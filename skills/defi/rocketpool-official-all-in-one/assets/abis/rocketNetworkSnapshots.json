@@ -1,0 +1,217 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_rocketStorageAddress",
+        "type": "address",
+        "internalType": "contract RocketStorageInterface"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "latest",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "exists",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "block",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "value",
+        "type": "uint224",
+        "internalType": "uint224"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "latestBlock",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "latestValue",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint224",
+        "internalType": "uint224"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "length",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "lookup",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_block",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint224",
+        "internalType": "uint224"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "lookupCheckpoint",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_block",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "exists",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "block",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "value",
+        "type": "uint224",
+        "internalType": "uint224"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "lookupRecent",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_block",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "_recency",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint224",
+        "internalType": "uint224"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "push",
+    "inputs": [
+      {
+        "name": "_key",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_value",
+        "type": "uint224",
+        "internalType": "uint224"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "version",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  }
+]

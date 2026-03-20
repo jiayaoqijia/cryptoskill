@@ -1,0 +1,66 @@
+{
+  "mainnet": {
+    "chainId": 1,
+    "rocketStorage": "0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46",
+    "rocketTokenRPL": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f",
+    "rocketTokenRPLFixedSupply": "0xb4efd85c19999d84251304bda99e90b92300bd93",
+    "rocketVault": "0x3bDC69C4E5e13E52A65f5583c23EFB9636b469d6"
+  },
+  "hoodi": {
+    "chainId": 560048,
+    "rocketStorage": "0x594Fb75D3dc2DFa0150Ad03F99F97817747dd4E1",
+    "rocketTokenRPL": "0x1Cc9cF5586522c6F483E84A19c3C2B0B6d027bF0",
+    "rocketVault": "0x67CdE7AF920682A29fcfea1A179ef0f30F48Df3e"
+  },
+  "tokens": {
+    "mainnet": {
+      "rETH": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+      "RPL": "0xD33526068D116cE69F19A9ee46F0bd304F21A51f"
+    },
+    "arbitrum": {
+      "chainId": 42161,
+      "rETH": "0xec70dcb4a1efa46b8f2d97c310c9c4790ba5ffa8",
+      "RPL": "0xb766039cc6db368759c1e56b79affe831d0cc507"
+    },
+    "optimism": {
+      "chainId": 10,
+      "rETH": "0x9bcef72be871e61ed4fbbc7630889bee758eb81d",
+      "RPL": "0xc81d1f0eb955b0c020e5d5b264e1ff72c14d1401"
+    },
+    "base": {
+      "chainId": 8453,
+      "rETH": "0xB6fe221Fe9EeF5aBa221c348bA20A1Bf5e73624c",
+      "RPL": "0x1f73EAf55d696BFFA9b0EA16fa987B93b0f4d302"
+    },
+    "polygon": {
+      "chainId": 137,
+      "rETH": "0x0266F4F08D82372CF0FcbCCc0Ff74309089c74d1",
+      "RPL": "0x7205705771547cf79201111b4bd8aaf29467b9ec"
+    },
+    "polygonZkEVM": {
+      "chainId": 1101,
+      "rETH": "0xb23C20EFcE6e24Acca0Cef9B7B7aA196b84EC942",
+      "RPL": "0x70d35152fBf63FB312709b11a9Bac87519de0019"
+    },
+    "zkSyncEra": {
+      "chainId": 324,
+      "rETH": "0x32Fd44bB869620C0EF993754c8a00Be67C464806",
+      "RPL": "0x1CF8553Da5a75C20cdC33532cb19Ef7E3bFFf5BC"
+    },
+    "scroll": {
+      "chainId": 534352,
+      "rETH": "0x53878B874283351D26d206FA512aEcE1Bef6C0dD"
+    },
+    "starknet": {
+      "rETH": "0x0319111a5037cbec2b3e638cc34a3474e2d2608299f3e62866e9cc683208c610"
+    },
+    "unichain": {
+      "rETH": "0x94Cac393f3444cEf63a651FfC18497E7e8bd036a"
+    },
+    "hoodi": {
+      "chainId": 560048,
+      "rETH": "0x7322c24752f79c05FFD1E2a6FCB97020C1C264F1",
+      "RPL": "0x1Cc9cF5586522c6F483E84A19c3C2B0B6d027bF0"
+    }
+  }
+}

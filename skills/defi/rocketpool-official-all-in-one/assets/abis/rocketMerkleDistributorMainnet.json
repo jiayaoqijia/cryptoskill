@@ -1,0 +1,268 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_rocketStorageAddress",
+        "type": "address",
+        "internalType": "contract RocketStorageInterface"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "receive",
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "claim",
+    "inputs": [
+      {
+        "name": "_nodeAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_claims",
+        "type": "tuple[]",
+        "internalType": "struct Claim[]",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountSmoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountVoterETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleProof",
+            "type": "bytes32[]",
+            "internalType": "bytes32[]"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimAndStake",
+    "inputs": [
+      {
+        "name": "_nodeAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_claims",
+        "type": "tuple[]",
+        "internalType": "struct Claim[]",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountSmoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountVoterETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleProof",
+            "type": "bytes32[]",
+            "internalType": "bytes32[]"
+          }
+        ]
+      },
+      {
+        "name": "_stakeAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimOutstandingEth",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getOutstandingEth",
+    "inputs": [
+      {
+        "name": "_address",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initialise",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "isClaimed",
+    "inputs": [
+      {
+        "name": "_rewardIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_claimer",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "receiveVaultWithdrawalETH",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "relayRewards",
+    "inputs": [
+      {
+        "name": "_rewardIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_treeVersion",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_root",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_rewardsRPL",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_rewardsETH",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "version",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "RewardsClaimed",
+    "inputs": [
+      {
+        "name": "claimer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "claims",
+        "type": "tuple[]",
+        "indexed": false,
+        "internalType": "struct Claim[]",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountSmoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amountVoterETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleProof",
+            "type": "bytes32[]",
+            "internalType": "bytes32[]"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  }
+]

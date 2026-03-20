@@ -1,0 +1,770 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_rocketStorageAddress",
+        "type": "address",
+        "internalType": "contract RocketStorageInterface"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "receive",
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "depositVoterShare",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "executeRewardSnapshot",
+    "inputs": [
+      {
+        "name": "_submission",
+        "type": "tuple",
+        "internalType": "struct RewardSubmission",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "executionBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "consensusBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleRoot",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "intervalsPassed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "smoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "userETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "trustedNodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeETH",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getClaimIntervalExecutionAddress",
+    "inputs": [
+      {
+        "name": "_interval",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getClaimIntervalExecutionBlock",
+    "inputs": [
+      {
+        "name": "_interval",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getClaimIntervalTime",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getClaimIntervalTimeStart",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getClaimIntervalsPassed",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getClaimingContractPerc",
+    "inputs": [
+      {
+        "name": "_claimingContract",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getClaimingContractsPerc",
+    "inputs": [
+      {
+        "name": "_claimingContracts",
+        "type": "string[]",
+        "internalType": "string[]"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getEthBalance",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPendingETHRewards",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPendingRPLRewards",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPendingVoterShare",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRPLBalance",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRewardIndex",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getSubmissionCount",
+    "inputs": [
+      {
+        "name": "_submission",
+        "type": "tuple",
+        "internalType": "struct RewardSubmission",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "executionBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "consensusBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleRoot",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "intervalsPassed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "smoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "userETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "trustedNodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeETH",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getSubmissionFromNodeExists",
+    "inputs": [
+      {
+        "name": "_trustedNodeAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_submission",
+        "type": "tuple",
+        "internalType": "struct RewardSubmission",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "executionBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "consensusBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleRoot",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "intervalsPassed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "smoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "userETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "trustedNodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeETH",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTrustedNodeSubmitted",
+    "inputs": [
+      {
+        "name": "_trustedNodeAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_rewardIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "receiveVaultWithdrawalETH",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "submitRewardSnapshot",
+    "inputs": [
+      {
+        "name": "_submission",
+        "type": "tuple",
+        "internalType": "struct RewardSubmission",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "executionBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "consensusBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleRoot",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "intervalsPassed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "smoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "userETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "trustedNodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeETH",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "version",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "RewardSnapshot",
+    "inputs": [
+      {
+        "name": "rewardIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "submission",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct RewardSubmission",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "executionBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "consensusBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleRoot",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "intervalsPassed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "smoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "userETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "trustedNodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeETH",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          }
+        ]
+      },
+      {
+        "name": "intervalStartTime",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "intervalEndTime",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "time",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RewardSnapshotSubmitted",
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "rewardIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "submission",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct RewardSubmission",
+        "components": [
+          {
+            "name": "rewardIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "executionBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "consensusBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "merkleRoot",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "intervalsPassed",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "smoothingPoolETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryRPL",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "treasuryETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "userETH",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "trustedNodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeRPL",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          },
+          {
+            "name": "nodeETH",
+            "type": "uint256[]",
+            "internalType": "uint256[]"
+          }
+        ]
+      },
+      {
+        "name": "time",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  }
+]

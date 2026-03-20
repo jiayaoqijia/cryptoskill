@@ -1,0 +1,14 @@
+{
+  "chainId": 56,
+  "protocol": "flux",
+  "network": "bnb",
+  "source": "https://github.com/Instadapp/fluid-contracts-public/tree/main/deployments/bnb",
+  "lendingResolver": "0x48D32f49aFeAEC7AE66ad7B9264f446fc11a1569",
+  "lendingFactory": "0x54B91A0D94cb471F37f949c60F7Fa7935b551D03",
+  "fTokens": [
+    {"symbol": "fU", "address": "0x007df53Cda786450Cf8145a73B2748B241a0069c"},
+    {"symbol": "fUSDC", "address": "0xfE60462E93cee34319F48Cfc6AcFbc13c2882Df9"},
+    {"symbol": "fUSDT", "address": "0xA5b8FCa32E5252B0B58EAbf1A8c79d958F8EE6A2"},
+    {"symbol": "fWBNB", "address": "0x527C2a0B8A3eDD9696B4A9443ef66Ec30fD7B84a"}
+  ]
+}

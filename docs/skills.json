@@ -1244,6 +1244,83 @@
       "version": "1.0.0"
     },
     {
+      "name": "rocketpool-official-all-in-one",
+      "displayName": "Rocketpool Official All In One",
+      "description": "Interact with Rocket Pool protocol contracts on Ethereum mainnet and Hoodi testnet. Use for any task involving rETH (liquid staking token), RPL (governance token), ETH staking, minting/burning rETH, checking exchange rates, node operator registration, minipool/megapool management, RPL staking, governance proposals, voting, rewards claiming, deposit pool queries, network balances, smoothing pool, or any Rocket Pool smart contract interaction. Supports both cast (Foundry CLI) and Ethereum MCP tools.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rocketpool-official-governance",
+      "displayName": "Rocketpool Official Governance",
+      "description": "Interact with Rocket Pool governance contracts — protocol DAO (pDAO) proposals and voting, oracle DAO (oDAO) membership and proposals, security council operations, and all DAO settings contracts. Supports cast (Foundry CLI) and Ethereum MCP tools on mainnet and Hoodi testnet.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rocketpool-official-liquid-staking",
+      "displayName": "Rocketpool Official Liquid Staking",
+      "description": "Interact with Rocket Pool liquid staking contracts — deposit ETH to mint rETH, burn rETH for ETH, check exchange rates, query deposit pool balances, and perform rETH ERC-20 operations. Supports cast (Foundry CLI) and Ethereum MCP tools on mainnet and Hoodi testnet.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rocketpool-official-network",
+      "displayName": "Rocketpool Official Network",
+      "description": "Interact with Rocket Pool network infrastructure contracts — RocketStorage address registry, network balances, RPL price oracle, node fees, penalties, governance snapshots, voting delegation, revenue splitting, and network settings. Supports cast (Foundry CLI) and Ethereum MCP tools on mainnet and Hoodi testnet.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rocketpool-official-node-operations",
+      "displayName": "Rocketpool Official Node Operations",
+      "description": "Interact with Rocket Pool node operator contracts — register nodes, create validators, manage minipools and megapools, stake RPL, handle bond reduction, distribute rewards, and manage withdrawal addresses. Supports cast (Foundry CLI) and Ethereum MCP tools on mainnet and Hoodi testnet.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rocketpool-official-rewards",
+      "displayName": "Rocketpool Official Rewards",
+      "description": "Interact with Rocket Pool rewards contracts — query reward cycles, claim RPL and ETH rewards via Merkle proofs, check smoothing pool balance, manage treasury payment contracts, and query reward settings. Supports cast (Foundry CLI) and Ethereum MCP tools on mainnet and Hoodi testnet.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rocketpool-official-tokens",
+      "displayName": "Rocketpool Official Tokens",
+      "description": "Interact with Rocket Pool token contracts — RPL (governance/staking token) ERC-20 operations, inflation mechanics, old RPL swap, rocketVault balance queries, and L2 token addresses for rETH and RPL on Arbitrum, Optimism, Base, Polygon, zkSync Era, Scroll, Starknet, and Unichain. Supports cast (Foundry CLI) and Ethereum MCP tools on mainnet and Hoodi testnet.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
       "name": "rwa-oracle",
       "displayName": "QXMP Oracle",
       "description": "Fetch real-world asset (RWA) data and proof-of-reserve status from the QXMP Oracle — managing $1.17 trillion in certified in-ground mining assets on the QELT blockchain. Use when asked about tokenized assets, reserve proofs, asset valuations, QXMP portfolio stats, or proof freshness. No API key required.",
@@ -1428,6 +1505,17 @@
       ],
       "author": "openclaw-consensus-bot",
       "version": "2.0.4"
+    },
+    {
+      "name": "venus-official-protocol-ops",
+      "displayName": "Venus Official Protocol Ops",
+      "description": "Analyze Venus Protocol lending/borrowing positions on BNB Chain with risk-first guidance. Use when users ask about Venus markets, collateral/borrow decisions, health factor, liquidation risk, APY/utilization comparison, isolated pools, or \"can I borrow X safely\" style what-if checks.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
     },
     {
       "name": "alchemy",
