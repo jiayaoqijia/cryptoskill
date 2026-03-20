@@ -1,0 +1,17 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required: []
+    properties:
+      graphApiKey:
+        type: string
+        description: API key for The Graph network (optional, for higher rate limits). Get one free at https://thegraph.com/studio/
+  commandFunction: |-
+    config => ({
+      command: 'npx',
+      args: ['-y', 'graph-polymarket-mcp'],
+      env: config.graphApiKey ? { GRAPH_API_KEY: config.graphApiKey } : {}
+    })

@@ -1,0 +1,52 @@
+{
+  "name": "x402-kit-express",
+  "version": "0.1.0",
+  "description": "Enhanced Express middleware for x402 crypto paywalls with policy and logging",
+  "license": "MIT",
+  "author": "Tara Quinn <hello@taraquinn.ai>",
+  "homepage": "https://github.com/tara-quinn-ai/x402-kit/tree/main/packages/express#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tara-quinn-ai/x402-kit.git",
+    "directory": "packages/express"
+  },
+  "keywords": ["x402", "crypto", "payments", "express", "middleware", "paywall", "USDC", "Base"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@x402/core": "^2.5.0",
+    "@x402/evm": "^2.5.0",
+    "@x402/express": "^2.5.0",
+    "x402-kit-shared": "*"
+  },
+  "peerDependencies": {
+    "express": "^4.0.0 || ^5.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  }
+}

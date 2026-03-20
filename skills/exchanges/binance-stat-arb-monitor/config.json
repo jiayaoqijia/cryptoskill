@@ -1,0 +1,35 @@
+{
+  "binance": {
+    "base_url": "https://demo-fapi.binance.com",
+    "timeout": 10
+  },
+  "strategy": {
+    "symbol1": "ETHUSDT",
+    "symbol2": "BTCUSDT",
+    "lookback_period": 720,
+    "interval": "1h",
+    "entry_threshold": 3.0,
+    "exit_threshold": 1.0,
+    "stop_loss": 4.5,
+    "min_zscore_for_signal": 2.5,
+    "position_size_usd": 1000
+  },
+  "notification": {
+    "enabled": true,
+    "telegram": {
+      "enabled": false,
+      "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
+      "chat_id": "YOUR_CHANNEL_CHAT_ID"
+    },
+    "feishu": {
+      "enabled": false,
+      "webhook_url": ""
+    }
+  },
+  "storage": {
+    "data_dir": "data",
+    "signals_file": "data/signals.json",
+    "latest_file": "data/latest_signal.json",
+    "log_file": "data/monitor.log"
+  }
+}

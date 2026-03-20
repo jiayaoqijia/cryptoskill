@@ -1,0 +1,15 @@
+{
+    "name": "zeal-agent-wallet",
+    "version": "1.0.0",
+    "description": "Zeal agent wallet skill — generate a wallet, propose transactions to a Zeal wallet via API calls.",
+    "scripts": {
+        "setup": "tsx src/setup.ts",
+        "propose-txn": "tsx src/propose-txn.ts",
+        "disconnect": "tsx src/disconnect.ts"
+    },
+    "dependencies": {
+        "tsx": "4.19.0",
+        "typescript": "5.7.0",
+        "viem": "2.21.0"
+    }
+}

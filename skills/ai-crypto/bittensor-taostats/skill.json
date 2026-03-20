@@ -1,0 +1,96 @@
+{
+  "name": "taostats",
+  "version": "1.1.0",
+  "description": "TaoStats API wrapper for Bittensor blockchain data - subnets, validators, staking, emissions. Read-only GET calls to api.taostats.io.",
+  "author": "vanlabs-dev",
+  "created": "2026-02-03",
+  "tags": [
+    "bittensor",
+    "taostats",
+    "blockchain",
+    "crypto",
+    "api"
+  ],
+  "dependencies": {
+    "system": [
+      "curl",
+      "jq",
+      "bc"
+    ],
+    "python": [
+      "requests"
+    ],
+    "api": [
+      "TaoStats API key (free tier at taostats.io)"
+    ]
+  },
+  "files": {
+    "main": "taostats.sh",
+    "python": [
+      "taostats_client.py",
+      "balance_history.py",
+      "validator_tracker.py"
+    ],
+    "docs": [
+      "SKILL.md",
+      "README.md"
+    ]
+  },
+  "credentials": {
+    "required": [
+      "TAOSTATS_API_KEY"
+    ],
+    "description": "Free API key from taostats.io. Export as environment variable.",
+    "storage": "environment_variable"
+  },
+  "setup": {
+    "env_vars": [
+      "TAOSTATS_API_KEY"
+    ]
+  },
+  "permissions": {
+    "network": [
+      "api.taostats.io"
+    ],
+    "filesystem": "read-only",
+    "disableModelInvocation": true
+  },
+  "functions": [
+    "taostats_pool",
+    "taostats_validator_yield",
+    "taostats_stake_balance",
+    "taostats_delegation_history",
+    "taostats_pruning",
+    "taostats_dev_activity",
+    "taostats_metagraph",
+    "taostats_slippage",
+    "taostats_coldkey_balance",
+    "taostats_top_validators",
+    "taostats_total_staked",
+    "taostats_dereg_risk",
+    "taostats_scan_apy",
+    "taostats_tao_price",
+    "rao_to_tao",
+    "tao_to_rao",
+    "taostats_batch_apy"
+  ],
+  "examples": [
+    {
+      "name": "Check portfolio",
+      "command": "taostats_total_staked YOUR_COLDKEY"
+    },
+    {
+      "name": "Find best validator",
+      "command": "taostats_top_validators 12"
+    },
+    {
+      "name": "Scan high APY",
+      "command": "taostats_scan_apy 100"
+    }
+  ],
+  "requires": {
+    "env": [
+      "TAOSTATS_API_KEY"
+    ]
+  }
+}

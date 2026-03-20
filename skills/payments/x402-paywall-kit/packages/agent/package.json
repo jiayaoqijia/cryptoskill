@@ -1,0 +1,49 @@
+{
+  "name": "x402-kit-agent",
+  "version": "0.1.0",
+  "description": "HTTP interceptor for AI agents to auto-pay x402 paywalls",
+  "license": "MIT",
+  "author": "Tara Quinn <hello@taraquinn.ai>",
+  "homepage": "https://github.com/tara-quinn-ai/x402-kit/tree/main/packages/agent#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tara-quinn-ai/x402-kit.git",
+    "directory": "packages/agent"
+  },
+  "keywords": ["x402", "crypto", "payments", "agent", "AI", "fetch", "USDC", "Base", "paywall"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@x402/core": "^2.5.0",
+    "@x402/evm": "^2.5.0",
+    "@x402/fetch": "^2.5.0",
+    "x402-kit-shared": "*",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  }
+}

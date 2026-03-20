@@ -1,0 +1,26 @@
+{
+  "name": "erc8004-identity",
+  "version": "1.0.0",
+  "description": "Deploy ERC-8004 onchain identity for AI agents on Avalanche",
+  "main": "cli.js",
+  "bin": {
+    "erc8004": "./cli.js"
+  },
+  "scripts": {
+    "init": "node cli.js init",
+    "deploy": "node cli.js deploy",
+    "status": "node cli.js status"
+  },
+  "keywords": [
+    "erc8004",
+    "avalanche",
+    "ai-agent",
+    "onchain-identity"
+  ],
+  "author": "Eva (@eva_uncensored)",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "ethers": "^6.0.0"
+  }
+}

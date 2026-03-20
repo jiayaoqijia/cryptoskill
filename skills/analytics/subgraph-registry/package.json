@@ -1,0 +1,41 @@
+{
+  "name": "subgraph-registry-mcp",
+  "version": "0.3.0",
+  "mcpName": "io.github.PaulieB14/subgraph-registry-mcp",
+  "description": "MCP server for agent-friendly subgraph discovery on The Graph Network. 15,500+ classified subgraphs with reliability scoring.",
+  "type": "module",
+  "bin": {
+    "subgraph-registry-mcp": "src/index.js"
+  },
+  "files": [
+    "src/",
+    "data/registry.db"
+  ],
+  "scripts": {
+    "start": "node src/index.js",
+    "start:http": "node src/index.js --http",
+    "start:http-only": "node src/index.js --http-only"
+  },
+  "keywords": [
+    "mcp",
+    "subgraph",
+    "the-graph",
+    "web3",
+    "defi",
+    "agent",
+    "ai",
+    "openclaw",
+    "sse"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PaulieB14/subgraph-registry.git"
+  },
+  "author": "PaulieB14",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "better-sqlite3": "^11.8.2",
+    "express": "^4.21.0"
+  }
+}

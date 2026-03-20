@@ -1,0 +1,53 @@
+{
+  "skill_name": "dune-analytics-api",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我查一下 ETH 过去24小时在 Uniswap V3 上的交易量",
+      "expected_output": "使用 dex.trades 或相关表查询 Uniswap V3 ETH 交易量，返回 USD 总量",
+      "files": [],
+      "expectations": [
+        "读取了相关 reference 文件",
+        "SQL 使用了正确的表（dex.trades 或 uniswap_v3_ethereum 相关表）",
+        "包含了时间过滤条件（过去24小时）",
+        "输出了交易量数据"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "我有一个钱包地址 0xabc123...，帮我分析它在 Base 链上的 DEX 交易历史",
+      "expected_output": "使用 wallet-analysis 参考，查询该地址在 Base 链上的 DEX 交易",
+      "files": [],
+      "expectations": [
+        "读取了 wallet-analysis.md",
+        "使用了 dex_aggregator.trades 而不是 dex.trades",
+        "按 Base 链过滤",
+        "包含了钱包地址过滤"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Solana 上 Jupiter 聚合器最近一周的交易量趋势，按天分组",
+      "expected_output": "查询 Solana DEX 数据，考虑 Solana 没有 dex_aggregator 表的特殊情况",
+      "files": [],
+      "expectations": [
+        "读取了相关 reference",
+        "知道 Solana 没有 dex_aggregator_solana.trades",
+        "使用了去重方式（GROUP BY tx_id）",
+        "按天分组输出趋势数据"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "我有一份 CSV 文件包含 500 个钱包地址，帮我上传到 Dune 做分析",
+      "expected_output": "使用 data-upload 参考或 dune_upload.py 脚本上传 CSV",
+      "files": [],
+      "expectations": [
+        "读取了 data-upload.md 或使用了 scripts/dune_upload.py",
+        "使用了 is_private=True",
+        "创建了适当的表结构",
+        "上传成功并提示可以在 SQL 中引用"
+      ]
+    }
+  ]
+}

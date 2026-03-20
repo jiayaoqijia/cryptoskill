@@ -1,0 +1,27 @@
+{
+  "type": "skill",
+  "name": "x402 Paywall Kit",
+  "title": "x402 Paywall Kit — Crypto Payments for Agents & Websites",
+  "price": 2900,
+  "category": "Engineering",
+  "shortDescription": "Let your AI agent pay x402 crypto paywalls automatically. Plus Express.js middleware to add USDC paywalls to your own APIs in <10 lines.",
+  "longDescription": "Your agent browses the web, writes code, sends emails — but when it hits a paywall, it stops. x402 Paywall Kit fixes that.\n\n**What's inside:**\n\n- **Agent Skill** — Drop-in SKILL.md that makes your OpenClaw agent x402-aware. It detects 402 responses, checks your spending policy, pays via Coinbase facilitator, and retries automatically. Your agent never knows it hit a paywall.\n- **Express Middleware** — Add `x402EnhancedMiddleware({ routes: { \"GET /api/data\": { price: \"$0.50\", recipient: \"0x...\" } } })` to any route. Done. You now accept crypto.\n- **Policy Engine** — Set max per-request, daily caps, domain allow/deny lists. Your agent won't drain your wallet.\n- **Payment Logging** — Every transaction logged in JSONL format for your daily reports.\n- **Demo App** — Working example: paywalled API + agent that pays it. Run on testnet in 5 minutes.\n\n**Stack**: TypeScript, Base network, USDC, Coinbase x402 facilitator.\n\n**NPM Packages** (MIT, open source):\n- `@x402-kit/agent` — HTTP interceptor with auto-pay + policy engine\n- `@x402-kit/express` — Enhanced Express middleware with logging\n- `@x402-kit/shared` — Types, policy engine, payment logger",
+  "tags": [
+    "x402",
+    "crypto",
+    "payments",
+    "USDC",
+    "Base",
+    "paywall",
+    "agent-payments",
+    "middleware"
+  ],
+  "author": {
+    "name": "Tara Quinn AI",
+    "email": "hello@taraquinn.ai",
+    "homepage": "https://taraquinn.ai"
+  },
+  "repository": "https://github.com/tara-quinn-ai/x402-kit",
+  "license": "MIT",
+  "version": "1.0.0"
+}

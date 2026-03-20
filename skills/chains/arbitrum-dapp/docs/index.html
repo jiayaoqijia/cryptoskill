@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arbitrum dApp Skill — Claude Code Skill for Building on Arbitrum</title>
+  <meta name="description" content="A Claude Code skill for building dApps on Arbitrum with Stylus Rust and Solidity. Scaffold, test, deploy, and integrate with viem.">
+  <link rel="icon" type="image/svg+xml" href="assets/arbitrum-logomark.svg">
+  <!-- Privacy-friendly analytics: no cookies, no personal data. See https://goatcounter.com -->
+  <script data-goatcounter="https://arbitrum-dapp-skill.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #213147;
+      --navy-deep: #141c2b;
+      --navy-darker: #0b1018;
+      --navy-card: #151d2e;
+      --blue: #12AAFF;
+      --blue-dim: rgba(18, 170, 255, 0.12);
+      --blue-glow: rgba(18, 170, 255, 0.35);
+      --light-blue: #9DCCED;
+      --white: #FFFFFF;
+      --gray-100: #e8edf3;
+      --gray-200: #c4cdd8;
+      --gray-400: #7b8a9a;
+      --gray-600: #3e4f62;
+      --gray-800: #1e2a3a;
+      --accent-purple: #6366f1;
+      --accent-cyan: #22d3ee;
+      --code-bg: #0d1520;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--navy-darker);
+      color: var(--gray-100);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(11, 16, 24, 0.7);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(18, 170, 255, 0.06);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo img { height: 26px; }
+
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+
+    .nav-pill {
+      color: var(--gray-400);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .nav-pill:hover {
+      color: var(--gray-100);
+      border-color: var(--gray-600);
+    }
+
+    .nav-cta {
+      background: var(--blue);
+      color: var(--white) !important;
+      border-color: var(--blue) !important;
+      font-weight: 600;
+    }
+
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 160px 0 60px;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(18, 170, 255, 0.12) 0%, rgba(99, 102, 241, 0.06) 40%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-left h1 {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+
+    .hero-left h1 .gradient-text {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--accent-cyan) 50%, var(--light-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-left p {
+      font-size: 16px;
+      color: var(--gray-400);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 440px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: var(--white);
+      box-shadow: 0 0 24px rgba(18, 170, 255, 0.25);
+    }
+
+    .btn-primary:hover { box-shadow: 0 0 32px rgba(18, 170, 255, 0.4); }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--gray-200);
+      border: 1px solid var(--gray-600);
+    }
+
+    .btn-ghost:hover { border-color: var(--gray-400); color: var(--white); }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hero-feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--navy-card);
+      border: 1px solid rgba(18, 170, 255, 0.06);
+      border-radius: 14px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .hero-feature:hover {
+      border-color: rgba(18, 170, 255, 0.2);
+      transform: translateX(4px);
+    }
+
+    .hero-feature-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--blue-dim), rgba(99, 102, 241, 0.1));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--blue);
+    }
+
+    .hero-feature-icon svg { width: 20px; height: 20px; }
+
+    .hero-feature-text h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-100);
+      margin-bottom: 2px;
+    }
+
+    .hero-feature-text p {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin: 0;
+    }
+
+    /* STATS BAR */
+    .stats {
+      padding: 40px 0;
+      border-top: 1px solid rgba(18, 170, 255, 0.06);
+      border-bottom: 1px solid rgba(18, 170, 255, 0.06);
+      margin-top: 20px;
+    }
+
+    .stats-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--white);
+    }
+
+    .stat-value .blue { color: var(--blue); }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .stats-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--gray-600);
+    }
+
+    /* SERVICES */
+    .services {
+      padding: 100px 0;
+    }
+
+    .services-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .section-header {
+      margin-bottom: 56px;
+    }
+
+    .section-header h2 {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .section-header p {
+      font-size: 16px;
+      color: var(--gray-400);
+      max-width: 480px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .service-card {
+      position: relative;
+      background: var(--navy-card);
+      border: 1px solid rgba(18, 170, 255, 0.06);
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: border-color 0.3s, transform 0.3s;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .service-card:hover {
+      border-color: rgba(18, 170, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, rgba(18, 170, 255, 0.15), rgba(99, 102, 241, 0.1));
+      border: 1px solid rgba(18, 170, 255, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--blue);
+    }
+
+    .service-icon svg { width: 22px; height: 22px; }
+
+    .service-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .service-card p {
+      font-size: 13px;
+      color: var(--gray-400);
+      line-height: 1.6;
+    }
+
+    /* QUICKSTART */
+    .quickstart {
+      padding: 80px 0 100px;
+    }
+
+    .qs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .qs-left .services-label { margin-bottom: 12px; }
+
+    .qs-left h2 {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .qs-left p {
+      font-size: 15px;
+      color: var(--gray-400);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    /* Terminal window */
+    .terminal {
+      background: #131a27;
+      border-radius: 14px;
+      border: 1px solid rgba(18, 170, 255, 0.08);
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), 0 0 80px rgba(18, 170, 255, 0.04);
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #0f1520;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .terminal-dots span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .terminal-dots span:nth-child(1) { background: #ff5f57; }
+    .terminal-dots span:nth-child(2) { background: #febc2e; }
+    .terminal-dots span:nth-child(3) { background: #28c840; }
+
+    .terminal-tabs {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      margin-left: 4px;
+    }
+
+    .terminal-tab {
+      padding: 5px 14px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--gray-400);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .terminal-tab.active {
+      border-color: var(--gray-600);
+      color: var(--gray-100);
+    }
+
+    .terminal-tab:hover:not(.active) { color: var(--gray-200); }
+
+    .terminal-body {
+      position: relative;
+      padding: 22px 22px 18px;
+      min-height: 160px;
+    }
+
+    .terminal-panel { display: none; }
+    .terminal-panel.active { display: block; }
+
+    .terminal-body code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--gray-200);
+      line-height: 1.8;
+      display: block;
+    }
+
+    .terminal-body .comment { color: #3d4f63; }
+    .terminal-body .prompt { color: var(--blue); user-select: none; }
+
+    .terminal-copy {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--gray-600);
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
+      display: flex;
+    }
+
+    .terminal-copy:hover { color: var(--gray-200); }
+
+    .terminal-subtitle {
+      text-align: center;
+      color: var(--gray-400);
+      font-size: 13px;
+      margin-top: 14px;
+    }
+
+    /* STACK */
+    .stack {
+      padding: 60px 0 100px;
+    }
+
+    .stack-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--navy-card);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(18, 170, 255, 0.06);
+    }
+
+    .stack-table th {
+      text-align: left;
+      padding: 14px 24px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gray-400);
+      background: rgba(0, 0, 0, 0.25);
+      font-weight: 600;
+    }
+
+    .stack-table td {
+      padding: 14px 24px;
+      font-size: 14px;
+      border-top: 1px solid rgba(18, 170, 255, 0.04);
+    }
+
+    .stack-table td:first-child {
+      color: var(--gray-400);
+      font-weight: 500;
+    }
+
+    .stack-table td:nth-child(2) {
+      color: var(--white);
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    .stack-table td:nth-child(3) {
+      color: var(--gray-400);
+      font-size: 13px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(18, 170, 255, 0.06);
+      padding: 36px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-left img { height: 18px; opacity: 0.4; }
+
+    .footer-left span {
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .footer-links { display: flex; gap: 24px; }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--gray-600);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gray-400); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero-left h1 { font-size: 36px; }
+      .hero-right { order: -1; }
+      .services-grid { grid-template-columns: 1fr; }
+      .qs-grid { grid-template-columns: 1fr; gap: 32px; }
+      .qs-left h2 { font-size: 28px; }
+      .stats-inner { gap: 24px; }
+      .stats-divider { display: none; }
+      .nav-pill:not(.nav-cta) { display: none; }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .terminal-tabs { flex-wrap: wrap; }
+      .terminal-body { padding: 14px; }
+      .terminal-body code { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <img src="assets/arbitrum-logomark.svg" alt="Arbitrum">
+        arbitrum-dapp-skill
+      </a>
+      <div class="nav-links">
+        <a href="#services" class="nav-pill">Features</a>
+        <a href="#quickstart" class="nav-pill">Quick Start</a>
+        <a href="#stack" class="nav-pill">Stack</a>
+        <a href="https://github.com/hummusonrails/arbitrum-dapp-skill" class="nav-pill nav-cta">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <h1>Build dApps on<br><span class="gradient-text">Arbitrum</span> with AI.</h1>
+          <p>A Claude Code skill with deep knowledge of Stylus Rust, Solidity, and the full Arbitrum toolchain. Go from idea to deployed dApp.</p>
+          <div class="hero-actions">
+            <a href="#quickstart" class="btn btn-primary">
+              Get Started
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="https://github.com/hummusonrails/arbitrum-dapp-skill" class="btn btn-ghost">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              View Source
+            </a>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-feature">
+            <div class="hero-feature-icon">
+              <!-- Orbit icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.341 6.484A10 10 0 0 1 10.266 21.85"/><path d="M3.659 17.516A10 10 0 0 1 13.74 2.152"/><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/></svg>
+            </div>
+            <div class="hero-feature-text">
+              <h4>Stylus Rust + Solidity</h4>
+              <p>Write contracts in Rust or Solidity. Full interop.</p>
+            </div>
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon">
+              <!-- LayoutDashboard icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            </div>
+            <div class="hero-feature-text">
+              <h4>viem + wagmi Frontend</h4>
+              <p>Type-safe React integration. No ethers.js.</p>
+            </div>
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon">
+              <!-- Container icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z"/><path d="M10 21.9V14L2.1 9.1"/><path d="m10 14 11.9-6.9"/><path d="M14 19.8v-8.1"/><path d="M18 17.5V9.4"/></svg>
+            </div>
+            <div class="hero-feature-text">
+              <h4>Local Devnode</h4>
+              <p>Docker-based Arbitrum chain with pre-funded accounts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="container">
+      <div class="stats-inner">
+        <div class="stat">
+          <div class="stat-value">6<span class="blue">+</span></div>
+          <div class="stat-label">Reference Docs</div>
+        </div>
+        <div class="stats-divider"></div>
+        <div class="stat">
+          <div class="stat-value">2</div>
+          <div class="stat-label">Contract Languages</div>
+        </div>
+        <div class="stats-divider"></div>
+        <div class="stat">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Deploy Targets</div>
+        </div>
+        <div class="stats-divider"></div>
+        <div class="stat">
+          <div class="stat-value">v0.10<span class="blue">+</span></div>
+          <div class="stat-label">Stylus SDK</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <div class="services-label">What It Does</div>
+        <h2>Everything you need to<br>build on Arbitrum.</h2>
+        <p>The skill covers the full development lifecycle from contract to frontend to deployment.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <!-- CircuitBoard icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M11 9h4a2 2 0 0 0 2-2V3"/><circle cx="9" cy="9" r="2"/><path d="M7 21v-4a2 2 0 0 1 2-2h4"/><circle cx="15" cy="15" r="2"/></svg>
+          </div>
+          <h3>Stylus Rust Contracts</h3>
+          <p>Write smart contracts in Rust with the Stylus SDK. Lower gas costs, storage macros, cross-contract calls, and full EVM interop.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <!-- Cpu icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          </div>
+          <h3>Solidity + Foundry</h3>
+          <p>Standard Solidity development with Foundry. Build, test, deploy with forge and cast.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <!-- Waypoints icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.586 5.414-5.172 5.172"/><path d="m18.586 13.414-5.172 5.172"/><path d="M6 12h12"/><circle cx="12" cy="20" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="4" cy="12" r="2"/></svg>
+          </div>
+          <h3>viem + wagmi Frontend</h3>
+          <p>React integration with viem and wagmi. Type-safe contract reads, writes, event watching, and wallet connection.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <!-- Container icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z"/><path d="M10 21.9V14L2.1 9.1"/><path d="m10 14 11.9-6.9"/><path d="M14 19.8v-8.1"/><path d="M18 17.5V9.4"/></svg>
+          </div>
+          <h3>Local Devnode</h3>
+          <p>Docker-based local Arbitrum chain with pre-funded accounts for instant development.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <!-- FlaskConical icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/></svg>
+          </div>
+          <h3>Testing Strategies</h3>
+          <p>Unit tests, fuzz tests, fork tests, and integration tests. stylus-test for Rust, Foundry for Solidity, coverage reports.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <!-- Rocket icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          </div>
+          <h3>Deploy Anywhere</h3>
+          <p>Deploy to local devnode, Arbitrum Sepolia, or Arbitrum One. Gas estimation, verification, and activation guides.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICKSTART -->
+  <section class="quickstart" id="quickstart">
+    <div class="container">
+      <div class="qs-grid">
+        <div class="qs-left">
+          <div class="services-label">Quick Start</div>
+          <h2>Install the skill,<br>start building.</h2>
+          <p>One command installs everything. Claude Code automatically loads the skill and its reference docs when you ask about Arbitrum development.</p>
+          <a href="https://github.com/hummusonrails/arbitrum-dapp-skill" class="btn btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            View on GitHub
+          </a>
+        </div>
+        <div class="qs-right">
+          <div class="terminal">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="terminal-tabs">
+                <button class="terminal-tab active" data-tab="one-liner">One-liner</button>
+                <button class="terminal-tab" data-tab="manual">Manual</button>
+                <button class="terminal-tab" data-tab="usage">Usage</button>
+              </div>
+            </div>
+            <div class="terminal-body">
+              <!-- ONE-LINER -->
+              <div class="terminal-panel active" id="tab-one-liner">
+                <code>
+                  <span class="comment"># Installs to ~/.claude/skills/arbitrum-dapp</span><br>
+                  <span class="prompt">$ </span>bash &lt;(curl -s https://raw.githubusercontent.com/<br>&nbsp;&nbsp;hummusonrails/arbitrum-dapp-skill/main/install.sh)<br>
+                  <br>
+                  <span class="comment"># Then start Claude Code</span><br>
+                  <span class="prompt">$ </span>claude
+                </code>
+                <button class="terminal-copy" onclick="copyTerminal(this)" title="Copy">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                </button>
+              </div>
+
+              <!-- MANUAL -->
+              <div class="terminal-panel" id="tab-manual">
+                <code>
+                  <span class="comment"># Clone the repository</span><br>
+                  <span class="prompt">$ </span>git clone https://github.com/<br>&nbsp;&nbsp;hummusonrails/arbitrum-dapp-skill.git \<br>&nbsp;&nbsp;~/.claude/skills/arbitrum-dapp<br>
+                  <br>
+                  <span class="comment"># Start Claude Code</span><br>
+                  <span class="prompt">$ </span>claude
+                </code>
+                <button class="terminal-copy" onclick="copyTerminal(this)" title="Copy">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                </button>
+              </div>
+
+              <!-- USAGE -->
+              <div class="terminal-panel" id="tab-usage">
+                <code>
+                  <span class="comment"># Ask Claude to help you build</span><br>
+                  <span class="prompt">&gt; </span>Create a Stylus contract for an NFT<br>
+                  <span class="prompt">&gt; </span>Write a Solidity ERC-20 for Arbitrum<br>
+                  <span class="prompt">&gt; </span>Deploy to my local devnode<br>
+                  <span class="prompt">&gt; </span>Build a frontend with viem + wagmi
+                </code>
+                <button class="terminal-copy" onclick="copyTerminal(this)" title="Copy">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section class="stack" id="stack">
+    <div class="container">
+      <div class="section-header">
+        <div class="services-label">Tech Stack</div>
+        <h2>Opinionated defaults.<br>Override anything.</h2>
+      </div>
+      <table class="stack-table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Tool</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Contracts (Rust)</td>
+            <td>stylus-sdk v0.10+</td>
+            <td>Compiled to WASM, runs on Stylus VM</td>
+          </tr>
+          <tr>
+            <td>Contracts (Solidity)</td>
+            <td>Solidity 0.8.x + Foundry</td>
+            <td>Standard EVM path on Arbitrum</td>
+          </tr>
+          <tr>
+            <td>Local node</td>
+            <td>nitro-devnode</td>
+            <td>Docker-based local Arbitrum chain</td>
+          </tr>
+          <tr>
+            <td>Contract CLI</td>
+            <td>cargo-stylus</td>
+            <td>Check, deploy, export-abi</td>
+          </tr>
+          <tr>
+            <td>Contract toolchain</td>
+            <td>forge / cast</td>
+            <td>Build, test, deploy, interact</td>
+          </tr>
+          <tr>
+            <td>Frontend</td>
+            <td>viem + wagmi</td>
+            <td>Type-safe chain interaction</td>
+          </tr>
+          <tr>
+            <td>Package manager</td>
+            <td>pnpm</td>
+            <td>Workspace-friendly, fast</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <img src="assets/arbitrum-logomark.svg" alt="Arbitrum">
+          <span>arbitrum-dapp-skill</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/hummusonrails/arbitrum-dapp-skill">GitHub</a>
+          <a href="https://docs.arbitrum.io/stylus/quickstart">Arbitrum Docs</a>
+          <a href="https://github.com/OffchainLabs/stylus-sdk-rs">Stylus SDK</a>
+          <a href="https://viem.sh">viem</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Tabs
+    document.querySelectorAll('.terminal-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.terminal-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.terminal-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Copy
+    function copyTerminal(btn) {
+      const panel = btn.closest('.terminal-panel');
+      const code = panel.querySelector('code').innerText
+        .replace(/^\$ /gm, '')
+        .replace(/^> /gm, '')
+        .replace(/^# .*$/gm, '')
+        .replace(/\n{2,}/g, '\n')
+        .trim();
+      navigator.clipboard.writeText(code).then(() => {
+        const svg = btn.innerHTML;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg>';
+        setTimeout(() => btn.innerHTML = svg, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "name": "worldcoin",
+  "version": "1.0.0",
+  "description": "Filter human-critical workflows using proof-of-human logic. Designed for identity-sensitive commercial decisions, anti-bot gating, and real-human-required checkpoints.",
+  "author": "agenticio",
+  "license": "MIT-0",
+  "homepage": "https://clawhub.ai",
+  "keywords": [
+    "worldcoin",
+    "proof of human",
+    "proof of personhood",
+    "human verification",
+    "anti bot",
+    "identity gating",
+    "fake lead filtering",
+    "synthetic engagement"
+  ],
+  "files": {
+    "skill.md": "skill.md"
+  },
+  "capabilities": {
+    "human_trust_design": "Design proof-of-human style trust layers for digital workflows",
+    "abuse_risk_classification": "Classify bot, duplicate, and fake-participation risks",
+    "verification_threshold_design": "Recommend the right level of human-verification friction",
+    "workflow_gating": "Decide where stronger human gating is worth the cost"
+  },
+  "triggers": [
+    "proof of human",
+    "human verification",
+    "anti bot workflow",
+    "fake lead filtering",
+    "real human required",
+    "duplicate participation",
+    "identity gating",
+    "bot prevention"
+  ],
+  "audience": [
+    "Founders designing trust-sensitive products",
+    "Operators reducing fake participation",
+    "Teams filtering low-trust inbound workflows",
+    "Builders thinking about proof-of-human gating"
+  ],
+  "openclaw": {
+    "primaryEnv": null,
+    "requires": {}
+  }
+}

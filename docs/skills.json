@@ -1,0 +1,4398 @@
+{
+  "skills": [
+    {
+      "name": "binance-spot-api",
+      "displayName": "Binance Spot API",
+      "description": "Full spot trading API integration for Binance exchange. Execute market, limit, and stop orders with real-time balance tracking.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "trading",
+        "spot",
+        "cex",
+        "api"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-spot-websocket",
+      "displayName": "Binance Spot WebSocket",
+      "description": "Real-time market data streaming via Binance WebSocket API. Subscribe to order book updates, trades, and ticker streams.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "websocket",
+        "streaming",
+        "market-data"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-web3-api",
+      "displayName": "Binance Web3 API",
+      "description": "Interact with Binance Web3 wallet and DApp browser. Bridge between centralized exchange and on-chain operations.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "web3",
+        "wallet",
+        "dapp"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-trading-bot",
+      "displayName": "Binance Trading Bot",
+      "description": "Automated trading bot framework for Binance. Supports custom strategies, backtesting, and live execution with risk management.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "bot",
+        "automation",
+        "trading"
+      ],
+      "author": "jolestar",
+      "version": "1.2.0"
+    },
+    {
+      "name": "binance-futures-trading",
+      "displayName": "Binance Futures Trading",
+      "description": "Futures and perpetual contract trading on Binance. Manage leverage, margin, and position sizing with built-in risk controls.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "futures",
+        "perpetual",
+        "leverage"
+      ],
+      "author": "jolestar",
+      "version": "1.1.0"
+    },
+    {
+      "name": "binance-spot-trading",
+      "displayName": "Binance Spot Trading",
+      "description": "Simplified spot trading interface for Binance. Quick buy/sell with smart order routing and slippage protection.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "spot",
+        "trading",
+        "orders"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-grid-trading",
+      "displayName": "Binance Grid Trading",
+      "description": "Automated grid trading strategy for Binance. Set price ranges and let the bot buy low and sell high within the grid.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "grid",
+        "strategy",
+        "automation"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-arbitrage-finder",
+      "displayName": "Binance Arbitrage Finder",
+      "description": "Detect arbitrage opportunities across Binance trading pairs. Real-time scanning of triangular and cross-exchange spreads.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "arbitrage",
+        "scanner",
+        "opportunity"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-price-alerts",
+      "displayName": "Binance Price Alerts",
+      "description": "Configurable price alert system for Binance markets. Set threshold alerts, percentage moves, and volume spikes.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "alerts",
+        "price",
+        "notifications"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-trading-assistant",
+      "displayName": "Binance Trading Assistant",
+      "description": "AI-powered trading assistant for Binance. Get trade suggestions, market analysis, and portfolio recommendations via natural language.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "assistant",
+        "ai",
+        "recommendations"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-signal-engine",
+      "displayName": "Binance Signal Engine",
+      "description": "Technical analysis signal generator for Binance markets. Combines RSI, MACD, Bollinger Bands, and volume analysis.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "signals",
+        "technical-analysis",
+        "indicators"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-stat-arb-monitor",
+      "displayName": "Binance Statistical Arbitrage Monitor",
+      "description": "Monitor statistical arbitrage pairs on Binance. Track correlation, cointegration, and z-score divergence in real time.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "stat-arb",
+        "correlation",
+        "quant"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-watchlist-scanner",
+      "displayName": "Binance Watchlist Scanner",
+      "description": "Automated watchlist scanner for Binance. Track multiple tokens with customizable alerts for price, volume, and momentum shifts.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "watchlist",
+        "scanner",
+        "monitoring"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-square-post",
+      "displayName": "Binance Square Post",
+      "description": "Publish and manage content on Binance Square social platform. Schedule posts, track engagement, and monitor trending topics.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "social",
+        "content",
+        "square"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-spot-trader",
+      "displayName": "Binance Spot Trader",
+      "description": "Professional spot trading toolkit for Binance. Advanced order types, position tracking, and P&L reporting.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "spot",
+        "professional",
+        "orders"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-spot-skill",
+      "displayName": "Binance Spot Skill",
+      "description": "Core Binance spot market skill for AI agents. Query prices, execute trades, and manage balances through a unified interface.",
+      "category": "exchanges",
+      "tags": [
+        "binance",
+        "spot",
+        "core",
+        "agent"
+      ],
+      "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "coinbase",
+      "displayName": "Coinbase",
+      "description": "Complete Coinbase integration for AI agents. Trade, check balances, view transaction history, and manage portfolios.",
+      "category": "exchanges",
+      "tags": [
+        "coinbase",
+        "trading",
+        "portfolio",
+        "cex"
+      ],
+      "author": "coinbase",
+      "version": "2.0.0"
+    },
+    {
+      "name": "coinbase-api",
+      "displayName": "Coinbase API",
+      "description": "Low-level Coinbase Advanced Trade API wrapper. Full access to order book, fills, accounts, and product data.",
+      "category": "exchanges",
+      "tags": [
+        "coinbase",
+        "api",
+        "advanced-trade",
+        "rest"
+      ],
+      "author": "coinbase",
+      "version": "1.5.0"
+    },
+    {
+      "name": "okx-websocket",
+      "displayName": "OKX WebSocket",
+      "description": "Real-time data streaming from OKX exchange. Subscribe to market tickers, order book depth, and trade execution feeds.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "websocket",
+        "streaming",
+        "real-time"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-mcp",
+      "displayName": "OKX MCP",
+      "description": "OKX Model Context Protocol integration. Provides structured market data and trading capabilities to AI agents.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "mcp",
+        "ai",
+        "integration"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-dex-swap",
+      "displayName": "OKX DEX Swap",
+      "description": "Decentralized token swaps via OKX DEX aggregator. Find optimal routes across multiple DEXs for best execution.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "dex",
+        "swap",
+        "aggregator"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-dex-market",
+      "displayName": "OKX DEX Market",
+      "description": "On-chain market data from OKX DEX. Track token prices, liquidity pools, and trading volumes across supported chains.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "dex",
+        "market-data",
+        "on-chain"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-dex-token",
+      "displayName": "OKX DEX Token",
+      "description": "Token discovery and analysis via OKX DEX. Get token metadata, contract security scores, and holder distribution.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "dex",
+        "token",
+        "analysis"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-dex-signal",
+      "displayName": "OKX DEX Signal",
+      "description": "On-chain trading signals from OKX DEX activity. Monitor smart money flows, whale trades, and liquidity shifts.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "dex",
+        "signals",
+        "smart-money"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-wallet-portfolio",
+      "displayName": "OKX Wallet Portfolio",
+      "description": "Portfolio tracking and management via OKX wallet. Aggregate positions across chains with real-time valuation.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "wallet",
+        "portfolio",
+        "multi-chain"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-security",
+      "displayName": "OKX Security",
+      "description": "Token and contract security analysis powered by OKX. Check for honeypots, rug pulls, and malicious contract patterns.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "security",
+        "audit",
+        "scam-detection"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-onchain-gateway",
+      "displayName": "OKX On-Chain Gateway",
+      "description": "Bridge between OKX exchange and on-chain operations. Seamless deposits, withdrawals, and cross-chain transfers.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "on-chain",
+        "bridge",
+        "gateway"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-agentic-wallet",
+      "displayName": "OKX Agentic Wallet",
+      "description": "AI agent-native wallet powered by OKX. Programmatic transaction signing, gas management, and multi-chain support.",
+      "category": "wallets",
+      "tags": [
+        "okx",
+        "wallet",
+        "agentic",
+        "ai-native"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-cex-bot",
+      "displayName": "OKX CEX Bot",
+      "description": "Automated trading bot for OKX centralized exchange. Supports grid, DCA, and custom strategy execution.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "bot",
+        "automation",
+        "cex"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-cex-market",
+      "displayName": "OKX CEX Market",
+      "description": "Market data feed from OKX centralized exchange. Access order books, recent trades, candlesticks, and funding rates.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "cex",
+        "market-data",
+        "order-book"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-cex-trade",
+      "displayName": "OKX CEX Trade",
+      "description": "Trade execution on OKX centralized exchange. Place spot, margin, and futures orders with advanced order types.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "cex",
+        "trade",
+        "orders"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-cex-portfolio",
+      "displayName": "OKX CEX Portfolio",
+      "description": "Portfolio management for OKX exchange accounts. Track P&L, asset allocation, and historical performance across sub-accounts.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "cex",
+        "portfolio",
+        "analytics"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-api",
+      "displayName": "OKX API",
+      "description": "Comprehensive OKX REST API wrapper. Full access to trading, market data, and account management endpoints.",
+      "category": "exchanges",
+      "tags": [
+        "okx",
+        "api",
+        "rest",
+        "comprehensive"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-api",
+      "displayName": "Kraken API",
+      "description": "Full Kraken exchange API integration. Trade, query balances, access market data, and manage staking positions.",
+      "category": "exchanges",
+      "tags": [
+        "kraken",
+        "api",
+        "trading",
+        "staking"
+      ],
+      "author": "kraken",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken",
+      "displayName": "Kraken",
+      "description": "High-level Kraken exchange skill for AI agents. Natural language trading, portfolio queries, and market intelligence.",
+      "category": "exchanges",
+      "tags": [
+        "kraken",
+        "trading",
+        "cex",
+        "agent"
+      ],
+      "author": "kraken",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-spot",
+      "displayName": "Kraken Spot",
+      "description": "Spot market trading on Kraken. Execute trades, check ticker data, and manage open orders with low-latency access.",
+      "category": "exchanges",
+      "tags": [
+        "kraken",
+        "spot",
+        "trading",
+        "low-latency"
+      ],
+      "author": "kraken",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bybit-api",
+      "displayName": "Bybit API",
+      "description": "Complete Bybit exchange API wrapper. Access spot, derivatives, and copy trading functionality via REST and WebSocket.",
+      "category": "exchanges",
+      "tags": [
+        "bybit",
+        "api",
+        "derivatives",
+        "copy-trading"
+      ],
+      "author": "bybit",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bybit-trading",
+      "displayName": "Bybit Trading",
+      "description": "Trading interface for Bybit exchange. Manage positions across spot, USDT perpetuals, and inverse contracts.",
+      "category": "exchanges",
+      "tags": [
+        "bybit",
+        "trading",
+        "perpetuals",
+        "inverse"
+      ],
+      "author": "bybit",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bybit-futures",
+      "displayName": "Bybit Futures",
+      "description": "Futures trading on Bybit with leverage management. Set take-profit, stop-loss, and trailing stop orders programmatically.",
+      "category": "exchanges",
+      "tags": [
+        "bybit",
+        "futures",
+        "leverage",
+        "risk-management"
+      ],
+      "author": "bybit",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kucoin-api",
+      "displayName": "KuCoin API",
+      "description": "KuCoin exchange API integration. Access spot trading, margin lending, and futures markets with full order management.",
+      "category": "exchanges",
+      "tags": [
+        "kucoin",
+        "api",
+        "margin",
+        "futures"
+      ],
+      "author": "kucoin",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kucoin-trader",
+      "displayName": "KuCoin Trader",
+      "description": "Smart trading toolkit for KuCoin. Includes DCA, grid trading, and custom strategy execution with backtesting support.",
+      "category": "exchanges",
+      "tags": [
+        "kucoin",
+        "trading",
+        "dca",
+        "grid"
+      ],
+      "author": "kucoin",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-trading-copilot",
+      "displayName": "Gate Trading Copilot",
+      "description": "AI-powered trading copilot for Gate.io. Get real-time trade suggestions, risk analysis, and portfolio optimization advice.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "copilot",
+        "ai",
+        "trading"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-market-analysis",
+      "displayName": "Gate Market Analysis",
+      "description": "Deep market analysis tools for Gate.io. Technical indicators, trend detection, and sentiment scoring across all markets.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "analysis",
+        "technical",
+        "sentiment"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-assets",
+      "displayName": "Gate Assets",
+      "description": "Asset management for Gate.io accounts. View balances, transfer funds, and track deposit/withdrawal history.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "assets",
+        "balance",
+        "transfers"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-staking",
+      "displayName": "Gate Staking",
+      "description": "Staking and earn products on Gate.io. Browse available staking pools, lock tokens, and track staking rewards.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "staking",
+        "earn",
+        "yield"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-dex-market",
+      "displayName": "Gate DEX Market",
+      "description": "Decentralized market data from Gate.io DEX. Track on-chain liquidity, pair stats, and trading volume trends.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "dex",
+        "market-data",
+        "liquidity"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-dex-trade",
+      "displayName": "Gate DEX Trade",
+      "description": "Execute decentralized trades via Gate.io DEX. Swap tokens on-chain with optimized routing and MEV protection.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "dex",
+        "swap",
+        "mev-protection"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-dex-wallet",
+      "displayName": "Gate DEX Wallet",
+      "description": "On-chain wallet integration with Gate.io DEX. Manage tokens, approve contracts, and track wallet activity across chains.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "dex",
+        "wallet",
+        "multi-chain"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-coin-analysis",
+      "displayName": "Gate Coin Analysis",
+      "description": "In-depth coin analysis from Gate.io data. Tokenomics review, holder analysis, and market cap comparisons.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "analysis",
+        "tokenomics",
+        "fundamentals"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-market-overview",
+      "displayName": "Gate Market Overview",
+      "description": "Macro market overview from Gate.io. Sector performance, top movers, new listings, and market cap rankings.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "overview",
+        "sectors",
+        "rankings"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-risk-check",
+      "displayName": "Gate Risk Check",
+      "description": "Risk assessment tools powered by Gate.io. Evaluate token safety, exchange risk metrics, and portfolio exposure analysis.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "risk",
+        "safety",
+        "assessment"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-trend-analysis",
+      "displayName": "Gate Trend Analysis",
+      "description": "Market trend identification from Gate.io data. Moving averages, momentum indicators, and breakout pattern detection.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "trends",
+        "momentum",
+        "patterns"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-news-briefing",
+      "displayName": "Gate News Briefing",
+      "description": "Curated crypto news and updates from Gate.io. AI-summarized market news, project updates, and regulatory developments.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "news",
+        "briefing",
+        "updates"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-mcp-installer",
+      "displayName": "Gate MCP Installer",
+      "description": "One-click installer for Gate.io MCP server. Auto-configures API keys, permissions, and skill dependencies.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "mcp",
+        "installer",
+        "setup"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gate-mcp",
+      "displayName": "Gate MCP",
+      "description": "Gate.io Model Context Protocol server. Provides structured exchange data and trading tools to AI agent frameworks.",
+      "category": "exchanges",
+      "tags": [
+        "gate",
+        "mcp",
+        "protocol",
+        "ai-framework"
+      ],
+      "author": "gate",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitfinex-lending-monitor",
+      "displayName": "Bitfinex Lending Monitor",
+      "description": "Monitor and manage margin lending positions on Bitfinex. Track rates, auto-renew offers, and optimize lending returns.",
+      "category": "exchanges",
+      "tags": [
+        "bitfinex",
+        "lending",
+        "margin",
+        "yield"
+      ],
+      "author": "bitfinex",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-api",
+      "displayName": "Bitget API",
+      "description": "Bitget exchange API integration. Access spot trading, copy trading, and futures with comprehensive order management.",
+      "category": "exchanges",
+      "tags": [
+        "bitget",
+        "api",
+        "copy-trading",
+        "futures"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-wallet",
+      "displayName": "Bitget Wallet",
+      "description": "Bitget on-chain wallet integration. Multi-chain asset management, DApp browser, and token swap functionality.",
+      "category": "wallets",
+      "tags": [
+        "bitget",
+        "wallet",
+        "multi-chain",
+        "dapp"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-com-mcp",
+      "displayName": "Crypto.com MCP",
+      "description": "Crypto.com exchange MCP integration. Trade, check prices, and manage your Crypto.com portfolio through AI agents.",
+      "category": "exchanges",
+      "tags": [
+        "crypto-com",
+        "mcp",
+        "trading",
+        "portfolio"
+      ],
+      "author": "crypto-com",
+      "version": "1.0.0"
+    },
+    {
+      "name": "mexc-api",
+      "displayName": "MEXC API",
+      "description": "MEXC Global exchange API wrapper. Access spot markets, new token listings, and launchpad participation.",
+      "category": "exchanges",
+      "tags": [
+        "mexc",
+        "api",
+        "spot",
+        "launchpad"
+      ],
+      "author": "mexc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "dune-mcp",
+      "displayName": "Dune MCP",
+      "description": "Dune Analytics MCP integration. Query on-chain data, run custom SQL queries, and access pre-built dashboards via AI agents.",
+      "category": "analytics",
+      "tags": [
+        "dune",
+        "mcp",
+        "sql",
+        "on-chain-data"
+      ],
+      "author": "dune",
+      "version": "1.0.0"
+    },
+    {
+      "name": "dune-analytics-api",
+      "displayName": "Dune Analytics API",
+      "description": "Programmatic access to Dune Analytics. Execute queries, retrieve results, and build custom analytics pipelines.",
+      "category": "analytics",
+      "tags": [
+        "dune",
+        "api",
+        "analytics",
+        "queries"
+      ],
+      "author": "dune",
+      "version": "1.0.0"
+    },
+    {
+      "name": "coingecko-api",
+      "displayName": "CoinGecko API",
+      "description": "Comprehensive CoinGecko market data API. Access prices, market caps, volumes, and historical data for 10,000+ coins.",
+      "category": "analytics",
+      "tags": [
+        "coingecko",
+        "api",
+        "market-data",
+        "prices"
+      ],
+      "author": "coingecko",
+      "version": "2.0.0"
+    },
+    {
+      "name": "coingecko-price",
+      "displayName": "CoinGecko Price",
+      "description": "Quick price lookups via CoinGecko. Get current prices, 24h changes, and price charts for any cryptocurrency.",
+      "category": "analytics",
+      "tags": [
+        "coingecko",
+        "price",
+        "quotes",
+        "charts"
+      ],
+      "author": "coingecko",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cmc-api-crypto",
+      "displayName": "CMC Crypto API",
+      "description": "CoinMarketCap cryptocurrency data API. Access detailed crypto metadata, quotes, and global market metrics.",
+      "category": "analytics",
+      "tags": [
+        "coinmarketcap",
+        "crypto",
+        "metadata",
+        "quotes"
+      ],
+      "author": "cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cmc-api-dex",
+      "displayName": "CMC DEX API",
+      "description": "CoinMarketCap DEX data API. Track decentralized exchange volumes, liquidity pools, and token pair analytics.",
+      "category": "analytics",
+      "tags": [
+        "coinmarketcap",
+        "dex",
+        "liquidity",
+        "volumes"
+      ],
+      "author": "cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cmc-api-exchange",
+      "displayName": "CMC Exchange API",
+      "description": "CoinMarketCap exchange data API. Compare exchange volumes, trust scores, and available trading pairs.",
+      "category": "analytics",
+      "tags": [
+        "coinmarketcap",
+        "exchange",
+        "trust-score",
+        "comparison"
+      ],
+      "author": "cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cmc-api-market",
+      "displayName": "CMC Market API",
+      "description": "CoinMarketCap global market API. Access total market cap, BTC dominance, fear & greed index, and sector performance.",
+      "category": "analytics",
+      "tags": [
+        "coinmarketcap",
+        "market",
+        "dominance",
+        "sentiment"
+      ],
+      "author": "cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cmc-api-onchain",
+      "displayName": "CMC On-Chain API",
+      "description": "CoinMarketCap on-chain data API. Access blockchain metrics, address analytics, and network activity indicators.",
+      "category": "analytics",
+      "tags": [
+        "coinmarketcap",
+        "on-chain",
+        "blockchain",
+        "metrics"
+      ],
+      "author": "cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cmc-mcp",
+      "displayName": "CMC MCP",
+      "description": "CoinMarketCap MCP server integration. Structured market data delivery to AI agents with real-time updates.",
+      "category": "analytics",
+      "tags": [
+        "coinmarketcap",
+        "mcp",
+        "real-time",
+        "ai"
+      ],
+      "author": "cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "coinmarketcap-mcp",
+      "displayName": "CoinMarketCap MCP",
+      "description": "Full-featured CoinMarketCap MCP integration. Query prices, rankings, trending coins, and market analytics via AI.",
+      "category": "analytics",
+      "tags": [
+        "coinmarketcap",
+        "mcp",
+        "rankings",
+        "trending"
+      ],
+      "author": "cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "etherscan",
+      "displayName": "Etherscan",
+      "description": "Etherscan blockchain explorer integration. Look up transactions, addresses, contracts, and token transfers on Ethereum.",
+      "category": "analytics",
+      "tags": [
+        "etherscan",
+        "ethereum",
+        "explorer",
+        "transactions"
+      ],
+      "author": "etherscan",
+      "version": "1.0.0"
+    },
+    {
+      "name": "etherscan-api",
+      "displayName": "Etherscan API",
+      "description": "Etherscan API for programmatic access to Ethereum data. Query accounts, transactions, logs, and contract ABIs.",
+      "category": "analytics",
+      "tags": [
+        "etherscan",
+        "api",
+        "ethereum",
+        "abi"
+      ],
+      "author": "etherscan",
+      "version": "1.0.0"
+    },
+    {
+      "name": "etherscan-mcp",
+      "displayName": "Etherscan MCP",
+      "description": "Etherscan MCP server for AI agents. Structured Ethereum blockchain data access with semantic query support.",
+      "category": "analytics",
+      "tags": [
+        "etherscan",
+        "mcp",
+        "ethereum",
+        "semantic"
+      ],
+      "author": "etherscan",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-api",
+      "displayName": "DefiLlama API",
+      "description": "DefiLlama DeFi analytics API. Access TVL data, protocol metrics, and chain comparisons across the entire DeFi ecosystem.",
+      "category": "analytics",
+      "tags": [
+        "defillama",
+        "tvl",
+        "defi",
+        "protocols"
+      ],
+      "author": "defillama",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-prices-api",
+      "displayName": "DefiLlama Prices API",
+      "description": "DefiLlama token price API. Historical and current prices with cross-chain support and on-chain price verification.",
+      "category": "analytics",
+      "tags": [
+        "defillama",
+        "prices",
+        "historical",
+        "cross-chain"
+      ],
+      "author": "defillama",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-yields-api",
+      "displayName": "DefiLlama Yields API",
+      "description": "DefiLlama yield farming data API. Compare APY/APR across protocols, chains, and pool types for yield optimization.",
+      "category": "analytics",
+      "tags": [
+        "defillama",
+        "yields",
+        "farming",
+        "apy"
+      ],
+      "author": "defillama",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-data",
+      "displayName": "DefiLlama Data",
+      "description": "Comprehensive DefiLlama data access skill. TVL, fees, revenue, token unlocks, and stablecoin analytics in one package.",
+      "category": "analytics",
+      "tags": [
+        "defillama",
+        "data",
+        "fees",
+        "stablecoins"
+      ],
+      "author": "defillama",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-smart-money",
+      "displayName": "Nansen Smart Money",
+      "description": "Track smart money wallets with Nansen. Follow whale movements, fund flows, and institutional accumulation patterns.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "smart-money",
+        "whales",
+        "institutional"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-token-research",
+      "displayName": "Nansen Token Research",
+      "description": "Deep token research powered by Nansen. Analyze holder composition, supply distribution, and exchange flow dynamics.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "research",
+        "holders",
+        "supply"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-portfolio",
+      "displayName": "Nansen Portfolio",
+      "description": "Portfolio analytics with Nansen data. Track wallet performance, benchmark against smart money, and identify alpha opportunities.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "portfolio",
+        "performance",
+        "alpha"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-defi-positions",
+      "displayName": "Nansen DeFi Positions",
+      "description": "Track DeFi positions across protocols with Nansen. Monitor lending positions, LP tokens, and staking rewards.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "defi",
+        "positions",
+        "lending"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-smart-alerts",
+      "displayName": "Nansen Smart Alerts",
+      "description": "Configurable smart alerts from Nansen. Get notified of whale movements, token surges, and unusual on-chain activity.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "alerts",
+        "notifications",
+        "whale"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-token-screener",
+      "displayName": "Nansen Token Screener",
+      "description": "Screen tokens using Nansen metrics. Filter by smart money holdings, exchange inflows, and on-chain momentum signals.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "screener",
+        "filter",
+        "momentum"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-holder-analysis",
+      "displayName": "Nansen Holder Analysis",
+      "description": "Detailed holder analysis with Nansen labels. Identify token holders by category: funds, whales, smart money, and retail.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "holders",
+        "labels",
+        "categorization"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-perp-screener",
+      "displayName": "Nansen Perp Screener",
+      "description": "Perpetual futures screener powered by Nansen. Track open interest, funding rates, and liquidation levels across DEXs.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "perps",
+        "funding-rate",
+        "open-interest"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-search",
+      "displayName": "Nansen Search",
+      "description": "Universal search across Nansen's labeled database. Look up any wallet, token, or protocol with enriched on-chain context.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "search",
+        "labels",
+        "lookup"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nansen-fund-tracker",
+      "displayName": "Nansen Fund Tracker",
+      "description": "Track crypto fund portfolios with Nansen. Monitor fund holdings, rebalancing activity, and investment thesis changes.",
+      "category": "analytics",
+      "tags": [
+        "nansen",
+        "funds",
+        "tracking",
+        "investments"
+      ],
+      "author": "nansen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "zapper",
+      "displayName": "Zapper",
+      "description": "Zapper portfolio dashboard integration. Aggregate DeFi positions, NFTs, and token balances across all chains in one view.",
+      "category": "analytics",
+      "tags": [
+        "zapper",
+        "portfolio",
+        "defi",
+        "nfts"
+      ],
+      "author": "zapper",
+      "version": "1.0.0"
+    },
+    {
+      "name": "zapper-api",
+      "displayName": "Zapper API",
+      "description": "Zapper programmatic API access. Query wallet balances, DeFi positions, and transaction history with rich protocol labels.",
+      "category": "analytics",
+      "tags": [
+        "zapper",
+        "api",
+        "balances",
+        "history"
+      ],
+      "author": "zapper",
+      "version": "1.0.0"
+    },
+    {
+      "name": "zerion-api",
+      "displayName": "Zerion API",
+      "description": "Zerion DeFi portfolio API. Track positions, transactions, and net worth across protocols with detailed breakdowns.",
+      "category": "analytics",
+      "tags": [
+        "zerion",
+        "api",
+        "portfolio",
+        "net-worth"
+      ],
+      "author": "zerion",
+      "version": "1.0.0"
+    },
+    {
+      "name": "zerion-api-skill",
+      "displayName": "Zerion API Skill",
+      "description": "Enhanced Zerion API skill for AI agents. Natural language queries for portfolio data, market trends, and token discovery.",
+      "category": "analytics",
+      "tags": [
+        "zerion",
+        "skill",
+        "natural-language",
+        "discovery"
+      ],
+      "author": "zerion",
+      "version": "1.0.0"
+    },
+    {
+      "name": "thegraph-mcp",
+      "displayName": "The Graph MCP",
+      "description": "The Graph protocol MCP integration. Query any subgraph for on-chain data with GraphQL through AI agent interfaces.",
+      "category": "analytics",
+      "tags": [
+        "thegraph",
+        "mcp",
+        "graphql",
+        "subgraph"
+      ],
+      "author": "thegraph",
+      "version": "1.0.0"
+    },
+    {
+      "name": "subgraph-registry",
+      "displayName": "Subgraph Registry",
+      "description": "Discover and query subgraphs from The Graph's decentralized network. Browse indexed protocols and chain data sources.",
+      "category": "analytics",
+      "tags": [
+        "thegraph",
+        "registry",
+        "subgraphs",
+        "indexing"
+      ],
+      "author": "thegraph",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap",
+      "displayName": "Uniswap",
+      "description": "Uniswap DEX integration for AI agents. Execute token swaps, check prices, and manage liquidity positions on Uniswap V3.",
+      "category": "defi",
+      "tags": [
+        "uniswap",
+        "dex",
+        "swap",
+        "liquidity"
+      ],
+      "author": "uniswap",
+      "version": "2.0.0"
+    },
+    {
+      "name": "uniswap-pool-analysis",
+      "displayName": "Uniswap Pool Analysis",
+      "description": "Analyze Uniswap liquidity pools. Track fees, volume, TVL, impermanent loss, and fee tier performance comparisons.",
+      "category": "defi",
+      "tags": [
+        "uniswap",
+        "pools",
+        "analysis",
+        "impermanent-loss"
+      ],
+      "author": "uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-swap-simulation",
+      "displayName": "Uniswap Swap Simulation",
+      "description": "Simulate token swaps on Uniswap before execution. Preview price impact, slippage, route splits, and gas costs.",
+      "category": "defi",
+      "tags": [
+        "uniswap",
+        "simulation",
+        "price-impact",
+        "slippage"
+      ],
+      "author": "uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-v4",
+      "displayName": "Uniswap V4",
+      "description": "Uniswap V4 hooks and pool integration. Create custom pool logic with hooks, manage singleton positions, and optimize gas.",
+      "category": "defi",
+      "tags": [
+        "uniswap",
+        "v4",
+        "hooks",
+        "singleton"
+      ],
+      "author": "uniswap",
+      "version": "0.9.0"
+    },
+    {
+      "name": "sushiswap-api",
+      "displayName": "SushiSwap API",
+      "description": "SushiSwap DEX API integration. Access multi-chain swap routing, pool data, and liquidity provision across 20+ networks.",
+      "category": "defi",
+      "tags": [
+        "sushiswap",
+        "api",
+        "multi-chain",
+        "routing"
+      ],
+      "author": "sushi",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sushiswap-sdk",
+      "displayName": "SushiSwap SDK",
+      "description": "SushiSwap TypeScript SDK for building DeFi applications. Includes trade routing, pool math, and token list utilities.",
+      "category": "defi",
+      "tags": [
+        "sushiswap",
+        "sdk",
+        "typescript",
+        "pool-math"
+      ],
+      "author": "sushi",
+      "version": "1.0.0"
+    },
+    {
+      "name": "opensea-mcp",
+      "displayName": "OpenSea MCP",
+      "description": "OpenSea NFT marketplace MCP integration. Browse collections, check floor prices, and manage listings through AI agents.",
+      "category": "defi",
+      "tags": [
+        "opensea",
+        "nft",
+        "marketplace",
+        "collections"
+      ],
+      "author": "opensea",
+      "version": "1.0.0"
+    },
+    {
+      "name": "opensea",
+      "displayName": "OpenSea",
+      "description": "OpenSea NFT marketplace skill. Search NFTs, track collection stats, view rarity rankings, and monitor sales activity.",
+      "category": "defi",
+      "tags": [
+        "opensea",
+        "nft",
+        "rarity",
+        "sales"
+      ],
+      "author": "opensea",
+      "version": "1.0.0"
+    },
+    {
+      "name": "jupiter-prediction-market",
+      "displayName": "Jupiter Prediction Market",
+      "description": "Jupiter prediction market integration on Solana. Create, trade, and resolve prediction market positions with AI analysis.",
+      "category": "defi",
+      "tags": [
+        "jupiter",
+        "prediction",
+        "solana",
+        "markets"
+      ],
+      "author": "jupiter",
+      "version": "1.0.0"
+    },
+    {
+      "name": "metamask-agent-wallet",
+      "displayName": "MetaMask Agent Wallet",
+      "description": "MetaMask wallet integration for autonomous AI agents. Programmatic transaction signing with configurable spending limits.",
+      "category": "wallets",
+      "tags": [
+        "metamask",
+        "agent",
+        "autonomous",
+        "signing"
+      ],
+      "author": "metamask",
+      "version": "1.0.0"
+    },
+    {
+      "name": "metamask",
+      "displayName": "MetaMask",
+      "description": "MetaMask wallet integration. Connect to DApps, check balances, send transactions, and manage token approvals.",
+      "category": "wallets",
+      "tags": [
+        "metamask",
+        "wallet",
+        "dapp",
+        "ethereum"
+      ],
+      "author": "metamask",
+      "version": "2.0.0"
+    },
+    {
+      "name": "metamask-wallet",
+      "displayName": "MetaMask Wallet",
+      "description": "Full MetaMask wallet management skill. Create accounts, import keys, manage networks, and interact with smart contracts.",
+      "category": "wallets",
+      "tags": [
+        "metamask",
+        "wallet",
+        "accounts",
+        "contracts"
+      ],
+      "author": "metamask",
+      "version": "1.0.0"
+    },
+    {
+      "name": "wallet-pilot",
+      "displayName": "Wallet Pilot",
+      "description": "Universal wallet pilot for AI agents. Abstract away wallet complexity with a unified interface across chains and providers.",
+      "category": "wallets",
+      "tags": [
+        "wallet",
+        "universal",
+        "abstraction",
+        "multi-chain"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "walletconnect",
+      "displayName": "WalletConnect",
+      "description": "WalletConnect protocol integration. Connect any wallet to any DApp with secure relay-based session management.",
+      "category": "wallets",
+      "tags": [
+        "walletconnect",
+        "protocol",
+        "session",
+        "relay"
+      ],
+      "author": "walletconnect",
+      "version": "2.0.0"
+    },
+    {
+      "name": "zeal-agent-wallet",
+      "displayName": "Zeal Agent Wallet",
+      "description": "Zeal wallet built for AI agent interactions. Headless wallet operations with policy-based transaction approval.",
+      "category": "wallets",
+      "tags": [
+        "zeal",
+        "agent",
+        "headless",
+        "policy"
+      ],
+      "author": "zeal",
+      "version": "1.0.0"
+    },
+    {
+      "name": "vincent-agent-wallet",
+      "displayName": "Vincent Agent Wallet",
+      "description": "Vincent programmable wallet for AI agents. Define spending rules, whitelist contracts, and automate recurring transactions.",
+      "category": "wallets",
+      "tags": [
+        "vincent",
+        "agent",
+        "programmable",
+        "rules"
+      ],
+      "author": "vincent",
+      "version": "1.0.0"
+    },
+    {
+      "name": "wallet-skills",
+      "displayName": "Wallet Skills",
+      "description": "Collection of wallet utility skills. Balance checking, token transfers, gas estimation, and transaction history queries.",
+      "category": "wallets",
+      "tags": [
+        "wallet",
+        "utilities",
+        "balance",
+        "transfers"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "moralis",
+      "displayName": "Moralis",
+      "description": "Moralis Web3 data API integration. Access wallet data, token metadata, NFT data, and DeFi positions across all major chains.",
+      "category": "dev-tools",
+      "tags": [
+        "moralis",
+        "web3",
+        "data",
+        "multi-chain"
+      ],
+      "author": "moralis",
+      "version": "2.0.0"
+    },
+    {
+      "name": "moralis-api",
+      "displayName": "Moralis API",
+      "description": "Low-level Moralis API wrapper. Direct access to all Moralis endpoints including streams, auth, and market data.",
+      "category": "dev-tools",
+      "tags": [
+        "moralis",
+        "api",
+        "streams",
+        "auth"
+      ],
+      "author": "moralis",
+      "version": "1.0.0"
+    },
+    {
+      "name": "moralis-data-api",
+      "displayName": "Moralis Data API",
+      "description": "Moralis blockchain data API. Query wallet portfolios, token prices, NFT metadata, and transaction histories at scale.",
+      "category": "dev-tools",
+      "tags": [
+        "moralis",
+        "data",
+        "portfolio",
+        "nft"
+      ],
+      "author": "moralis",
+      "version": "1.0.0"
+    },
+    {
+      "name": "moralis-streams-api",
+      "displayName": "Moralis Streams API",
+      "description": "Real-time blockchain event streaming with Moralis. Set up webhooks for contract events, transfers, and custom filters.",
+      "category": "dev-tools",
+      "tags": [
+        "moralis",
+        "streams",
+        "webhooks",
+        "events"
+      ],
+      "author": "moralis",
+      "version": "1.0.0"
+    },
+    {
+      "name": "alchemy",
+      "displayName": "Alchemy",
+      "description": "Alchemy Web3 developer platform integration. Enhanced APIs, NFT tools, and blockchain node infrastructure access.",
+      "category": "dev-tools",
+      "tags": [
+        "alchemy",
+        "infrastructure",
+        "nodes",
+        "enhanced-api"
+      ],
+      "author": "alchemy",
+      "version": "2.0.0"
+    },
+    {
+      "name": "alchemy-api",
+      "displayName": "Alchemy API",
+      "description": "Alchemy's full API suite. Token API, NFT API, Transact API, and custom webhooks for blockchain application development.",
+      "category": "dev-tools",
+      "tags": [
+        "alchemy",
+        "api",
+        "token-api",
+        "webhooks"
+      ],
+      "author": "alchemy",
+      "version": "1.0.0"
+    },
+    {
+      "name": "alchemy-web3",
+      "displayName": "Alchemy Web3",
+      "description": "Alchemy-enhanced Web3.js provider. Automatic retries, rate limiting, and enhanced JSON-RPC methods for reliable DApp development.",
+      "category": "dev-tools",
+      "tags": [
+        "alchemy",
+        "web3js",
+        "provider",
+        "reliability"
+      ],
+      "author": "alchemy",
+      "version": "1.0.0"
+    },
+    {
+      "name": "foundry",
+      "displayName": "Foundry",
+      "description": "Foundry smart contract development toolkit. Compile, test, deploy, and debug Solidity contracts with blazing fast performance.",
+      "category": "dev-tools",
+      "tags": [
+        "foundry",
+        "solidity",
+        "testing",
+        "deployment"
+      ],
+      "author": "paradigm",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hardhat",
+      "displayName": "Hardhat",
+      "description": "Hardhat Ethereum development environment. Compile, deploy, test, and debug smart contracts with a flexible plugin system.",
+      "category": "dev-tools",
+      "tags": [
+        "hardhat",
+        "ethereum",
+        "development",
+        "plugins"
+      ],
+      "author": "nomic-foundation",
+      "version": "1.0.0"
+    },
+    {
+      "name": "wagmi",
+      "displayName": "Wagmi",
+      "description": "Wagmi React hooks for Ethereum. Connect wallets, read contracts, send transactions, and manage chain state in React apps.",
+      "category": "dev-tools",
+      "tags": [
+        "wagmi",
+        "react",
+        "hooks",
+        "frontend"
+      ],
+      "author": "wevm",
+      "version": "2.0.0"
+    },
+    {
+      "name": "viem",
+      "displayName": "Viem",
+      "description": "Viem TypeScript interface for Ethereum. Type-safe contract interactions, transaction building, and ABI encoding/decoding.",
+      "category": "dev-tools",
+      "tags": [
+        "viem",
+        "typescript",
+        "type-safe",
+        "abi"
+      ],
+      "author": "wevm",
+      "version": "2.0.0"
+    },
+    {
+      "name": "ethereum-dev",
+      "displayName": "Ethereum Dev",
+      "description": "Ethereum development skill. Deploy contracts, interact with the EVM, query state, and manage ENS names on Ethereum mainnet.",
+      "category": "chains",
+      "tags": [
+        "ethereum",
+        "evm",
+        "contracts",
+        "ens"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "solana-dev",
+      "displayName": "Solana Dev",
+      "description": "Solana blockchain development skill. Build and deploy programs, manage SPL tokens, and interact with Solana DApps.",
+      "category": "chains",
+      "tags": [
+        "solana",
+        "programs",
+        "spl",
+        "high-performance"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitcoin-rpc",
+      "displayName": "Bitcoin RPC",
+      "description": "Bitcoin node RPC integration. Query blocks, transactions, UTXO sets, and manage wallet operations on the Bitcoin network.",
+      "category": "chains",
+      "tags": [
+        "bitcoin",
+        "rpc",
+        "utxo",
+        "node"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bnb-chain",
+      "displayName": "BNB Chain",
+      "description": "BNB Smart Chain development skill. Deploy BEP-20 tokens, interact with PancakeSwap, and build on BSC ecosystem.",
+      "category": "chains",
+      "tags": [
+        "bnb",
+        "bsc",
+        "bep-20",
+        "pancakeswap"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polygon-dev",
+      "displayName": "Polygon Dev",
+      "description": "Polygon PoS and zkEVM development skill. Deploy contracts, bridge assets, and build scalable DApps on Polygon.",
+      "category": "chains",
+      "tags": [
+        "polygon",
+        "matic",
+        "zkevm",
+        "scaling"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "arbitrum-dev",
+      "displayName": "Arbitrum Dev",
+      "description": "Arbitrum L2 development skill. Deploy on Arbitrum One and Nova, use Stylus for WASM contracts, and manage cross-chain messaging.",
+      "category": "chains",
+      "tags": [
+        "arbitrum",
+        "l2",
+        "rollup",
+        "stylus"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "optimism-dev",
+      "displayName": "Optimism Dev",
+      "description": "Optimism L2 development skill. Build on the OP Stack, deploy contracts, and leverage the Superchain ecosystem.",
+      "category": "chains",
+      "tags": [
+        "optimism",
+        "op-stack",
+        "l2",
+        "superchain"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-dev",
+      "displayName": "Base Dev",
+      "description": "Base L2 development skill. Build consumer-friendly DApps on Coinbase's L2 with easy onboarding and low gas fees.",
+      "category": "chains",
+      "tags": [
+        "base",
+        "coinbase",
+        "l2",
+        "consumer"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "avalanche-dev",
+      "displayName": "Avalanche Dev",
+      "description": "Avalanche development skill. Build on C-Chain, create subnets, and deploy high-throughput DApps on Avalanche consensus.",
+      "category": "chains",
+      "tags": [
+        "avalanche",
+        "avax",
+        "subnets",
+        "c-chain"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sui-dev",
+      "displayName": "Sui Dev",
+      "description": "Sui blockchain development skill. Write Move smart contracts, manage objects, and build on Sui's parallel execution engine.",
+      "category": "chains",
+      "tags": [
+        "sui",
+        "move",
+        "objects",
+        "parallel"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aptos-dev",
+      "displayName": "Aptos Dev",
+      "description": "Aptos blockchain development skill. Build with Move language, manage resources, and deploy modules on Aptos mainnet.",
+      "category": "chains",
+      "tags": [
+        "aptos",
+        "move",
+        "resources",
+        "modules"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cosmos-sdk",
+      "displayName": "Cosmos SDK",
+      "description": "Cosmos SDK development skill. Build application-specific blockchains, use IBC for cross-chain communication, and stake ATOM.",
+      "category": "chains",
+      "tags": [
+        "cosmos",
+        "ibc",
+        "sdk",
+        "app-chain"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "near-dev",
+      "displayName": "NEAR Dev",
+      "description": "NEAR Protocol development skill. Write smart contracts in Rust or JavaScript, use NEAR social, and build with chain abstraction.",
+      "category": "chains",
+      "tags": [
+        "near",
+        "rust",
+        "javascript",
+        "chain-abstraction"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "tron-dev",
+      "displayName": "TRON Dev",
+      "description": "TRON blockchain development skill. Deploy TRC-20 tokens, interact with energy/bandwidth, and build on TRON's high-throughput network.",
+      "category": "chains",
+      "tags": [
+        "tron",
+        "trc-20",
+        "energy",
+        "bandwidth"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cardano-dev",
+      "displayName": "Cardano Dev",
+      "description": "Cardano development skill. Write Plutus smart contracts, manage native assets, and build on Cardano's eUTXO model.",
+      "category": "chains",
+      "tags": [
+        "cardano",
+        "plutus",
+        "eutxo",
+        "native-assets"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "starknet-dev",
+      "displayName": "StarkNet Dev",
+      "description": "StarkNet development skill. Write Cairo contracts, deploy on StarkNet L2, and leverage validity proofs for Ethereum scaling.",
+      "category": "chains",
+      "tags": [
+        "starknet",
+        "cairo",
+        "zk-rollup",
+        "validity-proofs"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "zksync-dev",
+      "displayName": "zkSync Dev",
+      "description": "zkSync Era development skill. Deploy Solidity contracts on zkSync L2, use account abstraction, and build with native paymaster support.",
+      "category": "chains",
+      "tags": [
+        "zksync",
+        "zk-rollup",
+        "account-abstraction",
+        "paymaster"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "fantom-dev",
+      "displayName": "Fantom Dev",
+      "description": "Fantom blockchain development skill. Build on Fantom's DAG-based consensus with fast finality and low transaction costs.",
+      "category": "chains",
+      "tags": [
+        "fantom",
+        "ftm",
+        "dag",
+        "fast-finality"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polkadot-dev",
+      "displayName": "Polkadot Dev",
+      "description": "Polkadot development skill. Build parachains with Substrate, use XCM for cross-chain messaging, and participate in governance.",
+      "category": "chains",
+      "tags": [
+        "polkadot",
+        "substrate",
+        "parachains",
+        "xcm"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ton-dev",
+      "displayName": "TON Dev",
+      "description": "TON blockchain development skill. Write FunC/Tact contracts, build Telegram Mini Apps, and use TON's sharding architecture.",
+      "category": "chains",
+      "tags": [
+        "ton",
+        "telegram",
+        "func",
+        "mini-apps"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "stellar-dev",
+      "displayName": "Stellar Dev",
+      "description": "Stellar network development skill. Issue assets, build payment channels, and use Soroban smart contracts on Stellar.",
+      "category": "chains",
+      "tags": [
+        "stellar",
+        "soroban",
+        "payments",
+        "assets"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hedera-dev",
+      "displayName": "Hedera Dev",
+      "description": "Hedera Hashgraph development skill. Use native token service, consensus service, and smart contracts on the Hedera network.",
+      "category": "chains",
+      "tags": [
+        "hedera",
+        "hashgraph",
+        "hts",
+        "consensus"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "injective-dev",
+      "displayName": "Injective Dev",
+      "description": "Injective Protocol development skill. Build on-chain orderbooks, derivatives, and prediction markets on Injective's finance-optimized chain.",
+      "category": "chains",
+      "tags": [
+        "injective",
+        "orderbook",
+        "derivatives",
+        "finance"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sei-dev",
+      "displayName": "Sei Dev",
+      "description": "Sei blockchain development skill. Build trading applications with built-in order matching, MEV prevention, and parallel execution.",
+      "category": "chains",
+      "tags": [
+        "sei",
+        "trading",
+        "order-matching",
+        "parallel"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "mantle-dev",
+      "displayName": "Mantle Dev",
+      "description": "Mantle L2 development skill. Deploy contracts on Mantle's modular rollup with data availability powered by EigenDA.",
+      "category": "chains",
+      "tags": [
+        "mantle",
+        "l2",
+        "modular",
+        "eigenda"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "celestia-dev",
+      "displayName": "Celestia Dev",
+      "description": "Celestia modular blockchain development. Build rollups with Celestia's data availability layer and modular architecture.",
+      "category": "chains",
+      "tags": [
+        "celestia",
+        "data-availability",
+        "modular",
+        "rollups"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "manta-dev",
+      "displayName": "Manta Dev",
+      "description": "Manta Network development skill. Build privacy-preserving DApps with zero-knowledge proofs on Manta's modular L2.",
+      "category": "chains",
+      "tags": [
+        "manta",
+        "privacy",
+        "zero-knowledge",
+        "l2"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blast-dev",
+      "displayName": "Blast Dev",
+      "description": "Blast L2 development skill. Build on Blast's native yield chain with auto-rebasing ETH and USDB stablecoin integration.",
+      "category": "chains",
+      "tags": [
+        "blast",
+        "yield",
+        "rebasing",
+        "l2"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "filecoin-dev",
+      "displayName": "Filecoin Dev",
+      "description": "Filecoin network development skill. Store data on the decentralized storage network, manage deals, and build on FVM.",
+      "category": "chains",
+      "tags": [
+        "filecoin",
+        "storage",
+        "fvm",
+        "deals"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "xrp-dev",
+      "displayName": "XRP Dev",
+      "description": "XRP Ledger development skill. Build payment solutions, issue tokens, and use XRPL's built-in DEX and escrow features.",
+      "category": "chains",
+      "tags": [
+        "xrp",
+        "xrpl",
+        "payments",
+        "dex"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "chainlink-oracle",
+      "displayName": "Chainlink Oracle",
+      "description": "Chainlink oracle integration skill. Access price feeds, VRF randomness, automation, and CCIP cross-chain interoperability.",
+      "category": "chains",
+      "tags": [
+        "chainlink",
+        "oracle",
+        "price-feeds",
+        "ccip"
+      ],
+      "author": "chainlink",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lido-staking",
+      "displayName": "Lido Staking",
+      "description": "Lido liquid staking integration. Stake ETH for stETH, track rewards, and manage liquid staking positions across protocols.",
+      "category": "chains",
+      "tags": [
+        "lido",
+        "staking",
+        "liquid-staking",
+        "steth"
+      ],
+      "author": "lido",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aave-lending",
+      "displayName": "Aave Lending",
+      "description": "Aave lending protocol integration. Supply assets, borrow with variable or stable rates, and manage health factors across markets.",
+      "category": "chains",
+      "tags": [
+        "aave",
+        "lending",
+        "borrowing",
+        "health-factor"
+      ],
+      "author": "aave",
+      "version": "3.0.0"
+    },
+    {
+      "name": "compound-lending",
+      "displayName": "Compound Lending",
+      "description": "Compound V3 lending protocol skill. Supply collateral, borrow USDC, and earn interest with automated position management.",
+      "category": "chains",
+      "tags": [
+        "compound",
+        "lending",
+        "usdc",
+        "collateral"
+      ],
+      "author": "compound",
+      "version": "3.0.0"
+    },
+    {
+      "name": "makerdao-dai",
+      "displayName": "MakerDAO DAI",
+      "description": "MakerDAO protocol integration. Open vaults, mint DAI, manage collateral ratios, and participate in MKR governance.",
+      "category": "chains",
+      "tags": [
+        "makerdao",
+        "dai",
+        "vaults",
+        "governance"
+      ],
+      "author": "makerdao",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-whale-tracker",
+      "displayName": "Crypto Whale Tracker",
+      "description": "Track large wallet movements across chains. Real-time alerts for whale accumulation, distribution, and exchange transfers.",
+      "category": "trading",
+      "tags": [
+        "whales",
+        "tracking",
+        "alerts",
+        "movements"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-trading-bot",
+      "displayName": "Crypto Trading Bot",
+      "description": "Multi-exchange trading bot framework. Build custom strategies with backtesting, paper trading, and live execution support.",
+      "category": "trading",
+      "tags": [
+        "bot",
+        "multi-exchange",
+        "backtesting",
+        "strategies"
+      ],
+      "author": "community",
+      "version": "2.0.0"
+    },
+    {
+      "name": "crypto-price-tracker",
+      "displayName": "Crypto Price Tracker",
+      "description": "Real-time cryptocurrency price tracking. Monitor prices across exchanges with customizable alerts and historical charts.",
+      "category": "trading",
+      "tags": [
+        "prices",
+        "tracking",
+        "alerts",
+        "charts"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-arb",
+      "displayName": "Crypto Arbitrage",
+      "description": "Cross-exchange and cross-chain arbitrage detection. Scan for price discrepancies and calculate profit opportunities in real time.",
+      "category": "trading",
+      "tags": [
+        "arbitrage",
+        "cross-exchange",
+        "profit",
+        "scanner"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-dca",
+      "displayName": "Crypto DCA",
+      "description": "Dollar-cost averaging automation for crypto. Set schedules, manage allocations, and track DCA performance across portfolios.",
+      "category": "trading",
+      "tags": [
+        "dca",
+        "automation",
+        "scheduling",
+        "allocation"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-portfolio",
+      "displayName": "Crypto Portfolio",
+      "description": "Portfolio management and tracking tool. Aggregate holdings across exchanges and wallets with performance analytics and rebalancing.",
+      "category": "trading",
+      "tags": [
+        "portfolio",
+        "tracking",
+        "rebalancing",
+        "analytics"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "trading-signals",
+      "displayName": "Trading Signals",
+      "description": "AI-generated trading signals for crypto markets. Combine technical analysis, on-chain data, and sentiment for actionable signals.",
+      "category": "trading",
+      "tags": [
+        "signals",
+        "ai",
+        "technical-analysis",
+        "sentiment"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "market-analysis",
+      "displayName": "Market Analysis",
+      "description": "Comprehensive crypto market analysis toolkit. Sector rotation, correlation analysis, and macro trend identification.",
+      "category": "trading",
+      "tags": [
+        "analysis",
+        "sectors",
+        "correlation",
+        "macro"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "token-research",
+      "displayName": "Token Research",
+      "description": "Deep-dive token research and due diligence. Tokenomics analysis, team assessment, competitive landscape, and risk scoring.",
+      "category": "trading",
+      "tags": [
+        "research",
+        "tokenomics",
+        "due-diligence",
+        "scoring"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defi-yield-optimizer",
+      "displayName": "DeFi Yield Optimizer",
+      "description": "Automated yield optimization across DeFi protocols. Find best yields, auto-compound rewards, and manage farming positions.",
+      "category": "trading",
+      "tags": [
+        "yield",
+        "optimization",
+        "farming",
+        "auto-compound"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "liquidity-monitor",
+      "displayName": "Liquidity Monitor",
+      "description": "Monitor liquidity across DEXs and CEXs. Track order book depth, bid-ask spreads, and liquidity concentration in real time.",
+      "category": "trading",
+      "tags": [
+        "liquidity",
+        "order-book",
+        "spreads",
+        "depth"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "mev-protection",
+      "displayName": "MEV Protection",
+      "description": "Protect transactions from MEV attacks. Route trades through private mempools, detect sandwich attacks, and optimize gas pricing.",
+      "category": "trading",
+      "tags": [
+        "mev",
+        "protection",
+        "private-mempool",
+        "sandwich"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "funding-rate-monitor",
+      "displayName": "Funding Rate Monitor",
+      "description": "Track perpetual futures funding rates across exchanges. Identify funding rate arbitrage and cash-and-carry trade opportunities.",
+      "category": "trading",
+      "tags": [
+        "funding-rate",
+        "perpetuals",
+        "arbitrage",
+        "cash-carry"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "on-chain-analytics",
+      "displayName": "On-Chain Analytics",
+      "description": "Advanced on-chain analytics for trading. NUPL, SOPR, exchange reserves, and miner metrics for market cycle analysis.",
+      "category": "trading",
+      "tags": [
+        "on-chain",
+        "nupl",
+        "sopr",
+        "metrics"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sentiment-analysis",
+      "displayName": "Sentiment Analysis",
+      "description": "Crypto market sentiment analysis. Aggregate social media, news, and on-chain signals into actionable sentiment scores.",
+      "category": "trading",
+      "tags": [
+        "sentiment",
+        "social-media",
+        "news",
+        "scoring"
+      ],
+      "author": "community",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid",
+      "displayName": "Hyperliquid",
+      "description": "Trade perpetual futures on Hyperliquid L1 DEX with up to 50x leverage and sub-second settlement.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "perps",
+        "dex",
+        "futures"
+      ],
+      "author": "k0nkupa",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid-prime",
+      "displayName": "Hyperliquid Prime",
+      "description": "Advanced Hyperliquid trading with portfolio management, risk analysis, and automated strategies.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "trading",
+        "portfolio",
+        "advanced"
+      ],
+      "author": "mehranhydary",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid-cli",
+      "displayName": "Hyperliquid CLI",
+      "description": "Command-line interface for Hyperliquid DEX operations including order placement and vault management.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "cli",
+        "trading"
+      ],
+      "author": "chrisling-dev",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid-perps",
+      "displayName": "Hyperliquid Perps",
+      "description": "Perpetual contract trading on Hyperliquid with funding rate monitoring and position management.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "perpetuals",
+        "funding-rate"
+      ],
+      "author": "jamierossouw",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid-analyzer",
+      "displayName": "Hyperliquid Analyzer",
+      "description": "Analyze Hyperliquid market data, open interest, and trading volumes for informed decision-making.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "analytics",
+        "market-data"
+      ],
+      "author": "b0on",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid-trading",
+      "displayName": "Hyperliquid Trading",
+      "description": "Automated trading strategies for Hyperliquid DEX with backtesting and risk management.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "automated",
+        "strategies"
+      ],
+      "author": "anajuliabit",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid-dex",
+      "displayName": "Hyperliquid DEX",
+      "description": "Full Hyperliquid DEX integration including spot and derivatives trading with wallet management.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "dex",
+        "spot",
+        "derivatives"
+      ],
+      "author": "chipagosfinest",
+      "version": "1.0.0"
+    },
+    {
+      "name": "supurr-hyperliquid",
+      "displayName": "Supurr Hyperliquid",
+      "description": "Supurr-powered Hyperliquid trading assistant with AI-driven market analysis and execution.",
+      "category": "exchanges",
+      "tags": [
+        "hyperliquid",
+        "ai",
+        "assistant"
+      ],
+      "author": "yashagarwal1994",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-api",
+      "displayName": "Polymarket API",
+      "description": "Query Polymarket prediction markets, fetch odds, and retrieve market data via REST API.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "api",
+        "odds",
+        "prediction"
+      ],
+      "author": "dannyshmueli",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-odds",
+      "displayName": "Polymarket Odds",
+      "description": "Real-time odds tracking for Polymarket events with historical price charts and probability analysis.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "odds",
+        "probability"
+      ],
+      "author": "deanpress",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-data-api",
+      "displayName": "Polymarket Data API",
+      "description": "Comprehensive data API for Polymarket including market metadata, volume, and resolution details.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "data",
+        "analytics"
+      ],
+      "author": "bombfuock",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-trading-bot",
+      "displayName": "Polymarket Trading Bot",
+      "description": "Automated trading bot for Polymarket with configurable strategies and risk limits.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "bot",
+        "automated",
+        "trading"
+      ],
+      "author": "bombfuock",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket",
+      "displayName": "Polymarket",
+      "description": "Core Polymarket integration for browsing markets, checking positions, and placing trades.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "prediction",
+        "markets"
+      ],
+      "author": "mvanhorn",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-sdk",
+      "displayName": "Polymarket SDK",
+      "description": "TypeScript SDK for building Polymarket-powered applications with order management and settlement.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "sdk",
+        "typescript"
+      ],
+      "author": "tyhouch",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-agent",
+      "displayName": "Polymarket Agent",
+      "description": "AI agent for autonomous Polymarket trading with research, analysis, and execution capabilities.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "agent",
+        "ai",
+        "autonomous"
+      ],
+      "author": "andretuta",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-whale-copier",
+      "displayName": "Polymarket Whale Copier",
+      "description": "Track and copy trades from top Polymarket whales with configurable position sizing.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "whale",
+        "copy-trading"
+      ],
+      "author": "cassh100k",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-trading-bot-v2",
+      "displayName": "Polymarket Trading Bot V2",
+      "description": "Enhanced Polymarket trading bot with improved signal generation and multi-market support.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "bot",
+        "signals",
+        "v2"
+      ],
+      "author": "hanguang254",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-sports-edge",
+      "displayName": "Polymarket Sports Edge",
+      "description": "Sports betting edge finder using Polymarket data and statistical modeling.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "sports",
+        "betting",
+        "edge"
+      ],
+      "author": "0xjims",
+      "version": "1.0.0"
+    },
+    {
+      "name": "graph-polymarket-mcp",
+      "displayName": "Graph Polymarket MCP",
+      "description": "Query Polymarket data through The Graph subgraphs via MCP protocol integration.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "thegraph",
+        "mcp",
+        "subgraph"
+      ],
+      "author": "paulieb14",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-cli-trading",
+      "displayName": "Polymarket CLI Trading",
+      "description": "Command-line trading interface for Polymarket with order book visualization and quick execution.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "cli",
+        "trading"
+      ],
+      "author": "lacymorrow",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402",
+      "displayName": "x402",
+      "description": "Core x402 protocol implementation for HTTP-native micropayments using Coinbase Commerce.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "coinbase",
+        "micropayments",
+        "http"
+      ],
+      "author": "lumenfromthefuture",
+      "version": "1.0.0"
+    },
+    {
+      "name": "configure-x402",
+      "displayName": "Configure x402",
+      "description": "Quick setup and configuration tool for x402 payment protocol integration.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "setup",
+        "config"
+      ],
+      "author": "wpank",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-skill",
+      "displayName": "x402 Skill",
+      "description": "OpenClaw skill for x402 payments enabling AI agents to pay for API access automatically.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "openclaw",
+        "agent",
+        "pay-per-use"
+      ],
+      "author": "coinvest518",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cmc-x402",
+      "displayName": "CMC x402",
+      "description": "CoinMarketCap data access via x402 micropayments for premium market intelligence.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "coinmarketcap",
+        "market-data"
+      ],
+      "author": "bryan-cmc",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-cli",
+      "displayName": "x402 CLI",
+      "description": "Command-line tool for testing and debugging x402 payment flows and configurations.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "cli",
+        "debugging"
+      ],
+      "author": "razvanmacovei",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-client",
+      "displayName": "x402 Client",
+      "description": "Client library for consuming x402-protected APIs with automatic payment handling.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "client",
+        "sdk"
+      ],
+      "author": "samoppakiks",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-agent-api",
+      "displayName": "x402 Agent API",
+      "description": "API wrapper enabling AI agents to interact with x402-gated services autonomously.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "agent",
+        "api",
+        "autonomous"
+      ],
+      "author": "parsonssss",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-payment-tron",
+      "displayName": "x402 Payment Tron",
+      "description": "x402 payment protocol extended to Tron network for low-cost micropayments.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "tron",
+        "payments",
+        "low-cost"
+      ],
+      "author": "hades-ye",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-breeze-api",
+      "displayName": "x402 Breeze API",
+      "description": "Breeze-powered x402 payment API for seamless crypto micropayment integration.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "breeze",
+        "api"
+      ],
+      "author": "keeganthomp",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-paywall-kit",
+      "displayName": "x402 Paywall Kit",
+      "description": "Complete toolkit for building x402-powered paywalls for web content and API endpoints.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "paywall",
+        "monetization"
+      ],
+      "author": "tara-quinn-ai",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-agent-marketplace",
+      "displayName": "x402 Agent Marketplace",
+      "description": "Marketplace for x402-enabled AI agent services with discovery and payment orchestration.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "marketplace",
+        "agents"
+      ],
+      "author": "dahhan43-netizen",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-private-search",
+      "displayName": "x402 Private Search",
+      "description": "Privacy-preserving web search powered by x402 micropayments for anonymous queries.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "privacy",
+        "search"
+      ],
+      "author": "kodos-vibe",
+      "version": "1.0.0"
+    },
+    {
+      "name": "goldrush-x402",
+      "displayName": "Goldrush x402",
+      "description": "Covalent GoldRush blockchain data API with x402 payment integration.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "goldrush",
+        "covalent",
+        "blockchain-data"
+      ],
+      "author": "gane5h",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc8004-agent",
+      "displayName": "ERC-8004 Agent",
+      "description": "Register and manage on-chain AI agent identity using the ERC-8004 standard.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "agent",
+        "identity",
+        "on-chain"
+      ],
+      "author": "limone-eth",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc8004-register",
+      "displayName": "ERC-8004 Register",
+      "description": "On-chain registration service for ERC-8004 compliant agent identities.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "registration",
+        "identity"
+      ],
+      "author": "aetherstacey",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc8004-reputation",
+      "displayName": "ERC-8004 Reputation",
+      "description": "On-chain reputation scoring system for ERC-8004 registered agents.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "reputation",
+        "scoring"
+      ],
+      "author": "aetherstacey",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc8004-discover",
+      "displayName": "ERC-8004 Discover",
+      "description": "Discovery service for finding and verifying ERC-8004 registered AI agents.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "discovery",
+        "verification"
+      ],
+      "author": "aetherstacey",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc8004-identity",
+      "displayName": "ERC-8004 Identity",
+      "description": "Complete identity management for ERC-8004 including attestations and credentials.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "identity",
+        "attestation"
+      ],
+      "author": "ijaack",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc-8004",
+      "displayName": "ERC-8004",
+      "description": "Reference implementation of the ERC-8004 on-chain agent identity standard.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "reference",
+        "standard"
+      ],
+      "author": "sp0oby",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pinata-erc-8004",
+      "displayName": "Pinata ERC-8004",
+      "description": "Store ERC-8004 agent metadata on IPFS via Pinata with on-chain verification.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "pinata",
+        "ipfs",
+        "metadata"
+      ],
+      "author": "iammatthias",
+      "version": "1.0.0"
+    },
+    {
+      "name": "8004",
+      "displayName": "8004",
+      "description": "Minimal ERC-8004 implementation for quick agent identity deployment.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "minimal",
+        "deploy"
+      ],
+      "author": "san-npm",
+      "version": "1.0.0"
+    },
+    {
+      "name": "8004-mcp",
+      "displayName": "8004 MCP",
+      "description": "ERC-8004 agent identity accessible via MCP protocol for seamless integration.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "mcp",
+        "integration"
+      ],
+      "author": "montecrypto999",
+      "version": "1.0.0"
+    },
+    {
+      "name": "doppel-erc-8004",
+      "displayName": "Doppel ERC-8004",
+      "description": "Doppelganger detection and anti-impersonation for ERC-8004 agent identities.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "security",
+        "anti-fraud"
+      ],
+      "author": "0xm1kr",
+      "version": "1.0.0"
+    },
+    {
+      "name": "8004-skill-monad",
+      "displayName": "8004 Skill Monad",
+      "description": "ERC-8004 agent identity registration on Monad blockchain.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "monad",
+        "registration"
+      ],
+      "author": "fabriziogianni7",
+      "version": "1.0.0"
+    },
+    {
+      "name": "basecred-8004",
+      "displayName": "BaseCred 8004",
+      "description": "Credential-based ERC-8004 agent registration on Base with reputation scoring.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "base",
+        "credentials"
+      ],
+      "author": "callmedas69",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-8004",
+      "displayName": "Base 8004",
+      "description": "Deploy and manage ERC-8004 agent identities on Base L2 chain.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "base",
+        "l2"
+      ],
+      "author": "squirt11e",
+      "version": "1.0.0"
+    },
+    {
+      "name": "8004-skill",
+      "displayName": "8004 Skill",
+      "description": "General-purpose ERC-8004 skill for agent identity operations and lookups.",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "skill",
+        "lookup"
+      ],
+      "author": "spyderjr",
+      "version": "1.0.0"
+    },
+    {
+      "name": "farcaster",
+      "displayName": "Farcaster",
+      "description": "Post casts, read feeds, and interact with Farcaster decentralized social protocol.",
+      "category": "social",
+      "tags": [
+        "farcaster",
+        "social",
+        "decentralized",
+        "casts"
+      ],
+      "author": "openclaw-consensus-bot",
+      "version": "1.0.0"
+    },
+    {
+      "name": "farcaster-agent",
+      "displayName": "Farcaster Agent",
+      "description": "AI-powered Farcaster bot for automated posting, engagement, and community management.",
+      "category": "social",
+      "tags": [
+        "farcaster",
+        "agent",
+        "bot",
+        "community"
+      ],
+      "author": "rishavmukherji",
+      "version": "1.0.0"
+    },
+    {
+      "name": "xmtp-agent",
+      "displayName": "XMTP Agent",
+      "description": "Decentralized messaging via XMTP protocol with wallet-to-wallet encrypted communication.",
+      "category": "social",
+      "tags": [
+        "xmtp",
+        "messaging",
+        "encrypted",
+        "web3"
+      ],
+      "author": "humanagent",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nostr-nak",
+      "displayName": "Nostr NAK",
+      "description": "Interact with Nostr relays using the NAK toolkit for publishing and reading events.",
+      "category": "social",
+      "tags": [
+        "nostr",
+        "nak",
+        "relays",
+        "events"
+      ],
+      "author": "samthomson",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nostr-social",
+      "displayName": "Nostr Social",
+      "description": "Full Nostr social client with profile management, follows, and note publishing.",
+      "category": "social",
+      "tags": [
+        "nostr",
+        "social",
+        "profiles",
+        "notes"
+      ],
+      "author": "shawnyeager",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nostr-wallet-connect",
+      "displayName": "Nostr Wallet Connect",
+      "description": "Connect Bitcoin Lightning wallets via Nostr Wallet Connect (NWC) protocol for payments.",
+      "category": "social",
+      "tags": [
+        "nostr",
+        "nwc",
+        "lightning",
+        "bitcoin"
+      ],
+      "author": "vveerrgg",
+      "version": "1.0.0"
+    },
+    {
+      "name": "dagny-nostr",
+      "displayName": "Dagny Nostr",
+      "description": "Advanced Nostr toolkit with relay management, event filtering, and key operations.",
+      "category": "social",
+      "tags": [
+        "nostr",
+        "toolkit",
+        "relay",
+        "keys"
+      ],
+      "author": "edwardbickerton",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bittensor-sdk",
+      "displayName": "Bittensor SDK",
+      "description": "Build and interact with Bittensor subnets for decentralized AI model inference and training.",
+      "category": "ai-crypto",
+      "tags": [
+        "bittensor",
+        "tao",
+        "subnet",
+        "ai",
+        "decentralized"
+      ],
+      "author": "taoleeh",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bittensor-taostats",
+      "displayName": "Bittensor TaoStats",
+      "description": "Monitor Bittensor network stats, validator performance, and TAO token metrics.",
+      "category": "ai-crypto",
+      "tags": [
+        "bittensor",
+        "taostats",
+        "analytics",
+        "validators"
+      ],
+      "author": "vanlabs-dev",
+      "version": "1.0.0"
+    },
+    {
+      "name": "elizacloud",
+      "displayName": "ElizaCloud",
+      "description": "Deploy and manage ElizaOS AI agents in the cloud with crypto wallet integration.",
+      "category": "ai-crypto",
+      "tags": [
+        "eliza",
+        "elizaos",
+        "ai-agent",
+        "cloud"
+      ],
+      "author": "odilitime",
+      "version": "1.0.0"
+    },
+    {
+      "name": "virtuals-protocol",
+      "displayName": "Virtuals Protocol",
+      "description": "Interact with Virtuals Protocol for tokenized AI agent creation and management.",
+      "category": "ai-crypto",
+      "tags": [
+        "virtuals",
+        "ai-agent",
+        "tokenized",
+        "protocol"
+      ],
+      "author": "virtualstechteam",
+      "version": "1.0.0"
+    },
+    {
+      "name": "virtuals",
+      "displayName": "Virtuals",
+      "description": "Core Virtuals Protocol integration for launching and managing AI agent tokens.",
+      "category": "ai-crypto",
+      "tags": [
+        "virtuals",
+        "token",
+        "ai-agent",
+        "launch"
+      ],
+      "author": "rojasjuniore",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pump-sdk-core",
+      "displayName": "Pump SDK Core",
+      "description": "Core SDK for interacting with Pump.fun token launchpad on Solana.",
+      "category": "defi",
+      "tags": [
+        "pump-fun",
+        "solana",
+        "token-launch",
+        "sdk"
+      ],
+      "author": "speraxos",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pump-mcp-server",
+      "displayName": "Pump MCP Server",
+      "description": "MCP server for Pump.fun operations including token creation and trading.",
+      "category": "defi",
+      "tags": [
+        "pump-fun",
+        "mcp",
+        "solana",
+        "trading"
+      ],
+      "author": "speraxos",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pump-fun",
+      "displayName": "Pump.fun",
+      "description": "Create and trade meme tokens on Pump.fun Solana launchpad with bonding curve mechanics.",
+      "category": "defi",
+      "tags": [
+        "pump-fun",
+        "meme",
+        "solana",
+        "bonding-curve"
+      ],
+      "author": "playdadev",
+      "version": "1.0.0"
+    },
+    {
+      "name": "openpump-solana",
+      "displayName": "OpenPump Solana",
+      "description": "Open-source Pump.fun integration with Solana MCP for programmatic token launches.",
+      "category": "defi",
+      "tags": [
+        "pump-fun",
+        "solana",
+        "open-source",
+        "mcp"
+      ],
+      "author": "fullstacktard",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pumpfun-sniper",
+      "displayName": "PumpFun Sniper",
+      "description": "Snipe newly launched tokens on Pump.fun with configurable buy parameters and speed optimization.",
+      "category": "defi",
+      "tags": [
+        "pump-fun",
+        "sniper",
+        "speed",
+        "solana"
+      ],
+      "author": "ultranumblol",
+      "version": "1.0.0"
+    },
+    {
+      "name": "raydium",
+      "displayName": "Raydium",
+      "description": "Swap tokens and provide liquidity on Raydium AMM, Solana's leading DEX.",
+      "category": "defi",
+      "tags": [
+        "raydium",
+        "solana",
+        "amm",
+        "liquidity"
+      ],
+      "author": "btcagentic",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pancakeswap",
+      "displayName": "PancakeSwap",
+      "description": "Trade tokens and farm yields on PancakeSwap, BNB Chain's largest DEX.",
+      "category": "defi",
+      "tags": [
+        "pancakeswap",
+        "bnb",
+        "dex",
+        "farming"
+      ],
+      "author": "btcagentic",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aevo-trading",
+      "displayName": "Aevo Trading",
+      "description": "Trade crypto options and perpetuals on Aevo DEX with advanced order types.",
+      "category": "defi",
+      "tags": [
+        "aevo",
+        "options",
+        "perps",
+        "dex"
+      ],
+      "author": "yichulau",
+      "version": "1.0.0"
+    },
+    {
+      "name": "dex-aggregator",
+      "displayName": "DEX Aggregator",
+      "description": "Multi-DEX aggregation for optimal swap routing across Uniswap, SushiSwap, 1inch, and more.",
+      "category": "defi",
+      "tags": [
+        "dex",
+        "aggregator",
+        "routing",
+        "swap"
+      ],
+      "author": "bytesagain1",
+      "version": "1.0.0"
+    },
+    {
+      "name": "liquidity-monitor",
+      "displayName": "Liquidity Monitor",
+      "description": "Monitor liquidity pool depths, impermanent loss, and LP positions across major DEXes.",
+      "category": "defi",
+      "tags": [
+        "liquidity",
+        "pools",
+        "monitoring",
+        "defi"
+      ],
+      "author": "bytesagain1",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rwa-oracle",
+      "displayName": "RWA Oracle",
+      "description": "Oracle for real-world asset data feeds including treasuries, commodities, and tokenized securities.",
+      "category": "defi",
+      "tags": [
+        "rwa",
+        "oracle",
+        "treasuries",
+        "tokenized"
+      ],
+      "author": "prqelt",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lightning-mcp",
+      "displayName": "Lightning MCP",
+      "description": "Bitcoin Lightning Network operations via MCP including invoices, payments, and channel management.",
+      "category": "chains",
+      "tags": [
+        "lightning",
+        "bitcoin",
+        "mcp",
+        "payments"
+      ],
+      "author": "roasbeef",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lightning-commerce",
+      "displayName": "Lightning Commerce",
+      "description": "Enable Lightning Network payments for AI agent commerce with invoice generation and verification.",
+      "category": "chains",
+      "tags": [
+        "lightning",
+        "bitcoin",
+        "commerce",
+        "invoices"
+      ],
+      "author": "roasbeef",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lightning-security",
+      "displayName": "Lightning Security",
+      "description": "Security module for Lightning Network nodes including watchtower and channel monitoring.",
+      "category": "chains",
+      "tags": [
+        "lightning",
+        "bitcoin",
+        "security",
+        "watchtower"
+      ],
+      "author": "roasbeef",
+      "version": "1.0.0"
+    },
+    {
+      "name": "monad",
+      "displayName": "Monad",
+      "description": "Build and deploy smart contracts on Monad, the high-performance EVM-compatible L1.",
+      "category": "chains",
+      "tags": [
+        "monad",
+        "evm",
+        "l1",
+        "high-performance"
+      ],
+      "author": "portdeveloper",
+      "version": "1.0.0"
+    },
+    {
+      "name": "worldcoin",
+      "displayName": "Worldcoin",
+      "description": "Integrate World ID verification and World App for proof-of-personhood in AI agents.",
+      "category": "chains",
+      "tags": [
+        "worldcoin",
+        "world-id",
+        "identity",
+        "proof-of-personhood"
+      ],
+      "author": "btcagentic",
+      "version": "1.0.0"
+    },
+    {
+      "name": "yield-shark",
+      "displayName": "Yield Shark",
+      "description": "Aggressive yield farming optimizer scanning Pendle, Ethena, Ondo, and more for best APY.",
+      "category": "trading",
+      "tags": [
+        "yield",
+        "farming",
+        "optimizer",
+        "apy"
+      ],
+      "author": "gztanht",
+      "version": "1.0.0"
+    },
+    {
+      "name": "airdrop-hunter",
+      "displayName": "Airdrop Hunter",
+      "description": "Discover and track upcoming crypto airdrops with eligibility checking and claim automation.",
+      "category": "trading",
+      "tags": [
+        "airdrop",
+        "hunter",
+        "eligibility",
+        "claim"
+      ],
+      "author": "deeplearning1993",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-alpha-scanner",
+      "displayName": "Crypto Alpha Scanner",
+      "description": "Scan on-chain data and social signals to find alpha opportunities before the crowd.",
+      "category": "trading",
+      "tags": [
+        "alpha",
+        "scanner",
+        "signals",
+        "on-chain"
+      ],
+      "author": "cassh100k",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defi-yield-scanner",
+      "displayName": "DeFi Yield Scanner",
+      "description": "Scan DeFi protocols for the best yield opportunities with risk-adjusted scoring.",
+      "category": "trading",
+      "tags": [
+        "defi",
+        "yield",
+        "scanner",
+        "risk"
+      ],
+      "author": "jamierossouw",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-whale-tracker",
+      "displayName": "Crypto Whale Tracker",
+      "description": "Track whale wallet movements across CEX and DEX with real-time alerts and analysis.",
+      "category": "trading",
+      "tags": [
+        "whale",
+        "tracker",
+        "alerts",
+        "on-chain"
+      ],
+      "author": "bytesagain1",
+      "version": "1.0.0"
+    },
+    {
+      "name": "mpc-payments",
+      "displayName": "MPC Payments",
+      "description": "Accept crypto payments securely using multi-party computation wallets without exposing private keys.",
+      "category": "wallets",
+      "tags": [
+        "mpc",
+        "payments",
+        "security",
+        "custody"
+      ],
+      "author": "mavagio",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cobo-tss",
+      "displayName": "Cobo TSS",
+      "description": "Threshold signature scheme node management for Cobo custody with multi-party signing.",
+      "category": "wallets",
+      "tags": [
+        "cobo",
+        "tss",
+        "mpc",
+        "custody",
+        "threshold"
+      ],
+      "author": "dinstein",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-algo",
+      "displayName": "Binance Official Algo",
+      "description": "Binance Algo request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "algo",
+        "trading",
+        "api"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-alpha",
+      "displayName": "Binance Official Alpha",
+      "description": "Binance Alpha request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "alpha",
+        "api"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-assets",
+      "displayName": "Binance Official Assets",
+      "description": "Binance Assets request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "assets",
+        "api"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-convert",
+      "displayName": "Binance Official Convert",
+      "description": "Binance Convert request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "convert",
+        "api"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-derivatives-trading-coin-futures",
+      "displayName": "Binance Official Coin Futures",
+      "description": "Binance Derivatives coin futures trading using the Binance API. Supports testnet and mainnet.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "derivatives",
+        "coin-futures",
+        "trading"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-derivatives-trading-options",
+      "displayName": "Binance Official Options Trading",
+      "description": "Binance Derivatives options trading using the Binance API. Supports testnet and mainnet.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "derivatives",
+        "options",
+        "trading"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-derivatives-trading-portfolio-margin",
+      "displayName": "Binance Official Portfolio Margin",
+      "description": "Binance Derivatives portfolio margin trading using the Binance API. Supports testnet and mainnet.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "derivatives",
+        "portfolio-margin",
+        "trading"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-derivatives-trading-portfolio-margin-pro",
+      "displayName": "Binance Official Portfolio Margin Pro",
+      "description": "Binance Derivatives portfolio margin pro trading using the Binance API.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "derivatives",
+        "portfolio-margin-pro",
+        "trading"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-derivatives-trading-usds-futures",
+      "displayName": "Binance Official USDS Futures",
+      "description": "Binance Derivatives USDS futures trading using the Binance API. Supports testnet and mainnet.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "derivatives",
+        "usds-futures",
+        "trading"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-margin-trading",
+      "displayName": "Binance Official Margin Trading",
+      "description": "Binance Margin trading request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "margin",
+        "trading",
+        "api"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-onchain-pay",
+      "displayName": "Binance Official Onchain Pay",
+      "description": "Binance Onchain Pay enables users to buy cryptocurrency with fiat or send crypto from their Binance account directly to any external on-chain wallet address.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "onchain",
+        "pay",
+        "fiat"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-spot",
+      "displayName": "Binance Official Spot",
+      "description": "Binance Spot trading using the Binance API. Supports testnet, mainnet, and demo.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "spot",
+        "trading",
+        "api"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-square-post",
+      "displayName": "Binance Official Square Post",
+      "description": "Post content to Binance Square, the Binance social platform for sharing trading insights.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "square",
+        "social",
+        "content"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-sub-account",
+      "displayName": "Binance Official Sub-Account",
+      "description": "Binance Sub-account management using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "sub-account",
+        "management",
+        "api"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-web3-crypto-market-rank",
+      "displayName": "Binance Official Crypto Market Rank",
+      "description": "Crypto market rankings and leaderboards. Query trending tokens, top searched tokens, Binance Alpha tokens, smart money inflow rankings, and top trader PnL leaderboards.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "web3",
+        "rankings",
+        "leaderboard"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-web3-meme-rush",
+      "displayName": "Binance Official Meme Rush",
+      "description": "Meme token fast-trading assistant with real-time meme token lists from launchpads and AI-powered market hot topics with associated tokens.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "web3",
+        "meme",
+        "trading"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-web3-query-address-info",
+      "displayName": "Binance Official Query Address Info",
+      "description": "Query any on-chain wallet address token balances and positions, including token name, symbol, price, 24h price change, and holding quantity.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "web3",
+        "address",
+        "portfolio"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-web3-query-token-audit",
+      "displayName": "Binance Official Token Audit",
+      "description": "Query token security audit to detect scams, honeypots, and malicious contracts before trading.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "web3",
+        "security",
+        "audit"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-web3-query-token-info",
+      "displayName": "Binance Official Token Info",
+      "description": "Query token details by keyword, contract address, or chain. Search tokens, get metadata, retrieve real-time market data, and fetch K-Line candlestick charts.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "web3",
+        "token",
+        "market-data"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-web3-trading-signal",
+      "displayName": "Binance Official Trading Signal",
+      "description": "Subscribe and retrieve on-chain Smart Money signals. Monitor trading activities of smart money addresses including buy/sell signals and trigger prices.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "binance",
+        "web3",
+        "smart-money",
+        "signals"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-agentic-wallet",
+      "displayName": "OKX Official Agentic Wallet",
+      "description": "OKX wallet lifecycle management including auth, balance queries, token transfers, transaction history, and smart contract calls.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "wallet",
+        "agentic",
+        "transfers"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-audit-log",
+      "displayName": "OKX Official Audit Log",
+      "description": "Export audit logs, find audit log location, view command history, and track operation records for OKX CLI.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "audit",
+        "logging",
+        "history"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-cex-bot",
+      "displayName": "OKX Official CEX Bot",
+      "description": "Create, manage, and monitor grid and DCA (Martingale) trading bots on OKX CEX for spot and contract variants.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "bot",
+        "grid",
+        "dca",
+        "automation"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-cex-earn",
+      "displayName": "OKX Official CEX Earn",
+      "description": "Manage OKX Simple Earn, On-chain Earn (staking/DeFi), and Dual Investment products including subscriptions and redemptions.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "earn",
+        "staking",
+        "dual-investment"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-cex-market",
+      "displayName": "OKX Official CEX Market",
+      "description": "Query public market data on OKX CEX including prices, orderbook, candles, funding rates, open interest, and instruments.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "cex",
+        "market-data",
+        "orderbook"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-cex-portfolio",
+      "displayName": "OKX Official CEX Portfolio",
+      "description": "OKX CEX account management including balances, positions, P&L tracking, transaction history, and fund transfers.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "cex",
+        "portfolio",
+        "positions"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-cex-trade",
+      "displayName": "OKX Official CEX Trade",
+      "description": "Place, cancel, and amend spot, perpetual swap, delivery futures, and options orders on OKX CEX with advanced order types.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "cex",
+        "trade",
+        "orders",
+        "options"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-dex-market",
+      "displayName": "OKX Official DEX Market",
+      "description": "On-chain market data including token prices, K-line charts, wallet PnL analysis, and raw DEX transaction feeds for tracked addresses.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "dex",
+        "market-data",
+        "pnl"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-dex-signal",
+      "displayName": "OKX Official DEX Signal",
+      "description": "Smart-money, whale, and KOL aggregated buy signal alerts and top trader leaderboard rankings across chains.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "dex",
+        "signals",
+        "smart-money",
+        "whale"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-dex-swap",
+      "displayName": "OKX Official DEX Swap",
+      "description": "Decentralized token swaps aggregating liquidity from 500+ DEX sources across 20+ supported chains with optimal routing.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "dex",
+        "swap",
+        "aggregator"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-dex-token",
+      "displayName": "OKX Official DEX Token",
+      "description": "Token-level data including search, trending tokens, liquidity pools, holder distribution, honeypot risk detection, and cluster analysis.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "dex",
+        "token",
+        "analysis",
+        "security"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-dex-trenches",
+      "displayName": "OKX Official DEX Trenches",
+      "description": "Meme and alpha token research on pump.fun and launchpads including dev reputation, bundle detection, and bonding curve analysis.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "dex",
+        "meme",
+        "trenches",
+        "launchpad"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-onchain-gateway",
+      "displayName": "OKX Official Onchain Gateway",
+      "description": "Broadcast transactions, estimate gas, simulate transactions, and track transaction status across 20+ supported chains.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "onchain",
+        "gateway",
+        "gas",
+        "broadcast"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-security",
+      "displayName": "OKX Official Security",
+      "description": "Security scanning for tokens, DApps, transactions, and signatures including honeypot detection, phishing checks, and approval management.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "security",
+        "scanning",
+        "honeypot"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-wallet-portfolio",
+      "displayName": "OKX Official Wallet Portfolio",
+      "description": "Check wallet address balance, token holdings, portfolio value, and DeFi positions across 20+ supported chains.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "wallet",
+        "portfolio",
+        "multi-chain"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-x402-payment",
+      "displayName": "OKX Official x402 Payment",
+      "description": "Handle HTTP 402 Payment Required responses by signing x402 payment proofs for payment-gated APIs and resources.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "okx",
+        "x402",
+        "payment",
+        "micropayments"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-macro-analyst",
+      "displayName": "Bitget Official Macro Analyst",
+      "description": "Macro-economic and cross-asset analysis for crypto market context.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "bitget",
+        "macro",
+        "analysis",
+        "economics"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-market-intel",
+      "displayName": "Bitget Official Market Intel",
+      "description": "On-chain and institutional market intelligence — the structural layer beneath price.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "bitget",
+        "market-intel",
+        "on-chain",
+        "institutional"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-news-briefing",
+      "displayName": "Bitget Official News Briefing",
+      "description": "Crypto and financial news aggregation, briefing, and narrative synthesis.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "bitget",
+        "news",
+        "briefing",
+        "aggregation"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-sentiment-analyst",
+      "displayName": "Bitget Official Sentiment Analyst",
+      "description": "Crypto market sentiment and positioning analysis.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "bitget",
+        "sentiment",
+        "positioning",
+        "analysis"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-technical-analysis",
+      "displayName": "Bitget Official Technical Analysis",
+      "description": "Crypto technical analysis with indicators, trend direction, support/resistance, momentum, volatility, and volume analysis.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "bitget",
+        "technical-analysis",
+        "indicators",
+        "momentum"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-trading",
+      "displayName": "Bitget Official Trading",
+      "description": "Check prices, manage account balances, place or cancel orders, manage futures or spot positions, set leverage, and transfer funds on Bitget.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "bitget",
+        "trading",
+        "spot",
+        "futures"
+      ],
+      "author": "bitget",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-wallet",
+      "displayName": "Bitget Official Wallet",
+      "description": "Interact with Bitget Wallet API for crypto market data, token info, swap quotes, RWA stock trading, and security audits.",
+      "category": "wallets",
+      "tags": [
+        "official",
+        "bitget",
+        "wallet",
+        "rwa",
+        "swap",
+        "security"
+      ],
+      "author": "bitget-wallet-ai-lab",
+      "version": "1.0.0"
+    },
+    {
+      "name": "alchemy-mcp",
+      "displayName": "Alchemy MCP",
+      "description": "MCP server enabling AI agents to interact with Alchemy's blockchain APIs for token prices, NFT data, transaction history, balances, asset transfers, and onchain transactions.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp",
+        "alchemy",
+        "blockchain",
+        "nft",
+        "tokens"
+      ],
+      "author": "alchemy",
+      "version": "1.0.0"
+    },
+    {
+      "name": "coinbase-agentkit",
+      "displayName": "Coinbase AgentKit",
+      "description": "Coinbase Developer Platform toolkit for giving AI agents a crypto wallet and onchain interactions, supporting fee-free stablecoin payments and agent monetization.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "coinbase",
+        "agentkit",
+        "wallet",
+        "onchain",
+        "payments"
+      ],
+      "author": "coinbase",
+      "version": "1.0.0"
+    },
+    {
+      "name": "coinstats-mcp",
+      "displayName": "CoinStats MCP",
+      "description": "MCP server for the CoinStats API providing access to cryptocurrency market data, portfolio tracking, and news.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp",
+        "coinstats",
+        "market-data",
+        "portfolio"
+      ],
+      "author": "coinstats",
+      "version": "1.0.0"
+    },
+    {
+      "name": "debridge-mcp",
+      "displayName": "deBridge MCP",
+      "description": "MCP server for the deBridge protocol enabling AI agents to find optimal cross-chain and same-chain swap routes, check fees and conditions, and initiate trades across major blockchain networks.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp",
+        "debridge",
+        "cross-chain",
+        "swap",
+        "bridge"
+      ],
+      "author": "debridge",
+      "version": "1.0.0"
+    },
+    {
+      "name": "goat-onchain",
+      "displayName": "GOAT Onchain",
+      "description": "The largest agentic finance toolkit for AI agents with 200+ tools for payments, DeFi, NFTs, prediction markets, and crypto asset management across multiple chains.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "goat",
+        "onchain",
+        "defi",
+        "payments",
+        "multi-chain"
+      ],
+      "author": "goat-sdk",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lifi-mcp",
+      "displayName": "LI.FI MCP",
+      "description": "MCP server for LI.FI protocol enabling cross-chain token swaps and bridging across multiple blockchain networks via AI agents.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp",
+        "lifi",
+        "cross-chain",
+        "bridge",
+        "swap"
+      ],
+      "author": "lifi",
+      "version": "1.0.0"
+    },
+    {
+      "name": "solana-agent-kit",
+      "displayName": "Solana Agent Kit",
+      "description": "Open-source toolkit for connecting AI agents to Solana protocols with 60+ actions including token operations, DeFi integration, NFT management, and cross-chain bridging.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "solana",
+        "agent",
+        "defi",
+        "nft",
+        "tokens"
+      ],
+      "author": "sendai",
+      "version": "1.0.0"
+    },
+    {
+      "name": "tatum-blockchain-mcp",
+      "displayName": "Tatum Blockchain MCP",
+      "description": "MCP server providing access to the Tatum Blockchain Data API and RPC Gateway, enabling LLMs to read and write blockchain data across 130+ networks.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp",
+        "tatum",
+        "blockchain",
+        "multi-chain",
+        "rpc"
+      ],
+      "author": "tatum",
+      "version": "1.0.0"
+    },
+    {
+      "name": "web3-mcp",
+      "displayName": "Web3 MCP",
+      "description": "MCP server for interacting with multiple blockchains including Solana, Ethereum, THORChain, XRP Ledger, TON, Cardano, and UTXO chains with support for balances, transfers, swaps, and staking.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp",
+        "web3",
+        "multi-chain",
+        "solana",
+        "ethereum"
+      ],
+      "author": "strangelove",
+      "version": "1.0.0"
+    }
+  ],
+  "categories": {
+    "exchanges": {
+      "name": "Exchanges",
+      "icon": "🏦",
+      "description": "CEX & DEX integrations",
+      "count": 60
+    },
+    "chains": {
+      "name": "Chains",
+      "icon": "⛓️",
+      "description": "Blockchain protocols",
+      "count": 35
+    },
+    "defi": {
+      "name": "DeFi",
+      "icon": "🏗️",
+      "description": "DeFi protocols & tools",
+      "count": 9
+    },
+    "wallets": {
+      "name": "Wallets",
+      "icon": "👛",
+      "description": "Wallet integrations",
+      "count": 10
+    },
+    "analytics": {
+      "name": "Analytics",
+      "icon": "📊",
+      "description": "Data & analytics platforms",
+      "count": 34
+    },
+    "dev-tools": {
+      "name": "Dev Tools",
+      "icon": "🔧",
+      "description": "Developer tools & SDKs",
+      "count": 11
+    },
+    "trading": {
+      "name": "Trading",
+      "icon": "📈",
+      "description": "Trading bots & strategies",
+      "count": 15
+    },
+    "prediction-markets": {
+      "name": "Prediction Markets",
+      "icon": "🎯",
+      "description": "Prediction market protocols"
+    },
+    "payments": {
+      "name": "Payments",
+      "icon": "💳",
+      "description": "Crypto payment protocols"
+    },
+    "social": {
+      "name": "Social",
+      "icon": "💬",
+      "description": "Decentralized social protocols"
+    },
+    "ai-crypto": {
+      "name": "AI x Crypto",
+      "icon": "🤖",
+      "description": "AI-powered crypto tools"
+    },
+    "identity": {
+      "name": "Identity",
+      "icon": "🪥",
+      "description": "On-chain identity & reputation"
+    },
+    "mcp-servers": {
+      "name": "MCP Servers",
+      "icon": "🔌",
+      "description": "Official MCP protocol servers"
+    }
+  }
+}

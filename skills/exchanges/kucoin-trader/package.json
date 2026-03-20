@@ -1,0 +1,25 @@
+{
+  "name": "kucoin-trader",
+  "version": "1.0.0",
+  "description": "Professional KuCoin trading system with multi-account support, spot/margin/futures trading, asset transfers, and account management.",
+  "main": "lib/kucoin-client.js",
+  "scripts": {
+    "init": "node scripts/init.js",
+    "accounts": "node scripts/accounts.js",
+    "report": "node scripts/report.js",
+    "market": "node scripts/market.js",
+    "spot": "node scripts/spot.js",
+    "transfer": "node scripts/transfer.js"
+  },
+  "keywords": ["kucoin", "crypto", "trading", "spot", "margin", "futures", "exchange", "openclaw"],
+  "author": "alz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/esojourn/kucoin-trader"
+  },
+  "homepage": "https://github.com/esojourn/kucoin-trader",
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

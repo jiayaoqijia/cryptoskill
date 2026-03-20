@@ -1,0 +1,43 @@
+{
+  "name": "pancakeswap",
+  "version": "1.0.0",
+  "description": "Audit PancakeSwap liquidity positions before capital is deployed. Evaluate depth, concentrated-liquidity setup, range risk, and pool quality.",
+  "author": "qclawbot",
+  "license": "MIT-0",
+  "homepage": "https://clawhub.ai",
+  "keywords": [
+    "pancakeswap",
+    "liquidity audit",
+    "lp risk",
+    "concentrated liquidity",
+    "range risk",
+    "fee tier",
+    "pool quality"
+  ],
+  "files": {
+    "skill.md": "skill.md"
+  },
+  "capabilities": {
+    "pool_audit": "Assess PancakeSwap pool quality before LP deployment",
+    "range_risk_review": "Review concentrated-liquidity range exposure",
+    "structure_analysis": "Assess fee-tier, depth, and position fragility",
+    "deployment_guidance": "Recommend deploy, widen, reduce, monitor, or avoid"
+  },
+  "triggers": [
+    "pancakeswap pool",
+    "pancakeswap lp risk",
+    "should I add liquidity",
+    "range risk",
+    "concentrated liquidity",
+    "fee tier review"
+  ],
+  "audience": [
+    "Liquidity providers on PancakeSwap",
+    "DeFi users evaluating V3 LP positions",
+    "Operators auditing pool structure risk"
+  ],
+  "openclaw": {
+    "primaryEnv": null,
+    "requires": {}
+  }
+}

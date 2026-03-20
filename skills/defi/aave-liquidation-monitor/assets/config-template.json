@@ -1,0 +1,20 @@
+{
+  "aaveLiquidationMonitor": {
+    "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "chain": "ethereum",
+    "checkInterval": 6,
+    "thresholds": {
+      "critical": 1.05,
+      "warning": 1.2,
+      "stable": 1.5
+    },
+    "verbosity": "quiet",
+    "channel": "telegram",
+    "enabled": false,
+    "lastCheck": null,
+    "lastStatus": null,
+    "lastAlert": null,
+    "retryAttempts": 3,
+    "retryBackoffMs": 2000
+  }
+}

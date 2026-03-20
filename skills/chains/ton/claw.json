@@ -1,0 +1,20 @@
+﻿{
+    "scripts":  [
+                    "scripts/ton-info.sh"
+                ],
+    "permissions":  [
+                        "exec"
+                    ],
+    "description":  "Ton namespace for Netsnek e.U. audio and media processing tools. Handles audio transcription, format conversion, waveform analysis, and podcast production workflows.",
+    "minOpenClawVersion":  "0.8.0",
+    "version":  "0.1.0",
+    "tags":  [
+                 "reserved",
+                 "netsnek",
+                 "media"
+             ],
+    "author":  "netsnek",
+    "name":  "ton",
+    "license":  "MIT",
+    "entry":  "SKILL.md"
+}

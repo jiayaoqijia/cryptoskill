@@ -1,0 +1,59 @@
+# alias|method|path|signed|confirm|description
+market.time|GET|/public/Time|false|false|Get server time
+market.system-status|GET|/public/SystemStatus|false|false|Get system trading status
+market.assets|GET|/public/Assets|false|false|Get asset metadata
+market.asset-pairs|GET|/public/AssetPairs|false|false|Get tradable asset pairs
+market.ticker|GET|/public/Ticker|false|false|Get ticker data
+market.orderbook|GET|/public/Depth|false|false|Get order book depth
+market.grouped-orderbook|GET|/public/GroupedBook|false|false|Get grouped order book data
+market.ohlc|GET|/public/OHLC|false|false|Get OHLC candles
+market.trades|GET|/public/Trades|false|false|Get recent trades
+market.spread|GET|/public/Spread|false|false|Get recent spread data
+market.pre-trade|GET|/public/PreTrade|false|false|Get market pre-trade transparency data
+market.post-trade|GET|/public/PostTrade|false|false|Get market post-trade transparency data
+market.level3|POST|/private/Level3|true|false|Get authenticated level 3 order book data
+account.balance|POST|/private/Balance|true|false|Get account balances
+account.balance-ex|POST|/private/BalanceEx|true|false|Get extended account balances
+account.credit-lines|POST|/private/CreditLines|true|false|Get credit line information
+account.trade-balance|POST|/private/TradeBalance|true|false|Get trade balance summary
+account.open-orders|POST|/private/OpenOrders|true|false|Get open orders
+account.closed-orders|POST|/private/ClosedOrders|true|false|Get closed orders
+account.query-orders|POST|/private/QueryOrders|true|false|Get specific order details
+account.order-amends|POST|/private/OrderAmends|true|false|Get order amend history
+account.trades-history|POST|/private/TradesHistory|true|false|Get trade history
+account.query-trades|POST|/private/QueryTrades|true|false|Get specific trade details
+account.open-positions|POST|/private/OpenPositions|true|false|Get open margin positions
+account.ledgers|POST|/private/Ledgers|true|false|Get ledger entries
+account.query-ledgers|POST|/private/QueryLedgers|true|false|Get specific ledger entries
+account.trade-volume|POST|/private/TradeVolume|true|false|Get fee schedule and 30d volume
+account.request-export|POST|/private/AddExport|true|false|Request a trades or ledgers export
+account.export-status|POST|/private/ExportStatus|true|false|Get export job status
+account.retrieve-export|POST|/private/RetrieveExport|true|false|Retrieve an export payload
+account.remove-export|POST|/private/RemoveExport|true|true|Delete or cancel an export job
+account.websocket-token|POST|/private/GetWebSocketsToken|true|false|Get a websocket auth token
+trading.add-order|POST|/private/AddOrder|true|true|Place a new order
+trading.amend-order|POST|/private/AmendOrder|true|true|Amend an existing order in place
+trading.edit-order|POST|/private/EditOrder|true|true|Edit a live order by replacing it
+trading.cancel-order|POST|/private/CancelOrder|true|true|Cancel one or more orders
+trading.cancel-all|POST|/private/CancelAll|true|true|Cancel all open orders
+trading.cancel-all-after|POST|/private/CancelAllOrdersAfter|true|true|Set or disable the dead-man switch timer
+trading.add-order-batch|POST|/private/AddOrderBatch|true|true|Place a batch of 2-15 orders on a single pair
+trading.cancel-order-batch|POST|/private/CancelOrderBatch|true|true|Cancel multiple orders in one request
+funding.deposit-methods|POST|/private/DepositMethods|true|false|Get deposit methods for an asset
+funding.deposit-addresses|POST|/private/DepositAddresses|true|false|Get or generate deposit addresses
+funding.deposit-status|POST|/private/DepositStatus|true|false|Get recent deposit status entries
+funding.withdraw-methods|POST|/private/WithdrawMethods|true|false|Get withdrawal methods
+funding.withdraw-addresses|POST|/private/WithdrawAddresses|true|false|Get withdrawal addresses
+funding.withdraw-info|POST|/private/WithdrawInfo|true|false|Get withdrawal fee information
+funding.withdraw|POST|/private/Withdraw|true|true|Request a withdrawal
+funding.withdraw-status|POST|/private/WithdrawStatus|true|false|Get recent withdrawal status entries
+funding.withdraw-cancel|POST|/private/WithdrawCancel|true|true|Cancel a withdrawal request
+funding.wallet-transfer|POST|/private/WalletTransfer|true|true|Transfer funds from spot to futures wallet
+subaccounts.create|POST|/private/CreateSubaccount|true|true|Create a trading subaccount
+subaccounts.transfer|POST|/private/AccountTransfer|true|true|Transfer between master and subaccounts
+earn.allocate|POST|/private/Earn/Allocate|true|true|Allocate funds to an earn strategy
+earn.allocate-status|POST|/private/Earn/AllocateStatus|true|false|Check allocation status
+earn.deallocate|POST|/private/Earn/Deallocate|true|true|Deallocate funds from an earn strategy
+earn.deallocate-status|POST|/private/Earn/DeallocateStatus|true|false|Check deallocation status
+earn.strategies|POST|/private/Earn/Strategies|true|false|List earn strategies
+earn.allocations|POST|/private/Earn/Allocations|true|false|List earn allocations

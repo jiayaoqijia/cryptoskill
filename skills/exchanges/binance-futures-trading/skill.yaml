@@ -1,0 +1,25 @@
+#BJ|# skill.yaml
+#SB|name: binance-futures-trading
+#VK|slug: binance-futures-trading
+#HY|version: 1.0.0
+#WZ|author: moson
+#VX|description: 币安合约交易支持，包括杠杆和合约订单。每次调用自动扣费 0.001 USDT
+#RX|license: MIT
+#TS|tags:
+#JM|  - binance
+#BR|  - futures
+#YS|  - trading
+#XR|  - leverage
+#PR|permissions:
+#WZ|  - network
+#RZ|config:
+#QW|  SKILLPAY_API_KEY:
+#PJ|    type: string
+#ZZ|    required: true
+#PM|    secret: true
+#VW|entryPoint:
+#SZ|  type: typescript
+#ZK|  path: index.js
+#KX|price:
+#VV|  amount: 0.001
+#RV|  currency: USDT

@@ -1,0 +1,25 @@
+{
+  "name": "x402-cli",
+  "tagline": "Pay for any x402-gated API with USDC — one command, JSON output for agents",
+  "description": "CLI tool that enables AI agents to access x402 payment-gated HTTP endpoints. Probes endpoints for payment requirements, signs USDC payments via EIP-3009, and returns structured JSON with the backend response. Works with any x402-compliant server including the x402-k8s-operator. Supports EVM networks: Base, Base Sepolia, Avalanche, and Avalanche Fuji.",
+  "category": "utility",
+  "tags": ["x402", "payments", "usdc", "crypto", "api", "evm", "base", "agent-tools", "web3"],
+  "license": "Apache-2.0",
+  "pricing": "free",
+  "support_url": "https://github.com/razvanmacovei/x402-cli/issues",
+  "homepage": "https://github.com/razvanmacovei/x402-cli",
+  "install": {
+    "brew": "brew install razvanmacovei/tap/x402-cli",
+    "go": "go install github.com/razvanmacovei/x402-cli@latest",
+    "binary": "https://github.com/razvanmacovei/x402-cli/releases/latest"
+  },
+  "environment": {
+    "EVM_PRIVATE_KEY": {
+      "required": true,
+      "description": "EVM private key for signing USDC payments via EIP-3009. Use a dedicated low-value wallet, not your main account."
+    }
+  },
+  "permissions": [
+    "network: outbound HTTPS to x402-gated endpoints and x402.org facilitator"
+  ]
+}

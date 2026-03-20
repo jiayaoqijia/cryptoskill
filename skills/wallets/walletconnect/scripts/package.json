@@ -1,0 +1,26 @@
+{
+  "name": "walletconnect-requester",
+  "version": "1.0.0",
+  "description": "Secure WalletConnect client for AI agents - Zero custody, user controlled",
+  "main": "scripts/wc-requester.js",
+  "bin": {
+    "wc-requester": "./scripts/wc-requester.js"
+  },
+  "scripts": {
+    "connect": "node scripts/wc-requester.js connect",
+    "sessions": "node scripts/wc-requester.js sessions"
+  },
+  "dependencies": {
+    "@walletconnect/sign-client": "^2.13.0",
+    "@walletconnect/core": "^2.13.0",
+    "qrcode": "^1.5.3"
+  },
+  "keywords": [
+    "walletconnect",
+    "web3",
+    "ai-agent",
+    "non-custodial",
+    "secure"
+  ],
+  "license": "MIT"
+}

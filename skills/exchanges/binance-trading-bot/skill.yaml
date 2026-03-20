@@ -1,0 +1,48 @@
+name: binance-trading-bot
+slug: binance-trading-bot
+version: 1.0.0
+author: moson
+description: Binance 现货/合约交易机器人 - 查询余额、市价/限价下单。每次调用自动扣费 0.001 USDT（SkillPay 集成）
+license: MIT
+homepage: https://github.com/moson/binance-trading-bot
+
+tags:
+  - binance
+  - trading
+  - crypto
+  - bot
+
+permissions:
+  - network
+
+config:
+  SKILLPAY_API_KEY:
+    type: string
+    required: true
+    description: "SkillPay API Key"
+    secret: true
+  BINANCE_API_KEY:
+    type: string
+    required: true
+    description: "Binance API Key"
+    secret: true
+  BINANCE_SECRET_KEY:
+    type: string
+    required: true
+    description: "Binance Secret Key"
+    secret: true
+
+entryPoint:
+  type: typescript
+  path: index.js
+
+metadata:
+  clawdbot:
+    emoji: "💰"
+    category: trading
+    price: "0.001 USDT per call"
+
+price:
+  amount: 0.001
+  currency: USDT
+  per: call

@@ -1,0 +1,25 @@
+{
+  "name": "virtuals",
+  "version": "1.0.0",
+  "description": "Virtuals Protocol integration for OpenClaw - Create, manage and trade AI agent tokens",
+  "main": "dist/cli.js",
+  "bin": {
+    "virtuals": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js"
+  },
+  "keywords": ["openclaw", "virtuals", "ai-agents", "base", "tokens"],
+  "author": "IntechChain",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "ethers": "^6.9.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

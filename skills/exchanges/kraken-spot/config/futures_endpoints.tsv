@@ -1,0 +1,38 @@
+# alias|method|path|signed|confirm|description
+public.tickers|GET|/derivatives/api/v3/tickers|false|false|List all futures tickers
+public.ticker|GET|/derivatives/api/v3/tickers|false|false|Get ticker data, usually with symbol parameter
+public.orderbook|GET|/derivatives/api/v3/orderbook|false|false|Get futures order book
+public.history|GET|/api/history/v2/history|false|false|Get historical futures data
+public.charts|GET|/api/charts/v1/trade/chart|false|false|Get chart data
+public.instruments|GET|/derivatives/api/v3/instruments|false|false|List futures instruments
+public.feeschedules|GET|/derivatives/api/v3/feeschedules|false|false|List futures fee schedules
+market.tickers|GET|/derivatives/api/v3/tickers|false|false|List all futures tickers
+market.orderbook|GET|/derivatives/api/v3/orderbook|false|false|Get futures order book
+market.instruments|GET|/derivatives/api/v3/instruments|false|false|List futures instruments
+market.history|GET|/api/history/v2/history|false|false|Get historical futures data
+market.charts|GET|/api/charts/v1/trade/chart|false|false|Get futures chart data
+account.accounts|GET|/derivatives/api/v3/accounts|true|false|Get futures account balances and margin info
+account.open-orders|GET|/derivatives/api/v3/openorders|true|false|Get futures open orders
+account.open-positions|GET|/derivatives/api/v3/openpositions|true|false|Get futures open positions
+account.fills|GET|/derivatives/api/v3/fills|true|false|Get futures fills
+account.order-status|GET|/derivatives/api/v3/orders/status|true|false|Get futures order status
+account.account-log|GET|/api/history/v2/accountlog|true|false|Get futures account log
+account.execution-events|GET|/api/history/v2/executions|true|false|Get historical execution events
+account.historical-orders|GET|/api/history/v2/orders|true|false|Get historical orders
+trading.send-order|POST|/derivatives/api/v3/sendorder|true|true|Send a futures order
+trading.edit-order|POST|/derivatives/api/v3/editorder|true|true|Edit a futures order
+trading.cancel-order|POST|/derivatives/api/v3/cancelorder|true|true|Cancel a futures order
+trading.cancel-all|POST|/derivatives/api/v3/cancelallorders|true|true|Cancel all futures orders
+trading.cancel-all-after|POST|/derivatives/api/v3/cancelallordersafter|true|true|Set futures dead-man switch
+trading.batch-order|POST|/derivatives/api/v3/batchorder|true|true|Submit a futures batch order payload
+funding.transfer|POST|/derivatives/api/v3/transfer|true|true|Transfer collateral between wallets
+funding.transfer-subaccount|POST|/derivatives/api/v3/transfer/subaccount|true|true|Transfer collateral to a subaccount
+funding.withdraw-to-spot|POST|/derivatives/api/v3/withdrawaltospotwallet|true|true|Withdraw futures collateral to spot wallet
+preferences.leverage|GET|/derivatives/api/v3/leveragepreferences|true|false|Get leverage preferences
+preferences.set-leverage|PUT|/derivatives/api/v3/leveragepreferences|true|true|Set leverage preferences
+preferences.pnl|GET|/derivatives/api/v3/pnlpreferences|true|false|Get PnL preferences
+preferences.set-pnl|PUT|/derivatives/api/v3/pnlpreferences|true|true|Set PnL preferences
+preferences.self-trade-strategy|GET|/derivatives/api/v3/self-trade-strategy|true|false|Get self trade strategy
+preferences.set-self-trade-strategy|PUT|/derivatives/api/v3/self-trade-strategy|true|true|Set self trade strategy
+subaccounts.list|GET|/derivatives/api/v3/subaccounts|true|false|List futures subaccounts
+subaccounts.trading-enabled|GET|/derivatives/api/v3/subaccount|true|false|Inspect subaccount trading enablement, usually with subaccountUid parameter

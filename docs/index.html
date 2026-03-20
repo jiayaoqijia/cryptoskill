@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoSkill - The Crypto Skill Hub for AI Agents</title>
+  <meta name="description" content="Discover, install, and build AI agent skills for every crypto protocol, exchange, and tool. 310+ skills across 7 categories.">
+  <meta name="keywords" content="crypto, AI agents, skills, MCP, blockchain, DeFi, trading, exchanges">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CryptoSkill - The Crypto Skill Hub for AI Agents">
+  <meta property="og:description" content="Discover, install, and build AI agent skills for every crypto protocol, exchange, and tool.">
+  <meta property="og:url" content="https://cryptoskill.app">
+  <meta property="og:site_name" content="CryptoSkill">
+  <meta property="og:image" content="https://cryptoskill.app/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CryptoSkill - The Crypto Skill Hub for AI Agents">
+  <meta name="twitter:description" content="Discover, install, and build AI agent skills for every crypto protocol, exchange, and tool.">
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Dot Pattern Background -->
+  <div class="dot-pattern"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+          <text x="16" y="22" font-family="system-ui" font-size="18" font-weight="700" fill="white" text-anchor="middle">CS</text>
+        </svg>
+        CryptoSkill
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="https://github.com/jiayaoqijia/cryptoskill" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+
+      <button class="nav-search-btn" aria-label="Search skills">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Search skills...
+        <kbd>&#8984;K</kbd>
+      </button>
+
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Search Overlay -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+      <div class="search-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search skills, protocols, exchanges..." autocomplete="off">
+      </div>
+      <div class="search-results" id="searchResults"></div>
+      <div class="search-hint">
+        <span>Type to search through all skills</span>
+        <kbd>ESC</kbd>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skill Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal"></div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Open Source Skill Registry
+      </div>
+      <h1>The Crypto Skill Hub<br><span class="gradient-text">for AI Agents</span></h1>
+      <p class="subtitle">Discover, install, and build AI agent skills for every crypto protocol, exchange, and tool.</p>
+      <div class="hero-actions">
+        <a href="#skills" class="btn-primary">
+          Browse Skills
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="#install" class="btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"/>
+            <line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+          Quick Install
+        </a>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-value" id="statSkills">310+</div>
+          <div class="stat-label">Skills</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statCategories">7</div>
+          <div class="stat-label">Categories</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statProtocols">50+</div>
+          <div class="stat-label">Protocols</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="section" id="categories">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-label">Categories</div>
+        <h2 class="section-title">Every corner of crypto, covered</h2>
+        <p class="section-desc">From centralized exchanges to on-chain protocols, find the right skill for your AI agent.</p>
+      </div>
+      <div class="categories-grid stagger" id="categoriesGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Skills Section -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-label">Skills</div>
+        <h2 class="section-title">Featured skills</h2>
+        <p class="section-desc">Production-ready skills to give your AI agents crypto superpowers.</p>
+      </div>
+      <div class="skills-filter fade-in-up" id="filterContainer">
+        <!-- Populated by JS -->
+      </div>
+      <div class="skills-grid stagger" id="skillsGrid">
+        <!-- Populated by JS -->
+      </div>
+      <div class="skills-show-more" id="showMoreBtn" style="display:none;">
+        <button class="btn-secondary">Show all skills</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">Three steps to get started</h2>
+        <p class="section-desc">Add crypto capabilities to your AI agent in minutes.</p>
+      </div>
+      <div class="how-grid stagger">
+        <div class="how-card fade-in-up">
+          <div class="how-number">1</div>
+          <div class="how-title">Browse</div>
+          <div class="how-desc">Explore our catalog of 310+ crypto skills organized by category. Search for the exact protocol, exchange, or tool you need.</div>
+        </div>
+        <div class="how-card fade-in-up">
+          <div class="how-number">2</div>
+          <div class="how-title">Install</div>
+          <div class="how-desc">Install any skill with a single command. Each skill is self-contained with its own configuration and dependencies.</div>
+        </div>
+        <div class="how-card fade-in-up">
+          <div class="how-number">3</div>
+          <div class="how-title">Build</div>
+          <div class="how-desc">Compose skills together to build powerful AI agent workflows. Mix exchange data, on-chain analytics, and trading strategies.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install Section -->
+  <section class="section install-section" id="install">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-label">Get Started</div>
+        <h2 class="section-title">Install in seconds</h2>
+        <p class="section-desc">One command to add any crypto skill to your AI agent.</p>
+      </div>
+      <div class="install-box fade-in-up">
+        <div class="install-cmd">
+          <span class="prompt">$</span>
+          <code>npx cryptoskill install binance-spot-api</code>
+          <button class="copy-btn" onclick="copyToClipboard('npx cryptoskill install binance-spot-api', this)" title="Copy to clipboard">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+        <p class="install-note">Works with any MCP-compatible AI agent framework</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-left">
+        <span class="footer-brand">CryptoSkill</span>
+        <span class="footer-text">Built for the crypto community</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/jiayaoqijia/cryptoskill" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+        <a href="#skills">Skills</a>
+        <a href="#categories">Categories</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App JS -->
+  <script src="app.js"></script>
+</body>
+</html>

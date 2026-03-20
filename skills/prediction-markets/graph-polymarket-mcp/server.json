@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.PaulieB14/graph-polymarket-mcp",
+  "description": "Query Polymarket prediction markets via The Graph — 20 tools, 8 subgraphs",
+  "repository": {
+    "url": "https://github.com/PaulieB14/graph-polymarket-mcp",
+    "source": "github"
+  },
+  "version": "1.4.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "graph-polymarket-mcp",
+      "version": "1.4.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "API key for The Graph network (optional, for higher rate limits)",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "GRAPH_API_KEY"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "jupiter-prediction-agent",
+  "version": "1.0.0",
+  "description": "Jupiter Prediction Market API client for AI agents",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "jest --testPathPattern=e2e",
+    "test:coverage": "jest --coverage",
+    "scan": "node scripts/scan-markets.js",
+    "opportunities": "node scripts/find-opportunities.js",
+    "monitor": "node scripts/monitor-portfolio.js",
+    "claim": "node scripts/auto-claim.js",
+    "health": "node scripts/portfolio-health.js"
+  },
+  "keywords": [
+    "jupiter",
+    "prediction-market",
+    "solana",
+    "api",
+    "agent",
+    "trading"
+  ],
+  "author": "MoltyBot OpenClaw",
+  "license": "MIT",
+  "dependencies": {
+    "cross-fetch": "^4.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-fetch-mock": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

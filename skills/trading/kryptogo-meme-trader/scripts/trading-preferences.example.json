@@ -1,0 +1,11 @@
+{
+  "max_position_size": 0.1,
+  "stop_loss_pct": 50,
+  "take_profit_pct": 200,
+  "min_market_cap": 100000,
+  "scan_count": 10,
+  "risk_tolerance": "aggressive",
+  "chains": ["solana"],
+  "max_open_positions": 5,
+  "max_daily_trades": 10
+}

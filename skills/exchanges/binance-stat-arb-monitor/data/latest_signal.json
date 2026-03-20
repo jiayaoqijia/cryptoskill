@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-03-14T19:55:35+08:00",
+  "signal_type": "HOLD",
+  "direction": "UNKNOWN",
+  "zscore": 1.8368,
+  "ratio": 0.030161,
+  "mean": 0.029309,
+  "std": 0.000464,
+  "threshold": {
+    "entry": 3.0,
+    "exit": 1.0,
+    "stop_loss": 4.5
+  },
+  "prices": {
+    "eth": 2082.229705964975,
+    "btc": 69037.1207211364
+  },
+  "recommendation": {
+    "action": "观望",
+    "eth_action": "无操作",
+    "btc_action": "无操作",
+    "position_size_usd": 1000
+  },
+  "estimate": {
+    "expected_return": 1.0,
+    "fees_taker": 1.6,
+    "net_pnl": -0.6,
+    "return_pct": 0.1
+  },
+  "strength": 2,
+  "reason": "z-score 1.84 在阈值内，观望",
+  "volatility": "normal"
+}

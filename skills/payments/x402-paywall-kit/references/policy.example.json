@@ -1,0 +1,12 @@
+{
+  "$schema": "https://taraquinn.ai/schemas/x402-policy.json",
+  "description": "Example x402 agent spending policy — conservative production defaults",
+  "policy": {
+    "maxPerRequest": "1.00",
+    "maxDailySpend": "10.00",
+    "allowedNetworks": ["eip155:8453"],
+    "allowedAssets": ["0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"],
+    "domainAllowlist": ["api.example.com"],
+    "requireHumanApproval": false
+  }
+}

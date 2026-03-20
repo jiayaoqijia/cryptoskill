@@ -1,0 +1,38 @@
+{
+  "slug": "nostrwalletconnect",
+  "name": "NostrWalletConnect",
+  "version": "0.1.2",
+  "summary": "Nostr Wallet Connect (NIP-47) SDK for AI agents — pay Lightning invoices, check balance, create invoices via any NWC-compatible wallet",
+  "author": {
+    "name": "Humanjava Enterprises",
+    "url": "https://loginwithnostr.com/openclaw"
+  },
+  "license": "MIT",
+  "acceptLicenseTerms": true,
+  "repository": "https://github.com/HumanjavaEnterprises/nwc.app.OC-python.src",
+  "tags": [
+    "nostr",
+    "nwc",
+    "wallet-connect",
+    "nip-47",
+    "lightning",
+    "payments",
+    "invoice",
+    "balance",
+    "ai-payments"
+  ],
+  "install": {
+    "pip": "nostrwalletconnect"
+  },
+  "requires": {
+    "python": ">=3.10"
+  },
+  "dependencies": [
+    "nostrkey"
+  ],
+  "categories": [
+    "payments",
+    "communication",
+    "infrastructure"
+  ]
+}

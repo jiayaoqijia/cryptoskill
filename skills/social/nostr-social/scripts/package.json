@@ -1,0 +1,11 @@
+{
+  "name": "nostr-skill",
+  "type": "module",
+  "dependencies": {
+    "@scure/bip32": "^2.0.1",
+    "@scure/bip39": "^2.0.1",
+    "cocod": "^0.0.10",
+    "nostr-tools": "^2.10.0",
+    "ws": "^8.18.0"
+  }
+}

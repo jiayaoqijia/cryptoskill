@@ -1,0 +1,69 @@
+# LND Configuration for Remote Signer
+#
+# Minimal config: holds keys, signs transactions, no routing.
+# Flat format (no section headers) to avoid go-flags double-prefixing.
+# Used by both docker-compose-signer.yml and docker-compose-watchonly.yml.
+
+# Node alias (not visible on network — signer doesn't peer).
+alias=lnget-signer
+
+# Log level: trace, debug, info, warn, error, critical.
+debuglevel=info
+
+# No p2p listening — signer does not route or open channels.
+listen=
+
+# RPC on all interfaces so watch-only node can connect.
+rpclisten=0.0.0.0:10012
+
+# REST on all interfaces for Docker port mapping.
+restlisten=0.0.0.0:10013
+
+# Auto-unlock wallet on startup using stored passphrase.
+wallet-unlock-password-file=/root/.lnd/wallet-password.txt
+wallet-unlock-allow-create=true
+
+# TLS: allow connections from any IP (watch-only on different machine).
+tlsextraip=0.0.0.0
+
+# TLS: include Docker service and container names so the watch-only node
+# can verify the signer's cert when connecting by hostname.
+tlsextradomain=signer
+tlsextradomain=litd-signer
+
+# Maximum pending channels (none — signer doesn't manage channels).
+maxpendingchannels=0
+
+# Activate Bitcoin.
+bitcoin.active=true
+
+# Network: mainnet, testnet, signet, regtest.
+# Override via NETWORK env var or --network flag.
+bitcoin.testnet=true
+
+# Use neutrino light client (signer needs chain awareness for signing).
+bitcoin.node=neutrino
+
+# Peers for neutrino block header sync.
+neutrino.addpeer=btcd0.lightning.computer
+neutrino.addpeer=mainnet1-btcd.zaphq.io
+neutrino.addpeer=mainnet2-btcd.zaphq.io
+
+# Fee estimation URL (required for neutrino on mainnet).
+# Testnet: https://nodes.lightning.computer/fees/v1/btctestnet-fee-estimates.json
+fee.url=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json
+
+# Maximum peers for neutrino.
+neutrino.maxpeers=8
+
+# Persist compact filters to disk for faster restarts.
+neutrino.persistfilters=true
+
+# Use SQLite for all databases.
+db.backend=sqlite
+
+# Autopilot disabled — signer does not manage channels.
+autopilot.active=false
+
+# Tor disabled by default.
+tor.active=false

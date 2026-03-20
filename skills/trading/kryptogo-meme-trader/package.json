@@ -1,0 +1,11 @@
+{
+  "name": "kryptogo-meme-trader",
+  "version": "2.5.6",
+  "security": {
+    "default_mode": "supervised",
+    "trade_confirmation": "required_by_default",
+    "autonomous_trading": "opt_in",
+    "credential_file_read": false,
+    "local_signing_only": true
+  }
+}

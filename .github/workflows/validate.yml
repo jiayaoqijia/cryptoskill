@@ -1,0 +1,115 @@
+name: Validate Skills
+
+on:
+  pull_request:
+    paths:
+      - 'skills/**'
+      - 'docs/skills.json'
+
+jobs:
+  validate:
+    name: Validate Skill Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          echo "Checking all SKILL.md files have required frontmatter..."
+          errors=0
+
+          for skill_md in $(find skills -name "SKILL.md" -type f); do
+            skill_dir=$(dirname "$skill_md")
+            skill_name=$(basename "$skill_dir")
+
+            # Check that the file starts with frontmatter delimiters
+            if ! head -1 "$skill_md" | grep -q "^---$"; then
+              echo "ERROR: $skill_md is missing frontmatter (no opening ---)"
+              errors=$((errors + 1))
+              continue
+            fi
+
+            # Extract frontmatter
+            frontmatter=$(sed -n '/^---$/,/^---$/p' "$skill_md")
+
+            # Check required fields
+            for field in name description version author; do
+              if ! echo "$frontmatter" | grep -q "^${field}:"; then
+                echo "ERROR: $skill_md is missing required field: $field"
+                errors=$((errors + 1))
+              fi
+            done
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo ""
+            echo "Found $errors error(s) in SKILL.md frontmatter."
+            exit 1
+          fi
+
+          echo "All SKILL.md files have valid frontmatter."
+
+      - name: Validate skills.json
+        run: |
+          echo "Checking docs/skills.json is valid JSON..."
+          if [ -f "docs/skills.json" ]; then
+            python3 -m json.tool docs/skills.json > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+              echo "ERROR: docs/skills.json is not valid JSON"
+              exit 1
+            fi
+            echo "docs/skills.json is valid JSON."
+          else
+            echo "docs/skills.json not found — skipping."
+          fi
+
+      - name: Check SOURCE.md exists
+        run: |
+          echo "Checking each skill has a SOURCE.md..."
+          errors=0
+
+          for skill_dir in $(find skills -name "SKILL.md" -type f -exec dirname {} \;); do
+            if [ ! -f "$skill_dir/SOURCE.md" ]; then
+              echo "WARNING: $skill_dir is missing SOURCE.md"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo ""
+            echo "Found $errors skill(s) missing SOURCE.md."
+            echo "Each skill should include a SOURCE.md for attribution."
+            # Warning only — don't fail the build for missing SOURCE.md
+            # since some skills may not have been migrated yet.
+          else
+            echo "All skills have SOURCE.md."
+          fi
+
+      - name: Check _meta.json exists and is valid
+        run: |
+          echo "Checking each skill has a valid _meta.json..."
+          errors=0
+
+          for skill_dir in $(find skills -name "SKILL.md" -type f -exec dirname {} \;); do
+            meta_file="$skill_dir/_meta.json"
+            if [ ! -f "$meta_file" ]; then
+              echo "ERROR: $skill_dir is missing _meta.json"
+              errors=$((errors + 1))
+              continue
+            fi
+
+            python3 -m json.tool "$meta_file" > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+              echo "ERROR: $meta_file is not valid JSON"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo ""
+            echo "Found $errors error(s) in _meta.json files."
+            exit 1
+          fi
+
+          echo "All _meta.json files are valid."

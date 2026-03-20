@@ -1,0 +1,30 @@
+{
+  "strategy_id": "swing_baseline",
+  "strategy_name": "Swing Baseline",
+  "risk_profile": {
+    "risk_per_trade_pct": 0.02,
+    "max_concurrent_positions": 5,
+    "max_strategy_drawdown_pct": 0.1
+  },
+  "maturity_gates": {
+    "paper_to_live": {
+      "min_sample_trades": 80,
+      "min_days_active": 56,
+      "min_win_rate": 0.52,
+      "min_expectancy": 0.01,
+      "max_drawdown": 0.1,
+      "max_execution_error_rate": 0.02,
+      "risk_rule_adherence": 0.98
+    }
+  },
+  "promotion_policy": {
+    "autonomy_mode_required": "balanced",
+    "approval_scope": "per_hypothesis",
+    "rollback_triggers": [
+      "drawdown_limit_breach",
+      "edge_decay_two_weeks",
+      "execution_error_rate_spike"
+    ]
+  }
+}
+

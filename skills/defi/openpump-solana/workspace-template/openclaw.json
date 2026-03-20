@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "openpump": {
+      "command": "npx",
+      "args": ["-y", "@openpump/mcp@latest"],
+      "env": {
+        "OPENPUMP_API_KEY": "${OPENPUMP_API_KEY}"
+      }
+    }
+  }
+}

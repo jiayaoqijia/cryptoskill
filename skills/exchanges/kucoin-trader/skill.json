@@ -1,0 +1,50 @@
+{
+  "name": "kucoin-trader",
+  "version": "1.0.0",
+  "description": "Professional KuCoin (KC) trading system - multi-account support, spot/margin/futures trading, asset transfers.",
+  "skills": [
+    {
+      "name": "kucoin_accounts",
+      "description": "List all KuCoin account balances across all account types (spot, margin, futures)",
+      "trigger": ["kucoin账户", "kucoin资产", "KC账户", "KC资产", "kucoin balance", "kucoin accounts"]
+    },
+    {
+      "name": "kucoin_transfer",
+      "description": "Transfer assets between KuCoin account types (main, trade, margin, futures)",
+      "trigger": ["kucoin划转", "kucoin转账", "kucoin transfer"]
+    },
+    {
+      "name": "kucoin_trade",
+      "description": "Execute spot trades on KuCoin (market or limit orders)",
+      "trigger": ["kucoin交易", "kucoin买卖", "kucoin trade", "kucoin buy", "kucoin sell"]
+    },
+    {
+      "name": "kucoin_market",
+      "description": "Get market data and ticker information for trading pairs",
+      "trigger": ["kucoin行情", "kucoin价格", "kucoin market", "kucoin ticker"]
+    },
+    {
+      "name": "kucoin_orders",
+      "description": "Query all types of orders (spot, margin, futures)",
+      "trigger": ["kucoin订单", "kc订单", "kc账户订单", "委托订单", "全部委托", "查询订单", "kucoin orders", "全部订单", "活跃委托"]
+    },
+    {
+      "name": "kucoin_margin",
+      "description": "Margin trading - cross/isolated margin, borrow, repay, and trade with leverage",
+      "trigger": ["kucoin杠杆", "kucoin全仓", "kucoin逐仓", "kucoin margin", "kucoin isolated", "杠杆交易", "全仓杠杆", "逐仓杠杆"]
+    },
+    {
+      "name": "kucoin_futures",
+      "description": "Futures trading - trade perpetual contracts with leverage",
+      "trigger": ["kucoin合约", "kucoin期货", "kucoin futures", "合约交易", "期货交易"]
+    }
+  ],
+  "config": {
+    "credentials": "~/.openclaw/credentials/kucoin.json",
+    "fields": {
+      "apiKey": "KuCoin API Key",
+      "secretKey": "KuCoin Secret Key",
+      "passphrase": "KuCoin API Passphrase"
+    }
+  }
+}

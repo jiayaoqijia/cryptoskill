@@ -1,0 +1,466 @@
+openapi: 3.0.0
+info:
+  # You application title. Required.
+  title: Sushi API
+  # API version. You can use semantic versioning like 1.0.0,
+  # or an arbitrary string like 0.99-beta. Required.
+  version: 7.0.0
+
+  # API description. Arbitrary text in CommonMark or HTML.
+  description: Documentation for interacting with the Sushi API
+
+servers:
+  - description: Sushi API
+    url: https://api.sushi.com
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/sushi-labs/sushi/7.0.0
+tags:
+  - name: swap
+    description: All swap endpoints
+  - name: price
+    description: All price endpoints
+  - name: token
+    description: All token endpoints
+  - name: liquidity-providers
+    description: All liquidity provider endpoints
+  - name: other
+    description: Other endpoints
+
+components:
+  parameters:
+    tokenAddress:
+      in: path
+      name: tokenAddress
+      description: token address
+      required: true
+      schema:
+        type: string
+    chainId:
+      in: path
+      name: chainId
+      description: chainId
+      required: true
+      schema:
+        type: number
+    referrer:
+      in: query
+      name: referrer
+      description: referrer
+      required: false
+      schema:
+        type: string
+        default: none
+    tokenIn:
+      in: query
+      name: tokenIn
+      description: input token address
+      required: true
+      schema:
+        type: string
+    tokenOut:
+      in: query
+      name: tokenOut
+      description: output token address
+      required: true
+      schema:
+        type: string
+    sender:
+      in: query
+      name: sender
+      description: sender of transaction
+      required: true
+      schema:
+        type: string
+    recipient:
+      in: query
+      name: recipient
+      description: recipient of tokens, defaults to sender
+      required: false
+      schema:
+        type: string
+    amount:
+      in: query
+      name: amount
+      description: input token amount
+      required: true
+      schema:
+        type: integer
+        format: int256
+        minimum: 1
+    fee:
+      in: query
+      name: fee
+      description: amount of the fee, for example 0.0025 (0.25%)
+      required: false
+      schema:
+        type: number
+        minimum: 0
+        maximum: 0.5
+        default: 0
+    feeBy:
+      in: query
+      name: feeBy
+      description: if fee > 0 then which token to take fee from input or output
+      required: false
+      schema:
+        type: string
+        enum: [input, output]
+        default: output
+    feeReceiver:
+      in: query
+      name: feeReceiver
+      description: if fee > 0 then receiver of the fee
+      required: false
+      schema:
+        type: string
+    maxPriceImpact:
+      in: query
+      name: maxPriceImpact
+      description: the max price impact for route planning. It's better to set it to a reasonable value, for example 1 (100%)
+      required: false
+      schema:
+        type: number
+        minimum: 0
+        exclusiveMinimum: true
+        maximum: 1
+        default: 1
+    maxSlippage:
+      in: query
+      name: maxSlippage
+      description: the max slippage for route execution, for example 0.005 (0.5%)
+      required: false
+      schema:
+        type: number
+        minimum: 0
+        maximum: 1
+        exclusiveMaximum: true
+        default: 0.005
+    source:
+      in: query
+      name: source
+      description: the source of router liquidity
+      required: false
+      schema:
+        type: string
+        enum: [sender, self]
+        default: sender
+    onlyDEX:
+      in: query
+      name: onlyDEX
+      description: a list of DEX names separated by comma. If exists in the request then only pools from these DEXes are used in the response route. List of all supported DEXes can be obtained with /liquidity-provider request
+      required: false
+      schema:
+        type: string
+    excludeDEX:
+      in: query
+      name: excludeDEX
+      description: a list of DEX names separated by comma. If exists in the request then pools from these DEXes are excluded in the response route. List of all supported DEXes can be obtained with /liquidity-provider request
+      required: false
+      schema:
+        type: string
+    onlyPools:
+      in: query
+      name: onlyPools
+      description: a list of pools addresses separated by comma. If exists in the request then only these pools are used in the response route
+      required: false
+      schema:
+        type: string
+    excludePools:
+      in: query
+      name: excludePools
+      description: a list of pools addresses separated by comma. If exists in the request then these pools are excluded in the response route
+      required: false
+      schema:
+        type: string
+    excludeTokens:
+      in: query
+      name: excludeTokens
+      description: a list of token addresses separated by comma. If exists in the request then pools with these tokens are excluded in the response route
+      required: false
+      schema:
+        type: string
+    visualize:
+      in: query
+      name: visualize
+      description: vizulaization
+      required: false
+      schema:
+        type: boolean
+        default: false
+    simulate:
+      in: query
+      name: simulate
+      description: simulate
+      required: false
+      schema:
+        type: boolean
+        default: false
+    override:
+      in: query
+      name: override
+      description: uses state overrides to ensure simulation doesn't fail from sender not having balance and allowance
+      required: false
+      schema:
+        type: boolean
+        default: false
+    validate:
+      in: query
+      name: validate
+      description: validate sender has balance & allowance of token if simulation fails
+      required: false
+      schema:
+        type: boolean
+        default: false
+
+paths:
+  /quote/v7/{chainId}:
+    get:
+      tags:
+        - swap
+      summary: generates a quote
+      operationId: quote
+      description: |
+        By passing in the appropriate options, you can generate a swap quote
+      parameters:
+        - $ref: "#/components/parameters/chainId"
+        - $ref: "#/components/parameters/referrer"
+        - $ref: "#/components/parameters/tokenIn"
+        - $ref: "#/components/parameters/tokenOut"
+        - $ref: "#/components/parameters/amount"
+        - $ref: "#/components/parameters/fee"
+        - $ref: "#/components/parameters/feeBy"
+        - $ref: "#/components/parameters/maxPriceImpact"
+        - $ref: "#/components/parameters/maxSlippage"
+        - $ref: "#/components/parameters/onlyDEX"
+        - $ref: "#/components/parameters/onlyPools"
+        - $ref: "#/components/parameters/excludeDEX"
+        - $ref: "#/components/parameters/excludePools"
+        - $ref: "#/components/parameters/excludeTokens"
+        - $ref: "#/components/parameters/visualize"
+      responses:
+        '200':
+          description: quote
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: Success
+                  tokens:
+                    - address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+                      symbol: ETH
+                      name: Ether
+                      decimals: 18
+                    - address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+                      symbol: WETH
+                      name: Wrapped Ether
+                      decimals: 18
+                    - address: '0x6B3595068778DD592e39A122f4f5a5cF09C90fE2'
+                      symbol: SUSHI
+                      name: SushiToken
+                      decimals: 18
+                  tokenFrom: 0
+                  tokenTo: 2
+                  swapPrice: 2837.6709246572527
+                  priceImpact: -0.002204113661183449
+                  amountIn: "10000000000000000"
+                  assumedAmountOut: "28376709246572527616"
+        '422':
+          description: request parameters invalid
+        '500':
+          description: internal server error
+        '529':
+          description: server overloaded
+  /swap/v7/{chainId}:
+    get:
+      tags:
+        - swap
+      summary: generates a swap
+      operationId: swap
+      description: |
+        By passing in the appropriate options, you can generate a swap transaction
+      parameters:
+        - $ref: "#/components/parameters/chainId"
+        - $ref: "#/components/parameters/referrer"
+        - $ref: "#/components/parameters/tokenIn"
+        - $ref: "#/components/parameters/tokenOut"
+        - $ref: "#/components/parameters/sender"
+        - $ref: "#/components/parameters/recipient"
+        - $ref: "#/components/parameters/amount"
+        - $ref: "#/components/parameters/fee"
+        - $ref: "#/components/parameters/feeReceiver"
+        - $ref: "#/components/parameters/feeBy"
+        - $ref: "#/components/parameters/maxPriceImpact"
+        - $ref: "#/components/parameters/maxSlippage"
+        - $ref: "#/components/parameters/source"
+        - $ref: "#/components/parameters/onlyDEX"
+        - $ref: "#/components/parameters/onlyPools"
+        - $ref: "#/components/parameters/excludeDEX"
+        - $ref: "#/components/parameters/excludePools"
+        - $ref: "#/components/parameters/excludeTokens"
+        - $ref: "#/components/parameters/visualize"
+        - $ref: "#/components/parameters/simulate"
+        - $ref: "#/components/parameters/override"
+        - $ref: "#/components/parameters/validate"
+      responses:
+        '200':
+          description: route data
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: Success
+                  tokens:
+                    - address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+                      symbol: ETH
+                      name: Ether
+                      decimals: 18
+                    - address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+                      symbol: WETH
+                      name: Wrapped Ether
+                      decimals: 18
+                    - address: '0x6B3595068778DD592e39A122f4f5a5cF09C90fE2'
+                      symbol: SUSHI
+                      name: SushiToken
+                      decimals: 18
+                  tokenFrom: 0
+                  tokenTo: 2
+                  swapPrice: 2837.6709246572527
+                  priceImpact: -0.002204113661183449
+                  amountIn: "10000000000000000"
+                  assumedAmountOut: "28376709246572527616"
+                  tx:
+                   from: 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+                   to: 0xAC4c6e212A361c968F1725b4d055b47E63F80b75
+                   gas: "162561"
+                   gasPrice: 682394289
+                   data: "0x5f3bd1c8000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa960450000000000000000000000006b3595068778dd592e39a122f4f5a5cf09c90fe20000000000000000000000000000000000000000000000018969823f2df6281000000000000000000000000085cd07ea01423b1e937929b44e4ad8c40bbb5e7100000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001a4dd9c5f96000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000006b3595068778dd592e39a122f4f5a5cf09c90fe200000000000000000000000000000000000000000000000189ce52b6a87f80000000000000000000000000000000000000000000000000018969823f2df62810000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa960450000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000700301ffff0201CE84867c3c02B05dc570d0135103d3fB9CC19433C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc204C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200CE84867c3c02B05dc570d0135103d3fB9CC194330085CD07Ea01423b1E937929B44E4Ad8c40BbB5E71000bb80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                   value: "10000000000000000"
+        '422':
+          description: request parameters invalid
+        '500':
+          description: internal server error
+        '529':
+          description: server overloaded
+  /price/v1/{chainId}:
+    get:
+      tags:
+        - price
+      summary: returns prices for specified chainId
+      operationId: prices
+      description: |
+        By passing in a chainId, you can get dollar prices for tokens addresses
+      parameters:
+        - $ref: "#/components/parameters/chainId"
+      responses:
+        "200":
+          description: an address to price object map
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+                example:
+                  '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2': 2360.066696167956
+        '422':
+          description: request parameters invalid
+        '500':
+          description: internal server error
+  /price/v1/{chainId}/{tokenAddress}:
+    get:
+      tags:
+        - price
+      summary: returns price for specified chainId and token
+      operationId: price
+      description: |
+        By passing in a chainId and address, you can get a dollar price for specified token address
+      parameters:
+        - $ref: "#/components/parameters/chainId"
+        - $ref: "#/components/parameters/tokenAddress"
+      responses:
+        "200":
+          description: numerical price
+          content:
+            application/json:
+              schema:
+                type: number
+              example: 2360.066696167956
+        '422':
+          description: request parameters invalid
+        '500':
+          description: internal server error
+  /token/v1/{chainId}/{tokenAddress}:
+    get:
+      tags:
+        - token
+      summary: returns token data for specified chainId and token
+      operationId: token
+      description: |
+        By passing in a chainId and address, you can get token data for specified token address
+      parameters:
+        - $ref: "#/components/parameters/chainId"
+        - $ref: "#/components/parameters/tokenAddress"
+      responses:
+        "200":
+          description: token data
+          content:
+            application/json:
+              schema:
+                type: object
+                # additionalProperties:
+                #   chainId: number
+                #   address: string
+                #   decimals: number
+                #   name: string
+                #   symbol: string
+                example:
+                  chainId: 1
+                  address: '0x6B3595068778DD592e39A122f4f5a5cF09C90fE2'
+                  decimals: 18
+                  name: 'Sushi Token'
+                  symbol: 'SUSHI'
+        '422':
+          description: request parameters invalid
+        '500':
+          description: internal server error
+        '529':
+          description: server overloaded
+  /liquidity-providers/v7/{chainId}:
+    get:
+      tags:
+        - liquidity-providers
+      summary: Returns all available liquidity providers for the specified chainId
+      operationId: getLiquidityProviders
+      description: |
+        By passing in a chainId you can get the enabled liquidity providers.
+      parameters:
+        - $ref: "#/components/parameters/chainId"
+      responses:
+        "200":
+          description: liquidity providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example:
+                  - "UniswapV2"
+                  - "SushiSwapV2"
+                  - "PancakeSwap"
+                  - "Elk"
+                  - "Kwikswap"
+                  - "ShibaSwap"
+                  - "CroDefiSwap"
+                  - "UniswapV3"
+                  - "SushiSwapV3"
+                  - "PancakeSwapV3"
+                  - "Wagmi"
+                  - "CurveSwap"
+        "422":
+          description: request parameters invalid.
+        "500":
+          description: internal server error.

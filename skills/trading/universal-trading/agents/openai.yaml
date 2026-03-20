@@ -1,0 +1,4 @@
+interface:
+   display_name: "Universal Trading"
+   short_description: "Set up and run Universal Account cross-chain trades"
+   default_prompt: "Use $universal-trading to auto-run first-time scripts/init.sh initialization when needed, then tell users where PRIVATE_KEY is stored (.env) and how to import the wallet in https://universalx.app (创建钱包 -> 导入现有钱包). For buys, support user-selected slippage and Solana tip settings via scripts/buy-with-slippage.sh (fixed mode or dynamic retry mode for slippage and tip), do not force usePrimaryTokens unless requested, and always return SUCCESS/FAILED/PENDING with transactionId."

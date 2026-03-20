@@ -1,0 +1,43 @@
+{
+  "name": "raydium",
+  "version": "1.0.0",
+  "description": "Audit Raydium liquidity positions before capital is deployed. Analyze depth, concentration, liquidity quality, and structural pool risks.",
+  "author": "qclawbot",
+  "license": "MIT-0",
+  "homepage": "https://clawhub.ai",
+  "keywords": [
+    "raydium",
+    "liquidity audit",
+    "lp risk",
+    "pool depth",
+    "concentrated liquidity",
+    "solana defi",
+    "slippage risk"
+  ],
+  "files": {
+    "skill.md": "skill.md"
+  },
+  "capabilities": {
+    "pool_audit": "Assess Raydium pool quality before LP deployment",
+    "depth_review": "Review usable liquidity and fragility risk",
+    "concentration_analysis": "Flag concentration and narrow-range exposure",
+    "deployment_guidance": "Recommend deploy, reduce size, monitor, or avoid"
+  },
+  "triggers": [
+    "raydium pool",
+    "raydium lp risk",
+    "should I add liquidity",
+    "pool depth",
+    "concentrated liquidity risk",
+    "liquidity audit"
+  ],
+  "audience": [
+    "Liquidity providers on Solana",
+    "DeFi users screening pool quality",
+    "Operators auditing LP deployment risk"
+  ],
+  "openclaw": {
+    "primaryEnv": null,
+    "requires": {}
+  }
+}

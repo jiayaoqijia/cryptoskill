@@ -1,0 +1,585 @@
+#!/opt/homebrew/bin/bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# shellcheck source=/dev/null
+source "$ROOT_DIR/lib/kraken_config.sh"
+# shellcheck source=/dev/null
+source "$ROOT_DIR/lib/kraken_redact.sh"
+# shellcheck source=/dev/null
+source "$ROOT_DIR/lib/kraken_validate.sh"
+# shellcheck source=/dev/null
+source "$ROOT_DIR/lib/kraken_auth.sh"
+# shellcheck source=/dev/null
+source "$ROOT_DIR/lib/kraken_endpoints.sh"
+# shellcheck source=/dev/null
+source "$ROOT_DIR/lib/kraken_futures.sh"
+# shellcheck source=/dev/null
+source "$ROOT_DIR/lib/kraken_http.sh"
+
+main() {
+  kraken_load_config "$ROOT_DIR"
+  kraken_validate_runtime
+
+  if [ "$#" -lt 1 ]; then
+    kraken_usage >&2
+    exit 1
+  fi
+
+  local group="$1"
+  shift
+
+  case "$group" in
+    market|account|orders|funding|earn|subaccounts)
+      kraken_dispatch_category "$group" "$@"
+      ;;
+    futures)
+      kraken_dispatch_futures "$@"
+      ;;
+    ws)
+      kraken_dispatch_ws "$@"
+      ;;
+    call)
+      [ "$#" -ge 1 ] || kraken_fail "missing endpoint alias"
+      local alias="$1"
+      shift
+      kraken_execute_alias "$alias" "$@"
+      ;;
+    raw)
+      [ "$#" -ge 2 ] || kraken_fail "usage: raw public|private <endpoint-or-path> [flags]"
+      local scope="$1"
+      local endpoint="$2"
+      shift 2
+      kraken_execute_raw "$scope" "$endpoint" "$@"
+      ;;
+    endpoints|list)
+      kraken_list_endpoints "${1:-}"
+      ;;
+    describe)
+      [ "$#" -ge 1 ] || kraken_fail "missing endpoint alias"
+      kraken_describe_endpoint "$1"
+      ;;
+    help|-h|--help)
+      kraken_usage
+      ;;
+    *)
+      kraken_fail "unknown command group: $group"
+      ;;
+  esac
+}
+
+kraken_usage() {
+  cat <<'EOF'
+Usage:
+  openclaw-kraken endpoints [prefix]
+  openclaw-kraken describe <alias>
+  openclaw-kraken call <alias> [flags]
+  openclaw-kraken raw public|private <EndpointName|/path> [flags]
+  openclaw-kraken futures endpoints|describe|call|raw ...
+  openclaw-kraken ws ...
+  openclaw-kraken market|account|orders|funding|earn|subaccounts <command> [flags]
+
+Discovery:
+  endpoints [prefix]                      List supported aliases from the local registry
+  describe trading.add-order             Show alias metadata and whether --confirm is required
+
+Generic flags:
+  --param key=value                      Add a request parameter
+  --set key value                        Add a request parameter
+  --param-file key path                  Read a parameter value from a file
+  --stdin-param key                      Read a parameter value from stdin
+  --confirm                              Required for state-changing endpoints
+  --raw | --compact | --pretty           Output mode (jq required for compact/pretty)
+  --jq '.result'                         Apply a jq filter to the response
+
+Shortcut groups:
+  market time
+  market ticker --pair XBTUSD
+  account balance
+  funding deposit-methods --asset ETH
+  earn strategies --ascending true
+  orders add --pair XBTUSD --side buy --type limit --volume 0.01 --price 25000 --time-in-force GTC --post-only true --confirm
+
+Raw examples:
+  openclaw-kraken raw public Time
+  openclaw-kraken raw private Earn/Strategies --set ascending true
+  openclaw-kraken futures call market.tickers
+  openclaw-kraken ws open --url wss://ws.kraken.com/v2 --message-json '{"method":"ping"}'
+EOF
+}
+
+kraken_dispatch_category() {
+  local category="$1"
+  shift
+  local command="${1:-}"
+  shift || true
+  local alias_command="$command"
+
+  [ -n "$command" ] || kraken_fail "missing ${category} command"
+
+  case "$category" in
+    orders)
+      case "$command" in
+        add)
+          alias_command="add-order"
+          ;;
+        cancel)
+          alias_command="cancel-order"
+          ;;
+      esac
+      kraken_execute_alias "trading.${alias_command}" "$@"
+      ;;
+    *)
+      kraken_execute_alias "${category}.${alias_command}" "$@"
+      ;;
+  esac
+}
+
+kraken_execute_alias() {
+  local alias="$1"
+  shift
+
+  kraken_endpoint_lookup "$alias"
+  KRAKEN_REQUEST_ALIAS="$alias"
+  kraken_parse_request_flags "$@"
+
+  if [ "$KRAKEN_ENDPOINT_SIGNED" = "true" ]; then
+    kraken_require_private_env
+  fi
+  if [ "$KRAKEN_ENDPOINT_CONFIRM" = "true" ]; then
+    kraken_require_confirmation "$alias"
+  fi
+
+  kraken_execute_request "$KRAKEN_ENDPOINT_METHOD" "$KRAKEN_ENDPOINT_PATH" "$KRAKEN_ENDPOINT_SIGNED"
+}
+
+kraken_execute_raw() {
+  local scope="$1"
+  local endpoint="$2"
+  shift 2
+
+  kraken_parse_request_flags "$@"
+
+  local method="${KRAKEN_REQUEST_METHOD:-}"
+  local path=""
+  local signed="false"
+  KRAKEN_REQUEST_ALIAS="raw.${scope}.${endpoint}"
+
+  case "$scope" in
+    public)
+      signed="false"
+      path="$(kraken_normalize_raw_path "public" "$endpoint")"
+      : "${method:=GET}"
+      ;;
+    private)
+      signed="true"
+      kraken_require_private_env
+      path="$(kraken_normalize_raw_path "private" "$endpoint")"
+      : "${method:=POST}"
+      ;;
+    *)
+      kraken_fail "raw scope must be public or private"
+      ;;
+  esac
+
+  kraken_execute_request "$method" "$path" "$signed"
+}
+
+kraken_execute_request() {
+  local method="$1"
+  local path="$2"
+  local signed="$3"
+  local payload
+
+  payload="$(kraken_build_request_payload)"
+  case "$method" in
+    GET)
+      kraken_http_request "GET" "$path" "$payload" "$signed"
+      ;;
+    POST)
+      kraken_http_request "POST" "$path" "$payload" "$signed"
+      ;;
+    *)
+      kraken_fail "unsupported method: $method"
+      ;;
+  esac
+}
+
+kraken_dispatch_futures() {
+  local mode="${1:-}"
+  shift || true
+
+  case "$mode" in
+    endpoints|list)
+      kraken_futures_list "${1:-}"
+      ;;
+    describe)
+      [ "$#" -ge 1 ] || kraken_fail "missing futures endpoint alias"
+      kraken_futures_describe "$1"
+      ;;
+    call)
+      [ "$#" -ge 1 ] || kraken_fail "missing futures endpoint alias"
+      local alias="$1"
+      shift
+      kraken_futures_execute_alias "$alias" "$@"
+      ;;
+    raw)
+      [ "$#" -ge 2 ] || kraken_fail "usage: futures raw public|private <path> [flags]"
+      local scope="$1"
+      local endpoint="$2"
+      shift 2
+      kraken_futures_execute_raw "$scope" "$endpoint" "$@"
+      ;;
+    *)
+      kraken_futures_execute_alias "$mode" "$@"
+      ;;
+  esac
+}
+
+kraken_futures_execute_alias() {
+  local alias="$1"
+  shift
+
+  kraken_futures_lookup "$alias"
+  KRAKEN_REQUEST_ALIAS="futures.${alias}"
+  kraken_parse_request_flags "$@"
+
+  if [ "$KRAKEN_FUTURES_SIGNED" = "true" ]; then
+    kraken_require_futures_private_env
+  fi
+  if [ "$KRAKEN_FUTURES_CONFIRM" = "true" ]; then
+    kraken_require_confirmation "$alias"
+  fi
+
+  kraken_futures_http_request "$KRAKEN_FUTURES_METHOD" "$KRAKEN_FUTURES_PATH" "$(kraken_build_request_payload)" "$KRAKEN_FUTURES_SIGNED"
+}
+
+kraken_futures_execute_raw() {
+  local scope="$1"
+  local endpoint="$2"
+  shift 2
+
+  kraken_parse_request_flags "$@"
+
+  local method="${KRAKEN_REQUEST_METHOD:-}"
+  local path=""
+  local signed="false"
+  KRAKEN_REQUEST_ALIAS="futures.raw.${scope}.${endpoint}"
+
+  case "$scope" in
+    public)
+      signed="false"
+      path="$(kraken_futures_normalize_path "$endpoint")"
+      : "${method:=GET}"
+      ;;
+    private)
+      signed="true"
+      kraken_require_futures_private_env
+      path="$(kraken_futures_normalize_path "$endpoint")"
+      : "${method:=POST}"
+      ;;
+    *)
+      kraken_fail "futures raw scope must be public or private"
+      ;;
+  esac
+
+  kraken_futures_http_request "$method" "$path" "$(kraken_build_request_payload)" "$signed"
+}
+
+kraken_futures_normalize_path() {
+  local endpoint="$1"
+  case "$endpoint" in
+    /*)
+      printf '%s' "$endpoint"
+      ;;
+    *)
+      printf '/%s' "$endpoint"
+      ;;
+  esac
+}
+
+kraken_dispatch_ws() {
+  local mode="${1:-}"
+  shift || true
+
+  case "$mode" in
+    open)
+      kraken_ws_open "$@"
+      ;;
+    spot-public)
+      kraken_ws_open --url "$KRAKEN_WS_SPOT_PUBLIC_URL" "$@"
+      ;;
+    spot-private)
+      kraken_ws_spot_private "$@"
+      ;;
+    futures-public)
+      kraken_ws_open --url "$KRAKEN_WS_FUTURES_URL" "$@"
+      ;;
+    futures-private)
+      kraken_ws_open --url "$KRAKEN_WS_FUTURES_URL" "$@"
+      ;;
+    spot-token)
+      kraken_private_post "/private/GetWebSocketsToken" ""
+      ;;
+    futures-sign-challenge)
+      [ "$#" -ge 1 ] || kraken_fail "missing challenge"
+      kraken_require_futures_private_env
+      printf '{"api_key":"%s","original_challenge":"%s","signed_challenge":"%s"}\n' \
+        "$KRAKEN_FUTURES_API_KEY" \
+        "$1" \
+        "$(kraken_sign_futures_challenge "$1")"
+      ;;
+    *)
+      kraken_fail "unknown ws mode: ${mode:-missing}"
+      ;;
+  esac
+}
+
+kraken_ws_spot_private() {
+  kraken_require_private_env
+  local token_mode="auto"
+  local -a args=()
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --token)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --token"
+        token_mode="$2"
+        shift 2
+        ;;
+      *)
+        args+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  if [ "$token_mode" = "auto" ]; then
+    local token_response token
+    token_response="$(KRAKEN_OUTPUT_MODE=raw KRAKEN_JQ_FILTER= "$ROOT_DIR/bin/openclaw-kraken" call account.websocket-token)"
+    token="$(printf '%s' "$token_response" | jq -r '.result.token')"
+    [ -n "$token" ] && [ "$token" != "null" ] || kraken_fail "failed to fetch websocket token"
+    kraken_ws_open --url "$KRAKEN_WS_SPOT_PRIVATE_URL" --inject-token "$token" "${args[@]}"
+    return
+  fi
+
+  kraken_ws_open --url "$KRAKEN_WS_SPOT_PRIVATE_URL" --inject-token "$token_mode" "${args[@]}"
+}
+
+kraken_ws_open() {
+  local url=""
+  local timeout_ms="$KRAKEN_WS_TIMEOUT_MS"
+  local max_messages="$KRAKEN_WS_MAX_MESSAGES"
+  local inject_token=""
+  local -a node_args=()
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --url)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --url"
+        url="$2"
+        shift 2
+        ;;
+      --timeout-ms|--max-messages)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for $1"
+        local key="${1#--}"
+        if [ "$key" = "timeout-ms" ]; then
+          timeout_ms="$2"
+        else
+          max_messages="$2"
+        fi
+        shift 2
+        ;;
+      --message-json|--message-file)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for $1"
+        local mode="$1"
+        local value="$2"
+        if [ -n "$inject_token" ] && [ "$mode" = "--message-json" ]; then
+          kraken_require_jq
+          value="$(printf '%s' "$value" | jq -c --arg token "$inject_token" 'if has("params") and (.params | type == "object") then .params.token = (.params.token // $token) else .token = (.token // $token) end')"
+        fi
+        node_args+=("$mode" "$value")
+        shift 2
+        ;;
+      --inject-token)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --inject-token"
+        inject_token="$2"
+        shift 2
+        ;;
+      *)
+        kraken_fail "unknown ws flag: $1"
+        ;;
+    esac
+  done
+
+  [ -n "$url" ] || kraken_fail "missing websocket URL"
+  "$KRAKEN_WS_NODE_BIN" "$ROOT_DIR/scripts/ws_client.mjs" --url "$url" --timeout-ms "$timeout_ms" --max-messages "$max_messages" "${node_args[@]}"
+}
+
+kraken_parse_request_flags() {
+  declare -ga KRAKEN_REQUEST_PARAMS=()
+  unset KRAKEN_FLAG_confirm KRAKEN_JQ_FILTER KRAKEN_REQUEST_METHOD
+
+  local pending_oflags=""
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --param)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --param"
+        KRAKEN_REQUEST_PARAMS+=("$2")
+        shift 2
+        ;;
+      --set)
+        [ "$#" -ge 3 ] || kraken_fail "usage: --set key value"
+        KRAKEN_REQUEST_PARAMS+=("$2=$3")
+        shift 3
+        ;;
+      --param-file)
+        [ "$#" -ge 3 ] || kraken_fail "usage: --param-file key path"
+        [ -f "$3" ] || kraken_fail "parameter file not found: $3"
+        KRAKEN_REQUEST_PARAMS+=("$2=$(cat "$3")")
+        shift 3
+        ;;
+      --stdin-param)
+        [ "$#" -ge 2 ] || kraken_fail "usage: --stdin-param key"
+        KRAKEN_REQUEST_PARAMS+=("$2=$(cat)")
+        shift 2
+        ;;
+      --method)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --method"
+        KRAKEN_REQUEST_METHOD="$(printf '%s' "$2" | tr '[:lower:]' '[:upper:]')"
+        shift 2
+        ;;
+      --jq)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --jq"
+        KRAKEN_JQ_FILTER="$2"
+        shift 2
+        ;;
+      --compact)
+        KRAKEN_OUTPUT_MODE="compact"
+        shift
+        ;;
+      --pretty)
+        KRAKEN_OUTPUT_MODE="pretty"
+        shift
+        ;;
+      --raw)
+        KRAKEN_OUTPUT_MODE="raw"
+        shift
+        ;;
+      --confirm)
+        KRAKEN_FLAG_confirm="true"
+        shift
+        ;;
+      --post-only)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --post-only"
+        if [ "$2" = "true" ]; then
+          pending_oflags="$(kraken_append_csv_flag "$pending_oflags" "post")"
+        fi
+        shift 2
+        ;;
+      --reduce-only)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for --reduce-only"
+        if [ "$2" = "true" ]; then
+          pending_oflags="$(kraken_append_csv_flag "$pending_oflags" "reduce_only")"
+        fi
+        shift 2
+        ;;
+      --help|-h)
+        kraken_usage
+        exit 0
+        ;;
+      --*=*)
+        local key="${1%%=*}"
+        local value="${1#*=}"
+        key="${key#--}"
+        kraken_add_named_param "$key" "$value" pending_oflags
+        shift
+        ;;
+      --*)
+        [ "$#" -ge 2 ] || kraken_fail "missing value for $1"
+        local key="${1#--}"
+        kraken_add_named_param "$key" "$2" pending_oflags
+        shift 2
+        ;;
+      *)
+        kraken_fail "unexpected positional argument: $1"
+        ;;
+    esac
+  done
+
+  if [ -n "$pending_oflags" ]; then
+    KRAKEN_REQUEST_PARAMS+=("oflags=$pending_oflags")
+  fi
+}
+
+kraken_add_named_param() {
+  local raw_key="$1"
+  local value="$2"
+  local oflags_var="$3"
+  local key="${raw_key//-/_}"
+
+  case "${KRAKEN_REQUEST_ALIAS:-}" in
+    trading.add-order|trading.add-order-batch)
+      case "$raw_key" in
+        side)
+          key="type"
+          ;;
+        type)
+          key="ordertype"
+          ;;
+      esac
+      ;;
+  esac
+
+  case "$raw_key" in
+    time-in-force)
+      key="timeinforce"
+      ;;
+    cl-ord-id)
+      key="cl_ord_id"
+      ;;
+    displayvol)
+      key="displayvol"
+      ;;
+    oflags)
+      printf -v "$oflags_var" '%s' "$(kraken_append_csv_flag "${!oflags_var:-}" "$value")"
+      return
+      ;;
+  esac
+
+  KRAKEN_REQUEST_PARAMS+=("${key}=${value}")
+}
+
+kraken_build_request_payload() {
+  local payload=""
+  local pair key value item
+
+  for item in "${KRAKEN_REQUEST_PARAMS[@]:-}"; do
+    key="${item%%=*}"
+    value="${item#*=}"
+    pair="$(kraken_query_kv "$key" "$value")"
+    payload="$(kraken_join_query "$payload" "$pair")"
+  done
+
+  printf '%s' "$payload"
+}
+
+kraken_append_csv_flag() {
+  local input="$1"
+  local flag="$2"
+  case ",${input}," in
+    *,"$flag",*)
+      printf '%s' "$input"
+      return
+      ;;
+  esac
+
+  if [ -z "$input" ]; then
+    printf '%s' "$flag"
+  else
+    printf '%s,%s' "$input" "$flag"
+  fi
+}
+
+main "$@"

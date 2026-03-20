@@ -1,0 +1,87 @@
+{
+  "name": "@clawhub/uniswap-v4",
+  "version": "2.0.4",
+  "description": "Swap tokens and read pool state on Uniswap V4 (Base, Ethereum). Production-grade TypeScript skill for OpenClaw agents.",
+  "author": "Consensus HQ",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/consensus-hq/uniswap-v4-skill"
+  },
+  "keywords": [
+    "openclaw",
+    "skill",
+    "uniswap",
+    "v4",
+    "swap",
+    "defi",
+    "base",
+    "ethereum",
+    "evm"
+  ],
+  "openclaw": {
+    "type": "skill",
+    "emoji": "🦄",
+    "chains": [
+      "base",
+      "ethereum"
+    ],
+    "requires": {
+      "bins": [
+        "node"
+      ],
+      "env": [],
+      "optionalEnv": [
+        "PRIVATE_KEY",
+        "BASE_RPC_URL",
+        "ETH_RPC_URL",
+        "BASE_SEPOLIA_RPC_URL"
+      ]
+    },
+    "contracts": {
+      "PoolManager (Base)": "0x498581fF718922c3f8e6A244956aF099B2652b2b",
+      "UniversalRouter (Base)": "0x6ff5693b99212da76ad316178a184ab56d299b43",
+      "Permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "StateView (Base)": "0xa3c0c9b65bad0b08107aa264b0f3db444b867a71",
+      "V4Quoter (Base)": "0x0d5e0f971ed27fbff6c2837bf31316121532048d"
+    },
+    "scripts": {
+      "pool-info": "npx tsx src/pool-info.ts",
+      "quote": "npx tsx src/quote.ts",
+      "approve": "npx tsx src/approve.ts",
+      "swap": "npx tsx src/swap.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/ tests/ --ext .ts",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit/",
+    "test:fork": "vitest run tests/fork/",
+    "test:testnet": "vitest run tests/testnet/",
+    "test:mainnet": "vitest run tests/mainnet/",
+    "security": "node scripts/security-scan.mjs"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^8.57.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.2.4"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "src/",
+    "references/"
+  ]
+}

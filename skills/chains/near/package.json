@@ -1,0 +1,69 @@
+{
+  "name": "near-intents-skill",
+  "version": "2.0.0",
+  "description": "Universal Cross-Chain Swap & Bridge Tool for OpenClaw. Powered by the 1Click SDK (@defuse-protocol/one-click-sdk-typescript) and NEAR Intents. Supports NEAR, Ethereum, Base, Arbitrum, Solana, BSC, Bitcoin, and more. Production-ready with refund address protection.",
+  "main": "index.ts",
+  "keywords": [
+    "openclaw",
+    "openclaw-skill",
+    "near",
+    "near-intents",
+    "defuse",
+    "1click",
+    "one-click-sdk",
+    "cross-chain",
+    "swap",
+    "bridge",
+    "defi",
+    "ethereum",
+    "base",
+    "solana",
+    "arbitrum",
+    "bitcoin"
+  ],
+  "author": "OpenClaw Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openclaw/openclaw-skills"
+  },
+  "bugs": {
+    "url": "https://github.com/openclaw/openclaw-skills/issues"
+  },
+  "homepage": "https://clawhub.com",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest tests/",
+    "test:watch": "jest --watch",
+    "test:integration": "ts-node scripts/test_intent.ts",
+    "test:coverage": "jest --coverage",
+    "build": "tsc",
+    "swap:test": "ts-node test-1click-swap.ts"
+  },
+  "dependencies": {
+    "@defuse-protocol/one-click-sdk-typescript": "0.1.1",
+    "@near-js/accounts": "^2.2.4",
+    "@near-js/crypto": "^2.2.4",
+    "@near-js/providers": "^2.2.4",
+    "@near-js/signers": "^2.2.4",
+    "@near-js/tokens": "^2.2.4",
+    "axios": "^1.6.0",
+    "bs58": "^5.0.0",
+    "decimal.js": "^10.4.3",
+    "dotenv": "^16.3.1",
+    "near-api-js": "^3.0.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.0.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
+  }
+}

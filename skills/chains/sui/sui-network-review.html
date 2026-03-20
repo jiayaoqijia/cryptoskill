@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#1a1a2e;background:#fff;padding:40px 50px;line-height:1.6}
+.header{background:#1e40af;color:#fff;padding:25px 30px;border-radius:12px;margin-bottom:25px}
+.header h1{font-size:32px;font-weight:700;margin-bottom:10px}
+.header .meta-row{display:flex;gap:15px;font-size:14px}
+.header .meta-row span{background:rgba(255,255,255,0.2);padding:5px 14px;border-radius:5px}
+.publish-box{background:#dbeafe;border:2px solid #2563eb;border-radius:10px;padding:20px 25px;margin-bottom:25px}
+.publish-box h2{font-size:16px;color:#1e40af;margin-bottom:15px;border-bottom:2px solid #2563eb;padding-bottom:6px}
+.publish-box table{width:100%;border-collapse:collapse}
+.publish-box td{padding:8px 12px;font-size:14px;border-bottom:1px solid #93c5fd;vertical-align:top}
+.publish-box td:first-child{font-weight:700;color:#1e40af;width:100px}
+.publish-box td:last-child{color:#1e293b}
+.publish-box .mono{font-family:"SF Mono",Menlo,monospace;font-size:13px;background:#eff6ff;padding:2px 6px;border-radius:3px}
+.warning{background:#fef2f2;border:2px solid #dc2626;border-radius:8px;padding:12px 15px;margin-bottom:20px;color:#991b1b;font-size:13px}
+.content{margin-top:25px;padding-top:20px;border-top:2px solid #e2e8f0}
+.content h1{font-size:22px;color:#1e40af;margin:20px 0 12px;border-bottom:2px solid #e2e8f0;padding-bottom:8px}
+.content h2{font-size:17px;color:#1e40af;margin:18px 0 8px;border-left:4px solid #2563eb;padding-left:12px;background:#eff6ff;padding:8px 12px;border-radius:0 6px 6px 0}
+.content p{margin:5px 0;font-size:14px}
+.content strong{color:#1e293b}
+.content pre{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:12px 15px;margin:8px 0;overflow-x:auto;font-size:12px}
+.content code{font-family:"SF Mono",Menlo,monospace;font-size:12px}
+.content code.inline{background:#e0e7ff;padding:2px 6px;border-radius:3px;font-size:13px;color:#3730a3}
+.content ul{margin:8px 0 8px 20px}
+.content li{margin:3px 0;font-size:14px}
+</style></head><body>
+
+<div class="header">
+  <h1>Sui</h1>
+  <div class="meta-row">
+    <span>slug: <strong>sui-network</strong></span>
+    <span>v1.0.0</span>
+    <span>92 lines ⚠️</span>
+  </div>
+</div>
+
+<div class="publish-box">
+  <h2>Valores de Publicación (exactos)</h2>
+  <table>
+    <tr><td>--slug</td><td><span class="mono">sui-network</span></td></tr>
+    <tr><td>--name</td><td><span class="mono">Sui</span></td></tr>
+    <tr><td>--version</td><td><span class="mono">1.0.0</span></td></tr>
+    <tr><td>Description</td><td>Assist with SUI transactions, object model, staking, and Move smart contracts.</td></tr>
+  </table>
+</div>
+
+<div class="warning">⚠️ <strong>92 líneas</strong> — excede límite de 80.</div>
+
+<div class="content">
+<h2>Object Model (Critical Difference)</h2>
+<li>Sui uses objects, not accounts — everything is an object with unique ID</li>
+<li>Objects are owned or shared — owned objects enable parallel transactions</li>
+<li>Coins are objects too — SUI balance is sum of coin objects you own</li>
+<li>Object IDs are permanent — address doesn't change but objects move</li>
+<li>Different from Ethereum's account model — requires different mental model</li>
+<h2>SUI Token</h2>
+<li>Native gas token — required for all transactions</li>
+<li>Total supply fixed at creation — no inflation, but distribution ongoing</li>
+<li>Gas fees burned — deflationary pressure</li>
+<li>Staking rewards from fees — validators and delegators earn from gas</li>
+<h2>Transaction Characteristics</h2>
+<li>Sub-second finality — extremely fast confirmation</li>
+<li>Parallel execution for owned objects — independent transactions don't wait</li>
+<li>Gas is predictable — know exact cost before submitting</li>
+<li>Transactions are atomic — all or nothing, no partial execution</li>
+<li>Sponsored transactions possible — someone else pays gas</li>
+<h2>Address Format</h2>
+<li>Addresses start with "0x" — 64 hex characters</li>
+<li>One address per wallet — but many objects owned</li>
+<li>Not the same as Ethereum addresses — different derivation</li>
+<li>Same seed gives different addresses than other chains</li>
+<h2>Wallet Options</h2>
+<li>Sui Wallet (official) — browser extension</li>
+<li>Suiet, Ethos — alternative wallets with good UX</li>
+<li>Ledger support coming — check current status</li>
+<li>Mobile wallets available — Sui Wallet has mobile app</li>
+<h2>Staking</h2>
+<li>Delegate to validators — no minimum to stake</li>
+<li>Epoch-based rewards — epochs are ~24 hours</li>
+<li>Staking locks SUI — but liquid staking options exist</li>
+<li>Choose validators carefully — commission rates vary</li>
+<li>Rewards compound automatically — unless you withdraw</li>
+<h2>Gas and Fees</h2>
+<li>Gas denominated in MIST — 1 SUI = 10^9 MIST</li>
+<li>Gas budget set per transaction — unused gas refunded</li>
+<li>Storage fees separate — pay for object storage</li>
+<li>Gas prices stable — reference gas price updated per epoch</li>
+<li>Very cheap transactions — fractions of a cent</li>
+<h2>Move Language</h2>
+<li>Smart contracts written in Move — not Solidity</li>
+<li>Object-centric programming — different from EVM</li>
+<li>Strong safety guarantees — resources can't be copied or lost</li>
+<li>Abilities system — controls what objects can do</li>
+<li>Package upgrades possible — but original stays on chain</li>
+<h2>DeFi and NFTs</h2>
+<li>Cetus, Turbos for DEX — major decentralized exchanges</li>
+<li>NFTs are objects — natural fit for Sui's model</li>
+<li>Kiosk standard for NFT trading — built-in marketplace primitives</li>
+<li>SuiFrens and other NFT collections — active NFT ecosystem</li>
+<li>Dynamic NFTs easy — objects can change over time</li>
+<h2>Common Issues</h2>
+<li>"Insufficient gas" — need more SUI for transaction</li>
+<li>Object not found — object was consumed or transferred</li>
+<li>Transaction failed — check error message, often gas or permission</li>
+<li>Coins fragmented — many small coin objects, merge them</li>
+<li>Staking delayed — rewards start next epoch after staking</li>
+<h2>Coin Management</h2>
+<li>Coins are separate objects — can have many coin objects</li>
+<li>Merge coins to simplify — combine into fewer objects</li>
+<li>Split coins for exact amounts — needed for some dApps</li>
+<li>Gas paid from one coin object — automatically selected</li>
+<li>Wallet usually manages this — but understand the model</li>
+<h2>Cross-Chain</h2>
+<li>Wormhole bridge available — connect to other chains</li>
+<li>Bridged assets are wrapped — not native on other chains</li>
+<li>Bridge verification important — verify official bridge addresses</li>
+<li>Native USDC coming — Circle deploying natively</li>
+<h2>Security</h2>
+<li>Seed phrase controls everything — standard 12/24 word recovery</li>
+<li>Transaction preview shows effects — review before signing</li>
+<li>dApp permissions matter — revoke unused connections</li>
+<li>Objects can have transfer restrictions — check before assuming transferable</li>
+<li>Verify package addresses — scam dApps exist</li>
+</div>
+
+</body></html>

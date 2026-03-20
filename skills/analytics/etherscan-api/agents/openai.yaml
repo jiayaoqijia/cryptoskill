@@ -1,0 +1,4 @@
+interface:
+  display_name: "Etherscan API V2"
+  short_description: "Use Etherscan V2 for onchain activity, logs, ABI/source, and proxy-aware contract metadata"
+  default_prompt: "Use $etherscan-api to query Etherscan API V2 across Ethereum/Taiko networks, including activity endpoints, logs, ABI/source retrieval, and proxy-to-implementation handling."

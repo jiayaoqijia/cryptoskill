@@ -1,0 +1,35 @@
+# Standalone remote signer container using lnd.
+#
+# The signer holds the wallet seed and signs transactions on behalf of a
+# watch-only litd node. It does not route payments or open channels.
+#
+# All runtime configuration lives in the mounted config file
+# (signer-lnd.conf.template by default). Use docker-start.sh to generate
+# a config with custom network or debug level.
+#
+# Usage:
+#   skills/lightning-security-module/scripts/docker-start.sh   # Recommended
+#   docker compose -f docker-compose-signer.yml up -d
+#
+# Environment variables (with defaults):
+#   LND_VERSION — lnd image tag (default: from versions.env)
+#   LND_IMAGE   — lnd image name (default: from versions.env)
+#   SIGNER_CONF_PATH — path to generated signer config
+
+services:
+  signer:
+    image: ${LND_IMAGE:-lightninglabs/lnd}:${LND_VERSION:-v0.20.0-beta}
+    container_name: litd-signer
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c", "touch /root/.lnd/wallet-password.txt && cp /tmp/lnd.conf /root/.lnd/lnd.conf && exec lnd"]
+    ports:
+      # RPC for watch-only node connections.
+      - "${SIGNER_RPC_PORT:-10012}:10012"
+      # REST for wallet creation and management.
+      - "${SIGNER_REST_PORT:-10013}:10013"
+    volumes:
+      - signer-data:/root/.lnd
+      - ${SIGNER_CONF_PATH:-./signer-lnd.conf.template}:/tmp/lnd.conf:ro
+
+volumes:
+  signer-data:

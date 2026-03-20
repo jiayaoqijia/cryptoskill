@@ -1,0 +1,12 @@
+{
+  "name": "binance-trading-bot",
+  "version": "1.0.0",
+  "description": "Binance 现货/合约交易机器人 - 查询余额、市价/限价下单、止盈止损。每次调用自动扣费 0.001 USDT",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "keywords": ["binance", "trading", "crypto"],
+  "author": "moson",
+  "license": "MIT"
+}

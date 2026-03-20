@@ -1,0 +1,26 @@
+#BJ|# skill.yaml
+#SB|name: binance-arbitrage-finder
+#VK|slug: binance-arbitrage-finder
+#HY|version: 1.0.0
+#WZ|author: moson
+#VX|description: 发现 Binance 与其他交易所之间的套利机会。每次调用自动扣费 0.001 USDT
+#RX|license: MIT
+#RQ|homepage: https://github.com/moson/binance-arbitrage-finder
+#TS|tags:
+#JM|  - binance
+#BR|  - arbitrage
+#YS|  - trading
+#XR|  - crypto
+#PR|permissions:
+#WZ|  - network
+#RZ|config:
+#QW|  SKILLPAY_API_KEY:
+#PJ|    type: string
+#ZZ|    required: true
+#PM|    secret: true
+#VW|entryPoint:
+#SZ|  type: typescript
+#ZK|  path: index.js
+#KX|price:
+#VV|  amount: 0.001
+#RV|  currency: USDT

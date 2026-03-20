@@ -1,0 +1,14 @@
+{
+  "name": "sui-agent-wallet-server",
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun --watch run index.ts"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.21.1",
+    "@mysten/bcs": "^1.3.0",
+    "@scure/bip39": "^1.4.0"
+  }
+}

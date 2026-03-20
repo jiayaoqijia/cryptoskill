@@ -1,0 +1,29 @@
+{
+  "name": "basecred-8004-registration",
+  "version": "1.0.0",
+  "description": "Interactive ERC-8004 agent registration via chat using agent0-sdk",
+  "type": "module",
+  "scripts": {
+    "register": "node scripts/register.mjs",
+    "search": "node scripts/search.mjs",
+    "update": "node scripts/update.mjs",
+    "feedback": "node scripts/feedback.mjs",
+    "setup": "bash scripts/setup.sh",
+    "template": "node scripts/register.mjs --template"
+  },
+  "keywords": [
+    "erc-8004",
+    "agent",
+    "registration",
+    "onchain",
+    "base",
+    "openclaw",
+    "agent0",
+    "basecred"
+  ],
+  "author": "0xdas",
+  "license": "MIT",
+  "dependencies": {
+    "agent0-sdk": "^1.5.2"
+  }
+}

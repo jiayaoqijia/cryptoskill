@@ -1,0 +1,46 @@
+{
+  "name": "yield-shark",
+  "version": "1.0.6",
+  "description": "🦈 YieldShark - DeFi 收益监控，多链多平台稳定币 APY 追踪",
+  "main": "scripts/monitor.mjs",
+  "type": "module",
+  "scripts": {
+    "monitor": "node scripts/monitor.mjs",
+    "compare": "node scripts/compare.mjs",
+    "compare-tokens": "node scripts/compare-tokens.mjs",
+    "calculate": "node scripts/calculate.mjs",
+    "alert": "node scripts/alert.mjs",
+    "report": "node scripts/report.mjs",
+    "optimize": "node scripts/optimize.mjs",
+    "history": "node scripts/history.mjs",
+    "card": "node scripts/card.mjs",
+    "test": "node scripts/monitor.mjs USDT"
+  },
+  "keywords": [
+    "defi",
+    "yield",
+    "apy",
+    "crypto",
+    "stablecoin",
+    "usdt",
+    "usdc",
+    "aave",
+    "compound",
+    "shark"
+  ],
+  "author": "@gztanht",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gztanht/yield-shark"
+  },
+  "homepage": "https://clawhub.com/skills/yield-shark",
+  "funding": {
+    "type": "crypto",
+    "usdt": "0x33f943e71c7b7c4e88802a68e62cca91dab65ad9",
+    "usdc": "0xcb5173e3f5c2e32265fbbcaec8d26d49bf290e44"
+  }
+}

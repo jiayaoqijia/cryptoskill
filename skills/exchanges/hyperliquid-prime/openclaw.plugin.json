@@ -1,0 +1,60 @@
+{
+  "id": "hyperliquid-prime",
+  "name": "Hyperliquid Prime",
+  "description": "Prime broker SDK for Hyperliquid perp markets (native + HIP-3) with intelligent order routing and cross-market splitting",
+  "version": "0.1.0",
+  "author": "mehranhydary",
+  "source": "https://github.com/mehranhydary/hl-prime",
+  "type": "instruction-only",
+  "implementation": {
+    "note": "This skill bundle contains instructions (SKILL.md) only. The SDK implementation must be installed separately via npm. Source code is available for audit at the GitHub repository.",
+    "source_repo": "https://github.com/mehranhydary/hl-prime",
+    "npm_package": "hyperliquid-prime"
+  },
+  "install": {
+    "method": "npm",
+    "package": "hyperliquid-prime",
+    "note": "Installs external code from the public npm registry. Audit the source at https://github.com/mehranhydary/hl-prime before use."
+  },
+  "env": {
+    "HP_PRIVATE_KEY": {
+      "description": "Hex private key (0x-prefixed, 64 hex chars). Required for trading operations. Read-only operations (quotes, orderbooks, funding) do not require a key.",
+      "required": false
+    }
+  },
+  "permissions": {
+    "network": true,
+    "credentials": ["HP_PRIVATE_KEY"],
+    "signingRequired": true,
+    "onChainActions": [
+      "Builder fee approval (1 bps, one-time per wallet, opt-out via builder: null)",
+      "Collateral swaps (USDC to target token, only during split order execution)",
+      "DEX abstraction enable (account-level setting, only during split order execution)"
+    ],
+    "confirmationFlow": "The SDK uses a quote-then-execute pattern: quote() is read-only and returns a plan for review. execute() requires explicit invocation to perform on-chain actions. One-step methods (long/short) combine both steps."
+  },
+  "fees": {
+    "builderFee": {
+      "amount": "1 basis point (0.01%)",
+      "recipient": "0x34411c9d3c312e6ECb32C079AA0F34B572Dddc37",
+      "mechanism": "Hyperliquid native builder fee, auto-approved on first order",
+      "optOut": "Set builder: null in config to disable entirely"
+    }
+  },
+  "skill": {
+    "path": "./SKILL.md",
+    "name": "hyperliquid-prime",
+    "description": "Trade on Hyperliquid's perp markets (native + HIP-3) with intelligent order routing and cross-market splitting. Routes across both native HL perps (ETH, BTC) and HIP-3 deployer markets. Use when the user wants to trade crypto, stocks, or commodities on Hyperliquid, get best execution across fragmented markets, split large orders across multiple venues, compare funding rates, view aggregated orderbooks, or manage positions across multiple collateral types. Handles collateral swaps automatically during execution."
+  },
+  "entrypoints": {
+    "cli": {
+      "bin": "hp",
+      "description": "CLI for Hyperliquid Prime trading"
+    }
+  },
+  "channels": [],
+  "commands": [],
+  "dependencies": {
+    "node": ">=20.0.0"
+  }
+}

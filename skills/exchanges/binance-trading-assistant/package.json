@@ -1,0 +1,22 @@
+{
+  "name": "binance-trading-assistant",
+  "version": "1.0.0",
+  "description": "Monitor Binance balances, positions, and get trading alerts",
+  "author": "AI Trading Tools",
+  "license": "MIT",
+  "pricing": {
+    "model": "subscription",
+    "price": 5,
+    "currency": "USD",
+    "interval": "month"
+  },
+  "keywords": ["binance", "trading", "crypto", "balance", "positions", "alerts"],
+  "category": "finance",
+  "dependencies": {
+    "ccxt": "^4.0.0"
+  },
+  "scripts": {
+    "check-balance": "node scripts/check_balance.js",
+    "check-positions": "node scripts/check_positions.js"
+  }
+}

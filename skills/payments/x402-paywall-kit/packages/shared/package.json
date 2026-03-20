@@ -1,0 +1,75 @@
+{
+  "name": "x402-kit-shared",
+  "version": "0.1.0",
+  "description": "Shared types, policy engine, and logger for x402-kit",
+  "license": "MIT",
+  "author": "Tara Quinn <hello@taraquinn.ai>",
+  "homepage": "https://github.com/tara-quinn-ai/x402-kit/tree/main/packages/shared#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tara-quinn-ai/x402-kit.git",
+    "directory": "packages/shared"
+  },
+  "keywords": ["x402", "crypto", "payments", "policy", "logging", "USDC", "Base"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./types": {
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/types/index.mjs"
+      },
+      "require": {
+        "types": "./dist/types/index.d.cts",
+        "default": "./dist/types/index.js"
+      }
+    },
+    "./policy": {
+      "import": {
+        "types": "./dist/policy/index.d.ts",
+        "default": "./dist/policy/index.mjs"
+      },
+      "require": {
+        "types": "./dist/policy/index.d.cts",
+        "default": "./dist/policy/index.js"
+      }
+    },
+    "./logger": {
+      "import": {
+        "types": "./dist/logger/index.d.ts",
+        "default": "./dist/logger/index.mjs"
+      },
+      "require": {
+        "types": "./dist/logger/index.d.cts",
+        "default": "./dist/logger/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@x402/core": "^2.5.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  }
+}

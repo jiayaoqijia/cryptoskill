@@ -1,0 +1,146 @@
+{
+  "platforms": {
+    "aave": {
+      "name": "Aave",
+      "chains": ["ethereum", "arbitrum", "optimism", "polygon"],
+      "api": "https://api.aave.com/v2/reserve-data",
+      "website": "https://app.aave.com",
+      "risk_rating": "A",
+      "audit": "Multiple (OpenZeppelin, Consensys, Trail of Bits)",
+      "insurance": "Yes - Safety Module",
+      "tvl_usd": 5600000000,
+      "description": "最大的去中心化借贷协议"
+    },
+    "compound": {
+      "name": "Compound",
+      "chains": ["ethereum", "arbitrum", "polygon"],
+      "api": "https://api.compound.finance/api/v2/rates",
+      "website": "https://app.compound.finance",
+      "risk_rating": "A+",
+      "audit": "Multiple (Trail of Bits, OpenZeppelin)",
+      "insurance": "Yes - Compound Treasury",
+      "tvl_usd": 890000000,
+      "description": "历史最悠久的借贷协议，安全性最高"
+    },
+    "spark": {
+      "name": "Spark",
+      "chains": ["ethereum", "gnosis"],
+      "api": "https://api.sparkprotocol.io/rates",
+      "website": "https://sparkprotocol.io",
+      "risk_rating": "A",
+      "audit": "Yes (ChainSecurity)",
+      "insurance": "Yes - MakerDAO backed",
+      "tvl_usd": 1200000000,
+      "description": "MakerDAO 生态的借贷协议"
+    },
+    "morpho": {
+      "name": "Morpho",
+      "chains": ["ethereum", "arbitrum", "optimism"],
+      "api": "https://api.morpho.xyz/rates",
+      "website": "https://app.morpho.org",
+      "risk_rating": "B+",
+      "audit": "Yes (Spearbit, Trail of Bits)",
+      "insurance": "No",
+      "tvl_usd": 380000000,
+      "description": "借贷优化层，收益率更高"
+    },
+    "curve": {
+      "name": "Curve Finance",
+      "chains": ["ethereum", "arbitrum", "optimism", "base", "polygon"],
+      "api": "https://api.curve.fi/rates",
+      "website": "https://curve.fi",
+      "risk_rating": "A",
+      "audit": "Multiple",
+      "insurance": "Yes - DAO Insurance",
+      "tvl_usd": 2100000000,
+      "description": "最大的稳定币 DEX"
+    },
+    "yearn": {
+      "name": "Yearn Finance",
+      "chains": ["ethereum", "arbitrum", "optimism"],
+      "api": "https://api.yearn.finance/vaults",
+      "website": "https://yearn.finance",
+      "risk_rating": "B+",
+      "audit": "Multiple",
+      "insurance": "Partial",
+      "tvl_usd": 450000000,
+      "description": "收益聚合器，自动优化策略"
+    },
+    "beefy": {
+      "name": "Beefy Finance",
+      "chains": ["ethereum", "bsc", "polygon", "arbitrum", "optimism", "base"],
+      "api": "https://api.beefy.finance/vaults",
+      "website": "https://app.beefy.com",
+      "risk_rating": "B+",
+      "audit": "Select audits",
+      "insurance": "No",
+      "tvl_usd": 180000000,
+      "description": "多链收益聚合器"
+    }
+  },
+  "chains": {
+    "ethereum": {
+      "name": "Ethereum",
+      "avg_gas_gwei": 30,
+      "avg_tx_cost_usd": 15,
+      "block_time_seconds": 12
+    },
+    "arbitrum": {
+      "name": "Arbitrum One",
+      "avg_gas_gwei": 0.1,
+      "avg_tx_cost_usd": 0.5,
+      "block_time_seconds": 0.25
+    },
+    "optimism": {
+      "name": "Optimism",
+      "avg_gas_gwei": 0.001,
+      "avg_tx_cost_usd": 0.2,
+      "block_time_seconds": 2
+    },
+    "base": {
+      "name": "Base",
+      "avg_gas_gwei": 0.01,
+      "avg_tx_cost_usd": 0.1,
+      "block_time_seconds": 2
+    },
+    "polygon": {
+      "name": "Polygon",
+      "avg_gas_gwei": 50,
+      "avg_tx_cost_usd": 0.5,
+      "block_time_seconds": 2
+    }
+  },
+  "risk_ratings": {
+    "A+": {
+      "score": 95,
+      "description": "最高安全级别，经受时间考验，TVL>$10 亿",
+      "examples": ["Compound"]
+    },
+    "A": {
+      "score": 90,
+      "description": "高安全性，多重审计，TVL>$10 亿",
+      "examples": ["Aave", "Curve", "Spark"]
+    },
+    "B+": {
+      "score": 80,
+      "description": "较安全，有审计，TVL>$1 亿",
+      "examples": ["Morpho", "Yearn", "Beefy"]
+    },
+    "B": {
+      "score": 70,
+      "description": "中等风险，新项目或 TVL 较低",
+      "examples": []
+    },
+    "C": {
+      "score": 50,
+      "description": "高风险，未经充分审计或 TVL<$1000 万",
+      "examples": []
+    }
+  },
+  "api_endpoints": {
+    "defillama": "https://yields.llama.fi/pools",
+    "coingecko": "https://api.coingecko.com/api/v3"
+  },
+  "update_interval_seconds": 300,
+  "version": "1.0.0"
+}

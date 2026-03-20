@@ -1,0 +1,1 @@
+This software is provided "AS IS" without warranty of any kind. Cryptocurrency trading involves substantial risk and may result in the loss of your entire capital. This tool is for educational and informational purposes only and does not constitute financial or trading advice. The author assumes no liability for any damages or losses arising from the use of this software.

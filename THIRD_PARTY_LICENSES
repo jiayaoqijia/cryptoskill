@@ -1,0 +1,92 @@
+This file contains the license notices for third-party software and content
+incorporated into or used by CryptoSkill. These notices are provided in
+compliance with the respective license terms.
+
+================================================================================
+ClawHub Skills
+https://clawhub.ai
+================================================================================
+
+All skills in the skills/ directory are sourced from the ClawHub community
+registry. Skills published on ClawHub are released under the MIT-0 license
+(MIT No Attribution), which permits use, modification, and redistribution
+without requiring attribution.
+
+Each skill directory contains a SOURCE.md file that documents the original
+author, source URL, and classification (OFFICIAL or COMMUNITY).
+
+MIT No Attribution (MIT-0)
+
+Copyright (various authors — see individual SOURCE.md files)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+OpenClaw
+https://github.com/nicholasgriffintn/openclaw
+================================================================================
+
+The skill format and agent framework used by CryptoSkill is based on OpenClaw.
+
+Copyright (c) 2025 OpenClaw contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+Notable Skill Authors
+================================================================================
+
+The following individuals and organizations have contributed skills to the
+ClawHub registry that are included in this repository. We gratefully
+acknowledge their work:
+
+Official project teams:
+  - Gate.io (gate-* skills)
+  - OKX (okx-* skills)
+  - CoinMarketCap (cmc-* skills)
+  - Nansen (nansen-* skills)
+  - OpenSea (opensea-* skills)
+  - Lightning Labs (lightning-* skills)
+  - SushiSwap (sushiswap-* skills)
+  - Virtuals Protocol (virtuals-* skills)
+  - XMTP (xmtp-* skills)
+  - ElizaOS (elizacloud skill)
+  - Bitget Wallet (bitget-wallet skill)
+
+Prolific community contributors:
+  - jolestar
+  - ivangdavila
+  - mosonchan2023
+  - squirt11e
+  - and many others (see SOURCE.md in each skill directory)
+
+All skill content is licensed under MIT-0 as published on ClawHub.

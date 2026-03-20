@@ -1,0 +1,28 @@
+{
+  "name": "x402-skill",
+  "version": "1.0.0",
+  "description": "x402 HTTP payment protocol for agents - pay for resources with USDC on Base",
+  "type": "module",
+  "main": "x402.mjs",
+  "scripts": {
+    "test": "node examples/conway-credits.mjs --help"
+  },
+  "keywords": [
+    "x402",
+    "payments",
+    "crypto",
+    "usdc",
+    "base",
+    "agents",
+    "openclaw"
+  ],
+  "author": "Lumen <https://x.com/LumenFTFuture>",
+  "license": "MIT",
+  "dependencies": {
+    "viem": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LumenFromTheFuture/x402-skill"
+  }
+}

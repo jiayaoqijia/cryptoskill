@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>pump.fun Sniper Scorer</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 16px}
+    .container{width:100%;max-width:740px}
+    h1{font-size:1.9rem;font-weight:700;text-align:center;margin-bottom:6px;background:linear-gradient(90deg,#ff6b35,#f7c59f);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .subtitle{text-align:center;color:#8b949e;margin-bottom:32px;font-size:.95rem}
+    .input-row{display:flex;gap:10px;margin-bottom:28px}
+    input{flex:1;background:#161b22;border:1px solid #30363d;border-radius:8px;color:#e6edf3;font-size:.95rem;padding:12px 16px;outline:none;transition:border-color .2s}
+    input:focus{border-color:#ff6b35}
+    input::placeholder{color:#484f58}
+    button{background:linear-gradient(135deg,#ff6b35,#f7c59f);border:none;border-radius:8px;color:#0d1117;cursor:pointer;font-size:.95rem;font-weight:700;padding:12px 24px;transition:opacity .2s;white-space:nowrap}
+    button:hover{opacity:.85}
+    button:disabled{opacity:.4;cursor:not-allowed}
+    .score-ring{display:flex;flex-direction:column;align-items:center;margin-bottom:24px}
+    .ring-wrap{position:relative;width:130px;height:130px;margin-bottom:12px}
+    svg.ring{transform:rotate(-90deg)}
+    .ring-bg{fill:none;stroke:#21262d;stroke-width:10}
+    .ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+    .ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700}
+    .verdict{font-size:1.2rem;font-weight:700;letter-spacing:.05em}
+    .SNIPE{color:#14f195}.CAUTION{color:#e3a008}.AVOID{color:#f85149}
+    .token-bar{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin-bottom:18px;display:flex;gap:20px;flex-wrap:wrap}
+    .ti{display:flex;flex-direction:column;gap:3px}
+    .tl{font-size:.72rem;color:#8b949e;text-transform:uppercase;letter-spacing:.05em}
+    .tv{font-size:.95rem;font-weight:600}
+    .breakdown{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px 18px;margin-bottom:18px}
+    .breakdown h3{font-size:.82rem;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+    .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.85rem}
+    .bar-label{width:110px;color:#8b949e}
+    .bar-track{flex:1;background:#21262d;border-radius:4px;height:8px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+    .bar-num{width:40px;text-align:right;font-size:.8rem;color:#e6edf3}
+    .signals{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px 18px;margin-bottom:18px}
+    .signals h3{font-size:.82rem;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+    .signal{padding:6px 0;border-bottom:1px solid #21262d;font-size:.88rem}
+    .signal:last-child{border:none}
+    .loading{text-align:center;padding:48px;color:#8b949e;font-size:.95rem}
+    .spinner{display:inline-block;width:28px;height:28px;border:3px solid #30363d;border-top-color:#ff6b35;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:14px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .err{background:#2a0d0d;border:1px solid #f85149;border-radius:10px;padding:18px;color:#ffa198;text-align:center}
+    .footer{margin-top:40px;text-align:center;font-size:.78rem;color:#484f58}
+    .footer a{color:#58a6ff;text-decoration:none}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🎯 pump.fun Sniper Scorer</h1>
+  <p class="subtitle">Score any token 0–100 before you snipe — detect rugs before they happen</p>
+  <div class="input-row">
+    <input id="ca" type="text" placeholder="Paste pump.fun token CA..." />
+    <button id="btn" onclick="analyze()">Score It</button>
+  </div>
+  <div id="result"></div>
+  <div class="footer">Data from pump.fun · DexScreener · Solana RPC &nbsp;·&nbsp;
+    <a href="https://github.com/ultranumblol/pumpfun-sniper" target="_blank">GitHub</a>
+  </div>
+</div>
+<script>
+const COLOR = {SNIPE:'#14f195', CAUTION:'#e3a008', AVOID:'#f85149'};
+const KEYS = {dev_wallet:'Dev Wallet', social:'Social Links', liquidity:'Liquidity', concentration:'Concentration'};
+
+async function analyze() {
+  const ca = document.getElementById('ca').value.trim();
+  if (!ca) return;
+  const btn = document.getElementById('btn');
+  const res = document.getElementById('result');
+  btn.disabled = true;
+  res.innerHTML = `<div class="loading"><div class="spinner"></div><br>Analyzing token… 10–20 seconds</div>`;
+  try {
+    const resp = await fetch(`/demo?ca=${encodeURIComponent(ca)}`);
+    const d = await resp.json();
+    if (!resp.ok) { res.innerHTML = `<div class="err">❌ ${d.detail||'Analysis failed'}</div>`; btn.disabled=false; return; }
+
+    const score = d.score;
+    const circ = 2 * Math.PI * 54;
+    const offset = circ - (score / 100) * circ;
+    const col = COLOR[d.verdict];
+
+    res.innerHTML = `
+      <div class="score-ring">
+        <div class="ring-wrap">
+          <svg class="ring" width="130" height="130" viewBox="0 0 130 130">
+            <circle class="ring-bg" cx="65" cy="65" r="54"/>
+            <circle class="ring-fill" cx="65" cy="65" r="54"
+              stroke="${col}"
+              stroke-dasharray="${circ}"
+              stroke-dashoffset="${offset}"/>
+          </svg>
+          <div class="ring-num" style="color:${col}">${score}</div>
+        </div>
+        <div class="verdict ${d.verdict}">${d.verdict === 'SNIPE' ? '🎯 SNIPE' : d.verdict === 'CAUTION' ? '⚠️ CAUTION' : '🚨 AVOID'}</div>
+      </div>
+
+      <div class="token-bar">
+        <div class="ti"><span class="tl">Token</span><span class="tv">$${d.token.symbol} — ${d.token.name}</span></div>
+        <div class="ti"><span class="tl">Price</span><span class="tv">$${parseFloat(d.token.price_usd||0).toPrecision(4)}</span></div>
+        <div class="ti"><span class="tl">Liquidity</span><span class="tv">$${Number(d.token.liquidity_usd||0).toLocaleString()}</span></div>
+        <div class="ti"><span class="tl">Market Cap</span><span class="tv">$${Number(d.token.market_cap||0).toLocaleString()}</span></div>
+      </div>
+
+      <div class="breakdown">
+        <h3>Score Breakdown</h3>
+        ${Object.entries(d.breakdown).map(([k,v])=>`
+          <div class="bar-row">
+            <span class="bar-label">${KEYS[k]||k}</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${(v.score/v.max*100)}%;background:${v.score/v.max>0.6?'#14f195':v.score/v.max>0.35?'#e3a008':'#f85149'}"></div></div>
+            <span class="bar-num">${v.score}/${v.max}</span>
+          </div>`).join('')}
+      </div>
+
+      <div class="signals">
+        <h3>Signals</h3>
+        ${d.signals.map(s=>`<div class="signal">${s}</div>`).join('')}
+      </div>`;
+  } catch(e) {
+    res.innerHTML = `<div class="err">❌ Network error. Please try again.</div>`;
+  }
+  btn.disabled = false;
+}
+document.getElementById('ca').addEventListener('keydown', e => { if(e.key==='Enter') analyze(); });
+</script>
+</body>
+</html>

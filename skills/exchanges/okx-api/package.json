@@ -1,0 +1,36 @@
+{
+  "name": "openclaw-okx-api-skill",
+  "version": "1.0.0",
+  "description": "OpenClaw agent skill for OKX exchange REST API v5 and WebSocket — market data, account management, and order trading",
+  "keywords": [
+    "openclaw",
+    "openclaw-skill",
+    "okx",
+    "crypto",
+    "trading",
+    "exchange",
+    "api"
+  ],
+  "author": "gvgv.li",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/XHFkindergarten/openclaw-okx-api-skill.git"
+  },
+  "homepage": "https://github.com/XHFkindergarten/openclaw-okx-api-skill#readme",
+  "bugs": {
+    "url": "https://github.com/XHFkindergarten/openclaw-okx-api-skill/issues"
+  },
+  "openclaw": {
+    "type": "skill",
+    "skillId": "okx-api",
+    "skillPath": ".",
+    "minVersion": "2026.0.0"
+  },
+  "scripts": {
+    "test": "python scripts/okx_auth.py"
+  },
+  "engines": {
+    "python": ">=3.10"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "x402 Paywall Kit",
+  "slug": "x402-paywall-kit",
+  "tagline": "Crypto Payments for Agents & Websites",
+  "price": {
+    "amount": 2900,
+    "currency": "USD",
+    "display": "$29"
+  },
+  "usdcPrice": {
+    "amount": "29.00",
+    "asset": "USDC",
+    "network": "eip155:8453",
+    "recipient": "0x5b99070C84aB6297F2c1a25490c53eE483C8B499"
+  },
+  "shortDescription": "Let your AI agent pay x402 crypto paywalls automatically. Plus Express.js middleware to add USDC paywalls to your own APIs in <10 lines.",
+  "features": [
+    "Agent skill — auto-detect and pay x402 paywalls with policy controls",
+    "Express middleware — add USDC paywalls to any route in minutes",
+    "Policy engine — spending limits, domain filtering, daily caps",
+    "Payment logging — JSONL audit trail for every transaction",
+    "Demo app — working example on Base Sepolia testnet"
+  ],
+  "stack": ["TypeScript", "Base", "USDC", "Coinbase x402"],
+  "delivery": "email",
+  "category": "developer-tools",
+  "npmPackages": [
+    "@x402-kit/agent",
+    "@x402-kit/express",
+    "@x402-kit/shared"
+  ],
+  "links": {
+    "github": "https://github.com/tara-quinn-ai/x402-kit",
+    "clawmart": "https://www.shopclawmart.com/listings/x402-paywall-kit",
+    "clawhub": "https://clawhub.ai/skills/x402-agent"
+  }
+}

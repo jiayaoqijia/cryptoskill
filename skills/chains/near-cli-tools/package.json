@@ -1,0 +1,29 @@
+{
+  "name": "near-tools",
+  "version": "1.0.0",
+  "description": "NEAR Protocol CLI installation and setup guide for OpenClaw AI agents",
+  "keywords": [
+    "openclaw",
+    "skill",
+    "near",
+    "near-protocol",
+    "cli",
+    "blockchain",
+    "web3"
+  ],
+  "author": "cuongdcdev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cuongdcdev/near-skill-openclawd.git",
+    "directory": "near-skills/near-tools"
+  },
+  "homepage": "https://github.com/cuongdcdev/near-skill-openclawd/tree/main/near-skills/near-tools#readme",
+  "bugs": {
+    "url": "https://github.com/cuongdcdev/near-skill-openclawd/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

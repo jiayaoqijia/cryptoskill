@@ -1,0 +1,75 @@
+{
+  "id": "near-intents",
+  "name": "NEAR Intents",
+  "version": "2.0.0",
+  "description": "Universal cross-chain swap & bridge powered by NEAR Intents 1Click SDK. Supports 14+ blockchains including NEAR, Base, Ethereum, Arbitrum, Solana, and Bitcoin. Production-ready with mandatory refund address protection.",
+  "author": "OpenClaw Contributors",
+  "license": "MIT",
+  "homepage": "https://clawhub.com",
+  "repository": "https://github.com/openclaw/openclaw-skills",
+  "tags": [
+    "near",
+    "defi",
+    "swap",
+    "bridge",
+    "cross-chain",
+    "ethereum",
+    "solana",
+    "arbitrum",
+    "base",
+    "bitcoin"
+  ],
+  "capabilities": {
+    "swap": true,
+    "bridge": true,
+    "multichain": true
+  },
+  "supported_chains": [
+    "NEAR",
+    "Base",
+    "Ethereum",
+    "Arbitrum",
+    "Solana",
+    "BSC",
+    "Gnosis",
+    "Optimism",
+    "Bitcoin",
+    "Dogecoin",
+    "Litecoin",
+    "Zcash",
+    "Aptos",
+    "Starknet"
+  ],
+  "requirements": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "entrypoint": "index.ts",
+  "configuration": {
+    "optional": [
+      "NEAR_ACCOUNT_ID",
+      "NEAR_PRIVATE_KEY",
+      "NEAR_RPC_URL",
+      "NEAR_NETWORK_ID",
+      "ONE_CLICK_JWT"
+    ],
+    "required_for_auto_mode": [
+      "NEAR_ACCOUNT_ID",
+      "NEAR_PRIVATE_KEY"
+    ]
+  },
+  "documentation": {
+    "primary": "SKILL.md",
+    "agent_guide": "AI-AGENT-GUIDE.md",
+    "tokens": "TOKENS.md",
+    "usage": "USAGE_GUIDE.md",
+    "install": "INSTALL.md"
+  },
+  "safety_features": {
+    "refund_address_validation": true,
+    "cross_chain_protection": true,
+    "error_messages": "comprehensive"
+  },
+  "release_date": "2026-02-15",
+  "status": "production"
+}
