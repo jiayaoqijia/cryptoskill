@@ -424,7 +424,7 @@
             </svg>
           </div>
           <h3>Quick Submit</h3>
-          <form class="submit-form" onsubmit="return false;">
+          <form class="submit-form" id="quickSubmitForm">
             <div class="form-group">
               <label for="submitName">Skill Name</label>
               <input type="text" id="submitName" placeholder="e.g. my-defi-skill">
@@ -461,7 +461,7 @@
               <input type="email" id="submitEmail" placeholder="you@example.com">
             </div>
             <div class="submit-form-actions">
-              <button type="submit" class="btn-submit-outline" disabled>
+              <button type="submit" class="btn-submit-outline">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13"/>
                   <polygon points="22 2 15 22 11 13 2 9 22 2"/>

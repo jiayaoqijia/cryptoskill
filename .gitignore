@@ -41,4 +41,14 @@ test-results/
 
 # Generated scripts
 generate_source_md.sh
+
+# GitHub workflows (needs workflow token scope)
 .github/workflows/
+
+# Claude / AI agent configs (private)
+CLAUDE.md
+.claude/
+
+# Playwright
+test-results/
+playwright-report/

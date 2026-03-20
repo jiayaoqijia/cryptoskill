@@ -74,7 +74,7 @@
     {
       "name": "cmc-api-crypto",
       "displayName": "CoinMarketCap Crypto APIs",
-      "description": "|",
+      "description": "API reference for CoinMarketCap cryptocurrency endpoints including quotes, listings, OHLCV, trending, and categories. Use this skill whenever the user mentions CMC API, asks how to get crypto data programmatically, wants to build price integrations, or needs REST endpoint documentation. This is the go-to reference for any CMC cryptocurrency API question. Trigger: \"CMC API\", \"coinmarketcap api\", \"crypto price API\", \"get bitcoin price via API\", \"/cmc-api-crypto\"",
       "category": "analytics",
       "tags": [
         "coinmarketcap",
@@ -88,7 +88,7 @@
     {
       "name": "cmc-api-dex",
       "displayName": "[Outdated] CoinMarketCap Onchain Data",
-      "description": "|",
+      "description": "API reference for CoinMarketCap DEX endpoints including token lookup, pools, transactions, trending, and security analysis. Use this skill whenever the user mentions DEX API, asks about on-chain token data, wants to look up tokens by contract address, needs security/rug risk checks, or is building DEX integrations. This is the definitive reference for CMC DEX API questions. Trigger: \"DEX API\", \"token by contract address\", \"CMC security API\", \"liquidity pool API\", \"/cmc-api-dex\"",
       "category": "analytics",
       "tags": [
         "coinmarketcap",
@@ -102,7 +102,7 @@
     {
       "name": "cmc-api-exchange",
       "displayName": "CoinMarketCap Exchange APIs",
-      "description": "|",
+      "description": "API reference for CoinMarketCap exchange endpoints including exchange info, volume, market pairs, and assets. Use this skill whenever the user mentions exchange API, asks about exchange volumes, wants trading pair data, needs proof-of-reserves info, or is building exchange integrations. This is the authoritative reference for CMC exchange API questions. Trigger: \"exchange API\", \"CMC exchange data\", \"trading pairs API\", \"exchange volume API\", \"/cmc-api-exchange\"",
       "category": "analytics",
       "tags": [
         "coinmarketcap",
@@ -116,7 +116,7 @@
     {
       "name": "cmc-api-market",
       "displayName": "CoinMarketCap Market Overview APIs",
-      "description": "|",
+      "description": "API reference for CoinMarketCap market-wide endpoints including global metrics, fear/greed, indices, trending topics, and charts. Use this skill whenever the user mentions market API, asks about fear/greed index, wants global metrics or BTC dominance data, needs k-line charts, or is working with market sentiment. This is the complete reference for CMC market-wide API questions. Trigger: \"market API\", \"fear greed API\", \"global metrics API\", \"CMC charts API\", \"/cmc-api-market\"",
       "category": "analytics",
       "tags": [
         "coinmarketcap",
@@ -130,7 +130,7 @@
     {
       "name": "cmc-api-onchain",
       "displayName": "CoinMarketCap Onchain Data APIs",
-      "description": "|",
+      "description": "API reference for CoinMarketCap DEX endpoints including token lookup, pools, transactions, trending, and security analysis. Use this skill whenever the user mentions DEX API, asks about on-chain token data, wants to look up tokens by contract address, needs security/rug risk checks, or is building DEX integrations. This is the definitive reference for CMC DEX API questions. Trigger: \"DEX API\", \"token by contract address\", \"CMC security API\", \"liquidity pool API\", \"/cmc-api-dex\"",
       "category": "analytics",
       "tags": [
         "coinmarketcap",
@@ -144,7 +144,7 @@
     {
       "name": "cmc-mcp",
       "displayName": "CoinMarketCap MCP",
-      "description": "|",
+      "description": "Fetches cryptocurrency market data, prices, technical analysis, news, and trends using the CoinMarketCap MCP. Use for ANY question involving cryptocurrencies, tokens, or blockchain markets, even if the user doesn't explicitly ask for data. This includes price checks, portfolio questions, market analysis, coin comparisons, holder metrics, technical indicators, and news. Trigger: \"bitcoin\", \"ETH\", \"crypto\", \"token price\", \"market cap\", \"how is [coin] doing\", \"/cmc-mcp\"",
       "category": "analytics",
       "tags": [
         "coinmarketcap",
@@ -1061,7 +1061,7 @@
     {
       "name": "jupiter-prediction-market",
       "displayName": "Jupiter Prediction Market",
-      "description": ">",
+      "description": "Complete Node.js client for Jupiter Prediction Market API. Use when building AI agents for prediction market trading, portfolio management, or automated trading bots on Solana. Covers: (1) Querying events, markets, orders, positions, payouts, history, and social features, (2) Creating/managing trading positions, (3) Claiming payouts after market settlement, (4) Building autonomous agent workflows for market scanning, opportunity finding, portfolio monitoring, and risk management.",
       "category": "defi",
       "tags": [
         "jupiter",
@@ -1089,7 +1089,7 @@
     {
       "name": "openpump-solana",
       "displayName": "Openpump Solana Mcp",
-      "description": ">",
+      "description": "Solana token launch and trading tools via the OpenPump MCP server. Creates tokens on pump.fun, buys and sells tokens, runs market-making bots, snipes new token launches, sets stop-loss orders, generates vanity addresses, manages custodial wallets, transfers SOL and SPL tokens, checks balances, gets price quotes, monitors portfolio positions and creator fees. Use when the user asks to launch a token, trade a memecoin, buy or sell on pump.fun, check wallet balance, transfer SOL, set up a sniper, run a market maker, create wallets, get a price quote, claim creator fees, or do anything with pump.fun tokens. Also use for bundle launches, Jito bundles, bonding curve queries, and spam launches. Do not use for general Solana RPC queries, non-pump.fun DeFi (Raydium, Jupiter, Orca), NFT operations, or importing external private keys.",
       "category": "defi",
       "tags": [
         "solana",
@@ -1168,7 +1168,7 @@
     {
       "name": "pump-mcp-server",
       "displayName": "Pump MCP Server",
-      "description": ">",
+      "description": "Model Context Protocol server exposing 7 tools, 3 resource types, and 3 prompts for AI agent consumption — Solana wallet operations, vanity address generation, message signing, and address validation over stdio transport.",
       "category": "defi",
       "tags": [
         "pump-fun",
@@ -1196,7 +1196,7 @@
     {
       "name": "pumpfun-sniper",
       "displayName": "pumpfun-sniper",
-      "description": "|",
+      "description": "Score any pump.fun token CA for snipe safety (0-100) before buying. Analyzes dev wallet history, social links, liquidity, and holder concentration. Returns SNIPE / CAUTION / AVOID verdict with detailed signal breakdown. Use when the user wants to snipe a new token, check if a pump.fun token is safe, score a new launch, detect rug potential, or analyze a fresh CA before buying. Keywords: pump.fun snipe, rug check, new token score, CA analysis, safe to buy.",
       "category": "defi",
       "tags": [
         "pump-fun",
@@ -1238,7 +1238,7 @@
     {
       "name": "sushiswap-api",
       "displayName": "SushiSwap API",
-      "description": ">",
+      "description": "REST API for optimized token swapping (including executable transaction generation), swap quoting, and pricing using the SushiSwap Aggregator. Use this skill when the user wants to: - Get a swap quote between two tokens on 40+ evm networks - Generate executable swap transaction data - Fetch token prices for a specific network or token - Retrieve token metadata - Discover supported AMM liquidity sources - Integrate SushiSwap swapping or pricing logic via HTTP/REST (and not the SushiSwap Javascript API)",
       "category": "defi",
       "tags": [
         "sushiswap",
@@ -1252,7 +1252,7 @@
     {
       "name": "sushiswap-sdk",
       "displayName": "SushiSwap SDK",
-      "description": ">",
+      "description": "TypeScript SDK for interacting with the SushiSwap Aggregator and related primitives. This SDK is a typed wrapper over the SushiSwap API, providing ergonomic helpers for token amounts, prices, quotes, and swap transaction generation. USE THIS SKILL WHEN: - Building TypeScript or JavaScript applications - You want strongly typed token, amount, and fraction primitives - You need to request swap quotes or executable swap transactions via code - You want safer arithmetic, formatting, and comparisons without floating point errors - You prefer SDK-based integration over raw HTTP requests",
       "category": "defi",
       "tags": [
         "sushiswap",
@@ -1313,7 +1313,7 @@
     {
       "name": "uniswap-official-pay-with-any-token",
       "displayName": "Uniswap Official Pay With Any Token",
-      "description": ">",
+      "description": "Pay HTTP 402 payment challenges using tokens via the Tempo CLI and Uniswap Trading API. Use when the user encounters a 402 Payment Required response, needs to fulfill a machine payment, mentions \"MPP\", \"Tempo payment\", \"pay for API access\", \"HTTP 402\", \"x402\", \"machine payment protocol\", \"pay-with-any-token\", \"use tempo\", \"tempo request\", or \"tempo wallet\".",
       "category": "defi",
       "tags": [
         "defi"
@@ -1396,7 +1396,7 @@
     {
       "name": "uniswap-v4",
       "displayName": "Uniswap V4",
-      "description": ">",
+      "description": "Swap tokens and read pool state on Uniswap V4 (Base, Ethereum). Use when the agent needs to: (1) swap ERC20 tokens or ETH via Uniswap V4, (2) get pool info (price, tick, liquidity, fees), (3) find the best pool for a token pair, (4) quote expected swap output via the on-chain V4Quoter, (5) set up Permit2 approvals for the Universal Router, or (6) execute exact-input swaps with proper slippage protection. Supports Base and Ethereum mainnet, plus Base Sepolia testnet. TypeScript with strict types. Write operations need a private key via env var.",
       "category": "defi",
       "tags": [
         "uniswap",
@@ -1755,7 +1755,7 @@
     {
       "name": "binance-official-onchain-pay",
       "displayName": "Binance Official Onchain Pay",
-      "description": "|",
+      "description": "Binance Onchain Pay enables users to buy cryptocurrency with fiat (e.g., EUR, USD) or send existing crypto from their Binance account directly to any external on-chain wallet address in a single flow—no manual withdrawal needed. Enables partners to integrate crypto buying services: - payment-method-list: Get available payment methods (Card, P2P, Google Pay, Apple Pay, etc.) with limits for a fiat/crypto pair - trading-pairs: List all supported fiat currencies and cryptocurrencies - estimated-quote: Get real-time price quote including exchange rate, fees, and estimated crypto amount - pre-order: Create a buy order and get redirect URL to Binance payment flow - order: Query order status and details (processing, completed, failed, etc.) - crypto-network: Get supported blockchain networks with withdraw fees and limits - p2p/trading-pairs: List P2P-specific trading pairs",
       "category": "exchanges",
       "tags": [
         "official",
@@ -1785,7 +1785,7 @@
     {
       "name": "binance-official-square-post",
       "displayName": "Binance Official Square Post",
-      "description": "|",
+      "description": "Post content to Binance Square (Binance social platform for sharing trading insights). Auto-run on messages like 'post to square', 'square post'. Supports pure text posts.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -1815,7 +1815,7 @@
     {
       "name": "binance-official-web3-crypto-market-rank",
       "displayName": "Binance Official Crypto Market Rank",
-      "description": "|",
+      "description": "Crypto market rankings and leaderboards. Query trending tokens, top searched tokens, Binance Alpha tokens, tokenized stocks, social hype sentiment ranks, smart money inflow token rankings, top meme token rankings from Pulse launchpad, and top trader PnL leaderboards. Use this skill when users ask about token rankings, market trends, social buzz, meme rankings, breakout meme tokens, or top traders.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -1830,7 +1830,7 @@
     {
       "name": "binance-official-web3-meme-rush",
       "displayName": "Binance Official Meme Rush",
-      "description": "|",
+      "description": "Meme token fast-trading assistant with two core capabilities: 1. Meme Rush - Real-time meme token lists from launchpads (Pump.fun, Four.meme, etc.) across new, finalizing, and migrated stages 2. Topic Rush - AI-powered market hot topics with associated tokens ranked by net inflow Use this skill when users ask about new meme tokens, meme launches, bonding curve, migration status, pump.fun tokens, four.meme tokens, fast meme trading, market hot topics, or trending narratives.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -1845,7 +1845,7 @@
     {
       "name": "binance-official-web3-query-address-info",
       "displayName": "Binance Official Query Address Info",
-      "description": "|",
+      "description": "Query any on-chain wallet address token balances and positions. Retrieves all token holdings for a specified wallet address on a given chain, including token name, symbol, price, 24h price change, and holding quantity. Use this skill when users ask about wallet balance, token holds, portfolio, or asset positions for any blockchain address.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -1860,7 +1860,7 @@
     {
       "name": "binance-official-web3-query-token-audit",
       "displayName": "Binance Official Token Audit",
-      "description": "|",
+      "description": "Query token security audit to detect scams, honeypots, and malicious contracts before trading. Returns comprehensive security analysis including contract risks, trading risks, and scam detection. Use when users ask \"is this token safe?\", \"check token security\", \"audit token\", or before any swap.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -1875,7 +1875,7 @@
     {
       "name": "binance-official-web3-query-token-info",
       "displayName": "Binance Official Token Info",
-      "description": "|",
+      "description": "Query token details by keyword, contract address, or chain. Search tokens, get metadata and social links, retrieve real-time market data (price, price trend, volume, holders, liquidity), and fetch K-Line candlestick charts. Use this skill when users search tokens, check token prices, view market data, or request kline/candlestick charts.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -1890,7 +1890,7 @@
     {
       "name": "binance-official-web3-trading-signal",
       "displayName": "Binance Official Trading Signal",
-      "description": "|",
+      "description": "Subscribe and retrieve on-chain Smart Money signals. Monitor trading activities of smart money addresses, including buy/sell signals, trigger price, current price, max gain, and exit rate. Use this skill when users are looking for investment opportunities — smart money signals can serve as valuable references for potential trades.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -2002,7 +2002,7 @@
     {
       "name": "binance-square-post",
       "displayName": "binance square 币安广场",
-      "description": "|",
+      "description": "Post content to Binance Square (Binance social platform for sharing trading insights). Auto-run on messages like 'post to square', 'square post'. Supports pure text posts.",
       "category": "exchanges",
       "tags": [
         "binance",
@@ -2016,7 +2016,7 @@
     {
       "name": "binance-stat-arb-monitor",
       "displayName": "Binance Statistical Arbitrage Monitor",
-      "description": "|",
+      "description": "Binance 统计套利监控系统。基于 ETH/BTC 永续合约价格比率计算 z-score，生成均值回归交易信号并推送到 Telegram 或飞书。 使用场景： (1) 监控统计套利机会（ETH/BTC 比率偏离均值） (2) 计算 z-score 判断开仓/平仓时机 (3) 生成交易信号（OPEN/CLOSE） (4) 通过 Telegram Channel 或飞书推送信号 (5) 记录信号历史用于回测分析 数据来源：Binance USDT 合约公共 API（无需认证即可获取行情数据）",
       "category": "exchanges",
       "tags": [
         "binance",
@@ -2119,7 +2119,7 @@
     {
       "name": "bitget-official-macro-analyst",
       "displayName": "Bitget Official Macro Analyst",
-      "description": ">",
+      "description": "Macro-economic and cross-asset analysis for crypto market context. Use this skill whenever the user asks about the broader economic environment and its effect on crypto or risk assets. Triggers include: macro outlook, interest rates, Fed policy, rate cut, rate hike, FOMC, yield curve, inverted yield curve, recession risk, inflation, CPI, PCE, jobs data, unemployment, GDP, 10-year yield, 2-year yield, spread, dollar strength, DXY, risk-on, risk-off, gold correlation, BTC vs S&P, cross-asset correlation, global markets, tech earnings impact on crypto, forex rates, euro, yen, China market, A-shares, economic calendar, macro environment.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -2134,7 +2134,7 @@
     {
       "name": "bitget-official-market-intel",
       "displayName": "Bitget Official Market Intel",
-      "description": ">",
+      "description": "On-chain and institutional market intelligence — the structural layer beneath price. Use this skill whenever the user asks about: whale activity, exchange flows, token unlocks, ETF inflows/outflows, institutional buying or selling, DeFi TVL, yield opportunities, DEX trending tokens, meme coins, new token launches, market cycle indicators, AHR999, Pi Cycle, rainbow chart, accumulation zone, BTC market cycle, is now a good time to DCA, Coinbase premium, stablecoin supply, on-chain health, ETH gas, BTC fees, mempool, market cap rankings, or anything about what large holders and institutions are doing with their coins.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -2149,7 +2149,7 @@
     {
       "name": "bitget-official-news-briefing",
       "displayName": "Bitget Official News Briefing",
-      "description": ">",
+      "description": "Crypto and financial news aggregation, briefing, and narrative synthesis. Use this skill whenever the user wants news, headlines, or to understand what's happening in markets right now. Triggers include: latest news, what's happening, news briefing, morning briefing, today's news, crypto news, market news, top headlines, recent news, news summary, what happened, hot topics, trending news, breaking news, market update, weekly recap, what's moving markets, catalyst today, current narrative, what are people talking about, social trending, Weibo trending, hot search, Chinese social media, KOL views, analyst opinion, researcher take, any news on [X].",
       "category": "exchanges",
       "tags": [
         "official",
@@ -2164,7 +2164,7 @@
     {
       "name": "bitget-official-sentiment-analyst",
       "displayName": "Bitget Official Sentiment Analyst",
-      "description": ">",
+      "description": "Crypto market sentiment and positioning analysis. Use this skill whenever the user asks about market mood, trader positioning, leverage, or crowd behavior. Triggers include: fear and greed index, fear & greed, long/short ratio, long short, funding rate, open interest, OI, taker ratio, buy/sell pressure, crowded trade, short squeeze, long squeeze, overleveraged, liquidation risk, bullish crowd, bearish crowd, sentiment score, Reddit mentions, social buzz, community mood, are longs crowded, whale flow, exchange outflow, exchange inflow, coins leaving exchanges, accumulation signal.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -2179,7 +2179,7 @@
     {
       "name": "bitget-official-technical-analysis",
       "displayName": "Bitget Official Technical Analysis",
-      "description": ">",
+      "description": "Use this skill when the user asks about crypto technical analysis, technical indicators, trend direction, overbought/oversold, support/resistance, momentum, volatility, volume, or money flow analysis. Trigger keywords include: technical analysis, indicator, trend, overbought, oversold, support, resistance, momentum, volatility, volume, money flow, capital inflow, capital outflow, MACD, RSI, KDJ, BOLL, SuperTrend, EMA, MA, SAR, ATR, VWAP, FIB, StochRSI, MFI, DMI, OBV, ROC, CCI, WR, VOL, DMA, MTM, EMV, AVL, DC, CMF, Fractal. This applies even when the user doesn't say \"indicator\" explicitly — phrases like \"is BTC overbought\", \"what's the trend\", \"where is support\", \"4h analysis\", \"should I buy/sell\" all point to this skill.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -2194,7 +2194,7 @@
     {
       "name": "bitget-official-trading",
       "displayName": "Bitget Official Trading",
-      "description": ">",
+      "description": "Use this skill whenever the user wants to check prices, manage account balances, place or cancel orders, manage futures or spot positions, set leverage, transfer funds, check funding rates, use demo/paper trading, or do anything else on the Bitget exchange. Invoke this skill even when the user doesn't say \"Bitget\" by name — action phrases like \"check my open orders\", \"cancel my BTC position\", \"move USDT to futures\", \"what's my P&L\", \"place a market sell\", \"how much can I withdraw\", \"show my positions\", \"set leverage to 10x\", \"what's the funding rate\" all require this skill. Also invoke for Chinese-language trading requests such as \"查看我的账户\", \"下一个限价单\", \"查看持仓盈亏\", \"转账到合约账户\", \"BTC现在多少钱\" — these are Bitget operations even without the exchange name. Always invoke this skill before attempting any exchange trading task from scratch.",
       "category": "exchanges",
       "tags": [
         "official",
@@ -3891,7 +3891,7 @@
     {
       "name": "erc8004-agent",
       "displayName": "ERC8004 Agent",
-      "description": ">",
+      "description": "8004 Agent Skill for registering AI agents on the ERC-8004 Trustless Agents standard and authenticating them via SIWA (Sign In With Agent). Use this skill when an agent needs to: (1) create or manage an Ethereum wallet for onchain identity, (2) register on the ERC-8004 Identity Registry as an NFT-based agent identity (SIGN UP), (3) authenticate with a server by proving ownership of an ERC-8004 identity using a signed challenge (SIGN IN / SIWA), (4) build or update an ERC-8004 registration file (metadata JSON with endpoints, trust models, services), (5) upload agent metadata to IPFS or base64 data URI, (6) look up or verify an agent's onchain registration. The agent persists public identity state in MEMORY.md. Private keys are held in a separate keyring proxy server — the agent can request signatures but never access the key itself. Triggers on: ERC-8004, trustless agents, agent registration, SIWA, Sign In With Agent, agent identity NFT, Agent0 SDK, agent wallet, agent keystore, keyring proxy.",
       "category": "identity",
       "tags": [
         "erc-8004",
@@ -4436,7 +4436,7 @@
     {
       "name": "cmc-x402",
       "displayName": "CoinMarketCap x402 APIs",
-      "description": "|",
+      "description": "Access CoinMarketCap data via x402 pay-per-request protocol with USDC payments on Base. Use when users mention x402, want CMC data without API keys, ask about pay-per-request APIs, or need to integrate CMC with on-chain payments. Also use for any Coinbase x402 protocol questions. Trigger: \"x402\", \"pay per request\", \"no API key\", \"USDC payment\", \"CMC without subscription\", \"/cmc-x402\"",
       "category": "payments",
       "tags": [
         "x402",
@@ -4865,7 +4865,7 @@
     {
       "name": "xmtp-agent",
       "displayName": "XMTP",
-      "description": ">",
+      "description": "Building and extending XMTP agents with the Agent SDK. Use when: (1) creating or configuring an XMTP agent, (2) implementing agent features (commands, attachments, reactions, groups, transactions, inline actions, or domain resolution).",
       "category": "social",
       "tags": [
         "xmtp",
@@ -5114,7 +5114,7 @@
     {
       "name": "trading-coach",
       "displayName": "Trading Coach",
-      "description": "|",
+      "description": "🏆 AI交易复盘教练 — 把你的券商CSV变成可执行的改进洞察！ 自动FIFO配对持仓，8维度质量评分(入场/出场/趋势/风险...)，10维度AI洞察。 支持富途(中/英)、老虎、中信、华泰等主流券商。 触发条件: 用户提供交易CSV、要求分析交易表现、评估交易质量、生成复盘报告、 计算盈亏统计、识别交易模式问题、\"帮我复盘\"、\"分析我的交易\"。",
       "category": "trading",
       "tags": [
         "trading"
@@ -5125,7 +5125,7 @@
     {
       "name": "trading-signal",
       "displayName": "Trading Signal",
-      "description": "|",
+      "description": "Subscribe and retrieve on-chain Smart Money signals. Monitor trading activities of smart money addresses, including buy/sell signals, trigger price, current price, max gain, and exit rate. Use this skill when users are looking for investment opportunities — smart money signals can serve as valuable references for potential trades.",
       "category": "trading",
       "tags": [
         "trading"

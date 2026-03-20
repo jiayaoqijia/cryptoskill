@@ -53,8 +53,24 @@ def parse_skill_md_frontmatter(path: Path) -> dict:
 
     fm: dict = {}
     current_list_key: str | None = None
+    current_multiline_key: str | None = None
+    multiline_lines: list = []
 
     for line in m.group(1).splitlines():
+        # If we're collecting multiline text (YAML | or >)
+        if current_multiline_key:
+            if re.match(r"^[a-zA-Z\w-]+:", line):
+                # New key starts — save collected multiline
+                fm[current_multiline_key] = " ".join(multiline_lines).strip()
+                current_multiline_key = None
+                multiline_lines = []
+                # Fall through to parse this line as a key
+            elif line.strip():
+                multiline_lines.append(line.strip())
+                continue
+            else:
+                continue
+
         # List item (e.g.  "  - some-tag")
         list_match = re.match(r"^\s+-\s+(.+)", line)
         if list_match and current_list_key:
@@ -68,7 +84,12 @@ def parse_skill_md_frontmatter(path: Path) -> dict:
         if kv:
             key = kv.group(1)
             val = kv.group(2).strip().strip('"').strip("'")
-            if val:
+            if val == "|" or val == ">":
+                # YAML multiline block scalar
+                current_multiline_key = key
+                multiline_lines = []
+                current_list_key = None
+            elif val:
                 fm[key] = val
                 current_list_key = None
             else:
@@ -77,6 +98,10 @@ def parse_skill_md_frontmatter(path: Path) -> dict:
             continue
 
         current_list_key = None
+
+    # Flush any remaining multiline
+    if current_multiline_key and multiline_lines:
+        fm[current_multiline_key] = " ".join(multiline_lines).strip()
 
     return fm
 

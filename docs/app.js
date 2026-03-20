@@ -683,6 +683,36 @@
     });
   }
 
+  // --- Quick Submit Form ---
+  const quickSubmitForm = document.getElementById('quickSubmitForm');
+  if (quickSubmitForm) {
+    quickSubmitForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('submitName').value.trim();
+      const url = document.getElementById('submitURL').value.trim();
+      const category = document.getElementById('submitCategory').value;
+      const desc = document.getElementById('submitDesc').value.trim();
+      const email = document.getElementById('submitEmail').value.trim();
+
+      if (!name || !url) {
+        alert('Please fill in at least the skill name and GitHub URL.');
+        return;
+      }
+
+      const subject = encodeURIComponent('[CryptoSkill] New Skill Submission: ' + name);
+      const body = encodeURIComponent(
+        'Skill Name: ' + name + '\n' +
+        'GitHub URL: ' + url + '\n' +
+        'Category: ' + (category || 'Not specified') + '\n' +
+        'Description: ' + (desc || 'Not provided') + '\n' +
+        'Submitter Email: ' + (email || 'Not provided') + '\n\n' +
+        '---\nSubmitted via cryptoskill.org'
+      );
+
+      window.location.href = 'mailto:maintainers@altresear.ch?subject=' + subject + '&body=' + body;
+    });
+  }
+
   // --- Install Tab Switching ---
   window.switchInstallTab = function (tab, btn) {
     document.querySelectorAll('.install-panel').forEach(p => p.style.display = 'none');
