@@ -5731,6 +5731,989 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
+    },
+    {
+      "name": "binance-official-query-token-audit",
+      "displayName": "Query Token Audit",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-crypto-market-rank",
+      "displayName": "Crypto Market Rank",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-trading-signal",
+      "displayName": "Trading Signal",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-address-info",
+      "displayName": "Query Address Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-meme-rush",
+      "displayName": "Meme Rush",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-token-info",
+      "displayName": "Query Token Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-simple-earn",
+      "displayName": "Simple Earn",
+      "description": "Binance Simple-earn request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-vip-loan",
+      "displayName": "Vip Loan",
+      "description": "Binance Vip-loan request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-fiat",
+      "displayName": "Fiat",
+      "description": "Binance Fiat request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-audit-log",
+      "displayName": "Okx Audit Log",
+      "description": "Use this skill when the user asks to export audit logs, find audit log location, view command history, 导出日志, 查看日志, 日志路径, 操作记录, 调用记录, 命令历史. Do NOT use for wallet balance, token search, swap, or any other on-chain operation — use the corresponding skill instead.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-onchain-gateway",
+      "displayName": "Okx Onchain Gateway",
+      "description": "Use this skill to 'broadcast transaction', 'send tx', 'estimate gas', 'simulate transaction', 'check tx status', 'track my transaction', 'get gas price', 'gas limit', 'broadcast signed tx', 'transaction hash confirmed on-chain', '交易哈希是否上链', '是否确认', or mentions broadcasting transactions, sending transactions on-chain, gas estimation, transaction simulation, tracking broadcast orders, or checking transaction status. Covers gas price, gas limit estimation, transaction simulation, transaction broadcasting, and order tracking across XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, and 20+ other chains. Do NOT use for swap quote or execution - use okx-dex-swap instead. Do NOT use for general programming questions about transaction handling. Do NOT use when the user says only a single word like 'gas' or 'broadcast' without specifying a chain, transaction, or any other context.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-swap",
+      "displayName": "Okx Dex Swap",
+      "description": "Use this skill to 'swap tokens', 'trade OKB for USDC', 'buy tokens', 'sell tokens', 'exchange crypto', 'convert tokens', 'swap SOL for USDC', 'get a swap quote', 'execute a trade', 'find the best swap route', 'cheapest way to swap', 'optimal swap', 'compare swap rates', '换币', '买币', '卖币', '兑换', '交易', '代币兑换', '最优路径', '滑点', or mentions swapping, trading, buying, selling, or exchanging tokens on XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, or any of 20+ supported chains. Aggregates liquidity from 500+ DEX sources for optimal routing and price. Supports slippage control, price impact protection, and cross-DEX route optimization. Do NOT use for questions about HOW TO implement, code, or integrate swaps into an application — only for actually executing swap operations. Do NOT use for analytical questions about historical swap volume. Do NOT use when the user says only a single word like 'swap' or 'trade' without specifying tokens, amounts, or any other context.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-wallet-portfolio",
+      "displayName": "Okx Wallet Portfolio",
+      "description": "Use this skill when the user provides a specific wallet address and wants to check its balance, token holdings, portfolio value, or DeFi positions. Typical triggers: 'check balance of 0xAbc...', 'show tokens in this address', 'what tokens does 0xAbc hold', 'portfolio value of this address', address portfolio value, multi-chain balance lookup for a given address. Supports XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, and 20+ other chains. Do NOT use when the user asks about their own wallet without providing an address (e.g., 'check my wallet balance', 'show my assets', '查看我的余额') — use okx-agentic-wallet instead, which queries the logged-in wallet. Do NOT use for PnL analysis, DEX history, realized/unrealized profit — use okx-dex-market. Do NOT use for signal tracking — use okx-dex-signal. Do NOT use for meme scanning — use okx-dex-trenches. Do NOT use for programming questions about balance APIs or integration.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-x402-payment",
+      "displayName": "Okx X402 Payment",
+      "description": "This skill should be used when the user encounters an HTTP 402 Payment Required response, wants to pay for a payment-gated API or resource, or mentions 'x402', 'pay for access', '402 payment', 'payment-gated URL', or 'sign x402 payment'. Primary path signs via TEE with a wallet session (JWT); fallback path guides local EIP-3009 signing with the user's own private key if they have no wallet. Returns the payment proof (signature + authorization) that the caller can attach as a payment header to access the resource. Do NOT use for swap or token transfers — use okx-dex-swap instead. Do NOT use for wallet balance or portfolio queries — use okx-agentic-wallet or okx-wallet-portfolio. Do NOT use for security scanning — use okx-security. Do NOT use for transaction broadcasting — use okx-onchain-gateway. Do NOT use for general programming questions.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-signal",
+      "displayName": "Okx Dex Signal",
+      "description": "Use this skill for smart-money/whale/KOL/大户 aggregated buy signal/信号 alerts and leaderboard/牛人榜 rankings — monitoring aggregated notable wallet buying signals and who the top traders are. Covers: real-time aggregated buy signal alerts from smart money, KOL/influencers, and whales; filtering by wallet type, trade size, market cap, liquidity; leaderboard of top traders ranked by PnL, win rate, volume, or ROI across chains. Use when the user asks '大户在买什么', 'show me whale signals', 'smart money alerts', '信号', '大户信号', 'top traders', '牛人榜', or wants aggregated notable wallet activity signals. Do NOT use for raw per-transaction DEX trade feed, sell-direction tracking ('卖出动态', '追踪聪明钱卖出', 'raw trade feed'), or individual transaction queries of smart money/KOL — use okx-dex-market address-tracker-activities. Do NOT use for meme/pump.fun token scanning — use okx-dex-trenches. Do NOT use for individual token holder distribution — use okx-dex-token.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-agentic-wallet",
+      "displayName": "Okx Agentic Wallet",
+      "description": "Use this skill when the user mentions wallet login, sign in, verify OTP, add wallet, switch account, wallet status, logout, wallet balance, assets, holdings, send tokens, transfer ETH, transfer USDC, pay someone, send crypto, send ERC-20, send SPL, transaction history, recent transactions, tx status, tx detail, order list, call smart contract, interact with contract, execute contract function, send calldata, invoke smart contract, show my addresses, wallet addresses, deposit, receive, receive address, top up, fund my wallet. Chinese: 登录钱包, 钱包登录, 验证OTP, 添加钱包, 切换账户, 钱包状态, 退出登录, 余额, 资产, 钱包列表, 账户列表, 发送代币, 转账, 交易历史, 交易记录, 合约调用, 我的地址, 钱包地址, 充值, 充币, 收款, 收款地址, 入金. Manages the wallet lifecycle: auth (login, OTP verify, account addition, switching, status, logout), authenticated balance queries, wallet address display (grouped by XLayer/EVM/Solana), token transfers (native & ERC-20/SPL), transaction history, and smart contract calls. Do NOT use for DEX swaps — use okx-dex-swap. Do NOT use for token search or market data — use okx-dex-token or okx-dex-market. Do NOT use for smart money / whale / KOL signals — use okx-dex-signal. Do NOT use for meme token scanning — use okx-dex-trenches. Do NOT use for transaction broadcasting (non-wallet) — use okx-onchain-gateway. Do NOT use when the user says only a single word like 'wallet' or 'login' without specifying an action or context. Do NOT use for security scanning (token/DApp/tx/sig) — use okx-security. Do NOT use for querying a specific public address's portfolio balance (user provides an explicit address like 0xAbc...) — use okx-wallet-portfolio. Do NOT use for PnL analysis (win rate, realized/unrealized PnL, DEX history) — use okx-dex-market.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-market",
+      "displayName": "Okx Dex Market",
+      "description": "Use this skill for on-chain market data: token prices/价格, K-line/OHLC charts, index prices, wallet PnL/盈亏分析 (win rate, my DEX trade history, realized/unrealized PnL per token), and raw DEX transaction feed for tracked addresses (latest trades/transactions by smart money, KOL, or custom addresses). Use when the user asks for 'token price', 'price chart', 'candlestick', 'K线', 'OHLC', 'how much is X worth', 'show my PnL', '胜率', '盈亏', 'my DEX history', 'realized profit', 'unrealized profit', 'latest trades by smart money', 'what are KOL wallets buying', 'track address trades', 'KOL交易动态', '聪明钱最新交易', '追踪地址交易', '追踪聪明钱卖出', '卖出动态', 'smart money sell', or 'address transaction feed'. Do NOT use for smart-money/whale/KOL aggregated signal alerts — use okx-dex-signal. Do NOT use for meme/pump.fun token scanning — use okx-dex-trenches. Do NOT use for token search, holder distribution, liquidity pools, or honeypot checks — use okx-dex-token.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-security",
+      "displayName": "Okx Security",
+      "description": "Use this skill for security scanning: check transaction safety, is this transaction safe, pre-execution check, security scan, token risk scanning, honeypot detection, DApp/URL phishing detection, message signature safety, malicious transaction detection, approval safety checks, token approval management. Triggers: 'is this token safe', 'check token security', 'honeypot check', 'scan this tx', 'scan this swap tx', 'tx risk check', 'is this URL a scam', 'check if this dapp is safe', 'phishing site check', 'is this signature safe', 'check this signing request', 'check my approvals', 'show risky approvals', 'revoke approval', 'check if this approve is safe', token authorization, ERC20 allowance, Permit2. Covers token-scan, dapp-scan, tx-scan (EVM+Solana pre-execution), sig-scan (EIP-712/personal_sign), approvals (ERC-20/Permit2). Chinese: 安全扫描, 代币安全, 蜜罐检测, 貔貅盘, 钓鱼网站, 交易安全, 签名安全, 代币风险, 授权管理, 授权查询, 风险授权, 代币授权. Do NOT use for wallet balance/send/history — use okx-agentic-wallet.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-trenches",
+      "displayName": "Okx Dex Trenches",
+      "description": "Use this skill for meme/打狗/alpha token research on pump.fun and similar launchpads: scanning new token launches, checking developer reputation/开发者信息/dev launch history/has this dev rugged before/开发者跑路记录, bundle/sniper detection/捆绑狙击, bonding curve status/bonding curve progress, finding similar tokens by the same dev/相似代币, and wallets that co-invested (同车/aped) into a token. Use when the user asks about 'new meme coins', 'pump.fun launches', 'trenches', 'trench', '扫链', 'developer launch history', 'developer rug history', 'check if dev has rugged', 'bundler analysis', 'who else bought this token', 'who aped into this', 'similar tokens', 'bonding curve progress', '打狗', '新盘', '开发者信息', '开发者历史', '捆绑', '同车', 'rug pull count', 'similar meme coins', '捆绑情况', '已迁移出 bonding curve', or '发过多少个项目'. Do NOT use for market-wide whale/signal tracking — use okx-dex-signal. Do NOT use for per-token holder distribution or honeypot checks — use okx-dex-token.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-token",
+      "displayName": "Okx Dex Token",
+      "description": "Use this skill for token-level data: cluster overview, search tokens, trending/hot tokens (热门, 代币榜单), liquidity pools, holder distribution (whale/巨鲸, sniper, bundler percent), token safety and honeypot risk (貔貅盘, 'is this token a honeypot', 'is this safe to buy', 'rugged?', 'can I sell this'), who created a token, recent buy/sell activity, top profit addresses, trade history by wallet type, or holder cluster analysis (持仓集中度, rug pull probability/跑路风险, new wallet percentage/新钱包持仓比例, suspicious holding percentage/可疑持仓%, bundle hold percent, holder clusters, 'are top holders in same cluster'). Invoke on user intent; address can be provided after. Do NOT use for market-wide whale/signal tracking — use okx-dex-signal. Do NOT use for meme/pump.fun launch scanning, dev reputation, or bundle detection — use okx-dex-trenches. Do NOT use for personal DEX trade history or price charts — use okx-dex-market.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-portfolio",
+      "displayName": "Okx Cex Portfolio",
+      "description": "This skill should be used when the user asks about 'account balance', 'how much USDT do I have', 'my funding account', 'show my positions', 'open positions', 'position P&L', 'unrealized PnL', 'closed positions', 'position history', 'realized PnL', 'account bills', 'transaction history', 'trading fees', 'fee tier', 'account config', 'max order size', 'how much can I buy', 'withdrawable amount', 'transfer funds', 'move USDT to trading account', or 'switch position mode'. Requires API credentials. Do NOT use for market prices (use okx-cex-market), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-trade",
+      "displayName": "Okx Cex Trade",
+      "description": "This skill should be used when the user asks to 'buy BTC', 'sell ETH', 'place a limit order', 'place a market order', 'cancel my order', 'amend my order', 'long BTC perp', 'short ETH swap', 'open a position', 'close a position', 'set take profit', 'set stop loss', 'add a trailing stop', 'set leverage', 'check my orders', 'order status', 'fill history', 'trade history', 'buy a call', 'sell a put', 'buy call option', 'sell put option', 'option chain', 'implied volatility', 'IV', 'option Greeks', 'delta', 'gamma', 'theta', 'vega', 'delta hedge', 'option order', 'option position', 'option fills', or any request to place/cancel/amend spot, perpetual swap, delivery futures, or options orders on OKX CEX. Covers spot trading, swap/perpetual contracts, delivery futures, options (calls/puts, Greeks, IV), and conditional (TP/SL/trailing) algo orders. Requires API credentials. Do NOT use for market data (use okx-cex-market), account balance/positions (use okx-cex-portfolio), or grid/DCA bots (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-bot",
+      "displayName": "Okx Cex Bot",
+      "description": "This skill should be used when the user asks to 'start a grid bot', 'create a grid bot', 'stop the grid bot', 'show my grid bots', 'grid bot status', 'grid bot P&L', 'create a DCA bot', 'start a DCA bot', 'set up a martingale bot', 'show my DCA bots', 'stop the DCA bot', 'DCA P&L', or any request involving creating, stopping, querying, or monitoring grid or DCA (Dollar Cost Averaging / Martingale) bots on OKX CEX. Grid covers both spot and contract variants. DCA is contract-only (leveraged Martingale on futures/swaps). Requires API credentials. Do NOT use for regular spot/swap/futures orders (use okx-cex-trade), market data (use okx-cex-market), or account balance/portfolio (use okx-cex-portfolio).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-market",
+      "displayName": "Okx Cex Market",
+      "description": "This skill should be used when the user asks for 'price of BTC', 'ETH ticker', 'show me the orderbook', 'market depth', 'BTC candles', 'OHLCV chart data', 'funding rate', 'open interest', 'mark price', 'index price', 'recent trades', 'price limit', 'list instruments', 'what instruments are available', or any request to query public market data on OKX CEX. All commands are read-only and do NOT require API credentials. Do NOT use for account balance/positions (use okx-cex-portfolio), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-earn",
+      "displayName": "Okx Cex Earn",
+      "description": "Manages OKX Simple Earn (flexible savings/lending), On-chain Earn (staking/DeFi), and Dual Investment (DCD/双币赢) via the okx CLI. Use this skill whenever the user wants to check earn balances, subscribe or redeem earn products, view or set lending rates, monitor on-chain staking orders, or interact with dual investment structured products — even if phrased casually as 活期赚币, 赚币, 申购, 赎回, 链上赚币, 质押, 理财, 双币赢, 双币理财, 双币申购, 高卖, 低买, dual investment, DCD, buy low, sell high structured product, earn with target price, or 目标价. Also use when the user asks about idle funds and whether to earn on them.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bitget-official-skills",
+      "displayName": "Bitget",
+      "description": ">",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "BitgetLimited",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-tax-export",
+      "displayName": "Kraken Tax Export",
+      "description": "Export trade history, ledgers, and cost basis data for tax reporting.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-fee-optimization",
+      "displayName": "Kraken Fee Optimization",
+      "description": "Minimize trading fees through maker orders, volume tiers, and fee-aware execution.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-dca-strategy",
+      "displayName": "Kraken Dca Strategy",
+      "description": "Dollar cost averaging with scheduled buys and performance tracking.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-funding-carry",
+      "displayName": "Kraken Funding Carry",
+      "description": "Earn funding rate payments by positioning on the paying side of perpetuals.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-ws-streaming",
+      "displayName": "Kraken Ws Streaming",
+      "description": "Real-time data streaming via WebSocket for spot and futures.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-basis-trading",
+      "displayName": "Kraken Basis Trading",
+      "description": "Capture the spot-futures price spread with delta-neutral basis trades.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-futures-trading",
+      "displayName": "Kraken Futures Trading",
+      "description": "Place, manage, and monitor futures orders across the full lifecycle.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-autonomy-levels",
+      "displayName": "Kraken Autonomy Levels",
+      "description": "Progress from manual trading to full agent autonomy with controlled risk at each level.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-twap-execution",
+      "displayName": "Kraken Twap Execution",
+      "description": "Execute large orders as time-weighted slices to reduce market impact.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-paper-to-live",
+      "displayName": "Kraken Paper To Live",
+      "description": "Promote a validated paper strategy to live trading with safety checks.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-funding-ops",
+      "displayName": "Kraken Funding Ops",
+      "description": "Manage deposits, withdrawals, and wallet transfers safely.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-spot-execution",
+      "displayName": "Kraken Spot Execution",
+      "description": "Execute spot orders with validation, confirmation gates, and post-trade checks.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-subaccount-ops",
+      "displayName": "Kraken Subaccount Ops",
+      "description": "Create and manage subaccounts with inter-account transfers.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-risk-operations",
+      "displayName": "Kraken Risk Operations",
+      "description": "Operational risk controls for live agent trading sessions.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-error-recovery",
+      "displayName": "Kraken Error Recovery",
+      "description": "Handle order failures, network errors, and duplicate submissions safely.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-alert-patterns",
+      "displayName": "Kraken Alert Patterns",
+      "description": "Price alerts, threshold monitoring, and notification triggers for agents.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-grid-trading",
+      "displayName": "Kraken Grid Trading",
+      "description": "Grid trading strategy with layered buy and sell orders across a price range.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-rate-limits",
+      "displayName": "Kraken Rate Limits",
+      "description": "Understand Kraken API rate limits and adapt agent behavior when limits are hit.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "2.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-shared",
+      "displayName": "Kraken Shared",
+      "description": "Shared runtime contract for kraken-cli: auth, invocation, parsing, and safety.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-earn-staking",
+      "displayName": "Kraken Earn Staking",
+      "description": "Discover staking strategies, allocate funds, and track earn positions.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-futures-risk",
+      "displayName": "Kraken Futures Risk",
+      "description": "Futures-specific risk management: leverage, funding rates, margin, and liquidation awareness.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-mcp-integration",
+      "displayName": "Kraken Mcp Integration",
+      "description": "Connect MCP clients to kraken-cli for native tool calling without subprocess wrappers.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-paper-strategy",
+      "displayName": "Kraken Paper Strategy",
+      "description": "Test strategy logic on paper trading before touching live funds.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-rebalancing",
+      "displayName": "Kraken Rebalancing",
+      "description": "Portfolio rebalancing to maintain target allocations across assets.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-portfolio-intel",
+      "displayName": "Kraken Portfolio Intel",
+      "description": "Portfolio analysis, P&L tracking, trade history, and export reports.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-market-intel",
+      "displayName": "Kraken Market Intel",
+      "description": "Read market state with low-noise data pulls and streaming updates.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-order-types",
+      "displayName": "Kraken Order Types",
+      "description": "Complete reference for all spot and futures order types and modifiers.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-liquidation-guard",
+      "displayName": "Kraken Liquidation Guard",
+      "description": "Prevent futures liquidation through margin monitoring and emergency procedures.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-stop-take-profit",
+      "displayName": "Kraken Stop Take Profit",
+      "description": "Manage stop-loss and take-profit orders for risk-bounded positions.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kraken-official-kraken-multi-pair",
+      "displayName": "Kraken Multi Pair",
+      "description": "Monitor multiple trading pairs simultaneously for screening and comparison.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "krakenfx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-configurator",
+      "displayName": "Configurator",
+      "description": "Configure CCA (Continuous Clearing Auction) smart contract parameters through an interactive bulk form flow. Use when user says \"configure auction\", \"cca auction\", \"setup token auction\", \"auction configuration\", \"continuous auction\", or mentions CCA contracts.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-deployer",
+      "displayName": "Deployer",
+      "description": "Deploy CCA (Continuous Clearing Auction) smart contracts using the Factory pattern. Use when user says \"deploy auction\", \"deploy cca\", \"factory deployment\", or wants to deploy a configured auction.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-security-foundations",
+      "displayName": "V4 Security Foundations",
+      "description": "Security-first Uniswap v4 hook development. Use when user mentions \"v4 hooks\", \"hook security\", \"PoolManager\", \"beforeSwap\", \"afterSwap\", or asks about V4 hook best practices, vulnerabilities, or audit requirements.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bnb-official-bnbchain-mcp-skill",
+      "displayName": "Bnbchain Mcp",
+      "description": "BNB Chain MCP server connection and tool usage. Covers npx @bnb-chain/mcp@latest, PRIVATE_KEY and RPC, and every MCP tool — blocks, transactions, contracts, ERC20/NFT transfers, wallet, ERC-8004 agent registration, Greenfield. Use when connecting to bnbchain-mcp, querying or transacting on BNB Chain/opBNB/EVM, registering as ERC-8004 agent, or using Greenfield.",
+      "category": "chains",
+      "tags": [
+        "official",
+        "chains"
+      ],
+      "author": "bnb-chain",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-read-temp-file",
+      "displayName": "Read Temp File",
+      "description": "Reads the content of a file located in the temporary directory (temp/) which is otherwise ignored by git.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-codex-session-bootstrap",
+      "displayName": "Codex Session Bootstrap",
+      "description": "Codex-only mandatory startup skill for this repository. Trigger for every user request in this project, including read-only questions, planning, and code changes. Run before any reasoning, shell commands, or file edits.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-implementation-plan-review",
+      "displayName": "Implementation Plan Review",
+      "description": "Expert review of an implementation plan against a GitHub issue/enhancement description (provided as a local file or a GitHub issue URL) and the current repository codebase. Use when asked to critique a plan for correctness, completeness, codebase alignment, risks, and test/rollout readiness (do not implement).",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-gh-issue-improvement",
+      "displayName": "Gh Issue Improvement",
+      "description": "Generate a structured improvement/enhancement proposal for GitHub issues based on conversation context",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-gh-issue-publish",
+      "displayName": "Gh Issue Publish",
+      "description": "Publish a GitHub issue from a markdown file in temp/gh_issues/ created by gh-issue-bug or gh-issue-improvement skills",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-plan-export",
+      "displayName": "Plan Export",
+      "description": "Export a detailed phased implementation plan for a GitHub issue to a file, reading all applicable rules from .cursor/rules before planning",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-test-guided-tool-run",
+      "displayName": "Test Guided Tool Run",
+      "description": "Use when user asks to \"run tool as function\", \"test directly\", or \"call standalone\" (outside MCP server). Essential for correct mock Context setup (MagicMock + AsyncMock). Finds integration tests with real test data.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-consult-spec",
+      "displayName": "Consult Spec",
+      "description": "|",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-describe-changes",
+      "displayName": "Describe Changes",
+      "description": "Describe very high level changes required to implement discussed functionality (functionality, test, docs)",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "blockscout-gh-issue-bug",
+      "displayName": "Gh Issue Bug",
+      "description": "Generate a structured bug report for GitHub issues based on conversation context about bugs, errors, or broken functionality",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "blockscout",
+      "version": "1.0.0"
+    },
+    {
+      "name": "senpi-skills",
+      "displayName": "Senpi Skills",
+      "description": "Agent Skills for autonomous crypto trading on Hyperliquid — trailing stops, market scanning, position management, and more.",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "Senpi-ai",
+      "version": "1.0.0"
+    },
+    {
+      "name": "apify-crypto-skill",
+      "displayName": "Apify Crypto Skill",
+      "description": "Crypto data skills for AI agents — wraps Apify actors for KuCoin OHLCV and CoinGecko market data",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "foreztgump",
+      "version": "1.0.0"
+    },
+    {
+      "name": "virtual-exchange",
+      "displayName": "Virtual Exchange",
+      "description": "Virtual crypto exchange for AI agents - spot, futures (1-125x), AMM trading with Python SDK and OpenClaw skill",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "Ed1sonL1-byte",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-news-agent",
+      "displayName": "Crypto News Agent",
+      "description": "AI Agent Skill for latest crypto news on ShibClaw platform",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "ShibClaw",
+      "version": "1.0.0"
+    },
+    {
+      "name": "asterdex-mcp-server",
+      "displayName": "Asterdex Mcp Server",
+      "description": "Provide a Model Context Protocol server delivering real-time data, analysis, and trading tools for Aster DEX perpetual futures.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "Excaliber9271",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402-deploy",
+      "displayName": "X402 Deploy",
+      "description": "🚀 Deploy monetized APIs and MCP servers in minutes with 1-click. Easily turn your service into a paid offering without code changes.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "navsahu",
+      "version": "1.0.0"
+    },
+    {
+      "name": "universal-crypto-mcp",
+      "displayName": "Universal Crypto Mcp",
+      "description": "🌐 Enable seamless interaction with EVM blockchains using AI agents through a universal model context protocol server.",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "OnePieceOn",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-mcp-server",
+      "displayName": "Crypto Mcp Server",
+      "description": "📈 Fetch real-time and historical cryptocurrency market data with Crypto MCP Server, offering tools for live pricing, candlestick data, and real-time streaming.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "menorhge3556",
+      "version": "1.0.0"
+    },
+    {
+      "name": "solana-mcp-server",
+      "displayName": "Solana Mcp Server",
+      "description": "MCP-Server für Solana-Blockchain-Daten — Wallets, Token-Preise, DeFi-Yields, Sicherheitschecks",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "AiAgentKarl",
+      "version": "1.0.0"
+    },
+    {
+      "name": "evm-chains-mcp-server",
+      "displayName": "Evm Chains Mcp Server",
+      "description": "🚀 Explore the EVM Chains MCP Server, offering 111 tools across 7 EVM networks for a complete DeFi experience.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "Bazinga640",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hyperliquid-mcp-server",
+      "displayName": "Hyperliquid Mcp Server",
+      "description": "🔗 Connect Claude Code to the power of Hyperliquid DEX with the fully implemented Model Context Protocol (MCP) server for seamless interactions.",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "moner124",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aegis",
+      "displayName": "Aegis",
+      "description": "Safety layer for autonomous DeFi agents. MCP server + Uniswap v4 hook + on-chain gateway. Scan contracts, simulate transactions, block honeypots.",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "StanleytheGoat",
+      "version": "1.0.0"
+    },
+    {
+      "name": "fourtrader-mcp",
+      "displayName": "Fourtrader Mcp",
+      "description": "🚀 Trade Four.meme tokens on BNB Chain with a powerful MCP server, offering real-time data and wallet management for seamless integration and transactions.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "menscheck",
+      "version": "1.0.0"
     }
   ],
   "categories": {
