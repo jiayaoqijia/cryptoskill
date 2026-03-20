@@ -21,34 +21,26 @@
   <meta name="twitter:description" content="Discover, install, and build AI agent skills for every crypto protocol, exchange, and tool.">
 
   <!-- Favicon (inline SVG) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a84ff'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E">
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Dot Pattern Background -->
-  <div class="dot-pattern"></div>
-
   <!-- Navigation -->
   <nav class="navbar">
     <div class="container">
       <a href="#" class="nav-logo">
         <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-          <defs>
-            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#6366f1"/>
-              <stop offset="100%" stop-color="#8b5cf6"/>
-            </linearGradient>
-          </defs>
-          <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+          <rect width="32" height="32" rx="8" fill="#0a84ff"/>
           <text x="16" y="22" font-family="system-ui" font-size="18" font-weight="700" fill="white" text-anchor="middle">CS</text>
         </svg>
         CryptoSkill
       </a>
 
       <ul class="nav-links" id="navLinks">
+        <li><a href="#official">Official</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#categories">Categories</a></li>
         <li><a href="#how-it-works">How It Works</a></li>
@@ -103,10 +95,10 @@
         <span class="dot"></span>
         Open Source Skill Registry
       </div>
-      <h1>The Crypto Skill Hub<br><span class="gradient-text">for AI Agents</span></h1>
+      <h1>The Crypto Skill Hub<br><span class="accent">for AI Agents</span></h1>
       <p class="subtitle">Discover, install, and build AI agent skills for every crypto protocol, exchange, and tool.</p>
       <div class="hero-actions">
-        <a href="#skills" class="btn-primary">
+        <a href="#official" class="btn-primary">
           Browse Skills
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -138,6 +130,42 @@
     </div>
   </section>
 
+  <!-- Official Skills Section -->
+  <section class="official-section section" id="official">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-label">Verified</div>
+        <div class="section-title-row">
+          <h2>Official Skills</h2>
+          <span class="verified-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </span>
+        </div>
+        <p class="section-desc">From verified project teams with official GitHub repos</p>
+      </div>
+      <div class="official-grid stagger" id="officialGrid">
+        <!-- Populated by JS -->
+      </div>
+      <div class="official-skills-detail" id="officialSkillsDetail">
+        <div class="official-skills-detail-header">
+          <h3 id="officialDetailTitle">Skills</h3>
+          <button class="official-skills-detail-close" id="officialDetailClose">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            Close
+          </button>
+        </div>
+        <div class="official-skills-list stagger" id="officialSkillsList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Categories Section -->
   <section class="section" id="categories">
     <div class="container">
@@ -152,13 +180,13 @@
     </div>
   </section>
 
-  <!-- Featured Skills Section -->
+  <!-- Community Skills Section -->
   <section class="section" id="skills">
     <div class="container">
       <div class="section-header fade-in-up">
-        <div class="section-label">Skills</div>
-        <h2 class="section-title">Featured skills</h2>
-        <p class="section-desc">Production-ready skills to give your AI agents crypto superpowers.</p>
+        <div class="section-label">Community</div>
+        <h2 class="section-title">Community Skills</h2>
+        <p class="section-desc">Built by developers for the crypto community.</p>
       </div>
       <div class="skills-filter fade-in-up" id="filterContainer">
         <!-- Populated by JS -->
@@ -205,21 +233,31 @@
     <div class="container">
       <div class="section-header fade-in-up">
         <div class="section-label">Get Started</div>
-        <h2 class="section-title">Install in seconds</h2>
-        <p class="section-desc">One command to add any crypto skill to your AI agent.</p>
+        <h2 class="section-title">Get started in seconds</h2>
+        <p class="section-desc">Clone the repo and copy any skill into your agent's workspace.</p>
       </div>
       <div class="install-box fade-in-up">
-        <div class="install-cmd">
+        <div class="install-cmd" style="margin-bottom:12px">
           <span class="prompt">$</span>
-          <code>npx cryptoskill install binance-spot-api</code>
-          <button class="copy-btn" onclick="copyToClipboard('npx cryptoskill install binance-spot-api', this)" title="Copy to clipboard">
+          <code>git clone https://github.com/jiayaoqijia/cryptoskill.git</code>
+          <button class="copy-btn" onclick="copyToClipboard('git clone https://github.com/jiayaoqijia/cryptoskill.git', this)" title="Copy to clipboard">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
             </svg>
           </button>
         </div>
-        <p class="install-note">Works with any MCP-compatible AI agent framework</p>
+        <div class="install-cmd">
+          <span class="prompt">$</span>
+          <code>cp -r cryptoskill/skills/exchanges/binance-spot-api ~/agent/skills/</code>
+          <button class="copy-btn" onclick="copyToClipboard('cp -r cryptoskill/skills/exchanges/binance-spot-api ~/agent/skills/', this)" title="Copy to clipboard">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+        <p class="install-note">Works with OpenClaw, Claude Code, and any MCP-compatible agent</p>
       </div>
     </div>
   </section>
@@ -238,6 +276,7 @@
           </svg>
           GitHub
         </a>
+        <a href="#official">Official</a>
         <a href="#skills">Skills</a>
         <a href="#categories">Categories</a>
       </div>
