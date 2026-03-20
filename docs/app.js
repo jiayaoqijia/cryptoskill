@@ -22,69 +22,69 @@
       id: 'binance',
       name: 'Binance',
       icon: '🔶',
-      github: 'https://github.com/nicepay-dev/binance-mcp-server',
-      matcher: (s) => s.tags.includes('official') && (s.name.startsWith('binance-official') || s.tags.includes('binance'))
+      github: 'https://github.com/binance/binance-skills-hub',
+      matcher: (s) => s.author === 'binance' || s.name.startsWith('binance-official')
     },
     {
       id: 'okx',
       name: 'OKX',
       icon: '⚫',
-      github: 'https://github.com/nicepay-dev/okx-mcp-server',
-      matcher: (s) => s.tags.includes('official') && (s.name.startsWith('okx-official') || s.tags.includes('okx'))
+      github: 'https://github.com/okx/onchainos-skills',
+      matcher: (s) => s.author === 'okx' || s.name.startsWith('okx-official')
     },
     {
       id: 'gate',
       name: 'Gate.io',
       icon: '🔵',
-      github: 'https://github.com/nicepay-dev/gateio-mcp-server',
-      matcher: (s) => s.name.startsWith('gate-') && s.author === 'gate'
+      github: 'https://github.com/gateio',
+      matcher: (s) => s.author === 'gate' && s.name.startsWith('gate-')
     },
     {
       id: 'nansen',
       name: 'Nansen',
       icon: '📊',
-      github: 'https://github.com/nicepay-dev/nansen-mcp-server',
-      matcher: (s) => s.name.startsWith('nansen-') && s.author === 'nansen'
+      github: 'https://www.nansen.ai',
+      matcher: (s) => s.author === 'nansen' && s.name.startsWith('nansen-')
     },
     {
       id: 'cmc',
       name: 'CoinMarketCap',
       icon: '📈',
-      github: 'https://github.com/nicepay-dev/cmc-mcp-server',
-      matcher: (s) => (s.name.startsWith('cmc-') || s.name.startsWith('coinmarketcap-')) && s.author === 'cmc'
+      github: 'https://github.com/coinmarketcap',
+      matcher: (s) => s.author === 'cmc' && (s.name.startsWith('cmc-') || s.name.startsWith('coinmarketcap-'))
     },
     {
       id: 'bitget',
       name: 'Bitget',
       icon: '🟢',
-      github: 'https://github.com/nicepay-dev/bitget-mcp-server',
-      matcher: (s) => s.tags.includes('official') && (s.name.startsWith('bitget-official') || s.tags.includes('bitget'))
+      github: 'https://github.com/BitgetLimited/agent_hub',
+      matcher: (s) => (s.author === 'bitget' || s.author === 'bitget-wallet-ai-lab') && s.name.startsWith('bitget-official')
     },
     {
       id: 'lightning',
       name: 'Lightning Labs',
       icon: '⚡',
-      github: 'https://github.com/nicepay-dev/lightning-mcp-server',
-      matcher: (s) => s.name.startsWith('lightning-') && s.author === 'roasbeef'
+      github: 'https://github.com/lightningnetwork',
+      matcher: (s) => s.author === 'roasbeef' && s.name.startsWith('lightning-')
     },
     {
       id: 'opensea',
       name: 'OpenSea',
       icon: '🌊',
-      github: 'https://github.com/nicepay-dev/opensea-mcp-server',
-      matcher: (s) => s.name.startsWith('opensea') && s.author === 'opensea'
+      github: 'https://github.com/ProjectOpenSea',
+      matcher: (s) => s.author === 'opensea' && s.name.startsWith('opensea')
     },
     {
       id: 'sushiswap',
       name: 'SushiSwap',
       icon: '🍣',
-      github: 'https://github.com/nicepay-dev/sushi-mcp-server',
-      matcher: (s) => s.name.startsWith('sushiswap') && s.author === 'sushi'
+      github: 'https://github.com/sushiswap',
+      matcher: (s) => s.author === 'sushi' && s.name.startsWith('sushiswap')
     },
     {
       id: 'mcp-servers',
       name: 'MCP Servers',
-      icon: '🔗',
+      icon: '🔌',
       github: 'https://github.com/jiayaoqijia/cryptoskill',
       matcher: (s) => s.tags.includes('official') && s.category === 'mcp-servers'
     }
