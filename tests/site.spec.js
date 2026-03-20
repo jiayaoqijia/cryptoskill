@@ -247,6 +247,11 @@ test.describe('Install Section', () => {
     const claudePanel = page.locator('#install-claude');
     await expect(claudePanel).toBeVisible();
     await expect(claudePanel.locator('code').nth(1)).toContainText('git clone');
+    // Switch to MCP tab
+    await page.locator('.install-tab', { hasText: /MCP/ }).click();
+    const mcpPanel = page.locator('#install-mcp');
+    await expect(mcpPanel).toBeVisible();
+    await expect(mcpPanel.locator('code').nth(1)).toContainText('claude mcp add');
     // Switch to OpenClaw tab
     await page.locator('.install-tab', { hasText: /OpenClaw/ }).click();
     const openclawPanel = page.locator('#install-openclaw');

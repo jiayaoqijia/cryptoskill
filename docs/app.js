@@ -440,6 +440,28 @@
       </div>
       <div class="modal-section-title">Install</div>
       <div class="modal-install">
+        ${skill.category === 'mcp-servers' ? `
+        <div class="install-cmd" style="margin-bottom:6px">
+          <span class="prompt" style="color:var(--accent)">MCP</span>
+          <code>claude mcp add ${skill.name}</code>
+          <button class="copy-btn" onclick="copyToClipboard('claude mcp add ${skill.name}', this)" title="Copy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+        <div class="install-cmd">
+          <span class="prompt" style="color:var(--text-tertiary)">Git</span>
+          <code>git clone ${skill.tags.find(t => t.startsWith('http')) || 'https://github.com/jiayaoqijia/cryptoskill'}</code>
+          <button class="copy-btn" onclick="copyToClipboard('git clone ${skill.tags.find(t => t.startsWith('http')) || ''}', this)" title="Copy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+        ` : `
         <div class="install-cmd" style="margin-bottom:6px">
           <span class="prompt" style="color:var(--accent)">Claude</span>
           <code>cp -r cryptoskill/skills/${skill.category}/${skill.name} .claude/skills/</code>
@@ -460,6 +482,7 @@
             </svg>
           </button>
         </div>
+        `}
       </div>
     `;
     modalOverlay.classList.add('active');
