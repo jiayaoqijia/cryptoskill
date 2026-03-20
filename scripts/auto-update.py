@@ -36,6 +36,7 @@ SKILLS_JSON = DOCS_DIR / "skills.json"
 INDEX_HTML = DOCS_DIR / "index.html"
 ENV_FILE = REPO_ROOT / ".env"
 WATCHLIST_FILE = SCRIPTS_DIR / "watchlist.json"
+REPO_SHAS_FILE = SCRIPTS_DIR / ".repo-shas.json"
 
 LOOKBACK_DAYS = 7
 
@@ -445,18 +446,45 @@ def search_github_for_new_repos(lookback_days: int) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Source 4: Check Official Repos for New/Updated Skills
+# Source 4: Check Official Repos for New/Updated Skills (with SHA tracking)
 # ---------------------------------------------------------------------------
+
+
+def load_repo_shas() -> dict:
+    """Load stored commit SHAs from .repo-shas.json."""
+    if REPO_SHAS_FILE.exists():
+        try:
+            return read_json(REPO_SHAS_FILE)
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
+def save_repo_shas(shas: dict) -> None:
+    """Save commit SHAs to .repo-shas.json."""
+    write_json(REPO_SHAS_FILE, shas)
+
+
+def get_latest_commit_sha(org: str, repo: str) -> str | None:
+    """Fetch the latest commit SHA from GitHub API without cloning."""
+    url = f"https://api.github.com/repos/{org}/{repo}/commits?per_page=1"
+    data = github_api_get(url)
+    if data and isinstance(data, list) and len(data) > 0:
+        return data[0].get("sha")
+    return None
 
 
 def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict], int]:
     """Clone official repos and check for new or updated skills.
 
+    Uses commit SHA tracking to avoid re-cloning repos that haven't changed.
     Returns (new_skills, updated_count).
     """
     new_skills = []
     updated = 0
     existing = existing_skill_names()
+    repo_shas = load_repo_shas()
+    shas_changed = False
 
     for repo_info in OFFICIAL_REPOS:
         org = repo_info["org"]
@@ -464,6 +492,20 @@ def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict],
         category = repo_info["category"]
         prefix = repo_info.get("prefix", "")
         skills_dir_name = repo_info.get("skills_dir", "")
+        sha_key = f"{org}/{repo}"
+
+        # Check latest commit SHA via API before cloning
+        log.info("Checking %s/%s for updates...", org, repo)
+        latest_sha = get_latest_commit_sha(org, repo)
+        if latest_sha:
+            stored_sha = repo_shas.get(sha_key)
+            if stored_sha and stored_sha == latest_sha:
+                log.info("  %s/%s unchanged (SHA: %s), skipping clone", org, repo, latest_sha[:8])
+                continue
+            log.info("  %s/%s has new commits (SHA: %s -> %s)", org, repo,
+                     (stored_sha or "none")[:8], latest_sha[:8])
+        else:
+            log.info("  Could not fetch SHA for %s/%s, will clone to check", org, repo)
 
         clone_dir = Path(f"/tmp/cs-official-{org}-{repo}")
 
@@ -471,7 +513,6 @@ def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict],
         if clone_dir.exists():
             shutil.rmtree(clone_dir)
 
-        log.info("Checking %s/%s for updates...", org, repo)
         result = subprocess.run(
             ["git", "clone", "--depth", "1", f"https://github.com/{org}/{repo}.git", str(clone_dir)],
             capture_output=True, timeout=30,
@@ -542,6 +583,16 @@ def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict],
         # Cleanup
         shutil.rmtree(clone_dir, ignore_errors=True)
 
+        # Save the SHA after successful processing
+        if latest_sha:
+            repo_shas[sha_key] = latest_sha
+            shas_changed = True
+
+    # Persist updated SHAs
+    if shas_changed and not dry_run:
+        save_repo_shas(repo_shas)
+        log.info("Saved updated repo SHAs to %s", REPO_SHAS_FILE)
+
     return new_skills, updated
 
 
@@ -610,6 +661,58 @@ def scan_watchlist_for_new_repos() -> list[dict]:
 
     log.info("Scanned %d watchlist projects, found %d new repos", checked, len(discoveries))
     return discoveries
+
+
+# ---------------------------------------------------------------------------
+# Watchlist timestamp/status updater
+# ---------------------------------------------------------------------------
+
+
+def update_watchlist_after_scan(scanned_github_orgs: set, new_skill_orgs: set, dry_run: bool = False) -> None:
+    """Update watchlist.json after a scan run.
+
+    - Set last_checked to today for any project whose GitHub org was scanned
+    - Change status from "missing" to "added" for projects where new skills were found
+    """
+    if not WATCHLIST_FILE.exists():
+        return
+
+    watchlist = read_json(WATCHLIST_FILE)
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    changes = 0
+
+    for category_key, projects in watchlist.items():
+        if category_key.startswith("_"):
+            continue
+        if not isinstance(projects, list):
+            continue
+
+        for project in projects:
+            github_org = project.get("github")
+            if not github_org:
+                continue
+
+            # Update last_checked for any scanned org
+            if github_org in scanned_github_orgs:
+                if project.get("last_checked") != today:
+                    project["last_checked"] = today
+                    changes += 1
+
+            # Promote status from "missing" to "added" if new skills were found
+            if github_org in new_skill_orgs and project.get("status") == "missing":
+                project["status"] = "added"
+                project["last_checked"] = today
+                changes += 1
+                log.info("  [WATCHLIST] Promoted %s from missing -> added", project.get("name", github_org))
+
+    if changes > 0:
+        if dry_run:
+            log.info("[DRY-RUN] Would update %d entries in watchlist.json", changes)
+        else:
+            write_json(WATCHLIST_FILE, watchlist)
+            log.info("Updated %d entries in watchlist.json", changes)
+    else:
+        log.info("No watchlist changes needed")
 
 
 # ---------------------------------------------------------------------------
@@ -1073,6 +1176,8 @@ def main() -> None:
     parser.add_argument("--lookback-days", type=int, default=LOOKBACK_DAYS)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--no-push", action="store_true")
+    parser.add_argument("--update-watchlist", action="store_true",
+                        help="Update watchlist.json timestamps and statuses after scan")
     parser.add_argument("--skip-openclaw", action="store_true",
                         help="Skip OpenClaw repo scan")
     parser.add_argument("--skip-web", action="store_true",
@@ -1095,17 +1200,82 @@ def main() -> None:
         log.info("=== DRY-RUN MODE ===")
 
     all_new_skills = []
+    # Track which GitHub orgs were scanned and which produced new skills
+    scanned_github_orgs: set = set()
+    new_skill_github_orgs: set = set()
 
-    # --- Source 1: OpenClaw skills repo ---
+    # -----------------------------------------------------------------------
+    # Step 1: Check watchlist for "missing" projects -> scan GitHub -> add new
+    # -----------------------------------------------------------------------
+    if not args.skip_watchlist:
+        log.info("=== Step 1: Watchlist Scan (missing projects) ===")
+        watchlist_discoveries = scan_watchlist_for_new_repos()
+        existing = existing_skill_names()
+        new_watchlist = [d for d in watchlist_discoveries if d["name"] not in existing]
+
+        # Track scanned orgs from watchlist
+        if WATCHLIST_FILE.exists():
+            try:
+                wl = read_json(WATCHLIST_FILE)
+                for cat_key, projects in wl.items():
+                    if cat_key.startswith("_") or not isinstance(projects, list):
+                        continue
+                    for proj in projects:
+                        if proj.get("status") in ("missing", "watch") and proj.get("github"):
+                            scanned_github_orgs.add(proj["github"])
+            except (json.JSONDecodeError, OSError):
+                pass
+
+        for d in new_watchlist:
+            created = create_skill_from_discovery(d, dry_run=args.dry_run)
+            if created:
+                all_new_skills.append({
+                    "slug": d["name"],
+                    "name": d["name"],
+                    "displayName": d.get("displayName", d["name"]),
+                    "description": d["description"],
+                    "category": d.get("category", "dev-tools"),
+                    "tags": ["official", d.get("category", "dev-tools")],
+                    "author": d.get("author", "unknown"),
+                    "version": "1.0.0",
+                    "owner": d.get("author", "unknown"),
+                    "official": True,
+                    "source": "watchlist-scan",
+                })
+                if d.get("author"):
+                    new_skill_github_orgs.add(d["author"])
+
+    # -----------------------------------------------------------------------
+    # Step 2: Check official repos via SHA comparison -> only clone changed
+    # -----------------------------------------------------------------------
+    updated_count = 0
+    if not args.skip_official:
+        log.info("=== Step 2: Official Repo Updates (SHA-tracked) ===")
+        official_new, updated_count = check_official_repos_for_updates(dry_run=args.dry_run)
+        log.info("Found %d new official skills, %d updated", len(official_new), updated_count)
+        all_new_skills.extend(official_new)
+
+        # Track official repo orgs
+        for repo_info in OFFICIAL_REPOS:
+            scanned_github_orgs.add(repo_info["org"])
+        for skill in official_new:
+            if skill.get("author"):
+                new_skill_github_orgs.add(skill["author"])
+
+    # -----------------------------------------------------------------------
+    # Step 3: Scan OpenClaw for new community skills
+    # -----------------------------------------------------------------------
     if not args.skip_openclaw:
-        log.info("=== Source 1: OpenClaw Skills Repo ===")
+        log.info("=== Step 3: OpenClaw Skills Repo ===")
         openclaw_skills = find_new_openclaw_skills(args.source_dir, args.lookback_days)
         log.info("Found %d new skills from OpenClaw", len(openclaw_skills))
         all_new_skills.extend(openclaw_skills)
 
-    # --- Source 2: AltLLM Web/Twitter search ---
+    # -----------------------------------------------------------------------
+    # Step 4: AltLLM/GitHub search for trending
+    # -----------------------------------------------------------------------
     if not args.skip_web:
-        log.info("=== Source 2: AltLLM Web/Twitter Search ===")
+        log.info("=== Step 4a: AltLLM Web/Twitter Search ===")
         discoveries = search_trending_crypto_skills()
         # Only add discoveries not already in the repo
         existing = existing_skill_names()
@@ -1130,9 +1300,8 @@ def main() -> None:
                     "source": "altllm-web-search",
                 })
 
-    # --- Source 3: GitHub API search for new repos ---
     if not args.skip_github:
-        log.info("=== Source 3: GitHub API Search ===")
+        log.info("=== Step 4b: GitHub API Search ===")
         github_discoveries = search_github_for_new_repos(args.lookback_days)
         existing = existing_skill_names()
         new_github = [d for d in github_discoveries if d["name"] not in existing]
@@ -1154,47 +1323,22 @@ def main() -> None:
                     "source": "github-search",
                 })
 
-    # --- Source 5: Watchlist scan for missing projects ---
-    if not args.skip_watchlist:
-        log.info("=== Source 5: Watchlist Scan ===")
-        watchlist_discoveries = scan_watchlist_for_new_repos()
-        existing = existing_skill_names()
-        new_watchlist = [d for d in watchlist_discoveries if d["name"] not in existing]
-        for d in new_watchlist:
-            created = create_skill_from_discovery(d, dry_run=args.dry_run)
-            if created:
-                all_new_skills.append({
-                    "slug": d["name"],
-                    "name": d["name"],
-                    "displayName": d.get("displayName", d["name"]),
-                    "description": d["description"],
-                    "category": d.get("category", "dev-tools"),
-                    "tags": ["official", d.get("category", "dev-tools")],
-                    "author": d.get("author", "unknown"),
-                    "version": "1.0.0",
-                    "owner": d.get("author", "unknown"),
-                    "official": True,
-                    "source": "watchlist-scan",
-                })
-
-    # --- Source 4: Check official repos for new/updated skills ---
-    updated_count = 0
-    if not args.skip_official:
-        log.info("=== Source 4: Official Repo Updates ===")
-        official_new, updated_count = check_official_repos_for_updates(dry_run=args.dry_run)
-        log.info("Found %d new official skills, %d updated", len(official_new), updated_count)
-        all_new_skills.extend(official_new)
-
     if not all_new_skills and updated_count == 0:
         log.info("No new or updated crypto skills found — nothing to do.")
+        # Still update watchlist timestamps if requested (scanned orgs were checked)
+        if args.update_watchlist and scanned_github_orgs:
+            log.info("=== Updating watchlist timestamps ===")
+            update_watchlist_after_scan(scanned_github_orgs, new_skill_github_orgs, dry_run=args.dry_run)
         return
 
     if all_new_skills:
         log.info("Total new candidates: %d skills", len(all_new_skills))
 
-    # --- Security checks ---
+    # -----------------------------------------------------------------------
+    # Step 5: Security checks
+    # -----------------------------------------------------------------------
     if all_new_skills and not args.skip_security:
-        log.info("=== Security Scan ===")
+        log.info("=== Step 5: Security Scan ===")
         official = [s for s in all_new_skills if s.get("official")]
         community = [s for s in all_new_skills if not s.get("official")]
 
@@ -1205,16 +1349,22 @@ def main() -> None:
         all_new_skills = safe_official + safe_community
         log.info("After security: %d skills approved", len(all_new_skills))
 
-    # --- Copy skills with source paths ---
+    # -----------------------------------------------------------------------
+    # Step 6: Copy/update skills
+    # -----------------------------------------------------------------------
     copyable = [s for s in all_new_skills if s.get("source_path")]
     copied = copy_skills(copyable, dry_run=args.dry_run)
 
-    # --- Update catalog ---
+    # -----------------------------------------------------------------------
+    # Step 7: Regenerate catalog
+    # -----------------------------------------------------------------------
     if all_new_skills:
         update_skills_json(all_new_skills, dry_run=args.dry_run)
     update_index_html(dry_run=args.dry_run)
 
-    # --- Git commit & push ---
+    # -----------------------------------------------------------------------
+    # Step 8: Commit/push
+    # -----------------------------------------------------------------------
     if not args.dry_run:
         total_changes = len(all_new_skills) + updated_count
         if total_changes > 0:
@@ -1226,6 +1376,13 @@ def main() -> None:
                 parts.append(f"{updated_count} updated")
             msg = f"Auto-update: {', '.join(parts)} crypto skills ({today})"
             git_commit_and_push(total_changes, no_push=args.no_push)
+
+    # -----------------------------------------------------------------------
+    # Step 9: Update watchlist timestamps
+    # -----------------------------------------------------------------------
+    if args.update_watchlist:
+        log.info("=== Step 9: Update Watchlist ===")
+        update_watchlist_after_scan(scanned_github_orgs, new_skill_github_orgs, dry_run=args.dry_run)
 
     log.info("Done! %d new, %d updated.", len(all_new_skills), updated_count)
 
