@@ -6,11 +6,14 @@
 
 Discover, install, and build AI agent skills and MCP servers for every crypto protocol, exchange, and tool.
 
-[![Skills](https://img.shields.io/badge/skills-453-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-45-f59e0b)]() [![Official](https://img.shields.io/badge/official-221-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-477-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-56-f59e0b)]() [![Official](https://img.shields.io/badge/official-221-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-overview) · [MCP Servers](#mcp-servers) · [Submit a Skill](#submit-a-skill) · [Contributing](CONTRIBUTING.md)
 
 </div>
+
+> [!CAUTION]
+> **This project is under active development.** None of the skills or MCP servers listed here have been audited. This is a community-compiled directory of projects shared on social media, listed on skill hubs, and found across public repositories. We make no guarantees about their safety, integrity, or intentions. Exercise extreme caution with anything that touches wallets, private keys, seed phrases, or transaction signing -- a malicious skill can compromise your agent and drain your funds. Always review the source code, verify the authors, and do your own research (DYOR) before installing or granting permissions to any skill or MCP server.
 
 ---
 
@@ -22,8 +25,8 @@ Whether you're building an autonomous trading agent, a portfolio tracker, or a r
 
 ### Why CryptoSkill?
 
-- **453 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, and more
-- **45 MCP servers** for direct protocol integration with Claude, Cursor, and other AI tools
+- **477 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, and more
+- **56 MCP servers** for direct protocol integration with Claude, Cursor, and other AI tools
 - **221 official skills** from verified project teams (Binance, OKX, Kraken, KuCoin, Uniswap, Gate.io, Nansen, and more)
 - **Plug and play** -- works with Claude Code (`.claude/skills/`), OpenClaw (`clawhub install`), and any SKILL.md-based agent
 - **Auto-updated** -- bot scans 128+ projects every 6 hours for new skills and MCP servers
@@ -49,7 +52,7 @@ Whether you're building an autonomous trading agent, a portfolio tracker, or a r
 
 ## MCP Servers
 
-CryptoSkill maintains **45 MCP (Model Context Protocol) servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
+CryptoSkill maintains **56 MCP (Model Context Protocol) servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
 
 ### Official MCP Servers
 
