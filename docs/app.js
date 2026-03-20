@@ -728,8 +728,8 @@
         }
       });
     }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0.05,
+      rootMargin: '0px 0px 50px 0px'
     });
 
     document.querySelectorAll('.fade-in-up:not(.visible), .stagger:not(.visible)').forEach(el => {
