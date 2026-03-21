@@ -220,8 +220,50 @@ CryptoSkill is one layer in a broader stack. Agents need skills to be useful, id
 
 ## Acknowledgments
 
-- [ClawHub](https://clawhub.ai) -- Skill registry where community skills originate
-- [OpenClaw](https://github.com/nicholasgriffintn/openclaw) -- Agent framework powering skills
-- [Ottie](https://github.com/jiayaoqijia/ottie) -- Self-evolving crypto AI agent
+We gratefully acknowledge the following projects and teams whose skills and tools are included in this registry:
+
+### Skill Sources
+
+| Source | Skills | Link |
+|---|---|---|
+| [ClawHub](https://clawhub.ai) | 200+ community skills | Skill registry for OpenClaw agents |
+| [Ottie](https://github.com/jiayaoqijia/ottie) | 18 crypto/DeFi skills | Self-evolving crypto AI agent |
+| [Binance Skills Hub](https://github.com/binance/binance-skills-hub) | 20+ exchange skills | Official Binance AI skills |
+| [OKX OnchainOS](https://github.com/okx/onchainos-skills) | 16+ exchange skills | Official OKX AI skills |
+| [Kraken CLI](https://github.com/krakenfx/kraken-cli) | 50 trading skills | Official Kraken AI-native CLI |
+| [KuCoin Skills Hub](https://github.com/Kucoin/kucoin-skills-hub) | 7 exchange skills | Official KuCoin AI skills |
+| [Uniswap AI](https://github.com/Uniswap/uniswap-ai) | 8 DeFi skills | Official Uniswap agent tools |
+| [Rocket Pool Skills](https://github.com/rocket-pool/skills) | 7 staking skills | Official Rocket Pool agent skills |
+| [GMX AI](https://github.com/gmx-io/gmx-ai) | 2 DeFi skills | Official GMX trading + liquidity |
+| [Venus Agent Skills](https://github.com/VenusProtocol/venus-agent-skills) | 1 lending skill | Official Venus Protocol toolkit |
+| [Polyhub Skills](https://github.com/HubbleVision/polyhub-skills) | 3 trading skills | Copy-trading and portfolio tools |
+| [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) | 7 exchange skills | Official Bitget AI skills |
+| [Awesome Ethereum AI Skills](https://github.com/rickkdev/awesome-ethereum-ai-skills) | 24 skills/MCPs | Curated Ethereum AI skill directory |
+| [Trail of Bits](https://github.com/trailofbits/skills) | Security skills | Smart contract security testing |
+| [OpenZeppelin](https://mcp.openzeppelin.com) | MCP server | Solidity security best practices |
+
+### MCP Server Sources
+
+| Source | Servers | Link |
+|---|---|---|
+| [Solana Foundation](https://github.com/solana-foundation/solana-mcp-official) | 3 MCP servers | Official Solana MCP |
+| [Coinbase](https://github.com/coinbase/agentkit) | AgentKit + Base MCP | Official wallet + Base tools |
+| [Alchemy](https://github.com/alchemyplatform/alchemy-mcp-server) | 1 MCP server | Multi-chain RPC + APIs |
+| [EigenLayer](https://github.com/Layr-Labs/eigenlayer-mcp-server) | 1 MCP server | Restaking protocol docs |
+| [Blockscout](https://github.com/blockscout/mcp-server) | 1 MCP server | Multi-chain block explorer |
+| [CoinGecko](https://github.com/coingecko/coingecko-typescript) | 1 MCP server | Market data + token info |
+| [BNB Chain](https://github.com/bnb-chain/bnbchain-mcp) | 1 MCP server | BSC + opBNB + Greenfield |
+| [Monad](https://github.com/monad-developers/monad-mcp) | 1 MCP server | Monad blockchain tools |
+| [NEAR](https://github.com/nearai/near-mcp) | 1 MCP server | NEAR protocol integration |
+| [Aptos](https://github.com/aptos-labs/aptos-npm-mcp) | 1 MCP server | Aptos blockchain tools |
+| [Alpaca](https://github.com/alpacahq/alpaca-mcp-server) | 1 MCP server | Stocks + crypto trading |
+| [Awesome Blockchain MCPs](https://github.com/royyannick/awesome-blockchain-mcps) | Reference | Curated MCP directory |
+| [Awesome Crypto MCP Servers](https://github.com/hive-intel/awesome-crypto-mcp-servers) | Reference | Community MCP collection |
+
+### Frameworks & Standards
+
+- [OpenClaw](https://github.com/nicholasgriffintn/openclaw) -- Agent framework powering the SKILL.md format
 - [ERC-8004](https://github.com/jiayaoqijia/8004) -- On-chain agent identity standard
-- All original skill authors -- see `SOURCE.md` in each skill directory
+- [x402](https://github.com/coinbase/x402) -- HTTP 402 agent payment protocol
+
+Every skill includes a `SOURCE.md` file crediting its original author and source repository.
