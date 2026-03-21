@@ -1,6 +1,6 @@
 ---
 name: maiat-trust
-description: Query trust scores, token safety verdicts, and reputation data for AI agents and on-chain addresses via the Maiat Protocol API. Supports agent trust verification, token forensics (honeypot/rug detection), and trust-gated swaps.
+description: Free trust score and token safety API for AI agents. Query agent reputation, detect honeypots/rug pulls, and gate swaps by trust — no API key required.
 version: 0.9.0
 author: JhiNResH
 tags:
@@ -9,9 +9,9 @@ tags:
   - agent-safety
   - token-check
   - rug-detection
-  - acp
   - erc-8004
   - base
+  - free
 homepage: https://github.com/JhiNResH/maiat-protocol
 triggers:
   - "check agent trust score"
@@ -29,7 +29,13 @@ config:
 
 # Maiat Trust — Agent & Token Trust Scores
 
-Trust infrastructure for agent-to-agent transactions. Query trust scores, verify token safety, and gate swaps based on on-chain reputation.
+Free, open trust infrastructure for agent-to-agent transactions. No API key needed — just query.
+
+## Pricing
+
+**Free to use.** All API endpoints are open with no authentication required. The SDK and all contracts are open source (MIT).
+
+For agent-to-agent commerce via ACP (Agent Commerce Protocol), optional paid offerings exist — see [ACP Offerings](#acp-offerings-agent-commerce-protocol) at the bottom.
 
 ## Use This When...
 
@@ -39,9 +45,8 @@ Trust infrastructure for agent-to-agent transactions. Query trust scores, verify
 - "Run token forensics on [address]"
 - "Get a trust-gated swap quote"
 - "Show me the agent leaderboard"
-- "What's the reputation of agent X?"
 
-## API Endpoints
+## API Endpoints (Free, No Auth)
 
 Base URL: `https://app.maiat.io/api/v1`
 
@@ -89,7 +94,7 @@ Returns swap quote only if token passes safety check. Verdict=avoid → no calld
 curl https://app.maiat.io/api/v1/agents?sort=trustScore&limit=50
 ```
 
-## SDK (TypeScript)
+## SDK (TypeScript, Open Source)
 
 ```bash
 npm install @jhinresh/maiat-sdk
@@ -100,19 +105,19 @@ import { MaiatClient } from '@jhinresh/maiat-sdk';
 
 const client = new MaiatClient({ baseUrl: 'https://app.maiat.io' });
 
-// Check agent trust
+// Check agent trust — free
 const score = await client.getAgentScore('0x...');
 console.log(score.trustScore, score.verdict);
 
-// Check token safety
+// Check token safety — free
 const token = await client.checkToken('0x...', 8453);
 console.log(token.verdict, token.flags);
 ```
 
 ## Architecture
 
-- **Guard** — Wallet-level protection, auto-checks before every transaction
-- **Hook** — Uniswap V4 TrustGateHook, rewards good actors via dynamic fees
+- **Guard** — Wallet-level protection, auto-checks before every transaction (open source)
+- **Hook** — Uniswap V4 TrustGateHook, rewards good actors via dynamic fees (on-chain)
 - **Evaluator** — ERC-8183 quality verification for agentic commerce
 - **Wadjet** — ML risk model (60% ML + 40% heuristic) for token forensics
 
@@ -123,7 +128,11 @@ console.log(token.verdict, token.flags);
 - ERC-8004 Identity Registry: `0x8004A169...9432`
 - ERC-8004 Reputation Registry: `0x8004BAa1...9b63`
 
+---
+
 ## ACP Offerings (Agent Commerce Protocol)
+
+For automated agent-to-agent payments via ACP. These are optional — the REST API above is free.
 
 | Offering | Price | Description |
 |----------|-------|-------------|
