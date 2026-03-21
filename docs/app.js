@@ -123,6 +123,14 @@
       matcher: (s) => s.name.startsWith('aptos-official') || s.name === 'aptos-mcp'
     },
     {
+      id: 'circle',
+      name: 'Circle (USDC)',
+      icon: '💵',
+      github: 'https://github.com/circlefin/skills',
+      description: 'USDC stablecoin, wallets, gateway, bridging, and smart contract tools.',
+      matcher: (s) => s.name.startsWith('circle-official')
+    },
+    {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',
