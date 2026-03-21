@@ -5127,6 +5127,105 @@
       "version": "1.0.0"
     },
     {
+      "name": "circle-official-bridge-stablecoin",
+      "displayName": "Circle Official Bridge Stablecoin",
+      "description": "Build USDC bridging with Circle Bridge Kit SDK and Crosschain Transfer Protocol (CCTP). Supports bridging USDC between EVM chains, between EVM chains and Solana, and between any two chains on Circle Wallets (i.e Developer-Controlled Wallets or Programmable wallets). Use when: bridge USDC, setting up Bridge Kit adapters (Viem, Ethers, Solana Kit, Circle Wallets), handling bridge events, collecting custom fees, configuring transfer speed, or using the Forwarding Service. Triggers on: Bridge Kit, bridge USDC, crosschain transfer, CCTP, move USDC between chains, @circle-fin/bridge-kit, adapter-viem, adapter-ethers, adapter-solana-kit, forwarding service, bridge routes.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-arc",
+      "displayName": "Circle Official Use Arc",
+      "description": "Provide instructions on how to build with Arc, Circle's blockchain where USDC is the native gas token. Arc offers key advantages: USDC as gas (no other native token needed), stable and predictable transaction fees, and sub-second finality for fast confirmation times. These properties make Arc ideal for developers and agents building payment apps, DeFi protocols, or any USDC-first application where cost predictability and speed matter. Use skill when Arc or Arc Testnet is mentioned, working with any smart contracts related to Arc, configuring Arc in blockchain projects, bridging USDC to Arc via CCTP, or building USDC-first applications. Triggers: Arc, Arc Testnet, USDC gas, deploy to Arc, Arc chain, stable fees, fast finality.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-circle-wallets",
+      "displayName": "Circle Official Use Circle Wallets",
+      "description": "Choose and implement the right Circle wallet type for your application. Compares developer-controlled, user-controlled, and modular (passkey) wallets across custody model, key management, account types, blockchain support, and use cases. Use whenever blockchain wallet integrations are required for onchain application development. Triggers on: circle wallets, blockchain wallets, choose wallet, wallet comparison, which wallet, wallet types, EOA vs SCA vs MSCA, custody model, embedded wallet, smart account, programmable wallets, create wallet, onchain wallet.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-developer-controlled-wallets",
+      "displayName": "Circle Official Use Developer Controlled Wallets",
+      "description": "Create and manage Circle developer-controlled wallets where the application retains full custody of wallet keys on behalf of end-users. Covers wallet sets, entity secret registration, token transfers, and balance checks via the developer controlled wallets SDK. Triggers on: developer-controlled wallets, dev-controlled wallets, create wallet, wallet set, entity secret, transfer tokens, check balance, EOA wallet, SCA wallet, initiateDeveloperControlledWalletsClient, createWalletSet, createWallets, custody wallet.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-gateway",
+      "displayName": "Circle Official Use Gateway",
+      "description": "Integrate Circle Gateway to hold a unified USDC balance across multiple blockchains and transfer USDC instantly (<500ms) via permissionless deposit, burn, and mint workflows. Available on 11 EVM chains + Solana (mainnet and testnet), plus Arc testnet. Use when: enabling chain-agnostic user experiences, low-latency or instant next-block finality is required, capital needs to be pooled across chains for greater capital efficiency, or building apps with consolidated crosschain balances. Triggers on: Gateway, unified balance, crosschain USDC, instant transfer, chain abstraction, Gateway Wallet, Gateway Minter, gatewayMint, burn intent, crosschain liquidity, payment routing, capital efficiency, permissionless transfer.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-modular-wallets",
+      "displayName": "Circle Official Use Modular Wallets",
+      "description": "Build crypto wallets using Circle Modular Wallets SDK with passkey authentication, gasless transactions, and extensible module architecture. Use when: creating crypto wallets with passkey-based (WebAuthn) registration and login, sending gasless transactions using Circle Gas Station paymaster, batching multiple transactions into a single user operation, implementing passkey recovery using BIP-39 mnemonic phrases, building advanced onchain wallets with custom modules (multisig, subscriptions, session keys). Triggers on: modular wallet, smart account, MSCA, passkey authentication, WebAuthn, gasless, paymaster, Gas Station, bundler client, user operation, userOp, ERC-4337, ERC-6900, account abstraction, toCircleSmartAccount, toPasskeyTransport, toModularTransport, sendUserOperation, batch transactions, 2D nonce, passkey recovery, EIP-1193 provider.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-smart-contract-platform",
+      "displayName": "Circle Official Use Smart Contract Platform",
+      "description": "Deploy, import, interact with, and monitor smart contracts using Circle Smart Contract Platform APIs. Supports bytecode deployment, template contracts (ERC-20/721/1155/Airdrop), ABI-based read/write calls, and webhook event monitoring. Keywords: contract deployment, smart contract, ABI interactions, template contracts, event monitoring, contract webhooks, bytecode, ERC-1155, ERC-20, ERC-721.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-usdc",
+      "displayName": "Circle Official Use Usdc",
+      "description": "USDC is Circle's stablecoin deployed across multiple blockchain ecosystems including EVM chains (Ethereum, Base, Arbitrum, Polygon, Arc) and Solana. Use this skill to check balances, send transfers, approve spending, and verify transactions. Triggers on: USDC balance, send USDC, transfer USDC, approve USDC, USDC allowance, verify USDC transfer, USDC contract address, USDC on Solana, Solana USDC, check balance, SPL token, Associated Token Account, ATA, ERC-20 USDC, parseUnits, formatUnits, 6 decimals, viem, @solana/kit.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "circle-official-use-user-controlled-wallets",
+      "displayName": "Circle Official Use User Controlled Wallets",
+      "description": "Build non-custodial wallets where end users retain control of their private keys via Circle's user-controlled wallets SDK. Supports Google, Apple, Facebook social login, email OTP, and PIN authentication with MPC-based key management. Triggers on: user-controlled wallets, embedded wallet, social login wallet, email OTP wallet, PIN wallet, w3s-pw-web-sdk, challenge execution, executeChallenge, non-custodial wallet, MPC wallet, userToken, deviceToken.",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
       "name": "cmc-x402",
       "displayName": "CoinMarketCap x402 APIs",
       "description": "Access CoinMarketCap data via x402 pay-per-request protocol with USDC payments on Base. Use when users mention x402, want CMC data without API keys, ask about pay-per-request APIs, or need to integrate CMC with on-chain payments. Also use for any Coinbase x402 protocol questions. Trigger: \"x402\", \"pay per request\", \"no API key\", \"USDC payment\", \"CMC without subscription\", \"/cmc-x402\"",

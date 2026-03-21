@@ -6,7 +6,7 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-477-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-56-f59e0b)]() [![Official](https://img.shields.io/badge/official-221-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-489-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-56-f59e0b)]() [![Official](https://img.shields.io/badge/official-221-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-overview) · [MCP Servers](#mcp-servers) · [Submit a Skill](#submit-a-skill) · [Contributing](CONTRIBUTING.md)
 
@@ -165,6 +165,7 @@ clawhub install binance-spot-api
 | [OpenSea](https://opensea.io/) | 2 | ClawHub: dfinzer (CEO) |
 | [SushiSwap](https://www.sushi.com/) | 2 | ClawHub: 0xmasayoshi (CTO) |
 | [Venus Protocol](https://venus.io/) | 1 | [VenusProtocol/venus-agent-skills](https://github.com/VenusProtocol/venus-agent-skills) |
+| [Circle](https://github.com/circlefin/skills) | 9 USDC/wallet skills | Official Circle stablecoin & wallet tools |
 | + MCP servers | 45 | Alchemy, Coinbase, Solana, EigenLayer, Blockscout, Alpaca, NEAR, Base, Monad, CoinGecko, and more |
 
 ## Submit a Skill
@@ -236,7 +237,9 @@ We gratefully acknowledge the following projects and teams whose skills and tool
 | [Rocket Pool Skills](https://github.com/rocket-pool/skills) | 7 staking skills | Official Rocket Pool agent skills |
 | [GMX AI](https://github.com/gmx-io/gmx-ai) | 2 DeFi skills | Official GMX trading + liquidity |
 | [Venus Agent Skills](https://github.com/VenusProtocol/venus-agent-skills) | 1 lending skill | Official Venus Protocol toolkit |
+| [Circle](https://github.com/circlefin/skills) | 9 USDC/wallet skills | Official Circle stablecoin & wallet tools |
 | [Polyhub Skills](https://github.com/HubbleVision/polyhub-skills) | 3 trading skills | Copy-trading and portfolio tools |
+| [Circle](https://github.com/circlefin/skills) | 9 USDC/wallet skills | Official Circle stablecoin & wallet tools |
 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) | 7 exchange skills | Official Bitget AI skills |
 | [Awesome Ethereum AI Skills](https://github.com/rickkdev/awesome-ethereum-ai-skills) | 24 skills/MCPs | Curated Ethereum AI skill directory |
 | [Trail of Bits](https://github.com/trailofbits/skills) | Security skills | Smart contract security testing |
