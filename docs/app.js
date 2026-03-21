@@ -123,6 +123,14 @@
       matcher: (s) => s.name.startsWith('aptos-official') || s.name === 'aptos-mcp'
     },
     {
+      id: 'metamask',
+      name: 'MetaMask',
+      icon: '🦊',
+      github: 'https://github.com/MetaMask/openclaw-skills',
+      description: 'Smart accounts, EIP-7702, delegations, gator CLI, and passkey signers.',
+      matcher: (s) => s.name.startsWith('metamask-official')
+    },
+    {
       id: 'circle',
       name: 'Circle (USDC)',
       icon: '💵',
