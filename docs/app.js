@@ -123,6 +123,14 @@
       matcher: (s) => s.name.startsWith('aptos-official') || s.name === 'aptos-mcp'
     },
     {
+      id: 'moonpay',
+      name: 'MoonPay',
+      icon: '🌙',
+      github: 'https://github.com/moonpay/skills',
+      description: 'Crypto onramp, trading, wallets, block explorer, and payment tools.',
+      matcher: (s) => s.name.startsWith('moonpay-official')
+    },
+    {
       id: 'metamask',
       name: 'MetaMask',
       icon: '🦊',
