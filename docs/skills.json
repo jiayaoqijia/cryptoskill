@@ -7051,6 +7051,222 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
+    },
+    {
+      "name": "uniswap-v4-agent",
+      "displayName": "Uniswap V4 Agent Integration",
+      "description": "Execute swaps and query pool info on Uniswap V4 with hooks support across Ethereum, Base, Arbitrum, and Optimism.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "virtuals-protocol-agent",
+      "displayName": "Virtuals Protocol AI Agent Tools",
+      "description": "Launch, buy, and sell AI agent tokens on Virtuals Protocol bonding curves with VIRTUAL token integration.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kalshi-agent",
+      "displayName": "Kalshi Prediction Market Agent",
+      "description": "Access Kalshi prediction markets with orderbook data, trade history, and event filtering capabilities.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aerodrome-agent",
+      "displayName": "Aerodrome Finance DEX Agent",
+      "description": "Full Aerodrome integration with swaps, LP, gauges, veAERO voting, and bribe claiming on Base.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "jupiter-agent",
+      "displayName": "Jupiter Solana DEX Agent",
+      "description": "Execute swaps and get quotes on Jupiter, the leading Solana DEX aggregator with best route finding.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "eigenlayer-agent",
+      "displayName": "EigenLayer Restaking Agent",
+      "description": "Deposit LSTs, delegate to operators, and manage restaking positions on EigenLayer.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "mellow-restaking-agent",
+      "displayName": "Mellow LRT Vault Agent",
+      "description": "Deposit into curated restaking vaults, earn points, and manage withdrawal flows on Mellow.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ethena-agent",
+      "displayName": "Ethena USDe/sUSDe Agent",
+      "description": "Stake USDe for sUSDe, manage cooldown periods, and track yields on Ethena's synthetic dollar protocol.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pendle-agent",
+      "displayName": "Pendle Yield Trading Agent",
+      "description": "Trade PT/YT tokens, add liquidity, and lock fixed yields on Pendle markets across multiple chains.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "morpho-blue-agent",
+      "displayName": "Morpho Blue Lending Agent",
+      "description": "Supply, borrow, and manage positions on Morpho Blue's efficient lending markets.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "balancer-v3-agent",
+      "displayName": "Balancer V3 Pool Agent",
+      "description": "Swap, add/remove liquidity, and manage positions on Balancer V3 pools with weighted and stable options.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cowswap-agent",
+      "displayName": "CoW Protocol Gasless Swap Agent",
+      "description": "Execute gasless swaps via intent-based trading on CoW Protocol with MEV protection.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "marinade-agent",
+      "displayName": "Marinade Finance SOL Staking Agent",
+      "description": "Stake SOL for mSOL liquid staking token and manage unstaking on Solana.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-yield-agent",
+      "displayName": "DefiLlama Yield Discovery Agent",
+      "description": "Search and compare yield opportunities across all DeFi with risk-adjusted scoring and recommendations.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "alienbase-agent",
+      "displayName": "AlienBase DEX Agent",
+      "description": "Swap via Odos aggregator and farm ALB rewards on AlienBase DEX on Base network.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "convex-agent",
+      "displayName": "Convex Finance Boosted Rewards Agent",
+      "description": "Deposit Curve LP tokens for boosted CRV/CVX rewards and claim extra incentives.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lifi-bridge-agent",
+      "displayName": "Li.Fi Cross-Chain Bridge Agent",
+      "description": "Get quotes and execute cross-chain bridges via Li.Fi aggregator across 20+ chains.",
+      "category": "chains",
+      "tags": [
+        "official",
+        "chains"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-intel-agent",
+      "displayName": "Crypto Intelligence Research Agent",
+      "description": "Comprehensive crypto research with price data, TVL, GitHub activity, tokenomics, and security analysis.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
