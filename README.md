@@ -6,7 +6,7 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-550-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-56-f59e0b)]() [![Official](https://img.shields.io/badge/official-221-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-550-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-56-f59e0b)]() [![Official](https://img.shields.io/badge/official-299-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-550overview) · [MCP Servers](#mcp-servers) · [Submit a Skill](#submit-a-skill) · [Contributing](CONTRIBUTING.md)
 
@@ -119,7 +119,7 @@ cp -r /tmp/cs/skills/dev-tools/cryptoskill .claude/skills/
 ```bash
 # Copy a skill into your project's Claude Code skills
 cp -r /tmp/cs/skills/exchanges/binance-spot-api .claude/skills/
-cp -r /tmp/cs/skills/defi/uniswap-official-swap-integration .claude/skills/
+cp -r /tmp/cs/skills/defi/uniswap-official-299swap-integration .claude/skills/
 ```
 
 ### Install an MCP Server
