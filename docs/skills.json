@@ -55,6 +55,17 @@
       "version": "1.1.0"
     },
     {
+      "name": "elizaos-plugin-defi",
+      "displayName": "ElizaOS DeFi Plugin",
+      "description": "Plugin for ElizaOS framework enabling AI agents to interact with DeFi protocols across multiple chains.",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "privacy-layer",
       "displayName": "Privacy Layer",
       "description": "Privacy-preserving operations for crypto agents. Covers ZK-SNARK private transfers via Railgun Protocol, shielded balances, network egress monitoring, and confidential transaction patterns. Use when asked about private transfers, shielded transactions, or agent privacy.",
@@ -151,6 +162,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "arthur-mcp-server",
+      "displayName": "Arthur MCP Server",
+      "description": "MCP server for on-chain analytics, whale tracking, and smart money analysis.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "bicscan-mcp",
       "displayName": "Bicscan Mcp",
       "description": "Blockchain address risk scoring and AML analysis. Evaluate wallet addresses for suspicious activity, sanctions exposure, and compliance risk.",
@@ -159,6 +181,18 @@
         "analytics"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "chainlink-mcp-server",
+      "displayName": "Chainlink MCP Server",
+      "description": "MCP server for Chainlink Data Feeds enabling AI agents to fetch real-world price data on-chain.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -666,6 +700,18 @@
       ],
       "author": "nansen-devops",
       "version": "0.1.1"
+    },
+    {
+      "name": "pyth-mcp-server",
+      "displayName": "Pyth MCP Server",
+      "description": "MCP server for Pyth Network price feeds enabling AI agents to fetch high-frequency oracle data.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     },
     {
       "name": "subgraph-registry",
@@ -1283,6 +1329,18 @@
       "version": "1.0.1"
     },
     {
+      "name": "aave-mcp-server",
+      "displayName": "Aave MCP Server",
+      "description": "MCP integration for Aave lending protocol for supply, borrow, and position management.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "aerodrome-agent",
       "displayName": "Aerodrome Finance DEX Agent",
       "description": "Full Aerodrome integration with swaps, LP, gauges, veAERO voting, and bribe claiming on Base.",
@@ -1650,6 +1708,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "jupiter-mcp-server",
+      "displayName": "Jupiter MCP Server",
+      "description": "MCP server for Jupiter DEX aggregator on Solana enabling optimal swap routing for AI agents.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "jupiter-prediction-market",
       "displayName": "Jupiter Prediction Market",
       "description": "Complete Node.js client for Jupiter Prediction Market API. Use when building AI agents for prediction market trading, portfolio management, or automated trading bots on Solana. Covers: (1) Querying events, markets, orders, positions, payouts, history, and social features, (2) Creating/managing trading positions, (3) Claiming payouts after market settlement, (4) Building autonomous agent workflows for market scanning, opportunity finding, portfolio monitoring, and risk management.",
@@ -1722,6 +1792,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "lifi-mcp-server",
+      "displayName": "LI.FI MCP Server",
+      "description": "MCP server for LI.FI cross-chain bridge aggregator enabling seamless multi-chain swaps.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "liquidity-monitor",
       "displayName": "Liquidity Monitor",
       "description": "Monitor DEX liquidity pool depth, track liquidity changes, calculate LP yield, and estimate impermanent loss. Use when you need liquidity monitor capabilities. Triggers on: liquidity monitor.",
@@ -1787,6 +1869,18 @@
       "name": "morpho-blue-agent",
       "displayName": "Morpho Blue Lending Agent",
       "description": "Supply, borrow, and manage positions on Morpho Blue's efficient lending markets.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "morpho-mcp-server",
+      "displayName": "Morpho MCP Server",
+      "description": "MCP integration for Morpho lending protocol enabling AI agents to supply, borrow, and manage positions.",
       "category": "defi",
       "tags": [
         "official",
@@ -2133,6 +2227,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "uniswap-mcp-server",
+      "displayName": "Uniswap MCP Server",
+      "description": "MCP server for Uniswap DEX enabling AI agents to get quotes and execute swaps across all supported chains.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "uniswap-official-cca-configurator",
       "displayName": "Uniswap Official Cca Configurator",
       "description": "Configure CCA (Continuous Clearing Auction) smart contract parameters through an interactive bulk form flow. Use when user says \"configure auction\", \"cca auction\", \"setup token auction\", \"auction configuration\", \"continuous auction\", or mentions CCA contracts.",
@@ -2411,6 +2517,17 @@
       "version": "0.1.0"
     },
     {
+      "name": "goat-sdk",
+      "displayName": "GOAT SDK",
+      "description": "Open-source SDK for building AI agents that interact with any blockchain protocol.",
+      "category": "dev-tools",
+      "tags": [
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "hardhat",
       "displayName": "Hardhat",
       "description": "Hardhat development for EVM chains including Celo. Use when setting up Hardhat projects, writing Solidity contracts, compiling, testing, deploying, or verifying contracts with Hardhat.",
@@ -2594,6 +2711,18 @@
         "bot"
       ],
       "author": "mosonchan2023",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-mcp-server",
+      "displayName": "Binance MCP Server",
+      "description": "Official MCP server for Binance API enabling AI agents to query prices, execute trades, and manage portfolios.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -6599,6 +6728,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "polymarket-mcp",
+      "displayName": "Polymarket MCP Server",
+      "description": "MCP server for Polymarket prediction markets enabling AI agents to query markets and place bets.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "polymarket-odds",
       "displayName": "Polymarket Odds",
       "description": "Query Polymarket prediction market odds and events via CLI. Search for markets, get current prices, list events by category. Supports sports betting (NFL, NBA, soccer/EPL, Champions League), politics, crypto, elections, geopolitics. Real money markets = more accurate than polls. No API key required. Use when asked about odds, probabilities, predictions, or \"what are the chances of X\".",
@@ -7231,6 +7372,18 @@
       "version": "0.2.0"
     },
     {
+      "name": "coinbase-developer-platform-mcp",
+      "displayName": "Coinbase Developer Platform MCP",
+      "description": "MCP server for Coinbase CDP enabling wallet creation, transfers, and smart contract interactions.",
+      "category": "wallets",
+      "tags": [
+        "official",
+        "wallets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "crypto-wallet",
       "displayName": "Crypto Wallet",
       "description": "Check cryptocurrency wallet balances, token holdings, transaction history, token approvals, ENS name resolution, and on-chain activity. Use when asked about wallet balance, what tokens an address holds, transaction history, pending transactions, token allowances, ENS lookup, or address portfolio.",
@@ -7339,6 +7492,18 @@
       "version": "2.0.0"
     },
     {
+      "name": "safe-mcp-server",
+      "displayName": "Safe MCP Server",
+      "description": "MCP integration for Safe (Gnosis Safe) multisig wallets enabling AI agents to propose and sign transactions.",
+      "category": "wallets",
+      "tags": [
+        "official",
+        "wallets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "trust-wallet-skills",
       "displayName": "Trust Wallet Skills",
       "description": "Claude Code skills and MCP for Trust Wallet APIs. Interact with Trust Wallet for token management, transaction signing, and multi-chain wallet operations.",
@@ -7421,116 +7586,6 @@
       "version": "1.0.2"
     },
     {
-      "name": "zeal-agent-wallet",
-      "displayName": "Zeal Agent Wallet",
-      "description": "Propose transactions to a Zeal Wallet. Use when the user wants to set up an agent as a Zeal Wallet signer, propose transactions, or manage a delegate wallet.",
-      "category": "wallets",
-      "tags": [
-        "zeal",
-        "agent",
-        "headless",
-        "policy"
-      ],
-      "author": "nicvaniek",
-      "version": "1.0.1"
-    },
-    {
-      "name": "binance-mcp-server",
-      "displayName": "Binance MCP Server",
-      "description": "Official MCP server for Binance API enabling AI agents to query prices, execute trades, and manage portfolios.",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "coinbase-developer-platform-mcp",
-      "displayName": "Coinbase Developer Platform MCP",
-      "description": "MCP server for Coinbase CDP enabling wallet creation, transfers, and smart contract interactions.",
-      "category": "wallets",
-      "tags": [
-        "official",
-        "wallets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "morpho-mcp-server",
-      "displayName": "Morpho MCP Server",
-      "description": "MCP integration for Morpho lending protocol enabling AI agents to supply, borrow, and manage positions.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "jupiter-mcp-server",
-      "displayName": "Jupiter MCP Server",
-      "description": "MCP server for Jupiter DEX aggregator on Solana enabling optimal swap routing for AI agents.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "polymarket-mcp",
-      "displayName": "Polymarket MCP Server",
-      "description": "MCP server for Polymarket prediction markets enabling AI agents to query markets and place bets.",
-      "category": "prediction-markets",
-      "tags": [
-        "official",
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "chainlink-mcp-server",
-      "displayName": "Chainlink MCP Server",
-      "description": "MCP server for Chainlink Data Feeds enabling AI agents to fetch real-world price data on-chain.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "aave-mcp-server",
-      "displayName": "Aave MCP Server",
-      "description": "MCP integration for Aave lending protocol for supply, borrow, and position management.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "lifi-mcp-server",
-      "displayName": "LI.FI MCP Server",
-      "description": "MCP server for LI.FI cross-chain bridge aggregator enabling seamless multi-chain swaps.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
       "name": "walletconnect-mcp",
       "displayName": "WalletConnect MCP Server",
       "description": "MCP server for WalletConnect enabling AI agents to initiate and manage wallet connections.",
@@ -7543,73 +7598,18 @@
       "version": "1.0.0"
     },
     {
-      "name": "safe-mcp-server",
-      "displayName": "Safe MCP Server",
-      "description": "MCP integration for Safe (Gnosis Safe) multisig wallets enabling AI agents to propose and sign transactions.",
+      "name": "zeal-agent-wallet",
+      "displayName": "Zeal Agent Wallet",
+      "description": "Propose transactions to a Zeal Wallet. Use when the user wants to set up an agent as a Zeal Wallet signer, propose transactions, or manage a delegate wallet.",
       "category": "wallets",
       "tags": [
-        "official",
-        "wallets"
+        "zeal",
+        "agent",
+        "headless",
+        "policy"
       ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "pyth-mcp-server",
-      "displayName": "Pyth MCP Server",
-      "description": "MCP server for Pyth Network price feeds enabling AI agents to fetch high-frequency oracle data.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "uniswap-mcp-server",
-      "displayName": "Uniswap MCP Server",
-      "description": "MCP server for Uniswap DEX enabling AI agents to get quotes and execute swaps across all supported chains.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "goat-sdk",
-      "displayName": "GOAT SDK",
-      "description": "Open-source SDK for building AI agents that interact with any blockchain protocol.",
-      "category": "dev-tools",
-      "tags": [
-        "dev-tools"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "arthur-mcp-server",
-      "displayName": "Arthur MCP Server",
-      "description": "MCP server for on-chain analytics, whale tracking, and smart money analysis.",
-      "category": "analytics",
-      "tags": [
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "elizaos-plugin-defi",
-      "displayName": "ElizaOS DeFi Plugin",
-      "description": "Plugin for ElizaOS framework enabling AI agents to interact with DeFi protocols across multiple chains.",
-      "category": "ai-crypto",
-      "tags": [
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
+      "author": "nicvaniek",
+      "version": "1.0.1"
     }
   ],
   "categories": {
