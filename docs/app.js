@@ -707,9 +707,11 @@
     });
   }
 
-  // --- Quick Submit Form ---
-  const quickSubmitForm = document.getElementById('quickSubmitForm');
-  if (quickSubmitForm) {
+  // --- Quick Submit Form (initialized in DOMContentLoaded) ---
+  function initSubmitForm() {
+    const quickSubmitForm = document.getElementById('quickSubmitForm');
+    if (!quickSubmitForm) return;
+
     quickSubmitForm.addEventListener('submit', function (e) {
       e.preventDefault();
       const name = document.getElementById('submitName').value.trim();
@@ -733,7 +735,16 @@
         '---\nSubmitted via cryptoskill.org'
       );
 
+      // Try mailto
       window.location.href = 'mailto:maintainers@altresear.ch?subject=' + subject + '&body=' + body;
+
+      // Show confirmation with fallback
+      setTimeout(function () {
+        var msg = 'Your email client should have opened with the submission details.\n\n' +
+          'If it didn\'t open, please email maintainers@altresear.ch directly with:\n\n' +
+          'Skill: ' + name + '\nURL: ' + url + '\nCategory: ' + (category || 'N/A');
+        alert(msg);
+      }, 500);
     });
   }
 
@@ -806,6 +817,7 @@
   // --- Init ---
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initSubmitForm();
     loadSkills();
     observeElements();
   });
