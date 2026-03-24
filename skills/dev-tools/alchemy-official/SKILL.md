@@ -1,6 +1,6 @@
 ---
 name: alchemy-official
-description: "Official Alchemy skill. Complete API coverage for ~100 chains: Token API, NFT API, Transfers, Prices, Portfolio, Simulation, Webhooks, Solana, and JSON-RPC. 82 reference docs."
+description: "Official Alchemy skill. Two auth modes: API key or x402 Agentic Gateway (no key needed). Complete coverage for ~100 chains: Token API, NFT API, Transfers, Prices, Portfolio, Simulation, Webhooks, Solana, and JSON-RPC. 82 reference docs + x402 gateway rules."
 version: 1.0.0
 author: alchemyplatform
 homepage: https://github.com/alchemyplatform/skills
@@ -18,6 +18,9 @@ tags:
   - webhooks
   - solana
   - evm
+  - x402
+  - agentic-gateway
+  - siwe
   - official
 triggers:
   - "alchemy"
@@ -30,14 +33,13 @@ triggers:
   - "on-chain"
 config:
   ALCHEMY_API_KEY:
-    required: true
-    description: "Alchemy API key (get one free at https://dashboard.alchemy.com)"
+    required: false
+    description: "Alchemy API key (get one free at https://dashboard.alchemy.com). If not set, uses the x402 Agentic Gateway instead (no key needed, pays per request with USDC)."
 metadata:
   openclaw:
     emoji: "⚗️"
-    requires:
-      env:
-        - ALCHEMY_API_KEY
+    primaryEnv: ALCHEMY_API_KEY
+    homepage: https://www.alchemy.com
     primaryEnv: ALCHEMY_API_KEY
     homepage: https://www.alchemy.com
 ---
