@@ -123,6 +123,14 @@
       matcher: (s) => s.name.startsWith('aptos-official') || s.name === 'aptos-mcp'
     },
     {
+      id: 'minara',
+      name: 'Minara AI',
+      icon: '👩',
+      github: 'https://github.com/minara-ai/skills',
+      description: 'Crypto trading, wallets, perps, swaps across EVM + Solana + Hyperliquid.',
+      matcher: (s) => s.name.startsWith('minara')
+    },
+    {
       id: 'moonpay',
       name: 'MoonPay',
       icon: '🌙',
