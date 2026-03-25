@@ -155,6 +155,14 @@
       matcher: (s) => s.name.startsWith('circle-official')
     },
     {
+      id: 'alchemy',
+      name: 'Alchemy',
+      icon: '🔮',
+      github: 'https://github.com/alchemyplatform/skills',
+      description: 'Official Alchemy dev tools — RPC, APIs, wallets, webhooks, and rollups.',
+      matcher: (s) => s.name.startsWith('alchemy-official')
+    },
+    {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',

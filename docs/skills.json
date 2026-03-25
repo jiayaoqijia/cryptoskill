@@ -529,8 +529,10 @@
         "sentiment",
         "social-media",
         "trending",
+        "narratives",
         "twitter",
         "telegram",
+        "market-analysis",
         "x402"
       ],
       "author": "elfa-ai",
@@ -1562,6 +1564,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "deepblue-defi-api",
+      "displayName": "Deepblue Defi Api",
+      "description": "Use when an agent needs live DeFi data from Base — ETH prices, trending pools, token scores, or wallet scans. No auth required.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
       "name": "defi-lending",
       "displayName": "Defi Lending",
       "description": "Check DeFi lending and borrowing rates, supply/borrow APY, positions, health factors, and protocol comparisons. Use when asked about lending rates, borrowing costs, Aave rates, Compound APY, Morpho markets, lending protocol comparison, health factor, or liquidation risk.",
@@ -2495,6 +2508,32 @@
       "version": "1.0.0"
     },
     {
+      "name": "alchemy-official-skill",
+      "displayName": "Alchemy",
+      "description": "Official Alchemy skill. Two auth modes: API key or x402 Agentic Gateway (no key needed). Complete coverage for ~100 chains: Token API, NFT API, Transfers, Prices, Portfolio, Simulation, Webhooks, Solana, and JSON-RPC. 82 reference docs + x402 gateway rules.",
+      "category": "dev-tools",
+      "tags": [
+        "alchemy",
+        "blockchain",
+        "infrastructure",
+        "multi-chain",
+        "tokens",
+        "nfts",
+        "prices",
+        "transfers",
+        "portfolio",
+        "webhooks",
+        "solana",
+        "evm",
+        "x402",
+        "agentic-gateway",
+        "siwe",
+        "official"
+      ],
+      "author": "alchemyplatform",
+      "version": "1.0.0"
+    },
+    {
       "name": "alchemy-web3",
       "displayName": "Alchemy Web3",
       "description": "Interact with Alchemy's Web3 APIs for blockchain data, NFTs, tokens, transfers, and webhooks across 80+ chains.",
@@ -2528,6 +2567,25 @@
         "dev-tools"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "eth2-quickstart",
+      "displayName": "Eth2 Quickstart",
+      "description": "Bootstrap, operate, diagnose, and safely clean production Ethereum validator nodes through a tested command surface with strict safety guardrails.",
+      "category": "dev-tools",
+      "tags": [
+        "ethereum",
+        "validator",
+        "staking",
+        "node",
+        "beacon",
+        "consensus",
+        "execution",
+        "mev",
+        "devops"
+      ],
+      "author": "chimera-defi",
       "version": "1.0.0"
     },
     {
@@ -5180,6 +5238,40 @@
       "version": "1.1.1"
     },
     {
+      "name": "maiat-guard",
+      "displayName": "Maiat Guard",
+      "description": "Universal trust middleware for viem — auto-checks Maiat trust scores before every on-chain transaction. Drop-in wallet protection for AI agents. Blocks transactions to untrusted addresses.",
+      "category": "identity",
+      "tags": [
+        "wallet-protection",
+        "trust",
+        "viem",
+        "middleware",
+        "transaction-safety",
+        "base"
+      ],
+      "author": "JhiNResH",
+      "version": "0.9.0"
+    },
+    {
+      "name": "maiat-trust",
+      "displayName": "Maiat Trust",
+      "description": "Free trust score and token safety API for AI agents. Query agent reputation, detect honeypots/rug pulls, and gate swaps by trust — no API key required.",
+      "category": "identity",
+      "tags": [
+        "trust",
+        "reputation",
+        "agent-safety",
+        "token-check",
+        "rug-detection",
+        "erc-8004",
+        "base",
+        "free"
+      ],
+      "author": "JhiNResH",
+      "version": "0.9.0"
+    },
+    {
       "name": "pinata-erc-8004",
       "displayName": "Pinata ERC-8004",
       "description": "Register and verify ERC-8004 AI agents on-chain using Pinata IPFS and Viem for blockchain transactions",
@@ -5350,6 +5442,21 @@
         "mcp-servers"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "chainflip-baas-mcp",
+      "displayName": "Chainflip Broker as a Service",
+      "description": "Cross-chain cryptocurrency swaps via Chainflip. Get quotes, execute swaps, and track progress across Bitcoin, Ethereum, Solana, and Arbitrum.",
+      "category": "mcp-servers",
+      "tags": [
+        "chainflip",
+        "cross-chain",
+        "swaps",
+        "dex",
+        "mcp"
+      ],
+      "author": "CumpsD",
       "version": "1.0.0"
     },
     {
@@ -5664,6 +5771,22 @@
       ],
       "author": "roasbeef",
       "version": "1.0.0"
+    },
+    {
+      "name": "maiat-mcp",
+      "displayName": "Maiat MCP Server",
+      "description": "Maiat Trust Score MCP Server — query agent trust scores, token safety verdicts, and reputation data from Claude, GPT, Cursor, Codex, or any MCP-compatible AI tool.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp",
+        "trust",
+        "agent-safety",
+        "token-check",
+        "claude",
+        "cursor"
+      ],
+      "author": "JhiNResH",
+      "version": "0.9.0"
     },
     {
       "name": "meson-mcp",
@@ -6002,6 +6125,26 @@
       ],
       "author": "wpank",
       "version": "0.1.0"
+    },
+    {
+      "name": "deepblue-x402-api",
+      "displayName": "Deepblue X402 Api",
+      "description": "Use when an agent needs live crypto trading signals, BTC macro intelligence, Polymarket prediction market odds, or sentiment data — paid per-call via x402 USDC micropayments on Base. No API keys needed; agents pay autonomously.",
+      "category": "payments",
+      "tags": [
+        "x402",
+        "crypto-signals",
+        "polymarket",
+        "prediction-markets",
+        "sentiment",
+        "btc",
+        "trading",
+        "base",
+        "usdc",
+        "pay-per-call"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
     },
     {
       "name": "goldrush-x402",
@@ -6752,6 +6895,25 @@
       "version": "1.0.0"
     },
     {
+      "name": "polymarket-builder",
+      "displayName": "Polymarket Builder",
+      "description": "Polymarket Builder Program integration — register as a builder to earn weekly USDC fee rebates on routed volume, use py-builder-signing-sdk with Gnosis Safe wallets, discover 5-minute epoch-based Up/Down crypto markets via slug pattern {coin}-updown-5m-{epoch}, fix the CTF conditional token 400 balance/allowance error with polling (update_balance_allowance is a GET not a tx), and implement production-grade scalper bots on Polygon.",
+      "category": "prediction-markets",
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "builder-program",
+        "clob",
+        "conditional-tokens",
+        "5-minute-markets",
+        "scalper",
+        "polygon",
+        "gnosis-safe"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
       "name": "polymarket-cli-trading",
       "displayName": "Polymarket CLI Trading",
       "description": "Trade prediction markets on Polymarket using the official polymarket CLI. Use when the user wants to browse prediction markets, place bets, manage orders, check positions, view order books, or trade on market outcomes. Also use when they mention \"prediction market,\" \"bet,\" \"polymarket,\" \"YES/NO,\" \"order book,\" \"CLOB,\" \"limit order,\" \"market order,\" \"hedge,\" \"arbitrage,\" \"liquidity rewards,\" or \"conditional tokens.",
@@ -6812,6 +6974,17 @@
         "prediction-markets"
       ],
       "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-research",
+      "displayName": "Polymarket Research",
+      "description": "Use when researching Polymarket prediction markets, checking odds on events, finding trending markets, analyzing 5-minute crypto prediction markets (BTC/ETH), comparing market sentiment, or helping users decide what to bet on. Triggers on polymarket, prediction market, odds, betting, 5-minute markets, event probability.",
+      "category": "prediction-markets",
+      "tags": [
+        "prediction-markets"
+      ],
+      "author": "unknown",
       "version": "1.0.0"
     },
     {

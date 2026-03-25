@@ -6,7 +6,7 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-601-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-56-f59e0b)]() [![Official](https://img.shields.io/badge/official-342-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-612-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-58-f59e0b)]() [![Official](https://img.shields.io/badge/official-342-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-601overview) · [MCP Servers](#mcp-servers) · [Submit a Skill](#submit-a-skill) · [Contributing](CONTRIBUTING.md)
 
@@ -25,8 +25,8 @@ The general-purpose skill registries (SkillsMP with 500K+ skills, SkillHub with 
 
 CryptoSkill is the crypto-native answer:
 
-- **477 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
-- **56 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
+- **612 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
+- **58 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
 - **221 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Gate.io, Nansen, and more)
 - **Security-scanned** -- every skill checked for hardcoded credentials, RCE, exfiltration, and prompt injection
 - **Auto-updated** -- bot scans 128+ projects every 6 hours for new skills and changes
@@ -36,23 +36,23 @@ CryptoSkill is the crypto-native answer:
 
 | Category | Skills | Highlights |
 |---|---|---|
-| **Exchanges** | 172 | Binance (official), OKX (official), Kraken (official 50 skills), KuCoin (official), Gate.io (official), Bitget (official), Hyperliquid, Bybit, Coinbase, MEXC |
-| **DeFi** | 46 | Uniswap (official 8), GMX (official), Rocket Pool (official 7), Venus (official), Lido, Aave, SushiSwap, PancakeSwap, Raydium, OpenSea, Pump.fun |
-| **MCP Servers** | 45 | Alchemy, Solana, CoinGecko, EigenLayer, Blockscout, Alpaca, NEAR, deBridge, Kraken CLI, Jupiter, CCXT, Chainlink |
-| **Chains** | 41 | Ethereum, Solana, Bitcoin, Lightning Network, BNB Chain, Arbitrum, Base, Sui, Polygon, Cosmos, Monad, Aptos, TON |
-| **Analytics** | 36 | CoinMarketCap (official 7), CoinGecko, Nansen (official 10), DefiLlama, Dune, Etherscan, The Graph, Zapper, Zerion |
-| **Trading** | 25 | Grid trading, copy trading, whale tracking, yield scanning, airdrop hunting, DCA, signals |
-| **Identity** | 17 | ERC-8004, 8004scan, 8004scan-webhooks, self-agent-id, on-chain reputation |
-| **Payments** | 16 | x402 protocol, mpp, tempo, agent marketplace, paywall kit |
-| **Wallets** | 14 | MetaMask, Bitget Wallet (official), crypto-wallet, Cobo TSS, WalletConnect, MPC |
-| **Dev Tools** | 12 | CryptoSkill registry, Alchemy, Moralis, Foundry, Hardhat, Viem, Wagmi |
-| **Prediction Markets** | 12 | Polymarket API, trading bots, whale copying, sports edge, CLI trading |
-| **AI x Crypto** | 10 | Bittensor, Virtuals Protocol, ElizaOS, privacy-layer, venice-private-ai |
+| **Exchanges** | 175 | Binance (official), OKX (official), Kraken (official 50 skills), KuCoin (official), Gate.io (official), Bitget (official), Hyperliquid, Bybit, Coinbase, MEXC |
+| **DeFi** | 94 | Uniswap (official 8), GMX (official), Rocket Pool (official 7), Venus (official), Lido, Aave, SushiSwap, PancakeSwap, Raydium, OpenSea, Pump.fun, DeepBlue |
+| **MCP Servers** | 58 | Alchemy, Solana, CoinGecko, EigenLayer, Blockscout, Alpaca, NEAR, deBridge, Kraken CLI, Jupiter, CCXT, Chainlink, Chainflip, Maiat |
+| **Chains** | 44 | Ethereum, Solana, Bitcoin, Lightning Network, BNB Chain, Arbitrum, Base, Sui, Polygon, Cosmos, Monad, Aptos, TON |
+| **Analytics** | 49 | CoinMarketCap (official 7), CoinGecko, Nansen (official 10), DefiLlama, Dune, Etherscan, The Graph, Zapper, Zerion, Elfa |
+| **Trading** | 31 | Grid trading, copy trading, whale tracking, yield scanning, airdrop hunting, DCA, signals |
+| **Identity** | 19 | ERC-8004, 8004scan, 8004scan-webhooks, self-agent-id, on-chain reputation, Maiat Guard, Maiat Trust |
+| **Payments** | 62 | x402 protocol, mpp, tempo, agent marketplace, paywall kit, DeepBlue x402 |
+| **Wallets** | 20 | MetaMask, Bitget Wallet (official), crypto-wallet, Cobo TSS, WalletConnect, MPC |
+| **Dev Tools** | 18 | CryptoSkill registry, Alchemy (official), Moralis, Foundry, Hardhat, Viem, Wagmi, ETH2 Quickstart |
+| **Prediction Markets** | 21 | Polymarket API, Polymarket Builder, Polymarket Research, trading bots, whale copying, sports edge, CLI trading |
+| **AI x Crypto** | 14 | Bittensor, Virtuals Protocol, ElizaOS, privacy-layer, venice-private-ai |
 | **Social** | 7 | Farcaster, Nostr, XMTP (official) |
 
 ## MCP Servers
 
-CryptoSkill maintains **56 MCP (Model Context Protocol) servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
+CryptoSkill maintains **58 MCP (Model Context Protocol) servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
 
 ### Official MCP Servers
 
@@ -101,6 +101,8 @@ CryptoSkill maintains **56 MCP (Model Context Protocol) servers** for crypto -- 
 | [The Graph Token API](skills/mcp-servers/thegraph-token-api/) | Subgraph token data |
 | [Web3 MCP](skills/mcp-servers/web3-mcp/) | Multi-chain Web3 tools |
 | [Whale Tracker](skills/mcp-servers/whale-tracker-mcp/) | Large transaction monitoring |
+| [Chainflip BaaS](skills/mcp-servers/chainflip-baas-mcp/) | Chainflip broker-as-a-service swap API |
+| [Maiat MCP](skills/mcp-servers/maiat-mcp/) | Maiat Protocol identity and trust MCP |
 
 > **Looking for an MCP server that's not listed?** [Submit it!](#submit-a-skill)
 
@@ -170,8 +172,9 @@ clawhub install binance-spot-api
 | [MetaMask](https://github.com/MetaMask/openclaw-skills) | 2 wallet skills | Official MetaMask smart accounts & gator CLI |
 | [MoonPay](https://github.com/moonpay/skills) | 35 payment/trading skills | Official MoonPay crypto onramp, trading, & wallet tools |
 | [Minara AI](https://github.com/minara-ai/skills) | 1 trading skill | Official crypto trading & wallet CLI (EVM + Solana + Hyperliquid) |
+| [Alchemy](https://www.alchemy.com/) | 1 comprehensive skill | [alchemyplatform/skills](https://github.com/alchemyplatform/skills) |
 | [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
-| + MCP servers | 45 | Alchemy, Coinbase, Solana, EigenLayer, Blockscout, Alpaca, NEAR, Base, Monad, CoinGecko, and more |
+| + MCP servers | 58 | Alchemy, Coinbase, Solana, EigenLayer, Blockscout, Alpaca, NEAR, Base, Monad, CoinGecko, and more |
 
 ## Submit a Skill
 
@@ -257,6 +260,13 @@ We gratefully acknowledge the following projects and teams whose skills and tool
 | [Awesome Ethereum AI Skills](https://github.com/rickkdev/awesome-ethereum-ai-skills) | 24 skills/MCPs | Curated Ethereum AI skill directory |
 | [Trail of Bits](https://github.com/trailofbits/skills) | Security skills | Smart contract security testing |
 | [OpenZeppelin](https://mcp.openzeppelin.com) | MCP server | Solidity security best practices |
+| [Alchemy Official](https://github.com/alchemyplatform/skills) | 1 comprehensive skill | Official Alchemy dev tools, RPC, wallets, webhooks |
+| [Chainflip BaaS](https://github.com/CumpsD/broker-as-a-service) | 1 MCP server | Chainflip broker-as-a-service MCP |
+| [Maiat Protocol](https://github.com/JhiNResH/maiat-protocol) | 3 skills | Identity guard, trust engine, and MCP server |
+| [Elfa AI](https://github.com/elfa-ai/elfa-ai-skill) | 1 analytics skill | Social analytics and sentiment API |
+| [ETH2 Quickstart](https://github.com/chimera-defi/eth2-quickstart) | 1 dev-tools skill | Ethereum 2.0 staking quickstart guide |
+| [DeepBlue / ERROR403agent](https://github.com/ERROR403agent/clawford) | 3 skills | DeFi API, x402 payments, Polymarket builder |
+| [Polymarket Research](https://github.com/ERROR403agent) | 1 skill | Polymarket research and analysis |
 
 ### MCP Server Sources
 
