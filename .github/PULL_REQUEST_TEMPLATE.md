@@ -1,57 +1,26 @@
+## ⚠️ We no longer accept Pull Requests for skill submissions
+
+Please use our **Issue-based submission** instead — it's faster for you and easier for us to review:
+
+👉 **[Submit a Skill or MCP Server](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=skill_submission.md&title=%5BSubmit%5D+)**
+
+Just provide the skill name, GitHub URL, and category. We'll review and add it.
+
+---
+
+If this PR is for a **bug fix, documentation update, or infrastructure change** (not a skill submission), please describe below:
+
 ## Summary
 
-Brief description of the changes in this PR.
+
 
 ## Type of Change
 
-- [ ] New skill
-- [ ] Skill update / improvement
-- [ ] Site update (website, docs)
-- [ ] Infrastructure (CI, tooling, templates)
-- [ ] Documentation
 - [ ] Bug fix
+- [ ] Documentation update
+- [ ] Infrastructure / tooling
 - [ ] Other: ___
-
-## Skill Details (if applicable)
-
-- **Skill Name:**
-- **Category:**
-- **Protocol/Project:**
-
-## Changes
-
--
 
 ## Related Issue
 
 Closes #
-
-## AI Code Generation
-
-<!-- Required: disclose AI involvement. There is no stigma — we embrace AI-assisted contributions. -->
-
-- [ ] Fully AI-generated — AI wrote the skill; I reviewed and validated it
-- [ ] Mostly AI-generated — AI produced the draft; I made significant modifications
-- [ ] Mostly human-written — I led; AI provided suggestions or none at all
-
-## Checklist
-
-- [ ] `SKILL.md` is present with valid frontmatter (name, description, version, author, tags)
-- [ ] `_meta.json` is present with correct metadata
-- [ ] `SOURCE.md` is present with proper attribution
-- [ ] Skill is in the correct category directory
-- [ ] Directory name uses `kebab-case`
-- [ ] Documentation is clear and complete
-- [ ] No hardcoded credentials or secrets
-- [ ] Tested with a compatible agent (if skill includes executable code)
-- [ ] `skills.json` updated (if adding a new skill to the website)
-
-## Testing
-
-Describe how you tested this change:
-
--
-
-## Additional Context
-
-Any other information that reviewers should know.

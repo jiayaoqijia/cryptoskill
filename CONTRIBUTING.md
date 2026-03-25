@@ -27,17 +27,22 @@ We are committed to maintaining a welcoming and respectful community. Be kind, c
 
 ---
 
-## Ways to Contribute
+## How to Submit a Skill
 
-- **New skills** -- Add a skill for a protocol, exchange, or tool that isn't covered yet.
-- **MCP servers** -- Submit an MCP server for inclusion in our curated collection.
-- **Skill improvements** -- Improve documentation, fix bugs, or add features to existing skills.
-- **Bug reports** -- Open an issue using the bug report template.
-- **Feature requests** -- Open an issue using the feature request template.
-- **Skill requests** -- Request a skill for a specific protocol using the skill request template.
-- **Documentation** -- Improve READMEs, guides, or inline comments.
+The easiest way to submit a skill or MCP server is to **open a GitHub Issue**:
 
-For substantial changes, please open an issue first to discuss your approach. This prevents wasted effort and ensures alignment with the project's direction.
+👉 **[Submit a Skill](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=skill_submission.md&title=%5BSubmit%5D+)**
+
+Just provide the skill name, GitHub URL, and category. We'll review and add it for you.
+
+> **Note:** We no longer accept Pull Requests for skill submissions. PRs are reserved for bug fixes and infrastructure changes only.
+
+## Other Ways to Contribute
+
+- **Skill requests** -- Request a skill for a protocol we don't cover yet: [Open a request](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=skill_request.md)
+- **Bug reports** -- Found an issue? [Report it](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=bug_report.md)
+- **Feature requests** -- Have an idea? [Tell us](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=feature_request.md)
+- **Quick submit** -- Email maintainers@altresear.ch with the skill name, GitHub URL, and category
 
 ---
 
