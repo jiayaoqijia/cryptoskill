@@ -8056,6 +8056,388 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
+    },
+    {
+      "name": "binance-official-query-token-audit",
+      "displayName": "Query Token Audit",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-crypto-market-rank",
+      "displayName": "Crypto Market Rank",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-trading-signal",
+      "displayName": "Trading Signal",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-address-info",
+      "displayName": "Query Address Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-binance-tokenized-securities-info",
+      "displayName": "Binance Tokenized Securities Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-meme-rush",
+      "displayName": "Meme Rush",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-token-info",
+      "displayName": "Query Token Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-simple-earn",
+      "displayName": "Simple Earn",
+      "description": "Binance Simple-earn request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-vip-loan",
+      "displayName": "Vip Loan",
+      "description": "Binance Vip-loan request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-p2p",
+      "displayName": "P2P",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-fiat",
+      "displayName": "Fiat",
+      "description": "Binance Fiat request using the Binance API. Authentication requires API key and secret key.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc-8004-agent-registry",
+      "displayName": "ERC-8004 AI Agent Registry",
+      "description": "On-chain registry for AI agent discovery, scoring, and validation with semantic search and trending metrics.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "jupiter-swap-aggregator",
+      "displayName": "Jupiter DEX Aggregator",
+      "description": "Solana's leading DEX aggregator for optimal swap routing across all Solana liquidity sources.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aerodrome-finance",
+      "displayName": "Aerodrome Finance",
+      "description": "Base's largest DEX with veAERO voting, gauge rewards, and bribe mechanics for liquidity incentives.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ethena-usde",
+      "displayName": "Ethena USDe",
+      "description": "Synthetic dollar protocol with sUSDe staking yields, cooldown mechanics, and cross-chain balances.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "marinade-solana-staking",
+      "displayName": "Marinade Finance",
+      "description": "Solana liquid staking with mSOL, validator delegation, and real-time exchange rates.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-prediction-markets",
+      "displayName": "Polymarket",
+      "description": "Decentralized prediction markets on Polygon with order books, positions tracking, and outcome tokens.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kalshi-prediction-markets",
+      "displayName": "Kalshi",
+      "description": "CFTC-regulated prediction markets for real-world events with orderbook and trade history.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lifi-cross-chain-bridge",
+      "displayName": "Li.Fi Bridge Aggregator",
+      "description": "Multi-protocol bridge aggregator comparing routes by output, fees, and speed across 20+ chains.",
+      "category": "chains",
+      "tags": [
+        "official",
+        "chains"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cow-swap-mev-protection",
+      "displayName": "CoW Swap",
+      "description": "MEV-protected DEX with batch auctions, surplus capture, and gasless swaps via signed orders.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "morpho-blue-lending",
+      "displayName": "Morpho Blue",
+      "description": "Permissionless lending markets with isolated risk, oracle-free design, and efficient APYs.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-yield-analytics",
+      "displayName": "DefiLlama Yield Analytics",
+      "description": "Cross-chain yield discovery with risk-adjusted scoring, TVL tracking, and APY comparisons.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "conditional-orders-automation",
+      "displayName": "Conditional Orders",
+      "description": "Automated swap execution based on price thresholds, gas prices, Aave health, or portfolio drops.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "workflow-automation",
+      "displayName": "Multi-Step Workflows",
+      "description": "Chain multiple DeFi actions with conditions, delays, and automated execution.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "alienbase-farms",
+      "displayName": "AlienBase Farms",
+      "description": "Base DEX with farming pools, ALB token rewards, and Odos aggregator routing.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "convex-curve-staking",
+      "displayName": "Convex Finance",
+      "description": "Boosted Curve LP staking with CRV/CVX rewards and extra incentive tokens.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "merkl-airdrop-discovery",
+      "displayName": "Merkl Airdrop Discovery",
+      "description": "Discover and claim pending airdrops across chains with eligibility checking.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-intel-security-scanner",
+      "displayName": "Smart Contract Security Scanner",
+      "description": "Analyze Solidity code for vulnerabilities, get safety scores, and audit checklists.",
+      "category": "dev-tools",
+      "tags": [
+        "official",
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "crypto-intel-github-analytics",
+      "displayName": "Crypto GitHub Analytics",
+      "description": "Track repo activity, developer profiles, and organization stats for crypto projects.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "token-unlock-scheduler",
+      "displayName": "Token Unlock Tracker",
+      "description": "Monitor vesting schedules, upcoming unlocks, and token distribution timelines.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sdks",
+      "displayName": "Sdks",
+      "description": "Official Azex SDKs — TypeScript, Python, MCP Server, CLI for the crypto-native LLM API gateway",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "azex-ai",
+      "version": "1.0.0"
+    },
+    {
+      "name": "flash-payment-system",
+      "displayName": "Flash Payment System",
+      "description": "bUSD1 — USD stablecoin backed by BITCOIN•USD•ONE Runes | First write-capable Runes MCP server | Chainlink PoR | Agent swarm | x402 payments | 99 tests",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "ElromEvedElElyon",
+      "version": "1.0.0"
     }
   ],
   "categories": {
