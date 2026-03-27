@@ -6606,6 +6606,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "agenti",
+      "displayName": "Agenti",
+      "description": "Give AI agents access to money. Manage finances, trade cryptocurrency. MCP server for AI agents to interact with 20+ blockchains. 380+ tools for DeFi, DEX aggregation, security scanning, cross-chain b",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "nirholas",
+      "version": "1.0.0"
+    },
+    {
       "name": "aibtc-mcp-server",
       "displayName": "Aibtc Mcp Server",
       "description": "Bitcoin-native MCP server for AI agents: BTC/STX wallets, DeFi yield, sBTC peg, NFTs, and x402 payments.",
@@ -8578,65 +8589,6 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
-    },
-    {
-      "name": "uniswap-official-configurator",
-      "displayName": "Configurator",
-      "description": "Configure CCA (Continuous Clearing Auction) smart contract parameters through an interactive bulk form flow. Use when user says \"configure auction\", \"cca auction\", \"setup token auction\", \"auction configuration\", \"continuous auction\", or mentions CCA contracts.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "Uniswap",
-      "version": "1.0.0"
-    },
-    {
-      "name": "uniswap-official-deployer",
-      "displayName": "Deployer",
-      "description": "Deploy CCA (Continuous Clearing Auction) smart contracts using the Factory pattern. Use when user says \"deploy auction\", \"deploy cca\", \"factory deployment\", or wants to deploy a configured auction.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "Uniswap",
-      "version": "1.0.0"
-    },
-    {
-      "name": "uniswap-official-v4-security-foundations",
-      "displayName": "V4 Security Foundations",
-      "description": "Security-first Uniswap v4 hook development. Use when user mentions \"v4 hooks\", \"hook security\", \"PoolManager\", \"beforeSwap\", \"afterSwap\", or asks about V4 hook best practices, vulnerabilities, or audit requirements.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "Uniswap",
-      "version": "1.0.0"
-    },
-    {
-      "name": "alchemy-changeset",
-      "displayName": "Changeset",
-      "description": "Create a changeset entry to document a version bump and changelog for the current changes",
-      "category": "mcp-servers",
-      "tags": [
-        "official",
-        "mcp-servers"
-      ],
-      "author": "alchemyplatform",
-      "version": "1.0.0"
-    },
-    {
-      "name": "agenti",
-      "displayName": "Agenti",
-      "description": "Give AI agents access to money. Manage finances, trade cryptocurrency. MCP server for AI agents to interact with 20+ blockchains. 380+ tools for DeFi, DEX aggregation, security scanning, cross-chain b",
-      "category": "payments",
-      "tags": [
-        "payments"
-      ],
-      "author": "nirholas",
-      "version": "1.0.0"
     }
   ],
   "categories": {
