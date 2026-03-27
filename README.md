@@ -6,9 +6,9 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-675-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-64-f59e0b)]() [![Official](https://img.shields.io/badge/official-395-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-690-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-64-f59e0b)]() [![Official](https://img.shields.io/badge/official-410-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
-[Website](https://cryptoskill.org) · [Browse Skills](#skills-675overview) · [MCP Servers](#mcp-servers) · [Submit a Skill](#submit-a-skill) · [Contributing](CONTRIBUTING.md)
+[Website](https://cryptoskill.org) · [Browse Skills](#skills-690overview) · [MCP Servers](#mcp-servers) · [Submit a Skill](#submit-a-skill) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -64,7 +64,7 @@ CryptoSkill maintains **58 MCP (Model Context Protocol) servers** for crypto -- 
 | [Base](skills/mcp-servers/base-mcp/) | Coinbase | `git clone base/base-mcp` |
 | [Blockscout](skills/mcp-servers/blockscout-mcp/) | Blockscout | `claude mcp add blockscout https://mcp.blockscout.com/mcp` |
 | [BNB Chain](skills/mcp-servers/bnbchain-mcp/) | BNB Chain | `git clone bnb-chain/bnbchain-mcp` |
-| [BNB Chain Skills Hub](https://github.com/bnb-chain/skills-675hub) | Registry | BNB Chain community skill registry with AgentGuard security scanning |
+| [BNB Chain Skills Hub](https://github.com/bnb-chain/skills-690hub) | Registry | BNB Chain community skill registry with AgentGuard security scanning |
 | [Coinbase AgentKit](skills/mcp-servers/coinbase-agentkit/) | Coinbase | `npm create onchain-agent@latest` |
 | [CoinGecko](skills/mcp-servers/coingecko-mcp-official/) | CoinGecko | `npx @coingecko/coingecko-mcp` |
 | [DefiLlama](skills/mcp-servers/defillama-mcp/) | dcSpark | `git clone dcSpark/mcp-server-defillama` |
@@ -122,7 +122,7 @@ cp -r /tmp/cs/skills/dev-tools/cryptoskill .claude/skills/
 ```bash
 # Copy a skill into your project's Claude Code skills
 cp -r /tmp/cs/skills/exchanges/binance-spot-api .claude/skills/
-cp -r /tmp/cs/skills/defi/uniswap-official-395swap-integration .claude/skills/
+cp -r /tmp/cs/skills/defi/uniswap-official-410swap-integration .claude/skills/
 ```
 
 ### Install an MCP Server
@@ -153,14 +153,14 @@ clawhub install binance-spot-api
 | Project | Skills | Source |
 |---|---|---|
 | [Kraken](https://www.kraken.com/) | 50 | [krakenfx/kraken-cli](https://github.com/krakenfx/kraken-cli) |
-| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-675hub](https://github.com/binance/binance-skills-hub) |
+| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-690hub](https://github.com/binance/binance-skills-hub) |
 | [OKX](https://www.okx.com/) | 16+ | [okx/onchainos-skills](https://github.com/okx/onchainos-skills) |
 | [Gate.io](https://www.gate.io/) | 13 | ClawHub: gate-exchange |
 | [Nansen](https://www.nansen.ai/) | 10 | ClawHub: nansen-devops |
 | [Uniswap](https://uniswap.org/) | 8 | [Uniswap/uniswap-ai](https://github.com/Uniswap/uniswap-ai) |
 | [CoinMarketCap](https://coinmarketcap.com/) | 7 | ClawHub: bryan-cmc |
 | [Bitget](https://www.bitget.com/) | 7 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) |
-| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-675hub](https://github.com/Kucoin/kucoin-skills-hub) |
+| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-690hub](https://github.com/Kucoin/kucoin-skills-hub) |
 | [Rocket Pool](https://rocketpool.net/) | 7 | [rocket-pool/skills](https://github.com/rocket-pool/skills) |
 | [Ottie](https://github.com/jiayaoqijia/ottie) | 18 | Crypto DeFi, wallets, market data, mpp, tempo |
 | [Lightning Labs](https://lightning.engineering/) | 3 | ClawHub: roasbeef (CTO) |
@@ -172,6 +172,8 @@ clawhub install binance-spot-api
 | [MetaMask](https://github.com/MetaMask/openclaw-skills) | 2 wallet skills | Official MetaMask smart accounts & gator CLI |
 | [MoonPay](https://github.com/moonpay/skills) | 35 payment/trading skills | Official MoonPay crypto onramp, trading, & wallet tools |
 | [Minara AI](https://github.com/minara-ai/skills) | 1 trading skill | Official crypto trading & wallet CLI (EVM + Solana + Hyperliquid) |
+| [Pendle Finance](https://github.com/pendle-finance/pendle-ai) | 4 yield trading skills | Official Pendle yield market data, swaps, portfolio, orders |
+| [DefiLlama](https://github.com/DefiLlama/defillama-skills) | 11 analytics skills | Official DeFi analytics, TVL, yields, risk assessment, market analysis |
 | [Alchemy](https://www.alchemy.com/) | 1 comprehensive skill | [alchemyplatform/skills](https://github.com/alchemyplatform/skills) |
 | [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
 | + MCP servers | 58 | Alchemy, Coinbase, Solana, EigenLayer, Blockscout, Alpaca, NEAR, Base, Monad, CoinGecko, and more |
@@ -237,10 +239,10 @@ We gratefully acknowledge the following projects and teams whose skills and tool
 |---|---|---|
 | [ClawHub](https://clawhub.ai) | 200+ community skills | Skill registry for OpenClaw agents |
 | [Ottie](https://github.com/jiayaoqijia/ottie) | 18 crypto/DeFi skills | Self-evolving crypto AI agent |
-| [Binance Skills Hub](https://github.com/binance/binance-skills-675hub) | 20+ exchange skills | Official Binance AI skills |
+| [Binance Skills Hub](https://github.com/binance/binance-skills-690hub) | 20+ exchange skills | Official Binance AI skills |
 | [OKX OnchainOS](https://github.com/okx/onchainos-skills) | 16+ exchange skills | Official OKX AI skills |
 | [Kraken CLI](https://github.com/krakenfx/kraken-cli) | 50 trading skills | Official Kraken AI-native CLI |
-| [KuCoin Skills Hub](https://github.com/Kucoin/kucoin-skills-675hub) | 7 exchange skills | Official KuCoin AI skills |
+| [KuCoin Skills Hub](https://github.com/Kucoin/kucoin-skills-690hub) | 7 exchange skills | Official KuCoin AI skills |
 | [Uniswap AI](https://github.com/Uniswap/uniswap-ai) | 8 DeFi skills | Official Uniswap agent tools |
 | [Rocket Pool Skills](https://github.com/rocket-pool/skills) | 7 staking skills | Official Rocket Pool agent skills |
 | [GMX AI](https://github.com/gmx-io/gmx-ai) | 2 DeFi skills | Official GMX trading + liquidity |
@@ -249,12 +251,16 @@ We gratefully acknowledge the following projects and teams whose skills and tool
 | [MetaMask](https://github.com/MetaMask/openclaw-skills) | 2 wallet skills | Official MetaMask smart accounts & gator CLI |
 | [MoonPay](https://github.com/moonpay/skills) | 35 payment/trading skills | Official MoonPay crypto onramp, trading, & wallet tools |
 | [Minara AI](https://github.com/minara-ai/skills) | 1 trading skill | Official crypto trading & wallet CLI (EVM + Solana + Hyperliquid) |
+| [Pendle Finance](https://github.com/pendle-finance/pendle-ai) | 4 yield trading skills | Official Pendle yield market data, swaps, portfolio, orders |
+| [DefiLlama](https://github.com/DefiLlama/defillama-skills) | 11 analytics skills | Official DeFi analytics, TVL, yields, risk assessment, market analysis |
 | [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
 | [Polyhub Skills](https://github.com/HubbleVision/polyhub-skills) | 3 trading skills | Copy-trading and portfolio tools |
 | [Circle](https://github.com/circlefin/skills) | 9 USDC/wallet skills | Official Circle stablecoin & wallet tools |
 | [MetaMask](https://github.com/MetaMask/openclaw-skills) | 2 wallet skills | Official MetaMask smart accounts & gator CLI |
 | [MoonPay](https://github.com/moonpay/skills) | 35 payment/trading skills | Official MoonPay crypto onramp, trading, & wallet tools |
 | [Minara AI](https://github.com/minara-ai/skills) | 1 trading skill | Official crypto trading & wallet CLI (EVM + Solana + Hyperliquid) |
+| [Pendle Finance](https://github.com/pendle-finance/pendle-ai) | 4 yield trading skills | Official Pendle yield market data, swaps, portfolio, orders |
+| [DefiLlama](https://github.com/DefiLlama/defillama-skills) | 11 analytics skills | Official DeFi analytics, TVL, yields, risk assessment, market analysis |
 | [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) | 7 exchange skills | Official Bitget AI skills |
 | [Awesome Ethereum AI Skills](https://github.com/rickkdev/awesome-ethereum-ai-skills) | 24 skills/MCPs | Curated Ethereum AI skill directory |
@@ -279,7 +285,7 @@ We gratefully acknowledge the following projects and teams whose skills and tool
 | [Blockscout](https://github.com/blockscout/mcp-server) | 1 MCP server | Multi-chain block explorer |
 | [CoinGecko](https://github.com/coingecko/coingecko-typescript) | 1 MCP server | Market data + token info |
 | [BNB Chain](https://github.com/bnb-chain/bnbchain-mcp) | 1 MCP server | BSC + opBNB + Greenfield |
-| [BNB Chain Skills Hub](https://github.com/bnb-chain/skills-675hub) | Registry | BNB Chain community skill registry with AgentGuard security scanning |
+| [BNB Chain Skills Hub](https://github.com/bnb-chain/skills-690hub) | Registry | BNB Chain community skill registry with AgentGuard security scanning |
 | [Monad](https://github.com/monad-developers/monad-mcp) | 1 MCP server | Monad blockchain tools |
 | [NEAR](https://github.com/nearai/near-mcp) | 1 MCP server | NEAR protocol integration |
 | [Aptos](https://github.com/aptos-labs/aptos-npm-mcp) | 1 MCP server | Aptos blockchain tools |

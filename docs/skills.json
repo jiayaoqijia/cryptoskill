@@ -511,6 +511,127 @@
       "version": "0.1.0"
     },
     {
+      "name": "defillama-official-chain-ecosystem",
+      "displayName": "Defillama Official Chain Ecosystem",
+      "description": "Full blockchain ecosystem analysis covering TVL, top protocols, bridge flows, stablecoin supply, DEX volume, fees, and user activity on a chain. Use when the user asks about a blockchain's ecosystem, \"what's happening on Solana\", chain health, or a chain-level overview.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-defi-data",
+      "displayName": "Defillama Official Defi Data",
+      "description": "Core reference for DefiLlama MCP tools. Maps DeFi questions to the correct tool call with proper parameters. Covers entity conventions, metric interpretation, stock vs flow distinctions, percentage formatting, and error recovery. Use whenever querying DeFi data — protocol TVL, token prices, chain metrics, fees, revenue, yields, stablecoins, bridges, ETFs, hacks, raises, treasuries, or institutional holdings.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-defi-market-overview",
+      "displayName": "Defillama Official Defi Market Overview",
+      "description": "Broad DeFi market overview combining category rankings, chain comparison, total TVL trends, top protocols, and market events. Use when the user asks for a market summary, \"what's happening in DeFi\", weekly recap, overall market state, DeFi dashboard, or wants a high-level snapshot of the ecosystem.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-defillama-setup",
+      "displayName": "Defillama Official Defillama Setup",
+      "description": "Install and configure the DefiLlama MCP server for DeFi analytics. Provides 23 tools for TVL, token prices, yields, protocol metrics, stablecoins, bridges, ETFs, hacks, raises, and more. Supports OAuth login with your DefiLlama account. Use when the user wants to set up DefiLlama MCP, connect to DeFi data, or install DeFi analytics tools.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "defillama",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-flows-and-events",
+      "displayName": "Defillama Official Flows And Events",
+      "description": "Guide for querying DeFi flow data and events using DefiLlama MCP tools. Covers bridge flows, ETF inflows/outflows, stablecoin supply, institutional/DAT holdings with mNAV ratios, hacks and exploits, fundraising rounds, CEX volumes, open interest, and protocol treasuries. Use when users ask about bridge volume, ETF flows, stablecoin supply, MicroStrategy holdings, DeFi hacks, funding rounds, exchange volume, or treasury data.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-institutional-crypto",
+      "displayName": "Defillama Official Institutional Crypto",
+      "description": "Institutional and TradFi crypto exposure analysis covering public company holdings (MicroStrategy, Tesla, etc.), Bitcoin and Ethereum ETF flows, and institutional accumulation patterns. Use when the user asks about institutional adoption, ETF flows, corporate treasuries, what institutions are buying, or MicroStrategy holdings.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-market-analysis",
+      "displayName": "Defillama Official Market Analysis",
+      "description": "Patterns for DeFi market analysis, screening, and comparison using DefiLlama MCP tools. Covers valuation ratios (P/S, P/F), growth screening with pct_change columns, multi-metric protocol comparison, category comparison, and cross-entity analysis. Use when users ask to compare protocols, screen for undervalued projects, analyze growth trends, or do sector analysis.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-protocol-deep-dive",
+      "displayName": "Defillama Official Protocol Deep Dive",
+      "description": "Comprehensive single-protocol analysis combining TVL, fees, revenue, yields, events, income, and user activity. Produces a full protocol report. Use when the user asks for a complete overview, deep dive, \"tell me everything about\" a protocol, or a protocol research report.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-risk-assessment",
+      "displayName": "Defillama Official Risk Assessment",
+      "description": "Protocol and DeFi risk evaluation covering hack history, oracle dependencies, treasury health, TVL concentration, and yield sustainability. Use when the user asks \"is X safe\", \"how risky is\", protocol security, risk analysis, or wants to evaluate risk before investing or depositing funds.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-token-research",
+      "displayName": "Defillama Official Token Research",
+      "description": "Comprehensive token analysis combining price, market cap, unlock schedule, DeFi deposits, and yield opportunities. Use when the user asks to analyze a token, research a token, check token fundamentals, or wants full token intelligence including vesting and DeFi usage.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "defillama-official-yield-strategies",
+      "displayName": "Defillama Official Yield Strategies",
+      "description": "Guide for querying DeFi yield and APY data using get_yield_pools. Covers pool filtering by token, chain, protocol, category, stablecoin-only mode, and capacity assessment. Explains APY conventions, lending vs borrowing rates, and sort options. Use when users ask about yields, APY, lending rates, borrowing costs, best pools, or DeFi yield strategies.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
       "name": "defillama-prices-api",
       "displayName": "DefiLlama Prices OpenAPI Skill",
       "description": "Operate DefiLlama public price APIs through UXC with a curated OpenAPI schema and read-first guardrails.",
@@ -2459,6 +2580,50 @@
         "defi"
       ],
       "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pendle-official-pendle-data",
+      "displayName": "Pendle Official Pendle Data",
+      "description": "Query Pendle Finance market data, asset metadata, APY analytics, and yield strategy insights. Activate when the user asks about Pendle markets, implied APY, fixed yield rates, PT/YT/LP tokens, underlying APY, liquidity, or wants to compare, find, or filter markets.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pendle-official-pendle-order",
+      "displayName": "Pendle Official Pendle Order",
+      "description": "Manage Pendle Finance limit orders — view the order book, generate EIP-712 order data for PT/YT buys and sells, submit signed orders, and cancel. Activate when the user asks about limit orders, buy PT at a target APY, sell YT if yield drops, or set a yield target.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pendle-official-pendle-portfolio",
+      "displayName": "Pendle Official Pendle Portfolio",
+      "description": "Analyze Pendle Finance portfolio positions — view PT, YT, LP holdings across markets, check claimable PENDLE rewards and YT interest, display maturity timelines, and provide position-level insights. Activate when the user asks about their portfolio, wallet positions, holdings, claimable rewards, or upcoming maturities.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pendle-official-pendle-swap",
+      "displayName": "Pendle Official Pendle Swap",
+      "description": "Build Pendle Finance swap and LP transactions — swap any ERC20 tokens, buy/sell PT, buy/sell YT, mint/redeem SY, mint/redeem PT&YT, add/remove liquidity, claim rewards. Activate when the user wants to trade on Pendle, swap tokens, get a swap quote, buy fixed yield, sell a position, wrap tokens into SY, add or remove liquidity, or claim PENDLE rewards.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
       "version": "1.0.0"
     },
     {

@@ -163,6 +163,22 @@
       matcher: (s) => s.name.startsWith('alchemy-official')
     },
     {
+      id: 'pendle',
+      name: 'Pendle Finance',
+      icon: '⚖️',
+      github: 'https://github.com/pendle-finance/pendle-ai',
+      description: 'Yield trading: market data, swap, portfolio management, and limit orders.',
+      matcher: (s) => s.name.startsWith('pendle-official')
+    },
+    {
+      id: 'defillama',
+      name: 'DefiLlama',
+      icon: '🦙',
+      github: 'https://github.com/DefiLlama/defillama-skills',
+      description: 'DeFi analytics: TVL, yields, protocols, risk assessment, and market analysis.',
+      matcher: (s) => s.name.startsWith('defillama-official')
+    },
+    {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',
