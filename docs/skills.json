@@ -9118,6 +9118,53 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
+    },
+    {
+      "name": "curve-finance-agent",
+      "displayName": "Curve Finance Agent",
+      "description": "Curve pool discovery, exchange rates, and swap building for stablecoin and LP trading.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "dexpaprika-dex-scanner",
+      "displayName": "DexPaprika DEX Agent",
+      "description": "Multi-chain DEX pool discovery with 5M+ tokens, volume analytics, and liquidity tracking.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lido-rocketpool-staking",
+      "displayName": "ETH Liquid Staking Agent",
+      "description": "Compare stETH, rETH, eETH, and swETH rates with auto-selection for best yield.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "token-safety-scanner",
+      "displayName": "Token Safety Agent",
+      "description": "DEXTScore security analysis, holder distribution, and smart contract vulnerability scanning.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
