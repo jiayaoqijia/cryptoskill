@@ -211,30 +211,6 @@
       matcher: (s) => s.name.startsWith('bankr-official')
     },
     {
-      id: 'heurist',
-      name: 'Heurist',
-      icon: '🔬',
-      github: 'https://github.com/heurist-network/heurist-mesh-skill',
-      description: 'Mesh network skill for decentralized AI compute and inference.',
-      matcher: (s) => s.name.startsWith('heurist-official')
-    },
-    {
-      id: 'towns',
-      name: 'Towns',
-      icon: '🏘️',
-      github: 'https://github.com/towns-protocol/skills',
-      description: 'Decentralized community bots and social protocol skills.',
-      matcher: (s) => s.name.startsWith('towns-official')
-    },
-    {
-      id: 'elsa',
-      name: 'Elsa',
-      icon: '❄️',
-      github: 'https://github.com/HeyElsa/elsa-openclaw',
-      description: 'DeFi portfolio management with smart routing and x402 payments.',
-      matcher: (s) => s.name.startsWith('elsa-official')
-    },
-    {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',
