@@ -80,7 +80,7 @@
       icon: '🌊',
       github: 'https://github.com/ProjectOpenSea',
       description: 'NFT marketplace operations including listing, bidding, and analytics.',
-      matcher: (s) => s.author === 'opensea' && s.name.startsWith('opensea')
+      matcher: (s) => (s.author === 'opensea' && s.name.startsWith('opensea')) || s.name.startsWith('opensea-official')
     },
     {
       id: 'sushiswap',
@@ -177,6 +177,70 @@
       github: 'https://github.com/DefiLlama/defillama-skills',
       description: 'DeFi analytics: TVL, yields, protocols, risk assessment, and market analysis.',
       matcher: (s) => s.name.startsWith('defillama-official')
+    },
+    {
+      id: 'coinbase-wallet',
+      name: 'Coinbase Wallet',
+      icon: '🔵',
+      github: 'https://github.com/coinbase/agentic-wallet-skills',
+      description: 'Agentic wallet skills for funding, trading, payments, and on-chain queries.',
+      matcher: (s) => s.name.startsWith('coinbase-official')
+    },
+    {
+      id: 'privy',
+      name: 'Privy',
+      icon: '🔐',
+      github: 'https://github.com/privy-io/privy-agentic-wallets-skill',
+      description: 'Agentic wallet infrastructure for embedded and server wallets.',
+      matcher: (s) => s.name.startsWith('privy-official')
+    },
+    {
+      id: 'virtuals',
+      name: 'Virtual Protocol',
+      icon: '🤖',
+      github: 'https://github.com/Virtual-Protocol/openclaw-acp',
+      description: 'Agent Commerce Protocol for autonomous agent-to-agent transactions.',
+      matcher: (s) => s.name.startsWith('virtuals-official')
+    },
+    {
+      id: 'blockrun',
+      name: 'BlockRun AI',
+      icon: '🧠',
+      github: 'https://github.com/BlockRunAI/ClawRouter',
+      description: 'ClawRouter for intelligent skill routing and orchestration.',
+      matcher: (s) => s.name.startsWith('blockrun-official')
+    },
+    {
+      id: 'bankr',
+      name: 'Bankr',
+      icon: '💰',
+      github: 'https://github.com/BankrBot/skills',
+      description: 'Trading signals, on-chain tools, and social integrations for crypto agents.',
+      matcher: (s) => s.name.startsWith('bankr-official')
+    },
+    {
+      id: 'heurist',
+      name: 'Heurist',
+      icon: '🔬',
+      github: 'https://github.com/heurist-network/heurist-mesh-skill',
+      description: 'Mesh network skill for decentralized AI compute and inference.',
+      matcher: (s) => s.name.startsWith('heurist-official')
+    },
+    {
+      id: 'towns',
+      name: 'Towns',
+      icon: '🏘️',
+      github: 'https://github.com/towns-protocol/skills',
+      description: 'Decentralized community bots and social protocol skills.',
+      matcher: (s) => s.name.startsWith('towns-official')
+    },
+    {
+      id: 'elsa',
+      name: 'Elsa',
+      icon: '❄️',
+      github: 'https://github.com/HeyElsa/elsa-openclaw',
+      description: 'DeFi portfolio management with smart routing and x402 payments.',
+      matcher: (s) => s.name.startsWith('elsa-official')
     },
     {
       id: 'mcp-servers',

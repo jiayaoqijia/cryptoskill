@@ -1,0 +1,28 @@
+{
+  "skills": {
+    "load": {
+      "extraDirs": [
+        "/path/to/openclaw-elsa-x402"
+      ]
+    },
+    "entries": {
+      "openclaw-elsa-x402": {
+        "env": {
+          "PAYMENT_PRIVATE_KEY": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "TRADE_PRIVATE_KEY": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "BASE_RPC_URL": "https://mainnet.base.org",
+          "ELSA_API_URL": "https://x402-api.heyelsa.ai",
+          "ELSA_MAX_USD_PER_CALL": "0.05",
+          "ELSA_MAX_USD_PER_DAY": "2.00",
+          "ELSA_MAX_CALLS_PER_MINUTE": "30",
+          "ELSA_TZ": "UTC",
+          "ELSA_ENABLE_EXECUTION_TOOLS": "false",
+          "ELSA_REQUIRE_CONFIRMATION_TOKEN": "true",
+          "ELSA_CONFIRMATION_TTL_SECONDS": "600",
+          "ELSA_AUDIT_LOG_PATH": "./audit.jsonl",
+          "LOG_LEVEL": "info"
+        }
+      }
+    }
+  }
+}
