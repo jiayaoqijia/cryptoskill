@@ -203,7 +203,6 @@
       matcher: (s) => s.name.startsWith('virtuals-official')
     },
     {
-    {
       id: 'bankr',
       name: 'Bankr',
       icon: '💰',
