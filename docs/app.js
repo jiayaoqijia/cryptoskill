@@ -203,13 +203,6 @@
       matcher: (s) => s.name.startsWith('virtuals-official')
     },
     {
-      id: 'blockrun',
-      name: 'BlockRun AI',
-      icon: '🧠',
-      github: 'https://github.com/BlockRunAI/ClawRouter',
-      description: 'ClawRouter for intelligent skill routing and orchestration.',
-      matcher: (s) => s.name.startsWith('blockrun-official')
-    },
     {
       id: 'bankr',
       name: 'Bankr',
