@@ -129,4 +129,4 @@ Submit new skills at [cryptoskill.org](https://cryptoskill.org) or open a PR at 
 
 - Website: https://cryptoskill.org
 - GitHub: https://github.com/jiayaoqijia/cryptoskill
-- Submit: maintainers@altresear.ch
+- Submit: maintainers+cryptoskills@altresear.ch

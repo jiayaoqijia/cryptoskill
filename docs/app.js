@@ -800,12 +800,12 @@
       );
 
       // Try mailto
-      window.location.href = 'mailto:maintainers@altresear.ch?subject=' + subject + '&body=' + body;
+      window.location.href = 'mailto:maintainers+cryptoskills@altresear.ch?subject=' + subject + '&body=' + body;
 
       // Show confirmation with fallback
       setTimeout(function () {
         var msg = 'Your email client should have opened with the submission details.\n\n' +
-          'If it didn\'t open, please email maintainers@altresear.ch directly with:\n\n' +
+          'If it didn\'t open, please email maintainers+cryptoskills@altresear.ch directly with:\n\n' +
           'Skill: ' + name + '\nURL: ' + url + '\nCategory: ' + (category || 'N/A');
         alert(msg);
       }, 500);

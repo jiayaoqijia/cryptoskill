@@ -42,7 +42,7 @@ Just provide the skill name, GitHub URL, and category. We'll review and add it f
 - **Skill requests** -- Request a skill for a protocol we don't cover yet: [Open a request](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=skill_request.md)
 - **Bug reports** -- Found an issue? [Report it](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=bug_report.md)
 - **Feature requests** -- Have an idea? [Tell us](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=feature_request.md)
-- **Quick submit** -- Email maintainers@altresear.ch with the skill name, GitHub URL, and category
+- **Quick submit** -- Email maintainers+cryptoskills@altresear.ch with the skill name, GitHub URL, and category
 
 ---
 

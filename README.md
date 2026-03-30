@@ -190,7 +190,7 @@ clawhub install binance-spot-api
 We welcome contributions from the community. Submit via:
 
 1. **GitHub PR** -- Fork, add your skill, open a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md)
-2. **Quick Submit** -- Email maintainers@altresear.ch with the skill name, GitHub URL, category, and description
+2. **Quick Submit** -- Email maintainers+cryptoskills@altresear.ch with the skill name, GitHub URL, category, and description
 3. **Website** -- Use the submit form at [cryptoskill.org](https://cryptoskill.org)
 
 All submissions are reviewed for security and quality before merging.
