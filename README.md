@@ -67,6 +67,7 @@ CryptoSkill maintains **67 MCP (Model Context Protocol) servers** for crypto -- 
 | [Coinbase AgentKit](skills/mcp-servers/coinbase-agentkit/) | Coinbase | `npm create onchain-agent@latest` |
 | [CoinGecko](skills/mcp-servers/coingecko-mcp-official/) | CoinGecko | `npx @coingecko/coingecko-mcp` |
 | [DefiLlama](skills/mcp-servers/defillama-mcp/) | dcSpark | `git clone dcSpark/mcp-server-defillama` |
+| [CoinPaprika](skills/mcp-servers/coinpaprika-mcp/) | CoinPaprika | `git clone coinpaprika/coinpaprika-mcp` |
 | [DexPaprika](skills/mcp-servers/dexpaprika-mcp/) | CoinPaprika | `git clone coinpaprika/dexpaprika-mcp` |
 | [EigenLayer](skills/mcp-servers/eigenlayer-mcp/) | Layr-Labs | `claude mcp add --transport sse eigenlayer https://eigenlayer-mcp-server-sand.vercel.app/sse` |
 | [Kraken CLI](skills/mcp-servers/kraken-cli-mcp/) | Kraken | `git clone krakenfx/kraken-cli` |
