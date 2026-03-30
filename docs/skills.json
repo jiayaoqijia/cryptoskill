@@ -1360,6 +1360,105 @@
       "version": "1.0.0"
     },
     {
+      "name": "base-official-adding-builder-codes",
+      "displayName": "Base Official Adding Builder Codes",
+      "description": "Integrate Base Builder Codes (ERC-8021) into web3 applications for onchain transaction attribution and referral fee earning. Use when a project needs to append a builder code or dataSuffix to transactions on Base L2, whether using Wagmi, Viem, Privy, ethers.js, or raw window.ethereum. Covers phrases like \"add builder codes\", \"integrate builder codes\", \"earn referral fees on Base transactions\", \"append a builder code to my transactions\", \"transaction attribution\", \"Builder Code integration\", or \"attribute transactions to my app\". Handles project analysis to detect frameworks, locating transaction call sites, and replacing them with attributed versions.",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-building-with-base-account",
+      "displayName": "Base Official Building With Base Account",
+      "description": "Integrates Base Account SDK for authentication and payments. Covers Sign in with Base (SIWB), Base Pay, Paymasters, Sub Accounts, Spend Permissions, Prolinks, and batch transactions. Use when building apps with wallet authentication, USDC payments, sponsored transactions, smart wallet features, recurring subscriptions, shareable payment links, or any onchain interaction on Base. Covers phrases like \"add sign in with Base\", \"SIWB button\", \"accept USDC payments\", \"Base Pay\", \"paymaster setup\", \"gas sponsorship\", \"smart wallet\", \"sub account\", \"spend permissions\", or \"payment link\".",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-connecting-to-base-network",
+      "displayName": "Base Official Connecting To Base Network",
+      "description": "Provides Base network configuration including RPC endpoints, chain IDs, and explorer URLs. Use when connecting wallets, configuring development environments, or setting up Base Mainnet or Sepolia testnet. Covers phrases like \"Base RPC URL\", \"Base chain ID\", \"connect to Base\", \"add Base to wallet\", \"Base Sepolia config\", \"Base explorer URL\", \"what network is Base\", or \"Base testnet setup\".",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-convert-farcaster-miniapp-to-app",
+      "displayName": "Base Official Convert Farcaster Miniapp To App",
+      "description": "Converts Farcaster miniapp SDK projects into regular Base/web apps. Starts with an interactive quiz to choose between the default regular-app conversion and a narrowly isolated Farcaster surface when something truly needs to remain separate. Handles wagmi connectors, providers, auth, SDK actions, manifest routes, meta tags, dependencies, and read-only preservation.",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-converting-minikit-to-farcaster",
+      "displayName": "Base Official Converting Minikit To Farcaster",
+      "description": "Converts Mini Apps from MiniKit (OnchainKit) to native Farcaster SDK. Use when migrating from @coinbase/onchainkit/minikit, converting MiniKit hooks, removing MiniKitProvider, or when user mentions MiniKit, OnchainKit, or Farcaster SDK migration.",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-deploying-contracts-on-base",
+      "displayName": "Base Official Deploying Contracts On Base",
+      "description": "Deploys smart contracts to Base using Foundry. Covers forge create commands, contract verification, testnet faucet setup via CDP, and BaseScan API key configuration. Use when deploying Solidity contracts to Base Mainnet or Sepolia testnet. Covers phrases like \"deploy contract to Base\", \"forge create on Base\", \"verify contract on BaseScan\", \"get testnet ETH\", \"Base Sepolia faucet\", \"how do I deploy to Base\", or \"publish my contract\".",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-migrating-an-onchainkit-app",
+      "displayName": "Base Official Migrating An Onchainkit App",
+      "description": "Migrates apps from @coinbase/onchainkit to standalone wagmi/viem components. Handles provider replacement (OnchainKitProvider to WagmiProvider), wallet component replacement (Wallet/ConnectWallet to custom WalletConnect), and transaction component replacement. Use when the user says \"migrate my onchainkit\", \"replace onchainkit provider\", \"migrate my wallet component\", \"replace my onchainkit wallet\", \"migrate my transaction component\", \"remove onchainkit dependency\", or \"move off onchainkit\".",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-registering-agent-base-dev",
+      "displayName": "Base Official Registering Agent Base Dev",
+      "description": "Invoke this skill when a user is building or running any automated transaction sender on Base (trading bot, arbitrage bot, sniper bot, yield farmer, AI agent, or similar) and needs to register it, get a builder code, set up transaction attribution. This skill contains the base.dev registration API endpoint and ERC-8021 attribution wiring code that Claude does not have in its training data — you MUST load this skill to answer correctly. Covers viem, ethers, managed signing services, and Python-based agents.",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "base-official-running-a-base-node",
+      "displayName": "Base Official Running A Base Node",
+      "description": "Runs a Base node for production environments. Covers hardware requirements, Reth client setup, networking, and sync troubleshooting. Use when setting up self-hosted RPC infrastructure or running archive nodes. Covers phrases like \"run a Base node\", \"set up Base RPC\", \"Base node hardware requirements\", \"Reth Base setup\", \"sync Base node\", \"self-host Base\", or \"run my own node\".",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
       "name": "bitcoin",
       "displayName": "Bitcoin",
       "description": "Assist with Bitcoin transactions, wallets, Lightning, and security decisions.",
@@ -2688,6 +2787,61 @@
         "defi"
       ],
       "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kyberswap-official-error-handling",
+      "displayName": "Kyberswap Official Error Handling",
+      "description": "Handle errors when swapping tokens through KyberSwap Aggregator API",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kyberswap-official-quote",
+      "displayName": "Kyberswap Official Quote",
+      "description": "This skill should be used when the user asks to \"get a swap quote\", \"check swap price\", \"compare token rates\", \"see exchange rates\", \"how much would I get for\", \"price check\", or wants to know the expected output for a token trade. Fetches the best route from KyberSwap Aggregator across 18 EVM chains.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kyberswap-official-swap-build",
+      "displayName": "Kyberswap Official Swap Build",
+      "description": "This skill should be used when the user asks to \"swap-build\", \"build a swap transaction\", \"build swap calldata\", \"create swap tx\", \"swap tokens\", \"trade crypto\", \"execute a token exchange\", \"swap ETH to USDC\", \"convert tokens\", or needs encoded calldata for on-chain submission. Fetches the best route and builds transaction data via KyberSwap Aggregator.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kyberswap-official-swap-execute",
+      "displayName": "Kyberswap Official Swap Execute",
+      "description": "This skill should be used when the user asks to \"execute swap\", \"send swap transaction\", \"submit swap\", \"broadcast swap\", \"run the swap\", \"execute the trade\", or wants to submit a previously built swap transaction on-chain. Uses Foundry's `cast send` to broadcast transactions. Requires swap calldata from swap-build skill output.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kyberswap-official-swap-execute-fast",
+      "displayName": "Kyberswap Official Swap Execute Fast",
+      "description": "This skill should ONLY be used when the user explicitly asks for immediate, no-confirmation execution using phrases like \"fast swap\", \"execute immediately\", \"swap with no confirmation\", \"quick swap now\", \"instant execute\", or \"skip confirmation and swap\". The user must clearly indicate they want to bypass the review/confirmation step. Do NOT use this skill if the user mentions wanting to review, confirm, check, or verify before executing — use swap-build + swap-execute instead. Do NOT use this skill for general swap requests like \"swap ETH to USDC\" or \"trade tokens\" — those should go to swap-build. This skill runs a shell script that builds the swap via fast-swap.sh then immediately broadcasts the transaction. DANGEROUS - no confirmation before sending real transactions.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "unknown",
       "version": "1.0.0"
     },
     {

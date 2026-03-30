@@ -211,6 +211,22 @@
       matcher: (s) => s.name.startsWith('bankr-official')
     },
     {
+      id: 'base-skills',
+      name: 'Base',
+      icon: '🔵',
+      github: 'https://github.com/base/skills',
+      description: 'Build on Base: deploy contracts, connect network, run nodes, Farcaster miniapps.',
+      matcher: (s) => s.name.startsWith('base-official')
+    },
+    {
+      id: 'kyberswap',
+      name: 'KyberSwap',
+      icon: '💱',
+      github: 'https://github.com/KyberNetwork/kyberswap-skills',
+      description: 'Multi-chain DEX aggregator: quotes, swap building, and execution.',
+      matcher: (s) => s.name.startsWith('kyberswap-official')
+    },
+    {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',
