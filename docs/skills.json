@@ -495,6 +495,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "crypto-intelligence-suite",
+      "displayName": "Crypto Intelligence Suite",
+      "description": "Comprehensive crypto research including project alpha, tokenomics, team info, and security analysis.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "crypto-liquidations-mcp",
       "displayName": "Crypto Liquidations Mcp",
       "description": "Real-time crypto liquidation events monitoring. Track leveraged position liquidations across major exchanges and DeFi protocols.",
@@ -1165,6 +1177,18 @@
       "name": "token-unlock-scheduler",
       "displayName": "Token Unlock Tracker",
       "description": "Monitor vesting schedules, upcoming unlocks, and token distribution timelines.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "token-unlock-tracker",
+      "displayName": "Token Unlock Schedule",
+      "description": "Query token vesting schedules and upcoming unlock events across the market.",
       "category": "analytics",
       "tags": [
         "official",
@@ -2476,6 +2500,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "ethena-synthetic-dollar",
+      "displayName": "Ethena USDe Protocol",
+      "description": "Query USDe/sUSDe balances, APY rates, and cooldown status for the synthetic dollar protocol.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "ethena-usde",
       "displayName": "Ethena USDe",
       "description": "Synthetic dollar protocol with sUSDe staking yields, cooldown mechanics, and cross-chain balances.",
@@ -3753,6 +3789,18 @@
       "version": "0.1.0"
     },
     {
+      "name": "github-crypto-search",
+      "displayName": "GitHub Crypto Repository Search",
+      "description": "Search and analyze crypto/blockchain repositories with developer profiles and activity metrics.",
+      "category": "dev-tools",
+      "tags": [
+        "official",
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "goat-sdk",
       "displayName": "GOAT SDK",
       "description": "Open-source SDK for building AI agents that interact with any blockchain protocol.",
@@ -3842,6 +3890,18 @@
         "dev-tools"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "smart-contract-security",
+      "displayName": "Smart Contract Security Analyzer",
+      "description": "Analyze Solidity code for vulnerabilities and get security checklists for auditing.",
+      "category": "dev-tools",
+      "tags": [
+        "official",
+        "dev-tools"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -8965,6 +9025,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "dex-paprika-aggregator",
+      "displayName": "DexPaprika DEX Data",
+      "description": "Query 5M+ tokens and liquidity pools across 30+ blockchain networks for DEX analytics.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "funding-rate-trader",
       "displayName": "Funding Rate Trader",
       "description": "Crypto funding rate arbitrage strategy. Scan negative funding rates, auto-trade with stop-loss/take-profit. No API key needed for scanning, Binance API for trading.",
@@ -8974,6 +9046,18 @@
       ],
       "author": "dagangtj",
       "version": "1.0.1"
+    },
+    {
+      "name": "funding-rates-monitor",
+      "displayName": "Perpetual Futures Funding Rates",
+      "description": "Track funding rates, open interest, liquidations, and long/short ratios across exchanges.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     },
     {
       "name": "funding-rates-tracker",
@@ -9751,90 +9835,6 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
-    },
-    {
-      "name": "ethena-synthetic-dollar",
-      "displayName": "Ethena USDe Protocol",
-      "description": "Query USDe/sUSDe balances, APY rates, and cooldown status for the synthetic dollar protocol.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "crypto-intelligence-suite",
-      "displayName": "Crypto Intelligence Suite",
-      "description": "Comprehensive crypto research including project alpha, tokenomics, team info, and security analysis.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "dex-paprika-aggregator",
-      "displayName": "DexPaprika DEX Data",
-      "description": "Query 5M+ tokens and liquidity pools across 30+ blockchain networks for DEX analytics.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "funding-rates-monitor",
-      "displayName": "Perpetual Futures Funding Rates",
-      "description": "Track funding rates, open interest, liquidations, and long/short ratios across exchanges.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "token-unlock-tracker",
-      "displayName": "Token Unlock Schedule",
-      "description": "Query token vesting schedules and upcoming unlock events across the market.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "smart-contract-security",
-      "displayName": "Smart Contract Security Analyzer",
-      "description": "Analyze Solidity code for vulnerabilities and get security checklists for auditing.",
-      "category": "dev-tools",
-      "tags": [
-        "official",
-        "dev-tools"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "github-crypto-search",
-      "displayName": "GitHub Crypto Repository Search",
-      "description": "Search and analyze crypto/blockchain repositories with developer profiles and activity metrics.",
-      "category": "dev-tools",
-      "tags": [
-        "official",
-        "dev-tools"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
     }
   ],
   "categories": {
