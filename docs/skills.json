@@ -41,6 +41,17 @@
       "version": "1.0.2"
     },
     {
+      "name": "camscanner-ai-tools",
+      "displayName": "Camscanner Ai Tools",
+      "description": "AI agents and skills for crypto, finance, design, and real estate tools",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "duc041318",
+      "version": "1.0.0"
+    },
+    {
       "name": "coinbase-developer-platform",
       "displayName": "Coinbase CDP Agent Kit",
       "description": "Official SDK for building AI agents that interact with Coinbase wallets, trading, and onchain actions.",
@@ -133,6 +144,17 @@
         "ai-crypto"
       ],
       "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "fx-mcp",
+      "displayName": "Fx Mcp",
+      "description": "MCP server for AI agents — real-time FX rates, crypto quotes, DeFi yields, and market data. 8 tools, 6 data sources, no API keys needed.",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "lamcearber-spec",
       "version": "1.0.0"
     },
     {
@@ -4918,6 +4940,17 @@
       "version": "0.1.0"
     },
     {
+      "name": "bitget-wallet-mcp",
+      "displayName": "Bitget Wallet Mcp",
+      "description": "MCP server for Bitget Wallet DEX aggregator — token info, swap quotes, calldata generation, and transaction submission across 10+ chains.",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "bitget-wallet-ai-lab",
+      "version": "1.0.0"
+    },
+    {
       "name": "bybit-ai-skills",
       "displayName": "Bybit Ai Skills",
       "description": "253 API endpoints for trading, derivatives, earn products on Bybit. Comprehensive AI skills covering spot, futures, options, and institutional features.",
@@ -7220,6 +7253,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "free-crypto-news",
+      "displayName": "Free Crypto News",
+      "description": "Free crypto news API - real-time aggregator for Bitcoin, Ethereum, DeFi, Solana & altcoins. No API key required. RSS/Atom feeds, JSON REST API, historical archive with market context, embeddable widge",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "nirholas",
+      "version": "1.0.0"
+    },
+    {
       "name": "freqtrade-mcp",
       "displayName": "Freqtrade Mcp",
       "description": "Integration with Freqtrade open-source trading bot framework. Manage strategies, backtesting, and live trading operations via MCP.",
@@ -8511,6 +8555,17 @@
         "prediction-markets"
       ],
       "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kit",
+      "displayName": "Kit",
+      "description": "Non-custodial execution primitives for DeFi. SDK, CLI, MCP server, and skills for agents and developers. Best-execution routing across venues. Starting with Solana perps — extending to options, predic",
+      "category": "prediction-markets",
+      "tags": [
+        "prediction-markets"
+      ],
+      "author": "toreva",
       "version": "1.0.0"
     },
     {
@@ -10094,61 +10149,6 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
-    },
-    {
-      "name": "camscanner-ai-tools",
-      "displayName": "Camscanner Ai Tools",
-      "description": "AI agents and skills for crypto, finance, design, and real estate tools",
-      "category": "ai-crypto",
-      "tags": [
-        "ai-crypto"
-      ],
-      "author": "duc041318",
-      "version": "1.0.0"
-    },
-    {
-      "name": "kit",
-      "displayName": "Kit",
-      "description": "Non-custodial execution primitives for DeFi. SDK, CLI, MCP server, and skills for agents and developers. Best-execution routing across venues. Starting with Solana perps — extending to options, predic",
-      "category": "prediction-markets",
-      "tags": [
-        "prediction-markets"
-      ],
-      "author": "toreva",
-      "version": "1.0.0"
-    },
-    {
-      "name": "bitget-wallet-mcp",
-      "displayName": "Bitget Wallet Mcp",
-      "description": "MCP server for Bitget Wallet DEX aggregator — token info, swap quotes, calldata generation, and transaction submission across 10+ chains.",
-      "category": "exchanges",
-      "tags": [
-        "exchanges"
-      ],
-      "author": "bitget-wallet-ai-lab",
-      "version": "1.0.0"
-    },
-    {
-      "name": "free-crypto-news",
-      "displayName": "Free Crypto News",
-      "description": "Free crypto news API - real-time aggregator for Bitcoin, Ethereum, DeFi, Solana & altcoins. No API key required. RSS/Atom feeds, JSON REST API, historical archive with market context, embeddable widge",
-      "category": "mcp-servers",
-      "tags": [
-        "mcp-servers"
-      ],
-      "author": "nirholas",
-      "version": "1.0.0"
-    },
-    {
-      "name": "fx-mcp",
-      "displayName": "Fx Mcp",
-      "description": "MCP server for AI agents — real-time FX rates, crypto quotes, DeFi yields, and market data. 8 tools, 6 data sources, no API keys needed.",
-      "category": "ai-crypto",
-      "tags": [
-        "ai-crypto"
-      ],
-      "author": "lamcearber-spec",
-      "version": "1.0.0"
     }
   ],
   "categories": {
