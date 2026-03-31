@@ -1,6 +1,30 @@
 {
   "skills": [
     {
+      "name": "ack-reputation",
+      "displayName": "ACK (Agent Consensus Kudos)",
+      "description": "Peer-driven onchain reputation layer for AI agents enabling kudos across reliability, speed, accuracy, creativity, and security categories.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "agent8-reputation",
+      "displayName": "Agent8",
+      "description": "Interaction layer where humans, AI agents, and blockchain converge, powering a trustless reputation economy for ERC-8004 ecosystem.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "baseoracle",
       "displayName": "Baseoracle",
       "description": "BaseOracle MCP Server — Base L2 intelligence for AI agents",
@@ -52,9 +76,33 @@
       "version": "1.0.0"
     },
     {
+      "name": "clawdia-manager",
+      "displayName": "Clawdia",
+      "description": "Manager agent of ClawPlaza ecosystem that orchestrates agent collaboration, task routing, quality checks, and execution monitoring.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "coinbase-developer-platform",
       "displayName": "Coinbase CDP Agent Kit",
       "description": "Official SDK for building AI agents that interact with Coinbase wallets, trading, and onchain actions.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "corgent-cortensor",
+      "displayName": "Corgent - Cortensor Agent",
+      "description": "ERC-8004-native trust and execution agent acting as shared oracle for AI agents in the 8004 ecosystem.",
       "category": "ai-crypto",
       "tags": [
         "official",
@@ -178,6 +226,30 @@
         "ai-crypto"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "loopuman",
+      "displayName": "Loopuman",
+      "description": "Human layer for AI that routes tasks to verified human workers worldwide via Telegram & WhatsApp with 8-second cUSD payments.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "molty-cash-workers",
+      "displayName": "Molty Cash Workers",
+      "description": "Human worker marketplace where AI agents can hire verified workers via x402 payments on Base or Solana.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -305,6 +377,18 @@
       "tags": [
         "official",
         "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "agentic-eye",
+      "displayName": "Agentic Eye",
+      "description": "Content intelligence API that analyzes live YouTube, TikTok, and Reddit comments to predict viral content with 47 stars.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
       ],
       "author": "discovered",
       "version": "1.0.0"
@@ -1167,6 +1251,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "quantaBot",
+      "displayName": "QuantaBot",
+      "description": "Monitors discrete quantum jumps in Base DeFi protocol metrics, identifying non-linear step-change increases in TVL and volume.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "subgraph-registry",
       "displayName": "Subgraph Registry",
       "description": "Discover and query subgraphs from The Graph's decentralized network. Browse indexed protocols and chain data sources.",
@@ -1988,6 +2084,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "abstract-xp-agent",
+      "displayName": "Abstract XP Agent",
+      "description": "Autonomous DeFi and gaming agent on Abstract managing veABX positions, bribe hunting, LP staking, and game automation.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "aerodrome-agent",
       "displayName": "Aerodrome Finance DEX Agent",
       "description": "Full Aerodrome integration with swaps, LP, gauges, veAERO voting, and bribe claiming on Base.",
@@ -2170,6 +2278,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "arcpilot",
+      "displayName": "ArcPilot",
+      "description": "Onchain guide for swaps, pools, and reputation on Arc chain, assisting users with DeFi actions and intelligent interaction.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "balancer-v3-agent",
       "displayName": "Balancer V3 Pool Agent",
       "description": "Swap, add/remove liquidity, and manage positions on Balancer V3 pools with weighted and stable options.",
@@ -2202,6 +2322,18 @@
         "defi"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "captain-dackie",
+      "displayName": "Captain Dackie",
+      "description": "DeFAI and x402 AI Agent from Capminal with 4000+ stars, providing autonomous DeFi operations on Base.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -3892,6 +4024,18 @@
       "name": "yield-strategy-router",
       "displayName": "Yield Strategy Router",
       "description": "Access Pendle, Convex, EigenLayer, Ethena, and Marinade yield strategies with unified interface.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "zyfai-rebalancer",
+      "displayName": "Zyfai Rebalancer Agent",
+      "description": "ZK powered rebalancer agent that finds optimal low-risk yield opportunities across Base, Arbitrum, and Plasma chains.",
       "category": "defi",
       "tags": [
         "official",
@@ -7447,6 +7591,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "nate-the-grait",
+      "displayName": "Nate the GrAIt",
+      "description": "Autonomous AI agent on Abstract Chain with live MCP server, agent audit system, and ecosystem intelligence for task automation.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "near-mcp",
       "displayName": "Near Mcp",
       "description": "Official NEAR Protocol MCP server for AI agents to interact with NEAR blockchain, accounts, contracts, and tokens.",
@@ -7466,6 +7622,18 @@
         "mcp-servers"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nookplot-mcp",
+      "displayName": "Nookplot MCP Agent",
+      "description": "AI agent connected via @nookplot/mcp enabling MCP protocol integration for blockchain operations on Base.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -7499,6 +7667,17 @@
         "mcp-servers"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rug-munch-mcp",
+      "displayName": "Rug Munch Mcp",
+      "description": "MCP server for Marcus Rug Intel — 19 tools for crypto token risk analysis, rug pull detection, and AI forensics. Works with Claude Desktop, Cursor, Windsurf.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "Marcus-Rug-Intel",
       "version": "1.0.0"
     },
     {
@@ -8326,6 +8505,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "remittance-agent",
+      "displayName": "Remittance",
+      "description": "First ERC8004 agent to verify payment stability, enabling cross-border payment verification on Ethereum.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "tempo",
       "displayName": "Tempo",
       "description": "Use this skill when the user wants to call an API, make an HTTP request, discover available services, or access external data with automatic payments. Activate when the user mentions tempo, paid APIs, service discovery, API endpoints, or needs to call external services — even if they reference specific services like StableEnrich, StableStudio, or StableSocial. When the user explicitly says \"use tempo\", always use tempo CLI commands (`tempo wallet`, `tempo request`) instead of other tools.",
@@ -8334,6 +8525,18 @@
         "payments"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "toppa-payments",
+      "displayName": "Toppa",
+      "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases on Celo.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -8485,6 +8688,18 @@
       "version": "0.1.0"
     },
     {
+      "name": "football-odds-ai",
+      "displayName": "Football Odds AI",
+      "description": "Verifiable pre-match football odds prediction agent for European leagues with five-model consensus and on-chain commit-reveal records.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "fortune-skill",
       "displayName": "Fortune Skill",
       "description": "Community skill from BNB Chain Skills Hub",
@@ -8577,6 +8792,18 @@
         "prediction-markets"
       ],
       "author": "unknown",
+      "version": "1.0.0"
+    },
+    {
+      "name": "oraclemind",
+      "displayName": "OracleMind",
+      "description": "AI oracle specialized in prediction markets and global sentiment analysis, aggregating data from decentralized prediction markets.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -8975,6 +9202,18 @@
       "version": "1.1.0"
     },
     {
+      "name": "ave-trading-agent",
+      "displayName": "Ave.ai Trading Agent",
+      "description": "AI-driven multi-chain trading agent with on-chain reputation registered across multiple chains including BSC.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "bankr-official-0xwork",
       "displayName": "Bankr Official 0xwork",
       "description": "Find and complete paid tasks on the 0xWork decentralized marketplace (Base chain, USDC escrow). Use when: the agent wants to earn money/USDC by doing work, discover available tasks, claim a bounty, submit deliverables, post tasks with bounties, check earnings or wallet balance, sell digital products, list services, or set up as a 0xWork worker/poster. Task categories: Writing, Research, Social, Creative, Code, Data. NOT for: managing the 0xWork platform or frontend development.",
@@ -9321,6 +9560,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "debot-trading-agent",
+      "displayName": "Debot Trading Agent",
+      "description": "Trading agent from debot.ai enabling smarter multi-chain trading with AI-driven insights on BSC.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "defi-yield-scanner",
       "displayName": "DeFi Yield Scanner",
       "description": "Scan DeFi protocols for the best yield opportunities. Covers Aave, Compound, Curve, Yearn, Uniswap v3, and emerging L2 protocols. Compares APY vs risk, tracks TVL changes, and flags new farm openings. Use when you need DeFi yield farming opportunities, protocol APY comparisons, liquidity mining alerts, or stablecoin yield optimization.",
@@ -9342,6 +9593,18 @@
       "name": "dex-paprika-aggregator",
       "displayName": "DexPaprika DEX Data",
       "description": "Query 5M+ tokens and liquidity pools across 30+ blockchain networks for DEX analytics.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ethy-ai-trading",
+      "displayName": "Ethy AI",
+      "description": "Vibe trading agent that turns plain-language trading strategies into live automations with x402 payment support.",
       "category": "trading",
       "tags": [
         "official",
@@ -9397,6 +9660,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "gekko-portfolio",
+      "displayName": "Gekko",
+      "description": "AI Agent Portfolio Manager built for crypto with 2000+ stars, scanning vaults, crunching yields, and finding alpha opportunities.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "grid-trading",
       "displayName": "OpenMM Grid Trading",
       "description": "Create and manage grid trading strategies with OpenMM. Automated buy/sell around center price.",
@@ -9410,6 +9685,30 @@
       ],
       "author": "adacapo21",
       "version": "0.1.0"
+    },
+    {
+      "name": "heyanon-jupiter-perps",
+      "displayName": "Jupiter Perps powered by HeyAnon",
+      "description": "Safe execution layer for Jupiter perpetuals on Solana with leverage validation, liquidity checks, and collateral verification.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "heyanon-pumpfun",
+      "displayName": "Pumpfun powered by HeyAnon",
+      "description": "Safe execution layer for Pumpfun token launches on Solana with launch parameter validation and reward eligibility checks.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     },
     {
       "name": "hyperliquid-copy-trade",
@@ -9485,6 +9784,18 @@
       ],
       "author": "build23w",
       "version": "0.1.0"
+    },
+    {
+      "name": "minara-ai",
+      "displayName": "Minara AI",
+      "description": "Intelligent crypto assistant providing real-time market analysis, DeFi guidance, swap intent parsing, and prediction market analysis with x402 support.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     },
     {
       "name": "minara-official",
@@ -10149,317 +10460,6 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
-    },
-    {
-      "name": "nate-the-grait",
-      "displayName": "Nate the GrAIt",
-      "description": "Autonomous AI agent on Abstract Chain with live MCP server, agent audit system, and ecosystem intelligence for task automation.",
-      "category": "mcp-servers",
-      "tags": [
-        "official",
-        "mcp-servers"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "ack-reputation",
-      "displayName": "ACK (Agent Consensus Kudos)",
-      "description": "Peer-driven onchain reputation layer for AI agents enabling kudos across reliability, speed, accuracy, creativity, and security categories.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "loopuman",
-      "displayName": "Loopuman",
-      "description": "Human layer for AI that routes tasks to verified human workers worldwide via Telegram & WhatsApp with 8-second cUSD payments.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "captain-dackie",
-      "displayName": "Captain Dackie",
-      "description": "DeFAI and x402 AI Agent from Capminal with 4000+ stars, providing autonomous DeFi operations on Base.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "minara-ai",
-      "displayName": "Minara AI",
-      "description": "Intelligent crypto assistant providing real-time market analysis, DeFi guidance, swap intent parsing, and prediction market analysis with x402 support.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "gekko-portfolio",
-      "displayName": "Gekko",
-      "description": "AI Agent Portfolio Manager built for crypto with 2000+ stars, scanning vaults, crunching yields, and finding alpha opportunities.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "heyanon-pumpfun",
-      "displayName": "Pumpfun powered by HeyAnon",
-      "description": "Safe execution layer for Pumpfun token launches on Solana with launch parameter validation and reward eligibility checks.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "heyanon-jupiter-perps",
-      "displayName": "Jupiter Perps powered by HeyAnon",
-      "description": "Safe execution layer for Jupiter perpetuals on Solana with leverage validation, liquidity checks, and collateral verification.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "ave-trading-agent",
-      "displayName": "Ave.ai Trading Agent",
-      "description": "AI-driven multi-chain trading agent with on-chain reputation registered across multiple chains including BSC.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "zyfai-rebalancer",
-      "displayName": "Zyfai Rebalancer Agent",
-      "description": "ZK powered rebalancer agent that finds optimal low-risk yield opportunities across Base, Arbitrum, and Plasma chains.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "nookplot-mcp",
-      "displayName": "Nookplot MCP Agent",
-      "description": "AI agent connected via @nookplot/mcp enabling MCP protocol integration for blockchain operations on Base.",
-      "category": "mcp-servers",
-      "tags": [
-        "official",
-        "mcp-servers"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "toppa-payments",
-      "displayName": "Toppa",
-      "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases on Celo.",
-      "category": "payments",
-      "tags": [
-        "official",
-        "payments"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "agentic-eye",
-      "displayName": "Agentic Eye",
-      "description": "Content intelligence API that analyzes live YouTube, TikTok, and Reddit comments to predict viral content with 47 stars.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "oraclemind",
-      "displayName": "OracleMind",
-      "description": "AI oracle specialized in prediction markets and global sentiment analysis, aggregating data from decentralized prediction markets.",
-      "category": "prediction-markets",
-      "tags": [
-        "official",
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "football-odds-ai",
-      "displayName": "Football Odds AI",
-      "description": "Verifiable pre-match football odds prediction agent for European leagues with five-model consensus and on-chain commit-reveal records.",
-      "category": "prediction-markets",
-      "tags": [
-        "official",
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "agent8-reputation",
-      "displayName": "Agent8",
-      "description": "Interaction layer where humans, AI agents, and blockchain converge, powering a trustless reputation economy for ERC-8004 ecosystem.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "clawdia-manager",
-      "displayName": "Clawdia",
-      "description": "Manager agent of ClawPlaza ecosystem that orchestrates agent collaboration, task routing, quality checks, and execution monitoring.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "ethy-ai-trading",
-      "displayName": "Ethy AI",
-      "description": "Vibe trading agent that turns plain-language trading strategies into live automations with x402 payment support.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "remittance-agent",
-      "displayName": "Remittance",
-      "description": "First ERC8004 agent to verify payment stability, enabling cross-border payment verification on Ethereum.",
-      "category": "payments",
-      "tags": [
-        "official",
-        "payments"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "arcpilot",
-      "displayName": "ArcPilot",
-      "description": "Onchain guide for swaps, pools, and reputation on Arc chain, assisting users with DeFi actions and intelligent interaction.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "debot-trading-agent",
-      "displayName": "Debot Trading Agent",
-      "description": "Trading agent from debot.ai enabling smarter multi-chain trading with AI-driven insights on BSC.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "molty-cash-workers",
-      "displayName": "Molty Cash Workers",
-      "description": "Human worker marketplace where AI agents can hire verified workers via x402 payments on Base or Solana.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "abstract-xp-agent",
-      "displayName": "Abstract XP Agent",
-      "description": "Autonomous DeFi and gaming agent on Abstract managing veABX positions, bribe hunting, LP staking, and game automation.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "quantaBot",
-      "displayName": "QuantaBot",
-      "description": "Monitors discrete quantum jumps in Base DeFi protocol metrics, identifying non-linear step-change increases in TVL and volume.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "corgent-cortensor",
-      "displayName": "Corgent - Cortensor Agent",
-      "description": "ERC-8004-native trust and execution agent acting as shared oracle for AI agents in the 8004 ecosystem.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "rug-munch-mcp",
-      "displayName": "Rug Munch Mcp",
-      "description": "MCP server for Marcus Rug Intel — 19 tools for crypto token risk analysis, rug pull detection, and AI forensics. Works with Claude Desktop, Cursor, Windsurf.",
-      "category": "mcp-servers",
-      "tags": [
-        "mcp-servers"
-      ],
-      "author": "Marcus-Rug-Intel",
-      "version": "1.0.0"
     }
   ],
   "categories": {
