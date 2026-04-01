@@ -13,6 +13,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "agent8",
+      "displayName": "Agent8",
+      "description": "Interaction layer powering trustless reputation economy for ERC-8004 ecosystem with rewards for honest contributions.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "agent8-reputation",
       "displayName": "Agent8",
       "description": "Interaction layer where humans, AI agents, and blockchain converge, powering a trustless reputation economy for ERC-8004 ecosystem.",
@@ -76,6 +88,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "clawdia",
+      "displayName": "Clawdia",
+      "description": "Default manager agent of ClawPlaza orchestrating agent collaboration, task routing, and quality checks.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "clawdia-manager",
       "displayName": "Clawdia",
       "description": "Manager agent of ClawPlaza ecosystem that orchestrates agent collaboration, task routing, quality checks, and execution monitoring.",
@@ -91,6 +115,18 @@
       "name": "coinbase-developer-platform",
       "displayName": "Coinbase CDP Agent Kit",
       "description": "Official SDK for building AI agents that interact with Coinbase wallets, trading, and onchain actions.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "corgent",
+      "displayName": "Corgent - Cortensor Agent",
+      "description": "ERC-8004-native trust and execution agent acting as shared oracle for AI agents with multi-model verification.",
       "category": "ai-crypto",
       "tags": [
         "official",
@@ -399,6 +435,18 @@
       "description": "MCP server for on-chain analytics, whale tracking, and smart money analysis.",
       "category": "analytics",
       "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aurasight",
+      "displayName": "aurasight",
+      "description": "Advanced NFT and Metaverse analytics agent scanning collections for wash trading and predicting floor price trends.",
+      "category": "analytics",
+      "tags": [
+        "official",
         "analytics"
       ],
       "author": "discovered",
@@ -1263,6 +1311,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "quantabot",
+      "displayName": "QuantaBot",
+      "description": "Monitors quantum jumps in Base DeFi protocol metrics identifying non-linear step-change increases in TVL, volume, and user counts.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "subgraph-registry",
       "displayName": "Subgraph Registry",
       "description": "Discover and query subgraphs from The Graph's decentralized network. Browse indexed protocols and chain data sources.",
@@ -2096,6 +2156,30 @@
       "version": "1.0.0"
     },
     {
+      "name": "aegis-protocol",
+      "displayName": "AegisProtocol",
+      "description": "Enterprise-grade DeFi security and analytics agent with advanced threat detection and market intelligence on Base.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aegiszk",
+      "displayName": "aegiszk",
+      "description": "Privacy-focused AI agent specializing in Zero-Knowledge proofs, smart contract security audits, and transaction anonymization.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "aerodrome-agent",
       "displayName": "Aerodrome Finance DEX Agent",
       "description": "Full Aerodrome integration with swaps, LP, gauges, veAERO voting, and bribe claiming on Base.",
@@ -2704,6 +2788,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "esusu-ai",
+      "displayName": "Esusu AI",
+      "description": "Autonomous onchain financial execution agent for Esusu decentralized savings protocol on Celo blockchain.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "eth-liquid-staking",
       "displayName": "ETH Liquid Staking Router",
       "description": "Stake ETH with Lido, Rocket Pool, EtherFi, or Swell with automatic best-rate selection across providers.",
@@ -2862,6 +2958,18 @@
       "name": "etherfi-staking-agent",
       "displayName": "EtherFi eETH",
       "description": "AI agent for EtherFi liquid restaking and eETH token management.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "eyeset",
+      "displayName": "Eyeset",
+      "description": "Autonomous AI agent on Abstract blockchain executing on-chain transactions, managing assets, and interacting with DeFi protocols.",
       "category": "defi",
       "tags": [
         "official",
@@ -3558,6 +3666,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "quantumswap-agent",
+      "displayName": "quantumswap",
+      "description": "AI-driven cross-chain arbitrage bot and liquidity routing engine for high-speed execution on Base network.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "raydium",
       "displayName": "Raydium",
       "description": "Swap tokens and provide liquidity on Raydium AMM, Solana's leading DEX.",
@@ -3685,6 +3805,18 @@
       ],
       "author": "prqelt",
       "version": "0.1.0"
+    },
+    {
+      "name": "saucaiii",
+      "displayName": "Saucaiii",
+      "description": "Crypto-native DeFi orchestrator running 48 operational skills including MEV capture, liquidations, arbitrage via flash loans on Abstract Chain.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     },
     {
       "name": "spark-lending-agent",
@@ -7320,6 +7452,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "dexter-mcp",
+      "displayName": "Dexter Mcp",
+      "description": "Dexter MCP server — 60+ Solana DeFi tools over HTTP and stdio",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "Dexter-DAO",
+      "version": "1.0.0"
+    },
+    {
       "name": "dune-analytics-mcp",
       "displayName": "Dune Analytics Mcp",
       "description": "Dune Analytics MCP server for executing queries and retrieving on-chain analytics dashboards.",
@@ -8528,6 +8671,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "toppa",
+      "displayName": "Toppa",
+      "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases on Celo.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "toppa-payments",
       "displayName": "Toppa",
       "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases on Celo.",
@@ -9055,6 +9210,18 @@
       "tags": [
         "official",
         "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "castmind",
+      "displayName": "castmind",
+      "description": "Web3 social intelligence agent for Farcaster and Lens Protocol that automates engagement and tracks influencer alpha.",
+      "category": "social",
+      "tags": [
+        "official",
+        "social"
       ],
       "author": "discovered",
       "version": "1.0.0"
@@ -9614,6 +9781,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "floor-otc-agent",
+      "displayName": "FLOOR OTC Agent",
+      "description": "Autonomous OTC trading desk for trustless token swaps with on-chain escrow and atomic settlement on Base mainnet.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "funding-rate-trader",
       "displayName": "Funding Rate Trader",
       "description": "Crypto funding rate arbitrage strategy. Scan negative funding rates, auto-trade with stop-loss/take-profit. No API key needed for scanning, Binance API for trading.",
@@ -9786,6 +9965,18 @@
       "version": "0.1.0"
     },
     {
+      "name": "mevx-trading-agent",
+      "displayName": "MevX Trading Agent",
+      "description": "Next-gen AI trading agent powered by MevX.io with MEV-aware execution strategies.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "minara-ai",
       "displayName": "Minara AI",
       "description": "Intelligent crypto assistant providing real-time market analysis, DeFi guidance, swap intent parsing, and prediction market analysis with x402 support.",
@@ -9898,6 +10089,18 @@
       ],
       "author": "brendanwood",
       "version": "1.1.0"
+    },
+    {
+      "name": "pumpfun-heyanon",
+      "displayName": "Pumpfun powered by HeyAnon",
+      "description": "Safe execution layer for Pumpfun token launches on Solana with parameter validation and pre-validated transactions.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     },
     {
       "name": "solana-trade",
@@ -10342,6 +10545,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "trustwallet-ensoul",
+      "displayName": "Trust Wallet Ensoul",
+      "description": "Official Trust Wallet AI agent serving 220+ million users with product announcements and crypto culture engagement.",
+      "category": "wallets",
+      "tags": [
+        "official",
+        "wallets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "vincent-agent-wallet",
       "displayName": "Vincent - A secure wallet for your agent",
       "description": "Use this skill to safely create a wallet the agent can use for transfers, swaps, and any EVM chain transaction.  Also supports raw signing and polymarket betting.",
@@ -10460,353 +10675,6 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
-    },
-    {
-      "name": "binance-official-query-token-audit",
-      "displayName": "Query Token Audit",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-crypto-market-rank",
-      "displayName": "Crypto Market Rank",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-trading-signal",
-      "displayName": "Trading Signal",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-query-address-info",
-      "displayName": "Query Address Info",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-binance-tokenized-securities-info",
-      "displayName": "Binance Tokenized Securities Info",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-meme-rush",
-      "displayName": "Meme Rush",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-query-token-info",
-      "displayName": "Query Token Info",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-simple-earn",
-      "displayName": "Simple Earn",
-      "description": "Binance Simple-earn request using the Binance API. Authentication requires API key and secret key.",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-vip-loan",
-      "displayName": "Vip Loan",
-      "description": "Binance Vip-loan request using the Binance API. Authentication requires API key and secret key.",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-p2p",
-      "displayName": "P2P",
-      "description": "|",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "binance-official-fiat",
-      "displayName": "Fiat",
-      "description": "Query Binance fiat payment capabilities — supported countries, currencies, payment methods, limits, and crypto prices — via public APIs, plus authenticated order/payment history lookup. Use whenever users ask about buying or selling crypto with fiat, depositing or withdrawing fiat, fiat-crypto exchange rates, payment options in a specific country, or their fiat order history — even if they don't explicitly mention Binance APIs.",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "binance",
-      "version": "1.0.0"
-    },
-    {
-      "name": "mevx-trading-agent",
-      "displayName": "MevX Trading Agent",
-      "description": "Next-gen AI trading agent powered by MevX.io with MEV-aware execution strategies.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "saucaiii",
-      "displayName": "Saucaiii",
-      "description": "Crypto-native DeFi orchestrator running 48 operational skills including MEV capture, liquidations, arbitrage via flash loans on Abstract Chain.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "eyeset",
-      "displayName": "Eyeset",
-      "description": "Autonomous AI agent on Abstract blockchain executing on-chain transactions, managing assets, and interacting with DeFi protocols.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "floor-otc-agent",
-      "displayName": "FLOOR OTC Agent",
-      "description": "Autonomous OTC trading desk for trustless token swaps with on-chain escrow and atomic settlement on Base mainnet.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "aegis-protocol",
-      "displayName": "AegisProtocol",
-      "description": "Enterprise-grade DeFi security and analytics agent with advanced threat detection and market intelligence on Base.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "aegiszk",
-      "displayName": "aegiszk",
-      "description": "Privacy-focused AI agent specializing in Zero-Knowledge proofs, smart contract security audits, and transaction anonymization.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "castmind",
-      "displayName": "castmind",
-      "description": "Web3 social intelligence agent for Farcaster and Lens Protocol that automates engagement and tracks influencer alpha.",
-      "category": "social",
-      "tags": [
-        "official",
-        "social"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "quantumswap-agent",
-      "displayName": "quantumswap",
-      "description": "AI-driven cross-chain arbitrage bot and liquidity routing engine for high-speed execution on Base network.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "corgent",
-      "displayName": "Corgent - Cortensor Agent",
-      "description": "ERC-8004-native trust and execution agent acting as shared oracle for AI agents with multi-model verification.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "agent8",
-      "displayName": "Agent8",
-      "description": "Interaction layer powering trustless reputation economy for ERC-8004 ecosystem with rewards for honest contributions.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "pumpfun-heyanon",
-      "displayName": "Pumpfun powered by HeyAnon",
-      "description": "Safe execution layer for Pumpfun token launches on Solana with parameter validation and pre-validated transactions.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "clawdia",
-      "displayName": "Clawdia",
-      "description": "Default manager agent of ClawPlaza orchestrating agent collaboration, task routing, and quality checks.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "toppa",
-      "displayName": "Toppa",
-      "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases on Celo.",
-      "category": "payments",
-      "tags": [
-        "official",
-        "payments"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "trustwallet-ensoul",
-      "displayName": "Trust Wallet Ensoul",
-      "description": "Official Trust Wallet AI agent serving 220+ million users with product announcements and crypto culture engagement.",
-      "category": "wallets",
-      "tags": [
-        "official",
-        "wallets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "quantabot",
-      "displayName": "QuantaBot",
-      "description": "Monitors quantum jumps in Base DeFi protocol metrics identifying non-linear step-change increases in TVL, volume, and user counts.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "aurasight",
-      "displayName": "aurasight",
-      "description": "Advanced NFT and Metaverse analytics agent scanning collections for wash trading and predicting floor price trends.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "esusu-ai",
-      "displayName": "Esusu AI",
-      "description": "Autonomous onchain financial execution agent for Esusu decentralized savings protocol on Celo blockchain.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "dexter-mcp",
-      "displayName": "Dexter Mcp",
-      "description": "Dexter MCP server — 60+ Solana DeFi tools over HTTP and stdio",
-      "category": "mcp-servers",
-      "tags": [
-        "mcp-servers"
-      ],
-      "author": "Dexter-DAO",
-      "version": "1.0.0"
     }
   ],
   "categories": {
