@@ -2577,6 +2577,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "crawbot8004",
+      "displayName": "Crawbot8004",
+      "description": "Autonomous specialist agent for Superfluid pool eligibility checks and membership verification on Base.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "curve-dex-agent",
       "displayName": "Curve Pool Agent",
       "description": "Query Curve pools, exchange rates, and build swap transactions across Ethereum, Base, and BSC.",
@@ -3337,6 +3348,18 @@
       "name": "merkl-airdrop-discovery",
       "displayName": "Merkl Airdrop Discovery",
       "description": "Discover and claim pending airdrops across chains with eligibility checking.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "meteora-dlmm-heyanon",
+      "displayName": "Meteora DLMM by HeyAnon",
+      "description": "Safe execution layer for Meteora DLMM on Solana with bin distribution validation and optimal strategy computation.",
       "category": "defi",
       "tags": [
         "official",
@@ -7780,6 +7803,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "nookplot-mcp-agent",
+      "displayName": "Nookplot MCP Agent",
+      "description": "AI agent connected via @nookplot/mcp enabling MCP server integration on Base.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "openzeppelin-mcp",
       "displayName": "Openzeppelin Mcp",
       "description": "Security rules and best practices for Solidity development. Provides MCP servers for Solidity, Cairo, Confidential, Stellar, and Stylus contract generation using OpenZeppelin's audited libraries.",
@@ -8962,6 +8997,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "orba-prediction-markets",
+      "displayName": "Orba Prediction Markets",
+      "description": "WhatsApp-based conversational prediction market agent on Celo for creating markets and placing bets via natural language.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "polymarket",
       "displayName": "Polymarket",
       "description": "Query and trade on Polymarket prediction markets — check odds, trending markets, search events, view order books, place trades, and manage positions. Now available to US developers.",
@@ -9187,6 +9234,17 @@
       "version": "2.0.0"
     },
     {
+      "name": "polymarket-trending",
+      "displayName": "Polymarket Trending",
+      "description": "Real-time prediction market analytics powered by Polymarket data and AI analysis.",
+      "category": "prediction-markets",
+      "tags": [
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "polymarket-whale-copier",
       "displayName": "Polymarket Whale Copier",
       "description": "Copy trade winning Polymarket wallets automatically. Track whale wallets, mirror their bets at configurable percentages, with built-in risk management. No API keys needed.",
@@ -9200,6 +9258,18 @@
         "automation]"
       ],
       "author": "cassh100k",
+      "version": "1.0.0"
+    },
+    {
+      "name": "predi",
+      "displayName": "Predi",
+      "description": "AI agent for PredictBase platform enabling natural language betting, prediction trading, and market exploration.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -9372,6 +9442,18 @@
       "name": "ave-trading-agent",
       "displayName": "Ave.ai Trading Agent",
       "description": "AI-driven multi-chain trading agent with on-chain reputation registered across multiple chains including BSC.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bankr-autotrade",
+      "displayName": "AutoTrade Agent by Bankr",
+      "description": "Autonomous DeFi trading on Base with API-based trend scanning, strategy switching, and instant access revocation.",
       "category": "trading",
       "tags": [
         "official",
@@ -10114,6 +10196,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "sperax-defi-trader",
+      "displayName": "DeFi Trading Agent on SperaxOS",
+      "description": "Autonomous DeFi trading agent with real-time market analysis by the Sperax Team on BSC.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "trading-analyzer",
       "displayName": "Trading Analyzer",
       "description": "Multi-source trading analyzer (`/drunk-trading-analyzer`) combining crypto data (TradingView), stock data (Alpha Vantage), and market intelligence (Yahoo Finance) into unified analysis reports with price trends, technical indicators, and sentiment analysis.",
@@ -10675,100 +10769,6 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
-    },
-    {
-      "name": "meteora-dlmm-heyanon",
-      "displayName": "Meteora DLMM by HeyAnon",
-      "description": "Safe execution layer for Meteora DLMM on Solana with bin distribution validation and optimal strategy computation.",
-      "category": "defi",
-      "tags": [
-        "official",
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "predi",
-      "displayName": "Predi",
-      "description": "AI agent for PredictBase platform enabling natural language betting, prediction trading, and market exploration.",
-      "category": "prediction-markets",
-      "tags": [
-        "official",
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "orba-prediction-markets",
-      "displayName": "Orba Prediction Markets",
-      "description": "WhatsApp-based conversational prediction market agent on Celo for creating markets and placing bets via natural language.",
-      "category": "prediction-markets",
-      "tags": [
-        "official",
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "nookplot-mcp-agent",
-      "displayName": "Nookplot MCP Agent",
-      "description": "AI agent connected via @nookplot/mcp enabling MCP server integration on Base.",
-      "category": "mcp-servers",
-      "tags": [
-        "official",
-        "mcp-servers"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "sperax-defi-trader",
-      "displayName": "DeFi Trading Agent on SperaxOS",
-      "description": "Autonomous DeFi trading agent with real-time market analysis by the Sperax Team on BSC.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "bankr-autotrade",
-      "displayName": "AutoTrade Agent by Bankr",
-      "description": "Autonomous DeFi trading on Base with API-based trend scanning, strategy switching, and instant access revocation.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "polymarket-trending",
-      "displayName": "Polymarket Trending",
-      "description": "Real-time prediction market analytics powered by Polymarket data and AI analysis.",
-      "category": "prediction-markets",
-      "tags": [
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "crawbot8004",
-      "displayName": "Crawbot8004",
-      "description": "Autonomous specialist agent for Superfluid pool eligibility checks and membership verification on Base.",
-      "category": "defi",
-      "tags": [
-        "defi"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
     }
   ],
   "categories": {
