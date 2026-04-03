@@ -1088,8 +1088,8 @@ def score_skill(skill_dir: Path) -> dict:
         "static": static_total,
         "security": security_total,
         "depth": depth_total,
-        "safety_gate": "PASS" if gate_passed else "FAIL",
-        "safety_gate_reasons": gate_reasons if not gate_passed else [],
+        "risk_gate": "PASS" if gate_passed else "FAIL",
+        "risk_gate_reasons": gate_reasons if not gate_passed else [],
         "dimensions": {
             "static": static_dims,
             "security": security_dims,
@@ -1151,7 +1151,7 @@ def print_summary(results: dict[str, dict]):
     for name, result in sorted_skills:
         grade_dist[result["grade"]] += 1
         total_score += result["total"]
-        if result["safety_gate"] == "FAIL":
+        if result["risk_gate"] == "FAIL":
             gate_failures.append(name)
 
         # Extract category from path
@@ -1224,7 +1224,7 @@ def print_summary(results: dict[str, dict]):
         print("  Security Gate Failures ({}):".format(len(gate_failures)))
         for name in gate_failures[:20]:
             short_name = name.split("/")[-1]
-            reasons = results[name].get("safety_gate_reasons", [])
+            reasons = results[name].get("risk_gate_reasons", [])
             print("    - {}: {}".format(short_name, "; ".join(reasons[:2])))
         if len(gate_failures) > 20:
             print("    ... and {} more".format(len(gate_failures) - 20))

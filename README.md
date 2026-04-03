@@ -69,7 +69,7 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 | **C** | 40-59 | 506 | Usable but significant gaps |
 | **D** | 20-39 | 6 | Minimal quality, use with caution |
 
-**Safety Gate**: 93% pass (828/887). Fund-moving skills also get LLM-as-judge evaluation based on the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
+**Risk Gate**: 93% pass (828/887). Fund-moving skills also get LLM-as-judge evaluation based on the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
 
 ## MCP Servers
 

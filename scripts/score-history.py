@@ -52,7 +52,7 @@ def load_skills_json():
         scores[name] = {
             "total": score_data.get("total", 0),
             "grade": score_data.get("grade", "F"),
-            "safety_gate": score_data.get("safety_gate", "UNKNOWN"),
+            "risk_gate": score_data.get("risk_gate", "UNKNOWN"),
         }
     return scores
 
