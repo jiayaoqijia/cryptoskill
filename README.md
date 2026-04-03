@@ -25,11 +25,12 @@ The general-purpose skill registries (SkillsMP with 500K+ skills, SkillHub with 
 
 CryptoSkill is the crypto-native answer:
 
-- **773 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
-- **67 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
-- **481 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Coinbase, Bankr, and more)
-- **Security-scanned** -- every skill checked for hardcoded credentials, RCE, exfiltration, and prompt injection
-- **Auto-updated** -- bot scans 128+ projects every 6 hours for new skills and changes
+- **887 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
+- **76 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
+- **575 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Coinbase, Bankr, and more)
+- **Quality scored** -- every skill rated 0-100 across documentation, security, and depth (avg 58/100, 93% pass safety gate)
+- **Security-scanned** -- credential detection (160+ patterns), code safety, permission analysis, supply chain checks
+- **Auto-updated** -- bot scans 128+ projects every 6 hours, rescores all skills, tracks regressions
 - **Open standard** -- SKILL.md + _meta.json + SOURCE.md, works with Claude Code, OpenClaw, and any SKILL.md agent
 
 ## Skills Overview
@@ -49,9 +50,36 @@ CryptoSkill is the crypto-native answer:
 | **Prediction Markets** | 26 | Polymarket API, Polymarket Builder, Polymarket Research, trading bots, whale copying, sports edge, CLI trading |
 | **Social** | 8 | Towns (official), Farcaster, Nostr, XMTP (official) |
 
+## Quality Scores
+
+Every skill is scored 0-100 across three layers, updated every 6 hours. Scores are visible on skill cards at [cryptoskill.org](https://cryptoskill.org).
+
+```
+Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
+```
+
+| Layer | Points | Cost | What it measures |
+|-------|--------|------|-----------------|
+| **Static** | 0-40 | Free | Documentation quality, completeness, freshness, provenance, structure |
+| **Security** | 0-20 | Free | Credential safety, code safety, permission scope, supply chain |
+| **Depth** | 0-40 | Free/LLM | Actionability, specificity, examples, error handling (+ LLM eval for trading skills) |
+
+| Grade | Score | Skills | Meaning |
+|-------|-------|--------|---------|
+| **A** | 80-100 | 16 | Production-ready, well-documented, secure |
+| **B** | 60-79 | 359 | Good quality, minor gaps |
+| **C** | 40-59 | 506 | Usable but significant gaps |
+| **D** | 20-39 | 6 | Minimal quality, use with caution |
+
+**Safety Gate**: 93% of skills pass (828/887). Skills that fail have credentials in reference docs or execute without confirmation.
+
+Fund-moving skills (exchanges, DeFi, wallets, trading) also get LLM-as-judge evaluation on safety, coverage, robustness, routing, and UX — based on the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology.
+
+See [EVALUATION.md](docs/EVALUATION.md) for the full framework design.
+
 ## MCP Servers
 
-CryptoSkill maintains **67 MCP (Model Context Protocol) servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
+CryptoSkill maintains **76 MCP (Model Context Protocol) servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
 
 ### Official MCP Servers
 
