@@ -20930,7 +20930,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:54Z"
+        "scored_at": "2026-04-03T16:03:54.265651+00:00",
+        "depth_llm": {
+          "depth_llm": 24.0,
+          "depth_max": 40,
+          "safety_gate_llm": "PASS",
+          "dimensions": {
+            "safety": {
+              "score": 8.6,
+              "max": 12,
+              "raw": 72
+            },
+            "coverage": {
+              "score": 5.6,
+              "max": 10,
+              "raw": 56
+            },
+            "robustness": {
+              "score": 3.4,
+              "max": 8,
+              "raw": 42
+            },
+            "routing": {
+              "score": 4.1,
+              "max": 6,
+              "raw": 69
+            },
+            "ux": {
+              "score": 2.3,
+              "max": 4,
+              "raw": 58
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -22390,7 +22425,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:04:23.121619+00:00",
+        "depth_llm": {
+          "depth_llm": 19.9,
+          "depth_max": 40,
+          "safety_gate_llm": "FAIL",
+          "dimensions": {
+            "safety": {
+              "score": 2.6,
+              "max": 12,
+              "raw": 22
+            },
+            "coverage": {
+              "score": 7.6,
+              "max": 10,
+              "raw": 76
+            },
+            "robustness": {
+              "score": 3.3,
+              "max": 8,
+              "raw": 41
+            },
+            "routing": {
+              "score": 4.3,
+              "max": 6,
+              "raw": 72
+            },
+            "ux": {
+              "score": 2.1,
+              "max": 4,
+              "raw": 53
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -22475,7 +22545,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:04:39.814541+00:00",
+        "depth_llm": {
+          "depth_llm": 15.8,
+          "depth_max": 40,
+          "safety_gate_llm": "FAIL",
+          "dimensions": {
+            "safety": {
+              "score": 1.7,
+              "max": 12,
+              "raw": 14
+            },
+            "coverage": {
+              "score": 7.4,
+              "max": 10,
+              "raw": 74
+            },
+            "robustness": {
+              "score": 2.1,
+              "max": 8,
+              "raw": 26
+            },
+            "routing": {
+              "score": 3.4,
+              "max": 6,
+              "raw": 57
+            },
+            "ux": {
+              "score": 1.2,
+              "max": 4,
+              "raw": 31
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -23080,7 +23185,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:04:54.156620+00:00",
+        "depth_llm": {
+          "depth_llm": 21.1,
+          "depth_max": 40,
+          "safety_gate_llm": "PASS",
+          "dimensions": {
+            "safety": {
+              "score": 7.0,
+              "max": 12,
+              "raw": 58
+            },
+            "coverage": {
+              "score": 3.6,
+              "max": 10,
+              "raw": 36
+            },
+            "robustness": {
+              "score": 4.6,
+              "max": 8,
+              "raw": 57
+            },
+            "routing": {
+              "score": 4.1,
+              "max": 6,
+              "raw": 69
+            },
+            "ux": {
+              "score": 1.8,
+              "max": 4,
+              "raw": 44
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -23165,7 +23305,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:05:07.697613+00:00",
+        "depth_llm": {
+          "depth_llm": 26.3,
+          "depth_max": 40,
+          "safety_gate_llm": "PASS",
+          "dimensions": {
+            "safety": {
+              "score": 8.3,
+              "max": 12,
+              "raw": 69
+            },
+            "coverage": {
+              "score": 6.6,
+              "max": 10,
+              "raw": 66
+            },
+            "robustness": {
+              "score": 4.6,
+              "max": 8,
+              "raw": 58
+            },
+            "routing": {
+              "score": 4.4,
+              "max": 6,
+              "raw": 74
+            },
+            "ux": {
+              "score": 2.4,
+              "max": 4,
+              "raw": 61
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -23250,7 +23425,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:05:21.527811+00:00",
+        "depth_llm": {
+          "depth_llm": 25.2,
+          "depth_max": 40,
+          "safety_gate_llm": "PASS",
+          "dimensions": {
+            "safety": {
+              "score": 8.3,
+              "max": 12,
+              "raw": 69
+            },
+            "coverage": {
+              "score": 5.7,
+              "max": 10,
+              "raw": 57
+            },
+            "robustness": {
+              "score": 3.5,
+              "max": 8,
+              "raw": 44
+            },
+            "routing": {
+              "score": 5.0,
+              "max": 6,
+              "raw": 84
+            },
+            "ux": {
+              "score": 2.7,
+              "max": 4,
+              "raw": 67
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -23337,7 +23547,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:05:29.087908+00:00",
+        "depth_llm": {
+          "depth_llm": 12.6,
+          "depth_max": 40,
+          "safety_gate_llm": "FAIL",
+          "dimensions": {
+            "safety": {
+              "score": 1.4,
+              "max": 12,
+              "raw": 12
+            },
+            "coverage": {
+              "score": 3.4,
+              "max": 10,
+              "raw": 34
+            },
+            "robustness": {
+              "score": 1.9,
+              "max": 8,
+              "raw": 24
+            },
+            "routing": {
+              "score": 4.7,
+              "max": 6,
+              "raw": 78
+            },
+            "ux": {
+              "score": 1.2,
+              "max": 4,
+              "raw": 29
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -23422,7 +23667,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:05:37.944348+00:00",
+        "depth_llm": {
+          "depth_llm": 10.9,
+          "depth_max": 40,
+          "safety_gate_llm": "FAIL",
+          "dimensions": {
+            "safety": {
+              "score": 0.0,
+              "max": 12,
+              "raw": 0
+            },
+            "coverage": {
+              "score": 2.8,
+              "max": 10,
+              "raw": 28
+            },
+            "robustness": {
+              "score": 1.4,
+              "max": 8,
+              "raw": 18
+            },
+            "routing": {
+              "score": 5.0,
+              "max": 6,
+              "raw": 84
+            },
+            "ux": {
+              "score": 1.7,
+              "max": 4,
+              "raw": 42
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -25850,7 +26130,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:05:54.929053+00:00",
+        "depth_llm": {
+          "depth_llm": 19.2,
+          "depth_max": 40,
+          "safety_gate_llm": "FAIL",
+          "dimensions": {
+            "safety": {
+              "score": 1.0,
+              "max": 12,
+              "raw": 8
+            },
+            "coverage": {
+              "score": 8.3,
+              "max": 10,
+              "raw": 83
+            },
+            "robustness": {
+              "score": 3.3,
+              "max": 8,
+              "raw": 41
+            },
+            "routing": {
+              "score": 5.2,
+              "max": 6,
+              "raw": 86
+            },
+            "ux": {
+              "score": 1.4,
+              "max": 4,
+              "raw": 34
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -26367,7 +26682,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:37:55Z"
+        "scored_at": "2026-04-03T16:06:33.487067+00:00",
+        "depth_llm": {
+          "depth_llm": 26.5,
+          "depth_max": 40,
+          "safety_gate_llm": "PASS",
+          "dimensions": {
+            "safety": {
+              "score": 10.1,
+              "max": 12,
+              "raw": 84
+            },
+            "coverage": {
+              "score": 6.8,
+              "max": 10,
+              "raw": 68
+            },
+            "robustness": {
+              "score": 3.3,
+              "max": 8,
+              "raw": 41
+            },
+            "routing": {
+              "score": 4.8,
+              "max": 6,
+              "raw": 80
+            },
+            "ux": {
+              "score": 1.5,
+              "max": 4,
+              "raw": 37
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
@@ -72028,7 +72378,42 @@
             }
           }
         },
-        "scored_at": "2026-04-03T15:38:06Z"
+        "scored_at": "2026-04-03T16:03:33.302824+00:00",
+        "depth_llm": {
+          "depth_llm": 21.2,
+          "depth_max": 40,
+          "safety_gate_llm": "FAIL",
+          "dimensions": {
+            "safety": {
+              "score": 2.9,
+              "max": 12,
+              "raw": 24
+            },
+            "coverage": {
+              "score": 8.8,
+              "max": 10,
+              "raw": 88
+            },
+            "robustness": {
+              "score": 3.0,
+              "max": 8,
+              "raw": 37
+            },
+            "routing": {
+              "score": 4.7,
+              "max": 6,
+              "raw": 79
+            },
+            "ux": {
+              "score": 1.8,
+              "max": 4,
+              "raw": 46
+            }
+          },
+          "notes": "",
+          "scenarios_run": 5,
+          "evaluator": "codex-local"
+        }
       }
     },
     {
