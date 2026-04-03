@@ -476,10 +476,10 @@
     const grade = skill.score.grade || 'F';
     const total = skill.score.total;
     const gradeClass = getGradeClass(grade);
-    const safetyWarn = skill.score.risk_gate === 'FAIL'
-      ? '<span class="safety-warn" title="Safety gate: FAIL">&#9888;</span>'
+    const riskWarn = skill.score.risk_gate === 'FAIL'
+      ? '<span class="risk-warn" title="Risk gate: FAIL">&#9888;</span>'
       : '';
-    return `<span class="skill-score-badge ${gradeClass}">${safetyWarn}${grade} ${total}</span>`;
+    return `<span class="skill-score-badge ${gradeClass}">${riskWarn}${grade} ${total}</span>`;
   }
 
   // --- Create Skill Card (shared between official and community) ---
@@ -624,9 +624,9 @@
     const s = skill.score;
     const grade = s.grade || 'F';
     const gradeClass = getGradeClass(grade);
-    const safetyClass = s.risk_gate === 'PASS' ? 'pass' : 'fail';
-    const safetyIcon = s.risk_gate === 'PASS' ? '&#10003;' : '&#9888;';
-    const safetyLabel = s.risk_gate || 'N/A';
+    const riskClass = s.risk_gate === 'PASS' ? 'pass' : 'fail';
+    const riskIcon = s.risk_gate === 'PASS' ? '&#10003;' : '&#9888;';
+    const riskLabel = s.risk_gate || 'N/A';
 
     // Dimension max totals from the scoring schema
     const dimensionMaxes = { static: 40, security: 20, depth: 40 };
@@ -664,9 +664,9 @@
             <span class="modal-score-max">/ 100</span>
             <span class="modal-score-grade skill-score-badge ${gradeClass}">${grade}</span>
           </div>
-          <div class="modal-safety-gate ${safetyClass}">
-            <span>${safetyIcon}</span>
-            Safety: ${safetyLabel}
+          <div class="modal-risk-gate ${riskClass}">
+            <span>${riskIcon}</span>
+            Risk: ${riskLabel}
           </div>
         </div>
         <div class="modal-score-dimensions">

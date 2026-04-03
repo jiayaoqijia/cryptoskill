@@ -2134,7 +2134,7 @@ a {
 .skill-score-badge.grade-c { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
 .skill-score-badge.grade-d { background: rgba(249, 115, 22, 0.15); color: #f97316; }
 .skill-score-badge.grade-f { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-.safety-warn { color: #ef4444; font-size: 12px; }
+.risk-warn { color: #ef4444; font-size: 12px; }
 
 /* Sort button active state */
 .filter-btn.sort-active {
@@ -2185,7 +2185,7 @@ a {
   font-weight: 700;
 }
 
-.modal-safety-gate {
+.modal-risk-gate {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -2193,8 +2193,8 @@ a {
   font-weight: 500;
 }
 
-.modal-safety-gate.pass { color: #22c55e; }
-.modal-safety-gate.fail { color: #ef4444; }
+.modal-risk-gate.pass { color: #22c55e; }
+.modal-risk-gate.fail { color: #ef4444; }
 
 .modal-score-dimensions {
   display: flex;
