@@ -37,6 +37,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "bardiel-trust-oracle",
+      "displayName": "Bardiel – Trust Oracle",
+      "description": "Virtual-native trust and execution agent serving as a shared oracle for AI agents to verify model outputs.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "baseoracle",
       "displayName": "Baseoracle",
       "description": "BaseOracle MCP Server — Base L2 intelligence for AI agents",
@@ -103,6 +115,18 @@
       "name": "clawdia-manager",
       "displayName": "Clawdia",
       "description": "Manager agent of ClawPlaza ecosystem that orchestrates agent collaboration, task routing, quality checks, and execution monitoring.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "clawplaza-manager",
+      "displayName": "Clawdia",
+      "description": "Default manager agent of ClawPlaza orchestrating agent collaboration, task routing, and quality checks.",
       "category": "ai-crypto",
       "tags": [
         "official",
@@ -265,6 +289,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "jake-concierge",
+      "displayName": "Jake",
+      "description": "Public-facing concierge agent that brokers user requests to specialist peer agents via A2A for Superfluid onboarding.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "loopuman",
       "displayName": "Loopuman",
       "description": "Human layer for AI that routes tasks to verified human workers worldwide via Telegram & WhatsApp with 8-second cUSD payments.",
@@ -277,9 +313,33 @@
       "version": "1.0.0"
     },
     {
+      "name": "loopuman-human-layer",
+      "displayName": "Loopuman",
+      "description": "Routes AI agent tasks to verified human workers worldwide via Telegram & WhatsApp with 8-second cUSD payments.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "molty-cash-workers",
       "displayName": "Molty Cash Workers",
       "description": "Human worker marketplace where AI agents can hire verified workers via x402 payments on Base or Solana.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "openclaw-virtuals-acp",
+      "displayName": "OpenClaw Virtuals ACP Agent",
+      "description": "Autonomous AI agent using natural language to coordinate with specialized agents for airdrop farming optimization.",
       "category": "ai-crypto",
       "tags": [
         "official",
@@ -330,6 +390,18 @@
         "ai-crypto"
       ],
       "author": "lordbasilaiassistant-sudo",
+      "version": "1.0.0"
+    },
+    {
+      "name": "trust-city-exchange",
+      "displayName": "Trust City Exchange",
+      "description": "Trust-gated autonomous job marketplace with plugin-agent onboarding and ERC-8004 receipts.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -621,6 +693,18 @@
         "trending"
       ],
       "author": "jolestar",
+      "version": "1.0.0"
+    },
+    {
+      "name": "credora-ratings",
+      "displayName": "Credora Ratings Agent",
+      "description": "Provides credit ratings for DeFi vaults with risk metrics including ratings, PSL scores, and publish dates.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -1134,6 +1218,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "github-ai-trending-feed",
+      "displayName": "Real-time GitHub AI & ML Trending Repository Feed",
+      "description": "JSON-ready stream of top 25 trending AI/ML repositories on GitHub filtered for high-growth signals, powered by x402.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "nansen-defi-positions",
       "displayName": "Nansen DeFi Positions",
       "description": "What DeFi positions does a wallet hold? Protocol-by-protocol breakdown of assets, debts, and rewards across chains.",
@@ -1336,6 +1431,18 @@
       "name": "quantabot",
       "displayName": "QuantaBot",
       "description": "Monitors quantum jumps in Base DeFi protocol metrics identifying non-linear step-change increases in TVL, volume, and user counts.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "redstone-price-oracle",
+      "displayName": "RedStone Agent",
+      "description": "Real-time cryptocurrency price data and AI-powered analysis for 500+ tokens across major exchanges with trend analysis and support/resistance detection.",
       "category": "analytics",
       "tags": [
         "official",
@@ -4579,6 +4686,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "zkproofport-prover",
+      "displayName": "proveragent.base.eth",
+      "description": "Autonomous ZK proof generation agent with ERC-8004 identity and x402 payments powered by ZKProofport.",
+      "category": "dev-tools",
+      "tags": [
+        "official",
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "aegis",
       "displayName": "Aegis",
       "description": "Safety layer for autonomous DeFi agents. MCP server + Uniswap v4 hook + on-chain gateway. Scan contracts, simulate transactions, block honeypots.",
@@ -7406,6 +7525,17 @@
       "version": "1.0.0"
     },
     {
+      "name": "claudy-mcp-server",
+      "displayName": "Claudy AI",
+      "description": "Research-as-a-Service MCP server for AI agent research, protocol analysis, and blockchain projects using Claude AI.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "coinbase-agentkit",
       "displayName": "Coinbase AgentKit",
       "description": "Coinbase Developer Platform toolkit for giving AI agents a crypto wallet and onchain interactions, supporting fee-free stablecoin payments and agent monetization.",
@@ -7582,6 +7712,17 @@
         "mcp-servers"
       ],
       "author": "Bazinga640",
+      "version": "1.0.0"
+    },
+    {
+      "name": "evm-copilot",
+      "displayName": "Evm Copilot",
+      "description": "Competitive intelligence MCP server for the EVM ecosystem. 18,000+ projects, 1,500+ research docs, 54 VC theses. Gap analysis, funding landscape, semantic search.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "0xYudhishthra",
       "version": "1.0.0"
     },
     {
@@ -8264,6 +8405,18 @@
       "version": "3.0.5"
     },
     {
+      "name": "molty-payments",
+      "displayName": "molty.cash",
+      "description": "Send USDC payments and create/earn from pay-per-task gigs on X, supporting Base and Solana via x402.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "moonpay-official-allium-onchain-data",
       "displayName": "Moonpay Official Allium Onchain Data",
       "description": ">-",
@@ -8773,6 +8926,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "toppa-fintech",
+      "displayName": "Toppa",
+      "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "toppa-payments",
       "displayName": "Toppa",
       "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases on Celo.",
@@ -9064,6 +9229,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "otto-prediction-markets",
+      "displayName": "Otto AI - Prediction Markets",
+      "description": "Trade prediction markets on Polymarket with non-custodial security, auto-bridging USDC deposits, and auto-redeem winnings.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "polymarket",
       "displayName": "Polymarket",
       "description": "Query and trade on Polymarket prediction markets — check odds, trending markets, search events, view order books, place trades, and manage positions. Now available to US developers.",
@@ -9159,6 +9336,17 @@
         "analytics"
       ],
       "author": "bombfuock",
+      "version": "1.0.0"
+    },
+    {
+      "name": "polymarket-intelligence",
+      "displayName": "Polymarket Agent",
+      "description": "Prediction market intelligence agent to search markets, check odds, view price history and order books through chat.",
+      "category": "prediction-markets",
+      "tags": [
+        "prediction-markets"
+      ],
+      "author": "discovered",
       "version": "1.0.0"
     },
     {
@@ -9864,6 +10052,18 @@
       "version": "1.0.0"
     },
     {
+      "name": "debot-trading",
+      "displayName": "Debot Trading Agent",
+      "description": "Trading agent from debot.ai for smarter multi-chain trading with AI-powered execution.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
       "name": "debot-trading-agent",
       "displayName": "Debot Trading Agent",
       "description": "Trading agent from debot.ai enabling smarter multi-chain trading with AI-driven insights on BSC.",
@@ -10036,6 +10236,18 @@
       ],
       "author": "alannkl",
       "version": "1.0.7"
+    },
+    {
+      "name": "hyperliquid-heyanon",
+      "displayName": "Hyperliquid by HeyAnon",
+      "description": "Safe execution layer for Hyperliquid L1 derivatives with margin validation, leverage limits, and EIP-712 typed data signing.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     },
     {
       "name": "hyperliquid-trading",
@@ -10824,290 +11036,6 @@
       ],
       "author": "nicvaniek",
       "version": "1.0.1"
-    },
-    {
-      "name": "okx-official-okx-cex-portfolio",
-      "displayName": "Okx Cex Portfolio",
-      "description": "This skill should be used when the user asks about 'account balance', 'how much USDT do I have', 'my funding account', 'show my positions', 'open positions', 'position P&L', 'unrealized PnL', 'closed positions', 'position history', 'realized PnL', 'account bills', 'transaction history', 'trading fees', 'fee tier', 'account config', 'max order size', 'how much can I buy', 'withdrawable amount', 'transfer funds', 'move USDT to trading account', or 'switch position mode'. Requires API credentials. Do NOT use for market prices (use okx-cex-market), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot).",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "okx",
-      "version": "1.0.0"
-    },
-    {
-      "name": "okx-official-okx-cex-skill-mp",
-      "displayName": "Okx Cex Skill Mp",
-      "description": "Use this skill when the user asks to: 'find a trading skill', 'search for skills', 'install a skill', 'add a skill', 'download a skill', 'browse skill marketplace', 'what skills are available', 'update a skill', 'check for skill updates', 'remove a skill', 'uninstall a skill', 'list installed skills', 'show my skills', 'skill categories', or any request to discover, install, update, or manage AI trading skills from the OKX Skills Marketplace. This skill covers searching, browsing categories, installing via CLI, downloading zip packages, checking for updates, and removing installed skills. Requires API credentials for marketplace API access. Do NOT use for placing orders (use okx-cex-trade), market data (use okx-cex-market), or bot management (use okx-cex-bot).",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "okx",
-      "version": "1.0.0"
-    },
-    {
-      "name": "okx-official-okx-cex-trade",
-      "displayName": "Okx Cex Trade",
-      "description": "This skill should be used when the user asks to 'buy BTC', 'sell ETH', 'place a limit order', 'place a market order', 'cancel my order', 'amend my order', 'long BTC perp', 'short ETH swap', 'open a position', 'close a position', 'set take profit', 'set stop loss', 'add a trailing stop', 'set leverage', 'check my orders', 'order status', 'fill history', 'trade history', 'buy a call', 'sell a put', 'buy call option', 'sell put option', 'option chain', 'implied volatility', 'IV', 'option Greeks', 'delta', 'gamma', 'theta', 'vega', 'delta hedge', 'option order', 'option position', 'option fills', or any request to place/cancel/amend spot, perpetual swap, delivery futures, or options orders on OKX CEX. Covers spot trading, swap/perpetual contracts, delivery futures, options (calls/puts, Greeks, IV), and conditional (TP/SL/trailing) algo orders. Requires API credentials. Do NOT use for market data (use okx-cex-market), account balance/positions (use okx-cex-portfolio), or grid/DCA bots (use okx-cex-bot).",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "okx",
-      "version": "1.0.0"
-    },
-    {
-      "name": "okx-official-okx-cex-bot",
-      "displayName": "Okx Cex Bot",
-      "description": "Manage Grid bots (spot/contract/coin-margined) and DCA Martingale bots (Spot DCA 现货马丁 / Contract DCA 合约马丁) on OKX. Covers create, stop, amend, monitor P&L, TP/SL, margin/investment adjustment, and AI-recommended parameters. Requires API credentials. Not for regular orders (okx-cex-trade), market data (okx-cex-market), or account info (okx-cex-portfolio).",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "okx",
-      "version": "1.0.0"
-    },
-    {
-      "name": "okx-official-okx-cex-market",
-      "displayName": "Okx Cex Market",
-      "description": "Use this skill when the user asks for: price of any asset, ticker, order book, market depth, candles, OHLCV, funding rate, open interest, mark price, index price, recent trades, price limit, instrument list, stock tokens, metals prices (gold, silver, XAU, XAG), commodities prices (oil, crude, natural gas, OIL), forex rates (EUR/USD, GBP/USD, EURUSDT), bond instruments, non-crypto assets, tradeable instruments by category, or any technical indicator query (RSI, MACD, EMA, MA, Bollinger Bands, KDJ, SuperTrend, AHR999, BTC rainbow, pi-cycle, Mayer Multiple, BTC cycle). All commands are read-only and do NOT require API credentials. Do NOT use for account balance/positions (use okx-cex-portfolio), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot).",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "okx",
-      "version": "1.0.0"
-    },
-    {
-      "name": "okx-official-okx-cex-earn",
-      "displayName": "Okx Cex Earn",
-      "description": "Manages OKX Simple Earn (flexible savings/lending), On-chain Earn (staking/DeFi), Dual Investment (DCD/双币赢), and AutoEarn (自动赚币) via the okx CLI. Use this skill whenever the user wants to check earn balances, subscribe or redeem earn products, view or set lending rates, monitor on-chain staking orders, interact with dual investment structured products, or manage auto-earn — even if phrased casually as 活期赚币, 赚币, 申购, 赎回, 链上赚币, 质押, 理财, 双币赢, 双币理财, 双币申购, 高卖, 低买, dual investment, DCD, buy low, sell high structured product, earn with target price, 目标价, 自动赚币, auto earn, auto-earn, 自动借出, 自动质押, auto lend, auto staking, USDG earn, USDG 赚币, 闲置资金自动理财. Also use when the user asks about idle funds and whether to earn on them.",
-      "category": "exchanges",
-      "tags": [
-        "official",
-        "exchanges"
-      ],
-      "author": "okx",
-      "version": "1.0.0"
-    },
-    {
-      "name": "redstone-price-oracle",
-      "displayName": "RedStone Agent",
-      "description": "Real-time cryptocurrency price data and AI-powered analysis for 500+ tokens across major exchanges with trend analysis and support/resistance detection.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "hyperliquid-heyanon",
-      "displayName": "Hyperliquid by HeyAnon",
-      "description": "Safe execution layer for Hyperliquid L1 derivatives with margin validation, leverage limits, and EIP-712 typed data signing.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "credora-ratings",
-      "displayName": "Credora Ratings Agent",
-      "description": "Provides credit ratings for DeFi vaults with risk metrics including ratings, PSL scores, and publish dates.",
-      "category": "analytics",
-      "tags": [
-        "official",
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "loopuman-human-layer",
-      "displayName": "Loopuman",
-      "description": "Routes AI agent tasks to verified human workers worldwide via Telegram & WhatsApp with 8-second cUSD payments.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "bardiel-trust-oracle",
-      "displayName": "Bardiel – Trust Oracle",
-      "description": "Virtual-native trust and execution agent serving as a shared oracle for AI agents to verify model outputs.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "zkproofport-prover",
-      "displayName": "proveragent.base.eth",
-      "description": "Autonomous ZK proof generation agent with ERC-8004 identity and x402 payments powered by ZKProofport.",
-      "category": "dev-tools",
-      "tags": [
-        "official",
-        "dev-tools"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "molty-payments",
-      "displayName": "molty.cash",
-      "description": "Send USDC payments and create/earn from pay-per-task gigs on X, supporting Base and Solana via x402.",
-      "category": "payments",
-      "tags": [
-        "official",
-        "payments"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "toppa-fintech",
-      "displayName": "Toppa",
-      "description": "Financial services AI agent for mobile airtime top-ups, data bundles, utility bill payments, and gift card purchases.",
-      "category": "payments",
-      "tags": [
-        "official",
-        "payments"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "otto-prediction-markets",
-      "displayName": "Otto AI - Prediction Markets",
-      "description": "Trade prediction markets on Polymarket with non-custodial security, auto-bridging USDC deposits, and auto-redeem winnings.",
-      "category": "prediction-markets",
-      "tags": [
-        "official",
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "debot-trading",
-      "displayName": "Debot Trading Agent",
-      "description": "Trading agent from debot.ai for smarter multi-chain trading with AI-powered execution.",
-      "category": "trading",
-      "tags": [
-        "official",
-        "trading"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "trust-city-exchange",
-      "displayName": "Trust City Exchange",
-      "description": "Trust-gated autonomous job marketplace with plugin-agent onboarding and ERC-8004 receipts.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "jake-concierge",
-      "displayName": "Jake",
-      "description": "Public-facing concierge agent that brokers user requests to specialist peer agents via A2A for Superfluid onboarding.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "clawplaza-manager",
-      "displayName": "Clawdia",
-      "description": "Default manager agent of ClawPlaza orchestrating agent collaboration, task routing, and quality checks.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "openclaw-virtuals-acp",
-      "displayName": "OpenClaw Virtuals ACP Agent",
-      "description": "Autonomous AI agent using natural language to coordinate with specialized agents for airdrop farming optimization.",
-      "category": "ai-crypto",
-      "tags": [
-        "official",
-        "ai-crypto"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "claudy-mcp-server",
-      "displayName": "Claudy AI",
-      "description": "Research-as-a-Service MCP server for AI agent research, protocol analysis, and blockchain projects using Claude AI.",
-      "category": "mcp-servers",
-      "tags": [
-        "mcp-servers"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "polymarket-intelligence",
-      "displayName": "Polymarket Agent",
-      "description": "Prediction market intelligence agent to search markets, check odds, view price history and order books through chat.",
-      "category": "prediction-markets",
-      "tags": [
-        "prediction-markets"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "github-ai-trending-feed",
-      "displayName": "Real-time GitHub AI & ML Trending Repository Feed",
-      "description": "JSON-ready stream of top 25 trending AI/ML repositories on GitHub filtered for high-growth signals, powered by x402.",
-      "category": "analytics",
-      "tags": [
-        "analytics"
-      ],
-      "author": "discovered",
-      "version": "1.0.0"
-    },
-    {
-      "name": "evm-copilot",
-      "displayName": "Evm Copilot",
-      "description": "Competitive intelligence MCP server for the EVM ecosystem. 18,000+ projects, 1,500+ research docs, 54 VC theses. Gap analysis, funding landscape, semantic search.",
-      "category": "mcp-servers",
-      "tags": [
-        "mcp-servers"
-      ],
-      "author": "0xYudhishthra",
-      "version": "1.0.0"
     }
   ],
   "categories": {
