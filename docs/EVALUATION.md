@@ -4,7 +4,23 @@
 
 Evaluation should be **cheap by default, deep when it matters**. Most of the 800+ skills can be scored with static analysis (zero LLM cost). Only fund-moving skills (exchanges, DeFi, wallets, trading) need expensive LLM-as-judge evaluation. The framework produces a single **0-100 Quality Score** per skill, decomposed into transparent dimensions.
 
-Inspired by: npm quality scores, Minara crypto-skill-benchmark, ClawHub repository context scoring, SkillsMP maintenance tiers, GoPlus/AgentGuard security scanning, and Chrome Web Store ratings.
+Inspired by: npm quality scores (26 attributes, 3 aspects), Minara crypto-skill-benchmark (76 scenarios, LLM-as-judge), ClawHub repository context scoring (70% codebase + 30% metadata), SkillsMP maintenance tiers, GoPlus AgentGuard (6-detector security pipeline, trust registry), SkillCompass (6 dimensions with hard security gate), SkillTester (formal utility + security formulas), OWASP Agentic Skills Top 10, Chrome Web Store (install velocity + retention), and Agent Skills Directory (dmgrok, 0-100 quality scoring).
+
+### Key Research Findings
+
+| Source | Key Insight |
+|--------|------------|
+| **ClawHub** | 43.4% of skill repos have zero stars, 66.5% zero forks. 5 of top 7 most-downloaded skills were confirmed malware at peak. |
+| **SkillsMP** | Maintenance recency is the "strongest trust indicator". Minimum quality gate: 2 GitHub stars. |
+| **SkillCompass** | 80% of skills lacked rejection boundaries (trigger dimension). Mean score 73.8/100 for top 100 ClawHub skills. |
+| **GoPlus AgentGuard** | 6 security detectors with 160+ credential patterns, 75+ prompt injection patterns, 112+ malicious command patterns. |
+| **Oathe ClawMutiny** | Found 88 dangerous skills where the leading scanner only flagged 7 (91% miss rate). Signature-based detection misses instruction-layer threats. |
+| **Snyk ToxicSkills** | 13.4% of scanned skills had critical issues. 36.82% had any flaw. 76 confirmed malicious payloads. |
+| **OWASP AST10** | Recommends "semantic + behavioral multi-tool pipeline" over pattern-matching. Provides Universal Skill Format with ed25519 signatures. |
+| **npm (npms.io)** | 26 package attributes feed 11 metrics, then 3 aspects (Quality 40%, Popularity 30%, Maintenance 30%). Recalculated every 15 days. |
+| **OpenRouter** | Real usage data outperforms synthetic benchmarks as a quality signal. |
+| **SkillTester** | Formal scoring: utility = efficiency-weighted success rate; security = probe pass rate across 3 groups (abnormal behavior, permission boundary, sensitive data). |
+| **Agent Skills Directory** | Maintenance 50pts, Documentation 30pts, Provider Trust 20pts. Security gates must pass before inclusion. |
 
 ---
 
@@ -124,6 +140,24 @@ Independent of score. A **FAIL** flag if any of:
 | + Bash | High | -2 |
 | + Bash with network access | Critical | -3 |
 
+### Security Scanning Depth (informed by GoPlus AgentGuard + Snyk + OWASP AST10)
+
+**Tier 1 — Pattern-Based (runs every 6h, free):**
+- 160+ credential patterns (API keys, tokens, private keys, DB strings)
+- 75+ prompt injection patterns (including base64, zero-width obfuscation)
+- 112+ malicious command patterns (RCE, reverse shells, encoded payloads)
+- Data exfiltration: sensitive path access, HTTP/DNS tunneling, clipboard scraping
+
+**Tier 2 — Behavioral Analysis (runs weekly, free):**
+- Declared vs. needed permissions comparison (permission abuse detection)
+- URL destination analysis (malicious domains, suspicious TLDs, phishing)
+- Instruction-layer threat scan (markdown behavioral directives — catches the 91% that signature scanners miss per Oathe research)
+
+**Tier 3 — Deep Scan (on new skill addition):**
+- AST dataflow analysis for scripts/ (Python, JS)
+- Binary/minified code detection
+- External dependency resolution and vulnerability check
+
 ---
 
 ## Layer 3: Depth Score (40 points max)
@@ -239,8 +273,26 @@ quality_score = static_score + security_score + depth_score
 
 ## References
 
+### Benchmarks & Scoring
 - [Minara crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) -- 76 scenarios, 5 dimensions, LLM-as-judge
-- [ClawHub Repository Context Score](https://arxiv.org/html/2603.16572) -- Codebase (70%) + Metadata (30%)
-- [SkillsMP Maintenance Tiers](https://skillsmp.com) -- Freshness-based trust indicators
-- [GoPlus AgentGuard](https://agentguard.gopluslabs.io) -- Security scanning for AI agent skills
-- [npm quality scores](https://docs.npmjs.com/about-package-search-ranking) -- Quality, maintenance, popularity
+- [SkillTester](https://arxiv.org/abs/2603.28815) -- Formal utility + security scoring formulas
+- [SkillCompass](https://arxiv.org/html/2603.16572) -- 6 dimensions, 0-100, hard security gate
+- [MCP-Bench](https://arxiv.org/abs/2508.20453) -- NeurIPS 2025, 28 MCP servers, 250 tools
+- [Agent Skills Directory](https://github.com/dmgrok/agent_skills_directory) -- 687+ skills, 0-100 scoring
+
+### Security
+- [GoPlus AgentGuard](https://agentguard.gopluslabs.io) -- 6-detector pipeline, trust registry, 200+ agents protected
+- [Snyk ToxicSkills](https://snyk.io) -- 13.4% critical issues across 3,984 skills scanned
+- [Oathe ClawMutiny](https://oathe.security) -- Behavioral analysis, found 91% miss rate in signature scanners
+- [OWASP Agentic Skills Top 10](https://owasp.org) -- AST01-AST10, semantic + behavioral scanning
+- [Cisco AI Defense Skill Scanner](https://github.com/cisco/skill-scanner) -- Pattern + AST + LLM semantic analysis
+
+### Registries & Marketplaces
+- [ClawHub](https://clawhub.ai) -- 13,729 skills, repository context scoring
+- [SkillsMP](https://skillsmp.com) -- 66,500+ skills, maintenance-first trust
+- [skills.sh](https://skills.sh) -- Leaderboard + 3 independent security scanners
+- [LobeHub](https://lobehub.com) -- 8-dimension skill reviewer, marketplace validation
+- [npm quality scores](https://docs.npmjs.com/about-package-search-ranking) -- 26 attributes, 3 aspects
+- [Libraries.io SourceRank](https://libraries.io) -- 14-factor quality scoring
+- [Chrome Web Store](https://developer.chrome.com) -- Install velocity + retention + ratings
+- [OpenRouter](https://openrouter.ai) -- Usage-based model ranking (real data > benchmarks)
