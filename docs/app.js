@@ -14,6 +14,7 @@
   let activeOfficialProject = null;
   const FEATURED_COUNT = 12;
   let showingAll = false;
+  let sortByScore = false;
 
   // --- Official Project Definitions ---
   // Each project has a matcher function, display info, and optional GitHub URL
@@ -464,6 +465,23 @@
     });
   }
 
+  // --- Score Badge Helper ---
+  function getGradeClass(grade) {
+    if (!grade) return '';
+    return 'grade-' + grade.toLowerCase();
+  }
+
+  function renderScoreBadge(skill) {
+    if (!skill.score || skill.score.total == null) return '';
+    const grade = skill.score.grade || 'F';
+    const total = skill.score.total;
+    const gradeClass = getGradeClass(grade);
+    const safetyWarn = skill.score.safety_gate === 'FAIL'
+      ? '<span class="safety-warn" title="Safety gate: FAIL">&#9888;</span>'
+      : '';
+    return `<span class="skill-score-badge ${gradeClass}">${safetyWarn}${grade} ${total}</span>`;
+  }
+
   // --- Create Skill Card (shared between official and community) ---
   function createSkillCard(skill, isOfficial) {
     const card = document.createElement('div');
@@ -472,7 +490,9 @@
     const badgeClass = isOfficial ? 'skill-badge official-tag' : 'skill-badge';
     const badgeText = isOfficial ? '&#10003; Official' : (cat ? cat.name : skill.category);
 
+    // Note: skill data comes from our own skills.json catalog, not user input
     card.innerHTML = `
+      ${renderScoreBadge(skill)}
       <div class="skill-card-header">
         <div class="skill-name">${skill.displayName}</div>
         <span class="${badgeClass}">${badgeText}</span>
@@ -525,6 +545,18 @@
       const btn = createFilterBtn(key, cat.name);
       filterContainer.appendChild(btn);
     });
+
+    // Add sort-by-score toggle
+    const sortBtn = document.createElement('button');
+    sortBtn.className = 'filter-btn' + (sortByScore ? ' sort-active' : '');
+    sortBtn.textContent = 'Sort by Score';
+    sortBtn.title = 'Sort skills by quality score (highest first)';
+    sortBtn.addEventListener('click', () => {
+      sortByScore = !sortByScore;
+      sortBtn.classList.toggle('sort-active', sortByScore);
+      renderSkills();
+    });
+    filterContainer.appendChild(sortBtn);
   }
 
   function createFilterBtn(key, label) {
@@ -552,6 +584,13 @@
     if (!skillsGrid) return;
     skillsGrid.innerHTML = '';
     let filtered = activeFilter === 'all' ? [...communitySkills] : communitySkills.filter(s => s.category === activeFilter);
+    if (sortByScore) {
+      filtered.sort((a, b) => {
+        const sa = (a.score && a.score.total != null) ? a.score.total : -1;
+        const sb = (b.score && b.score.total != null) ? b.score.total : -1;
+        return sb - sa;
+      });
+    }
     const displaySkills = showingAll ? filtered : filtered.slice(0, FEATURED_COUNT);
 
     displaySkills.forEach(skill => {
@@ -577,6 +616,63 @@
       showingAll = true;
       renderSkills();
     });
+  }
+
+  // --- Score Detail Rendering for Modal ---
+  function renderScoreDetail(skill) {
+    if (!skill.score || skill.score.total == null) return '';
+    const s = skill.score;
+    const grade = s.grade || 'F';
+    const gradeClass = getGradeClass(grade);
+    const safetyClass = s.safety_gate === 'PASS' ? 'pass' : 'fail';
+    const safetyIcon = s.safety_gate === 'PASS' ? '&#10003;' : '&#9888;';
+    const safetyLabel = s.safety_gate || 'N/A';
+
+    // Dimension max totals from the scoring schema
+    const dimensionMaxes = { static: 40, security: 20, depth: 40 };
+
+    function fillClass(pts, max) {
+      const pct = max > 0 ? (pts / max) * 100 : 0;
+      if (pct >= 80) return 'fill-a';
+      if (pct >= 60) return 'fill-b';
+      if (pct >= 40) return 'fill-c';
+      if (pct >= 20) return 'fill-d';
+      return 'fill-f';
+    }
+
+    const dims = ['static', 'security', 'depth'];
+    const barsHTML = dims.map(dim => {
+      const pts = s[dim] != null ? s[dim] : 0;
+      const max = dimensionMaxes[dim] || 40;
+      const pct = max > 0 ? Math.round((pts / max) * 100) : 0;
+      const fc = fillClass(pts, max);
+      return `
+        <div class="score-dimension">
+          <span class="score-dimension-label">${dim}</span>
+          <div class="score-dimension-bar">
+            <div class="score-dimension-fill ${fc}" style="width:${pct}%"></div>
+          </div>
+          <span class="score-dimension-value">${pts}/${max}</span>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="modal-score-section">
+        <div class="modal-score-header">
+          <div class="modal-score-overall">
+            <span class="modal-score-number">${s.total}</span>
+            <span class="modal-score-max">/ 100</span>
+            <span class="modal-score-grade skill-score-badge ${gradeClass}">${grade}</span>
+          </div>
+          <div class="modal-safety-gate ${safetyClass}">
+            <span>${safetyIcon}</span>
+            Safety: ${safetyLabel}
+          </div>
+        </div>
+        <div class="modal-score-dimensions">
+          ${barsHTML}
+        </div>
+      </div>`;
   }
 
   // --- Modal ---
@@ -661,6 +757,7 @@
         </div>
         `}
       </div>
+      ${renderScoreDetail(skill)}
     `;
     modalOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
