@@ -77397,6 +77397,133 @@
         },
         "scored_at": "2026-04-03T18:00:57Z"
       }
+    },
+    {
+      "name": "lido-mcp-server",
+      "displayName": "Lido MCP Server",
+      "description": "MCP server to perform on-chain actions and get real-time staking data on Lido protocol.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "solana-agent-kit-mcp",
+      "displayName": "Solana Agent Kit MCP",
+      "description": "MCP server enabling LLMs to interact with Solana blockchain with 40+ protocol actions via SendAI.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hedera-network-explorer-mcp",
+      "displayName": "Hedera Network Explorer MCP",
+      "description": "MCP server exposing Hedera network explorer tools for querying transactions, accounts, tokens, and smart contracts.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lazy-lotto-agent",
+      "displayName": "LazyLotto Agent",
+      "description": "Multi-user custodial lottery agent on Hedera that evaluates expected value, buys entries, and transfers winnings.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "molty-cash-payments",
+      "displayName": "molty.cash",
+      "description": "Send USDC payments and create/earn from pay-per-task gigs on X, supporting Base and Solana via x402.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "avalanche-avabuilder",
+      "displayName": "AvaBuilder Agent",
+      "description": "AI-powered gateway to Avalanche ecosystem unifying DeFi analytics, wallet balances, NFTs, swaps, and portfolio tracking.",
+      "category": "chains",
+      "tags": [
+        "official",
+        "chains"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "meowblock-mcp",
+      "displayName": "MeowBlock MCP Server",
+      "description": "MCP server exposing Ethereum JSON-RPC access via a generic tool, free to use with 60 requests/minute rate limit.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aerodropx",
+      "displayName": "AeroDropX",
+      "description": "Automated AI agent for tracking airdrop opportunities, managing daily tasks, and automating social media engagements.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nexusnode-depin",
+      "displayName": "NexusNode",
+      "description": "DePIN and IoT intelligence agent that optimizes decentralized physical infrastructure networks and verifies sensor data.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "luminaverse-gamefi",
+      "displayName": "Luminaverse",
+      "description": "AI agent specializing in Web3 gaming economies, in-game asset valuation, and predictive modeling for GameFi ecosystems.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "shirdev-web3",
+      "displayName": "ShirDev",
+      "description": "Autonomous full-stack developer agent specializing in TypeScript, React, Solidity, Web3, and smart contracts.",
+      "category": "dev-tools",
+      "tags": [
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
