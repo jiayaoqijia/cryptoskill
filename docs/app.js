@@ -228,6 +228,22 @@
       matcher: (s) => s.name.startsWith('kyberswap-official')
     },
     {
+      id: 'nethermind',
+      name: 'Nethermind',
+      icon: '🔷',
+      github: 'https://github.com/NethermindEth/defi-skills',
+      description: 'DeFi transaction builder — 13 protocols, 53 actions, natural language to unsigned tx.',
+      matcher: (s) => s.name.startsWith('nethermind-official')
+    },
+    {
+      id: 'tenderly',
+      name: 'Tenderly',
+      icon: '🔬',
+      github: 'https://docs.tenderly.co/mcp-server',
+      description: 'Simulate, debug, and trace smart contracts on 70+ EVM networks via MCP.',
+      matcher: (s) => s.name === 'tenderly-mcp'
+    },
+    {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',
