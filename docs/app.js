@@ -17,14 +17,14 @@
   let sortByScore = false;
 
   // --- Official Project Definitions ---
-  // Each project has a matcher function, display info, and optional GitHub URL
+  // Only show big names. Skills from smaller projects still get "official" tag but no card.
   const OFFICIAL_PROJECTS = [
     {
       id: 'binance',
       name: 'Binance',
       icon: '🔶',
       github: 'https://github.com/binance/binance-skills-hub',
-      description: 'Official Binance exchange skills for spot, futures, and wallet operations.',
+      description: 'Spot, futures, wallet, and Web3 trading skills.',
       matcher: (s) => s.author === 'binance' || s.name.startsWith('binance-official')
     },
     {
@@ -32,224 +32,88 @@
       name: 'OKX',
       icon: '⚫',
       github: 'https://github.com/okx/onchainos-skills',
-      description: 'OKX OnchainOS skills for trading, DeFi, and on-chain operations.',
+      description: 'CEX + DEX trading, wallet, and on-chain operations.',
       matcher: (s) => s.author === 'okx' || s.name.startsWith('okx-official')
     },
     {
-      id: 'gate',
-      name: 'Gate.io',
+      id: 'kraken',
+      name: 'Kraken',
+      icon: '🐙',
+      github: 'https://github.com/krakenfx/kraken-cli',
+      description: '50 trading skills + built-in MCP server for spot, futures, and earn.',
+      matcher: (s) => s.name.startsWith('kraken-official')
+    },
+    {
+      id: 'coinbase',
+      name: 'Coinbase',
       icon: '🔵',
-      github: 'https://github.com/gateio',
-      description: 'Gate.io exchange integration for spot and futures trading.',
-      matcher: (s) => s.author === 'gate' && s.name.startsWith('gate-')
-    },
-    {
-      id: 'nansen',
-      name: 'Nansen',
-      icon: '📊',
-      github: 'https://www.nansen.ai',
-      description: 'On-chain analytics and smart money tracking from Nansen.',
-      matcher: (s) => s.author === 'nansen' && s.name.startsWith('nansen-')
-    },
-    {
-      id: 'cmc',
-      name: 'CoinMarketCap',
-      icon: '📈',
-      github: 'https://github.com/coinmarketcap',
-      description: 'Market data, rankings, and crypto metrics from CoinMarketCap.',
-      matcher: (s) => s.author === 'cmc' && (s.name.startsWith('cmc-') || s.name.startsWith('coinmarketcap-'))
-    },
-    {
-      id: 'bitget',
-      name: 'Bitget',
-      icon: '🟢',
-      github: 'https://github.com/BitgetLimited/agent_hub',
-      description: 'Bitget exchange skills for copy trading and derivatives.',
-      matcher: (s) => (s.author === 'bitget' || s.author === 'bitget-wallet-ai-lab') && s.name.startsWith('bitget-official')
-    },
-    {
-      id: 'lightning',
-      name: 'Lightning Labs',
-      icon: '⚡',
-      github: 'https://github.com/lightningnetwork',
-      description: 'Lightning Network payment channel and node management skills.',
-      matcher: (s) => s.author === 'roasbeef' && s.name.startsWith('lightning-')
-    },
-    {
-      id: 'opensea',
-      name: 'OpenSea',
-      icon: '🌊',
-      github: 'https://github.com/ProjectOpenSea',
-      description: 'NFT marketplace operations including listing, bidding, and analytics.',
-      matcher: (s) => (s.author === 'opensea' && s.name.startsWith('opensea')) || s.name.startsWith('opensea-official')
-    },
-    {
-      id: 'sushiswap',
-      name: 'SushiSwap',
-      icon: '🍣',
-      github: 'https://github.com/sushiswap',
-      description: 'Decentralized exchange and liquidity provision on SushiSwap.',
-      matcher: (s) => s.author === 'sushi' && s.name.startsWith('sushiswap')
+      github: 'https://github.com/coinbase/agentic-wallet-skills',
+      description: 'AgentKit, wallets, Base chain, and on-chain agent tools.',
+      matcher: (s) => s.name.startsWith('coinbase-official') || s.name.startsWith('base-official')
     },
     {
       id: 'uniswap',
       name: 'Uniswap',
       icon: '🦄',
       github: 'https://github.com/Uniswap/uniswap-ai',
-      description: 'Uniswap DEX skills for swaps, liquidity, and pool management.',
+      description: 'Swap integration, liquidity, v4 hooks, and CCA auctions.',
       matcher: (s) => s.name.startsWith('uniswap-official')
-    },
-    {
-      id: 'solana',
-      name: 'Solana Foundation',
-      icon: '☀️',
-      github: 'https://github.com/solana-foundation/solana-mcp-official',
-      description: 'Official Solana MCP server for on-chain interactions.',
-      matcher: (s) => s.name === 'solana-mcp-official'
-    },
-    {
-      id: 'bnbchain',
-      name: 'BNB Chain',
-      icon: '💛',
-      github: 'https://github.com/bnb-chain/bnbchain-skills',
-      description: 'BNB Chain skills for BSC, opBNB, and Greenfield operations.',
-      matcher: (s) => s.name.startsWith('bnb-official') || s.name === 'bnbchain-mcp'
-    },
-    {
-      id: 'aptos',
-      name: 'Aptos',
-      icon: '🔷',
-      github: 'https://github.com/aptos-labs/aptos-agent',
-      description: 'Aptos blockchain skills for Move contracts and transactions.',
-      matcher: (s) => s.name.startsWith('aptos-official') || s.name === 'aptos-mcp'
-    },
-    {
-      id: 'minara',
-      name: 'Minara AI',
-      icon: '👩',
-      github: 'https://github.com/minara-ai/skills',
-      description: 'Crypto trading, wallets, perps, swaps across EVM + Solana + Hyperliquid.',
-      matcher: (s) => s.name.startsWith('minara')
-    },
-    {
-      id: 'moonpay',
-      name: 'MoonPay',
-      icon: '🌙',
-      github: 'https://github.com/moonpay/skills',
-      description: 'Crypto onramp, trading, wallets, block explorer, and payment tools.',
-      matcher: (s) => s.name.startsWith('moonpay-official')
     },
     {
       id: 'metamask',
       name: 'MetaMask',
       icon: '🦊',
       github: 'https://github.com/MetaMask/openclaw-skills',
-      description: 'Smart accounts, EIP-7702, delegations, gator CLI, and passkey signers.',
+      description: 'Smart accounts, EIP-7702 delegations, and gator CLI.',
       matcher: (s) => s.name.startsWith('metamask-official')
+    },
+    {
+      id: 'moonpay',
+      name: 'MoonPay',
+      icon: '🌙',
+      github: 'https://github.com/moonpay/skills',
+      description: '35 skills: onramp, trading, wallets, payments, and Messari research.',
+      matcher: (s) => s.name.startsWith('moonpay-official')
     },
     {
       id: 'circle',
       name: 'Circle (USDC)',
       icon: '💵',
       github: 'https://github.com/circlefin/skills',
-      description: 'USDC stablecoin, wallets, gateway, bridging, and smart contract tools.',
+      description: 'USDC transfers, wallets, gateway, bridging, and smart contracts.',
       matcher: (s) => s.name.startsWith('circle-official')
-    },
-    {
-      id: 'alchemy',
-      name: 'Alchemy',
-      icon: '🔮',
-      github: 'https://github.com/alchemyplatform/skills',
-      description: 'Official Alchemy dev tools — RPC, APIs, wallets, webhooks, and rollups.',
-      matcher: (s) => s.name.startsWith('alchemy-official')
-    },
-    {
-      id: 'pendle',
-      name: 'Pendle Finance',
-      icon: '⚖️',
-      github: 'https://github.com/pendle-finance/pendle-ai',
-      description: 'Yield trading: market data, swap, portfolio management, and limit orders.',
-      matcher: (s) => s.name.startsWith('pendle-official')
-    },
-    {
-      id: 'defillama',
-      name: 'DefiLlama',
-      icon: '🦙',
-      github: 'https://github.com/DefiLlama/defillama-skills',
-      description: 'DeFi analytics: TVL, yields, protocols, risk assessment, and market analysis.',
-      matcher: (s) => s.name.startsWith('defillama-official')
-    },
-    {
-      id: 'coinbase-wallet',
-      name: 'Coinbase Wallet',
-      icon: '🔵',
-      github: 'https://github.com/coinbase/agentic-wallet-skills',
-      description: 'Agentic wallet skills for funding, trading, payments, and on-chain queries.',
-      matcher: (s) => s.name.startsWith('coinbase-official')
-    },
-    {
-      id: 'privy',
-      name: 'Privy',
-      icon: '🔐',
-      github: 'https://github.com/privy-io/privy-agentic-wallets-skill',
-      description: 'Agentic wallet infrastructure for embedded and server wallets.',
-      matcher: (s) => s.name.startsWith('privy-official')
-    },
-    {
-      id: 'virtuals',
-      name: 'Virtual Protocol',
-      icon: '🤖',
-      github: 'https://github.com/Virtual-Protocol/openclaw-acp',
-      description: 'Agent Commerce Protocol for autonomous agent-to-agent transactions.',
-      matcher: (s) => s.name.startsWith('virtuals-official')
-    },
-    {
-      id: 'bankr',
-      name: 'Bankr',
-      icon: '💰',
-      github: 'https://github.com/BankrBot/skills',
-      description: 'Trading signals, on-chain tools, and social integrations for crypto agents.',
-      matcher: (s) => s.name.startsWith('bankr-official')
-    },
-    {
-      id: 'base-skills',
-      name: 'Base',
-      icon: '🔵',
-      github: 'https://github.com/base/skills',
-      description: 'Build on Base: deploy contracts, connect network, run nodes, Farcaster miniapps.',
-      matcher: (s) => s.name.startsWith('base-official')
-    },
-    {
-      id: 'kyberswap',
-      name: 'KyberSwap',
-      icon: '💱',
-      github: 'https://github.com/KyberNetwork/kyberswap-skills',
-      description: 'Multi-chain DEX aggregator: quotes, swap building, and execution.',
-      matcher: (s) => s.name.startsWith('kyberswap-official')
     },
     {
       id: 'nethermind',
       name: 'Nethermind',
       icon: '🔷',
       github: 'https://github.com/NethermindEth/defi-skills',
-      description: 'DeFi transaction builder — 13 protocols, 53 actions, natural language to unsigned tx.',
+      description: 'Natural language to DeFi transactions across 13 protocols.',
       matcher: (s) => s.name.startsWith('nethermind-official')
     },
     {
-      id: 'tenderly',
-      name: 'Tenderly',
-      icon: '🔬',
-      github: 'https://docs.tenderly.co/mcp-server',
-      description: 'Simulate, debug, and trace smart contracts on 70+ EVM networks via MCP.',
-      matcher: (s) => s.name === 'tenderly-mcp'
+      id: 'defillama',
+      name: 'DefiLlama',
+      icon: '🦙',
+      github: 'https://github.com/DefiLlama/defillama-skills',
+      description: 'DeFi analytics: TVL, yields, risk assessment, and market analysis.',
+      matcher: (s) => s.name.startsWith('defillama-official')
+    },
+    {
+      id: 'alchemy',
+      name: 'Alchemy',
+      icon: '🔮',
+      github: 'https://github.com/alchemyplatform/skills',
+      description: 'Multi-chain RPC, token/NFT APIs, webhooks, and rollups.',
+      matcher: (s) => s.name.startsWith('alchemy-official')
     },
     {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',
       github: 'https://github.com/jiayaoqijia/cryptoskill',
-      description: 'Community and third-party MCP server integrations.',
-      matcher: (s) => s.category === 'mcp-servers' && !s.name.startsWith('bnb') && !s.name.startsWith('aptos') && !s.name.startsWith('solana')
+      description: '85+ MCP servers: Solana, Tenderly, NEAR, EigenLayer, CoinGecko, and more.',
+      matcher: (s) => s.category === 'mcp-servers'
     }
   ];
 
