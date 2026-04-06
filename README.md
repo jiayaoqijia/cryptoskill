@@ -8,7 +8,7 @@ Before the App Store, iPhone developers distributed apps through ad hoc channels
 
 [![Skills](https://img.shields.io/badge/skills-977-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-85-f59e0b)]() [![Official](https://img.shields.io/badge/official-617-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
-[Website](https://cryptoskill.org) · [Browse Skills](#skills-977overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
+[Website](https://cryptoskill.org) · [Browse Skills](#skills-overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -23,9 +23,9 @@ A developer building a crypto AI agent today has to hunt through Binance's repo,
 
 CryptoSkill is the crypto-native answer:
 
-- **887 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
-- **76 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
-- **575 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, and more)
+- **977 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
+- **85 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
+- **617 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
 - **Quality scored** -- every skill rated 0-100 across documentation, security, and depth
 - **Security-scanned** -- credential detection (160+ patterns), code safety, permission analysis
 - **Auto-updated** -- bot scans 128+ projects every 6 hours, rescores all skills, tracks regressions
@@ -34,19 +34,19 @@ CryptoSkill is the crypto-native answer:
 
 | Category | Skills | Highlights |
 |---|---|---|
-| **Exchanges** | 179 | Binance, OKX, Kraken (50), KuCoin, Gate.io, Bitget, Hyperliquid, Bybit, Coinbase |
-| **DeFi** | 150 | Uniswap (8), GMX, Rocket Pool (7), Venus, Pendle (4), KyberSwap (5), Lido, Aave, OpenSea, Elsa |
-| **Analytics** | 74 | DefiLlama (11), Nansen (10), CoinMarketCap (7), CoinGecko, Dune, Etherscan, Elfa |
-| **MCP Servers** | 76 | Alchemy, Solana, CoinGecko, EigenLayer, Blockscout, NEAR, Monad, Chainflip |
-| **Payments** | 64 | MoonPay (35), Circle (9), x402, mpp, tempo |
-| **Trading** | 59 | Bankr (20), Minara, Polyhub, grid trading, whale tracking, signals |
-| **Chains** | 47 | Base (9), Ethereum, Solana, Bitcoin, Lightning, BNB Chain, Arbitrum, Sui, Monad |
-| **Wallets** | 34 | Coinbase Wallet (9), MetaMask (2), Privy, Bitget Wallet, Cobo TSS |
-| **Prediction Markets** | 26 | Polymarket API, Builder, Research, trading bots, whale copying |
-| **Dev Tools** | 21 | Alchemy, Moralis, Foundry, Hardhat, Trail of Bits, Cyfrin, ETH2 Quickstart |
-| **Identity** | 19 | ERC-8004, 8004scan, self-agent-id, Maiat Guard, Maiat Trust |
-| **Social** | 8 | Towns, Farcaster, Nostr, XMTP |
-| **AI x Crypto** | 7 | Virtual Protocol, Heurist, Bittensor, Virtuals, ElizaOS |
+| **DeFi** | 192 | Uniswap (8), Nethermind, GMX, Rocket Pool (7), Venus, Pendle (4), KyberSwap (5), Lido, Aave, OpenSea, Elsa |
+| **Exchanges** | 180 | Binance, OKX, Kraken (50), KuCoin, Gate.io, Bitget, Hyperliquid, Bybit, Coinbase |
+| **Analytics** | 98 | DefiLlama (11), Nansen (10), CoinMarketCap (7), CoinGecko, CoinPaprika, Dune, Etherscan, Elfa |
+| **Trading** | 87 | Bankr (20), Minara, Polyhub, grid trading, whale tracking, signals |
+| **MCP Servers** | 85 | Alchemy, Solana, CoinGecko, Tenderly, CoinPaprika, EigenLayer, Blockscout, NEAR, Monad, Chainflip |
+| **Payments** | 75 | MoonPay (35), Circle (9), x402, mpp, tempo |
+| **Chains** | 57 | Base (9), Ethereum, Solana, Bitcoin, Lightning, BNB Chain, Arbitrum, Sui, Monad |
+| **AI x Crypto** | 52 | Virtual Protocol, Heurist, Bittensor, Virtuals, ElizaOS |
+| **Prediction Markets** | 46 | Polymarket API, Builder, Research, trading bots, whale copying |
+| **Wallets** | 38 | Coinbase Wallet (9), MetaMask (2), Privy, Bitget Wallet, Cobo TSS |
+| **Dev Tools** | 33 | Alchemy, Tenderly, Moralis, Foundry, Hardhat, Trail of Bits, Cyfrin, ETH2 Quickstart |
+| **Identity** | 24 | ERC-8004, 8004scan, self-agent-id, Maiat Guard, Maiat Trust |
+| **Social** | 10 | Towns, Farcaster, Nostr, XMTP |
 
 ## Quality Scores
 
@@ -65,15 +65,15 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 | Grade | Score | Skills | Meaning |
 |-------|-------|--------|---------|
 | **A** | 80-100 | 16 | Production-ready, well-documented, secure |
-| **B** | 60-79 | 359 | Good quality, minor gaps |
-| **C** | 40-59 | 506 | Usable but significant gaps |
+| **B** | 60-79 | 361 | Good quality, minor gaps |
+| **C** | 40-59 | 594 | Usable but significant gaps |
 | **D** | 20-39 | 6 | Minimal quality, use with caution |
 
-**Risk Gate**: 93% pass (828/887). Fund-moving skills also get LLM-as-judge evaluation based on the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
+**Risk Gate**: 93% pass (918/977). Fund-moving skills also get LLM-as-judge evaluation based on the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
 
 ## MCP Servers
 
-**76 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
+**85 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
 
 ### Official MCP Servers
 
@@ -89,10 +89,12 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 | [Monad](skills/mcp-servers/monad-mcp/) | Monad | `git clone monad-developers/monad-mcp` |
 | [NEAR](skills/mcp-servers/near-mcp/) | NEAR | `git clone nearai/near-mcp` |
 | [Solana](skills/mcp-servers/solana-mcp-official/) | Solana Foundation | `git clone solana-foundation/solana-mcp-official` |
+| [Tenderly](skills/mcp-servers/tenderly-mcp/) | Tenderly | `claude mcp add tenderly --transport http https://mcp.tenderly.co/mcp` |
+| [CoinPaprika](skills/mcp-servers/coinpaprika-mcp/) | CoinPaprika | `npx @coinpaprika/mcp` |
 
 ### Community MCP Servers
 
-CCXT (100+ exchanges), GOAT Onchain (200+ actions), Helius, Jupiter, Lightning, Chainlink Feeds, deBridge, DEXScreener, Dune Analytics, StarkNet, Tatum (130+ networks), Whale Tracker, Chainflip, and [40+ more](skills/mcp-servers/).
+CCXT (100+ exchanges), GOAT Onchain (200+ actions), Helius, Jupiter, Lightning, Chainlink Feeds, deBridge, DEXScreener, Dune Analytics, StarkNet, Tatum (130+ networks), Whale Tracker, Chainflip, and [50+ more](skills/mcp-servers/).
 
 ## Quick Start
 
@@ -112,13 +114,13 @@ npm i -g clawhub && clawhub install binance-spot-api
 
 ## Official Skills
 
-**575 skills** from verified project teams:
+**617 skills** from verified project teams:
 
 | Project | Skills | Source |
 |---|---|---|
 | [Kraken](https://www.kraken.com/) | 50 | [krakenfx/kraken-cli](https://github.com/krakenfx/kraken-cli) |
 | [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
-| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-977hub](https://github.com/binance/binance-skills-hub) |
+| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-hub](https://github.com/binance/binance-skills-hub) |
 | [Bankr](https://bankr.bot/) | 20 | [BankrBot/skills](https://github.com/BankrBot/skills) |
 | [Ottie](https://github.com/jiayaoqijia/ottie) | 18 | Crypto DeFi, wallets, market data |
 | [OKX](https://www.okx.com/) | 16+ | [okx/onchainos-skills](https://github.com/okx/onchainos-skills) |
@@ -130,15 +132,16 @@ npm i -g clawhub && clawhub install binance-spot-api
 | [Coinbase Wallet](https://www.coinbase.com/) | 9 | [coinbase/agentic-wallet-skills](https://github.com/coinbase/agentic-wallet-skills) |
 | [Uniswap](https://uniswap.org/) | 8 | [Uniswap/uniswap-ai](https://github.com/Uniswap/uniswap-ai) |
 | [Bitget](https://www.bitget.com/) | 7 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) |
-| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-977hub](https://github.com/Kucoin/kucoin-skills-hub) |
+| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-hub](https://github.com/Kucoin/kucoin-skills-hub) |
 | [Rocket Pool](https://rocketpool.net/) | 7 | [rocket-pool/skills](https://github.com/rocket-pool/skills) |
 | [CoinMarketCap](https://coinmarketcap.com/) | 7 | ClawHub: bryan-cmc |
 | [KyberSwap](https://kyberswap.com/) | 5 | [KyberNetwork/kyberswap-skills](https://github.com/KyberNetwork/kyberswap-skills) |
 | [Pendle](https://www.pendle.finance/) | 4 | [pendle-finance/pendle-ai](https://github.com/pendle-finance/pendle-ai) |
 | [MetaMask](https://metamask.io/) | 2 | [MetaMask/openclaw-skills](https://github.com/MetaMask/openclaw-skills) |
 | [GMX](https://gmx.io/) | 2 | [gmx-io/gmx-ai](https://github.com/gmx-io/gmx-ai) |
+| [Nethermind](https://nethermind.io/) | 1 | [NethermindEth/defi-skills](https://github.com/NethermindEth/defi-skills) |
 
-Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, and [76 MCP servers](#mcp-servers).
+Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, CoinPaprika, and [85 MCP servers](#mcp-servers).
 
 ## Submit a Skill
 
@@ -184,6 +187,9 @@ A bot scans 128+ projects every 6 hours:
 | [Awesome Ethereum AI Skills](https://github.com/rickkdev/awesome-ethereum-ai-skills) | 24 | Curated Ethereum AI skill directory |
 | [Trail of Bits](https://github.com/trailofbits/skills) | Security | Smart contract security testing |
 | [OpenZeppelin](https://mcp.openzeppelin.com) | MCP | Solidity security best practices |
+| [Nethermind](https://github.com/NethermindEth/defi-skills) | DeFi | DeFi transaction builder (13 protocols, 53 actions) |
+| [Tenderly](https://docs.tenderly.co/mcp-server) | MCP | Smart contract simulation and debugging |
+| [CoinPaprika](https://github.com/coinpaprika/coinpaprika-mcp) | MCP | Crypto market data (12K+ coins, 350+ exchanges) |
 
 ### Frameworks & Standards
 
