@@ -85421,6 +85421,88 @@
         },
         "scored_at": "2026-04-07T00:01:11Z"
       }
+    },
+    {
+      "name": "polymarket-integration",
+      "displayName": "Polymarket Markets",
+      "description": "Query active prediction markets, order books, and user positions on Polymarket via Polygon.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kalshi-integration",
+      "displayName": "Kalshi Markets",
+      "description": "Access Kalshi prediction markets with orderbook data, trade history, and event filtering.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "erc-8004-registry",
+      "displayName": "ERC-8004 Agent Registry",
+      "description": "On-chain AI agent registry with semantic search, trending agents, and reputation scoring.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aerodrome-dex",
+      "displayName": "Aerodrome Finance",
+      "description": "Base DEX with pool info, swap quotes, gauge rewards, and veAERO voting power queries.",
+      "category": "dex",
+      "tags": [
+        "official",
+        "dex"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cow-protocol",
+      "displayName": "CoW Swap",
+      "description": "MEV-protected DEX aggregator with quote building and order status tracking.",
+      "category": "dex",
+      "tags": [
+        "official",
+        "dex"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aerodrop-x",
+      "displayName": "AeroDropX",
+      "description": "Automated AI agent tracking airdrop opportunities and managing daily interaction tasks for Web3 users.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cast-mind",
+      "displayName": "castmind",
+      "description": "Web3 social intelligence agent for Farcaster and Lens Protocol automating engagement and tracking influencer alpha.",
+      "category": "social",
+      "tags": [
+        "social"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
