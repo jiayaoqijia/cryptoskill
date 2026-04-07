@@ -86535,6 +86535,147 @@
         },
         "scored_at": "2026-04-07T12:01:15Z"
       }
+    },
+    {
+      "name": "uniswap-official-configurator",
+      "displayName": "Configurator",
+      "description": "Configure CCA (Continuous Clearing Auction) smart contract parameters through an interactive bulk form flow. Use when user says \"configure auction\", \"cca auction\", \"setup token auction\", \"auction configuration\", \"continuous auction\", or mentions CCA contracts.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-deployer",
+      "displayName": "Deployer",
+      "description": "Deploy CCA (Continuous Clearing Auction) smart contracts using the Factory pattern. Use when user says \"deploy auction\", \"deploy cca\", \"factory deployment\", or wants to deploy a configured auction.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-security-foundations",
+      "displayName": "V4 Security Foundations",
+      "description": "Security-first Uniswap v4 hook development. Use when user mentions \"v4 hooks\", \"hook security\", \"PoolManager\", \"beforeSwap\", \"afterSwap\", or asks about V4 hook best practices, vulnerabilities, or audit requirements.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-sdk-integration",
+      "displayName": "V4 Sdk Integration",
+      "description": ">",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "kamino-heyanon-agent",
+      "displayName": "Kamino powered by HeyAnon",
+      "description": "Safe execution layer for Kamino lending on Solana with collateral validation and LTV limit verification.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "pumpfun-heyanon-agent",
+      "displayName": "Pumpfun powered by HeyAnon",
+      "description": "Safe execution layer for Pumpfun token launches on Solana with parameter validation and reward eligibility checks.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ethy-ai",
+      "displayName": "Ethy AI",
+      "description": "Vibe trading agent that converts plain-language trading strategies into live 24/7 automations using A2A workflows and x402 protocol.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "composai-able",
+      "displayName": "ComposAIble",
+      "description": "Composable DeFi strategy orchestrator that chains multiple protocols to build optimized yield strategies on Base.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "quanta-bot",
+      "displayName": "QuantaBot",
+      "description": "Monitors discrete quantum jumps in Base DeFi protocol metrics identifying non-linear step-change increases in TVL, volume, and user counts.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "gold-api-feed",
+      "displayName": "Gold Api Feed",
+      "description": "Real-Time Precious Metals & Crypto Trading Skill with Multi-Agent Analysis — Claude Code + OpenClaw + MCP",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "rawbethwebsites",
+      "version": "1.0.0"
+    },
+    {
+      "name": "package",
+      "displayName": "Package",
+      "description": "Solobank SDK — DeFi toolkit for Solana: payments, lending, swaps, and MCP server",
+      "category": "payments",
+      "tags": [
+        "payments"
+      ],
+      "author": "solobank-ai",
+      "version": "1.0.0"
+    },
+    {
+      "name": "mcp-servers",
+      "displayName": "Mcp Servers",
+      "description": "Thryx MCP server monorepo — 4 packages on npm. Smart contract scanning, multi-wallet treasury, DeFi orchestration, and gas paymaster integration for AI agents on Base.",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "lordbasilaiassistant-sudo",
+      "version": "1.0.0"
     }
   ],
   "categories": {
