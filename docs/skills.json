@@ -87305,6 +87305,65 @@
         },
         "scored_at": "2026-04-08T05:38:01Z"
       }
+    },
+    {
+      "name": "hedera-explorer-mcp",
+      "displayName": "Hedera Network Explorer MCP",
+      "description": "MCP server exposing Hedera network explorer tools for querying transactions, accounts, tokens, and smart contracts in real time.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-agentic-trader",
+      "displayName": "Uniswap Agentic Trader",
+      "description": "AI agent that autonomously executes DeFi trading strategies through the Uniswap Developer Platform API.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ask-heurist",
+      "displayName": "Ask Heurist Agent",
+      "description": "Crypto Q&A and research agent for traders covering token analysis, market trends, and trading strategies.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "story-scoring-agent",
+      "displayName": "Story Scoring Agent",
+      "description": "Scores user stories 0-100 with token rewards for scores ≥60, backed by 8004mint.com.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "agent-swaps",
+      "displayName": "AgentSwaps",
+      "description": "Cross-chain DEX for AI agents on Base with ERC-7683 intents and trustless settlement.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
