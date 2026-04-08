@@ -87819,6 +87819,150 @@
         },
         "scored_at": "2026-04-08T12:01:51Z"
       }
+    },
+    {
+      "name": "okx-official-okx-cex-portfolio",
+      "displayName": "Okx Cex Portfolio",
+      "description": "This skill should be used when the user asks about 'account balance', 'how much USDT do I have', 'my funding account', 'show my positions', 'open positions', 'position P&L', 'unrealized PnL', 'closed positions', 'position history', 'realized PnL', 'account bills', 'transaction history', 'trading fees', 'fee tier', 'account config', 'max order size', 'how much can I buy', 'withdrawable amount', 'transfer funds', 'move USDT to trading account', or 'switch position mode'. Requires API credentials. Do NOT use for market prices (use okx-cex-market), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-skill-mp",
+      "displayName": "Okx Cex Skill Mp",
+      "description": "Use this skill when the user asks to: 'find a trading skill', 'search for skills', 'install a skill', 'add a skill', 'download a skill', 'browse skill marketplace', 'what skills are available', 'update a skill', 'check for skill updates', 'remove a skill', 'uninstall a skill', 'list installed skills', 'show my skills', 'skill categories', or any request to discover, install, update, or manage AI trading skills from the OKX Skills Marketplace. This skill covers searching, browsing categories, installing via CLI, downloading zip packages, checking for updates, and removing installed skills. Requires API credentials for marketplace API access. Do NOT use for placing orders (use okx-cex-trade), market data (use okx-cex-market), or bot management (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-trade",
+      "displayName": "Okx Cex Trade",
+      "description": "This skill should be used when the user asks to 'buy BTC', 'sell ETH', 'place a limit order', 'place a market order', 'cancel my order', 'amend my order', 'long BTC perp', 'short ETH swap', 'open a position', 'close a position', 'set take profit', 'set stop loss', 'add a trailing stop', 'set leverage', 'check my orders', 'order status', 'fill history', 'trade history', 'buy a call', 'sell a put', 'buy call option', 'sell put option', 'option chain', 'implied volatility', 'IV', 'option Greeks', 'delta', 'gamma', 'theta', 'vega', 'delta hedge', 'option order', 'option position', 'option fills', or any request to place/cancel/amend spot, perpetual swap, delivery futures, or options orders on OKX CEX. Covers spot trading, swap/perpetual contracts, delivery futures, options (calls/puts, Greeks, IV), and conditional (TP/SL/trailing) algo orders. Requires API credentials. Do NOT use for market data (use okx-cex-market), account balance/positions (use okx-cex-portfolio), or grid/DCA bots (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-bot",
+      "displayName": "Okx Cex Bot",
+      "description": "Manage Grid bots (spot/contract/coin-margined) and DCA Martingale bots (Spot DCA 现货马丁 / Contract DCA 合约马丁) on OKX. Covers create, stop, amend, monitor P&L, TP/SL, margin/investment adjustment, and AI-recommended parameters. Requires API credentials. Not for regular orders (okx-cex-trade), market data (okx-cex-market), or account info (okx-cex-portfolio).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-market",
+      "displayName": "Okx Cex Market",
+      "description": "Use this skill when the user asks for: price of any asset, ticker, order book, market depth, candles, OHLCV, funding rate, open interest, mark price, index price, recent trades, price limit, instrument list, stock tokens, metals prices (gold, silver, XAU, XAG), commodities prices (oil, crude, natural gas, OIL), forex rates (EUR/USD, GBP/USD, EURUSDT), bond instruments, non-crypto assets, tradeable instruments by category, or any technical indicator query (RSI, MACD, EMA, MA, Bollinger Bands, KDJ, SuperTrend, AHR999, BTC rainbow, and 70+ more indicators). All commands are read-only and do NOT require API credentials. Do NOT use for account balance/positions (use okx-cex-portfolio), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-earn",
+      "displayName": "Okx Cex Earn",
+      "description": "Manages OKX Simple Earn (flexible savings/lending), On-chain Earn (staking/DeFi), Dual Investment (DCD/双币赢), and AutoEarn (自动赚币) via the okx CLI. Use this skill whenever the user wants to check earn balances, subscribe or redeem earn products, view or set lending rates, monitor on-chain staking orders, interact with dual investment structured products, or manage auto-earn — even if phrased casually as 活期赚币, 定期赚币, 赚币, 申购, 赎回, 链上赚币, 质押, 理财, 双币赢, 双币理财, 双币申购, 高卖, 低买, dual investment, DCD, buy low, sell high structured product, earn with target price, 目标价, 自动赚币, auto earn, auto-earn, 自动借出, 自动质押, auto lend, auto staking, USDG earn, USDG 赚币, 闲置资金自动理财, fixed earn, fixed deposit, term deposit, 定期理财, 定期. Also use when the user asks about idle funds and whether to earn on them.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-heyanon",
+      "displayName": "Binance powered by HeyAnon",
+      "description": "Safe execution layer for Binance CEX with order validation, margin checks, and pre-validated API requests for AI agents.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "yearn-heyanon",
+      "displayName": "Yearn powered by HeyAnon",
+      "description": "Safe execution layer for Yearn yield vaults with deposit validation, capacity checks, and approval handling.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "v3-pools-heyanon",
+      "displayName": "V3 Pools powered by HeyAnon",
+      "description": "Safe execution layer for Uniswap V3-style concentrated liquidity across Uniswap, PancakeSwap, WAGMI, and OkuTrade.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "wagmi-heyanon",
+      "displayName": "WAGMI powered by HeyAnon",
+      "description": "Safe execution layer for WAGMI staking on Kava EVM, Metis, and Sonic with balance validation and token approvals.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aerohunter-ai",
+      "displayName": "AeroHunter AI",
+      "description": "Multi-chain DeFi automation agent for airdrop hunting, yield optimization, and automated trading across 10+ blockchains.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "likim-bomtron85",
+      "displayName": "likim-bomtron85 by Olas",
+      "description": "Pearl service trader agent for Omen prediction markets on Polygon with autonomous trading capabilities.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
