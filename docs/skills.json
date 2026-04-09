@@ -88761,6 +88761,96 @@
         },
         "scored_at": "2026-04-09T00:01:21Z"
       }
+    },
+    {
+      "name": "alchemy-changeset",
+      "displayName": "Changeset",
+      "description": "Create a changeset entry to document a version bump and changelog for the current changes",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "alchemyplatform",
+      "version": "1.0.0"
+    },
+    {
+      "name": "yearn-heyanon-executor",
+      "displayName": "Yearn powered by HeyAnon",
+      "description": "Safe execution layer for Yearn yield vaults that validates deposit parameters, checks vault capacity, and returns pre-validated calldata for AI agents.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "4626-vault-agent",
+      "displayName": "4626 Agent",
+      "description": "Agent API for ERC-4626 vault management on Base with XMTP messaging, REST API, and MCP tools for vault operations and keeper automation.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "arbital-market-maker",
+      "displayName": "Arbital",
+      "description": "Market maker provider that helps users farm volume on perpetual DEXes like Pacifica with automated position management.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "minara-ai-assistant",
+      "displayName": "Minara AI",
+      "description": "Intelligent crypto assistant providing real-time market analysis, DeFi guidance, swap intent parsing, and prediction market analysis with x402 support.",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rocky-abstract-agent",
+      "displayName": "Rocky",
+      "description": "Autonomous AI agent on Abstract Chain that trades $PENGU with grid strategy, performs daily Moody Drops, and votes for Abstract ecosystem apps.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bridge-agent-crosschain",
+      "displayName": "Bridge Agent",
+      "description": "Bridges tokens between Sepolia and Base Sepolia networks, finding optimal routes and timing for cross-chain transfers.",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "yield-optimizer-agent",
+      "displayName": "Yield Optimizer",
+      "description": "Compares yield opportunities across DeFi protocols and optimizes portfolio positions for maximum risk-adjusted returns.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
