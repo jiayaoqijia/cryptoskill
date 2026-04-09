@@ -88335,6 +88335,134 @@
         },
         "scored_at": "2026-04-08T18:01:23Z"
       }
+    },
+    {
+      "name": "uniswap-official-configurator",
+      "displayName": "Configurator",
+      "description": "Configure CCA (Continuous Clearing Auction) smart contract parameters through an interactive bulk form flow. Use when user says \"configure auction\", \"cca auction\", \"setup token auction\", \"auction configuration\", \"continuous auction\", or mentions CCA contracts.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-deployer",
+      "displayName": "Deployer",
+      "description": "Deploy CCA (Continuous Clearing Auction) smart contracts using the Factory pattern. Use when user says \"deploy auction\", \"deploy cca\", \"factory deployment\", or wants to deploy a configured auction.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-hook-generator",
+      "displayName": "V4 Hook Generator",
+      "description": "Generate Uniswap v4 hook contracts via OpenZeppelin MCP. Use when building custom swap logic, async swaps, hook-owned liquidity, custom curves, dynamic fees, MEV protection, limit orders, or oracle hooks.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-security-foundations",
+      "displayName": "V4 Security Foundations",
+      "description": "Security-first Uniswap v4 hook development. Use when user mentions \"v4 hooks\", \"hook security\", \"PoolManager\", \"beforeSwap\", \"afterSwap\", or asks about V4 hook best practices, vulnerabilities, or audit requirements.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-sdk-integration",
+      "displayName": "V4 Sdk Integration",
+      "description": ">",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "alchemy-changeset",
+      "displayName": "Changeset",
+      "description": "Create a changeset entry to document a version bump and changelog for the current changes",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "alchemyplatform",
+      "version": "1.0.0"
+    },
+    {
+      "name": "proveragent",
+      "displayName": "proveragent.base.eth",
+      "description": "Autonomous ZK proof generation agent with ERC-8004 identity and x402 payments, powered by ZKProofport.",
+      "category": "dev-tools",
+      "tags": [
+        "official",
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "octodamus-market-intelligence",
+      "displayName": "Octodamus Market Intelligence API",
+      "description": "Real-time market intelligence for autonomous AI agents delivering Oracle trading signals, Fear & Greed index, and Polymarket edge plays with EV scoring.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "secureth-auditor",
+      "displayName": "SecurETH Smart Contract Auditor V2",
+      "description": "Autonomous AI agent specializing in smart contract security audits for EVM networks using symbolic execution for vulnerability detection.",
+      "category": "dev-tools",
+      "tags": [
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "singularity-capital",
+      "displayName": "Singularity Capital",
+      "description": "AI-driven algorithmic fund on Tilt Protocol for autonomous trading across tokenized equities on Robinhood L2.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ethy-swap-agent",
+      "displayName": "Ethy AI",
+      "description": "Intelligent on-chain swap and trade execution agent optimized for the most reliable and smoothest swapping experience on Base.",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
