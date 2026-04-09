@@ -84,8 +84,8 @@ def parse_skill_md_frontmatter(path: Path) -> dict:
         if kv:
             key = kv.group(1)
             val = kv.group(2).strip().strip('"').strip("'")
-            if val == "|" or val == ">":
-                # YAML multiline block scalar
+            if val in ("|", ">", "|-", ">-"):
+                # YAML multiline block scalar (|, >, |-, >-)
                 current_multiline_key = key
                 multiline_lines = []
                 current_list_key = None
