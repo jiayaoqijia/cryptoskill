@@ -108,6 +108,14 @@
       matcher: (s) => s.name.startsWith('alchemy-official')
     },
     {
+      id: 'surf',
+      name: 'Surf AI',
+      icon: '<img src="surf-icon.png" width="18" height="18" style="border-radius:4px;vertical-align:middle">',
+      github: 'https://github.com/asksurf-ai/surf-skills',
+      description: '83+ commands across 14 data domains — prices, wallets, DeFi, on-chain SQL, and more.',
+      matcher: (s) => s.name.startsWith('surf-official') || s.name === 'surf'
+    },
+    {
       id: 'mcp-servers',
       name: 'MCP Servers',
       icon: '🔌',
