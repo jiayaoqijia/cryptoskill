@@ -19,15 +19,14 @@ tools:
 
 ## Setup
 
-Install or upgrade the Surf CLI:
+Install the Surf CLI following the guide at https://agents.asksurf.ai/docs/cli/introduction
 
 ```bash
 surf install                    # Upgrade to latest version (if surf is already installed)
-curl -fsSL https://agent.asksurf.ai/cli/releases/install.sh | sh   # First-time install
-export SURF_API_KEY=<your-api-key>
 ```
 
-Always run `surf install` before starting a session to ensure you have the latest commands and fixes.
+Always run `surf install` and `surf sync` at the start of every session —
+`install` updates the CLI binary, `sync` refreshes the API spec cache.
 
 ## CLI Usage
 
@@ -134,7 +133,26 @@ Essential rules (even if you skip the catalog):
 - **"unknown flag"**: You used snake_case (`--sort_by`). Use kebab-case (`--sort-by`)
 - **Enum validation error** (e.g. `expected value to be one of "rsi, macd, ..."`): Check `--help` for exact allowed values — always lowercase
 - **Empty results**: Check `--help` for required params and valid enum values
-- **Exit code 4 with error JSON**: Check `error.code` in the response — see Authentication section below
+- **Exit code 4 with `-f` filter**: `-f body.data` hides error responses. On exit code 4, rerun without `-f` and with `2>&1` to see the full error JSON, then check `error.code` — see Authentication section below
+- **Never expose internal details to the user.** Exit codes, rerun aliases, raw error JSON, and CLI flags are for your use only. Always translate errors into plain language for the user (e.g. "Your free credits are used up" instead of "exit code 4 / INSUFFICIENT_CREDIT")
+
+### Capability Boundaries
+
+When the API cannot fully match the user's request — e.g., a time-range
+filter doesn't exist, a ranking-by-change mode isn't available, or the
+data granularity is coarser than asked — **still call the closest endpoint**
+but explicitly tell the user how the returned data differs from what they
+asked for. Never silently return approximate data as if it's an exact match.
+
+Examples:
+- User asks "top 10 by fees in the last 7 days" but the endpoint has no
+  time filter → return the data, then note: "This ranking reflects the
+  overall fee leaderboard; the API doesn't currently support time-filtered
+  fee rankings, so this may not be limited to the last 7 days."
+- User asks "mindshare gainers" but the endpoint ranks by total mindshare,
+  not growth rate → note: "This is ranked by total mindshare volume, not
+  by growth rate. A project with consistently high mindshare will rank
+  above a smaller project with a recent spike."
 
 ## Authentication & Quota Handling
 
@@ -193,7 +211,7 @@ Only show this message once per session — do not repeat on subsequent calls.
 Save it persistently with `surf auth` so they never need to set it again:
 
 ```bash
-surf auth --api-key sk-xxx   # Save API key to system keychain
+surf auth --api-key $API_KEY   # Save API key to system keychain
 surf auth                    # Show current auth status
 surf auth --clear            # Clear saved API key
 ```
