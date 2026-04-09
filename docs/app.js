@@ -110,7 +110,7 @@
     {
       id: 'surf',
       name: 'Surf AI',
-      icon: '<img src="surf-icon.png" width="18" height="18" style="border-radius:4px;vertical-align:middle">',
+      icon: '<img src="surf-icon.png" width="32" height="32" style="border-radius:6px">',
       github: 'https://github.com/asksurf-ai/surf-skills',
       description: '83+ commands across 14 data domains — prices, wallets, DeFi, on-chain SQL, and more.',
       matcher: (s) => s.name.startsWith('surf-official') || s.name === 'surf'
