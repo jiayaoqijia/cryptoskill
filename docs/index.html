@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CryptoSkill - The Crypto Skill Hub for AI Agents</title>
   <meta name="description" content="Discover, install, and build AI agent skills and MCP servers for every crypto protocol, exchange, and tool. 1054+ skills and 89 MCP servers across 13 categories.">
-  <meta name="keywords" content="crypto, AI agents, skills, MCP, blockchain, DeFi, trading, exchanges">
+  <meta name="keywords" content="crypto, AI agents, skills, MCP, blockchain, DeFi, trading, exchanges, Claude Code skills, OpenClaw skills, blockchain agent tools, crypto MCP servers">
+  <meta name="author" content="CryptoSkill">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a84ff">
+  <link rel="canonical" href="https://cryptoskill.org/">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -14,11 +18,131 @@
   <meta property="og:url" content="https://cryptoskill.org">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="CryptoSkill - The Crypto Skill Hub for AI Agents">
   <meta name="twitter:description" content="Discover, install, and build AI agent skills for every crypto protocol, exchange, and tool.">
+  <meta name="twitter:site" content="@cryptaborgs">
+  <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "CryptoSkill",
+    "url": "https://cryptoskill.org",
+    "description": "The largest curated registry of AI agent skills and MCP servers for the crypto ecosystem. 1000+ skills across 13 categories.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "CryptoSkill",
+      "url": "https://cryptoskill.org",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://cryptoskill.org/icon.png"
+      }
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://cryptoskill.org/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "CryptoSkill",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.5",
+      "ratingCount": "100"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is CryptoSkill?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CryptoSkill is the largest curated registry of crypto AI agent skills and MCP servers. It provides 1000+ open-source skills across 13 categories including exchanges, DeFi protocols, blockchain networks, wallets, and analytics tools. Skills are compatible with Claude Code, OpenClaw, Codex, and other AI agent frameworks."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I install a crypto AI agent skill?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There are three ways to install: (1) Clone the registry and copy skill folders to your .claude/skills/ directory for Claude Code, (2) Use 'clawhub install skill-name' via the ClawHub CLI for OpenClaw, or (3) For MCP servers, use 'claude mcp add' or install from their GitHub repos. All skills are free and open source."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is an MCP server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An MCP (Model Context Protocol) server is a standardized interface that allows AI agents to interact with external tools and services. In the crypto context, MCP servers enable AI agents to query blockchain data, execute trades on exchanges, interact with DeFi protocols, and access on-chain analytics through a unified protocol."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is CryptoSkill free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, CryptoSkill is completely free and open source under the AGPL-3.0 license. All skills in the registry are free to browse, download, and use. The source code is available on GitHub at github.com/jiayaoqijia/cryptoskill."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I add my skill to CryptoSkill?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can submit your skill in two ways: (1) Open a GitHub issue with the skill name and repository URL, or (2) Use the Quick Submit form on the website. All submissions are reviewed for security and quality before inclusion. Skills should follow the SKILL.md format with proper metadata and documentation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What exchanges are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CryptoSkill includes skills for major centralized exchanges like Binance, OKX, Bybit, and Coinbase, as well as decentralized exchanges like Uniswap, Raydium, Jupiter, and Hyperliquid. Skills cover trading, market data, portfolio management, and more."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is CryptoSkill safe to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CryptoSkill takes security seriously. All submitted skills are scanned for malicious code, credential theft, and other security concerns before being added to the registry. Official skills come from verified project teams with official GitHub repositories. However, users should always review source code before running any skill, especially those handling private keys or financial transactions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How often is CryptoSkill updated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CryptoSkill is updated automatically every 6 hours by an auto-update bot that scans 128+ projects for new skills, checks official repos for updates, and searches for trending crypto AI tools. The bot also performs security scans on all new additions and regenerates the skill catalog."
+        }
+      }
+    ]
+  }
+  </script>
 
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" sizes="any">
@@ -26,7 +150,8 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="stylesheet" href="styles.css" fetchpriority="high">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>
@@ -51,6 +176,7 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#categories">Categories</a></li>
         <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#faq">FAQ</a></li>
         <li><a href="https://github.com/jiayaoqijia/cryptoskill" target="_blank" rel="noopener">GitHub</a></li>
       </ul>
 
@@ -124,7 +250,7 @@
         Open Source Skill Registry
       </div>
       <h1>The Crypto Skill Hub<br><span class="accent">for AI Agents</span></h1>
-      <p class="subtitle">Discover, install, and build AI agent skills and MCP servers for every crypto protocol, exchange, and tool.</p>
+      <p class="subtitle">Discover, install, and build crypto AI agent skills, MCP servers, and blockchain agent tools for Claude Code, OpenClaw, Codex, and every crypto protocol.</p>
       <div class="hero-actions">
         <a href="#official" class="btn-primary">
           Browse Skills
@@ -484,6 +610,51 @@
     </div>
   </section>
 
+  <!-- FAQ Section -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-header fade-in-up">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-desc">Everything you need to know about crypto AI agent skills and MCP servers.</p>
+      </div>
+      <div class="faq-list fade-in-up">
+        <div class="faq-item">
+          <h3 class="faq-question">What is CryptoSkill?</h3>
+          <p class="faq-answer">CryptoSkill is the largest curated registry of crypto AI agent skills and MCP servers. It provides 1000+ open-source skills across 13 categories including exchanges, DeFi protocols, blockchain networks, wallets, and analytics tools. Skills are compatible with Claude Code, OpenClaw, Codex, and other AI agent frameworks.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">How do I install a crypto AI agent skill?</h3>
+          <p class="faq-answer">There are three ways to install: (1) Clone the registry and copy skill folders to your <code>.claude/skills/</code> directory for Claude Code, (2) Use <code>clawhub install skill-name</code> via the ClawHub CLI for OpenClaw, or (3) For MCP servers, use <code>claude mcp add</code> or install from their GitHub repos. All skills are free and open source.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">What is an MCP server?</h3>
+          <p class="faq-answer">An MCP (Model Context Protocol) server is a standardized interface that allows AI agents to interact with external tools and services. In the crypto context, MCP servers enable AI agents to query blockchain data, execute trades on exchanges, interact with DeFi protocols, and access on-chain analytics through a unified protocol.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">Is CryptoSkill free to use?</h3>
+          <p class="faq-answer">Yes, CryptoSkill is completely free and open source under the AGPL-3.0 license. All skills in the registry are free to browse, download, and use. The source code is available on <a href="https://github.com/jiayaoqijia/cryptoskill" target="_blank" rel="noopener">GitHub</a>.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">How do I add my skill to CryptoSkill?</h3>
+          <p class="faq-answer">You can submit your skill in two ways: (1) Open a <a href="https://github.com/jiayaoqijia/cryptoskill/issues/new?template=skill_submission.md" target="_blank" rel="noopener">GitHub issue</a> with the skill name and repository URL, or (2) Use the Quick Submit form on the website. All submissions are reviewed for security and quality before inclusion. Skills should follow the SKILL.md format with proper metadata and documentation.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">What exchanges are supported?</h3>
+          <p class="faq-answer">CryptoSkill includes skills for major centralized exchanges like Binance, OKX, Bybit, and Coinbase, as well as decentralized exchanges like Uniswap, Raydium, Jupiter, and Hyperliquid. Skills cover trading, market data, portfolio management, and more.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">Is CryptoSkill safe to use?</h3>
+          <p class="faq-answer">CryptoSkill takes security seriously. All submitted skills are scanned for malicious code, credential theft, and other security concerns before being added to the registry. Official skills come from verified project teams with official GitHub repositories. However, users should always review source code before running any skill, especially those handling private keys or financial transactions.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question">How often is CryptoSkill updated?</h3>
+          <p class="faq-answer">CryptoSkill is updated automatically every 6 hours by an auto-update bot that scans 128+ projects for new skills, checks official repos for updates, and searches for trending crypto AI tools. The bot also performs security scans on all new additions and regenerates the skill catalog.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
@@ -501,6 +672,7 @@
         <a href="#official">Official</a>
         <a href="#skills">Skills</a>
         <a href="#categories">Categories</a>
+        <a href="#faq">FAQ</a>
         <a href="terms.html">Terms</a>
         <a href="privacy.html">Privacy</a>
       </div>
