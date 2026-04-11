@@ -2294,3 +2294,90 @@ a {
 .faq-answer a:hover {
   text-decoration: none;
 }
+
+/* ============================================
+   Skill Pages & Category Index Pages
+   ============================================ */
+.breadcrumb {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin-bottom: 24px;
+}
+
+.breadcrumb a {
+  color: var(--primary);
+  transition: opacity var(--transition);
+}
+
+.breadcrumb a:hover {
+  opacity: 0.8;
+}
+
+.skill-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 16px 0 24px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.skill-page-desc {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+/* Category index skill list */
+.cat-skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cat-skill-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  transition: background var(--transition);
+  text-decoration: none;
+}
+
+.cat-skill-row:hover {
+  background: var(--subtle-bg-hover);
+}
+
+.cat-skill-name {
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.cat-skill-desc {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .cat-skill-row {
+    flex-wrap: wrap;
+  }
+  .cat-skill-desc {
+    width: 100%;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+}

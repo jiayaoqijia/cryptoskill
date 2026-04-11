@@ -22,6 +22,9 @@ python3 scripts/score-skills.py >> "$LOG" 2>&1
 # Track score regressions (Phase 4: snapshot + diff)
 python3 scripts/score-history.py >> "$LOG" 2>&1
 
+# Generate individual skill pages + category indexes + sitemap
+python3 scripts/generate-pages.py >> "$LOG" 2>&1
+
 # Update website HTML stats to match current counts
 TOTAL=$(find skills -mindepth 2 -maxdepth 2 -type d | wc -l)
 MCP=$(find skills/mcp-servers -mindepth 1 -maxdepth 1 -type d | wc -l)
