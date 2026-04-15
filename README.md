@@ -6,9 +6,9 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-1071-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-91-f59e0b)]() [![Official](https://img.shields.io/badge/official-664-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-1081-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-91-f59e0b)]() [![Official](https://img.shields.io/badge/official-667-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
-[Website](https://cryptoskill.org) · [Browse Skills](#skills-1071overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
+[Website](https://cryptoskill.org) · [Browse Skills](#skills-1081overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -120,7 +120,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 |---|---|---|
 | [Kraken](https://www.kraken.com/) | 50 | [krakenfx/kraken-cli](https://github.com/krakenfx/kraken-cli) |
 | [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
-| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-1071hub](https://github.com/binance/binance-skills-hub) |
+| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-1081hub](https://github.com/binance/binance-skills-hub) |
 | [Bankr](https://bankr.bot/) | 20 | [BankrBot/skills](https://github.com/BankrBot/skills) |
 | [Ottie](https://github.com/jiayaoqijia/ottie) | 18 | Crypto DeFi, wallets, market data |
 | [OKX](https://www.okx.com/) | 16+ | [okx/onchainos-skills](https://github.com/okx/onchainos-skills) |
@@ -132,7 +132,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 | [Coinbase Wallet](https://www.coinbase.com/) | 9 | [coinbase/agentic-wallet-skills](https://github.com/coinbase/agentic-wallet-skills) |
 | [Uniswap](https://uniswap.org/) | 8 | [Uniswap/uniswap-ai](https://github.com/Uniswap/uniswap-ai) |
 | [Bitget](https://www.bitget.com/) | 7 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) |
-| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-1071hub](https://github.com/Kucoin/kucoin-skills-hub) |
+| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-1081hub](https://github.com/Kucoin/kucoin-skills-hub) |
 | [Rocket Pool](https://rocketpool.net/) | 7 | [rocket-pool/skills](https://github.com/rocket-pool/skills) |
 | [CoinMarketCap](https://coinmarketcap.com/) | 7 | ClawHub: bryan-cmc |
 | [KyberSwap](https://kyberswap.com/) | 5 | [KyberNetwork/kyberswap-skills](https://github.com/KyberNetwork/kyberswap-skills) |
