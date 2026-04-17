@@ -96459,6 +96459,29 @@
         },
         "scored_at": "2026-04-17T06:01:23Z"
       }
+    },
+    {
+      "name": "prover-agent",
+      "displayName": "Prover Agent",
+      "description": "Autonomous ZK proof generation agent with ERC-8004 identity and x402 payments powered by ZKProofport.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "smith-aster-perps",
+      "displayName": "Smith - Aster DEX Perps Trader",
+      "description": "BUILD4 autonomous trading agent executing Aster DEX perpetual trades via EIP-712 signatures.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
