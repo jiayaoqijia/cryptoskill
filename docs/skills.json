@@ -97741,6 +97741,30 @@
         },
         "scored_at": "2026-04-18T18:01:18Z"
       }
+    },
+    {
+      "name": "agentseal-mcp-scanner",
+      "displayName": "AgentSeal MCP Security Scanner",
+      "description": "Security scanner for MCP servers that detects toxic data flows, prompt injection, and supply-chain threats before installation.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "worksucks-agent",
+      "displayName": "WorkSucks",
+      "description": "Autonomous agent for trading bots, DeFi research, smart contract audits, and crypto automation with live Hyperliquid bots.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
