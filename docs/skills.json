@@ -99450,6 +99450,234 @@
         },
         "scored_at": "2026-04-20T00:01:11Z"
       }
+    },
+    {
+      "name": "binance-official-query-token-audit",
+      "displayName": "Query Token Audit",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-crypto-market-rank",
+      "displayName": "Crypto Market Rank",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-trading-signal",
+      "displayName": "Trading Signal",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-address-info",
+      "displayName": "Query Address Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-binance-agentic-wallet",
+      "displayName": "Binance Agentic Wallet",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-binance-tokenized-securities-info",
+      "displayName": "Binance Tokenized Securities Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-meme-rush",
+      "displayName": "Meme Rush",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-token-info",
+      "displayName": "Query Token Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-payment",
+      "displayName": "Payment Assistant",
+      "description": "QR Code Payment Assistant for Funding Wallet Auto-deduction. Supports C2C and PIX QR payments. Use when the user wants to buy/purchase/pay/transfer/send (买, 购买, 支付, 付款, 转账, 发送), confirm/cancel payment (确认, 取消), or query order status (查询, 订单). Requires QR code data from user. PIX QR codes (pix, br.gov.bcb.pix) are auto-detected.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-binance",
+      "displayName": "Binance",
+      "description": "Use binance-cli for Binance Spot, Futures (USD-S), and Convert. Requires auth.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-p2p",
+      "displayName": "P2P",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-fiat",
+      "displayName": "Fiat",
+      "description": "Query Binance fiat payment capabilities — supported countries, currencies, payment methods, limits, and crypto prices — via public APIs, plus authenticated order/payment history lookup. Use whenever users ask about buying or selling crypto with fiat, depositing or withdrawing fiat, fiat-crypto exchange rates, payment options in a specific country, or their fiat order history — even if they don't explicitly mention Binance APIs.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "m2m-toolbox",
+      "displayName": "M2M Toolbox",
+      "description": "General-purpose machine-to-machine utility agent offering 28 skills for AI inference, data transformation, and live data lookups with x402 micropayments on Base L2.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "tator-trader",
+      "displayName": "Tator Trader",
+      "description": "AI-powered trading agent supporting 24+ blockchains with natural language trade execution, swaps, bridges, perp positions, and prediction market betting.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "otto-trade-executor",
+      "displayName": "Otto AI Trade Execution Agent",
+      "description": "Autonomous trade execution agent for swaps, bridges, and cross-chain operations on Base, Ethereum, and Arbitrum.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "composaible",
+      "displayName": "ComposAIble",
+      "description": "Composable DeFi strategy orchestrator that chains multiple protocols to build optimized yield strategies and manages multi-step cross-protocol operations on Base.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cym-rewards",
+      "displayName": "CYM Rewards",
+      "description": "Redeem USDC or USDT0 tokens for gift cards across a multi-country, multi-currency catalogue with 300+ brands via x402 protocol.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "selantar",
+      "displayName": "Selantar",
+      "description": "Autonomous AI mediator that resolves B2B contract disputes end-to-end with on-chain settlement execution.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "autopilot-defi-agent",
+      "displayName": "AutoPilot DeFi Agent",
+      "description": "Autonomous multi-agent system (Strategist, Risk, Executor) that analyzes market conditions and executes real on-chain token swaps on Uniswap.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
