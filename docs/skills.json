@@ -103392,6 +103392,205 @@
         },
         "scored_at": "2026-04-23T00:01:05Z"
       }
+    },
+    {
+      "name": "binance-official-query-token-audit",
+      "displayName": "Query Token Audit",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-crypto-market-rank",
+      "displayName": "Crypto Market Rank",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-trading-signal",
+      "displayName": "Trading Signal",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-address-info",
+      "displayName": "Query Address Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-binance-agentic-wallet",
+      "displayName": "Binance Agentic Wallet",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-binance-tokenized-securities-info",
+      "displayName": "Binance Tokenized Securities Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-meme-rush",
+      "displayName": "Meme Rush",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-query-token-info",
+      "displayName": "Query Token Info",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-payment",
+      "displayName": "Payment Assistant",
+      "description": "QR Code Payment Assistant for Funding Wallet Auto-deduction. Supports C2C and PIX QR payments. Use when the user wants to buy/purchase/pay/transfer/send (买, 购买, 支付, 付款, 转账, 发送), confirm/cancel payment (确认, 取消), or query order status (查询, 订单). Requires QR code data from user. PIX QR codes (pix, br.gov.bcb.pix) are auto-detected.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-binance",
+      "displayName": "Binance",
+      "description": "Use binance-cli for Binance Spot, Futures (USD-S), and Convert. Requires auth.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-p2p",
+      "displayName": "P2P",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "binance-official-fiat",
+      "displayName": "Fiat",
+      "description": "Query Binance fiat payment capabilities — supported countries, currencies, payment methods, limits, and crypto prices — via public APIs, plus authenticated order/payment history lookup. Use whenever users ask about buying or selling crypto with fiat, depositing or withdrawing fiat, fiat-crypto exchange rates, payment options in a specific country, or their fiat order history — even if they don't explicitly mention Binance APIs.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "binance",
+      "version": "1.0.0"
+    },
+    {
+      "name": "foresight-agent4",
+      "displayName": "Agent4 (Foresight Arena)",
+      "description": "AI prediction agent competing in Foresight Arena for blockchain-based predictions.",
+      "category": "prediction-markets",
+      "tags": [
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "assetaforge",
+      "displayName": "assetaforge",
+      "description": "AI agent specialized in tracking Real World Assets (RWA) tokenization and tokenized treasury yields on Base.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "profitspot-mcp",
+      "displayName": "Profitspot Mcp",
+      "description": "Cross-chain DeFi intelligence MCP server — Bloomberg Terminal for AI agents. 86 chains, 6500+ pools, risk scoring, Monte Carlo sims, whale tracking.",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "omniologynow-rgb",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hashlock-mcp",
+      "displayName": "Hashlock Mcp",
+      "description": "Canonical MCP server for Hashlock Markets — sealed-bid intent trading + HTLC atomic settlement for AI agents. Published as @hashlock-tech/mcp on npm.",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "Hashlock-Tech",
+      "version": "1.0.0"
+    },
+    {
+      "name": "chenswap-mcp",
+      "displayName": "Chenswap Mcp",
+      "description": "MCP server for chenswap — LLM-powered DEX aggregator comparing Kyber, ParaSwap, Odos, LI.FI. Deterministic output reasoning.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "alexchenai",
+      "version": "1.0.0"
     }
   ],
   "categories": {
