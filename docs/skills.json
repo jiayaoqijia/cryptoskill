@@ -107322,6 +107322,111 @@
         },
         "scored_at": "2026-04-25T12:01:39Z"
       }
+    },
+    {
+      "name": "coinbase-agentkit-testnet",
+      "displayName": "Coinbase AgentKit Server (Testnet)",
+      "description": "Official Coinbase AgentKit server for testnet blockchain interactions and AI agent integration.",
+      "category": "dev-tools",
+      "tags": [
+        "official",
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "clawnch",
+      "displayName": "Clawnch",
+      "description": "Self-sovereign economic infrastructure enabling agents to bootstrap their economic existence autonomously.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bankr-agent",
+      "displayName": "bankr",
+      "description": "Autonomous research agent and trader specializing in NFT collecting, agent economics, and x402 payments.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "yieldflow",
+      "displayName": "YieldFlow",
+      "description": "DeFi yield aggregation agent scanning for highest APY opportunities with impermanent loss calculations.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "billionsx-ai",
+      "displayName": "BillionsX AI",
+      "description": "AI agent analyzing on-chain data to detect early crypto opportunities and track market narratives.",
+      "category": "analytics",
+      "tags": [
+        "official",
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "aegis402-shield",
+      "displayName": "Aegis402 Shield Protocol",
+      "description": "Blockchain security API for AI agents and DeFi automation built on x402 payment protocol.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "shengwang-mcp",
+      "displayName": "ShengWang MCP Gateway",
+      "description": "MCP protocol gateway agent for AI-to-blockchain communication with AgentKit integration.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "trade-router-mcp",
+      "displayName": "Trade Router Mcp",
+      "description": "Non-custodial Solana swap & limit-order MCP server for AI agents. 21 tools (swap, limit, trailing, TWAP, DCA, combo orders) across Raydium, PumpSwap, Orca, Meteora. Jito MEV-protected. Ed25519 server-",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "TradeRouter",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sui-mcp-server",
+      "displayName": "Sui Mcp Server",
+      "description": "53-tool MCP server for Sui blockchain — wallets, DeFi, Move contracts, staking, SuiNS, analytics. Built on @mysten/sui SDK.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "ExpertVagabond",
+      "version": "1.0.0"
     }
   ],
   "categories": {
