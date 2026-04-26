@@ -81,7 +81,7 @@ capabilities:
 | `can_spawn_subagents` | Does it call sub-skills or other agents? | `allowed-tools` includes Agent/SubAgent (high) | `unknown` |
 | `can_move_funds` | Does it sign or broadcast transactions? | regex hits on `sendTransaction`, signer methods, CEX trade calls (low) | `unknown` |
 | `requires_private_key` | Does it ask the user for a key, mnemonic, or wallet config? | regex on docs + scripts (low) | `unknown` |
-| `requires_hosted_operator` | Does correct behavior depend on a specific company's running infra? | Phase 1 mini-extractor: regex against the curated ~50-host list of CEX/RPC/data operators (high confidence on hits). Phase 2 expands using full ingredient list. | `unknown` if no hits |
+| `requires_hosted_operator` | Does correct behavior depend on a specific company's running infra? | Phase 1 mini-extractor: regex over text + URL extraction against the curated, **versioned** host list at `scripts/hosted-operator-hosts.yaml` (host → operator name). Each positive carries `source: extracted, confidence: medium` and evidence pointing to the matched host. The host list is a **heuristic**, not a stable fact: it requires periodic maintenance, so `hostlist_version` (date-stamped) is recorded in every attestation. Phase 2 expands using full ingredient list. | `unknown` if no hits |
 | `uses_remote_install_script` | Does setup involve running a script downloaded from the internet? | regex for `curl \| sh`, `wget \| sh` (high) | `false` once script scan completes |
 | `mutable_remote_runtime` | Does the skill execute remote code (`npx`, hosted CLI, downloaded binary) whose behavior can change without a local diff? | true whenever `can_install_code: true` AND no `runtime_locator` records integrity hash; or whenever a runtime_locator's `integrity == unverified` | `unknown` if `can_install_code` is unknown |
 
@@ -228,18 +228,49 @@ To prevent low-value signed endorsements from diluting the system, every reviewe
 
 | Tier | Who qualifies | Weight in UI |
 |---|---|---|
-| `tier_1` | Named professional audit firms with ≥3 years public history (Trail of Bits, OpenZeppelin, Spearbit, Code4rena, Sigma Prime, Cyfrin, etc. — list curated and public) | Shown prominently |
+| `tier_1` | Named professional audit firms listed in `docs/reviewer-tiers.yaml` (Trail of Bits, OpenZeppelin, Spearbit, Code4rena, Sigma Prime, Cyfrin, etc.). Each entry pins a Sigstore OIDC identity. | Shown prominently |
 | `tier_2` | CryptoSkill maintainers reviewing as `cryptoskill_team` | Shown as second-class endorsement |
-| `tier_3` | Independent researchers with verifiable identity (GitHub OIDC + ≥1 prior tier_1 audit publication, or a verified Sigstore identity tied to a known org) | Shown with disclaimer |
+| `tier_3` | Independent researchers added by maintainer PR after manual identity verification, with a pinned Sigstore OIDC identity. **No automatic eligibility.** | Shown with disclaimer |
 | `unverified` | Any other signed claim | **Not displayed by default**; visible only via "show all attestations" toggle |
 
-Sock puppet attestations land in `unverified` and don't surface. Tier promotion is a manual maintainer decision via PR.
+Sock puppet attestations land in `unverified` and don't surface. All tier promotions are manual maintainer decisions via PR against `docs/reviewer-tiers.yaml`. See "Reviewer tier governance" below for issuance / revocation / expiry rules.
 
 ### Attestation predicate — pinned
 
 We pin a single attestation predicate now: **`https://cryptoskill.org/attestations/skill-audit/v1`**. This is the in-toto Statement `predicateType` for all audit attestations. The schema is versioned; v1 is the spec above. Verifiers check this predicate type only.
 
 CycloneDX-native attestation fields (CycloneDX 1.7's audit metadata) are emitted as a parallel record for tooling compatibility, but the **canonical** attestation is the in-toto Statement signed via Sigstore keyless.
+
+**Predicate v1 required fields.** Pinning the URL only proves a signer endorsed *some* blob. To bind the attestation to the exact thing audited and the exact extractor that produced it, the predicate body MUST include:
+
+```yaml
+predicateType: https://cryptoskill.org/attestations/skill-audit/v1
+predicate:
+  manifest_digest: sha256:...        # TRUST.auto.yaml + TRUST.md overlay, canonicalized
+  bom_digest: sha256:...             # bom.cdx.json at audit time
+  report_digest: sha256:...          # the human-readable audit report PDF/MD
+  extractor_version: 0.2.0           # version string of extract-capabilities.py
+  taxonomy_version: 1                # capability registry / TRUST.md schema version
+  hostlist_version: 2026-04-26       # date-stamped curated host list version
+  reviewed_at: 2026-03-15T00:00:00Z
+  expires_at:  2027-03-15T00:00:00Z  # attestation freshness window; UI badges expired
+  reviewer:                          # mirrored from `audits[].reviewer` for self-containment
+    name: Trail of Bits
+    identity: github:trailofbits
+    tier: tier_1
+```
+
+Verifiers reject attestations missing any of these fields. Stale attestations (`now > expires_at`) render with a "stale" badge and are excluded from Stage computation. Attestations with `taxonomy_version` lower than the current spec render as "applies to older taxonomy" and require re-signing before they count toward Stage upgrades.
+
+### Reviewer tier governance
+
+Tier assignments live in a public, versioned policy file (`docs/reviewer-tiers.yaml`) signed by the `cryptoskill_team` identity. The policy enumerates:
+
+- **Issuance** — tier_1 firms are added by maintainer PR with public discussion. tier_2 is the maintainer team itself. tier_3 is added by maintainer PR after manual identity verification (see below). `unverified` is the default for any signed claim from an identity not in the policy.
+- **Revocation** — any tier can be downgraded by maintainer PR. Revocation invalidates future signatures from that identity at the previous tier; **prior signed attestations remain visible** but render with a "reviewer tier was downgraded after signing" badge.
+- **Identity binding** — every tier_1/tier_2/tier_3 entry pins a Sigstore OIDC identity (`certificate-identity` + `certificate-oidc-issuer`). Signatures from any other identity, even with the same display name, fall to `unverified`.
+- **Expiry** — tier assignments themselves expire after 24 months and require re-confirmation by maintainer PR. This catches firms that have wound down or been acquired.
+- **Tier_3 promotion is manual-only.** There is no automatic OR clause. A reviewer becomes tier_3 only via a maintainer PR after off-line identity verification.
 
 ---
 
@@ -329,6 +360,32 @@ expansion:
 
 **`condition` is a structured object, not a DSL.** Allowed `kind` values are `equals`, `in`, `always`, `regex`. Allowed `field` values are `chain`, `input_token`, `output_token`, `category`. Anything more expressive must be expressed as multiple route entries. This makes the evaluator a few lines of code, not a parser.
 
+**`condition.value` type per `kind`** (parsers MUST reject mismatches):
+
+| `kind` | `value` type | Notes |
+|---|---|---|
+| `equals` | string | Exact match against `field` |
+| `in` | array of strings | OR over array; empty array is invalid |
+| `always` | (omitted) | The route always matches; `value` MUST be absent |
+| `regex` | string | ECMA-262 regex source, no flags. Implementations apply against the string form of `field` with case-sensitive matching, no anchoring (caller must include `^`/`$` if needed) |
+
+**`expansion.discovery.source` enum** — Phase 1 supports only `static`. Phase 2+ values are reserved but parsers SHOULD reject them today:
+
+| `source` | Phase | Semantics |
+|---|---|---|
+| `static` | 1+ | All routes are enumerated in `expansion.routes`. `ttl_seconds` MUST be `null`. |
+| `runtime_registry` | 2+ (reserved) | Routes are fetched from a registry endpoint at evaluation time. Endpoint URL and shape are not yet specified; this enum value is a placeholder. |
+| `env_var` | 2+ (reserved) | An environment variable selects among enumerated routes. Variable name and resolution rules are not yet specified. |
+
+Phase 1 parsers MUST treat `runtime_registry` and `env_var` as `unbounded: true` for capability-union purposes, since their semantics are not yet defined.
+
+**`capabilities_override` semantics** (governs the multi-mode example above):
+
+- A `capabilities_override` is a **partial map** of capability fields → tri-state values. Omitted fields inherit from the skill-level capability manifest.
+- The skill-level manifest is the **worst-case union** across all modes, computed as: for each capability, if any mode (after override) has `true`, the union is `true`; else if any mode has `false` AND no mode has `unknown`, the union is `false`; else `unknown`. (`unknown` propagates upward; one explicit `false` does not mask another mode's `unknown` or `true`.)
+- A mode's `false` override does NOT reduce the skill-level union — it only affects display in that mode's per-mode breakdown.
+- Modes MUST NOT override `mutable_remote_runtime` to `false` if any mode has `can_install_code: true`; the parser rejects manifests that violate this (mutable runtime is a property of the skill's worst case, not a per-mode opinion).
+
 ### Two-pass extraction
 
 Phase 1 runs in two passes per cycle:
@@ -349,8 +406,8 @@ If a router can route to skills not enumerated:
 From codex #14. We use the standard formats directly:
 
 - **Build provenance** — SLSA L2+ provenance signed via Sigstore keyless OIDC
-- **Audit attestation** — in-toto Statement with a custom `cryptoskill/audit/v1` predicate type (CycloneDX 1.7 has a similar field, we use whichever is more adopted by audit firms)
-- **Verification** — `cosign verify-attestation --certificate-identity ... --certificate-oidc-issuer ...`
+- **Audit attestation** — in-toto Statement with the canonical predicate type `https://cryptoskill.org/attestations/skill-audit/v1` (defined in §"Attestation predicate — pinned" above; this is the only string verifiers should match against). CycloneDX 1.7 audit metadata is emitted as a parallel record for tooling compatibility but is **not** the canonical signed object.
+- **Verification** — `cosign verify-attestation --type https://cryptoskill.org/attestations/skill-audit/v1 --certificate-identity ... --certificate-oidc-issuer ...`
 
 ERC-8004 anchoring is **deferred to Phase 4+**. When we do anchor, the skill's Identity Registry entry contains:
 
@@ -466,7 +523,7 @@ This prevents two failure modes:
 
 | Phase | Deliverable | Why this order |
 |---|---|---|
-| **1** | Capability manifest extractor (the 10 negative-leaning facts) + execution_model classifier + GitHub link viewer | Establish the foundation — what can each skill do? Honest, conservative, immediately useful. |
+| **1** | Capability manifest extractor (the 11 negative-leaning facts) + execution_modes classifier + GitHub link viewer + per-capability precision/recall sheet | Establish the foundation — what can each skill do? Honest, conservative, immediately useful. |
 | **2** | CycloneDX `bom.cdx.json` ingredient extractor + AST scan + L2BEAT/DefiLlama label fetcher with provenance | Layer the dependency graph on the capability foundation |
 | **3** | Risk rosette + scoped audit records + custody/operator dependence fields + UI surfacing red flags | Add the secondary trust signals |
 | **4** | Sigstore signing pipeline for `cryptoskill_team` attestations + in-toto Statements + manual third-party audit submission flow | Get cryptographically verifiable attestations flowing |
@@ -519,19 +576,27 @@ Phase 1 is "done" when the extractor's output agrees with hand-review on a strat
 
 **Per-skill review form** (filled by human reviewer, blind to extractor output):
 - 11 capability fields, each `true | false | unknown`
-- `execution_model` from the 9-value enum
+- `execution_modes[]` and per-mode label from the 9-value enum (graded separately from the capability cells)
 - Free-form note for any field where extractor and human disagreed
 
-**Pass/fail criteria**:
-- Per-field agreement rate ≥ 90% across the sample (i.e., extractor and human agree on at least 198 of 220 cell values).
-- Zero `true` claims by the extractor that the human marks `false` (no false-positive alarms).
-- False negatives (extractor `unknown` or `false` where human says `true`) acceptable up to 15% — these become Phase 2 fixes.
+**Pass/fail criteria for the stratified sample (capability cells):**
+- 11 capability fields × 20 skills = **220 capability cells**. `execution_modes[]` and `label` are graded separately and are NOT part of the 220.
+- Per-cell agreement rate ≥ 90% (≥ 198 of 220).
+- Zero `true` claims by the extractor that the human marks `false`. A single false positive sends Phase 1 back to design.
+- False negatives (extractor `unknown`/`false` where human says `true`) acceptable up to 15%. These become Phase 2 fixes.
 
-**Failure handling**:
-- A single false-positive sends Phase 1 back to design. False positives are the failure mode codex #13 warned about.
-- ≥10% disagreement on `execution_model` → re-spec the classifier rules before shipping.
+**Pass/fail for execution mode classification (separate axis):**
+- ≥ 90% agreement on the per-mode `label` enum across 20 skills × N modes.
+- ≥10% disagreement triggers re-spec of the classifier rules before shipping.
 
-**Sample stays public.** The 20 reviewed skills' hand-labeled forms are checked into `docs/phase1-verification/`. Reviewers sign their forms with Sigstore keyless. This makes the verification protocol auditable.
+**Capability-aware adjudication (covers the long tail).** The 20-skill stratified sample cannot validate rare-positive capabilities like `auto_invocable` (1/1250 in the latest run), `can_write_files` (4), `can_spawn_subagents` (5), `can_browse_web` (7). These tails are where the model is weakest, so we run a separate pass before declaring Phase 1 done:
+
+1. **Exhaust positives.** For every capability with extractor-positive count ≤ 30 across the corpus, hand-review **all** positive cases. Any false positive → defect logged → extractor patched and re-run.
+2. **Sample negatives per capability.** For each of the 11 capabilities, draw a stratified sample of 20 extractor-negative skills (mix `unknown` and `false`) and hand-label them. Compute per-capability **precision** (TP / (TP+FP)) and **recall** (TP / (TP+FN)).
+3. **Publish.** Per-capability precision and recall numbers ship with the launch as `docs/phase1-verification/precision-recall.md`, regenerated each time the extractor changes.
+4. **Pass bar.** Precision ≥ 0.95 on every capability (a positive claim is almost never wrong); recall is reported but is not gated — `unknown` is the honest fallback.
+
+**Sample stays public.** The 20 reviewed skills' hand-labeled forms and the per-capability precision/recall sheets are checked into `docs/phase1-verification/`. Reviewers sign their forms with Sigstore keyless. This makes the verification protocol auditable.
 
 ---
 

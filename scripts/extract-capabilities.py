@@ -2,7 +2,9 @@
 """
 Phase 1 of TRUST.md design: capability manifest extractor.
 
-For each skill, computes the 10 negative-leaning capability facts:
+For each skill, computes the 11 negative-leaning capability facts (the canonical
+set defined by ``CAPABILITY_REGISTRY`` below — a single source of truth shared
+by the schema, the emitter, and the count log):
 - auto_invocable
 - can_execute_shell
 - can_install_code
@@ -13,8 +15,9 @@ For each skill, computes the 10 negative-leaning capability facts:
 - requires_private_key
 - requires_hosted_operator
 - uses_remote_install_script
+- mutable_remote_runtime
 
-Plus the execution_model enum.
+Plus an execution_modes[] array (Phase 1 emits exactly one element).
 
 Writes results to:
   - skills/{cat}/{name}/TRUST.auto.yaml  (per-skill, bot-owned)
@@ -40,6 +43,28 @@ log = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = ROOT / "skills"
 CAPABILITIES_JSON = ROOT / "docs" / "capabilities.json"
+
+# Single source of truth for capability fields — consumed by extractor,
+# emitter, and counter. Keep in sync with the table in docs/TRUST.md.
+CAPABILITY_REGISTRY = [
+    "auto_invocable",
+    "can_execute_shell",
+    "can_install_code",
+    "can_write_files",
+    "can_browse_web",
+    "can_spawn_subagents",
+    "can_move_funds",
+    "requires_private_key",
+    "requires_hosted_operator",
+    "uses_remote_install_script",
+    "mutable_remote_runtime",
+]
+
+# Versioned hostlist identifier — emitted into TRUST.auto.yaml for attestation
+# binding. Bump when HOSTED_OPERATOR_HOSTS is edited.
+HOSTLIST_VERSION = "2026-04-26"
+EXTRACTOR_VERSION = "0.3.0"
+TAXONOMY_VERSION = 1
 
 # === Static patterns ===
 
@@ -222,12 +247,7 @@ def extract_capabilities(skill_dir):
 
     # Tri-state: every field is true | false | "unknown".
     # Default to "unknown"; flip to bool only on positive evidence.
-    caps = {k: "unknown" for k in [
-        "auto_invocable", "can_execute_shell", "can_install_code", "can_write_files",
-        "can_browse_web", "can_spawn_subagents", "can_move_funds",
-        "requires_private_key", "requires_hosted_operator", "uses_remote_install_script",
-        "mutable_remote_runtime",
-    ]}
+    caps = {k: "unknown" for k in CAPABILITY_REGISTRY}
     confidence = {k: "low" for k in caps}
     evidence = {k: [] for k in caps}
 
@@ -275,17 +295,43 @@ def extract_capabilities(skill_dir):
             caps["uses_remote_install_script"] = True
             caps["can_install_code"] = True
             evidence["uses_remote_install_script"].append(f"pattern: {m.group(0)[:80]}")
-            evidence["can_install_code"].append("remote install script implies install")
+            # Prefix with "pattern:" so cap_source() classifies as 'extracted'.
+            evidence["can_install_code"].append(f"pattern: remote install script -> implies install ({m.group(0)[:60]})")
             break
 
     # can_install_code — package manager invocations
-    if not caps["can_install_code"]:
+    if caps["can_install_code"] != True:
         for pat in INSTALL_PATTERNS:
             m = pat.search(text["all"])
             if m:
                 caps["can_install_code"] = True
                 evidence["can_install_code"].append(f"pattern: {m.group(0)[:60]}")
                 break
+
+    # Phase 1 spec: full snippet scan completed; emit `false` (not `unknown`)
+    # for the two install fields when no pattern fired. This is "scanned and
+    # negative" rather than "not yet scanned".
+    if caps["can_install_code"] == "unknown":
+        caps["can_install_code"] = False
+        evidence["can_install_code"].append("scan: no install/pkg-mgr pattern matched")
+    if caps["uses_remote_install_script"] == "unknown":
+        caps["uses_remote_install_script"] = False
+        evidence["uses_remote_install_script"].append("scan: no curl|sh / wget|sh pattern matched")
+
+    # mutable_remote_runtime — the spec says: true whenever can_install_code is
+    # true AND no runtime_locator records integrity hash. Phase 1 has no
+    # runtime_locator records by definition, so the rule resolves to:
+    #   can_install_code: True  -> mutable_remote_runtime: True
+    #   can_install_code: False -> mutable_remote_runtime: False
+    #   can_install_code: unknown -> mutable_remote_runtime: unknown
+    if caps["can_install_code"] is True:
+        caps["mutable_remote_runtime"] = True
+        evidence["mutable_remote_runtime"].append(
+            "derived: can_install_code=true and no runtime_locator integrity hash in Phase 1"
+        )
+    elif caps["can_install_code"] is False:
+        caps["mutable_remote_runtime"] = False
+        evidence["mutable_remote_runtime"].append("derived: can_install_code=false")
 
     # can_move_funds
     for pat in FUND_MOVE_PATTERNS:
@@ -303,17 +349,21 @@ def extract_capabilities(skill_dir):
             evidence["requires_private_key"].append(f"pattern: {m.group(0)[:60]}")
             break
 
-    # requires_hosted_operator — based on URL extraction
+    # requires_hosted_operator — curated host list match. The spec calls this
+    # an "extracted" mini-classifier (medium confidence on hits) — it's
+    # deterministic against a versioned host list, not a generic prose hint.
+    # Codex R3 was right that the host list is heuristic in the sense that it
+    # rots; we record HOSTLIST_VERSION on the manifest for attestation binding.
     found_hosts = set()
     for m in URL_RE.finditer(text["all"]):
         host = m.group(1).lower()
-        # Strip subdomain to find root domain match
         for known in HOSTED_OPERATOR_HOSTS:
             if host == known or host.endswith("." + known):
                 found_hosts.add(known)
     if found_hosts:
         caps["requires_hosted_operator"] = True
-        evidence["requires_hosted_operator"] = sorted(found_hosts)
+        for h in sorted(found_hosts):
+            evidence["requires_hosted_operator"].append(f"hostlist match: {h}")
 
     # === Execution model heuristic ===
     em = "unknown"
@@ -364,7 +414,14 @@ def write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=False):
         ev_str = " ".join(ev).lower()
         if "frontmatter" in ev_str or "allowed-tools" in ev_str or "user-invocable" in ev_str:
             return "declared"
-        if "pattern:" in ev_str or k == "requires_hosted_operator":
+        # Deterministic AST/regex/hostlist matches and explicit derivations
+        # are 'extracted'. Everything else (prose hints, etc.) is 'inferred'.
+        if (
+            "pattern:" in ev_str
+            or "hostlist match" in ev_str
+            or "derived:" in ev_str
+            or "scan:" in ev_str
+        ):
             return "extracted"
         return "inferred"
 
@@ -377,9 +434,11 @@ def write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=False):
     lines = [
         "# Auto-generated by extract-capabilities.py — do NOT edit by hand.",
         "# Human overlay belongs in TRUST.md (frontmatter) once we ship Phase 3.",
-        "schema_version: 1",
+        f"schema_version: {TAXONOMY_VERSION}",
         f"generated_at: {datetime.now(timezone.utc).isoformat()}",
-        "generator: cryptoskill/extract-capabilities/0.2.0",
+        f"generator: cryptoskill/extract-capabilities/{EXTRACTOR_VERSION}",
+        f"taxonomy_version: {TAXONOMY_VERSION}",
+        f"hostlist_version: {HOSTLIST_VERSION}",
         "",
         "# === Stage (derived; null until rosette is computed in Phase 3) ===",
         "stage: null",
@@ -396,12 +455,7 @@ def write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=False):
         "# === Capability manifest (per-field provenance) ===",
         "capabilities:",
     ]
-    field_order = [
-        "auto_invocable", "can_execute_shell", "can_install_code", "can_write_files",
-        "can_browse_web", "can_spawn_subagents", "can_move_funds",
-        "requires_private_key", "requires_hosted_operator", "uses_remote_install_script",
-        "mutable_remote_runtime",
-    ]
+    field_order = list(CAPABILITY_REGISTRY)
     for k in field_order:
         v = caps[k]
         lines.append(f"  {k}:")
@@ -427,19 +481,21 @@ def write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=False):
 
 
 def iter_skills(specific=None):
+    """Yield (skill_dir, has_skill_md). Caller can count skipped vs processed."""
     if specific:
         p = Path(specific)
         if not p.is_absolute():
             p = ROOT / p
-        if (p / "SKILL.md").exists():
-            yield p
+        if p.is_dir():
+            yield p, (p / "SKILL.md").exists()
         return
     for cat in sorted(SKILLS_DIR.iterdir()):
         if not cat.is_dir():
             continue
         for skill in sorted(cat.iterdir()):
-            if skill.is_dir() and (skill / "SKILL.md").exists():
-                yield skill
+            if not skill.is_dir():
+                continue
+            yield skill, (skill / "SKILL.md").exists()
 
 
 def main():
@@ -449,21 +505,23 @@ def main():
     args = p.parse_args()
 
     aggregate = {}
-    counts = {"total": 0, "model_unknown": 0}
-    cap_totals = {k: 0 for k in [
-        "auto_invocable", "can_execute_shell", "can_install_code", "can_write_files",
-        "can_browse_web", "can_spawn_subagents", "can_move_funds",
-        "requires_private_key", "requires_hosted_operator", "uses_remote_install_script",
-    ]}
+    counts = {"discovered": 0, "processed": 0, "skipped_no_skill_md": 0, "model_unknown": 0}
+    # Use the canonical capability registry so every declared capability is
+    # counted — codex R3 caught mutable_remote_runtime missing from the log.
+    cap_totals = {k: 0 for k in CAPABILITY_REGISTRY}
     em_counts = {}
 
-    for skill_dir in iter_skills(args.skill):
+    for skill_dir, has_md in iter_skills(args.skill):
+        counts["discovered"] += 1
+        if not has_md:
+            counts["skipped_no_skill_md"] += 1
+            continue
         caps, evidence, em, name, hosts = extract_capabilities(skill_dir)
         write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=args.dry_run)
         rel = str(skill_dir.relative_to(SKILLS_DIR))
         aggregate[rel] = {"name": name, "execution_model": em, "capabilities": caps,
                           "hosted_operators": hosts}
-        counts["total"] += 1
+        counts["processed"] += 1
         if em == "unknown":
             counts["model_unknown"] += 1
         em_counts[em] = em_counts.get(em, 0) + 1
@@ -471,13 +529,31 @@ def main():
             if v is True:
                 cap_totals[k] += 1
 
+    # CI invariant — codex R3 critical-1: declared capabilities must equal
+    # counted capabilities, and discovered must equal processed + skipped.
+    missing = [k for k in CAPABILITY_REGISTRY if k not in cap_totals]
+    if missing:
+        log.error(f"Capability registry drift: declared but not counted: {missing}")
+        sys.exit(2)
+    if counts["discovered"] != counts["processed"] + counts["skipped_no_skill_md"]:
+        log.error(
+            "Skill accounting drift: discovered=%d, processed=%d, skipped=%d",
+            counts["discovered"], counts["processed"], counts["skipped_no_skill_md"],
+        )
+        sys.exit(2)
+
     if not args.dry_run:
         CAPABILITIES_JSON.write_text(
             json.dumps({
                 "generated_at": datetime.now(timezone.utc).isoformat(),
+                "extractor_version": EXTRACTOR_VERSION,
+                "taxonomy_version": TAXONOMY_VERSION,
+                "hostlist_version": HOSTLIST_VERSION,
                 "skills": aggregate,
                 "summary": {
-                    "total": counts["total"],
+                    "discovered": counts["discovered"],
+                    "processed": counts["processed"],
+                    "skipped_no_skill_md": counts["skipped_no_skill_md"],
                     "execution_models": em_counts,
                     "capability_counts": cap_totals,
                 },
@@ -485,7 +561,10 @@ def main():
             encoding="utf-8",
         )
 
-    log.info(f"Processed {counts['total']} skills")
+    log.info(
+        "Discovered %d skills (processed %d, skipped %d without SKILL.md)",
+        counts["discovered"], counts["processed"], counts["skipped_no_skill_md"],
+    )
     log.info(f"Execution models: {em_counts}")
     log.info(f"Capability counts (true): {cap_totals}")
 
