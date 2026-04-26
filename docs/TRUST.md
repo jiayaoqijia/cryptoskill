@@ -260,7 +260,17 @@ predicate:
     tier: tier_1
 ```
 
-Verifiers reject attestations missing any of these fields. Stale attestations (`now > expires_at`) render with a "stale" badge and are excluded from Stage computation. Attestations with `taxonomy_version` lower than the current spec render as "applies to older taxonomy" and require re-signing before they count toward Stage upgrades.
+Verifiers reject attestations missing any of these fields (per the two-stage pipeline in §"Attestations — Sigstore + in-toto" below). Stale attestations (`now > expires_at`) render with a "stale" badge and are excluded from Stage computation. Attestations with `taxonomy_version` lower than the current spec render as "applies to older taxonomy" and require re-signing before they count toward Stage upgrades.
+
+**Risk-weighted `expires_at`.** Trust state decays fastest for skills with mutable runtime, fund-moving capability, or hosted/custodial dependence. Audit attestations MUST set `expires_at` no later than:
+
+| Skill profile | Maximum TTL | Rationale |
+|---|---|---|
+| Any of `mutable_remote_runtime: true`, `uses_remote_install_script: true`, `custodial_executor` mode | 6 months | Remote artifact / operator state can change behavior without local diff |
+| Any of `can_move_funds: true`, `requires_private_key: true`, `hosted_executor` mode | 12 months | Authority-bearing skill; signing keys + operator infra age |
+| `read_only` / `analysis_only` only, no install, no fund movement | 24 months | Static local skills decay slowly |
+
+The bot computes the maximum TTL from the skill's worst-case capability union; a reviewer who signs with a longer `expires_at` than the cap gets the attestation rejected at stage 2 validation. The cap re-evaluates whenever the underlying capabilities change — promoting `read_only` to `local_executor` shortens every active attestation on that skill to the new ceiling, with a 30-day grace window.
 
 ### Reviewer tier governance
 
@@ -407,7 +417,55 @@ From codex #14. We use the standard formats directly:
 
 - **Build provenance** — SLSA L2+ provenance signed via Sigstore keyless OIDC
 - **Audit attestation** — in-toto Statement with the canonical predicate type `https://cryptoskill.org/attestations/skill-audit/v1` (defined in §"Attestation predicate — pinned" above; this is the only string verifiers should match against). CycloneDX 1.7 audit metadata is emitted as a parallel record for tooling compatibility but is **not** the canonical signed object.
-- **Verification** — `cosign verify-attestation --type https://cryptoskill.org/attestations/skill-audit/v1 --certificate-identity ... --certificate-oidc-issuer ...`
+- **Verification** is a two-stage pipeline. Cosign alone validates only the signature and certificate chain; it does not validate the predicate body fields. An attestation that passes cosign but fails predicate body validation is treated as `tier: unverified` (hidden from default UI):
+
+  ```bash
+  # Stage 1: Sigstore keyless verification
+  cosign verify-attestation \
+    --type https://cryptoskill.org/attestations/skill-audit/v1 \
+    --certificate-identity ... --certificate-oidc-issuer ...
+
+  # Stage 2: predicate body validation (run by ingestion pipeline)
+  python3 scripts/validate-attestation.py <statement.json>
+  ```
+
+  `scripts/validate-attestation.py` enforces the predicate v1 required-field set, rejects manifests missing any field, and checks that `manifest_digest` / `bom_digest` / `report_digest` resolve to bytes the registry has actually fetched (not just claimed). Stage-2 failure → `audit.tier = unverified`, `audit.validation_error = <reason>`.
+
+### Canonical serialization (digest stability)
+
+For digests to be reproducible across signers, every digestable artifact has one canonical serialization rule and one hash algorithm:
+
+| Artifact | Serialization | Hash |
+|---|---|---|
+| `TRUST.auto.yaml` | LF line endings, no trailing whitespace, sorted keys at every map level (RFC 8785-style canonical order), UTF-8 NFC | `sha256` |
+| `bom.cdx.json` | RFC 8785 JSON Canonicalization Scheme (JCS) | `sha256` |
+| Audit report | Bytes-identical to the URL-served file at `report.url`; no canonicalization | `sha256` |
+
+Verifiers re-derive the digest from the canonical bytes; mismatched digests reject the attestation regardless of signature validity.
+
+### Corpus-level attestation
+
+A single per-skill attestation does not protect against omission attacks (a malicious bot silently dropping a high-risk skill from the registry). Each bot run additionally emits a **corpus attestation** binding the full set:
+
+```yaml
+predicateType: https://cryptoskill.org/attestations/skill-corpus/v1
+predicate:
+  generated_at: 2026-04-26T17:12:58Z
+  extractor_version: 0.3.0
+  taxonomy_version: 1
+  hostlist_version: 2026-04-26
+  discovered: 1256
+  processed: 1250
+  skipped:
+    - skill: skills/ai-crypto/<slug>
+      reason: missing_skill_md
+  manifest_digests:               # sha256 of every TRUST.auto.yaml in this run
+    skills/ai-crypto/agent8: sha256:...
+    skills/exchanges/binance-spot: sha256:...
+    # ... one entry per processed skill
+```
+
+The corpus attestation is signed by `cryptoskill_team` per run and lets a verifier prove that a per-skill attestation was generated as part of a known corpus state, not in isolation.
 
 ERC-8004 anchoring is **deferred to Phase 4+**. When we do anchor, the skill's Identity Registry entry contains:
 
@@ -594,7 +652,18 @@ Phase 1 is "done" when the extractor's output agrees with hand-review on a strat
 1. **Exhaust positives.** For every capability with extractor-positive count ≤ 30 across the corpus, hand-review **all** positive cases. Any false positive → defect logged → extractor patched and re-run.
 2. **Sample negatives per capability.** For each of the 11 capabilities, draw a stratified sample of 20 extractor-negative skills (mix `unknown` and `false`) and hand-label them. Compute per-capability **precision** (TP / (TP+FP)) and **recall** (TP / (TP+FN)).
 3. **Publish.** Per-capability precision and recall numbers ship with the launch as `docs/phase1-verification/precision-recall.md`, regenerated each time the extractor changes.
-4. **Pass bar.** Precision ≥ 0.95 on every capability (a positive claim is almost never wrong); recall is reported but is not gated — `unknown` is the honest fallback.
+4. **Pass bar — precision (all capabilities).** Precision ≥ 0.95 on every capability (a positive claim is almost never wrong).
+5. **Pass bar — recall floors (critical subset only).** Critical capabilities have hard recall floors because false negatives are the failure mode that lets dangerous skills through the filter. A skill cannot earn the "trusted_auto" badge for any of these capabilities until the per-capability recall meets the floor on the latest verification run; until then the capability is rendered as `confidence: low (under-validated)` and the badge is withheld:
+
+   | Capability | Recall floor | Rationale |
+   |---|---|---|
+   | `can_move_funds` | 0.90 | Misclassifying a fund-mover as benign is the loudest failure mode |
+   | `requires_private_key` | 0.90 | Misses cause users to grant signing material to skills that don't disclose it |
+   | `can_install_code` | 0.85 | Drives mutable_remote_runtime; misses understate blast radius |
+   | `uses_remote_install_script` | 0.85 | High-blast-radius pattern; misses defeat the gate |
+   | `requires_hosted_operator` | 0.80 | Heuristic against curated hostlist; rot is expected and tracked |
+
+   Non-critical capabilities (`auto_invocable`, `can_browse_web`, `can_write_files`, `can_spawn_subagents`, `can_execute_shell`) report recall but are not gated — `unknown` is the honest fallback for low-corpus tails. If the negatives sample for a critical capability is too small to estimate recall to ±0.05 at 95% CI, the capability is held in `under-validated` state until the sample grows (forced manual review of predicted negatives until the bar is reached).
 
 **Sample stays public.** The 20 reviewed skills' hand-labeled forms and the per-capability precision/recall sheets are checked into `docs/phase1-verification/`. Reviewers sign their forms with Sigstore keyless. This makes the verification protocol auditable.
 

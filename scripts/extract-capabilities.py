@@ -100,12 +100,15 @@ INSTALL_PATTERNS = [
     re.compile(r"\buvx?\s+", re.IGNORECASE),
 ]
 
-# Patterns that indicate `uses_remote_install_script` (high-blast radius)
+# Patterns that indicate `uses_remote_install_script` (high-blast radius).
+# Patterns model shell one-liners; they MUST NOT cross newlines (DOTALL was
+# producing prose-level false positives where "curl" appeared in one paragraph
+# and a pipe character appeared in a much later paragraph).
 REMOTE_INSTALL_PATTERNS = [
-    re.compile(r"curl\s+[^|]*\|\s*sh\b", re.IGNORECASE | re.DOTALL),
-    re.compile(r"curl\s+[^|]*\|\s*bash\b", re.IGNORECASE | re.DOTALL),
-    re.compile(r"wget\s+[^|]*\|\s*sh\b", re.IGNORECASE | re.DOTALL),
-    re.compile(r"wget\s+[^|]*\|\s*bash\b", re.IGNORECASE | re.DOTALL),
+    re.compile(r"curl\s+[^\n|]*\|\s*sh\b", re.IGNORECASE),
+    re.compile(r"curl\s+[^\n|]*\|\s*bash\b", re.IGNORECASE),
+    re.compile(r"wget\s+[^\n|]*\|\s*sh\b", re.IGNORECASE),
+    re.compile(r"wget\s+[^\n|]*\|\s*bash\b", re.IGNORECASE),
     re.compile(r"sh\s+<\(curl\b", re.IGNORECASE),
     re.compile(r"bash\s+<\(curl\b", re.IGNORECASE),
 ]
