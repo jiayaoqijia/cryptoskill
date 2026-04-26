@@ -143,14 +143,18 @@ def main():
     p.add_argument("path", nargs="?", help="Path to in-toto Statement JSON; omit with --stdin")
     p.add_argument("--stdin", action="store_true")
     args = p.parse_args()
-    if args.stdin:
-        stmt = json.load(sys.stdin)
-    else:
-        if not args.path:
-            print("usage: validate-attestation.py <path> | --stdin", file=sys.stderr)
-            sys.exit(2)
-        stmt = json.loads(Path(args.path).read_text(encoding="utf-8"))
+    if not args.stdin and not args.path:
+        print("usage: validate-attestation.py <path> | --stdin", file=sys.stderr)
+        sys.exit(2)
     try:
+        # Input parse is INSIDE the guard so a malformed JSON file or an
+        # unreadable path normalizes to INVALID exit 1, not a raw Python
+        # exception. Stage 2 contract: exits 0 (OK), 1 (INVALID), or 2
+        # (usage), nothing else.
+        if args.stdin:
+            stmt = json.load(sys.stdin)
+        else:
+            stmt = json.loads(Path(args.path).read_text(encoding="utf-8"))
         # No fetcher in CLI mode — Stage 2 in production is invoked by the
         # bot, which provides a fetcher closure that resolves digests
         # against the current registry state. The CLI form validates
@@ -160,10 +164,10 @@ def main():
         print(f"INVALID: {exc}", file=sys.stderr)
         sys.exit(1)
     except Exception as exc:
-        # Defense in depth: any unexpected exception during validation is
-        # treated as INVALID rather than letting the calling pipeline see
-        # a hard crash. Stage 2 must always exit 0 (OK) or 1 (INVALID).
-        print(f"INVALID: validation failed with {type(exc).__name__}: {exc}", file=sys.stderr)
+        # Defense in depth: any unexpected exception during input parse
+        # or validation is treated as INVALID rather than letting the
+        # calling pipeline see a hard crash.
+        print(f"INVALID: {type(exc).__name__}: {exc}", file=sys.stderr)
         sys.exit(1)
     print("OK")
 
