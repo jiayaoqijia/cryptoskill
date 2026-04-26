@@ -108179,6 +108179,28 @@
         },
         "scored_at": "2026-04-26T06:01:18Z"
       }
+    },
+    {
+      "name": "shengwang-mcp-gateway",
+      "displayName": "ShengWang MCP Gateway",
+      "description": "MCP protocol gateway agent for AI-to-blockchain communication and AgentKit integration with real-time on-chain data and transaction execution.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hedera-mcp-explorer",
+      "displayName": "Hedera Network Explorer MCP",
+      "description": "MCP server exposing Hedera network explorer tools for querying transactions, accounts, tokens, and smart contracts in real time.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
