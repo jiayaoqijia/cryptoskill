@@ -1,8 +1,10 @@
-# Trust Manifest v4 — final design after codex challenge
+# Trust Manifest
 
-This is the design we will ship. It supersedes v1, v2, and v3.
+The implementation spec for skill trust at cryptoskill.org. Supersedes earlier drafts in `docs/archive/`.
 
-The codex review (`/tmp/codex-review.md`) found 15 issues with v1, several of which v3 didn't fully address. This v4 incorporates the most important corrections:
+This doc has been through two rounds of independent review (Claude Code engineering review + codex adversarial review), with all critical and high issues addressed. Earlier drafts are archived for historical reference.
+
+The codex round-1 review found 15 issues, several of which earlier drafts didn't fully address. The current spec incorporates the most important corrections:
 
 - **The frame was wrong.** A skill's blast radius comes from its capabilities (can it execute shell? move funds? install packages?), not from its endpoint list. Trust starts with capabilities; ingredients are secondary. (codex #1)
 - **`trustless` is marketing language**, not a classifier. Hardcoded Alchemy is not in the same risk class as a CEX. Cut it. (codex #2)
@@ -25,30 +27,102 @@ What survived from v1-v3:
 
 ## Frame: capabilities first, ingredients second
 
-Every skill answers ten capability questions before anything else. These are the **blast radius** axes. They're machine-extractable from the SKILL.md frontmatter (`allowed-tools`, `user-invocable`, `disable-model-invocation`, `metadata.openclaw.requires`) plus a static analysis pass over scripts.
+Every skill answers eleven capability questions before anything else. These are the **blast radius** axes.
 
-| Capability | What it asks | Source |
-|---|---|---|
-| `auto_invocable` | Will the agent run this without user prompt? | `user-invocable` frontmatter inverted |
-| `can_execute_shell` | Does it run arbitrary Bash? | `allowed-tools` includes Bash |
-| `can_install_code` | Does it `npx`, `pip install`, `curl \| sh`, or download CLIs? | shell snippet scan |
-| `can_write_files` | Does it edit user files? | `allowed-tools` includes Edit/Write |
-| `can_browse_web` | Does it fetch arbitrary URLs? | `allowed-tools` includes WebFetch / WebSearch |
-| `can_spawn_subagents` | Does it call sub-skills or other agents? | `allowed-tools` includes Agent / SubAgent |
-| `can_move_funds` | Does it sign or broadcast transactions? | scripts call `sendTransaction`, signers, CEX endpoints |
-| `requires_private_key` | Does it ask the user for a key, mnemonic, or wallet config? | regex on docs + scripts |
-| `requires_hosted_operator` | Does correct behavior depend on a specific company's running infra? | computed from ingredient list |
-| `uses_remote_install_script` | Does setup involve running a script downloaded from the internet? | shell snippet scan for `curl \| sh`, `wget \| sh` |
+### Tri-state values
 
-These are **negative-leaning facts**. The UI surfaces them as red flags, not green checks. "This skill can execute shell and install code" is a useful sentence even when nothing else is known.
+Every capability field is `true | false | unknown`. **`unknown` means the extractor declined to assert.** A `false` is only emitted when the extractor has positive evidence the skill cannot do the thing (e.g., `allowed-tools` is declared and does not include Bash). When in doubt, the answer is `unknown`. The UI must surface `unknown` as a red flag, not as `false`.
+
+Each value carries a `confidence` tag: `high` (deterministic source like frontmatter), `medium` (specific AST/pattern match), `low` (generic regex hint). Low-confidence claims are badged "tentative — not human-verified" in the UI.
+
+### Phase 1 fidelity contract
+
+Phase 1 extractors are **frontmatter parse + AST/regex over scripts only**. Anything that requires sandboxed execution, type-resolution across SDK calls, or runtime tracing resolves to `unknown` with explanatory evidence. AST/sandbox extraction is deferred to Phase 2.
+
+### Corpus reality (current)
+
+Codex round-2 corpus scan (April 2026): of 1265 SKILL.md files, only 44 declare `allowed-tools`, 32 declare `user-invocable`, 9 declare `disable-model-invocation`. The remaining 1204 declare none of these. This means most skills' capabilities **cannot be extracted from frontmatter alone today** — they require:
+
+1. **Inference from prose** in SKILL.md (low confidence, marked as such)
+2. **AST/regex over scripts** (medium confidence at best)
+3. **`unknown` everywhere else** — the honest default
+
+We will not pretend coverage exists where it doesn't. Phase 1 ships with measured corpus coverage on the website. If `auto_invocable` is `unknown` for 96% of skills initially, the UI shows "auto_invocable: unknown (96% of corpus)" and the public dashboard tracks the % over time as we improve extractors and as authors add structured frontmatter.
+
+### Provenance per field
+
+Every capability value carries its origin:
+
+```yaml
+capabilities:
+  can_execute_shell:
+    value: true
+    confidence: high
+    source: declared              # declared | extracted | inferred | unknown
+    evidence: "frontmatter allowed-tools: ['Bash']"
+```
+
+| Source | Meaning |
+|---|---|
+| `declared` | Read directly from SKILL.md frontmatter (highest confidence) |
+| `extracted` | Found via deterministic AST/regex pattern match in scripts |
+| `inferred` | Heuristic match on prose (lowest confidence; UI shows "tentative") |
+| `unknown` | Extractor declined to assert |
+
+### The eleven capability questions
+
+| Capability | What it asks | Phase 1 source | Phase 1 default when unclear |
+|---|---|---|---|
+| `auto_invocable` | Will the agent run this without user prompt? | `user-invocable` / `disable-model-invocation` frontmatter | `unknown` |
+| `can_execute_shell` | Does it run arbitrary Bash? | `allowed-tools` listing (high), shell snippet count >0 (medium) | `unknown` |
+| `can_install_code` | Does it `npx`, `pip install`, `curl \| sh`, or download CLIs? | shell snippet scan for known managers (high) | `false` (only after full snippet scan, otherwise `unknown`) |
+| `can_write_files` | Does it edit user files? | `allowed-tools` includes Edit/Write (high) | `unknown` |
+| `can_browse_web` | Does it fetch arbitrary URLs? | `allowed-tools` includes WebFetch / WebSearch (high) | `unknown` |
+| `can_spawn_subagents` | Does it call sub-skills or other agents? | `allowed-tools` includes Agent/SubAgent (high) | `unknown` |
+| `can_move_funds` | Does it sign or broadcast transactions? | regex hits on `sendTransaction`, signer methods, CEX trade calls (low) | `unknown` |
+| `requires_private_key` | Does it ask the user for a key, mnemonic, or wallet config? | regex on docs + scripts (low) | `unknown` |
+| `requires_hosted_operator` | Does correct behavior depend on a specific company's running infra? | Phase 1 mini-extractor: regex against the curated ~50-host list of CEX/RPC/data operators (high confidence on hits). Phase 2 expands using full ingredient list. | `unknown` if no hits |
+| `uses_remote_install_script` | Does setup involve running a script downloaded from the internet? | regex for `curl \| sh`, `wget \| sh` (high) | `false` once script scan completes |
+| `mutable_remote_runtime` | Does the skill execute remote code (`npx`, hosted CLI, downloaded binary) whose behavior can change without a local diff? | true whenever `can_install_code: true` AND no `runtime_locator` records integrity hash; or whenever a runtime_locator's `integrity == unverified` | `unknown` if `can_install_code` is unknown |
+
+These are **negative-leaning facts**. The UI surfaces them as red flags, not green checks. "This skill can execute shell and install code; mutable_remote_runtime: true" is a useful sentence even when nothing else is known.
 
 The capability manifest is the foundation. Everything else (ingredients, audits, attestations) layers on top.
 
 ---
 
-## Skill execution model (a single enum on every skill)
+## Skill execution modes (per-mode, not a single enum)
 
-From codex #5, we add `execution_model`:
+A single `execution_model` enum is **lossy** for real skills. From codex round-2 critical-2: `polymarket` is `read_only` for browsing, `installer_bootstrap` for CLI setup, and `local_executor` once a wallet is configured. Forcing one label per skill either flattens to the scariest mode (lying about safer subpaths) or hides the dangerous mode (lying about the worst case).
+
+We model this as `execution_modes[]` — a list. Each mode carries its own per-mode capability subset.
+
+```yaml
+execution_modes:
+  - id: browse
+    label: read_only
+    description: "Default; queries public Polymarket data."
+    capabilities_override:
+      can_move_funds: false
+      requires_private_key: false
+  - id: install
+    label: installer_bootstrap
+    description: "First-run wallet-setup downloads polymarket-cli."
+    capabilities_override:
+      uses_remote_install_script: true
+      mutable_remote_runtime: true
+      can_install_code: true
+  - id: trade
+    label: local_executor
+    description: "After wallet setup; signs and broadcasts orders locally."
+    capabilities_override:
+      can_move_funds: true
+      requires_private_key: true
+```
+
+The skill-level capability manifest is the **worst-case union** across all modes. The UI surfaces both the union and the per-mode breakdown so a user choosing "read-only" can see the safer subpath.
+
+Mode `label` values:
 
 | Value | Meaning |
 |---|---|
@@ -62,7 +136,7 @@ From codex #5, we add `execution_model`:
 | `opaque_tool_wrapper` | Wraps a third-party tool whose internals are not inspectable |
 | `router_orchestrator` | Dispatches to other skills/adapters at runtime |
 
-This frames everything else. Audit questions, ingredient questions, and trust questions are different per execution model. A `read_only` skill scoring poorly on `audit_history` is fine. A `custodial_executor` scoring poorly on `audit_history` is a red flag.
+A skill with a single mode (most skills) just has a one-element `execution_modes[]`. The schema scales naturally.
 
 ---
 
@@ -115,6 +189,8 @@ The 6th axis (remote artifact pinning) is new in v4, prompted by codex #7. It di
 
 The single Stage (0/1/2) is **derived** from the rosette + capabilities, not asserted. We compute it server-side. Authors don't claim a Stage; they document the underlying facts and the system tells them what Stage they're at.
 
+If insufficient evidence exists to compute a Stage, `stage` is `null` and the UI renders "Stage: not yet evaluated" with a link explaining what evidence is needed. **`null` is not "Stage 0".** A skill that's missing test coverage data hasn't been measured; we don't pretend it has been.
+
 ---
 
 ## Audits — scoped records, not global badges
@@ -132,16 +208,38 @@ audits:
     reviewer:
       name: Trail of Bits
       identity: github:trailofbits  # OIDC identity for keyless verification
+      tier: tier_1               # see Reviewer Trust Tiers below
     date: 2026-03-15
     expires_at: 2027-03-15
     exclusions:
       - "Behavior of remote polymarket-cli once installed"
       - "Backend API correctness"
-    report_url: https://github.com/...
+    report:
+      url: https://github.com/.../audit-2026-03-15.pdf
+      digest: sha256:abc123...   # report content-addressed; URL drift is detected
     signature: sigstore_keyless_url://...
 ```
 
-The UI renders "audited components" — never a single global ✓.
+The UI renders "audited components" — never a single global ✓. The report is bound by digest; if the URL serves different bytes later, the bot flags `report_drift: true`.
+
+### Reviewer Trust Tiers
+
+To prevent low-value signed endorsements from diluting the system, every reviewer has a tier. Tier is a function of identity, not stake.
+
+| Tier | Who qualifies | Weight in UI |
+|---|---|---|
+| `tier_1` | Named professional audit firms with ≥3 years public history (Trail of Bits, OpenZeppelin, Spearbit, Code4rena, Sigma Prime, Cyfrin, etc. — list curated and public) | Shown prominently |
+| `tier_2` | CryptoSkill maintainers reviewing as `cryptoskill_team` | Shown as second-class endorsement |
+| `tier_3` | Independent researchers with verifiable identity (GitHub OIDC + ≥1 prior tier_1 audit publication, or a verified Sigstore identity tied to a known org) | Shown with disclaimer |
+| `unverified` | Any other signed claim | **Not displayed by default**; visible only via "show all attestations" toggle |
+
+Sock puppet attestations land in `unverified` and don't surface. Tier promotion is a manual maintainer decision via PR.
+
+### Attestation predicate — pinned
+
+We pin a single attestation predicate now: **`https://cryptoskill.org/attestations/skill-audit/v1`**. This is the in-toto Statement `predicateType` for all audit attestations. The schema is versioned; v1 is the spec above. Verifiers check this predicate type only.
+
+CycloneDX-native attestation fields (CycloneDX 1.7's audit metadata) are emitted as a parallel record for tooling compatibility, but the **canonical** attestation is the in-toto Statement signed via Sigstore keyless.
 
 ---
 
@@ -204,17 +302,45 @@ We add an `expansion` field on the manifest:
 ```yaml
 expansion:
   type: router  # static | router | dynamic
+  discovery:
+    source: static                  # static | runtime_registry | env_var
+    ttl_seconds: null               # null = enumerated forever; integer = re-fetch interval if source is dynamic
   routes:
-    - condition: "input_token in ['ETH', 'USDC'] and chain == 'ethereum'"
-      delegates_to: skills/defi/uniswap-official-swap-integration
-    - condition: "chain == 'solana'"
-      delegates_to: skills/defi/jupiter-official-swap
-  unbounded: false  # true if can route to skills not enumerated
+    - target_type: skill            # skill | adapter | service
+      target: skills/defi/uniswap-official-swap-integration
+      condition:
+        kind: equals                # equals | in | always | regex
+        field: chain                # chain | input_token | output_token | category
+        value: ethereum
+    - target_type: skill
+      target: skills/defi/jupiter-official-swap
+      condition:
+        kind: equals
+        field: chain
+        value: solana
+    - target_type: adapter          # an adapter is an in-process plugin, not a sibling skill
+      target: openclaw://adapters/uniswap-v3
+      condition:
+        kind: in
+        field: input_token
+        value: ["ETH", "USDC", "USDT"]
+  unbounded: false  # true if can route to targets not enumerated
 ```
 
-Router skills get a "depends on selected route" warning in the UI with links to each route's manifest. The bot computes the **union** of capabilities across all enumerated routes — a router that delegates to one custodial executor is itself custodial-capable.
+**`condition` is a structured object, not a DSL.** Allowed `kind` values are `equals`, `in`, `always`, `regex`. Allowed `field` values are `chain`, `input_token`, `output_token`, `category`. Anything more expressive must be expressed as multiple route entries. This makes the evaluator a few lines of code, not a parser.
 
-`unbounded: true` is a strong red flag (skill can route to anything).
+### Two-pass extraction
+
+Phase 1 runs in two passes per cycle:
+1. **Pass 1** — extract capabilities for all leaf skills (no `expansion.routes`).
+2. **Pass 2** — for router skills, compute **union of capabilities** across all enumerated routes. A router that delegates to one custodial executor inherits `can_move_funds: true`, etc.
+
+### `unbounded: true` semantics
+
+If a router can route to skills not enumerated:
+- All capability fields → `unknown` (we don't know what it might call)
+- `execution_model` → `router_orchestrator`
+- UI shows: "⚠ This skill routes to runtime-determined targets. Worst-case capability set assumed; install only if you trust the publisher's full set of possible delegates."
 
 ---
 
@@ -281,7 +407,7 @@ Default state for any skill on the page:
 
 ```
 Binance Spot API
-Stage: not classified yet (Stage 0 minimum)
+Stage: not yet evaluated  (insufficient evidence — see what's missing)
 
 ⚠ Capabilities
   · Can execute shell
@@ -291,7 +417,7 @@ Stage: not classified yet (Stage 0 minimum)
 
 📋 Coverage
   · Source: visible
-  · Audits: 0
+  · Audits attempted: 0 (no audit yet — distinct from "audited and clean")
   · Egress declarations: 5 / unknown total
 
 🔍 Source: View on GitHub →
@@ -306,6 +432,33 @@ Filters in v4 are negative-only:
 - `No remote install scripts`
 
 These are unambiguous. Positive filters (`Trustless`, `Local-first`) are absent.
+
+### Audits — evidence-of-absence vs absence-of-evidence
+
+The UI distinguishes:
+- `audits_attempted: 0` — no audit has ever been requested or performed (default state)
+- `audits_attempted: N, audits_passed: 0` — audit was performed, found nothing meeting the threshold; render as "audit attempted; no clean record"
+
+These are different signals and the UI must not collapse them.
+
+---
+
+## BOM reconciliation
+
+`bom.cdx.json` is bot-generated, but humans can override component metadata via the `TRUST.md` overlay. On every bot run:
+
+1. Re-extract ingredients from the current source tree.
+2. Diff against the published `bom.cdx.json`.
+3. If diff non-empty:
+   - Set `manifest_stale: true` on the skill's TRUST manifest.
+   - Add the diff to a `pending_reconciliation` list in `TRUST.auto.yaml`.
+   - **Do not silently overwrite** the published BOM.
+   - Mark any audit whose `artifact_digest` no longer matches as `audit_artifact_drift: true` — the audit is preserved but its applicability is in question.
+4. A maintainer reviews the diff via PR. Acceptance updates the BOM and clears the stale flag.
+
+This prevents two failure modes:
+- The bot silently changing what users think they trust.
+- Audits remaining marked "valid" against a moved target.
 
 ---
 
@@ -353,12 +506,41 @@ From codex #15:
 
 ---
 
+## Phase 1 verification protocol
+
+Phase 1 is "done" when the extractor's output agrees with hand-review on a stratified sample of 20 skills.
+
+**Sample composition** (stratified by category and execution model):
+- 4 from `exchanges` (likely `custodial_executor`)
+- 4 from `defi` (likely `local_executor` or `unsigned_tx_builder`)
+- 4 from `analytics` (likely `analysis_only` or `read_only`)
+- 4 from `mcp-servers` (likely `installer_bootstrap` or `hosted_executor`)
+- 4 from `trading` / `wallets` / `payments` / `chains` (mixed)
+
+**Per-skill review form** (filled by human reviewer, blind to extractor output):
+- 11 capability fields, each `true | false | unknown`
+- `execution_model` from the 9-value enum
+- Free-form note for any field where extractor and human disagreed
+
+**Pass/fail criteria**:
+- Per-field agreement rate ≥ 90% across the sample (i.e., extractor and human agree on at least 198 of 220 cell values).
+- Zero `true` claims by the extractor that the human marks `false` (no false-positive alarms).
+- False negatives (extractor `unknown` or `false` where human says `true`) acceptable up to 15% — these become Phase 2 fixes.
+
+**Failure handling**:
+- A single false-positive sends Phase 1 back to design. False positives are the failure mode codex #13 warned about.
+- ≥10% disagreement on `execution_model` → re-spec the classifier rules before shipping.
+
+**Sample stays public.** The 20 reviewed skills' hand-labeled forms are checked into `docs/phase1-verification/`. Reviewers sign their forms with Sigstore keyless. This makes the verification protocol auditable.
+
+---
+
 ## Next steps
 
 1. Land this v4 doc.
 2. Build Phase 1 — capability manifest extractor for all 1256 skills.
-3. Verify the "what can this skill do?" answers against a sample of 20 hand-reviewed skills.
-4. Phase 2 once Phase 1 is honest.
+3. Run the 20-skill verification protocol above.
+4. Phase 2 once verification passes.
 
 The lesson from both reviews: **honest "unknown" beats false green checks**. Ship the conservative version and let the manifest fill in over time.
 
@@ -366,9 +548,27 @@ The lesson from both reviews: **honest "unknown" beats false green checks**. Shi
 
 ## References
 
-- v1 — `docs/TRUST.md` (original sketch)
-- v2 — `docs/TRUST-v2.md` (CC engineering review punch list)
-- v3 — `docs/TRUST-v3.md` (synthesized prior art + L2BEAT rosette)
-- CC review — `/tmp/claude-1001/.../a399ac4fcc6081c48.output`
-- Codex review — `/tmp/codex-review.md`
-- Research — TCRs, ERC-8004, L2BEAT, SLSA, CycloneDX, Sigstore, GoPlus AgentGuard, Snyk Agent Scan, Oathe, EigenLayer, Optimism Cannon, Ink & Switch local-first
+### Internal drafts (archived)
+- v1 — `docs/archive/archive-trust-v1.md` (original sketch)
+- v2 — `docs/archive/archive-trust-v2.md` (CC engineering review punch list)
+- v3 — `docs/archive/archive-trust-v3.md` (synthesized prior art + L2BEAT rosette)
+- Codex round-1 review — `docs/TRUST-codex-review.md`
+
+### External standards
+- **L2BEAT** — Stage 0/1/2 classification, Risk Rosette framework
+- **SLSA** — Supply chain Levels for Software Artifacts (build provenance)
+- **CycloneDX 1.7** — SBOM with native attestation support
+- **in-toto** — Attestation framework (Statement + predicate types)
+- **Sigstore** — Cosign keyless signing, Fulcio CA, Rekor transparency log
+- **EIP / ERC-8004** — Trustless agent identity registries
+- **OWASP** — Agentic Skills Top 10
+- **Ink & Switch** — Local-first software (concept origin)
+
+### Skill scanners surveyed
+- GoPlus AgentGuard, Snyk Agent Scan / ToxicSkills, Oathe ClawMutiny, STSS, Cisco AI Defense skill-scanner, DeFiSafety PQR
+
+### Failure modes studied
+- Mike Goldin TCR 1.0 (and AdChain post-mortem, Tabarrok critique)
+- Optimism Cannon FPVM (bisection-based dispute resolution)
+- EigenLayer slashing + veto committee pattern
+- Forta detection-bot marketplace
