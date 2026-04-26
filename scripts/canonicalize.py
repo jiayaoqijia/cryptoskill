@@ -80,18 +80,17 @@ def _scan_for_banned_features(text: str) -> None:
         if anchor:
             raise ValueError(f"YAML anchors (`&name`) are not allowed (at {ev.start_mark})")
         tag = getattr(ev, "tag", None)
-        # Allow only the implicit YAML core schema tags; custom tags carry
-        # explicit values like 'tag:example.com,2026:foo' or '!Ref'.
-        if tag is not None:
-            if isinstance(tag, tuple):
-                # ruamel emits tag as (handle, suffix); the implicit form is None.
-                handle, suffix = tag
-                if handle is not None or suffix is not None:
-                    raise ValueError(
-                        f"explicit YAML tags are not allowed (handle={handle!r} suffix={suffix!r})"
-                    )
-            elif tag and not tag.startswith("tag:yaml.org,2002:"):
+        # Allow only the implicit YAML core schema tags. The safe loader emits
+        # tag strings like "tag:yaml.org,2002:str"; anything else (custom !tags,
+        # YAML 1.1 type tags) we refuse at the parser-event layer before
+        # composition can resolve them.
+        if tag is not None and tag != "":
+            if not isinstance(tag, str) or not tag.startswith("tag:yaml.org,2002:"):
                 raise ValueError(f"non-core YAML tag not allowed: {tag!r}")
+            local = tag.removeprefix("tag:yaml.org,2002:")
+            allowed_local = {"str", "int", "float", "bool", "null", "seq", "map"}
+            if local not in allowed_local:
+                raise ValueError(f"YAML core tag {tag!r} is outside the JSON-projectable subset")
         # Merge keys appear as ScalarEvents with value '<<'; reject them.
         if isinstance(ev, ScalarEvent) and ev.value == "<<":
             raise ValueError("YAML merge keys (`<<`) are not allowed")
@@ -153,19 +152,37 @@ def _parse_canonical_json(text: str):
 
 def to_canonical_json_bytes(text: str) -> bytes:
     """Return RFC 8785 JCS bytes for YAML or JSON input. NFC-normalize all
-    string values so visually identical inputs hash identically."""
+    string values so visually identical inputs hash identically.
+
+    NFC-collision check: two source keys can be byte-distinct (e.g.
+    'é' as U+00E9 vs 'e' + U+0301) but NFC-collapse to the same string.
+    A naive comprehension `{nfc(k): nfc(v) ...}` would silently last-wins
+    and produce a digest that depends on dict iteration order. We
+    therefore reject NFC-colliding keys explicitly.
+    """
     if text.lstrip().startswith("{") or text.lstrip().startswith("["):
         node = _parse_canonical_json(text)
     else:
         node = parse_canonical_yaml(text)
 
-    def _nfc(value):
+    def _nfc(value, path="$"):
         if isinstance(value, str):
             return unicodedata.normalize("NFC", value)
         if isinstance(value, dict):
-            return {_nfc(k): _nfc(v) for k, v in value.items()}
+            normalized = {}
+            for k, v in value.items():
+                if not isinstance(k, str):
+                    raise ValueError(f"non-string key at {path}")
+                nk = unicodedata.normalize("NFC", k)
+                if nk in normalized:
+                    raise ValueError(
+                        f"NFC-colliding map keys at {path}: distinct source "
+                        f"strings collapse to {nk!r} after Unicode normalization"
+                    )
+                normalized[nk] = _nfc(v, f"{path}.{nk}")
+            return normalized
         if isinstance(value, list):
-            return [_nfc(v) for v in value]
+            return [_nfc(v, f"{path}[{i}]") for i, v in enumerate(value)]
         return value
 
     normalized = _nfc(node)

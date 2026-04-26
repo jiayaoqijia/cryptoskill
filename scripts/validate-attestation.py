@@ -85,9 +85,12 @@ def _resolve_digest(field: str, want: str, fetcher) -> None:
         )
 
 
-def validate_statement(stmt: dict, fetcher=None) -> None:
-    _ensure(stmt.get("_type", "").startswith("https://in-toto.io/Statement/v"),
-            f"_type must be an in-toto Statement, got {stmt.get('_type')!r}")
+def validate_statement(stmt, fetcher=None) -> None:
+    _ensure(isinstance(stmt, dict), f"top-level value must be a JSON object; got {type(stmt).__name__}")
+    _type = stmt.get("_type")
+    _ensure(isinstance(_type, str), f"_type must be a string; got {type(_type).__name__}")
+    _ensure(_type.startswith("https://in-toto.io/Statement/v"),
+            f"_type must be an in-toto Statement, got {_type!r}")
     pred_type = stmt.get("predicateType")
     _ensure(pred_type == PREDICATE_TYPE,
             f"predicateType must be {PREDICATE_TYPE!r}, got {pred_type!r}")
@@ -155,6 +158,12 @@ def main():
         validate_statement(stmt, fetcher=None)
     except ValidationError as exc:
         print(f"INVALID: {exc}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as exc:
+        # Defense in depth: any unexpected exception during validation is
+        # treated as INVALID rather than letting the calling pipeline see
+        # a hard crash. Stage 2 must always exit 0 (OK) or 1 (INVALID).
+        print(f"INVALID: validation failed with {type(exc).__name__}: {exc}", file=sys.stderr)
         sys.exit(1)
     print("OK")
 

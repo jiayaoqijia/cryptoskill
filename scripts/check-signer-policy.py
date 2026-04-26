@@ -18,10 +18,13 @@ Inputs:
   --cert-issuer <url>          Verified OIDC issuer URL (from cosign output)
 
 Exit codes:
-  0  signer authorized at the pinned snapshot
+  0  signer authorized AND predicate.reviewer.tier matches verified tier
   1  signer NOT in the pinned policy at any tier (=> unverified)
   2  pinned policy digest mismatch (=> reject the attestation outright)
   3  malformed inputs
+  4  signer authorized but predicate claimed a different tier
+     (the verified tier supersedes the claim; pipeline SHOULD render
+     with disclaimer rather than display the claimed tier)
 """
 
 import argparse
@@ -75,9 +78,10 @@ def check(statement: dict, policy: dict, policy_path: Path,
             if _full_match(regex, cert_identity):
                 claimed = (pred.get("reviewer") or {}).get("tier")
                 if claimed != tier_name:
-                    return 0, (
+                    return 4, (
                         f"signer authorized at {tier_name} (verified cert); "
-                        f"predicate claimed {claimed!r} (rendered with disclaimer)"
+                        f"predicate claimed {claimed!r} — render with "
+                        "disclaimer or downgrade to verified tier"
                     )
                 return 0, f"signer authorized at {tier_name}"
     return 1, (
@@ -116,6 +120,8 @@ def main():
     code, msg = check(stmt, policy, policy_path, args.cert_identity, args.cert_issuer)
     if code == 0:
         print(f"OK: {msg}")
+    elif code == 4:
+        print(f"AUTHORIZED-WITH-DISCLAIMER (4): {msg}", file=sys.stderr)
     else:
         print(f"REJECT ({code}): {msg}", file=sys.stderr)
     sys.exit(code)

@@ -21,6 +21,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+import rfc8785
+
 from canonicalize import to_canonical_json_bytes
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -85,11 +87,12 @@ def main():
         )
         sys.exit(2)
 
-    # subject.digest must be reproducible: hash the predicate body itself
-    # via the same RFC 8785 JCS canonicalization used everywhere else.
-    # Hashing only `processed` was ad hoc and didn't bind the skipped set
-    # or version stamps.
-    canonical_predicate_bytes = to_canonical_json_bytes(json.dumps(predicate))
+    # subject.digest must be reproducible: canonicalize the predicate dict
+    # directly via RFC 8785 JCS (no intermediate json.dumps round-trip,
+    # which would re-parse and re-emit through canonicalize.py only to
+    # produce the same bytes — but with extra brittleness if a future
+    # field type changes serialization).
+    canonical_predicate_bytes = rfc8785.dumps(predicate)
     subject_digest = hashlib.sha256(canonical_predicate_bytes).hexdigest()
 
     statement = {
