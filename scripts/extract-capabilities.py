@@ -223,20 +223,47 @@ def read_text(path):
         return ""
 
 
+SHELL_LINE_CONTINUATION = re.compile(r"\\\s*\n\s*")
+
+
+def _normalize_shell(text: str) -> str:
+    """Join shell line-continuations so a multi-line `curl ... \\\n  | bash`
+    inside a fenced block looks like a single logical line. Without this,
+    REMOTE_INSTALL_PATTERNS misses real installer commands authored with
+    backslash continuations (codex R5 #2)."""
+    return SHELL_LINE_CONTINUATION.sub(" ", text)
+
+
+# Files explicitly excluded from the scanned corpus. SOURCE.md is attribution
+# prose and frequently *quotes* upstream installer commands; including it
+# attributed those commands to skills that don't run them locally (CC R5 #2).
+SCAN_EXCLUDED_FILENAMES = {"SOURCE.md", "_meta.json", "TRUST.auto.yaml", "TRUST.md", "bom.cdx.json"}
+
+
 def gather_text(skill_dir):
-    """Return the SKILL.md body text + concatenated text from all sub files."""
+    """Return the SKILL.md body text + concatenated text from skill-local
+    scripts and explicitly-marked references, with shell continuations joined.
+
+    Excludes SOURCE.md, _meta.json, and trust-system files from the scan corpus
+    so attribution prose does not produce false-positive capabilities."""
     parts = {"skill_md": "", "scripts": "", "references": "", "all": ""}
     skill_md = skill_dir / "SKILL.md"
     if skill_md.exists():
-        parts["skill_md"] = read_text(skill_md)
+        parts["skill_md"] = _normalize_shell(read_text(skill_md))
     for f in skill_dir.rglob("*"):
         if not f.is_file() or f == skill_md:
             continue
+        if f.name in SCAN_EXCLUDED_FILENAMES:
+            continue
         rel = str(f.relative_to(skill_dir))
-        text = read_text(f)
+        text = _normalize_shell(read_text(f))
         if rel.startswith("scripts/") or f.suffix in (".py", ".sh", ".js", ".ts", ".mjs"):
             parts["scripts"] += "\n" + text
-        elif rel.startswith("references/") or f.suffix in (".md", ".txt"):
+        elif rel.startswith("references/"):
+            parts["references"] += "\n" + text
+        elif f.suffix in (".md", ".txt"):
+            # Other markdown/text files are skill-authored docs; include but
+            # only if not in the SCAN_EXCLUDED_FILENAMES set above.
             parts["references"] += "\n" + text
     parts["all"] = parts["skill_md"] + "\n" + parts["scripts"] + "\n" + parts["references"]
     return parts

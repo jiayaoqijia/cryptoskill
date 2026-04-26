@@ -417,31 +417,36 @@ From codex #14. We use the standard formats directly:
 
 - **Build provenance** — SLSA L2+ provenance signed via Sigstore keyless OIDC
 - **Audit attestation** — in-toto Statement with the canonical predicate type `https://cryptoskill.org/attestations/skill-audit/v1` (defined in §"Attestation predicate — pinned" above; this is the only string verifiers should match against). CycloneDX 1.7 audit metadata is emitted as a parallel record for tooling compatibility but is **not** the canonical signed object.
-- **Verification** is a two-stage pipeline. Cosign alone validates only the signature and certificate chain; it does not validate the predicate body fields. An attestation that passes cosign but fails predicate body validation is treated as `tier: unverified` (hidden from default UI):
+- **Verification** is a two-stage pipeline. Cosign alone validates only the signature and certificate chain; it does not, by itself, prove the *right* identity signed (only that *some* valid identity did). An attestation that passes Stage 1 but fails Stage 2 (predicate body) or Stage 3 (signer authorization policy) is treated as `tier: unverified` (hidden from default UI):
 
   ```bash
-  # Stage 1: Sigstore keyless verification
+  # Stage 1: Sigstore keyless verification — signature + cert chain
   cosign verify-attestation \
     --type https://cryptoskill.org/attestations/skill-audit/v1 \
-    --certificate-identity ... --certificate-oidc-issuer ...
+    --certificate-identity-regexp '^https://github\.com/(trailofbits|openzeppelin|cryptoskill)/[^/]+/\.github/workflows/[^/]+@refs/(heads/main|tags/v[0-9.]+)$' \
+    --certificate-oidc-issuer 'https://token.actions.githubusercontent.com'
 
-  # Stage 2: predicate body validation (run by ingestion pipeline)
+  # Stage 2: predicate body validation
   python3 scripts/validate-attestation.py <statement.json>
+
+  # Stage 3: signer authorization policy — does the cert identity match a
+  # tier_1/tier_2/tier_3 entry in docs/reviewer-tiers.yaml for THIS skill?
+  python3 scripts/check-signer-policy.py <statement.json>
   ```
 
-  `scripts/validate-attestation.py` enforces the predicate v1 required-field set, rejects manifests missing any field, and checks that `manifest_digest` / `bom_digest` / `report_digest` resolve to bytes the registry has actually fetched (not just claimed). Stage-2 failure → `audit.tier = unverified`, `audit.validation_error = <reason>`.
+  Stage 1 enforces an `--certificate-identity-regexp` and `--certificate-oidc-issuer` pair derived from `docs/reviewer-tiers.yaml`. A signer with a valid cosign signature but an identity not on the tier list lands in `unverified`. Stage 2 (`validate-attestation.py`) enforces the predicate v1 required-field set, rejects manifests missing any field, and checks that `manifest_digest` / `bom_digest` / `report_digest` resolve to bytes the registry has actually fetched. Stage 3 (`check-signer-policy.py`) re-resolves the cert identity against the policy at attestation creation time (not signing time): a tier downgraded after signing flags the attestation as "reviewer tier was downgraded after signing" but keeps it visible historically; a tier never granted lands in `unverified`. Any stage failure → `audit.tier = unverified`, `audit.validation_error = <reason>`.
 
 ### Canonical serialization (digest stability)
 
-For digests to be reproducible across signers, every digestable artifact has one canonical serialization rule and one hash algorithm:
+For digests to be reproducible across signers, every digestable artifact has one canonical serialization rule and one hash algorithm. RFC 8785 JCS (JSON Canonicalization Scheme) is the only canonicalizer used; YAML files are converted to JSON first because YAML has no widely-implemented canonical form.
 
 | Artifact | Serialization | Hash |
 |---|---|---|
-| `TRUST.auto.yaml` | LF line endings, no trailing whitespace, sorted keys at every map level (RFC 8785-style canonical order), UTF-8 NFC | `sha256` |
-| `bom.cdx.json` | RFC 8785 JSON Canonicalization Scheme (JCS) | `sha256` |
+| `TRUST.auto.yaml` | Parse YAML → emit JSON (UTF-8 NFC, no comments) → apply RFC 8785 JCS to the JSON tree | `sha256` |
+| `bom.cdx.json` | RFC 8785 JCS directly | `sha256` |
 | Audit report | Bytes-identical to the URL-served file at `report.url`; no canonicalization | `sha256` |
 
-Verifiers re-derive the digest from the canonical bytes; mismatched digests reject the attestation regardless of signature validity.
+Implementations MUST use a single library/version pair to avoid silent drift; the reference implementation is `scripts/canonicalize.py`, which uses `ruamel.yaml` (round-trip parser) → Python `dict` → `rfc8785` Python module. Verifiers re-derive the digest from the canonical bytes; mismatched digests reject the attestation regardless of signature validity.
 
 ### Corpus-level attestation
 
@@ -653,17 +658,21 @@ Phase 1 is "done" when the extractor's output agrees with hand-review on a strat
 2. **Sample negatives per capability.** For each of the 11 capabilities, draw a stratified sample of 20 extractor-negative skills (mix `unknown` and `false`) and hand-label them. Compute per-capability **precision** (TP / (TP+FP)) and **recall** (TP / (TP+FN)).
 3. **Publish.** Per-capability precision and recall numbers ship with the launch as `docs/phase1-verification/precision-recall.md`, regenerated each time the extractor changes.
 4. **Pass bar — precision (all capabilities).** Precision ≥ 0.95 on every capability (a positive claim is almost never wrong).
-5. **Pass bar — recall floors (critical subset only).** Critical capabilities have hard recall floors because false negatives are the failure mode that lets dangerous skills through the filter. A skill cannot earn the "trusted_auto" badge for any of these capabilities until the per-capability recall meets the floor on the latest verification run; until then the capability is rendered as `confidence: low (under-validated)` and the badge is withheld:
+5. **Pass bar — recall floors (critical subset only).** Critical capabilities have hard recall floors because false negatives are the failure mode that lets dangerous skills through the filter. A skill cannot earn the "trusted_auto" badge for any of these capabilities until the per-capability recall meets the floor on the latest verification run; until then the capability is rendered as `confidence: low (under-validated)` and the badge is withheld.
 
-   | Capability | Recall floor | Rationale |
-   |---|---|---|
-   | `can_move_funds` | 0.90 | Misclassifying a fund-mover as benign is the loudest failure mode |
-   | `requires_private_key` | 0.90 | Misses cause users to grant signing material to skills that don't disclose it |
-   | `can_install_code` | 0.85 | Drives mutable_remote_runtime; misses understate blast radius |
-   | `uses_remote_install_script` | 0.85 | High-blast-radius pattern; misses defeat the gate |
-   | `requires_hosted_operator` | 0.80 | Heuristic against curated hostlist; rot is expected and tracked |
+   The gate is on the **one-sided 95% Wilson lower confidence bound** of recall against a frozen stratified holdout, not the point estimate. This prevents gaming via cherry-picked samples and is conservative when N is small.
 
-   Non-critical capabilities (`auto_invocable`, `can_browse_web`, `can_write_files`, `can_spawn_subagents`, `can_execute_shell`) report recall but are not gated — `unknown` is the honest fallback for low-corpus tails. If the negatives sample for a critical capability is too small to estimate recall to ±0.05 at 95% CI, the capability is held in `under-validated` state until the sample grows (forced manual review of predicted negatives until the bar is reached).
+   | Capability | Wilson lower-bound floor | Min positive support N | Rationale |
+   |---|---|---|---|
+   | `can_move_funds` | 0.90 | 50 | Misclassifying a fund-mover as benign is the loudest failure mode |
+   | `requires_private_key` | 0.90 | 50 | Misses cause users to grant signing material silently |
+   | `can_install_code` | 0.85 | 50 | Drives mutable_remote_runtime; misses understate blast radius |
+   | `uses_remote_install_script` | 0.85 | 30 | High-blast-radius; misses defeat the gate |
+   | `requires_hosted_operator` | 0.80 | 50 | Heuristic against curated hostlist; rot is expected |
+
+   The holdout is **frozen at the start of each extractor major version**: 200 hand-labeled skills (stratified by category × predicted execution mode), checked into `docs/phase1-verification/holdout-vN.yaml`, and signed by the labelling team. The same holdout MUST be reused across patch releases to keep the floor measurement comparable; a new holdout is only generated when the extractor's major version increments. Until each critical capability accumulates the minimum positive support N in the holdout, the capability is held in `under-validated` state — Phase 1 remains uncertified for that field even if precision meets the bar.
+
+   Non-critical capabilities (`auto_invocable`, `can_browse_web`, `can_write_files`, `can_spawn_subagents`, `can_execute_shell`) report recall but are not gated — `unknown` is the honest fallback for low-corpus tails.
 
 **Sample stays public.** The 20 reviewed skills' hand-labeled forms and the per-capability precision/recall sheets are checked into `docs/phase1-verification/`. Reviewers sign their forms with Sigstore keyless. This makes the verification protocol auditable.
 

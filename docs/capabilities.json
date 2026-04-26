@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-26T17:19:41.490843+00:00",
+  "generated_at": "2026-04-26T17:28:51.485074+00:00",
   "extractor_version": "0.3.0",
   "taxonomy_version": 1,
   "hostlist_version": "2026-04-26",
@@ -3022,13 +3022,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-fund-tracker": {
       "name": "nansen-fund-tracker",
@@ -3042,13 +3040,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-holder-analysis": {
       "name": "nansen-holder-analysis",
@@ -3062,13 +3058,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-perp-screener": {
       "name": "nansen-perp-screener",
@@ -3082,13 +3076,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-portfolio": {
       "name": "nansen-portfolio-tracker",
@@ -3102,13 +3094,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-search": {
       "name": "nansen-general-search",
@@ -3122,13 +3112,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-smart-alerts": {
       "name": "nansen-smart-alerts",
@@ -3142,13 +3130,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-smart-money": {
       "name": "nansen-smart-money-tracker",
@@ -3162,13 +3148,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-token-research": {
       "name": "nansen-token-research",
@@ -3182,13 +3166,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/nansen-token-screener": {
       "name": "nansen-token-screener",
@@ -3202,13 +3184,11 @@
         "can_spawn_subagents": false,
         "can_move_funds": "unknown",
         "requires_private_key": "unknown",
-        "requires_hosted_operator": true,
+        "requires_hosted_operator": "unknown",
         "uses_remote_install_script": false,
         "mutable_remote_runtime": false
       },
-      "hosted_operators": [
-        "nansen.ai"
-      ]
+      "hosted_operators": []
     },
     "analytics/octav-official-api": {
       "name": "octav-api",
@@ -22954,7 +22934,7 @@
       "can_spawn_subagents": 5,
       "can_move_funds": 109,
       "requires_private_key": 188,
-      "requires_hosted_operator": 196,
+      "requires_hosted_operator": 186,
       "uses_remote_install_script": 23,
       "mutable_remote_runtime": 223
     }
