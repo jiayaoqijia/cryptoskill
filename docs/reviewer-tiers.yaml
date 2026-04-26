@@ -1,0 +1,42 @@
+# Reviewer tier policy — the source of truth for Stage 1 cosign identity
+# regexp generation and Stage 3 signer authorization. The sha256 of this
+# file's canonical form (see scripts/canonicalize.py) is bound into every
+# audit attestation as `predicate.reviewer_tiers_digest`, pinning the
+# policy snapshot at sign time so retroactive policy changes cannot
+# invalidate (or accidentally validate) past attestations.
+#
+# Edit history is tracked in git. Tier-promotion PRs MUST update both
+# `policy_version` (monotonic int) and `last_updated`.
+policy_version: 1
+last_updated: "2026-04-26"
+
+# Each tier entry pins:
+# - certificate_oidc_issuer: the OIDC provider (GitHub Actions or
+#   Sigstore-compatible providers; one issuer per signer entry)
+# - certificate_identity_regexp: tightly scoped to repo + workflow + ref;
+#   this is what gets fed to `cosign verify-attestation`
+# - display_name: shown in the UI when the attestation is rendered
+tiers:
+  tier_1:
+    description: |
+      Named professional audit firms with multi-year public history.
+      Promoted by maintainer PR. Each entry MUST pin a Sigstore OIDC
+      identity (the firm's public release-signing workflow).
+    members: []  # populated as firms onboard; empty in v1
+  tier_2:
+    description: |
+      CryptoSkill maintainer team reviewing as `cryptoskill_team`.
+    members:
+      - display_name: "CryptoSkill Team"
+        certificate_oidc_issuer: "https://token.actions.githubusercontent.com"
+        certificate_identity_regexp: "^https://github\\.com/jiayaoqijia/cryptoskill/\\.github/workflows/[^/]+\\.ya?ml@refs/(heads/main|tags/v[0-9.]+)$"
+  tier_3:
+    description: |
+      Independent researchers added by maintainer PR after manual identity
+      verification. NO automatic eligibility. Each entry pins a Sigstore
+      OIDC identity.
+    members: []
+  unverified:
+    description: |
+      Default for any signed claim from an identity not on the lists
+      above. Hidden from default UI.

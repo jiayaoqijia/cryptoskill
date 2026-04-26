@@ -1,0 +1,52 @@
+# Phase 1 verification holdout — extractor major version 0.x
+# Frozen on first label-day; do not edit entries after that point.
+# Reviewer signature material is attached per-entry as `reviewer_sig`.
+#
+# Required strata (by category × predicted_execution_mode):
+#   exchanges        x custodial_executor   = 30
+#   exchanges        x hosted_executor      = 10
+#   defi             x local_executor       = 30
+#   defi             x unsigned_tx_builder  = 10
+#   analytics        x analysis_only        = 25
+#   analytics        x read_only            = 15
+#   mcp-servers      x installer_bootstrap  = 15
+#   mcp-servers      x hosted_executor      = 10
+#   trading          x local_executor       = 15
+#   wallets          x local_executor       = 10
+#   payments         x unsigned_tx_builder  =  5
+#   chains           x read_only            =  5
+#   ai-crypto        x router_orchestrator  = 10
+#   ai-crypto        x installer_bootstrap  = 10
+# Plus at least 1 polymorphic skill (Heurist Mesh) flagged for hand-checking
+# the worst-case-union behavior.
+#
+# Schema for each entry:
+#   skill: <relative path under skills/>
+#   stratum: <string label>
+#   labels:
+#     auto_invocable:        true | false | unknown
+#     can_execute_shell:     true | false | unknown
+#     can_install_code:      true | false | unknown
+#     can_write_files:       true | false | unknown
+#     can_browse_web:        true | false | unknown
+#     can_spawn_subagents:   true | false | unknown
+#     can_move_funds:        true | false | unknown
+#     requires_private_key:  true | false | unknown
+#     requires_hosted_operator: true | false | unknown
+#     uses_remote_install_script: true | false | unknown
+#     mutable_remote_runtime: true | false | unknown
+#   execution_modes:
+#     - id: <string>
+#       label: <one of the 9 enum values>
+#   reviewer:
+#     name: <human display>
+#     identity: <Sigstore OIDC identity>
+#     signed_at: <ISO-8601>
+#   notes: <free-form>
+
+policy_version: 1
+extractor_major_version: 0
+sample_size_target: 200
+status: template  # change to "frozen" on label-day, after which entries are immutable
+
+entries: []
