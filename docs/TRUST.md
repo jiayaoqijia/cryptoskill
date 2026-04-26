@@ -252,6 +252,11 @@ predicate:
   extractor_version: 0.2.0           # version string of extract-capabilities.py
   taxonomy_version: 1                # capability registry / TRUST.md schema version
   hostlist_version: 2026-04-26       # date-stamped curated host list version
+  reviewer_tiers_digest: sha256:...  # sha256 of canonicalized docs/reviewer-tiers.yaml
+                                     # at sign time. Stage 3 re-resolves the cert
+                                     # identity against this pinned policy snapshot,
+                                     # not the current HEAD — prevents retroactive
+                                     # verdict changes when the policy mutates.
   reviewed_at: 2026-03-15T00:00:00Z
   expires_at:  2027-03-15T00:00:00Z  # attestation freshness window; UI badges expired
   reviewer:                          # mirrored from `audits[].reviewer` for self-containment
@@ -420,21 +425,25 @@ From codex #14. We use the standard formats directly:
 - **Verification** is a two-stage pipeline. Cosign alone validates only the signature and certificate chain; it does not, by itself, prove the *right* identity signed (only that *some* valid identity did). An attestation that passes Stage 1 but fails Stage 2 (predicate body) or Stage 3 (signer authorization policy) is treated as `tier: unverified` (hidden from default UI):
 
   ```bash
-  # Stage 1: Sigstore keyless verification — signature + cert chain
+  # Stage 1: Sigstore keyless verification — signature + cert chain.
+  # The --certificate-identity-regexp is *generated* from
+  # docs/reviewer-tiers.yaml at bot-run time (not hand-maintained); the
+  # snippet below is illustrative.
   cosign verify-attestation \
     --type https://cryptoskill.org/attestations/skill-audit/v1 \
-    --certificate-identity-regexp '^https://github\.com/(trailofbits|openzeppelin|cryptoskill)/[^/]+/\.github/workflows/[^/]+@refs/(heads/main|tags/v[0-9.]+)$' \
+    --certificate-identity-regexp "$(scripts/build-cosign-identity-regexp.py)" \
     --certificate-oidc-issuer 'https://token.actions.githubusercontent.com'
 
   # Stage 2: predicate body validation
   python3 scripts/validate-attestation.py <statement.json>
 
   # Stage 3: signer authorization policy — does the cert identity match a
-  # tier_1/tier_2/tier_3 entry in docs/reviewer-tiers.yaml for THIS skill?
+  # tier_1/tier_2/tier_3 entry in docs/reviewer-tiers.yaml for THIS skill,
+  # AT THE POLICY DIGEST PINNED IN THE PREDICATE BODY (not the current head)?
   python3 scripts/check-signer-policy.py <statement.json>
   ```
 
-  Stage 1 enforces an `--certificate-identity-regexp` and `--certificate-oidc-issuer` pair derived from `docs/reviewer-tiers.yaml`. A signer with a valid cosign signature but an identity not on the tier list lands in `unverified`. Stage 2 (`validate-attestation.py`) enforces the predicate v1 required-field set, rejects manifests missing any field, and checks that `manifest_digest` / `bom_digest` / `report_digest` resolve to bytes the registry has actually fetched. Stage 3 (`check-signer-policy.py`) re-resolves the cert identity against the policy at attestation creation time (not signing time): a tier downgraded after signing flags the attestation as "reviewer tier was downgraded after signing" but keeps it visible historically; a tier never granted lands in `unverified`. Any stage failure → `audit.tier = unverified`, `audit.validation_error = <reason>`.
+  Stage 1 enforces an `--certificate-identity-regexp` and `--certificate-oidc-issuer` pair **generated** from `docs/reviewer-tiers.yaml` by `scripts/build-cosign-identity-regexp.py` at bot-run time. The maintainer process for adding/removing a tier_1 firm is therefore: PR to `docs/reviewer-tiers.yaml`, regenerate the regexp, commit both. A signer with a valid cosign signature but an identity not on the policy at the time the attestation references lands in `unverified`. Stage 2 (`validate-attestation.py`) enforces the predicate v1 required-field set, rejects manifests missing any field, and checks that `manifest_digest` / `bom_digest` / `report_digest` resolve to bytes the registry has actually fetched. Stage 3 (`check-signer-policy.py`) re-resolves the cert identity against the **policy snapshot pinned in the predicate body** (not the current `main` HEAD), preventing retroactive verdict changes when the policy mutates: a tier later downgraded flags the attestation as "reviewer tier was downgraded after signing" but keeps it visible historically; a tier never granted at the pinned policy digest lands in `unverified`. Any stage failure → `audit.tier = unverified`, `audit.validation_error = <reason>`.
 
 ### Canonical serialization (digest stability)
 
@@ -446,7 +455,22 @@ For digests to be reproducible across signers, every digestable artifact has one
 | `bom.cdx.json` | RFC 8785 JCS directly | `sha256` |
 | Audit report | Bytes-identical to the URL-served file at `report.url`; no canonicalization | `sha256` |
 
-Implementations MUST use a single library/version pair to avoid silent drift; the reference implementation is `scripts/canonicalize.py`, which uses `ruamel.yaml` (round-trip parser) → Python `dict` → `rfc8785` Python module. Verifiers re-derive the digest from the canonical bytes; mismatched digests reject the attestation regardless of signature validity.
+Implementations MUST use a single library/version pair to avoid silent drift; the reference implementation is `scripts/canonicalize.py`, which uses `ruamel.yaml` (round-trip parser) → Python `dict` → `rfc8785` Python module.
+
+**YAML content constraints (so YAML→JSON is deterministic).** The bot rejects any TRUST.auto.yaml / TRUST.md frontmatter / reviewer-tiers.yaml that uses any of the following non-JSON YAML features, since they have no canonical JSON projection:
+
+- duplicate keys at any map level
+- aliases (`*foo`) and anchors (`&foo`)
+- merge keys (`<<:`)
+- custom `!tag` types
+- non-string map keys (numeric, sequence, or mapping keys)
+- non-finite numbers (`.inf`, `.nan`)
+- multi-document streams (`---` separators within a single file)
+- timestamps as YAML-typed values (must be ISO-8601 strings)
+
+The reference parser configuration (`scripts/canonicalize.py`) is `ruamel.yaml.YAML(typ="safe", pure=True)` with `allow_duplicate_keys=False`. Files violating these constraints are rejected at bot ingest, not silently re-canonicalized — silent re-canonicalization would let two different inputs produce the same digest.
+
+Verifiers re-derive the digest from the canonical bytes; mismatched digests reject the attestation regardless of signature validity.
 
 ### Corpus-level attestation
 
@@ -673,6 +697,10 @@ Phase 1 is "done" when the extractor's output agrees with hand-review on a strat
    The holdout is **frozen at the start of each extractor major version**: 200 hand-labeled skills (stratified by category × predicted execution mode), checked into `docs/phase1-verification/holdout-vN.yaml`, and signed by the labelling team. The same holdout MUST be reused across patch releases to keep the floor measurement comparable; a new holdout is only generated when the extractor's major version increments. Until each critical capability accumulates the minimum positive support N in the holdout, the capability is held in `under-validated` state — Phase 1 remains uncertified for that field even if precision meets the bar.
 
    Non-critical capabilities (`auto_invocable`, `can_browse_web`, `can_write_files`, `can_spawn_subagents`, `can_execute_shell`) report recall but are not gated — `unknown` is the honest fallback for low-corpus tails.
+
+   **Phase 1 acknowledged limitation.** `can_execute_shell` recall depends almost entirely on the presence of `allowed-tools` frontmatter (44 / 1265 skills declare it today); shell-pattern fallback detection ships in Phase 2 with AST/script scanning. Any `can_execute_shell: false` claim in Phase 1 has high precision when the source is `declared` and `unknown` precision otherwise — the UI must label the field accordingly until Phase 2 closes the gap.
+
+   **Adversarial test cases.** Skills like Heurist Mesh advertise multiple setup paths (API-key auth, x402 with `WALLET_PRIVATE_KEY`, Inflow with `INFLOW_PRIVATE_KEY`) and simultaneously claim "read-only / does not sign transactions" in their docs. Phase 1 emits a single-mode manifest using the **worst-case union** rule (§"Skill execution modes") so the existence of any private-key-bearing setup path forces the skill-level capability set to acknowledge it; the Phase 2 multi-mode breakdown will surface the safer subpath as a labeled mode without lowering the union. Verification reviewers MUST hand-check at least one such polymorphic skill in the stratified sample to confirm the worst-case union behavior survives in practice.
 
 **Sample stays public.** The 20 reviewed skills' hand-labeled forms and the per-capability precision/recall sheets are checked into `docs/phase1-verification/`. Reviewers sign their forms with Sigstore keyless. This makes the verification protocol auditable.
 
