@@ -85,16 +85,19 @@ def main():
         )
         sys.exit(2)
 
+    # subject.digest must be reproducible: hash the predicate body itself
+    # via the same RFC 8785 JCS canonicalization used everywhere else.
+    # Hashing only `processed` was ad hoc and didn't bind the skipped set
+    # or version stamps.
+    canonical_predicate_bytes = to_canonical_json_bytes(json.dumps(predicate))
+    subject_digest = hashlib.sha256(canonical_predicate_bytes).hexdigest()
+
     statement = {
         "_type": "https://in-toto.io/Statement/v0.1",
         "subject": [
             {
                 "name": "cryptoskill-corpus",
-                "digest": {
-                    "sha256": hashlib.sha256(
-                        json.dumps(processed, sort_keys=True).encode("utf-8")
-                    ).hexdigest()
-                },
+                "digest": {"sha256": subject_digest},
             }
         ],
         "predicateType": PREDICATE_TYPE,

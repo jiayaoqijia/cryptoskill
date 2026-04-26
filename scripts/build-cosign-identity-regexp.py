@@ -7,14 +7,14 @@ regexp across tier_1, tier_2, tier_3 (NOT `unverified`).
 Output: a single regex string on stdout. Combine with
 --certificate-oidc-issuer at call sites.
 
-The bot regenerates this at run time so adding a new tier_1 firm via PR
-also updates the cosign verification command without manual sync.
+Cosign accepts only one --certificate-oidc-issuer per call. To safely emit
+a single regex, all included members MUST share the same issuer; the
+script enforces this and aborts otherwise. Pass --issuer to scope to a
+specific issuer when the policy mixes providers.
 
-Note: cosign requires a single regexp; this script enforces that all
-members share the same `certificate_oidc_issuer` (or none does), since
-cosign cannot match multiple issuers simultaneously. If issuers diverge,
-the bot must run separate verify passes — one per issuer — and the
-script accepts an --issuer filter to scope output.
+Each member regex must be present and non-empty; an empty regex would
+match anything in cosign and silently authorize attestations the policy
+never issued.
 """
 
 import argparse
@@ -27,25 +27,43 @@ ROOT = Path(__file__).resolve().parent.parent
 POLICY_PATH = ROOT / "docs" / "reviewer-tiers.yaml"
 
 
-def build_regexp(policy: dict, issuer_filter: str | None) -> str:
+class PolicyError(Exception):
+    pass
+
+
+def collect_members(policy: dict, issuer_filter: str | None):
     members = []
     for tier_name in ("tier_1", "tier_2", "tier_3"):
         tier = policy.get("tiers", {}).get(tier_name, {})
         for entry in tier.get("members") or []:
             iss = entry.get("certificate_oidc_issuer")
+            regex = entry.get("certificate_identity_regexp")
+            display = entry.get("display_name") or "<unnamed>"
+            if not iss:
+                raise PolicyError(
+                    f"{tier_name}/{display}: certificate_oidc_issuer is required"
+                )
+            if not regex:
+                raise PolicyError(
+                    f"{tier_name}/{display}: certificate_identity_regexp is required and must be non-empty"
+                )
             if issuer_filter and iss != issuer_filter:
                 continue
-            regex = entry.get("certificate_identity_regexp")
-            if not regex:
-                raise ValueError(
-                    f"{tier_name} entry for {entry.get('display_name')!r} is missing certificate_identity_regexp"
-                )
-            members.append(f"(?:{regex})")
+            members.append((tier_name, display, iss, regex))
+    return members
+
+
+def build_regexp(members) -> str:
+    """Wrap each member pattern in a non-capturing group and OR them.
+
+    Cosign uses Go's regexp/syntax (RE2). The alternation precedence rules
+    require the WHOLE alternation be grouped, otherwise `^a|b$` parses as
+    `(?:^a)|(?:b$)` and authorizes any identity ending with the second
+    alternative. We always emit `(?:p1|p2|...)`.
+    """
     if not members:
-        # Empty regex would match nothing in cosign — caller should treat
-        # this as "no audited skills yet".
-        return "(?!)"
-    return "^" + "|".join(members) + "$" if all(m.startswith("(?:^") is False for m in members) else "|".join(members)
+        return "(?!)"  # never matches anything; cosign call will fail-closed
+    return "(?:" + "|".join(f"(?:{m[3]})" for m in members) + ")"
 
 
 def main():
@@ -60,7 +78,25 @@ def main():
     except ValueError as exc:
         print(f"reviewer-tiers.yaml violates canonical-form constraints: {exc}", file=sys.stderr)
         sys.exit(1)
-    print(build_regexp(policy, args.issuer))
+
+    try:
+        members = collect_members(policy, args.issuer)
+    except PolicyError as exc:
+        print(f"policy error: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    if not args.issuer and members:
+        issuers = {m[2] for m in members}
+        if len(issuers) > 1:
+            print(
+                "policy mixes OIDC issuers but --issuer was not given; cosign "
+                "accepts only one --certificate-oidc-issuer at a time. Re-run "
+                f"with --issuer set to one of: {sorted(issuers)}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+    print(build_regexp(members))
 
 
 if __name__ == "__main__":

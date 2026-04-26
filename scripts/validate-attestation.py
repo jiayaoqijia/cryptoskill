@@ -52,14 +52,23 @@ def _ensure(cond: bool, msg: str) -> None:
         raise ValidationError(msg)
 
 
-def _parse_iso(value: str, field: str) -> datetime:
+def _ensure_str(obj, field: str) -> str:
+    if not isinstance(obj, str):
+        raise ValidationError(f"{field} must be a string; got {type(obj).__name__}")
+    return obj
+
+
+def _parse_iso(value, field: str) -> datetime:
+    if not isinstance(value, str):
+        raise ValidationError(f"{field} must be an ISO-8601 string; got {type(value).__name__}")
     try:
-        # Accept both Z-suffixed and explicit offsets.
-        if value.endswith("Z"):
-            value = value[:-1] + "+00:00"
-        return datetime.fromisoformat(value)
-    except ValueError as exc:
-        raise ValidationError(f"{field} is not a valid ISO-8601 timestamp: {value}") from exc
+        normalized = value[:-1] + "+00:00" if value.endswith("Z") else value
+        dt = datetime.fromisoformat(normalized)
+    except (ValueError, TypeError) as exc:
+        raise ValidationError(f"{field} is not a valid ISO-8601 timestamp: {value!r}") from exc
+    if dt.tzinfo is None:
+        raise ValidationError(f"{field} must be timezone-aware (use Z or explicit offset)")
+    return dt.astimezone(timezone.utc)
 
 
 def _resolve_digest(field: str, want: str, fetcher) -> None:
@@ -89,8 +98,15 @@ def validate_statement(stmt: dict, fetcher=None) -> None:
     _ensure(not missing, f"predicate missing required field(s): {', '.join(missing)}")
 
     for digest_field in ("manifest_digest", "bom_digest", "report_digest", "reviewer_tiers_digest"):
-        _ensure(DIGEST_RE.match(pred[digest_field]) is not None,
-                f"{digest_field} must match sha256:[0-9a-f]{{64}}; got {pred[digest_field]!r}")
+        v = pred[digest_field]
+        _ensure(isinstance(v, str), f"{digest_field} must be a string; got {type(v).__name__}")
+        _ensure(DIGEST_RE.match(v) is not None,
+                f"{digest_field} must match sha256:[0-9a-f]{{64}}; got {v!r}")
+
+    _ensure_str(pred["extractor_version"], "extractor_version")
+    _ensure(isinstance(pred["taxonomy_version"], int) and pred["taxonomy_version"] >= 0,
+            f"taxonomy_version must be a non-negative int; got {pred['taxonomy_version']!r}")
+    _ensure_str(pred["hostlist_version"], "hostlist_version")
 
     reviewed_at = _parse_iso(pred["reviewed_at"], "reviewed_at")
     expires_at = _parse_iso(pred["expires_at"], "expires_at")
@@ -100,6 +116,8 @@ def validate_statement(stmt: dict, fetcher=None) -> None:
     _ensure(isinstance(reviewer, dict), "reviewer must be an object")
     missing_r = [f for f in REVIEWER_REQUIRED if f not in reviewer]
     _ensure(not missing_r, f"reviewer missing required field(s): {', '.join(missing_r)}")
+    _ensure_str(reviewer["name"], "reviewer.name")
+    _ensure_str(reviewer["identity"], "reviewer.identity")
     _ensure(reviewer["tier"] in ("tier_1", "tier_2", "tier_3", "unverified"),
             f"reviewer.tier must be one of tier_1/tier_2/tier_3/unverified; got {reviewer['tier']!r}")
 

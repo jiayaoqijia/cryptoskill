@@ -25,11 +25,14 @@ tiers:
     members: []  # populated as firms onboard; empty in v1
   tier_2:
     description: |
-      CryptoSkill maintainer team reviewing as `cryptoskill_team`.
+      CryptoSkill maintainer team reviewing as `cryptoskill_team`. Tier_2
+      attestations are produced ONLY by the dedicated audit workflow at
+      .github/workflows/trust-attest.yml on tagged releases. Any other
+      workflow file in the repo lands in `unverified`.
     members:
-      - display_name: "CryptoSkill Team"
+      - display_name: "CryptoSkill Team (trust-attest workflow)"
         certificate_oidc_issuer: "https://token.actions.githubusercontent.com"
-        certificate_identity_regexp: "^https://github\\.com/jiayaoqijia/cryptoskill/\\.github/workflows/[^/]+\\.ya?ml@refs/(heads/main|tags/v[0-9.]+)$"
+        certificate_identity_regexp: "^https://github\\.com/jiayaoqijia/cryptoskill/\\.github/workflows/trust-attest\\.yml@refs/tags/v[0-9]+\\.[0-9]+\\.[0-9]+$"
   tier_3:
     description: |
       Independent researchers added by maintainer PR after manual identity

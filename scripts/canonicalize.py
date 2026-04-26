@@ -3,9 +3,17 @@
 Canonical serialization for trust-manifest digests (TRUST.md §"Canonical
 serialization"): YAML parse -> JSON tree -> RFC 8785 JCS bytes -> sha256.
 
-Per the spec, YAML inputs MUST NOT use any non-JSON YAML feature. The bot
-rejects (does not silently re-canonicalize) inputs that violate the
-constraints, so the digest is reproducible across signers.
+Per the spec, YAML inputs MUST NOT use any non-JSON YAML feature (anchors,
+aliases, merge keys, custom tags, duplicate keys, multi-document, non-string
+keys, non-finite numbers, YAML-typed timestamps). The bot rejects (does
+not silently re-canonicalize) inputs that violate the constraints, so
+the digest is reproducible across signers.
+
+Implementation note: ruamel's safe loader silently resolves anchors and
+aliases to the same Python object before any tree walk can detect them.
+We therefore intercept at the **token stream** level (before composition)
+to flag every banned token, AND walk the tree afterward for the
+schema-level checks (non-string keys, non-finite numbers, etc.).
 
 Usage:
   python3 scripts/canonicalize.py <path>            # print canonical JCS bytes
@@ -17,26 +25,79 @@ import hashlib
 import json
 import sys
 import unicodedata
+from io import StringIO
 from pathlib import Path
 
 import rfc8785
 from ruamel.yaml import YAML
 from ruamel.yaml.constructor import DuplicateKeyError
-
-
-BANNED_NODE_KINDS = (
-    # Detected via runtime tree inspection after parse. ruamel's safe loader
-    # already rejects custom !tag types and aliases by default.
+from ruamel.yaml.scanner import Scanner
+from ruamel.yaml import tokens as yaml_tokens
+from ruamel.yaml.parser import Parser
+from ruamel.yaml.events import (
+    AliasEvent,
+    MappingStartEvent,
+    SequenceStartEvent,
+    ScalarEvent,
 )
 
 
-def _check_no_yaml_only_features(node, path="$"):
-    """Walk the parsed tree and reject anything that has no canonical JSON
-    projection: non-string map keys, non-finite numbers, byte values, etc.
+def _detect_multidoc(text: str) -> None:
+    """Reject multi-document streams. A leading '---' is allowed once.
+    A real multidoc has '---' at the start of a line *after* content, so we
+    look for a second occurrence."""
+    sep_count = sum(1 for ln in text.splitlines() if ln.rstrip() == "---")
+    if sep_count > 1:
+        raise ValueError("multi-document YAML stream is not allowed")
 
-    Duplicate keys, anchors/aliases, and merge keys are caught at parse time
-    by the loader configuration; this pass catches the schema-level issues.
-    """
+
+def _scan_for_banned_features(text: str) -> None:
+    """Run the ruamel SCANNER and PARSER over the text and reject tokens/
+    events that have no canonical JSON projection: anchors, aliases, custom
+    tags. (Merge keys appear as `<<` scalars and are caught by the schema
+    walk below; they are also flagged here so the error message points to
+    YAML-feature use.)"""
+    yaml = YAML(typ="safe", pure=True)
+    yaml.allow_duplicate_keys = False
+    parser = yaml.parser
+    # Use a fresh loader-internal pipeline to consume parse events.
+    yaml.loader = yaml.Reader
+    # ruamel exposes parse_events via load_all(); a simpler hand-rolled
+    # check uses the constructor on the composed graph, but to catch
+    # anchors/aliases we walk the parser events directly.
+    yaml_local = YAML(typ="safe", pure=True)
+    yaml_local.allow_duplicate_keys = False
+    try:
+        events = list(yaml_local.parse(text))
+    except Exception as exc:
+        raise ValueError(f"YAML parse failed: {exc}") from exc
+
+    for ev in events:
+        if isinstance(ev, AliasEvent):
+            raise ValueError(f"YAML aliases (`*name`) are not allowed (at {ev.start_mark})")
+        # Detect anchors: every event has an .anchor attribute that is None when absent.
+        anchor = getattr(ev, "anchor", None)
+        if anchor:
+            raise ValueError(f"YAML anchors (`&name`) are not allowed (at {ev.start_mark})")
+        tag = getattr(ev, "tag", None)
+        # Allow only the implicit YAML core schema tags; custom tags carry
+        # explicit values like 'tag:example.com,2026:foo' or '!Ref'.
+        if tag is not None:
+            if isinstance(tag, tuple):
+                # ruamel emits tag as (handle, suffix); the implicit form is None.
+                handle, suffix = tag
+                if handle is not None or suffix is not None:
+                    raise ValueError(
+                        f"explicit YAML tags are not allowed (handle={handle!r} suffix={suffix!r})"
+                    )
+            elif tag and not tag.startswith("tag:yaml.org,2002:"):
+                raise ValueError(f"non-core YAML tag not allowed: {tag!r}")
+        # Merge keys appear as ScalarEvents with value '<<'; reject them.
+        if isinstance(ev, ScalarEvent) and ev.value == "<<":
+            raise ValueError("YAML merge keys (`<<`) are not allowed")
+
+
+def _check_no_yaml_only_features(node, path="$"):
     if isinstance(node, dict):
         for k, v in node.items():
             if not isinstance(k, str):
@@ -53,29 +114,13 @@ def _check_no_yaml_only_features(node, path="$"):
     elif isinstance(node, (str, int, bool)) or node is None:
         return
     else:
-        raise ValueError(
-            f"non-JSON value type at {path}: {type(node).__name__}"
-        )
-
-
-def _detect_multidoc(text: str) -> None:
-    """Reject multi-document streams. A leading '---' is allowed once.
-
-    A real multidoc has '---' at the start of a line *after* content, so we
-    look for a second occurrence.
-    """
-    lines = text.splitlines()
-    sep_count = sum(1 for ln in lines if ln.rstrip() == "---")
-    if sep_count > 1:
-        raise ValueError("multi-document YAML stream is not allowed")
+        raise ValueError(f"non-JSON value type at {path}: {type(node).__name__}")
 
 
 def parse_canonical_yaml(text: str):
-    """Parse YAML under the safe loader with all banned-feature checks.
-
-    Returns the parsed Python tree (dict / list / str / int / bool / None).
-    """
+    """Parse YAML under the safe loader with all banned-feature checks."""
     _detect_multidoc(text)
+    _scan_for_banned_features(text)
     yaml = YAML(typ="safe", pure=True)
     yaml.allow_duplicate_keys = False
     try:
@@ -86,12 +131,31 @@ def parse_canonical_yaml(text: str):
     return node
 
 
+def _no_dup_object_pairs(pairs):
+    seen = {}
+    for k, v in pairs:
+        if k in seen:
+            raise ValueError(f"duplicate JSON object key: {k!r}")
+        seen[k] = v
+    return seen
+
+
+def _parse_canonical_json(text: str):
+    """Parse JSON rejecting duplicate keys (default last-wins is unsafe for
+    canonicalization)."""
+    try:
+        node = json.loads(text, object_pairs_hook=_no_dup_object_pairs)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"JSON parse failed: {exc}") from exc
+    _check_no_yaml_only_features(node)
+    return node
+
+
 def to_canonical_json_bytes(text: str) -> bytes:
     """Return RFC 8785 JCS bytes for YAML or JSON input. NFC-normalize all
     string values so visually identical inputs hash identically."""
     if text.lstrip().startswith("{") or text.lstrip().startswith("["):
-        node = json.loads(text)
-        _check_no_yaml_only_features(node)
+        node = _parse_canonical_json(text)
     else:
         node = parse_canonical_yaml(text)
 

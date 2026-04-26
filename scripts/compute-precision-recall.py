@@ -40,8 +40,14 @@ NON_CRITICAL = [
 ]
 
 
-def wilson_lower(p_hat: float, n: int, z: float = 1.96) -> float:
-    """One-sided Wilson lower bound at 95% confidence (z=1.96)."""
+def wilson_lower(p_hat: float, n: int, z: float = 1.6448536269514722) -> float:
+    """One-sided Wilson lower confidence bound at 95% (z = Φ⁻¹(0.95) ≈ 1.6449).
+
+    The two-sided 95% z is 1.96; using that here would be a tighter (less
+    conservative) lower bound than the spec calls for. TRUST.md §"Pass
+    bar — recall floors" specifies "one-sided 95% Wilson lower confidence
+    bound" so we use 1.6449.
+    """
     if n == 0:
         return 0.0
     denom = 1 + z * z / n
@@ -150,7 +156,12 @@ def main():
     out = ROOT / "docs" / "phase1-verification" / "precision-recall.md"
     out.write_text(body, encoding="utf-8")
     print(body)
-    sys.exit(0 if all_pass else 0)  # exit non-zero only if you want CI to fail; today, just report
+    # CI-gating: exit 1 when any critical capability fails the Wilson lower
+    # bound or the minimum positive support N. The holdout-template state
+    # (no entries) deliberately reports UNDER-VALIDATED for every critical
+    # capability, so this script DOES exit 1 until the holdout is labelled.
+    # That is intentional — Phase 1 cannot certify recall without data.
+    sys.exit(0 if all_pass else 1)
 
 
 if __name__ == "__main__":
