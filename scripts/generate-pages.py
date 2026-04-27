@@ -14,11 +14,38 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
+
+# Trust manifest support — read TRUST.auto.yaml via the canonical safe parser.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from canonicalize import parse_canonical_yaml  # noqa: E402
+except ImportError:
+    parse_canonical_yaml = None  # graceful degradation if ruamel/rfc8785 missing
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
+SKILLS_DIR = os.path.join(ROOT, "skills")
 SKILLS_JSON = os.path.join(DOCS, "skills.json")
 SITE = "https://cryptoskill.org"
+GH_BLOB = "https://github.com/jiayaoqijia/cryptoskill/blob/main"
+GH_TREE = "https://github.com/jiayaoqijia/cryptoskill/tree/main"
+
+# Capabilities considered "negative-leaning red flags" — when true the UI
+# surfaces them prominently. Order is the rendering order in the panel.
+RED_FLAG_CAPS = [
+    ("can_move_funds",            "Can move funds",              "Sends or signs transactions; can move user funds"),
+    ("requires_private_key",      "Requires private key",        "Asks the user for a key, mnemonic, or wallet config"),
+    ("requires_hosted_operator",  "Requires hosted operator",    "Correct behavior depends on a specific company's running infrastructure"),
+    ("uses_remote_install_script","Uses remote install script",  "Setup runs a script downloaded from the internet (curl|sh class)"),
+    ("mutable_remote_runtime",    "Mutable remote runtime",      "Executes remote code whose behavior can change without a local diff"),
+    ("can_install_code",          "Can install code",            "Runs npx, pip install, or downloads CLIs at install time"),
+    ("can_execute_shell",         "Can execute shell",           "Runs arbitrary Bash"),
+    ("can_browse_web",            "Can browse the web",          "Fetches arbitrary URLs"),
+    ("can_write_files",           "Can write files",             "Edits the user's local files"),
+    ("can_spawn_subagents",       "Can spawn sub-agents",        "Calls sub-skills or other agents"),
+    ("auto_invocable",            "Auto-invocable",              "Will be invoked by the agent without explicit user prompt"),
+]
 
 # ── helpers ──────────────────────────────────────────────────────────
 
@@ -51,6 +78,195 @@ def category_display(cat_id, categories):
     return info.get("name", cat_id.replace("-", " ").title()), info.get("icon", "")
 
 
+# ── Trust manifest helpers (TRUST.md §"File viewer", §"UI: red flags first") ──
+
+def load_trust_manifest(category, skill_name):
+    """Read TRUST.auto.yaml for a skill, return parsed dict or None."""
+    if parse_canonical_yaml is None:
+        return None
+    path = Path(SKILLS_DIR) / category / skill_name / "TRUST.auto.yaml"
+    if not path.exists():
+        return None
+    try:
+        return parse_canonical_yaml(path.read_text(encoding="utf-8"))
+    except Exception:
+        # An ill-formed manifest must not break page generation.
+        return None
+
+
+def _cap_field(caps, key):
+    """Return (value, confidence, source) tri-state for a capability key."""
+    raw = (caps or {}).get(key)
+    if isinstance(raw, dict):
+        return raw.get("value"), raw.get("confidence"), raw.get("source")
+    return raw, None, None
+
+
+def _red_flag_count(trust):
+    if not trust:
+        return None
+    caps = trust.get("capabilities") or {}
+    n = 0
+    for key, _label, _hover in RED_FLAG_CAPS:
+        v, _, _ = _cap_field(caps, key)
+        if v is True:
+            n += 1
+    return n
+
+
+def _capability_row(key, label, hover, value, confidence, source):
+    """One row in the capability list with honest tri-state rendering.
+
+    True  → red dot + label + capability name. Marketing-language-free.
+    False → checkmark + label.
+    Unknown → grey dot + label + "not yet measured".
+    """
+    if value is True:
+        cls = "trust-cap trust-cap--true"
+        icon = "&#x26A0;"  # ⚠
+        suffix = ""
+    elif value is False:
+        cls = "trust-cap trust-cap--false"
+        icon = "&#x2713;"  # ✓
+        suffix = ""
+    else:
+        cls = "trust-cap trust-cap--unknown"
+        icon = "&#x25CB;"  # ○
+        suffix = " <span class='trust-unknown-note'>not yet measured</span>"
+    conf = ""
+    if value is True and confidence:
+        conf = f" <span class='trust-conf trust-conf--{esc(confidence)}'>{esc(confidence)}</span>"
+    src = ""
+    if source and source != "unknown":
+        src = f" <span class='trust-src'>{esc(source)}</span>"
+    return (
+        f"<li class='{cls}' title='{esc(hover)}'>"
+        f"<span class='trust-icon' aria-hidden='true'>{icon}</span> "
+        f"<span class='trust-cap-label'>{esc(label)}</span>{suffix}{conf}{src}"
+        f"</li>"
+    )
+
+
+def trust_panel_html(trust, category, skill_name):
+    """Render the per-skill Trust Manifest panel.
+
+    Honest defaults per TRUST.md §"UI: red flags first":
+    - Stage renders 'not yet evaluated' until Phase 3 rosette computed
+    - Capability list shows ALL eleven, with tri-state value
+    - Audits section says 'no audits attempted' (distinct from "audited and clean")
+    - Ingredients section shows detected hosted operators only (Phase 1)
+    - Source links: GitHub blob + raw TRUST.auto.yaml + tree
+    """
+    blob_skill = f"{GH_BLOB}/skills/{category}/{skill_name}/SKILL.md"
+    blob_trust = f"{GH_BLOB}/skills/{category}/{skill_name}/TRUST.auto.yaml"
+    blob_source = f"{GH_BLOB}/skills/{category}/{skill_name}/SOURCE.md"
+    tree_dir = f"{GH_TREE}/skills/{category}/{skill_name}"
+
+    if trust is None:
+        return f"""
+    <h2 id="trust">Trust Manifest</h2>
+    <div class="trust-panel">
+      <p class="trust-empty">No trust manifest has been computed for this skill yet.
+      Until the bot generates one, treat capabilities as <strong>unknown</strong>.</p>
+      <div class="trust-source-links">
+        <a href="{blob_skill}" target="_blank" rel="noopener">View SKILL.md &rarr;</a>
+        <a href="{tree_dir}" target="_blank" rel="noopener">Browse directory &rarr;</a>
+      </div>
+    </div>"""
+
+    caps = trust.get("capabilities") or {}
+    cap_rows = []
+    for key, label, hover in RED_FLAG_CAPS:
+        v, conf, src = _cap_field(caps, key)
+        cap_rows.append(_capability_row(key, label, hover, v, conf, src))
+    cap_list = "\n".join(cap_rows)
+
+    n_flags = _red_flag_count(trust)
+    flags_label = (
+        f"{n_flags} capability flag{'s' if n_flags != 1 else ''}"
+        if n_flags is not None else "capabilities not yet extracted"
+    )
+
+    # Ingredient list — Phase 1 surfaces detected_hosted_operators only;
+    # the full CycloneDX BOM lands in Phase 2.
+    operators = trust.get("detected_hosted_operators") or []
+    if operators:
+        ing_items = "".join(
+            f"<li class='trust-ingredient'>"
+            f"<span class='trust-ingredient-kind'>service</span> "
+            f"<code>{esc(op)}</code>"
+            f"</li>" for op in operators
+        )
+        ingredients = f"""
+      <h3 class="trust-subhead">Ingredients</h3>
+      <p class="trust-help">External services this skill depends on. A skill with operators in this list is NOT local-only — its behavior depends on those services being up, honest, and unchanged. Full CycloneDX BOM ships in Phase 2.</p>
+      <ul class="trust-ingredient-list">{ing_items}</ul>"""
+    else:
+        ingredients = """
+      <h3 class="trust-subhead">Ingredients</h3>
+      <p class="trust-empty trust-help">No hosted operators detected by Phase 1 extractor. This is the absence of evidence, not evidence of absence — full CycloneDX BOM lands in Phase 2.</p>"""
+
+    # Execution mode summary
+    modes = trust.get("execution_modes") or []
+    if modes:
+        mode_label = esc(modes[0].get("label") or "unknown")
+        mode_desc = esc(modes[0].get("description") or "")
+        mode_html = f"""
+      <h3 class="trust-subhead">Execution mode</h3>
+      <p class="trust-mode"><code>{mode_label}</code> {mode_desc}</p>"""
+    else:
+        mode_html = ""
+
+    # Audits — TRUST.md §"Audits — evidence-of-absence vs absence-of-evidence"
+    audits = trust.get("audits") or []
+    if audits:
+        rows = []
+        for a in audits:
+            rev = (a.get("reviewer") or {})
+            rows.append(
+                f"<li class='trust-audit'>"
+                f"<strong>{esc(rev.get('name'))}</strong> "
+                f"<span class='trust-tier trust-tier--{esc(rev.get('tier','unverified'))}'>{esc(rev.get('tier','unverified'))}</span>"
+                f" &middot; subject <code>{esc(a.get('subject'))}</code>"
+                f" &middot; {esc(a.get('date',''))}"
+                f"</li>"
+            )
+        audits_html = f"""
+      <h3 class="trust-subhead">Audits</h3>
+      <ul class="trust-audit-list">{''.join(rows)}</ul>"""
+    else:
+        audits_html = """
+      <h3 class="trust-subhead">Audits</h3>
+      <p class="trust-empty trust-help"><strong>No audits attempted.</strong> This is distinct from &ldquo;audited and clean.&rdquo;
+      No tier_1/tier_2/tier_3 reviewer has signed an attestation for this skill yet.
+      <a href="../../TRUST.md" target="_blank" rel="noopener">See reviewer trust tiers &rarr;</a></p>"""
+
+    stage = trust.get("stage")
+    stage_text = "not yet evaluated" if stage is None else esc(str(stage))
+    extractor = esc(trust.get("generator") or "extract-capabilities")
+    hostlist_v = esc(trust.get("hostlist_version") or "n/a")
+
+    return f"""
+    <h2 id="trust">Trust Manifest <span class="trust-stage-pill">Stage: {stage_text}</span></h2>
+    <p class="trust-help"><strong>{esc(flags_label)}.</strong> Capabilities are extracted automatically per <a href="../../TRUST.md" target="_blank" rel="noopener">TRUST.md</a>; <code>unknown</code> means the extractor declined to assert and is the honest default in Phase 1.</p>
+    <div class="trust-panel">
+      <h3 class="trust-subhead">Capabilities</h3>
+      <ul class="trust-cap-list">
+{cap_list}
+      </ul>
+{mode_html}
+{ingredients}
+{audits_html}
+      <p class="trust-source-links">
+        <a href="{blob_skill}" target="_blank" rel="noopener">SKILL.md &rarr;</a>
+        <a href="{blob_source}" target="_blank" rel="noopener">SOURCE.md &rarr;</a>
+        <a href="{blob_trust}" target="_blank" rel="noopener">TRUST.auto.yaml &rarr;</a>
+        <a href="{tree_dir}" target="_blank" rel="noopener">Browse directory &rarr;</a>
+      </p>
+      <p class="trust-foot">Generated by {extractor} &middot; hostlist {hostlist_v} &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
+    </div>"""
+
+
 # ── page templates ───────────────────────────────────────────────────
 
 def skill_page_html(skill, categories):
@@ -69,6 +285,17 @@ def skill_page_html(skill, categories):
     total = score.get("total", "")
     grade = score.get("grade", "")
     risk_gate = score.get("risk_gate", "")
+
+    # Trust manifest data (TRUST.auto.yaml). May be None if not yet computed.
+    trust = load_trust_manifest(cat, s["name"])
+    trust_html = trust_panel_html(trust, cat, s["name"])
+    n_flags = _red_flag_count(trust)
+    flag_badge = ""
+    if n_flags is not None:
+        if n_flags == 0:
+            flag_badge = '<span class="skill-badge trust-flag-badge trust-flag-zero" title="No red-flag capabilities detected">0 flags</span>'
+        else:
+            flag_badge = f'<span class="skill-badge trust-flag-badge trust-flag-some" title="{n_flags} red-flag capabilities detected">{n_flags} flag{"s" if n_flags != 1 else ""}</span>'
 
     # Build tags HTML
     tags_html = ""
@@ -168,6 +395,7 @@ def skill_page_html(skill, categories):
       <span>v{version}</span>
       {grade_badge}
       {risk_badge}
+      {flag_badge}
     </div>
     <p class="skill-page-desc">{desc}</p>
 
@@ -180,6 +408,8 @@ def skill_page_html(skill, categories):
       {tags_html}
     </div>
 {quality_html}
+
+{trust_html}
 
     <h2>Source</h2>
     <p><a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/{esc(cat)}/{name}" target="_blank" rel="noopener">View on GitHub &rarr;</a></p>
@@ -224,9 +454,19 @@ def category_index_html(cat_id, skills, categories):
         grade = s.get("score", {}).get("grade", "")
         gc = grade_color(grade) if grade else ""
         grade_span = f'<span class="skill-badge" style="background:rgba({_hex_to_rgb(gc)},0.12);color:{gc}">{esc(grade)}</span>' if grade else ""
+        # Trust flag count from per-skill TRUST.auto.yaml — null when manifest absent.
+        trust = load_trust_manifest(cat_id, s["name"])
+        nf = _red_flag_count(trust)
+        if nf is None:
+            flag_span = ""
+        elif nf == 0:
+            flag_span = '<span class="skill-badge trust-flag-badge trust-flag-zero" title="No red-flag capabilities">0 flags</span>'
+        else:
+            flag_span = f'<span class="skill-badge trust-flag-badge trust-flag-some" title="{nf} red-flag capabilities">{nf} flag{"s" if nf != 1 else ""}</span>'
         rows += f"""      <a href="{sname}.html" class="cat-skill-row">
         <span class="cat-skill-name">{sdisplay}</span>
         {grade_span}
+        {flag_span}
         <span class="cat-skill-desc">{sdesc}</span>
       </a>\n"""
 

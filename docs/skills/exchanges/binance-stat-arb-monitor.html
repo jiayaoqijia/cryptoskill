@@ -57,6 +57,7 @@
       <span>v1.0.0</span>
       <span class="skill-badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">B</span>
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
+      <span class="skill-badge trust-flag-badge trust-flag-some" title="3 red-flag capabilities detected">3 flags</span>
     </div>
     <p class="skill-page-desc">Binance 统计套利监控系统。基于 ETH/BTC 永续合约价格比率计算 z-score，生成均值回归交易信号并推送到 Telegram 或飞书。 使用场景： (1) 监控统计套利机会（ETH/BTC 比率偏离均值） (2) 计算 z-score 判断开仓/平仓时机 (3) 生成交易信号（OPEN/CLOSE） (4) 通过 Telegram Channel 或飞书推送信号 (5) 记录信号历史用于回测分析 数据来源：Binance USDT 合约公共 API（无需认证即可获取行情数据）</p>
 
@@ -78,6 +79,45 @@
       <span>Score: <strong>73/100</strong></span>
       <span>Grade: <strong>B</strong></span>
       <span>Risk Gate: <strong>PASS</strong></span>
+    </div>
+
+
+    <h2 id="trust">Trust Manifest <span class="trust-stage-pill">Stage: not yet evaluated</span></h2>
+    <p class="trust-help"><strong>3 capability flags.</strong> Capabilities are extracted automatically per <a href="../../TRUST.md" target="_blank" rel="noopener">TRUST.md</a>; <code>unknown</code> means the extractor declined to assert and is the honest default in Phase 1.</p>
+    <div class="trust-panel">
+      <h3 class="trust-subhead">Capabilities</h3>
+      <ul class="trust-cap-list">
+<li class='trust-cap trust-cap--unknown' title='Sends or signs transactions; can move user funds'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can move funds</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--unknown' title='Asks the user for a key, mnemonic, or wallet config'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Requires private key</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--true' title='Correct behavior depends on a specific company&#x27;s running infrastructure'><span class='trust-icon' aria-hidden='true'>&#x26A0;</span> <span class='trust-cap-label'>Requires hosted operator</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Setup runs a script downloaded from the internet (curl|sh class)'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Uses remote install script</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--true' title='Executes remote code whose behavior can change without a local diff'><span class='trust-icon' aria-hidden='true'>&#x26A0;</span> <span class='trust-cap-label'>Mutable remote runtime</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--true' title='Runs npx, pip install, or downloads CLIs at install time'><span class='trust-icon' aria-hidden='true'>&#x26A0;</span> <span class='trust-cap-label'>Can install code</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--unknown' title='Runs arbitrary Bash'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can execute shell</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--unknown' title='Fetches arbitrary URLs'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can browse the web</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--unknown' title='Edits the user&#x27;s local files'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can write files</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--unknown' title='Calls sub-skills or other agents'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can spawn sub-agents</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--unknown' title='Will be invoked by the agent without explicit user prompt'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Auto-invocable</span> <span class='trust-unknown-note'>not yet measured</span></li>
+      </ul>
+
+      <h3 class="trust-subhead">Execution mode</h3>
+      <p class="trust-mode"><code>local_executor</code> Phase 1 single-mode classification — multi-mode breakdown deferred to Phase 2.</p>
+
+      <h3 class="trust-subhead">Ingredients</h3>
+      <p class="trust-help">External services this skill depends on. A skill with operators in this list is NOT local-only — its behavior depends on those services being up, honest, and unchanged. Full CycloneDX BOM ships in Phase 2.</p>
+      <ul class="trust-ingredient-list"><li class='trust-ingredient'><span class='trust-ingredient-kind'>service</span> <code>binance.com</code></li></ul>
+
+      <h3 class="trust-subhead">Audits</h3>
+      <p class="trust-empty trust-help"><strong>No audits attempted.</strong> This is distinct from &ldquo;audited and clean.&rdquo;
+      No tier_1/tier_2/tier_3 reviewer has signed an attestation for this skill yet.
+      <a href="../../TRUST.md" target="_blank" rel="noopener">See reviewer trust tiers &rarr;</a></p>
+      <p class="trust-source-links">
+        <a href="https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/exchanges/binance-stat-arb-monitor/SKILL.md" target="_blank" rel="noopener">SKILL.md &rarr;</a>
+        <a href="https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/exchanges/binance-stat-arb-monitor/SOURCE.md" target="_blank" rel="noopener">SOURCE.md &rarr;</a>
+        <a href="https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/exchanges/binance-stat-arb-monitor/TRUST.auto.yaml" target="_blank" rel="noopener">TRUST.auto.yaml &rarr;</a>
+        <a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/exchanges/binance-stat-arb-monitor" target="_blank" rel="noopener">Browse directory &rarr;</a>
+      </p>
+      <p class="trust-foot">Generated by cryptoskill/extract-capabilities/0.3.0 &middot; hostlist 2026-04-26 &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
     </div>
 
     <h2>Source</h2>

@@ -16,6 +16,36 @@
   let showingAll = false;
   let sortByScore = false;
 
+  // Trust manifest data, keyed by `${category}/${skillName}` (matches the
+  // path in skills/ on disk). Loaded from docs/capabilities.json so the
+  // home page never blocks on per-skill YAML parsing client-side.
+  let trustData = {};
+  // The four negative-only filters from TRUST.md §"UI: red flags first".
+  // `id` is the capability key in TRUST.auto.yaml; an entry is included
+  // only when the manifest reports the field as `false`.
+  const TRUST_FILTERS = [
+    { id: 'can_execute_shell',          label: 'Cannot execute shell' },
+    { id: 'can_move_funds',             label: 'Cannot move funds' },
+    { id: 'requires_hosted_operator',   label: 'No hosted operator required' },
+    { id: 'uses_remote_install_script', label: 'No remote install scripts' },
+  ];
+  // Capability keys we want surfaced in the modal as "red flags". Order
+  // mirrors scripts/generate-pages.py:RED_FLAG_CAPS.
+  const RED_FLAG_CAPS = [
+    ['can_move_funds',             'Can move funds'],
+    ['requires_private_key',       'Requires private key'],
+    ['requires_hosted_operator',   'Requires hosted operator'],
+    ['uses_remote_install_script', 'Uses remote install script'],
+    ['mutable_remote_runtime',     'Mutable remote runtime'],
+    ['can_install_code',           'Can install code'],
+    ['can_execute_shell',          'Can execute shell'],
+    ['can_browse_web',             'Can browse the web'],
+    ['can_write_files',            'Can write files'],
+    ['can_spawn_subagents',        'Can spawn sub-agents'],
+    ['auto_invocable',             'Auto-invocable'],
+  ];
+  let activeTrustFilters = new Set();
+
   // --- Official Project Definitions ---
   // Only show big names. Skills from smaller projects still get "official" tag but no card.
   const OFFICIAL_PROJECTS = [
@@ -168,10 +198,28 @@
   // --- Load Skills Catalog ---
   async function loadSkills() {
     try {
-      const res = await fetch('skills.json');
-      const data = await res.json();
+      // Skills catalog is required; capabilities are best-effort. Don't let
+      // a missing or malformed capabilities.json break page rendering.
+      const [catalogRes, capsRes] = await Promise.allSettled([
+        fetch('skills.json', { cache: 'no-cache' }),
+        fetch('capabilities.json', { cache: 'no-cache' }),
+      ]);
+      if (catalogRes.status !== 'fulfilled' || !catalogRes.value.ok) {
+        throw new Error('skills.json fetch failed');
+      }
+      const data = await catalogRes.value.json();
       skills = data.skills;
       categories = data.categories;
+      if (capsRes.status === 'fulfilled' && capsRes.value.ok) {
+        try {
+          const capsJson = await capsRes.value.json();
+          trustData = capsJson.skills || {};
+        } catch (e) {
+          // Malformed capabilities.json — fall through with empty trustData
+          // so the UI keeps working without flag badges.
+          trustData = {};
+        }
+      }
       separateSkills();
       renderOfficialProjects();
       renderCategories();
@@ -181,6 +229,37 @@
     } catch (err) {
       console.error('Failed to load skills catalog:', err);
     }
+  }
+
+  // --- Trust manifest accessors ---
+  function trustFor(skill) {
+    if (!skill) return null;
+    return trustData[`${skill.category}/${skill.name}`] || null;
+  }
+  function capValue(t, key) {
+    if (!t || !t.capabilities) return undefined;
+    const raw = t.capabilities[key];
+    // Python emitter writes scalar; JSON shape is the raw value.
+    if (raw === null || raw === undefined) return undefined;
+    if (typeof raw === 'object') return raw.value;
+    return raw;
+  }
+  function redFlagCount(t) {
+    if (!t) return null;
+    let n = 0;
+    for (const [k] of RED_FLAG_CAPS) {
+      if (capValue(t, k) === true) n += 1;
+    }
+    return n;
+  }
+  function passesTrustFilters(skill) {
+    if (activeTrustFilters.size === 0) return true;
+    const t = trustFor(skill);
+    if (!t) return false; // when filter is active, manifests-not-yet are excluded
+    for (const id of activeTrustFilters) {
+      if (capValue(t, id) !== false) return false;
+    }
+    return true;
   }
 
   // --- Separate Official and Community Skills ---
@@ -379,6 +458,14 @@
     const badgeText = isOfficial ? '&#10003; Official' : (cat ? cat.name : skill.category);
 
     // Note: skill data comes from our own skills.json catalog, not user input
+    const flagCount = redFlagCount(trustFor(skill));
+    let flagBadge = '';
+    if (flagCount === 0) {
+      flagBadge = '<span class="skill-badge trust-flag-badge trust-flag-zero" title="No red-flag capabilities detected">0 flags</span>';
+    } else if (flagCount > 0) {
+      const plural = flagCount === 1 ? '' : 's';
+      flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-some" title="${flagCount} red-flag capabilities detected">${flagCount} flag${plural}</span>`;
+    }
     card.innerHTML = `
       ${renderScoreBadge(skill)}
       <div class="skill-card-header">
@@ -389,6 +476,7 @@
       <div class="skill-footer">
         <div class="skill-tags">
           ${skill.tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="skill-tag">${t}</span>`).join('')}
+          ${flagBadge}
         </div>
         <span class="skill-version">v${skill.version}</span>
       </div>
@@ -445,6 +533,36 @@
       renderSkills();
     });
     filterContainer.appendChild(sortBtn);
+
+    // Trust filter row (TRUST.md §"UI: red flags first, green checks last").
+    // Negative-only — these all read "Cannot X" / "No X required". A skill
+    // qualifies only when its TRUST.auto.yaml capability is explicitly false.
+    let trustRow = document.getElementById('trustFilterRow');
+    if (!trustRow) {
+      trustRow = document.createElement('div');
+      trustRow.id = 'trustFilterRow';
+      trustRow.className = 'trust-filter-row';
+      filterContainer.parentNode.insertBefore(trustRow, filterContainer.nextSibling);
+    }
+    trustRow.innerHTML = '';
+    const lbl = document.createElement('span');
+    lbl.className = 'trust-filter-label';
+    lbl.textContent = 'Trust filters:';
+    trustRow.appendChild(lbl);
+    TRUST_FILTERS.forEach(f => {
+      const tb = document.createElement('button');
+      const isOn = activeTrustFilters.has(f.id);
+      tb.className = 'filter-btn' + (isOn ? ' trust-filter-active' : '');
+      tb.textContent = f.label;
+      tb.title = `Show only skills whose TRUST.auto.yaml records ${f.id}: false`;
+      tb.addEventListener('click', () => {
+        if (activeTrustFilters.has(f.id)) activeTrustFilters.delete(f.id);
+        else activeTrustFilters.add(f.id);
+        tb.classList.toggle('trust-filter-active');
+        renderSkills();
+      });
+      trustRow.appendChild(tb);
+    });
   }
 
   function createFilterBtn(key, label) {
@@ -472,6 +590,9 @@
     if (!skillsGrid) return;
     skillsGrid.innerHTML = '';
     let filtered = activeFilter === 'all' ? [...communitySkills] : communitySkills.filter(s => s.category === activeFilter);
+    if (activeTrustFilters.size > 0) {
+      filtered = filtered.filter(passesTrustFilters);
+    }
     if (sortByScore) {
       filtered.sort((a, b) => {
         const sa = (a.score && a.score.total != null) ? a.score.total : -1;
@@ -504,6 +625,75 @@
       showingAll = true;
       renderSkills();
     });
+  }
+
+  // --- Trust panel (modal) ---
+  function escHTML(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+  function renderTrustPanel(skill) {
+    const t = trustFor(skill);
+    const ghBlob = `https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/${skill.category}/${skill.name}`;
+    const ghTree = `https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/${skill.category}/${skill.name}`;
+    const links = `
+      <p class="trust-source-links">
+        <a href="${ghBlob}/SKILL.md" target="_blank" rel="noopener">SKILL.md &rarr;</a>
+        <a href="${ghBlob}/SOURCE.md" target="_blank" rel="noopener">SOURCE.md &rarr;</a>
+        <a href="${ghBlob}/TRUST.auto.yaml" target="_blank" rel="noopener">TRUST.auto.yaml &rarr;</a>
+        <a href="${ghTree}" target="_blank" rel="noopener">Browse directory &rarr;</a>
+      </p>`;
+    if (!t) {
+      return `
+      <div class="modal-section-title">Trust Manifest</div>
+      <div class="trust-panel">
+        <p class="trust-empty">No trust manifest computed for this skill yet. Treat capabilities as <strong>unknown</strong> until the bot generates one.</p>
+        ${links}
+      </div>`;
+    }
+    const caps = t.capabilities || {};
+    const rows = RED_FLAG_CAPS.map(([key, label]) => {
+      const raw = caps[key];
+      const val = (raw && typeof raw === 'object') ? raw.value : raw;
+      const conf = (raw && typeof raw === 'object') ? raw.confidence : null;
+      const src = (raw && typeof raw === 'object') ? raw.source : null;
+      let cls, icon, suffix = '';
+      if (val === true) { cls = 'trust-cap--true'; icon = '&#x26A0;'; }
+      else if (val === false) { cls = 'trust-cap--false'; icon = '&#x2713;'; }
+      else { cls = 'trust-cap--unknown'; icon = '&#x25CB;'; suffix = " <span class='trust-unknown-note'>not yet measured</span>"; }
+      const confSpan = (val === true && conf) ? ` <span class='trust-conf trust-conf--${escHTML(conf)}'>${escHTML(conf)}</span>` : '';
+      const srcSpan = (src && src !== 'unknown') ? ` <span class='trust-src'>${escHTML(src)}</span>` : '';
+      return `<li class="trust-cap ${cls}"><span class="trust-icon" aria-hidden="true">${icon}</span> <span class="trust-cap-label">${escHTML(label)}</span>${suffix}${confSpan}${srcSpan}</li>`;
+    }).join('');
+    // capabilities.json uses `hosted_operators`; per-skill TRUST.auto.yaml
+    // uses `detected_hosted_operators`. Accept either.
+    const operators = t.detected_hosted_operators || t.hosted_operators || [];
+    const ingredients = operators.length
+      ? `<h3 class="trust-subhead">Ingredients</h3>
+         <ul class="trust-ingredient-list">${operators.map(op => `<li class="trust-ingredient"><span class="trust-ingredient-kind">service</span> <code>${escHTML(op)}</code></li>`).join('')}</ul>`
+      : '<h3 class="trust-subhead">Ingredients</h3><p class="trust-empty trust-help">No hosted operators detected by Phase 1 extractor. Full CycloneDX BOM ships in Phase 2.</p>';
+    const audits = (t.audits || []);
+    const auditsHTML = audits.length
+      ? `<h3 class="trust-subhead">Audits</h3><ul class="trust-audit-list">${audits.map(a => {
+          const r = a.reviewer || {};
+          return `<li class="trust-audit"><strong>${escHTML(r.name || 'Unknown')}</strong> <span class="trust-tier trust-tier--${escHTML(r.tier || 'unverified')}">${escHTML(r.tier || 'unverified')}</span> &middot; subject <code>${escHTML(a.subject || '')}</code> &middot; ${escHTML(a.date || '')}</li>`;
+        }).join('')}</ul>`
+      : '<h3 class="trust-subhead">Audits</h3><p class="trust-empty trust-help"><strong>No audits attempted.</strong> Distinct from "audited and clean".</p>';
+    const stage = t.stage == null ? 'not yet evaluated' : escHTML(String(t.stage));
+    const flagN = redFlagCount(t);
+    const flagsLabel = flagN === null ? 'capabilities not yet extracted' :
+      `${flagN} capability flag${flagN === 1 ? '' : 's'}`;
+    return `
+      <div class="modal-section-title">Trust Manifest <span class="trust-stage-pill">Stage: ${stage}</span></div>
+      <p class="trust-help"><strong>${escHTML(flagsLabel)}.</strong> Extracted automatically; <code>unknown</code> means the extractor declined to assert.</p>
+      <div class="trust-panel">
+        <h3 class="trust-subhead">Capabilities</h3>
+        <ul class="trust-cap-list">${rows}</ul>
+        ${ingredients}
+        ${auditsHTML}
+        ${links}
+      </div>`;
   }
 
   // --- Score Detail Rendering for Modal ---
@@ -646,6 +836,7 @@
         `}
       </div>
       ${renderScoreDetail(skill)}
+      ${renderTrustPanel(skill)}
     `;
     modalOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';

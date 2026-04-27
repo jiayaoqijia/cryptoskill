@@ -2381,3 +2381,233 @@ a {
     -webkit-box-orient: vertical;
   }
 }
+
+/* ============================================
+   Trust Manifest panel (Phase 3 UI)
+   See docs/TRUST.md §"UI: red flags first, green checks last"
+   ============================================ */
+
+.trust-panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  padding: 18px 22px;
+  margin: 12px 0 32px;
+}
+
+.trust-stage-pill {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px 10px;
+  border-radius: 8px;
+  vertical-align: middle;
+}
+[data-theme="dark"] .trust-stage-pill {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.trust-help {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 6px 0 14px;
+}
+
+.trust-subhead {
+  margin: 18px 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.trust-subhead:first-child {
+  margin-top: 4px;
+}
+
+.trust-cap-list,
+.trust-ingredient-list,
+.trust-audit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 6px 16px;
+}
+
+.trust-cap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  background: rgba(0, 0, 0, 0.02);
+}
+[data-theme="dark"] .trust-cap {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.trust-cap--true {
+  background: rgba(239, 68, 68, 0.10);
+  color: #b91c1c;
+}
+[data-theme="dark"] .trust-cap--true {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+}
+.trust-cap--false {
+  color: var(--text-secondary);
+}
+.trust-cap--unknown {
+  color: var(--text-tertiary);
+}
+
+.trust-icon {
+  flex: 0 0 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.trust-cap-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.trust-conf,
+.trust-src {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-tertiary);
+}
+.trust-conf--high   { background: rgba(34, 197, 94, 0.12); color: #15803d; }
+.trust-conf--medium { background: rgba(234, 179, 8, 0.14); color: #a16207; }
+.trust-conf--low    { background: rgba(0, 0, 0, 0.06); color: var(--text-tertiary); }
+[data-theme="dark"] .trust-conf--high   { color: #86efac; }
+[data-theme="dark"] .trust-conf--medium { color: #fde68a; }
+
+.trust-unknown-note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.trust-ingredient {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.02);
+  font-size: 13.5px;
+}
+[data-theme="dark"] .trust-ingredient {
+  background: rgba(255, 255, 255, 0.03);
+}
+.trust-ingredient code {
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+}
+.trust-ingredient-kind {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 1px 6px;
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+[data-theme="dark"] .trust-ingredient-kind {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.trust-audit { padding: 6px 10px; font-size: 13.5px; }
+
+.trust-tier {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+.trust-tier--tier_1     { background: rgba(34, 197, 94, 0.18); color: #15803d; }
+.trust-tier--tier_2     { background: rgba(59, 130, 246, 0.18); color: #1d4ed8; }
+.trust-tier--tier_3     { background: rgba(234, 179, 8, 0.18); color: #a16207; }
+.trust-tier--unverified { background: rgba(0, 0, 0, 0.08);     color: var(--text-tertiary); }
+
+.trust-empty {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.trust-mode { margin: 4px 0; font-size: 14px; color: var(--text-secondary); }
+.trust-mode code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+[data-theme="dark"] .trust-mode code { background: rgba(255, 255, 255, 0.07); }
+
+.trust-source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+  font-size: 14px;
+}
+.trust-source-links a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.trust-source-links a:hover { text-decoration: underline; }
+
+.trust-foot {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Card-level flag badge: 0 flags → muted green; some → muted amber. */
+.trust-flag-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+.trust-flag-zero { background: rgba(34, 197, 94, 0.12); color: #15803d; }
+.trust-flag-some { background: rgba(234, 179, 8, 0.16); color: #a16207; }
+[data-theme="dark"] .trust-flag-zero { color: #86efac; }
+[data-theme="dark"] .trust-flag-some { color: #fde68a; }
+
+/* Trust-filter row sits below the category filters. */
+.trust-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  align-items: center;
+}
+.trust-filter-row .trust-filter-label {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin-right: 6px;
+}
+.filter-btn.trust-filter-active {
+  background: rgba(34, 197, 94, 0.18);
+  color: #15803d;
+  border-color: transparent;
+}
+[data-theme="dark"] .filter-btn.trust-filter-active { color: #86efac; }

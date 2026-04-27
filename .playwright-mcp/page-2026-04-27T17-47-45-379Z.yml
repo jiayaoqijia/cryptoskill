@@ -1,0 +1,173 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "CryptoSkill CryptoSkill" [ref=e4] [cursor=pointer]:
+        - /url: ../../
+        - img "CryptoSkill" [ref=e5]
+        - text: CryptoSkill
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "Official" [ref=e8] [cursor=pointer]:
+            - /url: ../../#official
+        - listitem [ref=e9]:
+          - link "Skills" [ref=e10] [cursor=pointer]:
+            - /url: ../../#skills
+        - listitem [ref=e11]:
+          - link "Categories" [ref=e12] [cursor=pointer]:
+            - /url: ../../#categories
+        - listitem [ref=e13]:
+          - link "How It Works" [ref=e14] [cursor=pointer]:
+            - /url: ../../#how-it-works
+        - listitem [ref=e15]:
+          - link "GitHub" [ref=e16] [cursor=pointer]:
+            - /url: https://github.com/jiayaoqijia/cryptoskill
+      - button "Toggle theme" [ref=e18] [cursor=pointer]:
+        - img [ref=e19]
+  - generic [ref=e25]:
+    - navigation [ref=e26]:
+      - link "Home" [ref=e27] [cursor=pointer]:
+        - /url: ../../
+      - text: ›
+      - link "AI x Crypto" [ref=e28] [cursor=pointer]:
+        - /url: ../../#categories
+      - text: › Heurist Official Mesh
+    - heading "Heurist Official Mesh" [level=1] [ref=e29]
+    - generic [ref=e30]:
+      - generic [ref=e31]: AI x Crypto
+      - generic [ref=e32]: by @unknown
+      - generic [ref=e33]: v1.0.0
+      - generic [ref=e34]: B
+      - generic [ref=e35]: PASS
+      - generic "4 red-flag capabilities detected" [ref=e36]: 4 flags
+    - paragraph [ref=e37]: Access real-time crypto token data, DeFi analytics, wallet intelligence, project research, and blockchain insights through Heurist Mesh agents. Use when the user asks about token trends, DeFi protocols, wallet holdings, project due diligence, Twitter/X crypto sentiment, or deeper market analysis.
+    - heading "Install" [level=2] [ref=e38]
+    - generic [ref=e39]:
+      - generic [ref=e40]: $
+      - code [ref=e41]: cp -r cryptoskill/skills/ai-crypto/heurist-official-mesh .claude/skills/
+    - generic [ref=e42]:
+      - generic [ref=e43]: $
+      - code [ref=e44]: clawhub install heurist-official-mesh
+    - heading "Tags" [level=2] [ref=e45]
+    - generic [ref=e47]: ai-crypto
+    - heading "Quality Score" [level=2] [ref=e48]
+    - generic [ref=e49]:
+      - generic [ref=e50]:
+        - text: "Score:"
+        - strong [ref=e51]: 68/100
+      - generic [ref=e52]:
+        - text: "Grade:"
+        - strong [ref=e53]: B
+      - generic [ref=e54]:
+        - text: "Risk Gate:"
+        - strong [ref=e55]: PASS
+    - 'heading "Trust Manifest Stage: not yet evaluated" [level=2] [ref=e56]':
+      - text: Trust Manifest
+      - generic [ref=e57]: "Stage: not yet evaluated"
+    - paragraph [ref=e58]:
+      - strong [ref=e59]: 4 capability flags.
+      - text: Capabilities are extracted automatically per
+      - link "TRUST.md" [ref=e60] [cursor=pointer]:
+        - /url: ../../TRUST.md
+      - text: ;
+      - code [ref=e61]: unknown
+      - text: means the extractor declined to assert and is the honest default in Phase 1.
+    - generic [ref=e62]:
+      - heading "Capabilities" [level=3] [ref=e63]
+      - list [ref=e64]:
+        - listitem "Sends or signs transactions; can move user funds" [ref=e65]:
+          - generic [ref=e66]: ○
+          - generic [ref=e67]: Can move funds
+          - generic [ref=e68]: not yet measured
+        - listitem "Asks the user for a key, mnemonic, or wallet config" [ref=e69]:
+          - generic [ref=e70]: ⚠
+          - generic [ref=e71]: Requires private key
+          - generic [ref=e72]: medium
+          - generic [ref=e73]: extracted
+        - listitem "Correct behavior depends on a specific company's running infrastructure" [ref=e74]:
+          - generic [ref=e75]: ○
+          - generic [ref=e76]: Requires hosted operator
+          - generic [ref=e77]: not yet measured
+        - listitem "Setup runs a script downloaded from the internet (curl|sh class)" [ref=e78]:
+          - generic [ref=e79]: ⚠
+          - generic [ref=e80]: Uses remote install script
+          - generic [ref=e81]: medium
+          - generic [ref=e82]: extracted
+        - listitem "Executes remote code whose behavior can change without a local diff" [ref=e83]:
+          - generic [ref=e84]: ⚠
+          - generic [ref=e85]: Mutable remote runtime
+          - generic [ref=e86]: medium
+          - generic [ref=e87]: extracted
+        - listitem "Runs npx, pip install, or downloads CLIs at install time" [ref=e88]:
+          - generic [ref=e89]: ⚠
+          - generic [ref=e90]: Can install code
+          - generic [ref=e91]: medium
+          - generic [ref=e92]: extracted
+        - listitem "Runs arbitrary Bash" [ref=e93]:
+          - generic [ref=e94]: ○
+          - generic [ref=e95]: Can execute shell
+          - generic [ref=e96]: not yet measured
+        - listitem "Fetches arbitrary URLs" [ref=e97]:
+          - generic [ref=e98]: ○
+          - generic [ref=e99]: Can browse the web
+          - generic [ref=e100]: not yet measured
+        - listitem "Edits the user's local files" [ref=e101]:
+          - generic [ref=e102]: ○
+          - generic [ref=e103]: Can write files
+          - generic [ref=e104]: not yet measured
+        - listitem "Calls sub-skills or other agents" [ref=e105]:
+          - generic [ref=e106]: ○
+          - generic [ref=e107]: Can spawn sub-agents
+          - generic [ref=e108]: not yet measured
+        - listitem "Will be invoked by the agent without explicit user prompt" [ref=e109]:
+          - generic [ref=e110]: ○
+          - generic [ref=e111]: Auto-invocable
+          - generic [ref=e112]: not yet measured
+      - heading "Execution mode" [level=3] [ref=e113]
+      - paragraph [ref=e114]:
+        - code [ref=e115]: installer_bootstrap
+        - text: Phase 1 single-mode classification — multi-mode breakdown deferred to Phase 2.
+      - heading "Ingredients" [level=3] [ref=e116]
+      - paragraph [ref=e117]: No hosted operators detected by Phase 1 extractor. This is the absence of evidence, not evidence of absence — full CycloneDX BOM lands in Phase 2.
+      - heading "Audits" [level=3] [ref=e118]
+      - paragraph [ref=e119]:
+        - strong [ref=e120]: No audits attempted.
+        - text: This is distinct from “audited and clean.” No tier_1/tier_2/tier_3 reviewer has signed an attestation for this skill yet.
+        - link "See reviewer trust tiers →" [ref=e121] [cursor=pointer]:
+          - /url: ../../TRUST.md
+      - paragraph [ref=e122]:
+        - link "SKILL.md →" [ref=e123] [cursor=pointer]:
+          - /url: https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/ai-crypto/heurist-official-mesh/SKILL.md
+        - link "SOURCE.md →" [ref=e124] [cursor=pointer]:
+          - /url: https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/ai-crypto/heurist-official-mesh/SOURCE.md
+        - link "TRUST.auto.yaml →" [ref=e125] [cursor=pointer]:
+          - /url: https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/ai-crypto/heurist-official-mesh/TRUST.auto.yaml
+        - link "Browse directory →" [ref=e126] [cursor=pointer]:
+          - /url: https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/ai-crypto/heurist-official-mesh
+      - paragraph [ref=e127]:
+        - text: Generated by cryptoskill/extract-capabilities/0.3.0 · hostlist 2026-04-26 ·
+        - link "how this is computed" [ref=e128] [cursor=pointer]:
+          - /url: ../../TRUST.md
+    - heading "Source" [level=2] [ref=e129]
+    - paragraph [ref=e130]:
+      - link "View on GitHub →" [ref=e131] [cursor=pointer]:
+        - /url: https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/ai-crypto/heurist-official-mesh
+  - contentinfo [ref=e132]:
+    - generic [ref=e133]:
+      - generic [ref=e134]:
+        - generic [ref=e135]: CryptoSkill
+        - generic [ref=e136]: Built for the crypto community
+      - generic [ref=e137]:
+        - link "GitHub" [ref=e138] [cursor=pointer]:
+          - /url: https://github.com/jiayaoqijia/cryptoskill
+          - img [ref=e139]
+          - text: GitHub
+        - link "Official" [ref=e141] [cursor=pointer]:
+          - /url: ../../#official
+        - link "Skills" [ref=e142] [cursor=pointer]:
+          - /url: ../../#skills
+        - link "Categories" [ref=e143] [cursor=pointer]:
+          - /url: ../../#categories
+        - link "Terms" [ref=e144] [cursor=pointer]:
+          - /url: ../../terms.html
+        - link "Privacy" [ref=e145] [cursor=pointer]:
+          - /url: ../../privacy.html
