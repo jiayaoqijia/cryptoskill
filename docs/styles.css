@@ -2611,3 +2611,6 @@ a {
   border-color: transparent;
 }
 [data-theme="dark"] .filter-btn.trust-filter-active { color: #86efac; }
+
+.trust-flag-mostly-unknown { background: rgba(0,0,0,0.06); color: var(--text-tertiary); }
+[data-theme="dark"] .trust-flag-mostly-unknown { background: rgba(255,255,255,0.07); }

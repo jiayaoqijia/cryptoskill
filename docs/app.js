@@ -244,13 +244,19 @@
     if (typeof raw === 'object') return raw.value;
     return raw;
   }
-  function redFlagCount(t) {
+  function redFlagSummary(t) {
     if (!t) return null;
-    let n = 0;
+    let nTrue = 0, nUnknown = 0;
     for (const [k] of RED_FLAG_CAPS) {
-      if (capValue(t, k) === true) n += 1;
+      const v = capValue(t, k);
+      if (v === true) nTrue += 1;
+      else if (v === undefined || v === 'unknown') nUnknown += 1;
     }
-    return n;
+    return { nTrue, nUnknown };
+  }
+  function redFlagCount(t) {
+    const s = redFlagSummary(t);
+    return s === null ? null : s.nTrue;
   }
   function passesTrustFilters(skill) {
     if (activeTrustFilters.size === 0) return true;
@@ -458,13 +464,19 @@
     const badgeText = isOfficial ? '&#10003; Official' : (cat ? cat.name : skill.category);
 
     // Note: skill data comes from our own skills.json catalog, not user input
-    const flagCount = redFlagCount(trustFor(skill));
+    const summary = redFlagSummary(trustFor(skill));
     let flagBadge = '';
-    if (flagCount === 0) {
-      flagBadge = '<span class="skill-badge trust-flag-badge trust-flag-zero" title="No red-flag capabilities detected">0 flags</span>';
-    } else if (flagCount > 0) {
-      const plural = flagCount === 1 ? '' : 's';
-      flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-some" title="${flagCount} red-flag capabilities detected">${flagCount} flag${plural}</span>`;
+    if (summary !== null) {
+      const { nTrue, nUnknown } = summary;
+      const title = `${nTrue} true, ${nUnknown} unknown of 11 capability flags`;
+      if (nTrue === 0 && nUnknown === 0) {
+        flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-zero" title="${title}">0 known flags</span>`;
+      } else if (nTrue === 0 && nUnknown > 0) {
+        flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="${title}">0 known &middot; ${nUnknown} unknown</span>`;
+      } else {
+        const plural = nTrue === 1 ? '' : 's';
+        flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-some" title="${title}">${nTrue} flag${plural}</span>`;
+      }
     }
     card.innerHTML = `
       ${renderScoreBadge(skill)}
@@ -635,8 +647,12 @@
   }
   function renderTrustPanel(skill) {
     const t = trustFor(skill);
-    const ghBlob = `https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/${skill.category}/${skill.name}`;
-    const ghTree = `https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/${skill.category}/${skill.name}`;
+    // URL-encode path segments — skill.category and skill.name come from our
+    // own catalog so they're trusted today, but defense-in-depth is cheap.
+    const cat = encodeURIComponent(skill.category);
+    const nm = encodeURIComponent(skill.name);
+    const ghBlob = `https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/${cat}/${nm}`;
+    const ghTree = `https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/${cat}/${nm}`;
     const links = `
       <p class="trust-source-links">
         <a href="${ghBlob}/SKILL.md" target="_blank" rel="noopener">SKILL.md &rarr;</a>
@@ -662,7 +678,10 @@
       if (val === true) { cls = 'trust-cap--true'; icon = '&#x26A0;'; }
       else if (val === false) { cls = 'trust-cap--false'; icon = '&#x2713;'; }
       else { cls = 'trust-cap--unknown'; icon = '&#x25CB;'; suffix = " <span class='trust-unknown-note'>not yet measured</span>"; }
-      const confSpan = (val === true && conf) ? ` <span class='trust-conf trust-conf--${escHTML(conf)}'>${escHTML(conf)}</span>` : '';
+      // Surface confidence on every asserted (true OR false) value so users
+      // can tell "high-confidence false" apart from "low-confidence false".
+      const showConf = (val === true || val === false) && conf;
+      const confSpan = showConf ? ` <span class='trust-conf trust-conf--${escHTML(conf)}'>${escHTML(conf)}</span>` : '';
       const srcSpan = (src && src !== 'unknown') ? ` <span class='trust-src'>${escHTML(src)}</span>` : '';
       return `<li class="trust-cap ${cls}"><span class="trust-icon" aria-hidden="true">${icon}</span> <span class="trust-cap-label">${escHTML(label)}</span>${suffix}${confSpan}${srcSpan}</li>`;
     }).join('');

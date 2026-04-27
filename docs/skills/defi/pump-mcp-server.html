@@ -57,7 +57,7 @@
       <span>v0.1.0</span>
       <span class="skill-badge" style="background:rgba(234,179,8,0.12);color:#eab308">C</span>
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
-      <span class="skill-badge trust-flag-badge trust-flag-zero" title="No red-flag capabilities detected">0 flags</span>
+      <span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="0 true, 8 unknown of 11 capability flags">0 known &middot; 8 unknown</span>
     </div>
     <p class="skill-page-desc">Model Context Protocol server exposing 7 tools, 3 resource types, and 3 prompts for AI agent consumption — Solana wallet operations, vanity address generation, message signing, and address validation over stdio transport.</p>
 
@@ -90,9 +90,9 @@
 <li class='trust-cap trust-cap--unknown' title='Sends or signs transactions; can move user funds'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can move funds</span> <span class='trust-unknown-note'>not yet measured</span></li>
 <li class='trust-cap trust-cap--unknown' title='Asks the user for a key, mnemonic, or wallet config'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Requires private key</span> <span class='trust-unknown-note'>not yet measured</span></li>
 <li class='trust-cap trust-cap--unknown' title='Correct behavior depends on a specific company&#x27;s running infrastructure'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Requires hosted operator</span> <span class='trust-unknown-note'>not yet measured</span></li>
-<li class='trust-cap trust-cap--false' title='Setup runs a script downloaded from the internet (curl|sh class)'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Uses remote install script</span> <span class='trust-src'>extracted</span></li>
-<li class='trust-cap trust-cap--false' title='Executes remote code whose behavior can change without a local diff'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Mutable remote runtime</span> <span class='trust-src'>extracted</span></li>
-<li class='trust-cap trust-cap--false' title='Runs npx, pip install, or downloads CLIs at install time'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Can install code</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Setup runs a script downloaded from the internet (curl|sh class)'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Uses remote install script</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Executes remote code whose behavior can change without a local diff'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Mutable remote runtime</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Runs npx, pip install, or downloads CLIs at install time'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Can install code</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
 <li class='trust-cap trust-cap--unknown' title='Runs arbitrary Bash'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can execute shell</span> <span class='trust-unknown-note'>not yet measured</span></li>
 <li class='trust-cap trust-cap--unknown' title='Fetches arbitrary URLs'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can browse the web</span> <span class='trust-unknown-note'>not yet measured</span></li>
 <li class='trust-cap trust-cap--unknown' title='Edits the user&#x27;s local files'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can write files</span> <span class='trust-unknown-note'>not yet measured</span></li>

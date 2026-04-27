@@ -15,6 +15,7 @@ import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import quote
 
 # Trust manifest support — read TRUST.auto.yaml via the canonical safe parser.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -54,6 +55,28 @@ def esc(text):
     if text is None:
         return ""
     return html.escape(str(text), quote=True)
+
+
+def url_path(text):
+    """URL-encode a path segment for href contexts. Skill names and category
+    ids in our catalog are kebab-case ASCII today, but defense-in-depth is
+    cheap and prevents future-introduced unsafe chars from breaking out."""
+    if text is None:
+        return ""
+    return quote(str(text), safe="-_.~")
+
+
+def safe_jsonld(obj):
+    """Serialize JSON-LD safely for embedding in <script type='application/ld+json'>.
+    Escapes '<' so a stray '</script>' inside a string can't terminate the
+    surrounding script element, and escapes line/paragraph separators that
+    are valid in JSON but not in HTML script contexts."""
+    return (
+        json.dumps(obj, ensure_ascii=False)
+        .replace("<", "\\u003c")
+        .replace(" ", "\\u2028")
+        .replace(" ", "\\u2029")
+    )
 
 
 def grade_color(grade):
@@ -102,16 +125,28 @@ def _cap_field(caps, key):
     return raw, None, None
 
 
-def _red_flag_count(trust):
+def _red_flag_summary(trust):
+    """Return (n_true, n_unknown) over the eleven negative-leaning caps.
+    Both numbers matter for the badge: 0 known true + 7 unknown is NOT the
+    same as 0 known true + 0 unknown, and the UI must not collapse them."""
     if not trust:
         return None
     caps = trust.get("capabilities") or {}
-    n = 0
+    n_true = 0
+    n_unknown = 0
     for key, _label, _hover in RED_FLAG_CAPS:
         v, _, _ = _cap_field(caps, key)
         if v is True:
-            n += 1
-    return n
+            n_true += 1
+        elif v is None or v == "unknown":
+            n_unknown += 1
+    return n_true, n_unknown
+
+
+def _red_flag_count(trust):
+    """Backwards-compat: just the true count."""
+    s = _red_flag_summary(trust)
+    return None if s is None else s[0]
 
 
 def _capability_row(key, label, hover, value, confidence, source):
@@ -133,8 +168,11 @@ def _capability_row(key, label, hover, value, confidence, source):
         cls = "trust-cap trust-cap--unknown"
         icon = "&#x25CB;"  # ○
         suffix = " <span class='trust-unknown-note'>not yet measured</span>"
+    # Confidence + source surface on every asserted (true OR false) value
+    # so users can tell "high-confidence false" apart from "low-confidence
+    # false". Unknown values stay un-tagged — there's no claim to qualify.
     conf = ""
-    if value is True and confidence:
+    if value in (True, False) and confidence:
         conf = f" <span class='trust-conf trust-conf--{esc(confidence)}'>{esc(confidence)}</span>"
     src = ""
     if source and source != "unknown":
@@ -157,10 +195,12 @@ def trust_panel_html(trust, category, skill_name):
     - Ingredients section shows detected hosted operators only (Phase 1)
     - Source links: GitHub blob + raw TRUST.auto.yaml + tree
     """
-    blob_skill = f"{GH_BLOB}/skills/{category}/{skill_name}/SKILL.md"
-    blob_trust = f"{GH_BLOB}/skills/{category}/{skill_name}/TRUST.auto.yaml"
-    blob_source = f"{GH_BLOB}/skills/{category}/{skill_name}/SOURCE.md"
-    tree_dir = f"{GH_TREE}/skills/{category}/{skill_name}"
+    cat_q = url_path(category)
+    skill_q = url_path(skill_name)
+    blob_skill = f"{GH_BLOB}/skills/{cat_q}/{skill_q}/SKILL.md"
+    blob_trust = f"{GH_BLOB}/skills/{cat_q}/{skill_q}/TRUST.auto.yaml"
+    blob_source = f"{GH_BLOB}/skills/{cat_q}/{skill_q}/SOURCE.md"
+    tree_dir = f"{GH_TREE}/skills/{cat_q}/{skill_q}"
 
     if trust is None:
         return f"""
@@ -289,13 +329,19 @@ def skill_page_html(skill, categories):
     # Trust manifest data (TRUST.auto.yaml). May be None if not yet computed.
     trust = load_trust_manifest(cat, s["name"])
     trust_html = trust_panel_html(trust, cat, s["name"])
-    n_flags = _red_flag_count(trust)
+    summary = _red_flag_summary(trust)
     flag_badge = ""
-    if n_flags is not None:
-        if n_flags == 0:
-            flag_badge = '<span class="skill-badge trust-flag-badge trust-flag-zero" title="No red-flag capabilities detected">0 flags</span>'
+    if summary is not None:
+        n_true, n_unknown = summary
+        title = f"{n_true} true, {n_unknown} unknown of 11 capability flags"
+        if n_true == 0 and n_unknown == 0:
+            flag_badge = f'<span class="skill-badge trust-flag-badge trust-flag-zero" title="{title}">0 known flags</span>'
+        elif n_true == 0 and n_unknown > 0:
+            # Don't paint the badge green when most capabilities are simply unmeasured.
+            flag_badge = f'<span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="{title}">0 known &middot; {n_unknown} unknown</span>'
         else:
-            flag_badge = f'<span class="skill-badge trust-flag-badge trust-flag-some" title="{n_flags} red-flag capabilities detected">{n_flags} flag{"s" if n_flags != 1 else ""}</span>'
+            plural = "s" if n_true != 1 else ""
+            flag_badge = f'<span class="skill-badge trust-flag-badge trust-flag-some" title="{title}">{n_true} flag{plural}</span>'
 
     # Build tags HTML
     tags_html = ""
@@ -324,17 +370,18 @@ def skill_page_html(skill, categories):
       <span>Risk Gate: <strong>{esc(risk_gate)}</strong></span>
     </div>"""
 
-    # JSON-LD
-    ld_json = json.dumps({
+    # JSON-LD — encode URL segments and escape `<` so a stray `</script>`
+    # inside a string field cannot terminate the surrounding script element.
+    ld_json = safe_jsonld({
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": s.get("displayName", s["name"]),
         "description": s.get("description", ""),
         "applicationCategory": "DeveloperApplication",
-        "url": f"{SITE}/skills/{cat}/{s['name']}.html",
+        "url": f"{SITE}/skills/{url_path(cat)}/{url_path(s['name'])}.html",
         "author": {"@type": "Organization", "name": s.get("author", "unknown")},
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-    }, ensure_ascii=False)
+    })
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -456,13 +503,19 @@ def category_index_html(cat_id, skills, categories):
         grade_span = f'<span class="skill-badge" style="background:rgba({_hex_to_rgb(gc)},0.12);color:{gc}">{esc(grade)}</span>' if grade else ""
         # Trust flag count from per-skill TRUST.auto.yaml — null when manifest absent.
         trust = load_trust_manifest(cat_id, s["name"])
-        nf = _red_flag_count(trust)
-        if nf is None:
+        summary = _red_flag_summary(trust)
+        if summary is None:
             flag_span = ""
-        elif nf == 0:
-            flag_span = '<span class="skill-badge trust-flag-badge trust-flag-zero" title="No red-flag capabilities">0 flags</span>'
         else:
-            flag_span = f'<span class="skill-badge trust-flag-badge trust-flag-some" title="{nf} red-flag capabilities">{nf} flag{"s" if nf != 1 else ""}</span>'
+            n_true, n_unknown = summary
+            title = f"{n_true} true, {n_unknown} unknown of 11 capability flags"
+            if n_true == 0 and n_unknown == 0:
+                flag_span = f'<span class="skill-badge trust-flag-badge trust-flag-zero" title="{title}">0 known flags</span>'
+            elif n_true == 0 and n_unknown > 0:
+                flag_span = f'<span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="{title}">0 known &middot; {n_unknown} unknown</span>'
+            else:
+                plural = "s" if n_true != 1 else ""
+                flag_span = f'<span class="skill-badge trust-flag-badge trust-flag-some" title="{title}">{n_true} flag{plural}</span>'
         rows += f"""      <a href="{sname}.html" class="cat-skill-row">
         <span class="cat-skill-name">{sdisplay}</span>
         {grade_span}
