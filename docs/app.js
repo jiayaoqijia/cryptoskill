@@ -241,7 +241,11 @@
     const raw = t.capabilities[key];
     // Python emitter writes scalar; JSON shape is the raw value.
     if (raw === null || raw === undefined) return undefined;
-    if (typeof raw === 'object') return raw.value;
+    if (typeof raw === 'object') {
+      // Per-field provenance shape: {value, confidence, source, evidence}
+      // — the .value can itself be null, treat that as unknown.
+      return raw.value == null ? undefined : raw.value;
+    }
     return raw;
   }
   function redFlagSummary(t) {
@@ -250,7 +254,8 @@
     for (const [k] of RED_FLAG_CAPS) {
       const v = capValue(t, k);
       if (v === true) nTrue += 1;
-      else if (v === undefined || v === 'unknown') nUnknown += 1;
+      // capValue() collapses null → undefined for us; check both anyway.
+      else if (v === undefined || v === null || v === 'unknown') nUnknown += 1;
     }
     return { nTrue, nUnknown };
   }

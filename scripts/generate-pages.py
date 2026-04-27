@@ -383,6 +383,7 @@ def skill_page_html(skill, categories):
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
     })
 
+    canonical_url = f"{SITE}/skills/{url_path(cat)}/{url_path(s['name'])}.html"
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -391,11 +392,11 @@ def skill_page_html(skill, categories):
   <title>{display} - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="{desc_short}">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="{SITE}/skills/{esc(cat)}/{name}.html">
+  <link rel="canonical" href="{canonical_url}">
   <meta property="og:type" content="website">
   <meta property="og:title" content="{display} - CryptoSkill">
   <meta property="og:description" content="{desc_short}">
-  <meta property="og:url" content="{SITE}/skills/{esc(cat)}/{name}.html">
+  <meta property="og:url" content="{canonical_url}">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="{SITE}/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
