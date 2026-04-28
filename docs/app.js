@@ -475,8 +475,14 @@
   //   │ tag tag tag                   Official  │  ← footer
   //   └────────────────────────────────────────┘
   function createSkillCard(skill, isOfficial) {
-    const card = document.createElement('div');
+    const card = document.createElement('article');
     card.className = 'skill-card skill-card-v2 fade-in-up';
+    // Accessibility: cards are interactive, so they need a keyboard-reachable
+    // role + tabindex and Enter/Space handlers (the click listener alone
+    // serves only mouse users).
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `${skill.displayName}, ${skill.category}, view details`);
     const cat = categories[skill.category];
     const catIcon = cat?.icon || '&#128230;'; // 📦
     const catName = cat?.name || skill.category;
@@ -490,31 +496,32 @@
       const trueCaps = RED_FLAG_CAPS
         .filter(([k]) => capValue(trust, k) === true)
         .slice(0, 3)
-        .map(([k, label]) => `<span class="trust-strip-flag" title="${escHTML(label)}: yes">⚠ ${escHTML(label)}</span>`)
+        .map(([, label]) => `<span class="trust-strip-flag" role="img" aria-label="${escHTML(label)}: yes" title="${escHTML(label)}: yes"><span aria-hidden="true">⚠</span> ${escHTML(label)}</span>`)
         .join('');
       const moreCount = Math.max(0, nTrue - 3);
-      const moreSpan = moreCount > 0 ? `<span class="trust-strip-more">+${moreCount}</span>` : '';
+      const moreSpan = moreCount > 0 ? `<span class="trust-strip-more" aria-label="${moreCount} more red flags">+${moreCount}</span>` : '';
       const title = `${nTrue} true, ${nUnknown} unknown of 11 capability flags`;
       if (nTrue === 0 && nUnknown === 0) {
-        trustStrip = `<div class="trust-strip trust-strip--clean" title="${title}"><span class="trust-strip-label">TRUST</span><span class="trust-strip-clean">✓ No red flags detected</span></div>`;
+        trustStrip = `<div class="trust-strip trust-strip--clean" role="status" aria-label="Trust: no red flags detected" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span><span class="trust-strip-clean"><span aria-hidden="true">✓</span> No red flags detected</span></div>`;
       } else if (nTrue === 0 && nUnknown > 0) {
-        trustStrip = `<div class="trust-strip trust-strip--unknown" title="${title}"><span class="trust-strip-label">TRUST</span><span class="trust-strip-unknown">○ ${nUnknown} not measured yet</span></div>`;
+        trustStrip = `<div class="trust-strip trust-strip--unknown" role="status" aria-label="Trust: ${nUnknown} capabilities not measured yet" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span><span class="trust-strip-unknown"><span aria-hidden="true">○</span> ${nUnknown} not measured yet</span></div>`;
       } else {
-        trustStrip = `<div class="trust-strip trust-strip--some" title="${title}"><span class="trust-strip-label">TRUST</span>${trueCaps}${moreSpan}</div>`;
+        trustStrip = `<div class="trust-strip trust-strip--some" role="status" aria-label="Trust: ${nTrue} red flag${nTrue === 1 ? '' : 's'} detected" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span>${trueCaps}${moreSpan}</div>`;
       }
     }
 
-    // --- Title row score badge (the existing renderScoreBadge already
-    // returns a positioned absolute span; we reposition it inline-right).
+    // --- Title row score badge.
     const grade = skill.score?.grade;
     const total = skill.score?.total;
     const gradeClass = grade ? getGradeClass(grade) : '';
-    const riskWarn = skill.score?.risk_gate === 'FAIL' ? '&#9888; ' : '';
-    const gradePill = grade ? `<span class="card-grade ${gradeClass}" title="${total != null ? total + '/100' : ''}">${riskWarn}${escHTML(grade)}</span>` : '';
+    const riskWarn = skill.score?.risk_gate === 'FAIL' ? '<span aria-hidden="true">&#9888;</span> ' : '';
+    const gradeAria = grade ? `Grade ${grade}${total != null ? `, ${total} of 100` : ''}` : '';
+    const gradePill = grade ? `<span class="card-grade ${gradeClass}" role="img" aria-label="${gradeAria}" title="${total != null ? total + '/100' : ''}">${riskWarn}${escHTML(grade)}</span>` : '';
 
-    const officialPill = isOfficial ? '<span class="card-official">&#10003; Official</span>' : '';
+    const officialPill = isOfficial ? '<span class="card-official"><span aria-hidden="true">&#10003;</span> Official</span>' : '';
     const author = skill.author || 'unknown';
     const version = skill.version || '1.0.0';
+    const tags = Array.isArray(skill.tags) ? skill.tags : [];
 
     card.innerHTML = `
       <header class="card-title-row">
@@ -524,21 +531,27 @@
       </header>
       <div class="card-meta-row">
         <span class="card-meta-cat">${escHTML(catName)}</span>
-        <span class="card-meta-sep">·</span>
+        <span class="card-meta-sep" aria-hidden="true">·</span>
         <span class="card-meta-author">@${escHTML(author)}</span>
-        <span class="card-meta-sep">·</span>
+        <span class="card-meta-sep" aria-hidden="true">·</span>
         <span class="card-meta-version">v${escHTML(version)}</span>
       </div>
       <p class="card-desc">${escHTML(skill.description || '')}</p>
       ${trustStrip}
       <footer class="card-footer-row">
         <div class="card-tags">
-          ${skill.tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="card-tag">${escHTML(t)}</span>`).join('')}
+          ${tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="card-tag">${escHTML(t)}</span>`).join('')}
         </div>
         ${officialPill}
       </footer>
     `;
     card.addEventListener('click', () => openModal(skill));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal(skill);
+      }
+    });
     return card;
   }
 

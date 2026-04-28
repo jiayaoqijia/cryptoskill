@@ -2811,3 +2811,9 @@ a {
 /* Hide the old absolute-positioned score badge for v2 cards. */
 .skill-card-v2 .skill-score-badge { display: none; }
 
+
+.skill-card-v2:focus-visible {
+  outline: 2px solid var(--primary, #0a84ff);
+  outline-offset: 2px;
+  border-color: transparent;
+}
