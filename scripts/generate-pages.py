@@ -276,9 +276,8 @@ def trust_panel_html(trust, category, skill_name):
     else:
         audits_html = """
       <h3 class="trust-subhead">Audits</h3>
-      <p class="trust-empty trust-help"><strong>No audits attempted.</strong> This is distinct from &ldquo;audited and clean.&rdquo;
-      No tier_1/tier_2/tier_3 reviewer has signed an attestation for this skill yet.
-      <a href="../../TRUST.md" target="_blank" rel="noopener">See reviewer trust tiers &rarr;</a></p>"""
+      <p class="trust-empty trust-help"><strong>No one has audited this skill yet.</strong> That is different from &ldquo;audited and clean&rdquo; &mdash; it just means no professional reviewer (a security firm, the CryptoSkill team, or a verified independent researcher) has signed off on it. There are no audit reports to read.
+      <a href="../../TRUST.md" target="_blank" rel="noopener">How reviewer levels work &rarr;</a></p>"""
 
     stage = trust.get("stage")
     # "Stage" is borrowed from L2BEAT (Stage 0/1/2 trust ladder). Until we
