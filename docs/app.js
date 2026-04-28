@@ -30,19 +30,21 @@
     { id: 'uses_remote_install_script', label: 'No remote install scripts' },
   ];
   // Capability keys we want surfaced in the modal as "red flags". Order
-  // mirrors scripts/generate-pages.py:RED_FLAG_CAPS.
+  // mirrors scripts/generate-pages.py:RED_FLAG_CAPS. Each entry carries a
+  // plain-language hint shown under the label so non-engineers can tell
+  // what the flag means in practice.
   const RED_FLAG_CAPS = [
-    ['can_move_funds',             'Can move funds'],
-    ['requires_private_key',       'Requires private key'],
-    ['requires_hosted_operator',   'Requires hosted operator'],
-    ['uses_remote_install_script', 'Uses remote install script'],
-    ['mutable_remote_runtime',     'Mutable remote runtime'],
-    ['can_install_code',           'Can install code'],
-    ['can_execute_shell',          'Can execute shell'],
-    ['can_browse_web',             'Can browse the web'],
-    ['can_write_files',            'Can write files'],
-    ['can_spawn_subagents',        'Can spawn sub-agents'],
-    ['auto_invocable',             'Auto-invocable'],
+    ['can_move_funds',             'Can move funds',              'this skill can sign and send transactions on your behalf'],
+    ['requires_private_key',       'Requires private key',        'you must hand over a private key, mnemonic, or wallet config'],
+    ['requires_hosted_operator',   'Requires hosted operator',    'depends on a third-party hosted service to function'],
+    ['uses_remote_install_script', 'Uses remote install script',  'setup pipes a remote shell script (curl | sh class)'],
+    ['mutable_remote_runtime',     'Mutable remote runtime',      'runs remote code that can change behavior without a local diff'],
+    ['can_install_code',           'Can install code',            'installs software at setup time (npx, pip, brew, etc.)'],
+    ['can_execute_shell',          'Can execute shell',           'runs arbitrary shell commands on your machine'],
+    ['can_browse_web',             'Can browse the web',          'fetches arbitrary URLs at runtime'],
+    ['can_write_files',            'Can write files',             'writes to your local filesystem'],
+    ['can_spawn_subagents',        'Can spawn sub-agents',        'delegates to other skills or sub-agents'],
+    ['auto_invocable',             'Auto-invocable',              'may be invoked by the agent without your explicit prompt'],
   ];
   let activeTrustFilters = new Set();
 
@@ -502,7 +504,7 @@
       const trueCaps = RED_FLAG_CAPS
         .filter(([k]) => capValue(trust, k) === true)
         .slice(0, 3)
-        .map(([, label]) => `<span class="trust-strip-flag" role="img" aria-label="${escHTML(label)}: yes" title="${escHTML(label)}: yes"><span aria-hidden="true">⚠</span> ${escHTML(label)}</span>`)
+        .map(([, label]) => `<span class="trust-strip-flag" role="img" aria-label="${escHTML(label)}: yes" title="${escHTML(label)}: yes"><span aria-hidden="true">&#x26A0;</span> ${escHTML(label)}</span>`)
         .join('');
       const moreCount = Math.max(0, nTrue - 3);
       const moreSpan = moreCount > 0 ? `<span class="trust-strip-more" aria-label="${moreCount} more red flags">+${moreCount}</span>` : '';
@@ -752,22 +754,50 @@
         ${links}
       </div>`;
     }
+    // Group capabilities by state — same layout as the per-skill HTML
+    // page (scripts/generate-pages.py:_capability_section).
     const caps = t.capabilities || {};
-    const rows = RED_FLAG_CAPS.map(([key, label]) => {
+    const buckets = { true: [], false: [], unknown: [] };
+    const ICON = { true: '&#x26A0;', false: '&#x2713;', unknown: '?' };
+    const ARIA = { true: 'Yes — red flag', false: 'No — cleared', unknown: 'Not measured' };
+    for (const [key, label, hint] of RED_FLAG_CAPS) {
       const raw = caps[key];
-      const val = (raw && typeof raw === 'object') ? raw.value : raw;
+      const val  = (raw && typeof raw === 'object') ? raw.value      : raw;
       const conf = (raw && typeof raw === 'object') ? raw.confidence : null;
-      const src = (raw && typeof raw === 'object') ? raw.source : null;
-      let cls, icon, suffix = '';
-      if (val === true) { cls = 'trust-cap--true'; icon = '&#x26A0;'; }
-      else if (val === false) { cls = 'trust-cap--false'; icon = '&#x2713;'; }
-      else { cls = 'trust-cap--unknown'; icon = '&#x25CB;'; suffix = " <span class='trust-unknown-note'>not yet measured</span>"; }
-      // Surface confidence on every asserted (true OR false) value so users
-      // can tell "high-confidence false" apart from "low-confidence false".
-      const showConf = (val === true || val === false) && conf;
-      const confSpan = showConf ? ` <span class='trust-conf trust-conf--${escHTML(conf)}'>${escHTML(conf)}</span>` : '';
-      const srcSpan = (src && src !== 'unknown') ? ` <span class='trust-src'>${escHTML(src)}</span>` : '';
-      return `<li class="trust-cap ${cls}"><span class="trust-icon" aria-hidden="true">${icon}</span> <span class="trust-cap-label">${escHTML(label)}</span>${suffix}${confSpan}${srcSpan}</li>`;
+      const src  = (raw && typeof raw === 'object') ? raw.source     : null;
+      const group = (val === true) ? 'true' : (val === false) ? 'false' : 'unknown';
+      const confDot = (group !== 'unknown' && conf)
+        ? `<span class="trust-cap-confidence trust-cap-confidence--${escHTML(conf)}" title="${escHTML(conf)} confidence (${escHTML(src || 'unknown')})" aria-label="${escHTML(conf)} confidence based on ${escHTML(src || 'unknown')} evidence"></span>`
+        : '';
+      buckets[group].push(
+        `<li class="trust-cap-v2" data-state="${group}">` +
+        `<span class="trust-cap-icon" aria-label="${ARIA[group]}" title="${ARIA[group]}">${ICON[group]}</span>` +
+        `<div class="trust-cap-body">` +
+        `<span class="trust-cap-label">${escHTML(label)}</span>` +
+        `<span class="trust-cap-hint">${escHTML(hint)}</span>` +
+        `</div>` +
+        confDot +
+        `</li>`
+      );
+    }
+    const SECTIONS = [
+      { state: 'true',    title: 'Red flags',          kicker: 'things this skill can do that affect your security or funds' },
+      { state: 'false',   title: 'Cleared by scanner', kicker: 'we scanned the skill’s text & scripts and found no evidence of these' },
+      { state: 'unknown', title: 'Not measured yet',   kicker: 'scanner couldn’t make a confident call — treat as a possible red flag' },
+    ];
+    const groupClass = { true: 'flags', false: 'clear', unknown: 'unknown' };
+    const sections = SECTIONS.map(({ state, title, kicker }) => {
+      const items = buckets[state];
+      if (!items.length) return '';
+      return `
+        <section class="trust-cap-group trust-cap-group--${groupClass[state]}">
+          <header class="trust-cap-group-header">
+            <span class="trust-cap-group-count">${items.length}</span>
+            <span class="trust-cap-group-title">${escHTML(title)}</span>
+            <span class="trust-cap-group-kicker">${escHTML(kicker)}</span>
+          </header>
+          <ul class="trust-cap-list-v2">${items.join('')}</ul>
+        </section>`;
     }).join('');
     // capabilities.json uses `hosted_operators`; per-skill TRUST.auto.yaml
     // uses `detected_hosted_operators`. Accept either.
@@ -785,30 +815,21 @@
         }).join('')}</ul>`
       : '<h3 class="trust-subhead">Audits</h3><p class="trust-empty trust-help"><strong>No one has audited this skill yet.</strong> That is different from "audited and clean" — it just means no professional reviewer has signed off on it. There are no audit reports to read.</p>';
     const stage = t.stage == null ? 'trust grade not computed yet' : escHTML(String(t.stage));
-    const summary = redFlagSummary(t);
-    let flagBadge = '';
-    let flagsLabel = 'capabilities not yet extracted';
-    if (summary !== null) {
-      const { nTrue, nUnknown } = summary;
-      const title = `${nTrue} true, ${nUnknown} unknown of 11 capability flags`;
-      if (nTrue === 0 && nUnknown === 0) {
-        flagBadge = ` <span class="skill-badge trust-flag-badge trust-flag-zero" title="${title}">0 known flags</span>`;
-        flagsLabel = '0 known capability flags';
-      } else if (nTrue === 0 && nUnknown > 0) {
-        flagBadge = ` <span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="${title}">0 known &middot; ${nUnknown} unknown</span>`;
-        flagsLabel = `0 known &middot; ${nUnknown} unknown`;
-      } else {
-        const plural = nTrue === 1 ? '' : 's';
-        flagBadge = ` <span class="skill-badge trust-flag-badge trust-flag-some" title="${title}">${nTrue} flag${plural}</span>`;
-        flagsLabel = `${nTrue} capability flag${plural}`;
-      }
-    }
+    const nTrue = buckets.true.length;
+    const nFalse = buckets.false.length;
+    const nUnknown = buckets.unknown.length;
+    const quickPills = `
+      <div class="trust-quick-pills">
+        <span class="trust-pill trust-pill--flags">${nTrue} red flag${nTrue === 1 ? '' : 's'}</span>
+        <span class="trust-pill trust-pill--clear">${nFalse} cleared</span>
+        <span class="trust-pill trust-pill--unknown">${nUnknown} not measured</span>
+      </div>`;
     return `
-      <div class="modal-section-title">Trust profile <span class="trust-stage-pill">${stage}</span>${flagBadge}</div>
-      <p class="trust-help"><strong>${flagsLabel}.</strong> Detected automatically by an open-source scanner; <code>unknown</code> means the scanner couldn't make a confident call — treat it as a possible red flag, not a green check.</p>
+      <div class="modal-section-title">Trust profile <span class="trust-stage-pill">${stage}</span></div>
+      ${quickPills}
+      <p class="trust-help">Detected automatically by an open-source scanner that reads the skill’s text and scripts. <strong>Not measured</strong> means the scanner couldn’t make a confident call — it is NOT a green check, treat it as a possible red flag until a human or a stronger scanner has measured it.</p>
       <div class="trust-panel">
-        <h3 class="trust-subhead">Capabilities</h3>
-        <ul class="trust-cap-list">${rows}</ul>
+        ${sections}
         ${ingredients}
         ${auditsHTML}
         ${links}
