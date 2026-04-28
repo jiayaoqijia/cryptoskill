@@ -34,6 +34,7 @@ GH_TREE = "https://github.com/jiayaoqijia/cryptoskill/tree/main"
 
 # Capabilities considered "negative-leaning red flags" — when true the UI
 # surfaces them prominently. Order is the rendering order in the panel.
+# Each entry is (key, label, hover-explanation).
 RED_FLAG_CAPS = [
     ("can_move_funds",            "Can move funds",              "Sends or signs transactions; can move user funds"),
     ("requires_private_key",      "Requires private key",        "Asks the user for a key, mnemonic, or wallet config"),
@@ -47,6 +48,22 @@ RED_FLAG_CAPS = [
     ("can_spawn_subagents",       "Can spawn sub-agents",        "Calls sub-skills or other agents"),
     ("auto_invocable",            "Auto-invocable",              "Will be invoked by the agent without explicit user prompt"),
 ]
+
+# Plain-language hint shown next to each capability so a non-engineer can
+# tell what the flag actually means in practice. Keep one short clause.
+RED_FLAG_HINTS = {
+    "can_move_funds":            "this skill can sign and send transactions on your behalf",
+    "requires_private_key":      "you must hand over a private key, mnemonic, or wallet config",
+    "requires_hosted_operator":  "depends on a third-party hosted service to function",
+    "uses_remote_install_script":"setup pipes a remote shell script (curl | sh class)",
+    "mutable_remote_runtime":    "runs remote code that can change behavior without a local diff",
+    "can_install_code":          "installs software at setup time (npx, pip, brew, etc.)",
+    "can_execute_shell":         "runs arbitrary shell commands on your machine",
+    "can_browse_web":            "fetches arbitrary URLs at runtime",
+    "can_write_files":           "writes to your local filesystem",
+    "can_spawn_subagents":       "delegates to other skills or sub-agents",
+    "auto_invocable":            "may be invoked by the agent without your explicit prompt",
+}
 
 # ── helpers ──────────────────────────────────────────────────────────
 
@@ -149,39 +166,52 @@ def _red_flag_count(trust):
     return None if s is None else s[0]
 
 
-def _capability_row(key, label, hover, value, confidence, source):
-    """One row in the capability list with honest tri-state rendering.
+def _capability_row(key, label, hover, value, confidence, source, group):
+    """One row in the grouped capability list.
 
-    True  → red dot + label + capability name. Marketing-language-free.
-    False → checkmark + label.
-    Unknown → grey dot + label + "not yet measured".
+    Each row carries: state icon (sized + colored), label, hint sentence,
+    confidence dot. We deliberately drop the verbose "medium / extracted"
+    pills that previously appeared on every row — they were visual noise
+    that didn't help a user pick out the actual red flags.
     """
-    if value is True:
-        cls = "trust-cap trust-cap--true"
-        icon = "&#x26A0;"  # ⚠
-        suffix = ""
-    elif value is False:
-        cls = "trust-cap trust-cap--false"
-        icon = "&#x2713;"  # ✓
-        suffix = ""
-    else:
-        cls = "trust-cap trust-cap--unknown"
-        icon = "&#x25CB;"  # ○
-        suffix = " <span class='trust-unknown-note'>not yet measured</span>"
-    # Confidence + source surface on every asserted (true OR false) value
-    # so users can tell "high-confidence false" apart from "low-confidence
-    # false". Unknown values stay un-tagged — there's no claim to qualify.
-    conf = ""
+    icon_map  = {"true": "&#x26A0;",        "false": "&#x2713;",       "unknown": "?"}
+    aria_map  = {"true": "Yes — red flag",  "false": "No — cleared",   "unknown": "Not measured"}
+    conf_dot = ""
     if value in (True, False) and confidence:
-        conf = f" <span class='trust-conf trust-conf--{esc(confidence)}'>{esc(confidence)}</span>"
-    src = ""
-    if source and source != "unknown":
-        src = f" <span class='trust-src'>{esc(source)}</span>"
+        conf_dot = (
+            f"<span class='trust-cap-confidence trust-cap-confidence--{esc(confidence)}'"
+            f" title='{esc(confidence)} confidence ({esc(source or 'unknown')})'"
+            f" aria-label='{esc(confidence)} confidence based on {esc(source or 'unknown')} evidence'></span>"
+        )
+    hint = RED_FLAG_HINTS.get(key, hover)
     return (
-        f"<li class='{cls}' title='{esc(hover)}'>"
-        f"<span class='trust-icon' aria-hidden='true'>{icon}</span> "
-        f"<span class='trust-cap-label'>{esc(label)}</span>{suffix}{conf}{src}"
+        f"<li class='trust-cap-v2' data-state='{group}'>"
+        f"  <span class='trust-cap-icon' aria-label='{aria_map[group]}' title='{aria_map[group]}'>{icon_map[group]}</span>"
+        f"  <div class='trust-cap-body'>"
+        f"    <span class='trust-cap-label'>{esc(label)}</span>"
+        f"    <span class='trust-cap-hint'>{esc(hint)}</span>"
+        f"  </div>"
+        f"  {conf_dot}"
         f"</li>"
+    )
+
+
+def _capability_section(title, kicker, group_class, rows):
+    """Render one of the three grouped capability sections (flags / cleared /
+    not measured). Hidden when the group is empty — no point printing
+    'Cleared (0)'."""
+    if not rows:
+        return ""
+    count = len(rows)
+    return (
+        f"<section class='trust-cap-group trust-cap-group--{group_class}'>"
+        f"  <header class='trust-cap-group-header'>"
+        f"    <span class='trust-cap-group-count'>{count}</span>"
+        f"    <span class='trust-cap-group-title'>{esc(title)}</span>"
+        f"    <span class='trust-cap-group-kicker'>{esc(kicker)}</span>"
+        f"  </header>"
+        f"  <ul class='trust-cap-list-v2'>{''.join(rows)}</ul>"
+        f"</section>"
     )
 
 
@@ -213,17 +243,47 @@ def trust_panel_html(trust, category, skill_name):
       </div>
     </div>"""
 
+    # Group capabilities by state so the user reads the most important
+    # group first (red flags), then the cleared list, then unmeasured.
     caps = trust.get("capabilities") or {}
-    cap_rows = []
+    flag_rows, clear_rows, unknown_rows = [], [], []
     for key, label, hover in RED_FLAG_CAPS:
         v, conf, src = _cap_field(caps, key)
-        cap_rows.append(_capability_row(key, label, hover, v, conf, src))
-    cap_list = "\n".join(cap_rows)
+        if v is True:
+            flag_rows.append(_capability_row(key, label, hover, v, conf, src, "true"))
+        elif v is False:
+            clear_rows.append(_capability_row(key, label, hover, v, conf, src, "false"))
+        else:
+            unknown_rows.append(_capability_row(key, label, hover, v, conf, src, "unknown"))
 
-    n_flags = _red_flag_count(trust)
-    flags_label = (
-        f"{n_flags} capability flag{'s' if n_flags != 1 else ''}"
-        if n_flags is not None else "capabilities not yet extracted"
+    n_true, n_false, n_unknown = len(flag_rows), len(clear_rows), len(unknown_rows)
+
+    # Quick summary pills under the heading — let a user see the breakdown
+    # in <1 second before deciding to read the detail sections.
+    quick_pills = (
+        f"<div class='trust-quick-pills'>"
+        f"  <span class='trust-pill trust-pill--flags'>{n_true} red flag{'s' if n_true != 1 else ''}</span>"
+        f"  <span class='trust-pill trust-pill--clear'>{n_false} cleared</span>"
+        f"  <span class='trust-pill trust-pill--unknown'>{n_unknown} not measured</span>"
+        f"</div>"
+    )
+
+    sections = (
+        _capability_section(
+            "Red flags",
+            "things this skill can do that affect your security or funds",
+            "flags", flag_rows,
+        )
+        + _capability_section(
+            "Cleared by scanner",
+            "we scanned the skill's text & scripts and found no evidence of these",
+            "clear", clear_rows,
+        )
+        + _capability_section(
+            "Not measured yet",
+            "scanner couldn't make a confident call — treat as a possible red flag",
+            "unknown", unknown_rows,
+        )
     )
 
     # Ingredient list — Phase 1 surfaces detected_hosted_operators only;
@@ -289,12 +349,10 @@ def trust_panel_html(trust, category, skill_name):
 
     return f"""
     <h2 id="trust">Trust profile <span class="trust-stage-pill">{stage_text}</span></h2>
-    <p class="trust-help"><strong>{esc(flags_label)}.</strong> Capabilities below are detected automatically by an open-source scanner that reads the skill's text and scripts (see <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a>). <code>unknown</code> means the scanner couldn't make a confident call yet — it is NOT a green check, and you should treat it as a possible red flag until a human or a stronger scanner has measured it.</p>
+    {quick_pills}
+    <p class="trust-help">Capabilities below are detected automatically by an open-source scanner that reads the skill's text and scripts (see <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a>). <strong>Not measured</strong> means the scanner couldn't make a confident call &mdash; it is NOT a green check, and you should treat it as a possible red flag until a human or a stronger scanner has measured it.</p>
     <div class="trust-panel">
-      <h3 class="trust-subhead">Capabilities</h3>
-      <ul class="trust-cap-list">
-{cap_list}
-      </ul>
+{sections}
 {mode_html}
 {ingredients}
 {audits_html}

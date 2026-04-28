@@ -2845,3 +2845,169 @@ a {
   outline-offset: 2px;
   border-color: transparent;
 }
+
+/* ============================================
+   Trust profile v2 — grouped capability sections
+   Replaces the dense 2-column .trust-cap-list grid with three clearly
+   labeled groups (red flags / cleared / not measured) so the most
+   important info reads first. Confidence becomes a single colored dot
+   per row instead of two repeated badges.
+   ============================================ */
+
+.trust-quick-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 14px;
+}
+.trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0;
+}
+.trust-pill::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.trust-pill--flags   { background: rgba(239, 68, 68, 0.10); color: #b91c1c; }
+.trust-pill--flags::before   { background: #ef4444; }
+.trust-pill--clear   { background: rgba(34, 197, 94, 0.10); color: #15803d; }
+.trust-pill--clear::before   { background: #22c55e; }
+.trust-pill--unknown { background: rgba(234, 179, 8, 0.12); color: #a16207; }
+.trust-pill--unknown::before { background: #eab308; }
+[data-theme="dark"] .trust-pill--flags   { color: #fca5a5; }
+[data-theme="dark"] .trust-pill--clear   { color: #86efac; }
+[data-theme="dark"] .trust-pill--unknown { color: #fde68a; }
+
+.trust-cap-group {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px 6px;
+  margin: 0 0 14px;
+  background: var(--bg-card);
+  border-left-width: 3px;
+}
+.trust-cap-group--flags   { border-left-color: #ef4444; }
+.trust-cap-group--clear   { border-left-color: #22c55e; }
+.trust-cap-group--unknown { border-left-color: #eab308; }
+
+.trust-cap-group-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+}
+.trust-cap-group-count {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  background: var(--subtle-bg);
+}
+.trust-cap-group--flags   .trust-cap-group-count { background: rgba(239, 68, 68, 0.18);  color: #b91c1c; }
+.trust-cap-group--clear   .trust-cap-group-count { background: rgba(34, 197, 94, 0.18);  color: #15803d; }
+.trust-cap-group--unknown .trust-cap-group-count { background: rgba(234, 179, 8, 0.20);  color: #a16207; }
+[data-theme="dark"] .trust-cap-group--flags   .trust-cap-group-count { color: #fca5a5; }
+[data-theme="dark"] .trust-cap-group--clear   .trust-cap-group-count { color: #86efac; }
+[data-theme="dark"] .trust-cap-group--unknown .trust-cap-group-count { color: #fde68a; }
+.trust-cap-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+.trust-cap-group-kicker {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  flex: 1 1 100%;
+  margin-top: 2px;
+}
+
+.trust-cap-list-v2 {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.trust-cap-v2 {
+  display: grid;
+  grid-template-columns: 26px 1fr 14px;
+  gap: 12px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--card-border);
+}
+.trust-cap-v2:first-child { border-top: 0; }
+
+.trust-cap-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  flex: 0 0 auto;
+}
+.trust-cap-v2[data-state="true"]    .trust-cap-icon { background: rgba(239, 68, 68, 0.16);  color: #b91c1c; }
+.trust-cap-v2[data-state="false"]   .trust-cap-icon { background: rgba(34, 197, 94, 0.16);  color: #15803d; }
+.trust-cap-v2[data-state="unknown"] .trust-cap-icon { background: rgba(234, 179, 8, 0.18);  color: #a16207; }
+[data-theme="dark"] .trust-cap-v2[data-state="true"]    .trust-cap-icon { color: #fca5a5; }
+[data-theme="dark"] .trust-cap-v2[data-state="false"]   .trust-cap-icon { color: #86efac; }
+[data-theme="dark"] .trust-cap-v2[data-state="unknown"] .trust-cap-icon { color: #fde68a; }
+
+.trust-cap-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.trust-cap-v2 .trust-cap-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+.trust-cap-v2[data-state="false"] .trust-cap-label { color: var(--text-secondary); }
+.trust-cap-hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+  margin-top: 1px;
+}
+
+.trust-cap-confidence {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  cursor: help;
+}
+.trust-cap-confidence--high   { background: #22c55e; }
+.trust-cap-confidence--medium { background: #eab308; }
+.trust-cap-confidence--low    { background: var(--text-tertiary); opacity: 0.5; }
+
+/* Hide the old Capabilities heading + grid on detail pages — the new
+   grouped sections supersede them. Any legacy pages still using the
+   .trust-cap-list grid keep working. */
+.trust-cap-group .trust-cap-list,
+.trust-cap-group .trust-subhead { display: none; }
