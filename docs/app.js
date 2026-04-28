@@ -610,6 +610,26 @@
     if (activeTrustFilters.size > 0) {
       filtered = filtered.filter(passesTrustFilters);
     }
+    if (filtered.length === 0 && activeTrustFilters.size > 0) {
+      // Honest empty state: explain why and offer to clear the filters.
+      const labels = Array.from(activeTrustFilters)
+        .map(id => (TRUST_FILTERS.find(f => f.id === id) || {}).label || id)
+        .join(', ');
+      skillsGrid.innerHTML = `
+        <div class="trust-empty-filters" style="grid-column:1/-1;padding:24px;border:1px dashed var(--border);border-radius:12px;background:var(--bg-secondary)">
+          <p style="margin:0 0 6px;font-size:15px"><strong>No skills match every active trust filter.</strong></p>
+          <p style="margin:0 0 12px;color:var(--text-secondary);font-size:14px">Active: ${labels}. A skill qualifies only when its <code>TRUST.auto.yaml</code> records the capability as explicitly <code>false</code>; capabilities that are still <code>unknown</code> in Phase 1 are excluded so red flags can't slip past the filter.</p>
+          <button class="filter-btn" id="trustFilterClearBtn">Clear trust filters</button>
+        </div>`;
+      const clear = skillsGrid.querySelector('#trustFilterClearBtn');
+      if (clear) clear.addEventListener('click', () => {
+        activeTrustFilters.clear();
+        document.querySelectorAll('#trustFilterRow .trust-filter-active').forEach(b => b.classList.remove('trust-filter-active'));
+        renderSkills();
+      });
+      if (showMoreBtn) showMoreBtn.style.display = 'none';
+      return;
+    }
     if (sortByScore) {
       filtered.sort((a, b) => {
         const sa = (a.score && a.score.total != null) ? a.score.total : -1;
@@ -705,12 +725,27 @@
         }).join('')}</ul>`
       : '<h3 class="trust-subhead">Audits</h3><p class="trust-empty trust-help"><strong>No audits attempted.</strong> Distinct from "audited and clean".</p>';
     const stage = t.stage == null ? 'not yet evaluated' : escHTML(String(t.stage));
-    const flagN = redFlagCount(t);
-    const flagsLabel = flagN === null ? 'capabilities not yet extracted' :
-      `${flagN} capability flag${flagN === 1 ? '' : 's'}`;
+    const summary = redFlagSummary(t);
+    let flagBadge = '';
+    let flagsLabel = 'capabilities not yet extracted';
+    if (summary !== null) {
+      const { nTrue, nUnknown } = summary;
+      const title = `${nTrue} true, ${nUnknown} unknown of 11 capability flags`;
+      if (nTrue === 0 && nUnknown === 0) {
+        flagBadge = ` <span class="skill-badge trust-flag-badge trust-flag-zero" title="${title}">0 known flags</span>`;
+        flagsLabel = '0 known capability flags';
+      } else if (nTrue === 0 && nUnknown > 0) {
+        flagBadge = ` <span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="${title}">0 known &middot; ${nUnknown} unknown</span>`;
+        flagsLabel = `0 known &middot; ${nUnknown} unknown`;
+      } else {
+        const plural = nTrue === 1 ? '' : 's';
+        flagBadge = ` <span class="skill-badge trust-flag-badge trust-flag-some" title="${title}">${nTrue} flag${plural}</span>`;
+        flagsLabel = `${nTrue} capability flag${plural}`;
+      }
+    }
     return `
-      <div class="modal-section-title">Trust Manifest <span class="trust-stage-pill">Stage: ${stage}</span></div>
-      <p class="trust-help"><strong>${escHTML(flagsLabel)}.</strong> Extracted automatically; <code>unknown</code> means the extractor declined to assert.</p>
+      <div class="modal-section-title">Trust Manifest <span class="trust-stage-pill">Stage: ${stage}</span>${flagBadge}</div>
+      <p class="trust-help"><strong>${flagsLabel}.</strong> Extracted automatically; <code>unknown</code> means the extractor declined to assert.</p>
       <div class="trust-panel">
         <h3 class="trust-subhead">Capabilities</h3>
         <ul class="trust-cap-list">${rows}</ul>

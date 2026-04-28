@@ -557,8 +557,40 @@ def main():
         caps, evidence, em, name, hosts = extract_capabilities(skill_dir)
         write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=args.dry_run)
         rel = str(skill_dir.relative_to(SKILLS_DIR))
-        aggregate[rel] = {"name": name, "execution_model": em, "capabilities": caps,
-                          "hosted_operators": hosts}
+        # Emit the FULL per-field provenance shape into capabilities.json so
+        # the modal UI can show confidence + source without a per-skill
+        # YAML fetch. Same shape as the YAML emitter; keys are stable.
+        caps_with_prov = {}
+        for key in CAPABILITY_REGISTRY:
+            v = caps[key]
+            ev_list = evidence.get(key, [])
+            ev_str = " ".join(ev_list).lower()
+            if v == "unknown":
+                source = "unknown"
+                confidence = "low"
+            elif "frontmatter" in ev_str or "allowed-tools" in ev_str or "user-invocable" in ev_str:
+                source = "declared"
+                confidence = "high"
+            elif (
+                "pattern:" in ev_str or "hostlist match" in ev_str
+                or "derived:" in ev_str or "scan:" in ev_str
+            ):
+                source = "extracted"
+                confidence = "medium"
+            else:
+                source = "inferred"
+                confidence = "low"
+            caps_with_prov[key] = {
+                "value": v if v != "unknown" else None,
+                "confidence": confidence,
+                "source": source,
+            }
+        aggregate[rel] = {
+            "name": name,
+            "execution_model": em,
+            "capabilities": caps_with_prov,
+            "hosted_operators": hosts,
+        }
         counts["processed"] += 1
         if em == "unknown":
             counts["model_unknown"] += 1
