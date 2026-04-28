@@ -57,7 +57,7 @@
       <span>v1.0.0</span>
       <span class="skill-badge" style="background:rgba(234,179,8,0.12);color:#eab308">C</span>
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
-      <span class="skill-badge trust-flag-badge trust-flag-some" title="2 true, 8 unknown of 11 capability flags">2 flags</span>
+      <span class="skill-badge trust-flag-badge trust-flag-some" title="3 true, 1 unknown of 11 capability flags">3 flags</span>
     </div>
     <p class="skill-page-desc">Jupiter DEX aggregator MCP for optimal Solana token swaps with route finding and price impact analysis.</p>
 
@@ -79,29 +79,29 @@
     </div>
 
 
-    <h2 id="trust">Trust Manifest <span class="trust-stage-pill">Stage: not yet evaluated</span></h2>
-    <p class="trust-help"><strong>2 capability flags.</strong> Capabilities are extracted automatically per <a href="../../TRUST.md" target="_blank" rel="noopener">TRUST.md</a>; <code>unknown</code> means the extractor declined to assert and is the honest default in Phase 1.</p>
+    <h2 id="trust">Trust profile <span class="trust-stage-pill">trust grade not computed yet</span></h2>
+    <p class="trust-help"><strong>3 capability flags.</strong> Capabilities below are detected automatically by an open-source scanner that reads the skill's text and scripts (see <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a>). <code>unknown</code> means the scanner couldn't make a confident call yet — it is NOT a green check, and you should treat it as a possible red flag until a human or a stronger scanner has measured it.</p>
     <div class="trust-panel">
       <h3 class="trust-subhead">Capabilities</h3>
       <ul class="trust-cap-list">
-<li class='trust-cap trust-cap--unknown' title='Sends or signs transactions; can move user funds'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can move funds</span> <span class='trust-unknown-note'>not yet measured</span></li>
-<li class='trust-cap trust-cap--unknown' title='Asks the user for a key, mnemonic, or wallet config'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Requires private key</span> <span class='trust-unknown-note'>not yet measured</span></li>
-<li class='trust-cap trust-cap--unknown' title='Correct behavior depends on a specific company&#x27;s running infrastructure'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Requires hosted operator</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--false' title='Sends or signs transactions; can move user funds'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Can move funds</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Asks the user for a key, mnemonic, or wallet config'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Requires private key</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Correct behavior depends on a specific company&#x27;s running infrastructure'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Requires hosted operator</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
 <li class='trust-cap trust-cap--false' title='Setup runs a script downloaded from the internet (curl|sh class)'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Uses remote install script</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
 <li class='trust-cap trust-cap--true' title='Executes remote code whose behavior can change without a local diff'><span class='trust-icon' aria-hidden='true'>&#x26A0;</span> <span class='trust-cap-label'>Mutable remote runtime</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
 <li class='trust-cap trust-cap--true' title='Runs npx, pip install, or downloads CLIs at install time'><span class='trust-icon' aria-hidden='true'>&#x26A0;</span> <span class='trust-cap-label'>Can install code</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
-<li class='trust-cap trust-cap--unknown' title='Runs arbitrary Bash'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can execute shell</span> <span class='trust-unknown-note'>not yet measured</span></li>
-<li class='trust-cap trust-cap--unknown' title='Fetches arbitrary URLs'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can browse the web</span> <span class='trust-unknown-note'>not yet measured</span></li>
-<li class='trust-cap trust-cap--unknown' title='Edits the user&#x27;s local files'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can write files</span> <span class='trust-unknown-note'>not yet measured</span></li>
-<li class='trust-cap trust-cap--unknown' title='Calls sub-skills or other agents'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Can spawn sub-agents</span> <span class='trust-unknown-note'>not yet measured</span></li>
+<li class='trust-cap trust-cap--true' title='Runs arbitrary Bash'><span class='trust-icon' aria-hidden='true'>&#x26A0;</span> <span class='trust-cap-label'>Can execute shell</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Fetches arbitrary URLs'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Can browse the web</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Edits the user&#x27;s local files'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Can write files</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
+<li class='trust-cap trust-cap--false' title='Calls sub-skills or other agents'><span class='trust-icon' aria-hidden='true'>&#x2713;</span> <span class='trust-cap-label'>Can spawn sub-agents</span> <span class='trust-conf trust-conf--medium'>medium</span> <span class='trust-src'>extracted</span></li>
 <li class='trust-cap trust-cap--unknown' title='Will be invoked by the agent without explicit user prompt'><span class='trust-icon' aria-hidden='true'>&#x25CB;</span> <span class='trust-cap-label'>Auto-invocable</span> <span class='trust-unknown-note'>not yet measured</span></li>
       </ul>
 
       <h3 class="trust-subhead">Execution mode</h3>
-      <p class="trust-mode"><code>router_orchestrator</code> Phase 1 single-mode classification — multi-mode breakdown deferred to Phase 2.</p>
+      <p class="trust-mode"><code>unknown</code> </p>
 
-      <h3 class="trust-subhead">Ingredients</h3>
-      <p class="trust-empty trust-help">No hosted operators detected by Phase 1 extractor. This is the absence of evidence, not evidence of absence — full CycloneDX BOM lands in Phase 2.</p>
+      <h3 class="trust-subhead">Ingredients (services this skill talks to)</h3>
+      <p class="trust-empty trust-help">We did not find any well-known hosted services in this skill's text or scripts. <strong>This does NOT mean the skill is local-only</strong> — it might use services we don't yet recognize, or talk to them through code paths our scanner can't reach. A complete dependency list (every package, library, and binary, with integrity hashes) is on the roadmap; today we only show recognized hosts.</p>
 
       <h3 class="trust-subhead">Audits</h3>
       <p class="trust-empty trust-help"><strong>No audits attempted.</strong> This is distinct from &ldquo;audited and clean.&rdquo;
@@ -113,7 +113,7 @@
         <a href="https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/mcp-servers/jupiter-mcp/TRUST.auto.yaml" target="_blank" rel="noopener">TRUST.auto.yaml &rarr;</a>
         <a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/mcp-servers/jupiter-mcp" target="_blank" rel="noopener">Browse directory &rarr;</a>
       </p>
-      <p class="trust-foot">Generated by cryptoskill/extract-capabilities/0.3.0 &middot; hostlist 2026-04-26 &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
+      <p class="trust-foot">Auto-generated by cryptoskill/extract-capabilities/0.3.0 &middot; hosted-service list version 2026-04-26 &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
     </div>
 
     <h2>Source</h2>

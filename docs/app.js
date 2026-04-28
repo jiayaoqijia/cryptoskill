@@ -618,7 +618,7 @@
       skillsGrid.innerHTML = `
         <div class="trust-empty-filters" style="grid-column:1/-1;padding:24px;border:1px dashed var(--border);border-radius:12px;background:var(--bg-secondary)">
           <p style="margin:0 0 6px;font-size:15px"><strong>No skills match every active trust filter.</strong></p>
-          <p style="margin:0 0 12px;color:var(--text-secondary);font-size:14px">Active: ${labels}. A skill qualifies only when its <code>TRUST.auto.yaml</code> records the capability as explicitly <code>false</code>; capabilities that are still <code>unknown</code> in Phase 1 are excluded so red flags can't slip past the filter.</p>
+          <p style="margin:0 0 12px;color:var(--text-secondary);font-size:14px">Active: ${labels}. A skill qualifies only when our scanner has confirmed the capability is <code>false</code>. Capabilities that are still <code>unknown</code> (the scanner couldn't make a confident call) are excluded on purpose, so red flags we haven't measured yet can't slip past the filter and look safe.</p>
           <button class="filter-btn" id="trustFilterClearBtn">Clear trust filters</button>
         </div>`;
       const clear = skillsGrid.querySelector('#trustFilterClearBtn');
@@ -714,17 +714,18 @@
     // uses `detected_hosted_operators`. Accept either.
     const operators = t.detected_hosted_operators || t.hosted_operators || [];
     const ingredients = operators.length
-      ? `<h3 class="trust-subhead">Ingredients</h3>
+      ? `<h3 class="trust-subhead">Ingredients (services this skill talks to)</h3>
+         <p class="trust-help">External services this skill needs in order to work. Today we only show services we recognize from a curated list of ~50 well-known hosts; a complete dependency list is on the roadmap.</p>
          <ul class="trust-ingredient-list">${operators.map(op => `<li class="trust-ingredient"><span class="trust-ingredient-kind">service</span> <code>${escHTML(op)}</code></li>`).join('')}</ul>`
-      : '<h3 class="trust-subhead">Ingredients</h3><p class="trust-empty trust-help">No hosted operators detected by Phase 1 extractor. Full CycloneDX BOM ships in Phase 2.</p>';
+      : '<h3 class="trust-subhead">Ingredients (services this skill talks to)</h3><p class="trust-empty trust-help">We did not find any well-known hosted services in this skill’s text or scripts. <strong>This does NOT mean the skill is local-only</strong> — it might use services we don’t yet recognize. A complete dependency list is on the roadmap.</p>';
     const audits = (t.audits || []);
     const auditsHTML = audits.length
       ? `<h3 class="trust-subhead">Audits</h3><ul class="trust-audit-list">${audits.map(a => {
           const r = a.reviewer || {};
           return `<li class="trust-audit"><strong>${escHTML(r.name || 'Unknown')}</strong> <span class="trust-tier trust-tier--${escHTML(r.tier || 'unverified')}">${escHTML(r.tier || 'unverified')}</span> &middot; subject <code>${escHTML(a.subject || '')}</code> &middot; ${escHTML(a.date || '')}</li>`;
         }).join('')}</ul>`
-      : '<h3 class="trust-subhead">Audits</h3><p class="trust-empty trust-help"><strong>No audits attempted.</strong> Distinct from "audited and clean".</p>';
-    const stage = t.stage == null ? 'not yet evaluated' : escHTML(String(t.stage));
+      : '<h3 class="trust-subhead">Audits</h3><p class="trust-empty trust-help"><strong>No one has audited this skill yet.</strong> That is different from "audited and clean" — it just means no professional reviewer has signed off on it. There are no audit reports to read.</p>';
+    const stage = t.stage == null ? 'trust grade not computed yet' : escHTML(String(t.stage));
     const summary = redFlagSummary(t);
     let flagBadge = '';
     let flagsLabel = 'capabilities not yet extracted';
@@ -744,8 +745,8 @@
       }
     }
     return `
-      <div class="modal-section-title">Trust Manifest <span class="trust-stage-pill">Stage: ${stage}</span>${flagBadge}</div>
-      <p class="trust-help"><strong>${flagsLabel}.</strong> Extracted automatically; <code>unknown</code> means the extractor declined to assert.</p>
+      <div class="modal-section-title">Trust profile <span class="trust-stage-pill">${stage}</span>${flagBadge}</div>
+      <p class="trust-help"><strong>${flagsLabel}.</strong> Detected automatically by an open-source scanner; <code>unknown</code> means the scanner couldn't make a confident call — treat it as a possible red flag, not a green check.</p>
       <div class="trust-panel">
         <h3 class="trust-subhead">Capabilities</h3>
         <ul class="trust-cap-list">${rows}</ul>

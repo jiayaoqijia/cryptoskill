@@ -141,6 +141,52 @@ KEY_REQ_PATTERNS = [
     re.compile(r"wallet[_\- ]?(?:setup|init|create|import)", re.IGNORECASE),
 ]
 
+# Patterns that indicate the skill executes shell commands.
+SHELL_EXEC_PATTERNS = [
+    re.compile(r"\bsubprocess\.(?:run|Popen|call|check_output|check_call)\b"),
+    re.compile(r"\bos\.system\b"),
+    re.compile(r"\bos\.popen\b"),
+    re.compile(r"\bchild_process\.(?:exec|spawn|execSync|spawnSync|fork)\b"),
+    re.compile(r"\bexec\(\s*['\"]?(?:sh|bash|zsh|/bin/)", re.IGNORECASE),
+    re.compile(r"^```(?:bash|sh|shell|zsh)\b", re.MULTILINE | re.IGNORECASE),
+    re.compile(r"\b(?:bash|sh)\s+-c\s+['\"]", re.IGNORECASE),
+    re.compile(r"\$\([^)]*\)", re.IGNORECASE),  # shell command substitution in docs
+]
+
+# Patterns that indicate the skill writes to the local filesystem.
+FILE_WRITE_PATTERNS = [
+    re.compile(r"\bopen\s*\([^)]*['\"][wax][b+]?['\"]", re.IGNORECASE),  # python open mode
+    re.compile(r"\b(?:fs\.|fsp\.|fs/promises)\.(?:writeFile|writeFileSync|appendFile|createWriteStream)\b"),
+    re.compile(r"\bnew\s+File\b", re.IGNORECASE),
+    re.compile(r"\bPath\([^)]*\)\.write_text\b"),
+    re.compile(r"\bPath\([^)]*\)\.write_bytes\b"),
+    re.compile(r"\.to_csv\b|\.to_json\b|\.to_parquet\b"),
+    re.compile(r"\bWrite\s*\(", re.IGNORECASE),  # claude tool name in instructions
+    re.compile(r"\bEdit\s*\(", re.IGNORECASE),
+]
+
+# Patterns that indicate web fetching to arbitrary URLs.
+WEB_FETCH_PATTERNS = [
+    re.compile(r"\bfetch\s*\(\s*['\"]https?://"),
+    re.compile(r"\baxios\.(?:get|post|put|delete|patch|request)\b", re.IGNORECASE),
+    re.compile(r"\brequests\.(?:get|post|put|delete|patch|request|Session)\b"),
+    re.compile(r"\burllib\.request\."),
+    re.compile(r"\bhttplib\.|http\.client\."),
+    re.compile(r"\bWebFetch\b|\bWebSearch\b"),
+    re.compile(r"\bgot\s*\(", re.IGNORECASE),  # the 'got' npm lib
+    re.compile(r"\bnode-fetch\b"),
+]
+
+# Patterns suggesting the skill spawns sub-agents or invokes other skills.
+SUBAGENT_PATTERNS = [
+    re.compile(r"\bAgent\s*\(", re.IGNORECASE),
+    re.compile(r"\bclaude\s+code\b", re.IGNORECASE),
+    re.compile(r"\bSubAgent\b", re.IGNORECASE),
+    re.compile(r"\bsubagent\b", re.IGNORECASE),
+    re.compile(r"\bdelegate\s+to\s+(?:agent|skill|sub-agent)", re.IGNORECASE),
+    re.compile(r"\bspawn\s+(?:agent|sub-?agent)", re.IGNORECASE),
+]
+
 # Endpoints whose presence indicates a hosted operator dependency
 HOSTED_OPERATOR_HOSTS = {
     # CEX
@@ -394,6 +440,47 @@ def extract_capabilities(skill_dir):
         caps["requires_hosted_operator"] = True
         for h in sorted(found_hosts):
             evidence["requires_hosted_operator"].append(f"hostlist match: {h}")
+
+    # === Full-scan fallbacks for fields not granted via allowed-tools. ===
+    # If allowed-tools wasn't declared (most skills), we run pattern scans
+    # over the skill's text + scripts and emit `false` only when the scan
+    # completes with zero hits. This replaces 'unknown' with measured
+    # negatives where we can; rare false negatives are acceptable per
+    # TRUST.md §"Pass bar — recall floors" (these caps are non-critical
+    # so we report recall but don't gate on it).
+    def _scan(field, patterns, evidence_label):
+        if caps[field] != "unknown":
+            return  # frontmatter or earlier scan already decided
+        for pat in patterns:
+            m = pat.search(text["all"])
+            if m:
+                caps[field] = True
+                evidence[field].append(f"pattern: {m.group(0)[:60]}")
+                return
+        caps[field] = False
+        evidence[field].append(f"scan: {evidence_label}")
+
+    _scan("can_execute_shell", SHELL_EXEC_PATTERNS, "no shell-exec pattern matched")
+    _scan("can_write_files",   FILE_WRITE_PATTERNS, "no file-write pattern matched")
+    _scan("can_browse_web",    WEB_FETCH_PATTERNS,  "no web-fetch pattern matched")
+    _scan("can_spawn_subagents", SUBAGENT_PATTERNS, "no sub-agent invocation pattern matched")
+
+    # The same convention for the three already-pattern-scanned caps:
+    # if no pattern matched and the field is still 'unknown', we have
+    # completed a full scan and the honest answer is `false`.
+    if caps["can_move_funds"] == "unknown":
+        caps["can_move_funds"] = False
+        evidence["can_move_funds"].append("scan: no fund-movement call pattern matched")
+    if caps["requires_private_key"] == "unknown":
+        caps["requires_private_key"] = False
+        evidence["requires_private_key"].append("scan: no key-requirement pattern matched")
+    if caps["requires_hosted_operator"] == "unknown":
+        caps["requires_hosted_operator"] = False
+        evidence["requires_hosted_operator"].append("scan: no hostlist match")
+
+    # `auto_invocable` only has a strong signal from frontmatter (no reliable
+    # body-text proxy), so we leave it `unknown` when frontmatter is silent.
+    # That is the single field where 'unknown' is honest in Phase 1.
 
     # === Execution model heuristic ===
     em = "unknown"
