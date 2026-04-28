@@ -286,6 +286,16 @@ def _normalize_shell(text: str) -> str:
 SCAN_EXCLUDED_FILENAMES = {"SOURCE.md", "_meta.json", "TRUST.auto.yaml", "TRUST.md", "bom.cdx.json"}
 
 
+def _resolve_skill_md(skill_dir):
+    """SKILL.md may exist with any case on disk (some upstream catalogs
+    ship `skill.md`). Return the first match the bot can read."""
+    for name in ("SKILL.md", "skill.md", "Skill.md", "SKILL.MD"):
+        candidate = skill_dir / name
+        if candidate.exists():
+            return candidate
+    return None
+
+
 def gather_text(skill_dir):
     """Return the SKILL.md body text + concatenated text from skill-local
     scripts and explicitly-marked references, with shell continuations joined.
@@ -293,11 +303,11 @@ def gather_text(skill_dir):
     Excludes SOURCE.md, _meta.json, and trust-system files from the scan corpus
     so attribution prose does not produce false-positive capabilities."""
     parts = {"skill_md": "", "scripts": "", "references": "", "all": ""}
-    skill_md = skill_dir / "SKILL.md"
-    if skill_md.exists():
+    skill_md = _resolve_skill_md(skill_dir)
+    if skill_md is not None and skill_md.exists():
         parts["skill_md"] = _normalize_shell(read_text(skill_md))
     for f in skill_dir.rglob("*"):
-        if not f.is_file() or f == skill_md:
+        if not f.is_file() or (skill_md is not None and f == skill_md):
             continue
         if f.name in SCAN_EXCLUDED_FILENAMES:
             continue
@@ -606,13 +616,16 @@ def write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=False):
 
 
 def iter_skills(specific=None):
-    """Yield (skill_dir, has_skill_md). Caller can count skipped vs processed."""
+    """Yield (skill_dir, has_skill_md). Caller can count skipped vs processed.
+    Case-insensitive on the SKILL.md filename — some upstream catalogs ship
+    `skill.md` and we don't want to silently drop those skills from the
+    trust-manifest run."""
     if specific:
         p = Path(specific)
         if not p.is_absolute():
             p = ROOT / p
         if p.is_dir():
-            yield p, (p / "SKILL.md").exists()
+            yield p, _resolve_skill_md(p) is not None
         return
     for cat in sorted(SKILLS_DIR.iterdir()):
         if not cat.is_dir():
@@ -620,7 +633,7 @@ def iter_skills(specific=None):
         for skill in sorted(cat.iterdir()):
             if not skill.is_dir():
                 continue
-            yield skill, (skill / "SKILL.md").exists()
+            yield skill, _resolve_skill_md(skill) is not None
 
 
 def main():

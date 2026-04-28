@@ -461,42 +461,82 @@
   }
 
   // --- Create Skill Card (shared between official and community) ---
+  // Card structure (Linear-inspired, four horizontal bands separated by
+  // hairline borders; everything left-aligned; metadata in mono):
+  //
+  //   ┌────────────────────────────────────────┐
+  //   │ ⊙ Skill name                    A grade │  ← title row
+  //   │ category · @author · v1.0.0             │  ← meta row
+  //   ├────────────────────────────────────────┤
+  //   │ Two-line description, ellipsis-clamped  │  ← body
+  //   ├────────────────────────────────────────┤
+  //   │ TRUST  ⚠ flag1  ⚠ flag2  +N            │  ← trust strip
+  //   ├────────────────────────────────────────┤
+  //   │ tag tag tag                   Official  │  ← footer
+  //   └────────────────────────────────────────┘
   function createSkillCard(skill, isOfficial) {
     const card = document.createElement('div');
-    card.className = 'skill-card fade-in-up';
+    card.className = 'skill-card skill-card-v2 fade-in-up';
     const cat = categories[skill.category];
-    const badgeClass = isOfficial ? 'skill-badge official-tag' : 'skill-badge';
-    const badgeText = isOfficial ? '&#10003; Official' : (cat ? cat.name : skill.category);
+    const catIcon = cat?.icon || '&#128230;'; // 📦
+    const catName = cat?.name || skill.category;
+    const trust = trustFor(skill);
+    const summary = redFlagSummary(trust);
 
-    // Note: skill data comes from our own skills.json catalog, not user input
-    const summary = redFlagSummary(trustFor(skill));
-    let flagBadge = '';
+    // --- Trust strip: top 3 active red flags with icons.
+    let trustStrip = '';
     if (summary !== null) {
       const { nTrue, nUnknown } = summary;
+      const trueCaps = RED_FLAG_CAPS
+        .filter(([k]) => capValue(trust, k) === true)
+        .slice(0, 3)
+        .map(([k, label]) => `<span class="trust-strip-flag" title="${escHTML(label)}: yes">⚠ ${escHTML(label)}</span>`)
+        .join('');
+      const moreCount = Math.max(0, nTrue - 3);
+      const moreSpan = moreCount > 0 ? `<span class="trust-strip-more">+${moreCount}</span>` : '';
       const title = `${nTrue} true, ${nUnknown} unknown of 11 capability flags`;
       if (nTrue === 0 && nUnknown === 0) {
-        flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-zero" title="${title}">0 known flags</span>`;
+        trustStrip = `<div class="trust-strip trust-strip--clean" title="${title}"><span class="trust-strip-label">TRUST</span><span class="trust-strip-clean">✓ No red flags detected</span></div>`;
       } else if (nTrue === 0 && nUnknown > 0) {
-        flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="${title}">0 known &middot; ${nUnknown} unknown</span>`;
+        trustStrip = `<div class="trust-strip trust-strip--unknown" title="${title}"><span class="trust-strip-label">TRUST</span><span class="trust-strip-unknown">○ ${nUnknown} not measured yet</span></div>`;
       } else {
-        const plural = nTrue === 1 ? '' : 's';
-        flagBadge = `<span class="skill-badge trust-flag-badge trust-flag-some" title="${title}">${nTrue} flag${plural}</span>`;
+        trustStrip = `<div class="trust-strip trust-strip--some" title="${title}"><span class="trust-strip-label">TRUST</span>${trueCaps}${moreSpan}</div>`;
       }
     }
+
+    // --- Title row score badge (the existing renderScoreBadge already
+    // returns a positioned absolute span; we reposition it inline-right).
+    const grade = skill.score?.grade;
+    const total = skill.score?.total;
+    const gradeClass = grade ? getGradeClass(grade) : '';
+    const riskWarn = skill.score?.risk_gate === 'FAIL' ? '&#9888; ' : '';
+    const gradePill = grade ? `<span class="card-grade ${gradeClass}" title="${total != null ? total + '/100' : ''}">${riskWarn}${escHTML(grade)}</span>` : '';
+
+    const officialPill = isOfficial ? '<span class="card-official">&#10003; Official</span>' : '';
+    const author = skill.author || 'unknown';
+    const version = skill.version || '1.0.0';
+
     card.innerHTML = `
-      ${renderScoreBadge(skill)}
-      <div class="skill-card-header">
-        <div class="skill-name">${skill.displayName}</div>
-        <span class="${badgeClass}">${badgeText}</span>
+      <header class="card-title-row">
+        <span class="card-icon" aria-hidden="true">${catIcon}</span>
+        <h3 class="card-name">${escHTML(skill.displayName)}</h3>
+        ${gradePill}
+      </header>
+      <div class="card-meta-row">
+        <span class="card-meta-cat">${escHTML(catName)}</span>
+        <span class="card-meta-sep">·</span>
+        <span class="card-meta-author">@${escHTML(author)}</span>
+        <span class="card-meta-sep">·</span>
+        <span class="card-meta-version">v${escHTML(version)}</span>
       </div>
-      <div class="skill-desc">${skill.description}</div>
-      <div class="skill-footer">
-        <div class="skill-tags">
-          ${skill.tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="skill-tag">${t}</span>`).join('')}
-          ${flagBadge}
+      <p class="card-desc">${escHTML(skill.description || '')}</p>
+      ${trustStrip}
+      <footer class="card-footer-row">
+        <div class="card-tags">
+          ${skill.tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="card-tag">${escHTML(t)}</span>`).join('')}
         </div>
-        <span class="skill-version">v${skill.version}</span>
-      </div>
+        ${officialPill}
+      </footer>
     `;
     card.addEventListener('click', () => openModal(skill));
     return card;
