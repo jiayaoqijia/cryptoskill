@@ -446,7 +446,12 @@
   // --- Score Badge Helper ---
   function getGradeClass(grade) {
     if (!grade) return '';
-    return 'grade-' + grade.toLowerCase();
+    // Convert 'A+' / 'B-' to 'grade-a-plus' / 'grade-b-minus' so the resulting
+    // class is a valid CSS identifier. Plain '+'/'−' produce '.grade-a+' which
+    // CSS parses as '.grade-a' followed by an adjacent-sibling combinator and
+    // never matches.
+    const slug = grade.toLowerCase().replace('+', '-plus').replace('-', '-minus');
+    return 'grade-' + slug;
   }
 
   function renderScoreBadge(skill) {
@@ -482,6 +487,7 @@
     // serves only mouse users).
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-haspopup', 'dialog');
     card.setAttribute('aria-label', `${skill.displayName}, ${skill.category}, view details`);
     const cat = categories[skill.category];
     const catIcon = cat?.icon || '&#128230;'; // 📦
@@ -504,7 +510,7 @@
       if (nTrue === 0 && nUnknown === 0) {
         trustStrip = `<div class="trust-strip trust-strip--clean" role="status" aria-label="Trust: no red flags detected" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span><span class="trust-strip-clean"><span aria-hidden="true">✓</span> No red flags detected</span></div>`;
       } else if (nTrue === 0 && nUnknown > 0) {
-        trustStrip = `<div class="trust-strip trust-strip--unknown" role="status" aria-label="Trust: ${nUnknown} capabilities not measured yet" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span><span class="trust-strip-unknown"><span aria-hidden="true">○</span> ${nUnknown} not measured yet</span></div>`;
+        trustStrip = `<div class="trust-strip trust-strip--unknown" role="status" aria-label="Trust: ${nUnknown} capabilities not measured yet — treat as a possible red flag" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span><span class="trust-strip-unknown"><span aria-hidden="true">?</span> ${nUnknown} not measured yet</span></div>`;
       } else {
         trustStrip = `<div class="trust-strip trust-strip--some" role="status" aria-label="Trust: ${nTrue} red flag${nTrue === 1 ? '' : 's'} detected" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span>${trueCaps}${moreSpan}</div>`;
       }
@@ -524,11 +530,11 @@
     const tags = Array.isArray(skill.tags) ? skill.tags : [];
 
     card.innerHTML = `
-      <header class="card-title-row">
+      <div class="card-title-row">
         <span class="card-icon" aria-hidden="true">${catIcon}</span>
-        <h3 class="card-name">${escHTML(skill.displayName)}</h3>
+        <span class="card-name">${escHTML(skill.displayName)}</span>
         ${gradePill}
-      </header>
+      </div>
       <div class="card-meta-row">
         <span class="card-meta-cat">${escHTML(catName)}</span>
         <span class="card-meta-sep" aria-hidden="true">·</span>

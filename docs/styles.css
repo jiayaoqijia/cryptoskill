@@ -2684,10 +2684,17 @@ a {
 .skill-card-v2 .card-grade.grade-d-plus,
 .skill-card-v2 .card-grade.grade-d,
 .skill-card-v2 .card-grade.grade-f    { background: rgba(239, 68, 68, 0.14);  color: #b91c1c; }
-[data-theme="dark"] .skill-card-v2 .card-grade.grade-a    { color: #86efac; }
-[data-theme="dark"] .skill-card-v2 .card-grade.grade-b    { color: #93c5fd; }
-[data-theme="dark"] .skill-card-v2 .card-grade.grade-c    { color: #fde68a; }
-[data-theme="dark"] .skill-card-v2 .card-grade.grade-f    { color: #fca5a5; }
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-a-plus,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-a            { color: #86efac; }
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-a-minus,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-b-plus,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-b            { color: #93c5fd; }
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-b-minus,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-c-plus,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-c            { color: #fde68a; }
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-d-plus,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-d,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-f            { color: #fca5a5; }
 
 .skill-card-v2 .card-meta-row {
   display: flex;
@@ -2699,12 +2706,24 @@ a {
   font-family: var(--font-mono);
   letter-spacing: -0.005em;
   overflow: hidden;
+  /* text-overflow:ellipsis has no effect on flex containers — apply
+     truncation to the children instead, with min-width:0 so flex actually
+     allows them to shrink past their intrinsic size. */
+}
+.skill-card-v2 .card-meta-row > span {
+  min-width: 0;
+}
+.skill-card-v2 .card-meta-cat,
+.skill-card-v2 .card-meta-author,
+.skill-card-v2 .card-meta-version {
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .skill-card-v2 .card-meta-sep {
   color: var(--text-tertiary);
   opacity: 0.5;
+  flex: 0 0 auto;
 }
 .skill-card-v2 .card-meta-cat {
   color: var(--text-secondary);
@@ -2764,10 +2783,15 @@ a {
   font-weight: 500;
 }
 [data-theme="dark"] .trust-strip-clean { color: #86efac; }
+/* TRUST.md §"UI: red flags first, green checks last" — unknown is a red
+   flag, not a green check. So we render it amber, not muted grey, and
+   we put a "?" glyph (ambiguity) instead of "○" (absence) so a quick
+   scan reads it as 'we haven't measured this' not 'nothing here'. */
 .trust-strip-unknown {
-  color: var(--text-tertiary);
+  color: #a16207;
   font-weight: 500;
 }
+[data-theme="dark"] .trust-strip-unknown { color: #fde68a; }
 
 .skill-card-v2 .card-footer-row {
   display: flex;
