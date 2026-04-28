@@ -108693,6 +108693,192 @@
         },
         "scored_at": "2026-04-27T18:01:32Z"
       }
+    },
+    {
+      "name": "uniswap-official-configurator",
+      "displayName": "Configurator",
+      "description": "Configure CCA (Continuous Clearing Auction) smart contract parameters through an interactive bulk form flow. Use when user says \"configure auction\", \"cca auction\", \"setup token auction\", \"auction configuration\", \"continuous auction\", or mentions CCA contracts.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-deployer",
+      "displayName": "Deployer",
+      "description": "Deploy CCA (Continuous Clearing Auction) smart contracts using the Factory pattern. Use when user says \"deploy auction\", \"deploy cca\", \"factory deployment\", or wants to deploy a configured auction.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-hook-generator",
+      "displayName": "V4 Hook Generator",
+      "description": "Generate Uniswap v4 hook contracts via OpenZeppelin MCP. Use when building custom swap logic, async swaps, hook-owned liquidity, custom curves, dynamic fees, MEV protection, limit orders, or oracle hooks.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-security-foundations",
+      "displayName": "V4 Security Foundations",
+      "description": "Security-first Uniswap v4 hook development. Use when user mentions \"v4 hooks\", \"hook security\", \"PoolManager\", \"beforeSwap\", \"afterSwap\", or asks about V4 hook best practices, vulnerabilities, or audit requirements.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-sdk-integration",
+      "displayName": "V4 Sdk Integration",
+      "description": ">",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "bnbchain-mcp-agent",
+      "displayName": "BNBChain MCP Agent",
+      "description": "Test agent registered via BNBChain MCP integration for BSC network operations.",
+      "category": "chains",
+      "tags": [
+        "official",
+        "chains"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nexgent-ai",
+      "displayName": "Nexgent.AI",
+      "description": "Open-source AI trading agents for Solana with autonomous execution and DeFi infrastructure.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "xiao8-trading-agent",
+      "displayName": "Xiao8 Trading Agent",
+      "description": "AI-powered trading agent on BSC for autonomous token trading and DeFi operations.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "molty-cash-agent",
+      "displayName": "molty.cash Payment Agent",
+      "description": "Hire agents for tasks with USDC payments via x402 on Base, Solana, World Chain.",
+      "category": "payments",
+      "tags": [
+        "official",
+        "payments"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nookplot-social-agent",
+      "displayName": "Nookplot Agent",
+      "description": "AI agent for the Nookplot decentralized social network.",
+      "category": "social",
+      "tags": [
+        "official",
+        "social"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "babycai-agent",
+      "displayName": "Babycai",
+      "description": "AI trading agent executing crypto trades across multiple DEXes with NFT minting and floor price analysis.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "vector-trading-ai",
+      "displayName": "Vector Trading AI",
+      "description": "Automated crypto trading and market analysis specialist for Solana/Base chains with Python/JS bots.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "vulnerability-hunt-agent",
+      "displayName": "Vulnerability Hunt Agent",
+      "description": "Smart contract auditor that identifies vulnerabilities with severity ratings and remediation steps.",
+      "category": "dev-tools",
+      "tags": [
+        "dev-tools"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "compass-rose-protocol",
+      "displayName": "CompassRose7",
+      "description": "Cartography agent for protocol landscapes mapping dependencies and ecosystem gaps.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "intent-based-trader",
+      "displayName": "Intent-Based Trader",
+      "description": "Interprets user intents and executes multi-step DeFi trades automatically on Polygon.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lighter-mcp",
+      "displayName": "Lighter Mcp",
+      "description": "MCP server for Lighter Protocol — graded safety gates (readonly/paper/live/funds), audit log, two-step confirmations.",
+      "category": "exchanges",
+      "tags": [
+        "exchanges"
+      ],
+      "author": "iamgoatedaf",
+      "version": "1.0.0"
     }
   ],
   "categories": {
