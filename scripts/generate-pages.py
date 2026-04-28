@@ -32,6 +32,17 @@ SITE = "https://cryptoskill.org"
 GH_BLOB = "https://github.com/jiayaoqijia/cryptoskill/blob/main"
 GH_TREE = "https://github.com/jiayaoqijia/cryptoskill/tree/main"
 
+# Computed at generation time to bust CDN/browser caches when styles.css
+# changes — the version comes from a sha256 of the file's bytes.
+def _compute_css_version():
+    import hashlib
+    css = os.path.join(DOCS, "styles.css")
+    if not os.path.exists(css):
+        return "0"
+    with open(css, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()[:8]
+CSS_VERSION = _compute_css_version()
+
 # Capabilities considered "negative-leaning red flags" — when true the UI
 # surfaces them prominently. Order is the rendering order in the panel.
 # Each entry is (key, label, hover-explanation).
@@ -466,7 +477,7 @@ def skill_page_html(skill, categories):
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../styles.css?v={CSS_VERSION}">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{ld_json}</script>
@@ -615,7 +626,7 @@ def category_index_html(cat_id, skills, categories):
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../styles.css?v={CSS_VERSION}">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{ld_json}</script>
