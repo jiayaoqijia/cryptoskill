@@ -2681,8 +2681,10 @@ a {
 .skill-card-v2 .card-grade.grade-b-minus,
 .skill-card-v2 .card-grade.grade-c-plus,
 .skill-card-v2 .card-grade.grade-c    { background: rgba(234, 179, 8, 0.16);  color: #a16207; }
+.skill-card-v2 .card-grade.grade-c-minus,
 .skill-card-v2 .card-grade.grade-d-plus,
 .skill-card-v2 .card-grade.grade-d,
+.skill-card-v2 .card-grade.grade-d-minus,
 .skill-card-v2 .card-grade.grade-f    { background: rgba(239, 68, 68, 0.14);  color: #b91c1c; }
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-a-plus,
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-a            { color: #86efac; }
@@ -2692,8 +2694,10 @@ a {
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-b-minus,
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-c-plus,
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-c            { color: #fde68a; }
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-c-minus,
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-d-plus,
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-d,
+[data-theme="dark"] .skill-card-v2 .card-grade.grade-d-minus,
 [data-theme="dark"] .skill-card-v2 .card-grade.grade-f            { color: #fca5a5; }
 
 .skill-card-v2 .card-meta-row {
