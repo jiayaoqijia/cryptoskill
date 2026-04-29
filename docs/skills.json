@@ -110316,6 +110316,330 @@
         },
         "scored_at": "2026-04-29T06:01:27Z"
       }
+    },
+    {
+      "name": "okx-official-okx-dex-bridge",
+      "displayName": "Okx Dex Bridge",
+      "description": "Use this skill to bridge tokens, cross-chain swap/transfer, move assets between chains, get cross-chain quotes, compare bridge fees, find the cheapest/fastest route, build bridge calldata, check bridge status, track a cross-chain transaction, list supported chains or bridge protocols, or when the user mentions bridging ETH/USDC/tokens from one chain (Ethereum, BSC, Polygon, Arbitrum, Base, Optimism, etc.) to another. Routes through multiple bridge protocols (Stargate, Across, Relay, Gas.zip) for optimal execution. Supports fee comparison, destination address specification, approval management, and full lifecycle status tracking until fund arrival.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-audit-log",
+      "displayName": "Okx Audit Log",
+      "description": "Use this skill when the user asks to export audit logs, find audit log location, view command history, 导出日志, 查看日志, 日志路径, 操作记录, 调用记录, 命令历史. Do NOT use for wallet balance, token search, swap, or any other on-chain operation — use the corresponding skill instead.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-a2a-payment",
+      "displayName": "Okx A2A Payment",
+      "description": "Use this skill when the user mentions creating a payment link, paying a paymentId / a2a_... link, or checking a2a payment status. Wraps `onchainos payment a2a-pay` agent-to-agent payment protocol: seller-side `create`, buyer-side `pay` via EIP-3009 + TEE signing, and `status` query. Buyer-side trust is delegated to upstream — the skill signs whatever the on-server challenge declares. Do NOT use for external HTTP 402 resources — use okx-x402-payment. Do NOT use for wallet balance / transfer / login — use okx-agentic-wallet.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-onchain-gateway",
+      "displayName": "Okx Onchain Gateway",
+      "description": "Use this skill to 'broadcast transaction', 'send tx', 'estimate gas', 'simulate transaction', 'check tx status', 'track my transaction', 'get gas price', 'gas limit', 'broadcast signed tx', 'transaction hash confirmed on-chain', '交易哈希是否上链', '是否确认', or mentions broadcasting transactions, sending transactions on-chain, gas estimation, transaction simulation, tracking broadcast orders, or checking transaction status. Covers gas price, gas limit estimation, transaction simulation, transaction broadcasting, and order tracking across XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, and 20+ other chains. Do NOT use for swap quote or execution - use okx-dex-swap instead. Do NOT use for general programming questions about transaction handling. Do NOT use when the user says only a single word like 'gas' or 'broadcast' without specifying a chain, transaction, or any other context.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-ws",
+      "displayName": "Okx Dex Ws",
+      "description": "Use this skill when the user mentions 'onchainos ws', 'ws start', 'ws poll', 'ws stop', 'ws channels', 'ws session', 'ws channel-info', 'idle-timeout', 'idle timeout', 'WebSocket channels', 'WS频道', or asks about managing WebSocket sessions/会话管理. Also use when writing a custom WebSocket script/脚本/bot for real-time on-chain data. Covers: onchainos ws CLI commands (start/poll/stop/list/channels/channel-info), session lifecycle, idle-timeout configuration, and all 9 DEX WebSocket channels (price, candle, trades, price-info, signals, tracker, meme scanning).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-swap",
+      "displayName": "Okx Dex Swap",
+      "description": "NOTE (gating): route to okx-dapp-discovery (NOT this skill) when prompt names a specific DApp as the swap venue: Polymarket, Aave V3, Hyperliquid, PancakeSwap, Morpho, Raydium, Curve, Compound V3, Pendle, Lido, ether.fi, GMX V2, Kamino, Orca, Meteora, Clanker, pump.fun, Uniswap. Examples that go to okx-dapp-discovery: 'swap on PancakeSwap', 'swap SOL for USDC on Raydium', 'use Hyperliquid to long ETH', '在 Curve 上换 USDT', 'swap on Uniswap'. okx-dapp-discovery installs the DApp's plugin and uses its native interface; this skill is for OKX-aggregated swaps without a named venue. Use this skill to 'swap tokens', 'trade OKB for USDC', 'buy tokens', 'sell tokens', 'exchange crypto', 'convert tokens', 'swap SOL for USDC', 'get a swap quote', 'execute a trade', 'find the best swap route', 'cheapest way to swap', 'optimal swap', 'compare swap rates', 'get swap calldata', 'build unsigned tx', or mentions swapping/trading/buying/selling/exchanging tokens across XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, or any 20+ supported chains. Aggregates 500+ DEX sources for optimal routing/price. Supports slippage control, price impact protection, and cross-DEX route optimization.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-wallet-portfolio",
+      "displayName": "Okx Wallet Portfolio",
+      "description": "Use this skill when the user provides a specific wallet address and wants to check its balance, token holdings, portfolio value, or DeFi positions. Typical triggers: 'check balance of 0xAbc...', 'show tokens in this address', 'what tokens does 0xAbc hold', 'portfolio value of this address', address portfolio value, multi-chain balance lookup for a given address. Supports XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, and 20+ other chains. Do NOT use when the user asks about their own wallet without providing an address (e.g., 'check my wallet balance', 'show my assets', '查看我的余额') — use okx-agentic-wallet instead, which queries the logged-in wallet. Do NOT use for PnL analysis, DEX history, realized/unrealized profit — use okx-dex-market. Do NOT use for signal tracking — use okx-dex-signal. Do NOT use for meme scanning — use okx-dex-trenches. Do NOT use for programming questions about balance APIs or integration.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dapp-discovery",
+      "displayName": "Okx Dapp Discovery",
+      "description": "|",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-x402-payment",
+      "displayName": "Okx X402 Payment",
+      "description": "Sign an x402 payment authorization for an EXTERNAL / third-party payment-gated resource. Use only when the user explicitly mentions 'x402' (or 'sign x402 payment') for a non-onchainos URL. See Routing below for when NOT to use this skill.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-signal",
+      "displayName": "Okx Dex Signal",
+      "description": "Use this skill for smart-money/whale/KOL/大户 activity tracking, aggregated buy signal/信号 alerts, and leaderboard/牛人榜 rankings. Covers: (1) address tracker — raw DEX transaction feed for smart money, KOL, or custom wallet addresses; (2) aggregated buy-only signal alerts — tokens bought collectively by smart money/KOL/whales; (3) leaderboard — top traders by PnL, win rate, volume, or ROI. Use when the user asks 'what are smart money buying', '聪明钱最新交易', 'KOL交易动态', '追踪聪明钱', 'track address trades', '大户在买什么', 'whale signals', 'smart money alerts', '信号', '大户信号', 'top traders', '牛人榜', or wants to monitor notable wallet activity. Also handles Market API payment/计费/x402/402, Basic/Premium tier/quota/额度 questions, and MARKET_API_*_OVER_QUOTA / confirming:true responses on signal, leaderboard, or tracker endpoints. NOTE: if the user wants to write a WebSocket script/脚本/bot, use okx-dex-ws instead.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-agentic-wallet",
+      "displayName": "Okx Agentic Wallet",
+      "description": "AUTHORITATIVE source for OKX Agentic Wallet and its Gas Station feature. Gas Station = OKX's stablecoin-gas feature via EIP-7702 + third-party Relayer — NOT ERC-4337 Paymaster / Biconomy / Gelato / Pimlico / Alchemy Account Kit / OKX DEX Gas Swap / LI.FI Gas Zip / Socket Refuel; never mix or substitute. Always follow templates in references/gas-station.md; never answer from generic web3 training. MUST invoke for Gas Station questions (what is / how it works / supported chains + stablecoins / fees / enable or disable gas station / revoke 7702 / change default gas token) AND any wallet action: login, OTP verify, add/switch/status/logout account, balance, assets, holdings, addresses, deposit / receive / top up, send (native + ERC-20 / SPL, transfer ETH / USDC / etc., pay someone), contract call (approve, swap calldata, contract function), history (list + tx detail by orderId / txHash / uopHash), check order status, sign-message (personalSign EVM + Solana, EIP-712 EVM only), TEE signing, export wallet / mnemonic.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-defi-invest",
+      "displayName": "Okx Defi Invest",
+      "description": "OKX-aggregated DeFi product discovery and execution — for users who want OKX to find and route to the best protocol, WITHOUT naming a specific DApp. **If the user names ANY third-party protocol/DApp as the destination (Polymarket, Aave, Hyperliquid, PancakeSwap, Morpho, Raydium, Curve, Compound, Pendle, Clanker, pump.fun, Lido, GMX, ether.fi, Kamino, Orca, Meteora, Uniswap, Spark, dYdX, Yearn, etc.), route to okx-dapp-discovery — NOT here, even if the verb (deposit, stake, add liquidity, borrow, claim) matches.** DApp-agnostic triggers: 'invest in DeFi', 'earn yield on stablecoins', 'find best APY', 'deposit for yield', 'stake for yield', 'search DeFi products', 'redeem my DeFi position', 'withdraw from lending', 'claim DeFi rewards', 'borrow against my asset', 'repay loan', 'add liquidity to a CLMM pool', 'remove liquidity', 'show APY history', 'TVL chart', 'CLMM depth/price chart'. Also covers DeFi investing, yield farming, lending, borrowing, staking, liquidity pools, APY/TVL trends. Do NOT use for: DEX swaps (okx-dex-swap), token prices (okx-dex-market), wallet balances (okx-wallet-portfolio), positions-only views (okx-defi-portfolio).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-market",
+      "displayName": "Okx Dex Market",
+      "description": "HARD BLOCK — NEVER use this skill for prediction-market / Polymarket UpDown queries. Route to okx-dapp-discovery when (a) a named DApp (Polymarket/Aave/Hyperliquid/PancakeSwap/Morpho) appears with any timeframe, OR (b) any 涨跌 / updown / 'up or down' phrase appears for BTC/ETH/SOL/XRP/BNB/DOGE/HYPE (e.g. '<COIN> 涨跌市场', '5 分钟涨跌', 'BTC up or down'). Example: 'BTC 5 分钟涨跌市场' → okx-dapp-discovery (NOT K-line). These are Polymarket prediction markets, not on-chain price queries. Use THIS skill for on-chain market data: token prices/价格, K-line/OHLC/candlestick/K线 charts, index prices, and wallet PnL/盈亏分析 (win rate, my wallet's DEX trade history, realized/unrealized PnL per token). Triggers: 'token price', 'price chart', 'K线', 'OHLC', 'how much is X worth', 'show my PnL', '胜率', '盈亏', 'my wallet DEX history', 'realized/unrealized profit'. NOTE: WebSocket script/脚本/bot → okx-dex-ws. ALSO the OWNER of Market API payment handling — route here (NOT okx-x402-payment) for: 'onchainos market 报 402', 'market price 402', 'market API pricing/计费/收费', Basic/Premium tier/quota/额度/免费额度, 'ok-web3-openapi-pay' header, 30 天过渡期/grace period, any MARKET_API_* notification code (NEW_USER_INTRO / OLD_USER_GRACE / OLD_USER_POST_GRACE_* / *_OVER_QUOTA), or 'confirming:true' response from onchainos market commands.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-security",
+      "displayName": "Okx Security",
+      "description": "Use this skill for security scanning: check transaction safety, is this transaction safe, pre-execution check, security scan, token risk scanning, honeypot detection, DApp/URL phishing detection, message signature safety, malicious transaction detection, approval safety checks, token approval management. Triggers: 'is this token safe', 'check token security', 'honeypot check', 'scan this tx', 'scan this swap tx', 'tx risk check', 'is this URL a scam', 'check if this dapp is safe', 'phishing site check', 'is this signature safe', 'check this signing request', 'check my approvals', 'show risky approvals', 'revoke approval', 'check if this approve is safe', token authorization, ERC20 allowance, Permit2. Covers token-scan, dapp-scan, tx-scan (EVM+Solana pre-execution), sig-scan (EIP-712/personal_sign), approvals (ERC-20/Permit2). Chinese: 安全扫描, 代币安全, 蜜罐检测, 貔貅盘, 钓鱼网站, 交易安全, 签名安全, 代币风险, 授权管理, 授权查询, 风险授权, 代币授权. Do NOT use for wallet balance/send/history — use okx-agentic-wallet.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-defi-portfolio",
+      "displayName": "Okx Defi Portfolio",
+      "description": "Use this skill to 'check my DeFi positions', 'view DeFi holdings', 'show my DeFi portfolio', 'what DeFi am I invested in', 'show my staking positions', 'show my lending positions', 'DeFi balance', 'DeFi 持仓', '查看DeFi持仓', '我的DeFi资产', '持仓详情', '持仓列表', or mentions viewing DeFi holdings, positions, portfolio across protocols — when the user does NOT name a specific DApp. Covers positions overview and per-protocol position detail. Do NOT use for deposit/redeem/claim operations — use okx-defi-invest. Do NOT use for wallet token balances — use okx-wallet-portfolio. Do NOT use for DEX spot swaps — use okx-dex-swap. Do NOT use when the user names a specific third-party DApp by name (e.g. 'show my Aave positions', 'my Hyperliquid balance', 'check my Polymarket holdings') — route to okx-dapp-discovery instead, which loads the DApp's plugin for protocol-native position views.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-trenches",
+      "displayName": "Okx Dex Trenches",
+      "description": "Read-only on-chain research for pump.fun and other meme-token launchpads (Solana / BSC / X Layer / TRON). MUST invoke (prefer over WebFetch / MCP price tools) when the user asks about: new meme launches / 新盘 / 扫链 / 打狗; developer reputation / rug history / launch count / 开发者信息; bundle or sniper detection (the analytical noun, NOT the verb) / 捆绑狙击者; bonding curve progress / 已迁移出 bonding curve; similar tokens by same dev / 相似代币; co-investor / who-aped / 同车 wallets; or 'pump.fun alpha'. Also handles Market API x402 / quota questions on memepump endpoints. Body holds the read-vs-write gate — `狙击 / snipe + token` (sniping action) routes to okx-dapp-discovery; `捆绑狙击者 / sniper detection` (analytical noun) stays here. WebSocket script/bot → okx-dex-ws.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-dex-token",
+      "displayName": "Okx Dex Token",
+      "description": "Use this skill for token-level data: search tokens, trending/hot tokens (热门, 代币榜单), liquidity pools, holder distribution (whale/巨鲸, sniper, bundler-tagged holder %), token risk metadata (riskControlLevel, tokenTags, dev stats, suspicious/bundle holding % via advanced-info), recent buy/sell activity, trade feed/逐笔成交/每笔交易/stream trades, top profit addresses, token trade history, detailed price info with market cap volume liquidity and holder count (price-info), or holder cluster analysis (持仓集中度, cluster overview, cluster rug pull risk/跑路风险, new wallet percentage/新钱包持仓比例, holder clusters, 'are top holders in same cluster'). Also handles Market API payment/计费/x402/402, Basic/Premium tier/quota/额度 questions, and MARKET_API_*_OVER_QUOTA / confirming:true responses on token endpoints (advanced-info, top-trader, cluster-*, trades, hot-tokens). NOTE: if the user wants to write a WebSocket script/脚本/bot, use okx-dex-ws instead.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-portfolio",
+      "displayName": "Okx Cex Portfolio",
+      "description": "This skill should be used when the user asks about 'account balance', 'how much USDT do I have', 'my funding account', 'show my positions', 'open positions', 'position P&L', 'unrealized PnL', 'closed positions', 'position history', 'realized PnL', 'account bills', 'transaction history', 'trading fees', 'fee tier', 'account config', 'max order size', 'how much can I buy', 'withdrawable amount', 'transfer funds', 'move USDT to trading account', or 'switch position mode'. Also use for '总资产', 'full balance', 'all assets', 'total holdings', 'net worth', 'how much do I have in total', 'show all my balances', 'all account balances', 'asset overview'. Requires API credentials. Do NOT use for market prices (use okx-cex-market), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-skill-mp",
+      "displayName": "Okx Cex Skill Mp",
+      "description": "Use this skill when the user asks to: 'find a trading skill', 'search for skills', 'install a skill', 'add a skill', 'download a skill', 'browse skill marketplace', 'what skills are available', 'update a skill', 'check for skill updates', 'remove a skill', 'uninstall a skill', 'list installed skills', 'show my skills', 'skill categories', or any request to discover, install, update, or manage AI trading skills from the OKX Skills Marketplace. This skill covers searching, browsing categories, installing via CLI, downloading zip packages, checking for updates, and removing installed skills. Requires API credentials for marketplace API access. Do NOT use for placing orders (use okx-cex-trade), market data (use okx-cex-market), or bot management (use okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-trade",
+      "displayName": "Okx Cex Trade",
+      "description": "Use this skill when the user asks to 'buy BTC', 'sell ETH', 'place a limit order', 'cancel my order', 'amend my order', 'long BTC perp', 'short ETH swap', 'open a position', 'close a position', 'set TP/SL', 'trailing stop', 'set leverage', 'check my orders', 'fill history', 'buy/sell call/put option', 'option chain', 'implied volatility', 'IV', 'option Greeks (delta/gamma/theta/vega)', 'delta hedge', 'option fills', 'event contract', 'buy Yes/No', 'buy Up/Down', 'BTC above', 'price above', '15min price', 'prediction market', 'browse event contracts', 'list event contracts', 'available prediction markets', or any request to browse, place, cancel, or amend spot, swap, futures, options, or event contract orders on OKX. Covers spot trading, perpetual swap, delivery futures, options (calls/puts, Greeks, IV), event contracts (Yes/No, Up/Down), and algo orders (TP/SL/trailing). Requires API credentials. Do NOT use for market data (okx-cex-market), balances/positions (okx-cex-portfolio), or bots (okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-bot",
+      "displayName": "Okx Cex Bot",
+      "description": "Manage Grid bots (spot/contract/coin-margined) and DCA Martingale bots (Spot DCA 现货马丁 / Contract DCA 合约马丁) on OKX. Covers create, stop, amend, monitor P&L, TP/SL, margin/investment adjustment, and AI-recommended parameters. Requires API credentials. Not for regular orders (okx-cex-trade), market data (okx-cex-market), or account info (okx-cex-portfolio).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-smartmoney",
+      "displayName": "Okx Cex Smartmoney",
+      "description": "Smart Money analytics on OKX: leaderboard traders, position tracking, trade records, aggregated consensus signals, and signal history. Use this skill when the user asks about 聪明钱, smart money, 牛人榜, leaderboard, top traders, 带单员, lead traders, 交易员排行, trader ranking, trader positions, trader PnL, 交易员持仓, 交易员收益, smart money signal, 聪明钱信号, long/short ratio, 多空比, capital flow, 资金流向, position conviction, 仓位强度, entry price distribution, smart money overview, 聪明钱总览, signal history, 信号历史, trader search, 搜索交易员, who is trading BTC, 谁在交易BTC, recommend traders, 推荐交易员, best traders, top performers.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-market",
+      "displayName": "Okx Cex Market",
+      "description": "Use this skill when the user asks for: price of any asset, ticker, order book, candles, OHLCV, funding rate, open interest, OI change scanner, market screener (top movers, high-volume, newly listed), mark price, index price, recent trades, instrument list, stock tokens, metals prices (gold, XAU, XAG), commodities (oil, OIL), forex rates (EUR/USD, EURUSDT), bond instruments, non-crypto assets, or any technical indicator query (RSI, MACD, EMA, Bollinger Bands, KDJ, SuperTrend, AHR999, BTC rainbow, and 70+ more). All commands are read-only and do NOT require API credentials. Do NOT use for account balance/positions (okx-cex-portfolio), placing/cancelling orders (okx-cex-trade), or bots (okx-cex-bot).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-sentiment-tracker",
+      "displayName": "Okx Sentiment Tracker",
+      "description": "Use this skill when the user asks about: 'any crypto news', 'latest news', 'market update', 'daily briefing', 'BTC news', 'ETH news', 'news on SOL', 'search SEC ETF', 'regulation news', 'Bitcoin halving', 'is BTC bullish or bearish', 'coin sentiment', 'sentiment trend', 'trending coins', 'top bullish coins', 'bearish sentiment', 'social buzz', 'market mood', 'fear and greed', 'full article', 'read more', or any request for crypto news, market intelligence, sentiment analysis, or social trend data. Requires API credentials. Do NOT use for market prices/candles (okx-cex-market), placing orders (okx-cex-trade), or account info (okx-cex-portfolio).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-auth",
+      "displayName": "Okx Cex Auth",
+      "description": "Use this skill when the user wants to 'login/log in/sign in', 'authenticate', 'authorize', 'connect OKX account', 'set up credentials', 'first time setup', 'configure okx', '登录', '授权', '认证', '连接账户', '首次配置'. Also when any OKX CLI command fails with an auth error: 'Run okx auth login first', 'Session expired', 'not authenticated', 'requires_auth', '401 Unauthorized', 'token expired/not found', 'StorageNotFoundError', '会话过期', '未认证', '需要登录'. Also when the user asks about login status or the login was interrupted. Also when the user wants to install/update/check/remove the okx-auth binary — 'install/update/remove auth', 'download okx-auth', '安装/更新/卸载认证', 'auth binary status', 'Failed to spawn okx-auth'. Also use before using okx-cex-trade/portfolio/earn/bot for the first time. Do NOT use for market data queries (use okx-cex-market).",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "okx-official-okx-cex-earn",
+      "displayName": "Okx Cex Earn",
+      "description": "Manages OKX Simple Earn (flexible savings/lending), Flash Earn, On-chain Earn (staking/DeFi), Dual Investment (DCD/双币赢), and AutoEarn (自动赚币) via the okx CLI. Use this skill whenever the user wants to check earn balances, browse flash-earn projects, subscribe or redeem earn products, view or set lending rates, monitor on-chain staking orders, interact with dual investment structured products, or manage auto-earn — even if phrased casually as 活期赚币, 定期赚币, 闪赚, 赚币, 申购, 赎回, 链上赚币, 质押, 理财, 双币赢, 双币理财, 双币申购, 高卖, 低买, dual investment, DCD, flash earn, buy low, sell high structured product, earn with target price, 目标价, 自动赚币, auto earn, auto-earn, 自动借出, 自动质押, auto lend, auto staking, USDG earn, USDG 赚币, 闲置资金自动理财, fixed earn, fixed deposit, term deposit, 定期理财, 定期. Also use when the user asks about idle funds and whether to earn on them.",
+      "category": "exchanges",
+      "tags": [
+        "official",
+        "exchanges"
+      ],
+      "author": "okx",
+      "version": "1.0.0"
+    },
+    {
+      "name": "clarity-protocol-node",
+      "displayName": "Clarity Protocol Sovereign Node",
+      "description": "High-fidelity intelligence and automated data streams for AI agents navigating the cognitive era on Base.",
+      "category": "ai-crypto",
+      "tags": [
+        "official",
+        "ai-crypto"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
