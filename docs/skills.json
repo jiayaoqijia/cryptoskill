@@ -109974,6 +109974,52 @@
         },
         "scored_at": "2026-04-29T00:01:06Z"
       }
+    },
+    {
+      "name": "lido-mcp-agent",
+      "displayName": "Lido MCP Agent",
+      "description": "Reference MCP server for Lido with 67 on-chain tools for stETH staking, wrapping, withdrawals, governance, and position management.",
+      "category": "mcp-servers",
+      "tags": [
+        "official",
+        "mcp-servers"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "volt-playground-agent",
+      "displayName": "Volt Playground Trading Agent",
+      "description": "Autonomous trading agent deployed via Volt Playground with non-custodial session keys and on-chain spend caps.",
+      "category": "trading",
+      "tags": [
+        "official",
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "clawlett-trading-companion",
+      "displayName": "Clawlett Agent",
+      "description": "AI trading companion running on OpenClaw platform for DeFi operations.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hive-sdk",
+      "displayName": "Hive Sdk",
+      "description": "Institutional-grade crypto market infrastructure for AI agents — 376+ tools, 10 categories, 9 providers (CoinGecko, DefiLlama, Moralis, GoldRush, Codex, GoPlus, Helius, Tenderly, CCXT). MCP server + C",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "hive-intel",
+      "version": "1.0.0"
     }
   ],
   "categories": {
