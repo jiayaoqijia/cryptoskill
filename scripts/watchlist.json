@@ -1,6 +1,6 @@
 {
   "_description": "Top crypto projects watchlist for auto-discovering skills and MCP servers. Maintained manually + updated by bot.",
-  "_updated": "2026-03-25",
+  "_updated": "2026-04-29",
   "cex": [
     {
       "name": "Binance",
@@ -1125,6 +1125,16 @@
       "skills_repo": "ERROR403agent/clawford",
       "status": "added",
       "last_checked": "2026-03-25"
+    },
+    {
+      "name": "ETHSkills",
+      "github": "austintgriffith",
+      "coingecko": null,
+      "skills_repo": "austintgriffith/ethskills",
+      "status": "added",
+      "last_checked": "2026-04-29",
+      "submitter": "austin@ethereum.org",
+      "note": "Production-Ethereum knowledge skill with topic-routed sub-skills hosted at ethskills.com"
     }
   ],
   "wallets": [
