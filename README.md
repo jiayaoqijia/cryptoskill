@@ -120,7 +120,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 |---|---|---|
 | [Kraken](https://www.kraken.com/) | 50 | [krakenfx/kraken-cli](https://github.com/krakenfx/kraken-cli) |
 | [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
-| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-hub](https://github.com/binance/binance-skills-hub) |
+| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-1281hub](https://github.com/binance/binance-skills-hub) |
 | [Bankr](https://bankr.bot/) | 20 | [BankrBot/skills](https://github.com/BankrBot/skills) |
 | [Ottie](https://github.com/jiayaoqijia/ottie) | 18 | Crypto DeFi, wallets, market data |
 | [OKX](https://www.okx.com/) | 16+ | [okx/onchainos-skills](https://github.com/okx/onchainos-skills) |
@@ -132,7 +132,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 | [Coinbase Wallet](https://www.coinbase.com/) | 9 | [coinbase/agentic-wallet-skills](https://github.com/coinbase/agentic-wallet-skills) |
 | [Uniswap](https://uniswap.org/) | 8 | [Uniswap/uniswap-ai](https://github.com/Uniswap/uniswap-ai) |
 | [Bitget](https://www.bitget.com/) | 7 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) |
-| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-hub](https://github.com/Kucoin/kucoin-skills-hub) |
+| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-1281hub](https://github.com/Kucoin/kucoin-skills-hub) |
 | [Rocket Pool](https://rocketpool.net/) | 7 | [rocket-pool/skills](https://github.com/rocket-pool/skills) |
 | [CoinMarketCap](https://coinmarketcap.com/) | 7 | ClawHub: bryan-cmc |
 | [KyberSwap](https://kyberswap.com/) | 5 | [KyberNetwork/kyberswap-skills](https://github.com/KyberNetwork/kyberswap-skills) |
