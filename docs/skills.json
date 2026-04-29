@@ -109633,6 +109633,123 @@
         },
         "scored_at": "2026-04-28T18:01:30Z"
       }
+    },
+    {
+      "name": "uniswap-official-configurator",
+      "displayName": "Configurator",
+      "description": "Configure CCA (Continuous Clearing Auction) smart contract parameters through an interactive bulk form flow. Use when user says \"configure auction\", \"cca auction\", \"setup token auction\", \"auction configuration\", \"continuous auction\", or mentions CCA contracts.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-deployer",
+      "displayName": "Deployer",
+      "description": "Deploy CCA (Continuous Clearing Auction) smart contracts using the Factory pattern. Use when user says \"deploy auction\", \"deploy cca\", \"factory deployment\", or wants to deploy a configured auction.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-hook-generator",
+      "displayName": "V4 Hook Generator",
+      "description": "Generate Uniswap v4 hook contracts via OpenZeppelin MCP. Use when building custom swap logic, async swaps, hook-owned liquidity, custom curves, dynamic fees, MEV protection, limit orders, or oracle hooks.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-security-foundations",
+      "displayName": "V4 Security Foundations",
+      "description": "Security-first Uniswap v4 hook development. Use when user mentions \"v4 hooks\", \"hook security\", \"PoolManager\", \"beforeSwap\", \"afterSwap\", or asks about V4 hook best practices, vulnerabilities, or audit requirements.",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-pay-with-app",
+      "displayName": "Pay With App",
+      "description": ">",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "uniswap-official-v4-sdk-integration",
+      "displayName": "V4 Sdk Integration",
+      "description": ">",
+      "category": "defi",
+      "tags": [
+        "official",
+        "defi"
+      ],
+      "author": "Uniswap",
+      "version": "1.0.0"
+    },
+    {
+      "name": "suzu-paro50",
+      "displayName": "Suzu Paro50 - Polymarket Trader",
+      "description": "Trader agent for Polymarket prediction markets on Polygon with autonomous betting capabilities.",
+      "category": "prediction-markets",
+      "tags": [
+        "official",
+        "prediction-markets"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "holy-agent",
+      "displayName": "HolyAgent",
+      "description": "Autonomous AI system for market analysis, signal generation and Web3 data intelligence.",
+      "category": "analytics",
+      "tags": [
+        "analytics"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "quantum-swap",
+      "displayName": "QuantumSwap",
+      "description": "AI-driven cross-chain arbitrage bot and liquidity routing engine for high-speed execution on Base.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "nodesentinel",
+      "displayName": "NodeSentinel",
+      "description": "Autonomous agent maintaining network activity and completing incentivized blockchain tasks.",
+      "category": "chains",
+      "tags": [
+        "chains"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
     }
   ],
   "categories": {
