@@ -110828,6 +110828,40 @@
         },
         "scored_at": "2026-04-30T06:01:16Z"
       }
+    },
+    {
+      "name": "freak-v1",
+      "displayName": "FREAK V1 Agent",
+      "description": "Autonomous on-chain entity with ERC-6551 TBA smart wallet and verifiable ERC-8004 identity.",
+      "category": "identity",
+      "tags": [
+        "official",
+        "identity"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "oxrdoc",
+      "displayName": "oxrdoc",
+      "description": "Autonomous trading agent deployed via Volt Playground with non-custodial session-key EOA on Base.",
+      "category": "trading",
+      "tags": [
+        "trading"
+      ],
+      "author": "discovered",
+      "version": "1.0.0"
+    },
+    {
+      "name": "alertio-mcp",
+      "displayName": "Alertio Mcp",
+      "description": "DeFi lending risk MCP server — scan any Ethereum wallet across Aave V3/V4, Spark, Morpho Blue, and Euler V2. Health factors, liquidation risk, and collateral drop simulation. No API key required.",
+      "category": "mcp-servers",
+      "tags": [
+        "mcp-servers"
+      ],
+      "author": "alertio",
+      "version": "1.0.0"
     }
   ],
   "categories": {
