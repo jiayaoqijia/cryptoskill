@@ -1,258 +1,227 @@
 const { test, expect } = require('@playwright/test');
+const path = require('path');
+
+async function waitForHome(page) {
+  await page.waitForFunction(() => {
+    const official = document.getElementById('officialGrid');
+    const top = document.getElementById('skillsGrid');
+    return official && official.children.length > 0 && top && top.children.length > 0;
+  }, { timeout: 10000 });
+}
+
+async function waitForDirectory(page) {
+  await page.waitForFunction(() => {
+    const grid = document.getElementById('skillsGrid');
+    return grid && grid.children.length > 0;
+  }, { timeout: 10000 });
+}
 
 test.describe('CryptoSkill Homepage', () => {
-  test.beforeEach(async ({ page }) => {
+  test('loads the lightweight homepage summary instead of the full skills catalog', async ({ page }) => {
+    const requests = [];
+    page.on('request', request => requests.push(request.url()));
+
     await page.goto('/');
-    // Wait for skills.json to load
-    await page.waitForFunction(() => {
-      const grid = document.getElementById('officialGrid');
-      return grid && grid.children.length > 0;
-    }, { timeout: 10000 });
+    await waitForHome(page);
+
+    expect(requests.some(url => url.endsWith('/home-summary.json'))).toBe(true);
+    expect(requests.some(url => url.endsWith('/skills.json'))).toBe(false);
+    expect(requests.some(url => url.endsWith('/capabilities.json'))).toBe(false);
   });
 
-  test('page loads with correct title', async ({ page }) => {
+  test('page loads with correct title and stats', async ({ page }) => {
+    await page.goto('/');
+    await waitForHome(page);
+
     await expect(page).toHaveTitle(/CryptoSkill/);
-  });
-
-  test('hero section renders correctly', async ({ page }) => {
     await expect(page.locator('h1')).toContainText('Crypto Skill Hub');
-    await expect(page.locator('.subtitle')).toBeVisible();
     await expect(page.locator('.hero-badge')).toContainText('Open Source');
-  });
 
-  test('stats bar shows correct numbers', async ({ page }) => {
     const skillCount = await page.locator('#statSkills').textContent();
-    expect(parseInt(skillCount)).toBeGreaterThan(200);
+    expect(parseInt(skillCount)).toBeGreaterThan(1200);
 
     const catCount = await page.locator('#statCategories').textContent();
-    expect(parseInt(catCount)).toBeGreaterThanOrEqual(13);
+    expect(parseInt(catCount)).toBeGreaterThanOrEqual(14);
   });
 
-  test('official skills section appears before community', async ({ page }) => {
-    const officialSection = page.locator('#official');
-    const communitySection = page.locator('#skills');
+  test('top navigation sends full browsing to the real /skills/ route', async ({ page }) => {
+    await page.goto('/');
+    await waitForHome(page);
 
-    const officialY = await officialSection.boundingBox();
-    const communityY = await communitySection.boundingBox();
-
-    expect(officialY.y).toBeLessThan(communityY.y);
+    await expect(page.locator('.nav-links a', { hasText: 'Skills' }).first()).toHaveAttribute('href', 'skills/');
+    await expect(page.locator('.hero-actions .btn-primary')).toHaveAttribute('href', 'skills/');
   });
 
-  test('official project cards render with correct data', async ({ page }) => {
-    const cards = page.locator('.official-project-card');
-    const count = await cards.count();
-    expect(count).toBeGreaterThanOrEqual(9);
+  test('official project cards and top skills render from summary data', async ({ page }) => {
+    await page.goto('/');
+    await waitForHome(page);
 
-    // Check Binance card exists
+    const officialCards = page.locator('.official-project-card');
+    expect(await officialCards.count()).toBeGreaterThanOrEqual(9);
+
     const binanceCard = page.locator('.official-project-card[data-project="binance"]');
     await expect(binanceCard).toBeVisible();
     await expect(binanceCard.locator('.official-project-name')).toContainText('Binance');
-    await expect(binanceCard.locator('.official-badge')).toContainText('Official');
+
+    const topCards = page.locator('#skillsGrid .skill-card');
+    await expect(topCards).toHaveCount(12);
   });
 
-  test('clicking official project card expands skill list', async ({ page }) => {
-    const binanceCard = page.locator('.official-project-card[data-project="binance"]');
-    await binanceCard.click();
+  test('Cmd+K jumps to the skills directory search', async ({ page }) => {
+    await page.goto('/');
+    await waitForHome(page);
 
-    const detail = page.locator('#officialSkillsDetail');
-    await expect(detail).toHaveClass(/active/);
-    await expect(page.locator('#officialDetailTitle')).toContainText('Binance');
-
-    // Should show individual skills
-    const skillCards = page.locator('#officialSkillsList .skill-card');
-    const skillCount = await skillCards.count();
-    expect(skillCount).toBeGreaterThan(0);
-  });
-
-  test('close button hides official detail panel', async ({ page }) => {
-    // Open
-    await page.locator('.official-project-card[data-project="binance"]').click();
-    await expect(page.locator('#officialSkillsDetail')).toHaveClass(/active/);
-
-    // Close
-    await page.locator('#officialDetailClose').click();
-    await expect(page.locator('#officialSkillsDetail')).not.toHaveClass(/active/);
-  });
-
-  test('official GitHub links point to correct repos', async ({ page }) => {
-    const binanceLink = page.locator('.official-project-card[data-project="binance"] .official-github-link');
-    await expect(binanceLink).toHaveAttribute('href', 'https://github.com/binance/binance-skills-hub');
-
-    const okxLink = page.locator('.official-project-card[data-project="okx"] .official-github-link');
-    await expect(okxLink).toHaveAttribute('href', 'https://github.com/okx/onchainos-skills');
+    await page.keyboard.press('Meta+k');
+    await expect(page).toHaveURL(/\/skills\/#search$/);
   });
 });
 
-test.describe('Categories Section', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForFunction(() => {
-      const grid = document.getElementById('categoriesGrid');
-      return grid && grid.children.length > 0;
-    }, { timeout: 10000 });
-  });
+test.describe('Skills Directory', () => {
+  test('renders 48 score-sorted skill cards on page 1', async ({ page }) => {
+    await page.goto('/skills/');
+    await waitForDirectory(page);
 
-  test('all 13 categories render', async ({ page }) => {
-    const cards = page.locator('.category-card');
-    const count = await cards.count();
-    expect(count).toBe(13);
-  });
-
-  test('clicking category scrolls to skills and filters', async ({ page }) => {
-    await page.locator('.category-card').first().click();
-    // Should scroll to skills section
-    await page.waitForTimeout(500);
-    const activeFilter = page.locator('.filter-btn.active');
-    const count = await activeFilter.count();
-    expect(count).toBe(1);
-  });
-});
-
-test.describe('Community Skills Section', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForFunction(() => {
-      const grid = document.getElementById('skillsGrid');
-      return grid && grid.children.length > 0;
-    }, { timeout: 10000 });
-  });
-
-  test('community skills render (not official ones)', async ({ page }) => {
     const cards = page.locator('#skillsGrid .skill-card');
-    const count = await cards.count();
-    expect(count).toBeGreaterThan(0);
-    expect(count).toBeLessThanOrEqual(12); // FEATURED_COUNT
+    await expect(cards).toHaveCount(48);
 
-    // None should have official badge
-    const officialBadges = page.locator('#skillsGrid .official-tag');
-    const officialCount = await officialBadges.count();
-    expect(officialCount).toBe(0);
+    const firstScore = await cards.first().locator('.card-grade').getAttribute('title');
+    const secondScore = await cards.nth(1).locator('.card-grade').getAttribute('title');
+    expect(parseInt(firstScore)).toBeGreaterThanOrEqual(parseInt(secondScore));
   });
 
-  test('show more button works', async ({ page }) => {
-    const showMore = page.locator('#showMoreBtn button');
-    if (await showMore.isVisible()) {
-      const beforeCount = await page.locator('#skillsGrid .skill-card').count();
-      await showMore.click();
-      await page.waitForTimeout(500);
-      const afterCount = await page.locator('#skillsGrid .skill-card').count();
-      expect(afterCount).toBeGreaterThan(beforeCount);
-    }
+  test('uses one icon-labeled category filter row', async ({ page }) => {
+    await page.goto('/skills/');
+    await waitForDirectory(page);
+
+    await expect(page.locator('.directory-quick-cats')).toHaveCount(0);
+
+    const exchangeFilter = page.locator('#filterContainer .filter-btn', { hasText: 'Exchanges' });
+    await expect(exchangeFilter).toBeVisible();
+    await expect(exchangeFilter.locator('.filter-btn-icon')).toContainText('🏦');
   });
 
-  test('filter buttons work', async ({ page }) => {
-    const allBtn = page.locator('.filter-btn', { hasText: /^All$/ });
-    await expect(allBtn).toHaveClass(/active/);
+  test('search, category, trust, sort, and page state survive refresh', async ({ page }) => {
+    await page.goto('/skills/?q=a&category=exchanges&sort=score_desc&trust=can_execute_shell&page=2');
+    await waitForDirectory(page);
 
-    // Click a category filter
-    const exchangeBtn = page.locator('.filter-btn', { hasText: /^Exchanges$/ });
-    if (await exchangeBtn.isVisible()) {
-      await exchangeBtn.click();
-      await expect(exchangeBtn).toHaveClass(/active/);
-      await expect(allBtn).not.toHaveClass(/active/);
-    }
-  });
-});
+    await expect(page.locator('#directorySearch')).toHaveValue('a');
+    await expect(page.locator('.filter-btn.active', { hasText: 'Exchanges' })).toBeVisible();
+    await expect(page.locator('#trustFilterRow .trust-filter-active', { hasText: 'Cannot execute shell' })).toBeVisible();
+    await expect(page.locator('#directorySort')).toHaveValue('score_desc');
+    await expect(page.locator('#paginationCurrent')).toContainText('Page 2');
 
-test.describe('Search', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForFunction(() => {
-      const grid = document.getElementById('officialGrid');
-      return grid && grid.children.length > 0;
-    }, { timeout: 10000 });
+    await page.reload();
+    await waitForDirectory(page);
+
+    await expect(page.locator('#directorySearch')).toHaveValue('a');
+    await expect(page.locator('#paginationCurrent')).toContainText('Page 2');
   });
 
-  test('Cmd+K opens search overlay', async ({ page }) => {
-    await page.keyboard.press('Meta+k');
-    await expect(page.locator('#searchOverlay')).toHaveClass(/active/);
+  test('pagination updates the URL and result set', async ({ page }) => {
+    await page.goto('/skills/');
+    await waitForDirectory(page);
+
+    const firstCardName = await page.locator('#skillsGrid .card-name').first().textContent();
+    await page.locator('#paginationNext').click();
+
+    await expect(page).toHaveURL(/\/skills\/\?page=2$/);
+    await expect(page.locator('#paginationCurrent')).toContainText('Page 2');
+    await expect(page.locator('#skillsGrid .card-name').first()).not.toHaveText(firstCardName);
   });
 
-  test('search finds skills', async ({ page }) => {
-    await page.keyboard.press('Meta+k');
-    await page.locator('#searchInput').fill('binance');
-    await page.waitForTimeout(300);
+  test('clicking a skill opens a details modal without changing URL', async ({ page }) => {
+    await page.goto('/skills/?q=uniswap');
+    await waitForDirectory(page);
 
-    const results = page.locator('.search-result-item');
-    const count = await results.count();
-    expect(count).toBeGreaterThan(0);
+    const before = page.url();
+    const card = page.locator('#skillsGrid .skill-card').first();
+    await card.click();
+
+    await expect(page).toHaveURL(before);
+    await expect(page.locator('#modalOverlay')).toHaveClass(/active/);
+    await expect(page.locator('#modalOverlay .modal-title')).toContainText(/uniswap/i);
+    await expect(page.locator('#modalOverlay .modal-section-title', { hasText: 'Install' })).toBeVisible();
+    await expect(page.locator('#modalOverlay .modal-section-title', { hasText: /Trust/i })).toBeVisible();
   });
 
-  test('search shows official/community badges', async ({ page }) => {
-    await page.keyboard.press('Meta+k');
-    await page.locator('#searchInput').fill('binance');
-    await page.waitForTimeout(300);
-
-    const badges = page.locator('.result-badge');
-    const count = await badges.count();
-    expect(count).toBeGreaterThan(0);
-  });
-
-  test('Escape closes search', async ({ page }) => {
-    await page.keyboard.press('Meta+k');
-    await expect(page.locator('#searchOverlay')).toHaveClass(/active/);
-    await page.keyboard.press('Escape');
-    await expect(page.locator('#searchOverlay')).not.toHaveClass(/active/);
-  });
-
-  test('clicking search result opens modal', async ({ page }) => {
-    await page.keyboard.press('Meta+k');
-    await page.locator('#searchInput').fill('uniswap');
-    await page.waitForTimeout(300);
-
-    const firstResult = page.locator('.search-result-item').first();
-    if (await firstResult.isVisible()) {
-      await firstResult.click();
-      await expect(page.locator('#modalOverlay')).toHaveClass(/active/);
-    }
-  });
-});
-
-test.describe('Skill Modal', () => {
-  test('modal shows install command with correct path', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForFunction(() => {
-      const grid = document.getElementById('skillsGrid');
-      return grid && grid.children.length > 0;
-    }, { timeout: 10000 });
+  test('details modal closes with button, overlay click, and Escape', async ({ page }) => {
+    await page.goto('/skills/?q=uniswap');
+    await waitForDirectory(page);
 
     await page.locator('#skillsGrid .skill-card').first().click();
     await expect(page.locator('#modalOverlay')).toHaveClass(/active/);
 
-    const installCmd = page.locator('.modal .install-cmd code').first();
-    const cmdText = await installCmd.textContent();
-    expect(cmdText).toContain('.claude/skills/');
-  });
-
-  test('modal closes on overlay click', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForFunction(() => {
-      const grid = document.getElementById('skillsGrid');
-      return grid && grid.children.length > 0;
-    }, { timeout: 10000 });
-
-    await page.locator('#skillsGrid .skill-card').first().click();
-    await expect(page.locator('#modalOverlay')).toHaveClass(/active/);
-
-    // Click the overlay (not the modal content)
-    await page.locator('#modalOverlay').click({ position: { x: 10, y: 10 } });
+    await page.locator('#modalOverlay .modal-close').click();
     await expect(page.locator('#modalOverlay')).not.toHaveClass(/active/);
+
+    await page.locator('#skillsGrid .skill-card').first().click();
+    await expect(page.locator('#modalOverlay')).toHaveClass(/active/);
+    await page.locator('#modalOverlay').click({ position: { x: 8, y: 8 } });
+    await expect(page.locator('#modalOverlay')).not.toHaveClass(/active/);
+
+    await page.locator('#skillsGrid .skill-card').first().click();
+    await expect(page.locator('#modalOverlay')).toHaveClass(/active/);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#modalOverlay')).not.toHaveClass(/active/);
+  });
+});
+
+test.describe('Generated Routes', () => {
+  test('old category and skill detail routes are not generated', async ({ page }) => {
+    const categoryResponse = await page.goto('/skills/analytics/');
+    expect(categoryResponse.status()).toBe(404);
+
+    const detailResponse = await page.goto('/skills/analytics/defillama-api.html');
+    expect(detailResponse.status()).toBe(404);
+  });
+
+  test('sitemap includes /skills/ but no old category or detail pages', async ({ page }) => {
+    const response = await page.goto('/sitemap.xml');
+    expect(response.ok()).toBe(true);
+    await expect(page.locator('body')).toContainText('https://cryptoskill.org/skills/');
+    await expect(page.locator('body')).not.toContainText('https://cryptoskill.org/skills/analytics/');
+    await expect(page.locator('body')).not.toContainText('https://cryptoskill.org/skills/analytics/defillama-api.html');
+  });
+});
+
+test.describe('Local Preview Guardrails', () => {
+  test('direct file opening explains that the directory needs an HTTP server', async ({ page }) => {
+    await page.goto('file://' + path.resolve(__dirname, '../docs/_site/skills/index.html'));
+
+    await expect(page.locator('#directoryResultSummary')).toContainText(
+      'Run python3 -m http.server 8080 --directory docs/_site'
+    );
+  });
+});
+
+test.describe('Theme Persistence', () => {
+  test('light mode persists from homepage to generated skills directory', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+
+    await page.locator('#themeToggle').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('cryptoskill-theme'))).toBe('light');
+
+    await page.goto('/skills/');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   });
 });
 
 test.describe('Install Section', () => {
   test('shows install tabs with correct commands', async ({ page }) => {
     await page.goto('/');
-    // Claude tab is active by default
+
     const claudePanel = page.locator('#install-claude');
     await expect(claudePanel).toBeVisible();
     await expect(claudePanel.locator('code').nth(1)).toContainText('git clone');
-    // Switch to MCP tab
+
     await page.locator('.install-tab', { hasText: /MCP/ }).click();
     const mcpPanel = page.locator('#install-mcp');
     await expect(mcpPanel).toBeVisible();
     await expect(mcpPanel.locator('code').nth(1)).toContainText('claude mcp add');
-    // Switch to OpenClaw tab
+
     await page.locator('.install-tab', { hasText: /OpenClaw/ }).click();
     const openclawPanel = page.locator('#install-openclaw');
     await expect(openclawPanel).toBeVisible();

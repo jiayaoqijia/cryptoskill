@@ -1,171 +1,90 @@
 /* ============================================
-   CryptoSkill - App JavaScript
+   CryptoSkill - Static Pages App
    ============================================ */
 
 (function () {
   'use strict';
 
-  // --- State ---
+  const pageMode = document.body?.dataset?.page || 'home';
+  const rootPrefix = document.body?.dataset?.rootPrefix || '';
+  const PAGE_SIZE = 48;
+  const FEATURED_COUNT = 12;
+
   let skills = [];
   let categories = {};
   let officialSkills = [];
-  let communitySkills = [];
-  let activeFilter = 'all';
-  let activeOfficialProject = null;
-  const FEATURED_COUNT = 12;
-  let showingAll = false;
-  let sortByScore = false;
-
-  // Trust manifest data, keyed by `${category}/${skillName}` (matches the
-  // path in skills/ on disk). Loaded from docs/capabilities.json so the
-  // home page never blocks on per-skill YAML parsing client-side.
   let trustData = {};
-  // The four negative-only filters from TRUST.md §"UI: red flags first".
-  // `id` is the capability key in TRUST.auto.yaml; an entry is included
-  // only when the manifest reports the field as `false`.
+  let homeOfficialProjects = [];
+  let activeOfficialProject = null;
+
   const TRUST_FILTERS = [
-    { id: 'can_execute_shell',          label: 'Cannot execute shell' },
-    { id: 'can_move_funds',             label: 'Cannot move funds' },
-    { id: 'requires_hosted_operator',   label: 'No hosted operator required' },
+    { id: 'can_execute_shell', label: 'Cannot execute shell' },
+    { id: 'can_move_funds', label: 'Cannot move funds' },
+    { id: 'requires_hosted_operator', label: 'No hosted operator required' },
     { id: 'uses_remote_install_script', label: 'No remote install scripts' },
   ];
-  // Capability keys we want surfaced in the modal as "red flags". Order
-  // mirrors scripts/generate-pages.py:RED_FLAG_CAPS. Each entry carries a
-  // plain-language hint shown under the label so non-engineers can tell
-  // what the flag means in practice.
+
   const RED_FLAG_CAPS = [
-    ['can_move_funds',             'Can move funds',              'this skill can sign and send transactions on your behalf'],
-    ['requires_private_key',       'Requires private key',        'you must hand over a private key, mnemonic, or wallet config'],
-    ['requires_hosted_operator',   'Requires hosted operator',    'depends on a third-party hosted service to function'],
-    ['uses_remote_install_script', 'Uses remote install script',  'setup pipes a remote shell script (curl | sh class)'],
-    ['mutable_remote_runtime',     'Mutable remote runtime',      'runs remote code that can change behavior without a local diff'],
-    ['can_install_code',           'Can install code',            'installs software at setup time (npx, pip, brew, etc.)'],
-    ['can_execute_shell',          'Can execute shell',           'runs arbitrary shell commands on your machine'],
-    ['can_browse_web',             'Can browse the web',          'fetches arbitrary URLs at runtime'],
-    ['can_write_files',            'Can write files',             'writes to your local filesystem'],
-    ['can_spawn_subagents',        'Can spawn sub-agents',        'delegates to other skills or sub-agents'],
-    ['auto_invocable',             'Auto-invocable',              'may be invoked by the agent without your explicit prompt'],
+    ['can_move_funds', 'Can move funds', 'this skill can sign and send transactions on your behalf'],
+    ['requires_private_key', 'Requires private key', 'you must hand over a private key, mnemonic, or wallet config'],
+    ['requires_hosted_operator', 'Requires hosted operator', 'depends on a third-party hosted service to function'],
+    ['uses_remote_install_script', 'Uses remote install script', 'setup pipes a remote shell script (curl | sh class)'],
+    ['mutable_remote_runtime', 'Mutable remote runtime', 'runs remote code that can change behavior without a local diff'],
+    ['can_install_code', 'Can install code', 'installs software at setup time (npx, pip, brew, etc.)'],
+    ['can_execute_shell', 'Can execute shell', 'runs arbitrary shell commands on your machine'],
+    ['can_browse_web', 'Can browse the web', 'fetches arbitrary URLs at runtime'],
+    ['can_write_files', 'Can write files', 'writes to your local filesystem'],
+    ['can_spawn_subagents', 'Can spawn sub-agents', 'delegates to other skills or sub-agents'],
+    ['auto_invocable', 'Auto-invocable', 'may be invoked by the agent without your explicit prompt'],
   ];
-  let activeTrustFilters = new Set();
 
-  // --- Official Project Definitions ---
-  // Only show big names. Skills from smaller projects still get "official" tag but no card.
+  const CATEGORY_DEFAULTS = {
+    exchanges: { name: 'Exchanges', icon: '&#127974;', description: 'CEX & DEX integrations' },
+    chains: { name: 'Chains', icon: '&#9939;', description: 'Blockchain protocols' },
+    defi: { name: 'DeFi', icon: '&#127959;', description: 'DeFi protocols & tools' },
+    wallets: { name: 'Wallets', icon: '&#128091;', description: 'Wallet integrations' },
+    analytics: { name: 'Analytics', icon: '&#128202;', description: 'Data & analytics platforms' },
+    'dev-tools': { name: 'Dev Tools', icon: '&#128295;', description: 'Developer tools & SDKs' },
+    trading: { name: 'Trading', icon: '&#128200;', description: 'Trading bots & strategies' },
+    'prediction-markets': { name: 'Prediction Markets', icon: '&#127919;', description: 'Prediction market protocols' },
+    payments: { name: 'Payments', icon: '&#128179;', description: 'Crypto payment protocols' },
+    social: { name: 'Social', icon: '&#128172;', description: 'Decentralized social protocols' },
+    'ai-crypto': { name: 'AI x Crypto', icon: '&#129302;', description: 'AI-powered crypto tools' },
+    identity: { name: 'Identity', icon: '&#129529;', description: 'On-chain identity & reputation' },
+    'mcp-servers': { name: 'MCP Servers', icon: '&#128268;', description: 'Official MCP protocol servers' },
+    dex: { name: 'DEX', icon: '&#128257;', description: 'Decentralized exchange integrations' },
+  };
+
   const OFFICIAL_PROJECTS = [
-    {
-      id: 'binance',
-      name: 'Binance',
-      icon: '🔶',
-      github: 'https://github.com/binance/binance-skills-hub',
-      description: 'Spot, futures, wallet, and Web3 trading skills.',
-      matcher: (s) => s.author === 'binance' || s.name.startsWith('binance-official')
-    },
-    {
-      id: 'okx',
-      name: 'OKX',
-      icon: '⚫',
-      github: 'https://github.com/okx/onchainos-skills',
-      description: 'CEX + DEX trading, wallet, and on-chain operations.',
-      matcher: (s) => s.author === 'okx' || s.name.startsWith('okx-official')
-    },
-    {
-      id: 'kraken',
-      name: 'Kraken',
-      icon: '🐙',
-      github: 'https://github.com/krakenfx/kraken-cli',
-      description: '50 trading skills + built-in MCP server for spot, futures, and earn.',
-      matcher: (s) => s.name.startsWith('kraken-official')
-    },
-    {
-      id: 'coinbase',
-      name: 'Coinbase',
-      icon: '🔵',
-      github: 'https://github.com/coinbase/agentic-wallet-skills',
-      description: 'AgentKit, wallets, Base chain, and on-chain agent tools.',
-      matcher: (s) => s.name.startsWith('coinbase-official') || s.name.startsWith('base-official')
-    },
-    {
-      id: 'uniswap',
-      name: 'Uniswap',
-      icon: '🦄',
-      github: 'https://github.com/Uniswap/uniswap-ai',
-      description: 'Swap integration, liquidity, v4 hooks, and CCA auctions.',
-      matcher: (s) => s.name.startsWith('uniswap-official')
-    },
-    {
-      id: 'metamask',
-      name: 'MetaMask',
-      icon: '🦊',
-      github: 'https://github.com/MetaMask/openclaw-skills',
-      description: 'Smart accounts, EIP-7702 delegations, and gator CLI.',
-      matcher: (s) => s.name.startsWith('metamask-official')
-    },
-    {
-      id: 'moonpay',
-      name: 'MoonPay',
-      icon: '🌙',
-      github: 'https://github.com/moonpay/skills',
-      description: '35 skills: onramp, trading, wallets, payments, and Messari research.',
-      matcher: (s) => s.name.startsWith('moonpay-official')
-    },
-    {
-      id: 'circle',
-      name: 'Circle (USDC)',
-      icon: '💵',
-      github: 'https://github.com/circlefin/skills',
-      description: 'USDC transfers, wallets, gateway, bridging, and smart contracts.',
-      matcher: (s) => s.name.startsWith('circle-official')
-    },
-    {
-      id: 'nethermind',
-      name: 'Nethermind',
-      icon: '🔷',
-      github: 'https://github.com/NethermindEth/defi-skills',
-      description: 'Natural language to DeFi transactions across 13 protocols.',
-      matcher: (s) => s.name.startsWith('nethermind-official')
-    },
-    {
-      id: 'defillama',
-      name: 'DefiLlama',
-      icon: '🦙',
-      github: 'https://github.com/DefiLlama/defillama-skills',
-      description: 'DeFi analytics: TVL, yields, risk assessment, and market analysis.',
-      matcher: (s) => s.name.startsWith('defillama-official')
-    },
-    {
-      id: 'alchemy',
-      name: 'Alchemy',
-      icon: '🔮',
-      github: 'https://github.com/alchemyplatform/skills',
-      description: 'Multi-chain RPC, token/NFT APIs, webhooks, and rollups.',
-      matcher: (s) => s.name.startsWith('alchemy-official')
-    },
-    {
-      id: 'surf',
-      name: 'Surf AI',
-      icon: '<img src="surf-icon.png" width="32" height="32" style="border-radius:6px">',
-      github: 'https://github.com/asksurf-ai/surf-skills',
-      description: '83+ commands across 14 data domains — prices, wallets, DeFi, on-chain SQL, and more.',
-      matcher: (s) => s.name.startsWith('surf-official') || s.name === 'surf'
-    },
-    {
-      id: 'mcp-servers',
-      name: 'MCP Servers',
-      icon: '🔌',
-      github: 'https://github.com/jiayaoqijia/cryptoskill',
-      description: '85+ MCP servers: Solana, Tenderly, NEAR, EigenLayer, CoinGecko, and more.',
-      matcher: (s) => s.category === 'mcp-servers'
-    }
+    { id: 'binance', name: 'Binance', matcher: s => s.author === 'binance' || s.name.startsWith('binance-official') },
+    { id: 'okx', name: 'OKX', matcher: s => s.author === 'okx' || s.name.startsWith('okx-official') },
+    { id: 'kraken', name: 'Kraken', matcher: s => s.name.startsWith('kraken-official') },
+    { id: 'coinbase', name: 'Coinbase', matcher: s => s.name.startsWith('coinbase-official') || s.name.startsWith('base-official') },
+    { id: 'uniswap', name: 'Uniswap', matcher: s => s.name.startsWith('uniswap-official') },
+    { id: 'metamask', name: 'MetaMask', matcher: s => s.name.startsWith('metamask-official') },
+    { id: 'moonpay', name: 'MoonPay', matcher: s => s.name.startsWith('moonpay-official') },
+    { id: 'circle', name: 'Circle (USDC)', matcher: s => s.name.startsWith('circle-official') },
+    { id: 'nethermind', name: 'Nethermind', matcher: s => s.name.startsWith('nethermind-official') },
+    { id: 'defillama', name: 'DefiLlama', matcher: s => s.name.startsWith('defillama-official') },
+    { id: 'alchemy', name: 'Alchemy', matcher: s => s.name.startsWith('alchemy-official') },
+    { id: 'surf', name: 'Surf AI', matcher: s => s.name.startsWith('surf-official') || s.name === 'surf' },
+    { id: 'mcp-servers', name: 'MCP Servers', matcher: s => s.category === 'mcp-servers' },
   ];
 
-  // --- DOM Elements ---
+  const directoryState = {
+    q: '',
+    category: 'all',
+    sort: 'score_desc',
+    trust: new Set(),
+    page: 1,
+  };
+
   const searchOverlay = document.getElementById('searchOverlay');
   const searchInput = document.getElementById('searchInput');
   const searchResults = document.getElementById('searchResults');
-  const modalOverlay = document.getElementById('modalOverlay');
   const categoriesGrid = document.getElementById('categoriesGrid');
   const skillsGrid = document.getElementById('skillsGrid');
   const filterContainer = document.getElementById('filterContainer');
-  const showMoreBtn = document.getElementById('showMoreBtn');
   const mobileToggle = document.getElementById('mobileToggle');
   const navLinks = document.getElementById('navLinks');
   const officialGrid = document.getElementById('officialGrid');
@@ -173,181 +92,224 @@
   const officialSkillsList = document.getElementById('officialSkillsList');
   const officialDetailTitle = document.getElementById('officialDetailTitle');
   const officialDetailClose = document.getElementById('officialDetailClose');
+  const directorySearch = document.getElementById('directorySearch');
+  const directorySort = document.getElementById('directorySort');
+  const directoryResultSummary = document.getElementById('directoryResultSummary');
+  const paginationPrev = document.getElementById('paginationPrev');
+  const paginationNext = document.getElementById('paginationNext');
+  const paginationCurrent = document.getElementById('paginationCurrent');
+  const modalOverlay = document.getElementById('modalOverlay');
 
-  // --- Theme Toggle ---
-  function initTheme() {
-    const themeToggle = document.getElementById('themeToggle');
-    if (!themeToggle) return;
-
-    // Load saved preference (default is dark)
-    const savedTheme = localStorage.getItem('cryptoskill-theme');
-    if (savedTheme === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
-
-    themeToggle.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      if (currentTheme === 'light') {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('cryptoskill-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('cryptoskill-theme', 'light');
-      }
-    });
+  function asset(path) {
+    return rootPrefix + path;
   }
 
-  // --- Load Skills Catalog ---
-  async function loadSkills() {
-    try {
-      // Skills catalog is required; capabilities are best-effort. Don't let
-      // a missing or malformed capabilities.json break page rendering.
-      const [catalogRes, capsRes] = await Promise.allSettled([
-        fetch('skills.json', { cache: 'no-cache' }),
-        fetch('capabilities.json', { cache: 'no-cache' }),
-      ]);
-      if (catalogRes.status !== 'fulfilled' || !catalogRes.value.ok) {
-        throw new Error('skills.json fetch failed');
-      }
-      const data = await catalogRes.value.json();
-      skills = data.skills;
-      categories = data.categories;
-      if (capsRes.status === 'fulfilled' && capsRes.value.ok) {
-        try {
-          const capsJson = await capsRes.value.json();
-          trustData = capsJson.skills || {};
-        } catch (e) {
-          // Malformed capabilities.json — fall through with empty trustData
-          // so the UI keeps working without flag badges.
-          trustData = {};
-        }
-      }
-      separateSkills();
-      renderOfficialProjects();
-      renderCategories();
-      renderFilters();
-      renderSkills();
-      updateStats();
-    } catch (err) {
-      console.error('Failed to load skills catalog:', err);
-    }
+  function skillsDirectoryUrl(suffix = '') {
+    return `${rootPrefix}skills/${suffix}`;
   }
 
-  // --- Trust manifest accessors ---
+  function escHTML(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[ch]));
+  }
+
+  function normalizeCategories(input, skillList) {
+    const out = Object.assign({}, CATEGORY_DEFAULTS, input || {});
+    for (const skill of skillList || []) {
+      const key = skill.category;
+      if (!key || out[key]) continue;
+      out[key] = {
+        name: key.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+        icon: '',
+        description: `${key.replace(/-/g, ' ')} skills`,
+      };
+    }
+    return out;
+  }
+
+  function skillSearchUrl(skill) {
+    return skillsDirectoryUrl(`?q=${encodeURIComponent(skill.name || skill.displayName || '')}`);
+  }
+
+  function scoreTotal(skill) {
+    const total = skill.score && skill.score.total;
+    return Number.isFinite(total) ? total : -1;
+  }
+
+  function getGradeClass(grade) {
+    if (!grade) return '';
+    const slug = String(grade).toLowerCase().replace('+', '-plus').replace('-', '-minus');
+    return 'grade-' + slug;
+  }
+
   function trustFor(skill) {
     if (!skill) return null;
     return trustData[`${skill.category}/${skill.name}`] || null;
   }
+
   function capValue(t, key) {
     if (!t || !t.capabilities) return undefined;
     const raw = t.capabilities[key];
-    // Python emitter writes scalar; JSON shape is the raw value.
-    if (raw === null || raw === undefined) return undefined;
-    if (typeof raw === 'object') {
-      // Per-field provenance shape: {value, confidence, source, evidence}
-      // — the .value can itself be null, treat that as unknown.
-      return raw.value == null ? undefined : raw.value;
-    }
+    if (raw == null) return undefined;
+    if (typeof raw === 'object') return raw.value == null ? undefined : raw.value;
     return raw;
   }
+
   function redFlagSummary(t) {
     if (!t) return null;
-    let nTrue = 0, nUnknown = 0;
-    for (const [k] of RED_FLAG_CAPS) {
-      const v = capValue(t, k);
-      if (v === true) nTrue += 1;
-      // capValue() collapses null → undefined for us; check both anyway.
-      else if (v === undefined || v === null || v === 'unknown') nUnknown += 1;
+    let nTrue = 0;
+    let nUnknown = 0;
+    const trueFlags = [];
+    for (const [key, label] of RED_FLAG_CAPS) {
+      const v = capValue(t, key);
+      if (v === true) {
+        nTrue += 1;
+        trueFlags.push({ key, label });
+      } else if (v === undefined || v === null || v === 'unknown') {
+        nUnknown += 1;
+      }
     }
-    return { nTrue, nUnknown };
+    return { nTrue, nUnknown, trueFlags };
   }
-  function redFlagCount(t) {
-    const s = redFlagSummary(t);
-    return s === null ? null : s.nTrue;
+
+  function summaryForSkill(skill) {
+    return skill.trustSummary || redFlagSummary(trustFor(skill));
   }
+
   function passesTrustFilters(skill) {
-    if (activeTrustFilters.size === 0) return true;
+    if (directoryState.trust.size === 0) return true;
     const t = trustFor(skill);
-    if (!t) return false; // when filter is active, manifests-not-yet are excluded
-    for (const id of activeTrustFilters) {
+    if (!t) return false;
+    for (const id of directoryState.trust) {
       if (capValue(t, id) !== false) return false;
     }
     return true;
   }
 
-  // --- Separate Official and Community Skills ---
-  function separateSkills() {
-    const officialSet = new Set();
+  function isOfficialSkill(skill) {
+    return officialSkills.some(s => s.category === skill.category && s.name === skill.name);
+  }
 
-    // Mark skills as official based on project matchers
-    skills.forEach(skill => {
-      for (const project of OFFICIAL_PROJECTS) {
-        if (project.matcher(skill)) {
-          officialSet.add(skill.name);
-          break;
-        }
+  function computeOfficialSkills() {
+    const official = [];
+    for (const skill of skills) {
+      if (OFFICIAL_PROJECTS.some(project => project.matcher(skill))) official.push(skill);
+    }
+    officialSkills = official;
+  }
+
+  function getProjectForSkill(skill) {
+    const homeProject = homeOfficialProjects.find(project =>
+      (project.skills || []).some(s => s.category === skill.category && s.name === skill.name)
+    );
+    if (homeProject) return homeProject;
+    return OFFICIAL_PROJECTS.find(project => project.matcher(skill)) || null;
+  }
+
+  function createSkillCard(skill, isOfficial, action = pageMode === 'skills-directory' ? 'modal' : 'directory-search') {
+    const card = document.createElement('article');
+    card.className = 'skill-card skill-card-v2 fade-in-up';
+    card.setAttribute('role', action === 'modal' ? 'button' : 'link');
+    card.setAttribute('tabindex', '0');
+    if (action !== 'modal') card.setAttribute('data-href', skillSearchUrl(skill));
+    card.setAttribute('aria-label', `${skill.displayName || skill.name}, ${skill.category}, ${action === 'modal' ? 'view details' : 'open in skills directory'}`);
+
+    const cat = categories[skill.category];
+    const catIcon = cat?.icon || '&#128230;';
+    const catName = cat?.name || skill.category;
+    const summary = summaryForSkill(skill);
+    let trustStrip = '';
+    if (summary) {
+      const trueFlags = (summary.trueFlags || []).slice(0, 3)
+        .map(flag => `<span class="trust-strip-flag" title="${escHTML(flag.label)}: yes"><span aria-hidden="true">&#x26A0;</span> ${escHTML(flag.label)}</span>`)
+        .join('');
+      const more = Math.max(0, summary.nTrue - 3);
+      const moreSpan = more > 0 ? `<span class="trust-strip-more">+${more}</span>` : '';
+      const title = `${summary.nTrue} true, ${summary.nUnknown} unknown of 11 capability flags`;
+      if (summary.nTrue === 0 && summary.nUnknown === 0) {
+        trustStrip = `<div class="trust-strip trust-strip--clean" title="${title}"><span class="trust-strip-label">TRUST</span><span class="trust-strip-clean"><span aria-hidden="true">✓</span> No red flags detected</span></div>`;
+      } else if (summary.nTrue === 0) {
+        trustStrip = `<div class="trust-strip trust-strip--unknown" title="${title}"><span class="trust-strip-label">TRUST</span><span class="trust-strip-unknown"><span aria-hidden="true">?</span> ${summary.nUnknown} not measured yet</span></div>`;
+      } else {
+        trustStrip = `<div class="trust-strip trust-strip--some" title="${title}"><span class="trust-strip-label">TRUST</span>${trueFlags}${moreSpan}</div>`;
+      }
+    }
+
+    const grade = skill.score?.grade;
+    const total = skill.score?.total;
+    const gradePill = grade
+      ? `<span class="card-grade ${getGradeClass(grade)}" title="${total != null ? total + '/100' : ''}">${skill.score?.risk_gate === 'FAIL' ? '<span aria-hidden="true">&#9888;</span> ' : ''}${escHTML(grade)}</span>`
+      : '';
+    const officialPill = isOfficial ? '<span class="card-official"><span aria-hidden="true">&#10003;</span> Official</span>' : '';
+    const tags = Array.isArray(skill.tags) ? skill.tags : [];
+
+    card.innerHTML = `
+      <div class="card-title-row">
+        <span class="card-icon" aria-hidden="true">${catIcon}</span>
+        <span class="card-name">${escHTML(skill.displayName || skill.name)}</span>
+        ${gradePill}
+      </div>
+      <div class="card-meta-row">
+        <span class="card-meta-cat">${escHTML(catName)}</span>
+        <span class="card-meta-sep" aria-hidden="true">·</span>
+        <span class="card-meta-author">@${escHTML(skill.author || 'unknown')}</span>
+        <span class="card-meta-sep" aria-hidden="true">·</span>
+        <span class="card-meta-version">v${escHTML(skill.version || '1.0.0')}</span>
+      </div>
+      <p class="card-desc">${escHTML(skill.description || '')}</p>
+      ${trustStrip}
+      <footer class="card-footer-row">
+        <div class="card-tags">${tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="card-tag">${escHTML(t)}</span>`).join('')}</div>
+        ${officialPill}
+      </footer>
+    `;
+
+    const go = () => {
+      if (action === 'modal') openSkillModal(skill);
+      else window.location.href = skillSearchUrl(skill);
+    };
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        go();
       }
     });
-
-    officialSkills = skills.filter(s => officialSet.has(s.name));
-    communitySkills = skills.filter(s => !officialSet.has(s.name));
+    return card;
   }
 
-  // --- Check if a skill is official ---
-  function isOfficialSkill(skill) {
-    return officialSkills.some(s => s.name === skill.name);
-  }
-
-  // --- Get project for a skill ---
-  function getProjectForSkill(skill) {
-    for (const project of OFFICIAL_PROJECTS) {
-      if (project.matcher(skill)) return project;
-    }
-    return null;
-  }
-
-  // --- Update Stats ---
-  function updateStats() {
+  function updateStats(stats) {
     const statSkills = document.getElementById('statSkills');
     const statCategories = document.getElementById('statCategories');
     const statMCP = document.getElementById('statMCP');
     const statProtocols = document.getElementById('statProtocols');
-
-    if (statSkills) statSkills.textContent = skills.length + '+';
-    if (statCategories) statCategories.textContent = Object.keys(categories).length;
-
-    // Auto-calculate MCP server count
-    const mcpCount = skills.filter(s => s.category === 'mcp-servers').length;
-    if (statMCP) statMCP.textContent = mcpCount;
-
-    const protocols = new Set();
-    skills.forEach(s => {
-      if (s.tags && s.tags.length > 0) protocols.add(s.tags[0]);
-    });
-    if (statProtocols) statProtocols.textContent = protocols.size + '+';
-
-    // Update official total count header
     const officialTotalCount = document.getElementById('officialTotalCount');
+
+    if (statSkills) statSkills.textContent = `${stats.skills}+`;
+    if (statCategories) statCategories.textContent = stats.categories;
+    if (statMCP) statMCP.textContent = stats.mcpServers;
+    if (statProtocols) statProtocols.textContent = `${stats.protocols}+`;
     if (officialTotalCount) {
-      const totalOfficialSkills = officialSkills.length;
-      const verifiedTeams = OFFICIAL_PROJECTS.filter(p => officialSkills.some(s => p.matcher(s))).length;
-      officialTotalCount.innerHTML = `<strong>${totalOfficialSkills}+</strong> official skills from <strong>${verifiedTeams}</strong> verified teams`;
+      officialTotalCount.innerHTML = `<strong>${stats.officialSkills}+</strong> official skills from <strong>${stats.officialProjects}</strong> verified teams`;
     }
   }
 
-  // --- Render Official Projects ---
   function renderOfficialProjects() {
     if (!officialGrid) return;
     officialGrid.innerHTML = '';
+    const projects = homeOfficialProjects.length
+      ? homeOfficialProjects
+      : OFFICIAL_PROJECTS.map(project => ({
+          ...project,
+          github: '#',
+          description: '',
+          skills: skills.filter(s => project.matcher(s)),
+        })).filter(project => project.skills.length);
 
-    OFFICIAL_PROJECTS.forEach(project => {
-      const projectSkills = officialSkills.filter(s => project.matcher(s));
-      if (projectSkills.length === 0) return;
-
-      // Get preview skill names (up to 4)
-      const previewSkills = projectSkills.slice(0, 4);
-      const previewHTML = previewSkills.map(s =>
-        `<span class="official-skill-preview-tag">${s.displayName}</span>`
+    for (const project of projects) {
+      const previewHTML = project.skills.slice(0, 4).map(s =>
+        `<span class="official-skill-preview-tag">${escHTML(s.displayName || s.name)}</span>`
       ).join('');
 
       const card = document.createElement('div');
@@ -357,264 +319,176 @@
         <div class="official-card-top">
           <div class="official-project-icon">${project.icon}</div>
           <div class="official-project-info">
-            <div class="official-project-name">${project.name}</div>
+            <div class="official-project-name">${escHTML(project.name)}</div>
             <span class="official-badge">&#10003; Official</span>
           </div>
         </div>
-        <div class="official-project-desc">${project.description || ''}</div>
+        <div class="official-project-desc">${escHTML(project.description || '')}</div>
         <div class="official-skill-previews">${previewHTML}</div>
         <div class="official-card-bottom">
-          <span class="official-skill-count"><strong>${projectSkills.length}</strong> skills</span>
-          <button class="official-view-all-btn" onclick="event.stopPropagation()">
-            View all ${projectSkills.length} skills
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-          <a href="${project.github}" target="_blank" rel="noopener" class="official-github-link" onclick="event.stopPropagation()">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            GitHub
-          </a>
+          <span class="official-skill-count"><strong>${project.skills.length}</strong> skills</span>
+          <button class="official-view-all-btn" type="button">View all ${project.skills.length} skills</button>
+          <a href="${escHTML(project.github || '#')}" target="_blank" rel="noopener" class="official-github-link" onclick="event.stopPropagation()">GitHub</a>
         </div>
       `;
-
-      // Click on the card or "View all" button opens the detail
-      card.addEventListener('click', () => {
-        toggleOfficialProject(project.id);
-      });
-
+      card.addEventListener('click', () => toggleOfficialProject(project.id, projects));
       const viewAllBtn = card.querySelector('.official-view-all-btn');
-      if (viewAllBtn) {
-        viewAllBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleOfficialProject(project.id);
-        });
-      }
-
+      viewAllBtn?.addEventListener('click', e => {
+        e.stopPropagation();
+        toggleOfficialProject(project.id, projects);
+      });
       officialGrid.appendChild(card);
-    });
+    }
   }
 
-  // --- Toggle Official Project Detail ---
-  function toggleOfficialProject(projectId) {
+  function toggleOfficialProject(projectId, projects = homeOfficialProjects) {
+    if (!officialSkillsDetail || !officialSkillsList || !officialDetailTitle) return;
     if (activeOfficialProject === projectId) {
-      // Close detail
       activeOfficialProject = null;
       officialSkillsDetail.classList.remove('active');
       document.querySelectorAll('.official-project-card').forEach(c => c.classList.remove('active'));
       return;
     }
-
     activeOfficialProject = projectId;
-    const project = OFFICIAL_PROJECTS.find(p => p.id === projectId);
+    const project = projects.find(p => p.id === projectId);
     if (!project) return;
-
-    const projectSkills = officialSkills.filter(s => project.matcher(s));
-
-    // Highlight active card
     document.querySelectorAll('.official-project-card').forEach(c => {
       c.classList.toggle('active', c.getAttribute('data-project') === projectId);
     });
-
-    // Update detail header
-    officialDetailTitle.textContent = `${project.name} Skills (${projectSkills.length})`;
-
-    // Render project skills
+    officialDetailTitle.textContent = `${project.name} Skills (${project.skills.length})`;
     officialSkillsList.innerHTML = '';
-    projectSkills.forEach(skill => {
-      const card = createSkillCard(skill, true);
-      officialSkillsList.appendChild(card);
-    });
-
-    // Show detail panel
+    project.skills.forEach(skill => officialSkillsList.appendChild(createSkillCard(skill, true)));
     officialSkillsDetail.classList.add('active');
-
-    // Scroll to detail
-    setTimeout(() => {
-      officialSkillsDetail.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-
-    // Re-observe for animations
+    setTimeout(() => officialSkillsDetail.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     observeElements();
   }
 
-  // --- Close Official Detail ---
-  if (officialDetailClose) {
-    officialDetailClose.addEventListener('click', () => {
-      activeOfficialProject = null;
-      officialSkillsDetail.classList.remove('active');
-      document.querySelectorAll('.official-project-card').forEach(c => c.classList.remove('active'));
-    });
-  }
-
-  // --- Score Badge Helper ---
-  function getGradeClass(grade) {
-    if (!grade) return '';
-    // Convert 'A+' / 'B-' to 'grade-a-plus' / 'grade-b-minus' so the resulting
-    // class is a valid CSS identifier. Plain '+'/'−' produce '.grade-a+' which
-    // CSS parses as '.grade-a' followed by an adjacent-sibling combinator and
-    // never matches.
-    const slug = grade.toLowerCase().replace('+', '-plus').replace('-', '-minus');
-    return 'grade-' + slug;
-  }
-
-  function renderScoreBadge(skill) {
-    if (!skill.score || skill.score.total == null) return '';
-    const grade = skill.score.grade || 'F';
-    const total = skill.score.total;
-    const gradeClass = getGradeClass(grade);
-    const riskWarn = skill.score.risk_gate === 'FAIL'
-      ? '<span class="risk-warn" title="Risk gate: FAIL">&#9888;</span>'
-      : '';
-    return `<span class="skill-score-badge ${gradeClass}">${riskWarn}${grade} ${total}</span>`;
-  }
-
-  // --- Create Skill Card (shared between official and community) ---
-  // Card structure (Linear-inspired, four horizontal bands separated by
-  // hairline borders; everything left-aligned; metadata in mono):
-  //
-  //   ┌────────────────────────────────────────┐
-  //   │ ⊙ Skill name                    A grade │  ← title row
-  //   │ category · @author · v1.0.0             │  ← meta row
-  //   ├────────────────────────────────────────┤
-  //   │ Two-line description, ellipsis-clamped  │  ← body
-  //   ├────────────────────────────────────────┤
-  //   │ TRUST  ⚠ flag1  ⚠ flag2  +N            │  ← trust strip
-  //   ├────────────────────────────────────────┤
-  //   │ tag tag tag                   Official  │  ← footer
-  //   └────────────────────────────────────────┘
-  function createSkillCard(skill, isOfficial) {
-    const card = document.createElement('article');
-    card.className = 'skill-card skill-card-v2 fade-in-up';
-    // Accessibility: cards are interactive, so they need a keyboard-reachable
-    // role + tabindex and Enter/Space handlers (the click listener alone
-    // serves only mouse users).
-    card.setAttribute('role', 'button');
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-haspopup', 'dialog');
-    card.setAttribute('aria-label', `${skill.displayName}, ${skill.category}, view details`);
-    const cat = categories[skill.category];
-    const catIcon = cat?.icon || '&#128230;'; // 📦
-    const catName = cat?.name || skill.category;
-    const trust = trustFor(skill);
-    const summary = redFlagSummary(trust);
-
-    // --- Trust strip: top 3 active red flags with icons.
-    let trustStrip = '';
-    if (summary !== null) {
-      const { nTrue, nUnknown } = summary;
-      const trueCaps = RED_FLAG_CAPS
-        .filter(([k]) => capValue(trust, k) === true)
-        .slice(0, 3)
-        .map(([, label]) => `<span class="trust-strip-flag" role="img" aria-label="${escHTML(label)}: yes" title="${escHTML(label)}: yes"><span aria-hidden="true">&#x26A0;</span> ${escHTML(label)}</span>`)
-        .join('');
-      const moreCount = Math.max(0, nTrue - 3);
-      const moreSpan = moreCount > 0 ? `<span class="trust-strip-more" aria-label="${moreCount} more red flags">+${moreCount}</span>` : '';
-      const title = `${nTrue} true, ${nUnknown} unknown of 11 capability flags`;
-      if (nTrue === 0 && nUnknown === 0) {
-        trustStrip = `<div class="trust-strip trust-strip--clean" role="status" aria-label="Trust: no red flags detected" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span><span class="trust-strip-clean"><span aria-hidden="true">✓</span> No red flags detected</span></div>`;
-      } else if (nTrue === 0 && nUnknown > 0) {
-        trustStrip = `<div class="trust-strip trust-strip--unknown" role="status" aria-label="Trust: ${nUnknown} capabilities not measured yet — treat as a possible red flag" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span><span class="trust-strip-unknown"><span aria-hidden="true">?</span> ${nUnknown} not measured yet</span></div>`;
-      } else {
-        trustStrip = `<div class="trust-strip trust-strip--some" role="status" aria-label="Trust: ${nTrue} red flag${nTrue === 1 ? '' : 's'} detected" title="${title}"><span class="trust-strip-label" aria-hidden="true">TRUST</span>${trueCaps}${moreSpan}</div>`;
-      }
-    }
-
-    // --- Title row score badge.
-    const grade = skill.score?.grade;
-    const total = skill.score?.total;
-    const gradeClass = grade ? getGradeClass(grade) : '';
-    const riskWarn = skill.score?.risk_gate === 'FAIL' ? '<span aria-hidden="true">&#9888;</span> ' : '';
-    const gradeAria = grade ? `Grade ${grade}${total != null ? `, ${total} of 100` : ''}` : '';
-    const gradePill = grade ? `<span class="card-grade ${gradeClass}" role="img" aria-label="${gradeAria}" title="${total != null ? total + '/100' : ''}">${riskWarn}${escHTML(grade)}</span>` : '';
-
-    const officialPill = isOfficial ? '<span class="card-official"><span aria-hidden="true">&#10003;</span> Official</span>' : '';
-    const author = skill.author || 'unknown';
-    const version = skill.version || '1.0.0';
-    const tags = Array.isArray(skill.tags) ? skill.tags : [];
-
-    card.innerHTML = `
-      <div class="card-title-row">
-        <span class="card-icon" aria-hidden="true">${catIcon}</span>
-        <span class="card-name">${escHTML(skill.displayName)}</span>
-        ${gradePill}
-      </div>
-      <div class="card-meta-row">
-        <span class="card-meta-cat">${escHTML(catName)}</span>
-        <span class="card-meta-sep" aria-hidden="true">·</span>
-        <span class="card-meta-author">@${escHTML(author)}</span>
-        <span class="card-meta-sep" aria-hidden="true">·</span>
-        <span class="card-meta-version">v${escHTML(version)}</span>
-      </div>
-      <p class="card-desc">${escHTML(skill.description || '')}</p>
-      ${trustStrip}
-      <footer class="card-footer-row">
-        <div class="card-tags">
-          ${tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="card-tag">${escHTML(t)}</span>`).join('')}
-        </div>
-        ${officialPill}
-      </footer>
-    `;
-    card.addEventListener('click', () => openModal(skill));
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openModal(skill);
-      }
-    });
-    return card;
-  }
-
-  // --- Render Categories ---
   function renderCategories() {
     if (!categoriesGrid) return;
     categoriesGrid.innerHTML = '';
-    Object.entries(categories).forEach(([key, cat]) => {
-      const count = skills.filter(s => s.category === key).length;
-      const card = document.createElement('div');
-      card.className = 'category-card fade-in-up';
-      card.setAttribute('data-category', key);
-      card.innerHTML = `
-        <span class="category-icon">${cat.icon}</span>
-        <div class="category-name">${cat.name}</div>
-        <div class="category-desc">${cat.description}</div>
-        <span class="category-count">${count} skills</span>
-      `;
-      card.addEventListener('click', () => {
-        filterByCategory(key);
-        const skillsSection = document.getElementById('skills');
-        if (skillsSection) {
-          skillsSection.scrollIntoView({ behavior: 'smooth' });
-        }
+    Object.entries(categories)
+      .sort((a, b) => (a[1].name || a[0]).localeCompare(b[1].name || b[0]))
+      .forEach(([key, cat]) => {
+        const count = Number.isFinite(cat.count) ? cat.count : skills.filter(s => s.category === key).length;
+        const card = document.createElement('div');
+        card.className = 'category-card fade-in-up';
+        card.setAttribute('data-category', key);
+        card.innerHTML = `
+          <span class="category-icon">${cat.icon || ''}</span>
+          <div class="category-name">${escHTML(cat.name || key)}</div>
+          <div class="category-desc">${escHTML(cat.description || '')}</div>
+          <span class="category-count">${count} skills</span>
+        `;
+        card.addEventListener('click', () => {
+          window.location.href = skillsDirectoryUrl(`?category=${encodeURIComponent(key)}`);
+        });
+        categoriesGrid.appendChild(card);
       });
-      categoriesGrid.appendChild(card);
-    });
   }
 
-  // --- Render Filters ---
-  function renderFilters() {
+  function renderHomeTopSkills() {
+    if (!skillsGrid) return;
+    skillsGrid.innerHTML = '';
+    skills.slice(0, FEATURED_COUNT).forEach(skill => {
+      skillsGrid.appendChild(createSkillCard(skill, isOfficialSkill(skill)));
+    });
+    observeElements();
+  }
+
+  async function loadHome() {
+    try {
+      const res = await fetch(asset('home-summary.json'), { cache: 'no-cache' });
+      if (!res.ok) throw new Error('home-summary.json fetch failed');
+      const summary = await res.json();
+      skills = summary.topSkills || [];
+      categories = normalizeCategories(summary.categories || {}, skills);
+      homeOfficialProjects = summary.officialProjects || [];
+      officialSkills = homeOfficialProjects.flatMap(project => project.skills || []);
+      updateStats(summary.stats || {
+        skills: skills.length,
+        mcpServers: 0,
+        categories: Object.keys(categories).length,
+        protocols: 0,
+        officialProjects: homeOfficialProjects.length,
+        officialSkills: officialSkills.length,
+      });
+      renderOfficialProjects();
+      renderCategories();
+      renderHomeTopSkills();
+    } catch (err) {
+      console.error('Failed to load homepage summary:', err);
+    }
+  }
+
+  function parseDirectoryState() {
+    const params = new URLSearchParams(window.location.search);
+    directoryState.q = (params.get('q') || '').trim();
+    directoryState.category = params.get('category') || 'all';
+    if (directoryState.category !== 'all' && !categories[directoryState.category]) {
+      directoryState.category = 'all';
+    }
+    directoryState.sort = params.get('sort') || 'score_desc';
+    if (!['score_desc', 'name_asc'].includes(directoryState.sort)) directoryState.sort = 'score_desc';
+    directoryState.trust = new Set(
+      (params.get('trust') || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(id => TRUST_FILTERS.some(f => f.id === id))
+    );
+    const page = parseInt(params.get('page') || '1', 10);
+    directoryState.page = Number.isFinite(page) && page > 0 ? page : 1;
+  }
+
+  function directoryParams() {
+    const params = new URLSearchParams();
+    if (directoryState.q) params.set('q', directoryState.q);
+    if (directoryState.category !== 'all') params.set('category', directoryState.category);
+    if (directoryState.sort !== 'score_desc') params.set('sort', directoryState.sort);
+    if (directoryState.trust.size) params.set('trust', Array.from(directoryState.trust).join(','));
+    if (directoryState.page > 1) params.set('page', String(directoryState.page));
+    return params;
+  }
+
+  function syncDirectoryURL(replace = false) {
+    const query = directoryParams().toString();
+    const next = query ? `/skills/?${query}` : '/skills/';
+    window.history[replace ? 'replaceState' : 'pushState']({}, '', next);
+  }
+
+  function searchableText(skill) {
+    return [
+      skill.name,
+      skill.displayName,
+      skill.description,
+      skill.category,
+      ...(skill.tags || []),
+    ].join(' ').toLowerCase();
+  }
+
+  function filteredDirectorySkills() {
+    const terms = directoryState.q.toLowerCase().split(/\s+/).filter(Boolean);
+    let result = skills.filter(skill => {
+      if (directoryState.category !== 'all' && skill.category !== directoryState.category) return false;
+      if (terms.length && !terms.every(term => searchableText(skill).includes(term))) return false;
+      return passesTrustFilters(skill);
+    });
+    if (directoryState.sort === 'name_asc') {
+      result.sort((a, b) => (a.displayName || a.name).localeCompare(b.displayName || b.name));
+    } else {
+      result.sort((a, b) => scoreTotal(b) - scoreTotal(a) || (a.displayName || a.name).localeCompare(b.displayName || b.name));
+    }
+    return result;
+  }
+
+  function renderDirectoryFilters() {
     if (!filterContainer) return;
     filterContainer.innerHTML = '';
-    const allBtn = createFilterBtn('all', 'All');
+    const allBtn = createDirectoryFilterBtn('all', 'All');
     filterContainer.appendChild(allBtn);
-    Object.entries(categories).forEach(([key, cat]) => {
-      const btn = createFilterBtn(key, cat.name);
-      filterContainer.appendChild(btn);
-    });
+    Object.entries(categories)
+      .sort((a, b) => (a[1].name || a[0]).localeCompare(b[1].name || b[0]))
+      .forEach(([key, cat]) => filterContainer.appendChild(createDirectoryFilterBtn(key, cat.name || key, cat.icon || '')));
 
-    // Add sort-by-score toggle
-    const sortBtn = document.createElement('button');
-    sortBtn.className = 'filter-btn' + (sortByScore ? ' sort-active' : '');
-    sortBtn.textContent = 'Sort by Score';
-    sortBtn.title = 'Sort skills by quality score (highest first)';
-    sortBtn.addEventListener('click', () => {
-      sortByScore = !sortByScore;
-      sortBtn.classList.toggle('sort-active', sortByScore);
-      renderSkills();
-    });
-    filterContainer.appendChild(sortBtn);
-
-    // Trust filter row (TRUST.md §"UI: red flags first, green checks last").
-    // Negative-only — these all read "Cannot X" / "No X required". A skill
-    // qualifies only when its TRUST.auto.yaml capability is explicitly false.
     let trustRow = document.getElementById('trustFilterRow');
     if (!trustRow) {
       trustRow = document.createElement('div');
@@ -622,121 +496,140 @@
       trustRow.className = 'trust-filter-row';
       filterContainer.parentNode.insertBefore(trustRow, filterContainer.nextSibling);
     }
-    trustRow.innerHTML = '';
-    const lbl = document.createElement('span');
-    lbl.className = 'trust-filter-label';
-    lbl.textContent = 'Trust filters:';
-    trustRow.appendChild(lbl);
-    TRUST_FILTERS.forEach(f => {
-      const tb = document.createElement('button');
-      const isOn = activeTrustFilters.has(f.id);
-      tb.className = 'filter-btn' + (isOn ? ' trust-filter-active' : '');
-      tb.textContent = f.label;
-      tb.title = `Show only skills whose TRUST.auto.yaml records ${f.id}: false`;
-      tb.addEventListener('click', () => {
-        if (activeTrustFilters.has(f.id)) activeTrustFilters.delete(f.id);
-        else activeTrustFilters.add(f.id);
-        tb.classList.toggle('trust-filter-active');
-        renderSkills();
+    trustRow.innerHTML = '<span class="trust-filter-label">Trust filters:</span>';
+    TRUST_FILTERS.forEach(filter => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-btn' + (directoryState.trust.has(filter.id) ? ' trust-filter-active' : '');
+      btn.textContent = filter.label;
+      btn.addEventListener('click', () => {
+        if (directoryState.trust.has(filter.id)) directoryState.trust.delete(filter.id);
+        else directoryState.trust.add(filter.id);
+        directoryState.page = 1;
+        syncDirectoryURL();
+        renderDirectoryFilters();
+        renderDirectoryResults();
       });
-      trustRow.appendChild(tb);
+      trustRow.appendChild(btn);
     });
   }
 
-  function createFilterBtn(key, label) {
+  function createDirectoryFilterBtn(key, label, icon = '') {
     const btn = document.createElement('button');
-    btn.className = 'filter-btn' + (key === activeFilter ? ' active' : '');
-    btn.textContent = label;
-    btn.addEventListener('click', () => filterByCategory(key));
+    btn.type = 'button';
+    btn.className = 'filter-btn' + (key === directoryState.category ? ' active' : '');
+    btn.innerHTML = icon
+      ? `<span class="filter-btn-icon" aria-hidden="true">${escHTML(icon)}</span><span class="filter-btn-label">${escHTML(label)}</span>`
+      : `<span class="filter-btn-label">${escHTML(label)}</span>`;
+    btn.addEventListener('click', () => {
+      directoryState.category = key;
+      directoryState.page = 1;
+      syncDirectoryURL();
+      renderDirectoryFilters();
+      renderDirectoryResults();
+    });
     return btn;
   }
 
-  function filterByCategory(category) {
-    activeFilter = category;
-    showingAll = false;
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.textContent === (category === 'all' ? 'All' : categories[category]?.name));
-    });
-    document.querySelectorAll('.category-card').forEach(card => {
-      card.style.outline = card.getAttribute('data-category') === category ? '1px solid rgba(10, 132, 255, 0.4)' : '';
-    });
-    renderSkills();
-  }
-
-  // --- Render Community Skills ---
-  function renderSkills() {
+  function renderDirectoryResults(replaceURL = false) {
     if (!skillsGrid) return;
+    const filtered = filteredDirectorySkills();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (directoryState.page > totalPages) {
+      directoryState.page = totalPages;
+      syncDirectoryURL(true);
+    } else if (replaceURL) {
+      syncDirectoryURL(true);
+    }
+    const start = (directoryState.page - 1) * PAGE_SIZE;
+    const pageSkills = filtered.slice(start, start + PAGE_SIZE);
     skillsGrid.innerHTML = '';
-    let filtered = activeFilter === 'all' ? [...communitySkills] : communitySkills.filter(s => s.category === activeFilter);
-    if (activeTrustFilters.size > 0) {
-      filtered = filtered.filter(passesTrustFilters);
+    pageSkills.forEach(skill => skillsGrid.appendChild(createSkillCard(skill, isOfficialSkill(skill))));
+    if (directoryResultSummary) {
+      const end = Math.min(start + pageSkills.length, filtered.length);
+      directoryResultSummary.textContent = filtered.length
+        ? `Showing ${start + 1}-${end} of ${filtered.length} skills`
+        : 'No skills match the active filters';
     }
-    if (filtered.length === 0 && activeTrustFilters.size > 0) {
-      // Honest empty state: explain why and offer to clear the filters.
-      const labels = Array.from(activeTrustFilters)
-        .map(id => (TRUST_FILTERS.find(f => f.id === id) || {}).label || id)
-        .join(', ');
-      skillsGrid.innerHTML = `
-        <div class="trust-empty-filters" style="grid-column:1/-1;padding:24px;border:1px dashed var(--border);border-radius:12px;background:var(--bg-secondary)">
-          <p style="margin:0 0 6px;font-size:15px"><strong>No skills match every active trust filter.</strong></p>
-          <p style="margin:0 0 12px;color:var(--text-secondary);font-size:14px">Active: ${labels}. A skill qualifies only when our scanner has confirmed the capability is <code>false</code>. Capabilities that are still <code>unknown</code> (the scanner couldn't make a confident call) are excluded on purpose, so red flags we haven't measured yet can't slip past the filter and look safe.</p>
-          <button class="filter-btn" id="trustFilterClearBtn">Clear trust filters</button>
-        </div>`;
-      const clear = skillsGrid.querySelector('#trustFilterClearBtn');
-      if (clear) clear.addEventListener('click', () => {
-        activeTrustFilters.clear();
-        document.querySelectorAll('#trustFilterRow .trust-filter-active').forEach(b => b.classList.remove('trust-filter-active'));
-        renderSkills();
-      });
-      if (showMoreBtn) showMoreBtn.style.display = 'none';
-      return;
-    }
-    if (sortByScore) {
-      filtered.sort((a, b) => {
-        const sa = (a.score && a.score.total != null) ? a.score.total : -1;
-        const sb = (b.score && b.score.total != null) ? b.score.total : -1;
-        return sb - sa;
-      });
-    }
-    const displaySkills = showingAll ? filtered : filtered.slice(0, FEATURED_COUNT);
-
-    displaySkills.forEach(skill => {
-      const card = createSkillCard(skill, false);
-      skillsGrid.appendChild(card);
-    });
-
-    if (showMoreBtn) {
-      if (filtered.length > FEATURED_COUNT && !showingAll) {
-        showMoreBtn.style.display = 'block';
-        showMoreBtn.querySelector('button').textContent = `Show all ${filtered.length} skills`;
-      } else {
-        showMoreBtn.style.display = 'none';
-      }
-    }
-
+    if (paginationCurrent) paginationCurrent.textContent = `Page ${directoryState.page} of ${totalPages}`;
+    if (paginationPrev) paginationPrev.disabled = directoryState.page <= 1;
+    if (paginationNext) paginationNext.disabled = directoryState.page >= totalPages;
     observeElements();
   }
 
-  // --- Show More ---
-  if (showMoreBtn) {
-    showMoreBtn.addEventListener('click', () => {
-      showingAll = true;
-      renderSkills();
+  function wireDirectoryControls() {
+    if (directorySearch) {
+      directorySearch.value = directoryState.q;
+      directorySearch.addEventListener('input', e => {
+        directoryState.q = e.target.value.trim();
+        directoryState.page = 1;
+        syncDirectoryURL();
+        renderDirectoryResults();
+      });
+    }
+    if (directorySort) {
+      directorySort.value = directoryState.sort;
+      directorySort.addEventListener('change', e => {
+        directoryState.sort = e.target.value;
+        directoryState.page = 1;
+        syncDirectoryURL();
+        renderDirectoryResults();
+      });
+    }
+    paginationPrev?.addEventListener('click', () => {
+      if (directoryState.page <= 1) return;
+      directoryState.page -= 1;
+      syncDirectoryURL();
+      renderDirectoryResults();
     });
+    paginationNext?.addEventListener('click', () => {
+      directoryState.page += 1;
+      syncDirectoryURL();
+      renderDirectoryResults();
+    });
+    window.addEventListener('popstate', () => {
+      parseDirectoryState();
+      if (directorySearch) directorySearch.value = directoryState.q;
+      if (directorySort) directorySort.value = directoryState.sort;
+      renderDirectoryFilters();
+      renderDirectoryResults(true);
+    });
+    if (window.location.hash === '#search') setTimeout(() => directorySearch?.focus(), 100);
   }
 
-  // --- Trust panel (modal) ---
-  function escHTML(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[ch]));
+  async function loadDirectory() {
+    try {
+      const [catalogRes, capsRes] = await Promise.all([
+        fetch(asset('skills.json'), { cache: 'no-cache' }),
+        fetch(asset('capabilities.json'), { cache: 'no-cache' }),
+      ]);
+      if (!catalogRes.ok) throw new Error(`skills.json fetch failed (${catalogRes.status})`);
+      const catalog = await catalogRes.json();
+      skills = (catalog.skills || []).map(skill => Object.assign({}, skill));
+      categories = normalizeCategories(catalog.categories || {}, skills);
+      if (capsRes.ok) {
+        const caps = await capsRes.json();
+        trustData = caps.skills || {};
+      }
+      computeOfficialSkills();
+      parseDirectoryState();
+      renderDirectoryFilters();
+      wireDirectoryControls();
+      renderDirectoryResults(true);
+    } catch (err) {
+      console.error('Failed to load skills directory:', err);
+      if (directoryResultSummary) {
+        directoryResultSummary.textContent = window.location.protocol === 'file:'
+          ? 'This page was opened as a local file, so the browser cannot load skills.json. Run python3 -m http.server 8080 --directory docs/_site, then open http://localhost:8080/skills/.'
+          : 'Could not load skills directory. Check that skills.json is available beside the published site.';
+      }
+    }
   }
+
   function renderTrustPanel(skill) {
     const t = trustFor(skill);
-    // URL-encode path segments — skill.category and skill.name come from our
-    // own catalog so they're trusted today, but defense-in-depth is cheap.
-    const cat = encodeURIComponent(skill.category);
-    const nm = encodeURIComponent(skill.name);
+    const cat = encodeURIComponent(skill.category || '');
+    const nm = encodeURIComponent(skill.name || '');
     const ghBlob = `https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/${cat}/${nm}`;
     const ghTree = `https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/${cat}/${nm}`;
     const links = `
@@ -746,47 +639,50 @@
         <a href="${ghBlob}/TRUST.auto.yaml" target="_blank" rel="noopener">TRUST.auto.yaml &rarr;</a>
         <a href="${ghTree}" target="_blank" rel="noopener">Browse directory &rarr;</a>
       </p>`;
+
     if (!t) {
       return `
-      <div class="modal-section-title">Trust Manifest</div>
-      <div class="trust-panel">
-        <p class="trust-empty">No trust manifest computed for this skill yet. Treat capabilities as <strong>unknown</strong> until the bot generates one.</p>
-        ${links}
-      </div>`;
+        <div class="modal-section-title">Trust profile</div>
+        <div class="trust-panel">
+          <p class="trust-empty">No trust manifest computed for this skill yet. Treat capabilities as <strong>unknown</strong> until the scanner generates one.</p>
+          ${links}
+        </div>`;
     }
-    // Group capabilities by state — same layout as the per-skill HTML
-    // page (scripts/generate-pages.py:_capability_section).
+
     const caps = t.capabilities || {};
     const buckets = { true: [], false: [], unknown: [] };
-    const ICON = { true: '&#x26A0;', false: '&#x2713;', unknown: '?' };
-    const ARIA = { true: 'Yes — red flag', false: 'No — cleared', unknown: 'Not measured' };
+    const icon = { true: '&#x26A0;', false: '&#x2713;', unknown: '?' };
+    const aria = { true: 'Yes - red flag', false: 'No - cleared', unknown: 'Not measured' };
+
     for (const [key, label, hint] of RED_FLAG_CAPS) {
       const raw = caps[key];
-      const val  = (raw && typeof raw === 'object') ? raw.value      : raw;
-      const conf = (raw && typeof raw === 'object') ? raw.confidence : null;
-      const src  = (raw && typeof raw === 'object') ? raw.source     : null;
-      const group = (val === true) ? 'true' : (val === false) ? 'false' : 'unknown';
-      const confDot = (group !== 'unknown' && conf)
+      const val = raw && typeof raw === 'object' ? raw.value : raw;
+      const conf = raw && typeof raw === 'object' ? raw.confidence : null;
+      const src = raw && typeof raw === 'object' ? raw.source : null;
+      const group = val === true ? 'true' : val === false ? 'false' : 'unknown';
+      const confDot = group !== 'unknown' && conf
         ? `<span class="trust-cap-confidence trust-cap-confidence--${escHTML(conf)}" title="${escHTML(conf)} confidence (${escHTML(src || 'unknown')})" aria-label="${escHTML(conf)} confidence based on ${escHTML(src || 'unknown')} evidence"></span>`
         : '';
+
       buckets[group].push(
         `<li class="trust-cap-v2" data-state="${group}">` +
-        `<span class="trust-cap-icon" aria-label="${ARIA[group]}" title="${ARIA[group]}">${ICON[group]}</span>` +
-        `<div class="trust-cap-body">` +
-        `<span class="trust-cap-label">${escHTML(label)}</span>` +
-        `<span class="trust-cap-hint">${escHTML(hint)}</span>` +
-        `</div>` +
-        confDot +
-        `</li>`
+          `<span class="trust-cap-icon" aria-label="${aria[group]}" title="${aria[group]}">${icon[group]}</span>` +
+          '<div class="trust-cap-body">' +
+            `<span class="trust-cap-label">${escHTML(label)}</span>` +
+            `<span class="trust-cap-hint">${escHTML(hint)}</span>` +
+          '</div>' +
+          confDot +
+        '</li>'
       );
     }
-    const SECTIONS = [
-      { state: 'true',    title: 'Red flags',          kicker: 'things this skill can do that affect your security or funds' },
-      { state: 'false',   title: 'Cleared by scanner', kicker: 'we scanned the skill’s text & scripts and found no evidence of these' },
-      { state: 'unknown', title: 'Not measured yet',   kicker: 'scanner couldn’t make a confident call — treat as a possible red flag' },
+
+    const sectionDefs = [
+      { state: 'true', title: 'Red flags', kicker: 'things this skill can do that affect your security or funds' },
+      { state: 'false', title: 'Cleared by scanner', kicker: 'we scanned the skill text and scripts and found no evidence of these' },
+      { state: 'unknown', title: 'Not measured yet', kicker: 'the scanner could not make a confident call; treat as possible risk' },
     ];
     const groupClass = { true: 'flags', false: 'clear', unknown: 'unknown' };
-    const sections = SECTIONS.map(({ state, title, kicker }) => {
+    const sections = sectionDefs.map(({ state, title, kicker }) => {
       const items = buckets[state];
       if (!items.length) return '';
       return `
@@ -799,21 +695,22 @@
           <ul class="trust-cap-list-v2">${items.join('')}</ul>
         </section>`;
     }).join('');
-    // capabilities.json uses `hosted_operators`; per-skill TRUST.auto.yaml
-    // uses `detected_hosted_operators`. Accept either.
+
     const operators = t.detected_hosted_operators || t.hosted_operators || [];
     const ingredients = operators.length
-      ? `<h3 class="trust-subhead">Ingredients (services this skill talks to)</h3>
-         <p class="trust-help">External services this skill needs in order to work. Today we only show services we recognize from a curated list of ~50 well-known hosts; a complete dependency list is on the roadmap.</p>
+      ? `<h3 class="trust-subhead">Ingredients</h3>
+         <p class="trust-help">External services this skill needs in order to work.</p>
          <ul class="trust-ingredient-list">${operators.map(op => `<li class="trust-ingredient"><span class="trust-ingredient-kind">service</span> <code>${escHTML(op)}</code></li>`).join('')}</ul>`
-      : '<h3 class="trust-subhead">Ingredients (services this skill talks to)</h3><p class="trust-empty trust-help">We did not find any well-known hosted services in this skill’s text or scripts. <strong>This does NOT mean the skill is local-only</strong> — it might use services we don’t yet recognize. A complete dependency list is on the roadmap.</p>';
-    const audits = (t.audits || []);
+      : '<h3 class="trust-subhead">Ingredients</h3><p class="trust-empty trust-help">No recognized hosted services were found in this skill text or scripts. This does not prove the skill is local-only.</p>';
+
+    const audits = t.audits || [];
     const auditsHTML = audits.length
       ? `<h3 class="trust-subhead">Audits</h3><ul class="trust-audit-list">${audits.map(a => {
-          const r = a.reviewer || {};
-          return `<li class="trust-audit"><strong>${escHTML(r.name || 'Unknown')}</strong> <span class="trust-tier trust-tier--${escHTML(r.tier || 'unverified')}">${escHTML(r.tier || 'unverified')}</span> &middot; subject <code>${escHTML(a.subject || '')}</code> &middot; ${escHTML(a.date || '')}</li>`;
+          const reviewer = a.reviewer || {};
+          return `<li class="trust-audit"><strong>${escHTML(reviewer.name || 'Unknown')}</strong> <span class="trust-tier trust-tier--${escHTML(reviewer.tier || 'unverified')}">${escHTML(reviewer.tier || 'unverified')}</span> &middot; subject <code>${escHTML(a.subject || '')}</code> &middot; ${escHTML(a.date || '')}</li>`;
         }).join('')}</ul>`
-      : '<h3 class="trust-subhead">Audits</h3><p class="trust-empty trust-help"><strong>No one has audited this skill yet.</strong> That is different from "audited and clean" — it just means no professional reviewer has signed off on it. There are no audit reports to read.</p>';
+      : '<h3 class="trust-subhead">Audits</h3><p class="trust-empty trust-help">No audit has been recorded for this skill yet.</p>';
+
     const stage = t.stage == null ? 'trust grade not computed yet' : escHTML(String(t.stage));
     const nTrue = buckets.true.length;
     const nFalse = buckets.false.length;
@@ -824,10 +721,11 @@
         <span class="trust-pill trust-pill--clear">${nFalse} cleared</span>
         <span class="trust-pill trust-pill--unknown">${nUnknown} not measured</span>
       </div>`;
+
     return `
       <div class="modal-section-title">Trust profile <span class="trust-stage-pill">${stage}</span></div>
       ${quickPills}
-      <p class="trust-help">Detected automatically by an open-source scanner that reads the skill’s text and scripts. <strong>Not measured</strong> means the scanner couldn’t make a confident call — it is NOT a green check, treat it as a possible red flag until a human or a stronger scanner has measured it.</p>
+      <p class="trust-help">Detected automatically by an open-source scanner that reads the skill text and scripts. Not measured is not a green check.</p>
       <div class="trust-panel">
         ${sections}
         ${ingredients}
@@ -836,7 +734,6 @@
       </div>`;
   }
 
-  // --- Score Detail Rendering for Modal ---
   function renderScoreDetail(skill) {
     if (!skill.score || skill.score.total == null) return '';
     const s = skill.score;
@@ -845,12 +742,10 @@
     const riskClass = s.risk_gate === 'PASS' ? 'pass' : 'fail';
     const riskIcon = s.risk_gate === 'PASS' ? '&#10003;' : '&#9888;';
     const riskLabel = s.risk_gate || 'N/A';
-
-    // Dimension max totals from the scoring schema
     const dimensionMaxes = { static: 40, security: 20, depth: 40 };
 
-    function fillClass(pts, max) {
-      const pct = max > 0 ? (pts / max) * 100 : 0;
+    function fillClass(points, max) {
+      const pct = max > 0 ? (points / max) * 100 : 0;
       if (pct >= 80) return 'fill-a';
       if (pct >= 60) return 'fill-b';
       if (pct >= 40) return 'fill-c';
@@ -858,19 +753,17 @@
       return 'fill-f';
     }
 
-    const dims = ['static', 'security', 'depth'];
-    const barsHTML = dims.map(dim => {
-      const pts = s[dim] != null ? s[dim] : 0;
+    const barsHTML = ['static', 'security', 'depth'].map(dim => {
+      const points = s[dim] != null ? s[dim] : 0;
       const max = dimensionMaxes[dim] || 40;
-      const pct = max > 0 ? Math.round((pts / max) * 100) : 0;
-      const fc = fillClass(pts, max);
+      const pct = max > 0 ? Math.round((points / max) * 100) : 0;
       return `
         <div class="score-dimension">
-          <span class="score-dimension-label">${dim}</span>
+          <span class="score-dimension-label">${escHTML(dim)}</span>
           <div class="score-dimension-bar">
-            <div class="score-dimension-fill ${fc}" style="width:${pct}%"></div>
+            <div class="score-dimension-fill ${fillClass(points, max)}" style="width:${pct}%"></div>
           </div>
-          <span class="score-dimension-value">${pts}/${max}</span>
+          <span class="score-dimension-value">${points}/${max}</span>
         </div>`;
     }).join('');
 
@@ -878,236 +771,131 @@
       <div class="modal-score-section">
         <div class="modal-score-header">
           <div class="modal-score-overall">
-            <span class="modal-score-number">${s.total}</span>
+            <span class="modal-score-number">${escHTML(s.total)}</span>
             <span class="modal-score-max">/ 100</span>
-            <span class="modal-score-grade skill-score-badge ${gradeClass}">${grade}</span>
+            <span class="modal-score-grade skill-score-badge ${gradeClass}">${escHTML(grade)}</span>
           </div>
           <div class="modal-risk-gate ${riskClass}">
             <span>${riskIcon}</span>
-            Risk: ${riskLabel}
+            Risk: ${escHTML(riskLabel)}
           </div>
         </div>
-        <div class="modal-score-dimensions">
-          ${barsHTML}
-        </div>
+        <div class="modal-score-dimensions">${barsHTML}</div>
       </div>`;
   }
 
-  // --- Modal ---
-  function openModal(skill) {
-    const cat = categories[skill.category];
-    const isOfficial = isOfficialSkill(skill);
-    const project = getProjectForSkill(skill);
+  function installCommandsFor(skill) {
+    if (skill.category === 'mcp-servers') {
+      return [
+        { label: 'MCP', command: `claude mcp add ${skill.name || ''}` },
+        { label: 'Git', command: 'git clone https://github.com/jiayaoqijia/cryptoskill.git' },
+      ];
+    }
+    return [
+      { label: 'Claude', command: `cp -r cryptoskill/skills/${skill.category || ''}/${skill.name || ''} .claude/skills/` },
+      { label: 'Claw', command: `clawhub install ${skill.name || ''}` },
+    ];
+  }
+
+  function openSkillModal(skill) {
+    if (!modalOverlay) return;
     const modalContent = modalOverlay.querySelector('.modal');
+    if (!modalContent) return;
 
-    const officialBadgeHTML = isOfficial
-      ? `<span class="modal-official-badge">&#10003; Official</span>`
-      : '';
-
-    const projectInfoHTML = project
-      ? `<span>&#183;</span><span>${project.name}</span>`
-      : '';
+    const cat = categories[skill.category] || {};
+    const project = getProjectForSkill(skill);
+    const isOfficial = isOfficialSkill(skill);
+    const sourceUrl = `https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/${encodeURIComponent(skill.category || '')}/${encodeURIComponent(skill.name || '')}`;
+    const tags = Array.isArray(skill.tags) ? skill.tags.filter(Boolean) : [];
+    const tagHTML = tags.length
+      ? tags.map(t => `<span class="modal-tag">${escHTML(t)}</span>`).join('')
+      : '<span class="modal-tag">untagged</span>';
+    const installHTML = installCommandsFor(skill).map(({ label, command }) => `
+      <div class="install-cmd">
+        <span class="prompt">${escHTML(label)}</span>
+        <code>${escHTML(command)}</code>
+        <button class="copy-btn" type="button" data-copy="${escHTML(command)}" title="Copy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </button>
+      </div>`).join('');
 
     modalContent.innerHTML = `
+      <button class="modal-close" type="button" aria-label="Close details">&times;</button>
       <div class="modal-header">
-        <div class="modal-icon">${cat ? cat.icon : '&#128230;'}</div>
+        <div class="modal-icon" aria-hidden="true">${cat.icon || '&#128230;'}</div>
         <div>
-          <div class="modal-title">${skill.displayName}</div>
+          <div class="modal-title">${escHTML(skill.displayName || skill.name)}</div>
           <div class="modal-meta">
-            <span class="author">@${skill.author}</span>
-            <span>&#183;</span>
-            <span>v${skill.version}</span>
-            <span>&#183;</span>
-            <span>${cat ? cat.name : skill.category}</span>
-            ${projectInfoHTML}
-            ${officialBadgeHTML}
+            <span class="author">@${escHTML(skill.author || 'unknown')}</span>
+            <span>&middot;</span>
+            <span>v${escHTML(skill.version || '1.0.0')}</span>
+            <span>&middot;</span>
+            <span>${escHTML(cat.name || skill.category || 'Uncategorized')}</span>
+            ${project ? `<span>&middot;</span><span>${escHTML(project.name)}</span>` : ''}
+            ${isOfficial ? '<span class="modal-official-badge">&#10003; Official</span>' : ''}
           </div>
         </div>
       </div>
-      <div class="modal-desc">${skill.description}</div>
+      <div class="modal-desc">${escHTML(skill.description || '')}</div>
       <div class="modal-section-title">Tags</div>
-      <div class="modal-tags">
-        ${skill.tags.map(t => `<span class="modal-tag">${t}</span>`).join('')}
-      </div>
+      <div class="modal-tags">${tagHTML}</div>
       <div class="modal-section-title">Install</div>
-      <div class="modal-install">
-        ${skill.category === 'mcp-servers' ? `
-        <div class="install-cmd" style="margin-bottom:6px">
-          <span class="prompt" style="color:var(--accent)">MCP</span>
-          <code>claude mcp add ${skill.name}</code>
-          <button class="copy-btn" onclick="copyToClipboard('claude mcp add ${skill.name}', this)" title="Copy">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-            </svg>
-          </button>
-        </div>
-        <div class="install-cmd">
-          <span class="prompt" style="color:var(--text-tertiary)">Git</span>
-          <code>git clone ${skill.tags.find(t => t.startsWith('http')) || 'https://github.com/jiayaoqijia/cryptoskill'}</code>
-          <button class="copy-btn" onclick="copyToClipboard('git clone ${skill.tags.find(t => t.startsWith('http')) || ''}', this)" title="Copy">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-            </svg>
-          </button>
-        </div>
-        ` : `
-        <div class="install-cmd" style="margin-bottom:6px">
-          <span class="prompt" style="color:var(--accent)">Claude</span>
-          <code>cp -r cryptoskill/skills/${skill.category}/${skill.name} .claude/skills/</code>
-          <button class="copy-btn" onclick="copyToClipboard('cp -r cryptoskill/skills/${skill.category}/${skill.name} .claude/skills/', this)" title="Copy">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-            </svg>
-          </button>
-        </div>
-        <div class="install-cmd">
-          <span class="prompt" style="color:var(--success)">Claw</span>
-          <code>clawhub install ${skill.name}</code>
-          <button class="copy-btn" onclick="copyToClipboard('clawhub install ${skill.name}', this)" title="Copy">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-            </svg>
-          </button>
-        </div>
-        `}
-      </div>
+      <div class="modal-install">${installHTML}</div>
+      <div class="modal-section-title">Source</div>
+      <p class="trust-source-links"><a href="${sourceUrl}" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
       ${renderScoreDetail(skill)}
       ${renderTrustPanel(skill)}
     `;
+
+    modalContent.querySelector('.modal-close')?.addEventListener('click', closeSkillModal);
+    modalContent.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', () => copyToClipboard(btn.getAttribute('data-copy') || '', btn));
+    });
     modalOverlay.classList.add('active');
+    modalOverlay.setAttribute('aria-modal', 'true');
     document.body.style.overflow = 'hidden';
   }
 
-  function closeModal() {
+  function closeSkillModal() {
+    if (!modalOverlay) return;
     modalOverlay.classList.remove('active');
+    modalOverlay.removeAttribute('aria-modal');
     document.body.style.overflow = '';
   }
 
-  modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) closeModal();
-  });
-
-  // --- Search ---
-  function openSearch() {
-    searchOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => searchInput.focus(), 100);
-  }
-
-  function closeSearch() {
-    searchOverlay.classList.remove('active');
-    document.body.style.overflow = '';
-    searchInput.value = '';
-    searchResults.innerHTML = '';
-  }
-
-  document.querySelectorAll('.nav-search-btn, .mobile-search-btn').forEach(btn => {
-    btn.addEventListener('click', openSearch);
-  });
-
-  searchOverlay.addEventListener('click', (e) => {
-    if (e.target === searchOverlay) closeSearch();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      if (searchOverlay.classList.contains('active')) {
-        closeSearch();
-      } else {
-        openSearch();
+  function focusOrNavigateSearch() {
+    if (pageMode === 'skills-directory') {
+      directorySearch?.focus();
+      if (window.location.hash !== '#search') {
+        window.history.replaceState({}, '', `${window.location.pathname}${window.location.search}#search`);
       }
-    }
-    if (e.key === 'Escape') {
-      if (searchOverlay.classList.contains('active')) closeSearch();
-      if (modalOverlay.classList.contains('active')) closeModal();
-    }
-  });
-
-  searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase().trim();
-    if (!query) {
-      searchResults.innerHTML = '';
       return;
     }
-    const results = fuzzySearch(query);
-    renderSearchResults(results);
-  });
-
-  function fuzzySearch(query) {
-    const terms = query.split(/\s+/);
-    return skills
-      .map(skill => {
-        let score = 0;
-        const searchable = [
-          skill.name,
-          skill.displayName,
-          skill.description,
-          skill.category,
-          ...skill.tags
-        ].join(' ').toLowerCase();
-
-        terms.forEach(term => {
-          if (skill.name.toLowerCase().includes(term)) score += 10;
-          if (skill.displayName.toLowerCase().includes(term)) score += 8;
-          if (skill.tags.some(t => t.toLowerCase().includes(term))) score += 5;
-          if (skill.category.toLowerCase().includes(term)) score += 3;
-          if (skill.description.toLowerCase().includes(term)) score += 1;
-          if (!searchable.includes(term)) score -= 100;
-        });
-        return { skill, score };
-      })
-      .filter(r => r.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 12)
-      .map(r => r.skill);
+    window.location.href = skillsDirectoryUrl('#search');
   }
 
-  function renderSearchResults(results) {
-    if (results.length === 0) {
-      searchResults.innerHTML = '<div class="search-empty">No skills found. Try a different search term.</div>';
-      return;
-    }
-    searchResults.innerHTML = results.map(skill => {
-      const cat = categories[skill.category];
-      const isOfficial = isOfficialSkill(skill);
-      const badgeHTML = isOfficial
-        ? '<span class="result-badge official">Official</span>'
-        : '<span class="result-badge community">Community</span>';
-      return `
-        <div class="search-result-item" data-skill="${skill.name}">
-          <div class="result-icon">${cat ? cat.icon : '&#128230;'}</div>
-          <div class="result-info">
-            <div class="result-name">${skill.displayName}</div>
-            <div class="result-desc">${skill.description}</div>
-          </div>
-          ${badgeHTML}
-          <span class="result-category">${cat ? cat.name : skill.category}</span>
-        </div>
-      `;
-    }).join('');
-
-    searchResults.querySelectorAll('.search-result-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const skillName = item.getAttribute('data-skill');
-        const skill = skills.find(s => s.name === skillName);
-        if (skill) {
-          closeSearch();
-          openModal(skill);
-        }
-      });
+  function initTheme() {
+    const themeToggle = document.getElementById('themeToggle');
+    if (!themeToggle) return;
+    const savedTheme = localStorage.getItem('cryptoskill-theme') || localStorage.getItem('theme');
+    if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    else document.documentElement.removeAttribute('data-theme');
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const next = currentTheme === 'light' ? 'dark' : 'light';
+      if (next === 'dark') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('cryptoskill-theme', next);
+      localStorage.setItem('theme', next);
     });
   }
 
-  // --- Quick Submit Form (initialized in DOMContentLoaded) ---
   function initSubmitForm() {
     const quickSubmitForm = document.getElementById('quickSubmitForm');
     if (!quickSubmitForm) return;
-
     quickSubmitForm.addEventListener('submit', function (e) {
       e.preventDefault();
       const name = document.getElementById('submitName').value.trim();
@@ -1115,12 +903,10 @@
       const category = document.getElementById('submitCategory').value;
       const desc = document.getElementById('submitDesc').value.trim();
       const email = document.getElementById('submitEmail').value.trim();
-
       if (!name || !url) {
         alert('Please fill in at least the skill name and GitHub URL.');
         return;
       }
-
       const subject = encodeURIComponent('[CryptoSkill] New Skill Submission: ' + name);
       const body = encodeURIComponent(
         'Skill Name: ' + name + '\n' +
@@ -1130,92 +916,104 @@
         'Submitter Email: ' + (email || 'Not provided') + '\n\n' +
         '---\nSubmitted via cryptoskill.org'
       );
-
-      // Try mailto
       window.location.href = 'mailto:maintainers+cryptoskills@altresear.ch?subject=' + subject + '&body=' + body;
-
-      // Show confirmation with fallback
-      setTimeout(function () {
-        var msg = 'Your email client should have opened with the submission details.\n\n' +
-          'If it didn\'t open, please email maintainers+cryptoskills@altresear.ch directly with:\n\n' +
-          'Skill: ' + name + '\nURL: ' + url + '\nCategory: ' + (category || 'N/A');
-        alert(msg);
-      }, 500);
     });
   }
 
-  // --- Install Tab Switching ---
-  window.switchInstallTab = function (tab, btn) {
-    document.querySelectorAll('.install-panel').forEach(p => p.style.display = 'none');
-    document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
-    const panel = document.getElementById('install-' + tab);
-    if (panel) {
-      panel.style.display = 'block';
-      // Re-trigger animation
-      panel.style.animation = 'none';
-      panel.offsetHeight; // force reflow
-      panel.style.animation = '';
-    }
-    if (btn) btn.classList.add('active');
-  };
-
-  // --- Copy to Clipboard ---
-  window.copyToClipboard = function (text, btn) {
-    navigator.clipboard.writeText(text).then(() => {
-      btn.classList.add('copied');
-      const svg = btn.innerHTML;
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        btn.innerHTML = svg;
-      }, 2000);
-    });
-  };
-
-  // --- Mobile Nav Toggle ---
-  if (mobileToggle) {
-    mobileToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-    });
-  }
-
-  // --- Scroll Animations (IntersectionObserver) ---
   function observeElements() {
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
           observer.unobserve(entry.target);
         }
       });
-    }, {
-      threshold: 0.05,
-      rootMargin: '0px 0px 50px 0px'
-    });
+    }, { threshold: 0.05, rootMargin: '0px 0px 50px 0px' });
+    document.querySelectorAll('.fade-in-up:not(.visible), .stagger:not(.visible)').forEach(el => observer.observe(el));
+  }
 
-    document.querySelectorAll('.fade-in-up:not(.visible), .stagger:not(.visible)').forEach(el => {
-      observer.observe(el);
+  window.switchInstallTab = function (tab, btn) {
+    document.querySelectorAll('.install-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+    const panel = document.getElementById('install-' + tab);
+    if (panel) panel.style.display = 'block';
+    if (btn) btn.classList.add('active');
+  };
+
+  window.copyToClipboard = function (text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      const old = btn.innerHTML;
+      btn.textContent = 'Copied';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = old;
+      }, 1600);
+    });
+  };
+
+  if (officialDetailClose) {
+    officialDetailClose.addEventListener('click', () => {
+      activeOfficialProject = null;
+      officialSkillsDetail?.classList.remove('active');
+      document.querySelectorAll('.official-project-card').forEach(c => c.classList.remove('active'));
     });
   }
 
-  // --- Smooth Anchor Scrolling ---
+  document.querySelectorAll('.nav-search-btn, .mobile-search-btn').forEach(btn => {
+    btn.addEventListener('click', focusOrNavigateSearch);
+  });
+
+  searchOverlay?.addEventListener('click', e => {
+    if (e.target === searchOverlay) searchOverlay.classList.remove('active');
+  });
+
+  modalOverlay?.addEventListener('click', e => {
+    if (e.target === modalOverlay) closeSkillModal();
+  });
+
+  searchInput?.addEventListener('input', e => {
+    if (!searchResults) return;
+    const value = e.target.value.trim();
+    searchResults.innerHTML = value
+      ? `<div class="search-empty">Press Enter to search for "${escHTML(value)}" in the full directory.</div>`
+      : '';
+  });
+
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      focusOrNavigateSearch();
+    }
+    if (e.key === 'Enter' && searchOverlay?.classList.contains('active') && searchInput?.value.trim()) {
+      window.location.href = skillsDirectoryUrl(`?q=${encodeURIComponent(searchInput.value.trim())}#search`);
+    }
+    if (e.key === 'Escape') {
+      searchOverlay?.classList.remove('active');
+      closeSkillModal();
+    }
+  });
+
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', () => navLinks?.classList.toggle('open'));
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
+    anchor.addEventListener('click', e => {
       e.preventDefault();
       const target = document.querySelector(anchor.getAttribute('href'));
       if (target) {
         target.scrollIntoView({ behavior: 'smooth' });
-        if (navLinks) navLinks.classList.remove('open');
+        navLinks?.classList.remove('open');
       }
     });
   });
 
-  // --- Init ---
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initSubmitForm();
-    loadSkills();
+    if (pageMode === 'skills-directory') loadDirectory();
+    else loadHome();
     observeElements();
   });
-
 })();
