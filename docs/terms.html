@@ -219,13 +219,17 @@
   <script>
     // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
-    const stored = localStorage.getItem('theme');
-    if (stored) document.documentElement.setAttribute('data-theme', stored);
+    const stored = localStorage.getItem('cryptoskill-theme') || localStorage.getItem('theme');
+    const applyTheme = value => {
+      if (value === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      else document.documentElement.removeAttribute('data-theme');
+    };
+    if (stored) applyTheme(stored);
 
     themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      applyTheme(next);
+      localStorage.setItem('cryptoskill-theme', next);
       localStorage.setItem('theme', next);
     });
 

@@ -151,7 +151,7 @@
 
   <!-- Stylesheet -->
   <link rel="preconnect" href="https://www.googletagmanager.com">
-  <link rel="stylesheet" href="styles.css?v=bb0d57c7" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css?v=skills-directory" fetchpriority="high">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>
@@ -161,7 +161,7 @@
     gtag('config', 'G-3VP1G7H67L');
   </script>
 </head>
-<body>
+<body data-page="home" data-root-prefix="">
 
   <!-- Navigation -->
   <nav class="navbar">
@@ -173,7 +173,7 @@
 
       <ul class="nav-links" id="navLinks">
         <li><a href="#official">Official</a></li>
-        <li><a href="#skills">Skills</a></li>
+        <li><a href="skills/">Skills</a></li>
         <li><a href="#categories">Categories</a></li>
         <li><a href="#how-it-works">How It Works</a></li>
         <li><a href="#faq">FAQ</a></li>
@@ -252,7 +252,7 @@
       <h1>The Crypto Skill Hub<br><span class="accent">for AI Agents</span></h1>
       <p class="subtitle">Discover, install, and build crypto AI agent skills, MCP servers, and blockchain agent tools for Claude Code, OpenClaw, Codex, and every crypto protocol.</p>
       <div class="hero-actions">
-        <a href="#official" class="btn-primary">
+        <a href="skills/" class="btn-primary">
           Browse Skills
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -339,22 +339,19 @@
     </div>
   </section>
 
-  <!-- Community Skills Section -->
+  <!-- Top Skills Section (keeps #skills for legacy /#skills links) -->
   <section class="section" id="skills">
     <div class="container">
       <div class="section-header fade-in-up">
-        <div class="section-label">Community</div>
-        <h2 class="section-title">Community Skills</h2>
-        <p class="section-desc">Built by developers for the crypto community.</p>
-      </div>
-      <div class="skills-filter fade-in-up" id="filterContainer">
-        <!-- Populated by JS -->
+        <div class="section-label">Top Rated</div>
+        <h2 class="section-title">Start with the strongest skills</h2>
+        <p class="section-desc">The highest-scoring skills in the registry. Use the full directory for search, filters, and every category.</p>
       </div>
       <div class="skills-grid stagger" id="skillsGrid">
         <!-- Populated by JS -->
       </div>
-      <div class="skills-show-more" id="showMoreBtn" style="display:none;">
-        <button class="btn-secondary">Show all skills</button>
+      <div class="skills-show-more" style="display:block;">
+        <a class="btn-secondary" href="skills/">Open full skills directory</a>
       </div>
     </div>
   </section>
@@ -670,7 +667,7 @@
           GitHub
         </a>
         <a href="#official">Official</a>
-        <a href="#skills">Skills</a>
+        <a href="skills/">Skills</a>
         <a href="#categories">Categories</a>
         <a href="#faq">FAQ</a>
         <a href="terms.html">Terms</a>
@@ -680,6 +677,6 @@
   </footer>
 
   <!-- App JS -->
-  <script src="app.js?v=a9e2103f"></script>
+  <script src="app.js?v=skills-directory-theme-persistence"></script>
 </body>
 </html>
