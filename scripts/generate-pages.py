@@ -379,7 +379,86 @@ def trust_panel_html(trust, category, skill_name):
 
 # ── page templates ───────────────────────────────────────────────────
 
-def skill_page_html(skill, categories):
+def _related_strip(skill, all_skills, categories):
+    """Build two strips: 'More from <project>' (same author or same
+    -official prefix) and 'Other in <category>'. Cap each at 6 entries
+    sorted by score then alphabetical."""
+    cat = skill.get("category", "")
+    name = skill.get("name", "")
+    author = skill.get("author") or ""
+    # Same-project siblings: skills that share an "<prefix>-official-" prefix
+    # OR the same author handle (excluding this one). Stable ordering.
+    prefix = ""
+    if "-official-" in name:
+        prefix = name.split("-official-")[0] + "-official-"
+    siblings = []
+    for s in all_skills:
+        if s.get("name") == name:
+            continue
+        same_prefix = prefix and s.get("name", "").startswith(prefix)
+        same_author = author and s.get("author") == author
+        if same_prefix or same_author:
+            siblings.append(s)
+    siblings.sort(key=lambda x: (
+        -1 * (x.get("score", {}).get("total") or 0),
+        x.get("displayName", x.get("name", ""))
+    ))
+    siblings = siblings[:6]
+    same_cat = [s for s in all_skills
+                if s.get("category") == cat and s.get("name") != name
+                and s not in siblings]
+    same_cat.sort(key=lambda x: (
+        -1 * (x.get("score", {}).get("total") or 0),
+        x.get("displayName", x.get("name", ""))
+    ))
+    same_cat = same_cat[:6]
+
+    def _row(s):
+        cat_id = s.get("category", "")
+        cat_info = categories.get(cat_id, {}) if isinstance(categories, dict) else {}
+        ic = cat_info.get("icon", "&#128230;")
+        n_true = 0
+        for k in ("can_move_funds", "requires_private_key",
+                  "requires_hosted_operator", "uses_remote_install_script",
+                  "mutable_remote_runtime", "can_install_code",
+                  "can_execute_shell", "can_browse_web", "can_write_files",
+                  "can_spawn_subagents", "auto_invocable"):
+            # We don't have per-row trust data in the catalog snapshot
+            # passed in; the count would require re-reading every YAML.
+            # Skip — flags are visible on each linked card itself.
+            break
+        return (
+            f'<a class="related-strip-card" href="{esc(s.get("name",""))}.html">'
+            f'<span class="related-strip-icon" aria-hidden="true">{ic}</span>'
+            f'<span class="related-strip-name">{esc(s.get("displayName", s.get("name","")))}</span>'
+            f'</a>'
+        )
+
+    out = []
+    if siblings:
+        project_label = (prefix.rstrip("-official-").replace("-", " ").title()
+                         or f"@{esc(author)}")
+        out.append(
+            f'<section class="related-strip">'
+            f'<h2>More from {esc(project_label)}</h2>'
+            f'<div class="related-strip-list">'
+            f'{"".join(_row(s) for s in siblings)}'
+            f'</div></section>'
+        )
+    if same_cat:
+        cat_info = categories.get(cat, {})
+        cat_label = cat_info.get("name", cat.replace("-", " ").title())
+        out.append(
+            f'<section class="related-strip">'
+            f'<h2>Other in {esc(cat_label)}</h2>'
+            f'<div class="related-strip-list">'
+            f'{"".join(_row(s) for s in same_cat)}'
+            f'</div></section>'
+        )
+    return "\n".join(out)
+
+
+def skill_page_html(skill, categories, all_skills=None):
     s = skill
     name = esc(s["name"])
     display = esc(s.get("displayName", s["name"]))
@@ -528,6 +607,8 @@ def skill_page_html(skill, categories):
 {quality_html}
 
 {trust_html}
+
+    {_related_strip(s, all_skills, categories) if all_skills else ""}
 
     <h2>Source</h2>
     <p><a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/{esc(cat)}/{name}" target="_blank" rel="noopener">View on GitHub &rarr;</a></p>
@@ -758,7 +839,7 @@ def main():
         os.makedirs(cat_dir, exist_ok=True)
 
         for s in cat_skills:
-            page_html = skill_page_html(s, categories)
+            page_html = skill_page_html(s, categories, all_skills=skills)
             page_path = os.path.join(cat_dir, f"{s['name']}.html")
             with open(page_path, "w", encoding="utf-8") as f:
                 f.write(page_html)

@@ -15,6 +15,17 @@
   const FEATURED_COUNT = 12;
   let showingAll = false;
   let sortByScore = false;
+  // Sort modes for the new <select> dropdown — replaces the boolean toggle.
+  // Reads `added_at` / `last_updated` from skills.json when present, falls
+  // back to score / displayName.
+  let activeSort = 'recently_updated';
+  const SORT_MODES = [
+    { id: 'recently_updated', label: 'Recently updated' },
+    { id: 'newest_added',     label: 'Newest added' },
+    { id: 'highest_score',    label: 'Highest score' },
+    { id: 'least_red_flags',  label: 'Fewest red flags' },
+    { id: 'alpha',            label: 'A → Z' },
+  ];
 
   // Trust manifest data, keyed by `${category}/${skillName}` (matches the
   // path in skills/ on disk). Loaded from docs/capabilities.json so the
@@ -530,6 +541,11 @@
     const author = skill.author || 'unknown';
     const version = skill.version || '1.0.0';
     const tags = Array.isArray(skill.tags) ? skill.tags : [];
+    // Copy-install line — same format as the modal & detail page; lets a
+    // user grab the install command without leaving the home grid.
+    const installCmd = skill.category === 'mcp-servers'
+      ? `claude mcp add ${skill.name}`
+      : `clawhub install ${skill.name}`;
 
     card.innerHTML = `
       <div class="card-title-row">
@@ -546,6 +562,19 @@
       </div>
       <p class="card-desc">${escHTML(skill.description || '')}</p>
       ${trustStrip}
+      <div class="card-install-row">
+        <code class="card-install-cmd">${escHTML(installCmd)}</code>
+        <button class="card-install-copy" type="button"
+                aria-label="Copy install command"
+                data-cmd="${escHTML(installCmd)}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </button>
+      </div>
       <footer class="card-footer-row">
         <div class="card-tags">
           ${tags.filter(t => t !== 'official').slice(0, 3).map(t => `<span class="card-tag">${escHTML(t)}</span>`).join('')}
@@ -553,6 +582,26 @@
         ${officialPill}
       </footer>
     `;
+    // Copy-install button: stop the click from bubbling to the card so we
+    // don't open the modal at the same time. Show a brief "✓ Copied" state.
+    const copyBtn = card.querySelector('.card-install-copy');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cmd = copyBtn.getAttribute('data-cmd') || installCmd;
+        if (navigator.clipboard?.writeText) {
+          navigator.clipboard.writeText(cmd).then(() => {
+            copyBtn.classList.add('card-install-copy--ok');
+            setTimeout(() => copyBtn.classList.remove('card-install-copy--ok'), 1100);
+          });
+        }
+      });
+      copyBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.stopPropagation();
+        }
+      });
+    }
     card.addEventListener('click', () => openModal(skill));
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -600,17 +649,32 @@
       filterContainer.appendChild(btn);
     });
 
-    // Add sort-by-score toggle
-    const sortBtn = document.createElement('button');
-    sortBtn.className = 'filter-btn' + (sortByScore ? ' sort-active' : '');
-    sortBtn.textContent = 'Sort by Score';
-    sortBtn.title = 'Sort skills by quality score (highest first)';
-    sortBtn.addEventListener('click', () => {
-      sortByScore = !sortByScore;
-      sortBtn.classList.toggle('sort-active', sortByScore);
+    // Sort dropdown — replaces the binary "Sort by Score" toggle so users
+    // can browse by recency / score / red flags / name. Uses DOM APIs only
+    // (no innerHTML) since labels and option text are static constants.
+    const sortWrap = document.createElement('label');
+    sortWrap.className = 'filter-sort-wrap';
+    const sortLabel = document.createElement('span');
+    sortLabel.className = 'filter-sort-label';
+    sortLabel.textContent = 'Sort:';
+    sortWrap.appendChild(sortLabel);
+    const sortSelect = document.createElement('select');
+    sortSelect.className = 'filter-sort-select';
+    sortSelect.setAttribute('aria-label', 'Sort skills');
+    SORT_MODES.forEach(m => {
+      const o = document.createElement('option');
+      o.value = m.id;
+      o.textContent = m.label;
+      if (m.id === activeSort) o.selected = true;
+      sortSelect.appendChild(o);
+    });
+    sortSelect.addEventListener('change', (e) => {
+      activeSort = e.target.value;
+      sortByScore = (activeSort === 'highest_score');
       renderSkills();
     });
-    filterContainer.appendChild(sortBtn);
+    sortWrap.appendChild(sortSelect);
+    filterContainer.appendChild(sortWrap);
 
     // Trust filter row (TRUST.md §"UI: red flags first, green checks last").
     // Negative-only — these all read "Cannot X" / "No X required". A skill
@@ -691,12 +755,35 @@
       if (showMoreBtn) showMoreBtn.style.display = 'none';
       return;
     }
-    if (sortByScore) {
-      filtered.sort((a, b) => {
-        const sa = (a.score && a.score.total != null) ? a.score.total : -1;
-        const sb = (b.score && b.score.total != null) ? b.score.total : -1;
-        return sb - sa;
-      });
+    // Sort modes — `activeSort` is the canonical state; `sortByScore` is
+    // kept in sync for backwards compatibility with older bits of UI.
+    const cmpScore = (a, b) => {
+      const sa = (a.score && a.score.total != null) ? a.score.total : -1;
+      const sb = (b.score && b.score.total != null) ? b.score.total : -1;
+      return sb - sa;
+    };
+    const cmpRecent = (a, b) => {
+      const da = (a.last_updated || a.added_at || '').localeCompare(
+                 (b.last_updated || b.added_at || ''));
+      return -da;
+    };
+    const cmpAdded = (a, b) => (b.added_at || '').localeCompare(a.added_at || '');
+    const cmpAlpha = (a, b) => (a.displayName || a.name).localeCompare(
+                                b.displayName || b.name);
+    const cmpFlags = (a, b) => {
+      const fa = redFlagCount(trustFor(a)) ?? 99;
+      const fb = redFlagCount(trustFor(b)) ?? 99;
+      return fa - fb;
+    };
+    const SORTERS = {
+      recently_updated: cmpRecent,
+      newest_added:     cmpAdded,
+      highest_score:    cmpScore,
+      least_red_flags:  cmpFlags,
+      alpha:            cmpAlpha,
+    };
+    if (sortByScore || activeSort) {
+      filtered.sort(SORTERS[activeSort] || cmpScore);
     }
     const displaySkills = showingAll ? filtered : filtered.slice(0, FEATURED_COUNT);
 
