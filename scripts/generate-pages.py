@@ -386,19 +386,29 @@ def _related_strip(skill, all_skills, categories):
     cat = skill.get("category", "")
     name = skill.get("name", "")
     author = skill.get("author") or ""
-    # Same-project siblings: skills that share an "<prefix>-official-" prefix
-    # OR the same author handle (excluding this one). Stable ordering.
+    # Sibling collection — STRICT separation between first-party and author.
+    # When a -official- prefix exists, ONLY include other skills that share
+    # the same prefix (verified first-party). When it doesn't, fall back to
+    # author equality (community grouping). This prevents a community skill
+    # whose `author` field happens to match an official brand from leaking
+    # into a "More from <Brand>" section, which CC AR4 flagged as a latent
+    # provenance-overstatement bug.
     prefix = ""
     if "-official-" in name:
         prefix = name.split("-official-")[0] + "-official-"
     siblings = []
-    for s in all_skills:
-        if s.get("name") == name:
-            continue
-        same_prefix = prefix and s.get("name", "").startswith(prefix)
-        same_author = author and s.get("author") == author
-        if same_prefix or same_author:
-            siblings.append(s)
+    if prefix:
+        for s in all_skills:
+            if s.get("name") == name:
+                continue
+            if s.get("name", "").startswith(prefix):
+                siblings.append(s)
+    elif author:
+        for s in all_skills:
+            if s.get("name") == name:
+                continue
+            if s.get("author") == author:
+                siblings.append(s)
     siblings.sort(key=lambda x: (
         -1 * (x.get("score", {}).get("total") or 0),
         x.get("displayName", x.get("name", ""))
@@ -447,8 +457,38 @@ def _related_strip(skill, all_skills, categories):
         # — this is a verified first-party grouping. Without one, fall back to
         # "Other by @<author>" so we don't imply project-level provenance for
         # what is just author equality (codex AR1 finding).
+        # Brand display overrides for hyphen-less project slugs. Python's
+        # str.title() can't split run-together names ("trailofbits" → "Trailofbits"
+        # not "Trail Of Bits"). For the camel-cased / multi-word brands we ship,
+        # we keep an explicit map; for everything else the .title() default is
+        # correct (binance, kraken, kucoin, etc.).
+        BRAND_DISPLAY = {
+            "trailofbits": "Trail of Bits",
+            "chaingpt":    "ChainGPT",
+            "openzeppelin":"OpenZeppelin",
+            "trailrunner": "Trail Runner",
+            "tomorrowdao": "TomorrowDAO",
+            "aelfscan":    "AelfScan",
+            "spoonos":     "SpoonOS",
+            "aibtc":       "AIBTC",
+            "icp":         "ICP",
+            "gmgn":        "GMGN",
+            "kucoin":      "KuCoin",
+            "okx":         "OKX",
+            "bitget-wallet": "Bitget Wallet",
+            "portkey":     "Portkey",
+            "drpc":        "dRPC",
+            "chainstack":  "Chainstack",
+            "aicoin":      "AiCoin",
+            "reown":       "Reown",
+            "emblem":      "Emblem",
+            "bnb":         "BNB",
+            "solana-mcp":  "Solana",
+            "coingecko-mcp":"CoinGecko",
+        }
         if bare:
-            heading = f'More from {esc(bare.replace("-", " ").title())}'
+            display = BRAND_DISPLAY.get(bare, bare.replace("-", " ").title())
+            heading = f'More from {esc(display)}'
         else:
             heading = f'Other by @{esc(author)}'
         out.append(
