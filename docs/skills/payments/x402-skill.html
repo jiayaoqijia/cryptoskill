@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>Openclaw X402 Skill - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="Discover, browse, filter, and pay for x402-compatible API endpoints and MCP tools from the x402 Bazaar — the autonomous discovery layer for agentic payments. Br">
   <meta name="robots" content="index, follow">
@@ -21,7 +25,7 @@
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css?v=3337b81a">
+  <link rel="stylesheet" href="../../styles.css?v=0733f67c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Openclaw X402 Skill", "description": "Discover, browse, filter, and pay for x402-compatible API endpoints and MCP tools from the x402 Bazaar — the autonomous discovery layer for agentic payments. Browse all available services, filter by price or type, inspect payment requirements, and call any discovered endpoint using USDC micropayments on Base with no API keys or account setup. Use when the agent needs to find a payable API service, check what x402 services exist for a given task (web scraping, AI inference, weather data, market data), pay for a single API call via x402, or list services under a given price threshold. Requires EVM_PRIVATE_KEY in .env (Base wallet with USDC) for paid calls. Discovery browsing requires no keys at all.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/payments/x402-skill.html", "author": {"@type": "Organization", "name": "coinvest518"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>

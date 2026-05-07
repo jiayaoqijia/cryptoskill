@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>Heurist Official Mesh - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="Access real-time crypto token data, DeFi analytics, wallet intelligence, project research, and blockchain insights through Heurist Mesh agents. Use when the use">
   <meta name="robots" content="index, follow">
@@ -21,7 +25,7 @@
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css?v=3337b81a">
+  <link rel="stylesheet" href="../../styles.css?v=0733f67c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Heurist Official Mesh", "description": "Access real-time crypto token data, DeFi analytics, wallet intelligence, project research, and blockchain insights through Heurist Mesh agents. Use when the user asks about token trends, DeFi protocols, wallet holdings, project due diligence, Twitter/X crypto sentiment, or deeper market analysis.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/ai-crypto/heurist-official-mesh.html", "author": {"@type": "Organization", "name": "unknown"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>

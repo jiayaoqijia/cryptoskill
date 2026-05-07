@@ -3151,3 +3151,10 @@ a {
   color: var(--text-tertiary);
   font-family: var(--font-mono);
 }
+
+.skill-card-v2 .card-install-copy--err {
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.10);
+}
+[data-theme="dark"] .skill-card-v2 .card-install-copy--err { color: #fca5a5; }

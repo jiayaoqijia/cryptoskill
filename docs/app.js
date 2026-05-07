@@ -17,8 +17,11 @@
   let sortByScore = false;
   // Sort modes for the new <select> dropdown — replaces the boolean toggle.
   // Reads `added_at` / `last_updated` from skills.json when present, falls
-  // back to score / displayName.
-  let activeSort = 'recently_updated';
+  // back to score / displayName. Default is `highest_score` because most
+  // existing entries don't yet have date fields populated, so a recency
+  // sort would be a stable-but-arbitrary order until update-catalog.py
+  // backfills `added_at` from each skill's _meta.json.
+  let activeSort = 'highest_score';
   const SORT_MODES = [
     { id: 'recently_updated', label: 'Recently updated' },
     { id: 'newest_added',     label: 'Newest added' },
@@ -583,17 +586,46 @@
       </footer>
     `;
     // Copy-install button: stop the click from bubbling to the card so we
-    // don't open the modal at the same time. Show a brief "✓ Copied" state.
+    // don't open the modal at the same time. Show "✓ Copied" on success
+    // or "Press ⌘+C" on permission denial / unsupported browsers — never
+    // a misleading silent success (codex AR1 finding).
     const copyBtn = card.querySelector('.card-install-copy');
     if (copyBtn) {
+      const ok  = () => {
+        copyBtn.classList.remove('card-install-copy--err');
+        copyBtn.classList.add('card-install-copy--ok');
+        setTimeout(() => copyBtn.classList.remove('card-install-copy--ok'), 1100);
+      };
+      const err = () => {
+        copyBtn.classList.remove('card-install-copy--ok');
+        copyBtn.classList.add('card-install-copy--err');
+        setTimeout(() => copyBtn.classList.remove('card-install-copy--err'), 1600);
+      };
+      const fallbackCopy = (cmd) => {
+        // Last-resort: programmatic textarea + execCommand. Safari /
+        // permissions-denied / non-HTTPS contexts hit this path. We
+        // surface the error microstate either way so the user knows
+        // to grab the command manually.
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = cmd;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          const success = document.execCommand && document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (success) ok(); else err();
+        } catch (_) { err(); }
+      };
       copyBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const cmd = copyBtn.getAttribute('data-cmd') || installCmd;
         if (navigator.clipboard?.writeText) {
-          navigator.clipboard.writeText(cmd).then(() => {
-            copyBtn.classList.add('card-install-copy--ok');
-            setTimeout(() => copyBtn.classList.remove('card-install-copy--ok'), 1100);
-          });
+          navigator.clipboard.writeText(cmd).then(ok, () => fallbackCopy(cmd));
+        } else {
+          fallbackCopy(cmd);
         }
       });
       copyBtn.addEventListener('keydown', (e) => {

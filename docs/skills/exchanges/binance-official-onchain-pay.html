@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>Binance Official Onchain Pay - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="Binance Onchain Pay enables users to buy cryptocurrency with fiat (e.g., EUR, USD) or send existing crypto from their Binance account directly to any external o">
   <meta name="robots" content="index, follow">
@@ -21,7 +25,7 @@
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css?v=3337b81a">
+  <link rel="stylesheet" href="../../styles.css?v=0733f67c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Binance Official Onchain Pay", "description": "Binance Onchain Pay enables users to buy cryptocurrency with fiat (e.g., EUR, USD) or send existing crypto from their Binance account directly to any external on-chain wallet address in a single flow—no manual withdrawal needed. Enables partners to integrate crypto buying services: - payment-method-list: Get available payment methods (Card, P2P, Google Pay, Apple Pay, etc.) with limits for a fiat/crypto pair - trading-pairs: List all supported fiat currencies and cryptocurrencies - estimated-quote: Get real-time price quote including exchange rate, fees, and estimated crypto amount - pre-order: Create a buy order and get redirect URL to Binance payment flow - order: Query order status and details (processing, completed, failed, etc.) - crypto-network: Get supported blockchain networks with withdraw fees and limits - p2p/trading-pairs: List P2P-specific trading pairs", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/exchanges/binance-official-onchain-pay.html", "author": {"@type": "Organization", "name": "binance"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>

@@ -194,8 +194,16 @@ def fetch_skill_md(org, repo, branch, subpath, slug, fallback_desc=""):
                     continue
                 desc = line[:300]
                 break
-            desc = desc.replace('"', "'").replace("\n", " ").strip() or (
-                f"Skill from {org}/{repo}; see linked README for details.")
+            desc = desc.replace('"', "'").replace("\n", " ").replace("\r", " ").strip()
+            # Guard against YAML block-scalar openers ("|", ">", "|-", ">-").
+            # If the first prose line begins with one of these, the canonical
+            # YAML parser interprets the description as a multiline block,
+            # which breaks the frontmatter shape. Prefix a space so the
+            # description stays a single-quoted scalar.
+            if desc and desc[0] in ("|", ">"):
+                desc = " " + desc
+            if not desc:
+                desc = f"Skill from {org}/{repo}; see linked README for details."
             wrapped = (
                 "---\n"
                 f"name: {slug}\n"

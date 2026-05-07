@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>OKX Official DEX Signal - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="Use this skill for smart-money/whale/KOL/大户 aggregated buy signal/信号 alerts and leaderboard/牛人榜 rankings — monitoring aggregated notable wallet buying signals a">
   <meta name="robots" content="index, follow">
@@ -21,7 +25,7 @@
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css?v=3337b81a">
+  <link rel="stylesheet" href="../../styles.css?v=0733f67c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "OKX Official DEX Signal", "description": "Use this skill for smart-money/whale/KOL/大户 aggregated buy signal/信号 alerts and leaderboard/牛人榜 rankings — monitoring aggregated notable wallet buying signals and who the top traders are. Covers: real-time aggregated buy signal alerts from smart money, KOL/influencers, and whales; filtering by wallet type, trade size, market cap, liquidity; leaderboard of top traders ranked by PnL, win rate, volume, or ROI across chains. Use when the user asks '大户在买什么', 'show me whale signals', 'smart money alerts', '信号', '大户信号', 'top traders', '牛人榜', or wants aggregated notable wallet activity signals. Do NOT use for raw per-transaction DEX trade feed, sell-direction tracking ('卖出动态', '追踪聪明钱卖出', 'raw trade feed'), or individual transaction queries of smart money/KOL — use okx-dex-market address-tracker-activities. Do NOT use for meme/pump.fun token scanning — use okx-dex-trenches. Do NOT use for individual token holder distribution — use okx-dex-token.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/exchanges/okx-official-dex-signal.html", "author": {"@type": "Organization", "name": "okx"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>

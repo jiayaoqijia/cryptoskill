@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>ERC8004 Agent - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="8004 Agent Skill for registering AI agents on the ERC-8004 Trustless Agents standard and authenticating them via SIWA (Sign In With Agent). Use this skill when ">
   <meta name="robots" content="index, follow">
@@ -21,7 +25,7 @@
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css?v=3337b81a">
+  <link rel="stylesheet" href="../../styles.css?v=0733f67c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "ERC8004 Agent", "description": "8004 Agent Skill for registering AI agents on the ERC-8004 Trustless Agents standard and authenticating them via SIWA (Sign In With Agent). Use this skill when an agent needs to: (1) create or manage an Ethereum wallet for onchain identity, (2) register on the ERC-8004 Identity Registry as an NFT-based agent identity (SIGN UP), (3) authenticate with a server by proving ownership of an ERC-8004 identity using a signed challenge (SIGN IN / SIWA), (4) build or update an ERC-8004 registration file (metadata JSON with endpoints, trust models, services), (5) upload agent metadata to IPFS or base64 data URI, (6) look up or verify an agent's onchain registration. The agent persists public identity state in MEMORY.md. Private keys are held in a separate keyring proxy server — the agent can request signatures but never access the key itself. Triggers on: ERC-8004, trustless agents, agent registration, SIWA, Sign In With Agent, agent identity NFT, Agent0 SDK, agent wallet, agent keystore, keyring proxy.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/identity/erc8004-agent.html", "author": {"@type": "Organization", "name": "limone-eth"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>

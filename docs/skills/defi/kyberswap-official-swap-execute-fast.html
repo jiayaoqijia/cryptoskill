@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>Kyberswap Official Swap Execute Fast - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="This skill should ONLY be used when the user explicitly asks for immediate, no-confirmation execution using phrases like &quot;fast swap&quot;, &quot;execute im">
   <meta name="robots" content="index, follow">
@@ -21,7 +25,7 @@
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css?v=3337b81a">
+  <link rel="stylesheet" href="../../styles.css?v=0733f67c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Kyberswap Official Swap Execute Fast", "description": "This skill should ONLY be used when the user explicitly asks for immediate, no-confirmation execution using phrases like \"fast swap\", \"execute immediately\", \"swap with no confirmation\", \"quick swap now\", \"instant execute\", or \"skip confirmation and swap\". The user must clearly indicate they want to bypass the review/confirmation step. Do NOT use this skill if the user mentions wanting to review, confirm, check, or verify before executing — use swap-build + swap-execute instead. Do NOT use this skill for general swap requests like \"swap ETH to USDC\" or \"trade tokens\" — those should go to swap-build. This skill runs a shell script that builds the swap via fast-swap.sh then immediately broadcasts the transaction. DANGEROUS - no confirmation before sending real transactions.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/defi/kyberswap-official-swap-execute-fast.html", "author": {"@type": "Organization", "name": "unknown"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>

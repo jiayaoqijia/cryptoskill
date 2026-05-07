@@ -189,6 +189,22 @@ def build_catalog() -> dict:
                 "version": version,
             }
 
+            # Propagate dates from _meta.json so the home-page sort
+            # dropdown ('Recently updated', 'Newest added') has data to
+            # work with. `added_at` is set by bulk-add and skill-creation
+            # paths; `last_updated` is the most recent history entry's
+            # added_at (falls back to top-level added_at).
+            if meta:
+                if meta.get("added_at"):
+                    entry["added_at"] = meta["added_at"]
+                hist = meta.get("history") or []
+                if isinstance(hist, list) and hist:
+                    last = hist[-1]
+                    if isinstance(last, dict) and last.get("added_at"):
+                        entry["last_updated"] = last["added_at"]
+                if "last_updated" not in entry and entry.get("added_at"):
+                    entry["last_updated"] = entry["added_at"]
+
             skills_list.append(entry)
 
     # Preserve existing categories and merge with existing skill data

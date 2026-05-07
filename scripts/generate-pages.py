@@ -428,7 +428,7 @@ def _related_strip(skill, all_skills, categories):
             # Skip — flags are visible on each linked card itself.
             break
         return (
-            f'<a class="related-strip-card" href="{esc(s.get("name",""))}.html">'
+            f'<a class="related-strip-card" href="{url_path(s.get("name",""))}.html">'
             f'<span class="related-strip-icon" aria-hidden="true">{ic}</span>'
             f'<span class="related-strip-name">{esc(s.get("displayName", s.get("name","")))}</span>'
             f'</a>'
@@ -436,11 +436,24 @@ def _related_strip(skill, all_skills, categories):
 
     out = []
     if siblings:
-        project_label = (prefix.rstrip("-official-").replace("-", " ").title()
-                         or f"@{esc(author)}")
+        # `prefix` looks like "binance-official-"; we want "Binance".
+        # Note: str.rstrip(chars) strips a CHARACTER SET, not a suffix
+        # string — using it here was a Python footgun that corrupted
+        # every brand name (e.g. "binance-official-".rstrip("-official-")
+        # yielded "b" because i/n/a/c/e all overlap with the strip set).
+        suffix = "-official-"
+        bare = prefix[:-len(suffix)] if prefix.endswith(suffix) else prefix
+        # When there's a real -official- prefix, label as "More from <Project>"
+        # — this is a verified first-party grouping. Without one, fall back to
+        # "Other by @<author>" so we don't imply project-level provenance for
+        # what is just author equality (codex AR1 finding).
+        if bare:
+            heading = f'More from {esc(bare.replace("-", " ").title())}'
+        else:
+            heading = f'Other by @{esc(author)}'
         out.append(
             f'<section class="related-strip">'
-            f'<h2>More from {esc(project_label)}</h2>'
+            f'<h2>{heading}</h2>'
             f'<div class="related-strip-list">'
             f'{"".join(_row(s) for s in siblings)}'
             f'</div></section>'
@@ -538,6 +551,10 @@ def skill_page_html(skill, categories, all_skills=None):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>{display} - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="{desc_short}">
   <meta name="robots" content="index, follow">
@@ -689,6 +706,10 @@ def category_index_html(cat_id, skills, categories):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>{esc(title)}</title>
   <meta name="description" content="{desc_meta}">
   <meta name="robots" content="index, follow">

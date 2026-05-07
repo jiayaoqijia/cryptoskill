@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Defense-in-depth: even though we only render escaped catalog fields
+       from skills.json (never raw third-party SKILL.md/README body), this
+       CSP blocks any inline-script breakout if a future renderer changes. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <title>Goldrush x402 - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="GoldRush x402 — pay-per-request blockchain data access using the x402 protocol (HTTP 402 Payment Required). Use this skill whenever the user is building an AI a">
   <meta name="robots" content="index, follow">
@@ -21,7 +25,7 @@
   <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-  <link rel="stylesheet" href="../../styles.css?v=3337b81a">
+  <link rel="stylesheet" href="../../styles.css?v=0733f67c">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Goldrush x402", "description": "GoldRush x402 — pay-per-request blockchain data access using the x402 protocol (HTTP 402 Payment Required). Use this skill whenever the user is building an AI agent that needs blockchain data without API keys, wants wallet-based micropayments for on-chain data, needs autonomous or no-account access to the GoldRush API, mentions the x402 protocol, or wants no-signup/no-onboarding blockchain data access. This is the right skill for autonomous agents, serverless applications, and prototyping without onboarding. Provides access to 60+ Foundational API endpoints through a transparent reverse proxy with stablecoin payments on Base. If the user needs a traditional API key with monthly billing, use goldrush-foundational-api instead. If the user needs real-time streaming data via WebSocket, use goldrush-streaming-api instead.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/payments/goldrush-x402.html", "author": {"@type": "Organization", "name": "gane5h"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
