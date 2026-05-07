@@ -3,10 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Defense-in-depth: even though we only render escaped catalog fields
-       from skills.json (never raw third-party SKILL.md/README body), this
-       CSP blocks any inline-script breakout if a future renderer changes. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
+  <!-- Limited defense-in-depth CSP. We're on GitHub Pages so we can't
+       send HTTP response headers — that means `frame-ancestors` is
+       ignored by browsers per CSP3 §6.4.2 (we drop it instead of
+       overclaiming). `'unsafe-inline'` stays because GA bootstrap,
+       theme/mobile toggles, and JSON-LD are inlined; we'll move to
+       hashes once those move to external files. The policy still
+       narrows the URL set for scripts/connects/images/fonts to known
+       origins, which would catch a `<script src=evil.js>` injection
+       even if `'unsafe-inline'` allows inline ones. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>proveragent.base.eth - CryptoSkill | Crypto AI Agent Skill</title>
   <meta name="description" content="Autonomous ZK proof generation agent with ERC-8004 identity and x402 payments, powered by ZKProofport.">
   <meta name="robots" content="index, follow">
