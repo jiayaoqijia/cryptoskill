@@ -808,11 +808,19 @@
     }
     rail.innerHTML = '';
 
-    // Pick the 8 most-recent entries with a real added_at; cap at one
-    // strip-row so it doesn't dominate the page.
+    // Pick the 8 most-recent entries with a *valid*, non-future added_at.
+    // Filter on parsed Date so a malformed string or a future-clocked
+    // commit can't pollute the rail by sorting to the top of a localeCompare
+    // on raw strings (e.g. "9999-12-31" or NaN from "garbage" would otherwise
+    // win the sort even though relativeAge() suppresses the per-card pill).
+    const now = Date.now();
     const dated = skills
-      .filter(s => s && s.added_at)
-      .sort((a, b) => (b.added_at || '').localeCompare(a.added_at || ''))
+      .filter(s => {
+        if (!s || !s.added_at || typeof s.added_at !== 'string') return false;
+        const t = Date.parse(s.added_at);
+        return !isNaN(t) && t <= now;
+      })
+      .sort((a, b) => Date.parse(b.added_at) - Date.parse(a.added_at))
       .slice(0, 8);
     if (!dated.length) return;
 

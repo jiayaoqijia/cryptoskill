@@ -137,13 +137,30 @@ def classify_source(source_md_path: Path) -> str:
 
 def _load_date_cache() -> dict:
     """Read the git-history date cache produced by backfill-dates.py.
-    Keys are 'skills/<cat>/<slug>' relative paths."""
+    Keys are 'skills/<cat>/<slug>' relative paths.
+
+    Defensive: the cache is now correctness-critical (drives the freshness
+    pill and 'Recently added' rail). If it's missing entirely, log a loud
+    warning so a deploy notices instead of silently shipping date-less
+    cards. The home rail and pills will simply suppress themselves on
+    skills without dates, but we want the operator aware."""
     p = REPO_ROOT / "scripts" / ".skill-dates.json"
     if not p.exists():
+        print(
+            "WARN: scripts/.skill-dates.json missing — freshness pill and "
+            "'Recently added' rail will be empty for non-_meta-tagged "
+            "skills. Run `python3 scripts/backfill-dates.py` before deploy.",
+            file=sys.stderr,
+        )
         return {}
     try:
         return json.loads(p.read_text(encoding="utf-8"))
-    except Exception:
+    except Exception as exc:
+        print(
+            f"WARN: scripts/.skill-dates.json unparseable ({exc}); freshness "
+            "UI will fall back to _meta.json dates only.",
+            file=sys.stderr,
+        )
         return {}
 
 
@@ -253,6 +270,20 @@ def build_catalog() -> dict:
                         entry["displayName"] = old["displayName"]
         except Exception:
             pass
+
+    # Date-coverage guard — the freshness UI depends on added_at /
+    # last_updated. If <80% of catalog has dates, something is wrong
+    # (probably a stale .skill-dates.json) and the deploy operator
+    # should know before shipping.
+    total = len(skills_list)
+    dated = sum(1 for s in skills_list if s.get("added_at"))
+    if total and dated / total < 0.80:
+        print(
+            f"WARN: only {dated}/{total} skills have added_at populated. "
+            f"Run `python3 scripts/backfill-dates.py --rebuild` to regenerate "
+            "the date cache before deploying.",
+            file=sys.stderr,
+        )
 
     return catalog
 
