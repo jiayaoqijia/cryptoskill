@@ -135,9 +135,22 @@ def classify_source(source_md_path: Path) -> str:
 # ---------------------------------------------------------------------------
 
 
+def _load_date_cache() -> dict:
+    """Read the git-history date cache produced by backfill-dates.py.
+    Keys are 'skills/<cat>/<slug>' relative paths."""
+    p = REPO_ROOT / "scripts" / ".skill-dates.json"
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
 def build_catalog() -> dict:
     """Walk skills/*/* and build the catalog dict."""
     skills_list: list[dict] = []
+    date_cache = _load_date_cache()
 
     for cat_dir in sorted(SKILLS_DIR.iterdir()):
         if not cat_dir.is_dir():
@@ -189,11 +202,12 @@ def build_catalog() -> dict:
                 "version": version,
             }
 
-            # Propagate dates from _meta.json so the home-page sort
-            # dropdown ('Recently updated', 'Newest added') has data to
-            # work with. `added_at` is set by bulk-add and skill-creation
-            # paths; `last_updated` is the most recent history entry's
-            # added_at (falls back to top-level added_at).
+            # Propagate dates from _meta.json (when present) and fall back
+            # to the git-history backfill cache (scripts/.skill-dates.json
+            # produced by backfill-dates.py). `added_at` is the first commit
+            # that added the skill; `last_updated` is the most recent commit
+            # touching the skill dir. Either source can win; _meta.json is
+            # authoritative when present.
             if meta:
                 if meta.get("added_at"):
                     entry["added_at"] = meta["added_at"]
@@ -204,6 +218,16 @@ def build_catalog() -> dict:
                         entry["last_updated"] = last["added_at"]
                 if "last_updated" not in entry and entry.get("added_at"):
                     entry["last_updated"] = entry["added_at"]
+
+            cache_key = f"skills/{category}/{slug}"
+            cached = date_cache.get(cache_key) or {}
+            if "added_at" not in entry and cached.get("added_at"):
+                entry["added_at"] = cached["added_at"]
+            if "last_updated" not in entry and cached.get("last_updated"):
+                entry["last_updated"] = cached["last_updated"]
+            # Ensure last_updated is at least as recent as added_at.
+            if entry.get("added_at") and not entry.get("last_updated"):
+                entry["last_updated"] = entry["added_at"]
 
             skills_list.append(entry)
 

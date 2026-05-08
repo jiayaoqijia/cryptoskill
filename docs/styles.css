@@ -3158,3 +3158,104 @@ a {
   background: rgba(239, 68, 68, 0.10);
 }
 [data-theme="dark"] .skill-card-v2 .card-install-copy--err { color: #fca5a5; }
+
+/* ============================================
+   Recently-added rail + freshness pill (Loop 2)
+   ============================================ */
+
+.recently-added-rail {
+  margin: 0 0 24px;
+  padding: 18px 20px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(34,197,94,0.04), rgba(10,132,255,0.04));
+}
+.recently-added-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+}
+.recently-added-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.recently-added-sub {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.recently-added-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+.recently-added-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+.recently-added-card:hover {
+  border-color: var(--text-tertiary);
+  transform: translateY(-1px);
+}
+.recently-added-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--subtle-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex: 0 0 auto;
+}
+.recently-added-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.recently-added-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recently-added-meta {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Freshness pill on each card's meta row. Tier-coloured so a fast scan
+   distinguishes "shipped this week" from "1y ago" without reading text. */
+.skill-card-v2 .card-fresh {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.skill-card-v2 .card-fresh--fresh   { background: rgba(34, 197, 94, 0.14); color: #15803d; }
+.skill-card-v2 .card-fresh--recent  { background: rgba(59, 130, 246, 0.14); color: #1d4ed8; }
+.skill-card-v2 .card-fresh--stale   { background: rgba(234, 179, 8, 0.14); color: #a16207; }
+.skill-card-v2 .card-fresh--ancient { background: rgba(239, 68, 68, 0.10); color: #b91c1c; }
+[data-theme="dark"] .skill-card-v2 .card-fresh--fresh   { color: #86efac; }
+[data-theme="dark"] .skill-card-v2 .card-fresh--recent  { color: #93c5fd; }
+[data-theme="dark"] .skill-card-v2 .card-fresh--stale   { color: #fde68a; }
+[data-theme="dark"] .skill-card-v2 .card-fresh--ancient { color: #fca5a5; }

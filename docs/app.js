@@ -62,6 +62,31 @@
   ];
   let activeTrustFilters = new Set();
 
+  /**
+   * Compute a coarse "<N> <unit> ago" label + an absolute date + a freshness
+   * tier (fresh / recent / stale / ancient). The tier drives the badge colour
+   * and lets sorts/filters surface skills the bot has touched recently.
+   *
+   * Returns null if the input is missing or unparseable so callers can
+   * suppress the pill entirely (better than a misleading "0 days ago").
+   */
+  function relativeAge(isoDate) {
+    if (!isoDate || typeof isoDate !== 'string') return null;
+    const t = Date.parse(isoDate);
+    if (isNaN(t)) return null;
+    const diffMs = Date.now() - t;
+    if (diffMs < 0) return null; // future timestamps – ignore
+    const day = 86400000;
+    const days = Math.floor(diffMs / day);
+    let label, tier;
+    if (days <= 7)        { tier = 'fresh';   label = days <= 0 ? 'today' : days === 1 ? '1d ago' : `${days}d ago`; }
+    else if (days <= 30)  { tier = 'recent';  label = `${days}d ago`; }
+    else if (days <= 180) { tier = 'recent';  label = `${Math.floor(days / 30)}mo ago`; }
+    else if (days <= 365) { tier = 'stale';   label = `${Math.floor(days / 30)}mo ago`; }
+    else                  { tier = 'ancient'; label = `${Math.floor(days / 365)}y ago`; }
+    return { label, tier, absolute: isoDate.slice(0, 10) };
+  }
+
   // --- Official Project Definitions ---
   // Only show big names. Skills from smaller projects still get "official" tag but no card.
   const OFFICIAL_PROJECTS = [
@@ -240,6 +265,7 @@
       renderOfficialProjects();
       renderCategories();
       renderFilters();
+      renderRecentlyAddedRail();
       renderSkills();
       updateStats();
     } catch (err) {
@@ -549,6 +575,12 @@
     const installCmd = skill.category === 'mcp-servers'
       ? `claude mcp add ${skill.name}`
       : `clawhub install ${skill.name}`;
+    // Freshness pill — relative time since last update so a user scanning
+    // the grid can tell stale skills apart from active ones at a glance.
+    const freshness = relativeAge(skill.last_updated || skill.added_at);
+    const freshnessPill = freshness
+      ? `<span class="card-fresh card-fresh--${freshness.tier}" title="${escHTML(freshness.absolute)}">${escHTML(freshness.label)}</span>`
+      : '';
 
     card.innerHTML = `
       <div class="card-title-row">
@@ -562,6 +594,7 @@
         <span class="card-meta-author">@${escHTML(author)}</span>
         <span class="card-meta-sep" aria-hidden="true">·</span>
         <span class="card-meta-version">v${escHTML(version)}</span>
+        ${freshnessPill ? '<span class="card-meta-sep" aria-hidden="true">·</span>' + freshnessPill : ''}
       </div>
       <p class="card-desc">${escHTML(skill.description || '')}</p>
       ${trustStrip}
@@ -757,6 +790,73 @@
       card.style.outline = card.getAttribute('data-category') === category ? '1px solid rgba(10, 132, 255, 0.4)' : '';
     });
     renderSkills();
+  }
+
+  // --- Render "Recently added" rail above the home grid -----------------
+  // Surfaces the 8 most recently added skills (any provenance — official or
+  // community) so a returning visitor sees fresh content above the fold.
+  // Lives in its own DOM node so the standard renderSkills() flow doesn't
+  // have to know about it; a sibling element placed in front of skillsGrid.
+  function renderRecentlyAddedRail() {
+    if (!skillsGrid) return;
+    let rail = document.getElementById('recentlyAddedRail');
+    if (!rail) {
+      rail = document.createElement('section');
+      rail.id = 'recentlyAddedRail';
+      rail.className = 'recently-added-rail';
+      skillsGrid.parentNode.insertBefore(rail, skillsGrid);
+    }
+    rail.innerHTML = '';
+
+    // Pick the 8 most-recent entries with a real added_at; cap at one
+    // strip-row so it doesn't dominate the page.
+    const dated = skills
+      .filter(s => s && s.added_at)
+      .sort((a, b) => (b.added_at || '').localeCompare(a.added_at || ''))
+      .slice(0, 8);
+    if (!dated.length) return;
+
+    const header = document.createElement('header');
+    header.className = 'recently-added-header';
+    const h2 = document.createElement('h2');
+    h2.textContent = 'Recently added';
+    const sub = document.createElement('span');
+    sub.className = 'recently-added-sub';
+    sub.textContent = `${dated.length} of the newest skills the bot has shipped`;
+    header.appendChild(h2);
+    header.appendChild(sub);
+    rail.appendChild(header);
+
+    const list = document.createElement('div');
+    list.className = 'recently-added-list';
+    rail.appendChild(list);
+
+    dated.forEach(skill => {
+      const cat = categories[skill.category] || {};
+      const item = document.createElement('a');
+      item.className = 'recently-added-card';
+      item.href = `skills/${encodeURIComponent(skill.category)}/${encodeURIComponent(skill.name)}.html`;
+      item.setAttribute('aria-label',
+        `${skill.displayName}, ${skill.category}, added ${skill.added_at}`);
+      const icon = document.createElement('span');
+      icon.className = 'recently-added-icon';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = cat.icon || '📦'; // 📦
+      const body = document.createElement('div');
+      body.className = 'recently-added-body';
+      const name = document.createElement('span');
+      name.className = 'recently-added-name';
+      name.textContent = skill.displayName || skill.name;
+      const meta = document.createElement('span');
+      meta.className = 'recently-added-meta';
+      const fresh = relativeAge(skill.added_at);
+      meta.textContent = `${cat.name || skill.category} · ${fresh ? fresh.label : skill.added_at}`;
+      body.appendChild(name);
+      body.appendChild(meta);
+      item.appendChild(icon);
+      item.appendChild(body);
+      list.appendChild(item);
+    });
   }
 
   // --- Render Community Skills ---
