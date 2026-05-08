@@ -25,7 +25,17 @@ CACHE = ROOT / "scripts" / ".skill-dates.json"
 
 
 def git_date(args):
-    """Return the ISO date of the first/last matching commit, or None."""
+    """Return the ISO date of the first/last matching commit, or None.
+
+    Note on `[-1]`: `git log` defaults to reverse-chronological order
+    (newest first), so the LAST line of the output is the OLDEST commit.
+    For `added_at` we pass `--diff-filter=A` and want the oldest add
+    commit — `[-1]` is therefore correct.
+    For `last_updated` we pass `-1` so only one line is returned and
+    `[-1]` and `[0]` both yield the same most-recent commit.
+    Verified empirically against a multi-add skill dir
+    (skills/exchanges/binance-official-spot returns
+    [2026-04-26, 2026-03-20], and `[-1]` correctly extracts 2026-03-20)."""
     try:
         r = subprocess.run(
             ["git", "-C", str(ROOT), *args],
