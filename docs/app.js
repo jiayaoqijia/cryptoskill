@@ -93,7 +93,7 @@
     {
       id: 'binance',
       name: 'Binance',
-      icon: '🔶',
+      icon: '<img src="logos/binance.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/binance/binance-skills-hub',
       description: 'Spot, futures, wallet, and Web3 trading skills.',
       matcher: (s) => s.author === 'binance' || s.name.startsWith('binance-official')
@@ -101,7 +101,7 @@
     {
       id: 'okx',
       name: 'OKX',
-      icon: '⚫',
+      icon: '<img src="logos/okx.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/okx/onchainos-skills',
       description: 'CEX + DEX trading, wallet, and on-chain operations.',
       matcher: (s) => s.author === 'okx' || s.name.startsWith('okx-official')
@@ -109,7 +109,7 @@
     {
       id: 'kraken',
       name: 'Kraken',
-      icon: '🐙',
+      icon: '<img src="logos/kraken.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/krakenfx/kraken-cli',
       description: '50 trading skills + built-in MCP server for spot, futures, and earn.',
       matcher: (s) => s.name.startsWith('kraken-official')
@@ -117,7 +117,7 @@
     {
       id: 'coinbase',
       name: 'Coinbase',
-      icon: '🔵',
+      icon: '<img src="logos/coinbase.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/coinbase/agentic-wallet-skills',
       description: 'AgentKit, wallets, Base chain, and on-chain agent tools.',
       matcher: (s) => s.name.startsWith('coinbase-official') || s.name.startsWith('base-official')
@@ -125,7 +125,7 @@
     {
       id: 'uniswap',
       name: 'Uniswap',
-      icon: '🦄',
+      icon: '<img src="logos/uniswap.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/Uniswap/uniswap-ai',
       description: 'Swap integration, liquidity, v4 hooks, and CCA auctions.',
       matcher: (s) => s.name.startsWith('uniswap-official')
@@ -133,7 +133,7 @@
     {
       id: 'metamask',
       name: 'MetaMask',
-      icon: '🦊',
+      icon: '<img src="logos/metamask.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/MetaMask/openclaw-skills',
       description: 'Smart accounts, EIP-7702 delegations, and gator CLI.',
       matcher: (s) => s.name.startsWith('metamask-official')
@@ -141,7 +141,7 @@
     {
       id: 'moonpay',
       name: 'MoonPay',
-      icon: '🌙',
+      icon: '<img src="logos/moonpay.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/moonpay/skills',
       description: '35 skills: onramp, trading, wallets, payments, and Messari research.',
       matcher: (s) => s.name.startsWith('moonpay-official')
@@ -149,7 +149,7 @@
     {
       id: 'circle',
       name: 'Circle (USDC)',
-      icon: '💵',
+      icon: '<img src="logos/circle.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/circlefin/skills',
       description: 'USDC transfers, wallets, gateway, bridging, and smart contracts.',
       matcher: (s) => s.name.startsWith('circle-official')
@@ -157,7 +157,7 @@
     {
       id: 'nethermind',
       name: 'Nethermind',
-      icon: '🔷',
+      icon: '<img src="logos/nethermind.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/NethermindEth/defi-skills',
       description: 'Natural language to DeFi transactions across 13 protocols.',
       matcher: (s) => s.name.startsWith('nethermind-official')
@@ -165,7 +165,7 @@
     {
       id: 'defillama',
       name: 'DefiLlama',
-      icon: '🦙',
+      icon: '<img src="logos/defillama.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/DefiLlama/defillama-skills',
       description: 'DeFi analytics: TVL, yields, risk assessment, and market analysis.',
       matcher: (s) => s.name.startsWith('defillama-official')
@@ -173,7 +173,7 @@
     {
       id: 'alchemy',
       name: 'Alchemy',
-      icon: '🔮',
+      icon: '<img src="logos/alchemy.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/alchemyplatform/skills',
       description: 'Multi-chain RPC, token/NFT APIs, webhooks, and rollups.',
       matcher: (s) => s.name.startsWith('alchemy-official')
@@ -189,7 +189,7 @@
     {
       id: 'gmgn',
       name: 'GMGN',
-      icon: '🐸',
+      icon: '<img src="logos/gmgn.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/GMGNAI/gmgn-skills',
       description: 'GMGN OpenAPI skills — tokens, wallets, market data, and on-chain trades across Solana, BSC, and Base.',
       matcher: (s) => s.name.startsWith('gmgn-official')
@@ -198,7 +198,7 @@
     {
       id: 'chainlink',
       name: 'Chainlink',
-      icon: '🔗',
+      icon: '<img src="logos/chainlink.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/smartcontractkit/chainlink-agent-skills',
       description: 'CCIP, Data Feeds, Data Streams, VRF, ACE, and CRE — official Chainlink skills.',
       matcher: (s) => s.name.startsWith('chainlink-official')
@@ -206,7 +206,7 @@
     {
       id: 'helius',
       name: 'Helius',
-      icon: '☀️',
+      icon: '<img src="logos/helius.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/helius-labs/core-ai',
       description: 'Official Helius AI tooling: Sender, DAS, LaserStream, webhooks, priority fees.',
       matcher: (s) => s.name.startsWith('helius-official')
@@ -214,7 +214,7 @@
     {
       id: 'quicknode',
       name: 'QuickNode',
-      icon: '⚡',
+      icon: '<img src="logos/quicknode.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/quiknode-labs/blockchain-skills',
       description: 'Multi-chain RPC, indexing, and stream skills for coding agents.',
       matcher: (s) => s.name.startsWith('quicknode-official')
@@ -222,7 +222,7 @@
     {
       id: 'aptos',
       name: 'Aptos',
-      icon: '🅰️',
+      icon: '<img src="logos/aptos.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/aptos-labs/aptos-agent-skills',
       description: 'Move contracts, TS SDK, and dApp frontend skills from Aptos Labs.',
       matcher: (s) => s.name.startsWith('aptos-official')
@@ -230,7 +230,7 @@
     {
       id: 'sendai',
       name: 'SendAI',
-      icon: '🌅',
+      icon: '<img src="logos/sendai.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/sendaifun/skills',
       description: 'Solana skills marketplace — Jupiter, Helius, Drift, Marinade, Jito.',
       matcher: (s) => s.name.startsWith('sendai-official')
@@ -238,7 +238,7 @@
     {
       id: 'cryptocom',
       name: 'Crypto.com',
-      icon: '💎',
+      icon: '<img src="logos/cryptocom.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/crypto-com/crypto-agent-trading',
       description: 'Buy/sell/swap/balances via Crypto.com Exchange and App.',
       matcher: (s) => s.name.startsWith('cryptocom-official')
@@ -246,7 +246,7 @@
     {
       id: 'blockscout',
       name: 'Blockscout',
-      icon: '🔍',
+      icon: '<img src="logos/blockscout.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/blockscout/agent-skills',
       description: 'Explorer APIs and supporting services from the canonical Blockscout team.',
       matcher: (s) => s.name.startsWith('blockscout-official')
@@ -254,7 +254,7 @@
     {
       id: 'celo',
       name: 'Celo',
-      icon: '🟢',
+      icon: '<img src="logos/celo.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/celo-org/agent-skills',
       description: 'Hardhat / Foundry EVM dev on Celo, plus the official Celo MCP.',
       matcher: (s) => s.name.startsWith('celo-official')
@@ -262,7 +262,7 @@
     {
       id: 'worldcoin',
       name: 'Worldcoin',
-      icon: '🌐',
+      icon: '<img src="logos/worldcoin.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/worldcoin/agentkit',
       description: 'World ID verification — one-per-human gating for AI agents.',
       matcher: (s) => s.name.startsWith('worldcoin-official')
@@ -270,7 +270,7 @@
     {
       id: 'coinpaprika',
       name: 'CoinPaprika',
-      icon: '🌶️',
+      icon: '<img src="logos/coinpaprika.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/coinpaprika/claude-marketplace',
       description: 'CoinPaprika + DexPaprika official skills/agents for free crypto market data.',
       matcher: (s) => s.name.startsWith('coinpaprika-official')
