@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Limited defense-in-depth CSP. We're on GitHub Pages so we can't
+       send HTTP response headers — that means `frame-ancestors` is
+       ignored by browsers per CSP3 §6.4.2 (we drop it instead of
+       overclaiming). `'unsafe-inline'` stays because GA bootstrap,
+       theme/mobile toggles, and JSON-LD are inlined; we'll move to
+       hashes once those move to external files. The policy still
+       narrows the URL set for scripts/connects/images/fonts to known
+       origins, which would catch a `<script src=evil.js>` injection
+       even if `'unsafe-inline'` allows inline ones. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
+  <title>Coinpaprika Official Claude Marketplace - CryptoSkill | Crypto AI Agent Skill</title>
+  <meta name="description" content="Official Claude Code plugins for **CoinPaprika** and **DexPaprika** — free crypto market data and DeFi analytics.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://cryptoskill.org/skills/analytics/coinpaprika-official-claude-marketplace.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Coinpaprika Official Claude Marketplace - CryptoSkill">
+  <meta property="og:description" content="Official Claude Code plugins for **CoinPaprika** and **DexPaprika** — free crypto market data and DeFi analytics.">
+  <meta property="og:url" content="https://cryptoskill.org/skills/analytics/coinpaprika-official-claude-marketplace.html">
+  <meta property="og:site_name" content="CryptoSkill">
+  <meta property="og:image" content="https://cryptoskill.org/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Coinpaprika Official Claude Marketplace - CryptoSkill">
+  <meta name="twitter:description" content="Official Claude Code plugins for **CoinPaprika** and **DexPaprika** — free crypto market data and DeFi analytics.">
+  <meta name="twitter:site" content="@cryptaborgs">
+  <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="../../favicon.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Coinpaprika Official Claude Marketplace", "description": "Official Claude Code plugins for **CoinPaprika** and **DexPaprika** — free crypto market data and DeFi analytics.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/analytics/coinpaprika-official-claude-marketplace.html", "author": {"@type": "Organization", "name": "coinpaprika"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+</head>
+<body>
+  <nav class="navbar"><div class="container">
+    <a href="../../" class="nav-logo"><img src="../../icon.png" width="28" height="28" alt="CryptoSkill" style="border-radius:6px"> CryptoSkill</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../../#official">Official</a></li>
+      <li><a href="../../#skills">Skills</a></li>
+      <li><a href="../../#categories">Categories</a></li>
+      <li><a href="../../#how-it-works">How It Works</a></li>
+      <li><a href="https://github.com/jiayaoqijia/cryptoskill" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    </div>
+  </div></nav>
+
+  <div class="legal-content" style="padding-top:100px">
+    <nav class="breadcrumb">
+      <a href="../../">Home</a> &rsaquo; <a href="../../#categories">Analytics</a> &rsaquo; Coinpaprika Official Claude Marketplace
+    </nav>
+
+    <h1>Coinpaprika Official Claude Marketplace</h1>
+    <div class="skill-meta">
+      <span class="skill-badge">Analytics</span>
+      <span>by @coinpaprika</span>
+      <span>v1.0.0</span>
+      
+      
+      <span class="skill-badge trust-flag-badge trust-flag-some" title="2 true, 1 unknown of 11 capability flags">2 flags</span>
+    </div>
+    <p class="skill-page-desc">Official Claude Code plugins for **CoinPaprika** and **DexPaprika** — free crypto market data and DeFi analytics.</p>
+
+    <h2>Install</h2>
+    <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/analytics/coinpaprika-official-claude-marketplace .claude/skills/</code></div>
+    <div class="install-cmd"><span class="prompt">$</span> <code>clawhub install coinpaprika-official-claude-marketplace</code></div>
+
+    <h2>Tags</h2>
+    <div class="skill-tags" style="margin-bottom:32px">
+      <span class="skill-tag">analytics</span>
+
+    </div>
+
+
+
+    <h2 id="trust">Trust profile <span class="trust-stage-pill">trust grade not computed yet</span></h2>
+    <div class='trust-quick-pills'>  <span class='trust-pill trust-pill--flags'>2 red flags</span>  <span class='trust-pill trust-pill--clear'>8 cleared</span>  <span class='trust-pill trust-pill--unknown'>1 not measured</span></div>
+    <p class="trust-help">Capabilities below are detected automatically by an open-source scanner that reads the skill's text and scripts (see <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a>). <strong>Not measured</strong> means the scanner couldn't make a confident call &mdash; it is NOT a green check, and you should treat it as a possible red flag until a human or a stronger scanner has measured it.</p>
+    <div class="trust-panel">
+<section class='trust-cap-group trust-cap-group--flags'>  <header class='trust-cap-group-header'>    <span class='trust-cap-group-count'>2</span>    <span class='trust-cap-group-title'>Red flags</span>    <span class='trust-cap-group-kicker'>things this skill can do that affect your security or funds</span>  </header>  <ul class='trust-cap-list-v2'><li class='trust-cap-v2' data-state='true'>  <span class='trust-cap-icon' aria-label='Yes — red flag' title='Yes — red flag'>&#x26A0;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Can execute shell</span>    <span class='trust-cap-hint'>runs arbitrary shell commands on your machine</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='true'>  <span class='trust-cap-icon' aria-label='Yes — red flag' title='Yes — red flag'>&#x26A0;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Can spawn sub-agents</span>    <span class='trust-cap-hint'>delegates to other skills or sub-agents</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li></ul></section><section class='trust-cap-group trust-cap-group--clear'>  <header class='trust-cap-group-header'>    <span class='trust-cap-group-count'>8</span>    <span class='trust-cap-group-title'>Cleared by scanner</span>    <span class='trust-cap-group-kicker'>we scanned the skill&#x27;s text &amp; scripts and found no evidence of these</span>  </header>  <ul class='trust-cap-list-v2'><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Can move funds</span>    <span class='trust-cap-hint'>this skill can sign and send transactions on your behalf</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Requires private key</span>    <span class='trust-cap-hint'>you must hand over a private key, mnemonic, or wallet config</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Requires hosted operator</span>    <span class='trust-cap-hint'>depends on a third-party hosted service to function</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Uses remote install script</span>    <span class='trust-cap-hint'>setup pipes a remote shell script (curl | sh class)</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Mutable remote runtime</span>    <span class='trust-cap-hint'>runs remote code that can change behavior without a local diff</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Can install code</span>    <span class='trust-cap-hint'>installs software at setup time (npx, pip, brew, etc.)</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Can browse the web</span>    <span class='trust-cap-hint'>fetches arbitrary URLs at runtime</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li><li class='trust-cap-v2' data-state='false'>  <span class='trust-cap-icon' aria-label='No — cleared' title='No — cleared'>&#x2713;</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Can write files</span>    <span class='trust-cap-hint'>writes to your local filesystem</span>  </div>  <span class='trust-cap-confidence trust-cap-confidence--medium' title='medium confidence (extracted)' aria-label='medium confidence based on extracted evidence'></span></li></ul></section><section class='trust-cap-group trust-cap-group--unknown'>  <header class='trust-cap-group-header'>    <span class='trust-cap-group-count'>1</span>    <span class='trust-cap-group-title'>Not measured yet</span>    <span class='trust-cap-group-kicker'>scanner couldn&#x27;t make a confident call — treat as a possible red flag</span>  </header>  <ul class='trust-cap-list-v2'><li class='trust-cap-v2' data-state='unknown'>  <span class='trust-cap-icon' aria-label='Not measured' title='Not measured'>?</span>  <div class='trust-cap-body'>    <span class='trust-cap-label'>Auto-invocable</span>    <span class='trust-cap-hint'>may be invoked by the agent without your explicit prompt</span>  </div>  </li></ul></section>
+
+      <h3 class="trust-subhead">Execution mode</h3>
+      <p class="trust-mode"><code>read_only</code> Phase 1 single-mode classification — multi-mode breakdown deferred to Phase 2.</p>
+
+      <h3 class="trust-subhead">Ingredients (services this skill talks to)</h3>
+      <p class="trust-empty trust-help">We did not find any well-known hosted services in this skill's text or scripts. <strong>This does NOT mean the skill is local-only</strong> — it might use services we don't yet recognize, or talk to them through code paths our scanner can't reach. A complete dependency list (every package, library, and binary, with integrity hashes) is on the roadmap; today we only show recognized hosts.</p>
+
+      <h3 class="trust-subhead">Audits</h3>
+      <p class="trust-empty trust-help"><strong>No one has audited this skill yet.</strong> That is different from &ldquo;audited and clean&rdquo; &mdash; it just means no professional reviewer (a security firm, the CryptoSkill team, or a verified independent researcher) has signed off on it. There are no audit reports to read.
+      <a href="../../TRUST.md" target="_blank" rel="noopener">How reviewer levels work &rarr;</a></p>
+      <p class="trust-source-links">
+        <a href="https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/analytics/coinpaprika-official-claude-marketplace/SKILL.md" target="_blank" rel="noopener">SKILL.md &rarr;</a>
+        <a href="https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/analytics/coinpaprika-official-claude-marketplace/SOURCE.md" target="_blank" rel="noopener">SOURCE.md &rarr;</a>
+        <a href="https://github.com/jiayaoqijia/cryptoskill/blob/main/skills/analytics/coinpaprika-official-claude-marketplace/TRUST.auto.yaml" target="_blank" rel="noopener">TRUST.auto.yaml &rarr;</a>
+        <a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/analytics/coinpaprika-official-claude-marketplace" target="_blank" rel="noopener">Browse directory &rarr;</a>
+      </p>
+      <p class="trust-foot">Auto-generated by cryptoskill/extract-capabilities/0.3.0 &middot; hosted-service list version 2026-04-26 &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
+    </div>
+
+    <section class="related-strip"><h2>Other in Analytics</h2><div class="related-strip-list"><a class="related-strip-card" href="8004kenzo.html"><span class="related-strip-icon" aria-hidden="true">📊</span><span class="related-strip-name">8004kenzo</span></a><a class="related-strip-card" href="8004kenzo-analytics.html"><span class="related-strip-icon" aria-hidden="true">📊</span><span class="related-strip-name">8004kenzo</span></a><a class="related-strip-card" href="aelfscan-official-skill.html"><span class="related-strip-icon" aria-hidden="true">📊</span><span class="related-strip-name">Aelfscan Official Skill</span></a><a class="related-strip-card" href="agentic-eye.html"><span class="related-strip-icon" aria-hidden="true">📊</span><span class="related-strip-name">Agentic Eye</span></a><a class="related-strip-card" href="agentic-eye-content.html"><span class="related-strip-icon" aria-hidden="true">📊</span><span class="related-strip-name">Agentic Eye</span></a><a class="related-strip-card" href="agentic-eye-content-intelligence.html"><span class="related-strip-icon" aria-hidden="true">📊</span><span class="related-strip-name">Agentic Eye</span></a></div></section>
+
+    <h2>Source</h2>
+    <p><a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/analytics/coinpaprika-official-claude-marketplace" target="_blank" rel="noopener">View on GitHub &rarr;</a></p>
+  </div>
+
+  <footer class="footer"><div class="container">
+    <div class="footer-left"><span class="footer-brand">CryptoSkill</span><span class="footer-text">Built for the crypto community</span></div>
+    <div class="footer-links">
+      <a href="https://github.com/jiayaoqijia/cryptoskill" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg> GitHub</a>
+      <a href="../../#official">Official</a>
+      <a href="../../#skills">Skills</a>
+      <a href="../../#categories">Categories</a>
+      <a href="../../terms.html">Terms</a>
+      <a href="../../privacy.html">Privacy</a>
+    </div>
+  </div></footer>
+
+  <script>
+    var t=document.getElementById('themeToggle'),s=localStorage.getItem('theme');
+    if(s)document.documentElement.setAttribute('data-theme',s);
+    t.addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme'),n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n)});
+    var m=document.getElementById('mobileToggle'),nl=document.getElementById('navLinks');
+    m.addEventListener('click',function(){nl.classList.toggle('open')});
+  </script>
+</body>
+</html>
