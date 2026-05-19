@@ -6,7 +6,7 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-1342-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-109-f59e0b)]() [![Official](https://img.shields.io/badge/official-785-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-1342-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-121-f59e0b)]() [![Official](https://img.shields.io/badge/official-785-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-1342overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
 
@@ -25,7 +25,7 @@ CryptoSkill is the crypto-native answer:
 
 - **977 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
 - **85 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
-- **617 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
+- **270 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
 - **Quality scored** -- every skill rated 0-100 across documentation, security, and depth
 - **Security-scanned** -- credential detection (160+ patterns), code safety, permission analysis
 - **Auto-updated** -- bot scans 128+ projects every 6 hours, rescores all skills, tracks regressions
@@ -114,7 +114,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 
 ## Official Skills
 
-**617 skills** from verified project teams:
+**270 skills** from verified project teams:
 
 | Project | Skills | Source |
 |---|---|---|
@@ -132,7 +132,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 | [Coinbase Wallet](https://www.coinbase.com/) | 9 | [coinbase/agentic-wallet-skills](https://github.com/coinbase/agentic-wallet-skills) |
 | [Uniswap](https://uniswap.org/) | 8 | [Uniswap/uniswap-ai](https://github.com/Uniswap/uniswap-ai) |
 | [Bitget](https://www.bitget.com/) | 7 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) |
-| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-1297hub](https://github.com/Kucoin/kucoin-skills-hub) |
+| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-hub](https://github.com/Kucoin/kucoin-skills-hub) |
 | [Rocket Pool](https://rocketpool.net/) | 7 | [rocket-pool/skills](https://github.com/rocket-pool/skills) |
 | [CoinMarketCap](https://coinmarketcap.com/) | 7 | ClawHub: bryan-cmc |
 | [KyberSwap](https://kyberswap.com/) | 5 | [KyberNetwork/kyberswap-skills](https://github.com/KyberNetwork/kyberswap-skills) |
@@ -140,8 +140,23 @@ npm i -g clawhub && clawhub install binance-spot-api
 | [MetaMask](https://metamask.io/) | 2 | [MetaMask/openclaw-skills](https://github.com/MetaMask/openclaw-skills) |
 | [GMX](https://gmx.io/) | 2 | [gmx-io/gmx-ai](https://github.com/gmx-io/gmx-ai) |
 | [Nethermind](https://nethermind.io/) | 1 | [NethermindEth/defi-skills](https://github.com/NethermindEth/defi-skills) |
+| [GMGN](https://gmgn.ai/) | 1 | [GMGNAI/gmgn-skills](https://github.com/GMGNAI/gmgn-skills) |
+| [Chainlink](https://chain.link/) | 1 | [smartcontractkit/chainlink-agent-skills](https://github.com/smartcontractkit/chainlink-agent-skills) |
+| [Helius](https://helius.dev/) | 1 | [helius-labs/core-ai](https://github.com/helius-labs/core-ai) |
+| [QuickNode](https://www.quicknode.com/) | 1 | [quiknode-labs/blockchain-skills](https://github.com/quiknode-labs/blockchain-skills) |
+| [Worldcoin](https://worldcoin.org/) | 1 | [worldcoin/agentkit](https://github.com/worldcoin/agentkit) |
+| [Aptos](https://aptoslabs.com/) | 2 | [aptos-labs/aptos-agent-skills](https://github.com/aptos-labs/aptos-agent-skills) |
+| [SendAI](https://sendai.fun/) | 1 | [sendaifun/skills](https://github.com/sendaifun/skills) |
+| [Crypto.com](https://crypto.com/) | 1 | [crypto-com/crypto-agent-trading](https://github.com/crypto-com/crypto-agent-trading) |
+| [Blockscout](https://www.blockscout.com/) | 1 | [blockscout/agent-skills](https://github.com/blockscout/agent-skills) |
+| [Celo](https://celo.org/) | 2 | [celo-org/agent-skills](https://github.com/celo-org/agent-skills) |
+| [CoinPaprika](https://coinpaprika.com/) | 1 | [coinpaprika/claude-marketplace](https://github.com/coinpaprika/claude-marketplace) |
+| [Trail of Bits](https://trailofbits.com/) | 2 | [trailofbits/slither-mcp](https://github.com/trailofbits/slither-mcp) |
+| [Polymarket](https://polymarket.com/) | 1 | [Polymarket/agent-skills](https://github.com/Polymarket/agent-skills) |
+| [Dune Analytics](https://dune.com/) | 1 | [duneanalytics/skills](https://github.com/duneanalytics/skills) |
+| [Bybit](https://www.bybit.com/) | 1 | [bybit-exchange/skills](https://github.com/bybit-exchange/skills) |
 
-Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, CoinPaprika, and [85 MCP servers](#mcp-servers).
+Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, Reown, Bitget Wallet, ChainGPT, SpoonOS, AIBTC, AElf ecosystem (TomorrowDAO, AelfScan, Portkey, Awaken), ICP/dfinity, Hedera, Injective, Flow, XMTP, OpenOcean, and [121 MCP servers](#mcp-servers).
 
 ## Submit a Skill
 
