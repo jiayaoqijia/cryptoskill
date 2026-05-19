@@ -351,6 +351,19 @@
       "last_updated": "2026-05-07"
     },
     {
+      "name": "coinpilot-hyperliquid-copy-trade",
+      "displayName": "Coinpilot Hyperliquid Copy Trade",
+      "description": "Automate copy trading on Hyperliquid via Coinpilot to discover, investigate, and mirror top on-chain traders in real time with low execution latency. Runtime use requires a local credentials JSON that contains high-sensitivity secrets. Use only on a trusted local runtime when users explicitly request setup, lead discovery, subscription start/stop, risk updates, or performance checks. Github: https://github.com/coinpilot-labs/skills",
+      "category": "ai-crypto",
+      "tags": [
+        "ai-crypto"
+      ],
+      "author": "coinpilot-labs",
+      "version": "1.0.7",
+      "added_at": "2026-05-08",
+      "last_updated": "2026-05-08"
+    },
+    {
       "name": "convrgent-intelligence",
       "displayName": "Convrgent KYH/BLAH/KYB",
       "description": "Personality, communication, and buyer intelligence for AI agents analyzing humans across 11 frameworks.",
@@ -6499,6 +6512,19 @@
       "version": "1.0.0",
       "added_at": "2026-04-24",
       "last_updated": "2026-05-07"
+    },
+    {
+      "name": "openocean-official-multichain-token-swap",
+      "displayName": "Openocean Official Multichain Token Swap",
+      "description": "OpenOcean-skills is a skill package for interacting with the OpenOcean Aggregator API. Use it to get swap quotes, build swap transactions, execute swaps, and troubleshoot OpenOcean workflows across 40+ chains, including EVM, Solana, and Sui.",
+      "category": "defi",
+      "tags": [
+        "defi"
+      ],
+      "author": "openocean-finance",
+      "version": "1.0.0",
+      "added_at": "2026-05-08",
+      "last_updated": "2026-05-08"
     },
     {
       "name": "openpump-solana",
@@ -17134,7 +17160,7 @@
     {
       "name": "gmgn-official-skills",
       "displayName": "Gmgn Official Skills",
-      "description": "[![X](https://img.shields.io/badge/Follow-%40gmgnai-black?logo=x&logoColor=white)](https://x.com/gmgnai) [![Telegram](https://img.shields.io/badge/Telegram-gmgnagentapi-2CA5E0?logo=telegram&logoColor=white)](https://t.me/gmgnagentapi) [![Discord](https://img.shields.io/badge/Discord-gmgnai-5865F2?lo",
+      "description": "GMGN OpenAPI skills for AI Agent — query tokens, wallets, and market data, and execute on-chain trades across Solana, BSC, and Base.",
       "category": "trading",
       "tags": [
         "trading"
@@ -17142,7 +17168,7 @@
       "author": "GMGNAI",
       "version": "1.0.0",
       "added_at": "2026-04-29",
-      "last_updated": "2026-04-29"
+      "last_updated": "2026-05-08"
     },
     {
       "name": "gold-api-feed",

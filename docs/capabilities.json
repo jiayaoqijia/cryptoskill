@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-07T08:28:41.857903+00:00",
+  "generated_at": "2026-05-19T16:41:30.267905+00:00",
   "extractor_version": "0.3.0",
   "taxonomy_version": 1,
   "hostlist_version": "2026-04-26",
@@ -1533,6 +1533,68 @@
         },
         "requires_private_key": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "ai-crypto/coinpilot-hyperliquid-copy-trade": {
+      "name": "coinpilot-hyperliquid-copy-trade",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -29232,6 +29294,68 @@
         },
         "requires_private_key": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "defi/openocean-official-multichain-token-swap": {
+      "name": "OpenOcean",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -82886,11 +83010,11 @@
     }
   },
   "summary": {
-    "discovered": 1330,
-    "processed": 1330,
+    "discovered": 1332,
+    "processed": 1332,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 946,
+      "read_only": 948,
       "router_orchestrator": 33,
       "unknown": 109,
       "installer_bootstrap": 23,
@@ -82907,7 +83031,7 @@
       "can_browse_web": 78,
       "can_spawn_subagents": 81,
       "can_move_funds": 114,
-      "requires_private_key": 202,
+      "requires_private_key": 204,
       "requires_hosted_operator": 190,
       "uses_remote_install_script": 23,
       "mutable_remote_runtime": 241

@@ -28,11 +28,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = ROOT / "skills"
-TODAY = "2026-04-29"
+TODAY = "2026-05-08"
 
 # (org, repo, category, slug, classification, branch_or_None,
 #  skill_md_subpath_or_None, license_known)
 CANDIDATES = [
+    # ── 2026-05-08 community submissions ──
+    ("coinpilot-labs", "skills", "ai-crypto",
+     "coinpilot-hyperliquid-copy-trade", "COMMUNITY", "main",
+     "coinpilot-hyperliquid-copy-trade/SKILL.md", "unspecified"),
+    ("openocean-finance", "OpenOcean-skills", "defi",
+     "openocean-official-multichain-token-swap", "OFFICIAL", "main",
+     "SKILL.md", "unspecified"),
     # ── Priority A: top brands + Anthropic-spotlighted ──
     ("trailofbits", "building-secure-contracts", "dev-tools",
      "trailofbits-official-building-secure-contracts", "OFFICIAL", "master",

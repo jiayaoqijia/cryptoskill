@@ -6,4 +6,5 @@
 - **License**: MIT
 - **Classification**: OFFICIAL
 - **Discovered**: 2026-04-29 (autoresearch pass)
+- **Refreshed**: 2026-05-08 (clean description + latest upstream README)
 - **Submitter**: autoresearch (readme_wrapped)
