@@ -186,6 +186,87 @@
       description: '83+ commands across 14 data domains — prices, wallets, DeFi, on-chain SQL, and more.',
       matcher: (s) => s.name.startsWith('surf-official') || s.name === 'surf'
     },
+    // ── 2026-05-08 autoresearch pulse: new official project rails ──
+    {
+      id: 'chainlink',
+      name: 'Chainlink',
+      icon: '🔗',
+      github: 'https://github.com/smartcontractkit/chainlink-agent-skills',
+      description: 'CCIP, Data Feeds, Data Streams, VRF, ACE, and CRE — official Chainlink skills.',
+      matcher: (s) => s.name.startsWith('chainlink-official')
+    },
+    {
+      id: 'helius',
+      name: 'Helius',
+      icon: '☀️',
+      github: 'https://github.com/helius-labs/core-ai',
+      description: 'Official Helius AI tooling: Sender, DAS, LaserStream, webhooks, priority fees.',
+      matcher: (s) => s.name.startsWith('helius-official')
+    },
+    {
+      id: 'quicknode',
+      name: 'QuickNode',
+      icon: '⚡',
+      github: 'https://github.com/quiknode-labs/blockchain-skills',
+      description: 'Multi-chain RPC, indexing, and stream skills for coding agents.',
+      matcher: (s) => s.name.startsWith('quicknode-official')
+    },
+    {
+      id: 'aptos',
+      name: 'Aptos',
+      icon: '🅰️',
+      github: 'https://github.com/aptos-labs/aptos-agent-skills',
+      description: 'Move contracts, TS SDK, and dApp frontend skills from Aptos Labs.',
+      matcher: (s) => s.name.startsWith('aptos-official')
+    },
+    {
+      id: 'sendai',
+      name: 'SendAI',
+      icon: '🌅',
+      github: 'https://github.com/sendaifun/skills',
+      description: 'Solana skills marketplace — Jupiter, Helius, Drift, Marinade, Jito.',
+      matcher: (s) => s.name.startsWith('sendai-official')
+    },
+    {
+      id: 'cryptocom',
+      name: 'Crypto.com',
+      icon: '💎',
+      github: 'https://github.com/crypto-com/crypto-agent-trading',
+      description: 'Buy/sell/swap/balances via Crypto.com Exchange and App.',
+      matcher: (s) => s.name.startsWith('cryptocom-official')
+    },
+    {
+      id: 'blockscout',
+      name: 'Blockscout',
+      icon: '🔍',
+      github: 'https://github.com/blockscout/agent-skills',
+      description: 'Explorer APIs and supporting services from the canonical Blockscout team.',
+      matcher: (s) => s.name.startsWith('blockscout-official')
+    },
+    {
+      id: 'celo',
+      name: 'Celo',
+      icon: '🟢',
+      github: 'https://github.com/celo-org/agent-skills',
+      description: 'Hardhat / Foundry EVM dev on Celo, plus the official Celo MCP.',
+      matcher: (s) => s.name.startsWith('celo-official')
+    },
+    {
+      id: 'worldcoin',
+      name: 'Worldcoin',
+      icon: '🌐',
+      github: 'https://github.com/worldcoin/agentkit',
+      description: 'World ID verification — one-per-human gating for AI agents.',
+      matcher: (s) => s.name.startsWith('worldcoin-official')
+    },
+    {
+      id: 'coinpaprika',
+      name: 'CoinPaprika',
+      icon: '🌶️',
+      github: 'https://github.com/coinpaprika/claude-marketplace',
+      description: 'CoinPaprika + DexPaprika official skills/agents for free crypto market data.',
+      matcher: (s) => s.name.startsWith('coinpaprika-official')
+    },
     {
       id: 'mcp-servers',
       name: 'MCP Servers',
