@@ -186,6 +186,14 @@
       description: '83+ commands across 14 data domains — prices, wallets, DeFi, on-chain SQL, and more.',
       matcher: (s) => s.name.startsWith('surf-official') || s.name === 'surf'
     },
+    {
+      id: 'gmgn',
+      name: 'GMGN',
+      icon: '🐸',
+      github: 'https://github.com/GMGNAI/gmgn-skills',
+      description: 'GMGN OpenAPI skills — tokens, wallets, market data, and on-chain trades across Solana, BSC, and Base.',
+      matcher: (s) => s.name.startsWith('gmgn-official')
+    },
     // ── 2026-05-08 autoresearch pulse: new official project rails ──
     {
       id: 'chainlink',
