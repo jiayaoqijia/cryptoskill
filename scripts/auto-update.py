@@ -478,14 +478,14 @@ def get_latest_commit_sha(org: str, repo: str) -> str | None:
     return None
 
 
-def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict], int]:
+def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict], list[dict]]:
     """Clone official repos and check for new or updated skills.
 
     Uses commit SHA tracking to avoid re-cloning repos that haven't changed.
-    Returns (new_skills, updated_count).
+    Returns (new_skills, updated_skills).
     """
     new_skills = []
-    updated = 0
+    updated_skills = []
     existing = existing_skill_names()
     repo_shas = load_repo_shas()
     shas_changed = False
@@ -558,7 +558,18 @@ def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict],
                                     target.parent.mkdir(parents=True, exist_ok=True)
                                     shutil.copy2(ref, target)
                             log.info("  Updated %s", dest_name)
-                        updated += 1
+                        updated_skills.append({
+                            "slug": dest_name,
+                            "name": dest_name,
+                            "displayName": make_display_name(dest_name),
+                            "description": "Upstream content changed.",
+                            "category": category,
+                            "author": org,
+                            "source_url": f"https://github.com/{org}/{repo}",
+                            "owner": org,
+                            "source": "official-repo",
+                            "official": True,
+                        })
                 except OSError:
                     pass
                 continue
@@ -576,6 +587,7 @@ def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict],
                 "category": category,
                 "tags": ["official", category],
                 "author": org,
+                "source_url": f"https://github.com/{org}/{repo}",
                 "version": fm.get("version", "1.0.0"),
                 "owner": org,
                 "source_path": str(skill_dir),
@@ -597,7 +609,7 @@ def check_official_repos_for_updates(dry_run: bool = False) -> tuple[list[dict],
         save_repo_shas(repo_shas)
         log.info("Saved updated repo SHAs to %s", REPO_SHAS_FILE)
 
-    return new_skills, updated
+    return new_skills, updated_skills
 
 
 # ---------------------------------------------------------------------------
@@ -813,6 +825,108 @@ def make_display_name(slug: str) -> str:
     return " ".join(w.capitalize() for w in slug.split("-"))
 
 
+def make_skill_path(skill: dict) -> str:
+    category = skill.get("category", "dev-tools")
+    slug = skill.get("slug") or skill.get("name", "unknown")
+    return f"skills/{category}/{slug}"
+
+
+def markdown_cell(value: str) -> str:
+    return str(value).replace("|", "\\|").replace("\n", " ").strip()
+
+
+def markdown_link(label: str, url: str) -> str:
+    label = markdown_cell(label or "source")
+    url = str(url or "").strip().replace(")", "%29")
+    if not url:
+        return ""
+    return f"[{label}]({url})"
+
+
+def source_link_for_skill(skill: dict) -> str:
+    url = skill.get("source_url") or ""
+    if not url and skill.get("source") == "openclaw":
+        owner = skill.get("owner") or skill.get("author") or "unknown"
+        slug = skill.get("slug") or skill.get("name") or "unknown"
+        url = f"https://clawhub.ai/skills/{owner}/{slug}"
+    if not url:
+        return ""
+    source = skill.get("source") or "source"
+    return markdown_link(source, url)
+
+
+def summarize_skill_row(skill: dict) -> str:
+    slug = skill.get("slug") or skill.get("name", "unknown")
+    category = skill.get("category", "dev-tools")
+    author = skill.get("author") or skill.get("owner") or "unknown"
+    description = (skill.get("description") or "").strip().replace("\n", " ")
+    if len(description) > 140:
+        description = description[:137].rstrip() + "..."
+    return (
+        f"| `{markdown_cell(slug)}` "
+        f"| `{markdown_cell(category)}` "
+        f"| `{markdown_cell(author)}` "
+        f"| {source_link_for_skill(skill)} "
+        f"| {markdown_cell(description)} |"
+    )
+
+
+def render_skill_table(skills: list[dict]) -> list[str]:
+    rows = [
+        "| Skill | Category | Author | Source | Summary |",
+        "|---|---|---|---|---|",
+    ]
+    rows.extend(summarize_skill_row(skill) for skill in sorted(skills, key=make_skill_path))
+    return rows
+
+
+def write_sync_summary(summary_file: Path, new_skills: list[dict], updated_skills: list[dict]) -> None:
+    """Write a pull-request body that lists exactly what the sync changed."""
+    summary_file.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "## Summary",
+        "",
+        "Automated daily skill sync from configured upstream sources.",
+        "",
+        "This is a bot-generated maintainer ingestion PR, not an external user skill submission.",
+        "",
+        "## Synced Skills",
+        "",
+        f"- New skills: {len(new_skills)}",
+        f"- Updated skills: {len(updated_skills)}",
+        "",
+    ]
+
+    if new_skills:
+        lines.extend(["### New Skills", ""])
+        lines.extend(render_skill_table(new_skills))
+        lines.append("")
+
+    if updated_skills:
+        lines.extend(["### Updated Skills", ""])
+        lines.extend(render_skill_table(updated_skills))
+        lines.append("")
+
+    if not new_skills and not updated_skills:
+        lines.extend(["No new or updated skills were detected.", ""])
+
+    lines.extend([
+        "## Type of Change",
+        "",
+        "- [ ] Bug fix",
+        "- [ ] Documentation update",
+        "- [ ] Infrastructure / tooling",
+        "- [x] Maintainer / bot skill ingestion",
+        "- [ ] Other: ___",
+        "",
+        "## Review Notes",
+        "",
+        "The PR is generated from the current default branch and uses a dedicated bot branch. If a human PR or maintainer change adds the same skill first, the next sync run will regenerate this branch from the updated base and drop duplicate changes.",
+        "",
+    ])
+    summary_file.write_text("\n".join(lines), encoding="utf-8")
+
+
 # ---------------------------------------------------------------------------
 # Source 1: OpenClaw Skills Repo (local scan)
 # ---------------------------------------------------------------------------
@@ -879,6 +993,7 @@ def find_new_openclaw_skills(source_dir: Path, lookback_days: int) -> list:
                 "version": meta.get("latest", {}).get("version", fm.get("version", "1.0.0")),
                 "owner": meta.get("owner", "unknown"),
                 "source_path": str(skill_dir),
+                "source_url": f"https://clawhub.ai/skills/{meta.get('owner', 'unknown')}/{slug}",
                 "source": "openclaw",
                 "official": False,
             })
@@ -1179,6 +1294,10 @@ def main() -> None:
                         help="Path to OpenClaw skills directory")
     parser.add_argument("--lookback-days", type=int, default=LOOKBACK_DAYS)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--no-commit", action="store_true",
+                        help="Leave changes in the working tree instead of committing or pushing")
+    parser.add_argument("--summary-file", type=Path,
+                        help="Write a Markdown summary of synced skills for PR bodies")
     parser.add_argument("--no-push", action="store_true")
     parser.add_argument("--update-watchlist", action="store_true",
                         help="Update watchlist.json timestamps and statuses after scan")
@@ -1204,6 +1323,7 @@ def main() -> None:
         log.info("=== DRY-RUN MODE ===")
 
     all_new_skills = []
+    updated_skills = []
     # Track which GitHub orgs were scanned and which produced new skills
     scanned_github_orgs: set = set()
     new_skill_github_orgs: set = set()
@@ -1243,6 +1363,7 @@ def main() -> None:
                     "author": d.get("author", "unknown"),
                     "version": "1.0.0",
                     "owner": d.get("author", "unknown"),
+                    "source_url": d.get("source_url", ""),
                     "official": True,
                     "source": "watchlist-scan",
                 })
@@ -1252,11 +1373,11 @@ def main() -> None:
     # -----------------------------------------------------------------------
     # Step 2: Check official repos via SHA comparison -> only clone changed
     # -----------------------------------------------------------------------
-    updated_count = 0
     if not args.skip_official:
         log.info("=== Step 2: Official Repo Updates (SHA-tracked) ===")
-        official_new, updated_count = check_official_repos_for_updates(dry_run=args.dry_run)
-        log.info("Found %d new official skills, %d updated", len(official_new), updated_count)
+        official_new, official_updated = check_official_repos_for_updates(dry_run=args.dry_run)
+        updated_skills.extend(official_updated)
+        log.info("Found %d new official skills, %d updated", len(official_new), len(official_updated))
         all_new_skills.extend(official_new)
 
         # Track official repo orgs
@@ -1300,6 +1421,7 @@ def main() -> None:
                     "author": discovery.get("author", "discovered"),
                     "version": "1.0.0",
                     "owner": discovery.get("author", "discovered"),
+                    "source_url": discovery.get("source_url", ""),
                     "official": discovery.get("official", False),
                     "source": "altllm-web-search",
                 })
@@ -1323,12 +1445,15 @@ def main() -> None:
                     "author": d.get("author", "unknown"),
                     "version": "1.0.0",
                     "owner": d.get("author", "unknown"),
+                    "source_url": d.get("source_url", ""),
                     "official": d.get("official", False),
                     "source": "github-search",
                 })
 
-    if not all_new_skills and updated_count == 0:
+    if not all_new_skills and not updated_skills:
         log.info("No new or updated crypto skills found — nothing to do.")
+        if args.summary_file:
+            write_sync_summary(args.summary_file, [], [])
         # Still update watchlist timestamps if requested (scanned orgs were checked)
         if args.update_watchlist and scanned_github_orgs:
             log.info("=== Updating watchlist timestamps ===")
@@ -1366,20 +1491,25 @@ def main() -> None:
         update_skills_json(all_new_skills, dry_run=args.dry_run)
     update_index_html(dry_run=args.dry_run)
 
+    if args.summary_file:
+        write_sync_summary(args.summary_file, all_new_skills, updated_skills)
+
     # -----------------------------------------------------------------------
     # Step 8: Commit/push
     # -----------------------------------------------------------------------
-    if not args.dry_run:
-        total_changes = len(all_new_skills) + updated_count
+    if not args.dry_run and not args.no_commit:
+        total_changes = len(all_new_skills) + len(updated_skills)
         if total_changes > 0:
             today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
             parts = []
             if all_new_skills:
                 parts.append(f"{len(all_new_skills)} new")
-            if updated_count:
-                parts.append(f"{updated_count} updated")
+            if updated_skills:
+                parts.append(f"{len(updated_skills)} updated")
             msg = f"Auto-update: {', '.join(parts)} crypto skills ({today})"
             git_commit_and_push(total_changes, no_push=args.no_push)
+    elif args.no_commit:
+        log.info("Skipping git commit/push because --no-commit was set")
 
     # -----------------------------------------------------------------------
     # Step 9: Update watchlist timestamps
@@ -1388,7 +1518,7 @@ def main() -> None:
         log.info("=== Step 9: Update Watchlist ===")
         update_watchlist_after_scan(scanned_github_orgs, new_skill_github_orgs, dry_run=args.dry_run)
 
-    log.info("Done! %d new, %d updated.", len(all_new_skills), updated_count)
+    log.info("Done! %d new, %d updated.", len(all_new_skills), len(updated_skills))
 
 
 if __name__ == "__main__":

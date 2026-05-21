@@ -1,0 +1,56 @@
+name: Sync Skills
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-skills
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Clone OpenClaw skills source
+        run: git clone --depth 1 https://github.com/openclaw/skills.git /tmp/skills-source
+
+      - name: Sync skills
+        env:
+          ALTLLM: ${{ secrets.ALTLLM }}
+          ALTLLM_API_KEY: ${{ secrets.ALTLLM_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/auto-update.py \
+            --source-dir /tmp/skills-source/skills \
+            --no-commit \
+            --summary-file .github/sync-skills-pr-body.md
+
+      - name: Regenerate catalog
+        run: python scripts/update-catalog.py
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ github.token }}
+          commit-message: "Auto-update skills"
+          title: "Auto-update crypto skills"
+          body-path: .github/sync-skills-pr-body.md
+          branch: bot/sync-skills
+          delete-branch: true

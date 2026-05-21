@@ -1,14 +1,14 @@
-## ⚠️ We no longer accept Pull Requests for skill submissions
+## Skill submission policy
 
-Please use our **Issue-based submission** instead — it's faster for you and easier for us to review:
+External skill and MCP server submissions should be opened as Issues, not pull requests:
 
-👉 **[Submit a Skill or MCP Server](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=skill_submission.md&title=%5BSubmit%5D+)**
+[Submit a Skill or MCP Server](https://github.com/jiayaoqijia/cryptoskill/issues/new?template=skill_submission.md&title=%5BSubmit%5D+)
 
-Just provide the skill name, GitHub URL, and category. We'll review and add it.
+Please include the skill name, source URL, and category. Maintainers will review and ingest accepted submissions.
+
+Maintainer-created and bot-generated ingestion PRs are allowed. They must remain reviewable and should explain the upstream source or automation that produced the changes.
 
 ---
-
-If this PR is for a **bug fix, documentation update, or infrastructure change** (not a skill submission), please describe below:
 
 ## Summary
 
@@ -19,8 +19,11 @@ If this PR is for a **bug fix, documentation update, or infrastructure change** 
 - [ ] Bug fix
 - [ ] Documentation update
 - [ ] Infrastructure / tooling
+- [ ] Maintainer / bot skill ingestion
 - [ ] Other: ___
 
 ## Related Issue
 
 Closes #
+
+## Review Notes
