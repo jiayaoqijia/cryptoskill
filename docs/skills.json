@@ -95038,6 +95038,54 @@
       }
     },
     {
+      "name": "8004scan-skill-protocol",
+      "displayName": "8004scan Skill: Protocol Knowledge",
+      "description": "ERC-8004 protocol knowledge from the 8004scan skill bundle — understand Trustless Agents, Identity/Reputation/Validation registries, agent IDs, registration metadata, feedback, trust models, contract addresses, supported chains, OASF skills/domains, and integration patterns. Use when the user asks about ERC-8004 concepts or agent IDs like \"11155111:42\" or \"8453:17\".",
+      "category": "identity",
+      "tags": [
+        "erc-8004",
+        "8004scan",
+        "protocol",
+        "identity"
+      ],
+      "author": "jiayaoqijia",
+      "version": "1.0.0",
+      "added_at": "2026-06-03",
+      "last_updated": "2026-06-03"
+    },
+    {
+      "name": "8004scan-skill-api",
+      "displayName": "8004scan Skill: API Integration",
+      "description": "Query the 8004scan public API to discover, search, and analyze ERC-8004 AI agents registered on the blockchain. Covers agent listing, semantic search, agent details, account lookups, platform statistics, supported chains, and feedback queries. Consult this skill when the user wants to search for agents, browse the agent registry, check agent details on 8004scan, get platform stats, look up agents by owner address, query feedback scores, or integrate with the 8004scan API programmatically.",
+      "category": "identity",
+      "tags": [
+        "8004scan",
+        "erc-8004",
+        "api",
+        "identity"
+      ],
+      "author": "jiayaoqijia",
+      "version": "1.0.0",
+      "added_at": "2026-06-03",
+      "last_updated": "2026-06-03"
+    },
+    {
+      "name": "8004scan-skill-webhooks",
+      "displayName": "8004scan Skill: Webhooks",
+      "description": "Register and manage 8004scan webhooks for real-time event notifications — agent registrations, feedback submissions, validation responses, and star events. Covers webhook CRUD, event types, HMAC-SHA256 signature verification, delivery monitoring, and retry behavior. Consult this skill when the user wants to receive real-time notifications from 8004scan, set up webhooks, verify webhook signatures, or monitor webhook deliveries.",
+      "category": "identity",
+      "tags": [
+        "8004scan",
+        "erc-8004",
+        "webhooks",
+        "identity"
+      ],
+      "author": "jiayaoqijia",
+      "version": "1.0.0",
+      "added_at": "2026-06-03",
+      "last_updated": "2026-06-03"
+    },
+    {
       "name": "ack-reputation-layer",
       "displayName": "ACK - Agent Consensus Kudos",
       "description": "Peer-driven onchain reputation layer for AI agents with kudos across reliability, speed, and accuracy categories.",
