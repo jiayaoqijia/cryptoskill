@@ -7,6 +7,9 @@ test('generated catalog, capability data and detail pages agree', async ({ reque
   const capabilities = await (await request.get('/capabilities.json')).json();
   const ids = catalog.skills.map(s => `${s.category}/${s.name}`);
   expect(new Set(ids).size).toBe(ids.length);
+  expect(Object.keys(catalog.categories).sort()).toEqual(
+    [...new Set(catalog.skills.map(s => s.category))].sort()
+  );
   for (const skill of catalog.skills) {
     expect(skill.score?.total).toBeGreaterThanOrEqual(0);
     expect(skill.score?.total).toBeLessThanOrEqual(100);
@@ -112,10 +115,12 @@ test.describe('Categories Section', () => {
     }, { timeout: 10000 });
   });
 
-  test('all 13 categories render', async ({ page }) => {
+  test('all catalog categories render', async ({ page, request }) => {
+    const catalog = await (await request.get('/skills.json')).json();
+    const expected = new Set(catalog.skills.map(skill => skill.category)).size;
     const cards = page.locator('.category-card');
-    const count = await cards.count();
-    expect(count).toBe(13);
+    await expect(cards).toHaveCount(expected);
+    await expect(page.locator('#statCategories')).toHaveText(String(expected));
   });
 
   test('clicking category scrolls to skills and filters', async ({ page }) => {

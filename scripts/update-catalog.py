@@ -294,6 +294,14 @@ def build_catalog() -> dict:
         except Exception:
             pass
 
+    # Keep metadata complete for every category on disk. The homepage derives
+    # its category count and filters from this map, not the generated HTML.
+    for category in sorted({entry['category'] for entry in skills_list}):
+        display = category.replace('-', ' ').title()
+        catalog['categories'].setdefault(category, {
+            'name': display, 'icon': '', 'description': f'{display} skills',
+        })
+
     # Date-coverage guard — the freshness UI depends on added_at /
     # last_updated. If <80% of catalog has dates, something is wrong
     # (probably a stale .skill-dates.json) and the deploy operator
