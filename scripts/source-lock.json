@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "e8f4509300832de67b0e2d8ef8455e1cee798b25",
+      "revision": "4f676cbbd0497a879dc55f5c3c6582e4ad52ae55",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -6601,6 +6601,11 @@
         "skill-card.md": "9fe0d363484e6fb6e3f5ddca616807047aba34a01e1b888f3d198b400db644c5",
         "SKILL.md": "046ef6177f79eb6639dcb0d4f06dba8ddfb15c95fa27121e1bf5382e547f08c5",
         "_meta.json": "c59817f7c98c50af49883553fb71bc8cd47bf819d2e49e52d1bebbb8c0886ae7"
+      },
+      "modes": {
+        "skill-card.md": 420,
+        "SKILL.md": 420,
+        "_meta.json": 420
       }
     },
     "analytics/nansen-smart-alerts": {
@@ -7171,6 +7176,20 @@
         "SKILL.md": "8367c2f8d6c36b3a05972f18ba8131e3aa936b1748d31a0fc11a92a4a949ee5c",
         "testing.md": "369ad4402c4d8645c1556f331338a1c263b500c68761a353fbebbb256b1e5295",
         "_meta.json": "aa2dab215c754d3736373aa9e398e9d001b770584ab0dfca781de0635f005e34"
+      },
+      "modes": {
+        "frontend-framework-kit.md": 420,
+        "idl-codegen.md": 420,
+        "kit-web3-interop.md": 420,
+        "payments.md": 420,
+        "programs-anchor.md": 420,
+        "programs-pinocchio.md": 420,
+        "resources.md": 420,
+        "security.md": 420,
+        "skill-card.md": 420,
+        "SKILL.md": 420,
+        "testing.md": 420,
+        "_meta.json": 420
       }
     },
     "chains/stellar": {
@@ -7801,6 +7820,13 @@
         "skill-card.md": "d3ce883b8277f84d959f308cea4aebacd19161418b9e3798855c423668316490",
         "SKILL.md": "4945dbb7b3605bedf5ebd2892e40d7cdd3feca873292eeb709d6ce7755bcf582",
         "_meta.json": "61d668dc25c749c6ad083f2dbff955d69fee791702c57e19037f7b3871505721"
+      },
+      "modes": {
+        "LICENSE.md": 420,
+        "references/authentication.md": 420,
+        "skill-card.md": 420,
+        "SKILL.md": 420,
+        "_meta.json": 420
       }
     },
     "exchanges/binance-spot-api": {
@@ -7861,6 +7887,13 @@
         "skill-card.md": "e8d45fa45d28cbb2b3d2cda167dd499ae111245ab3680788deafb2b1c71c0419",
         "SKILL.md": "044d845f1a110ce5aa270c2057e471b0d621e359268e5e2576867f3f3d37454e",
         "_meta.json": "b28c2650a2c647b1381da4e4e05bdf9414f4d4074e8473f49267efe844dde406"
+      },
+      "modes": {
+        "README.cn.md": 420,
+        "README.md": 420,
+        "skill-card.md": 420,
+        "SKILL.md": 420,
+        "_meta.json": 420
       }
     },
     "exchanges/binance-stat-arb-monitor": {
@@ -8846,6 +8879,12 @@
         "skill-card.md": "287dad127db5df6f9403ba210026bf2826150d55bc85d51b1db6f7710f4c1d22",
         "SKILL.md": "f80cba3be95f37b597dc6eb37bb91389359a04868720e622413d20858c46a8aa",
         "_meta.json": "dbeadf5a8c9d538b3c4aa972d4d27cfbed22cc8c604f26cbac46b578801b9756"
+      },
+      "modes": {
+        "references/cli-reference.md": 420,
+        "skill-card.md": 420,
+        "SKILL.md": 420,
+        "_meta.json": 420
       }
     },
     "exchanges/okx-wallet-portfolio": {
@@ -8857,6 +8896,12 @@
         "skill-card.md": "5fc2c463b6d1d8f7c18fe17d8cc74e627db5a1c33a4ada1a268be679c1dcb70d",
         "SKILL.md": "17b662792a9e71305f973f944b94dc8a56126585dcb4621cd663a251551bc05f",
         "_meta.json": "6a632994cd68065b8348918d3ca27bcf04812971ae68dabcd34978e0b61108a8"
+      },
+      "modes": {
+        "references/cli-reference.md": 420,
+        "skill-card.md": 420,
+        "SKILL.md": 420,
+        "_meta.json": 420
       }
     },
     "exchanges/okx-security": {
@@ -20712,6 +20757,21 @@
         "SKILL.md": 420,
         "_meta.json": 420
       }
+    },
+    "trading/grid-trading": {
+      "repo": null,
+      "path": "SKILL.md",
+      "revision": "0.1.0",
+      "files": {
+        "skill-card.md": "8442850adc8c92cf68d96f848ec42254f97e6ad4d4d1e74360e56db96a485b90",
+        "SKILL.md": "817fe0ddacddf9f3e63f9c8dbed9d81f784cbe78ac38b293ba7a0c53e173dd49",
+        "_meta.json": "ed882a66c83cf442f5db44709841b0697dfa0b74ce03503cb90f1745a5e74856"
+      },
+      "modes": {
+        "skill-card.md": 420,
+        "SKILL.md": 420,
+        "_meta.json": 420
+      }
     }
   },
   "repositories": {
@@ -20745,7 +20805,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "19d519892ed13329b5f3ce4ad8204a59d6945984",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "e8f4509300832de67b0e2d8ef8455e1cee798b25",
+    "jiayaoqijia/cryptoskill": "4f676cbbd0497a879dc55f5c3c6582e4ad52ae55",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "b56c32f70fdc4bb2fda244b2848abe509dfe424b",
@@ -20792,6 +20852,7 @@
     "mystenlabs/sui-dev-skills": "e3657857fbe47142dae1ac0ce99114c8a3ba4caa",
     "ton-blockchain/skills": "35ddd7f67836e18b9bbce265e82a281980ecb920",
     "ton-blockchain/ton-triage-skill": "7412797497c49ea9f38fdef7938d5abda6a70b4e",
-    "ethereum/beaconrunner": "04a607f072c5fbc461bc50529cdb94c21528d4e5"
+    "ethereum/beaconrunner": "04a607f072c5fbc461bc50529cdb94c21528d4e5",
+    "0xsardius/solenrich": "62590250102c047fb97b0a6805ac7fde21da736a"
   }
 }
