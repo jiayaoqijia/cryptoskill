@@ -12,6 +12,7 @@ All pages are lightweight (<5 KB), static, and SEO-optimised.
 import html
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -524,6 +525,17 @@ def skill_page_html(skill, categories, all_skills=None):
     author = esc(s.get("author", "unknown"))
     version = esc(s.get("version", "1.0.0"))
     tags = s.get("tags", [])
+    remote_url = (s.get('mcp') or {}).get('url', '')
+    remote_command = None
+    if (re.fullmatch(r'https://[A-Za-z0-9.-]+(?::\d+)?(?:/[A-Za-z0-9._~%/-]*)?', remote_url)
+            and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*', s['name'])):
+        remote_command = f"claude mcp add {s['name']} --transport http {remote_url}"
+    if remote_command:
+        install_html = (f'<div class="install-cmd"><span class="prompt">$</span> <code>{esc(remote_command)}</code></div>'
+                        '<p>Complete authentication through your MCP client. This connects to a hosted service.</p>')
+    else:
+        install_html = (f'<div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/{esc(cat)}/{name} .claude/skills/</code></div>\n'
+                        f'    <div class="install-cmd"><span class="prompt">$</span> <code>clawhub install {name}</code></div>')
 
     score = s.get("score", {})
     total = score.get("total", "")
@@ -662,8 +674,7 @@ def skill_page_html(skill, categories, all_skills=None):
     <p class="skill-page-desc">{desc}</p>
 
     <h2>Install</h2>
-    <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/{esc(cat)}/{name} .claude/skills/</code></div>
-    <div class="install-cmd"><span class="prompt">$</span> <code>clawhub install {name}</code></div>
+    {install_html}
 
     <h2>Tags</h2>
     <div class="skill-tags" style="margin-bottom:32px">

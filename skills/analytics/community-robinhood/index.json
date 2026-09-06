@@ -1,0 +1,41 @@
+{
+  "name": "robinhood",
+  "description": "Robinhood portfolio advisor — read-only access to positions, quotes, fundamentals, news, earnings, analyst ratings, dividends, and options via MCP. Includes cache-first strategy, entity page workflows, and optional Obsidian vault integration.",
+  "version": "1.0.0",
+  "author": "Uzair Ansar",
+  "license": "MIT",
+  "tags": ["trading", "portfolio", "robinhood", "options", "investing", "mcp", "finance"],
+  "category": "finance",
+  "files": [
+    "SKILL.md",
+    "scripts/refresh_cache.py",
+    "scripts/install.sh",
+    "templates/config-snippet.yaml",
+    "templates/claude-desktop.json",
+    "templates/claude-code-mcp.json",
+    "templates/codex.json",
+    "templates/opencode.json",
+    "templates/cline-mcp.json",
+    "templates/windsurf-mcp.json"
+  ],
+  "requires_mcp": true,
+  "mcp_servers": {
+    "robinhood": {
+      "command": "uvx",
+      "args": ["robinhood-mcp"],
+      "env": {
+        "ROBINHOOD_USERNAME": "${ROBINHOOD_USERNAME}",
+        "ROBINHOOD_PASSWORD": "${ROBINHOOD_PASSWORD}",
+        "ROBINHOOD_TOTP_SECRET": "${ROBINHOOD_TOTP_SECRET}"
+      },
+      "timeout": 60,
+      "connect_timeout": 30
+    }
+  },
+  "related_skills": ["portfolio-obsidian-bridge", "llm-wiki", "obsidian"],
+  "links": {
+    "homepage": "https://github.com/uzairansaruzi/robinhood-agent-skill",
+    "robinhood-mcp": "https://github.com/verygoodplugins/robinhood-mcp",
+    "hermes-agent": "https://github.com/NousResearch/hermes-agent"
+  }
+}

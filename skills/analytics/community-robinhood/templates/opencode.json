@@ -1,0 +1,12 @@
+{
+  "mcp": {
+    "robinhood": {
+      "command": "uvx",
+      "args": ["robinhood-mcp"],
+      "env": {
+        "ROBINHOOD_USERNAME": "your_email",
+        "ROBINHOOD_PASSWORD": "your_password"
+      }
+    }
+  }
+}

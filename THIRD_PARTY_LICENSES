@@ -7,10 +7,11 @@ ClawHub Skills
 https://clawhub.ai
 ================================================================================
 
-All skills in the skills/ directory are sourced from the ClawHub community
-registry. Skills published on ClawHub are released under the MIT-0 license
-(MIT No Attribution), which permits use, modification, and redistribution
-without requiring attribution.
+The registry imports skills from ClawHub and public project repositories.
+Each import retains the upstream license recorded in SOURCE.md and any bundled
+LICENSE or NOTICE files. The MIT-0 notice below applies to entries recorded as
+MIT-0; it does not apply to all GitHub imports. NOASSERTION means that an upstream
+license has not been established, not that CryptoSkill grants a new license.
 
 Each skill directory contains a SOURCE.md file that documents the original
 author, source URL, and classification (OFFICIAL or COMMUNITY).
@@ -90,3 +91,12 @@ Prolific community contributors:
   - and many others (see SOURCE.md in each skill directory)
 
 All skill content is licensed under MIT-0 as published on ClawHub.
+
+================================================================================
+BIP-39 validation dependency
+https://github.com/trezor/python-mnemonic
+================================================================================
+
+The credential detector uses the MIT-licensed python-mnemonic reference
+implementation, installed through requirements.txt. Its package carries the
+upstream license. Regression tests reference its public BIP-39 test vectors.

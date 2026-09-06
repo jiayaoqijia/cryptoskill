@@ -396,7 +396,7 @@ def clawhub_bundle(entry):
 
 
 def sync_registry(root=ROOT, official_repos=(), dry_run=False, workers=4, only_repo=None,
-                  skip_clawhub=False, discover=True):
+                  skip_clawhub=False, discover=True, report_path=None):
     entries = inventory(root)
     state_path = root / "scripts/source-lock.json"
     state = read_json(state_path, {"schema_version": 1, "skills": {}})
@@ -423,7 +423,8 @@ def sync_registry(root=ROOT, official_repos=(), dry_run=False, workers=4, only_r
     for repo in configs:
         groups.setdefault(repo, [])
     if only_repo:
-        groups = {repo: group for repo, group in groups.items() if repo == only_repo.lower()}
+        selected = {r.lower() for r in ([only_repo] if isinstance(only_repo, str) else only_repo)}
+        groups = {repo: group for repo, group in groups.items() if repo in selected}
 
     def record(entry, status, detail=""):
         report["results"].append({"skill": entry["key"], "status": status, "detail": detail})
@@ -503,6 +504,10 @@ def sync_registry(root=ROOT, official_repos=(), dry_run=False, workers=4, only_r
                                    f"- **Source URL**: https://github.com/{repo}/blob/{revision}/{path}\n"
                                    "- **License**: See bundled upstream license; otherwise NOASSERTION\n"
                                    f"- **Classification**: {'OFFICIAL' if config.get('official', True) else 'COMMUNITY'}\n")
+                    if config.get('evidence_url'):
+                        attribution += f"- **Classification Evidence**: {config['evidence_url']}\n"
+                    if config.get('note'):
+                        attribution += f"- **Scope**: {config['note']}\n"
                     try:
                         apply(entry, bundle_files(files, path), revision, path, repo, attribution)
                         entries.append(entry)
@@ -536,6 +541,9 @@ def sync_registry(root=ROOT, official_repos=(), dry_run=False, workers=4, only_r
     report["results"].sort(key=lambda r: r["skill"])
     report["summary"] = dict(Counter(r["status"] for r in report["results"]))
     if not dry_run:
-        write_json(root / "docs/sync-report.json", report)
+        output = Path(report_path) if report_path else root / "docs/sync-report.json"
+        if not output.is_absolute():
+            output = root / output
+        write_json(output, report)
     LOG.info("Source refresh: %s", report["summary"])
     return report

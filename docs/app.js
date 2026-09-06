@@ -192,7 +192,24 @@
       icon: '<img src="logos/gmgn.png" alt="" width="32" height="32" loading="lazy" style="border-radius:6px;object-fit:cover">',
       github: 'https://github.com/GMGNAI/gmgn-skills',
       description: 'GMGN OpenAPI skills — tokens, wallets, market data, and on-chain trades across Solana, BSC, and Base.',
-      matcher: (s) => s.name.startsWith('gmgn-official')
+      matcher: (s) => s.tags.includes('official') && (s.name.startsWith('gmgn-official') || s.name.startsWith('gmgnai-official'))
+    },
+    {
+      id: 'robinhood',
+      name: 'Robinhood',
+      sourceLabel: 'Docs',
+      icon: 'RH',
+      github: 'https://robinhood.com/us/en/support/articles/agentic-trading-overview/',
+      description: 'Official hosted Trading MCP for portfolio research and Agentic account orders.',
+      matcher: (s) => s.tags.includes('official') && s.name === 'robinhood-trading-mcp'
+    },
+    {
+      id: 'pumpfun',
+      name: 'pump.fun',
+      icon: 'P',
+      github: 'https://github.com/pump-fun/pump-fun-skills',
+      description: 'Official skills for coin creation, swaps, creator fees, and tokenized agent payments.',
+      matcher: (s) => s.tags.includes('official') && s.name.startsWith('pumpfun-official-')
     },
     // ── 2026-05-08 autoresearch pulse: new official project rails ──
     {
@@ -499,8 +516,8 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
           <a href="${project.github}" target="_blank" rel="noopener" class="official-github-link" onclick="event.stopPropagation()">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            GitHub
+            <svg style="${project.sourceLabel ? 'display:none' : ''}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            ${project.sourceLabel || 'GitHub'}
           </a>
         </div>
       `;
@@ -661,9 +678,9 @@
     const tags = Array.isArray(skill.tags) ? skill.tags : [];
     // Copy-install line — same format as the modal & detail page; lets a
     // user grab the install command without leaving the home grid.
-    const installCmd = skill.category === 'mcp-servers'
+    const installCmd = getRemoteMcpCommand(skill) || (skill.category === 'mcp-servers'
       ? `claude mcp add ${skill.name}`
-      : `clawhub install ${skill.name}`;
+      : `clawhub install ${skill.name}`);
     // Freshness pill — relative time since last update so a user scanning
     // the grid can tell stale skills apart from active ones at a glance.
     const freshness = relativeAge(skill.last_updated || skill.added_at);
@@ -1210,11 +1227,19 @@
   }
 
   // --- Modal ---
+  function getRemoteMcpCommand(skill) {
+    const url = skill.mcp?.url || '';
+    if (!/^https:\/\/[A-Za-z0-9.-]+(?::\d+)?(?:\/[A-Za-z0-9._~%/-]*)?$/.test(url)
+        || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(skill.name)) return null;
+    return `claude mcp add ${skill.name} --transport http ${url}`;
+  }
+
   function openModal(skill) {
     const cat = categories[skill.category];
     const isOfficial = isOfficialSkill(skill);
     const project = getProjectForSkill(skill);
     const modalContent = modalOverlay.querySelector('.modal');
+    const remoteMcpCommand = getRemoteMcpCommand(skill);
 
     const officialBadgeHTML = isOfficial
       ? `<span class="modal-official-badge">&#10003; Official</span>`
@@ -1247,7 +1272,14 @@
       </div>
       <div class="modal-section-title">Install</div>
       <div class="modal-install">
-        ${skill.category === 'mcp-servers' ? `
+        ${remoteMcpCommand ? `
+        <div class="install-cmd">
+          <span class="prompt">MCP</span>
+          <code>${escHTML(remoteMcpCommand)}</code>
+          <button class="copy-btn" data-cmd="${escHTML(remoteMcpCommand)}" onclick="copyToClipboard(this.dataset.cmd, this)" title="Copy">Copy</button>
+        </div>
+        <p>Complete authentication through your MCP client. This connects to a hosted service.</p>
+        ` : skill.category === 'mcp-servers' ? `
         <div class="install-cmd" style="margin-bottom:6px">
           <span class="prompt" style="color:var(--accent)">MCP</span>
           <code>claude mcp add ${skill.name}</code>

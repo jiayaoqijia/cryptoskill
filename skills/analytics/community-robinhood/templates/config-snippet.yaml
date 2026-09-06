@@ -1,0 +1,22 @@
+# Robinhood MCP Server Configuration for Hermes Agent
+# Add this to ~/.hermes/config.yaml under mcp_servers:
+
+mcp_servers:
+  robinhood:
+    command: uvx
+    args:
+      - robinhood-mcp
+    env:
+      ROBINHOOD_USERNAME: "${ROBINHOOD_USERNAME}"
+      ROBINHOOD_PASSWORD: "${ROBINHOOD_PASSWORD}"
+      # ROBINHOOD_TOTP_SECRET: "${ROBINHOOD_TOTP_SECRET}"  # Uncomment for authenticator app 2FA
+    timeout: 60
+    connect_timeout: 30
+
+# If you already have mcp_servers defined, merge this into the existing section.
+# Do NOT create a duplicate mcp_servers key.
+
+# Then add these to ~/.hermes/.env (or your shell profile):
+# ROBINHOOD_USERNAME=your_email@example.com
+# ROBINHOOD_PASSWORD=your_password
+# ROBINHOOD_TOTP_SECRET=your_totp_secret  # Optional, for authenticator app

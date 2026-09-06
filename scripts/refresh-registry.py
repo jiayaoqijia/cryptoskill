@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -26,6 +27,9 @@ def update_stats():
     html = re.sub(r'\b\d+\+ (?:crypto )?skills', f'{total}+ skills', html)
     html = re.sub(r'\b\d+ MCP servers', f'{mcp} MCP servers', html)
     html = re.sub(r'\b\d+ categories', f'{cats} categories', html)
+    version = hashlib.sha256((ROOT / 'docs/app.js').read_bytes()).hexdigest()[:8]
+    html = re.sub(r'(src="app\.js)(?:\?v=[^"]*)?(\")',
+                  lambda match: match[1] + '?v=' + version + match[2], html)
     path.write_text(html)
     path = ROOT / 'README.md'
     text = path.read_text()

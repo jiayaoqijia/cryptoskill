@@ -62,8 +62,8 @@ CAPABILITY_REGISTRY = [
 
 # Versioned hostlist identifier — emitted into TRUST.auto.yaml for attestation
 # binding. Bump when HOSTED_OPERATOR_HOSTS is edited.
-HOSTLIST_VERSION = "2026-04-26"
-EXTRACTOR_VERSION = "0.3.0"
+HOSTLIST_VERSION = "2026-09-06"
+EXTRACTOR_VERSION = "0.3.1"
 TAXONOMY_VERSION = 1
 
 # === Static patterns ===
@@ -194,7 +194,7 @@ HOSTED_OPERATOR_HOSTS = {
     "coinbase.com", "kraken.com", "kucoin.com", "bybit.com",
     "gate.io", "gate.com", "bitget.com", "huobi.com", "htx.com",
     "mexc.com", "bitfinex.com", "crypto.com", "gemini.com",
-    "upbit.com", "alpaca.markets",
+    "upbit.com", "alpaca.markets", "robinhood.com",
     # Hosted RPCs
     "infura.io", "alchemy.com", "alchemyapi.io", "quicknode.com",
     "moralis.io", "blockdaemon.com", "ankr.com", "tatum.io",
@@ -202,7 +202,7 @@ HOSTED_OPERATOR_HOSTS = {
     # Hosted analytics / data
     "dune.com", "duneanalytics.com", "nansen.ai", "messari.io",
     "tenderly.co", "etherscan.io", "blockscout.com",
-    "thegraph.com", "covalenthq.com", "0x.org",
+    "thegraph.com", "covalenthq.com", "0x.org", "cope.capital", "robinscan.io", "gmgn.ai",
     # Onramp / payment
     "moonpay.com", "ramp.network", "circle.com",
     # Hosted DEX aggregators with backend
@@ -419,6 +419,12 @@ def extract_capabilities(skill_dir):
         caps["mutable_remote_runtime"] = False
         evidence["mutable_remote_runtime"].append("derived: can_install_code=false")
 
+    # Positive declarations are evidence, never permission to suppress a scan.
+    # A hosted MCP may place orders without containing local transaction code.
+    if str(fm.get('can-move-funds', '')).lower() == 'true':
+        caps['can_move_funds'] = True
+        evidence['can_move_funds'].append('frontmatter can-move-funds: true')
+
     # can_move_funds
     for pat in FUND_MOVE_PATTERNS:
         m = pat.search(text["all"])
@@ -496,7 +502,7 @@ def extract_capabilities(skill_dir):
     em = "unknown"
     if caps["uses_remote_install_script"] or "polymarket-cli" in text["all"].lower() or "wallet-setup" in text["all"].lower():
         em = "installer_bootstrap"
-    elif caps["can_move_funds"] and any("api.binance.com" in h or "okx" in h or "kraken" in h or "kucoin" in h
+    elif caps["can_move_funds"] and any("api.binance.com" in h or "okx" in h or "kraken" in h or "kucoin" in h or "robinhood.com" in h
                                          for h in found_hosts):
         em = "custodial_executor"
     elif caps["can_move_funds"] and caps["requires_private_key"]:

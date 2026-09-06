@@ -241,6 +241,10 @@ def build_catalog() -> dict:
                 "author": author,
                 "version": version,
             }
+            mcp = meta.get('mcp')
+            if (isinstance(mcp, dict) and mcp.get('transport') == 'http'
+                    and re.fullmatch(r'https://[A-Za-z0-9.-]+(?::\d+)?(?:/[A-Za-z0-9._~%/-]*)?', str(mcp.get('url', '')))):
+                entry['mcp'] = {'url': mcp['url'], 'transport': 'http'}
 
             # Propagate dates from _meta.json (when present) and fall back
             # to the git-history backfill cache (scripts/.skill-dates.json

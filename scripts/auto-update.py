@@ -134,7 +134,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dry-run', action='store_true', help='Fetch and validate without writing registry files')
     parser.add_argument('--workers', type=int, default=4, choices=range(1, 9), metavar='1..8')
-    parser.add_argument('--repo', help='Refresh one GitHub owner/repository')
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument('--repo', action='append', help='Refresh a GitHub owner/repository; repeat for multiple sources')
+    selection.add_argument('--curated', action='store_true', help='Refresh the explicitly curated source collection')
+    parser.add_argument('--report-path', help='Write this run to a separate report path')
     parser.add_argument('--skip-clawhub', '--skip-openclaw', action='store_true', dest='skip_clawhub')
     parser.add_argument('--no-discover', action='store_true', help='Refresh existing entries only')
     parser.add_argument('--discover-github', action='store_true', help='Also search GitHub and missing watchlist projects')
@@ -142,7 +145,8 @@ def main():
     parser.add_argument('--no-push', action='store_true', help='Compatibility flag; this command never commits or pushes')
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-    configs = list(OFFICIAL_REPOS)
+    curated = read_json(ROOT / 'scripts/curated-sources.json')
+    configs = list(OFFICIAL_REPOS) + curated.get('repositories', [])
     watchlist = read_json(ROOT / 'scripts/watchlist.json')
     for projects in watchlist.values():
         if not isinstance(projects, list):
@@ -161,8 +165,17 @@ def main():
         configs.extend(r for r in candidates if f"{r['org']}/{r['repo']}".lower() not in known)
         if not args.dry_run:
             write_json(ROOT / 'docs/discovery-report.json', {'candidates': candidates, 'queries': outcomes})
+    selected = args.repo
+    if args.curated:
+        selected = [f"{r['org']}/{r['repo']}" for r in curated.get('repositories', [])]
+        if not selected:
+            parser.error('No curated repositories configured')
     report = sync_registry(official_repos=configs, dry_run=args.dry_run, workers=args.workers,
-                           only_repo=args.repo, skip_clawhub=args.skip_clawhub, discover=not args.no_discover)
+                           only_repo=selected, skip_clawhub=args.skip_clawhub, discover=not args.no_discover,
+                           report_path=args.report_path)
+    if args.curated or not args.repo:
+        from hosted_sources import check_hosted_sources
+        check_hosted_sources(curated.get('hosted_mcps', []), dry_run=args.dry_run)
     if not args.dry_run:
         checked_orgs = {repo.split('/')[0].lower() for repo, outcome in report['repositories'].items()
                         if outcome['status'] in ('fetched', 'unchanged')}

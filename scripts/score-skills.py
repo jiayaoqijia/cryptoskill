@@ -24,6 +24,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from mnemonic import Mnemonic
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -44,8 +45,11 @@ RE_PRIVATE_KEY = re.compile(
 )
 # Mnemonic: 12+ lowercase words that look like a BIP-39 phrase
 RE_MNEMONIC = re.compile(
-    r"\b(?:[a-z]{3,8}\s+){11,}[a-z]{3,8}\b"
+    r"\b(?:[a-z]{3,8}\s+){11,}[a-z]{3,8}\b", re.IGNORECASE
 )
+_BIP39 = Mnemonic('english')
+_BIP39_WORDS = frozenset(_BIP39.wordlist)
+_SEED_CONTEXT = re.compile(r'(?:mnemonic|seed[ _-]?phrase|recovery[ _-]?phrase)\s*[=:]', re.I)
 # API key patterns — common formats
 RE_API_KEY = re.compile(
     r"(?i)(?:api[_-]?key|api[_-]?secret|secret[_-]?key|access[_-]?token)"
@@ -251,6 +255,29 @@ def is_placeholder_key(key_str: str) -> bool:
 def is_placeholder_mnemonic(phrase: str) -> bool:
     """Check if a detected mnemonic is a known placeholder."""
     return phrase.strip().lower() in PLACEHOLDER_MNEMONICS
+
+
+def contains_mnemonic(text: str) -> bool:
+    """Detect English BIP-39 candidates without treating prose as credentials.
+
+    Validate word membership and checksum. Explicitly labelled seed assignments
+    also flag word-list candidates with invalid checksums (damaged/nonstandard
+    seeds can still be sensitive). Never return the phrase in scan output.
+    """
+    for match in RE_MNEMONIC.finditer(text):
+        words = match.group().lower().split()
+        if is_placeholder_mnemonic(' '.join(words)):
+            continue
+        labelled = bool(_SEED_CONTEXT.search(text[max(0, match.start() - 100):match.start()]))
+        for size in (24, 21, 18, 15, 12):
+            for start in range(len(words) - size + 1):
+                candidate = words[start:start + size]
+                if not all(word in _BIP39_WORDS for word in candidate):
+                    continue
+                phrase = ' '.join(candidate)
+                if not is_placeholder_mnemonic(phrase) and (labelled or _BIP39.check(phrase)):
+                    return True
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -614,16 +641,8 @@ def scan_files_for_patterns(skill_dir: Path) -> dict:
                     findings["private_keys"].append(rel)
                     break  # one per file is enough
 
-            # Mnemonics (skip placeholders and short matches in docs)
-            for match in RE_MNEMONIC.finditer(text):
-                phrase = match.group()
-                if not is_placeholder_mnemonic(phrase):
-                    # Additional filter: skip if it's in a markdown table or
-                    # code comment explaining the format
-                    words = phrase.split()
-                    if len(words) >= 12 and len(set(words)) >= 6:
-                        findings["mnemonics"].append(rel)
-                        break
+            if contains_mnemonic(text):
+                findings["mnemonics"].append(rel)
 
             # API keys
             for match in RE_API_KEY.finditer(text):

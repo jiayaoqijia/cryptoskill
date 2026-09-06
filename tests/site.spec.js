@@ -1,5 +1,32 @@
 const { test, expect } = require('@playwright/test');
 
+test('requested platforms expose the right collections and MCP connection', async ({ page, request }) => {
+  const catalog = await (await request.get('/skills.json')).json();
+  const byName = new Map(catalog.skills.map(skill => [skill.name, skill]));
+  expect(byName.get('fomo-research').tags).not.toContain('official');
+  expect(byName.get('community-robinhood').tags).not.toContain('official');
+  expect(byName.get('robinhood-for-agents').tags).not.toContain('official');
+  expect(byName.get('robinscan').tags).not.toContain('official');
+  expect(byName.get('robinhood-trading-mcp').tags).toContain('official');
+  expect(byName.get('robinhood-trading-mcp').mcp.url).toBe('https://agent.robinhood.com/mcp/trading');
+  for (const suffix of ['coin-fees', 'create-coin', 'swap', 'tokenized-agents']) {
+    expect(byName.get(`pumpfun-official-${suffix}`).tags).toContain('official');
+  }
+  await page.goto('/');
+  await page.locator('.official-project-card[data-project="gmgn"]').click();
+  await expect(page.locator('#officialSkillsList')).toContainText('Gmgn Cooking');
+  await page.locator('.official-project-card[data-project="pumpfun"]').click();
+  await expect(page.locator('#officialSkillsList .skill-card')).toHaveCount(4);
+  await page.locator('.official-project-card[data-project="robinhood"]').click();
+  await page.locator('#officialSkillsList .skill-card').first().click();
+  await expect(page.locator('.modal .install-cmd code').first()).toContainText(
+    'claude mcp add robinhood-trading-mcp --transport http https://agent.robinhood.com/mcp/trading'
+  );
+  const detail = await (await request.get('/skills/mcp-servers/robinhood-trading-mcp.html')).text();
+  expect(detail).toContain('--transport http https://agent.robinhood.com/mcp/trading');
+  expect(detail).not.toContain('clawhub install robinhood-trading-mcp');
+});
+
 test('generated catalog, capability data and detail pages agree', async ({ request }) => {
   const catalogResponse = await request.get('/skills.json');
   expect(catalogResponse.ok()).toBeTruthy();

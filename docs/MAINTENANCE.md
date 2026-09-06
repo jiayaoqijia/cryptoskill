@@ -105,3 +105,29 @@ results after an error. Both are replaced by the shared build entry point.
 `--skip-openclaw` remains an alias for `--skip-clawhub`; `--no-push` is accepted
 for compatibility but is unnecessary. Other legacy discovery/security bypass
 flags are replaced by the modes documented above.
+
+## Curated platform sources
+
+`scripts/curated-sources.json` records explicit repositories, classifications,
+classification evidence, and hosted MCP endpoints. The scheduled updater includes
+these sources. Refresh just this collection without replacing the full-run report:
+
+```sh
+bash scripts/run-bot.sh --curated --report-path docs/targeted-sync-report.json
+```
+
+`--repo` can also be repeated to select several repositories. Community entries
+in the curated file carry `official: false`, including the Fomo/Cope Capital and
+Robinhood community clients. pump.fun and GMGN use their project repositories.
+
+Robinhood's official hosted Trading MCP has a registry-maintained connection
+guide. `hosted_sources.py` checks that Robinhood's public documentation still
+names the configured endpoint and writes `docs/hosted-mcp-status.json`. It never
+logs into accounts or invokes trading tools. Documentation changes require review
+rather than silently replacing the service URL. Its HTTP endpoint is propagated
+to the catalog so the site shows a usable MCP connection command.
+
+The seed-phrase detector now checks the English BIP-39 wordlist and checksum,
+with a conservative fallback for explicitly labelled seed assignments. It no
+longer treats every sequence of twelve ordinary English words as a credential.
+Other languages and non-BIP-39 seed schemes are outside that detector's scope.

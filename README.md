@@ -6,7 +6,7 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-1759-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-138-f59e0b)]() [![Official](https://img.shields.io/badge/official-1230-22c55e)]() [![Categories](https://img.shields.io/badge/categories-14-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-1773-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-139-f59e0b)]() [![Official](https://img.shields.io/badge/official-1240-22c55e)]() [![Categories](https://img.shields.io/badge/categories-14-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
 
@@ -23,9 +23,9 @@ A developer building a crypto AI agent today has to hunt through Binance's repo,
 
 CryptoSkill is the crypto-native answer:
 
-- **1759 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
-- **138 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
-- **1230 official skills** according to the recorded source classification (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
+- **1773 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
+- **139 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
+- **1240 official skills** according to the recorded source classification (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
 - **Quality scored** -- every skill rated 0-100 across documentation, security, and depth
 - **Security-scanned** -- credential detection (160+ patterns), code safety, permission analysis
 - **Auto-updated** -- a scheduled workflow refreshes recorded sources every 6 hours, rescores skills, and reports failed or blocked updates
@@ -34,12 +34,12 @@ CryptoSkill is the crypto-native answer:
 
 | Category | Skills |
 |---|---:|
-| DeFi | 290 |
-| Trading | 235 |
-| Exchanges | 234 |
+| DeFi | 294 |
+| Trading | 240 |
+| Exchanges | 235 |
 | AI x Crypto | 215 |
-| Analytics | 141 |
-| MCP Servers | 138 |
+| Analytics | 144 |
+| MCP Servers | 139 |
 | Payments | 104 |
 | Chains | 94 |
 | Wallets | 93 |
@@ -47,7 +47,7 @@ CryptoSkill is the crypto-native answer:
 | Prediction Markets | 75 |
 | Identity | 37 |
 | Social | 15 |
-| dex | 2 |
+| Dex | 2 |
 
 ## Quality Scores
 
@@ -65,16 +65,16 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 
 | Grade | Score | Skills | Meaning |
 |-------|-------|--------|---------|
-| **A** | 80-100 | 28 | Production-ready, well-documented, secure |
-| **B** | 60-79 | 654 | Good quality, minor gaps |
+| **A** | 80-100 | 30 | Production-ready, well-documented, secure |
+| **B** | 60-79 | 667 | Good quality, minor gaps |
 | **C** | 40-59 | 1074 | Usable but significant gaps |
-| **D** | 20-39 | 3 | Minimal quality, use with caution |
+| **D** | 20-39 | 2 | Minimal quality, use with caution |
 
-**Risk Gate**: 96% pass (1697/1759). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
+**Risk Gate**: 98% pass (1745/1773). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
 
 ## MCP Servers
 
-**138 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
+**139 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
 
 ### Official MCP Servers
 
@@ -119,6 +119,8 @@ npm i -g clawhub && clawhub install binance-spot-api
 
 | Project | Source |
 |---|---|
+| [Robinhood](https://robinhood.com/) | [Official Trading MCP documentation](https://robinhood.com/us/en/support/articles/agentic-trading-overview/) |
+| [pump.fun](https://pump.fun/) | [pump-fun/pump-fun-skills](https://github.com/pump-fun/pump-fun-skills) |
 | [Kraken](https://www.kraken.com/) | [krakenfx/kraken-cli](https://github.com/krakenfx/kraken-cli) |
 | [MoonPay](https://www.moonpay.com/) | [moonpay/skills](https://github.com/moonpay/skills) |
 | [Binance](https://www.binance.com/) | [binance/binance-skills-hub](https://github.com/binance/binance-skills-hub) |
@@ -157,7 +159,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 | [Dune Analytics](https://dune.com/) | [duneanalytics/skills](https://github.com/duneanalytics/skills) |
 | [Bybit](https://www.bybit.com/) | [bybit-exchange/skills](https://github.com/bybit-exchange/skills) |
 
-Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, Reown, Bitget Wallet, ChainGPT, SpoonOS, AIBTC, AElf ecosystem (TomorrowDAO, AelfScan, Portkey, Awaken), ICP/dfinity, Hedera, Injective, Flow, XMTP, OpenOcean, and [138 MCP servers](#mcp-servers).
+Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, Reown, Bitget Wallet, ChainGPT, SpoonOS, AIBTC, AElf ecosystem (TomorrowDAO, AelfScan, Portkey, Awaken), ICP/dfinity, Hedera, Injective, Flow, XMTP, OpenOcean, and [139 MCP servers](#mcp-servers).
 
 ## Submit a Skill
 

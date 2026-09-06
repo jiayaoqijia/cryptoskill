@@ -133,6 +133,22 @@ class BundleTests(unittest.TestCase):
         self.assertEqual(report['summary']['local_changes'], 1)
         self.assertEqual((self.dest / 'SKILL.md').read_bytes(), SKILL)
 
+    def test_multi_repo_selection_preserves_community_classification_and_report(self):
+        configs = [{'org': 'acme', 'repo': 'skills', 'category': 'defi', 'prefix': 'acme-'},
+                   {'org': 'beta', 'repo': 'skills', 'category': 'analytics', 'prefix': 'beta-',
+                    'official': False, 'evidence_url': 'https://github.com/beta/skills'},
+                   {'org': 'unselected', 'repo': 'skills', 'category': 'defi', 'prefix': 'no-'}]
+        with patch.object(sync, 'dirty_skills', return_value=set()), \
+             patch.object(sync, 'github_bundle', return_value=('a' * 40, {'SKILL.md': SKILL})) as fetch, \
+             patch.object(sync, 'security_check'):
+            report = sync.sync_registry(self.root, configs, only_repo=['acme/skills', 'beta/skills'],
+                                        skip_clawhub=True, report_path='docs/selected.json')
+        self.assertEqual({call.args[0] for call in fetch.call_args_list}, {'acme/skills', 'beta/skills'})
+        self.assertEqual(report['summary']['added'], 1)
+        self.assertIn('**Classification**: COMMUNITY', (self.root / 'skills/analytics/beta-swap/SOURCE.md').read_text())
+        self.assertTrue((self.root / 'docs/selected.json').exists())
+        self.assertFalse((self.root / 'docs/sync-report.json').exists())
+
     def test_clawhub_owner_mismatch_stops_download(self):
         with patch.object(sync, 'fetch', return_value=b'{"owner":{"handle":"imposter"}}') as fetch:
             with self.assertRaisesRegex(ValueError, 'publisher'):

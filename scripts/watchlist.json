@@ -1,6 +1,6 @@
 {
   "_description": "Top crypto projects watchlist for auto-discovering skills and MCP servers. Maintained manually + updated by bot.",
-  "_updated": "2026-04-29",
+  "_updated": "2026-09-06",
   "cex": [
     {
       "name": "Binance",
@@ -128,6 +128,16 @@
       "status": "added",
       "last_checked": "2026-09-06",
       "submitter": "autoresearch (2026-04-29 pass)"
+    },
+    {
+      "name": "Robinhood",
+      "github": null,
+      "website": "https://robinhood.com",
+      "skills_repo": null,
+      "status": "added-hosted-mcp",
+      "mcp_url": "https://agent.robinhood.com/mcp/trading",
+      "last_checked": "2026-09-06",
+      "note": "Official hosted Trading MCP; three separate community integrations are recorded in curated-sources.json."
     }
   ],
   "dex": [
@@ -264,6 +274,14 @@
       "status": "added",
       "last_checked": "2026-09-06",
       "submitter": "autoresearch (2026-04-29 pass)"
+    },
+    {
+      "name": "pump.fun",
+      "github": "pump-fun",
+      "website": "https://pump.fun",
+      "skills_repo": "pump-fun/pump-fun-skills",
+      "status": "added",
+      "last_checked": "2026-09-06"
     }
   ],
   "l1_chains": [
@@ -1091,6 +1109,16 @@
       "status": "added",
       "last_checked": "2026-09-06",
       "submitter": "autoresearch (2026-04-29 pass)"
+    },
+    {
+      "name": "Fomo (fomo.family)",
+      "github": null,
+      "website": "https://fomo.family",
+      "skills_repo": null,
+      "community_skills_repo": "pooowell/fomo-research-skill",
+      "status": "community-only",
+      "last_checked": "2026-09-06",
+      "note": "Cope Capital research integration; not classified as official Fomo Labs software."
     }
   ],
   "dev_tools": [

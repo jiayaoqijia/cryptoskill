@@ -1,0 +1,71 @@
+{
+  "repositories": [
+    {
+      "org": "pump-fun",
+      "repo": "pump-fun-skills",
+      "category": "defi",
+      "prefix": "pumpfun-official-",
+      "official": true,
+      "project": "pump.fun",
+      "evidence_url": "https://github.com/pump-fun/pump-fun-skills"
+    },
+    {
+      "org": "GMGNAI",
+      "repo": "gmgn-skills",
+      "category": "trading",
+      "prefix": "gmgnai-official-",
+      "official": true,
+      "project": "GMGN",
+      "evidence_url": "https://docs.gmgn.ai/index/gmgn-agent-api"
+    },
+    {
+      "org": "pooowell",
+      "repo": "fomo-research-skill",
+      "category": "analytics",
+      "prefix": "",
+      "official": false,
+      "project": "Fomo / Cope Capital",
+      "evidence_url": "https://github.com/pooowell/fomo-research-skill",
+      "note": "Cope Capital integration using fomo.family data; not an official Fomo Labs skill."
+    },
+    {
+      "org": "kevin1chun",
+      "repo": "robinhood-for-agents",
+      "category": "exchanges",
+      "prefix": "",
+      "official": false,
+      "project": "Robinhood community client",
+      "evidence_url": "https://github.com/kevin1chun/robinhood-for-agents"
+    },
+    {
+      "org": "uzairansaruzi",
+      "repo": "robinhood-agent-skill",
+      "category": "analytics",
+      "prefix": "community-",
+      "official": false,
+      "project": "Robinhood community portfolio advisor",
+      "evidence_url": "https://github.com/uzairansaruzi/robinhood-agent-skill"
+    },
+    {
+      "org": "robinscan",
+      "repo": "robinscan-skill",
+      "category": "analytics",
+      "prefix": "",
+      "official": false,
+      "project": "Robinhood Chain / Robinscan",
+      "evidence_url": "https://github.com/robinscan/robinscan-skill",
+      "note": "Third-party Robinhood Chain explorer; no Robinhood brokerage affiliation is asserted."
+    }
+  ],
+  "hosted_mcps": [
+    {
+      "slug": "robinhood-trading-mcp",
+      "category": "mcp-servers",
+      "project": "Robinhood",
+      "official": true,
+      "endpoint": "https://agent.robinhood.com/mcp/trading",
+      "documentation": "https://robinhood.com/us/en/support/articles/agentic-trading-overview/",
+      "note": "Official hosted service. CryptoSkill maintains the local connection guide; Robinhood does not publish this SKILL.md."
+    }
+  ]
+}
