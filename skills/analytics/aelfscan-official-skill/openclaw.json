@@ -1,0 +1,1043 @@
+{
+  "name": "aelfscan-skill",
+  "description": "AelfScan explorer tools for search, blockchain, addresses, tokens, NFTs, and statistics.",
+  "tools": [
+    {
+      "name": "aelfscan_search_filters",
+      "description": "Get search filter metadata used by explorer search UI.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "search",
+        "filters"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_search",
+      "description": "Search tokens/accounts/contracts/NFTs/blocks/transactions on AelfScan explorer.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "search",
+        "query"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_blocks",
+      "description": "List blocks with pagination.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "blocks"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_blocks_latest",
+      "description": "Get latest blocks (uses blocks API with skipCount=0).",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "blocks-latest"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_block_detail",
+      "description": "Get block detail by block height.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "block-detail"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_transactions",
+      "description": "List transactions with optional filters.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "transactions"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_transactions_latest",
+      "description": "Get latest transactions (uses transactions API with skipCount=0).",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "transactions-latest"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_transaction_detail",
+      "description": "Get transaction detail by transaction id.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "transaction-detail"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_blockchain_overview",
+      "description": "Get blockchain overview metrics and aggregate stats.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "overview"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_transaction_data_chart",
+      "description": "Get transaction data chart series.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "transaction-data-chart"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_address_dictionary",
+      "description": "Resolve or query address dictionary metadata.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "address-dictionary"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_log_events",
+      "description": "Get contract log events by contract address.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "blockchain",
+        "log-events"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_accounts",
+      "description": "List top accounts.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "accounts"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_contracts",
+      "description": "List contracts.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "contracts"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_address_detail",
+      "description": "Get address detail (EOA/contract profile and portfolio).",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "detail"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_address_tokens",
+      "description": "Get token holdings for an address.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "tokens"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_address_nft_assets",
+      "description": "Get NFT holdings for an address.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "nft-assets"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_address_transfers",
+      "description": "Get transfer history for an address.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "transfers"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_contract_history",
+      "description": "Get contract deploy/update history.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "contract-history"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_contract_events",
+      "description": "Get contract events list.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "contract-events"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_contract_source",
+      "description": "Get verified contract source metadata.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "address",
+        "contract-source"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_tokens",
+      "description": "List tokens.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "token",
+        "list"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_token_detail",
+      "description": "Get token detail by symbol.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "token",
+        "detail"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_token_transfers",
+      "description": "Get token transfer list by symbol.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "token",
+        "transfers"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_token_holders",
+      "description": "Get token holders.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "token",
+        "holders"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_collections",
+      "description": "List NFT collections.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "collections"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_collection_detail",
+      "description": "Get NFT collection detail.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "collection-detail"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_transfers",
+      "description": "Get NFT transfers by collection symbol.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "transfers"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_holders",
+      "description": "Get NFT holders by collection symbol.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "holders"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_inventory",
+      "description": "Get NFT inventory by collection symbol.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "inventory"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_item_detail",
+      "description": "Get NFT item detail by symbol.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "item-detail"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_item_holders",
+      "description": "Get holders of a specific NFT item.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "item-holders"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_nft_item_activity",
+      "description": "Get activity list of a specific NFT item.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "nft",
+        "item-activity"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics",
+      "description": "Get statistics by metric enum, supports all existing statistics endpoints.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "metric"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_transactions",
+      "description": "Get daily transactions statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-transactions"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_unique_addresses",
+      "description": "Get unique addresses statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "unique-addresses"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_active_addresses",
+      "description": "Get daily active addresses statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-active-addresses"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_monthly_active_addresses",
+      "description": "Get monthly active addresses statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "monthly-active-addresses"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_block_produce_rate",
+      "description": "Get block produce rate statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "block-produce-rate"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_avg_block_duration",
+      "description": "Get average block duration statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "avg-block-duration"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_cycle_count",
+      "description": "Get cycle count statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "cycle-count"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_node_block_produce",
+      "description": "Get node block produce statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "node-block-produce"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_avg_transaction_fee",
+      "description": "Get daily average transaction fee statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-avg-transaction-fee"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_tx_fee",
+      "description": "Get daily transaction fee statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-tx-fee"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_total_burnt",
+      "description": "Get daily total burnt statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-total-burnt"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_elf_price",
+      "description": "Get daily ELF price statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-elf-price"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_deploy_contract",
+      "description": "Get daily deploy contract statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-deploy-contract"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_block_reward",
+      "description": "Get daily block reward statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-block-reward"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_avg_block_size",
+      "description": "Get daily average block size statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-avg-block-size"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_top_contract_call",
+      "description": "Get top contract call statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "top-contract-call"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_contract_call",
+      "description": "Get daily contract call statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-contract-call"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_supply_growth",
+      "description": "Get daily supply growth statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-supply-growth"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_market_cap",
+      "description": "Get daily market cap statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-market-cap"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_staked",
+      "description": "Get daily staked statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-staked"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_holder",
+      "description": "Get daily holder statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-holder"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_tvl",
+      "description": "Get daily TVL statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-tvl"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_node_current_produce_info",
+      "description": "Get current node produce information.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "node-current-produce-info"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_elf_supply",
+      "description": "Get ELF supply statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "elf-supply"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_transaction_info",
+      "description": "Get daily transaction summary for a date range.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-transaction-info"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_daily_activity_address",
+      "description": "Get daily activity address summary for a date range.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "daily-activity-address"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "aelfscan_statistics_currency_price",
+      "description": "Get currency price statistics.",
+      "command": "bun",
+      "args": [
+        "run",
+        "aelfscan_skill.ts",
+        "statistics",
+        "currency-price"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    }
+  ]
+}

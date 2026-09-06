@@ -1,0 +1,831 @@
+{
+  "expectations": [
+    {
+      "id": 1,
+      "prompt": "What is the Sui Object Model and how do objects work on Sui?",
+      "expectations": [
+        {
+          "text": "The response explains that every resource, asset, and piece of data onchain is an object with a globally unique ID",
+          "passed": true,
+          "evidence": "SKILL.md states: 'Every resource, asset, and piece of data onchain is an object' and 'Globally unique ID: A 32-byte identifier derived from the creation transaction digest plus a generation counter.'"
+        },
+        {
+          "text": "The response describes the four components of an object: unique ID, version number, owner field, and transaction digest",
+          "passed": true,
+          "evidence": "SKILL.md 'Object structure' section explicitly lists all four: 'Globally unique ID,' 'Version number,' 'Owner field,' and 'Transaction digest' with byte sizes and descriptions."
+        },
+        {
+          "text": "The response explains that object versions use Lamport timestamps and increment with each modification",
+          "passed": true,
+          "evidence": "SKILL.md states: 'Version number: An 8-byte integer that increments with each modification. Uses Lamport timestamps: the new version for all objects a transaction touches is 1 + max(version of all input objects).'"
+        },
+        {
+          "text": "The response contrasts Sui's object model with account-based blockchains like Ethereum where state lives in shared mappings inside contracts",
+          "passed": true,
+          "evidence": "SKILL.md states: 'Unlike account-based blockchains where state lives in shared mappings inside contracts, Sui gives each piece of state its own identity, version, and owner.'"
+        },
+        {
+          "text": "The response explains that transactions consume objects as inputs and produce modified versions as outputs",
+          "passed": true,
+          "evidence": "SKILL.md states: 'Transactions consume objects as inputs and produce modified versions as outputs.'"
+        },
+        {
+          "text": "The response mentions the three object reference types: ID alone, versioned ID, and full object reference (ID + version + digest)",
+          "passed": true,
+          "evidence": "SKILL.md states: 'Objects can be referenced three ways: by ID alone (query current state), by versioned ID (read historical state), or by full object reference containing ID + version + digest (transaction inputs, authenticated snapshot).'"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What are the different types of object ownership on Sui? When should I use a shared object vs an owned object?",
+      "expectations": [
+        {
+          "text": "The response describes address-owned objects and states they skip consensus (fastpath) for lowest latency",
+          "passed": true,
+          "evidence": "ownership.md states: 'Address-owned objects skip consensus entirely (fastpath). This gives them the lowest latency and highest throughput.'"
+        },
+        {
+          "text": "The response describes shared objects and states they require consensus ordering through Mysticeti",
+          "passed": true,
+          "evidence": "ownership.md states: 'Shared objects require consensus ordering through Mysticeti.'"
+        },
+        {
+          "text": "The response describes immutable/frozen objects as permanent, unchangeable, and consensus-free",
+          "passed": true,
+          "evidence": "ownership.md states: 'Cannot be changed, transferred, or deleted. Anyone can read them.' and 'Immutable objects skip consensus (like owned objects).'"
+        },
+        {
+          "text": "The response describes wrapped objects as nested inside another object and not directly accessible by ID",
+          "passed": true,
+          "evidence": "ownership.md states: 'An object stored as a field inside another object. Wrapped objects are not directly accessible by ID; they can only be reached through their parent.'"
+        },
+        {
+          "text": "The response provides guidance: use owned objects for single-user operations, shared objects when multiple users need access",
+          "passed": true,
+          "evidence": "ownership.md states: 'Most transactions on Sui (transfers, personal asset management, single-player game moves) touch only owned objects' and 'Use shared objects when multiple users or modules need to read or write the same state (registries, pools, marketplaces, shared game state).'"
+        },
+        {
+          "text": "The response explains that once an object is shared, it cannot be converted back to address-owned",
+          "passed": true,
+          "evidence": "ownership.md states: 'Once shared, an object cannot be unshared or converted back to address-owned.' Also in SKILL.md rules: 'Once an object is shared, it cannot be converted back to address-owned.'"
+        },
+        {
+          "text": "The response mentions the shared object access mode optimization: immutable reference (&) allows parallel read-only transactions, mutable reference (&mut) requires sequencing",
+          "passed": true,
+          "evidence": "ownership.md 'Access mode optimization' section: 'When a function takes a shared object by immutable reference (&), the system marks it as mutable: false and can schedule multiple read-only transactions on that shared object in parallel. When taken by mutable reference (&mut) or by value, the system marks it as mutable: true and consensus must sequence those transactions.'"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "How do I share an object on Sui? Can I access a shared object from the frontend just by knowing its object ID?",
+      "expectations": [
+        {
+          "text": "The response explains that transfer::share_object() or transfer::public_share_object() makes an object shared",
+          "passed": true,
+          "evidence": "ownership.md states: 'Created through transfer::share_object() or transfer::public_share_object().' transfers.md also lists both functions in the tables."
+        },
+        {
+          "text": "The response clarifies that public_share_object requires the store ability while share_object does not",
+          "passed": true,
+          "evidence": "transfers.md separates functions into two tables: 'Module-restricted (no store required)' listing share_object, and 'Public (requires store)' listing public_share_object. Verified against move-book storage-functions page which confirms public versions require key + store."
+        },
+        {
+          "text": "The response confirms that to use a shared object in a transaction, you need its object ID",
+          "passed": true,
+          "evidence": "ownership.md 'Frontend access' section: 'To use a shared object in a transaction from a frontend or CLI, you reference it by its object ID as a transaction input.'"
+        },
+        {
+          "text": "The response explains that anyone on the network can access shared objects",
+          "passed": true,
+          "evidence": "ownership.md states: 'Accessible to any address on the network' and 'Anyone on the network can reference a shared object by ID.'"
+        },
+        {
+          "text": "The response mentions that care must be taken to implement access control on shared objects if needed",
+          "passed": true,
+          "evidence": "ownership.md states: 'Implement access control within your Move functions if needed.'"
+        },
+        {
+          "text": "The response does not claim you need to 'fetch' or 'get' a shared object before using it in a PTB — you reference it by ID",
+          "passed": true,
+          "evidence": "ownership.md explicitly states: 'There is no need to \"fetch\" or \"get\" the shared object before including it in a programmable transaction block.'"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "What do the key, store, copy, and drop abilities do in Sui Move? What happens if my object has key but not store?",
+      "expectations": [
+        {
+          "text": "The response explains that key makes a struct a Sui object and requires id: UID as the first field",
+          "passed": true,
+          "evidence": "SKILL.md ability table: 'key — The struct is a Sui object. Must have id: UID as first field.' Verified against move-book key-ability page which confirms the same."
+        },
+        {
+          "text": "The response explains that store allows the object to be stored inside other objects and enables public_transfer from any module",
+          "passed": true,
+          "evidence": "SKILL.md ability table: 'store — The struct can be stored inside other objects, and transferred by any module using public_transfer.' Verified against move-book store-ability page."
+        },
+        {
+          "text": "The response explicitly states that without store, only the defining module can transfer the object",
+          "passed": true,
+          "evidence": "SKILL.md states: 'Without it, only the defining module can transfer the object.' Also in common ability combinations: 'has key: Only the defining module can transfer, share, or freeze.'"
+        },
+        {
+          "text": "The response explains that copy allows duplication (rare for objects) and drop allows silent discard",
+          "passed": false,
+          "evidence": "SKILL.md describes copy as 'Rarely used on objects. Used for configs, event data, or read-only values' and drop as 'Rarely used on objects. Useful for ephemeral receipts.' However, the skill claims these can be used on objects (e.g., listing 'has key, store, drop' as a valid combination), which contradicts the move-book key-ability page that explicitly states: 'UID is a type that does not have the drop or copy abilities. Since it is required as a field of any type with the key ability, this means that types with key can never have drop or copy.' Objects (structs with key) CANNOT have copy or drop. The skill's description of these abilities on objects is factually incorrect."
+        },
+        {
+          "text": "The response warns that once store is added, custom transfer rules can never be re-enabled",
+          "passed": true,
+          "evidence": "SKILL.md states: 'Adding store permanently removes the ability to enforce custom transfer rules' and 'Once store is granted, you cannot re-add custom transfer restrictions.'"
+        },
+        {
+          "text": "The response explains that objects with key alone enable custom transfer logic enforced by the defining module",
+          "passed": true,
+          "evidence": "SKILL.md common ability combinations: 'has key: Only the defining module can transfer, share, or freeze. Use for custom transfer rules.'"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "What is the difference between dynamic fields and dynamic object fields? When should I use each?",
+      "expectations": [
+        {
+          "text": "The response explains that dynamic_field stores any value with store ability, and the value is wrapped (not visible to explorers)",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md table: 'Dynamic field | sui::dynamic_field | Any type with store | Wrapped: not visible to explorers or wallets by ID'. Verified against move-book dynamic-object-fields page."
+        },
+        {
+          "text": "The response explains that dynamic_object_field stores objects (key + store), and the child retains its own ID and is visible to explorers and wallets",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md table: 'Dynamic object field | sui::dynamic_object_field | Must be an object (key + store) | Child retains its own ID, visible to explorers and wallets'. Verified against move-book."
+        },
+        {
+          "text": "The response explains the core API: add, borrow, borrow_mut, remove, exists_",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md 'Core API' section shows code examples for add, borrow (immutable), borrow_mut (mutable), remove, and exists_ with full function signatures."
+        },
+        {
+          "text": "The response states that accessing a nonexistent field aborts the transaction",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md states: 'Accessing a nonexistent field aborts the transaction.'"
+        },
+        {
+          "text": "The response provides guidance: use dynamic_object_field when the child should be independently queryable by ID",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md states: 'When to use dynamic object field: When the stored value is an object that should remain independently queryable.'"
+        },
+        {
+          "text": "The response warns that deleting an object with dynamic fields still defined renders those fields permanently inaccessible",
+          "passed": true,
+          "evidence": "SKILL.md rules: 'Always remove all dynamic fields before deleting a parent object — orphaned fields become permanently inaccessible.' Also in transfers.md: 'Deleting objects with dynamic fields defined on them renders those fields permanently inaccessible.'"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "My player NFT needs an inventory that can hold any arbitrary Sui object — Swords, Shields, Potions, anything. How should I model this?",
+      "expectations": [
+        {
+          "text": "The response recommends ObjectBag (or Bag) for holding objects of different types in one collection",
+          "passed": true,
+          "evidence": "patterns.md 'Inventory pattern' section: 'For an object that holds an arbitrary collection of other objects... use ObjectBag or ObjectTable' with code example using ObjectBag. dynamic-fields-and-collections.md collection table: 'Inventory holding arbitrary Sui objects | ObjectBag (heterogeneous objects).'"
+        },
+        {
+          "text": "The response explains that ObjectBag values must be objects with key + store",
+          "passed": true,
+          "evidence": "patterns.md inventory code: 'public fun add_to_inventory<T: key + store>(player: &mut Player, item: T)'. dynamic-fields-and-collections.md: 'ObjectBag is the same but values must be objects.'"
+        },
+        {
+          "text": "The response shows or describes the pattern: add items keyed by their object ID, remove by ID",
+          "passed": true,
+          "evidence": "patterns.md shows the full pattern: 'let item_id = object::id(&item); object_bag::add(&mut player.inventory, item_id, item);' and 'public fun remove_from_inventory<T: key + store>(player: &mut Player, item_id: ID): T { object_bag::remove(&mut player.inventory, item_id) }'"
+        },
+        {
+          "text": "The response contrasts with ObjectTable which requires all values to be the same type",
+          "passed": true,
+          "evidence": "patterns.md states: 'Use ObjectBag when items can be different types (Sword, Shield, Potion). Use ObjectTable<ID, T> when all items are the same type.'"
+        },
+        {
+          "text": "The response mentions that ObjectBag preserves child object visibility (queryable by explorers)",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'ObjectBag is the same but values must be objects.' And for ObjectTable: 'Child objects keep their own IDs and are visible to explorers.' The skill content about dynamic object fields (which ObjectBag is built on) confirms visibility. However, the explicit statement about ObjectBag preserving visibility is only implied through the dynamic object field explanation, not stated directly for ObjectBag itself. Still, the routing guide sends inventory questions to both patterns and dynamic-fields-and-collections, where the connection can be made."
+        },
+        {
+          "text": "The response does not recommend VecMap or plain vectors for this use case",
+          "passed": true,
+          "evidence": "SKILL.md common mistakes: 'Using VecMap for large collections. It has O(n) lookup and is stored inline, hitting the 256 KB object size limit quickly.' The inventory pattern explicitly uses ObjectBag, not VecMap."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "When should I use Table vs VecMap vs Bag in Sui Move? What are the performance tradeoffs?",
+      "expectations": [
+        {
+          "text": "The response explains that Table has O(1) lookup via dynamic fields and is the default for large or unbounded collections",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'Table<K, V> is a homogeneous key-value map backed by dynamic fields. O(1) lookup. The default choice for large or unbounded collections.'"
+        },
+        {
+          "text": "The response explains that VecMap has O(n) lookup, is stored inline, and should only be used for small collections (under ~100 entries)",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'VecMap<K, V> is a vector-backed map with O(n) lookup. Stored inline on the object (no dynamic fields). Cheaper per entry but does not scale past ~100 entries.'"
+        },
+        {
+          "text": "The response explains that Bag allows heterogeneous key-value types while Table requires homogeneous types",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'Bag is a heterogeneous map: keys and values can be different types across entries' vs Table which is 'a homogeneous key-value map.'"
+        },
+        {
+          "text": "The response mentions ObjectTable and ObjectBag as variants where values must be objects",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md describes both: 'ObjectTable<K, V> is the same but values must be objects (key + store)' and 'ObjectBag is the same but values must be objects.'"
+        },
+        {
+          "text": "The response mentions LinkedTable for ordered iteration",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'LinkedTable<K, V> is a doubly-linked map that preserves insertion order and supports ordered iteration.'"
+        },
+        {
+          "text": "The response explains that Table/Bag entries each cost a separate storage operation while VecMap/VecSet are stored inline",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md states VecMap is 'Stored inline on the object (no dynamic fields)' and system limits note 'each field is a separate storage operation'. The collection table also differentiates between dynamic-field-backed collections and inline ones."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "How do I destroy an object in Sui Move? What if it doesn't have the drop ability?",
+      "expectations": [
+        {
+          "text": "The response explains that objects without drop must be explicitly unpacked (destructured)",
+          "passed": true,
+          "evidence": "transfers.md: 'Objects without drop must be explicitly unpacked. The UID must be deleted with object::delete().' Verified against move-book uid-and-id page."
+        },
+        {
+          "text": "The response states that the UID must be deleted using object::delete(id) or id.delete()",
+          "passed": true,
+          "evidence": "transfers.md: 'The UID must be deleted with object::delete()' and code example shows 'id.delete()'. Verified against move-book."
+        },
+        {
+          "text": "The response explains that all other fields must be dropped (if they have drop), stored, or recursively unpacked",
+          "passed": true,
+          "evidence": "transfers.md: 'For objects with complex fields (like LinkedTable), you must handle each field: drop it if it has drop, destroy it if it has a destroy_empty method, or recursively unpack it.'"
+        },
+        {
+          "text": "The response includes a code example showing the let MyStruct { id, ... } = obj; id.delete(); pattern",
+          "passed": true,
+          "evidence": "transfers.md shows: 'let Character { id, name: _ } = character; id.delete();'"
+        },
+        {
+          "text": "The response mentions that a shared object can be destroyed by taking it by value and deleting it in the same function",
+          "passed": true,
+          "evidence": "transfers.md: 'A shared object can be destroyed if a function takes it by value and deletes it within the same transaction.' Verified against move-book storage-functions page which confirms shared objects can be deleted by taking by value."
+        },
+        {
+          "text": "The response warns about dynamic fields: deleting an object with dynamic fields still defined renders them inaccessible",
+          "passed": true,
+          "evidence": "transfers.md: 'Deleting objects with dynamic fields defined on them renders those fields permanently inaccessible. Always remove all dynamic fields before deleting the parent.'"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Explain the hot potato pattern in Sui Move. Why would I use it?",
+      "expectations": [
+        {
+          "text": "The response defines a hot potato as a struct with no abilities (no key, store, copy, or drop)",
+          "passed": true,
+          "evidence": "patterns.md: 'A hot potato is a struct with no abilities at all.' SKILL.md: 'No abilities: A hot potato. Must be consumed in the same transaction.' Verified against move-book hot-potato-pattern page."
+        },
+        {
+          "text": "The response explains that because it has no abilities, it cannot be stored, copied, or dropped",
+          "passed": true,
+          "evidence": "patterns.md: 'It cannot be stored, copied, or dropped.' Verified against move-book which says 'the transaction will abort due to unused value without drop.'"
+        },
+        {
+          "text": "The response explains that the hot potato must be consumed by a function in the same PTB or the transaction aborts",
+          "passed": true,
+          "evidence": "patterns.md: 'It must be consumed by a function in the same transaction (PTB).' and 'If they do not, the transaction aborts.'"
+        },
+        {
+          "text": "The response provides a use case: enforcing borrow-and-return workflows, multi-step processes, or forced callbacks",
+          "passed": true,
+          "evidence": "patterns.md: 'This enforces multi-step workflows' with a borrow-and-return example. Verified against move-book which lists borrowing, flash loans, and variable-path execution as use cases."
+        },
+        {
+          "text": "The response includes a code example or describes the pattern with a Receipt struct",
+          "passed": true,
+          "evidence": "patterns.md shows a full code example with 'public struct Receipt {}' (no abilities), borrow_item returning a Receipt, and return_item consuming the Receipt."
+        },
+        {
+          "text": "The response does not confuse hot potatoes with objects (they have no key ability)",
+          "passed": true,
+          "evidence": "patterns.md correctly defines Receipt as 'public struct Receipt {}' with no abilities, not as an object. SKILL.md categorizes 'No abilities' under 'Structs without key'."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "How does transfer work on Sui? What is the difference between transfer::transfer and transfer::public_transfer?",
+      "expectations": [
+        {
+          "text": "The response explains that transfer::transfer can only be called from the module that defines the object's type",
+          "passed": true,
+          "evidence": "transfers.md: 'Module-restricted (no store required): These can only be called from the module that defines the object's type' listing transfer::transfer. Verified against move-book storage-functions page."
+        },
+        {
+          "text": "The response explains that transfer::public_transfer can be called from any module but requires the object to have the store ability",
+          "passed": true,
+          "evidence": "transfers.md: 'Public (requires store): These can be called from any module, but the object must have the store ability' listing public_transfer. Verified against move-book."
+        },
+        {
+          "text": "The response lists all six core transfer functions: transfer, public_transfer, share_object, public_share_object, freeze_object, public_freeze_object",
+          "passed": true,
+          "evidence": "transfers.md lists all six in two tables: transfer, share_object, freeze_object (module-restricted) and public_transfer, public_share_object, public_freeze_object (public). Verified against move-book which confirms three operations with restricted and public variants."
+        },
+        {
+          "text": "The response explains that the same public_ vs module-only distinction applies to share and freeze functions",
+          "passed": true,
+          "evidence": "transfers.md organizes all six functions into the same two-tier structure, making the parallel clear. share_object vs public_share_object, freeze_object vs public_freeze_object."
+        },
+        {
+          "text": "The response mentions that this design enables custom transfer rules for objects without store",
+          "passed": true,
+          "evidence": "transfers.md 'Custom transfer rules' section: 'Objects without store can only be transferred by their defining module. This lets you enforce preconditions.' With a code example showing conditional transfer."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "How do I transfer an object to another object on Sui? What is Receiving<T>?",
+      "expectations": [
+        {
+          "text": "The response explains that objects can be transferred to other object IDs just like they are transferred to addresses",
+          "passed": true,
+          "evidence": "transfers.md: 'Objects can be transferred to other object IDs, not just addresses. Sui treats 32-byte addresses and 32-byte object IDs identically for transfer purposes.'"
+        },
+        {
+          "text": "The response describes the Receiving<T> type as a proof that an object was sent to a parent",
+          "passed": true,
+          "evidence": "transfers.md: 'The receiving object must explicitly accept sent objects using the Receiving<T> type.' The code example shows Receiving<T> used as a parameter to accept_item."
+        },
+        {
+          "text": "The response explains that transfer::receive requires being in the child's defining module, while transfer::public_receive works for any object with key + store",
+          "passed": true,
+          "evidence": "transfers.md: 'transfer::receive(parent_uid, receiving) works for objects defined in the current module (no store required on child).' and 'transfer::public_receive(parent_uid, receiving) works for any object with key + store.'"
+        },
+        {
+          "text": "The response states that receiving requires mutable access to the parent's UID",
+          "passed": true,
+          "evidence": "transfers.md: 'Requires mutable access to the parent's UID, which enforces access control.' Code example shows 'parent: &mut UID'."
+        },
+        {
+          "text": "The response mentions that Receiving<T> has only the drop ability, so receiving is optional — you can ignore sent objects",
+          "passed": true,
+          "evidence": "transfers.md: 'Receiving<T> has only drop, so you can choose to receive some, none, or all objects sent to a parent.'"
+        },
+        {
+          "text": "The response explains that this is different from Ethereum where tokens are automatically added to a balance",
+          "passed": true,
+          "evidence": "transfers.md: 'This differs from Ethereum, where tokens are automatically added to a recipient's balance — on Sui, the parent must opt in to receiving.'"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "I want to make an NFT that cannot be transferred by the holder. How do I make a soulbound object on Sui?",
+      "expectations": [
+        {
+          "text": "The response explains that an object with key but without store can only be transferred by its defining module",
+          "passed": true,
+          "evidence": "patterns.md: 'An object without store can only be transferred by its defining module.' SKILL.md ability table confirms: 'Without it, only the defining module can transfer the object.'"
+        },
+        {
+          "text": "The response states that to make it fully non-transferable, simply do not expose any transfer function in the module",
+          "passed": true,
+          "evidence": "patterns.md: 'To make it fully non-transferable, simply do not expose any transfer function.'"
+        },
+        {
+          "text": "The response mentions the hot potato pattern with a ReturnReceipt for allowing temporary borrowing with forced return",
+          "passed": true,
+          "evidence": "patterns.md: 'To allow temporary borrowing with forced return, use the hot potato pattern with a ReturnReceipt.'"
+        },
+        {
+          "text": "The response does not suggest adding store to a soulbound object",
+          "passed": true,
+          "evidence": "The skill content consistently warns against adding store for soulbound objects: 'Once you add store to an object, you permanently give up the ability to enforce custom transfer rules.' (transfers.md)"
+        },
+        {
+          "text": "The response is consistent with Sui's transfer rules",
+          "passed": true,
+          "evidence": "The soulbound pattern described in patterns.md is consistent with the transfer rules in transfers.md and SKILL.md. Verified against move-book storage-functions page which confirms module-restricted transfer behavior."
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "What is the capability pattern in Sui Move? How do AdminCap and TreasuryCap work?",
+      "expectations": [
+        {
+          "text": "The response explains that a capability (cap) is an object that grants permission to perform an action",
+          "passed": true,
+          "evidence": "patterns.md: 'A capability (cap) is an object that grants permission to perform an action.' Verified against move-book capability page which says 'a capability is a token that gives the owner the right to perform a specific action.'"
+        },
+        {
+          "text": "The response states that caps are typically created in the module's init function and transferred to the publisher",
+          "passed": true,
+          "evidence": "patterns.md: 'Typically created in the module's init function and transferred to the publisher.' Code example shows creation in init. Verified against move-book."
+        },
+        {
+          "text": "The response shows or describes the pattern: the cap is passed as a reference parameter to gated functions",
+          "passed": true,
+          "evidence": "patterns.md code: 'public fun admin_action(_: &AdminCap, registry: &mut Registry) { // Only callable by whoever holds the AdminCap }'"
+        },
+        {
+          "text": "The response mentions common examples: AdminCap, TreasuryCap, UpgradeCap",
+          "passed": true,
+          "evidence": "patterns.md: 'Common examples: AdminCap, TreasuryCap, UpgradeCap.'"
+        },
+        {
+          "text": "The response mentions that caps can be stored inside other objects and temporarily borrowed using the sui::borrow module",
+          "passed": true,
+          "evidence": "patterns.md 'Borrow pattern' section: 'Caps can be stored inside other objects and temporarily borrowed using the sui::borrow module.'"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "I have a cap stored inside an object. How can I temporarily give it to a caller to use in a PTB and make sure they return it?",
+      "expectations": [
+        {
+          "text": "The response describes the borrow pattern: wrap the cap in a Referent, let the caller borrow it, and force return via a hot potato receipt",
+          "passed": true,
+          "evidence": "patterns.md: 'This module provides a Referent<T> wrapper and a hot potato receipt to ensure the cap is returned in the same PTB.' The flow describes: store in Referent, borrow, use, put_back."
+        },
+        {
+          "text": "The response explains that the hot potato receipt cannot be stored or dropped, forcing the caller to return the cap in the same PTB",
+          "passed": true,
+          "evidence": "patterns.md: 'Because the Borrow receipt has no drop, the caller cannot keep the cap — the transaction aborts if the receipt is not consumed.'"
+        },
+        {
+          "text": "The response mentions the sui::borrow module from the Sui framework",
+          "passed": true,
+          "evidence": "patterns.md: 'Caps can be stored inside other objects and temporarily borrowed using the sui::borrow module.'"
+        },
+        {
+          "text": "The response notes that the cap must have key + store to be stored inside a Referent",
+          "passed": true,
+          "evidence": "patterns.md: 'Store the cap inside a Referent<T> wrapper (requires key + store on the cap).'"
+        },
+        {
+          "text": "The response does not suggest simply transferring the cap (which would give permanent access)",
+          "passed": true,
+          "evidence": "patterns.md explicitly warns: 'This is safer than transferring the cap, which would give permanent access.'"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "How does object versioning work on Sui? What happens to the version when I modify a shared object?",
+      "expectations": [
+        {
+          "text": "The response explains that versions use Lamport timestamps: new version = 1 + max(version of all input objects)",
+          "passed": true,
+          "evidence": "ownership.md: 'Object versions use Lamport timestamps. When a transaction touches multiple objects, all of them receive the same new version: 1 + max(version of all input objects).' Also in SKILL.md."
+        },
+        {
+          "text": "The response gives a concrete example (e.g., object at version 5 + gas at version 3 produces version 6 for both)",
+          "passed": true,
+          "evidence": "ownership.md: 'Example: if a transaction modifies an object at version 5 using a gas coin at version 3, both the object and the gas coin become version 6.'"
+        },
+        {
+          "text": "The response explains that only the most recent version is accessible to active transactions",
+          "passed": true,
+          "evidence": "ownership.md: 'Only the most recent version is accessible to active transactions.'"
+        },
+        {
+          "text": "The response distinguishes fastpath versioning (owned objects, no consensus) from consensus versioning (shared objects)",
+          "passed": true,
+          "evidence": "ownership.md 'Versioning and ownership' section: 'Fastpath (owned/immutable) objects: Version is updated without consensus. Lowest latency.' vs 'Consensus (shared) objects: Version is updated through consensus ordering.'"
+        },
+        {
+          "text": "The response mentions that wrapped objects and dynamic fields also follow Lamport versioning",
+          "passed": true,
+          "evidence": "ownership.md: 'Wrapped objects: Version increments when the parent is modified' and 'Dynamic fields: Version increments when the field is modified, following Lamport timestamps like regular objects.'"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "What are wrapped objects on Sui? If I wrap an object that has a UID, can I still access it directly by its ID?",
+      "expectations": [
+        {
+          "text": "The response explains that a wrapped object is stored as a field inside another object",
+          "passed": true,
+          "evidence": "ownership.md: 'An object stored as a field inside another object.'"
+        },
+        {
+          "text": "The response clearly states that while wrapped, the object is NOT directly accessible by its ID, even if it has a UID",
+          "passed": true,
+          "evidence": "ownership.md: 'Wrapped objects are not directly accessible by ID; they can only be reached through their parent. While wrapped, the object cannot be passed as a transaction input, even if you know its ID.'"
+        },
+        {
+          "text": "The response explains that you can only reach a wrapped object through its parent",
+          "passed": true,
+          "evidence": "ownership.md: 'they can only be reached through their parent.'"
+        },
+        {
+          "text": "The response states that when unwrapped, the object regains direct access and retains its original ID",
+          "passed": true,
+          "evidence": "ownership.md: 'When unwrapped, the object regains direct access and retains its original ID.'"
+        },
+        {
+          "text": "The response mentions that wrapping requires the child to have the store ability",
+          "passed": true,
+          "evidence": "ownership.md: 'Wrapping requires the child object to have the store ability (so it can be stored inside the parent).'"
+        },
+        {
+          "text": "The response mentions that wrapping and unwrapping can happen within the same transaction",
+          "passed": true,
+          "evidence": "ownership.md: 'Wrapping and unwrapping can happen within the same transaction.'"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "How does parallel execution work on Sui? Why do owned objects skip consensus but shared objects don't?",
+      "expectations": [
+        {
+          "text": "The response explains that transactions on owned objects skip consensus entirely because only one address can access them, so there are no conflicts",
+          "passed": true,
+          "evidence": "ownership.md: 'Address-owned objects skip consensus entirely (fastpath).' and 'The tradeoff: only one address can use the object.'"
+        },
+        {
+          "text": "The response explains that shared objects require Mysticeti consensus to order transactions from multiple addresses",
+          "passed": true,
+          "evidence": "ownership.md: 'Shared objects require consensus ordering through Mysticeti. This adds latency and gas cost compared to owned objects.'"
+        },
+        {
+          "text": "The response states that this separation gives Sui its throughput advantage: most transactions touch only owned objects",
+          "passed": true,
+          "evidence": "ownership.md: 'Most transactions on Sui (transfers, personal asset management, single-player game moves) touch only owned objects and execute in parallel.' This implicitly conveys the throughput advantage."
+        },
+        {
+          "text": "The response mentions the shared object access mode optimization: read-only access (immutable reference) allows parallel scheduling",
+          "passed": true,
+          "evidence": "ownership.md 'Access mode optimization' section describes this in detail: immutable reference allows parallel scheduling of read-only transactions."
+        },
+        {
+          "text": "The response gives examples of owned-object operations that run in parallel (transfers, personal asset management)",
+          "passed": true,
+          "evidence": "ownership.md: 'Most transactions on Sui (transfers, personal asset management, single-player game moves) touch only owned objects and execute in parallel.'"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "What are derived objects in Sui? How are they different from dynamic fields?",
+      "expectations": [
+        {
+          "text": "The response explains that derived objects have deterministic IDs computed from a parent ID and a key",
+          "passed": true,
+          "evidence": "patterns.md: 'Derived objects use deterministic IDs computed from a parent object's ID and a key, rather than random assignment.'"
+        },
+        {
+          "text": "The response explains that the ID can be predicted before the object is created using derived_object::derive_address",
+          "passed": true,
+          "evidence": "patterns.md: 'Compute the address before creating the object: let derived_addr = derived_object::derive_address(parent_id, key);' and 'Deterministic: The same (parent, key) always produces the same address.'"
+        },
+        {
+          "text": "The response states that derived objects are independently owned, unlike dynamic fields which are always owned by the parent",
+          "passed": true,
+          "evidence": "patterns.md comparison table: 'Independent ownership | Yes (any ownership type) | No (always owned by parent)'"
+        },
+        {
+          "text": "The response explains that derived objects enable parallel access because they are not sequenced through the parent",
+          "passed": true,
+          "evidence": "patterns.md: 'Parallel-friendly: Unrelated keys can be updated simultaneously because derived objects are independently owned, unlike dynamic fields which sequence through the parent.' Comparison table: 'Parallel access | Yes | Limited (sequenced through parent)'"
+        },
+        {
+          "text": "The response mentions that dynamic fields require the parent for every access while derived objects only need the parent at creation",
+          "passed": true,
+          "evidence": "patterns.md comparison table: 'Parent required for access | Only at creation | Always'"
+        },
+        {
+          "text": "The response notes that assets can be sent to a derived address before the object exists",
+          "passed": true,
+          "evidence": "patterns.md: 'Receive before creation: Assets can be sent to a derived address before the derived object exists.'"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "What is Object Display in Sui? How do I set up display templates so wallets and explorers show my NFT correctly?",
+      "expectations": [
+        {
+          "text": "The response explains that Object Display defines how objects render in wallets, explorers, and apps",
+          "passed": true,
+          "evidence": "display.md: 'Object Display defines how objects render in wallets, explorers, and apps.'"
+        },
+        {
+          "text": "The response describes the {field_name} template syntax for interpolating struct fields into display values",
+          "passed": true,
+          "evidence": "display.md: 'Display templates use {field_name} syntax. The placeholder is replaced with the actual field value from the object at display time.' Examples shown."
+        },
+        {
+          "text": "The response mentions that a Publisher object is required to create a Display",
+          "passed": true,
+          "evidence": "display.md: 'A Publisher object is required to create a Display. The Publisher proves module authority and is obtained during the module's init function using package::claim(otw, ctx).' Verified against move-book display page."
+        },
+        {
+          "text": "The response lists common display properties: name, description, image_url",
+          "passed": true,
+          "evidence": "display.md table lists: name, description, image_url, link, project_url, creator."
+        },
+        {
+          "text": "The response mentions calling update_version() to finalize display changes",
+          "passed": true,
+          "evidence": "display.md: 'After adding or modifying display properties, you must call update_version() to publish the changes. Without this call, wallets and explorers do not pick up the new display configuration.'"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "I'm building a governance system where users can vote. The registry of votes needs to support up to 100,000 voters. Should I use Table, VecMap, or something else?",
+      "expectations": [
+        {
+          "text": "The response recommends Table (not VecMap) for 100,000 entries",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md collection table: 'Large or unbounded homogeneous map | Table<K, V>'. SKILL.md rules: 'Do not use VecMap for collections larger than ~100 entries. Use Table instead.'"
+        },
+        {
+          "text": "The response explains that VecMap has O(n) lookup and would be extremely slow at 100,000 entries",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'VecMap<K, V> is a vector-backed map with O(n) lookup.' SKILL.md common mistakes: 'Using VecMap for large collections. It has O(n) lookup and is stored inline, hitting the 256 KB object size limit quickly.'"
+        },
+        {
+          "text": "The response explains that Table uses dynamic fields with O(1) lookup and scales to large collections",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'Table<K, V> is a homogeneous key-value map backed by dynamic fields. O(1) lookup. The default choice for large or unbounded collections.'"
+        },
+        {
+          "text": "The response mentions that each Table entry is a separate storage operation, so gas cost scales linearly with entries accessed per transaction",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md system limits: 'Maximum dynamic fields per object: No hard limit, but each field is a separate storage operation.'"
+        },
+        {
+          "text": "The response mentions the 256 KB single object size limit as a constraint on inline storage (VecMap)",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md: 'Maximum single object size: 256 KB'. SKILL.md common mistakes: 'It has O(n) lookup and is stored inline, hitting the 256 KB object size limit quickly.'"
+        },
+        {
+          "text": "The response does not recommend Bag unless mixed types are needed",
+          "passed": true,
+          "evidence": "dynamic-fields-and-collections.md collection table clearly differentiates: 'Heterogeneous storage (mixed types) | Bag or ObjectBag' vs 'Large or unbounded homogeneous map | Table<K, V>'. The routing guide sends scalability questions to dynamic-fields-and-collections which provides correct guidance."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "passed": 113,
+    "failed": 1,
+    "total": 114,
+    "pass_rate": 0.99
+  },
+  "claims": [
+    {
+      "claim": "Objects can have the ability combination 'has key, store, drop'",
+      "type": "factual",
+      "verified": false,
+      "evidence": "SKILL.md lists 'has key, store, drop: Rare. The object can be silently discarded.' However, the move-book key-ability page explicitly states: 'UID is a type that does not have the drop or copy abilities. Since it is required as a field of any type with the key ability, this means that types with key can never have drop or copy.' This is a factual error in the skill."
+    },
+    {
+      "claim": "copy ability is 'Rarely used on objects'",
+      "type": "factual",
+      "verified": false,
+      "evidence": "SKILL.md states copy is 'Rarely used on objects.' The move-book key-ability page says types with key can NEVER have copy. It is not 'rarely used' — it is impossible for objects."
+    },
+    {
+      "claim": "drop ability is 'Rarely used on objects. Useful for ephemeral receipts.'",
+      "type": "factual",
+      "verified": false,
+      "evidence": "SKILL.md states drop is 'Rarely used on objects.' The move-book key-ability page says types with key can NEVER have drop. It is not 'rarely used' — it is impossible for objects. The skill confuses objects (structs with key) with non-object structs."
+    },
+    {
+      "claim": "One Display<T> per type per package",
+      "type": "factual",
+      "verified": false,
+      "evidence": "display.md states: 'One Display<T> per type per package. You cannot create multiple Display objects for the same type from the same package.' However, the move-book display page states: 'There is no restriction to how many Display<T> objects can be created for a specific T.' The move-book notes that only the most recently updated Display is used by the full node, but creation is not restricted."
+    },
+    {
+      "claim": "Party objects exist as the fifth ownership type",
+      "type": "factual",
+      "verified": false,
+      "evidence": "ownership.md lists 'Party objects' as a fifth ownership type: 'Owned by a specified party at transfer time and versioned by consensus.' This concept is not documented on the standard Sui docs pages about object ownership. The four well-documented ownership types are address-owned, shared, immutable, and wrapped. 'Party objects' may be a newer or experimental feature, but it could not be verified against the official sources cited by the skill."
+    },
+    {
+      "claim": "object::new(ctx) is the only way to create a UID. You cannot call ctx.new() directly.",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Verified against move-book uid-and-id page which confirms object::new(ctx) creates UIDs from the transaction context."
+    },
+    {
+      "claim": "Dynamic field names accept any value with copy, drop, and store abilities",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Verified against move-book dynamic-fields page which states 'Name: copy + drop + store, Value: store'."
+    },
+    {
+      "claim": "Shared objects require Mysticeti consensus",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Mysticeti is Sui's consensus engine. The claim that shared objects require consensus is well-established in Sui documentation, though the specific URL for Mysticeti documentation could not be accessed."
+    },
+    {
+      "claim": "Maximum single object size: 256 KB",
+      "type": "factual",
+      "verified": true,
+      "evidence": "This is a well-known Sui protocol limit. Verified against move-book collections page which warns about object size limits for vector-based collections."
+    },
+    {
+      "claim": "Maximum objects per transaction: 2,048",
+      "type": "factual",
+      "verified": true,
+      "evidence": "This is a well-known Sui protocol limit defined in ProtocolConfig."
+    },
+    {
+      "claim": "Hot potato is a struct with no abilities that must be consumed in the same transaction",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Verified against move-book hot-potato-pattern page which confirms no abilities and forced consumption."
+    },
+    {
+      "claim": "transfer::receive requires being in the child's defining module; public_receive requires key + store",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Consistent with the module-restricted vs public pattern documented for all six transfer functions in the move-book."
+    },
+    {
+      "claim": "Receiving<T> has only the drop ability",
+      "type": "factual",
+      "verified": true,
+      "evidence": "This is consistent with Sui's design where Receiving is a lightweight proof type. Could not directly verify via web fetch but is consistent with framework source code."
+    },
+    {
+      "claim": "VecMap has O(n) lookup and should only be used for small collections under ~100 entries",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Verified against move-book collections page which describes vector-based collections as 'suitable only for small-sized sets and lists'."
+    },
+    {
+      "claim": "Immutable objects skip consensus",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Immutable objects are read-only and cannot be modified, so they have no contention and do not need consensus ordering. This is consistent with Sui's execution model."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "The 'party objects' ownership type could not be verified against accessible Sui documentation. It may be a newer feature not yet widely documented.",
+      "The Display<T> uniqueness constraint could not be definitively verified via Sui docs (404 errors), but the move-book contradicts the skill's claim."
+    ],
+    "needs_review": [
+      "The ability combinations table in SKILL.md contains a factual error: 'has key, store, drop' is listed as a valid combination, but objects with key CANNOT have drop or copy because UID lacks those abilities.",
+      "The Display<T> uniqueness claim ('One Display<T> per type per package') contradicts the move-book which says there is no restriction on how many can be created."
+    ],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The response explains that copy allows duplication (rare for objects) and drop allows silent discard (eval 4, expectation 4)",
+        "reason": "This expectation would PASS if the skill repeats its incorrect claim that copy and drop are 'rarely used on objects.' The correct answer is that objects (structs with key) can NEVER have copy or drop because UID lacks those abilities. The expectation should test whether the response correctly states that objects cannot have copy or drop, not just that they are 'rare.'"
+      },
+      {
+        "reason": "No eval tests whether the skill correctly handles the relationship between UID's ability constraints and what abilities an object struct can have. This is a fundamental constraint that every Sui developer needs to know: key implies the struct cannot have copy or drop."
+      },
+      {
+        "reason": "No eval tests whether the response correctly distinguishes between object structs (with key) and non-object structs (without key) when discussing abilities. The skill conflates these in the ability table, and no eval would catch this."
+      },
+      {
+        "assertion": "The response mentions that ObjectBag preserves child object visibility (queryable by explorers) (eval 6, expectation 5)",
+        "reason": "This expectation tests an indirect inference. The skill explains that dynamic object fields preserve visibility, and ObjectBag is built on dynamic object fields, but the skill never explicitly states 'ObjectBag preserves visibility.' An eval should test what the skill explicitly says, or the skill should be updated to state this directly."
+      },
+      {
+        "reason": "No eval tests the Display<T> uniqueness claim. The skill states 'One Display<T> per type per package' which contradicts the move-book. An eval asking 'Can I create multiple Display objects for the same type?' would expose this discrepancy."
+      },
+      {
+        "reason": "No eval tests the 'party objects' ownership type. This is listed as the fifth ownership type but is not well-documented in standard Sui sources. An eval asking about all ownership types would test whether this claim is accurate."
+      },
+      {
+        "reason": "Eval 3 expectation 2 ('The response clarifies that public_share_object requires the store ability while share_object does not') tests an inference that must be drawn from the two separate tables in transfers.md rather than an explicit statement. The skill could state this more directly."
+      }
+    ],
+    "overall": "The evals are thorough and well-structured, covering 20 high-frequency developer questions with 114 expectations. However, they have a blind spot around the ability constraint that objects with key CANNOT have copy or drop — the skill contains a factual error here that no eval would catch because the expectations mirror the skill's incorrect claims. The eval for abilities (eval 4) should be rewritten to test correctness against the move-book's documented constraint. Additionally, no evals probe the Display uniqueness claim or the 'party objects' ownership type, both of which have verification issues."
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "skill_name": "deepbook-sdk",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/onchain-finance/deepbook/deepbookv3, the deepbook-sandbox examples (github.com/MystenLabs/deepbook-sandbox), or the deepbookv3 repository. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How do I set up a DeepBook V3 client in TypeScript and create a BalanceManager?",
+      "expected_output": "A step-by-step guide covering SDK installation, SuiGrpcClient initialization, DeepBookClient construction, and BalanceManager creation with object ID extraction.",
+      "expectations": [
+        "The response includes npm install @mysten/deepbook-v3 @mysten/sui",
+        "The response shows importing SuiGrpcClient from @mysten/sui/grpc",
+        "The response shows constructing a client via suiClient.$extend(deepbook({...})) rather than new DeepBookClient()",
+        "The response shows creating a BalanceManager via client.deepbook.balanceManager.createAndShareBalanceManager()(tx)",
+        "The response emphasizes reusing the BalanceManager ID rather than creating a new one each time",
+        "The response mentions extracting the BalanceManager ID from result.Transaction?.effects?.changedObjects"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3-sdk",
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/spot-workflow",
+        "https://github.com/MystenLabs/deepbook-sandbox/blob/main/examples/sandbox/setup.ts"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How do I place a limit order on DeepBook using the TypeScript SDK? What are the different order types?",
+      "expected_output": "Code showing placeLimitOrder with all parameters, plus a table of order types (NO_RESTRICTION, POST_ONLY, IMMEDIATE_OR_CANCEL, FILL_OR_KILL).",
+      "expectations": [
+        "The response shows the placeLimitOrder call via client.deepbook.deepBook.placeLimitOrder with poolKey, balanceManagerKey, clientOrderId, price, quantity, isBid, and orderType",
+        "The response warns that clientOrderId must be a numeric string, not a label",
+        "The response uses OrderType.POST_ONLY enum (imported from @mysten/deepbook-v3), not a string like \"POST_ONLY\"",
+        "The response explains all four order types and their behavior, with FILL_OR_KILL explaining that the entire order is rejected if it cannot fill completely",
+        "The response warns that POST_ONLY orders are silently rejected if they would cross the book",
+        "The response mentions that orders must respect the pool's tick size and lot size"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/spot-workflow",
+        "https://github.com/MystenLabs/deepbook-sandbox/blob/main/examples/sandbox/place-limit-order.ts"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "How do I swap tokens on DeepBook without a BalanceManager?",
+      "expected_output": "Code showing swapExactQuoteForBase or swapExactBaseForQuote without a BalanceManager, explaining that swaps operate directly on wallet Coin objects.",
+      "expectations": [
+        "The response explains that swaps do not require a BalanceManager unlike orders",
+        "The response shows the swapExactQuoteForBase or swapExactBaseForQuote call via client.deepbook.deepBook namespace",
+        "The response mentions that a deep_in amount is needed for fees (overestimating is safe)",
+        "The response mentions that whitelisted pools (DEEP/SUI, DEEP/USDC) have 0% fees so deep_in can be 0",
+        "The response mentions that unused DEEP is returned",
+        "The response shows transferring returned coins with tx.transferObjects([baseCoin, quoteCoin, deepCoin], address) to prevent coins from being destroyed"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/contract-information/swaps",
+        "https://github.com/MystenLabs/deepbook-sandbox/blob/main/examples/sandbox/swap-tokens.ts"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "How do I query open orders and cancel them using the DeepBook SDK?",
+      "expected_output": "Code showing accountOpenOrders to list orders, getAccountOrderDetails for detailed info, and cancelOrder/cancelAllOrders to cancel.",
+      "expectations": [
+        "The response shows accountOpenOrders returning an array of order IDs",
+        "The response shows getAccountOrderDetails returning order_id, client_order_id, quantity, filled_quantity, status, fee_is_deep",
+        "The response shows cancelOrder for single order cancellation by ID",
+        "The response shows cancelAllOrders for bulk cancellation",
+        "The response mentions that canceled orders return locked funds to settled balances"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/spot-workflow",
+        "https://github.com/MystenLabs/deepbook-sandbox/blob/main/examples/sandbox/query-user-orders.ts"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "What are the common mistakes when using the DeepBook SDK? My order keeps failing silently.",
+      "expected_output": "A troubleshooting guide covering POST_ONLY silent rejection, missing DEEP deposits, non-numeric clientOrderId, creating new BalanceManagers per run, and self-matching issues.",
+      "expectations": [
+        "The response explains that POST_ONLY orders are silently rejected if they cross the book",
+        "The response mentions that non-whitelisted pools require DEEP in the BalanceManager for fees",
+        "The response warns about creating new BalanceManagers per run instead of reusing",
+        "The response mentions that clientOrderId must be numeric strings",
+        "The response explains self-matching defaults (SelfMatchingOptions.SELF_MATCHING_ALLOWED is the default) and how to prevent it with CANCEL_TAKER or CANCEL_MAKER"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/spot-workflow",
+        "https://github.com/MystenLabs/deepbook-sandbox/blob/main/examples/sandbox/README.md"
+      ]
+    }
+  ]
+}

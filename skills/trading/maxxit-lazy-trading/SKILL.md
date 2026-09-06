@@ -1,7 +1,7 @@
 ---
 emoji: 📈
 name: maxxit-lazy-trading
-version: 1.2.19
+version: 1.2.20
 author: Maxxit
 description: Execute perpetual trades on Ostium, Aster, and Avantis via Maxxit's Lazy Trading API, and trade Indian stocks through Zerodha Kite. Includes programmatic endpoints for opening/closing positions, managing risk, fetching market data, researching Indian equities, copy-trading other OpenClaw agents, and a trustless Alpha Marketplace for buying/selling ZK-verified trading signals (Arbitrum Sepolia).
 homepage: https://maxxit.ai
@@ -1890,6 +1890,13 @@ Step 3: POST /avantis/close-position
 - Prefer `₹` in normal user-facing replies
 - Do not default to USD when the context is Zerodha, NSE, BSE, or Indian equities
 
+### TP/SL and GTT Guidance
+
+- When the user wants to set a take profit or stop loss for a Zerodha position, confirm whether they want to place a **GTT** order.
+- Explain GTT briefly when needed: **GTT (Good Till Triggered)** is a Zerodha trigger order that stays active until the trigger condition is hit or the user cancels it, and it is commonly used to automate target and stop-loss execution for cash-market positions.
+- If the user explicitly asks for GTT, use the Zerodha GTT flow directly.
+- If the user asks for TP/SL but does not mention GTT, ask first instead of assuming they want a regular order or a GTT trigger.
+
 ### Venue Routing
 
 | Keywords | Route |
@@ -2029,11 +2036,51 @@ curl -L -X POST "${MAXXIT_API_URL}/api/lazy-trading/programmatic/zerodha/orders"
 **Common values:**
 | Field | Values |
 |-------|--------|
-| `variety` | `regular`, `amo`, `bo`, `co` |
+| `variety` | `regular`, `amo`, `co`, `iceberg`, `auction` |
 | `exchange` | `NSE`, `BSE`, `NFO`, `BFO`, `CDS`, `MCX` |
 | `transaction_type` | `BUY`, `SELL` |
-| `product` | `CNC` (delivery), `MIS` (intraday) |
+| `product` | `CNC`, `NRML`, `MIS`, `MTF` |
 | `order_type` | `MARKET`, `LIMIT`, `SL`, `SL-M` |
+| `validity` | `DAY`, `IOC`, `TTL` |
+
+**How to explain Zerodha order fields to a normal trader:**
+
+| Field | Value | Meaning for a trader |
+|-------|-------|----------------------|
+| `variety` | `regular` | Standard exchange order placed during market hours. Use this by default unless the user asks for something more specific. |
+| `variety` | `amo` | After Market Order. Place the order outside market hours so it gets queued for the next session. |
+| `variety` | `co` | Cover Order. An intraday order paired with a compulsory stop loss. Use only if the user specifically wants a leveraged intraday order with a built-in risk stop. |
+| `variety` | `iceberg` | Iceberg Order. Splits one large order into smaller legs so the full size is not sent at once. Useful for quantities above freeze limits or to reduce visible impact. |
+| `variety` | `auction` | Auction Order. Used for exchange auction sessions, not for normal cash-market trading. Only use when the user explicitly wants auction participation. |
+| `order_type` | `MARKET` | Buy or sell immediately at the best available price. Prioritizes execution over exact price. |
+| `order_type` | `LIMIT` | Execute only at the specified price or better. Prioritizes price control over certainty of fill. |
+| `order_type` | `SL` | Stop-loss limit order. Once the trigger is hit, Zerodha places a limit order. Gives price control, but the order may remain unfilled in fast moves. |
+| `order_type` | `SL-M` | Stop-loss market order. Once the trigger is hit, Zerodha places a market order. Better for ensuring exit, but fill price can slip. |
+| `product` | `CNC` | Cash and Carry. Standard delivery equity order for shares you want to hold, typically in NSE/BSE cash markets. |
+| `product` | `NRML` | Normal order type commonly used for futures and options carry-forward positions, and other non-intraday derivatives exposure. |
+| `product` | `MIS` | Margin Intraday Squareoff. Intraday-only product, typically for futures/options or same-day cash trading where the position is not meant to be carried overnight. |
+| `product` | `MTF` | Margin Trading Facility. Broker-funded carry-forward equity position. Use only if the user explicitly asks for MTF and their account supports it. |
+| `validity` | `DAY` | Order stays active for the current trading session unless filled or cancelled. |
+| `validity` | `IOC` | Immediate or Cancel. Whatever can fill immediately will execute; the rest is cancelled right away. |
+| `validity` | `TTL` | Time to Live. The order stays active only for the specified number of minutes, using `validity_ttl`. |
+| `market_protection` | `0` | No market protection. Default behavior. |
+| `market_protection` | `0 - 100` | Custom market-protection percentage for market and stop-market style execution. Helps cap how far execution can chase price. Example: `2` means 2%. |
+| `market_protection` | `-1` | Automatic market protection chosen by the system based on Zerodha rules. |
+| `autoslice` | `true` | Automatically split a large order into multiple slices when quantity is above freeze limits. |
+| `autoslice` | `false` | Do not auto-slice. Default behavior. |
+
+**Extra order parameters supported by this route:**
+- `validity_ttl`: number of minutes when `validity` is `TTL`
+- `iceberg_legs`: number of child legs for an iceberg order
+- `iceberg_quantity`: quantity per iceberg leg
+- `auction_number`: required when placing auction orders
+- `market_protection`: market protection setting for eligible orders
+- `autoslice`: whether Zerodha should automatically slice oversized orders
+
+**Agent guidance:**
+- Default to `variety: regular`, `validity: DAY`, and either `MARKET` or `LIMIT` based on what the user asks.
+- Do not choose `CO`, `iceberg`, `auction`, `MTF`, `TTL`, `market_protection`, or `autoslice` unless the user explicitly wants that behavior or it is clearly necessary for the order they described.
+- If the user asks in plain English, translate the intent into these fields and explain the tradeoff briefly before placing the order.
 
 #### PUT /zerodha/orders?orderId=<id>
 
@@ -2059,6 +2106,104 @@ curl -L -X DELETE "${MAXXIT_API_URL}/api/lazy-trading/programmatic/zerodha/order
   -H "X-KITE-ACCESS-TOKEN: ${KITE_ACCESS_TOKEN}" \
   -H 'Content-Type: application/json' \
   -d '{"variety": "regular"}'
+```
+
+#### GET /zerodha/gtt
+
+List all GTT triggers. Use `?triggerId=<id>` to fetch a specific trigger.
+
+```bash
+curl -L -X GET "${MAXXIT_API_URL}/api/lazy-trading/programmatic/zerodha/gtt" \
+  -H "X-API-KEY: ${MAXXIT_API_KEY}" \
+  -H "X-KITE-API-KEY: ${KITE_API_KEY}" \
+  -H "X-KITE-ACCESS-TOKEN: ${KITE_ACCESS_TOKEN}"
+```
+
+#### POST /zerodha/gtt
+
+Place a new GTT trigger.
+
+```bash
+curl -L -X POST "${MAXXIT_API_URL}/api/lazy-trading/programmatic/zerodha/gtt" \
+  -H "X-API-KEY: ${MAXXIT_API_KEY}" \
+  -H "X-KITE-API-KEY: ${KITE_API_KEY}" \
+  -H "X-KITE-ACCESS-TOKEN: ${KITE_ACCESS_TOKEN}" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "trigger_type": "two-leg",
+    "tradingsymbol": "SBIN",
+    "exchange": "NSE",
+    "trigger_values": [800, 840],
+    "last_price": 835,
+    "orders": [
+      {
+        "transaction_type": "SELL",
+        "quantity": 1,
+        "product": "CNC",
+        "order_type": "LIMIT",
+        "price": 840
+      },
+      {
+        "transaction_type": "SELL",
+        "quantity": 1,
+        "product": "CNC",
+        "order_type": "LIMIT",
+        "price": 800
+      }
+    ]
+  }'
+```
+
+**Required fields:** `trigger_type`, `tradingsymbol`, `exchange`, `trigger_values`, `last_price`, `orders`
+
+**Rules:**
+- `trigger_type: "single"` requires exactly 1 `trigger_values` item and 1 order
+- `trigger_type: "two-leg"` requires exactly 2 `trigger_values` items and 2 orders
+
+#### PUT /zerodha/gtt?triggerId=<id>
+
+Modify an existing GTT trigger.
+
+```bash
+curl -L -X PUT "${MAXXIT_API_URL}/api/lazy-trading/programmatic/zerodha/gtt?triggerId=219118727" \
+  -H "X-API-KEY: ${MAXXIT_API_KEY}" \
+  -H "X-KITE-API-KEY: ${KITE_API_KEY}" \
+  -H "X-KITE-ACCESS-TOKEN: ${KITE_ACCESS_TOKEN}" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "trigger_type": "two-leg",
+    "tradingsymbol": "SBIN",
+    "exchange": "NSE",
+    "trigger_values": [800, 860],
+    "last_price": 837,
+    "orders": [
+      {
+        "transaction_type": "SELL",
+        "quantity": 1,
+        "product": "CNC",
+        "order_type": "LIMIT",
+        "price": 860
+      },
+      {
+        "transaction_type": "SELL",
+        "quantity": 1,
+        "product": "CNC",
+        "order_type": "LIMIT",
+        "price": 800
+      }
+    ]
+  }'
+```
+
+#### DELETE /zerodha/gtt?triggerId=<id>
+
+Delete an existing GTT trigger.
+
+```bash
+curl -L -X DELETE "${MAXXIT_API_URL}/api/lazy-trading/programmatic/zerodha/gtt?triggerId=219118727" \
+  -H "X-API-KEY: ${MAXXIT_API_KEY}" \
+  -H "X-KITE-API-KEY: ${KITE_API_KEY}" \
+  -H "X-KITE-ACCESS-TOKEN: ${KITE_ACCESS_TOKEN}"
 ```
 
 #### GET /zerodha/instruments

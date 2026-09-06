@@ -1,0 +1,12 @@
+#!/usr/bin/fift -s
+"TonUtil.fif" include
+
+{ ."usage: " @' $0 type ." <boc-file>" cr
+  ."Loads a single-root BoC from file and prints the cell tree." cr
+  1 halt
+} : usage
+
+$# 1 <> ' usage if
+
+$1 dup ."Loading BoC from file `" type ."`" cr
+file>B B>boc <s csr. cr

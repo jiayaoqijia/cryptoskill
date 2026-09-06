@@ -1,0 +1,57 @@
+[
+  {
+    "id": "token-mint-burn-tests",
+    "prompt": "Write a simple token module on Sui with mint and burn functions, and include tests that verify minting creates a token with the right value and burning destroys it. Use test_scenario for multi-transaction tests.",
+    "package_name": "token",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/move-basics/testing",
+      "https://docs.sui.io/develop/testing-debugging/testing"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Test module uses #[test_only] attribute",
+      "Tests use sui::test_scenario for multi-transaction scenarios",
+      "At least one test verifies the minted token's value",
+      "Token struct has store ability if tests use transfer::public_transfer"
+    ]
+  },
+  {
+    "id": "expected-failure-auth",
+    "prompt": "Write a Move module with an admin-only function that aborts if the caller isn't authorized. Write a test that verifies the function works for the admin, and a second test with #[expected_failure] that verifies it aborts for unauthorized callers.",
+    "package_name": "auth_test",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/move-basics/testing"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Admin function aborts with a defined error constant on unauthorized access",
+      "Positive test verifies admin can call the function",
+      "Negative test uses #[expected_failure(abort_code = ...)] attribute"
+    ]
+  },
+  {
+    "id": "event-verification-test",
+    "prompt": "Write a Move module with a counter that emits an event on each increment. Write a test that increments the counter twice, then verifies exactly 2 events were emitted using event::num_events() and checks their values with event::events_by_type. Destroy objects with std::unit_test::destroy.",
+    "package_name": "counter_events",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/programmability/events",
+      "https://move-book.com/move-basics/testing"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Event struct has copy and drop abilities",
+      "Test uses event::num_events() to verify event count",
+      "Test uses event::events_by_type to verify event content",
+      "Objects cleaned up with std::unit_test::destroy"
+    ]
+  }
+]

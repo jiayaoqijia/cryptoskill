@@ -1,0 +1,4 @@
+interface:
+  display_name: "TVM Fift Hypothesis Proving"
+  short_description: "Test TVM crash, gas, and resource claims"
+  default_prompt: "Use $tvm-fift-hypothesis-proving to turn this TVM opcode resource hypothesis into a minimal Fift probe and classify the result."

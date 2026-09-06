@@ -57,7 +57,7 @@ This skill is designed to work even when installed alone:
 
 This skill follows the shared exchange runtime rules:
 
-- `../exchange-runtime-rules.md`
+- [`gate-runtime-rules.md`](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md)
 
 At the skill level, the key expectation is simple:
 
@@ -103,7 +103,7 @@ gate-exchange-trading-copilot/
     └── execution-and-guardrails.md
 ```
 
-This package references the shared runtime rules from `../exchange-runtime-rules.md`; that shared file is intentionally not duplicated inside this skill folder.
+This package references the shared runtime rules from [`gate-runtime-rules.md`](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md); that shared file is intentionally not duplicated inside this skill folder.
 
 See `references/scenarios.md` for packaged scenario cases and representative prompt examples.
 

@@ -1,0 +1,115 @@
+[
+  {
+    "id": "ptbs-basic-transfer",
+    "prompt": "Using the Sui TypeScript SDK, write a function that transfers 100 MIST to the address 0xabc... from the connected wallet in a single transaction. Show me the code.",
+    "sources": [
+      "https://docs.sui.io/develop/transactions/ptbs/building-ptb",
+      "https://sdk.mystenlabs.com/sui/transactions/basics"
+    ],
+    "expected_output": "A TypeScript snippet that imports Transaction from '@mysten/sui/transactions', creates a Transaction, splits the specified amount off tx.gas (not a separately-fetched coin), transfers that new coin to the recipient address, and hands the Transaction off to the wallet via signTransaction/signAndExecuteTransaction. Should not call setGasBudget / setGasPrice / setGasPayment (let the wallet handle gas). Should use typed pure helpers (tx.pure.u64, tx.pure.address).",
+    "expectations": [
+      "Imports from '@mysten/sui/transactions'",
+      "Uses tx.splitCoins(tx.gas, [tx.pure.u64(100)]) to derive an owned coin from the gas coin rather than fetching a separate Coin<SUI> object",
+      "Uses tx.transferObjects with tx.pure.address(recipient) — not a raw string argument",
+      "Does NOT call tx.setGasBudget / tx.setGasPrice / tx.setGasPayment for a wallet-signed flow",
+      "Does NOT call tx.build() before handing to the wallet (uses tx.serialize() or passes the Transaction instance directly)",
+      "Mentions checking the execution result status (e.g., effects.status) or warns that transactions can fail at the Move level even if accepted"
+    ]
+  },
+  {
+    "id": "ptbs-batch-airdrop",
+    "prompt": "I need to airdrop variable amounts of SUI to 400 recipients. What's the best way to do this on Sui?",
+    "sources": [
+      "https://docs.sui.io/concepts/transactions/prog-txn-blocks",
+      "https://docs.sui.io/develop/transactions/ptbs/building-ptb",
+      "https://docs.sui.io/concepts/sui-architecture/epochs"
+    ],
+    "expected_output": "Recommendation to use a single PTB containing 400 splitCoins + transferObjects pairs against tx.gas, since a PTB supports up to 1024 commands and batching is cheaper and atomic compared to submitting 400 separate transactions. Includes example code using tx.splitCoins(tx.gas, amounts.map(...)) and a loop calling tx.transferObjects per recipient.",
+    "expectations": [
+      "Recommends a single PTB over 400 individual transactions",
+      "Mentions the 1024-command PTB limit (not 400 or some other incorrect number)",
+      "Example code uses tx.splitCoins(tx.gas, …) — not fetching a separate Coin<SUI>",
+      "Example iterates over recipients using an index into the splitCoins result (e.g., coins[i])",
+      "Does NOT suggest using transfer::transfer — uses tx.transferObjects"
+    ]
+  },
+  {
+    "id": "ptbs-chained-move-calls",
+    "prompt": "I have a Move function mint_hero that returns a Hero, and another function new_sword(power: u64) that returns a Sword, and a third function equip_sword(hero: Hero, sword: Sword) that returns a Hero. I want to mint a hero, mint a sword with power 10, equip the sword, and transfer the final hero to the sender — all in one transaction. Show me the code.",
+    "sources": [
+      "https://docs.sui.io/concepts/transactions/prog-txn-blocks",
+      "https://docs.sui.io/develop/transactions/ptbs/inputs-and-results"
+    ],
+    "expected_output": "A TypeScript snippet that chains three moveCall commands by passing the result of one as the argument to the next (no intermediate RPC round trips), then calls a fourth moveCall or uses tx.moveCall to 'sui::tx_context::sender' (or sets sender and passes it as a pure) and transfers the final hero with tx.transferObjects. Must not submit multiple transactions or store intermediate objects on-chain between calls.",
+    "expectations": [
+      "Uses a single Transaction (single PTB) for all four operations",
+      "Passes the result of mint_hero directly as an argument to equip_sword (command chaining), not an object ID fetched between transactions",
+      "Passes tx.pure.u64(10) to new_sword — uses typed pure helper, not a raw number or untyped tx.pure",
+      "Uses the final equipped hero result as input to tx.transferObjects, consuming it so no UnusedValueWithoutDrop error occurs",
+      "Does NOT fetch intermediate object IDs via RPC between commands"
+    ]
+  },
+  {
+    "id": "ptbs-sponsored-transaction-flow",
+    "prompt": "Explain how to build a sponsored transaction where my app constructs the PTB, a sponsor service pays the gas, and the user signs as sender. Show the code on all three sides.",
+    "sources": [
+      "https://docs.sui.io/develop/transaction-payment/sponsor-txn",
+      "https://sdk.mystenlabs.com/sui/transactions/signing-and-execution",
+      "https://docs.sui.io/develop/transactions/ptbs/building-ptb"
+    ],
+    "expected_output": "Three code blocks. (1) App: constructs Transaction, builds kind-only bytes with tx.build({ client, onlyTransactionKind: true }), sends to sponsor. (2) Sponsor: rehydrates with Transaction.fromKind(kindBytes), setSender(userAddress), setGasOwner(sponsorAddress), setGasPayment([…]), signs. (3) User signs over the resulting TransactionData (full data including GasData) and submits. Explanation notes both signatures cover the full TransactionData including GasData, and recommends submitting directly to a full node rather than via the sponsor.",
+    "expectations": [
+      "App side uses tx.build({ client, onlyTransactionKind: true }) — NOT a full tx.build()",
+      "Sponsor side uses Transaction.fromKind — NOT Transaction.from",
+      "Sponsor sets setSender, setGasOwner, and setGasPayment",
+      "Mentions both signatures must cover the full TransactionData including GasData",
+      "Recommends user (or either party) submits directly to a full node, not via the sponsor, to avoid censorship"
+    ]
+  },
+  {
+    "id": "ptbs-gas-coin-misuse",
+    "prompt": "Review this PTB for bugs:\n\n```ts\nconst tx = new Transaction();\ntx.moveCall({\n  target: '0xpkg::vault::deposit',\n  arguments: [tx.object(vaultId), tx.gas],\n});\ntx.transferObjects([tx.gas], tx.pure.address(recipient));\n```",
+    "sources": [
+      "https://docs.sui.io/concepts/transactions/prog-txn-blocks",
+      "https://docs.sui.io/develop/transactions/ptbs/building-ptb"
+    ],
+    "expected_output": "Identifies two bugs. (1) tx.gas is passed by value to the deposit moveCall where the function probably expects Coin<SUI> (or &mut Coin<SUI>) — tx.gas can only be used by reference, never by value, except in transferObjects. The fix is to splitCoins off tx.gas first: const [payment] = tx.splitCoins(tx.gas, [tx.pure.u64(amount)]); and pass payment. (2) Even after fixing, if deposit takes the coin by value the gas coin would be consumed and the subsequent transferObjects([tx.gas], ...) would reference a moved value. Corrected version uses splitCoins for a payment coin and either leaves gas alone or transfers it separately.",
+    "expectations": [
+      "Identifies that tx.gas cannot be used by value as a moveCall argument (only by reference, except in transferObjects)",
+      "Recommends tx.splitCoins(tx.gas, [amount]) to derive an owned coin for the deposit",
+      "Notes the order/move issue: even if the first bug is fixed naively by passing tx.gas by reference, passing tx.gas by value to transferObjects after it's been borrowed must come after all other uses",
+      "Does NOT suggest fetching a separate Coin<SUI> object via RPC as the primary fix"
+    ]
+  },
+  {
+    "id": "ptbs-unused-value-error",
+    "prompt": "My PTB fails with error 'UnusedValueWithoutDrop { result_idx: 1, secondary_idx: 0 }'. My code is:\n\n```ts\nconst tx = new Transaction();\ntx.moveCall({ target: '0xpkg::game::start_round', arguments: [tx.object(gameId)] });\ntx.moveCall({ target: '0xpkg::game::mint_ticket', arguments: [tx.object(gameId)] });\n```\n\nWhat's wrong and how do I fix it?",
+    "sources": [
+      "https://docs.sui.io/develop/testing-debugging/common-errors",
+      "https://docs.sui.io/concepts/transactions/prog-txn-blocks"
+    ],
+    "expected_output": "Explains that command index 1 (mint_ticket) returns a value without the drop ability (a Ticket object, likely with key + store). Every non-drop value in a PTB must be consumed — transferred, destroyed, or passed into another command. Fix: capture the result and transferObjects it to the sender (or a specified recipient), or pass it into a subsequent moveCall that consumes it.",
+    "expectations": [
+      "Correctly identifies result_idx: 1 as referring to the second command (mint_ticket), not the second argument",
+      "Explains the general rule: non-drop values must be consumed by end of PTB",
+      "Suggests tx.transferObjects([ticket], tx.pure.address(recipient)) as the fix, capturing the moveCall return via destructuring (const [ticket] = tx.moveCall(...)) or direct use of the result reference",
+      "Does NOT suggest suppressing the error or modifying the Move module to add drop (when that would change semantics) as the first-line fix"
+    ]
+  },
+  {
+    "id": "ptbs-shared-object-rules",
+    "prompt": "I have a shared object representing a liquidity pool. I want a PTB that reads some state from the pool, does a swap, and then deletes the pool object. Is this possible? What are the constraints on shared objects in PTBs?",
+    "sources": [
+      "https://docs.sui.io/concepts/transactions/prog-txn-blocks",
+      "https://docs.sui.io/develop/transactions/ptbs/inputs-and-results"
+    ],
+    "expected_output": "Explains constraints: shared objects cannot be transferred or frozen in a PTB (tx fails at commit). They can be wrapped or converted to dynamic fields mid-execution, but must be re-shared or deleted before the transaction completes — so deleting is allowed. Read-only shared inputs (mutable: false) cannot be used by value; for the stated workflow the pool must be marked mutable. Note that consuming a shared object by value permanently marks its hot-potato clique as hot.",
+    "expectations": [
+      "Correctly states that deleting a shared object mid-PTB IS allowed (re-share or delete are the two legal endings)",
+      "States that transferring or freezing a shared object is NOT allowed and causes tx failure at commit",
+      "Notes the pool must be passed as mutable: true (not read-only) to be consumed",
+      "Mentions that consuming a shared object by value permanently marks the clique as hot, which blocks subsequent non-public entry calls on entangled values",
+      "Does NOT falsely claim shared objects are immutable or that they cannot be deleted"
+    ]
+  }
+]

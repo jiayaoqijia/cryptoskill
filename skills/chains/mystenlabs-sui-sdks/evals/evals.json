@@ -1,0 +1,151 @@
+[
+  {
+    "id": "sui-sdks-choose-sdk",
+    "prompt": "I'm building a high-throughput indexer service that reads Sui transactions in near-real-time and writes them into a Postgres database. My team uses Go. What SDK should I use?",
+    "sources": [
+      "https://docs.sui.io/references/sui-sdks",
+      "https://github.com/MystenLabs/sui-rust-sdk",
+      "https://github.com/block-vision/sui-go-sdk"
+    ],
+    "expected_output": "Explains there is no official Go SDK — only the community block-vision/sui-go-sdk is listed on docs.sui.io. Recommends either (a) using the official Rust SDK (sui-rust-sdk crates) behind a Go↔Rust FFI boundary for protocol-accurate access, or (b) using block-vision/sui-go-sdk with a warning about community-maintained staleness risk. Notes that for raw throughput, gRPC via the sui-rpc crate (Rust) is the performance ceiling; JSON-RPC (deprecated) via a community Go SDK is lower-ceiling.",
+    "expectations": [
+      "Correctly states there is NO official Go SDK maintained by Mysten Labs",
+      "Names block-vision/sui-go-sdk as the canonical community Go SDK (matches docs.sui.io listing)",
+      "Mentions the Rust SDK (sui-rust-sdk) as the performance-maximizing alternative, usable via FFI",
+      "Flags community-SDK risk: may lag protocol updates, check last commit",
+      "Does NOT claim the Go SDK is official or maintained by Mysten",
+      "Does NOT recommend the TypeScript SDK for a Go service"
+    ]
+  },
+  {
+    "id": "sui-sdks-ts-client-choice",
+    "prompt": "I'm starting a new Node.js backend that submits transactions and queries state on Sui mainnet. Which TypeScript client class should I use and how do I instantiate it?",
+    "sources": [
+      "https://sdk.mystenlabs.com/sui/clients",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "Recommends SuiGrpcClient from '@mysten/sui/grpc' as the default for new code. Shows instantiation with both network and baseUrl parameters, pointing to https://fullnode.mainnet.sui.io:443. Explains SuiJsonRpcClient is legacy (JSON-RPC deprecated, mainnet shutdown week of July 27, 2026) and SuiGraphQLClient is for specialized relational queries. Notes all three share the client.core.* data access API.",
+    "expectations": [
+      "Imports SuiGrpcClient from '@mysten/sui/grpc' (not SuiClient from '@mysten/sui/client')",
+      "Passes BOTH network: 'mainnet' AND baseUrl to the constructor",
+      "Uses the correct mainnet gRPC URL: https://fullnode.mainnet.sui.io:443",
+      "Explicitly labels SuiJsonRpcClient as legacy / JSON-RPC deprecated with mainnet shutdown date",
+      "Does NOT use getFullnodeUrl (v1 helper) — that's for v1 SuiClient which was removed",
+      "Does NOT recommend @mysten/sui.js (deprecated package)"
+    ]
+  },
+  {
+    "id": "sui-sdks-bundled-llm-docs",
+    "prompt": "I'm about to write some code against @mysten/sui in my project. Before I do, is there a way to make sure I'm using the exact API for the version I have installed, not a newer or older version?",
+    "sources": [
+      "https://sdk.mystenlabs.com/sui/llm-docs"
+    ],
+    "expected_output": "Explains that every @mysten/* package ships a docs/ directory in node_modules containing llms-index.md (a routing index) plus topic markdown files, and that these match the installed version exactly. Recommends the agent check node_modules/@mysten/sui/docs/llms-index.md first, read the index, then read the targeted page. Suggests wiring this into AGENTS.md or CLAUDE.md so it becomes automatic per-project. Mentions this is more reliable than fetching docs from sdk.mystenlabs.com.",
+    "expectations": [
+      "Mentions the 'docs/llms-index.md' file convention",
+      "Specifies the correct path: node_modules/@mysten/sui/docs/llms-index.md (or equivalent node_modules/@mysten/<pkg>/docs/)",
+      "Explains that these docs match the installed version (not latest web docs)",
+      "Recommends reading llms-index.md first, then targeted page",
+      "Suggests adding guidance to AGENTS.md / CLAUDE.md / .cursorrules",
+      "Does NOT invent a non-existent CLI command or separate npm package for docs"
+    ]
+  },
+  {
+    "id": "sui-sdks-rust-ptb-minimal",
+    "prompt": "Show me a minimal Rust example that builds a PTB transferring 1 SUI from the gas coin to a recipient address, using the new sui-rust-sdk crates (not the legacy monorepo sui-sdk crate). Just the build — no execution.",
+    "sources": [
+      "https://github.com/MystenLabs/sui-rust-sdk",
+      "https://docs.rs/sui-transaction-builder"
+    ],
+    "expected_output": "A Rust snippet importing from sui_sdk_types, sui_transaction_builder. Creates TransactionBuilder::new(), uses tx.pure(&amount_u64), tx.gas(), tx.split_coins(gas, vec![amount]), tx.transfer_objects(coins, recipient_pure), sets sender/gas_budget/gas_price, adds a gas object via ObjectInput::owned, and calls try_build(). Matches the documented minimal example.",
+    "expectations": [
+      "Imports from sui_sdk_types and sui_transaction_builder — NOT from the legacy sui-sdk crate",
+      "Uses TransactionBuilder::new() (not SuiClientBuilder or similar)",
+      "Calls tx.pure(&amount) and tx.gas() — not tx.pure.u64() (which is TypeScript syntax)",
+      "Uses tx.split_coins(gas, vec![amount]) — snake_case, not camelCase",
+      "Calls tx.transfer_objects(coins, recipient) with recipient as a pure input",
+      "Calls tx.set_sender, tx.set_gas_budget, tx.set_gas_price, tx.add_gas_objects",
+      "Uses ObjectInput::owned for the gas coin object ref",
+      "Calls tx.try_build() at the end (offline build)",
+      "Does NOT use sui_sdk::SuiClientBuilder or similar legacy SDK types"
+    ]
+  },
+  {
+    "id": "sui-sdks-v1-to-v2-migration",
+    "prompt": "Migrate this legacy TS code to the current @mysten/sui v2:\n\n```ts\nimport { SuiClient, getFullnodeUrl } from '@mysten/sui.js/client';\nimport { TransactionBlock } from '@mysten/sui.js/transactions';\n\nconst client = new SuiClient({ url: getFullnodeUrl('mainnet') });\nconst txb = new TransactionBlock();\nconst [coin] = txb.splitCoins(txb.gas, [txb.pure(1_000_000)]);\ntxb.transferObjects([coin], txb.pure('0xrecipient'));\n\nconst result = await client.signAndExecuteTransactionBlock({\n  signer: keypair,\n  transactionBlock: txb,\n  options: { showEffects: true },\n});\n\nif (result.effects?.status?.status === 'success') { /* ... */ }\nawait client.waitForTransactionBlock({ digest: result.digest });\n```",
+    "sources": [
+      "https://sdk.mystenlabs.com/sui/migrations/sui-2.0/llms.txt",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "The fully migrated v2 file: imports from @mysten/sui (not @mysten/sui.js), uses SuiGrpcClient (or SuiJsonRpcClient as deprecated stopgap) with network + baseUrl (or getJsonRpcFullnodeUrl), Transaction instead of TransactionBlock, typed tx.pure.u64(), tx.pure.address(), signAndExecuteTransaction, transaction: (not transactionBlock:), include: { effects: true }, result.$kind === 'FailedTransaction' check, waitForTransaction.",
+    "expectations": [
+      "All imports from @mysten/sui (subpaths like '@mysten/sui/grpc', '@mysten/sui/transactions') — NO @mysten/sui.js remaining",
+      "TransactionBlock replaced with Transaction everywhere",
+      "SuiClient + getFullnodeUrl replaced with SuiGrpcClient + baseUrl (or SuiJsonRpcClient + getJsonRpcFullnodeUrl as deprecated stopgap)",
+      "Client constructor has the network parameter",
+      "txb.pure(1_000_000) replaced with tx.pure.u64(1_000_000) or tx.pure.u64(1_000_000n)",
+      "txb.pure('0xrecipient') replaced with tx.pure.address('0xrecipient')",
+      "signAndExecuteTransactionBlock replaced with signAndExecuteTransaction",
+      "transactionBlock parameter replaced with transaction",
+      "options: { showEffects: true } replaced with include: { effects: true }",
+      "result.effects?.status?.status === 'success' replaced with $kind-based check (result.$kind !== 'FailedTransaction' or equivalent)",
+      "waitForTransactionBlock replaced with waitForTransaction",
+      "Does NOT leave any v1 patterns in the output"
+    ]
+  },
+  {
+    "id": "sui-sdks-cross-sdk-port",
+    "prompt": "I have this TypeScript code that splits a coin and transfers it. Port it to Rust using the new sui-rust-sdk crates.\n\n```ts\nconst tx = new Transaction();\nconst [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000n)]);\ntx.transferObjects([coin], tx.pure.address('0xabc'));\n```",
+    "sources": [
+      "https://docs.rs/sui-transaction-builder",
+      "https://github.com/MystenLabs/sui-rust-sdk"
+    ],
+    "expected_output": "Rust equivalent using sui_transaction_builder::TransactionBuilder, tx.split_coins(tx.gas(), vec![tx.pure(&1_000_000u64)]), tx.transfer_objects(coins, tx.pure(&recipient_address)). Notes the differences: pure uses generic BCS serialization (not a typed helper chain), gas() is a method not a property, method names are snake_case.",
+    "expectations": [
+      "Uses TransactionBuilder::new()",
+      "Uses tx.split_coins (snake_case) not tx.splitCoins",
+      "Uses tx.gas() as a method call, not tx.gas as a field",
+      "Uses tx.pure(&value) with generic BCS — not tx.pure.u64(value) which is TS syntax",
+      "Wraps vec![amount] for the amounts argument",
+      "Calls tx.transfer_objects with the coins result and a pure recipient",
+      "Casts or types the amount as u64 (e.g., 1_000_000u64)",
+      "Points out the API differences (snake_case, generic pure, method gas())"
+    ]
+  },
+  {
+    "id": "sui-sdks-community-caveat",
+    "prompt": "Can I use the Python SDK for Sui? How do I install it?",
+    "sources": [
+      "https://docs.sui.io/references/sui-sdks",
+      "https://github.com/FrankC01/pysui"
+    ],
+    "expected_output": "Clarifies there is no official Python SDK. pysui is the community-maintained Python client for Sui, installed via 'pip install pysui'. Recommends checking repo activity before relying on it. Notes what pysui supports (PTBs, JSON-RPC/GraphQL/gRPC, sync and async clients). Suggests the Rust SDK via a Python FFI wrapper as an alternative if pysui is stale or missing a feature.",
+    "expectations": [
+      "States that there is NO official Python SDK from Mysten Labs",
+      "Names pysui as the community SDK and correctly attributes it to FrankC01",
+      "Gives the correct install command: pip install pysui",
+      "Mentions pysui supports PTBs and execution",
+      "Flags the community-maintained status as a risk factor",
+      "Does NOT claim pysui is official or maintained by Mysten Labs"
+    ]
+  },
+  {
+    "id": "sui-sdks-frontend-boundary",
+    "prompt": "I'm building a React frontend that lets users connect their wallet and submit a transaction. Should I use @mysten/sui, @mysten/dapp-kit-react, or both?",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "Explains both are needed. @mysten/dapp-kit-react handles wallet connection, React hooks, and UI components. The underlying Transaction construction uses @mysten/sui's Transaction class — dApp Kit wraps submission. The pattern: build the Transaction with @mysten/sui, hand it to a dApp Kit hook for wallet signing. Routes the user to the frontend-apps skill for hook-level details (which hooks exist, how to wire them). Notes that dApp Kit is the React-specific layer; for Vue/vanilla/Svelte use @mysten/dapp-kit-core.",
+    "expectations": [
+      "Recommends BOTH @mysten/sui (transaction construction) AND @mysten/dapp-kit-react (wallet + hooks)",
+      "Mentions that dApp Kit provides React hooks for wallet connection, signing, and client access (specific hook names belong to the frontend-apps skill)",
+      "Routes the user to the frontend-apps skill for React hook details",
+      "Explains the role separation: @mysten/sui for Transaction/client, dApp Kit for wallet + React bindings",
+      "Notes that dApp Kit wraps submission, it doesn't replace @mysten/sui's Transaction",
+      "Does NOT tell the user they can pick one or the other (both are needed for React wallet flow)",
+      "Does NOT confuse dApp Kit with @mysten/sui as if they were alternatives",
+      "Does NOT recommend the bare @mysten/dapp-kit package (deprecated JSON-RPC-only predecessor)"
+    ]
+  }
+]

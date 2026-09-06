@@ -1,0 +1,4 @@
+interface:
+  display_name: "TON Bug Triage"
+  short_description: "Triage TON local repros through contract txs or validator probes"
+  default_prompt: "Use $ton-bug-triage to verify a TON local-network repro through either Workflow A (contract transaction trigger) or Workflow B (mixed-build validator behavior)."

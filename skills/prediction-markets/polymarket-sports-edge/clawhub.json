@@ -4,7 +4,7 @@
     "pip": ["simmer-sdk", "requests"],
     "env": ["SIMMER_API_KEY", "THE_ODDS_API_KEY"]
   },
-  "cron": "*/15 * * * *",
+  "cron": "0 * * * *",
   "automaton": {
     "managed": true,
     "entrypoint": "sports_edge.py"

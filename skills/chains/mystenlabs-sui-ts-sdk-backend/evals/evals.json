@@ -1,0 +1,86 @@
+{
+  "skill_name": "sui-ts-sdk-backend",
+  "source_constraint": "All facts in these evals must be verifiable against sdk.mystenlabs.com. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a backend service that needs to interact with Sui. I can't use the CLI. How do I create a keypair, get testnet SUI, and connect to the network — all from TypeScript?",
+      "expected_output": "A complete bootstrap sequence: create an Ed25519Keypair, request SUI from the faucet using requestSuiFromFaucetV2, and create a SuiGrpcClient connected to testnet.",
+      "expectations": [
+        "The response shows creating a keypair with new Ed25519Keypair() or Ed25519Keypair.fromSecretKey()",
+        "The response shows requestSuiFromFaucetV2 with getFaucetHost('testnet') for programmatic faucet access",
+        "The response shows creating a SuiGrpcClient with network: 'testnet'",
+        "The response does NOT suggest using the Sui CLI for any of these steps",
+        "The response shows how to get the address with keypair.toSuiAddress()"
+      ],
+      "sources": [
+        "https://sdk.mystenlabs.com/sui/cryptography/keypairs",
+        "https://sdk.mystenlabs.com/sui"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How do I build a transaction that sends 1 SUI to another address, sign it with a keypair, and execute it from a backend? Show me the proper way to access coins and check the result.",
+      "expected_output": "A transaction using tx.coin() for coin access, keypair.signAndExecuteTransaction() for signing, result.$kind check for error handling, and waitForTransaction before dependent reads.",
+      "expectations": [
+        "The response uses tx.coin() or tx.balance() for coin access",
+        "The response uses keypair.signAndExecuteTransaction({ transaction, client })",
+        "The response checks result.$kind for FailedTransaction",
+        "The response calls client.waitForTransaction({ result }) before reading updated state",
+        "The response prefers balance::send_funds for transfers over transferObjects"
+      ],
+      "sources": [
+        "https://sdk.mystenlabs.com/sui/transactions/coins-and-balances",
+        "https://sdk.mystenlabs.com/sui/transactions/signing-and-execution"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to sponsor transactions for my users so they don't need SUI for gas. What's the recommended flow and what SDK should I use?",
+      "expected_output": "An explanation of the @mysten-incubation/sponsor package and createSponsor, the client-builds flow where the client builds transaction bytes and the backend validates and co-signs, and the three possible result types (Rejected, FailedTransaction, Transaction).",
+      "expectations": [
+        "The response recommends @mysten-incubation/sponsor and createSponsor for the backend",
+        "The response recommends the client-builds approach where the client builds full transaction bytes",
+        "The response mentions setting empty gas payment and gas owner for address-balance sponsorship",
+        "The response explains the three result types: Rejected, FailedTransaction, and Transaction",
+        "The response mentions application-specific validation (authentication, allowlists, rate limits) beyond defaults()",
+        "The response mentions useGasCoin: false when the sender is transferring their own tokens"
+      ],
+      "sources": [
+        "https://sdk.mystenlabs.com/sponsor/basic-usage",
+        "https://sdk.mystenlabs.com/sponsor/best-practices"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I need to run hundreds of transactions from one address as fast as possible for an airdrop. How do I avoid gas management issues?",
+      "expected_output": "An explanation of ParallelTransactionExecutor for concurrent execution with automatic gas pool management and conflict detection, or SerialTransactionExecutor for ordered execution with automatic gas merging.",
+      "expectations": [
+        "The response recommends ParallelTransactionExecutor for high-throughput batch operations",
+        "The response explains that the executor automatically maintains a gas coin pool",
+        "The response mentions conflict detection for transactions using the same objects",
+        "The response warns against running multiple executor instances on the same address",
+        "The response advises using unresolved object IDs (strings) rather than fully-specified refs"
+      ],
+      "sources": [
+        "https://sdk.mystenlabs.com/sui/executors"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "For our production backend, we don't want to store raw private keys. What are our options for signing Sui transactions securely, and how do we set up a 2-of-3 multisig?",
+      "expected_output": "An explanation of AWS KMS and GCP KMS signers that implement the same Signer interface as keypairs, plus MultiSigPublicKey setup with threshold and weights.",
+      "expectations": [
+        "The response recommends AWS KMS signer (@mysten/aws-kms-signer) or GCP KMS signer (@mysten/gcp-kms-signer)",
+        "The response explains that KMS signers implement the same Signer interface as keypairs",
+        "The response shows MultiSigPublicKey.fromPublicKeys with threshold and weighted public keys",
+        "The response shows how to combine partial signatures or use MultiSigSigner",
+        "The response notes maximum 10 accounts per multisig"
+      ],
+      "sources": [
+        "https://sdk.mystenlabs.com/sui/cryptography/signers",
+        "https://sdk.mystenlabs.com/sui/cryptography/signers/multisig"
+      ]
+    }
+  ]
+}

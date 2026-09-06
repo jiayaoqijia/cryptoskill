@@ -1,0 +1,145 @@
+[
+  {
+    "id": "accessing-data-no-json-rpc",
+    "prompt": "I want to build a Node.js backend that reads a user's SUI balance and lists their owned NFTs. Which API should I use and how do I set up the client?",
+    "sources": [
+      "https://docs.sui.io/concepts/data-access/data-serving",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "Recommends gRPC via SuiGrpcClient, imported from '@mysten/sui/grpc'. Shows client instantiation with network + baseUrl (https://fullnode.mainnet.sui.io:443). Uses client.core.listBalances and client.core.listOwnedObjects. Does not recommend JSON-RPC.",
+    "expectations": [
+      "Recommends gRPC / SuiGrpcClient, NOT JSON-RPC / SuiClient / SuiJsonRpcClient",
+      "Imports SuiGrpcClient from '@mysten/sui/grpc'",
+      "Passes both network and baseUrl to the constructor",
+      "Uses client.core.listBalances (v2 Core API) for balance read",
+      "Uses client.core.listOwnedObjects for owned objects",
+      "Does NOT recommend JSON-RPC / SuiJsonRpcClient for new code",
+      "Does NOT use client.getBalance / client.getOwnedObjects (v1 method names)"
+    ]
+  },
+  {
+    "id": "accessing-data-use-case-mapping",
+    "prompt": "I'm building a wallet UI that needs to show: a balance for each coin type, recent transactions (with effects), owned NFTs filtered by type, and a dashboard combining all three. Which API should I use and why?",
+    "sources": [
+      "https://docs.sui.io/concepts/data-access/data-serving",
+      "https://docs.sui.io/concepts/data-access/graphql-rpc"
+    ],
+    "expected_output": "For a dashboard that combines multiple entity types in one view, GraphQL RPC is the best fit — it can return balances + transactions + owned objects in a single query, reducing round trips. For individual per-entity reads (just a balance, just a tx), gRPC is still fine. Shows a sketch of a combined GraphQL query.",
+    "expectations": [
+      "Recommends GraphQL RPC for the multi-entity dashboard case",
+      "Explains the rationale: one request instead of multiple (reduced round trips, composable queries)",
+      "Identifies GraphQL RPC as GA (not beta)",
+      "Shows a GraphQL query that fetches balances, transactions, and owned objects together",
+      "Does NOT recommend JSON-RPC",
+      "Does NOT recommend building a custom indexer for this use case (hosted APIs cover it)"
+    ]
+  },
+  {
+    "id": "accessing-data-custom-indexer-gate",
+    "prompt": "I need to show a leaderboard of the top 100 users by total trade volume on my marketplace over the last 30 days. What's the right approach?",
+    "sources": [
+      "https://docs.sui.io/guides/operator/indexer-stack-setup",
+      "https://docs.sui.io/concepts/data-access/graphql-rpc"
+    ],
+    "expected_output": "Recommends a custom indexer via sui-indexer-alt. Rationale: this is an app-specific aggregation (SUM by user) across a time range — not something gRPC point-lookups or general GraphQL answer efficiently. Describes the pipeline approach: subscribe to marketplace events via gRPC, write to a Postgres aggregation table, serve from your own query layer. Notes this is ongoing operational work — ensure the query isn't solvable with GraphQL RPC first.",
+    "expectations": [
+      "Recommends a custom indexer (sui-indexer-alt) for the leaderboard use case",
+      "Explains why: app-specific aggregation / SUM-by-user / time-range filtering is beyond gRPC's point-lookup surface and beyond the General-Purpose Indexer's schema",
+      "Mentions the pipeline model: checkpoint ingestion, Postgres tables, custom schema",
+      "Mentions GCS checkpoint buckets for backfill (e.g., gs://mysten-mainnet-checkpoints-use4)",
+      "Mentions full node gRPC for steady-state",
+      "Flags the operational cost of running an indexer",
+      "Does NOT recommend this workload be solved by polling JSON-RPC in app code"
+    ]
+  },
+  {
+    "id": "accessing-data-walrus-blob",
+    "prompt": "I'm minting NFTs where each NFT has a 2 MB image. Where should I store the image?",
+    "sources": [
+      "https://docs.wal.app",
+      "https://docs.sui.io/concepts/data-access/data-serving"
+    ],
+    "expected_output": "Recommends Walrus for the image bytes and a Sui Move object (the NFT) that stores the Walrus blob ID. Explains: Move objects are capped at 250 KB so 2 MB cannot fit on-chain; Walrus is the decentralized blob storage protocol designed for this. Shows a minimal pattern: upload to Walrus, get blobId, include blobId as a string field on the NFT. Discourages centralized CDN / IPFS as lesser alternatives for a decentralized app.",
+    "expectations": [
+      "Recommends Walrus for the image storage",
+      "States that the NFT Move object should store the Walrus blob ID (and possibly MIME type), NOT the bytes",
+      "Mentions the 250 KB Move object size limit as the reason bytes can't go on-chain",
+      "Mentions @mysten/walrus or the general Walrus access pattern",
+      "Explains that only the availability certificate + metadata goes on Sui, the blob itself is off-chain on Walrus storage nodes",
+      "Does NOT recommend storing 2 MB in a Move object",
+      "Does NOT recommend IPFS/S3/Pinata as the primary solution (may mention them as lesser alternatives)"
+    ]
+  },
+  {
+    "id": "accessing-data-migrate-json-rpc",
+    "prompt": "Here's some of my code. What's wrong and how do I update it?\n\n```ts\nimport { SuiClient, getFullnodeUrl } from '@mysten/sui/client';\nconst client = new SuiClient({ url: getFullnodeUrl('mainnet') });\nconst balance = await client.getBalance({ owner: addr });\nconst objs = await client.getOwnedObjects({ owner: addr, options: { showContent: true } });\nconst tx = await client.getTransactionBlock({ digest, options: { showEffects: true } });\n```",
+    "sources": [
+      "https://docs.sui.io/concepts/data-access/data-serving",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "Identifies this as legacy v1 SDK code using the deprecated JSON-RPC surface. Notes JSON-RPC is deprecated with mainnet shutdown the week of July 27, 2026. Migrates to SuiGrpcClient from '@mysten/sui/grpc' with network + baseUrl. Renames methods: getBalance → client.core.listBalances (or similar v2 Core API), getOwnedObjects → client.core.listOwnedObjects, getTransactionBlock → client.core.getTransaction. Replaces options: { show*: true } with include: { ... }. Does the full migration.",
+    "expectations": [
+      "Identifies the code as using the deprecated JSON-RPC / v1 SDK surface",
+      "States JSON-RPC is deprecated with a mainnet shutdown date (or equivalent language)",
+      "Replaces SuiClient with SuiGrpcClient from '@mysten/sui/grpc'",
+      "Removes getFullnodeUrl (v1 helper) and passes baseUrl directly",
+      "Adds the network parameter",
+      "Renames client.getBalance to a v2 Core API method (client.core.listBalances or client.core.getBalance if that exists on Core)",
+      "Renames client.getOwnedObjects to client.core.listOwnedObjects",
+      "Renames client.getTransactionBlock to client.core.getTransaction",
+      "Replaces options: { showContent: true } with include: { content: true }",
+      "Replaces options: { showEffects: true } with include: { effects: true }",
+      "Does NOT leave any v1 method names in the final code"
+    ]
+  },
+  {
+    "id": "accessing-data-archival-historical",
+    "prompt": "I need to read the state of an object as it was 6 months ago. The object has been updated many times since. My gRPC call returns the current version — how do I get the historical version?",
+    "sources": [
+      "https://docs.sui.io/concepts/data-access/archival-store",
+      "https://docs.sui.io/concepts/data-access/graphql-rpc"
+    ],
+    "expected_output": "Explains that full nodes prune old object versions. The Archival Store retains them. For GraphQL RPC, access is transparent: you query for the specific version, and the service routes to archival for pruned data (when operator-configured). For gRPC, clients must query an Archival Service endpoint directly for historical data beyond full-node retention. Shows a GraphQL query for object at a specific past version.",
+    "expectations": [
+      "Correctly identifies that full nodes prune old object versions (retention is limited)",
+      "Identifies the Archival Store as the service that retains pruned history",
+      "States that GraphQL RPC routes to the Archival Store transparently (when operator-configured); gRPC clients need a separate Archival Service endpoint",
+      "Shows a GraphQL query that requests a specific past object version (e.g., object(address: ..., version: ...))",
+      "Identifies Archival Store as GA (not beta)",
+      "For gRPC archival, recommends an Archival Service endpoint running the standard LedgerService API — does NOT invent a separate non-standard archival API"
+    ]
+  },
+  {
+    "id": "accessing-data-streaming-events",
+    "prompt": "I need to watch for new transactions that mint a specific NFT type and react in real time (<1s). What's the right approach?",
+    "sources": [
+      "https://docs.sui.io/concepts/data-access/data-serving"
+    ],
+    "expected_output": "Recommends gRPC streaming / subscription (client.subscriptionService or equivalent streaming RPC). Rationale: gRPC streams push events as they occur with low latency. Shows a minimal example of iterating a server-stream. Discourages polling as wasteful and slow.",
+    "expectations": [
+      "Recommends gRPC streaming / subscription for real-time event ingestion",
+      "Mentions the SuiGrpcClient's subscription service (or equivalent streaming RPC path)",
+      "Explicitly discourages polling (getEvents / getTransactionBlocks in a loop) as the wrong pattern",
+      "Explains latency / cost tradeoff: streaming push vs polling pull",
+      "Does NOT recommend JSON-RPC or polling",
+      "Does NOT recommend GraphQL RPC for this case (GraphQL is request/response, not streaming)"
+    ]
+  },
+  {
+    "id": "accessing-data-storage-fund-clarification",
+    "prompt": "What's the 'storage fund' in Sui? Can I use it to store my application data?",
+    "sources": [
+      "https://docs.sui.io/concepts/tokenomics",
+      "https://docs.sui.io/concepts/data-access/data-serving"
+    ],
+    "expected_output": "Clarifies that the storage fund is a tokenomics mechanism, NOT an API you call. Each on-chain transaction pays a storage fee into the fund; validators earn yield from the fund's stake to cover ongoing data storage. It affects pricing, not where you store. For application data storage: small structured data goes in Move objects (paid to the storage fund); large blobs go to Walrus. The storage fund is not a data storage service.",
+    "expectations": [
+      "Correctly identifies storage fund as an economic/tokenomics mechanism",
+      "States you cannot 'use the storage fund' as an API",
+      "Explains briefly how it works: transactions contribute storage fees, validators earn on the fund's stake",
+      "Directs the user to actual storage options: Move objects (small) or Walrus (large blobs)",
+      "Does NOT treat storage fund as a storage service or API",
+      "Does NOT conflate storage fund with Archival Store or Walrus"
+    ]
+  }
+]

@@ -1,0 +1,129 @@
+{
+  "skill_name": "sui-move",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io or move-book.com. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you explain what the key, store, copy, and drop abilities do in Sui Move? When should I use each one?",
+      "expected_output": "A complete explanation of all four Move abilities with practical guidance on common combinations and when to use them.",
+      "expectations": [
+        "The response explains that 'key' marks a struct as a Sui object and requires an 'id: UID' field",
+        "The response explains that 'store' allows a struct to be stored inside other objects and enables public_transfer",
+        "The response explains that 'copy' allows a struct to be duplicated",
+        "The response explains that 'drop' allows a struct to be silently discarded without explicit destruction",
+        "The response covers the common combination 'has key, store' for freely composable objects",
+        "The response explains that 'has key' alone restricts transfer to the defining module only",
+        "The response mentions that abilities are enforced at compile time",
+        "The response provides practical guidance on when to use each combination"
+      ],
+      "sources": [
+        "https://move-book.com/move-basics/abilities-introduction.html",
+        "https://docs.sui.io/concepts/sui-move-concepts"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How do I upgrade a published Move package on Sui? What is the UpgradeCap?",
+      "expected_output": "An explanation of the package upgrade process, the UpgradeCap object, upgrade policies (compatible, additive, dependency-only), and how to restrict upgrade capabilities.",
+      "expectations": [
+        "The response explains that the UpgradeCap is an address-owned object sent to the publisher at publish time",
+        "The response explains that the original package version is always preserved onchain",
+        "The response describes at least two upgrade policies (compatible, additive, dependency-only)",
+        "The response mentions that the UpgradeCap can be restricted in the same PTB as the publish command",
+        "The response explains that restrictions cannot be widened once applied",
+        "The response mentions the option to transfer the UpgradeCap to a multisig or destroy it to make the package permanently immutable"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/publish-upgrade-packages/upgrade"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What is the init function in Sui Move? Why would I use a One-Time Witness for currency creation?",
+      "expected_output": "An explanation of the init function running once at publish time, and the OTW pattern proving module authority for operations like coin::create_currency.",
+      "expectations": [
+        "The response explains that init runs exactly once when the package is published and is never callable again",
+        "The response mentions common init use cases: creating admin capabilities, registries, or treasury caps",
+        "The response explains that a One-Time Witness is a struct with the module name in ALL CAPS, has only the 'drop' ability, and has no fields",
+        "The response explains that the runtime creates the OTW instance and passes it to init",
+        "The response states that coin::create_currency requires an OTW to prove module authority",
+        "The response explains that OTW guarantees the currency can only be created once"
+      ],
+      "sources": [
+        "https://move-book.com/programmability/module-initializer",
+        "https://move-book.com/programmability/one-time-witness",
+        "https://move-book.com/programmability/one-time-witness.html"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "How to get the current epoch in Sui Move using TxContext? What does ctx.epoch() return? What's the difference between ctx.epoch_timestamp_ms() and the Clock object?",
+      "expected_output": "An explanation of TxContext methods for time and epoch access, plus how the Clock object differs in precision.",
+      "expectations": [
+        "The response explains that ctx.epoch() returns the current epoch number",
+        "The response explains that ctx.epoch_timestamp_ms() returns the epoch start timestamp in milliseconds",
+        "The response explains that the Clock object (at address 0x6) provides a more precise current network timestamp",
+        "The response clarifies that ctx.epoch_timestamp_ms() only gives the epoch start time, not the current time",
+        "The response mentions that using the Clock requires passing it as an additional object parameter",
+        "The response explains that TxContext is automatically provided by the runtime as the last parameter"
+      ],
+      "sources": [
+        "https://docs.sui.io/sui-stack/on-chain-primitives/access-time",
+        "https://move-book.com/programmability/epoch-and-time.html"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "What are Sui Move events and how do I emit events in smart contracts? How do I subscribe to them offchain?",
+      "expected_output": "An explanation of Move events including how to define event structs, emit them, and subscribe to them using the TypeScript SDK or GraphQL.",
+      "expectations": [
+        "The response explains that events are emitted using sui::event::emit()",
+        "The response states that event structs must have 'copy' and 'drop' abilities",
+        "The response explains that events are not stored onchain as objects; they exist in transaction effects",
+        "The response mentions subscribing offchain using the TypeScript SDK or GraphQL API",
+        "The response includes a code example or describes the code pattern for defining and emitting an event",
+        "The response mentions filtering events by type"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/accessing-data/using-events",
+        "https://move-book.com/programmability/events.html"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "How do I create a new fungible token (currency) on Sui? What are the key coin operations like mint, burn, split, and merge?",
+      "expected_output": "An explanation of the coin::create_currency flow using OTW, the role of TreasuryCap and CoinMetadata, and the standard coin operations.",
+      "expectations": [
+        "The response explains that coin::create_currency requires a One-Time Witness, decimals, symbol, name, description, and optional icon URL",
+        "The response mentions that create_currency returns a TreasuryCap (for minting/burning) and CoinMetadata",
+        "The response covers coin::mint for creating new coins using the TreasuryCap",
+        "The response covers coin::burn for destroying coins",
+        "The response covers coin::split for splitting a coin into two",
+        "The response covers coin::join (or merge) for combining two coins of the same type",
+        "The response mentions that SUI itself is a Coin type (e.g., Coin<SUI> or 0x2::sui::SUI)"
+      ],
+      "sources": [
+        "https://docs.sui.io/standards/coin",
+        "https://docs.sui.io/references/framework/sui/coin"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "How do I destroy an object in Sui Move that doesn't have the drop ability?",
+      "expected_output": "An explanation of how to explicitly unpack and handle each field of a struct that lacks the drop ability, including the object::delete(id) call for the UID.",
+      "expectations": [
+        "The response explains that objects without 'drop' cannot be silently discarded",
+        "The response describes unpacking (destructuring) the struct to extract all fields",
+        "The response mentions that the UID must be deleted using object::delete(id) or id.delete()",
+        "The response explains that this is enforced at compile time by Move's resource safety",
+        "The response provides a code example showing the let MyStruct { id, ... } = obj; id.delete(); pattern",
+        "The response mentions that a shared object can be destroyed if the function takes it by value and deletes it"
+      ],
+      "sources": [
+        "https://move-book.com/storage/uid-and-id.html",
+        "https://move-book.com/move-basics/struct.html",
+        "https://move-book.com/storage/storage-functions.html"
+      ]
+    }
+  ]
+}

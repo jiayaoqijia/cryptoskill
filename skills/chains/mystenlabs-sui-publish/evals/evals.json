@@ -1,0 +1,100 @@
+{
+  "skill_name": "sui-publish",
+  "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io and MystenLabs/sui-stack-hello-world.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How do I publish a Move package for the first time? What do I get back?",
+      "expected_output": "The publish command, prerequisites, and what the transaction returns.",
+      "expectations": [
+        "The response includes the command: sui client publish",
+        "The response mentions prerequisites: successful build (sui move build), active environment set, sufficient SUI balance",
+        "The response explains that publishing returns a unique package ID",
+        "The response explains that an UpgradeCap object is sent to the publisher's address",
+        "The response mentions that object IDs created during init functions appear in the transaction effects",
+        "The response mentions that Published.toml is created or updated automatically"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/onboarding/hello-world"]
+    },
+    {
+      "id": 2,
+      "prompt": "I published to Testnet but now I want to publish a fresh copy to Devnet for development. How do I publish it again to another package ID?",
+      "expected_output": "Instructions for publishing to a different environment, explaining that each network gives a separate package ID.",
+      "expectations": [
+        "The response explains that each network gives the package a separate, independent package ID",
+        "The response instructs the user to switch environments: sui client switch --env devnet",
+        "The response explains that Published.toml tracks published addresses per environment",
+        "The response mentions getting Devnet tokens from the faucet before publishing",
+        "The response does not suggest deleting or modifying Published.toml to force a fresh publish (the toolchain handles multi-environment tracking)"
+      ],
+      "sources": [
+        "https://docs.sui.io/getting-started/onboarding/hello-world",
+        "https://docs.sui.io/develop/publish-upgrade-packages/"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "How do I upgrade a published Move contract on Sui? What's the process?",
+      "expected_output": "The full upgrade workflow including UpgradeCap, policies, and the CLI command.",
+      "expectations": [
+        "The response explains that published packages are immutable but can be upgraded by publishing a new version",
+        "The response mentions the UpgradeCap as the object that controls upgrade authority",
+        "The response includes the CLI command: sui client upgrade --upgrade-capability <CAP_ID>",
+        "The response describes upgrade policies: compatible (add functions), additive (add modules), dependency-only",
+        "The response mentions that the UpgradeCap can be restricted in the same PTB as the publish command",
+        "The response mentions the option to destroy the UpgradeCap to make the package permanently immutable"
+      ],
+      "sources": ["https://docs.sui.io/develop/publish-upgrade-packages/upgrade"]
+    },
+    {
+      "id": 4,
+      "prompt": "My dry run is failing on a transaction. What should I check to debug it?",
+      "expected_output": "A checklist of common dry run failure causes and debugging steps.",
+      "expectations": [
+        "The response mentions checking that all object IDs are correct and exist on the target network",
+        "The response mentions checking that the sender has sufficient gas",
+        "The response mentions checking that function arguments match the expected types",
+        "The response mentions checking that the active environment matches the network where the package is published",
+        "The response mentions devInspectTransactionBlock as the SDK method for programmatic dry runs"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/dev-cheat-sheet"]
+    },
+    {
+      "id": 5,
+      "prompt": "How do I start and use a local Sui network for development?",
+      "expected_output": "The localnet start command, faucet access, and how to switch to it.",
+      "expectations": [
+        "The response includes the command: sui start --with-faucet --force-regenesis (or similar)",
+        "The response mentions the local faucet endpoint at 127.0.0.1:5003/gas or 127.0.0.1:9123/gas",
+        "The response shows how to switch to localnet: sui client switch --env localnet",
+        "The response explains that localnet resets on restart with --force-regenesis",
+        "The response mentions that localnet is useful for offline development and rapid iteration"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/onboarding/"]
+    },
+    {
+      "id": 6,
+      "prompt": "I published my package and got objects back. How do I find the package ID and the objects created by init functions?",
+      "expected_output": "Instructions for finding the package ID and init-created object IDs from the publish transaction output.",
+      "expectations": [
+        "The response explains that the package ID appears in the publish transaction output under created objects",
+        "The response mentions that objects created by init functions also appear in the transaction effects",
+        "The response suggests using sui client object <OBJECT_ID> to inspect any created object",
+        "The response mentions that Published.toml records the package address for future reference"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/onboarding/hello-world"]
+    },
+    {
+      "id": 7,
+      "prompt": "How do I serialize a transaction to send to another party for signing, like for a multisig upgrade?",
+      "expected_output": "Instructions for using --serialize-output to generate base64 transaction bytes for offline signing.",
+      "expectations": [
+        "The response mentions the --serialize-unsigned-transaction or --serialize-output flag on sui client commands",
+        "The response explains that this outputs base64 transaction bytes instead of executing",
+        "The response mentions that these bytes can be sent to other signers for offline signing",
+        "The response mentions that this is the standard approach for multisig workflows"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/dev-cheat-sheet"]
+    }
+  ]
+}

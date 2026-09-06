@@ -85,7 +85,7 @@ To make this composite skill self-contained, the core analysis modules are mappe
 
 ### 3.0A Analysis-side availability rule
 
-Apply the shared runtime rules first via `../exchange-runtime-rules.md`.
+Apply the shared runtime rules first via [`gate-runtime-rules.md`](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md).
 
 This composite skill assumes the runtime exposes the referenced `info_*` and `news_*` tools.
 

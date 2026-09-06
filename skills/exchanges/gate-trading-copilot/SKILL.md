@@ -1,8 +1,8 @@
 ---
 name: gate-exchange-trading-copilot
-version: "2026.3.14-3"
-updated: "2026-03-14"
-description: 'End-to-end cryptocurrency trading copilot for Gate Exchange. Use this skill whenever the user wants one skill to complete market judgment, risk control, and execution for a cryptocurrency trade on Gate Exchange. Trigger phrases include "analyze before placing an order", "analyze before buying", "check risk before trading", or any request involving cryptocurrency trade judgment, order drafting, spot or futures execution, or post-trade management on Gate Exchange.'
+version: "2026.3.23-1"
+updated: "2026-03-23"
+description: "Gate Trading Copilot L2. Use when the user wants to execute complex trades, margin borrowing, or query positions and open orders. Triggers on 'market buy', 'margin borrow', 'TradFi', 'Alpha', or spot-plus-futures combos. Requires Action Draft."
 ---
 
 # Gate Exchange Trading Copilot
@@ -15,8 +15,11 @@ It is neither a pure research skill nor a pure execution skill. Its purpose is t
 
 ## General Rules
 
-Read and follow the shared runtime rules before proceeding:
-→ `../exchange-runtime-rules.md`
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read [gate-runtime-rules.md](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md)
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
 
 Before calling any named MCP tool, verify that the concrete tool name exists in the current runtime tool list. If a helper tool is absent, disclose the mismatch, use only the nearest valid fallback combination, and do not overclaim unavailable coverage such as rankings, macro breadth, or automated fund-flow tracing.
 
@@ -31,6 +34,13 @@ For portability across Gate MCP runtimes, treat the documented surfaces as the b
 
 Do not make `news_events_*` a required dependency in scenario design, because it is not part of the documented baseline news surface.
 
+## MCP Mode
+
+**Read and strictly follow** [`references/mcp.md`](./references/mcp.md), then execute this skill's copilot workflow.
+
+- `SKILL.md` keeps composite routing, trade lifecycle policy, and guardrails.
+- `references/mcp.md` is the authoritative MCP orchestration layer for cross-domain tool sequencing, execution gates, and degradation.
+
 ---
 
 Read `references/scenarios.md` for:
@@ -38,6 +48,13 @@ Read `references/scenarios.md` for:
 - representative user scenarios
 - representative prompt examples
 - expected tool-routing patterns
+
+## Authentication
+
+- API Key Required: Not always
+- Read-only analysis: public `info_*`, `news_feed_*`, and some public `cex_spot_*` / `cex_fx_*` market-data calls may work without authentication, depending on runtime
+- Execution and private account actions: Yes, authenticated Exchange MCP tools with the required API key permissions are mandatory
+- Note: Do not block analysis-only use just because private execution tools are unavailable; only block when the requested action needs private trading/account access.
 
 ## Positioning
 
@@ -149,7 +166,7 @@ Read `references/execution-and-guardrails.md` for:
 
 Before analysis or execution:
 
-- read and follow `../exchange-runtime-rules.md`
+- read and follow [gate-runtime-rules.md](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md)
 - resolve any required runtime, update, or authorization gate before continuing
 - verify that the named tools you plan to call exist in the current runtime before relying on them
 

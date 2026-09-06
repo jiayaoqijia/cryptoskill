@@ -1,0 +1,44 @@
+[
+  {
+    "id": "nft-mint-composable",
+    "prompt": "Write a Move module for minting NFTs on Sui. The mint function should be composable \u2014 it returns the NFT so callers can decide what to do with it (transfer, wrap, add to a collection). Include a separate transfer helper. Include tests.",
+    "package_name": "composable_nft",
+    "check": "test",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "public entry fun mint",
+      "entry fun mint"
+    ],
+    "sources": [
+      "https://move-book.com/programmability/module-initializer"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Mint function returns the NFT instead of transferring it internally",
+      "Functions use 'public' visibility (not 'public entry' or 'entry')",
+      "NFT struct has key and store abilities for composability"
+    ]
+  },
+  {
+    "id": "shop-buy-return",
+    "prompt": "Build a Move module for a simple shop on Sui. The shop is a shared object created in init. A buy_item function accepts Coin<SUI> payment and returns the purchased ShopItem \u2014 the caller's PTB handles where it goes. Include an event for purchases.",
+    "package_name": "shop",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "entry fun buy_item"
+    ],
+    "sources": [
+      "https://move-book.com/programmability/module-initializer",
+      "https://move-book.com/programmability/events"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "buy_item function returns ShopItem instead of transferring internally",
+      "Shop is shared via transfer::share_object in init",
+      "Purchase event is emitted with copy, drop abilities",
+      "Coin<SUI> payment is accepted and deposited into shop balance"
+    ]
+  }
+]

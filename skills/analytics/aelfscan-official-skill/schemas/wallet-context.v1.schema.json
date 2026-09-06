@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AElfProject/aelf-skills/docs/schemas/wallet-context.v1.schema.json",
+  "title": "WalletContextFileV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "activeProfileId",
+    "profiles",
+    "lastWriter"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "activeProfileId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profiles": {
+      "type": "object",
+      "minProperties": 0,
+      "additionalProperties": {
+        "$ref": "#/$defs/activeProfile"
+      }
+    },
+    "lastWriter": {
+      "$ref": "#/$defs/lastWriter"
+    }
+  },
+  "$defs": {
+    "activeProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "walletType",
+        "source",
+        "updatedAt"
+      ],
+      "properties": {
+        "walletType": {
+          "type": "string",
+          "enum": [
+            "EOA",
+            "CA"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "eoa-local",
+            "ca-keystore",
+            "env"
+          ]
+        },
+        "network": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "caAddress": {
+          "type": "string"
+        },
+        "caHash": {
+          "type": "string"
+        },
+        "walletFile": {
+          "type": "string"
+        },
+        "keystoreFile": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "lastWriter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "skill",
+        "version"
+      ],
+      "properties": {
+        "skill": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

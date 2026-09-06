@@ -1,0 +1,31 @@
+[
+  {
+    "id": "composable-amm",
+    "prompt": "Help me set up a standard AMM style smart contract with move. It should support: creating a liquidity pool for two coin types, adding and removing liquidity (minting/burning LP tokens), swapping between the two coins using the constant product formula (x * y = k), and a fee mechanism (e.g. 0.3% swap fee). Don't write tests yet",
+    "expectations": [
+      "Does not use `public entry` — functions are either `public` or `entry` but not both",
+      "add_liquidity and remove_liquidity return values to caller (not transfer to sender internally)",
+      "swap functions return the output coin to caller (not transfer internally)",
+      "Function parameters follow correct order: objects first, capabilities second, primitives third, ctx last"
+    ]
+  },
+  {
+    "id": "composable-nft-game",
+    "prompt": "I'm building a video game on Sui. I need a smart contract for player profiles as NFTs. Each player has a username, an XP counter, and a level. Players also need an inventory — use dynamic object fields so it can hold any arbitrary Sui object like game items, weapons, or collectibles. Players should be able to earn XP and level up when they hit thresholds. There should be an admin that can grant XP. Don't write tests yet.",
+    "expectations": [
+      "Does not use `public entry` — functions are either `public` or `entry` but not both",
+      "create_profile / mint_profile returns the PlayerProfile to caller (not transfer internally)",
+      "Capability parameters (AdminCap) come AFTER primary objects (PlayerProfile) in function signatures",
+      "Function parameters follow correct order: objects first, capabilities second, primitives third, ctx last"
+    ]
+  },
+  {
+    "id": "composable-coin",
+    "prompt": "I want to create a new token on Sui. It should have a fixed name and symbol, an icon URL, and I want to be able to mint new tokens and also have the ability to burn the treasury cap to make it so no one can ever mint more. Can you set up the smart contract for this? Don't write tests yet.",
+    "expectations": [
+      "Does not use `public entry` — functions are either `public` or `entry` but not both",
+      "mint function returns coins to caller OR has separate public (returns) and entry (transfers) versions",
+      "Function parameters follow correct order: objects first, primitives third, ctx last"
+    ]
+  }
+]

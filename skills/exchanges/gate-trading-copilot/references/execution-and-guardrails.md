@@ -58,7 +58,7 @@ In that case ask:
 
 ### 2.4 Runtime availability and authentication
 
-Apply the shared runtime rules first via `../exchange-runtime-rules.md`.
+Apply the shared runtime rules first via [`gate-runtime-rules.md`](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md).
 
 At the execution layer, this skill assumes the runtime exposes the referenced `cex_spot_*` and `cex_fx_*` tools.
 

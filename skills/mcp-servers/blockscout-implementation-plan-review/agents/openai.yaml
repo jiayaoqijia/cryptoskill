@@ -1,0 +1,6 @@
+interface:
+  display_name: "Implementation Plan Review"
+  short_description: "Review a plan against an issue and current repo"
+  default_prompt: "Use $implementation-plan-review to review an implementation plan file against a GitHub issue description (local file or issue number in the current repo) and the current codebase; do not implement, and output a structured review with actionable comments."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,64 @@
+{
+  "skill_name": "sui-for-ethereum",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/getting-started/sui-for-ethereum. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm an Ethereum developer. How does access control work on Sui compared to Solidity's Ownable and AccessControl patterns?",
+      "expected_output": "An explanation that Sui uses capability-based access control through owned objects instead of identity/role-based access control, with the AdminCap pattern as an example.",
+      "expectations": [
+        "The response explains that Solidity uses identity/role-based access control through Ownable and AccessControl contracts",
+        "The response explains that Move uses capability-based access control through owned objects",
+        "The response shows or describes the AdminCap pattern where a capability object is passed as a parameter to gated functions",
+        "The response does not suggest using msg.sender-style checks in Move",
+        "The response explains that possession of the capability object grants permission, rather than checking an address against a role mapping"
+      ],
+      "sources": [
+        "https://docs.sui.io/getting-started/sui-for-ethereum"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How do Ethereum token standards (ERC-20, ERC-721, ERC-1155) map to Sui? What are the equivalents?",
+      "expected_output": "A mapping of Ethereum token standards to Sui equivalents: Currency Standard and Closed-Loop Token, plus differences in token accessibility and royalty enforcement.",
+      "expectations": [
+        "The response maps ERC-20, ERC-721, and ERC-1155 to Sui's Currency Standard and Closed-Loop Token",
+        "The response explains that in Solidity, tokens are bound to a smart contract, while on Sui, anyone can access shared objects and owned objects are directly accessible by their owner",
+        "The response mentions that token royalties are enforced by the chain on Sui, whereas on Ethereum they are only enforceable by marketplaces",
+        "The response does not invent additional Sui token standards beyond Currency Standard and Closed-Loop Token"
+      ],
+      "sources": [
+        "https://docs.sui.io/getting-started/sui-for-ethereum"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm used to Solidity's inheritance and polymorphism. How does Move handle code reuse and type abstraction without interfaces or dynamic dispatch?",
+      "expected_output": "An explanation that Move has no interfaces, no polymorphism, and no dynamic dispatch, and uses generics (Type<T>) instead of inheritance hierarchies.",
+      "expectations": [
+        "The response states that Move does not support interfaces, polymorphism, or dynamic dispatch",
+        "The response explains that Move uses generics like Type<T> for type parameterization",
+        "The response contrasts this with Solidity's support for multiple inheritance, polymorphism, and dynamic dispatch",
+        "The response does not suggest that Move has inheritance or interface-like features"
+      ],
+      "sources": [
+        "https://docs.sui.io/getting-started/sui-for-ethereum"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "How does transaction composability on Sui compare to Ethereum? On Ethereum I need multiple transactions for a multi-step workflow. What does Sui offer?",
+      "expected_output": "An explanation of PTBs as atomic multi-call transactions that replace Ethereum's pattern of separate, non-atomic transactions.",
+      "expectations": [
+        "The response explains that Sui uses Programmable Transaction Blocks (PTBs) to chain contract calls together with atomicity guarantees",
+        "The response states that a PTB can have up to 1,024 different contract calls",
+        "The response contrasts this with Ethereum where each call is its own transaction and is not atomic",
+        "The response explains that state mutation on Ethereum uses a compile-time ABI interface while Sui uses runtime PTB construction",
+        "The response does not conflate PTBs with Ethereum's internal contract calls or multicall patterns"
+      ],
+      "sources": [
+        "https://docs.sui.io/getting-started/sui-for-ethereum"
+      ]
+    }
+  ]
+}

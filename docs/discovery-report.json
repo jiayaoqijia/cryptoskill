@@ -104,6 +104,76 @@
       "category": "exchanges",
       "prefix": "crypto-com-",
       "official": true
+    },
+    {
+      "org": "pancakeswap",
+      "repo": "pancakeswap-ai",
+      "category": "defi",
+      "prefix": "pancakeswap-",
+      "official": true
+    },
+    {
+      "org": "jup-ag",
+      "repo": "agent-skills",
+      "category": "defi",
+      "prefix": "jup-ag-",
+      "official": true
+    },
+    {
+      "org": "ethereum",
+      "repo": "beaconrunner",
+      "category": "chains",
+      "prefix": "ethereum-",
+      "official": true
+    },
+    {
+      "org": "ava-labs",
+      "repo": "avalanche-telemetry",
+      "category": "chains",
+      "prefix": "ava-labs-",
+      "official": true
+    },
+    {
+      "org": "cardano-foundation",
+      "repo": "cardano-dev-skills",
+      "category": "chains",
+      "prefix": "cardano-foundation-",
+      "official": true
+    },
+    {
+      "org": "MystenLabs",
+      "repo": "skills",
+      "category": "chains",
+      "prefix": "mystenlabs-",
+      "official": true
+    },
+    {
+      "org": "MystenLabs",
+      "repo": "community-skills",
+      "category": "chains",
+      "prefix": "mystenlabs-",
+      "official": true
+    },
+    {
+      "org": "MystenLabs",
+      "repo": "sui-dev-skills",
+      "category": "chains",
+      "prefix": "mystenlabs-",
+      "official": true
+    },
+    {
+      "org": "ton-blockchain",
+      "repo": "skills",
+      "category": "chains",
+      "prefix": "ton-blockchain-",
+      "official": true
+    },
+    {
+      "org": "ton-blockchain",
+      "repo": "ton-triage-skill",
+      "category": "chains",
+      "prefix": "ton-blockchain-",
+      "official": true
     }
   ],
   "queries": [
@@ -150,108 +220,88 @@
     },
     {
       "query": "org:upbit (mcp OR skill OR agent)",
-      "status": "unavailable",
-      "detail": "HTTP Error 403: rate limit exceeded"
+      "status": "checked"
     },
     {
       "query": "org:pancakeswap (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:curvefi (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:jup-ag (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:raydium-io (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:orca-so (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:dydxprotocol (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:hyperliquid-dex (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:traderjoe-xyz (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:CamelotLabs (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:aerodrome-finance (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:drift-labs (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:cowprotocol (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:ethereum (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:ava-labs (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:cardano-foundation (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:polkadot-fellows (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:MystenLabs (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:cosmos (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:ton-blockchain (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:tronprotocol (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "unavailable",
+      "detail": "HTTP Error 403: Forbidden"
     },
     {
       "query": "org:stellar (mcp OR skill OR agent)",

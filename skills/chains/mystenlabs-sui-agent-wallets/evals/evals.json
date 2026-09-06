@@ -1,0 +1,90 @@
+{
+  "skill_name": "sui-agent-wallets",
+  "source_constraint": "All expected outputs and expectations are grounded in docs.waap.human.tech and docs.sui.io, and were verified against @human.tech/waap-cli 2.2.0.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My trading agent runs headless on a server. How do I let it make many small trades on Sui without approving each one?",
+      "expected_output": "Mint a Privilege from the CLI with a bounded scope, then pipe it into the signing command.",
+      "expectations": [
+        "The response uses waap-cli squid privilege create, not a browser flow",
+        "The response passes --chain sui:<network> and notes that --chain is required",
+        "The response bounds the grant with --allow, --amount-usd and --expiry-seconds",
+        "The response states that --amount-usd is a cumulative total across the grant, not per transaction",
+        "The response states the default expiry is 900 seconds and the maximum is 7200",
+        "The response pipes the token with --privilege-stdin rather than passing --permission-token or --privilege in argv",
+        "The response extracts .permissionToken from the --json object rather than piping the whole object"
+      ],
+      "sources": [
+        "https://docs.waap.human.tech/for-agents/concepts/privileges",
+        "https://docs.waap.human.tech/for-agents/commands"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How do I stop my agent from spending more than $100 a day?",
+      "expected_output": "Set a server-side daily spend limit, and handle escalation as a distinct branch.",
+      "expectations": [
+        "The response uses waap-cli policy set --daily-spend-limit",
+        "The response states the limit is enforced server-side, before a signature exists, not in agent code",
+        "The response states that crossing the limit raises an approval request rather than halting the account",
+        "The response tells the agent to handle a waiting-for-authorization outcome separately from a rejection",
+        "The response warns against retrying an escalated request in a loop",
+        "The response does not claim per-contract or velocity limits are available"
+      ],
+      "sources": ["https://docs.waap.human.tech/for-agents/concepts/policy-controls"]
+    },
+    {
+      "id": 3,
+      "prompt": "Where do I put the agent's private key so it can sign on Sui?",
+      "expected_output": "There is no key to place; the agent authenticates a session and signing happens in secure hardware.",
+      "expectations": [
+        "The response states the agent never holds a private key or seed phrase",
+        "The response states keys are generated and used in secure hardware and never reach the agent's context",
+        "The response does not suggest an environment variable, a file, or a mounted secret",
+        "The response mentions that the CLI authenticates a session rather than loading a key"
+      ],
+      "sources": ["https://docs.waap.human.tech/overview/architecture-security-model/how-a-signature-is-protected"]
+    },
+    {
+      "id": 4,
+      "prompt": "My agent's Sui transaction fails and I cannot tell why. What should I check first?",
+      "expected_output": "Funding and chain identifiers before anything else.",
+      "expectations": [
+        "The response checks that the Sui address holds native SUI for gas",
+        "The response notes that bridged ETH is not native SUI",
+        "The response suggests reserving at least 0.2 SUI for a running agent",
+        "The response checks that --chain was passed, and notes there is no global default and chain set is deprecated",
+        "The response mentions that a Squid Mode account also needs IKA"
+      ],
+      "sources": [
+        "https://docs.waap.human.tech/networks/sui",
+        "https://docs.waap.human.tech/for-agents/commands"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I want to run six agents on the same box. Anything to watch out for?",
+      "expected_output": "Session isolation per agent.",
+      "expectations": [
+        "The response gives each agent its own WAAP_CLI_SESSION_DIR",
+        "The response explains that two processes sharing a session directory fight over the session file",
+        "The response warns that sessions are not scoped by environment, so changing WAAP_CLI_ENV alone can let a staging session overwrite a production one",
+        "The response notes that stray agent instances drain gas"
+      ],
+      "sources": ["https://docs.waap.human.tech/for-agents/commands"]
+    },
+    {
+      "id": 6,
+      "prompt": "Can I revoke a Privilege I already granted if the agent is compromised?",
+      "expected_output": "Not per grant; expiry is the control.",
+      "expectations": [
+        "The response does not claim per-grant revocation exists",
+        "The response states the grant expires, with a 7200 second maximum and a 900 second default",
+        "The response advises keeping lifetimes short and re-minting rather than relying on recall",
+        "The response does not confuse transferability of the Sui capability object with revocation of a grant"
+      ],
+      "sources": ["https://docs.waap.human.tech/for-agents/concepts/privileges"]
+    }
+  ]
+}

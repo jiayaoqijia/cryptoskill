@@ -1,0 +1,74 @@
+{
+  "skill_name": "sui-install",
+  "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How can I install Sui?",
+      "expected_output": "Step-by-step installation instructions starting with suiup as the recommended method, plus alternatives for different platforms.",
+      "expectations": [
+        "The response recommends suiup as the primary installation method",
+        "The response includes the suiup install command: curl -sSfL https://raw.githubusercontent.com/MystenLabs/suiup/main/install.sh | sh",
+        "The response shows how to install a network-specific version: suiup install sui@testnet or suiup install sui@mainnet",
+        "The response mentions suiup switch sui@testnet to make the installed version the active default",
+        "The response mentions Homebrew (brew install sui) and Chocolatey (choco install sui) as alternatives",
+        "The response mentions that alternatives do not support installing additional Sui Stack components",
+        "The response includes sui --version for verifying installation",
+        "The response notes the Windows caveat: the curl | sh command requires a Unix shell; Windows users should use Chocolatey or WSL"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+    },
+    {
+      "id": 2,
+      "prompt": "My sui --version shows 1.67.3 but the latest is 1.69. I installed via suiup. How do I update?",
+      "expected_output": "Instructions for updating AND switching Sui via suiup, explaining the two-step process.",
+      "expectations": [
+        "The response provides the update command: suiup update sui@testnet (or sui@mainnet depending on their target)",
+        "The response explicitly warns that suiup update downloads the new version but does NOT automatically make it the active default",
+        "The response provides the switch command: suiup switch sui@testnet to make the updated version active",
+        "The response explains that the CLI version should match the target network",
+        "The response suggests running suiup show to verify which version is active",
+        "The response does not use nonexistent commands like 'suiup use' or 'suiup default'",
+        "The response does not suggest reinstalling from scratch when suiup update + switch is sufficient"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+    },
+    {
+      "id": 3,
+      "prompt": "I ran suiup update sui@testnet and it says it downloaded v1.70.2, but sui --version still shows v1.62.0. What's going on?",
+      "expected_output": "An explanation that suiup update downloads but doesn't switch, and the correct command to activate the new version.",
+      "expectations": [
+        "The response explains that suiup update downloads the new version but does not make it the active default",
+        "The response provides the fix: suiup switch sui@testnet",
+        "The response explains the switch command syntax: binary@network (e.g., sui@testnet, not 'suiup switch sui testnet v1.70.2')",
+        "The response suggests suiup show to verify the current default and installed versions",
+        "The response does not suggest nonexistent commands like 'suiup use', 'suiup default', or 'suiup set'"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+    },
+    {
+      "id": 4,
+      "prompt": "I get a 'client/server api version mismatch' warning when running sui client commands. Client is 1.62.0 and server is 1.70.2. How do I fix this?",
+      "expected_output": "An explanation that the CLI version is behind the network and needs to be updated and switched.",
+      "expectations": [
+        "The response explains that this warning means the locally installed Sui CLI is older than the network version",
+        "The response provides the two-step fix: suiup update sui@testnet followed by suiup switch sui@testnet",
+        "The response mentions verifying with sui --version after switching",
+        "The response does not suggest ignoring the warning — version mismatches can cause build failures and unexpected behavior"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+    },
+    {
+      "id": 5,
+      "prompt": "I installed move-analyzer with suiup but the 'move-analyzer' command isn't found. What do I need to do?",
+      "expected_output": "An explanation that suiup install downloads but may not set the default, and suiup switch is needed.",
+      "expectations": [
+        "The response explains that after suiup install, the binary may not be set as the active default",
+        "The response provides the fix: suiup switch move-analyzer@testnet",
+        "The response suggests suiup show to verify installation and default status",
+        "The response does not suggest manual PATH manipulation or reinstalling"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/tooling"]
+    }
+  ]
+}

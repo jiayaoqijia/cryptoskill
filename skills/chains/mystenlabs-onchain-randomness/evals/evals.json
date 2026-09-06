@@ -1,0 +1,70 @@
+{
+  "skill_name": "onchain-randomness",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How do I generate a random number in a Sui Move smart contract? Show me a basic example of rolling a dice.",
+      "expected_output": "An explanation of the Random object, RandomGenerator, and a complete dice roll example using private entry function visibility.",
+      "expectations": [
+        "The response explains that the Random object lives at reserved address 0x8 and is a shared immutable object",
+        "The response explains that RandomGenerator is created locally using new_generator(r, ctx)",
+        "The response shows a dice roll example using random::generate_u8_in_range(&mut generator, 1, 6)",
+        "The response declares the function as entry (not public) to prevent composition attacks",
+        "The response shows RandomGenerator being created inside the function body, not passed as a parameter",
+        "The response mentions passing Random by reference (&Random)"
+      ],
+      "sources": [
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I wrote a public Move function that takes Random as a parameter for my lottery game. Why won't it compile, and how do I fix it?",
+      "expected_output": "An explanation of why public functions with Random parameters are rejected by the compiler, the composition attack they prevent, and how to fix it by using a private entry function.",
+      "expectations": [
+        "The response explains that the Move compiler rejects public functions with Random as a parameter",
+        "The response explains the composition (abort-filtering) attack: an attacker wraps the public function and reverts transactions with unfavorable outcomes",
+        "The response provides the attack example showing assert! to filter losing outcomes",
+        "The response recommends changing the function to a private entry function",
+        "The response explains that private entry functions prevent external module composition",
+        "The response mentions that the compiler also rejects public functions accepting RandomGenerator parameters"
+      ],
+      "sources": [
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to implement a secure NFT airdrop where users receive a random rarity tier (gold, silver, or bronze). How should I structure this to prevent manipulation?",
+      "expected_output": "A two-step commit-reveal implementation with step 1 as a private entry function that generates and stores the random value, and step 2 as a public function that reads the committed value and assigns the rarity tier.",
+      "expectations": [
+        "The response recommends the two-step commit-reveal pattern",
+        "The response shows step 1 as a private entry function that consumes Random and stores the random value in an unreadable object",
+        "The response shows step 2 as a separate function that reads the committed value and determines the rarity tier",
+        "The response explains that step 2 can be public because it does not use randomness directly",
+        "The response mentions that both steps should be separate transactions",
+        "The response mentions balanced gas usage so attackers cannot infer outcomes from gas consumption"
+      ],
+      "sources": [
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "What are the different attack vectors against onchain randomness on Sui, and how does Sui mitigate each one?",
+      "expected_output": "A comprehensive explanation of composition attacks, PTB attacks, and RandomGenerator state leakage, along with Sui's mitigations for each.",
+      "expectations": [
+        "The response covers composition attacks where attackers wrap public functions and abort unfavorable outcomes",
+        "The response explains that the compiler rejects public functions with Random or RandomGenerator parameters",
+        "The response covers PTB attacks where command chaining after MoveCall consuming Random enables inspection of results",
+        "The response explains that Sui rejects PTBs with commands other than TransferObjects or MergeCoins after a MoveCall consuming Random",
+        "The response covers RandomGenerator state leakage via bcs::to_bytes(&generator) when the generator is passed as a parameter",
+        "The response mentions balanced gas usage to prevent gas-based inference attacks"
+      ],
+      "sources": [
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+      ]
+    }
+  ]
+}

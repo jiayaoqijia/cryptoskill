@@ -1,0 +1,51 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - 'codex/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check dependency baseline
+        run: bun run deps:check
+
+      - name: Type check
+        run: bunx tsc --noEmit
+
+      - name: Coverage gate
+        run: bun run test:coverage:ci
+
+      - name: Verify generated openclaw config
+        run: bun run build:openclaw:check
+
+      - name: Upload coverage to Codecov
+        if: ${{ env.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ env.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Skip Codecov upload (missing token)
+        if: ${{ env.CODECOV_TOKEN == '' }}
+        run: echo "CODECOV_TOKEN is not set; skipping Codecov upload."

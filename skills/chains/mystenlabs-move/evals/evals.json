@@ -1,0 +1,33 @@
+{
+  "skill_name": "move",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build a Uniswap-style AMM (automated market maker) in idiomatic Move on Sui. It should support: creating a liquidity pool for two coin types, adding and removing liquidity (minting/burning LP tokens), swapping between the two coins using the constant product formula (x * y = k), and a fee mechanism (e.g. 0.3% swap fee). Use proper Sui object model patterns throughout.",
+      "expected_output": "A complete Move package with Move.toml and at least one module implementing: Pool struct (shared object), LP token (via Coin), add_liquidity, remove_liquidity, and swap functions. Code should compile with `sui move build` and follow Move idioms.",
+      "expectations": [
+        "Move.toml uses edition = \"2024\"",
+        "Move.toml does not list Sui or MoveStdlib as explicit dependencies (they are implicit in Sui 1.45+)",
+        "Module declaration uses single-line syntax without curly braces (e.g. `module pkg::amm;`)",
+        "All structs are declared public",
+        "Pool struct has `key` ability and `id: UID` as its first field",
+        "LP token is implemented using Sui's Coin/Balance framework, not a custom struct with copy+drop",
+        "Uses `let mut` for any variable that is reassigned or mutably borrowed",
+        "Does not use `public entry` — functions are either `public` or `entry` but not both",
+        "Does not use `public(friend)` or `friend` declarations",
+        "swap function returns Coin<Y> to the caller rather than calling transfer::transfer internally",
+        "add_liquidity and remove_liquidity follow pure function pattern (return values to caller, not transfer to sender internally — burns to @0x0 for minimum liquidity locking are acceptable)",
+        "Capability structs (if any) are suffixed with `Cap` (e.g. AdminCap)",
+        "Event structs (if any) are named in past tense (e.g. LiquidityAdded, not AddLiquidity)",
+        "Error constants use EPascalCase naming (e.g. EInsufficientLiquidity)",
+        "Does not use Aptos-specific patterns: no `acquires`, `move_to`, `move_from`, `borrow_global`, or `signer` type",
+        "Uses method syntax where applicable (e.g. `coin.value()` not `coin::value(&coin)`)",
+        "ctx.sender() used instead of tx_context::sender(ctx)",
+        "Does not import or call deprecated functions like coin::from_balance (uses balance.into_coin(ctx) instead)",
+        "Test functions do not have a `test_` prefix (e.g. `fun create_pool()` not `fun test_create_pool()`)",
+        "Tests use assert_eq! for equality checks rather than assert! with manual comparison", 
+        "Code compiles successfully with sui move build — no type errors or resource-linearity violations"
+      ]
+    }
+  ]
+}

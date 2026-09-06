@@ -1,0 +1,73 @@
+{
+  "skill_name": "zklogin",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/concepts/cryptography/zklogin. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How does the zkLogin protocol flow work? Walk me through the steps from user login to transaction submission.",
+      "expected_output": "A step-by-step explanation of the 10-step zkLogin protocol flow, covering the Groth16 ceremony, ephemeral key generation, OAuth login, salt retrieval, proof generation, address computation, and transaction submission with both ephemeral signature and ZK proof.",
+      "expectations": [
+        "The response mentions the Groth16 zkSNARK ceremony that generates the Common Reference String (CRS)",
+        "The response explains that an ephemeral key pair is generated and the public key, max_epoch, and randomness are embedded in the OAuth nonce",
+        "The response explains that the JWT is sent to a salt service which returns a unique user_salt based on iss, aud, and sub",
+        "The response explains that the JWT, salt, ephemeral public key, randomness, and key claim name are sent to the proving service to generate a ZK proof",
+        "The response explains that the Sui address is computed from iss, aud, sub, and user_salt",
+        "The response explains that the transaction is signed with the ephemeral private key and submitted with the signature, proof, and inputs",
+        "The response mentions that validators verify both the proof and the ephemeral signature"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/cryptography/zklogin"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How is a zkLogin address derived on Sui? Is it permanent, and what happens if I use a different OAuth provider or application?",
+      "expected_output": "An explanation of the zkLogin address derivation formula using Poseidon_BN254 and Blake2b_256, the inputs (zk_login_flag, iss, aud, sub/kc_value, user_salt), and that the address is permanent but provider-specific and application-specific.",
+      "expectations": [
+        "The response mentions the zk_login_flag (0x05) as the domain separator",
+        "The response explains that addr_seed uses Poseidon_BN254 with hashed key claim name, key claim value, aud, and hashed user_salt",
+        "The response explains that the final address uses Blake2b_256 with the zk_login_flag, iss length, iss, and addr_seed",
+        "The response states the address is permanent and does not change unless sub, iss, aud, or user_salt changes",
+        "The response explains that different OAuth providers produce different addresses for the same user",
+        "The response explains that different applications (different aud values) produce different addresses",
+        "The response states that zkLogin addresses cannot be converted to or from traditional wallet addresses"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/cryptography/zklogin"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What are the security implications if a user's JWT is leaked? What about if their salt is leaked? Can an attacker steal funds in either case?",
+      "expected_output": "An explanation that a leaked JWT compromises privacy but not funds (ephemeral private key is also needed), a leaked salt links the OAuth sub to the Sui address but does not enable fund theft, and that losing the salt means permanent loss of access.",
+      "expectations": [
+        "The response states that a leaked JWT can compromise privacy but cannot steal funds",
+        "The response explains that fund theft requires the ephemeral private key in addition to the JWT",
+        "The response states that a leaked salt allows linking the OAuth sub to the Sui address",
+        "The response states that a leaked salt alone cannot enable fund theft",
+        "The response warns that losing the salt means permanent loss of access to the address",
+        "The response explains zkLogin as a two-factor system: OAuth credential plus salt",
+        "The response mentions that the JWT is not published onchain, but iss, aud, and kid are revealed onchain"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/cryptography/zklogin"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Which OpenID providers does zkLogin support? I want to integrate it into my app -- what are the main steps and how do I verify signatures offchain?",
+      "expected_output": "A list of supported providers by network (all networks: Facebook, Google, Twitch, Apple, AWS Tenant, Karrier One, Credenza3; Devnet and Testnet only: Slack, Kakao, Microsoft; under review: RedBull, Amazon, WeChat, Auth0, Okta), a summary of integration steps, and the four offchain verification methods.",
+      "expectations": [
+        "The response lists the providers available on all networks: Facebook, Google, Twitch, Apple, AWS (Tenant), Karrier One, Credenza3",
+        "The response lists Devnet-and-Testnet-only providers (not Mainnet): Slack, Kakao, Microsoft",
+        "The response lists providers under review: RedBull, Amazon, WeChat, Auth0, Okta",
+        "The response covers the key integration steps: generate ephemeral key pair, construct nonce, initiate OAuth login, retrieve salt, generate ZK proof, compute address, sign and submit",
+        "The response lists all four offchain verification methods: Sui TypeScript SDK, GraphQL endpoint, Sui Keytool CLI, self-hosted verifier",
+        "The response includes the keytool CLI command example with zk-login-sig-verify"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/cryptography/zklogin"
+      ]
+    }
+  ]
+}

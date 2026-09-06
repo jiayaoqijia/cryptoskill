@@ -1,0 +1,88 @@
+[
+  {
+    "id": "simple-nft",
+    "prompt": "I want to create a simple NFT on Sui. It should have a name and a description, and anyone should be able to transfer it. Write the Move module with a mint function and tests.",
+    "package_name": "simple_nft",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/storage/key-ability"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "NFT struct has key and store abilities (store needed for public transfer)",
+      "Struct has id: UID as first field",
+      "Includes a constructor function that takes &mut TxContext"
+    ]
+  },
+  {
+    "id": "fungible-token-otw",
+    "prompt": "How do I create a new fungible token on Sui? Write me a complete module with a One-Time Witness, coin::create_currency in init, and a mint function that uses the TreasuryCap.",
+    "package_name": "my_token",
+    "check": "build",
+    "expected_result": "pass",
+    "sources": [
+      "https://docs.sui.io/onchain-finance/fungible-tokens/create-a-fungible-token"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "Uses One-Time Witness pattern (struct named after module in ALL CAPS with drop ability)",
+      "Calls coin::create_currency in the init function",
+      "Handles TreasuryCap and CoinMetadata correctly",
+      "Includes a mint function that uses the TreasuryCap"
+    ]
+  },
+  {
+    "id": "name-registry-events",
+    "prompt": "I'm building a name registry on Sui where users can claim names. The registry is a shared object. I want to emit events when names are registered. Names should be stored in a Table. Write the Move code with tests.",
+    "package_name": "name_registry",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/programmability/events",
+      "https://move-book.com/programmability/module-initializer"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Registry is a shared object created in init",
+      "Uses a collection type (Table, VecMap, etc.) for name storage",
+      "Event struct has copy and drop abilities",
+      "Uses event::emit to emit registration events"
+    ]
+  },
+  {
+    "id": "one-time-ticket",
+    "prompt": "Write a Move module for an event ticket that can be used exactly once. After use, the ticket should be destroyed. The ticket should not be transferable by the holder (key only, no store).",
+    "package_name": "ticket",
+    "check": "build",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/storage/key-ability"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "Ticket struct has key but NOT store (non-transferable by holder)",
+      "Includes a function that destroys the ticket by unpacking and calling id.delete()",
+      "Uses Move 2024 edition syntax"
+    ]
+  },
+  {
+    "id": "witness-gated-mint",
+    "prompt": "Build a regulated coin on Sui using the Witness pattern. Only the module that provides the witness type should be able to mint, burn, and transfer. Write the Move code.",
+    "package_name": "regulated_coin",
+    "check": "build",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/programmability/witness-pattern"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "Witness type has drop ability only",
+      "Mint function requires witness parameter to authorize creation",
+      "Burn function requires witness parameter",
+      "Only the defining module can construct the witness type"
+    ]
+  }
+]

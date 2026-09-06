@@ -1,0 +1,92 @@
+{
+  "skill_name": "sui-overview",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io, docs.wal.app, or move-book.com. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "What is the Sui Object Model and how do objects work on Sui?",
+      "expected_output": "A clear explanation of Sui's object-centric data model, how objects have unique IDs and versions, the five ownership types (address-owned, shared, immutable, wrapped, consensus-address-owned / party objects), and how ownership affects transaction processing and parallel execution.",
+      "expectations": [
+        "The response explains that Sui uses an object-centric model where every piece of onchain state is a typed object with a unique ID",
+        "The response describes object versioning: transactions produce new versions with incremented version numbers while preserving the original ID",
+        "The response covers all five ownership types: address-owned, shared, immutable/frozen, wrapped, and consensus-address-owned / party objects",
+        "The response explains that address-owned objects enable parallel execution without consensus",
+        "The response explains that shared objects require consensus ordering (Mysticeti)",
+        "The response contrasts Sui's model with account-based blockchains like Ethereum",
+        "The response does not hallucinate features or invent terminology not in Sui documentation"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/object-model",
+        "https://docs.sui.io/develop/objects/object-ownership"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Explain how Sui achieves parallel execution. What is Mysticeti and why do owned objects not need consensus?",
+      "expected_output": "An explanation of Sui's parallel execution model, the role of Mysticeti consensus, and why owned-object transactions bypass consensus.",
+      "expectations": [
+        "The response explains that transactions on owned objects skip consensus entirely because there are no conflicts to resolve",
+        "The response explains that only shared-object transactions go through consensus ordering via Mysticeti",
+        "The response identifies Mysticeti as Sui's consensus protocol",
+        "The response explains that this separation gives Sui its throughput advantage",
+        "The response gives examples of owned-object transactions that run in parallel (transfers, single-player actions, personal asset management)",
+        "The response explains that non-overlapping object sets never conflict, enabling parallelism"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/sui-architecture/consensus",
+        "https://docs.sui.io/develop/transactions/transaction-lifecycle"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm coming from Ethereum. Explain how Sui's object model is different from Ethereum's account model. What do I need to unlearn?",
+      "expected_output": "A comparison between Sui's object-centric model and Ethereum's account model, highlighting key conceptual shifts for Ethereum developers.",
+      "expectations": [
+        "The response contrasts Sui's object-centric model with Ethereum's account-based model",
+        "The response explains that in Sui, state is stored in individual objects rather than in large shared mappings inside contracts",
+        "The response mentions that Sui uses Move instead of Solidity, with compile-time resource safety instead of gas-based abuse prevention",
+        "The response explains that Sui objects have unique IDs and ownership, unlike Ethereum's contract storage",
+        "The response mentions PTBs as an alternative to multi-contract calls requiring separate transactions on Ethereum",
+        "The response explains that parallel execution of owned-object transactions is not possible on Ethereum"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/object-model",
+        "https://docs.sui.io/concepts/sui-move-concepts"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "What are the main components of the Sui Stack and how do they work together for building a complete app?",
+      "expected_output": "An overview of Sui Stack components (randomness, zkLogin, Walrus, Nautilus, DeepBook, Kiosk, Seal, Clock) and a concrete example of how they compose for a real use case.",
+      "expectations": [
+        "The response lists the major Sui Stack components: randomness, zkLogin, Walrus, Nautilus, DeepBook, Kiosk, Seal",
+        "The response mentions the Clock object and time primitives as part of the stack",
+        "The response provides at least one concrete example of how multiple components work together for a use case (for example, a gaming app using Move + randomness + Walrus + zkLogin + Kiosk)",
+        "The response describes the layered development workflow: Move contracts, publish, transactions, frontend with dApp Kit, extend with Stack primitives",
+        "The response mentions that these are native primitives, not third-party add-ons",
+        "The response covers at least 3 different use cases that the stack enables (DeFi, gaming, NFTs, identity, social, supply chain)"
+      ],
+      "sources": [
+        "https://docs.sui.io/sui-stack",
+        "https://docs.wal.app"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I want to build an NFT collection where the artwork is hidden until purchase. Buyers should only be able to see the art after they own the NFT. Which Sui Stack components do I need?",
+      "expected_output": "An explanation that combines Seal for access-controlled encryption, Walrus for storing the encrypted artwork, Kiosk for the marketplace with transfer policies, and Object Display for rendering metadata.",
+      "expectations": [
+        "The response recommends Seal for encrypting the artwork so only the owner can decrypt it",
+        "The response recommends Walrus for storing the encrypted image/media blob",
+        "The response recommends Kiosk for listing and purchasing the NFTs with creator-defined transfer policies",
+        "The response explains that the access policy in Move defines who can decrypt (e.g., must own the NFT)",
+        "The response mentions Object Display for rendering the NFT metadata in wallets and explorers",
+        "The response does not suggest storing the full image on-chain (256 KB object limit)"
+      ],
+      "sources": [
+        "https://docs.sui.io/sui-stack",
+        "https://docs.wal.app"
+      ]
+    }
+  ]
+}

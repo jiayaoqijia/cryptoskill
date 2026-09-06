@@ -1,7 +1,7 @@
 ---
-name: nethermind-official-defi-skills
-description: "Build unsigned DeFi transactions from natural language. Use when the user wants to send, transfer, swap, stake, unstake, wrap, unwrap, supply, withdraw, borrow, repay, deposit, delegate, add liquidity, remove liquidity, or trade yield tokens on-chain. Covers ETH, ERC-20, ERC-721, Aave, Lido, Uniswap, Curve, Compound, MakerDAO, Rocket Pool, EigenLayer, Balancer, Pendle, and WETH."
-version: "0.1.0"
+name: defi-skills
+description: "Build unsigned DeFi transactions from natural language across multiple chains. Use when the user wants to send, transfer, swap, stake, unstake, wrap, unwrap, supply, withdraw, borrow, repay, deposit, delegate, add liquidity, remove liquidity, or trade yield tokens on-chain. Supports Ethereum, Arbitrum, Base, Optimism, Polygon, and Sepolia. Covers ETH, ERC-20, ERC-721, Aave, Lido, Uniswap, Curve, Compound, MakerDAO, Rocket Pool, EigenLayer, Balancer, Pendle, Fibrous, and WETH."
+version: "0.2.0"
 license: MIT-0
 metadata:
   openclaw:
@@ -10,8 +10,12 @@ metadata:
         - defi-skills
       env:
         - WALLET_ADDRESS
+        - ALCHEMY_API_KEY
+        - THEGRAPH_API_KEY
     primaryEnv: WALLET_ADDRESS
     homepage: https://defi-skills.nethermind.io/
+    source: https://github.com/NethermindEth/defi-skills
+    install: "pip install --upgrade defi-skills"
 ---
 
 # Intent to Transaction
@@ -47,7 +51,7 @@ Examples:
 
 ## Constraints
 
-- **Mainnet only (chain_id 1).** All contract addresses in playbooks are for mainnet. Do not pass `--chain-id`. The CLI will reject mismatches.
+- **Multi-chain support.** Supported chains: Ethereum Mainnet (1), Arbitrum (42161), Base (8453), Optimism (10), Polygon (137), Sepolia (11155111). Default is mainnet. Use `--chain-id` to target other chains. Not all actions are available on all chains — check with `defi-skills actions --chain-id <id>`.
 - **One action per CLI call.** For multi-step intents, decompose into separate build calls. You are the planner.
 - **Some actions restrict valid tokens.** If you are unsure whether a token is supported for an action, run `defi-skills actions <name> --json` to check. The CLI will reject unsupported tokens with a clear error listing the valid options.
 - **Negative amounts are rejected.** All amounts must be zero or positive.
@@ -56,42 +60,55 @@ Examples:
 
 ## Prerequisites
 
-The CLI must be installed and a wallet address configured:
+The CLI must be installed:
 
 ```bash
-pip install defi-skills --extra-index-url https://nethermind.jfrog.io/artifactory/api/pypi/kyoto-pypi-local-prod/simple
-defi-skills config set-wallet "$WALLET_ADDRESS"
+pip install --upgrade defi-skills
 ```
 
-If `WALLET_ADDRESS` is not set, ask the user to provide their wallet address before continuing.
+A wallet address is required. The CLI reads it from (in priority order):
+1. `--wallet` flag on each command
+2. `WALLET_ADDRESS` environment variable
+3. Persisted config (`defi-skills config set-wallet`)
+
+For agents, prefer the env var or `--wallet` flag — no file writes needed. If no wallet is available, ask the user to provide their address before continuing.
 
 ### API keys
 
 **Most actions that involve on-chain data need `ALCHEMY_API_KEY`** (ENS resolution, swap quotes, "max" balance queries, EigenLayer strategy verification, etc.). Simple actions with known tokens and fixed amounts (like `aave_supply` with USDC) work without it.
 
-If a build fails with "no web3 instance" or "no RPC provider available", instruct the user to set their key using the CLI:
+If a build fails with "no web3 instance" or "no RPC provider available", the user needs to set their Alchemy key via environment variable or CLI config:
 
 ```bash
-defi-skills config set alchemy_api_key "<YOUR_ALCHEMY_KEY>"
+# Environment variable (preferred for agents)
+export ALCHEMY_API_KEY="<KEY>"
+
+# Or persist via CLI config
+defi-skills config set alchemy_api_key "<KEY>"
 ```
 
-Balancer actions additionally need `THEGRAPH_API_KEY`.
+**Balancer actions** additionally need `THEGRAPH_API_KEY`:
 
-Do not attempt to pass keys via environment variables. Use the config command.
+```bash
+export THEGRAPH_API_KEY="<KEY>"
+# Or persist via CLI config
+defi-skills config set thegraph_api_key "<KEY>"
+```
 
 ## Workflow
 
 ### Step 1: Identify the Action
 
-Determine the correct action from the supported actions table below. If unsure:
+Determine the correct action from the supported actions table below. If unsure, or to check availability on a specific chain:
 
 ```bash
 defi-skills actions --json
+defi-skills actions --chain-id 42161 --json   # Arbitrum actions only
 ```
 
-### Step 2: Check Parameters (when needed)
+### Step 2: Check Parameters (always)
 
-If you are unsure about required parameters or valid tokens for an action:
+Always check parameters before building. The call is instant (local lookup) and prevents errors from wrong field names:
 
 ```bash
 defi-skills actions aave_supply --json
@@ -101,6 +118,9 @@ defi-skills actions aave_supply --json
 
 ```bash
 TX=$(defi-skills build --action aave_supply --args '{"asset":"USDC","amount":"500"}' --json)
+
+# On L2 chains, pass --chain-id
+TX=$(defi-skills build --action aave_supply --args '{"asset":"USDC","amount":"500"}' --chain-id 42161 --json)
 ```
 
 Always check the response before proceeding:
@@ -156,23 +176,24 @@ On failure: `{"success": false, "error": "description of what went wrong"}`.
 
 ## Supported Actions
 
-| Protocol | Actions |
-|----------|---------|
-| Native ETH | `transfer_native` |
-| ERC-20 | `transfer_erc20` |
-| ERC-721 | `transfer_erc721` |
-| Aave V3 | `aave_supply`, `aave_withdraw`, `aave_borrow`, `aave_repay`, `aave_set_collateral`, `aave_repay_with_atokens`, `aave_claim_rewards` |
-| Lido | `lido_stake`, `lido_wrap_steth`, `lido_unwrap_wsteth`, `lido_unstake`, `lido_claim_withdrawals` |
-| Uniswap V3 | `uniswap_swap`, `uniswap_lp_mint`, `uniswap_lp_collect`, `uniswap_lp_decrease`, `uniswap_lp_increase` |
-| Curve 3pool | `curve_add_liquidity`, `curve_remove_liquidity` |
-| Curve Gauges | `curve_gauge_deposit`, `curve_gauge_withdraw`, `curve_mint_crv` |
-| WETH | `weth_wrap`, `weth_unwrap` |
-| Compound V3 | `compound_supply`, `compound_withdraw`, `compound_borrow`, `compound_repay`, `compound_claim_rewards` |
-| MakerDAO DSR | `maker_deposit`, `maker_redeem` |
-| Rocket Pool | `rocketpool_stake`, `rocketpool_unstake` |
-| EigenLayer | `eigenlayer_deposit`, `eigenlayer_delegate`, `eigenlayer_undelegate`, `eigenlayer_queue_withdrawals`, `eigenlayer_complete_withdrawal` |
-| Balancer V2 | `balancer_swap`, `balancer_join_pool`, `balancer_exit_pool` |
-| Pendle V2 | `pendle_swap_token_for_pt`, `pendle_swap_pt_for_token`, `pendle_swap_token_for_yt`, `pendle_swap_yt_for_token`, `pendle_add_liquidity`, `pendle_remove_liquidity`, `pendle_mint_py`, `pendle_redeem_py`, `pendle_claim_rewards` |
+| Protocol | Actions | Chains |
+|----------|---------|--------|
+| Transfers | `transfer_native`, `transfer_erc20`, `transfer_erc721` | All chains |
+| WETH | `weth_wrap`, `weth_unwrap` | Mainnet, Arbitrum, Base, Optimism, Sepolia |
+| Aave V3 | `aave_supply`, `aave_withdraw`, `aave_borrow`, `aave_repay`, `aave_set_collateral`, `aave_repay_with_atokens`, `aave_claim_rewards` | Mainnet, Arbitrum, Base, Optimism, Polygon, Sepolia |
+| Uniswap V3 | `uniswap_swap`, `uniswap_lp_mint`, `uniswap_lp_collect`, `uniswap_lp_decrease`, `uniswap_lp_increase` | Mainnet, Arbitrum, Base, Optimism, Polygon, Sepolia |
+| Compound V3 | `compound_supply`, `compound_withdraw`, `compound_borrow`, `compound_repay`, `compound_claim_rewards` | Mainnet, Arbitrum, Base, Optimism, Polygon, Sepolia |
+| Balancer V2 | `balancer_swap`, `balancer_join_pool`, `balancer_exit_pool` | Mainnet, Arbitrum, Base, Optimism, Polygon |
+| Lido | `lido_stake`, `lido_wrap_steth`, `lido_unwrap_wsteth`, `lido_unstake`, `lido_claim_withdrawals` | Mainnet only |
+| Curve 3pool | `curve_add_liquidity`, `curve_remove_liquidity` | Mainnet only |
+| Curve Gauges | `curve_gauge_deposit`, `curve_gauge_withdraw`, `curve_mint_crv` | Mainnet only |
+| MakerDAO DSR | `maker_deposit`, `maker_redeem` | Mainnet only |
+| Rocket Pool | `rocketpool_stake`, `rocketpool_unstake` | Mainnet only |
+| EigenLayer | `eigenlayer_deposit`, `eigenlayer_delegate`, `eigenlayer_undelegate`, `eigenlayer_queue_withdrawals`, `eigenlayer_complete_withdrawal` | Mainnet only |
+| Pendle V2 | `pendle_swap_token_for_pt`, `pendle_swap_pt_for_token`, `pendle_swap_token_for_yt`, `pendle_swap_yt_for_token`, `pendle_add_liquidity`, `pendle_remove_liquidity`, `pendle_mint_py`, `pendle_redeem_py`, `pendle_claim_rewards` | Mainnet only |
+| Fibrous | `fibrous_swap` | Base only |
+
+Not all actions are available on all chains. Use `defi-skills actions --chain-id <id> --json` to check.
 
 ## How to Build Any Action
 
@@ -213,7 +234,14 @@ Returns 2 transactions: ERC-20 approval, then `supply()`.
 TX=$(defi-skills build --action transfer_native --args '{"to":"vitalik.eth","amount":"0.5"}' --json)
 ```
 
-### Multi-step: Stake then Restake
+### L2: Supply USDC on Arbitrum
+
+```bash
+defi-skills actions aave_supply --chain-id 42161 --json   # check params on Arbitrum
+TX=$(defi-skills build --action aave_supply --args '{"asset":"USDC","amount":"1000"}' --chain-id 42161 --json)
+```
+
+### Multi-step: Stake then Restake (Mainnet)
 
 Lido staking is predictable (~1:1), so build both upfront:
 
@@ -235,11 +263,11 @@ The CLI is stateless. Each build call is independent with no memory of previous 
 - **`success: false`**: Read the `error` field. Do not retry blindly. Fix the input based on the error message.
 - **Unknown action**: Run `defi-skills actions` to see all supported actions.
 - **Unsupported token**: The error lists valid tokens for the action.
-- **Chain ID mismatch**: All playbooks are mainnet-only. Do not pass `--chain-id`.
+- **Action not available on chain**: The action exists but not on the requested chain. Use `defi-skills actions --chain-id <id>` to see what's available. Suggest mainnet if the action is mainnet-only (e.g., Lido, EigenLayer, Curve).
 - **Negative amount**: Amounts must be zero or positive.
-- **ENS resolution failed**: The user needs to run `defi-skills config set alchemy_api_key <KEY>`, or provide a hex address instead.
+- **ENS resolution failed**: The user needs to run `defi-skills config set alchemy_api_key <KEY>`, or provide a hex address instead. Note: ENS is only available on Ethereum Mainnet and Sepolia. On L2 chains, always use hex addresses (0x...).
 - **Missing wallet**: Run `defi-skills config set-wallet <address>`.
-- **CLI not found**: Run `npm install defi-skills --registry https://nethermind.jfrog.io/artifactory/api/npm/`.
+- **CLI not found**: Run `pip install defi-skills`.
 
 ## Safety
 

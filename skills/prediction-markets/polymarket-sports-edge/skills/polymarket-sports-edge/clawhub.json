@@ -1,0 +1,12 @@
+{
+  "emoji": "🏀",
+  "requires": {
+    "pip": ["simmer-sdk", "requests"],
+    "env": ["SIMMER_API_KEY", "THE_ODDS_API_KEY"]
+  },
+  "cron": "55 * * * *",
+  "automaton": {
+    "managed": true,
+    "entrypoint": "sports_edge.py"
+  }
+}

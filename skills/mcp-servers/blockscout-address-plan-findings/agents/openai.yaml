@@ -1,0 +1,6 @@
+interface:
+  display_name: "Address Plan Findings"
+  short_description: "Validate plan findings and fix the plan"
+  default_prompt: "Use $address-plan-findings to validate findings about an implementation plan against the codebase and repo rules, edit only the plan to fix valid findings, and write the required feedback file for every finding."
+policy:
+  allow_implicit_invocation: false

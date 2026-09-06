@@ -1,0 +1,76 @@
+{
+  "name": "@aelfscan/agent-skills",
+  "version": "0.2.2",
+  "description": "AelfScan explorer skill toolkit for AI agents: MCP, CLI, and SDK interfaces.",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./mcp": "./src/mcp/server.ts"
+  },
+  "bin": {
+    "aelfscan-skill": "./aelfscan_skill.ts",
+    "aelfscan-setup": "./bin/setup.js"
+  },
+  "files": [
+    "index.ts",
+    "src/",
+    "lib/",
+    "bin/",
+    "aelfscan_skill.ts",
+    "openclaw.json",
+    "mcp-config.example.json",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    ".env.example"
+  ],
+  "scripts": {
+    "setup": "bun run bin/setup.ts",
+    "mcp": "bun run src/mcp/server.ts",
+    "cli": "bun run aelfscan_skill.ts",
+    "build:openclaw": "bun run bin/generate-openclaw.ts",
+    "build:openclaw:check": "bun run bin/generate-openclaw.ts --check",
+    "test": "bun test tests/",
+    "test:unit": "bun test tests/unit/",
+    "test:unit:coverage": "bun run test:unit --coverage --coverage-reporter=text --coverage-reporter=lcov --coverage-dir=coverage",
+    "coverage:badge": "bun run bin/generate-coverage-badge.ts",
+    "test:integration": "bun test tests/integration/",
+    "test:e2e": "bun test tests/e2e/",
+    "coverage:gate": "bun run scripts/coverage-gate.ts",
+    "test:coverage:ci": "COVERAGE_MIN_LINES=85 COVERAGE_MIN_FUNCS=80 bun run test:unit:coverage && bun run coverage:gate",
+    "deps:check": "bun run scripts/check-deps-baseline.ts"
+  },
+  "keywords": [
+    "aelfscan",
+    "aelf",
+    "mcp",
+    "agent",
+    "blockchain",
+    "sdk",
+    "skill",
+    "explorer"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AelfScanProject/aelfscan-skill.git"
+  },
+  "homepage": "https://github.com/AelfScanProject/aelfscan-skill#readme",
+  "bugs": {
+    "url": "https://github.com/AelfScanProject/aelfscan-skill/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "commander": "^12.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "ajv": "^8.17.1",
+    "typescript": "^5.7.0"
+  }
+}

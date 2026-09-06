@@ -1,0 +1,46 @@
+[
+  {
+    "id": "multi-step-ptb",
+    "prompt": "Write a TypeScript script that builds a Sui PTB to mint an NFT via moveCall, set its description via a second moveCall using the result from the first, and then transfer it to a recipient \u2014 all in one transaction. Use Transaction from @mysten/sui/transactions.",
+    "package_name": "ptb_chain",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "TransactionBlock",
+      "@mysten/sui.js",
+      "getFullnodeUrl"
+    ],
+    "sources": [
+      "https://sdk.mystenlabs.com/typescript"
+    ],
+    "expectations": [
+      "Code compiles (TypeScript valid)",
+      "Uses Transaction from @mysten/sui/transactions",
+      "First moveCall result is captured and passed to second moveCall",
+      "Final result transferred to recipient with transferObjects",
+      "All operations composed in a single Transaction"
+    ]
+  },
+  {
+    "id": "kiosk-list-via-ptb",
+    "prompt": "Write a TypeScript script that builds a PTB to create a Kiosk, place an item into it, and list it for sale at a given price \u2014 all in one transaction. Use moveCall with 0x2::kiosk targets. Use Transaction from @mysten/sui/transactions.",
+    "package_name": "kiosk_ptb",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "TransactionBlock",
+      "@mysten/sui.js"
+    ],
+    "sources": [
+      "https://docs.sui.io/onchain-finance/kiosk/kiosk-example",
+      "https://sdk.mystenlabs.com/typescript"
+    ],
+    "expectations": [
+      "Code compiles (TypeScript valid)",
+      "Uses Transaction from @mysten/sui/transactions",
+      "Creates Kiosk via moveCall to 0x2::kiosk::new or 0x2::kiosk::default",
+      "Places item via moveCall to 0x2::kiosk::place",
+      "Lists item via moveCall to 0x2::kiosk::list with price"
+    ]
+  }
+]

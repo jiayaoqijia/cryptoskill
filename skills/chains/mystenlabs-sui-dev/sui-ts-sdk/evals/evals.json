@@ -1,0 +1,131 @@
+{
+  "skill_name": "sui-ts-sdk",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a TypeScript script using the Sui TypeScript SDK that does the following in a single PTB (Programmable Transaction Block): 1) Splits 1 SUI (1_000_000_000 MIST) from the gas coin. 2) Calls a Move function `0xDEAD::marketplace::buy_item` passing a shared marketplace object (ID: 0xMARKET), the split coin as payment, and a string item name 'legendary_sword'. The function returns the purchased item object. 3) Transfers the purchased item to the sender's address. Use the SuiGrpcClient for testnet and an Ed25519 keypair. Include proper error handling and wait for indexing.",
+      "expected_output": "A complete TypeScript script that constructs a multi-step PTB with splitCoins, moveCall, and transferObjects, executes it via SuiGrpcClient, checks the transaction status, and waits for indexing.",
+      "expectations": [
+        "Imports Transaction from '@mysten/sui/transactions' (not '@mysten/sui.js' or TransactionBlock)",
+        "Imports Ed25519Keypair from '@mysten/sui/keypairs/ed25519'",
+        "Imports SuiGrpcClient from '@mysten/sui/grpc' (not SuiClient from '@mysten/sui/client')",
+        "Creates SuiGrpcClient with both 'network' and 'baseUrl' parameters",
+        "Creates a Transaction instance (not TransactionBlock)",
+        "Uses tx.splitCoins(tx.gas, [...]) to split SUI from the gas coin",
+        "Uses tx.pure.u64() or plain number literal for the split amount (not raw tx.pure(1_000_000_000))",
+        "Uses tx.moveCall with target in 'package::module::function' format ('0xDEAD::marketplace::buy_item')",
+        "Passes the split coin result as an argument to moveCall (result chaining between PTB commands)",
+        "Uses tx.pure.string('legendary_sword') for the string argument (not a raw string literal)",
+        "Uses tx.object('0xMARKET') for the shared marketplace object",
+        "Captures the return value from moveCall and passes it to transferObjects",
+        "Uses tx.transferObjects([item], address) to transfer the purchased item",
+        "Calls client.signAndExecuteTransaction (not signAndExecuteTransactionBlock)",
+        "Checks result.$kind === 'FailedTransaction' for error handling (not result.effects?.status?.status)",
+        "Calls client.waitForTransaction after execution before any follow-up queries",
+        "Does not import from '@mysten/sui.js'"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write a TypeScript script using the Sui SDK that transfers 500 USDC tokens (coin type: 0xUSCpkg::usdc::USDC, 6 decimals so 500 USDC = 500_000_000) from the current user to a recipient address 0xRECIPIENT. The user may own multiple USDC coin objects that need to be merged. Use the coinWithBalance intent for automatic coin selection. Use SuiGrpcClient on mainnet.",
+      "expected_output": "A TypeScript script that uses coinWithBalance to create a coin of the correct non-SUI type and transfers it, using the correct coinWithBalance syntax with type parameter.",
+      "expectations": [
+        "Imports coinWithBalance from '@mysten/sui/transactions'",
+        "Imports Transaction from '@mysten/sui/transactions'",
+        "Imports SuiGrpcClient from '@mysten/sui/grpc' (not SuiClient)",
+        "Creates SuiGrpcClient with network 'mainnet' and mainnet baseUrl (https://fullnode.mainnet.sui.io:443)",
+        "Calls tx.setSender() before using coinWithBalance with a non-SUI coin type (required so the SDK can resolve owned coins during build)",
+        "Uses coinWithBalance({ balance: 500_000_000, type: '0xUSCpkg::usdc::USDC' }) with the type parameter for non-SUI coin",
+        "Uses tx.transferObjects to transfer the coinWithBalance result to '0xRECIPIENT'",
+        "Does NOT manually query coins, merge, and split (coinWithBalance handles this automatically)",
+        "Checks result.$kind === 'FailedTransaction' for error handling",
+        "Does not use deprecated package name @mysten/sui.js or class name TransactionBlock"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Given the attached Move module (pool.move), write a TypeScript script using the Sui SDK v2 that builds and executes TWO separate PTBs:\n\n1) A 'swap' PTB: Swap 1 SUI (type 0x2::sui::SUI) for TOKEN (type 0xTOKEN::token::TOKEN) using the pool at object ID 0xPOOL. Set min_amount_out to 1000. The swap function returns a Coin<TOKEN> which must be transferred to the sender.\n\n2) An 'add_liquidity' PTB: Add 2 SUI and 5000 TOKEN to the same pool. The function returns an LPToken which must be transferred to the sender.\n\nUse SuiGrpcClient on testnet with an Ed25519 keypair. Include proper error handling.",
+      "expected_output": "A TypeScript script with two PTBs that correctly translate the Move function signatures from pool.move into moveCall invocations with proper argument types, type arguments, and result handling.",
+      "files": ["evals/files/pool.move"],
+      "expectations": [
+        "Imports SuiGrpcClient from '@mysten/sui/grpc'",
+        "Imports Transaction from '@mysten/sui/transactions'",
+        "swap moveCall uses target in correct 'package::module::function' format",
+        "swap moveCall includes typeArguments with both X and Y types: ['0x2::sui::SUI', '0xTOKEN::token::TOKEN']",
+        "swap moveCall passes pool as tx.object('0xPOOL') — correctly mapping the Move &mut Pool<X,Y> parameter",
+        "swap moveCall passes coin_in as a result from tx.splitCoins or coinWithBalance — correctly mapping the Move Coin<X> parameter (not a raw object ID string)",
+        "swap moveCall passes min_amount_out as tx.pure.u64(1000) or similar typed pure — correctly mapping the Move u64 parameter",
+        "swap moveCall passes clock as tx.object.clock() — correctly mapping the Move &Clock parameter (not hardcoded '0x6' string)",
+        "swap moveCall arguments are in correct order matching the Move signature: pool, coin_in, min_amount_out, clock",
+        "Captures the Coin<Y> return value from swap moveCall and passes it to tx.transferObjects",
+        "add_liquidity moveCall includes typeArguments with both X and Y types",
+        "add_liquidity moveCall passes pool as tx.object('0xPOOL')",
+        "add_liquidity passes both coin_x and coin_y as coin results from splitCoins or coinWithBalance (not raw object IDs)",
+        "Captures the LPToken return value from add_liquidity and passes it to tx.transferObjects",
+        "Checks result.$kind === 'FailedTransaction' for both transactions",
+        "Does not use deprecated class names (TransactionBlock, SuiClient)"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Write a TypeScript script using the Sui SDK v2 that performs the following read queries on mainnet:\n\n1) Fetch the full object data for object ID '0xOBJECT', including its content.\n2) List all objects owned by address '0xOWNER', fetching ALL pages (not just the first page). Print the total count.\n3) List all SUI coins owned by '0xOWNER'.\n4) List all dynamic fields of object '0xPARENT', fetching all pages.\n\nUse SuiGrpcClient. Show how to handle pagination correctly for each paginated query.",
+      "expected_output": "A TypeScript script that uses the Core API client methods with correct v2 method names and proper cursor-based pagination.",
+      "expectations": [
+        "Imports SuiGrpcClient from '@mysten/sui/grpc'",
+        "Creates SuiGrpcClient with network 'mainnet' and mainnet baseUrl",
+        "Uses client.core.getObject() for fetching a single object (not client.getObject())",
+        "Passes include options to getObject (e.g., include: { content: true })",
+        "Uses client.core.listOwnedObjects() for listing owned objects (not getOwnedObjects)",
+        "Implements cursor-based pagination: loops while hasNextPage is true, passing cursor from previous response",
+        "Uses client.core.listCoins() for listing coins (not getCoins)",
+        "Uses client.core.listDynamicFields() for listing dynamic fields (not getDynamicFields)",
+        "All paginated queries handle multiple pages (not just fetching the first page)",
+        "Does not use deprecated method names: getOwnedObjects, getCoins, getDynamicFields",
+        "Does not call methods directly on client without the .core namespace"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Write a TypeScript script using the Sui SDK v2 that implements a sponsored transaction flow on testnet:\n\n1) A user (Ed25519 keypair) builds a PTB that transfers 0.5 SUI to address '0xRECIPIENT'.\n2) A sponsor (separate Ed25519 keypair) pays for the gas.\n3) Both the user and sponsor sign the transaction.\n4) The transaction is executed with both signatures.\n5) Properly check if the transaction succeeded or failed, and wait for indexing.\n\nUse SuiGrpcClient with the Core API. Show the complete flow including building, signing, and executing.",
+      "expected_output": "A TypeScript script implementing the full sponsored transaction flow: user builds tx, sets gas owner to sponsor, both sign independently, execute via client.core.executeTransaction with both signatures, check status, wait for indexing.",
+      "expectations": [
+        "Imports SuiGrpcClient from '@mysten/sui/grpc'",
+        "Imports Transaction from '@mysten/sui/transactions'",
+        "Creates two separate keypairs (user and sponsor)",
+        "Builds a Transaction with splitCoins and transferObjects",
+        "Sets the gas owner to the sponsor's address (not the user's)",
+        "User signs the transaction (using tx.sign or keypair.signTransaction)",
+        "Sponsor signs the transaction separately",
+        "Uses client.core.executeTransaction (not client.executeTransactionBlock) with both signatures",
+        "Passes both user and sponsor signatures to executeTransaction",
+        "Uses include parameter (not options) for execution response: e.g. include: { effects: true }",
+        "Checks result using $kind discriminant (FailedTransaction check) — not result.effects?.status?.status",
+        "Calls client.waitForTransaction after execution",
+        "Does not use deprecated names: signAndExecuteTransactionBlock, waitForTransactionBlock, TransactionBlock"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Migrate the attached TypeScript file (v1_script.ts) from Sui SDK v1 to Sui SDK v2. The file uses several deprecated v1 patterns that need to be updated. Produce the complete migrated file.\n\nKey v2 changes to apply:\n- Client class and imports\n- Network configuration\n- Transaction class\n- Method names\n- Execution options\n- Response handling\n- Module format (ESM)",
+      "expected_output": "A complete migrated TypeScript file with all v1 patterns replaced by their v2 equivalents, maintaining the same logic and functionality.",
+      "files": ["evals/files/v1_script.ts"],
+      "expectations": [
+        "Replaces SuiClient import with SuiGrpcClient from '@mysten/sui/grpc' (or SuiJsonRpcClient from '@mysten/sui/jsonRpc')",
+        "Replaces getFullnodeUrl with direct baseUrl or getJsonRpcFullnodeUrl",
+        "Adds network parameter to client constructor (network: 'testnet')",
+        "Replaces TransactionBlock with Transaction from '@mysten/sui/transactions'",
+        "Replaces client.getOwnedObjects with client.core.listOwnedObjects",
+        "Replaces client.getCoins with client.core.listCoins",
+        "Replaces client.getDynamicFields with client.core.listDynamicFields",
+        "Replaces client.signAndExecuteTransactionBlock with client.signAndExecuteTransaction",
+        "Replaces transactionBlock parameter name with transaction",
+        "Replaces options: { showEffects, showEvents } with include: { effects, events }",
+        "Replaces result.effects?.status?.status check with result.$kind === 'FailedTransaction' (or equivalent discriminant check)",
+        "Replaces client.waitForTransactionBlock with client.waitForTransaction",
+        "Replaces txb.pure(1_000_000_000) with tx.pure.u64(1_000_000_000) or typed pure helper",
+        "Replaces txb.pure(keypair.toSuiAddress()) with tx.pure.address(keypair.toSuiAddress()) for the transfer recipient",
+        "Does not contain any v1 imports or method names (SuiClient, getFullnodeUrl, TransactionBlock, signAndExecuteTransactionBlock, waitForTransactionBlock, getOwnedObjects, getCoins, getDynamicFields)"
+      ]
+    }
+  ]
+}

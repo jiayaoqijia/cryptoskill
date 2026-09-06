@@ -1,0 +1,35 @@
+{
+  "skill_name": "sui-build-test",
+  "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io and move-book.com.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How do I write and run tests for a Sui Move module? What testing tools are available?",
+      "expected_output": "An explanation of the test framework, test_scenario, running tests, and coverage.",
+      "expectations": [
+        "The response shows the sui move test command for running tests",
+        "The response mentions the #[test] attribute for marking test functions",
+        "The response mentions sui::test_scenario for multi-transaction, multi-sender test scenarios",
+        "The response mentions std::unit_test for assertion macros",
+        "The response mentions sui move test --coverage for tracking code coverage",
+        "The response mentions sui move coverage source --module <name> for viewing coverage results"
+      ],
+      "sources": [
+        "https://docs.sui.io/getting-started/dev-cheat-sheet",
+        "https://move-book.com/testing/"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How do I install and set up Move Analyzer for VS Code?",
+      "expected_output": "Installation via suiup plus VS Code extension setup.",
+      "expectations": [
+        "The response provides the install command: suiup install move-analyzer",
+        "The response instructs the user to install the Move Analyzer extension in VS Code",
+        "The response mentions the features: code completion, go-to-definition, diagnostics, hover documentation",
+        "The response mentions that it activates automatically for .move files"
+      ],
+      "sources": ["https://docs.sui.io/getting-started/tooling"]
+    }
+  ]
+}

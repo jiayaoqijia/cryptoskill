@@ -6,16 +6,22 @@ Supports two configuration modes:
 2. .env file (for tubman-bobtail-py CLI usage)
 
 Features:
-- SIWE authentication
-- Token refresh with JWT expiry checking
-- Portfolio management
-- Recommendation workflow
-- Trade execution
-- Position closing
-- Subscription monitoring
+- SIWE authentication with JWT refresh
+- Portfolio management (CRUD, tokens, timeseries, chain info)
+- Agent management (CRUD, assignment, invitations)
+- Recommendation workflow (request, poll, execute, response)
+- Research workflow (run, poll, results, apply)
+- Market Intelligence (trending, sentiment, whale flow/activity, token intelligence)
+- Trade execution and position closing
+- Conversation history management
+- User and subscription info
 
 IMPORTANT: ALWAYS include X-Agent-Private-Key header for Hyperliquid portfolio calls.
 See MEMORY.md Katbot/Tubman Client Rule for details.
+
+Portfolio types:
+  HL_PAPER   — paper trading on Hyperliquid (no real funds, was "PAPER")
+  HYPERLIQUID — live trading on Hyperliquid (agent key required)
 """
 import base64
 import json
@@ -53,7 +59,7 @@ if not BASE_URL or not IDENTITY_DIR:
         if candidate.exists():
             ENV_FILE = candidate
             break
-    
+
     if ENV_FILE and ENV_FILE.exists():
         with open(ENV_FILE) as f:
             for line in f:
@@ -240,7 +246,7 @@ def get_token() -> str:
 
 def _auth(token: str, agent_key: str = None) -> dict:
     """Build auth headers with optional agent private key.
-    
+
     CRITICAL: ALWAYS include X-Agent-Private-Key for Hyperliquid portfolio calls.
     The API requires this header for all Hyperliquid portfolio endpoints.
     """
@@ -265,6 +271,11 @@ def _require_agent_key() -> str:
     )
 
 
+# ============================================================================
+# PORTFOLIO MANAGEMENT
+# ============================================================================
+
+
 def list_portfolios(token: str) -> list:
     """List all portfolios for the authenticated user."""
     r = requests.get(f"{BASE_URL}/portfolio", headers=_auth(token))
@@ -272,232 +283,257 @@ def list_portfolios(token: str) -> list:
     return r.json()
 
 
-def get_user(token: str) -> dict:
-    """Fetch the current user's account info, subscription, plan, and feature usage.
+def create_portfolio(token: str, name: str, portfolio_type: str = "HL_PAPER",
+                     agent_private_key: str = None, amount: float = None,
+                     is_testnet: bool = True, primary_agent_id: int = None,
+                     arbitrum_rpc_url: str = None) -> dict:
+    """Create a new portfolio.
 
-    Calls GET /user. No agent key required — this is a user-scoped endpoint.
-
-    Returns:
-        dict with keys: sub, id, is_whitelisted, subscription, plan, feature_usage
-        where:
-          subscription: {id, plan_tier, status, starts_at, ends_at, is_active,
-                         is_expired, days_remaining, hours_remaining, expires_soon,
-                         expires_very_soon, is_forever, period, effective_ends_at,
-                         extension_count}
-          plan: {id, tier, agent_reccommendations, paper_trades, live_trades,
-                 priority_queue, has_sla, number_tokens}
-          feature_usage: list of {feature_type, usage_count, limit_count}
-    """
-    r = requests.get(f"{BASE_URL}/user", headers=_auth(token))
-    r.raise_for_status()
-    return r.json()
-
-
-def check_subscription_status(user_data: dict) -> dict:
-    """Evaluate a GetUserResponse dict and return a structured subscription status.
-
-    Args:
-        user_data: The dict returned by get_user()
-
-    Returns:
-        dict with keys:
-          is_active (bool)
-          is_expired (bool)
-          expires_soon (bool)
-          expires_very_soon (bool)
-          days_remaining (int or None)
-          hours_remaining (int or None)
-          plan_tier (str)
-          feature_usage (list of dicts: feature_type, usage_count, limit_count,
-                         limit_pct, near_limit)
-          warning_message (str or None) — human-readable, None if healthy
-          warnings (list of str)        — individual warning strings
-    """
-    sub = user_data.get("subscription", {})
-    feature_usage_raw = user_data.get("feature_usage", [])
-
-    is_active = sub.get("is_active", False)
-    is_expired = sub.get("is_expired", False)
-    expires_soon = sub.get("expires_soon", False)
-    expires_very_soon = sub.get("expires_very_soon", False)
-    days_remaining = sub.get("days_remaining")
-    hours_remaining = sub.get("hours_remaining")
-    plan_tier = sub.get("plan_tier", "unknown")
-
-    warnings = []
-
-    # Subscription expiry warnings
-    if is_expired:
-        warnings.append(
-            "❌ Your Katbot subscription has expired. "
-            "Visit https://katbot.ai to renew."
-        )
-    elif expires_very_soon:
-        if days_remaining is not None and days_remaining > 0:
-            time_str = f"{days_remaining} day{'s' if days_remaining != 1 else ''}"
-        elif hours_remaining is not None:
-            time_str = f"{hours_remaining} hour{'s' if hours_remaining != 1 else ''}"
-        else:
-            time_str = "very soon"
-        warnings.append(
-            f"⚠️ URGENT: Your Katbot subscription expires in {time_str}. "
-            "Visit https://katbot.ai to extend or upgrade your plan now."
-        )
-    elif expires_soon:
-        days_str = f"{days_remaining} days remaining" if days_remaining is not None else "soon"
-        warnings.append(
-            f"⚠️ Your Katbot subscription expires soon ({days_str}). "
-            "Visit https://katbot.ai to extend or upgrade."
-        )
-
-    # Feature usage warnings (>= 80% consumed)
-    feature_usage = []
-    for fu in feature_usage_raw:
-        feature_type = fu.get("feature_type", "")
-        usage_count = fu.get("usage_count", 0)
-        limit_count = fu.get("limit_count", 0)
-
-        if limit_count and limit_count > 0:
-            limit_pct = round((usage_count / limit_count) * 100, 1)
-            near_limit = limit_pct >= 80.0
-        else:
-            limit_pct = 0.0
-            near_limit = False
-
-        feature_usage.append({
-            "feature_type": feature_type,
-            "usage_count": usage_count,
-            "limit_count": limit_count,
-            "limit_pct": limit_pct,
-            "near_limit": near_limit,
-        })
-
-        if near_limit:
-            display_name = feature_type.replace("_", " ").lower()
-            warnings.append(
-                f"⚠️ You have used {usage_count}/{limit_count} {display_name}. "
-                "Visit https://katbot.ai to upgrade your plan."
-            )
-
-    warning_message = "\n".join(warnings) if warnings else None
-
-    return {
-        "is_active": is_active,
-        "is_expired": is_expired,
-        "expires_soon": expires_soon,
-        "expires_very_soon": expires_very_soon,
-        "days_remaining": days_remaining,
-        "hours_remaining": hours_remaining,
-        "plan_tier": plan_tier,
-        "feature_usage": feature_usage,
-        "warning_message": warning_message,
-        "warnings": warnings,
-    }
-
-
-def create_portfolio(token: str, name: str, portfolio_type: str = "PAPER", 
-                     exchange: str = "PAPER_PERPS", agent_private_key: str = None) -> dict:
-    """Create a new paper portfolio.
-    
     Args:
         token: JWT access token
         name: Portfolio name
-        portfolio_type: Type of portfolio (default: "PAPER")
-        exchange: Exchange identifier (default: "PAPER_PERPS")
-        agent_private_key: Optional agent private key (uses AGENT_PRIVATE_KEY if not provided)
-    
+        portfolio_type: "HL_PAPER" (paper trading) or "HYPERLIQUID" (live trading).
+                        Note: the old "PAPER" value has been renamed to "HL_PAPER".
+        agent_private_key: Optional agent private key (for HYPERLIQUID type)
+        amount: Initial USD balance for paper portfolios (ignored for HYPERLIQUID)
+        is_testnet: Use Hyperliquid testnet (default True for safety)
+        primary_agent_id: ID of the agent to assign as primary to this portfolio
+        arbitrum_rpc_url: Arbitrum RPC URL for Hyperliquid portfolio
+
     Returns:
-        Created portfolio dict with id, name, type, etc.
+        Created PortfolioInfo dict with id, name, type, agent_address, etc.
     """
     payload = {
         "name": name,
-        "type": portfolio_type,
-        "exchange": exchange,
+        "portfolio_type": portfolio_type,
+        "is_testnet": is_testnet,
     }
-    
-    # Add agent_private_key if provided or available
+
     key = agent_private_key or AGENT_PRIVATE_KEY
     if key:
         payload["agent_private_key"] = key
-    
+    if amount is not None:
+        payload["amount"] = amount
+    if primary_agent_id is not None:
+        payload["primary_agent_id"] = primary_agent_id
+    if arbitrum_rpc_url is not None:
+        payload["arbitrum_rpc_url"] = arbitrum_rpc_url
+
     r = requests.post(f"{BASE_URL}/portfolio", json=payload, headers=_auth(token))
     r.raise_for_status()
     return r.json()
 
 
-def get_portfolio_history(
-    token: str,
-    portfolio_id: int,
-    window: str = "7D",
-    granularity: str = "4h",
-    limit: int = 100,
-    require_agent: bool = True,
-) -> dict:
-    """Get portfolio history with explicit window, granularity, and limit params.
+def get_portfolio(token: str, portfolio_id: int, window: str = None, require_agent: bool = True) -> dict:
+    """Get portfolio state.
 
-    Use this function (not get_portfolio) when you need trade history for
-    charting or PnL reconstruction — it passes all three query params so
-    data density is explicitly controlled.
+    For timeseries data use get_portfolio_timeseries() instead.
 
     Args:
         token: JWT access token
         portfolio_id: Portfolio ID to query
-        window: Time window — "24H", "7D", or "30D" (default "7D")
-        granularity: Data bucket size — "1h", "4h", "1d" (default "4h")
-        limit: Max number of data points returned (default 100)
-        require_agent: If True (default), raises error if agent key not
-                       available. Set to False for paper portfolios.
-
-    Returns:
-        Portfolio history dict including trades[], total_pnl_usd,
-        total_pnl_pct, realized_pnl_usd, trade_fees_usd, etc.
-    """
-    agent_key = _require_agent_key() if require_agent else AGENT_PRIVATE_KEY
-    r = requests.get(
-        f"{BASE_URL}/portfolio/{portfolio_id}",
-        params={"window": window, "granularity": granularity, "limit": limit},
-        headers=_auth(token, agent_key),
-    )
-    r.raise_for_status()
-    return r.json()
-
-
-def get_portfolio(token: str, portfolio_id: int, window: str = "1d", require_agent: bool = True) -> dict:
-    """Get portfolio state with optional time window.
-    
-    Args:
-        token: JWT access token
-        portfolio_id: Portfolio ID to query
-        window: Time window for data (default "1d")
+        window: (deprecated) Use get_portfolio_timeseries() for timeseries data
         require_agent: If True (default), raises error if agent key not available.
                       Set to False for paper portfolios that don't need agent key.
-    
+
     Returns:
-        Portfolio state dict
-        
+        PortfolioInfo dict with portfolio state, positions, PnL metrics, etc.
+
     Raises:
         ValueError: If require_agent=True and KATBOT_HL_AGENT_PRIVATE_KEY not set
         HTTPError: If API returns error (e.g., 400 for missing agent key on Hyperliquid)
     """
-    # Get agent key, potentially raising error if required
     agent_key = _require_agent_key() if require_agent else AGENT_PRIVATE_KEY
-    
+
+    params = {}
+    if window is not None:
+        params["window"] = window
+
     r = requests.get(
-        f"{BASE_URL}/portfolio/{portfolio_id}", 
-        params={"window": window}, 
+        f"{BASE_URL}/portfolio/{portfolio_id}",
+        params=params,
         headers=_auth(token, agent_key)
     )
     r.raise_for_status()
     return r.json()
 
 
-def request_recommendation(token: str, portfolio_id: int, message: str) -> dict:
-    """Submit a recommendation request to the agent (async, returns ticket)."""
+def update_portfolio(token: str, portfolio_id: int,
+                     name: str = None,
+                     tokens_selected: list = None,
+                     max_history_messages: int = None) -> dict:
+    """Update portfolio settings (name, tokens, history limit).
+
+    Args:
+        token: Auth token
+        portfolio_id: Portfolio ID
+        name: New portfolio name (optional)
+        tokens_selected: List of token symbols (e.g., ["BTC", "ETH", "SOL"])
+        max_history_messages: Conversation history limit
+
+    Returns:
+        Updated PortfolioInfo dict
+    """
+    payload = {}
+    if name is not None:
+        payload["name"] = name
+    if tokens_selected is not None:
+        payload["tokens_selected"] = tokens_selected
+    if max_history_messages is not None:
+        payload["max_history_messages"] = max_history_messages
+
+    r = requests.put(f"{BASE_URL}/portfolio/{portfolio_id}",
+                     json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def delete_portfolio(token: str, portfolio_id: int,
+                     agent_private_key: str = None,
+                     user_master_address: str = None) -> dict:
+    """Delete a portfolio and all its associated data.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID to delete
+        agent_private_key: Agent private key (for Hyperliquid portfolios)
+        user_master_address: Master wallet address
+
+    Returns:
+        Dict with success status and message
+    """
+    params = {}
+    if user_master_address:
+        params["user_master_address"] = user_master_address
+    key = agent_private_key or AGENT_PRIVATE_KEY
+    if key:
+        params["agent_private_key"] = key
+
+    r = requests.delete(f"{BASE_URL}/portfolio/{portfolio_id}",
+                        params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_portfolio_tokens(token: str, portfolio_id: int) -> list:
+    """Get available trading token symbols for a portfolio.
+
+    Returns:
+        List of symbol strings (e.g., ["BTC", "ETH", "SOL"])
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/tokens", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_portfolio_chain_info(token: str, portfolio_id: int) -> dict:
+    """Get chain information for a portfolio.
+
+    Returns:
+        Dict with portfolio_id, chain_id, is_testnet, network_name
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/chain-info", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_portfolio_timeseries(token: str, portfolio_id: int,
+                              granularity: str,
+                              limit: int = 100,
+                              window: str = "24H",
+                              agent_private_key: str = None) -> dict:
+    """Get timeseries data for a portfolio.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID
+        granularity: Data granularity string (e.g., "1m", "5m", "15m", "1h", "4h", "1d", "1w", "1M")
+        limit: Maximum number of data points (default 100)
+        window: Time window (e.g., "24H", "7D", "30D", default "24H")
+        agent_private_key: Agent private key (required for HYPERLIQUID portfolios)
+
+    Returns:
+        Dict with timeseries list, portfolio_id, granularity, window, limit
+    """
+    key = agent_private_key or AGENT_PRIVATE_KEY
+    r = requests.get(
+        f"{BASE_URL}/portfolio/{portfolio_id}/timeseries",
+        params={"granularity": granularity, "limit": limit, "window": window},
+        headers=_auth(token, key)
+    )
+    r.raise_for_status()
+    return r.json()
+
+
+def approve_builder_fee(token: str, portfolio_id: int,
+                         action: dict, signature: dict, nonce: int) -> dict:
+    """Broadcast a user-signed approveBuilderFee action to Hyperliquid.
+
+    The frontend constructs and signs the EIP-712 approveBuilderFee action.
+    This endpoint forwards it to Hyperliquid and records approval in the database.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID (must be HYPERLIQUID type)
+        action: Full action dict (type, builder, maxFeeRate, nonce, etc.)
+        signature: {r, s, v} signature from MetaMask signTypedData
+        nonce: Millisecond timestamp used as nonce
+
+    Returns:
+        Dict with status, result, and portfolio_id
+    """
+    payload = {"action": action, "signature": signature, "nonce": nonce}
+    r = requests.post(f"{BASE_URL}/portfolio/{portfolio_id}/approve-builder-fee",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def validate_hyperliquid(token: str, agent_private_key: str = None,
+                          is_testnet: bool = True) -> dict:
+    """Validate a Hyperliquid connection using an agent private key.
+
+    Args:
+        token: JWT access token
+        agent_private_key: Agent private key to validate
+        is_testnet: Use testnet (default True for safety)
+
+    Returns:
+        Dict with status, validation details, and user_address
+    """
+    key = agent_private_key or AGENT_PRIVATE_KEY
+    payload = {"agent_private_key": key, "is_testnet": is_testnet}
+    r = requests.post(f"{BASE_URL}/portfolio/validate-hyperliquid",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# RECOMMENDATIONS
+# ============================================================================
+
+
+def request_recommendation(token: str, portfolio_id: int, message: str,
+                             agent_id: int = None) -> dict:
+    """Submit a recommendation request to the agent (async, returns ticket).
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID
+        message: Prompt/message for the agent
+        agent_id: Optional specific agent ID to use. If None, uses the portfolio's
+                  primary agent.
+
+    Returns:
+        Dict with ticket_id and status
+    """
     payload = {
         "portfolio_id": portfolio_id,
         "message": message,
     }
-    # Include agent_private_key in body for HYPERLIQUID portfolios
+    if agent_id is not None:
+        payload["agent_id"] = agent_id
     if AGENT_PRIVATE_KEY:
         payload["agent_private_key"] = AGENT_PRIVATE_KEY
     r = requests.post(f"{BASE_URL}/agent/recommendation/message", json=payload, headers=_auth(token))
@@ -506,21 +542,90 @@ def request_recommendation(token: str, portfolio_id: int, message: str) -> dict:
 
 
 def poll_recommendation(token: str, ticket_id: str, max_wait: int = 60) -> dict:
-    """Poll until recommendation is ready or timeout."""
+    """Poll until recommendation is ready or timeout.
+
+    Returns:
+        Dict with ticket_id, status, done, response, error
+    """
     deadline = time.time() + max_wait
     while time.time() < deadline:
         r = requests.get(f"{BASE_URL}/agent/recommendation/poll/{ticket_id}", headers=_auth(token))
         r.raise_for_status()
         data = r.json()
-        if data.get("status") in ("COMPLETED", "complete", "FAILED"):
+        if data.get("done") or data.get("status") in ("COMPLETED", "complete", "FAILED"):
             return data
         time.sleep(2)
     raise TimeoutError(f"Recommendation not ready after {max_wait}s")
 
 
-def execute_recommendation(token: str, portfolio_id: int, rec_id: int, 
-                           execute_onchain: bool = False, 
-                           user_master_address: str = None) -> dict:
+def submit_recommendation_response(token: str, portfolio_id: int,
+                                    recommendation: dict,
+                                    agent_id: int = None,
+                                    pack_goals: str = None,
+                                    agent_private_key: str = None) -> dict:
+    """Submit a foreign agent's recommendation for analysis (async, returns ticket).
+
+    Used by openclaw to analyze a recommendation from another agent/katpack.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID
+        recommendation: ForeignRecommendationContext dict with agent_name, symbol,
+                        action, confidence, entry_price, take_profit_pct, stop_loss_pct,
+                        rationale, katbot_portfolio_id
+        agent_id: Optional specific agent to use
+        pack_goals: Katpack goals/description
+        agent_private_key: Agent private key for Hyperliquid operations
+
+    Returns:
+        Dict with ticket_id and status
+    """
+    payload = {
+        "portfolio_id": portfolio_id,
+        "recommendation": recommendation,
+    }
+    if agent_id is not None:
+        payload["agent_id"] = agent_id
+    if pack_goals is not None:
+        payload["pack_goals"] = pack_goals
+    key = agent_private_key or AGENT_PRIVATE_KEY
+    if key:
+        payload["agent_private_key"] = key
+
+    r = requests.post(f"{BASE_URL}/agent/recommendation/response",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def poll_recommendation_response(token: str, ticket_id: str, max_wait: int = 60) -> dict:
+    """Poll until recommendation response analysis is ready or timeout.
+
+    Returns:
+        Dict with ticket_id, status, done, response (markdown analysis), error
+    """
+    deadline = time.time() + max_wait
+    while time.time() < deadline:
+        r = requests.get(f"{BASE_URL}/agent/recommendation/response/poll/{ticket_id}",
+                         headers=_auth(token))
+        r.raise_for_status()
+        data = r.json()
+        if data.get("done") or data.get("status") in ("COMPLETED", "complete", "FAILED"):
+            return data
+        time.sleep(2)
+    raise TimeoutError(f"Recommendation response not ready after {max_wait}s")
+
+
+def get_recommendations(token: str, portfolio_id: int) -> list:
+    """Get existing recommendations for a portfolio."""
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/recommendation", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def execute_recommendation(token: str, portfolio_id: int, rec_id: int,
+                            execute_onchain: bool = False,
+                            user_master_address: str = None) -> dict:
     """Execute an existing recommendation by ID."""
     payload = {"recommendation_id": rec_id}
     if execute_onchain is not None:
@@ -535,81 +640,649 @@ def execute_recommendation(token: str, portfolio_id: int, rec_id: int,
     return r.json()
 
 
-def close_position(token: str, portfolio_id: int, symbol: str, 
-                   user_master_address: str = None) -> dict:
-    """Close an open position by symbol."""
-    payload = {"symbol": symbol}
+# ============================================================================
+# TRADES & POSITIONS
+# ============================================================================
+
+
+def close_position(token: str, portfolio_id: int, symbol: str,
+                   user_master_address: str = None,
+                   reason: str = "API position closure",
+                   execute_onchain: bool = False) -> dict:
+    """Close an open position by symbol.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID
+        symbol: Token symbol (e.g., "ETH", "BTC")
+        user_master_address: Master wallet address for Hyperliquid agent approval
+        reason: Reason for closing the position (default "API position closure")
+        execute_onchain: Whether to execute on-chain (default False)
+
+    Returns:
+        ClosePositionResponse dict with success, message, symbol, exit_price, pnl_usd
+    """
+    payload = {
+        "symbol": symbol,
+        "reason": reason,
+        "execute_onchain": execute_onchain,
+    }
     if user_master_address:
         payload["user_master_address"] = user_master_address
+    if AGENT_PRIVATE_KEY:
+        payload["agent_private_key"] = AGENT_PRIVATE_KEY
     r = requests.post(f"{BASE_URL}/portfolio/{portfolio_id}/close-position",
                       json=payload, headers=_auth(token))
     r.raise_for_status()
     return r.json()
 
 
-def get_recommendations(token: str, portfolio_id: int) -> list:
-    """Get existing recommendations for a portfolio."""
-    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/recommendation", headers=_auth(token))
+def list_trades(token: str, portfolio_id: int,
+                agent_private_key: str = None,
+                user_master_address: str = None) -> list:
+    """List all trades for a portfolio.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID
+        agent_private_key: Agent private key (for Hyperliquid portfolios)
+        user_master_address: Master wallet address
+
+    Returns:
+        List of trade dicts
+    """
+    params = {}
+    if user_master_address:
+        params["user_master_address"] = user_master_address
+    key = agent_private_key or AGENT_PRIVATE_KEY
+    if key:
+        params["agent_private_key"] = key
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/trade",
+                     params=params, headers=_auth(token))
     r.raise_for_status()
     return r.json()
 
 
-def update_portfolio(token: str, portfolio_id: int, 
-                     name: str = None, 
-                     tokens_selected: list = None,
-                     max_history_messages: int = None) -> dict:
-    """Update portfolio settings (name, tokens, history limit).
-    
+def get_position_events(token: str, portfolio_id: int,
+                         limit: int = 20,
+                         event_type: str = None,
+                         agent_private_key: str = None,
+                         user_master_address: str = None) -> list:
+    """Return position lifecycle events for a portfolio.
+
+    Event types: TP_HIT, SL_HIT, LIQUIDATED, MANUAL_CLOSE
+
     Args:
-        token: Auth token
+        token: JWT access token
         portfolio_id: Portfolio ID
-        name: New portfolio name (optional)
-        tokens_selected: List of token symbols (e.g., ["BTC", "ETH", "SOL"])
-        max_history_messages: Conversation history limit
-    
+        limit: Max events to return (default 20, max 200)
+        event_type: Filter by event type (optional)
+        agent_private_key: Required for HYPERLIQUID portfolios
+        user_master_address: Master wallet address
+
     Returns:
-        Updated portfolio info
+        List of position event dicts
+    """
+    params = {"limit": limit}
+    if event_type:
+        params["event_type"] = event_type
+    if user_master_address:
+        params["user_master_address"] = user_master_address
+    key = agent_private_key or AGENT_PRIVATE_KEY
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/events",
+                     params=params, headers=_auth(token, key))
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# AGENT MANAGEMENT
+# ============================================================================
+
+
+def list_agents(token: str) -> list:
+    """List all agents belonging to the authenticated user.
+
+    Returns:
+        List of AgentInfo dicts (id, name, max_history_messages, avatar_url, etc.)
+    """
+    r = requests.get(f"{BASE_URL}/agents", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def create_agent(token: str, name: str, max_history_messages: int = 10) -> dict:
+    """Create a new agent.
+
+    Args:
+        token: JWT access token
+        name: Agent slug name (lowercase letters, numbers, hyphens; a 6-char suffix
+              is appended automatically by the server)
+        max_history_messages: Conversation history retention limit (1-100)
+
+    Returns:
+        AgentInfo dict with id, name, avatar_url, etc.
+    """
+    payload = {"name": name, "max_history_messages": max_history_messages}
+    r = requests.post(f"{BASE_URL}/agents", json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_agent(token: str, agent_id: int) -> dict:
+    """Get details for a specific agent.
+
+    Returns:
+        AgentInfo dict
+    """
+    r = requests.get(f"{BASE_URL}/agents/{agent_id}", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def update_agent(token: str, agent_id: int,
+                  name: str = None,
+                  max_history_messages: int = None,
+                  avatar_seed: str = None) -> dict:
+    """Update an existing agent.
+
+    Args:
+        token: JWT access token
+        agent_id: Agent ID to update
+        name: New slug name (optional)
+        max_history_messages: Updated history limit (optional, 1-100)
+        avatar_seed: Seed string for avatar generation (optional)
+
+    Returns:
+        Updated AgentInfo dict
     """
     payload = {}
     if name is not None:
         payload["name"] = name
-    if tokens_selected is not None:
-        payload["tokens_selected"] = tokens_selected
     if max_history_messages is not None:
         payload["max_history_messages"] = max_history_messages
-    
-    r = requests.put(f"{BASE_URL}/portfolio/{portfolio_id}",
+    if avatar_seed is not None:
+        payload["avatar_seed"] = avatar_seed
+    r = requests.put(f"{BASE_URL}/agents/{agent_id}", json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def delete_agent(token: str, agent_id: int) -> dict:
+    """Delete an agent. Only agents with 0 active primary portfolio assignments can be deleted.
+
+    Returns:
+        Dict with success status
+    """
+    r = requests.delete(f"{BASE_URL}/agents/{agent_id}", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def search_agents(token: str, q: str, portfolio_id: int = None) -> list:
+    """Search agents by name across all users (for invite flow).
+
+    Args:
+        token: JWT access token
+        q: Search query (minimum 3 characters)
+        portfolio_id: If provided, filters out agents already assigned or invited
+
+    Returns:
+        List of AgentInfo dicts (up to 10 results)
+    """
+    params = {"q": q}
+    if portfolio_id is not None:
+        params["portfolio_id"] = portfolio_id
+    r = requests.get(f"{BASE_URL}/agents/search", params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# PORTFOLIO-AGENT ASSIGNMENTS
+# ============================================================================
+
+
+def get_portfolio_agent(token: str, portfolio_id: int) -> dict:
+    """Get the active primary agent assignment for a portfolio.
+
+    Returns:
+        PortfolioAgentAssignmentInfo dict with id, portfolio_id, agent_id, role, agent info
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/agent", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def list_portfolio_agents(token: str, portfolio_id: int) -> list:
+    """List all active agent assignments for a portfolio (primary and observers).
+
+    Returns:
+        List of PortfolioAgentAssignmentInfo dicts
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/agents", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def assign_agent(token: str, portfolio_id: int, agent_id: int,
+                  role: str = "primary") -> dict:
+    """Assign an agent to a portfolio.
+
+    For role "primary": deactivates the existing primary agent and sets this one.
+    For role "observer": adds the agent without affecting the existing primary.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID
+        agent_id: Agent ID to assign
+        role: "primary" or "observer" (default "primary")
+
+    Returns:
+        PortfolioAgentAssignmentInfo dict
+    """
+    payload = {"agent_id": agent_id, "role": role}
+    r = requests.post(f"{BASE_URL}/portfolio/{portfolio_id}/agent",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def unassign_agent(token: str, portfolio_id: int, agent_id: int) -> dict:
+    """Deactivate a specific agent assignment from a portfolio.
+
+    Returns:
+        Dict with success status
+    """
+    r = requests.delete(f"{BASE_URL}/portfolio/{portfolio_id}/agent/{agent_id}",
+                        headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# AGENT OBSERVER INVITATIONS
+# ============================================================================
+
+
+def create_agent_invitation(token: str, portfolio_id: int, agent_id: int) -> dict:
+    """Invite an agent (owned by another user) to observe this portfolio.
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID (must be owned by caller)
+        agent_id: ID of the agent to invite as observer
+
+    Returns:
+        AgentObserverInviteInfo dict
+    """
+    payload = {"agent_id": agent_id, "role": "observer"}
+    r = requests.post(f"{BASE_URL}/portfolio/{portfolio_id}/agent-invitations",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def list_portfolio_invitations(token: str, portfolio_id: int) -> list:
+    """List all agent invitations (pending, accepted, rejected) for a portfolio.
+
+    Returns:
+        List of AgentObserverInviteInfo dicts
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/agent-invitations",
+                     headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def list_pending_invitations(token: str) -> list:
+    """List all pending invitations for agents owned by the authenticated user.
+
+    Returns:
+        List of AgentObserverInviteInfo dicts
+    """
+    r = requests.get(f"{BASE_URL}/agents/invitations/pending", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def respond_to_invitation(token: str, agent_id: int, invitation_id: int,
+                           action: str) -> dict:
+    """Accept or reject a pending agent observer invitation.
+
+    Args:
+        token: JWT access token
+        agent_id: ID of the agent (must be owned by caller)
+        invitation_id: Invitation ID to respond to
+        action: "accepted" or "rejected"
+
+    Returns:
+        Updated AgentObserverInviteInfo dict
+    """
+    payload = {"action": action}
+    r = requests.post(f"{BASE_URL}/agents/{agent_id}/invitations/{invitation_id}/respond",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def list_observer_portfolios(token: str) -> list:
+    """Return portfolios that the authenticated user observes via an accepted agent invitation.
+
+    Returns:
+        List of PortfolioInfo dicts with observer_role="observer"
+    """
+    r = requests.get(f"{BASE_URL}/agents/observer-portfolios", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# CONVERSATION HISTORY
+# ============================================================================
+
+
+def get_conversation(token: str, portfolio_id: int) -> dict:
+    """Get conversation history for a portfolio.
+
+    Returns:
+        Dict with portfolio_id, portfolio_name, exists, message_count,
+        last_interaction, created_at, conversation list
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/conversation",
+                     headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def delete_conversation(token: str, portfolio_id: int) -> dict:
+    """Clear conversation history for a portfolio (preserves portfolio state).
+
+    Returns:
+        Dict with portfolio_id, portfolio_name, success, message
+    """
+    r = requests.delete(f"{BASE_URL}/portfolio/{portfolio_id}/conversation",
+                        headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# USER & SUBSCRIPTION
+# ============================================================================
+
+
+def get_user(token: str) -> dict:
+    """Get user info including subscription and feature usage.
+
+    Returns:
+        GetUserResponse dict with sub, id, is_whitelisted, subscription, plan,
+        feature_usage
+    """
+    r = requests.get(f"{BASE_URL}/user", headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_plans() -> list:
+    """Get all available subscription plans (no auth required).
+
+    Returns:
+        List of PlanResponse dicts sorted by price ascending
+    """
+    r = requests.get(f"{BASE_URL}/plans")
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# RESEARCH
+# ============================================================================
+
+
+def run_research(token: str, portfolio_id: int,
+                 symbol: str = None,
+                 time_horizon: str = None,
+                 risk_profile: str = None) -> dict:
+    """Initiate a research run for a portfolio (async, returns ticket).
+
+    Args:
+        token: JWT access token
+        portfolio_id: Portfolio ID
+        symbol: Optional token symbol to focus research on (e.g., "BTC")
+        time_horizon: Optional time horizon ("short", "medium", "long")
+        risk_profile: Optional risk profile ("low", "medium", "high")
+
+    Returns:
+        ResearchTicketResponse dict with ticket_id and status
+    """
+    payload = {}
+    if symbol is not None:
+        payload["symbol"] = symbol
+    if time_horizon is not None:
+        payload["time_horizon"] = time_horizon
+    if risk_profile is not None:
+        payload["risk_profile"] = risk_profile
+    r = requests.post(f"{BASE_URL}/portfolio/{portfolio_id}/research/run",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def poll_research(token: str, portfolio_id: int, ticket_id: str,
+                  max_wait: int = 120) -> dict:
+    """Poll until a research task is ready or timeout.
+
+    Returns:
+        Dict with ticket_id, status, done, result, error
+    """
+    deadline = time.time() + max_wait
+    while time.time() < deadline:
+        r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/research/poll/{ticket_id}",
+                         headers=_auth(token))
+        r.raise_for_status()
+        data = r.json()
+        if data.get("done") or data.get("status") in ("COMPLETED", "complete", "FAILED"):
+            return data
+        time.sleep(3)
+    raise TimeoutError(f"Research not ready after {max_wait}s")
+
+
+def list_research_results(token: str, portfolio_id: int) -> list:
+    """List non-expired research results for a portfolio.
+
+    Returns:
+        List of research result dicts
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/research/results",
+                     headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_research_result(token: str, portfolio_id: int, result_id: int) -> dict:
+    """Get a specific research result.
+
+    Returns:
+        Research result dict
+    """
+    r = requests.get(f"{BASE_URL}/portfolio/{portfolio_id}/research/results/{result_id}",
+                     headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def delete_research_result(token: str, portfolio_id: int, result_id: int) -> dict:
+    """Delete a specific research result.
+
+    Returns:
+        Dict with success status
+    """
+    r = requests.delete(f"{BASE_URL}/portfolio/{portfolio_id}/research/results/{result_id}",
+                        headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def apply_research_result(token: str, portfolio_id: int, result_id: int) -> dict:
+    """Apply a research result's token selection to the portfolio.
+
+    WARNING: This mutates portfolio.tokens_selected. Always obtain explicit
+    user confirmation ("Apply this research result to your portfolio token
+    selection?") before calling this function.
+
+    Returns:
+        Dict with success status and updated token selection
+    """
+    r = requests.post(
+        f"{BASE_URL}/portfolio/{portfolio_id}/research/results/{result_id}/apply",
+        json={}, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def list_research_configs(token: str, agent_id: int) -> list:
+    """List research configurations for an agent.
+
+    Returns:
+        List of research config dicts
+    """
+    r = requests.get(f"{BASE_URL}/agents/{agent_id}/research/config",
+                     headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_research_config(token: str, agent_id: int, config_id: int) -> dict:
+    """Get a specific research configuration for an agent."""
+    r = requests.get(f"{BASE_URL}/agents/{agent_id}/research/config/{config_id}",
+                     headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def create_research_config(token: str, agent_id: int, payload: dict) -> dict:
+    """Create a research configuration for an agent."""
+    r = requests.post(f"{BASE_URL}/agents/{agent_id}/research/config",
+                      json=payload, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def update_research_config(token: str, agent_id: int, config_id: int,
+                            payload: dict) -> dict:
+    """Update a research configuration for an agent."""
+    r = requests.put(f"{BASE_URL}/agents/{agent_id}/research/config/{config_id}",
                      json=payload, headers=_auth(token))
     r.raise_for_status()
     return r.json()
 
 
-def chat(token: str, portfolio_id: int, message: str) -> dict:
-    """Send a chat message to the portfolio agent (async, returns ticket)."""
-    payload = {"portfolio_id": portfolio_id, "message": message}
-    r = requests.post(f"{BASE_URL}/agent/chat/message", json=payload, headers=_auth(token))
+def delete_research_config(token: str, agent_id: int, config_id: int) -> dict:
+    """Delete a research configuration for an agent."""
+    r = requests.delete(f"{BASE_URL}/agents/{agent_id}/research/config/{config_id}",
+                        headers=_auth(token))
     r.raise_for_status()
     return r.json()
 
 
-def poll_chat(token: str, ticket_id: str, max_wait: int = 60) -> dict:
-    """Poll until chat response is ready."""
-    deadline = time.time() + max_wait
-    while time.time() < deadline:
-        r = requests.get(f"{BASE_URL}/agent/chat/poll/{ticket_id}", headers=_auth(token))
-        r.raise_for_status()
-        data = r.json()
-        if data.get("status") in ("COMPLETED", "complete", "FAILED"):
-            return data
-        time.sleep(2)
-    raise TimeoutError(f"Chat response not ready after {max_wait}s")
+# ============================================================================
+# MARKET INTELLIGENCE
+# ============================================================================
 
 
-# CLI mode for tubman-bobtail-py usage
+def get_trending_tokens(token: str, **params) -> list:
+    """Get trending tokens by article volume.
+
+    Returns:
+        List of trending token dicts with symbol, article_volume, etc.
+    """
+    r = requests.get(f"{BASE_URL}/market-intelligence/trending",
+                     params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_intelligence_articles(token: str, **params) -> list:
+    """Get LLM-enriched news articles with sentiment scores.
+
+    Returns:
+        List of article dicts with headline, sentiment, symbol, etc.
+    """
+    r = requests.get(f"{BASE_URL}/market-intelligence/articles",
+                     params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_aggregated_sentiment(token: str, **params) -> list:
+    """Get aggregated token sentiment scores.
+
+    Returns:
+        List of sentiment dicts with symbol, score, direction, etc.
+    """
+    r = requests.get(f"{BASE_URL}/market-intelligence/sentiment",
+                     params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_token_sentiment(token: str, symbol: str) -> dict:
+    """Get detailed sentiment for a specific token symbol.
+
+    Returns:
+        Sentiment dict with score, direction, article_count, etc.
+    """
+    r = requests.get(f"{BASE_URL}/market-intelligence/sentiment/{symbol}",
+                     headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_whale_flow(token: str, **params) -> list:
+    """Get whale position flow per token.
+
+    Returns:
+        List of whale flow dicts with symbol, net_flow_usd, direction, etc.
+    """
+    r = requests.get(f"{BASE_URL}/market-intelligence/whale-flow",
+                     params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_whale_activity(token: str, **params) -> list:
+    """Get individual whale activity events.
+
+    Returns:
+        List of whale activity event dicts
+    """
+    r = requests.get(f"{BASE_URL}/market-intelligence/whale-activity",
+                     params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+def get_token_intelligence(token: str, **params) -> list:
+    """Get composite intelligence signals (news + whale) per token.
+
+    Returns:
+        List of token intelligence dicts
+    """
+    r = requests.get(f"{BASE_URL}/market-intelligence/token-intelligence",
+                     params=params, headers=_auth(token))
+    r.raise_for_status()
+    return r.json()
+
+
+# ============================================================================
+# CLI entry point
+# ============================================================================
+
 def main():
     """CLI entry point for katbot_client.py script."""
     import sys
-    
+
     # Reload env if running as CLI
     env = {}
     if ENV_FILE and ENV_FILE.exists():
@@ -620,38 +1293,62 @@ def main():
                     key, val = line.split("=", 1)
                     env[key.strip()] = val.strip().strip('"')
     env.update(os.environ)  # Allow env var overrides
-    
+
     if len(sys.argv) < 2:
         print("Usage: katbot_client.py <action> [args]")
-        print("Actions: subscription-status, portfolio-state, execute, close-position, recommendations, request-recommendation, poll-recommendation, update-portfolio")
+        print("Actions:")
+        print("  portfolio-state         Get portfolio state")
+        print("  execute <rec_id>        Execute a recommendation")
+        print("  close-position <sym>    Close position by symbol")
+        print("  recommendations         List recommendations")
+        print("  request-recommendation [msg]  Request a new recommendation")
+        print("  poll-recommendation <ticket_id>  Poll for recommendation result")
+        print("  update-portfolio --tokens BTC,ETH [--name Name]  Update portfolio")
+        print("  list-agents             List all agents")
+        print("  get-agent <agent_id>    Get agent details")
+        print("  list-portfolio-agents   List agents assigned to portfolio")
+        print("  assign-agent <agent_id> [--role primary|observer]  Assign agent to portfolio")
+        print("  conversation            Get conversation history")
+        print("  clear-conversation      Clear conversation history")
+        print("  user                    Get user info and subscription")
+        print("  plans                   List subscription plans")
+        print("  tokens                  Get available trading tokens")
+        print("  chain-info              Get portfolio chain info")
+        print("")
+        print("Research:")
+        print("  run-research [--symbol SYM] [--time-horizon short|medium|long] [--risk-profile low|medium|high]")
+        print("  poll-research <ticket_id>")
+        print("  list-research-results")
+        print("  get-research-result <result_id>")
+        print("  delete-research-result <result_id>")
+        print("  apply-research-result <result_id>")
+        print("  list-research-configs <agent_id>")
+        print("")
+        print("Market Intelligence:")
+        print("  trending [--limit N]")
+        print("  articles [--limit N]")
+        print("  sentiment [--symbol SYM]")
+        print("  whale-flow [--symbol SYM]")
+        print("  whale-activity [--symbol SYM]")
+        print("  token-intelligence [--symbol SYM]")
         sys.exit(1)
 
     action = sys.argv[1]
     portfolio_id = env.get("PORTFOLIO_ID")
+
     token = get_token()
 
-    # Actions that don't require a portfolio ID
-    if action == "subscription-status":
-        user_data = get_user(token)
-        status = check_subscription_status(user_data)
-        if status["warning_message"]:
-            print(status["warning_message"])
-            print()
-        print(json.dumps(status, indent=2))
-        sys.exit(0)
-
-    # All remaining actions require PORTFOLIO_ID
-    if not portfolio_id:
-        print("ERROR: PORTFOLIO_ID must be set in katbot_client.env or environment")
-        sys.exit(1)
-
-    print(f"Using Portfolio ID: {portfolio_id}")
-    
     if action == "portfolio-state":
-        result = get_portfolio(token, int(portfolio_id), window="1d")
-        print(json.dumps(result, indent=2))
-    
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result = get_portfolio(token, int(portfolio_id))
+        print(json.dumps(result, indent=2, default=str))
+
     elif action == "execute":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
         recommendation_id = sys.argv[2] if len(sys.argv) > 2 else None
         if not recommendation_id:
             print("ERROR: recommendation_id required")
@@ -661,35 +1358,47 @@ def main():
             execute_onchain=False,
             user_master_address=env.get("WALLET_ADDRESS")
         )
-        print(json.dumps(result, indent=2))
-    
+        print(json.dumps(result, indent=2, default=str))
+
     elif action == "close-position":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
         symbol = sys.argv[2] if len(sys.argv) > 2 else None
         if not symbol:
             print("ERROR: symbol required (e.g., ETH)")
             sys.exit(1)
-        result = close_position(token, int(portfolio_id), symbol, user_master_address=env.get("WALLET_ADDRESS"))
-        print(json.dumps(result, indent=2))
-    
+        result = close_position(token, int(portfolio_id), symbol,
+                                user_master_address=env.get("WALLET_ADDRESS"))
+        print(json.dumps(result, indent=2, default=str))
+
     elif action == "recommendations":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
         result = get_recommendations(token, int(portfolio_id))
-        print(json.dumps(result, indent=2))
-    
+        print(json.dumps(result, indent=2, default=str))
+
     elif action == "request-recommendation":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
         message = sys.argv[2] if len(sys.argv) > 2 else "Analyze portfolio tokens and generate recommendations based on the current market."
         result = request_recommendation(token, int(portfolio_id), message)
-        print(json.dumps(result, indent=2))
-    
+        print(json.dumps(result, indent=2, default=str))
+
     elif action == "poll-recommendation":
         ticket_id = sys.argv[2] if len(sys.argv) > 2 else None
         if not ticket_id:
             print("ERROR: ticket_id required")
             sys.exit(1)
         result = poll_recommendation(token, ticket_id)
-        print(json.dumps(result, indent=2))
-    
+        print(json.dumps(result, indent=2, default=str))
+
     elif action == "update-portfolio":
-        # Parse args: --tokens BTC,ETH,SOL or --name "New Name"
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
         tokens_arg = None
         name_arg = None
         i = 2
@@ -702,14 +1411,228 @@ def main():
                 i += 2
             else:
                 i += 1
-        
+
         if not tokens_arg and not name_arg:
             print("Usage: update-portfolio --tokens BTC,ETH,SOL [--name \"New Name\"]")
             sys.exit(1)
-        
+
         result = update_portfolio(token, int(portfolio_id), name=name_arg, tokens_selected=tokens_arg)
-        print(json.dumps(result, indent=2))
-    
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "list-agents":
+        result = list_agents(token)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "get-agent":
+        agent_id = sys.argv[2] if len(sys.argv) > 2 else None
+        if not agent_id:
+            print("ERROR: agent_id required")
+            sys.exit(1)
+        result = get_agent(token, int(agent_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "list-portfolio-agents":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result = list_portfolio_agents(token, int(portfolio_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "assign-agent":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        agent_id = sys.argv[2] if len(sys.argv) > 2 else None
+        if not agent_id:
+            print("ERROR: agent_id required")
+            sys.exit(1)
+        role = "primary"
+        if "--role" in sys.argv:
+            role_idx = sys.argv.index("--role")
+            if role_idx + 1 < len(sys.argv):
+                role = sys.argv[role_idx + 1]
+        result = assign_agent(token, int(portfolio_id), int(agent_id), role=role)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "conversation":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result = get_conversation(token, int(portfolio_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "clear-conversation":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result = delete_conversation(token, int(portfolio_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "user":
+        result = get_user(token)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "plans":
+        result = get_plans()
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "tokens":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result = get_portfolio_tokens(token, int(portfolio_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "chain-info":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result = get_portfolio_chain_info(token, int(portfolio_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    # --- Research ---
+
+    elif action == "run-research":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        symbol_arg = None
+        time_horizon_arg = None
+        risk_profile_arg = None
+        i = 2
+        while i < len(sys.argv):
+            if sys.argv[i] == "--symbol" and i + 1 < len(sys.argv):
+                symbol_arg = sys.argv[i + 1]; i += 2
+            elif sys.argv[i] == "--time-horizon" and i + 1 < len(sys.argv):
+                time_horizon_arg = sys.argv[i + 1]; i += 2
+            elif sys.argv[i] == "--risk-profile" and i + 1 < len(sys.argv):
+                risk_profile_arg = sys.argv[i + 1]; i += 2
+            else:
+                i += 1
+        result = run_research(token, int(portfolio_id),
+                              symbol=symbol_arg,
+                              time_horizon=time_horizon_arg,
+                              risk_profile=risk_profile_arg)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "poll-research":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        ticket_id = sys.argv[2] if len(sys.argv) > 2 else None
+        if not ticket_id:
+            print("ERROR: ticket_id required")
+            sys.exit(1)
+        result = poll_research(token, int(portfolio_id), ticket_id)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "list-research-results":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result = list_research_results(token, int(portfolio_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "get-research-result":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result_id = sys.argv[2] if len(sys.argv) > 2 else None
+        if not result_id:
+            print("ERROR: result_id required")
+            sys.exit(1)
+        result = get_research_result(token, int(portfolio_id), int(result_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "delete-research-result":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result_id = sys.argv[2] if len(sys.argv) > 2 else None
+        if not result_id:
+            print("ERROR: result_id required")
+            sys.exit(1)
+        result = delete_research_result(token, int(portfolio_id), int(result_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "apply-research-result":
+        if not portfolio_id:
+            print("ERROR: PORTFOLIO_ID must be set")
+            sys.exit(1)
+        result_id = sys.argv[2] if len(sys.argv) > 2 else None
+        if not result_id:
+            print("ERROR: result_id required")
+            sys.exit(1)
+        result = apply_research_result(token, int(portfolio_id), int(result_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "list-research-configs":
+        agent_id = sys.argv[2] if len(sys.argv) > 2 else None
+        if not agent_id:
+            print("ERROR: agent_id required")
+            sys.exit(1)
+        result = list_research_configs(token, int(agent_id))
+        print(json.dumps(result, indent=2, default=str))
+
+    # --- Market Intelligence ---
+
+    elif action == "trending":
+        params = {}
+        if "--limit" in sys.argv:
+            idx = sys.argv.index("--limit")
+            if idx + 1 < len(sys.argv):
+                params["limit"] = int(sys.argv[idx + 1])
+        result = get_trending_tokens(token, **params)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "articles":
+        params = {}
+        if "--limit" in sys.argv:
+            idx = sys.argv.index("--limit")
+            if idx + 1 < len(sys.argv):
+                params["limit"] = int(sys.argv[idx + 1])
+        result = get_intelligence_articles(token, **params)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "sentiment":
+        symbol_arg = None
+        if "--symbol" in sys.argv:
+            idx = sys.argv.index("--symbol")
+            if idx + 1 < len(sys.argv):
+                symbol_arg = sys.argv[idx + 1]
+        if symbol_arg:
+            result = get_token_sentiment(token, symbol_arg)
+        else:
+            result = get_aggregated_sentiment(token)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "whale-flow":
+        params = {}
+        if "--symbol" in sys.argv:
+            idx = sys.argv.index("--symbol")
+            if idx + 1 < len(sys.argv):
+                params["symbol"] = sys.argv[idx + 1]
+        result = get_whale_flow(token, **params)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "whale-activity":
+        params = {}
+        if "--symbol" in sys.argv:
+            idx = sys.argv.index("--symbol")
+            if idx + 1 < len(sys.argv):
+                params["symbol"] = sys.argv[idx + 1]
+        result = get_whale_activity(token, **params)
+        print(json.dumps(result, indent=2, default=str))
+
+    elif action == "token-intelligence":
+        params = {}
+        if "--symbol" in sys.argv:
+            idx = sys.argv.index("--symbol")
+            if idx + 1 < len(sys.argv):
+                params["symbol"] = sys.argv[idx + 1]
+        result = get_token_intelligence(token, **params)
+        print(json.dumps(result, indent=2, default=str))
+
     else:
         print(f"Unknown action: {action}")
         sys.exit(1)

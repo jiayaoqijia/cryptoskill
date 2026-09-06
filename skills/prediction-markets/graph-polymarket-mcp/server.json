@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.PaulieB14/graph-polymarket-mcp",
-  "description": "Query Polymarket prediction markets via The Graph — 20 tools, 8 subgraphs",
+  "description": "Query Polymarket prediction markets via The Graph subgraphs + Polymarket REST APIs — 31 tools for market search, live CLOB prices, on-chain analytics, and more",
   "repository": {
     "url": "https://github.com/PaulieB14/graph-polymarket-mcp",
     "source": "github"
   },
-  "version": "1.4.0",
+  "version": "2.0.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "graph-polymarket-mcp",
-      "version": "1.4.0",
+      "version": "2.0.0",
       "transport": {
         "type": "stdio"
       },

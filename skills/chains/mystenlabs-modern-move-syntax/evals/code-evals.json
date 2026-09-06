@@ -1,0 +1,52 @@
+[
+  {
+    "id": "tagged-item-collection",
+    "prompt": "Build a Move module for a tagged item collection on Sui. Items should have a name and a list of string tags. Include functions to create items, add tags, remove a tag by index, count tags, and check if a tag exists. Include unit tests.",
+    "package_name": "tagged_items",
+    "check": "test",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "vector::push_back",
+      "vector::pop_back",
+      "vector::length",
+      "vector::is_empty",
+      "vector::borrow",
+      "string::utf8(b\""
+    ],
+    "sources": [
+      "https://move-book.com/move-basics/vector",
+      "https://move-book.com/move-basics/string"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Uses method syntax for vector operations (.push_back(), .length(), .remove())",
+      "Uses b\"...\".to_string() for string creation (not string::utf8)",
+      "Includes functions for add, remove, count, and contains"
+    ]
+  },
+  {
+    "id": "config-registry-with-options",
+    "prompt": "Write a Move module for a configuration registry on Sui where each config entry has a required key (String), a required value (u64), and an optional description (Option<String>). Include functions to set config (with or without description), read the value, check if a description exists, and extract the description. Include tests.",
+    "package_name": "config_registry",
+    "check": "test",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "option::is_some(",
+      "option::is_none(",
+      "option::borrow(",
+      "option::extract("
+    ],
+    "sources": [
+      "https://move-book.com/move-basics/option",
+      "https://move-book.com/move-basics/string"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Uses method syntax for Option operations (.is_some(), .borrow(), .extract())",
+      "Config entries store Option<String> for optional description",
+      "Tests verify setting and extracting optional descriptions"
+    ]
+  }
+]

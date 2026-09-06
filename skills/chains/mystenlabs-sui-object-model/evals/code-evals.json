@@ -1,0 +1,54 @@
+[
+  {
+    "id": "message-board-shared",
+    "prompt": "I need a message board where anyone can post messages. Write the Move code for Sui. The board should be a shared object, messages stored in a vector, and include a function to post and a function to read the count.",
+    "package_name": "message_board",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://docs.sui.io/develop/objects/object-ownership/shared"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Board is shared using transfer::share_object in init",
+      "Messages stored in a vector",
+      "Post function takes board by mutable reference (&mut)"
+    ]
+  },
+  {
+    "id": "player-inventory-dynamic-fields",
+    "prompt": "Write a Move module for Sui where a Player object has an inventory using dynamic object fields. Include functions to add an item by name, check if an item exists, borrow an item, and remove an item. Include tests that exercise all operations.",
+    "package_name": "player_inventory",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/programmability/dynamic-fields"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Uses dynamic fields or dynamic object fields for storage",
+      "Player object has key ability with id: UID",
+      "Add and remove functions use string or byte keys",
+      "Tests verify add, exists_, borrow, and remove operations"
+    ]
+  },
+  {
+    "id": "lockbox-wrapping",
+    "prompt": "I want to build a lockbox that wraps another object inside it. The owner can lock an item and later unlock it to get the item back. Write the Move module. The lockbox UID should be deleted on unlock.",
+    "package_name": "lockbox",
+    "check": "test",
+    "expected_result": "pass",
+    "sources": [
+      "https://move-book.com/storage/key-ability"
+    ],
+    "expectations": [
+      "Code compiles with sui move build",
+      "All tests pass with sui move test",
+      "Item is stored as a direct field inside the Lockbox struct (wrapping pattern)",
+      "Unlock function takes Lockbox by value, unpacks it, and returns the inner item",
+      "Lockbox UID is deleted when unlocking"
+    ]
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "skill_name": "eth2-quickstart",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Check if my Ethereum node is healthy and tell me what's passing, what's failing, and what the next action should be.",
+      "expected_output": "Agent runs `./scripts/eth2qs.sh doctor --json`, parses the JSON summary and checks array, reports which checks passed/warned/failed with specific names and details, and recommends next steps based on the status.",
+      "expectations": [
+        "Agent uses `./scripts/eth2qs.sh doctor --json` (not a human-readable variant)",
+        "Agent parses the `summary` object (passed/warnings/failed/status)",
+        "Agent surfaces specific failing or warning check names from the `checks` array",
+        "Agent suggests a concrete next step (e.g. run phase2 if execution client not installed)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Set up a fresh Ethereum node on this server with Geth as the execution client and Lighthouse as the consensus client, using MEV-Boost for block building.",
+      "expected_output": "Agent runs `./scripts/eth2qs.sh plan --json` to detect the current state, explains the two-phase install boundary (Phase 1 requires root and a reboot, Phase 2 installs clients), asks for confirmation before running Phase 1, and provides the Phase 2 command with the correct client flags.",
+      "expectations": [
+        "Agent runs `./scripts/eth2qs.sh plan --json` or `./scripts/eth2qs.sh doctor --json` before proposing any install step",
+        "Agent explains the Phase 1 / Phase 2 reboot boundary",
+        "Agent requires explicit human confirmation before running `sudo ./scripts/eth2qs.sh phase1`",
+        "Agent provides the Phase 2 command: `./scripts/eth2qs.sh phase2 --execution=geth --consensus=lighthouse --mev=mev-boost`",
+        "Agent does not chain Phase 1 and Phase 2 without a reboot in between"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to wipe my node data and start fresh. Clean everything up safely without touching my validator keys or secrets.",
+      "expected_output": "Agent always runs the dry-run command first to show what would be deleted, explains that secrets and validator keystores are preserved by design, and only proceeds with the destructive cleanup after explicit human confirmation.",
+      "expectations": [
+        "Agent runs `./scripts/eth2qs.sh clean-data --dry-run` before any destructive action",
+        "Agent explicitly states that `~/secrets`, validator keystores, and wallet directories are preserved",
+        "Agent requires explicit human confirmation before running `./scripts/eth2qs.sh clean-data --confirm`",
+        "Agent does not run `cleanup-host` (root-level) unless the user specifically requests host-level cleanup"
+      ]
+    }
+  ]
+}

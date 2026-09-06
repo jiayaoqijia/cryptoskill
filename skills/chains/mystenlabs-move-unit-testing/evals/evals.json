@@ -1,0 +1,16 @@
+[
+  {
+    "id": "amm-unit-tests",
+    "prompt": "I have an AMM smart contract (see provided files). Write comprehensive unit tests for it. Cover pool creation, adding/removing liquidity, swaps, edge cases, and error conditions.",
+    "files": ["sui-smart-contracts/evals/fixtures/amm/"],
+    "expected_output": "A test module with comprehensive tests following Sui Move testing best practices.",
+    "expectations": [
+      "Test functions do NOT use test_ prefix (e.g. create_pool_succeeds, not test_create_pool)",
+      "Uses assert_eq! for equality comparisons instead of assert!(x == y) or assert!(x == y, 0)",
+      "Does not pass numeric abort codes to assert! in tests (no assert!(x, 0))",
+      "Merges #[test] and #[expected_failure] on a single line: #[test, expected_failure(...)]",
+      "Does not have unreachable cleanup code after an expected abort point in expected_failure tests",
+      "Uses standard cleanup patterns (test_utils::destroy, return_shared, return_to_sender) not custom destroy_for_testing functions"
+    ]
+  }
+]

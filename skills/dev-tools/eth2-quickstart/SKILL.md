@@ -1,117 +1,47 @@
 ---
 name: eth2-quickstart
-description: Bootstrap, operate, diagnose, and safely clean production Ethereum validator nodes through a tested command surface with strict safety guardrails.
-version: 1.0.0
-author: chimera-defi
-tags:
-  - ethereum
-  - validator
-  - staking
-  - node
-  - beacon
-  - consensus
-  - execution
-  - mev
-  - devops
-homepage: https://github.com/chimera-defi/eth2-quickstart
-triggers:
-  - "set up an ethereum node"
-  - "install ethereum validator"
-  - "bootstrap beacon node"
-  - "run geth and prysm"
-  - "install consensus client"
-  - "ethereum node setup"
-  - "configure mev-boost"
-  - "clean ethereum node data"
-  - "check ethereum node health"
-config:
-  FEE_RECIPIENT:
-  LOGIN_UNAME:
+description: Use this skill whenever the task involves an Ethereum validator node — setting up a node, installing Geth/Besu/Nethermind/Reth or Prysm/Lighthouse/Teku/other clients, configuring MEV-Boost or Commit-Boost, checking node health, listing active validators, managing validator exits, BLS-to-execution withdrawal changes, or 0x02 compounding creation, operating services, cleaning node data, or updating clients. Routes all actions through `./scripts/eth2qs.sh` with strict safety guardrails. If in doubt about an Ethereum node task, trigger this skill.
+metadata:
+  openclaw:
+    skillKey: eth2-quickstart
 ---
 
 # Eth2 Quickstart
 
-Automates production-ready Ethereum node setup on Linux servers — execution client, consensus client, MEV integration, OS hardening, and optional RPC exposure. Supports 7 execution clients (Geth, Besu, Nethermind, Erigon, Reth, Nimbus-eth1, Ethrex) and 6 consensus clients (Prysm, Lighthouse, Teku, Nimbus, Lodestar, Grandine).
+Use this skill for Ethereum node workflows inside an `eth2-quickstart` checkout. Publish/install it through ClawHub or `npx clawhub`, then run it from the repo so it can use the canonical wrapper commands.
 
-This skill is **repo-aware**: it runs inside an `eth2-quickstart` checkout and routes all actions through `./scripts/eth2qs.sh`. It never invents new lifecycle commands.
+## Routing
 
-## Install
+- For end-to-end node operator goals, read [operator.md](references/operator.md).
+- Install/bootstrap: use `./scripts/eth2qs.sh bootstrap ...`. Read [workflow.md](references/workflow.md).
+- Configure or rerun phases: use `./scripts/eth2qs.sh configure`, `phase1`, `phase2`, or `monad-install`. Read [workflow.md](references/workflow.md).
+- Diagnose or inspect status: use `./scripts/eth2qs.sh doctor --json` for health gates, `./scripts/eth2qs.sh stats --json` for machine-readable triage, `./scripts/eth2qs.sh debug --json --service <name>` for structured RCA, `./scripts/eth2qs.sh update-check --json` for freshness/drift, and `./scripts/eth2qs.sh repair` for bounded repair preview/apply. Read [outputs.md](references/outputs.md).
+- For validator lifecycle operations, use `./scripts/eth2qs.sh validators --json` to list active validators and `./scripts/eth2qs.sh validator-exit`, `./scripts/eth2qs.sh validator-withdrawal-changes`, `./scripts/eth2qs.sh validator-create-0x02`, or `./scripts/eth2qs.sh validator-manage` for focused exit / withdrawal-change / compounding / consolidation flows. Rehearse withdrawal changes with `./scripts/eth2qs.sh validator-withdrawal-changes --dry-run --generate --submit --yes` before touching live keys. Read [commands.md](references/commands.md) and [operator.md](references/operator.md).
+- Operate services, logs, cleanup, or updates: use the mapped commands in [commands.md](references/commands.md).
+- Before destructive or privilege-sensitive actions, load [safety.md](references/safety.md).
+- For server recommendation or host-fit questions, read [sizing.md](references/sizing.md).
+- For concrete user-task phrasing, read [examples.md](references/examples.md).
+- For Claude Code / Codex native tool use, read [mcp.md](references/mcp.md).
+- For durable repo-scoped improvement loops, read [improvement.md](references/improvement.md).
 
-```bash
-# Recommended
-clawhub install eth2-quickstart
+## Rules
 
-# Or clone directly
-git clone --depth 1 https://github.com/chimera-defi/eth2-quickstart.git
-cd eth2-quickstart
-```
+- Do not invent new command entrypoints when an existing wrapper command fits.
+- Prefer `./scripts/eth2qs.sh` over calling utility scripts directly.
+- Do not generate validator keys.
+- Do not remove secrets.
+- Require human confirmation before destructive cleanup, host-wide changes, or steps that require reboot/root.
+- Treat `doctor --json` as the canonical health gate, `stats --json` as the canonical machine-readable triage surface, and `monitor export --json` as the canonical compact alert/dashboard surface.
+- Treat `validators --json` as the canonical read-only validator inventory surface; use it to inspect local validator index/status/balance before taking exit, withdrawal-change, or compounding actions. The JSON output also carries inventory freshness metadata and beacon query status.
 
-## What agents can do with this skill
+## References
 
-- **Bootstrap a fresh host**: detect the next safe install step and execute it
-- **Check node health**: machine-readable JSON output from `doctor --json`
-- **Operate services**: start, stop, restart, view logs
-- **Update clients**: `update-all` covers all installed components
-- **Safe cleanup**: `clean-data --dry-run` shows what would be removed before any deletion; secrets and validator keystores are always preserved
-
-## Commands
-
-```bash
-# Detect the next safe install step (machine-readable)
-./scripts/eth2qs.sh plan --json
-
-# Preview next step without executing
-./scripts/eth2qs.sh ensure
-
-# Execute next step (requires explicit confirmation)
-./scripts/eth2qs.sh ensure --apply --confirm
-
-# Install Ethereum node (execution + consensus + MEV)
-sudo ./scripts/eth2qs.sh phase1
-./scripts/eth2qs.sh phase2 --execution=geth --consensus=prysm --mev=mev-boost
-
-# Health check
-./scripts/eth2qs.sh doctor --json
-
-# Operate
-./scripts/eth2qs.sh start
-./scripts/eth2qs.sh stop
-./scripts/eth2qs.sh logs --run2 -n 200
-./scripts/eth2qs.sh stats
-
-# Cleanup (always dry-run first)
-./scripts/eth2qs.sh clean-data --dry-run
-./scripts/eth2qs.sh clean-data --confirm
-sudo ./scripts/eth2qs.sh cleanup-host --dry-run
-```
-
-## Safety guardrails
-
-- `ensure --apply` requires explicit `--confirm` — no silent destructive execution
-- `clean-data` preserves `~/secrets`, validator keystores, and wallet directories by design
-- `doctor --json` detects service-unit drift (running binary doesn't match unit file)
-- Agents must require human confirmation before phase1 (root/reboot), destructive cleanup, or host-wide changes
-- Agents must never generate validator keys or remove secrets
-
-## `doctor --json` output shape
-
-```json
-{
-  "summary": { "passed": 12, "warnings": 2, "failed": 0, "status": "warn" },
-  "checks": [
-    { "status": "pass", "name": "RAM: 32GB (recommended: 16GB+)", "details": "" },
-    { "status": "warn", "name": "Execution client (eth1): Not installed", "details": "" }
-  ]
-}
-```
-
-Use `doctor --json` as the canonical agent-readable health surface. Use `status` / `stats` / `logs` for human-readable RCA.
-
-## Minimum host requirements
-
-| Spec | Minimum | Recommended |
-|------|---------|-------------|
-| Disk | 2 TB SSD | 4 TB NVMe |
-| RAM | 16 GB | 32 GB |
-| CPU | 4 cores | 8 cores |
-| OS | Ubuntu 20.04+ | Ubuntu 22.04+ |
+- [workflow.md](references/workflow.md): choose bootstrap vs configure vs phase workflows
+- [operator.md](references/operator.md): operator-focused install, resume, run, update, and cleanup flows
+- [commands.md](references/commands.md): canonical command mapping
+- [safety.md](references/safety.md): destructive boundaries and secrets policy
+- [sizing.md](references/sizing.md): server sizing and host-fit guidance
+- [outputs.md](references/outputs.md): expected outputs and checks for agents
+- [examples.md](references/examples.md): concrete prompt/task examples for common operator goals
+- [mcp.md](references/mcp.md): Claude Code / Codex MCP server usage and safety contract
+- [improvement.md](references/improvement.md): how to turn failures and test output into durable repo learnings

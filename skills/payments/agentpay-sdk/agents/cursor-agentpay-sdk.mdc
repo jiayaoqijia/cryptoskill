@@ -1,0 +1,28 @@
+---
+description: Use the AgentPay SDK skill pack for Link fiat setup, wallet setup, funding checks, policy recipes, cards, and transfers or approvals instead of guessing commands.
+alwaysApply: false
+---
+
+Load the installed `agentpay-sdk` skill when the task touches Link fiat setup, cards, wallet operations, or payments.
+
+Specific rules:
+
+- start with `agentpay config show --json`
+- for fiat/card payments, start with `agentpay link status --json`; if Link is not authenticated, use `agentpay link onboard`
+- list Link payment methods with `agentpay link payment-methods --json`
+- create one-time card credentials with `agentpay link card --payment-method-id <id> --merchant-name <name> --merchant-url <url> --amount <cents> --context <100+ char explanation> --output-file <PATH>` and never print full card details into chat
+- for third-party program integration, use `@worldlibertyfinancial/agentpay-sdk/link` helpers through the AgentPay Link facade
+- use `agentpay wallet --json` to determine whether a reusable wallet exists
+- if the user only asks what the skill can do, answer from `SKILL.md` and do not probe the machine first
+- never ask the user to paste `VAULT_PASSWORD` into chat
+- never ask the user to paste Link card numbers, CVCs, access tokens, refresh tokens, or full credential files into chat
+- tell the user to run `agentpay admin setup` locally when wallet metadata is unavailable and they are trying to use the wallet
+- tell the user to run `agentpay admin setup --reuse-existing-wallet` locally when the wallet exists and they need to re-run setup without changing vaults
+- after a fresh setup, tell the user to create an encrypted offline backup with `agentpay admin wallet-backup export --output <PATH>` unless they already have a verified backup
+- if the local wallet is gone but the user has an encrypted backup, tell them to run `agentpay admin setup --restore-wallet-from <PATH>` locally
+- default unspecified payments to `USD1` on `bsc`
+- check native gas before outbound actions
+- if funding is missing, ask the user to fund the wallet and provide address, network, token needs, BNB gas needs, and QR
+- if a request hits manual approval, say it is waiting for user approval and route the user to the local admin CLI approval commands first; for `transfer --broadcast`, `transfer-native --broadcast`, and `approve --broadcast`, tell them to keep the original command running and not rerun it after approval; if that original broadcast command is already gone after approval, use `agentpay admin resume-manual-approval-request --approval-request-id <UUID>`
+- use `agentpay --help` and subcommand help as the source of truth for exact flags
+- prefer `agentpay admin tui` for policy changes over vague policy discussion

@@ -724,6 +724,53 @@ Get Route API ✓ → Build Route API ✓ → Wallet/RPC Submission ✗ (fails h
 
 These errors occur when a submitted transaction reverts on the blockchain.
 
+### Diagnosing On-Chain Reverts
+
+When a transaction reverts, use these tools to decode the revert reason:
+
+**Using Foundry `cast run` (recommended — requires archive node):**
+```bash
+cast run {txHash} --rpc-url {RPC_URL}
+```
+This replays the transaction and shows the full execution trace, including the exact revert reason and the internal call that failed.
+
+**Using Foundry `cast call` at historical block (alternative):**
+```bash
+cast call \
+  --rpc-url {RPC_URL} \
+  --from {sender} \
+  --value {tx.value} \
+  --block {blockNumber} \
+  {tx.to} \
+  {tx.data}
+```
+Replays the call at the block where it reverted. Requires archive node.
+
+**Using ethers.js (for non-Foundry environments):**
+```javascript
+const provider = new ethers.JsonRpcProvider(RPC_URL);
+const tx = await provider.getTransaction(txHash);
+const receipt = await provider.getTransactionReceipt(txHash);
+
+try {
+  await provider.call(
+    { from: tx.from, to: tx.to, data: tx.data, value: tx.value },
+    receipt.blockNumber
+  );
+} catch (error) {
+  console.log("Revert reason:", error.reason || error.message);
+}
+```
+
+**Using block explorer (no tools needed):**
+Check the transaction on the chain's block explorer (e.g., etherscan.io). Most explorers decode common revert reasons automatically and show them in the transaction details under "Revert Reason" or "Status".
+
+> **Note:** `cast run` and historical `cast call` require an **archive node**. Public RPCs often only keep recent state. If you get "missing trie node" errors, use an archive-enabled RPC provider (Alchemy, QuickNode, etc.) or check the block explorer instead.
+
+Use the `/swap-status` skill for a guided diagnosis workflow that automates these steps.
+
+---
+
 ### TransferHelper: TRANSFER_FROM_FAILED
 
 **Description:** The router contract failed to transfer tokens from the sender.

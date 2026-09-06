@@ -49,7 +49,7 @@
   - `references/scenarios.md`
   - `references/routing-and-analysis.md`
   - `references/execution-and-guardrails.md`
-- Included shared runtime-rule referencing through `../exchange-runtime-rules.md`.
+- Included shared runtime-rule referencing through [`gate-runtime-rules.md`](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md).
 - Included the end-to-end closed loop for cryptocurrency trading on Gate Exchange:
   - trade judgment
   - risk control

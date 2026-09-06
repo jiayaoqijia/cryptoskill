@@ -1,0 +1,55 @@
+#!/usr/bin/fift -s
+"TonUtil.fif" include
+
+{ ."usage: " @' $0 type ." <workchain-id> <code-boc> <data-boc-or--> <library-boc-or--> [<filename-base>]" cr
+  ."Builds a deployable StateInit BoC from code plus optional data and library dictionary cells." cr
+  ."Saves <filename-base>-stateinit.boc and <filename-base>.addr ('contract' by default)." cr
+  1 halt
+} : usage
+
+$# dup 4 < swap 5 > or ' usage if
+5 :$1..n
+
+$1 parse-workchain-id =: wc
+$2 =: code-boc-file
+$3 =: data-boc-file
+$4 =: library-boc-file
+$5 "contract" replace-if-null =: file-base
+
+code-boc-file dup ."Loading code cell from file `" type ."`" cr
+file>B B>boc =: code
+
+data-boc-file "-" $=
+  { null }
+  { data-boc-file dup ."Loading data cell from file `" type ."`" cr file>B B>boc }
+cond =: data
+
+library-boc-file "-" $=
+  { null }
+  { library-boc-file dup ."Loading library dictionary cell from file `" type ."`" cr file>B B>boc }
+cond =: libraries
+
+data null? {
+  libraries null? {
+    <b b{00100} s, code ref, b>
+  } {
+    <b b{00101} s, code ref, libraries ref, b>
+  } cond
+} {
+  libraries null? {
+    <b b{00110} s, code ref, data ref, b>
+  } {
+    <b b{00111} s, code ref, data ref, libraries ref, b>
+  } cond
+} cond
+dup =: state-init
+
+."StateInit cell: " state-init <s csr. cr
+state-init 2 boc+>B file-base +"-stateinit.boc" tuck B>file drop
+state-init hashu wc swap 2dup 2constant contract_addr
+."contract address raw: " 2dup .addr cr
+2dup file-base +".addr" save-address-verbose
+."contract address non-bounceable: " 2dup 7 .Addr cr
+."contract address bounceable: " 6 .Addr cr
+."stateinit boc path: " file-base +"-stateinit.boc" type cr
+."address file path: " file-base +".addr" type cr

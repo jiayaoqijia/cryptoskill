@@ -1,0 +1,157 @@
+[
+  {
+    "id": "frontend-apps-react-setup",
+    "prompt": "Help me set up a new Vite + React app to integrate with Sui. I want users to connect a wallet and see their SUI balance. Give me the complete setup code: package installs, dapp-kit.ts instance, provider wrapping, and a simple Balance component that reads from the current network.",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/react",
+      "https://sdk.mystenlabs.com/sui/clients"
+    ],
+    "expected_output": "A full setup: npm install @mysten/dapp-kit-react @mysten/sui @tanstack/react-query; a dapp-kit.ts file that imports createDAppKit from '@mysten/dapp-kit-react' and SuiGrpcClient from '@mysten/sui/grpc', creates the instance with networks + defaultNetwork + createClient, and includes the `declare module` augmentation; an App.tsx that wraps with QueryClientProvider and DAppKitProvider; a Balance component using useCurrentAccount + useCurrentClient + useQuery with enabled: !!account and the correct client.core.listBalances call.",
+    "expectations": [
+      "Installs @mysten/dapp-kit-react (NOT the bare @mysten/dapp-kit)",
+      "Installs @mysten/sui and @tanstack/react-query",
+      "Creates the dApp Kit instance via createDAppKit from '@mysten/dapp-kit-react'",
+      "Passes SuiGrpcClient (from '@mysten/sui/grpc') to createClient, NOT SuiJsonRpcClient or SuiClient",
+      "Wraps with DAppKitProvider (NOT the old three-provider SuiClientProvider + WalletProvider + QueryClientProvider stack for dApp Kit)",
+      "Uses QueryClientProvider for TanStack Query",
+      "Includes the `declare module '@mysten/dapp-kit-react'` TypeScript augmentation",
+      "Uses useCurrentAccount and useCurrentClient (NOT useSuiClient)",
+      "Uses useQuery with enabled: !!account to gate the balance query",
+      "Calls client.core.listBalances (v2 API) not client.getBalance or client.getAllBalances directly",
+      "Does NOT use any removed hook: useSuiClientQuery, useSignAndExecuteTransaction (mutation), useSuiClient, useConnectWallet",
+      "Does NOT use deprecated @mysten/dapp-kit (no suffix) or @mysten/sui.js"
+    ]
+  },
+  {
+    "id": "frontend-apps-transaction-flow",
+    "prompt": "Write a React button that transfers 0.5 SUI to a hardcoded recipient when the user clicks it. Show the full transaction flow including error handling, waiting for indexing, and refreshing the balance query afterward.",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/react",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "A React component using useDAppKit, useCurrentClient, useCurrentAccount, useQueryClient. Builds a Transaction with tx.splitCoins(tx.gas, [tx.pure.u64(500_000_000n)]) and tx.transferObjects([coin], tx.pure.address(recipient)). Calls dAppKit.signAndExecuteTransaction({ transaction: tx }) — passing the Transaction instance directly, NOT pre-built bytes. Checks result.$kind === 'FailedTransaction' (or equivalent) for failure. Awaits client.waitForTransaction({ digest: result.Transaction.digest }). Then invalidates the balance query. Manages loading state via useState since there's no built-in mutation hook.",
+    "expectations": [
+      "Uses useDAppKit() to get the instance and calls instance.signAndExecuteTransaction (NOT the removed useSignAndExecuteTransaction hook)",
+      "Passes { transaction: tx } to signAndExecuteTransaction (NOT transactionBlock:)",
+      "Passes the Transaction instance directly — does NOT call tx.build() in the app code first",
+      "Builds the PTB with tx.splitCoins(tx.gas, [tx.pure.u64(500_000_000n)]) — uses typed pure helper",
+      "Uses tx.pure.address(recipient) for the recipient — not a raw string",
+      "Checks for failure via result.$kind or result.FailedTransaction discriminant (NOT result.effects?.status?.status)",
+      "On success, awaits client.waitForTransaction({ digest }) BEFORE invalidating queries",
+      "Calls queryClient.invalidateQueries AFTER waitForTransaction, not before",
+      "Manages isPending / error via useState (no built-in mutation hook)",
+      "Does NOT set tx.setGasBudget / tx.setGasPrice / tx.setGasPayment in app code (leaves gas to the wallet)",
+      "Does NOT use removed hooks"
+    ]
+  },
+  {
+    "id": "frontend-apps-owned-nfts-paginated",
+    "prompt": "Show me how to list all NFTs of type 0xPKG::nft::NFT owned by the connected user, with a 'Load more' button for pagination.",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/react",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "A React component using useCurrentClient + useCurrentAccount + useInfiniteQuery from @tanstack/react-query. queryFn calls client.core.listOwnedObjects with owner, cursor from pageParam, and type filter. getNextPageParam returns lastPage.cursor when non-null, undefined otherwise (the v2 API uses a single nullable cursor field, not nextCursor/hasNextPage). Uses enabled: !!account. Flattens pages to render. Load more button calls fetchNextPage.",
+    "expectations": [
+      "Uses useInfiniteQuery from @tanstack/react-query (NOT useSuiClientInfiniteQuery which is removed)",
+      "Uses useCurrentClient (NOT useSuiClient)",
+      "Calls client.core.listOwnedObjects (v2 Core API), NOT client.getOwnedObjects",
+      "Passes the type filter to listOwnedObjects",
+      "Uses cursor / pageParam pattern with initialPageParam and getNextPageParam",
+      "getNextPageParam returns lastPage.cursor when non-null, undefined otherwise (v2 uses a single nullable cursor, not nextCursor/hasNextPage)",
+      "enabled: !!account guards the query until wallet is connected",
+      "Flattens data.pages to render the full list",
+      "Load more button calls fetchNextPage and disables when isFetchingNextPage"
+    ]
+  },
+  {
+    "id": "frontend-apps-deprecated-package-check",
+    "prompt": "I found a tutorial that says to `npm install @mysten/dapp-kit` and shows SuiClientProvider, WalletProvider, QueryClientProvider nested together plus a useSuiClientQuery hook. Is this current?",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit"
+    ],
+    "expected_output": "Explains that @mysten/dapp-kit (no suffix) is the legacy JSON-RPC-only package and is deprecated. The tutorial shows the old three-provider pattern and a removed hook. The current setup uses @mysten/dapp-kit-react (React) or @mysten/dapp-kit-core (Vue/vanilla) with createDAppKit + DAppKitProvider. useSuiClientQuery was removed — use useCurrentClient + @tanstack/react-query's useQuery. Recommends using the getting-started React guide at sdk.mystenlabs.com/dapp-kit/getting-started/react.",
+    "expectations": [
+      "Identifies @mysten/dapp-kit (no suffix) as the deprecated / legacy package",
+      "Explicitly states the new packages are @mysten/dapp-kit-react and @mysten/dapp-kit-core",
+      "Notes the three-provider pattern (SuiClientProvider + WalletProvider + QueryClientProvider for dApp Kit) is replaced by createDAppKit + DAppKitProvider",
+      "Identifies useSuiClientQuery as a removed hook",
+      "Suggests useCurrentClient + @tanstack/react-query useQuery as the replacement",
+      "Does NOT claim the old pattern still works",
+      "Points to the current getting-started docs"
+    ]
+  },
+  {
+    "id": "frontend-apps-sponsored-sign-only",
+    "prompt": "I want the wallet to sign a transaction but have my backend sponsor the gas and submit it. Show the frontend React code that signs without executing, then POSTs the signed bytes and signature to /api/sponsor.",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/react"
+    ],
+    "expected_output": "Uses dAppKit.signTransaction({ transaction: tx }) (not signAndExecuteTransaction) to get { bytes, signature }. POSTs these to /api/sponsor. Explains that the backend is responsible for filling gas data (setSender from the user, setGasOwner to the sponsor, setGasPayment with sponsor coins), attaching the sponsor signature, and submitting. After the backend returns a digest, the frontend calls client.waitForTransaction.",
+    "expectations": [
+      "Uses dAppKit.signTransaction({ transaction }) — NOT signAndExecuteTransaction",
+      "Destructures { bytes, signature } from the result",
+      "POSTs bytes and signature to the backend (JSON body or multipart)",
+      "Mentions that the backend is responsible for setting gas owner / payment / sponsor signature / submission",
+      "After the backend responds with a digest, calls client.waitForTransaction for UI consistency",
+      "Does NOT try to call tx.build({ onlyTransactionKind: true }) in the frontend (that pattern is backend-facing in the sponsored flow where the app builds kind-only bytes for the sponsor — but if the user's prompt says 'wallet signs, backend sponsors', using signTransaction is the right primitive)",
+      "Does NOT try to set gas budget / gas owner / gas payment on the frontend"
+    ]
+  },
+  {
+    "id": "frontend-apps-vue-setup",
+    "prompt": "Set up @mysten/dapp-kit-core for a Vue 3 project. Show the dapp-kit.ts, main.ts, and a Vue component that shows the connect button and the connected account's address.",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/vue"
+    ],
+    "expected_output": "dapp-kit.ts imports createDAppKit from '@mysten/dapp-kit-core' (NOT -react) and SuiGrpcClient from '@mysten/sui/grpc', creates the instance. main.ts registers Web Components with `import '@mysten/dapp-kit-core/web'`. A .vue component uses useStore from @nanostores/vue on dAppKit.stores.$connection, renders <mysten-dapp-kit-connect-button :instance=\"dAppKit\" />, and shows the address from connection.value.account?.address.",
+    "expectations": [
+      "Imports createDAppKit from '@mysten/dapp-kit-core' (NOT @mysten/dapp-kit-react)",
+      "Imports SuiGrpcClient from '@mysten/sui/grpc'",
+      "Registers Web Components once at app entry with `import '@mysten/dapp-kit-core/web'`",
+      "Uses @nanostores/vue's useStore on dAppKit.stores.$connection",
+      "Renders the Web Component <mysten-dapp-kit-connect-button> with :instance property binding (NOT as an HTML string attribute)",
+      "Accesses account from the connection ref — either connection.value.account in script or connection.account in template (Vue auto-unwraps refs in templates)",
+      "Does NOT include the `declare module` TypeScript augmentation (that's React-only)",
+      "Does NOT import from @mysten/dapp-kit-react"
+    ]
+  },
+  {
+    "id": "frontend-apps-avoid-bad-pattern",
+    "prompt": "Review this code for problems:\n\n```tsx\nimport { SuiClient, getFullnodeUrl } from '@mysten/sui/client';\nimport { useSuiClientQuery, useSignAndExecuteTransaction } from '@mysten/dapp-kit';\nimport { TransactionBlock } from '@mysten/sui.js/transactions';\n\nfunction Mint() {\n  const { mutate: sign } = useSignAndExecuteTransaction();\n  const { data: balance } = useSuiClientQuery('getBalance', { owner: '...' });\n\n  const handleMint = () => {\n    const tx = new TransactionBlock();\n    tx.moveCall({ target: '...', arguments: [tx.pure('n')] });\n    sign({ transactionBlock: tx }, {\n      onSuccess: (result) => {\n        if (result.effects?.status?.status === 'success') {\n          queryClient.invalidateQueries(['getBalance']);\n        }\n      },\n    });\n  };\n}\n```",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit",
+      "https://sdk.mystenlabs.com/sui"
+    ],
+    "expected_output": "Identifies multiple outdated patterns: imports from deprecated @mysten/sui.js and @mysten/dapp-kit (no suffix); uses removed useSuiClientQuery and useSignAndExecuteTransaction hooks; uses removed TransactionBlock class and SuiClient; uses untyped tx.pure('n'); uses old transactionBlock parameter name; uses v1 result.effects?.status?.status check; invalidates queries without waitForTransaction first. Suggests the full migration: import from @mysten/sui/transactions and @mysten/dapp-kit-react, use Transaction, useDAppKit().signAndExecuteTransaction, tx.pure.u64/string/address, { transaction: tx }, check result.$kind, add waitForTransaction before invalidate.",
+    "expectations": [
+      "Flags @mysten/sui.js as deprecated; recommends @mysten/sui",
+      "Flags @mysten/dapp-kit (no suffix) as deprecated; recommends @mysten/dapp-kit-react",
+      "Flags useSuiClientQuery as removed",
+      "Flags useSignAndExecuteTransaction (mutation hook) as removed",
+      "Flags TransactionBlock as renamed to Transaction",
+      "Flags SuiClient as removed; recommends SuiGrpcClient",
+      "Flags tx.pure('n') as untyped; recommends typed helper like tx.pure.string('n') or tx.pure.u64(n)",
+      "Flags transactionBlock: parameter; recommends transaction:",
+      "Flags result.effects?.status?.status check; recommends $kind discriminant",
+      "Flags missing waitForTransaction before invalidateQueries",
+      "Identifies at least 6 distinct issues"
+    ]
+  },
+  {
+    "id": "frontend-apps-ssr-nextjs",
+    "prompt": "I'm using Next.js App Router. Where do I put the DAppKitProvider? Do I need 'use client'?",
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/next-js"
+    ],
+    "expected_output": "Explains that dApp Kit uses browser-only APIs (wallet detection via window.navigator.wallets) so components that touch wallet state must be client-rendered. Recommends a pattern: keep app/layout.tsx as a server component, extract providers into a separate app/providers.tsx file marked with 'use client', wrap the entire app in that. Any component that calls dApp Kit hooks must also be 'use client'.",
+    "expectations": [
+      "States that dApp Kit requires client-side rendering (wallet detection is browser-only)",
+      "Recommends keeping layout.tsx as a server component and a separate providers.tsx marked 'use client'",
+      "Shows 'use client' at the top of the providers file",
+      "Notes that leaf components using dApp Kit hooks also need 'use client'",
+      "Does NOT recommend marking the entire layout 'use client' (loses RSC benefits)",
+      "Does NOT recommend using @mysten/dapp-kit (the deprecated package)"
+    ]
+  }
+]

@@ -1,0 +1,337 @@
+{
+  "skill_name": "sui-object-model",
+  "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io and move-book.com. Graders should flag any claims sourced from third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "What is the Sui Object Model and how do objects work on Sui?",
+      "expected_output": "A comprehensive explanation of Sui's object-centric storage model covering object structure (ID, version, owner, digest), how objects differ from account-based blockchains, and how transactions interact with objects.",
+      "expectations": [
+        "The response explains that every resource, asset, and piece of data onchain is an object with a globally unique ID",
+        "The response describes the four components of an object: unique ID, version number, owner field, and transaction digest",
+        "The response explains that object versions use Lamport timestamps and increment with each modification",
+        "The response contrasts Sui's object model with account-based blockchains like Ethereum where state lives in shared mappings inside contracts",
+        "The response explains that transactions consume objects as inputs and produce modified versions as outputs",
+        "The response mentions the three object reference types: ID alone, versioned ID, and full object reference (ID + version + digest)"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/sui-architecture/object-model",
+        "https://docs.sui.io/develop/objects/"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What are the different types of object ownership on Sui? When should I use a shared object vs an owned object?",
+      "expected_output": "An explanation of all ownership types with practical guidance on when to choose each, including consensus implications.",
+      "expectations": [
+        "The response describes address-owned objects and states they skip consensus (fastpath) for lowest latency",
+        "The response describes shared objects and states they require consensus ordering through Mysticeti",
+        "The response describes immutable/frozen objects as permanent, unchangeable, and consensus-free",
+        "The response describes wrapped objects as nested inside another object and not directly accessible by ID",
+        "The response provides guidance: use owned objects for single-user operations, shared objects when multiple users need access",
+        "The response explains that once an object is shared, it cannot be converted back to address-owned",
+        "The response mentions the shared object access mode optimization: immutable reference (&) allows parallel read-only transactions, mutable reference (&mut) requires sequencing"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/object-ownership/",
+        "https://docs.sui.io/develop/sui-architecture/consensus"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "How do I share an object on Sui? Can I access a shared object from the frontend just by knowing its object ID?",
+      "expected_output": "An explanation of how to create shared objects and how frontends interact with them using the object ID.",
+      "expectations": [
+        "The response explains that transfer::share_object() or transfer::public_share_object() makes an object shared",
+        "The response clarifies that public_share_object requires the store ability while share_object does not",
+        "The response confirms that to use a shared object in a transaction, you need its object ID",
+        "The response explains that anyone on the network can access shared objects",
+        "The response mentions that care must be taken to implement access control on shared objects if needed",
+        "The response does not claim you need to 'fetch' or 'get' a shared object before using it in a PTB — you reference it by ID"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/object-ownership/",
+        "https://docs.sui.io/develop/objects/transfers/"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "What do the key, store, copy, and drop abilities do in Sui Move? What happens if my object has key but not store?",
+      "expected_output": "A complete explanation of all four abilities with specific focus on how store affects transfer permissions.",
+      "expectations": [
+        "The response explains that key makes a struct a Sui object and requires id: UID as the first field",
+        "The response explains that store allows the object to be stored inside other objects and enables public_transfer from any module",
+        "The response explicitly states that without store, only the defining module can transfer the object",
+        "The response explains that copy allows duplication (rare for objects) and drop allows silent discard",
+        "The response warns that once store is added, custom transfer rules can never be re-enabled",
+        "The response explains that objects with key alone enable custom transfer logic enforced by the defining module"
+      ],
+      "sources": [
+        "https://move-book.com/move-basics/abilities-introduction.html",
+        "https://docs.sui.io/develop/objects/transfers/custom-rules"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "What is the difference between dynamic fields and dynamic object fields? When should I use each?",
+      "expected_output": "A clear comparison of both dynamic field types with practical guidance on visibility, querying, and use cases.",
+      "expectations": [
+        "The response explains that dynamic_field stores any value with store ability, and the value is wrapped (not visible to explorers)",
+        "The response explains that dynamic_object_field stores objects (key + store), and the child retains its own ID and is visible to explorers and wallets",
+        "The response explains the core API: add, borrow, borrow_mut, remove, exists_",
+        "The response states that accessing a nonexistent field aborts the transaction",
+        "The response provides guidance: use dynamic_object_field when the child should be independently queryable by ID",
+        "The response warns that deleting an object with dynamic fields still defined renders those fields permanently inaccessible"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/dynamic-fields",
+        "https://move-book.com/programmability/dynamic-fields.html",
+        "https://move-book.com/programmability/dynamic-object-fields.html"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "My player NFT needs an inventory that can hold any arbitrary Sui object — Swords, Shields, Potions, anything. How should I model this?",
+      "expected_output": "A recommendation to use ObjectBag for heterogeneous object storage, with a code pattern for add/remove operations.",
+      "expectations": [
+        "The response recommends ObjectBag (or Bag) for holding objects of different types in one collection",
+        "The response explains that ObjectBag values must be objects with key + store",
+        "The response shows or describes the pattern: add items keyed by their object ID, remove by ID",
+        "The response contrasts with ObjectTable which requires all values to be the same type",
+        "The response mentions that ObjectBag preserves child object visibility (queryable by explorers)",
+        "The response does not recommend VecMap or plain vectors for this use case"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/dynamic-fields",
+        "https://move-book.com/programmability/collections.html"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "When should I use Table vs VecMap vs Bag in Sui Move? What are the performance tradeoffs?",
+      "expected_output": "A comparison of collection types with clear guidance on size limits, lookup cost, and type constraints.",
+      "expectations": [
+        "The response explains that Table has O(1) lookup via dynamic fields and is the default for large or unbounded collections",
+        "The response explains that VecMap has O(n) lookup, is stored inline, and should only be used for small collections (under ~100 entries)",
+        "The response explains that Bag allows heterogeneous key-value types while Table requires homogeneous types",
+        "The response mentions ObjectTable and ObjectBag as variants where values must be objects",
+        "The response explains that Table/Bag entries each cost a separate storage operation while VecMap/VecSet are stored inline"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/dynamic-fields",
+        "https://move-book.com/programmability/collections.html"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "How do I destroy an object in Sui Move? What if it doesn't have the drop ability?",
+      "expected_output": "An explanation of the unpacking pattern for destroying objects without drop, including UID deletion.",
+      "expectations": [
+        "The response explains that objects without drop must be explicitly unpacked (destructured)",
+        "The response states that the UID must be deleted using object::delete(id) or id.delete()",
+        "The response explains that all other fields must be dropped (if they have drop), stored, or recursively unpacked",
+        "The response includes a code example showing the let MyStruct { id, ... } = obj; id.delete(); pattern",
+        "The response mentions that a shared object can be destroyed by taking it by value and deleting it in the same function",
+        "The response warns about dynamic fields: deleting an object with dynamic fields still defined renders them inaccessible"
+      ],
+      "sources": [
+        "https://move-book.com/storage/uid-and-id.html",
+        "https://move-book.com/move-basics/struct.html"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Explain the hot potato pattern in Sui Move. Why would I use it?",
+      "expected_output": "An explanation of the hot potato pattern as a struct with no abilities that enforces multi-step transaction workflows.",
+      "expectations": [
+        "The response defines a hot potato as a struct with no abilities (no key, store, copy, or drop)",
+        "The response explains that because it has no abilities, it cannot be stored, copied, or dropped",
+        "The response explains that the hot potato must be consumed by a function in the same PTB or the transaction aborts",
+        "The response provides a use case: enforcing borrow-and-return workflows, multi-step processes, or forced callbacks",
+        "The response includes a code example or describes the pattern with a Receipt struct",
+        "The response does not confuse hot potatoes with objects (they have no key ability)"
+      ],
+      "sources": [
+        "https://move-book.com/programmability/hot-potato-pattern.html",
+        "https://docs.sui.io/develop/objects/transfers/"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "How does transfer work on Sui? What is the difference between transfer::transfer and transfer::public_transfer?",
+      "expected_output": "An explanation of the two transfer tiers: module-restricted (no store required) and public (store required).",
+      "expectations": [
+        "The response explains that transfer::transfer can only be called from the module that defines the object's type",
+        "The response explains that transfer::public_transfer can be called from any module but requires the object to have the store ability",
+        "The response lists the core transfer function pairs: transfer/public_transfer, share_object/public_share_object, freeze_object/public_freeze_object",
+        "The response explains that the same public_ vs module-only distinction applies to share and freeze functions",
+        "The response mentions that this design enables custom transfer rules for objects without store"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/transfers/custom-rules",
+        "https://move-book.com/storage/storage-functions"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "How do I transfer an object to another object on Sui? What is Receiving<T>?",
+      "expected_output": "An explanation of transfer-to-object mechanics including the Receiving type and receive/public_receive functions.",
+      "expectations": [
+        "The response explains that objects can be transferred to other object IDs just like they are transferred to addresses",
+        "The response describes the Receiving<T> type as a proof that an object was sent to a parent",
+        "The response explains that transfer::receive requires being in the child's defining module, while transfer::public_receive works for any object with key + store",
+        "The response states that receiving requires mutable access to the parent's UID",
+        "The response mentions that Receiving<T> has only the drop ability, so receiving is optional — you can ignore sent objects",
+        "The response explains that this is different from Ethereum where tokens are automatically added to a balance"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/transfers/transfer-to-object"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "I want to make an NFT that cannot be transferred by the holder. How do I make a soulbound object on Sui?",
+      "expected_output": "An explanation of how to create non-transferable objects by omitting store and not exposing transfer functions.",
+      "expectations": [
+        "The response explains that an object with key but without store can only be transferred by its defining module",
+        "The response states that to make it fully non-transferable, simply do not expose any transfer function in the module",
+        "The response mentions the hot potato pattern with a ReturnReceipt for allowing temporary borrowing with forced return",
+        "The response does not suggest adding store to a soulbound object",
+        "The response is consistent with Sui's transfer rules"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/transfers/custom-rules",
+        "https://docs.sui.io/develop/objects/transfers/transfer-to-object"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "What is the capability pattern in Sui Move? How do AdminCap and TreasuryCap work?",
+      "expected_output": "An explanation of capability objects as permission tokens, typically created in init and guarding privileged functions.",
+      "expectations": [
+        "The response explains that a capability (cap) is an object that grants permission to perform an action",
+        "The response states that caps are typically created in the module's init function and transferred to the publisher",
+        "The response shows or describes the pattern: the cap is passed as a reference parameter to gated functions",
+        "The response mentions common examples: AdminCap, TreasuryCap, UpgradeCap",
+        "The response mentions that caps can be stored inside other objects and temporarily borrowed using the sui::borrow module"
+      ],
+      "sources": [
+        "https://move-book.com/programmability/capability.html",
+        "https://docs.sui.io/develop/objects/transfers/custom-rules"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "I have a cap stored inside an object. How can I temporarily give it to a caller to use in a PTB and make sure they return it?",
+      "expected_output": "An explanation of the borrow pattern using sui::borrow module or a hot potato receipt to enforce return.",
+      "expectations": [
+        "The response describes the borrow pattern: wrap the cap in a Referent, let the caller borrow it, and force return via a hot potato receipt",
+        "The response explains that the hot potato receipt cannot be stored or dropped, forcing the caller to return the cap in the same PTB",
+        "The response mentions the sui::borrow module from the Sui framework",
+        "The response notes that the cap must have key + store abilities to be wrapped in a Referent",
+        "The response does not suggest simply transferring the cap (which would give permanent access)"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/transfers/simulating-refs",
+        "https://move-book.com/programmability/hot-potato-pattern.html"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "How does object versioning work on Sui? What happens to the version when I modify a shared object?",
+      "expected_output": "An explanation of Lamport timestamp versioning and how version numbers are computed across transaction inputs.",
+      "expectations": [
+        "The response explains that versions use Lamport timestamps: new version = 1 + max(version of all input objects)",
+        "The response gives a concrete example (e.g., object at version 5 + gas at version 3 produces version 6 for both)",
+        "The response explains that only the most recent version is accessible to active transactions",
+        "The response distinguishes fastpath versioning (owned objects, no consensus) from consensus versioning (shared objects)",
+        "The response mentions that wrapped objects and dynamic fields also follow Lamport versioning"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/versioning"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "What are wrapped objects on Sui? If I wrap an object that has a UID, can I still access it directly by its ID?",
+      "expected_output": "An explanation of wrapping behavior and the accessibility constraints while an object is wrapped.",
+      "expectations": [
+        "The response explains that a wrapped object is stored as a field inside another object",
+        "The response clearly states that while wrapped, the object is NOT directly accessible by its ID, even if it has a UID",
+        "The response explains that you can only reach a wrapped object through its parent",
+        "The response states that when unwrapped, the object regains direct access and retains its original ID",
+        "The response mentions that wrapping requires the child to have the store ability",
+        "The response mentions that wrapping and unwrapping can happen within the same transaction"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/object-ownership/",
+        "https://docs.sui.io/develop/objects/versioning"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "How does parallel execution work on Sui? Why do owned objects skip consensus but shared objects don't?",
+      "expected_output": "An explanation of Sui's dual execution paths: fastpath for owned objects and consensus for shared objects.",
+      "expectations": [
+        "The response explains that transactions on owned objects use a fastpath that does not require consensus ordering, because only one address can access them",
+        "The response explains that shared objects require Mysticeti consensus to order transactions from multiple addresses",
+        "The response states that this separation gives Sui its throughput advantage: most transactions touch only owned objects",
+        "The response mentions the shared object access mode optimization: read-only access (immutable reference) allows parallel scheduling",
+        "The response gives examples of owned-object operations that run in parallel (transfers, personal asset management)"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/sui-architecture/consensus",
+        "https://docs.sui.io/develop/objects/versioning"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "What are derived objects in Sui? How are they different from dynamic fields?",
+      "expected_output": "An explanation of derived objects with deterministic IDs, and a comparison to dynamic fields covering parallelism and ownership.",
+      "expectations": [
+        "The response explains that derived objects have deterministic IDs computed from a parent ID and a key",
+        "The response explains that the ID can be predicted before the object is created using derived_object::derive_address",
+        "The response states that derived objects are independently owned, unlike dynamic fields which are always owned by the parent",
+        "The response explains that derived objects enable parallel access because they are not sequenced through the parent",
+        "The response mentions that dynamic fields require the parent for every access while derived objects only need the parent at creation",
+        "The response notes that assets can be sent to a derived address before the object exists"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/derived-objects"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "What is Object Display in Sui? How do I set up display templates so wallets and explorers show my NFT correctly?",
+      "expected_output": "An explanation of the Display standard with template syntax, Publisher requirement, and common properties.",
+      "expectations": [
+        "The response explains that Object Display defines how objects render in wallets, explorers, and apps",
+        "The response describes the {field_name} template syntax for interpolating struct fields into display values",
+        "The response mentions that a Display can be created via Publisher (new_with_publisher) or via internal::Permit<T> (new)",
+        "The response lists common display properties: name, description, image_url",
+        "The response mentions that Display V2 changes take effect immediately — no update_version() call is needed (unlike V1)"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/display/",
+        "https://move-book.com/programmability/display.html"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "I'm building a governance system where users can vote. The registry of votes needs to support up to 100,000 voters. Should I use Table, VecMap, or something else? What are the scalability limits?",
+      "expected_output": "A recommendation to use Table for large-scale storage with guidance on scalability and why VecMap would fail at this scale.",
+      "expectations": [
+        "The response recommends Table (not VecMap) for 100,000 entries",
+        "The response explains that VecMap has O(n) lookup and would be extremely slow at 100,000 entries",
+        "The response explains that Table uses dynamic fields with O(1) lookup and scales to large collections",
+        "The response mentions that each Table entry is a separate storage operation, so gas cost scales linearly with entries accessed per transaction",
+        "The response mentions the 256 KB single object size limit as a constraint on inline storage (VecMap)",
+        "The response does not recommend Bag unless mixed types are needed"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/objects/dynamic-fields",
+        "https://move-book.com/programmability/collections.html"
+      ]
+    }
+  ]
+}

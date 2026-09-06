@@ -1,0 +1,39 @@
+{
+  "skill_name": "sui-networks-gas",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How is gas cost calculated on Sui? What is the storage rebate?",
+      "expected_output": "An explanation of Sui's gas cost formula (computation cost + storage cost - storage rebate) with details on each component and how gas budgets work.",
+      "expectations": [
+        "The response includes the gas cost formula: gas cost = computation cost + storage cost - storage rebate",
+        "The response explains that computation cost is proportional to execution effort",
+        "The response explains that storage cost is based on the bytes objects occupy onchain",
+        "The response explains that storage rebate is returned when objects are deleted or reduced in size",
+        "The response mentions the gas budget (--gas-budget) as the maximum a user is willing to pay",
+        "The response mentions that gas prices can vary per epoch",
+        "The response does not invent gas cost numbers or specific pricing"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/tokenomics/gas-in-sui"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What is a Sui epoch? How long is one epoch on Mainnet? What happens at the epoch boundary?",
+      "expected_output": "An explanation of epochs as fixed time periods with details on duration, boundary events, and how to access epoch info in Move.",
+      "expectations": [
+        "The response states that an epoch on Mainnet is approximately 24 hours",
+        "The response explains that during an epoch, the validator set and gas price remain constant",
+        "The response describes what happens at epoch boundary: staking rewards, validator rotation, gas price update",
+        "The response mentions ctx.epoch() for reading the current epoch number in Move",
+        "The response does not confuse Sui epochs with Walrus epochs or other blockchain epoch concepts"
+      ],
+      "sources": [
+        "https://docs.sui.io/concepts/tokenomics/gas-in-sui",
+        "https://move-book.com/programmability/epoch-and-time.html"
+      ]
+    }
+  ]
+}

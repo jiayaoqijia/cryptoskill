@@ -48,11 +48,31 @@ export async function querySubgraph(
   };
 
   if (json.errors && json.errors.length > 0) {
-    throw new GraphClientError(
-      `GraphQL errors: ${JSON.stringify(json.errors)}`,
-      undefined,
-      json.errors
-    );
+    // Distinguish "your query is wrong" from "nobody is serving this data". The gateway reports
+    // both as GraphQL errors, but they need opposite responses: one is fixed by rewriting the
+    // query, the other cannot be fixed by the caller at all. Left undistinguished, a model retries
+    // a rewritten query against a subgraph no indexer serves, forever.
+    const text = JSON.stringify(json.errors);
+    if (/subgraph not found/i.test(text)) {
+      throw new GraphClientError(
+        `Subgraph ${ipfsHash} is not currently served on The Graph Network — no indexer is ` +
+          `allocated to this deployment, so it cannot answer any query. This is an availability ` +
+          `problem, not a query problem: do not retry with a different query. Use list_subgraphs ` +
+          `to pick another subgraph covering the same data.`,
+        undefined,
+        json.errors
+      );
+    }
+    if (/bad indexers/i.test(text)) {
+      throw new GraphClientError(
+        `Subgraph ${ipfsHash} has indexers allocated but none returned a usable response ` +
+          `(gateway reported "bad indexers"). Often transient — retrying the same query later may ` +
+          `work. If it persists, the deployment needs re-indexing. Raw: ${text}`,
+        undefined,
+        json.errors
+      );
+    }
+    throw new GraphClientError(`GraphQL errors: ${text}`, undefined, json.errors);
   }
 
   return json.data;

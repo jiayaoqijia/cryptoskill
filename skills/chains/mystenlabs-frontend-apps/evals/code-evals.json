@@ -1,0 +1,48 @@
+[
+  {
+    "id": "dapp-wallet-connect",
+    "prompt": "Build a React dApp for Sui with wallet connection. Create a dapp-kit.ts config file using createDAppKit with SuiGrpcClient, and an App.tsx with DAppKitProvider, ConnectButton, and a WalletStatus component that shows the connected address and network.",
+    "package_name": "dapp_wallet",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "@mysten/sui.js",
+      "SuiClient",
+      "@mysten/dapp-kit/src",
+      "useSuiClient"
+    ],
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/react"
+    ],
+    "expectations": [
+      "Code compiles (TypeScript valid)",
+      "Uses createDAppKit from @mysten/dapp-kit-react",
+      "Uses SuiGrpcClient from @mysten/sui/grpc (not SuiClient)",
+      "App wrapped in DAppKitProvider with dAppKit instance",
+      "ConnectButton imported from @mysten/dapp-kit-react/ui",
+      "WalletStatus uses useCurrentAccount hook to show address"
+    ]
+  },
+  {
+    "id": "dapp-send-transaction",
+    "prompt": "Write a React component for a Sui dApp that lets the user send a transaction. Use useDAppKit to access signAndExecuteTransaction, build a Transaction with coinWithBalance and transferObjects, handle FailedTransaction, and show the digest on success.",
+    "package_name": "dapp_send",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "@mysten/sui.js",
+      "SuiClient",
+      "TransactionBlock"
+    ],
+    "sources": [
+      "https://sdk.mystenlabs.com/dapp-kit/getting-started/react"
+    ],
+    "expectations": [
+      "Code compiles (TypeScript valid)",
+      "Uses useDAppKit hook to access signAndExecuteTransaction",
+      "Builds Transaction with coinWithBalance and transferObjects",
+      "Checks result.$kind === 'FailedTransaction' for error handling",
+      "Displays transaction digest on success"
+    ]
+  }
+]

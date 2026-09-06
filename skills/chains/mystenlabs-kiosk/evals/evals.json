@@ -1,0 +1,68 @@
+{
+  "skill_name": "kiosk",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/standards/kiosk. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How do I create a Kiosk on Sui, list an NFT for sale, and what happens when a buyer purchases it?",
+      "expected_output": "An explanation covering Kiosk creation via kiosk::default, listing via kiosk::list with a price in MIST, and the purchase flow where kiosk::purchase returns the asset and a TransferRequest that must satisfy all TransferPolicy terms.",
+      "expectations": [
+        "The response explains that kiosk::default creates and shares a Kiosk and transfers KioskOwnerCap to the creator",
+        "The response explains that kiosk::place is used to add items, requiring KioskOwnerCap",
+        "The response explains that kiosk::list accepts an item ID and price in MIST (1 SUI = 10^9 MIST)",
+        "The response explains that a shared TransferPolicy must exist for the asset type before trading is possible",
+        "The response explains that kiosk::purchase returns the asset and a TransferRequest",
+        "The response explains that the buyer must satisfy all TransferPolicy terms to complete the transaction"
+      ],
+      "sources": [
+        "https://docs.sui.io/standards/kiosk"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What are the different asset states in a Sui Kiosk and what operations are available in each state?",
+      "expected_output": "A description of all four asset states (PLACED, LOCKED, LISTED, LISTED EXCLUSIVELY) with the operations available in each: withdrawability, mutable and immutable borrowing, and listability.",
+      "expectations": [
+        "The response identifies all four states: PLACED, LOCKED, LISTED, and LISTED EXCLUSIVELY",
+        "The response explains that PLACED items are withdrawable, borrowable (mutable and immutable), and listable",
+        "The response explains that LOCKED items are non-withdrawable but mutable-borrowable and listable",
+        "The response explains that LISTED items only support immutable borrows and cannot be modified",
+        "The response explains that LISTED EXCLUSIVELY items are extension-managed via kiosk::list_with_purchase_cap",
+        "The response explains that kiosk::lock requires an associated TransferPolicy"
+      ],
+      "sources": [
+        "https://docs.sui.io/standards/kiosk"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "How do I build a permissioned Kiosk extension using the kiosk_extension module? What permissions are available?",
+      "expected_output": "An explanation of the kiosk_extension API covering how to add an extension with a permissions bitmap, the available permission bits (place = 1, lock = 2), the app lifecycle (install, disable, enable, remove), and how to use app-isolated storage.",
+      "expectations": [
+        "The response shows how to use kiosk_extension::add with a witness type, Kiosk, KioskOwnerCap, permissions bitmap, and TxContext",
+        "The response explains the permissions bitmap: 0 = no permissions, 1 = place, 2 = place and lock, 3 = place and lock",
+        "The response mentions can_place and can_lock for checking permissions",
+        "The response explains the app lifecycle: installation, disable, enable, and removal (requires empty storage)",
+        "The response mentions that each app receives isolated bag-type storage accessible via a witness token"
+      ],
+      "sources": [
+        "https://docs.sui.io/standards/kiosk"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I want to borrow an NFT from my Kiosk to read its fields in a PTB. Which borrowing pattern should I use and what are the constraints?",
+      "expected_output": "An explanation of the three borrowing patterns (kiosk::borrow, kiosk::borrow_mut, kiosk::borrow_val) with guidance that borrow_val is the PTB-friendly option using the hot potato pattern, where the value must be returned via kiosk::return_val.",
+      "expectations": [
+        "The response identifies kiosk::borrow_val as the PTB-friendly mutable borrow pattern",
+        "The response explains the hot potato pattern: the borrowed value must be returned via kiosk::return_val in the same transaction",
+        "The response explains that kiosk::borrow (immutable) and kiosk::borrow_mut (mutable) require a Move module",
+        "The response explains that mutable borrows (borrow_mut) are unavailable for items in the LISTED state",
+        "The response mentions that immutable borrows are always available for PLACED, LOCKED, and LISTED items"
+      ],
+      "sources": [
+        "https://docs.sui.io/standards/kiosk"
+      ]
+    }
+  ]
+}

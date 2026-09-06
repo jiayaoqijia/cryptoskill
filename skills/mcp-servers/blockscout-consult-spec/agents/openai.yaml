@@ -1,0 +1,4 @@
+interface:
+  display_name: "Consult Spec"
+  short_description: "Consult SPEC.md for authoritative requirements"
+  default_prompt: "Use $consult-spec to consult SPEC.md through the isolated spec consultant workflow before implementing or making design decisions."

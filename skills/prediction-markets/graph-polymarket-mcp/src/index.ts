@@ -7,10 +7,25 @@ import express from "express";
 import { z } from "zod";
 import { querySubgraph } from "./graphClient.js";
 import { SUBGRAPHS, SUBGRAPH_NAMES } from "./subgraphs.js";
+import {
+  searchMarkets,
+  getMarketBySlug,
+  getMarketByConditionId,
+  listEvents,
+  getEvent,
+  getClobPrice,
+  getClobPricesBatch,
+  getClobMidpoint,
+  getClobSpread,
+  getClobOrderBook,
+  getClobLastTradePrice,
+  getClobPriceHistory,
+  getClobMarket,
+} from "./polymarketApi.js";
 
 const server = new McpServer({
   name: "graph-polymarket-mcp",
-  version: "1.4.0",
+  version: "2.1.2",
 });
 
 // Helper to format tool responses
@@ -41,10 +56,24 @@ server.registerTool(
       id: key,
       name: cfg.name,
       ipfsHash: cfg.ipfsHash,
+      // `era` and `syncWarning` are surfaced, not just stored: this list is what a model reads
+      // when it picks a subgraph, and picking a stale one returns data rather than an error.
+      era: cfg.era ?? "v1",
+      ...(cfg.syncWarning ? { syncWarning: cfg.syncWarning } : {}),
+      ...(cfg.availability ? { availability: cfg.availability } : {}),
       description: cfg.description,
       keyEntities: cfg.keyEntities,
     }));
-    return textResult(list);
+    return textResult({
+      subgraphs: list,
+      choosing:
+        "V1 and V2 are different eras, not old and new. Polymarket migrated to V2 exchange " +
+        "contracts on 2026-04-28; the v2_* subgraphs start at block 84902353 and hold NO earlier " +
+        "history. All-time or pre-migration questions belong on the V1 entries. Builder-code " +
+        "attribution exists only on v2_orderbook. Any entry carrying a syncWarning is behind " +
+        "chainhead and will answer with stale data rather than erroring — check its _meta block " +
+        "before trusting a 'current' number from it.",
+    });
   }
 );
 
@@ -202,19 +231,39 @@ server.registerTool(
   },
   async ({ account }) => {
     try {
-      const query = `{
-        userPositions(where: { user: "${account.toLowerCase()}" }, first: 100) {
-          id
-          user
-          tokenId
-          amount
-          avgPrice
-          realizedPnl
-          totalBought
+      const addr = account.toLowerCase();
+      const posQuery = `{
+        userPositions(where: { user: "${addr}" }, first: 100) {
+          id user tokenId amount avgPrice realizedPnl totalBought
         }
       }`;
-      const data = await querySubgraph(SUBGRAPHS.slimmed_pnl.ipfsHash, query);
-      return textResult(data);
+      const obQuery = `{
+        account(id: "${addr}") {
+          id totalVolume tradesQuantity totalFees
+        }
+      }`;
+      const [posData, obData] = await Promise.all([
+        querySubgraph(SUBGRAPHS.slimmed_pnl.ipfsHash, posQuery),
+        querySubgraph(SUBGRAPHS.orderbook.ipfsHash, obQuery).catch(() => null),
+      ]);
+      const pd = posData as { userPositions?: Array<{ totalBought: string }> };
+      const totalBought = (pd.userPositions ?? []).reduce(
+        (sum, p) => sum + parseFloat(p.totalBought || "0"), 0
+      );
+      const od = obData as { account?: { totalVolume?: string; tradesQuantity?: string } } | null;
+      const obVolume = parseFloat(od?.account?.totalVolume || "0");
+      const obTrades = parseInt(od?.account?.tradesQuantity || "0");
+      let reliabilityWarning: string | undefined;
+      if (obVolume > 0 && totalBought === 0) {
+        reliabilityWarning = `⚠ orderbook-only entry — no split collateral detected. OB volume: $${obVolume.toFixed(2)} across ${obTrades} trades. P&L from totalBought/avgPrice fields is unreliable.`;
+      } else if (obVolume > 0 && obVolume > totalBought * 2 && obVolume - totalBought > 1000) {
+        reliabilityWarning = `⚠ mixed entry — OB volume ($${obVolume.toFixed(2)}) significantly exceeds split collateral ($${totalBought.toFixed(2)}). Some positions entered via orderbook buys; P&L may be understated.`;
+      }
+      return textResult({
+        positions: pd.userPositions ?? [],
+        orderbookAccount: od?.account ?? null,
+        ...(reliabilityWarning ? { reliabilityWarning } : {}),
+      });
     } catch (error) {
       return errorResult(error);
     }
@@ -235,35 +284,73 @@ server.registerTool(
   },
   async ({ first, account }) => {
     try {
-      const stakeholderWhere = account
-        ? `, where: { stakeholder: "${account.toLowerCase()}" }`
-        : "";
-      const redeemerWhere = account
-        ? `, where: { redeemer: "${account.toLowerCase()}" }`
-        : "";
-      const query = `{
+      const addr = account?.toLowerCase();
+      const stakeholderWhere = addr ? `, where: { stakeholder: "${addr}" }` : "";
+      const redeemerWhere = addr ? `, where: { redeemer: "${addr}" }` : "";
+      const activityQuery = `{
         splits(first: ${first}, orderBy: timestamp, orderDirection: desc${stakeholderWhere}) {
-          id
-          stakeholder
-          amount
-          timestamp
+          id stakeholder amount timestamp
         }
         merges(first: ${first}, orderBy: timestamp, orderDirection: desc${stakeholderWhere}) {
-          id
-          stakeholder
-          amount
-          timestamp
+          id stakeholder amount timestamp
         }
         redemptions(first: ${first}, orderBy: timestamp, orderDirection: desc${redeemerWhere}) {
-          id
-          redeemer
-          payout
-          indexSets
-          timestamp
+          id redeemer payout indexSets timestamp
         }
       }`;
-      const data = await querySubgraph(SUBGRAPHS.activity.ipfsHash, query);
-      return textResult(data);
+      // Fetch OB fills: if account-filtered, query as maker + taker separately; else recent fills
+      const obQuery = addr
+        ? `{
+            makerFills: orderFilledEvents(first: ${first}, orderBy: timestamp, orderDirection: desc, where: { maker: "${addr}" }) {
+              id maker taker price side fee makerAmountFilled takerAmountFilled timestamp
+            }
+            takerFills: orderFilledEvents(first: ${first}, orderBy: timestamp, orderDirection: desc, where: { taker: "${addr}" }) {
+              id maker taker price side fee makerAmountFilled takerAmountFilled timestamp
+            }
+          }`
+        : `{
+            orderFilledEvents(first: ${first}, orderBy: timestamp, orderDirection: desc) {
+              id maker taker price side fee makerAmountFilled takerAmountFilled timestamp
+            }
+          }`;
+      const [actData, obData] = await Promise.all([
+        querySubgraph(SUBGRAPHS.activity.ipfsHash, activityQuery),
+        querySubgraph(SUBGRAPHS.orderbook.ipfsHash, obQuery).catch(() => null),
+      ]);
+      type EventRecord = { eventType: string; timestamp: string; [key: string]: unknown };
+      const ad = actData as {
+        splits?: Array<{ id: string; stakeholder: string; amount: string; timestamp: string }>;
+        merges?: Array<{ id: string; stakeholder: string; amount: string; timestamp: string }>;
+        redemptions?: Array<{ id: string; redeemer: string; payout: string; timestamp: string }>;
+      };
+      const od = obData as {
+        orderFilledEvents?: Array<{ id: string; timestamp: string }>;
+        makerFills?: Array<{ id: string; timestamp: string }>;
+        takerFills?: Array<{ id: string; timestamp: string }>;
+      } | null;
+      const events: EventRecord[] = [
+        ...(ad.splits ?? []).map((e) => ({ eventType: "split", ...e })),
+        ...(ad.merges ?? []).map((e) => ({ eventType: "merge", ...e })),
+        ...(ad.redemptions ?? []).map((e) => ({ eventType: "redemption", ...e })),
+      ];
+      const rawFills = od
+        ? addr
+          ? [
+              ...(od.makerFills ?? []).map((e) => ({ eventType: "ob_fill_maker", ...e })),
+              ...(od.takerFills ?? []).map((e) => ({ eventType: "ob_fill_taker", ...e })),
+            ]
+          : (od.orderFilledEvents ?? []).map((e) => ({ eventType: "ob_fill", ...e }))
+        : [];
+      // Deduplicate fills (same fill can appear as both maker and taker)
+      const seen = new Set<string>();
+      for (const e of rawFills) {
+        if (!seen.has(e.id as string)) {
+          seen.add(e.id as string);
+          events.push(e as EventRecord);
+        }
+      }
+      events.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
+      return textResult({ feed: events.slice(0, first * 2) });
     } catch (error) {
       return errorResult(error);
     }
@@ -418,29 +505,51 @@ server.registerTool(
   },
   async ({ first, orderBy, minTrades }) => {
     try {
-      const query = `{
+      const beefyQuery = `{
         accounts(
           first: ${first},
           orderBy: ${orderBy},
           orderDirection: desc,
           where: { numTrades_gte: "${minTrades}" }
         ) {
-          id
-          numTrades
-          collateralVolume
-          totalRealizedPnl
-          totalUnrealizedPnl
-          totalFeesPaid
-          winRate
-          profitFactor
-          maxDrawdown
-          numWinningPositions
-          numLosingPositions
-          lastTradedTimestamp
+          id numTrades collateralVolume totalRealizedPnl totalUnrealizedPnl
+          totalFeesPaid winRate profitFactor maxDrawdown
+          numWinningPositions numLosingPositions lastTradedTimestamp
         }
       }`;
-      const data = await querySubgraph(SUBGRAPHS.beefy_pnl.ipfsHash, query);
-      return textResult(data);
+      // Fetch top OB-volume accounts to surface OB-only traders absent from Beefy rankings
+      const obQuery = `{
+        accounts(first: ${first}, orderBy: totalVolume, orderDirection: desc) {
+          id totalVolume tradesQuantity
+        }
+      }`;
+      const [beefyData, obData] = await Promise.all([
+        querySubgraph(SUBGRAPHS.beefy_pnl.ipfsHash, beefyQuery),
+        querySubgraph(SUBGRAPHS.orderbook.ipfsHash, obQuery).catch(() => null),
+      ]);
+      const bd = beefyData as { accounts?: Array<{ id: string; collateralVolume?: string }> };
+      const od = obData as { accounts?: Array<{ id: string; totalVolume: string; tradesQuantity: string }> } | null;
+      const beefyIds = new Set((bd.accounts ?? []).map((a) => a.id));
+      const obById = new Map((od?.accounts ?? []).map((a) => [a.id, a]));
+      // Flag beefy rows where OB-tracked volume significantly exceeds Beefy-tracked volume
+      const annotated = (bd.accounts ?? []).map((a) => {
+        const ob = obById.get(a.id);
+        const beefyVol = parseFloat(a.collateralVolume || "0");
+        const obVol = ob ? parseFloat(ob.totalVolume) : null;
+        const flag =
+          obVol !== null && obVol > beefyVol * 1.5 && obVol - beefyVol > 1000
+            ? `⚠ OB volume ($${obVol.toFixed(0)}) exceeds Beefy-tracked volume ($${beefyVol.toFixed(0)}) — P&L ranking may be incomplete`
+            : undefined;
+        return { ...a, ...(flag ? { reliabilityWarning: flag } : {}) };
+      });
+      // Surface high-volume OB traders completely absent from Beefy leaderboard
+      const obOnlyTraders = (od?.accounts ?? [])
+        .filter((a) => !beefyIds.has(a.id))
+        .map((a) => ({ address: a.id, obVolume: a.totalVolume, obTrades: a.tradesQuantity, note: "not tracked by Beefy P&L subgraph — P&L unavailable" }));
+      return textResult({
+        traders: annotated,
+        ...(obOnlyTraders.length > 0 ? { obOnlyTradersNotInLeaderboard: obOnlyTraders } : {}),
+      });
     } catch (error) {
       return errorResult(error);
     }
@@ -459,7 +568,7 @@ server.registerTool(
       tokenId: z
         .string()
         .describe(
-          "The outcome token ID (large integer string from orderbook takerAssetId/makerAssetId)"
+          "The outcome token ID — same value as clobTokenIds from search_markets/get_market_info, token_id from get_clob_market, or makerAssetId/takerAssetId from get_orderbook_trades"
         ),
       first: z.number().min(1).max(100).default(20).describe("Number of positions to return"),
       orderBy: z
@@ -511,21 +620,46 @@ server.registerTool(
   },
   async ({ first, orderBy, orderDirection }) => {
     try {
-      const query = `{
+      const oiQuery = `{
         marketOpenInterests(first: ${first}, orderBy: ${orderBy}, orderDirection: ${orderDirection}) {
-          id
-          conditionId
-          amount
-          amountRaw
-          splitCount
-          mergeCount
-          redemptionCount
-          createdAtTimestamp
-          lastUpdatedTimestamp
+          id conditionId amount amountRaw splitCount mergeCount redemptionCount
+          createdAtTimestamp lastUpdatedTimestamp
         }
       }`;
-      const data = await querySubgraph(SUBGRAPHS.open_interest.ipfsHash, query);
-      return textResult(data);
+      const oiData = await querySubgraph(SUBGRAPHS.open_interest.ipfsHash, oiQuery);
+      const od = oiData as { marketOpenInterests?: Array<{ conditionId: string; amount: string }> };
+      const conditionIds = (od.marketOpenInterests ?? []).map((m) => m.conditionId).filter(Boolean);
+      // Cross-ref Main subgraph: payoutDenominator > 0 means market is resolved
+      const resolutionMap = new Map<string, boolean>();
+      if (conditionIds.length > 0) {
+        const ids = conditionIds.map((id) => `"${id}"`).join(", ");
+        const mainQuery = `{ conditions(where: { id_in: [${ids}] }) { id payoutDenominator } }`;
+        const mainData = await querySubgraph(SUBGRAPHS.main.ipfsHash, mainQuery).catch(() => null);
+        if (mainData) {
+          const md = mainData as { conditions?: Array<{ id: string; payoutDenominator: string }> };
+          for (const c of md.conditions ?? []) {
+            resolutionMap.set(c.id, parseInt(c.payoutDenominator || "0") > 0);
+          }
+        }
+      }
+      const annotated = (od.marketOpenInterests ?? []).map((m) => {
+        if (resolutionMap.get(m.conditionId)) {
+          return {
+            ...m,
+            warning: `⚠ dead money — market resolved. $${parseFloat(m.amount).toFixed(2)} OI represents worthless losing-side tokens that will never be redeemed on-chain.`,
+          };
+        }
+        return m;
+      });
+      const deadMoneyTotal = (od.marketOpenInterests ?? [])
+        .filter((m) => resolutionMap.get(m.conditionId))
+        .reduce((sum, m) => sum + parseFloat(m.amount || "0"), 0);
+      return textResult({
+        markets: annotated,
+        ...(deadMoneyTotal > 0
+          ? { deadMoneyOI: `$${deadMoneyTotal.toFixed(2)} of displayed OI is from resolved markets (losing tokens — not redeemable on-chain)` }
+          : {}),
+      });
     } catch (error) {
       return errorResult(error);
     }
@@ -732,32 +866,67 @@ server.registerTool(
   async ({ address, eventLimit }) => {
     try {
       const addr = address.toLowerCase();
-      const query = `{
+      const tradersQuery = `{
         trader(id: "${addr}") {
-          id
-          firstSeenBlock
-          firstSeenTimestamp
+          id firstSeenBlock firstSeenTimestamp
           ctfEvents(first: ${eventLimit}, orderBy: timestamp, orderDirection: desc) {
-            id
-            eventType
-            conditionId
-            amounts
-            blockNumber
-            timestamp
+            id eventType conditionId amounts blockNumber timestamp
           }
           usdcTransfers(first: ${eventLimit}, orderBy: timestamp, orderDirection: desc) {
-            id
-            from
-            to
-            amount
-            isInbound
-            blockNumber
-            timestamp
+            id from to amount isInbound blockNumber timestamp
           }
         }
       }`;
-      const data = await querySubgraph(SUBGRAPHS.traders.ipfsHash, query);
-      return textResult(data);
+      const obQuery = `{
+        makerFills: orderFilledEvents(first: ${eventLimit}, orderBy: timestamp, orderDirection: desc, where: { maker: "${addr}" }) {
+          id maker taker price side fee makerAmountFilled takerAmountFilled timestamp
+        }
+        takerFills: orderFilledEvents(first: ${eventLimit}, orderBy: timestamp, orderDirection: desc, where: { taker: "${addr}" }) {
+          id maker taker price side fee makerAmountFilled takerAmountFilled timestamp
+        }
+        account(id: "${addr}") {
+          id collateralVolume numTrades
+        }
+      }`;
+      const [tradersData, obData] = await Promise.all([
+        querySubgraph(SUBGRAPHS.traders.ipfsHash, tradersQuery),
+        querySubgraph(SUBGRAPHS.orderbook.ipfsHash, obQuery).catch(() => null),
+      ]);
+      const od = obData as {
+        makerFills?: Array<{ id: string; timestamp: string }>;
+        takerFills?: Array<{ id: string; timestamp: string }>;
+        account?: { id: string; collateralVolume: string; numTrades: string };
+      } | null;
+      // Deduplicate and merge fills
+      const seen = new Set<string>();
+      const allFills = [
+        ...(od?.makerFills ?? []).map((e) => ({ ...e, role: "maker" })),
+        ...(od?.takerFills ?? []).map((e) => ({ ...e, role: "taker" })),
+      ]
+        .filter((e) => {
+          if (seen.has(e.id)) return false;
+          seen.add(e.id);
+          return true;
+        })
+        .sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
+      const td = tradersData as { trader?: { ctfEvents?: unknown[] } };
+      const hasCTFEvents = (td.trader?.ctfEvents?.length ?? 0) > 0;
+      const hasOBFills = allFills.length > 0;
+      const obVolume = parseFloat(od?.account?.collateralVolume || "0");
+      let entryType: string;
+      if (hasCTFEvents && hasOBFills) entryType = "hybrid (split collateral + orderbook buys)";
+      else if (!hasCTFEvents && hasOBFills) entryType = "⚠ orderbook-only — no split collateral detected";
+      else if (hasCTFEvents && !hasOBFills) entryType = "split-collateral only";
+      else entryType = "no activity detected";
+      return textResult({
+        ...(tradersData as object),
+        orderbookFills: allFills,
+        orderbookAccount: od?.account ?? null,
+        entryType,
+        ...(obVolume > 0 && !hasCTFEvents
+          ? { pnlWarning: `⚠ wallet entered entirely via orderbook buys ($${obVolume.toFixed(2)} OB volume) — P&L from Slimmed/Beefy subgraphs is unreliable` }
+          : {}),
+      });
     } catch (error) {
       return errorResult(error);
     }
@@ -798,6 +967,416 @@ server.registerTool(
       }`;
       const data = await querySubgraph(SUBGRAPHS.traders.ipfsHash, query);
       return textResult(data);
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ===========================================================================
+// Polymarket REST API Tools (Gamma + CLOB) — powered by polymarket-cli APIs
+// ===========================================================================
+
+// ---------------------------------------------------------------------------
+// Tool 21: search_markets
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "search_markets",
+  {
+    description:
+      "Search Polymarket prediction markets by text query. Returns market metadata including question, prices, volume, liquidity, and CLOB token IDs. Uses the Gamma API for real-time market discovery. Chain with: get_clob_market(conditionId) for live order books, get_live_prices(clobTokenIds) for token-level pricing, get_market_open_interest for capital locked, or get_market_resolution for oracle status.",
+    inputSchema: {
+      query: z.string().describe("Search text (e.g. 'Trump', 'Bitcoin', 'World Cup')"),
+      limit: z.number().min(1).max(100).default(10).describe("Number of results (1-100)"),
+      active: z.boolean().optional().describe("Filter: only active markets"),
+      closed: z.boolean().optional().describe("Filter: only closed/resolved markets"),
+      orderBy: z
+        .enum(["volume", "liquidity", "endDate", "startDate", "createdAt"])
+        .optional()
+        .describe("Sort field"),
+      ascending: z.boolean().default(false).describe("Sort ascending (default: descending)"),
+    },
+  },
+  async ({ query, limit, active, closed, orderBy, ascending }) => {
+    try {
+      const markets = await searchMarkets(query, { limit, active, closed, orderBy, ascending });
+      return textResult({
+        count: markets.length,
+        markets: markets.map((m) => ({
+          id: m.id,
+          question: m.question,
+          slug: m.slug,
+          conditionId: m.conditionId,
+          active: m.active,
+          closed: m.closed,
+          outcomePrices: m.outcomePrices,
+          outcomes: m.outcomes,
+          bestBid: m.bestBid,
+          bestAsk: m.bestAsk,
+          lastTradePrice: m.lastTradePrice,
+          spread: m.spread,
+          volume: m.volume,
+          liquidity: m.liquidity,
+          endDate: m.endDate,
+          clobTokenIds: m.clobTokenIds,
+          description: m.description,
+        })),
+      });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 22: get_market_info
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_market_info",
+  {
+    description:
+      "Get detailed Polymarket market info by slug or condition ID. Returns full market metadata from the Gamma API including description, prices, outcomes, and CLOB token IDs. Use the returned conditionId to query get_clob_market for live CLOB data, get_market_open_interest for OI, or get_market_resolution for oracle status.",
+    inputSchema: {
+      slug: z.string().optional().describe("Market slug (e.g. 'will-trump-win-2024')"),
+      conditionId: z.string().optional().describe("Market condition ID (hex string)"),
+    },
+  },
+  async ({ slug, conditionId }) => {
+    try {
+      if (!slug && !conditionId) {
+        return errorResult("Provide either slug or conditionId");
+      }
+      const markets = slug
+        ? await getMarketBySlug(slug)
+        : await getMarketByConditionId(conditionId!);
+      if (markets.length === 0) {
+        return textResult({ error: "Market not found", slug, conditionId });
+      }
+      return textResult(markets.length === 1 ? markets[0] : markets);
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 23: list_polymarket_events
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "list_polymarket_events",
+  {
+    description:
+      "List Polymarket events (groups of related markets). Events bundle multiple Yes/No markets under one topic (e.g. 'US Presidential Election 2024' contains many candidate markets). Uses the Gamma API.",
+    inputSchema: {
+      limit: z.number().min(1).max(100).default(10).describe("Number of events (1-100)"),
+      active: z.boolean().optional().describe("Filter: only active events"),
+      closed: z.boolean().optional().describe("Filter: only closed events"),
+      tag: z.string().optional().describe("Filter by tag (e.g. 'politics', 'crypto', 'sports')"),
+      orderBy: z
+        .enum(["volume", "liquidity", "startDate", "endDate", "createdAt"])
+        .optional()
+        .describe("Sort field"),
+      ascending: z.boolean().default(false).describe("Sort ascending"),
+    },
+  },
+  async ({ limit, active, closed, tag, orderBy, ascending }) => {
+    try {
+      const events = await listEvents({ limit, active, closed, tag, orderBy, ascending });
+      return textResult({
+        count: events.length,
+        events: events.map((e) => ({
+          id: e.id,
+          title: e.title,
+          slug: e.slug,
+          description: e.description,
+          startDate: e.startDate,
+          endDate: e.endDate,
+          marketCount: e.markets?.length ?? 0,
+          markets: (e.markets ?? []).map((m) => ({
+            id: m.id,
+            question: m.question,
+            outcomePrices: m.outcomePrices,
+            volume: m.volume,
+            active: m.active,
+          })),
+        })),
+      });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 24: get_polymarket_event
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_polymarket_event",
+  {
+    description:
+      "Get a single Polymarket event with all its associated markets. An event groups related prediction markets under one topic.",
+    inputSchema: {
+      eventId: z.string().describe("Event ID or slug"),
+    },
+  },
+  async ({ eventId }) => {
+    try {
+      const event = await getEvent(eventId);
+      return textResult(event);
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 25: get_live_prices
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_live_prices",
+  {
+    description:
+      "Get real-time CLOB prices for Polymarket outcome tokens. Returns the current best price for buying or selling. Token IDs come from: clobTokenIds in search_markets/get_market_info, or token_id in get_clob_market.",
+    inputSchema: {
+      tokenIds: z
+        .array(z.string())
+        .min(1)
+        .max(20)
+        .describe("Array of CLOB token IDs (get these from search_markets or get_market_info clobTokenIds field)"),
+      side: z.enum(["buy", "sell"]).default("buy").describe("Price side: buy or sell"),
+    },
+  },
+  async ({ tokenIds, side }) => {
+    try {
+      if (tokenIds.length === 1) {
+        const result = await getClobPrice(tokenIds[0], side);
+        return textResult({ tokenId: tokenIds[0], side, ...result });
+      }
+      const result = await getClobPricesBatch(tokenIds, side);
+      return textResult({ side, prices: result });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 26: get_live_spread
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_live_spread",
+  {
+    description:
+      "Get the real-time bid-ask spread for a Polymarket outcome token. Returns best bid, best ask, and spread. Useful for assessing market liquidity and trading costs.",
+    inputSchema: {
+      tokenId: z.string().describe("CLOB token ID"),
+    },
+  },
+  async ({ tokenId }) => {
+    try {
+      const [spread, midpoint] = await Promise.all([
+        getClobSpread(tokenId),
+        getClobMidpoint(tokenId),
+      ]);
+      return textResult({ tokenId, ...spread, midpoint: midpoint.mid });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 27: get_live_orderbook
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_live_orderbook",
+  {
+    description:
+      "Get the full real-time order book (bids and asks) for a Polymarket outcome token from the CLOB. Shows all resting limit orders with prices and sizes.",
+    inputSchema: {
+      tokenId: z.string().describe("CLOB token ID"),
+    },
+  },
+  async ({ tokenId }) => {
+    try {
+      const book = await getClobOrderBook(tokenId);
+      return textResult({
+        tokenId,
+        bidCount: book.bids?.length ?? 0,
+        askCount: book.asks?.length ?? 0,
+        bids: book.bids,
+        asks: book.asks,
+        timestamp: book.timestamp,
+      });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 28: get_price_history
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_price_history",
+  {
+    description:
+      "Get historical price data for a Polymarket outcome token. Returns time-series price points for charting and trend analysis.",
+    inputSchema: {
+      tokenId: z.string().describe("CLOB token ID"),
+      interval: z
+        .enum(["1m", "5m", "1h", "6h", "1d", "1w", "max"])
+        .default("1d")
+        .describe("Time interval: 1m, 5m, 1h, 6h, 1d, 1w, or max"),
+      fidelity: z
+        .number()
+        .min(1)
+        .max(500)
+        .default(60)
+        .describe("Number of data points to return (1-500)"),
+    },
+  },
+  async ({ tokenId, interval, fidelity }) => {
+    try {
+      const data = await getClobPriceHistory(tokenId, interval, fidelity);
+      const history = (data.history ?? []).map((p) => ({
+        timestamp: p.t,
+        date: new Date(p.t * 1000).toISOString(),
+        price: p.p,
+      }));
+      return textResult({
+        tokenId,
+        interval,
+        pointCount: history.length,
+        history,
+      });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 29: get_last_trade
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_last_trade",
+  {
+    description:
+      "Get the last trade price for a Polymarket outcome token from the CLOB.",
+    inputSchema: {
+      tokenId: z.string().describe("CLOB token ID"),
+    },
+  },
+  async ({ tokenId }) => {
+    try {
+      const result = await getClobLastTradePrice(tokenId);
+      return textResult({ tokenId, ...result });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 30: get_clob_market
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_clob_market",
+  {
+    description:
+      "Get CLOB market details by condition ID. Returns token IDs (token_id) with live prices, minimum order/tick sizes, and market status. This is the bridge between on-chain condition IDs and CLOB trading data. Use the returned token_id values with get_live_prices, get_live_spread, get_live_orderbook, get_price_history, or get_market_positions.",
+    inputSchema: {
+      conditionId: z.string().describe("Market condition ID (hex string)"),
+    },
+  },
+  async ({ conditionId }) => {
+    try {
+      const market = await getClobMarket(conditionId);
+      return textResult(market);
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 31: search_markets_enriched
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "search_markets_enriched",
+  {
+    description:
+      "Power tool: search Polymarket markets then auto-enrich each result with live CLOB prices and on-chain resolution status. Combines Gamma API + CLOB API + The Graph in one call — no need to chain tools manually.",
+    inputSchema: {
+      query: z.string().describe("Search text (e.g. 'Trump', 'Bitcoin', 'World Cup')"),
+      limit: z.number().min(1).max(20).default(5).describe("Number of results (1-20, kept small for enrichment speed)"),
+      active: z.boolean().optional().describe("Filter: only active markets"),
+      closed: z.boolean().optional().describe("Filter: only closed/resolved markets"),
+    },
+  },
+  async ({ query, limit, active, closed }) => {
+    try {
+      const markets = await searchMarkets(query, { limit, active, closed, orderBy: "volume" });
+
+      // Enrich each market with CLOB prices and resolution status in parallel
+      const enriched = await Promise.all(
+        markets.map(async (m) => {
+          const base = {
+            question: m.question,
+            slug: m.slug,
+            conditionId: m.conditionId,
+            active: m.active,
+            closed: m.closed,
+            volume: m.volume,
+            liquidity: m.liquidity,
+            endDate: m.endDate,
+            outcomes: m.outcomes,
+            outcomePrices: m.outcomePrices,
+            clobTokenIds: m.clobTokenIds,
+          };
+
+          // Fetch CLOB market data + resolution status in parallel
+          const [clobData, resolutionData] = await Promise.all([
+            m.conditionId
+              ? getClobMarket(m.conditionId).catch(() => null)
+              : Promise.resolve(null),
+            m.conditionId
+              ? querySubgraph(
+                  SUBGRAPHS.resolution.ipfsHash,
+                  `{ marketResolutions(where: { id: "${m.conditionId.toLowerCase()}" }, first: 1) { status flagged wasDisputed proposedPrice price lastUpdateTimestamp } }`
+                ).catch(() => null)
+              : Promise.resolve(null),
+          ]);
+
+          const cd = clobData as {
+            tokens?: Array<{ token_id: string; outcome: string; price: number; winner: boolean }>;
+            minimum_tick_size?: string;
+            accepting_orders?: boolean;
+          } | null;
+
+          const rd = resolutionData as {
+            marketResolutions?: Array<{
+              status: string;
+              flagged: boolean;
+              wasDisputed: boolean;
+              proposedPrice: string;
+              price: string;
+              lastUpdateTimestamp: string;
+            }>;
+          } | null;
+
+          return {
+            ...base,
+            liveTokens: cd?.tokens ?? null,
+            acceptingOrders: cd?.accepting_orders ?? null,
+            tickSize: cd?.minimum_tick_size ?? null,
+            resolution: rd?.marketResolutions?.[0] ?? null,
+          };
+        })
+      );
+
+      return textResult({ count: enriched.length, markets: enriched });
     } catch (error) {
       return errorResult(error);
     }
@@ -847,9 +1426,10 @@ server.registerPrompt(
           text: `Give me a comprehensive Polymarket overview. Follow these steps:
 1. Use get_global_stats to get platform-wide metrics (market counts from main + real volume from orderbook)
 2. Use get_daily_stats with days=7 to see the last week of volume, fees, and trader trends
-3. Use get_orderbook_trades with first=10 to see the most recent trades
-4. Use get_top_traders with first=5 orderBy=totalRealizedPnl to identify leading traders
-5. Summarize: total volume, active markets, daily trends, recent trades, and top performers`,
+3. Use search_markets with orderBy=volume to find the hottest markets right now
+4. Use get_orderbook_trades with first=10 to see the most recent trades
+5. Use get_top_traders with first=5 orderBy=totalRealizedPnl to identify leading traders
+6. Summarize: total volume, active markets, trending topics, daily trends, recent trades, and top performers`,
         },
       },
     ],
@@ -944,6 +1524,265 @@ server.registerPrompt(
       },
     ],
   })
+);
+
+server.registerPrompt(
+  "market_deep_dive",
+  {
+    description: "Deep dive into a specific Polymarket market — combining off-chain metadata with on-chain analytics and live CLOB data",
+    argsSchema: {
+      query: z.string().describe("Market search query or slug"),
+    },
+  },
+  ({ query }) => ({
+    messages: [
+      {
+        role: "user" as const,
+        content: {
+          type: "text" as const,
+          text: `Do a deep dive on the Polymarket market matching "${query}". Follow these steps:
+1. Use search_markets to find the market. If multiple results, pick the most relevant one
+2. Use get_market_info with the slug to get full metadata (description, resolution source, outcomes)
+3. Use get_clob_market with the conditionId to get CLOB token IDs and live prices
+4. For each outcome token, use get_live_spread to check liquidity and get_price_history with interval=1w for trend
+5. Use get_market_open_interest with the conditionId to see capital locked
+6. Use get_oi_history to chart OI trend
+7. Use get_market_resolution to check the UMA oracle status
+8. Summarize: what the market is about, current prices, price trend, liquidity depth, OI, resolution status, and any notable patterns`,
+        },
+      },
+    ],
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Tools 22-23: builder attribution (CLOB V2 only)
+//
+// The V2 `OrderFilled` event carries a `builder` code identifying which frontend, bot or
+// integrator routed the order. The V1 exchange contracts do not emit it, so these two questions
+// are unanswerable on every other subgraph in this registry — this is new capability, not a
+// migration of something that already existed.
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "get_builder_leaderboard",
+  {
+    description:
+      "Rank Polymarket CLOB V2 builders by routed volume, order count or fees. A 'builder' is the " +
+      "frontend/bot/integrator whose code is attached to a fill — this answers 'who is actually " +
+      "routing the flow', which no V1 subgraph can, because the V1 contracts never emitted it. " +
+      "V2-era only (from block 84902353, migration 2026-04-28).",
+    inputSchema: {
+      limit: z.number().int().min(1).max(100).optional().describe("How many builders to return (default 10)"),
+      orderBy: z
+        .enum(["scaledVolume", "orderCount", "scaledFees"])
+        .optional()
+        .describe("Ranking metric (default scaledVolume)"),
+    },
+  },
+  async ({ limit, orderBy }) => {
+    try {
+      const n = limit ?? 10;
+      const by = orderBy ?? "scaledVolume";
+      const query = `{
+        builders(first: ${n}, orderBy: ${by}, orderDirection: desc) {
+          id
+          orderCount
+          volume
+          scaledVolume
+          fees
+          scaledFees
+          firstSeenTimestamp
+          lastSeenTimestamp
+        }
+        globalStats_collection(first: 1) {
+          buildersCount
+          tradesQuantity
+          scaledCollateralVolume
+        }
+      }`;
+      const data = (await querySubgraph(SUBGRAPHS.v2_orderbook.ipfsHash, query)) as {
+        builders?: Array<{ id: string; scaledVolume: string }>;
+        globalStats_collection?: Array<{ buildersCount: string; scaledCollateralVolume: string }>;
+      };
+      const totals = data.globalStats_collection?.[0];
+      // Share is computed here rather than left to the caller: the raw numbers invite comparing a
+      // builder's volume against all-time platform volume, which is a V1 number and ~3x larger.
+      const builders = (data.builders ?? []).map((b) => ({
+        ...b,
+        shareOfV2Volume: totals?.scaledCollateralVolume
+          ? `${((Number(b.scaledVolume) / Number(totals.scaledCollateralVolume)) * 100).toFixed(2)}%`
+          : null,
+      }));
+      return textResult({
+        builders,
+        v2Totals: totals ?? null,
+        era: "CLOB V2 only — from block 84902353 (2026-04-28 migration). Shares are of V2-era volume, not all-time.",
+      });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+server.registerTool(
+  "get_v2_top_traders",
+  {
+    description:
+      "Top real traders on Polymarket CLOB V2 by volume or trade count, with the exchange contracts " +
+      "excluded. Use this rather than querying accounts directly: the V2 exchange is itself the " +
+      "`taker` when an order matches the book, so it accumulates an Account row and outranks every " +
+      "human by an order of magnitude. V2-era only (from block 84902353).",
+    inputSchema: {
+      limit: z.number().int().min(1).max(100).optional().describe("How many traders (default 10)"),
+      orderBy: z
+        .enum(["scaledCollateralVolume", "tradesQuantity"])
+        .optional()
+        .describe("Ranking metric (default scaledCollateralVolume)"),
+    },
+  },
+  async ({ limit, orderBy }) => {
+    try {
+      const n = limit ?? 10;
+      const by = orderBy ?? "scaledCollateralVolume";
+      const cfg = SUBGRAPHS.v2_orderbook;
+      const excluded = cfg.excludeAccounts ?? [];
+      // Over-fetch by the number of excluded venues so the caller still gets `n` real traders back
+      // after filtering, rather than n-2.
+      const query = `{
+        accounts(
+          first: ${n + excluded.length}
+          orderBy: ${by}
+          orderDirection: desc
+          where: { id_not_in: ${JSON.stringify(excluded)} }
+        ) {
+          id
+          tradesQuantity
+          buysQuantity
+          sellsQuantity
+          collateralVolume
+          scaledCollateralVolume
+          lastTradedTimestamp
+        }
+      }`;
+      const data = (await querySubgraph(cfg.ipfsHash, query)) as {
+        accounts?: Array<{ id: string }>;
+      };
+      const accounts = (data.accounts ?? []).slice(0, n);
+      return textResult({
+        traders: accounts,
+        excludedVenues: excluded,
+        note: "Exchange contracts filtered out — they appear as Accounts because the exchange is the taker on a book match. V2-era volume only, not all-time.",
+      });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+server.registerTool(
+  "get_builder_activity",
+  {
+    description:
+      "Recent fills routed by one Polymarket CLOB V2 builder code, with that builder's aggregate " +
+      "totals. Use get_builder_leaderboard first to find a builder id. V2-era only.",
+    inputSchema: {
+      builderId: z.string().describe("The builder code (bytes32 hex, as returned by get_builder_leaderboard)"),
+      limit: z.number().int().min(1).max(100).optional().describe("How many recent fills (default 20)"),
+    },
+  },
+  async ({ builderId, limit }) => {
+    try {
+      const n = limit ?? 20;
+      const query = `{
+        builder(id: ${JSON.stringify(builderId)}) {
+          id
+          orderCount
+          scaledVolume
+          scaledFees
+          firstSeenTimestamp
+          lastSeenTimestamp
+        }
+        orderFilledEvents(
+          first: ${n}
+          orderBy: timestamp
+          orderDirection: desc
+          where: { builder: ${JSON.stringify(builderId)} }
+        ) {
+          timestamp
+          maker
+          taker
+          side
+          tokenId
+          price
+          size
+          fee
+          market { id lastPrice }
+        }
+      }`;
+      const data = (await querySubgraph(SUBGRAPHS.v2_orderbook.ipfsHash, query)) as {
+        builder?: unknown;
+      };
+      if (!data.builder) {
+        return textResult({
+          builder: null,
+          note: `No builder with id ${builderId} in the V2 orderbook subgraph. Builder ids are bytes32 hex — run get_builder_leaderboard to list real ones.`,
+        });
+      }
+      return textResult(data);
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
+);
+
+// ---------------------------------------------------------------------------
+// Tool 24: check_subgraph_freshness
+// ---------------------------------------------------------------------------
+server.registerTool(
+  "check_subgraph_freshness",
+  {
+    description:
+      "Report how far behind chainhead a subgraph is, by reading its _meta block. Worth calling " +
+      "before trusting any 'current' or 'latest' number, because a lagging subgraph returns stale " +
+      "data rather than an error — it succeeds, it is just answering about the past.",
+    inputSchema: {
+      subgraph: z.enum(SUBGRAPH_NAMES).describe("Which subgraph to check"),
+    },
+  },
+  async ({ subgraph }) => {
+    try {
+      const cfg = SUBGRAPHS[subgraph];
+      const data = (await querySubgraph(
+        cfg.ipfsHash,
+        `{ _meta { block { number timestamp } hasIndexingErrors deployment } }`
+      )) as { _meta?: { block?: { number: number; timestamp: number }; hasIndexingErrors?: boolean } };
+      const block = data._meta?.block;
+      const ageSeconds = block?.timestamp ? Math.floor(Date.now() / 1000) - block.timestamp : null;
+      const behindHuman =
+        ageSeconds === null
+          ? null
+          : ageSeconds < 300
+            ? "at chainhead"
+            : ageSeconds < 86400
+              ? `${Math.floor(ageSeconds / 3600)}h behind`
+              : `${Math.floor(ageSeconds / 86400)} days behind`;
+      return textResult({
+        subgraph,
+        name: cfg.name,
+        era: cfg.era ?? "v1",
+        headBlock: block?.number ?? null,
+        headTimestamp: block?.timestamp ?? null,
+        behind: behindHuman,
+        hasIndexingErrors: data._meta?.hasIndexingErrors ?? null,
+        // The static warning and the live measurement are both reported: the registry text can go
+        // out of date, and the live number cannot.
+        registryWarning: cfg.syncWarning ?? null,
+        trustworthyForCurrentData: ageSeconds !== null && ageSeconds < 3600,
+      });
+    } catch (error) {
+      return errorResult(error);
+    }
+  }
 );
 
 // ---------------------------------------------------------------------------

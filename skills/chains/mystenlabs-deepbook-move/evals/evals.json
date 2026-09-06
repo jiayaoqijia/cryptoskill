@@ -1,0 +1,89 @@
+{
+  "skill_name": "deepbook-move",
+  "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/onchain-finance/deepbook/deepbookv3 or github.com/MystenLabs/deepbookv3/tree/main/packages/deepbook/sources. No third-party blogs, tutorials, or unofficial documentation.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How do I add DeepBook V3 as a dependency in my Move project and place a limit order from my smart contract?",
+      "expected_output": "The Move.toml dependency line, the import statement, and the place_limit_order function signature with parameter explanations.",
+      "expectations": [
+        "The response includes the MVR dependency: deepbook = { mvr = \"@deepbook/core\" }",
+        "The response shows importing: use deepbook::pool::Pool",
+        "The response shows the place_limit_order function signature with generic type parameters <BaseAsset, QuoteAsset>",
+        "The response explains the TradeProof requirement for authorization",
+        "The response explains the order_type constants (0=NO_RESTRICTION, 1=IOC, 2=FOK, 3=POST_ONLY)",
+        "The response warns about matching type parameter order exactly to the pool"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/contract-information",
+        "https://github.com/MystenLabs/deepbookv3/blob/main/packages/deepbook/sources/pool.move"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How do flash loans work in DeepBook V3? Can I borrow and trade in the same pool?",
+      "expected_output": "An explanation of the hot potato pattern, borrow/return function signatures, and the constraint against same-pool trading.",
+      "expectations": [
+        "The response explains the FlashLoan hot potato pattern — struct with no abilities",
+        "The response shows borrow_flashloan_base and borrow_flashloan_quote signatures",
+        "The response shows return_flashloan_base and return_flashloan_quote signatures",
+        "The response explicitly warns that borrowing and trading in the same pool can fail",
+        "The response explains that the entire transaction reverts if the loan is not repaid",
+        "The response mentions that maximum borrowable equals the pool's current holdings"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/contract-information/flash-loans"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What is a BalanceManager in DeepBook V3 and how does the TradeCap delegation model work?",
+      "expected_output": "An explanation of BalanceManager as a shared object, the owner vs TradeCap authorization model, capability minting, and the 1,000 cap limit.",
+      "expectations": [
+        "The response explains BalanceManager as a shared object holding balances across all pools",
+        "The response describes the two-tier authorization: owner (full control) vs TradeCap (trading only)",
+        "The response mentions generate_proof_as_owner and generate_proof_as_trader functions",
+        "The response lists the three capability types: TradeCap, DepositCap, WithdrawCap",
+        "The response mentions the 1,000 total capabilities limit per BalanceManager",
+        "The response explains that TradeCap holders cannot deposit or withdraw"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/contract-information/balance-manager",
+        "https://github.com/MystenLabs/deepbookv3/blob/main/packages/deepbook/sources/balance_manager.move"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "How do I execute a swap in DeepBook V3 from Move code without a BalanceManager?",
+      "expected_output": "The swap_exact_base_for_quote and swap_exact_quote_for_base function signatures with return types, plus the deep_in fee requirement.",
+      "expectations": [
+        "The response shows swap_exact_base_for_quote returning (Coin<BaseAsset>, Coin<QuoteAsset>, Coin<DEEP>)",
+        "The response shows swap_exact_quote_for_base returning (Coin<BaseAsset>, Coin<QuoteAsset>, Coin<DEEP>)",
+        "The response explains that deep_in covers fees and overestimating is safe (unused DEEP returned)",
+        "The response mentions get_quantity_out for simulating swaps before execution",
+        "The response mentions that exactly one of base_quantity or quote_quantity must be non-zero for simulation"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/contract-information/swaps",
+        "https://github.com/MystenLabs/deepbookv3/blob/main/packages/deepbook/sources/pool.move"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "What are the common mistakes when integrating DeepBook V3 from Move code?",
+      "expected_output": "A list of pitfalls including wrong type parameter order, forgetting to return flash loan hot potatoes, same-pool borrow+trade, and using wrong proof generation.",
+      "expectations": [
+        "The response warns about wrong type parameter order (BaseAsset, QuoteAsset must match pool)",
+        "The response warns about forgetting to return the FlashLoan hot potato",
+        "The response warns about trading in the same pool as a flash loan borrow",
+        "The response warns about using generate_proof_as_owner from a non-owner address",
+        "The response mentions the 1,000 capability limit as a potential issue at scale"
+      ],
+      "sources": [
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/contract-information",
+        "https://docs.sui.io/onchain-finance/deepbook/deepbookv3/contract-information/flash-loans",
+        "https://github.com/MystenLabs/deepbookv3/blob/main/packages/deepbook/sources/balance_manager.move"
+      ]
+    }
+  ]
+}

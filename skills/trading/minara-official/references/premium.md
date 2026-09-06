@@ -1,169 +1,76 @@
-# Premium & Subscription Reference
+# Premium / Subscription
 
-> **Execute commands yourself.** Relay checkout URLs to the user for browser completion.
-
-## Contents
-
-- [Plans](#minara-premium-plans) — view available plans
-- [Status](#minara-premium-status) — current subscription
-- [Subscribe](#minara-premium-subscribe) — subscribe or upgrade
-- [Buy Credits](#minara-premium-buy-credits) — one-time credit package
-- [Cancel](#minara-premium-cancel) — cancel subscription
-
----
+> Execute commands yourself. Relay checkout URLs to user for browser completion.
 
 ## Commands
 
-### `minara premium plans`
+| Intent | CLI | Type |
+|--------|-----|------|
+| View plans | `minara premium plans` | read-only |
+| Subscription status | `minara premium status` | read-only |
+| Subscribe / change plan | `minara premium subscribe` | opens browser |
+| Cancel subscription | `minara premium cancel` | destructive |
 
-View all available subscription plans and credit packages.
+**Default (no subcommand):** interactive submenu.
+
+## `minara premium plans`
 
 ```
-$ minara premium plans
-
 Subscription Plans:
-
-  Plan      Monthly    Yearly           Credits    Workflows  Invites
-  Free      Free       —                1,000      1          0
-  Pro       $19/mo     $190/yr (save 17%)  50,000    10         3
-  Ultra     $49/mo     $490/yr (save 17%)  200,000   50         10
+  Plan      Monthly   Yearly                Credits   Workflows  Invites
+  Free      —         Free                  300       0          0
+  Lite      $19/mo    $192/yr (save 16%)    1,400     5          5
+  Starter   $49/mo    $480/yr (save 18%)    4,000     20         10
+  Pro       $199/mo   $1980/yr (save 17%)   20,000    50         15
+  Partner   $599/mo   $5964/yr (save 17%)   60,000    200        20
 
 Credit Packages (one-time):
-
-  Price     Credits
-  $5        5,000
-  $20       25,000
-  $50       75,000
-
-  Subscribe: minara premium subscribe
+  $19 → 800 · $49 → 2,200 · $89 → 4,400
 ```
 
-Read-only.
+> **Snapshot only.** Plans, prices, credits, and workflow limits are fetched
+> live from the server and rendered dynamically — the table above is a snapshot
+> (as of CLI v0.4.7). Always run `minara premium plans` for current values; do
+> not quote these numbers as authoritative.
 
----
+> **Workflows gate `research`.** The `minara research` endpoint (and other
+> workflow-backed features) consumes a **workflow**, not just credits. The
+> **Free tier has 0 workflows**, so free users cannot run `research` — it
+> errors with "Quota is still exhausted on the Free tier … Lite+ unlocks
+> workflows". **Lite+ unlocks workflows** (Lite = 5). `ask` / `chat` (fast
+> mode) still work on Free, drawing only on the 300 credits.
 
-### `minara premium status`
-
-View current subscription and billing info.
+## `minara premium status`
 
 ```
-$ minara premium status
-
 Subscription Status:
-
-  Plan             : Pro
-  Status           : Active
-  Billing          : Monthly
-  Price            : $19/mo
-  Credits          : 50,000
-  Renews On        : 4/16/2026
+  Plan       : Pro · Status: Active · Billing: Monthly · $199/mo
+  Credits    : 20,000 · Renews: 4/16/2026
 ```
 
-If on free plan:
+## `minara premium subscribe`
+
+Interactive: plan → payment method (Stripe / crypto USDC) → confirm → browser checkout.
 
 ```
-  Plan             : Free
-  Status           : Active
-
-  Upgrade with: minara premium subscribe
-```
-
-Read-only.
-
----
-
-### `minara premium subscribe`
-
-Subscribe to a plan or change plan. Interactive flow.
-
-**Flow:**
-1. Select plan (shows name, interval, price, credits, workflows)
-2. Select payment method: Credit Card (Stripe) / Crypto (USDC)
-3. Confirm order summary
-4. Opens browser for checkout
-
-```
-$ minara premium subscribe
-
-? Select a plan: Pro (Monthly) — $19/mo  [50,000 credits, 10 workflows]
+? Select plan: Lite (Monthly) — $19/mo
 ? Payment method: Credit Card (Stripe)
-
-Order Summary:
-  Plan    : Pro (Monthly)
-  Price   : $19/mo
-  Payment : Credit Card (Stripe)
-
-? Proceed to checkout? (Y/n) y
-✔ Checkout session created!
-  Opening browser for payment…
-  https://checkout.stripe.com/pay/cs_live_...
-ℹ Complete the payment in your browser. Your subscription will activate automatically.
-```
-
-For crypto payment:
-
-```
-? Payment method: Crypto (USDC on-chain)
-✔ Crypto checkout created!
-  Opening browser for crypto payment…
-  https://minara.ai/payment/crypto/...
-```
-
-**Errors:**
-- `No paid plans available` → API returned no active plans
-- `Failed to create checkout session` → Stripe/API error
-
----
-
-### `minara premium buy-credits`
-
-Buy a one-time credit package.
-
-```
-$ minara premium buy-credits
-
-? Select a credit package: $20 — 25,000 credits
-? Payment method: Credit Card (Stripe)
-
-Package Summary:
-  Price      : $20
-  Credits    : 25,000
-  Payment    : Credit Card (Stripe)
-
-? Proceed to checkout? (Y/n) y
 ✔ Opening browser for payment…
+  https://checkout.stripe.com/pay/cs_live_...
 ```
 
-Same Stripe / Crypto payment options as subscribe.
+Relay the checkout URL to user.
 
----
+## `minara premium cancel`
 
-### `minara premium cancel`
+**Options:** `-y, --yes`
 
-Cancel current subscription. Downgrades to Free at end of billing period.
-
-**Options:**
-- `-y, --yes` — skip confirmation
+Cancels at end of billing period (not immediate).
 
 ```
-$ minara premium cancel
-
-⚠ Cancelling your subscription will downgrade you to the Free plan at the end of your billing period.
-? Are you sure you want to cancel your subscription? (y/N) y
+⚠ This will downgrade to Free at end of billing period.
+? Are you sure? (y/N) y
 ✔ Subscription cancelled.
-ℹ You will continue to have access until the end of your current billing period.
 ```
 
-**Errors:**
-- `Failed to cancel subscription` → no active subscription or API error
-
----
-
-## Module-Specific Notes
-
-- **Execute commands yourself** — never tell the user to run `minara premium` commands
-- Checkout flows open browser — run the command, capture the URL, and relay it to the user
-- Crypto payment requires on-chain confirmation before activation
-- Cancellation is effective at end of billing period, not immediate
-- Credit purchases are one-time, non-refundable
-- **Handle errors autonomously** — if checkout fails, diagnose and retry or inform user
+**Errors:** `No paid plans available`, `Failed to create checkout session`, `Failed to cancel subscription`

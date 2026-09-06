@@ -1,0 +1,69 @@
+[
+  {
+    "id": "transfer-sui-e2e",
+    "prompt": "Write a complete TypeScript script that creates a SuiGrpcClient, builds a transaction to transfer 0.1 SUI to a recipient using coinWithBalance and transferObjects, signs and executes it with a keypair, checks for FailedTransaction, and prints the digest.",
+    "package_name": "transfer_sui",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "@mysten/sui.js",
+      "SuiClient",
+      "getFullnodeUrl",
+      "TransactionBlock"
+    ],
+    "sources": [
+      "https://sdk.mystenlabs.com/typescript"
+    ],
+    "expectations": [
+      "Code compiles (TypeScript valid)",
+      "Uses SuiGrpcClient from @mysten/sui/grpc",
+      "Uses Transaction and coinWithBalance from @mysten/sui/transactions",
+      "Checks result.$kind === 'FailedTransaction' for error handling",
+      "Prints transaction digest on success"
+    ]
+  },
+  {
+    "id": "gasless-usdc-transfer",
+    "prompt": "Write a TypeScript script that sends USDC using gasless stablecoin transfers on Sui mainnet. Use balance::send_funds via a moveCall with the USDC type argument. The transaction should have zero gas cost. Use SuiGrpcClient from @mysten/sui/grpc.",
+    "package_name": "gasless_usdc",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "@mysten/sui.js",
+      "SuiClient",
+      "getFullnodeUrl"
+    ],
+    "sources": [
+      "https://docs.sui.io/develop/transaction-payment/gasless-stablecoin-transfers"
+    ],
+    "expectations": [
+      "Code compiles (TypeScript valid)",
+      "Uses balance::send_funds as the moveCall target",
+      "Specifies USDC type as typeArguments",
+      "Uses tx.balance() for the amount input",
+      "Transaction is gasless (zero gas cost for allowlisted stablecoins)"
+    ]
+  },
+  {
+    "id": "address-balance-send-receive",
+    "prompt": "Write a TypeScript script that demonstrates sending SUI to an address balance (not as a Coin object) using balance::send_funds, and then withdrawing from the address balance using coin::redeem_funds. Use SuiGrpcClient and Transaction from the Sui SDK.",
+    "package_name": "address_balance",
+    "check": "build",
+    "expected_result": "pass",
+    "forbidden_patterns": [
+      "@mysten/sui.js",
+      "SuiClient",
+      "getFullnodeUrl"
+    ],
+    "sources": [
+      "https://docs.sui.io/onchain-finance/choose-payments-model"
+    ],
+    "expectations": [
+      "Code compiles (TypeScript valid)",
+      "Sends using balance::send_funds (not transferObjects with Coin)",
+      "Withdraws using coin::redeem_funds with tx.withdrawal()",
+      "Uses SuiGrpcClient from @mysten/sui/grpc",
+      "Demonstrates both send-to-balance and withdraw-from-balance patterns"
+    ]
+  }
+]

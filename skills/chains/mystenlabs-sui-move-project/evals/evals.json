@@ -1,0 +1,151 @@
+{
+  "skill_name": "sui-move-project",
+  "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io, move-book.com, and the MystenLabs/sui-stack-hello-world repository.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I get this error when building: '[NOTE] Updating dependencies for testnet environment because Move.toml has been changed. Packages with old dependencies found.' What's wrong?",
+      "expected_output": "An explanation that the CLI version is behind the network, with the correct update and switch commands.",
+      "expectations": [
+        "The response identifies this as a CLI version mismatch with the target network",
+        "The response suggests running suiup update sui@testnet followed by suiup switch sui@testnet",
+        "The response mentions the new package management format introduced in Sui CLI v1.63",
+        "The response does NOT suggest adding or modifying a Sui = { git = ... } dependency line \u2014 the Sui framework is resolved automatically on current CLI versions",
+        "The response mentions migrating from the old [addresses] format to the new [environments] section if applicable"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/publish-upgrade-packages/"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I get 'Cannot upgrade package without having a published id'. I already published it before. What's going on?",
+      "expected_output": "An explanation of the v1.63 package management migration and how Published.toml tracks published addresses.",
+      "expectations": [
+        "The response explains that this error relates to the new package management system introduced in Sui CLI v1.63",
+        "The response explains that published addresses are now tracked in Published.toml, not inside Move.toml",
+        "The response explains that if the user migrated from the old format, they need to ensure Published.toml exists with the correct published-at and upgrade-capability-id",
+        "The response does not tell the user to manually edit Move.toml with a published-at field (that's the old format)",
+        "The response mentions that the UpgradeCap object ID is needed for the upgrade command"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/publish-upgrade-packages/upgrade"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I get 'error[E13001]: feature is not supported in specified edition' when I use 'public struct'. How do I fix this?",
+      "expected_output": "An explanation that the public struct syntax requires edition = 2024 in Move.toml.",
+      "expectations": [
+        "The response identifies that the public struct syntax is a Move 2024 feature",
+        "The response instructs the user to set edition = \"2024\" in the [package] section of Move.toml",
+        "The response explains that the legacy edition does not support Move 2024 features",
+        "The response does not suggest workarounds like removing the public keyword unless the user explicitly wants legacy compatibility"
+      ],
+      "sources": [
+        "https://move-book.com/guides/2024-migration-guide.html"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "What's the correct Move.toml format? I'm confused about [addresses] vs [environments] and Sui dependencies. I keep getting build errors.",
+      "expected_output": "An explanation of the current Move.toml format: no explicit Sui dependency, no [addresses], optional [environments].",
+      "expectations": [
+        "The response explains that the Sui framework dependency is resolved automatically and should NOT be specified in [dependencies]",
+        "The response warns that using Sui = { git = '...' } in dependencies causes 'legacy system name' errors on current CLI versions",
+        "The response explains that [addresses] is no longer needed \u2014 the old my_project = '0x0' format is deprecated",
+        "The response mentions [environments] as the replacement for multi-network targeting with chain IDs",
+        "The response mentions that Published.toml replaces the old published-at field in Move.toml",
+        "The response provides a minimal correct Move.toml example with just [package] and edition = '2024'"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/publish-upgrade-packages/"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I get 'Dependency Sui is a legacy system name and cannot be used' when I run sui move build. My Move.toml has Sui = { git = \"https://github.com/MystenLabs/sui.git\", subdir = \"crates/sui-framework/packages/sui-framework\", rev = \"framework/testnet\" }. What's wrong?",
+      "expected_output": "An explanation that the git-based Sui dependency is no longer valid and should be removed.",
+      "expectations": [
+        "The response explains that the Sui framework dependency is now resolved automatically by the CLI and should not be specified in Move.toml",
+        "The response instructs the user to remove the Sui = { git = ... } line from [dependencies]",
+        "The response explains that this change was introduced in Sui CLI v1.63+",
+        "The response shows what a correct minimal Move.toml looks like (just [package] with name and edition = '2024', empty or absent [dependencies])",
+        "The response does not suggest changing the rev field or git URL \u2014 the entire line must be removed"
+      ],
+      "sources": [
+        "https://docs.sui.io/guides/developer/sui-101/move-package-management"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Help me set up a standard AMM style smart contract with move. It should support: creating a liquidity pool for two coin types, adding and removing liquidity (minting/burning LP tokens), swapping between the two coins using the constant product formula (x * y = k), and a fee mechanism (e.g. 0.3% swap fee). Don't write tests yet",
+      "expected_output": "A Move package with correct Move.toml and module using 2024 edition patterns",
+      "expectations": [
+        "Move.toml uses edition = \"2024\" not \"2024.beta\"",
+        "Move.toml does NOT have a [dependencies] section listing Sui or MoveStdlib",
+        "The first module declaration line ends with a semicolon (e.g. `module pkg::amm;`) \u2014 not with an opening curly brace"
+      ],
+      "sources": [
+        "https://move-book.com/guides/code-quality-checklist"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "I'm building a video game on Sui. I need a smart contract for player profiles as NFTs. Each player has a username, an XP counter, and a level. Players also need an inventory \u2014 use dynamic object fields so it can hold any arbitrary Sui object like game items, weapons, or collectibles. Players should be able to earn XP and level up when they hit thresholds. There should be an admin that can grant XP. Don't write tests yet.",
+      "expected_output": "A Move package with correct Move.toml and module using 2024 edition patterns",
+      "expectations": [
+        "Move.toml uses edition = \"2024\" not \"2024.beta\"",
+        "Move.toml does NOT have a [dependencies] section listing Sui or MoveStdlib",
+        "The first module declaration line ends with a semicolon (e.g. `module pkg::name;`) \u2014 not with an opening curly brace"
+      ],
+      "sources": [
+        "https://move-book.com/guides/code-quality-checklist"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "I want to create a new token on Sui. It should have a fixed name and symbol, an icon URL, and I want to be able to mint new tokens and also have the ability to burn the treasury cap to make it so no one can ever mint more. Can you set up the smart contract for this? Don't write tests yet.",
+      "expected_output": "A Move package with correct Move.toml and module using 2024 edition patterns",
+      "expectations": [
+        "Move.toml uses edition = \"2024\" not \"2024.beta\"",
+        "Move.toml does NOT have a [dependencies] section listing Sui or MoveStdlib",
+        "The first module declaration line ends with a semicolon (e.g. `module pkg::name;`) \u2014 not with an opening curly brace"
+      ],
+      "sources": [
+        "https://move-book.com/guides/code-quality-checklist"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Create a simple Move smart contract on Sui that implements a counter. Show me the complete Move.toml and the module file.",
+      "expected_output": "A Move.toml with just [package] section (no Sui dependency) and a counter module using 2024 edition syntax.",
+      "expectations": [
+        "Move.toml has edition = \"2024\"",
+        "Move.toml does NOT contain a [dependencies] section with Sui, sui, MoveStdlib, or any framework dependency",
+        "Move.toml does NOT contain any git URL pointing to github.com/MystenLabs/sui",
+        "Move.toml does NOT contain sui = { version = ... } or sui = { local = ... }",
+        "The module declaration uses semicolon syntax (e.g. `module pkg::counter;`) not curly braces",
+        "The module uses `use sui::` imports correctly"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/publish-upgrade-packages/"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "I want to build a DeFi lending protocol on Sui. Set up the Move project structure with Move.toml for me. I'll be deploying to testnet first, then mainnet.",
+      "expected_output": "A Move.toml with edition 2024, no framework dependencies, and optional [environments] section.",
+      "expectations": [
+        "Move.toml does NOT have Sui or MoveStdlib in [dependencies]",
+        "Move.toml does NOT use the git-based dependency format for Sui framework",
+        "Move.toml has edition = \"2024\"",
+        "If [environments] is included, it uses chain IDs like testnet = \"4c78adac\", NOT environment overrides",
+        "The response does not suggest adding published-at to Move.toml (that goes in Published.toml)"
+      ],
+      "sources": [
+        "https://docs.sui.io/develop/publish-upgrade-packages/"
+      ]
+    }
+  ]
+}

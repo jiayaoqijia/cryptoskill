@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "aelfscan-skill": {
+      "command": "bun",
+      "args": ["run", "/ABSOLUTE/PATH/TO/src/mcp/server.ts"],
+      "env": {
+        "AELFSCAN_API_BASE_URL": "https://aelfscan.io"
+      }
+    }
+  }
+}

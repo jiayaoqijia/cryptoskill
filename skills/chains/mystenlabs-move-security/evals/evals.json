@@ -1,0 +1,49 @@
+[
+  {
+    "id": "security-review-shared-object",
+    "prompt": "Review this Move module for security issues:\n\n```move\nmodule example::vault {\n    use sui::coin::{Self, Coin};\n    use sui::sui::SUI;\n    use sui::balance::{Self, Balance};\n\n    public struct Vault has key {\n        id: UID,\n        balance: Balance<SUI>,\n        admin: address,\n    }\n\n    fun init(ctx: &mut TxContext) {\n        let vault = Vault {\n            id: object::new(ctx),\n            balance: balance::zero(),\n            admin: ctx.sender(),\n        };\n        transfer::share_object(vault);\n    }\n\n    public fun deposit(vault: &mut Vault, coin: Coin<SUI>) {\n        coin::put(&mut vault.balance, coin);\n    }\n\n    public fun withdraw(vault: &mut Vault, amount: u64, ctx: &mut TxContext): Coin<SUI> {\n        assert!(ctx.sender() == vault.admin, 0);\n        coin::take(&mut vault.balance, amount, ctx)\n    }\n\n    public fun change_admin(vault: &mut Vault, new_admin: address, ctx: &mut TxContext) {\n        assert!(ctx.sender() == vault.admin, 0);\n        vault.admin = new_admin;\n    }\n}\n```",
+    "expectations": [
+      "Identifies that using tx_context::sender() alone for authorization breaks composability and that capability objects should be preferred",
+      "Notes that the vault is a shared object and anyone can submit transactions referencing it, so internal authorization checks are essential",
+      "Points out that no events are emitted for privileged actions (withdraw, change_admin) and recommends adding event emission for offchain monitoring",
+      "Suggests using an AdminCap capability object instead of storing an admin address",
+      "Notes the lack of a capability revocation mechanism and recommends designing one before publishing"
+    ]
+  },
+  {
+    "id": "access-control-pattern-choice",
+    "prompt": "I'm building a Move module on Sui where certain users should be authorized to perform minting operations. I'm considering two approaches: (1) storing a list of authorized addresses in a shared object and checking tx_context::sender() against it, or (2) creating a MinterCap capability object. Which approach should I use and why?",
+    "expectations": [
+      "Recommends capability objects (option 2) as the preferred default mechanism over address allowlists",
+      "Explains that capability objects compose well because other protocols can hold them on behalf of users",
+      "Explains that tx_context::sender() alone ties functions to single signers and breaks composability",
+      "If allowlists are discussed, mentions storing them in well-defined objects with restricted update access and emitting events on changes",
+      "Mentions that capability should be placed as the second parameter in function signatures to maintain method associativity",
+      "Recommends designing a revocation mechanism before publishing, such as an onchain registry of valid capability IDs or version fields"
+    ]
+  },
+  {
+    "id": "capability-safety-and-revocation",
+    "prompt": "I have an AdminCap in my Move module that controls treasury operations. Right now it's held by a single address. What security improvements should I make? Also, what happens if the AdminCap is leaked or stolen?",
+    "expectations": [
+      "Recommends holding the AdminCap in a multisig address or dedicated custody rather than a single hot wallet",
+      "Warns that each transfer grants full privileges and should not be done casually",
+      "Explains that without a revocation mechanism, a leaked capability remains valid for the life of the package",
+      "Describes revocation options: onchain registry of valid capability IDs, version/epoch fields that invalidate older capabilities, or destruction functions",
+      "Notes that registry or version checks work without holder cooperation while destruction requires holder cooperation",
+      "Recommends planning a rotation path before publishing"
+    ]
+  },
+  {
+    "id": "randomness-security-review",
+    "prompt": "I'm writing a lottery contract on Sui that uses onchain randomness. Here's my function signature:\n\n```move\npublic fun draw_winner(lottery: &mut Lottery, rng: &mut RandomGenerator, ctx: &mut TxContext) { ... }\n```\n\nIs this safe?",
+    "expectations": [
+      "Identifies that the function must not be public -- randomness-consuming functions must be private entry only",
+      "Explains that the Move compiler rejects public functions that take Random or RandomGenerator",
+      "Points out that RandomGenerator should never be accepted as a function parameter and must be created internally",
+      "Explains that private entry prevents other modules from composing randomness calls into larger attacks",
+      "Mentions gas path balance: favorable outcomes should consume equal or more gas than unfavorable ones",
+      "Mentions the commit-reveal pattern as an option for high-stakes applications"
+    ]
+  }
+]
