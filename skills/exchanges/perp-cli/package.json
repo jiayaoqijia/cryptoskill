@@ -1,0 +1,35 @@
+{
+  "name": "@hypurrquant/perp-cli-skill",
+  "version": "0.5.3",
+  "description": "AI agent skill for perp-cli — multi-DEX perpetual futures trading via CLI",
+  "keywords": [
+    "ai-skill",
+    "claude",
+    "mcp",
+    "perp",
+    "perpetual-futures",
+    "trading",
+    "hyperliquid",
+    "pacifica",
+    "lighter",
+    "defi",
+    "arbitrage",
+    "funding-rate"
+  ],
+  "author": "hypurrquant",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypurrquant/perp-cli",
+    "directory": "skills/perp-cli"
+  },
+  "homepage": "https://github.com/hypurrquant/perp-cli#ai-agent-skill",
+  "files": [
+    "SKILL.md",
+    "references",
+    "scripts"
+  ],
+  "peerDependencies": {
+    "perp-cli": ">=0.5.0"
+  }
+}

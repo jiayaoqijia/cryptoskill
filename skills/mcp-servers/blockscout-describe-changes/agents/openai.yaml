@@ -1,0 +1,6 @@
+interface:
+  display_name: "Describe Changes"
+  short_description: "Summarize required implementation changes concisely"
+  default_prompt: "Use $describe-changes to describe the high-level functional, test, documentation, and project-artifact changes required for the discussed feature or fix, after reading all files that will be mentioned."
+policy:
+  allow_implicit_invocation: false

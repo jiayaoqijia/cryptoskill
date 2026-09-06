@@ -167,10 +167,19 @@ gate-exchange-marketanalysis/
 
 - No external scripts or executable code
 - Uses Gate MCP tools only — no direct API calls
-- No credential handling or storage
+- No credential handling or storage — authentication is managed by the Gate MCP platform layer (the MCP server holds the user's API key and injects it into API calls automatically; no environment variables or secrets are required by the skill itself)
 - Read-only market data analysis, no trading operations
 - No file system writes
 - No data collection, telemetry, or analytics
+
+## Authentication
+
+Users should configure their Gate API key in the MCP server settings (see [Gate MCP](https://github.com/gateio/gate-mcp) for setup instructions). All MCP tools used by this skill access public market data and do **not** require authentication.
+
+## Source
+
+- **Repository**: [github.com/gate/gate-skills](https://github.com/gate/gate-skills)
+- **Publisher**: [Gate.com](https://www.gate.com)
 
 ## License
 

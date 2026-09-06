@@ -1,0 +1,43 @@
+name: Unit Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install
+      - run: bun run deps:check
+      - name: Typecheck (observe)
+        continue-on-error: true
+        run: bun run typecheck
+      - run: bun run test:coverage:ci
+      - run: bun run build:openclaw:check
+
+      - name: Upload coverage to Codecov
+        if: ${{ env.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ env.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Skip Codecov upload (missing token)
+        if: ${{ env.CODECOV_TOKEN == '' }}
+        run: echo "CODECOV_TOKEN is not set; skipping Codecov upload."

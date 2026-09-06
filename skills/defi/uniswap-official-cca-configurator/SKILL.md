@@ -30,6 +30,19 @@ When the user invokes this skill, guide them through a **bulk interactive form c
 4. **Validate after collection** - After each batch, validate all inputs before proceeding
 5. **Show progress** - After each batch, show which parameters are collected and which remain
 
+### Input Validation Rules
+
+Rule 4 above says validate after each batch. This is what validating means. Most values below arrive by selecting one of the preset options, but any of them can instead arrive as free text: through the "Other" option, which `AskUserQuestion` provides on every question, and through plain conversation whenever `AskUserQuestion` is unavailable and the runtime-compatibility fallback above applies. A custom RPC endpoint is the clearest case, because the Network question lists named networks and no endpoint field, yet a user who rejects the public endpoints still supplies one through "Other" or in conversation. Validate every value against the checks below before writing it into the configuration file or interpolating it into a `curl` command. Do not look for an exemption: a value that really is one of the presets this skill offered passes every check trivially, and under the conversational fallback there is no way to establish where a value came from in the first place.
+
+- **Ethereum addresses** (`token`, `currency`, `tokensRecipient`, `fundsRecipient`, `validationHook`): MUST match `^0x[a-fA-F0-9]{40}$` — reject otherwise
+- **Chain IDs**: MUST be from the supported chains list (1, 130, 1301, 8453, 42161, 11155111)
+- **Numeric values** (supply, prices, blocks, MPS, block deltas): MUST be non-negative and match `^[0-9]+\.?[0-9]*$`
+- **RPC endpoint URL**: prefer a public endpoint from the [Available Public RPCs](#available-public-rpcs) table. A custom endpoint, however it arrives, MUST be `https://`-scheme and MUST NOT contain any metacharacter or whitespace from the rule below before it reaches the `curl` command in [Fetch Block Number](#fetch-block-number). "It came from the user, not the table" is not an exemption.
+- **REJECT** any input containing shell metacharacters or whitespace: `;`, `|`, `&`, `$`, `` ` ``, `(`, `)`, `>`, `<`, `\`, `'`, `"`, spaces, tabs, newlines. `$(...)` and backticks execute even inside double quotes, and a space splits one value into extra `curl` flags, so neither is ever safe to interpolate. Abort and report which value and which character failed rather than stripping the offending characters and continuing.
+- **Never** pass raw user input directly to a shell command without validation, and always double-quote the interpolation in any command shown to the user.
+
+A value that fails any check is never written to the configuration file either. The `deployer` skill reads that file and interpolates its fields into `forge` and `cast` commands, so an unvalidated value stored here becomes an injected command there.
+
 ### Configuration Flow
 
 Collect parameters in these batches:
@@ -525,7 +538,9 @@ The plugin includes an MCP server that generates supply schedules using a **norm
 - **Equal token amounts** per step (5.8333% for 70% gradual release)
 - **Decreasing block durations** (convex curve property)
 - **Large final block** receives remaining tokens (~30%, configurable 20-40%)
-- **Total**: Always exactly 10,000,000 MPS
+- **Total**: the released supply is always exactly 10,000,000 MPS, computed as
+  `sum(mps * blockDelta)` across every step. `mps` is a per-block release rate, not a
+  per-step amount, so the `mps` column by itself does not sum to 10,000,000.
 
 Use the MCP tool `generate_supply_schedule` to generate this standard distribution:
 
@@ -543,7 +558,7 @@ The algorithm automatically calculates:
 1. Equal token amounts per step (e.g., 5.8333% for 12 steps with 70% gradual)
 2. Time boundaries from normalized curve C(t) = t^α (default α = 1.2)
 3. Block durations that DECREASE over time (convex curve property)
-4. Final block adjustment to hit exactly 10,000,000 MPS total
+4. Final block adjustment so that `sum(mps * blockDelta)` is exactly 10,000,000 MPS
 
 ### Example: 2-day auction on Base
 
@@ -598,7 +613,7 @@ Call `generate_supply_schedule` with:
 - Block durations DECREASE: 10894 → 8517 → 7803 → ... → 6043
 - Token amounts per step are approximately equal (~5.8333% each)
 - Final block contains 29.88% of all tokens
-- Total is exactly 10,000,000 MPS
+- `sum(mps * blockDelta)` is exactly 10,000,000 MPS (the `mps` column alone sums to far less)
 
 ### Example: With prebid period
 

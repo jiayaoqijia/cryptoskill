@@ -1,0 +1,10 @@
+-- MIGRATION: create_users_table
+-- DIRECTION: up
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- DIRECTION: down
+DROP TABLE IF EXISTS users;

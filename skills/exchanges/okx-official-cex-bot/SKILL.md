@@ -1,10 +1,10 @@
 ---
 name: okx-cex-bot
-description: "This skill should be used when the user asks to 'start a grid bot', 'create a grid bot', 'stop the grid bot', 'show my grid bots', 'grid bot status', 'grid bot P&L', 'create a DCA bot', 'start a DCA bot', 'set up a martingale bot', 'show my DCA bots', 'stop the DCA bot', 'DCA P&L', or any request involving creating, stopping, querying, or monitoring grid or DCA (Dollar Cost Averaging / Martingale) bots on OKX CEX. Grid covers both spot and contract variants. DCA is contract-only (leveraged Martingale on futures/swaps). Requires API credentials. Do NOT use for regular spot/swap/futures orders (use okx-cex-trade), market data (use okx-cex-market), or account balance/portfolio (use okx-cex-portfolio)."
+description: Manage Grid bots (spot/contract/coin-margined) and DCA Martingale bots (Spot DCA 现货马丁 / Contract DCA 合约马丁) on OKX. Covers create, stop, amend, monitor P&L, TP/SL, margin/investment adjustment, and AI-recommended parameters. Requires API credentials. Not for regular orders (okx-cex-trade), market data (okx-cex-market), or account info (okx-cex-portfolio).
 license: MIT
 metadata:
   author: okx
-  version: "1.0.0"
+  version: "1.4.5"
   homepage: "https://www.okx.com"
   agent:
     emoji: "🤖"
@@ -13,196 +13,454 @@ metadata:
     install:
       - id: npm
         kind: node
-        package: "@okx_ai/okx-trade-cli"
+        package: "@okx_ai/okx-trade-cli@1.4.5"
         bins: ["okx"]
         label: "Install okx CLI (npm)"
 ---
 
-# OKX CEX Bot Trading CLI
+# OKX CEX Bot Trading
 
-Grid and DCA (Contract Martingale) trading bot management on OKX exchange. All grid and DCA bots in this skill are **native OKX platform bots** — they run server-side on OKX and do not require a locally running process. **Requires API credentials.**
+Grid and DCA (Spot & Contract Martingale) bot management on OKX. All bots are **native OKX server-side** — they run on OKX and do not require a local process.
+
+## Preflight
+
+Before running any command, follow [`../_shared/preflight.md`](../_shared/preflight.md).
+Use `metadata.version` from this file's frontmatter as the reference for Step 2.
 
 ## Prerequisites
 
-1. Install `okx` CLI:
-   ```bash
-   npm install -g @okx_ai/okx-trade-cli
-   ```
+```bash
+npm install -g @okx_ai/okx-trade-cli
+okx config init   # select site -> follow browser OAuth flow
+```
 
-2. Configure credentials — **check first, then set up if missing**:
-
-   ```bash
-   okx config show   # shows configured profiles; api_key shows last 4 chars if set
-   ```
-
-   **If credentials are already configured** → proceed to step 3.
-
-   **If not configured**:
-
-   ```bash
-   okx config init          # interactive wizard — demo mode (opens browser → OKX demo API page)
-   okx config init          # run again for live mode (creates a second profile)
-   ```
-   Creates `okx-demo` (demo) and/or `okx-prod` (live) profiles. Each run safely merges into the existing config file without overwriting other profiles.
-
-   Or set environment variables:
-   ```bash
-   export OKX_API_KEY=your_key
-   export OKX_SECRET_KEY=your_secret
-   export OKX_PASSPHRASE=your_passphrase
-   ```
-
-   > **Security**: NEVER accept API credentials directly in chat. If the user pastes credentials, warn them and ask them to run `okx config init` or edit `~/.okx/config.toml` manually with their local editor instead. Credentials must never appear in conversation history.
-
-   **Switch between profiles**:
-   ```bash
-   okx config set default_profile okx-demo   # switch to demo
-   okx config set default_profile okx-prod   # switch to live
-   okx --profile okx-prod bot grid orders --algoOrdType grid  # one-off override
-   ```
-
-3. Test with demo mode (simulated trading, no real funds):
-   ```bash
-   okx --profile demo bot grid orders --algoOrdType grid
-   ```
+> **Security**: NEVER accept credentials in chat. Guide users to `okx config init` for setup.
 
 ## Credential & Profile Check
 
-**Run this check before any authenticated command.**
+**Run before every authenticated command.** The auth method is detected during [preflight](../_shared/preflight.md) Step 2 and remembered for the session.
 
 ### Step A — Verify credentials
 
-```bash
-okx config show       # verify configuration status (output is masked)
-```
-
-- If the command returns an error or shows no configuration: **stop all operations**, guide the user to run `okx config init`, and wait for setup to complete before retrying.
-- If credentials are configured: proceed to Step B.
-
-### Step B — Confirm profile (required)
-
-`--profile` is **required** for all authenticated commands. Never add a profile implicitly.
-
-| Value | Mode | Funds |
-|---|---|---|
-| `live` | 实盘 | Real funds — bot operates with real money |
-| `demo` | 模拟盘 | Simulated — safe for testing bot configurations |
-
-**Resolution rules:**
-1. Current message intent is clear (e.g. "real" / "实盘" / "live" → `live`; "test" / "模拟" / "demo" → `demo`) → use it and inform the user: `"Using --profile live (实盘)"` or `"Using --profile demo (模拟盘)"`
-2. Current message has no explicit declaration → check conversation context for a previous profile:
-   - Found → use it, inform user: `"Continuing with --profile live (实盘) from earlier"`
-   - Not found → ask: `"Live (实盘) or Demo (模拟盘)?"` — wait for answer before proceeding
-
-### Handling 401 Authentication Errors
-
-If any command returns a 401 / authentication error:
-1. **Stop immediately** — do not retry the same command
-2. Inform the user: "Authentication failed (401). Your API credentials may be invalid or expired."
-3. Guide the user to update credentials by editing the file directly with their local editor:
-   ```
-   ~/.okx/config.toml
-   ```
-   Update the fields `api_key`, `secret_key`, `passphrase` under the relevant profile.
-   Do NOT paste the new credentials into chat.
-4. After the user confirms the file is updated, run `okx config show` to verify (output is masked)
-5. Only then retry the original operation
-
-## Demo vs Live Mode
-
-Profile is the single control for 实盘/模拟盘 switching — exactly two options:
-
-| `--profile` | Mode | Funds |
-|---|---|---|
-| `live` | 实盘 | Real funds — bot operates with real money |
-| `demo` | 模拟盘 | Simulated — no real funds |
+Run **both** commands — the `apiKey` field from `okx auth status --json` is the auth-binary's internal state and is always `false` regardless of whether `~/.okx/config.toml` has an API-key profile. `okx config show --json` is the only authoritative source for API-key presence.
 
 ```bash
-okx --profile live  bot grid create ...    # 实盘 — real funds
-okx --profile demo  bot grid create ...    # 模拟盘 — simulated funds
+okx config show --json      # reveals API-key profiles (TOML config)
+okx auth status --json      # reveals OAuth session state (auth-binary state)
 ```
 
-**Rules:**
-1. `--profile` is **required** on every authenticated command — determined in "Credential & Profile Check" Step B
-2. Every response after a command must append: `[profile: live]` or `[profile: demo]`
-3. Do **not** use the `--demo` flag for mode switching — use `--profile` instead
-4. For bot create/stop operations (write commands), **profile must be explicitly confirmed** before execution
+Apply **in this order** — first match wins:
 
-### Example
+- `config show --json` has any profile with a non-empty `api_key` field → **API Key mode**. Proceed to Step B.
+- No API-key profile **AND** `auth status --json` returns `"status":"logged_in"` → **OAuth mode**. Proceed to Step B.
+- No API-key profile **AND** `"status":"pending"` — login is in progress, wait for it to complete.
+- No API-key profile **AND** `"status":"not_logged_in"` — stop, load `okx-cex-auth` skill and follow login steps, wait for completion.
 
-```
-User: "Start a BTC grid bot"
-Agent: "Live (实盘) or Demo (模拟盘)?"
-User: "Demo"
-Agent runs: okx --profile demo bot grid create --instId BTC-USDT --algoOrdType grid ...
-Agent replies: "Grid bot created: 12345678 (OK) — simulated, no real funds used. [profile: demo]"
-```
+### Step B — Confirm trading mode
+
+Resolution:
+1. User intent is clear ("real"/"实盘"/"live" → live; "test"/"模拟"/"demo" → demo) → use it, inform user
+2. No explicit declaration → check conversation context for previous choice → reuse if found
+3. Nothing found → ask: "Live (实盘) or Demo (模拟盘)?" — wait before proceeding
+
+**How to apply the mode depends on auth method (detected in Step A):**
+
+| Auth method | Live (实盘) | Demo (模拟盘) |
+|---|---|---|
+| **API Key** | `--profile <live-profile>` | `--profile <demo-profile>` |
+| **OAuth** | *(no flag needed, live is default)* | `--demo` |
+
+- **API Key users**: run `okx config show --json` to discover available profile names and their `demo` settings.
+- **OAuth users**: omit flags for live; add `--demo` for simulated trading.
+
+**After every command**: append `[mode: live]` or `[mode: demo]`
+
+### Handling 401 Errors
+
+**Authentication error** (error contains "401", "Session expired", or "Run `okx auth login` first"):
+1. Stop immediately
+2. Load `okx-cex-auth` skill and follow re-authentication steps
+3. Retry original command
 
 ## Skill Routing
 
-- For market data (prices, charts, depth, funding rates) → use `okx-cex-market`
-- For account balance, P&L, positions history, fees, transfers → use `okx-cex-portfolio`
-- For regular spot/swap/futures/algo orders → use `okx-cex-trade`
-- For grid and DCA trading strategies (native OKX platform bots) → use `okx-cex-bot` (this skill)
-
-## Quickstart
-
-```bash
-# Create a spot grid bot on BTC ($90k–$100k, 10 grids, invest 1000 USDT)
-okx bot grid create --instId BTC-USDT --algoOrdType grid \
-  --minPx 90000 --maxPx 100000 --gridNum 10 --quoteSz 1000
-
-# Create a contract grid bot on BTC perp (neutral, 5x leverage, 100 USDT margin)
-# basePos defaults to true for long/short (opens base position); neutral ignores it
-okx bot grid create --instId BTC-USDT-SWAP --algoOrdType contract_grid \
-  --minPx 90000 --maxPx 100000 --gridNum 10 \
-  --direction neutral --lever 5 --sz 100
-
-# List all active grid bots
-okx bot grid orders --algoOrdType grid
-
-# Get grid bot details and P&L
-okx bot grid details --algoOrdType grid --algoId <algoId>
-
-# Stop a grid bot (keep assets as-is)
-okx bot grid stop --algoId <algoId> --algoOrdType grid --instId BTC-USDT --stopType 2
-
-# Create a contract DCA bot on BTC perp (long, 3x leverage, 3% TP)
-okx bot dca create --instId BTC-USDT-SWAP --lever 3 --direction long \
-  --initOrdAmt 100 --safetyOrdAmt 50 --maxSafetyOrds 3 \
-  --pxSteps 0.03 --pxStepsMult 1 --volMult 1 --tpPct 0.03
-
-# List all active contract DCA bots
-okx bot dca orders
-
-# Get DCA bot details
-okx bot dca details --algoId <algoId>
-
-# Stop a DCA bot
-okx bot dca stop --algoId <algoId>
-```
+| Need | Skill |
+|---|---|
+| Market data, prices, depth | `okx-cex-market` |
+| Account balance, positions, fees | `okx-cex-portfolio` |
+| Regular spot/swap/futures orders | `okx-cex-trade` |
+| **Grid / DCA bots** | **`okx-cex-bot` (this skill)** |
 
 ## Command Index
 
 ### Grid Bot
 
-| # | Command | Type | Description |
-|---|---|---|---|
-| 1 | `okx bot grid create` | WRITE | Create a grid bot |
-| 2 | `okx bot grid stop` | WRITE | Stop a grid bot |
-| 3 | `okx bot grid orders` | READ | List active or history grid bots |
-| 4 | `okx bot grid details` | READ | Single grid bot details + PnL |
-| 5 | `okx bot grid sub-orders` | READ | Individual grid fills or live orders |
+| Command | Type | Description |
+|---|---|---|
+| `okx bot grid create` | WRITE | Create a grid bot (spot or contract) |
+| `okx bot grid amend` | WRITE | Amend price range, grid count, or TP/SL of a running grid bot |
+| `okx bot grid stop` | WRITE | Stop a grid bot |
+| `okx bot grid positions` | READ | Query open contract-grid positions (liquidation price, margin ratio, unrealized PnL) |
+| `okx bot grid liquidate-price` | READ | Estimate liquidation price for a contract-grid bot |
+| `okx bot grid close-position` | WRITE | Close remaining position after bot stopped with stopType=2 |
+| `okx bot grid orders` | READ | List active or history grid bots |
+| `okx bot grid details` | READ | Grid bot details + PnL |
+| `okx bot grid sub-orders` | READ | Individual grid fills or pending orders |
 
-### DCA Bot (Contract Only)
+### DCA Bot (Spot & Contract)
 
-| # | Command | Type | Description |
+| Command | Type | Description |
+|---|---|---|
+| `okx bot dca create` | WRITE | Create a DCA (Martingale) bot (spot or contract) |
+| `okx bot dca stop` | WRITE | Stop a DCA bot (spot or contract) |
+| `okx bot dca orders` | READ | List active or history DCA bots (default: contract_dca) |
+| `okx bot dca details` | READ | DCA bot details + PnL |
+| `okx bot dca sub-orders` | READ | DCA cycles and orders within a cycle |
+
+## Operation Flow
+
+### Step 1 — Identify bot type and action
+
+Parse user request → determine module (Grid / DCA) and action (create / stop / list / details).
+
+### Step 2 — Execute
+
+**READ commands** (orders, details, sub-orders): run immediately after profile confirmation.
+
+**WRITE commands** (create, amend, stop): confirm key parameters with user once before executing.
+
+### Step 3 — Verify after writes
+
+- After create → run the corresponding `orders` command to confirm active
+- After amend → run `bot grid details` to confirm updated config
+- After stop → run `orders --history` to confirm stopped
+
+## Key Rules
+
+- **Never auto-transfer funds.** If balance is insufficient for bot creation, report the shortfall (current available vs required) and ask the user how to proceed: (1) transfer funds manually, (2) reduce size, or (3) cancel.
+- **`algoId`** is the bot's algo order ID (from create or list output). It is NOT a normal `ordId`. Never fabricate — always obtain from a prior command.
+- **`algoOrdType`** for grid must match the bot's actual type. Always use the value from `bot grid orders` — do not infer from user description alone. Mismatch causes error `50016`.
+- When operating on existing bots, **always list first** to get correct IDs, unless the user provides them explicitly.
+- **TP/SL constraints**: `tpTriggerPx`/`tpRatio` and `slTriggerPx`/`slRatio` are mutually exclusive pairs.
+
+## CLI Command Reference
+
+### Grid Bot — Create
+
+```bash
+okx bot grid create --instId <id> --algoOrdType <type> \
+  --maxPx <px> --minPx <px> --gridNum <n> \
+  [--runType <1|2>] \
+  [--quoteSz <n>] [--baseSz <n>] \
+  [--direction <long|short|neutral>] [--lever <n>] [--sz <n>] \
+  [--basePos] [--no-basePos] \
+  [--tpTriggerPx <px>] [--slTriggerPx <px>] [--tpRatio <ratio>] [--slRatio <ratio>] \
+  [--algoClOrdId <id>] [--json]
+```
+
+| Param | Required | Default | Description |
 |---|---|---|---|
-| 6 | `okx bot dca create` | WRITE | Create a Contract DCA bot |
-| 7 | `okx bot dca stop` | WRITE | Stop a Contract DCA bot |
-| 8 | `okx bot dca orders` | READ | List active or history Contract DCA bots |
-| 9 | `okx bot dca details` | READ | Single Contract DCA bot details + PnL |
-| 10 | `okx bot dca sub-orders` | READ | Contract DCA cycles and orders within a cycle |
+| `--instId` | Yes | - | Instrument (e.g., `BTC-USDT` for spot, `BTC-USDT-SWAP` for USDT-M contract, `BTC-USD-SWAP` for coin-M contract) |
+| `--algoOrdType` | Yes | - | `grid` (spot grid) or `contract_grid` (contract grid, including coin-margined) |
+| `--maxPx` | Yes | - | Upper price boundary |
+| `--minPx` | Yes | - | Lower price boundary |
+| `--gridNum` | Yes | - | Grid levels (2–100) |
+| `--runType` | No | `1` | `1`=arithmetic spacing, `2`=geometric spacing |
+| `--quoteSz` | Cond. | - | USDT investment — spot grid only (provide `quoteSz` or `baseSz`) |
+| `--baseSz` | Cond. | - | Base currency investment — spot grid only |
+| `--direction` | Cond. | - | `long`, `short`, or `neutral` — required for contract grid |
+| `--lever` | Cond. | - | Leverage (e.g., `5`) — contract grid only |
+| `--sz` | Cond. | - | Investment margin in USDT (USDT-M) or coin (coin-M) — contract grid only |
+| `--basePos` / `--no-basePos` | No | `true` | Open a base position at creation — contract grid only (ignored for neutral). Use `--no-basePos` to disable |
+| `--tpTriggerPx` | No | - | Take-profit trigger price (mutually exclusive with `--tpRatio`) |
+| `--slTriggerPx` | No | - | Stop-loss trigger price (mutually exclusive with `--slRatio`) |
+| `--tpRatio` | No | - | Take-profit ratio — contract grid only (mutually exclusive with `--tpTriggerPx`) |
+| `--slRatio` | No | - | Stop-loss ratio — contract grid only (mutually exclusive with `--slTriggerPx`) |
+| `--algoClOrdId` | No | - | Client-defined algo order ID (1-32 alphanumeric). Unique per user, enables idempotent creation |
+
+---
+
+### Grid Bot — Amend
+
+```bash
+okx bot grid amend --algoId <id> \
+  [--maxPx <px> --minPx <px> --gridNum <n>] \
+  [--instId <id>] \
+  [--tpTriggerPx <px>] [--slTriggerPx <px>] \
+  [--tpRatio <ratio>] [--slRatio <ratio>] \
+  [--topUpAmt <n>] [--json]
+```
+
+Supports two modes that can be combined in one call:
+
+**Price-range mode** — triggered when `--maxPx` is provided:
+
+| Param | Required | Description |
+|---|---|---|
+| `--algoId` | Yes | Grid bot algo order ID |
+| `--maxPx` | Yes | New upper price boundary |
+| `--minPx` | Yes (with maxPx) | New lower price boundary |
+| `--gridNum` | Yes (with maxPx) | New grid count (integer) |
+| `--topUpAmt` | No | Extra margin to add (contract grid only; omit to auto-use minimum required) |
+
+**TP/SL mode** — triggered when at least one TP/SL param is provided; `--instId` is also required:
+
+| Param | Required | Description |
+|---|---|---|
+| `--instId` | Yes | Instrument ID (e.g., `BTC-USDT`) |
+| `--tpTriggerPx` | No | Take-profit trigger price (absolute). Pass `-1` to clear |
+| `--slTriggerPx` | No | Stop-loss trigger price (absolute). Pass `-1` to clear |
+| `--tpRatio` | No | Take-profit ratio (e.g., `0.1` = 10%). Contract grid only. Pass `-1` to clear |
+| `--slRatio` | No | Stop-loss ratio (e.g., `0.1` = 10%). Contract grid only. Pass `-1` to clear |
+| `--topUpAmt` | No | Extra margin to add (contract grid only) |
+
+> **Note**: `tpTriggerPx`/`tpRatio` are mutually exclusive. Same for `slTriggerPx`/`slRatio`.
+
+---
+
+### Grid Bot — Stop
+
+```bash
+okx bot grid stop --algoId <id> --algoOrdType <type> --instId <id> \
+  [--stopType <1|2>] [--json]
+```
+
+> **`--algoId`** and **`--algoOrdType`** must come from `bot grid orders` output. The `algoOrdType` must match the bot's actual type — do not guess.
+
+**Workflow:**
+1. Run `bot grid details --algoId <id> --algoOrdType <type>` and check the `state` field.
+2. If `state=running`: call stop with `--stopType 1` (default, clean exit) or `--stopType 2` (keep assets).
+3. If `state=no_close_position` (user previously stopped with stopType=2): call stop again with `--stopType 1` to close the remaining open position.
+
+| `--stopType` | Spot grid | Contract grid |
+|---|---|---|
+| `1` (default) | Sells all base assets back to quote | Market-closes all open positions |
+| `2` | Keeps base assets as-is | Cancels grid orders, leaves position open |
+
+---
+
+### Grid Bot — Positions
+
+```bash
+okx bot grid positions --algoId <id> --algoOrdType contract_grid [--json]
+```
+
+Returns open contract-grid positions: liquidation price (`liqPx`), margin ratio (`mgnRatio`), and unrealized PnL (`upl`). Only applicable to `contract_grid` bots.
+
+---
+
+### Grid Bot — Liquidation Price
+
+```bash
+okx bot grid liquidate-price --instId <id> --sz <margin> --lever <leverage> \
+  --maxPx <px> --minPx <px> --gridNum <n> --direction <long|short|neutral> \
+  [--runType <1|2>] [--triggerStrategy <instant|price|rsi|webhook>] [--json]
+```
+
+Estimates the liquidation price for a contract-grid bot. Use before creating a bot to assess liquidation risk. The estimate needs the **full intended config** — the backend requires `instId`, `sz`, `lever`, the grid range (`maxPx`/`minPx`/`gridNum`) and `direction` (use `neutral` for a neutral bot); omitting any of them fails fast with the list of what's missing. `runType` defaults to `1` (arithmetic; `2`=geometric) and `triggerStrategy` is optional.
+
+---
+
+### Grid Bot — Close Position
+
+```bash
+okx bot grid close-position --algoId <id> (--mktClose | --no-mktClose) [--sz <size>] [--px <price>] [--json]
+```
+
+Closes the remaining open position of a contract-grid bot that was stopped with `stopType='2'`. The close mode is **required** (no default, because it moves funds): pass `--mktClose` for a market close (immediate), or `--no-mktClose --sz <size> --px <price>` for a limit close order. Omitting both is rejected.
+
+---
+
+### Grid Bot — List Orders
+
+```bash
+okx bot grid orders --algoOrdType <type> [--instId <id>] [--algoId <id>] [--history] [--json]
+```
+
+| Param | Required | Default | Description |
+|---|---|---|---|
+| `--algoOrdType` | Yes | - | `grid` (spot), `contract_grid` (contract), or `moon_grid` (moon) |
+| `--instId` | No | - | Filter by instrument |
+| `--algoId` | No | - | Filter by algo order ID. NOT a normal trade order ID |
+| `--history` | No | false | Show completed/stopped bots instead of active |
+
+---
+
+### Grid Bot — Details
+
+```bash
+okx bot grid details --algoOrdType <type> --algoId <id> [--json]
+```
+
+Returns: bot config, current PnL (`pnlRatio`), grid range, number of grids, state, position info.
+
+---
+
+### Grid Bot — Sub-Orders
+
+```bash
+okx bot grid sub-orders --algoOrdType <type> --algoId <id> [--pending] [--groupId <id>] [--after <id>] [--before <id>] [--limit <n>] [--json]
+```
+
+| Flag | Effect |
+|---|---|
+| *(default)* | Filled sub-orders (executed grid trades) |
+| `--pending` | Pending grid orders currently on the book. (Works in demo mode. `--live` is a deprecated alias and cannot be combined with `--demo`.) |
+| `--groupId` | Filter to one buy-sell pair (shared groupId) |
+| `--after` | Pagination cursor — records older than this id |
+| `--before` | Pagination cursor — records newer than this id |
+| `--limit` | Max records to return (default 100) |
+
+---
+
+### DCA Bot — Create (Spot & Contract)
+
+```bash
+okx bot dca create --algoOrdType <spot_dca|contract_dca> --instId <id> --direction <long|short> \
+  --initOrdAmt <n> --maxSafetyOrds <n> --tpPct <ratio> \
+  [--lever <n>] [--safetyOrdAmt <n>] [--pxSteps <ratio>] [--pxStepsMult <mult>] [--volMult <mult>] \
+  [--slPct <ratio>] [--slMode <limit|market>] [--allowReinvest] \
+  [--triggerStrategy <instant|price|rsi>] [--triggerPx <price>] \
+  [--triggerCond <cross_up|cross_down>] [--thold <threshold>] [--timeframe <timeframe>] [--timePeriod <period>] \
+  [--algoClOrdId <id>] [--reserveFunds <true|false>] [--tradeQuoteCcy <ccy>] [--json]
+```
+
+| Param | Required | Default | Description |
+|---|---|---|---|
+| `--algoOrdType` | Yes | - | `spot_dca` (Spot DCA) or `contract_dca` (Contract DCA) |
+| `--instId` | Yes | - | Instrument (e.g., `BTC-USDT` for spot, `BTC-USDT-SWAP` for contract) |
+| `--lever` | Cond. | - | Leverage multiplier (e.g., `3`). Required for `contract_dca` |
+| `--direction` | Yes | - | `long` or `short`. `spot_dca` must be `long` |
+| `--initOrdAmt` | Yes | - | Initial order amount (quote currency) |
+| `--maxSafetyOrds` | Yes | - | Max safety orders, integer [0, 100] (e.g., `3`; `0` = no DCA) |
+| `--safetyOrdAmt` | Cond. | - | Safety order amount (quote currency). Required when `maxSafetyOrds > 0` |
+| `--pxSteps` | Cond. | - | Initial price deviation [0.001, 0.5], e.g., `0.03` = 3%. Required when `maxSafetyOrds > 0` |
+| `--pxStepsMult` | Cond. | `1` | Price step multiplier (e.g., `1.2`). Required when `maxSafetyOrds > 0` |
+| `--volMult` | Cond. | `1` | Safety order size multiplier (e.g., `1.5`). Required when `maxSafetyOrds > 0` |
+| `--tpPct` | Yes | - | Take-profit ratio: long [0.001, 10], short [0.001, 0.9999] (e.g., `0.03` = 3%) |
+| `--slPct` | No | - | Stop-loss ratio, must exceed MPD (e.g., `0.05` = 5%). Must be used with `--slMode` |
+| `--slMode` | No | `market` | Stop-loss type: `limit` or `market`. Must be used with `--slPct` |
+| `--allowReinvest` | No | `true` | Reinvest profit into the next DCA cycle |
+| `--triggerStrategy` | No | `instant` | contract_dca: `instant`, `price`, `rsi`; spot_dca: `instant`, `rsi` |
+| `--triggerPx` | No | - | Trigger price — required when `triggerStrategy=price` (contract_dca only) |
+| `--triggerCond` | No | - | `cross_up` or `cross_down` — required when `triggerStrategy=rsi`, optional when `triggerStrategy=price` |
+| `--thold` | No | - | RSI threshold (e.g. `30`) — required when `triggerStrategy=rsi` |
+| `--timeframe` | No | - | RSI timeframe (e.g. `15m`) — required when `triggerStrategy=rsi` |
+| `--timePeriod` | No | `14` | RSI period — optional when `triggerStrategy=rsi` |
+| `--algoClOrdId` | No | - | Client-defined strategy order ID (1-32 alphanumeric) |
+| `--reserveFunds` | No | `true` | `true` or `false` — whether to reserve funds |
+| `--tradeQuoteCcy` | No | - | Trade quote currency |
+
+**Conditional required logic:**
+- Always required: `--algoOrdType`, `--instId`, `--direction`, `--initOrdAmt`, `--maxSafetyOrds`, `--tpPct`
+- When `algoOrdType=contract_dca`: also required `--lever`
+- When `maxSafetyOrds > 0`: also required `--safetyOrdAmt`, `--pxSteps`, `--pxStepsMult`, `--volMult`
+- `--slPct` and `--slMode` must be both set or both omitted
+
+---
+
+### DCA Bot — Stop
+
+```bash
+okx bot dca stop --algoOrdType <spot_dca|contract_dca> --algoId <id> [--stopType <1|2>] [--json]
+```
+
+**Workflow:**
+1. Run `bot dca details --algoId <id> --algoOrdType <type>` and check the `state` field.
+2. If `state=running`: call stop (with `--stopType` for spot_dca).
+3. If `state=no_close_position` (user previously stopped with stopType=2): call stop again with `--stopType 1` to close the remaining open position.
+
+| Param | Required | Default | Description |
+|---|---|---|---|
+| `--algoOrdType` | Yes | - | `spot_dca` or `contract_dca` |
+| `--algoId` | Yes | - | DCA bot algo order ID (from create or list output). NOT a normal trade order ID |
+| `--stopType` | Cond. | `1` | `spot_dca` required: `1`=sell all tokens, `2`=keep tokens. `contract_dca`: `1`=close position (default), `2`=keep position open |
+
+---
+
+### DCA Bot — List Orders
+
+```bash
+okx bot dca orders [--algoOrdType <spot_dca|contract_dca>] [--algoId <id>] [--instId <id>] [--history] [--json]
+```
+
+| Param | Required | Default | Description |
+|---|---|---|---|
+| `--algoOrdType` | No | `contract_dca` | Filter by strategy type |
+| `--algoId` | No | - | Filter by DCA bot algo order ID |
+| `--instId` | No | - | Filter by instrument |
+| `--history` | No | false | Show completed/stopped bots instead of active |
+
+---
+
+### DCA Bot — Details
+
+```bash
+okx bot dca details --algoOrdType <spot_dca|contract_dca> --algoId <id> [--json]
+```
+
+Returns: `avgPx`, `upl`, `liqPx`, `sz`, `tpPx`, `slPx`, `initPx`, `fundingFee`, `fee`, `fillSafetyOrds`, `algoClOrdId`, `baseSz`, `quoteSz`, `tradeQuoteCcy`.
+
+---
+
+### DCA Bot — Sub-Orders
+
+```bash
+okx bot dca sub-orders --algoOrdType <spot_dca|contract_dca> --algoId <id> [--cycleId <id>] [--json]
+```
+
+| Flag / Param | Effect |
+|---|---|
+| *(default)* | List all cycles |
+| `--cycleId <id>` | Show orders within a specific cycle |
+
+## Quickstart
+
+```bash
+# Spot grid: BTC $90k–$100k, 10 grids, 1000 USDT
+okx bot grid create --instId BTC-USDT --algoOrdType grid \
+  --minPx 90000 --maxPx 100000 --gridNum 10 --quoteSz 1000
+
+# Contract grid: BTC perp, neutral, 5x, 100 USDT margin
+okx bot grid create --instId BTC-USDT-SWAP --algoOrdType contract_grid \
+  --minPx 90000 --maxPx 100000 --gridNum 10 \
+  --direction neutral --lever 5 --sz 100
+
+# Coin-margined contract grid: BTC inverse perp
+okx bot grid create --instId BTC-USD-SWAP --algoOrdType contract_grid \
+  --minPx 90000 --maxPx 100000 --gridNum 10 \
+  --direction long --lever 5 --sz 0.01
+
+# Contract DCA bot: BTC perp, long, 3x, 3% TP
+okx bot dca create --algoOrdType contract_dca --instId BTC-USDT-SWAP --lever 3 --direction long \
+  --initOrdAmt 100 --safetyOrdAmt 50 --maxSafetyOrds 3 \
+  --pxSteps 0.03 --pxStepsMult 1 --volMult 1 --tpPct 0.03
+
+# Spot DCA bot: BTC spot, long, 5% TP
+okx bot dca create --algoOrdType spot_dca --instId BTC-USDT --direction long \
+  --initOrdAmt 100 --safetyOrdAmt 50 --maxSafetyOrds 3 \
+  --pxSteps 0.03 --pxStepsMult 1.2 --volMult 1.5 --tpPct 0.05
+
+# Amend grid price range
+okx bot grid amend --algoId 3486105572796182528 --maxPx 102000 --minPx 88000 --gridNum 14
+
+# Amend grid TP/SL
+okx bot grid amend --algoId 3486105572796182528 --instId BTC-USDT --tpTriggerPx 110000 --slTriggerPx 80000
+
+# Amend both in one call (combined mode)
+okx bot grid amend --algoId 3486105572796182528 \
+  --maxPx 102000 --minPx 88000 --gridNum 14 \
+  --instId BTC-USDT --tpTriggerPx 110000 --slTriggerPx 80000
+
+# Clear TP/SL (use =-1 syntax for negative values)
+okx bot grid amend --algoId 3486105572796182528 --instId BTC-USDT --tpTriggerPx=-1 --slTriggerPx=-1
+
+# List all active bots
+okx bot grid orders --algoOrdType grid
+okx bot grid orders --algoOrdType contract_grid
+okx bot dca orders --algoOrdType contract_dca
+okx bot dca orders --algoOrdType spot_dca
+```
 
 ## Cross-Skill Workflows
 
@@ -219,355 +477,33 @@ okx bot dca stop --algoId <algoId>
 5. okx-cex-bot       okx bot grid details --algoOrdType grid --algoId <id> → monitor PnL
 ```
 
-### Contract Grid Bot (Long / Short / Neutral)
-> User: "Create a long grid bot on BTC perp from $90k to $100k, 10x leverage"
+### Contract DCA Bot
+> User: "Start a long DCA bot on BTC perp, 3x leverage, $200 initial, 3% TP"
 
 ```
 1. okx-cex-market    okx market ticker BTC-USDT-SWAP                → confirm current price
 2. okx-cex-portfolio okx account balance USDT                       → confirm margin
         ↓ user approves
-3. okx-cex-bot       okx bot grid create --instId BTC-USDT-SWAP --algoOrdType contract_grid \
-                       --minPx 90000 --maxPx 100000 --gridNum 10 \
-                       --direction long --lever 10 --sz 100
-                       # basePos defaults to true (opens base position for long/short)
-                       # For short: --direction short; for neutral: --direction neutral
-4. okx-cex-bot       okx bot grid orders --algoOrdType contract_grid → confirm active
-```
-
-### Contract DCA Bot (Long / Short)
-> User: "Start a long DCA bot on BTC perp, 3x leverage, $200 initial, 3% TP"
-
-```
-1. okx-cex-market    okx market ticker BTC-USDT-SWAP               → confirm current price
-2. okx-cex-portfolio okx account balance USDT                       → confirm margin
-        ↓ user approves
-3. okx-cex-bot       okx bot dca create --instId BTC-USDT-SWAP \
+3. okx-cex-bot       okx bot dca create --algoOrdType contract_dca --instId BTC-USDT-SWAP \
                        --lever 3 --direction long \
                        --initOrdAmt 200 --safetyOrdAmt 100 --maxSafetyOrds 3 \
                        --pxSteps 0.03 --pxStepsMult 1 --volMult 1 --tpPct 0.03
-                       # For short: --direction short
-4. okx-cex-bot       okx bot dca orders                             → confirm active
-5. okx-cex-bot       okx bot dca details --algoId <id>              → monitor PnL
+4. okx-cex-bot       okx bot dca orders --algoOrdType contract_dca   → confirm active
+5. okx-cex-bot       okx bot dca details --algoOrdType contract_dca --algoId <id> → monitor PnL
 ```
 
-### Monitor and Stop All Bots
-> User: "Show all my active bots and stop the ones losing money"
+### Spot DCA Bot
+> User: "帮我在现货上 DCA BTC，首单 100 USDT，5% 止盈"
 
 ```
-1. okx-cex-bot       okx bot grid orders --algoOrdType grid         → list spot grid bots
-2. okx-cex-bot       okx bot grid orders --algoOrdType contract_grid → list contract grid bots
-3. okx-cex-bot       okx bot dca orders                             → list DCA bots
-4. okx-cex-bot       okx bot grid details --algoOrdType grid --algoId <id>  → check PnL
-5. okx-cex-bot       okx bot grid stop --algoId <id> --algoOrdType grid --instId BTC-USDT --stopType 2
-```
-
-## Operation Flow
-
-### Step 0 — Credential & Profile Check
-
-Before any authenticated command:
-
-**Determine profile (required):**
-- Options: `live` (实盘) or `demo` (模拟盘) — exactly these two values
-1. Current message intent clear (e.g. "real"/"实盘"/"live" → live; "test"/"模拟"/"demo" → demo) → use it, inform user: `"Using --profile live (实盘)"`
-2. Current message has no explicit declaration → check conversation context for previous profile:
-   - Found → use it, inform user: `"Continuing with --profile live (实盘) from earlier"`
-   - Not found → ask: `"Live (实盘) or Demo (模拟盘)?"` — wait for answer
-
-**If no credentials configured:** guide user to run `okx config init`, stop all trading actions
-
-**After every command result:** append `[profile: live]` or `[profile: demo]` to the response
-
-### Critical: `algoId` and `algoOrdType` Rules
-
-- **`algoId`** is the bot's algo order ID (returned by `bot grid create` / `bot dca create` or listed by `bot grid orders` / `bot dca orders`). It is **NOT** a normal trade order ID (`ordId`). Never fabricate or guess an `algoId` — always obtain it from a prior create or list command.
-- **`algoOrdType`** for grid commands **must match the bot's actual type**. Always use the `algoOrdType` value from the `bot grid orders` response — do not infer from user description alone. Passing a mismatched type (e.g., `contract_grid` for a spot grid bot) causes error `50016`.
-- When operating on an existing bot (details, sub-orders, stop), **always retrieve the bot list first** to get the correct `algoId` and `algoOrdType` pair, unless the user provides them explicitly.
-
-### Step 1: Identify Bot Type and Action
-
-- Grid bot create → `okx bot grid create`
-- Grid bot stop → `okx bot grid stop`
-- Grid bot status/P&L → `okx bot grid orders` + `okx bot grid details`
-- Grid individual fills → `okx bot grid sub-orders`
-- DCA bot create → `okx bot dca create` (requires `--lever` and `--direction`)
-- DCA bot stop → `okx bot dca stop` (only `--algoId` needed)
-- DCA bot status/P&L → `okx bot dca orders` + `okx bot dca details`
-- DCA individual cycles/orders → `okx bot dca sub-orders`
-
-### Step 2: Run Read Commands Immediately — Confirm Profile (Step 0) then Writes
-
-**Read commands** (orders, details, sub-orders): run immediately.
-
-- `--algoOrdType` for grid → infer from context (`grid` for spot, `contract_grid` for perp)
-- `--history` → use default (active); only query history if explicitly requested
-
-**Write commands** (create, stop): confirm once before executing.
-
-- Grid create: confirm `--minPx`, `--maxPx`, `--gridNum`; verify `--minPx` < current price < `--maxPx`; confirm investment size
-    - Spot grid: `--quoteSz` (USDT) or `--baseSz` (base currency)
-    - Contract grid: `--direction` (`long`/`short`/`neutral`), `--lever`, `--sz` (investment margin in USDT); `--basePos` defaults to `true` (open base position for long/short)
-- DCA create: confirm `--instId`, `--lever`, `--direction`, `--initOrdAmt`, `--safetyOrdAmt`, `--maxSafetyOrds`, `--pxSteps`, `--pxStepsMult`, `--volMult`, `--tpPct`; optional: `--slPct`, `--slMode`, `--allowReinvest`, `--triggerStrategy`, `--triggerPx`
-- Grid stop: confirm `--stopType` (default omitted → keep assets; `1`=sell all to quote)
-- DCA stop: only `--algoId` needed
-- Demo dry-run: suggest `okx --profile demo bot grid create ...` when user is unsure
-
-**⚠ Insufficient balance — NEVER auto-transfer funds.**
-If the trading account balance is insufficient to create a bot, do NOT automatically initiate a fund transfer (`account_transfer`). Instead, inform the user of the shortfall (current available vs. required amount) and ask how they want to proceed. Suggested options to present:
-1. Transfer funds from funding account to trading account (specify amount)
-2. Reduce the investment size to fit available balance
-3. Cancel the bot creation
-
-### Step 3: Verify After Writes
-
-- After grid create: run `okx bot grid orders` to confirm bot is active; then `okx bot grid details` to monitor PnL
-- After DCA create: run `okx bot dca orders` to confirm bot is active; then `okx bot dca details` for details
-- After stop: run `okx bot grid orders --history` / `okx bot dca orders --history` to confirm bot is stopped
-
-## CLI Command Reference
-
-### Grid Bot — Create
-
-```bash
-okx bot grid create --instId <id> --algoOrdType <type> \
-  --maxPx <px> --minPx <px> --gridNum <n> \
-  [--runType <1|2>] \
-  [--quoteSz <n>] [--baseSz <n>] \
-  [--direction <long|short|neutral>] [--lever <n>] [--sz <n>] \
-  [--basePos] [--no-basePos] \
-  [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--instId` | Yes | - | Instrument (e.g., `BTC-USDT` for spot grid, `BTC-USDT-SWAP` for contract grid) |
-| `--algoOrdType` | Yes | - | `grid` (spot grid) or `contract_grid` (contract grid) |
-| `--maxPx` | Yes | - | Upper price boundary |
-| `--minPx` | Yes | - | Lower price boundary |
-| `--gridNum` | Yes | - | Grid levels (2–100) |
-| `--runType` | No | `1` | `1`=arithmetic spacing, `2`=geometric spacing |
-| `--quoteSz` | Cond. | - | USDT investment — spot grid only (provide `quoteSz` or `baseSz`) |
-| `--baseSz` | Cond. | - | Base currency investment — spot grid only |
-| `--direction` | Cond. | - | `long`, `short`, or `neutral` — contract grid only |
-| `--lever` | Cond. | - | Leverage (e.g., `5`) — contract grid only |
-| `--sz` | Cond. | - | Investment margin in USDT — contract grid only |
-| `--basePos` / `--no-basePos` | No | `true` | Open a base position at creation — contract grid only (ignored for neutral direction). Default is `true` (opens base position). Use `--no-basePos` to disable. |
-
----
-
-### Grid Bot — Stop
-
-```bash
-okx bot grid stop --algoId <id> --algoOrdType <type> --instId <id> \
-  [--stopType <1|2|3|5|6>] [--json]
-```
-
-> **`--algoId`** and **`--algoOrdType`** must come from `bot grid orders` output. The `algoOrdType` must match the bot's actual type — do not guess.
-
-| `--stopType` | Behavior |
-|---|---|
-| `1` | Stop + sell/close all positions at market |
-| `2` | Stop + keep current assets as-is (default) |
-| `3` | Stop + close at limit prices |
-| `5` | Stop + partial close |
-| `6` | Stop without selling (smart arbitrage) |
-
----
-
-### Grid Bot — List Orders
-
-```bash
-okx bot grid orders --algoOrdType <type> [--instId <id>] [--algoId <id>] [--history] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--algoOrdType` | Yes | - | `grid` (spot), `contract_grid` (contract), or `moon_grid` (moon) |
-| `--instId` | No | - | Filter by instrument |
-| `--algoId` | No | - | Filter by algo order ID (returned by create or previous list). NOT a normal trade order ID. |
-| `--history` | No | false | Show completed/stopped bots instead of active |
-
----
-
-### Grid Bot — Details
-
-```bash
-okx bot grid details --algoOrdType <type> --algoId <id> [--json]
-```
-
-> **`--algoId`** and **`--algoOrdType`** must come from `bot grid orders` output. The `algoOrdType` must match the bot's actual type.
-
-Returns: bot config, current PnL (`pnlRatio`), grid range, number of grids, state, position info.
-
----
-
-### Grid Bot — Sub-Orders
-
-```bash
-okx bot grid sub-orders --algoOrdType <type> --algoId <id> [--live] [--json]
-```
-
-> **`--algoId`** and **`--algoOrdType`** must come from `bot grid orders` output.
-
-| Flag | Effect |
-|---|---|
-| *(default)* | Filled sub-orders (executed grid trades) |
-| `--live` | Pending grid orders currently on the book |
-
----
-
-### DCA Bot — Create (Contract Only)
-
-```bash
-okx bot dca create --instId <id> --lever <n> --direction <long|short> \
-  --initOrdAmt <n> --safetyOrdAmt <n> --maxSafetyOrds <n> \
-  --pxSteps <ratio> --pxStepsMult <mult> --volMult <mult> --tpPct <ratio> \
-  [--slPct <ratio>] [--slMode <limit|market>] [--allowReinvest <true|false>] \
-  [--triggerStrategy <instant|price|rsi>] [--triggerPx <price>] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--instId` | Yes | - | Instrument (e.g., `BTC-USDT-SWAP`) |
-| `--lever` | Yes | - | Leverage multiplier (e.g., `3`) |
-| `--direction` | Yes | - | `long` or `short` |
-| `--initOrdAmt` | Yes | - | Initial order margin (quote currency) |
-| `--maxSafetyOrds` | Yes | - | Max number of safety orders (e.g., `3`; `0` = no DCA) |
-| `--safetyOrdAmt` | Yes | - | Safety order margin (quote currency) |
-| `--pxSteps` | Yes | - | Initial price deviation percentage (e.g., `0.03` = 3%) |
-| `--pxStepsMult` | Yes | - | Price step multiplier between safety orders (e.g., `1.2`) |
-| `--volMult` | Yes | - | Safety order size multiplier (e.g., `1.5`) |
-| `--tpPct` | Yes | - | Take-profit ratio (e.g., `0.03` = 3%) |
-| `--slPct` | No | - | Stop-loss ratio (e.g., `0.05` = 5%) |
-| `--slMode` | No | `market` | Stop-loss price type: `limit` (limit price) or `market` (market price) |
-| `--allowReinvest` | No | `true` | Reinvest profit into the next DCA cycle |
-| `--triggerStrategy` | No | `instant` | How the bot starts: `instant`, `price` (wait for trigger price), or `rsi` (RSI signal) |
-| `--triggerPx` | No | - | Trigger price — required when `triggerStrategy=price` |
-
----
-
-### DCA Bot — Stop
-
-```bash
-okx bot dca stop --algoId <id> [--json]
-```
-
-| Param | Required | Description |
-|---|---|---|
-| `--algoId` | Yes | DCA bot algo order ID (from `bot dca orders` or `bot dca create` output). NOT a normal trade order ID. |
-
----
-
-### DCA Bot — List Orders
-
-```bash
-okx bot dca orders [--algoId <id>] [--instId <id>] [--history] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--algoId` | No | - | Filter by DCA bot algo order ID (from create or previous list). NOT a normal trade order ID. |
-| `--instId` | No | - | Filter by instrument, e.g. `BTC-USDT-SWAP` |
-| `--history` | No | false | Show completed/stopped bots instead of active |
-
----
-
-### DCA Bot — Details
-
-```bash
-okx bot dca details --algoId <id> [--json]
-```
-
-> **`--algoId`** must come from `bot dca orders` or `bot dca create` output. NOT a normal trade order ID.
-
-Returns: position details including `avgPx`, `upl`, `liqPx`, `sz`, `tpPx`, `slPx`, `initPx`, `fundingFee`, `fee`, `fillSafetyOrds`.
-
----
-
-### DCA Bot — Sub-Orders
-
-```bash
-okx bot dca sub-orders --algoId <id> [--cycleId <id>] [--json]
-```
-
-> **`--algoId`** must come from `bot dca orders` or `bot dca create` output.
-
-| Flag / Param | Effect |
-|---|---|
-| *(default)* | List all cycles |
-| `--cycleId <id>` | Show orders within a specific cycle |
-
----
-
-## MCP Tool Reference
-
-CLI and MCP tools share the same underlying tool layer. All DCA tools operate on contract DCA only.
-
-| Tool | Description |
-|---|---|
-| `dca_create_order` | Create a Contract DCA bot |
-| `dca_stop_order` | Stop a Contract DCA bot |
-| `dca_get_orders` | List Contract DCA bots |
-| `dca_get_order_details` | Single Contract DCA bot details |
-| `dca_get_sub_orders` | Contract DCA cycles and orders within a cycle |
-
----
-
-## Input / Output Examples
-
-**"Start a BTC grid bot from $90k to $100k with 10 grids"**
-```bash
-okx bot grid create --instId BTC-USDT --algoOrdType grid \
-  --minPx 90000 --maxPx 100000 --gridNum 10 --quoteSz 1000
-# → Grid bot created: 12345678 (OK)
-```
-
-**"Show all my active grid bots"**
-```bash
-okx bot grid orders --algoOrdType grid
-```
-
-**"What's the P&L on my BTC grid bot?"**
-```bash
-okx bot grid details --algoOrdType grid --algoId 12345678
-# → pnlRatio, pnl, investAmt, totalAnnRate, runType, gridNum, maxPx, minPx
-```
-
-**"Stop my BTC grid bot and keep the assets"**
-```bash
-okx bot grid stop --algoId 12345678 --algoOrdType grid --instId BTC-USDT --stopType 2
-```
-
-**"Create a DCA bot on BTC perp, long, 3x leverage, 3% TP"**
-```bash
-okx bot dca create --instId BTC-USDT-SWAP --lever 3 --direction long \
-  --initOrdAmt 200 --safetyOrdAmt 100 --maxSafetyOrds 3 \
-  --pxSteps 0.03 --pxStepsMult 1 --volMult 1 --tpPct 0.03
-# → DCA bot created: 87654321 (OK)
-```
-
-**"Create a DCA bot with safety orders and stop-loss"**
-```bash
-okx bot dca create --instId BTC-USDT-SWAP --lever 3 --direction long \
-  --initOrdAmt 200 --safetyOrdAmt 100 --maxSafetyOrds 3 \
-  --pxSteps 0.03 --pxStepsMult 1.2 --volMult 1.5 \
-  --tpPct 0.03 --slPct 0.15 --slMode market
-```
-
-**"Show my active DCA bots"**
-```bash
-okx bot dca orders
-```
-
-**"How is my BTC DCA bot doing?"**
-```bash
-okx bot dca details --algoId 87654321
-# → avgPx, upl, liqPx, sz, tpPx, slPx, fillSafetyOrds
-```
-
-**"Stop my BTC DCA bot"**
-```bash
-okx bot dca stop --algoId 87654321
+1. okx-cex-market    okx market ticker BTC-USDT                     → confirm current price
+2. okx-cex-portfolio okx account balance USDT                       → confirm funds
+        ↓ user approves
+3. okx-cex-bot       okx bot dca create --algoOrdType spot_dca --instId BTC-USDT \
+                       --direction long \
+                       --initOrdAmt 100 --safetyOrdAmt 50 --maxSafetyOrds 3 \
+                       --pxSteps 0.03 --pxStepsMult 1.2 --volMult 1.5 --tpPct 0.05
+4. okx-cex-bot       okx bot dca orders --algoOrdType spot_dca       → confirm active
 ```
 
 ## Edge Cases
@@ -575,40 +511,51 @@ okx bot dca stop --algoId 87654321
 ### Grid Bot
 
 - **Price out of range**: `--minPx` must be < current price < `--maxPx`; check with `okx-cex-market` first
-- **Insufficient balance**: check `okx-cex-portfolio` → `account balance` before creating. If insufficient, **do NOT auto-transfer** — report the shortfall and ask the user for instructions (see Step 2)
-- **Contract grid direction**: `long` (buys more at lower prices), `short` (sells at higher), `neutral` (both)
-- **Contract grid basePos**: defaults to `true` — long/short grids automatically open a base position at creation. Neutral direction ignores this. Pass `--no-basePos` to disable.
-- **Contract grid --sz**: investment margin in USDT (not number of contracts)
-- **Stop type**: `stopType 1` sells/closes all; `stopType 2` keeps assets; `stopType 5/6` for contract grid positions
+- **Insufficient balance**: check `okx-cex-portfolio` → `account balance` before creating. If insufficient, **do NOT auto-transfer** — report the shortfall and ask the user for instructions
+- **Contract grid direction**: `long` (buys more at lower prices), `short` (sells at higher), `neutral` (both). Direction is required for contract grid
+- **Contract grid basePos**: defaults to `true` — long/short grids automatically open a base position at creation. Neutral direction ignores this. Pass `--no-basePos` to disable
+- **Contract grid --sz**: investment margin in USDT (USDT-M) or coin (coin-M), not number of contracts
+- **Coin-margined grids**: use inverse instruments (e.g., `BTC-USD-SWAP`). Margin unit is the base coin (BTC), not USDT
+- **Stop type**: `stopType 1` sells/closes all (default); `stopType 2` keeps assets as-is (spot grid) or leaves position open for manual close (contract grid)
+- **TP/SL**: `tpTriggerPx`/`tpRatio` and `slTriggerPx`/`slRatio` are mutually exclusive pairs. Ratio-based TP/SL is contract grid only
+- **Amend — at least one mode required**: must provide either price-range params (`--maxPx`+`--minPx`+`--gridNum`) or TP/SL params; providing neither returns a validation error
+- **Amend — combined mode**: price-range and TP/SL can be combined in one call (two sequential API requests internally)
+- **Amend — clear TP/SL**: pass `--tpTriggerPx=-1` or `--slTriggerPx=-1` (use `=` syntax for negative values, not `--flag -1`)
+- **Amend — contract grid topUpAmt**: if new range requires more margin, provide `--topUpAmt`; omit to auto-use the minimum required
+- **Amend — spot grid topUpAmt**: not supported; omit `--topUpAmt` for spot grids
 - **Already stopped bot**: stop returns error — check `bot grid orders --history` first to confirm state
-- **Demo mode**: `okx --profile demo bot grid create ...` — safe for testing, no real funds
+- **Insufficient margin (51340)**: extract required minimum from error, check balance via `okx-cex-portfolio`, report shortfall to user — do NOT auto-transfer
+- **Demo mode**: `okx --demo bot grid create ...` (OAuth) or `okx --profile <demo-profile> bot grid create ...` (API Key) — safe for testing, no real funds
+- **algoClOrdId duplicate**: if the same `algoClOrdId` already exists, the API returns error code `51065`
 
 ### DCA Bot
 
-- **Contract only**: DCA bots only support futures/swap instruments (e.g., `BTC-USDT-SWAP`). Spot DCA is not available.
-- **Insufficient balance**: check `okx-cex-portfolio` → `account balance` before creating. If insufficient, **do NOT auto-transfer** — report the shortfall and ask the user for instructions (see Step 2)
-- **pxStepsMult**: use `1.0` for equal price spacing; `>1.0` to widen gaps between successive safety orders
-- **volMult**: use `1.0` for equal safety order sizes; `>1.0` to increase size per safety order (Martingale)
-- **triggerStrategy**: `instant` (default) starts immediately; `price` waits for a trigger price; `rsi` uses RSI signals
-- **Stop**: only `--algoId` is needed — no `instId` or `stopType` required
-- **Already stopped bot**: stop returns error — check `bot dca orders --history` first to confirm state
-- **DCA create requires**: `--instId`, `--lever`, `--direction` (`long`/`short`), `--initOrdAmt`, `--safetyOrdAmt`, `--maxSafetyOrds`, `--pxSteps`, `--pxStepsMult`, `--volMult`, `--tpPct`
+- **Spot DCA direction**: must always be `long`. If user says "short spot DCA", explain that spot DCA only supports long direction
+- **Spot DCA stopType**: always ask user whether to sell all tokens (`1`) or keep them (`2`) when stopping
+- **Contract DCA lever**: required. If missing, the tool returns a validation error
+- **pxStepsMult**: `1.0` = equal spacing; `>1.0` = widen gaps between successive safety orders
+- **volMult**: `1.0` = equal sizes; `>1.0` = increase per safety order (Martingale scaling)
+- **triggerStrategy**: `instant` starts immediately; `price` waits for trigger price (contract_dca only); `rsi` waits for RSI condition (both spot_dca and contract_dca)
+- **Already stopped bot**: stop returns error — check `bot dca orders --history` first
+- **Demo mode**: `okx --demo bot dca create ...` (OAuth) or `okx --profile <demo-profile> bot dca create ...` (API Key) — safe testing, no real funds
+- **INVALID_PRICE_STEPS_MULTIPLIER error**: adjust `slPct`. Recalculate MPD = Σ(pxSteps × pxStepsMult^i) for i = 0..maxSafetyOrds−1, then set `slPct` > MPD
+- **algoClOrdId duplicate**: error code `51065`
 
 ## Communication Guidelines
 
-- **Use "bot" not "strategy"** when referring to grid or DCA in user-facing responses (e.g., "grid bot", "DCA bot" — not "grid strategy" or "DCA strategy").
-- **Always refer to DCA bots as "DCA"** — do not translate to "定投" or "recurring buy". The underlying mechanism is Martingale (马丁格尔), not simple dollar cost averaging. Use "DCA" in all user-facing responses regardless of language.
-- **Grid bot** can be referred to as "网格" in Chinese contexts.
+- **Grid/DCA**: use "bot" not "strategy" (e.g., "grid bot", "DCA bot")
+- **DCA**: always say "DCA" or "Martingale" — DCA supports both Spot DCA and Contract DCA
+- **Chinese**: Grid = "网格", Spot DCA = "现货马丁", Contract DCA = "合约马丁"
+- Use natural language for parameters — "What price range?" not "Enter minPx and maxPx"
+- If the user already provides values, map directly — don't re-ask
 
 ### Parameter Display Names
 
-When communicating with users, use the display name instead of the raw API field name. The API field is for internal mapping only.
-
-> **Currency placeholders**: `{base}` and `{quote}` refer to the actual currencies from the trading pair. Extract them by splitting `instId` on `-`: for `BTC-USDT-SWAP` → base=BTC, quote=USDT (ignore the SWAP suffix); for `ETH-USDT-SWAP` → base=ETH, quote=USDT.
+> `{base}` and `{quote}`: extract from `instId` by splitting on `-`. E.g., `BTC-USDT-SWAP` → base=BTC, quote=USDT.
 
 #### Grid Bot — Spot (`algoOrdType=grid`)
 
-| API Field | Display Name (EN) | Display Name (ZH) |
+| API Field | EN | ZH |
 |---|---|---|
 | `instId` | Trading pair | 交易对 |
 | `minPx` | Lower price bound | 网格下限价格 |
@@ -621,70 +568,52 @@ When communicating with users, use the display name instead of the raw API field
 
 #### Grid Bot — Contract (`algoOrdType=contract_grid`)
 
-| API Field | Display Name (EN) | Display Name (ZH) |
+| API Field | EN | ZH |
 |---|---|---|
 | `instId` | Trading pair | 交易对 |
 | `minPx` | Lower price bound | 网格下限价格 |
 | `maxPx` | Upper price bound | 网格上限价格 |
 | `gridNum` | Number of grids | 网格数量 |
-| `sz` | Investment margin ({quote}) | 投入保证金（{quote}） |
+| `sz` | Investment margin (USDT for USDT-M; {base} for coin-M) | 投入保证金（USDT-M 为 USDT；币本位为 {base}） |
 | `direction` | Direction (long / short / neutral) | 方向（做多 / 做空 / 中性） |
 | `lever` | Leverage | 杠杆倍数 |
 | `runType` | Spacing mode (1=arithmetic, 2=geometric) | 网格间距模式（1=等差, 2=等比） |
 | `basePos` | Open base position | 是否开底仓 |
 | `stopType` | Stop behavior | 停止方式 |
 
-#### DCA Bot (Contract)
+#### DCA Bot (Spot & Contract)
 
-| API Field | Display Name (EN) | Display Name (ZH) |
+| API Field | EN | ZH |
 |---|---|---|
+| `algoOrdType` | Strategy type (spot/contract) | 策略类型（现货/合约） |
 | `instId` | Trading pair | 交易对 |
-| `initOrdAmt` | Initial margin ({quote}) | 首单保证金（{quote}） |
-| `safetyOrdAmt` | Safety order margin ({quote}) | 补仓保证金（{quote}） |
+| `initOrdAmt` | Initial order amount ({quote}) | 首单金额（{quote}） |
+| `safetyOrdAmt` | Safety order amount ({quote}) | 补仓金额（{quote}） |
 | `maxSafetyOrds` | Max safety orders | 最大补仓次数 |
 | `pxSteps` | Price drop per safety order (%) | 补仓价格跌幅（%） |
 | `pxStepsMult` | Price step multiplier | 补仓跌幅倍数 |
 | `volMult` | Safety order size multiplier | 补仓金额倍数 |
 | `tpPct` | Take-profit ratio (%) | 止盈比例（%） |
 | `slPct` | Stop-loss ratio (%) | 止损比例（%） |
-| `slMode` | Stop-loss type (limit / market) | 止损类型（限价 / 市价） |
+| `slMode` | Stop-loss type (limit/market) | 止损类型（限价/市价） |
 | `lever` | Leverage | 杠杆倍数 |
-| `direction` | Direction (long / short) | 方向（做多 / 做空） |
-| `allowReinvest` | Reinvest profit into next cycle | 利润再投入下一轮 |
-| `triggerStrategy` | Trigger mode (instant / price / rsi) | 触发方式（立即 / 价格 / RSI） |
-| `triggerPx` | Trigger price (for price mode) | 触发价格（价格模式时） |
+| `direction` | Direction (long/short) | 方向（做多/做空） |
+| `allowReinvest` | Reinvest profit | 利润再投入 |
+| `triggerStrategy` | Trigger mode (contract_dca: instant/price/rsi; spot_dca: instant/rsi) | 触发方式 |
+| `triggerPx` | Trigger price | 触发价格 |
+| `algoClOrdId` | Client order ID | 客户端策略订单 ID |
+| `stopType` | Stop type (sell all / keep tokens) | 停止类型（卖出/保留） |
+| `reserveFunds` | Reserve funds | 预留资金 |
 
-> **`slPct` stop-loss logic (contract DCA)**:
-> - Long (`direction=long`): stop-loss price = initial order fill price × (1 − slPct)
-> - Short (`direction=short`): stop-loss price = initial order fill price × (1 + slPct)
->
-> When the stop-loss price is triggered and the position is fully closed, the bot ends.
->
-
-### Interaction Rules
-
-When collecting parameters from the user, always use natural language — never expose raw API field names.
-
-- Ask "What price range for the grid? (lower ~ upper)" — not "Enter minPx and maxPx"
-- Ask "How many grids?" — not "Enter gridNum"
-- Spot grid: ask "How much to invest (USDT)?" (use the actual quote currency) — not "Enter quoteSz"
-- Contract grid: ask "How much margin to invest (USDT)?" (use the actual quote currency) — not "Enter sz"
-- DCA: ask "How much initial margin (USDT)?" — not "Enter initOrdAmt"
-- Ask "What leverage?" — not "Enter lever"
-- Ask "Long or short?" — not "Enter direction"
-- Ask "Take-profit target (%)?" — not "Enter tpPct"
-- Ask "How many safety orders at most?" — not "Enter maxSafetyOrds"
-
-If the user already provides values in their initial request, do not re-ask — map them directly to the corresponding API fields.
+> **`slPct` stop-loss logic:**
+> - Long: stop-loss price = initial fill price × (1 − slPct)
+> - Short: stop-loss price = initial fill price × (1 + slPct)
+> When triggered and position fully closed, the bot ends.
 
 ## Global Notes
 
-- Grid and DCA bots are native OKX platform bots — they run entirely on OKX servers; stopping the CLI does not affect them
-- All write commands require valid credentials in `~/.okx/config.toml` or env vars
-- `--profile <name>` is required for all authenticated commands; see "Credential & Profile Check" section
-- Every command result includes a `[profile: <name>]` tag for audit reference
-- `--json` returns raw OKX API v5 response
-- Rate limit: 20 requests per 2 seconds per UID for all bot operations
+- All bots run on OKX servers — stopping the CLI does not affect them
+- Auth method and trading mode are determined in "Credential & Profile Check"; see that section for parameter rules
+- `--json` returns the raw OKX API v5 response by default. Add `--env` to wrap the output as `{"env": "<live|demo>", "profile": "<name>", "data": <response>}`
+- Rate limit: 20 requests per 2 seconds per UID
 - Grid `--gridNum` range: 2–100
-- DCA safety orders are triggered sequentially as price drops by `--pxSteps` increments
-- Contract DCA automatically starts with an instant trigger by default (configurable via `--triggerStrategy`)

@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenSea"
+  short_description: "NFT marketplace data + Seaport trades via @opensea/cli — listings, offers, sales, drops"
+  default_prompt: "Use OpenSea for NFT marketplace data (listings, offers, floor, sales, drops) or Seaport trade execution. For NFT metadata outside the marketplace context, use alchemy-api NFT API. For pure cross-chain token swaps, use lifi."

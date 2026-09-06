@@ -1,17 +1,53 @@
 ---
 name: gate-news-briefing
-version: "2026.3.12-1"
-updated: "2026-03-12"
-description: "News briefing. Use this skill whenever the user asks for recent news or headlines. Trigger phrases include: what happened recently, today's highlights, crypto news, any new updates. MCP tools: news_events_get_latest_events, news_feed_search_news, news_feed_get_social_sentiment."
+version: "2026.4.7-1"
+updated: "2026-04-07"
+description: "News briefing. Use this skill ONLY when the user's query is exclusively about recent news or headlines with no other analysis dimensions. Trigger phrases: what happened recently, today's highlights, crypto news, any new updates. If the query ALSO mentions coin analysis, risk check, technicals, or any other analysis dimension, use gate-info-research instead — it handles multi-dimension queries in a single unified report."
+required_credentials: []
+required_env_vars: []
+required_permissions: []
 ---
 
 # gate-news-briefing
+
+## General Rules
+
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read `./references/gate-runtime-rules.md`
+→ Also read `./references/info-news-runtime-rules.md` for gate-info / gate-news shared rules (tool degradation, report standards, security, and output standards).
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
 
 > The crypto industry "morning briefing" Skill. The user asks what's been happening; the system calls 3 MCP Tools in parallel to fetch major events + trending news + social sentiment, then the LLM aggregates into a layered news briefing.
 
 **Trigger Scenarios**: User asks about recent/today's news, headlines, or what's been happening.
 
 ---
+
+## MCP Dependencies
+
+### Required MCP Servers
+| MCP Server | Status |
+|------------|--------|
+| Gate-News | ✅ Required |
+
+### MCP Tools Used
+
+**Query Operations (Read-only)**
+
+- news_events_get_latest_events
+- news_feed_get_social_sentiment
+- news_feed_search_news
+
+### Authentication
+- API Key Required: No
+- Credentials Source: None; this skill uses read-only Gate Info / Gate News MCP access only.
+
+### Installation Check
+- Required: Gate-News
+- Install: Use the local Gate MCP installation flow for the current host IDE before continuing.
+- Continue only after the required Gate MCP server is available in the current environment.
 
 ## Routing Rules
 
@@ -26,6 +62,13 @@ description: "News briefing. Use this skill whenever the user asks for recent ne
 ---
 
 ## Execution Workflow
+
+### Step 0: Multi-Dimension Intent Check
+
+Before executing this Skill, check if the user's query involves multiple analysis dimensions:
+
+- If the query is exclusively about recent news or headlines, proceed with this Skill.
+- If the query **also** mentions coin analysis, risk check, technicals, fundamentals, or any other analysis dimension beyond news, route to `gate-info-research` — it handles multi-dimension queries with unified tool deduplication and coherent report aggregation.
 
 ### Step 1: Intent Recognition & Parameter Extraction
 

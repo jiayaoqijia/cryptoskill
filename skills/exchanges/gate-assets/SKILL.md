@@ -1,13 +1,89 @@
 ---
 name: gate-exchange-assets
-version: "2026.3.12-3"
-updated: "2026-03-12"
-description: "Gate Exchange asset and balance query skill. Use when user asks to check total assets, account balance, specific currency holdings, or sub-account assets (spot, futures, margin, options, finance, Alpha, TradFi). Trigger phrases: 'how much do I have', 'total assets', 'account balance', 'how many BTC', 'spot balance', 'futures account', 'margin account', 'options account', 'finance account', 'Alpha account', 'TradFi account'. Read-only, no trading."
+version: "2026.4.8-1"
+updated: "2026-04-08"
+description: "Gate multi-account asset and balance query skill. Use when the user asks to check total assets, account balance, or specific coin holdings across all accounts. Triggers on 'total assets', 'my balance', 'how many BTC do I have'. Read-only."
+required_credentials:
+  - gate_api_key
+  - gate_api_secret
+required_env_vars:
+  - GATE_API_KEY
+  - GATE_API_SECRET
+required_permissions:
+  - Delivery:Read
+  - Earn:Read
+  - Fx:Read
+  - Margin:Read
+  - Options:Read
+  - Spot:Read
+  - Tradfi:Read
+  - Unified:Read
+  - Wallet:Read
+metadata:
+  openclaw:
+    requires:
+      env:
+        - GATE_API_KEY
+        - GATE_API_SECRET
+    primaryEnv: GATE_API_KEY
+    homepage: https://github.com/gate/gate-skills
 ---
 
 # Gate Exchange Assets Assistant
 
-Execute read-only asset and balance queries for Gate Exchange. Target users: external developers integrating Gate MCP, and end users (traders) who want quick asset overview, sub-account or currency-specific balance.
+## General Rules
+
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read `./references/gate-runtime-rules.md`
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
+
+
+---
+
+## MCP Dependencies
+
+### Required MCP Servers
+| MCP Server | Status |
+|------------|--------|
+| Gate (main) | ✅ Required |
+
+### MCP Tools Used
+
+**Query Operations (Read-only)**
+
+- cex_dc_list_dc_accounts
+- cex_earn_list_dual_balance
+- cex_earn_list_dual_orders
+- cex_earn_list_structured_orders
+- cex_fx_get_fx_accounts
+- cex_margin_list_margin_accounts
+- cex_options_list_options_account
+- cex_spot_get_spot_accounts
+- cex_spot_list_spot_account_book
+- cex_tradfi_query_user_assets
+- cex_unified_get_unified_accounts
+- cex_wallet_get_total_balance
+
+### Authentication
+- Credentials Source: Local Gate MCP deployment (`GATE_API_KEY`, `GATE_API_SECRET`)
+- API Key Required: Yes
+- Permissions: Delivery:Read, Earn:Read, Fx:Read, Margin:Read, Options:Read, Spot:Read, Tradfi:Read, Unified:Read, Wallet:Read
+- Never ask the user to paste secrets into chat; rely on the configured MCP session only.
+- API Key Provisioning Reference: https://www.gate.com/myaccount/profile/api-key/manage (create or rotate keys outside the chat when the local MCP setup requires them).
+
+### Installation Check
+- Required: Gate (main)
+- Install: Use the local Gate MCP installation flow for the current host IDE before continuing.
+- Continue only after the Gate MCP session is configured with the credentials listed above; do not switch to browser auth or ask the user to paste secrets into chat.
+
+## MCP Mode
+
+**Read and strictly follow** [`references/mcp.md`](./references/mcp.md), then execute this skill's assets-query workflow.
+
+- `SKILL.md` keeps intent routing and rendering rules.
+- `references/mcp.md` is the authoritative MCP execution layer for multi-account data collection, normalization, and degraded output handling.
 
 ## Domain Knowledge
 
@@ -19,7 +95,7 @@ Execute read-only asset and balance queries for Gate Exchange. Target users: ext
 | `cex_spot_get_spot_accounts` | Spot balance (filter by currency) | currency, available, locked |
 | `cex_unified_get_unified_accounts` | Unified account (single/cross/portfolio margin) | balances, unified_account_total, margin_mode |
 | `cex_fx_get_fx_accounts` | Perpetual (settle=usdt or btc) | total, unrealised_pnl, available, point, bonus |
-| `cex_delivery_list_delivery_accounts` | Delivery (settle=usdt) | total, unrealised_pnl, available |
+| `cex_dc_list_dc_accounts` | Delivery (settle=usdt) | total, unrealised_pnl, available |
 | `cex_options_list_options_account` | Options | total_value, unrealised_pnl, available |
 | `cex_margin_list_margin_accounts` | Isolated margin | currency_pair, mmr, base/quote (available/locked/borrowed/interest) |
 | `cex_tradfi_query_user_assets` | TradFi assets | USDx balance, margin |
@@ -61,7 +137,7 @@ Execute read-only asset and balance queries for Gate Exchange. Target users: ext
 
 | Case | Trigger Phrases | MCP Tool | Output |
 |------|-----------------|----------|--------|
-| 2 | "How many BTC do I have", "How many USDT do I have" | Concurrent: `cex_spot_get_spot_accounts`, `cex_unified_get_unified_accounts`, `cex_fx_get_fx_accounts`, `cex_delivery_list_delivery_accounts`, `cex_margin_list_margin_accounts`, `cex_earn_list_dual_balance`, etc. | Total {COIN} held, distribution by account |
+| 2 | "How many BTC do I have", "How many USDT do I have" | Concurrent: `cex_spot_get_spot_accounts`, `cex_unified_get_unified_accounts`, `cex_fx_get_fx_accounts`, `cex_dc_list_dc_accounts`, `cex_margin_list_margin_accounts`, `cex_earn_list_dual_balance`, etc. | Total {COIN} held, distribution by account |
 
 ### III. Specific Account + Currency (Case 3)
 
@@ -74,7 +150,7 @@ Execute read-only asset and balance queries for Gate Exchange. Target users: ext
 | Case | Account | Trigger Phrases | MCP Tool |
 |------|---------|-----------------|----------|
 | 4 | Spot | "What's in my spot account", "Show my spot account assets" | `cex_spot_get_spot_accounts` or `cex_unified_get_unified_accounts` |
-| 5 | Futures | "How much in futures account", "USDT perpetual", "BTC perpetual", "Delivery" | `cex_fx_get_fx_accounts` settle=usdt/btc, `cex_delivery_list_delivery_accounts` |
+| 5 | Futures | "How much in futures account", "USDT perpetual", "BTC perpetual", "Delivery" | `cex_fx_get_fx_accounts` settle=usdt/btc, `cex_dc_list_dc_accounts` |
 | 6 | Trading (Unified) | "How much in trading account", "How much in unified account" | `cex_unified_get_unified_accounts` |
 | 7 | Options | "How much in options account", "Show my options assets" | `cex_options_list_options_account` or `cex_unified_get_unified_accounts` |
 | 8 | Finance | "How much in finance account", "Show my finance account assets" | `cex_earn_list_dual_balance`, `cex_earn_list_dual_orders`, `cex_earn_list_structured_orders` |

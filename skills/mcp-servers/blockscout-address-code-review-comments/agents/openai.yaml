@@ -1,0 +1,6 @@
+interface:
+  display_name: "Address Code Review Comments"
+  short_description: "Validate and fix PR review comments"
+  default_prompt: "Use $address-code-review-comments to validate review comments against the PR's actual code, fix only the valid ones in the worktree, and report closed and not-closed comments clearly."
+policy:
+  allow_implicit_invocation: false

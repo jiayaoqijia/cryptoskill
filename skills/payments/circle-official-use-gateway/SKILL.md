@@ -1,6 +1,6 @@
 ---
 name: use-gateway
-description: "Integrate Circle Gateway to hold a unified USDC balance across multiple blockchains and transfer USDC instantly (<500ms) via permissionless deposit, burn, and mint workflows. Available on 11 EVM chains + Solana (mainnet and testnet), plus Arc testnet. Use when: enabling chain-agnostic user experiences, low-latency or instant next-block finality is required, capital needs to be pooled across chains for greater capital efficiency, or building apps with consolidated crosschain balances. Triggers on: Gateway, unified balance, crosschain USDC, instant transfer, chain abstraction, Gateway Wallet, Gateway Minter, gatewayMint, burn intent, crosschain liquidity, payment routing, capital efficiency, permissionless transfer."
+description: "Integrate Circle Gateway to hold a unified USDC balance across multiple blockchains and transfer USDC instantly (<500ms) via permissionless deposit, burn, and mint workflows. Available on 11 EVM chains + Solana (mainnet and testnet), plus Arc testnet. Use when: enabling chain-agnostic user experiences, low-latency or instant next-block finality is required, capital needs to be pooled across chains for greater capital efficiency, or building apps with consolidated crosschain balances. Triggers on: Gateway, Gateway Wallet, Gateway Minter, gatewayMint, burn intent, unified balance, instant crosschain transfer."
 ---
 
 ## Overview
@@ -13,7 +13,26 @@ Gateway is a contract-level integration -- there is no SDK to install. You inter
 
 ### Chain Configuration
 
-You must read and refer to `references/config.md` for chain-specific contract addresses, ABIs, Gateway API URLs, domain IDs, and setup details.
+Do not load a separate config file by default. Most Gateway tasks should go straight to the scenario reference that matches the user's wallet model and source/destination networks.
+
+Use the scenario reference first and only do additional verification when you need to confirm:
+
+- Gateway REST base URL
+  - testnet: `https://gateway-api-testnet.circle.com/v1/`
+  - mainnet: `https://gateway-api.circle.com/v1/`
+- chain-specific USDC addresses: `https://developers.circle.com/stablecoins/usdc-contract-addresses.md`
+- Circle Wallet blockchain identifiers: `https://developers.circle.com/wallets/supported-blockchains.md`
+
+Canonical source docs for verification:
+
+- Gateway how-tos:
+  - `https://developers.circle.com/gateway/howtos/create-unified-usdc-balance.md`
+  - `https://developers.circle.com/gateway/howtos/manage-delegates.md`
+  - `https://developers.circle.com/gateway/howtos/transfer-unified-usdc-balance.md`
+- Gateway quickstarts:
+  - `https://developers.circle.com/gateway/quickstarts/unified-balance-evm.md`
+  - `https://developers.circle.com/gateway/quickstarts/unified-balance-solana.md`
+- Arc tutorial: `https://docs.arc.network/arc/tutorials/access-usdc-crosschain.md`
 
 ## Quick Reference
 
@@ -91,17 +110,42 @@ Think of it like a multi-currency bank account: you see one total, but withdrawa
 
 ## Implementation Patterns
 
-**READ** the reference files for the scenario(s) that apply. All vanilla EVM examples use `wagmi@^3`.
+**READ** the reference files for the scenario(s) that apply.
 
-- `references/deposit-evm.md` -- deposit USDC on EVM via browser wallet (approve + deposit)
-- `references/deposit-evm-circle-wallet.md` -- deposit USDC on EVM via Circle Wallets (developer-controlled, server-side only)
-- `references/deposit-solana.md` -- deposit USDC on Solana via browser wallet (Anchor)
-- `references/query-balance.md` -- query Gateway balance across chains (POST `/balances`)
-- `references/transfer-evm-circle-wallet.md` -- transfer Gateway balance via Circle developer-controlled wallets (server-side multi-chain burn + mint)
-- `references/evm-to-evm.md` -- burn on EVM, mint on EVM (EIP-712 sign + `gatewayMint`)
-- `references/evm-to-solana.md` -- burn on EVM, mint on Solana
-- `references/solana-to-evm.md` -- burn on Solana, mint on EVM
-- `references/solana-to-solana.md` -- burn on Solana, mint on Solana
+- Self-managed EVM refs use `viem` in Node/TypeScript scripts.
+- Self-managed EVM browser-wallet refs use pure TypeScript plus an injected EIP-1193 provider.
+- Circle Wallets refs use `@circle-fin/developer-controlled-wallets`.
+- Solana refs use Anchor plus the relevant Solana tooling.
+
+### Deposits
+- `references/deposit-evm.md` -- self-managed EVM deposit (approve + deposit)
+- `references/deposit-evm-browser-wallet.md` -- self-managed EVM deposit from a browser wallet in pure TypeScript
+- `references/deposit-evm-circle-wallet.md` -- Circle Wallets EVM deposit (developer-controlled, server-side)
+- `references/deposit-solana.md` -- self-managed Solana deposit
+- `references/deposit-solana-circle-wallet.md` -- Circle Wallets Solana deposit
+### Transfers from EVM
+- `references/evm-to-evm.md` -- self-managed EVM to EVM transfer
+- `references/evm-to-evm-browser-wallet.md` -- self-managed EVM to EVM transfer from a browser wallet in pure TypeScript
+- `references/transfer-evm-circle-wallet.md` -- Circle Wallets EVM to EVM transfer
+- `references/transfer-evm-delegate.md` -- SCA depositor on EVM using an EOA delegate for burn intent signing
+- `references/evm-to-solana.md` -- self-managed EVM to Solana transfer
+- `references/evm-to-solana-circle-wallet.md` -- Circle Wallets EVM to Solana transfer
+### Transfers from Solana
+- `references/solana-to-evm.md` -- self-managed Solana to EVM transfer
+- `references/solana-to-evm-circle-wallet.md` -- Circle Wallets Solana to EVM transfer
+- `references/solana-to-solana.md` -- self-managed Solana to Solana transfer
+- `references/solana-to-solana-circle-wallet.md` -- Circle Wallets Solana to Solana transfer
+### Balance queries
+- `references/query-balance.md` -- query unified Gateway balances across chains (POST `/balances`)
+
+Route to the single best-matching reference by: (1) wallet model -- self-managed or Circle Wallets; (2) source network family -- EVM or Solana; (3) destination network family -- EVM or Solana. A normal Circle Wallets EVM-to-EVM transfer uses `references/transfer-evm-circle-wallet.md`.
+
+The delegate flow is a NARROW exception -- an SCA source *depositor* that signs burn intents via a separate EOA delegate:
+
+- Circle Developer-Controlled Wallets where an EOA delegate signs for an SCA depositor -> `references/transfer-evm-delegate.md`. Do NOT use the delegate ref for an ordinary Circle Wallets transfer.
+- Self-managed SCA -> no exact reference matches. Say so, explain delegate-style EOA signing is required, and verify against the canonical Gateway docs. Do NOT reuse `transfer-evm-delegate.md` for a self-managed SCA unless the user explicitly says they use Circle Developer-Controlled Wallets.
+
+Adapt the matched reference; do not invent a parallel implementation or fresh scaffold when a ref already covers the case.
 
 ## Rules
 
@@ -121,9 +165,11 @@ Think of it like a multi-currency bank account: you see one total, but withdrawa
 ### Best Practices
 
 - ALWAYS read the correct reference files before implementing.
+- ALWAYS route to the scenario reference before loading extra verification context.
 - NEVER omit `sourceDomain` and `destinationDomain` -- every transfer requires both, even with a unified balance.
 - NEVER use 18 decimals for USDC. ALWAYS use 6 decimals (`parseUnits(amount, 6)`).
-- NEVER use `window.ethereum` directly with wagmi -- use `connector.getProvider()`.
+- In React apps that already use wagmi, prefer the existing wagmi/provider pattern instead of introducing a parallel wallet connection stack.
+- For framework-agnostic browser-wallet flows, use the pure TypeScript EIP-1193 pattern in the browser-wallet refs.
 - ALWAYS default to testnet. Require explicit user confirmation before targeting mainnet.
 
 ## Alternatives

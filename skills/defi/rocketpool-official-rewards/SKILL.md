@@ -101,7 +101,7 @@ claimOutstandingEth()
 getOutstandingEth(address _address) → uint256 [view]
 ```
 
-The `_claims` tuple: `(uint256 rewardIndex, uint256 amountRPL, uint256 amountETH, bytes32[] merkleProof)`.
+The `_claims` tuple: `(uint256 rewardIndex, uint256 amountRPL, uint256 amountSmoothingPoolETH, uint256 amountVoterETH, bytes32[] merkleProof)`.
 
 `claimAndStake` claims rewards and immediately stakes the RPL portion in a single transaction.
 

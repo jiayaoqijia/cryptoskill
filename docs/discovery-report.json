@@ -1,0 +1,632 @@
+{
+  "candidates": [
+    {
+      "org": "Bitget-AI",
+      "repo": "agent-mcp",
+      "category": "mcp-servers",
+      "prefix": "bitget-ai-",
+      "official": false
+    },
+    {
+      "org": "bnmbnmai",
+      "repo": "mcp-proxy",
+      "category": "mcp-servers",
+      "prefix": "bnmbnmai-",
+      "official": false
+    },
+    {
+      "org": "Danny-397",
+      "repo": "RL-for-Crypto-and-stocks-",
+      "category": "exchanges",
+      "prefix": "danny-397-",
+      "official": false
+    },
+    {
+      "org": "CoinRithm",
+      "repo": "coinrithm-agent-trading",
+      "category": "mcp-servers",
+      "prefix": "coinrithm-",
+      "official": false
+    },
+    {
+      "org": "Senpi-ai",
+      "repo": "senpi-skills",
+      "category": "exchanges",
+      "prefix": "senpi-ai-",
+      "official": false
+    },
+    {
+      "org": "mshehzadkhan93-web",
+      "repo": "trade-forensics-agent",
+      "category": "exchanges",
+      "prefix": "mshehzadkhan93-web-",
+      "official": false
+    },
+    {
+      "org": "GMGNAI",
+      "repo": "gmgn-skills",
+      "category": "chains",
+      "prefix": "gmgnai-",
+      "official": false
+    },
+    {
+      "org": "Eschatological-cpi959",
+      "repo": "Finance-mcp",
+      "category": "mcp-servers",
+      "prefix": "eschatological-cpi959-",
+      "official": false
+    },
+    {
+      "org": "Excaliber9271",
+      "repo": "asterdex-mcp-server",
+      "category": "mcp-servers",
+      "prefix": "excaliber9271-",
+      "official": false
+    },
+    {
+      "org": "scutuatua-crypto",
+      "repo": "whaletrucker-ecosystem",
+      "category": "mcp-servers",
+      "prefix": "scutuatua-crypto-",
+      "official": false
+    },
+    {
+      "org": "Fibrous-Finance",
+      "repo": "fibx",
+      "category": "mcp-servers",
+      "prefix": "fibrous-finance-",
+      "official": false
+    },
+    {
+      "org": "pythia-the-oracle",
+      "repo": "pythia-oracle-mcp",
+      "category": "mcp-servers",
+      "prefix": "pythia-the-oracle-",
+      "official": false
+    },
+    {
+      "org": "bybit-exchange",
+      "repo": "kaas",
+      "category": "mcp-servers",
+      "prefix": "bybit-exchange-",
+      "official": true
+    },
+    {
+      "org": "crypto-com",
+      "repo": "crypto-agent-trading",
+      "category": "exchanges",
+      "prefix": "crypto-com-",
+      "official": true
+    },
+    {
+      "org": "crypto-com",
+      "repo": "cdcx-cli",
+      "category": "exchanges",
+      "prefix": "crypto-com-",
+      "official": true
+    }
+  ],
+  "queries": [
+    {
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-08-30",
+      "status": "checked"
+    },
+    {
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-08-30",
+      "status": "checked"
+    },
+    {
+      "query": "crypto agent skills language:Python pushed:>2026-08-30",
+      "status": "checked"
+    },
+    {
+      "query": "DeFi MCP server pushed:>2026-08-30",
+      "status": "checked"
+    },
+    {
+      "query": "org:bybit-exchange (mcp OR skill OR agent)",
+      "status": "checked"
+    },
+    {
+      "query": "org:mxcdevelop (mcp OR skill OR agent)",
+      "status": "unavailable",
+      "detail": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "query": "org:HuobiGroup (mcp OR skill OR agent)",
+      "status": "checked"
+    },
+    {
+      "query": "org:bitfinexcom (mcp OR skill OR agent)",
+      "status": "checked"
+    },
+    {
+      "query": "org:crypto-com (mcp OR skill OR agent)",
+      "status": "checked"
+    },
+    {
+      "query": "org:gemini (mcp OR skill OR agent)",
+      "status": "checked"
+    },
+    {
+      "query": "org:upbit (mcp OR skill OR agent)",
+      "status": "unavailable",
+      "detail": "HTTP Error 403: rate limit exceeded"
+    },
+    {
+      "query": "org:pancakeswap (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:curvefi (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:jup-ag (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:raydium-io (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:orca-so (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:dydxprotocol (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:hyperliquid-dex (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:traderjoe-xyz (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:CamelotLabs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:aerodrome-finance (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:drift-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:cowprotocol (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ethereum (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ava-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:cardano-foundation (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:polkadot-fellows (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:MystenLabs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:cosmos (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ton-blockchain (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:tronprotocol (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:stellar (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:hashgraph (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:algorand (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:megaeth-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:sei-protocol (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:InjectiveLabs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:mantlenetworkio (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:berachain (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:OffchainLabs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ethereum-optimism (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:maticnetwork (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:matter-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:starkware-libs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:Consensys (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:scroll-tech (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:blast-io (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:manta-network (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:aave (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:lidofinance (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:makerdao (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:compound-finance (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ethena-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:morpho-org (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ondoprotocol (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:jito-foundation (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:marinade-finance (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:smartcontractkit (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:pyth-network (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:LayerZero-Labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:wormhole-foundation (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:Polymarket (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ssvlabs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:etherfi-protocol (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:maple-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:babylonlabs-io (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:Kamino-Finance (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:sparkdotfi (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:nicholasgriffintn (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:kelp-dao (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:WrappedBTC (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:centrifuge (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ObolNetwork (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:Veda-Labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:gauntlet-networks (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:steakhouse-financial (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:duneanalytics (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:etherscan (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:Zapper-fi (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:zeriontech (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:DeBankDeFi (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:dexscreener (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:ArkhamIntel (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:santiment (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:glassnode (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:MoralisWeb3 (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:INFURA (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:quiknode-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:foundry-rs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:NomicFoundation (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:helius-labs (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:Ankr-network (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:thirdweb-dev (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:nicholasgriffintn (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:nicholasgriffintn (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:RabbyHub (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:safe-global (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:LedgerHQ (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:opentensor (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:nicholasgriffintn (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:fetchai (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:akash-network (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:farcasterxyz (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:lens-protocol (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:nicholasgriffintn (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    },
+    {
+      "query": "org:worldliberty (mcp OR skill OR agent)",
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
+    }
+  ]
+}

@@ -74,7 +74,7 @@ If any position expires within **30 days**, prominently warn:
 
 ## Error Handling
 
-Tool errors return structured JSON with `error.code` and `error.retryable`. Use `error.action` for guidance.
+Tool errors return structured JSON with an error message. Check the message for guidance.
 
 ---
 

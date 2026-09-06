@@ -6,7 +6,7 @@ version: 1.2.0
 
 # x402 Agent API Skill
 
-Use this skill to let your AI agent call paid endpoints on `https://www.flashcode.live/` with x402.
+Use this skill to let your AI agent call paid endpoints on `https://www.x402api.app/` with x402.
 
 ## Quick start for AI agents
 
@@ -24,7 +24,7 @@ npm install @x402/core @x402/evm viem
 
 ```bash
 EVM_PRIVATE_KEY=0x_your_private_key
-API_BASE_URL=https://www.flashcode.live/
+API_BASE_URL=https://www.x402api.app/
 ```
 
 ## Currently available features
@@ -121,7 +121,7 @@ import { base } from "viem/chains";
 const baseUrl =
   process.env.X402_API_BASE_URL ??
   process.env.API_BASE_URL ??
-  "https://www.flashcode.live/";
+  "https://www.x402api.app/";
 const endpoint = `${baseUrl.replace(/\/$/, "")}/api/v1/qrcode/generate`;
 
 async function main() {
@@ -198,3 +198,4 @@ void main().catch((error) => {
 - `qrcode_content_too_long` (`400`): `text` exceeds 2048 characters.
 - `qrcode_format_not_supported` (`400`): only `png` format is supported.
 - `invalid_qrcode_request` (`400`): other validation errors.
+

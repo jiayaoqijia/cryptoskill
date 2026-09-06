@@ -1,0 +1,28 @@
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! myapp@1.0.0 test: `jest --coverage`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the myapp@1.0.0 test script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/runner/.npm/_logs/2024-01-30T10-15-30-123Z-debug.log
+
+Error: Cannot find module 'viem'
+Require stack:
+- /home/runner/work/myapp/myapp/src/lib/blockchain.ts
+- /home/runner/work/myapp/myapp/src/index.ts
+- /home/runner/work/myapp/myapp/node_modules/jest-runtime/build/index.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:1039:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:885:27)
+    at Module.require (node:internal/modules/cjs/loader:1105:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (/home/runner/work/myapp/myapp/src/lib/blockchain.ts:3:1)
+    at Module._compile (node:internal/modules/cjs/loader:1218:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1272:10)
+    at Module.load (node:internal/modules/cjs/loader:1081:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:922:12)
+
+Node.js v18.16.0
+npm v9.5.1

@@ -1,7 +1,7 @@
 ---
 name: kryptogo-meme-trader
-version: "2.5.6"
-description: Analyze and trade meme coins using KryptoGO's on-chain cluster analysis platform. Covers wallet clustering, address labels, accumulation/distribution detection, and automated swap execution via the Agent Trading API.
+version: "2.6.0"
+description: "[DEPRECATED 2026-05-04] Analyze and trade meme coins using KryptoGO's on-chain cluster analysis platform. NOTE: The kg-xyz analysis backend (wallet-data.kryptogo.app) is shutting down on 2026-05-04 — cluster analysis, wallet labels, signal dashboard, and DCA/limit order tools will stop working after that date. Swap execution via the OKX DEX aggregator continues to function."
 author: KryptoGO
 license: MIT
 homepage: https://www.kryptogo.xyz
@@ -53,9 +53,19 @@ metadata:
 
 # KryptoGO Meme Trader Agent Skill
 
+> ## SHUTDOWN NOTICE — kg-xyz Analysis Backend
+>
+> **The KryptoGO XYZ analysis backend (`wallet-data.kryptogo.app`) will be discontinued on 2026-05-04.**
+>
+> After this date, all tools that depend on cluster analysis, wallet labels, signal dashboards, and DCA/limit order reconstruction will no longer function. The swap execution path (OKX DEX aggregator + local transaction signing) is independent of the kg-xyz backend and will continue to work.
+>
+> Per-tool impact is annotated inline below. Scripts and MCP tool implementations have been kept in place so they fail gracefully (backend will return HTTP errors) and so a revert remains simple if plans change.
+
 ## Overview
 
 This skill enables an AI agent to **analyze and trade** meme coins through the KryptoGO platform, combining deep on-chain cluster analysis with trade execution.
+
+> **Degraded functionality starting 2026-05-04:** cluster analysis, wallet/token labels, signal dashboard, DCA/limit order reconstruction, and portfolio P&L enrichment will stop working when the kg-xyz backend shuts down. Swap execution continues.
 
 **Analysis** (multi-chain: Solana, BSC, Base, Monad): wallet clustering, accumulation/distribution detection, address behavior labels, network-wide accumulation signals (Pro/Alpha tier).
 
@@ -85,6 +95,7 @@ This skill enables an AI agent to **analyze and trade** meme coins through the K
 
 1. Go to [kryptogo.xyz/account](https://www.kryptogo.xyz/account) and create an API key
 2. Add to `~/.openclaw/workspace/.env`:
+
    ```bash
    echo 'KRYPTOGO_API_KEY=sk_live_YOUR_KEY' >> ~/.openclaw/workspace/.env && chmod 600 ~/.openclaw/workspace/.env
    ```
@@ -147,6 +158,7 @@ To enable autonomous trading, set `require_trade_confirmation: false` in prefere
 ### Persistence (CRITICAL)
 
 **IMMEDIATELY after submitting a transaction, the agent MUST:**
+
 1. Write trade details to `memory/trading-journal.json` with `status: "OPEN"`
 2. Include: `token_symbol`, `token_address`, `entry_price`, `position_size_sol`, `tx_hash`, `timestamp`
 
@@ -217,6 +229,8 @@ For full cron configuration, manual setup, heartbeat alternative, and monitoring
 
 ## On-Chain Analysis Framework (7-Step Pipeline)
 
+> ⚠️ **Unavailable after 2026-05-04:** Steps 1–6 all hit `wallet-data.kryptogo.app` and will stop working when the kg-xyz backend shuts down. Step 7 (execute trade via `swap.py`) continues to work, since the swap path routes through the OKX DEX aggregator and signs locally.
+
 ### Step 1: Token Overview & Market Cap Filter
 
 `/token-overview?address=<mint>&chain_id=<id>` — get name, price, market cap, holders, risk_level. Skip if market cap < `min_market_cap`.
@@ -224,6 +238,7 @@ For full cron configuration, manual setup, heartbeat alternative, and monitoring
 ### Step 2: Cluster Analysis
 
 `/analyze/<mint>?chain_id=<id>` — wallet clusters, top holders, metadata.
+
 - ≥30-35% = "controlled" — major entity present
 - ≥50% = high concentration risk
 - Single cluster >50% → skip (rug pull risk)
@@ -235,6 +250,7 @@ For full cron configuration, manual setup, heartbeat alternative, and monitoring
 `/analyze-cluster-change/<mint>` — `cluster_ratio` + `changes` across 15m/1h/4h/1d/7d.
 
 Core insight: **Price and cluster holdings DIVERGING** is the key signal.
+
 - Rising price + falling cluster % = distribution (bearish)
 - Falling price + rising cluster % = accumulation (bullish)
 
@@ -259,6 +275,8 @@ Apply Bullish Checklist from `references/decision-framework.md`.
 
 **Use `scripts/swap.py` for execution** — handles wallet_address injection, error checking, and journal logging.
 
+> ✓ **Continues to work after 2026-05-04:** swap execution goes through the OKX DEX aggregator with local signing and is independent of the kg-xyz backend.
+
 ```bash
 source ~/.openclaw/workspace/.env && python3 scripts/swap.py <token_mint> 0.1
 source ~/.openclaw/workspace/.env && python3 scripts/swap.py <token_mint> <amount> --sell
@@ -268,20 +286,22 @@ source ~/.openclaw/workspace/.env && python3 scripts/swap.py <token_mint> <amoun
 
 ## API Quick Reference
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/agent/account` | GET | Check tier & quota |
-| `/agent/trending-tokens` | GET | Scan trending tokens |
-| `/agent/portfolio` | GET | Wallet portfolio + PnL |
-| `/agent/swap` | POST | Build unsigned swap tx (Solana only) |
-| `/agent/submit` | POST | Submit signed tx (Solana only) |
-| `/token-overview` | GET | Token metadata & market data |
-| `/analyze/:token_mint` | GET | Full cluster analysis |
-| `/analyze-cluster-change/:token_mint` | GET | Cluster ratio trends |
-| `/balance-history` | POST | Time-series balance data |
-| `/wallet-labels` | POST | Behavior labels |
-| `/token-wallet-labels` | POST | Token-specific labels |
-| `/signal-dashboard` | GET | Curated accumulation signals (Pro+) |
+> ⚠️ **After 2026-05-04:** Every endpoint below is served by `wallet-data.kryptogo.app` and will be shut down. The swap tool (`swap_tokens` / `scripts/swap.py`) bypasses these endpoints and routes to the OKX DEX aggregator directly, so it continues to work.
+
+| Endpoint | Method | Purpose | After 2026-05-04 |
+|----------|--------|---------|------------------|
+| `/agent/account` | GET | Check tier & quota | ⚠️ Unavailable |
+| `/agent/trending-tokens` | GET | Scan trending tokens | ⚠️ Unavailable |
+| `/agent/portfolio` | GET | Wallet portfolio + PnL | ⚠️ Unavailable (P&L enrichment); balances still fetchable via Solana RPC |
+| `/agent/swap` | POST | Build unsigned swap tx (Solana only) | ⚠️ Unavailable (swap now routes through OKX DEX; see `scripts/swap.py`) |
+| `/agent/submit` | POST | Submit signed tx (Solana only) | ⚠️ Unavailable (submit directly to Solana RPC instead) |
+| `/token-overview` | GET | Token metadata & market data | ⚠️ Unavailable |
+| `/analyze/:token_mint` | GET | Full cluster analysis | ⚠️ Unavailable |
+| `/analyze-cluster-change/:token_mint` | GET | Cluster ratio trends | ⚠️ Unavailable |
+| `/balance-history` | POST | Time-series balance data | ⚠️ Unavailable |
+| `/wallet-labels` | POST | Behavior labels | ⚠️ Unavailable |
+| `/token-wallet-labels` | POST | Token-specific labels | ⚠️ Unavailable |
+| `/signal-dashboard` | GET | Curated accumulation signals (Pro+) | ⚠️ Unavailable |
 
 > Full request/response details: see `references/api-reference.md`
 
@@ -314,13 +334,15 @@ source ~/.openclaw/workspace/.env && python3 scripts/swap.py <token_mint> <amoun
 
 All scripts require credentials to be pre-loaded: `source ~/.openclaw/workspace/.env` before running.
 
+> **Post-shutdown (2026-05-04):** `portfolio.sh`, `trending.sh`, `analysis.sh`, and `test-api.sh` all call the kg-xyz backend and will begin returning HTTP errors. `swap.py` continues to work because it uses the OKX DEX aggregator and signs locally. Scripts are kept in place so that the skill fails gracefully and a revert remains trivial if the backend comes back.
+
 ```bash
-source ~/.openclaw/workspace/.env && bash scripts/portfolio.sh              # Portfolio check
-source ~/.openclaw/workspace/.env && bash scripts/trending.sh               # Trending tokens
-source ~/.openclaw/workspace/.env && bash scripts/analysis.sh               # Full analysis dashboard
-source ~/.openclaw/workspace/.env && python3 scripts/swap.py <mint> 0.1     # Buy
-source ~/.openclaw/workspace/.env && python3 scripts/swap.py <mint> <amt> --sell  # Sell
-source ~/.openclaw/workspace/.env && bash scripts/test-api.sh               # API connectivity test
+source ~/.openclaw/workspace/.env && bash scripts/portfolio.sh              # Portfolio check        (⚠️ breaks after 2026-05-04)
+source ~/.openclaw/workspace/.env && bash scripts/trending.sh               # Trending tokens        (⚠️ breaks after 2026-05-04)
+source ~/.openclaw/workspace/.env && bash scripts/analysis.sh               # Full analysis dashboard (⚠️ breaks after 2026-05-04)
+source ~/.openclaw/workspace/.env && python3 scripts/swap.py <mint> 0.1     # Buy                     (✓ continues to work)
+source ~/.openclaw/workspace/.env && python3 scripts/swap.py <mint> <amt> --sell  # Sell              (✓ continues to work)
+source ~/.openclaw/workspace/.env && bash scripts/test-api.sh               # API connectivity test   (⚠️ breaks after 2026-05-04)
 ```
 
 ---

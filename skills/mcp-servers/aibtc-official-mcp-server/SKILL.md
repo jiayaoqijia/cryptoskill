@@ -4,7 +4,7 @@ description: Bitcoin L1 wallet for agents - check balances, send BTC, manage UTX
 license: MIT
 metadata:
   author: aibtcdev
-  version: 1.51.0 # x-release-please-version
+  version: 1.69.0 # x-release-please-version
   npm: "@aibtc/mcp-server"
   github: https://github.com/aibtcdev/aibtc-mcp-server
 ---
@@ -15,13 +15,24 @@ A skill for managing Bitcoin L1 wallets with optional Pillar smart wallet and St
 
 ## Install
 
-One-command installation:
+One-command installation (Claude Code is the default):
 
 ```bash
 npx @aibtc/mcp-server@latest --install
 ```
 
-For testnet:
+Other MCP clients are selected with a flag:
+
+```bash
+npx @aibtc/mcp-server@latest --install --cursor     # Cursor
+npx @aibtc/mcp-server@latest --install --codex      # OpenAI Codex CLI
+npx @aibtc/mcp-server@latest --install --gemini     # Gemini CLI
+npx @aibtc/mcp-server@latest --install --windsurf   # Windsurf
+npx @aibtc/mcp-server@latest --install --vscode     # VS Code
+npx @aibtc/mcp-server@latest --install --desktop    # Claude Desktop
+```
+
+For testnet, add `--testnet` to any command:
 
 ```bash
 npx @aibtc/mcp-server@latest --install --testnet
@@ -188,21 +199,47 @@ Pay-per-use APIs with automatic micropayments on Stacks L2:
 - Discover available endpoints with `list_x402_endpoints`
 - Check cost before paying with `probe_x402_endpoint`
 - Execute endpoints with `execute_x402_endpoint` (safe-by-default — probes first)
-- Send inbox messages with `send_inbox_message` (use this instead of execute_x402_endpoint for inbox)
+- Send inbox messages with `send_inbox_message_direct` (use this instead of execute_x402_endpoint for inbox)
 - Build new x402 APIs with `scaffold_x402_endpoint` and `scaffold_x402_ai_endpoint`
 
 Always probe before executing paid endpoints. Never call `execute_x402_endpoint` with `autoApprove: true` without checking cost first.
 
-**send_inbox_message** — dedicated tool for aibtc.com inbox messages:
-- Parameters: `recipientBtcAddress` (bc1...), `recipientStxAddress` (SP...), `content` (max 500 chars), `paymentTxid` (optional)
-- Uses sponsored transactions: sender pays only the sBTC message cost, relay covers STX gas
-- Avoids sBTC settlement timeout issues that affect the generic execute_x402_endpoint tool
-- Implements the full 5-step x402 v2 payment flow with balance pre-check
-- **paymentTxid** (optional): provide a confirmed on-chain sBTC transfer txid to skip the x402 flow and deliver the message using that txid as payment proof — use for manual recovery when a settlement timeout left the sBTC payment confirmed on-chain but the message undelivered
-- **Automatic recovery**: if retries are exhausted, the tool checks whether any submitted payment txid confirmed on-chain and, if so, resubmits the message automatically — no agent action required
+**send_inbox_message_direct** — dedicated tool for aibtc.com inbox messages:
+- Parameters: `recipientBtcAddress` (bc1...), `recipientStxAddress` (SP...), `content` (max 500 chars)
+- Direct (non-sponsored) payment: signs a standard sBTC transfer and settles through the x402 facilitator — no relay in the middle
+- Sender pays BOTH the sBTC message cost AND its own STX gas; requires an unlocked wallet holding sBTC and STX (mainnet only)
+- Implements the full x402 v2 payment flow with a balance pre-check
+- Note: the older sponsored `send_inbox_message` tool is deprecated and no longer sends — use this tool instead
 
 See: [references/stacks-defi.md](references/stacks-defi.md) for endpoint catalog
 See: [references/x402-inbox.md](references/x402-inbox.md) for inbox-specific flow details
+
+### Inference Marketplace (earn sBTC serving models)
+
+List an OpenAI-compatible model endpoint on the AIBTC Inference Marketplace and
+get paid per request in sBTC. Ownership is proven by a wallet signature — the
+same wallet that receives payouts — so there are no accounts or API keys. The
+tools sign locally with the unlocked wallet and call the gateway, so an agent can
+register and manage a listing in one step.
+
+```
+"Register my endpoint https://my-host/v1 serving Qwen/Qwen2.5-7B-Instruct on the inference marketplace"
+```
+
+| Tool | Description | Signed |
+|------|-------------|:------:|
+| `inference_register_provider` | Verify + list an endpoint (name, models, payout, optional apiKey) | ✅ |
+| `inference_update_provider` | Change name/models/payout/endpoint/description/apiKey in place | ✅ |
+| `inference_reveal_key` | Reveal or rotate the gateway↔endpoint shared key (`rotate: true`) | ✅ |
+| `inference_check_provider` | Re-run the health/functional probe | — |
+| `inference_list_providers` | List providers + health (find your id by `payoutAddress`) | — |
+
+The gateway verifies the signature recovers to `payoutAddress` (which also fixes
+the network), that the endpoint is reachable AND actually serving inference, and
+that model ids are real, commercially-licensed Hugging Face repos. Requires an
+unlocked wallet on the gateway's network. Every tool takes an optional `gateway`
+arg (defaults to `https://inference.aibtc.com`; use `http://localhost:8787` for
+local dev).
 
 ### Genesis Lifecycle
 

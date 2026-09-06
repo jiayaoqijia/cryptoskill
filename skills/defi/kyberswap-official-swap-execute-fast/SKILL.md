@@ -245,6 +245,8 @@ bash execute-swap.sh 1 ETH USDC base 0xYourAddress "" 50 ledger
 
 ### Step 3: Format the Output
 
+> **IMPORTANT: Do not duplicate output.** The script's raw output (stderr log lines and stdout JSON) is already visible to the user from the Bash tool call in Step 1. Do NOT echo, quote, or re-display the raw script output. Only present the formatted summary below, which extracts key fields from the JSON. If you repeat the raw output AND show the formatted summary, the user sees every line twice.
+
 **On success**, present:
 
 ```

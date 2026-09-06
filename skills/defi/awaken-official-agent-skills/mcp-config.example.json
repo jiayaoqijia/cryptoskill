@@ -1,0 +1,33 @@
+{
+  "_comment": "Copy the relevant section to your AI tool's MCP config file.",
+
+  "_claude_desktop": "~/Library/Application Support/Claude/claude_desktop_config.json",
+  "_cursor_project": ".cursor/mcp.json (in project root)",
+  "_cursor_global": "~/.cursor/mcp.json",
+
+  "_eoa_mode": "EOA mode — direct private key signing:",
+  "mcpServers": {
+    "awaken-agent-kit": {
+      "command": "bun",
+      "args": ["run", "/ABSOLUTE/PATH/TO/awaken-agent-skills/src/mcp/server.ts"],
+      "env": {
+        "AELF_PRIVATE_KEY": "your_private_key_here",
+        "AWAKEN_NETWORK": "mainnet"
+      }
+    }
+  },
+
+  "_ca_mode": "CA mode — Portkey Contract Account via ManagerForwardCall:",
+  "_mcpServers_ca_example": {
+    "awaken-agent-kit": {
+      "command": "bun",
+      "args": ["run", "/ABSOLUTE/PATH/TO/awaken-agent-skills/src/mcp/server.ts"],
+      "env": {
+        "PORTKEY_PRIVATE_KEY": "your_manager_private_key",
+        "PORTKEY_CA_HASH": "your_ca_hash",
+        "PORTKEY_CA_ADDRESS": "your_ca_address",
+        "AWAKEN_NETWORK": "mainnet"
+      }
+    }
+  }
+}

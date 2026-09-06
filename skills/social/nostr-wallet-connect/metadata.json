@@ -1,11 +1,11 @@
 {
   "slug": "nostrwalletconnect",
   "name": "NostrWalletConnect",
-  "version": "0.1.2",
-  "summary": "Nostr Wallet Connect (NIP-47) SDK for AI agents — pay Lightning invoices, check balance, create invoices via any NWC-compatible wallet",
+  "version": "0.1.4",
+  "summary": "Nostr Wallet Connect (NIP-47) SDK for AI entities \u2014 pay Lightning invoices, check balance, create invoices via any NWC-compatible wallet",
   "author": {
     "name": "Humanjava Enterprises",
-    "url": "https://loginwithnostr.com/openclaw"
+    "url": "https://clawhub.ai/vveerrgg/nostrwalletconnect"
   },
   "license": "MIT",
   "acceptLicenseTerms": true,
@@ -28,7 +28,28 @@
     "python": ">=3.10"
   },
   "dependencies": [
-    "nostrkey"
+    "nostrkey>=0.1.1"
+  ],
+  "env": [
+    {
+      "name": "NWC_CONNECTION_STRING",
+      "description": "nostr+walletconnect:// URI from your NWC-compatible wallet \u2014 contains wallet pubkey, relay URL, and secret key",
+      "required": true,
+      "sensitive": true
+    },
+    {
+      "name": "NWC_TIMEOUT",
+      "description": "Request timeout in seconds for wallet responses",
+      "required": false,
+      "sensitive": false,
+      "default": "30"
+    },
+    {
+      "name": "NOSTRKEY_PASSPHRASE",
+      "description": "Passphrase for the NostrKey identity (used by the nostrkey dependency for key operations)",
+      "required": false,
+      "sensitive": true
+    }
   ],
   "categories": [
     "payments",

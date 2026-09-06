@@ -26,3 +26,8 @@ An AI Agent skill that performs **single-coin trend and technical analysis** (kl
 - **Input**: User message with one coin symbol and technical/trend intent. **Parameter extraction**: symbol, timeframe (default 1d/4h), indicators (default all), period (kline default 90).
 - **Tools**: See SKILL.md — `info_markettrend_get_kline`, `info_markettrend_get_indicator_history`, `info_markettrend_get_technical_analysis`, `info_marketsnapshot_get_market_snapshot`. All 4 in parallel.
 - **Output**: 7-section report. **Judgment Logic** (RSI/MACD/MA/Bollinger/volume/divergence/funding), **Error Handling**, **Cross-Skill**, **Safety** — see SKILL.md.
+
+## Source
+
+- **Repository**: [github.com/gate/gate-skills](https://github.com/gate/gate-skills)
+- **Publisher**: [Gate.com](https://www.gate.com)

@@ -1,0 +1,6 @@
+interface:
+  display_name: "GitHub Bug Report Generator"
+  short_description: "Generate structured GitHub bug reports"
+  default_prompt: "Use $gh-issue-bug to turn the current conversation into a structured GitHub bug report, following the skill's required sections and output confirmation format."
+policy:
+  allow_implicit_invocation: false

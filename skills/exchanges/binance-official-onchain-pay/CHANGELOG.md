@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.2 - 2026-06-15
+
+### Fixed
+- **Pre-order endpoint pointed at gray environment**: Switched the documented pre-order path from `papi/v1/ramp/connect/gray/buy/pre-order` to the production path `papi/v1/ramp/connect/buy/pre-order` (Quick Reference table + bash example). Merchants copying the previous example would have integrated against the gray test environment.
+
+### Changed
+- Removed `connect-gray` / `GrayTest` / `your-api-key` example values from the bash example and `merchantCode` / `merchantName` parameter descriptions; replaced with neutral placeholders (`<YOUR_CLIENT_ID>`, `<YOUR_API_KEY>`, `<YOUR_MERCHANT_CODE>`, `<YOUR_MERCHANT_NAME>`) so users supply their own Binance-issued credentials.
+- Reworded the Customization "Testing" note to drop the `connect-gray` reference.
+- Bumped User-Agent string to `onchain-pay-open-api/0.1.2 (Skill)` in `scripts/sign_and_call.sh`.
+
 ## 0.1.1 - 2026-03-17
 
 ### Fixed

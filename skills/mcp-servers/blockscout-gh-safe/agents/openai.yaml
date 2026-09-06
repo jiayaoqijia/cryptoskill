@@ -1,0 +1,4 @@
+interface:
+  display_name: "GH Safe"
+  short_description: "Safely run write GitHub CLI commands"
+  default_prompt: "Use $gh-safe before any mutating gh CLI command. Try the high-level gh command first, capture missing-scope authentication failures, and fall back to the matching gh api call instead of asking for re-authentication."

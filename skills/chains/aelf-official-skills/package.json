@@ -1,0 +1,39 @@
+{
+  "name": "@blockchain-forever/aelf-skills",
+  "version": "0.1.4",
+  "description": "Discovery, download, and configuration hub for the aelf agent skill ecosystem.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AElfProject/aelf-skills.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "SKILL.md",
+    "skills-catalog.json",
+    "bootstrap.sh",
+    "scripts/",
+    "docs/",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "catalog:generate": "bun run scripts/generate-catalog.ts",
+    "catalog:generate:local": "bun run scripts/generate-catalog.ts --include-local-paths --output skills-catalog.local.json --no-readme-sync",
+    "bootstrap": "bun run scripts/bootstrap.ts",
+    "health:check": "bun run scripts/health-check.ts",
+    "update:check": "bun run scripts/update-check.ts",
+    "update:check:json": "bun run scripts/update-check.ts --json",
+    "type-debt:report": "bun run scripts/type-debt-report.ts",
+    "test:signer-chain": "bun run scripts/test-signer-chain.ts",
+    "readme:check": "bun run scripts/check-readme-sync.ts",
+    "security:audit": "bun run scripts/security-audit.ts"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}

@@ -32,7 +32,7 @@ Query current staking positions, balances, and rewards on Gate.
 | redeem_amount | string | Amount available/in redeem |
 | createStamp, updateStamp | integer | Timestamps |
 | extra_income, move_income | string | Extra / move income |
-| status | integer | Status |
+| status | integer | Status (do not display when showing positions) |
 
 ---
 
@@ -41,12 +41,12 @@ Query current staking positions, balances, and rewards on Gate.
 1. **Parse parameters**: Extract `coin` or `pid` from user query if present (e.g. "USDT position" → coin=USDT).
 2. **Call positions**: Call `cex_earn_asset_list` with optional `coin` and/or `pid`. No parameters returns all positions.
 3. **Redeemable amount**: For each position item, **do not** use `mortgage_amount` − `freeze_amount`. To get redeemable: call **`cex_earn_find_coin`** (optionally with `cointype` matching the position’s `mortgage_coin`), find the product entry with the same **pid** and matching **currency** (coin). Use that product’s **exchangeRate** (or **exchangeRateReserve** as per API). Then **redeemable** = `mortgage_amount` × that exchange rate. If the API provides `redeem_amount` and it is documented as the final redeemable value, prefer it when present.
-4. **Key data to extract**: From each array item: `pid`, `mortgage_coin`, `mortgage_amount`, `freeze_amount`, `income_total`, `yesterday_income` or `yesterday_income_multi`, `protocol_name`, `type`, `reward_coins`, `defi_income`, `redeem_amount`. For redeemable, use the formula above with exchange rate from `cex_earn_find_coin` (same coin + pid).
-5. **Format response**: Group by coin or show per-product; use the Response Template in the matching scenario below.
+4. **Key data to extract**: From each array item: `pid`, `mortgage_coin`, `mortgage_amount`, `freeze_amount`, `income_total`, `yesterday_income` or `yesterday_income_multi`, `protocol_name`, `type`, `reward_coins`, `defi_income`, `redeem_amount`. For redeemable, use the formula above with exchange rate from `cex_earn_find_coin` (same coin + pid). Do not display `createStamp`, `updateStamp` or any timestamp formatting (see SKILL.md). Do not display **status** (ignore status when showing positions).
+5. **Format response**: Group by coin or show per-product; use the Response Template in the matching scenario below. Do not display or format timestamp fields in any result. Do not display status in position output.
 
 ## Report Template
 
-Use the **Response Template** block from the scenario that matches the user intent (all positions, specific coin, portfolio value). Show mortgage_coin, protocol_name, mortgage_amount, freeze_amount, **redeemable** (mortgage_amount × exchange rate from `cex_earn_find_coin` for same coin and pid), income_total, yesterday_income; for DeFi include defi_income and reward_coins.
+Use the **Response Template** block from the scenario that matches the user intent (all positions, specific coin, portfolio value). Show mortgage_coin, protocol_name, mortgage_amount, freeze_amount, **redeemable** (mortgage_amount × exchange rate from `cex_earn_find_coin` for same coin and pid), income_total, yesterday_income; for DeFi include defi_income and reward_coins. Do not show **status** (omit status field).
 
 **Number formatting**: Apply 8 decimal places precision with trailing zeros removed for amounts (mortgage_amount, freeze_amount, income_total, etc.). For exchange rates, use appropriate precision as returned by the API.
 

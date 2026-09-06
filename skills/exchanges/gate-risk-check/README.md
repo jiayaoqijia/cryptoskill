@@ -28,3 +28,8 @@ An AI Agent skill that performs **token contract security and address risk asses
 - **Input**: Token symbol or contract address + **chain** (required). Or address for Address Risk mode.
 - **Tools**: Token mode — `info_compliance_check_token_security`, `info_coin_get_coin_info` (parallel). Address mode — `info_onchain_get_address_info` only; `info_compliance_check_address_risk` not available.
 - **Output**: Contract Security Report (7 sections) or address degradation message. **Decision Logic** (honeypot, tax, concentration, name risk), **Risk Level Mapping**, **Error Handling**, **Safety** (mandatory honeypot warning, no safety guarantee) — see SKILL.md.
+
+## Source
+
+- **Repository**: [github.com/gate/gate-skills](https://github.com/gate/gate-skills)
+- **Publisher**: [Gate.com](https://www.gate.com)

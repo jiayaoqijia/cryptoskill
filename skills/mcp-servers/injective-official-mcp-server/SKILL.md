@@ -3,12 +3,6 @@ name: injective-official-mcp-server
 description: "An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that gives AI agents full trading capabilities on [Injective](https://injective.com) — perpetual futures, spot transfers, cross-chain bridging, and raw EVM transactions."
 ---
 
-# injective-official-mcp-server
-
-_Source: [github.com/InjectiveLabs/mcp-server](https://github.com/InjectiveLabs/mcp-server). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Injective MCP Server
 
 An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that gives AI agents full trading capabilities on [Injective](https://injective.com) — perpetual futures, spot transfers, cross-chain bridging, and raw EVM transactions.
@@ -18,6 +12,11 @@ Connect it to Claude Desktop or Claude Code and trade with natural language.
 ---
 
 ## Tools
+
+### Address Utilities
+| Tool | Description |
+|---|---|
+| `address_normalize` | Accept an `inj1...` or `0x...` address and return both canonical encodings. |
 
 ### Wallets
 | Tool | Description |
@@ -35,6 +34,26 @@ Connect it to Claude Desktop or Claude Code and trade with natural language.
 | `account_balances` | Get bank + subaccount balances. Supports all token types. |
 | `account_positions` | Get open perpetual positions with unrealized P&L. |
 | `token_metadata` | Look up symbol, decimals, and type for any denom. |
+
+### Native USDC and CCTP
+| Tool | Description |
+|---|---|
+| `usdc_native_info` | Return native Injective USDC metadata, including EVM address, Cosmos denom, decimals, CCTP domain, and contracts. |
+| `cctp_supported_chains` | Return common Circle CCTP V2 source-chain configs and aliases for native USDC flows into Injective. |
+| `cctp_attestation_status` | Check Circle Iris attestation status for a CCTP burn transaction. Read-only. |
+| `cctp_mint` | Submit `receiveMessage(message, attestation)` on Injective EVM after an attestation is complete. Real transaction. |
+
+### RFQ
+| Tool | Description |
+|---|---|
+| `rfq_constants` | Return RFQ contract, gateway, websocket, chain IDs, and default quote collection window for the configured network. |
+| `rfq_market_readiness` | List active derivative markets and mark which ones match the RFQ quote denom. Read-only. |
+
+### Frontend Guidance
+| Tool | Description |
+|---|---|
+| `frontend_guidance_topics` | List read-only frontend guidance topics available from the MCP server. |
+| `frontend_guidance` | Return guidance for Injective browser trading flows, optionally filtered by topic. |
 
 ### Perpetual Trading
 | Tool | Description |
@@ -145,6 +164,29 @@ For bridging:
 > Bridge 50 USDT to 0x... on Base via deBridge
 ```
 
+For native USDC and CCTP:
+
+```text
+> Show the native Injective USDC denom and CCTP domain
+> Check the CCTP attestation status for burn tx 0x...
+> Mint the completed CCTP transfer on Injective
+```
+
+For RFQ discovery:
+
+```text
+> Show RFQ constants for mainnet
+> Which active USDC perp markets are RFQ-ready?
+```
+
+For frontend implementation guidance:
+
+```text
+> List Injective frontend guidance topics
+> Show frontend guidance for native USDC balance UX
+> What should I check before shipping an Injective browser wallet signing flow?
+```
+
 ---
 
 ## Architecture
@@ -156,10 +198,14 @@ Claude (MCP client)
 MCP Server  (src/mcp/server.ts)
        │
        ├── config/       Network config (testnet / mainnet)
+       ├── addresses/    Injective/Ethereum address normalization
        ├── keystore/     AES-256-GCM encrypted key storage
        ├── wallets/      Wallet generation and management
        ├── markets/      Market data with in-memory caching
        ├── accounts/     Balances and positions
+       ├── usdc/         Native USDC metadata and Circle CCTP helpers
+       ├── rfq/          RFQ constants and market readiness
+       ├── guidance/     Read-only frontend implementation guidance
        ├── trading/      Perpetual market orders (Cosmos signing)
        ├── evm/eip712    Perpetual market orders (EIP-712 signing)
        ├── orders/       Perpetual limit order lifecycle
@@ -205,7 +251,7 @@ All Injective denom formats are supported:
 | Peggy (bridged ERC-20) | `peggy0x...` | USDT |
 | IBC | `ibc/...` | ATOM |
 | TokenFactory | `factory/inj.../name` | — |
-| MTS / Injective EVM ERC-20 | `erc20:0x...` | Injective EVM tokens |
+| MTS / Injective EVM ERC-20 | `erc20:0x...` | native USDC |
 
 Token metadata (symbol, decimals) is resolved automatically against on-chain registry and cached for the lifetime of the server process.
 

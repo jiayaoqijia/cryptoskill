@@ -1,0 +1,20 @@
+# Translation Tool Dependencies
+# Created by ETHPanda for SpoonOS
+
+# Google Translate API (free)
+googletrans==4.0.0-rc1
+
+# Alternative: Official Google Cloud Translation (requires API key)
+# google-cloud-translate==3.12.1
+
+# DeepL Translation API (requires API key)
+# deepl==1.16.1
+
+# HTTP requests
+requests>=2.31.0
+
+# JSON handling (built-in, listed for reference)
+# json
+
+# Type hints support
+typing-extensions>=4.8.0

@@ -1,0 +1,294 @@
+{
+  "name": "gold-api-feed",
+  "description": "Real-time precious metals and cryptocurrency price feed with TradingAgents-inspired multi-agent analysis, portfolio management, and risk monitoring",
+  "version": "2.0.0",
+  "tools": [
+    {
+      "name": "get_price",
+      "description": "Get current price for a single asset",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Asset symbol (XAU, XAG, BTC, ETH, XPD, XPT, HG)",
+            "enum": ["XAU", "XAG", "BTC", "ETH", "XPD", "XPT", "HG"]
+          }
+        },
+        "required": ["symbol"]
+      },
+      "returns": {
+        "success": "boolean",
+        "symbol": "string",
+        "name": "string",
+        "price": "number",
+        "currency": "string",
+        "updated": "string (ISO timestamp)"
+      }
+    },
+    {
+      "name": "get_all_prices",
+      "description": "Get prices for all supported assets",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      },
+      "returns": {
+        "success": "boolean",
+        "prices": {
+          "type": "object",
+          "description": "Map of symbol to price data"
+        }
+      }
+    },
+    {
+      "name": "analyze_trade_setup",
+      "description": "Analyze trade setup with position sizing and risk checks",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "type": "string",
+            "description": "Asset symbol"
+          },
+          "entry": {
+            "type": "number",
+            "description": "Entry price"
+          },
+          "stop": {
+            "type": "number",
+            "description": "Stop loss price"
+          },
+          "target": {
+            "type": "number",
+            "description": "Take profit price"
+          },
+          "account": {
+            "type": "number",
+            "description": "Account balance",
+            "default": 10000
+          },
+          "risk_percent": {
+            "type": "number",
+            "description": "Risk percentage per trade",
+            "default": 1.0
+          }
+        },
+        "required": ["asset", "entry", "stop", "target"]
+      },
+      "returns": {
+        "success": "boolean",
+        "approved": "boolean",
+        "position_size": "number",
+        "risk_amount": "number",
+        "risk_reward_ratio": "number",
+        "recommendation": "string",
+        "reasoning": ["string"]
+      }
+    },
+    {
+      "name": "market_analysis",
+      "description": "Multi-agent market analysis with technical, sentiment, and fundamental perspectives",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "type": "string",
+            "description": "Asset symbol"
+          },
+          "current_price": {
+            "type": "number",
+            "description": "Current market price"
+          },
+          "support": {
+            "type": "array",
+            "items": { "type": "number" },
+            "description": "Support price levels"
+          },
+          "resistance": {
+            "type": "array",
+            "items": { "type": "number" },
+            "description": "Resistance price levels"
+          },
+          "rsi": {
+            "type": "number",
+            "description": "RSI value (optional)"
+          },
+          "trend": {
+            "type": "string",
+            "enum": ["bullish", "bearish", "neutral"],
+            "default": "neutral"
+          },
+          "price_change_24h": {
+            "type": "number",
+            "description": "24h price change percentage",
+            "default": 0
+          }
+        },
+        "required": ["asset", "current_price", "support", "resistance"]
+      },
+      "returns": {
+        "success": "boolean",
+        "sentiment": "string (BULLISH/BEARISH/NEUTRAL)",
+        "confidence": "number (0-1)",
+        "recommendation": "string",
+        "risk_level": "string",
+        "bullish_points": ["string"],
+        "bearish_points": ["string"],
+        "analyst_opinions": [
+          {
+            "type": "string",
+            "sentiment": "string",
+            "confidence": "number"
+          }
+        ]
+      }
+    },
+    {
+      "name": "run_debate",
+      "description": "Run structured bull/bear debate with configurable rounds",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "type": "string",
+            "description": "Asset symbol"
+          },
+          "current_price": {
+            "type": "number",
+            "description": "Current market price"
+          },
+          "rounds": {
+            "type": "integer",
+            "description": "Number of debate rounds (1-5)",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 3
+          }
+        },
+        "required": ["asset", "current_price"]
+      },
+      "returns": {
+        "success": "boolean",
+        "verdict": "string",
+        "rounds": [
+          {
+            "round": "integer",
+            "bull_argument": "string",
+            "bear_argument": "string",
+            "bull_strength": "number",
+            "bear_strength": "number",
+            "winner": "string"
+          }
+        ],
+        "bull_wins": "integer",
+        "bear_wins": "integer"
+      }
+    },
+    {
+      "name": "create_portfolio",
+      "description": "Create new portfolio with capital and risk settings",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "initial_capital": {
+            "type": "number",
+            "description": "Starting capital",
+            "default": 10000
+          },
+          "max_risk_per_trade": {
+            "type": "number",
+            "description": "Maximum risk percentage per trade",
+            "default": 2
+          }
+        }
+      },
+      "returns": {
+        "success": "boolean",
+        "capital": "number",
+        "message": "string"
+      }
+    },
+    {
+      "name": "check_order",
+      "description": "Check order eligibility with Portfolio Manager validation",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "type": "string",
+            "description": "Asset symbol"
+          },
+          "entry": {
+            "type": "number",
+            "description": "Entry price"
+          },
+          "stop": {
+            "type": "number",
+            "description": "Stop loss price"
+          },
+          "risk_percent": {
+            "type": "number",
+            "description": "Risk percentage",
+            "default": 1
+          }
+        },
+        "required": ["asset", "entry", "stop"]
+      },
+      "returns": {
+        "success": "boolean",
+        "approved": "boolean",
+        "position_size": "number",
+        "risk_amount": "number",
+        "notional": "number",
+        "margin_required": "number",
+        "reason": "string"
+      }
+    },
+    {
+      "name": "get_portfolio_summary",
+      "description": "Get complete portfolio summary",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      },
+      "returns": {
+        "success": "boolean",
+        "summary": "string"
+      }
+    },
+    {
+      "name": "check_risk",
+      "description": "Run comprehensive risk assessment with volatility, VaR, and liquidity analysis",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "assets": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of asset symbols"
+          },
+          "portfolio_value": {
+            "type": "number",
+            "description": "Current portfolio value"
+          }
+        },
+        "required": ["assets", "portfolio_value"]
+      },
+      "returns": {
+        "success": "boolean",
+        "risk_level": "string (LOW/MEDIUM/HIGH/CRITICAL)",
+        "risk_score": "number (0-1)",
+        "alerts": [
+          {
+            "level": "string",
+            "category": "string",
+            "message": "string",
+            "severity": "number"
+          }
+        ],
+        "recommendations": ["string"]
+      }
+    }
+  ]
+}

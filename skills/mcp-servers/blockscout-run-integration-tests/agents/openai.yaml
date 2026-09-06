@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Integration Tests"
+  short_description: "Timeout-protected integration test runner"
+  default_prompt: "Use $run-integration-tests before running any integration test suite, module, or test in this project, especially when checking live Blockscout, Chainscout, or BENS connectivity."

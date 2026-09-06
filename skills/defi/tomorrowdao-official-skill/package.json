@@ -1,0 +1,75 @@
+{
+  "name": "@tomorrowdao/agent-skills",
+  "version": "0.2.2",
+  "description": "TomorrowDAO AI agent skills toolkit with MCP, CLI, OpenClaw and SDK interfaces.",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./mcp": "./src/mcp/server.ts"
+  },
+  "bin": {
+    "tomorrowdao-skill": "tomorrowdao_skill.js",
+    "tomorrowdao-setup": "bin/setup.js"
+  },
+  "files": [
+    "index.ts",
+    "src/",
+    "lib/",
+    "bin/",
+    "SKILL.md",
+    "cli-helpers.ts",
+    "tomorrowdao_skill.ts",
+    "tomorrowdao_skill.js",
+    "openclaw.json",
+    "mcp-config.example.json",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TomorrowDAOProject/tomorrowDAO-skill.git"
+  },
+  "homepage": "https://github.com/TomorrowDAOProject/tomorrowDAO-skill#readme",
+  "bugs": {
+    "url": "https://github.com/TomorrowDAOProject/tomorrowDAO-skill/issues"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "setup": "bun run bin/setup.ts",
+    "mcp": "bun run src/mcp/server.ts",
+    "cli": "bun run tomorrowdao_skill.ts",
+    "test": "bun test tests/",
+    "test:unit": "bun test tests/unit/",
+    "test:integration": "bun test tests/integration/",
+    "test:e2e": "bun test tests/e2e/",
+    "test:coverage": "bun test --coverage --coverage-reporter=text tests/unit/ tests/integration/ tests/e2e/",
+    "test:coverage:gate": "bun run scripts/coverage-gate.ts",
+    "test:coverage:ci": "COVERAGE_MIN_LINES=85 COVERAGE_MIN_FUNCS=80 bun run test:unit:coverage && bun run coverage:gate",
+    "test:unit:coverage": "bun run test:unit --coverage --coverage-reporter=text --coverage-reporter=lcov --coverage-dir=coverage",
+    "coverage:gate": "bun run scripts/coverage-gate.ts",
+    "typecheck:src": "bunx tsc -p tsconfig.src.json --noEmit",
+    "typecheck:test": "bunx tsc -p tsconfig.test.json --noEmit",
+    "typecheck": "bun run typecheck:src && bun run typecheck:test",
+    "build:openclaw": "bun run bin/generate-openclaw.ts",
+    "build:openclaw:check": "bun run bin/generate-openclaw.ts --check",
+    "coverage:badge": "bun run bin/generate-coverage-badge.ts",
+    "deps:check": "bun run scripts/check-deps-baseline.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "aelf-sdk": "^3.5.1-beta.0",
+    "commander": "^12.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "latest",
+    "ajv": "^8.17.1",
+    "typescript": "^5.7.0"
+  }
+}

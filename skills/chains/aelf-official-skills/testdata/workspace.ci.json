@@ -1,0 +1,10 @@
+{
+  "projects": [
+    { "path": "${SKILLS_BASE}/skills/fixture-core-skill" },
+    {
+      "path": "${SKILLS_BASE}/skills/fixture-node-skill",
+      "dependsOn": ["fixture-core-skill"]
+    },
+    { "path": "${SKILLS_BASE}/skills/fixture-nonskill-repo" }
+  ]
+}

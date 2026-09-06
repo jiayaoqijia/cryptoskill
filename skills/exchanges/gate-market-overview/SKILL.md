@@ -1,17 +1,54 @@
 ---
 name: gate-info-marketoverview
-version: "2026.3.12-1"
-updated: "2026-03-12"
-description: "Market overview. Use this skill whenever the user asks about overall market. Trigger phrases include: how is the market, market overview, what is happening in crypto. MCP tools: info_marketsnapshot_get_market_overview, info_coin_get_coin_rankings, info_platformmetrics_get_defi_overview, news_events_get_latest_events, info_macro_get_macro_summary."
+version: "2026.4.6-1"
+updated: "2026-04-06"
+description: "Market overview. Use this skill ONLY when the user's query is exclusively about overall market conditions with no specific coin analysis. Trigger phrases: how is the market, market overview, what is happening in crypto. If the query ALSO mentions a specific coin to analyze, risk to check, technicals to review, or any other analysis dimension, use gate-info-research instead — it handles multi-dimension queries in a single unified report."
+required_credentials: []
+required_env_vars: []
+required_permissions: []
 ---
 
 # gate-info-marketoverview
+
+## General Rules
+
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read `./references/gate-runtime-rules.md`
+→ Also read `./references/info-news-runtime-rules.md` for gate-info / gate-news shared rules (tool degradation, report standards, security, routing, and graceful fallback behavior).
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
 
 > The crypto market "dashboard" Skill. The user asks about overall market conditions in a single sentence; the system calls 5 MCP Tools in parallel to fetch market-wide data + sector leaderboards + DeFi overview + recent events + macro summary, then the LLM aggregates into a market-briefing-level structured report.
 
 **Trigger Scenarios**: User asks about overall market conditions — not about a specific coin.
 
----
+## MCP Dependencies
+
+### Required MCP Servers
+| MCP Server | Status |
+|------------|--------|
+| Gate-Info | ✅ Required |
+
+### MCP Tools Used
+
+**Query Operations (Read-only)**
+
+- info_coin_get_coin_rankings
+- info_macro_get_macro_summary
+- info_marketsnapshot_get_market_overview
+- info_marketsnapshot_get_market_snapshot
+- info_platformmetrics_get_defi_overview
+- news_events_get_latest_events
+
+### Authentication
+- API Key Required: No
+- Credentials Source: None; this skill uses read-only Gate Info / Gate News MCP access only.
+
+### Installation Check
+- Required: Gate-Info
+- Install: Use the local Gate MCP installation flow for the current host IDE before continuing.
+- Continue only after the required Gate MCP server is available in the current environment.
 
 ## Routing Rules
 
@@ -26,6 +63,13 @@ description: "Market overview. Use this skill whenever the user asks about overa
 ---
 
 ## Execution Workflow
+
+### Step 0: Multi-Dimension Intent Check
+
+Before executing this Skill, check if the user's query involves multiple analysis dimensions:
+
+- If the query is exclusively about overall market conditions with no specific coin to deep-dive, proceed with this Skill.
+- If the query **also** mentions a specific coin to analyze, risk to check, technicals to review, or any other analysis dimension beyond market overview, route to `gate-info-research` — it handles multi-dimension queries with unified tool deduplication and coherent report aggregation.
 
 ### Step 1: Intent Recognition
 
@@ -135,8 +179,8 @@ Confirm the user is asking about overall market conditions (not a single coin). 
 |-----------|-----------------|
 | fear_greed > 75 | "Extreme Greed — exercise caution at highs" |
 | fear_greed < 25 | "Extreme Fear — potential opportunity amid panic" |
-| BTC dominance > 55% and altcoins broadly declining | "Capital rotating back to BTC — altcoins under pressure" |
-| BTC dominance declining + altcoins broadly rising | "Potential altcoin season" |
+| BTC dominance > 55% and most altcoins declining | "Capital rotating back to BTC — altcoins under pressure" |
+| BTC dominance declining + most altcoins rising | "Potential altcoin season" |
 | Gainer/Loser ratio > 3:1 | "Broad-based rally — bulls in control" |
 | Gainer/Loser ratio < 1:3 | "Broad-based decline — bears in control" |
 | DeFi TVL 7d change > +10% | "Significant capital inflow into DeFi" |

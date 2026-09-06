@@ -1,0 +1,127 @@
+# Limit-Order Strategy — CLI Reference
+
+4 subcommands: `create-limit`, `cancel`, `list`, `resume`. All emit the JSON envelope `{ok:true,data:{...}}` on stdout (no `--format` flag — strategy CLI is agent-facing; the agent renders any user-visible table from JSON). Follow the already-loaded strategy flow for behavior.
+
+## `strategy create-limit`
+
+```bash
+onchainos strategy create-limit --chain-id <id|alias> --from-token <address> --to-token <address> \
+  --amount <decimal-string> --direction <buy|sell> --trigger-price <usd> \
+  [--current-price <usd>] [--slippage <percent>] [--mev-protection <on|off|default>] [--wait]
+```
+
+| Flag | Required | Notes |
+|---|---|---|
+| `--chain-id` | Y | `1` / `solana` / `bsc` / `arbitrum` / `base` / `xlayer` (6 supported chains only). |
+| `--from-token` / `--to-token` | Y | Sell-side / buy-side token contract address. |
+| `--amount` | Y | Amount of from-token to sell (string, no precision loss). |
+| `--direction` | Y | `buy` or `sell` (case-insensitive). Strategy type is derived by the CLI — no `--type` flag. |
+| `--trigger-price` | Y | USD trigger price. |
+| `--current-price` | N | Current USD price of the comparison token (to-token for buy, from-token for sell). Omit → CLI fetches via `market price`. |
+| `--slippage` | N | Percent, default `15`. Pass a plain number (`20%` → `20`; `0.05` = 0.05%, not 5%). |
+| `--mev-protection` | N | `on` / `off` / `default` (default = BE picks). |
+| `--wait` | N | bool `[UNIT: bool]`, default `false`. Wait for terminal state: fixed 3 s sleep, then re-query + merge (see Output). |
+
+Order TTL is fixed at `604800` seconds (7 days) by the CLI and cannot be configured with a command-line flag.
+
+Output: `{orderId, status:<int>, statusLabel, estimatedWaitTime:<int|null>, eventCursor:<string|null>}`. Solana returns `estimatedWaitTime=0`; other chains follow the async wait pattern.
+
+**belowMinimum (exit 0, no order created):** below the $1 USD minimum — caught by the local pre-check OR by normalizing backend `100010` — the CLI returns `{belowMinimum:true, minFromAmount:<string>, fromSymbol:<string>}` instead. `minFromAmount = ceil(1.0 / from_token_price)` as an integer string; both paths emit identical shape. Return this object to the already-loaded strategy flow for rendering.
+
+**`--wait` merge:** appends `settled:<bool>`; when settled, also `transactionInfo` / `executionHistoryList` / `fromToken` / `toToken` / `orderStatusUpdateTime`. `status` / `statusLabel` reflect the re-query.
+
+## `strategy cancel`
+
+Pass exactly one target selector:
+```bash
+onchainos strategy cancel --order-id <id> [--wait]
+onchainos strategy cancel --order-ids id1,id2,... [--wait]
+onchainos strategy cancel --all
+```
+`--wait` (bool, `[UNIT: bool]`) waits for terminal state (fixed 3 s + per-order re-query/merge). **`--all` + `--wait` is rejected** before any cancel is sent (`code: invalid_input`, `field: wait`, exit 1) — use `--order-id` / `--order-ids` with `--wait`, or omit `--wait` for bulk cancel. Output without `--wait`: `{updateNum:N, estimatedWaitTime:null|n}`; with `--wait`: `{settled:<bool>, orders:[{orderId, settled, status, statusLabel, ...}]}` (top-level `settled` = logical AND across orders). `updateNum` is the count BE accepted, not the count that reached terminal state — re-query with `list` if you did not pass `--wait`.
+
+## `strategy list`
+
+```bash
+onchainos strategy list [--order-id <id>] [--status active,suspended,...] [--chain-id 1,501] \
+  [--token <address>] [--limit <int>] [--cursor <string>] [--strategy-mode 7]
+```
+Modes: `--order-id <id>` → single-order detail (`openOrderDetail`); omit → page query (`getOpenOrder`, active wallet addresses auto-supplied; `--limit` max 100 default 100; `--cursor` from the previous response's `nextCursor`). `--status` and `--chain-id` accept comma-separated lists; `--token` accepts a single address only (multi-token → call once per token and merge).
+
+## `strategy resume`
+
+```bash
+onchainos strategy resume [--wait]                      # auto-discover all SUSPENDED + canResume=true
+onchainos strategy resume --order-ids id1,id2 [--wait]  # explicit
+```
+`--wait` (bool, `[UNIT: bool]`) waits for terminal state (fixed 3 s + per-order re-query/merge), same `{settled, orders:[...]}` shape as `cancel --wait`.
+
+## strategyType enum + derivation
+
+Derived inside the CLI from `(--direction, --trigger-price, current price)`; equality folds into the aggressive side (CHASE_HIGH / STOP_LOSS). The Display label is the only user-facing string.
+
+| int | Enum | Direction | trigger vs current | Display label | Semantics |
+|---|---|---|---|---|---|
+| 2 | BUY_DIP | buy | trigger < current | Buy Dip | Buy when price falls to trigger |
+| 5 | CHASE_HIGH | buy | trigger ≥ current | Buy Above | Buy when price rises above trigger |
+| 3 | TAKE_PROFIT | sell | trigger > current | Take Profit | Sell when price rises to trigger |
+| 4 | STOP_LOSS | sell | trigger ≤ current | Stop Loss | Sell when price falls to trigger |
+
+To fetch the current price: `onchainos market price --chain <chain> --address <token>`, read `data[0].price` (buy → to-token's price; sell → from-token's price).
+
+## status enum
+
+| int | Enum | CLI `--status` value | Display label | Terminal? |
+|---|---|---|---|---|
+| -7 | EXPIRED | `expired` | Expired | Yes |
+| -3 | CANCELLING | `cancelling` | Cancelling | No |
+| -2 | CANCELLED | `cancelled` | Cancelled | Yes |
+| -1 | FAILED | `failed` | Failed | Yes |
+| 0 | TRADING | `processing` / `trading` | Trading | No |
+| 1 | COMPLETED | `completed` | Completed | Yes |
+| 2 | CREATING | `creating` | Creating | No |
+| 3 | ACTIVE | `active` | Active | No |
+| 4 | SUSPENDED | `suspended` | Suspended | No |
+
+Non-terminal set `{-3,0,2,3,4}` (the default when `--status` is omitted); terminal set `{-7,-2,-1,1}`. `SPEEDING_UP` (-4) is not a valid filter. To see terminal orders, pass `--status` explicitly (e.g. `completed`, `cancelled`, `failed`, `expired`, or the full 9 for "all including terminal").
+
+## Error code → agent action
+
+Match by integer code, not msg string.
+
+| Code | Name | Action |
+|---|---|---|
+| 100 | REQUEST_PARAM_ERROR | Surface the BE message; ask the user to fix the flag. |
+| 10019 | INSUFFICIENT_NATIVE_GAS_BALANCE | Native gas below required minimum (msg includes `minAmount`). Prompt to top up (deposit / transfer / swap a stablecoin to native via `swap execute`). Do NOT auto-retry. |
+| 10026 | JWT_TOKEN_VERIFY_FAILED | Suggest `wallet login`, then retry. |
+| 10106 | CHAIN_NOT_SUPPORT_ERROR | Chain unsupported; suggest a supported alternative. |
+| 60002 | NO_ORDER_FOUND | Target id wrong or already terminal — suggest `list`. |
+| 60003 | LIMIT_ORDER_NO_AUTHORITY | Trader Mode not activated yet; next CLI call triggers SD-A automatically — retry once. |
+| 60006 | LIMIT_ORDER_OUT_LIMIT_FAIL | Pending order count at the per-account max (100); ask the user to cancel some and retry. |
+| 60009 | LIMIT_ORDER_ILLIQUIDITY_ERROR | No liquidity at the trigger; suggest a different pair or wider trigger. |
+| 60014 | LIMIT_ORDER_EXPIRED_CANNOT_OPERATE | Order already expired. |
+| 60015 | LIMIT_ORDER_PENDING_CANNOT_OPERATE | Mid-lifecycle; wait for terminal state. |
+| 60017 | LIMIT_ORDER_SUCCESS_CANNOT_OPERATE | Already completed. |
+| 60018 | ...UPGRADE_REQUIRED | Transparent — CLI handles via SD-A retry; if it leaks, just retry the same command. |
+| 60030 | QUOTA_EXCEEDED | Account-level quota reached. |
+| 100005 | WALLET_ADDRESS_BLACKLISTED | Address flagged; ask the user to contact support — do not retry. |
+| 100007 | TEE_SIGN_FAILURE | Transient — retry once. |
+| 100008 | TEE_SERVICE_UNAVAILABLE | Temporarily unavailable; retry later. |
+| 100010 | ORDER_AMOUNT_TOO_SMALL | Below the $1 USD minimum. For `create-limit` the CLI normalizes this to a `belowMinimum` response at exit 0 (see create-limit Output) — you won't see it as an error there; elsewhere, increase `--amount` and retry. |
+| 100012 | LIMIT_ORDER_INSUFFICIENT_BALANCE | Insufficient balance; suggest `wallet balance`. |
+
+## Execution event codes (`executionHistoryList[].code`)
+
+Emitted by the TEE swap-trade engine on an active order. Read the **latest** entry first. Per recognised code the CLI injects `name` (internal, do NOT surface), `message` (surface verbatim, translate), `terminal` (`true` → stop polling and surface; `false` → safe to wait). Unrecognised codes: surface the raw BE `msg` (else `"event code <N>"`).
+
+Reading patterns: latest entry wins; same code recurring every ~10s without a `txHash` = soft retry loop (surface the latest message + repeat count, ask wait/cancel/adjust); `terminal=true` → stop and surface; `terminal=false` repeating 3+ times → treat as user-actionable; code `0` with `txHash` → success (surface `txHash` + explorer link).
+
+Action hints by hot code: `0` success (txHash + explorer) · `3013` top up from-token or smaller amount · `3014` fund the native fee token · `3015` widen `--slippage` · `3016` non-transient (different pair / smaller amount / wider trigger / different chain) · `3017` engine retries (recurring 3+ → treat like 3016) · `3019` terminal, destination token blocklisted · `3020` terminal, wallet flagged · `3023` the fixed TTL expired; ask whether to create a new order. Codes outside this list: follow the CLI's `terminal` field.
+
+## `getOpenOrder` request body (reference only — agent never builds it)
+
+Page-query mode POSTs `getOpenOrder`; the agent only sets mapped flags. Fields: `accountId` (auto, JWT auth), `walletAddressList` (auto, EVM+SOL), `chainIdList` (← `--chain-id`), `orderStatusList` (← `--status`; default 5 non-terminal), `orderTypeList` (unused), `idList` (use `--order-id` detail mode instead), `tokenAddress` (← `--token`, single only), `limit` (← `--limit`, BE default 100 max 100), `cursor` (← `--cursor`, Base64; omit on first page).
+
+## Current limitations
+
+Symbol→address resolution: out of scope (pass addresses). Custom preset (fee tiers, dexId filter): default preset only (MEV via `--mev-protection`). Events stream: `eventCursor` surfaced verbatim, no consumer yet. `cancel --all` channel filter: BE default pass-through. Multi-account batch: out of scope (active account only). `get_account_status`: intentionally not implemented — SA activation/expiry is handled transparently inside the 60018 flow.

@@ -1,139 +1,156 @@
-# Depositing USDC on Solana (Creating Unified Balance)
+# Deposit USDC on Solana into Gateway
 
-## Create Unified Balance
-```tsx
+This example uses Solana Devnet, but the same deposit pattern applies to other supported Solana Gateway environments after substituting the correct RPC endpoint, Gateway Wallet address, and USDC mint address.
+
+Canonical runnable references:
+- Create unified USDC balance: https://developers.circle.com/gateway/howtos/create-unified-usdc-balance.md
+- Unified balance Solana quickstart: https://developers.circle.com/gateway/quickstarts/unified-balance-solana.md
+
+## What this does
+
+This script:
+
+1. Connects to Solana and loads the depositor keypair
+2. Checks the depositor's USDC Associated Token Account balance
+3. Derives the Gateway deposit PDAs
+4. Calls the Gateway `deposit` instruction
+5. Waits for transaction confirmation
+
+## Critical warning
+
+Do **not** send USDC directly to the Gateway Wallet address or custody account. The funds will not be credited to the unified balance. You must submit a Gateway `deposit` instruction.
+
+## Runnable example
+
+```ts
 import {
+  Wallet,
   AnchorProvider,
   Program,
   setProvider,
-  utils,
 } from "@coral-xyz/anchor";
+import { Connection, Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import {
-  getAssociatedTokenAddress,
+  getAssociatedTokenAddressSync,
   getAccount,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import {
-  PublicKey,
-  SystemProgram,
-  type TransactionSignature,
-} from "@solana/web3.js";
 import BN from "bn.js";
-import { useState } from "react";
-import { parseUnits } from "viem";
 
-import { gatewayWalletIdl, solanaContracts } from "./contract-addresses.js";
+const RPC_ENDPOINT = "https://api.devnet.solana.com";
+const GATEWAY_WALLET_ADDRESS = "GATEwdfmYNELfp5wDmmR6noSr2vHnAfBPMm2PvCzX5vu";
+const USDC_ADDRESS = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
+const DEPOSIT_AMOUNT = new BN(5_000_000); // 5 USDC (6 decimals)
 
-type DepositStep = "idle" | "depositing" | "success";
-const SOLANA_NETWORK = "devnet" as
-  | "mainnet"
-  | "devnet";
+const gatewayWalletIdl = {
+  address: GATEWAY_WALLET_ADDRESS,
+  metadata: {
+    name: "gatewayWallet",
+    version: "0.1.0",
+    spec: "0.1.0",
+  },
+  instructions: [
+    {
+      name: "deposit",
+      discriminator: [22, 0],
+      accounts: [
+        { name: "payer", writable: true, signer: true },
+        { name: "owner", signer: true },
+        { name: "gatewayWallet" },
+        { name: "ownerTokenAccount", writable: true },
+        { name: "custodyTokenAccount", writable: true },
+        { name: "deposit", writable: true },
+        { name: "depositorDenylist" },
+        { name: "tokenProgram" },
+        { name: "systemProgram" },
+        { name: "eventAuthority" },
+        { name: "program" },
+      ],
+      args: [{ name: "amount", type: "u64" }],
+    },
+  ],
+} as const;
 
-function findPDAs(programId: PublicKey, usdcMint: PublicKey, owner: PublicKey) {
+function findDepositPDAs(
+  programId: PublicKey,
+  usdcMint: PublicKey,
+  owner: PublicKey,
+) {
   return {
     wallet: PublicKey.findProgramAddressSync(
-      [Buffer.from(utils.bytes.utf8.encode("gateway_wallet"))],
-      programId
+      [Buffer.from("gateway_wallet")],
+      programId,
     )[0],
     custody: PublicKey.findProgramAddressSync(
-      [Buffer.from(utils.bytes.utf8.encode("gateway_wallet_custody")), usdcMint.toBuffer()],
-      programId
+      [Buffer.from("gateway_wallet_custody"), usdcMint.toBuffer()],
+      programId,
     )[0],
     deposit: PublicKey.findProgramAddressSync(
       [Buffer.from("gateway_deposit"), usdcMint.toBuffer(), owner.toBuffer()],
-      programId
+      programId,
     )[0],
     denylist: PublicKey.findProgramAddressSync(
       [Buffer.from("denylist"), owner.toBuffer()],
-      programId
+      programId,
     )[0],
   };
 }
 
-/**
- * React component demonstrating Gateway USDC deposit flow on Solana
- * using browser wallet hooks and Anchor.
- */
-export default function DepositGatewayBalanceSolana() {
-  const { connection } = useConnection();
-  const wallet = useWallet();
-
-  const [step, setStep] = useState<DepositStep>("idle");
-  const [amount, setAmount] = useState("");
-  const [txHash, setTxHash] = useState<TransactionSignature | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleDeposit = async (depositAmountUsdc: string) => {
-    if (!wallet.publicKey) return;
-    if (!wallet.signTransaction) return;
-    if (!depositAmountUsdc) return;
-
-    setError(null);
-
-    try {
-      setAmount(depositAmountUsdc);
-      setStep("depositing");
-
-      const depositAmountBaseUnits = parseUnits(depositAmountUsdc, 6);
-      const depositAmountBN = new BN(depositAmountBaseUnits.toString());
-
-      const chainConfig = solanaContracts[SOLANA_NETWORK];
-      if (!chainConfig) {
-        throw new Error(`Missing Solana config for network: ${SOLANA_NETWORK}`);
-      }
-      const programId = new PublicKey(chainConfig.GatewayWallet);
-      const usdcMint = new PublicKey(chainConfig.USDCAddress);
-
-      const userAta = await getAssociatedTokenAddress(usdcMint, wallet.publicKey);
-      const ataInfo = await getAccount(connection, userAta);
-      if (ataInfo.amount < depositAmountBaseUnits) {
-        throw new Error("Insufficient USDC balance for deposit");
-      }
-
-      const pdas = findPDAs(programId, usdcMint, wallet.publicKey);
-
-      const provider = new AnchorProvider(
-        connection,
-        wallet as any,
-        AnchorProvider.defaultOptions(),
-      );
-      setProvider(provider);
-
-      const program = new Program(gatewayWalletIdl as any, provider);
-      const depositMethod = program.methods?.deposit;
-      if (!depositMethod) {
-        throw new Error("Gateway wallet IDL is missing the deposit method");
-      }
-
-      const signature = await depositMethod(depositAmountBN)
-        .accountsPartial({
-          payer: wallet.publicKey,
-          owner: wallet.publicKey,
-          gatewayWallet: pdas.wallet,
-          ownerTokenAccount: userAta,
-          custodyTokenAccount: pdas.custody,
-          deposit: pdas.deposit,
-          depositorDenylist: pdas.denylist,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
-
-      setTxHash(signature);
-      setStep("success");
-      setTimeout(() => {
-        setStep("idle");
-        setAmount("");
-      }, 3000);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Deposit failed";
-      setError(errorMessage);
-      setStep("idle");
-    }
-  };
-
-  // Placeholder UI - business logic is in hooks and handlers above.
-  return <div />;
+if (!process.env.SOLANA_PRIVATE_KEYPAIR) {
+  throw new Error("SOLANA_PRIVATE_KEYPAIR not set");
 }
+
+const secretKey = Uint8Array.from(JSON.parse(process.env.SOLANA_PRIVATE_KEYPAIR));
+const keypair = Keypair.fromSecretKey(secretKey);
+
+async function main() {
+  const connection = new Connection(RPC_ENDPOINT, "confirmed");
+  const wallet = new Wallet(keypair);
+  const owner = wallet.publicKey;
+  const usdcMint = new PublicKey(USDC_ADDRESS);
+  const programId = new PublicKey(GATEWAY_WALLET_ADDRESS);
+
+  console.log(`Using account: ${owner.toBase58()}`);
+
+  const ownerTokenAccount = getAssociatedTokenAddressSync(usdcMint, owner);
+  const tokenAccountInfo = await getAccount(connection, ownerTokenAccount);
+
+  if (tokenAccountInfo.amount < BigInt(DEPOSIT_AMOUNT.toString())) {
+    throw new Error("Insufficient USDC balance for deposit");
+  }
+
+  const provider = new AnchorProvider(
+    connection,
+    wallet,
+    AnchorProvider.defaultOptions(),
+  );
+  setProvider(provider);
+
+  const program = new Program(gatewayWalletIdl, provider);
+  const pdas = findDepositPDAs(programId, usdcMint, owner);
+
+  const txSignature = await program.methods
+    .deposit(DEPOSIT_AMOUNT)
+    .accountsPartial({
+      payer: owner,
+      owner: owner,
+      gatewayWallet: pdas.wallet,
+      ownerTokenAccount,
+      custodyTokenAccount: pdas.custody,
+      deposit: pdas.deposit,
+      depositorDenylist: pdas.denylist,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      systemProgram: SystemProgram.programId,
+    })
+    .rpc();
+
+  console.log(`Deposit tx: ${txSignature}`);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 ```
+
+

@@ -1,11 +1,11 @@
 ---
 name: octav-api
 description: |
-  Integrate with Octav API for cryptocurrency portfolio tracking, transaction history, and DeFi analytics across 65+ blockchain networks. Use when building applications that need to: (1) Track wallet balances and net worth across multiple chains, (2) Query transaction history with filtering and search, (3) Monitor DeFi protocol positions (Aave, Uniswap, etc.), (4) Access historical portfolio snapshots, (5) Analyze token distribution and holdings. Triggers on: "Octav API", "crypto portfolio API", "blockchain portfolio tracking", "DeFi analytics API", "wallet balance API", "transaction history API", "multi-chain portfolio".
+  Integrate with Octav API for cryptocurrency portfolio tracking, transaction history, and DeFi analytics across 50+ blockchain networks. Use when building applications that need to: (1) Track wallet balances and net worth across multiple chains, (2) Query transaction history with filtering and search, (3) Monitor DeFi protocol positions (Aave, Uniswap, etc.), (4) Access historical portfolio snapshots, (5) Analyze token distribution and holdings, (6) Pay per request as an autonomous agent via x402. Triggers on: "Octav API", "crypto portfolio API", "blockchain portfolio tracking", "DeFi analytics API", "wallet balance API", "transaction history API", "multi-chain portfolio", "Octav x402".
 license: MIT
 metadata:
   author: Octav-Labs
-  version: "1.0"
+  version: "1.1"
   website: https://octav.fi
 ---
 
@@ -30,18 +30,55 @@ curl -X GET "https://api.octav.fi/v1/credits" \
 
 Store API key in environment variable `OCTAV_API_KEY`. Never hardcode.
 
+## Access methods
+
+**Default to the API-key REST API documented below.** It covers all 25 endpoints.
+
+Octav also exposes 5 endpoints over the [x402 payment protocol](https://docs.octav.fi/api/endpoints/agent-x402) at `/v1/agent/{portfolio,wallet,nav,status,chains}` — 0.025 USDC per call on Base, no API key. Use x402 **only** when:
+
+- the user explicitly asked for x402 or pay-per-call access, or
+- the agent has its own funded wallet and no API key is available.
+
+Otherwise use `/v1/*` with a Bearer token, and mention x402 exists if one of those cases applies. Do not start from x402 by default.
+
+**There is no `/v1/agent/transactions` — transaction history requires an API key.**
+
 ## Endpoints Overview
 
 | Endpoint | Method | Cost | Description |
 |----------|--------|------|-------------|
 | `/v1/portfolio` | GET | 1 credit | Portfolio holdings across chains/protocols |
-| `/v1/nav` | GET | 1 credit | Net Asset Value (simple number) |
+| `/v1/portfolio/at-block` | GET | Add-on + 1 credit | Portfolio valued at a historical block (Ethereum) |
+| `/v1/virtual-users` | GET | 1 credit | List virtual users (Pro) |
+| `/v1/virtual-users/portfolio` | GET | 1 credit/address | Virtual user holdings (Pro) |
+| `/v1/nav` | GET | 1 credit | Net Asset Value — `{nav, currency, conversionPrice}` |
+| `/v1/wallet` | GET | 1 credit | Wallet token balances, excludes DeFi positions |
 | `/v1/transactions` | GET | 1 credit | Transaction history with filtering |
+| `/v1/approvals/{chain}` | GET | 1 credit | ERC-20 token approval records |
 | `/v1/token-overview` | GET | 1 credit | Token breakdown by protocol (PRO only) |
+| `/v1/airdrop` | GET | 1 credit | Claimable airdrops (Solana only) |
 | `/v1/historical` | GET | 1 credit | Historical portfolio snapshots |
 | `/v1/sync-transactions` | POST | 1+ credits | Trigger transaction sync |
+| `/v1/contract-protocol` | GET | 5 credits | Resolve contract address to DeFi protocol (refunded on 404) |
+| `/v1/beacon/validators/*` | GET | Add-on | ETH validator details, rewards, withdrawals, deposits |
+| `/v1/chains` | GET | Free | List supported blockchain networks |
+| `/v1/chains/{chainKey}/protocols` | GET | Free | List protocols on a chain |
 | `/v1/status` | GET | Free | Check sync status |
 | `/v1/credits` | GET | Free | Check credit balance |
+
+Subscribe Snapshot (POST, 1200 credits) enables daily portfolio snapshots for an address, which `/v1/historical` then reads.
+
+### x402 endpoints (no API key — see Access methods above)
+
+| Endpoint | Method | Cost | Description |
+|----------|--------|------|-------------|
+| `/v1/agent/portfolio` | GET | 0.025 USDC | Wallet and protocol holdings |
+| `/v1/agent/wallet` | GET | 0.025 USDC | Wallet holdings only |
+| `/v1/agent/nav` | GET | 0.025 USDC | Net Asset Value — `{nav, currency, conversionPrice}` |
+| `/v1/agent/status` | GET | 0.025 USDC | Sync status |
+| `/v1/agent/chains` | GET | 0.025 USDC | Supported chains |
+
+An unpaid request returns HTTP 402 with a base64 `payment-required` header containing the payment challenge (USDC on Base, `eip155:8453`). An x402-capable HTTP client settles it and retries automatically.
 
 ## Core Endpoints
 
@@ -59,9 +96,9 @@ const portfolio = await response.json();
 ```
 
 **Parameters:**
-- `addresses` (required): Comma-separated EVM/Solana addresses
-- `includeNFTs`: Include NFT holdings (default: false)
+- `addresses` (required): EVM or Solana address. Comma-separate multiple addresses in one request to save credits.
 - `includeImages`: Include asset/protocol image URLs (default: false)
+- `includeExplorerUrls`: Include block explorer URLs (default: false)
 - `waitForSync`: Wait for fresh data if stale (default: false)
 
 **Response structure:**
@@ -82,15 +119,23 @@ const portfolio = await response.json();
 
 ### Nav (Net Asset Value)
 
-Get simple net worth number.
+Get net worth as a single value, optionally converted to another currency.
 
 ```javascript
 const response = await fetch(
-  `https://api.octav.fi/v1/nav?addresses=${address}`,
+  `https://api.octav.fi/v1/nav?addresses=${address}&currency=USD`,
   { headers: { 'Authorization': `Bearer ${apiKey}` } }
 );
-const nav = await response.json(); // Returns: 1235564.43434
+const { nav, currency, conversionPrice } = await response.json();
+// { "nav": 1235564.43, "currency": "USD", "conversionPrice": 1 }
 ```
+
+**Parameters:**
+- `addresses` (required): EVM or Solana address
+- `currency`: Fiat `USD` (default), `EUR`, `CAD`, `AED`, `CHF`, `SGD`; crypto `ETH`, `SOL`, `cbBTC`, `EURC`, `BNB`
+- `waitForSync`: Wait for fresh data if stale (default: false)
+
+`conversionPrice` is the rate used — for fiat, the exchange rate from USD; for crypto, the weighted average USD price across the queried wallets.
 
 ### Transactions
 
@@ -123,7 +168,9 @@ const response = await fetch(
 - `protocols`: Protocol filter (e.g., `uniswap_v3,aave_v3`)
 - `hideSpam`: Exclude spam (default: false)
 - `hideDust`: Exclude dust transactions (default: false)
-- `startDate`/`endDate`: ISO 8601 date range
+- `startDate`/`endDate`: ISO 8601 date range, UTC, both inclusive. `endDate` rounds up to the end of its calendar day (23:59:59Z), so for a single day set both to the same date; never set `endDate` to the next day's midnight (duplicates the boundary tx)
+- `interactingAddresses`: Filter by interacting addresses (comma-separated)
+- `tokenId`: Filter by NFT token ID
 - `initialSearchText`: Full-text search in assets
 
 **Response (array of transactions):**
@@ -268,8 +315,8 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 
 ## Cost Optimization
 
-1. **Batch addresses:** `?addresses=0x123,0x456,0x789` (1 credit vs 3)
-2. **Use free endpoints:** `/v1/status` and `/v1/credits` cost nothing
+1. **Batch addresses:** comma-separate them in one request — `?addresses=0x123,0x456,0x789` — to save credits versus one call each
+2. **Use free endpoints:** `/v1/status`, `/v1/credits`, `/v1/chains`, and `/v1/chains/{chainKey}/protocols` cost nothing
 3. **Filter on server:** Use `networks`, `txTypes` params vs client filtering
 4. **Cache results:** Portfolio cached 1 minute, transactions 10 minutes
 5. **Check status first:** Avoid unnecessary syncs
@@ -397,5 +444,8 @@ Credits never expire. First-time address indexing: 1 credit per 250 transactions
 
 - **Dev Portal:** https://data.octav.fi
 - **API Docs:** https://docs.octav.fi
+- **Full endpoint reference:** https://docs.octav.fi/api/introduction
+- **Agent-readable docs (llms.txt):** https://docs.octav.fi/llms.txt
+- **x402 agent endpoints:** https://docs.octav.fi/api/endpoints/agent-x402
 - **Discord:** https://discord.com/invite/qvcknAa73A
 - **Protocol List:** https://protocols.octav.fi

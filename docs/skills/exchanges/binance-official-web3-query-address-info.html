@@ -14,18 +14,21 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Binance Official Query Address Info - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="Query any on-chain wallet address token balances and positions. Retrieves all token holdings for a specified wallet address on a given chain, including token na">
+  <meta name="description" content="Snapshot of a single wallet&#x27;s token holdings on a specific chain — list of every token currently held with
+name, symbol, current price, 24h price change, a">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/exchanges/binance-official-web3-query-address-info.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Binance Official Query Address Info - CryptoSkill">
-  <meta property="og:description" content="Query any on-chain wallet address token balances and positions. Retrieves all token holdings for a specified wallet address on a given chain, including token na">
+  <meta property="og:description" content="Snapshot of a single wallet&#x27;s token holdings on a specific chain — list of every token currently held with
+name, symbol, current price, 24h price change, a">
   <meta property="og:url" content="https://cryptoskill.org/skills/exchanges/binance-official-web3-query-address-info.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Binance Official Query Address Info - CryptoSkill">
-  <meta name="twitter:description" content="Query any on-chain wallet address token balances and positions. Retrieves all token holdings for a specified wallet address on a given chain, including token na">
+  <meta name="twitter:description" content="Snapshot of a single wallet&#x27;s token holdings on a specific chain — list of every token currently held with
+name, symbol, current price, 24h price change, a">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +37,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Binance Official Query Address Info", "description": "Query any on-chain wallet address token balances and positions. Retrieves all token holdings for a specified wallet address on a given chain, including token name, symbol, price, 24h price change, and holding quantity. Use this skill when users ask about wallet balance, token holds, portfolio, or asset positions for any blockchain address.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/exchanges/binance-official-web3-query-address-info.html", "author": {"@type": "Organization", "name": "binance"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Binance Official Query Address Info", "description": "Snapshot of a single wallet's token holdings on a specific chain — list of every token currently held with\nname, symbol, current price, 24h price change, and holding quantity.\nUse when the user provides an explicit wallet address (or says \"my wallet\") and wants the current portfolio:\n\"what does 0x... hold\", \"wallet balance breakdown\", \"list positions for this address\",\n\"what tokens are in this wallet\", \"show me the holdings of \u003caddress>\".\n", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/exchanges/binance-official-web3-query-address-info.html", "author": {"@type": "Organization", "name": "Binance"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -63,13 +66,18 @@
     <h1>Binance Official Query Address Info</h1>
     <div class="skill-meta">
       <span class="skill-badge">Exchanges</span>
-      <span>by @binance</span>
+      <span>by @Binance</span>
       <span>v1.0.0</span>
-      
-      
+      <span class="skill-badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">B</span>
+      <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-some" title="2 true, 1 unknown of 11 capability flags">2 flags</span>
     </div>
-    <p class="skill-page-desc">Query any on-chain wallet address token balances and positions. Retrieves all token holdings for a specified wallet address on a given chain, including token name, symbol, price, 24h price change, and holding quantity. Use this skill when users ask about wallet balance, token holds, portfolio, or asset positions for any blockchain address.</p>
+    <p class="skill-page-desc">Snapshot of a single wallet&#x27;s token holdings on a specific chain — list of every token currently held with
+name, symbol, current price, 24h price change, and holding quantity.
+Use when the user provides an explicit wallet address (or says &quot;my wallet&quot;) and wants the current portfolio:
+&quot;what does 0x... hold&quot;, &quot;wallet balance breakdown&quot;, &quot;list positions for this address&quot;,
+&quot;what tokens are in this wallet&quot;, &quot;show me the holdings of &lt;address&gt;&quot;.
+</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/exchanges/binance-official-web3-query-address-info .claude/skills/</code></div>
@@ -78,13 +86,16 @@
     <h2>Tags</h2>
     <div class="skill-tags" style="margin-bottom:32px">
       <span class="skill-tag">official</span>
-<span class="skill-tag">binance</span>
-<span class="skill-tag">web3</span>
-<span class="skill-tag">address</span>
-<span class="skill-tag">portfolio</span>
+<span class="skill-tag">exchanges</span>
 
     </div>
 
+    <h2>Quality Score</h2>
+    <div class="skill-meta" style="margin-top:8px">
+      <span>Score: <strong>67/100</strong></span>
+      <span>Grade: <strong>B</strong></span>
+      <span>Risk Gate: <strong>PASS</strong></span>
+    </div>
 
 
     <h2 id="trust">Trust profile <span class="trust-stage-pill">trust grade not computed yet</span></h2>
@@ -112,8 +123,8 @@
       <p class="trust-foot">Auto-generated by cryptoskill/extract-capabilities/0.3.0 &middot; hosted-service list version 2026-04-26 &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
     </div>
 
-    <section class="related-strip"><h2>More from Binance</h2><div class="related-strip-list"><a class="related-strip-card" href="binance-official-algo.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Algo</span></a><a class="related-strip-card" href="binance-official-alpha.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Alpha</span></a><a class="related-strip-card" href="binance-official-assets.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Assets</span></a><a class="related-strip-card" href="binance-official-derivatives-trading-coin-futures.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Coin Futures</span></a><a class="related-strip-card" href="binance-official-convert.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Convert</span></a><a class="related-strip-card" href="binance-official-web3-crypto-market-rank.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Crypto Market Rank</span></a></div></section>
-<section class="related-strip"><h2>Other in Exchanges</h2><div class="related-strip-list"><a class="related-strip-card" href="aegis.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Aegis</span></a><a class="related-strip-card" href="ai-bybit-trade.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Ai Bybit Trade</span></a><a class="related-strip-card" href="ai-bybit-trader.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Ai Bybit Trader</span></a><a class="related-strip-card" href="apify-crypto-skill.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Apify Crypto Skill</span></a><a class="related-strip-card" href="binance-arbitrage-finder.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Arbitrage Finder</span></a><a class="related-strip-card" href="binance-futures-trading.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Futures Trading</span></a></div></section>
+    <section class="related-strip"><h2>More from Binance</h2><div class="related-strip-list"><a class="related-strip-card" href="../exchanges/binance-official-onchain-pay.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Onchain Pay</span></a><a class="related-strip-card" href="../exchanges/binance-official-p2p.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official P2p</span></a><a class="related-strip-card" href="../exchanges/binance-official-payment-assistant.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Payment Assistant</span></a><a class="related-strip-card" href="../exchanges/binance-official-binance-tokenized-securities-info.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Binance Tokenized Securities Info</span></a><a class="related-strip-card" href="../exchanges/binance-official-binance-wallet-tracker.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Binance Wallet Tracker</span></a><a class="related-strip-card" href="../exchanges/binance-official-web3-query-token-audit.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Token Audit</span></a></div></section>
+<section class="related-strip"><h2>Other in Exchanges</h2><div class="related-strip-list"><a class="related-strip-card" href="../exchanges/bybit-official-skills.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Bybit Official Skills</span></a><a class="related-strip-card" href="../exchanges/gate-mcp-installer.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate MCP OpenClaw Installer</span></a><a class="related-strip-card" href="../exchanges/crypto-com-crypto-com-app.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Crypto Com Crypto Com App</span></a><a class="related-strip-card" href="../exchanges/okx-official-dex-swap.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">OKX Official DEX Swap</span></a><a class="related-strip-card" href="../exchanges/okx-agentic-wallet.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">OKX Agentic Wallet</span></a><a class="related-strip-card" href="../exchanges/okx-official-earn-hunter.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Okx Official Earn Hunter</span></a></div></section>
 
     <h2>Source</h2>
     <p><a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/exchanges/binance-official-web3-query-address-info" target="_blank" rel="noopener">View on GitHub &rarr;</a></p>

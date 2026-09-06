@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.4",
+    "ethers": "^6.16.0",
+    "undici": "^7.24.3"
+  }
+}

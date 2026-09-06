@@ -15,6 +15,7 @@ import logging
 import re
 import sys
 from pathlib import Path
+from ruamel.yaml import YAML
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -50,6 +51,15 @@ def parse_skill_md_frontmatter(path: Path) -> dict:
     m = re.match(r"^---\s*\n(.*?)\n---", text, re.DOTALL)
     if not m:
         return {}
+
+    try:
+        parsed = YAML(typ="safe").load(m.group(1))
+        if isinstance(parsed, dict):
+            return parsed
+    except Exception:
+        # Historical imports include invalid YAML. Preserve their usable
+        # scalar metadata until the upstream source can be refreshed.
+        pass
 
     fm: dict = {}
     current_list_key: str | None = None
@@ -125,7 +135,7 @@ def classify_source(source_md_path: Path) -> str:
     if not source_md_path.exists():
         return "community"
     text = source_md_path.read_text(encoding="utf-8").lower()
-    if "official" in text:
+    if re.search(r'\*\*classification\*\*:\s*official\b', text):
         return "official"
     return "community"
 
@@ -183,12 +193,21 @@ def build_catalog() -> dict:
             meta_json = skill_dir / "_meta.json"
             source_md = skill_dir / "SOURCE.md"
 
+            if not skill_md.exists():
+                skill_md = next((p for p in skill_dir.iterdir() if p.name.lower() == "skill.md"), skill_md)
+            if not skill_md.is_file():
+                continue
+
             # Parse available metadata sources
             fm = parse_skill_md_frontmatter(skill_md) if skill_md.exists() else {}
             meta = read_json_safe(meta_json) if meta_json.exists() else {}
 
             # Determine author
             author = meta.get("owner", fm.get("author", "unknown"))
+            if author == "unknown" and source_md.exists():
+                match = re.search(r'\*\*Original Author\*\*:\s*([^\n]+)', source_md.read_text())
+                if match:
+                    author = match.group(1).strip()
 
             # Determine version
             version = meta.get("latest", {}).get("version", fm.get("version", "1.0.0"))
@@ -197,10 +216,10 @@ def build_catalog() -> dict:
             display_name = meta.get("displayName", make_display_name(slug))
 
             # Determine description
-            description = fm.get("description", display_name)
+            description = str(fm.get("description") or display_name)
 
             # Tags
-            tags = fm.get("tags", [])
+            tags = fm.get("tags") or []
             if isinstance(tags, str):
                 tags = [t.strip() for t in tags.split(",")]
             if not tags:
@@ -208,6 +227,10 @@ def build_catalog() -> dict:
 
             # Classification
             classification = classify_source(source_md)
+            if classification == "official" and "official" not in tags:
+                tags = ["official", *tags]
+            elif classification != "official":
+                tags = [tag for tag in tags if tag != "official"]
 
             entry: dict = {
                 "name": slug,
@@ -240,8 +263,8 @@ def build_catalog() -> dict:
             cached = date_cache.get(cache_key) or {}
             if "added_at" not in entry and cached.get("added_at"):
                 entry["added_at"] = cached["added_at"]
-            if "last_updated" not in entry and cached.get("last_updated"):
-                entry["last_updated"] = cached["last_updated"]
+            if cached.get("last_updated"):
+                entry["last_updated"] = max(entry.get("last_updated", ""), cached["last_updated"])
             # Ensure last_updated is at least as recent as added_at.
             if entry.get("added_at") and not entry.get("last_updated"):
                 entry["last_updated"] = entry["added_at"]
@@ -256,14 +279,14 @@ def build_catalog() -> dict:
             # Keep curated categories
             catalog["categories"] = existing.get("categories", {})
             # Merge author/tags from existing entries where our parse found "unknown"
-            existing_by_name = {s["name"]: s for s in existing.get("skills", [])}
+            existing_by_name = {(s["category"], s["name"]): s for s in existing.get("skills", [])}
             for entry in catalog["skills"]:
-                old = existing_by_name.get(entry["name"])
+                old = existing_by_name.get((entry["category"], entry["name"]))
                 if old:
                     if entry["author"] == "unknown" and old.get("author", "unknown") != "unknown":
                         entry["author"] = old["author"]
                     if entry["tags"] == [entry["category"]] and old.get("tags"):
-                        entry["tags"] = old["tags"]
+                        entry["tags"] = [t for t in old["tags"] if t != "official"]
                     if entry["description"] == entry["displayName"] and old.get("description"):
                         entry["description"] = old["description"]
                     if entry["displayName"] == make_display_name(entry["name"]) and old.get("displayName"):

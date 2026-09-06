@@ -1,17 +1,56 @@
 ---
 name: gate-info-coinanalysis
-version: "2026.3.12-2"
-updated: "2026-03-11"
-description: "Coin comprehensive analysis. Use this skill whenever the user asks to analyze a single coin. Trigger phrases include: analyze, how is, worth buying, look at. MCP tools: info_coin_get_coin_info, info_marketsnapshot_get_market_snapshot, info_markettrend_get_technical_analysis, news_feed_search_news, news_feed_get_social_sentiment."
+version: "2026.4.6-1"
+updated: "2026-04-06"
+description: "Single-coin comprehensive analysis. Use this skill ONLY when the user asks to analyze one coin with no additional explicit dimension (e.g., no separate risk check, no separate trend-only request). Trigger phrases: analyze SOL, how is BTC, is ETH worth buying. If the query ALSO mentions security/risk, event attribution, multi-coin comparison, or any other analysis dimension beyond single-coin comprehensive, use gate-info-research instead — it handles multi-dimension queries in a single unified report."
+required_credentials: []
+required_env_vars: []
+required_permissions: []
 ---
 
 # gate-info-coinanalysis
+
+## General Rules
+
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read `./references/gate-runtime-rules.md`
+→ Also read `./references/info-news-runtime-rules.md` for gate-info / gate-news shared rules (tool degradation, report standards, security, and output standards).
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
 
 > The most frequently used Skill. The user inputs a coin name, the system calls 5 MCP Tools in parallel to fetch fundamentals + market data + technicals + news + social sentiment, then the LLM aggregates the results into a structured analysis report.
 
 **Trigger Scenarios**: User mentions a specific coin + keywords like analyze, how is, worth, look at, fundamentals, market analysis.
 
 ---
+
+## MCP Dependencies
+
+### Required MCP Servers
+| MCP Server | Status |
+|------------|--------|
+| Gate-Info | ✅ Required |
+
+### MCP Tools Used
+
+**Query Operations (Read-only)**
+
+- info_coin_get_coin_info
+- info_coin_search_coins
+- info_marketsnapshot_get_market_snapshot
+- info_markettrend_get_technical_analysis
+- news_feed_get_social_sentiment
+- news_feed_search_news
+
+### Authentication
+- API Key Required: No
+- Credentials Source: None; this skill uses read-only Gate Info / Gate News MCP access only.
+
+### Installation Check
+- Required: Gate-Info
+- Install: Use the local Gate MCP installation flow for the current host IDE before continuing.
+- Continue only after the required Gate MCP server is available in the current environment.
 
 ## Routing Rules
 
@@ -26,6 +65,13 @@ description: "Coin comprehensive analysis. Use this skill whenever the user asks
 ---
 
 ## Execution Workflow
+
+### Step 0: Multi-Dimension Intent Check
+
+Before executing this Skill, check if the user's query involves multiple analysis dimensions:
+
+- If the query is a standard single-coin analysis (e.g., "analyze SOL", "how is BTC"), proceed with this Skill.
+- If the query **also** mentions security/risk check, event attribution, multi-coin comparison, or any other analysis dimension beyond single-coin comprehensive, route to `gate-info-research` — it handles multi-dimension queries with unified tool deduplication and coherent report aggregation.
 
 ### Step 1: Intent Recognition & Parameter Extraction
 

@@ -1,0 +1,18 @@
+{
+  "name": "fixture-node-skill",
+  "description": "Fixture tool set",
+  "tools": [
+    {
+      "name": "fixture-node-ping",
+      "description": "Ping node fixture",
+      "command": "bun",
+      "args": ["run", "fixture-node.ts", "ping"],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    }
+  ]
+}

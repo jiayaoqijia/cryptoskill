@@ -1,0 +1,2133 @@
+{
+  "name": "tomorrowdao-agent-skills",
+  "description": "TomorrowDAO agent skill tools for DAO governance, network governance, BP election and resource trading. SECURITY: Never expose private keys in channel outputs.",
+  "tools": [
+    {
+      "name": "tomorrowdao_dao_create",
+      "description": "Create DAO on chain. Use execution mode simulate/send.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "create"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"metadata\":{\"name\":\"Demo DAO\"}}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_update_metadata",
+      "description": "Update DAO metadata.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "update-metadata"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "daoId": {
+            "type": "string",
+            "description": "DAO id"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Metadata object"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "daoId",
+          "metadata"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_upload_files",
+      "description": "Upload DAO files.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "upload-files"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "daoId": {
+            "type": "string",
+            "description": "DAO id"
+          },
+          "files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "cid": {
+                  "type": "string",
+                  "description": "File CID"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "File name"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "File URL"
+                }
+              },
+              "required": [
+                "cid",
+                "name",
+                "url"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "daoId",
+          "files"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_remove_files",
+      "description": "Remove DAO files by CID.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "remove-files"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "daoId": {
+            "type": "string",
+            "description": "DAO id"
+          },
+          "fileCids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "daoId",
+          "fileCids"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_proposal_create",
+      "description": "Create DAO proposal (transfer/governance/veto).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "proposal-create"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "methodName": {
+            "type": "string",
+            "enum": [
+              "CreateTransferProposal",
+              "CreateProposal",
+              "CreateVetoProposal"
+            ]
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"proposalBasicInfo\":{\"proposalTitle\":\"Title\"}}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "methodName",
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_vote",
+      "description": "Vote for DAO proposal by proposalId or votingItemId.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "vote"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"proposalId\":\"...\",\"voteOption\":0,\"voteAmount\":100000000} or {\"votingItemId\":\"...\",\"voteOption\":0,\"voteAmount\":100000000}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_withdraw",
+      "description": "Withdraw DAO vote by daoId + withdrawAmount + proposalId(s)/votingItemId(s).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "withdraw"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"daoId\":\"...\",\"withdrawAmount\":100000000,\"proposalId\":\"...\"} or {\"daoId\":\"...\",\"withdrawAmount\":100000000,\"votingItemIds\":[\"...\"]}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_execute",
+      "description": "Execute DAO proposal.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "execute"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "proposalId"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_discussion_list",
+      "description": "Fetch discussion comments.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "discussion-list"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias"
+          },
+          "skipCount": {
+            "type": "number",
+            "description": "Skip"
+          },
+          "maxResultCount": {
+            "type": "number",
+            "description": "Page size"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_discussion_comment",
+      "description": "Publish discussion comment (auth required).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "discussion-comment"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Comment text"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Alias"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "Parent comment id"
+          }
+        },
+        "required": [
+          "comment"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_proposal_my_info",
+      "description": "Get my proposal info (auth required).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "proposal-my-info"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address"
+          },
+          "daoId": {
+            "type": "string",
+            "description": "DAO id"
+          }
+        },
+        "required": [
+          "proposalId",
+          "address",
+          "daoId"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_token_allowance_view",
+      "description": "Get token allowance.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "token",
+        "allowance-view"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner address"
+          },
+          "spender": {
+            "type": "string",
+            "description": "Spender address"
+          }
+        },
+        "required": [
+          "symbol",
+          "owner",
+          "spender"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_token_approve",
+      "description": "Approve token allowance on the default token contract.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "token",
+        "approve"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "description": "Token Approve contract args.",
+            "properties": {
+              "spender": {
+                "type": "string",
+                "description": "Approved spender address."
+              },
+              "symbol": {
+                "type": "string",
+                "description": "Token symbol."
+              },
+              "amount": {
+                "type": "number",
+                "description": "Approve amount in minimal token unit."
+              }
+            },
+            "required": [
+              "spender",
+              "symbol",
+              "amount"
+            ],
+            "additionalProperties": true
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "description": "Execution mode."
+          },
+          "signer": {
+            "type": "object",
+            "description": "Optional signer input. signerMode=auto resolves explicit -> active context -> env. daemon is reserved. Send mode rejects direct contract send when the resolved signer is CA-backed; use an explicit CA forward transport instead.",
+            "properties": {
+              "signerMode": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "explicit",
+                  "context",
+                  "env",
+                  "daemon"
+                ]
+              },
+              "walletType": {
+                "type": "string",
+                "enum": [
+                  "EOA",
+                  "CA"
+                ]
+              },
+              "address": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "privateKey": {
+                "type": "string"
+              },
+              "caHash": {
+                "type": "string"
+              },
+              "caAddress": {
+                "type": "string"
+              },
+              "network": {
+                "type": "string",
+                "enum": [
+                  "mainnet",
+                  "testnet"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "signerContext": {
+            "type": "object",
+            "description": "Optional signer input. signerMode=auto resolves explicit -> active context -> env. daemon is reserved. Send mode rejects direct contract send when the resolved signer is CA-backed; use an explicit CA forward transport instead.",
+            "properties": {
+              "signerMode": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "explicit",
+                  "context",
+                  "env",
+                  "daemon"
+                ]
+              },
+              "walletType": {
+                "type": "string",
+                "enum": [
+                  "EOA",
+                  "CA"
+                ]
+              },
+              "address": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "privateKey": {
+                "type": "string"
+              },
+              "caHash": {
+                "type": "string"
+              },
+              "caAddress": {
+                "type": "string"
+              },
+              "network": {
+                "type": "string",
+                "enum": [
+                  "mainnet",
+                  "testnet"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_token_balance_view",
+      "description": "Get token balance.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "token",
+        "balance-view"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner address"
+          }
+        },
+        "required": [
+          "symbol",
+          "owner"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_token_allowance_view",
+      "description": "Get DAO token allowance for governance token workflows.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "token-allowance-view"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner address"
+          },
+          "spender": {
+            "type": "string",
+            "description": "Spender address"
+          }
+        },
+        "required": [
+          "symbol",
+          "owner",
+          "spender"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_dao_token_balance_view",
+      "description": "Get DAO token balance for governance token workflows.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "dao",
+        "token-balance-view"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner address"
+          }
+        },
+        "required": [
+          "symbol",
+          "owner"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_proposals_list",
+      "description": "List network governance proposals.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "proposals-list"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "skipCount": {
+            "type": "number",
+            "description": "Skip"
+          },
+          "maxResultCount": {
+            "type": "number",
+            "description": "Page size"
+          },
+          "proposalType": {
+            "type": "number",
+            "description": "Proposal type filter"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_proposal_get",
+      "description": "Get network proposal detail.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "proposal-get"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          }
+        },
+        "required": [
+          "proposalId"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_proposal_create",
+      "description": "Create network governance proposal.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "proposal-create"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalType": {
+            "type": "string",
+            "enum": [
+              "Parliament",
+              "Association",
+              "Referendum"
+            ]
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"title\":\"...\"}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "proposalType",
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_proposal_vote",
+      "description": "Approve/Reject/Abstain/Release network proposal.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "proposal-vote"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalType": {
+            "type": "string",
+            "enum": [
+              "Parliament",
+              "Association",
+              "Referendum"
+            ]
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "Approve",
+              "Reject",
+              "Abstain",
+              "Release"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "proposalType",
+          "proposalId",
+          "action"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_proposal_release",
+      "description": "Release network proposal.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "proposal-release"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalType": {
+            "type": "string",
+            "enum": [
+              "Parliament",
+              "Association",
+              "Referendum"
+            ]
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "proposalType",
+          "proposalId"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_org_create",
+      "description": "Create organization with threshold pre-check.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "org-create"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalType": {
+            "type": "string",
+            "enum": [
+              "Parliament",
+              "Association",
+              "Referendum"
+            ]
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"proposalReleaseThreshold\":{...}}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "proposalType",
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_org_list",
+      "description": "List organizations.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "org-list"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalType": {
+            "type": "number",
+            "description": "Organization type filter"
+          },
+          "skipCount": {
+            "type": "number",
+            "description": "Skip"
+          },
+          "maxResultCount": {
+            "type": "number",
+            "description": "Page size"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_contract_name_check",
+      "description": "Check contract name availability.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "contract-name-check"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "contractName": {
+            "type": "string",
+            "description": "Contract name"
+          }
+        },
+        "required": [
+          "contractName"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_contract_name_add",
+      "description": "Add contract name record (auth required).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "contract-name-add"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "operateChainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ]
+          },
+          "contractName": {
+            "type": "string",
+            "description": "Contract name"
+          },
+          "txId": {
+            "type": "string",
+            "description": "Tx id"
+          },
+          "action": {
+            "type": "number",
+            "description": "Action code"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "createAt": {
+            "type": "string",
+            "description": "Create time"
+          }
+        },
+        "required": [
+          "operateChainId",
+          "contractName",
+          "txId",
+          "action",
+          "address"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_contract_name_update",
+      "description": "Update contract name record (auth required).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "contract-name-update"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "operateChainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ]
+          },
+          "contractName": {
+            "type": "string",
+            "description": "Contract name"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address"
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "Contract address"
+          },
+          "caHash": {
+            "type": "string",
+            "description": "CA hash"
+          }
+        },
+        "required": [
+          "contractName",
+          "address",
+          "contractAddress"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_contract_flow_start",
+      "description": "Start contract proposal flow (bpApproval/withoutApproval actions).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "contract-flow-start"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "ProposeNewContract",
+              "ProposeUpdateContract",
+              "DeployUserSmartContract",
+              "UpdateUserSmartContract"
+            ]
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"category\":0,\"code\":\"...\"}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "action",
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_contract_flow_release",
+      "description": "Release approved/code-checked contract proposal.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "contract-flow-release"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "methodName": {
+            "type": "string",
+            "enum": [
+              "ReleaseApprovedContract",
+              "ReleaseCodeCheckedContract"
+            ]
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "proposedContractInputHash": {
+            "type": "string",
+            "description": "Input hash"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "methodName",
+          "proposalId",
+          "proposedContractInputHash"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_network_contract_flow_status",
+      "description": "Query contract proposal flow status.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "network",
+        "contract-flow-status"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          },
+          "codeHash": {
+            "type": "string",
+            "description": "Code hash"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_apply",
+      "description": "Apply as BP candidate.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "apply"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"value\":10000000000}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_quit",
+      "description": "Quit BP election.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "quit"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"value\":true}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_vote",
+      "description": "Vote for BP candidate.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "vote"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"candidatePubkey\":\"...\",\"amount\":1000}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_withdraw",
+      "description": "Withdraw BP votes.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "withdraw"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"voteId\":\"...\"}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_change_vote",
+      "description": "Change BP voting option.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "change-vote"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"voteId\":\"...\",\"candidatePubkey\":\"...\"}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_claim_profits",
+      "description": "Claim BP profits.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "claim-profits"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Contract args object. Example: {\"schemeId\":\"...\"}"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "args"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_votes_list",
+      "description": "List BP votes.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "votes-list"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "skipCount": {
+            "type": "number",
+            "description": "Skip"
+          },
+          "maxResultCount": {
+            "type": "number",
+            "description": "Page size"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_team_desc_get",
+      "description": "Get BP team description.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "team-desc-get"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "BP public key"
+          }
+        },
+        "required": [
+          "publicKey"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_team_desc_list",
+      "description": "List all BP team descriptions.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "team-desc-list"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_team_desc_add",
+      "description": "Add BP team description (auth required).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "team-desc-add"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "Public key"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address"
+          },
+          "name": {
+            "type": "string",
+            "description": "Team name"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Avatar URL"
+          },
+          "intro": {
+            "type": "string",
+            "description": "Intro"
+          },
+          "txId": {
+            "type": "string",
+            "description": "Tx id"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "socials": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "officialWebsite": {
+            "type": "string",
+            "description": "Official website"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location"
+          },
+          "mail": {
+            "type": "string",
+            "description": "Email"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "Update time"
+          }
+        },
+        "required": [
+          "publicKey",
+          "address",
+          "name"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_bp_vote_reclaim",
+      "description": "Update BP vote reclaim status (auth required).",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "bp",
+        "vote-reclaim"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "voteId": {
+            "type": "string",
+            "description": "Vote id"
+          },
+          "proposalId": {
+            "type": "string",
+            "description": "Proposal id"
+          }
+        },
+        "required": [
+          "voteId"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_resource_buy",
+      "description": "Buy resource token.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "resource",
+        "buy"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Resource symbol"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "symbol",
+          "amount"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_resource_sell",
+      "description": "Sell resource token.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "resource",
+        "sell"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Resource symbol"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "simulate",
+              "send"
+            ],
+            "default": "simulate",
+            "description": "simulate: dry-run, send: broadcast tx"
+          }
+        },
+        "required": [
+          "symbol",
+          "amount"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_resource_realtime_records",
+      "description": "Get resource realtime records.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "resource",
+        "realtime-records"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "skipCount": {
+            "type": "number",
+            "description": "Skip"
+          },
+          "maxResultCount": {
+            "type": "number",
+            "description": "Page size"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_resource_turnover",
+      "description": "Get resource turnover.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "resource",
+        "turnover"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Resource symbol"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "tomorrowdao_resource_records",
+      "description": "Get resource trading records.",
+      "command": "bun",
+      "args": [
+        "run",
+        "tomorrowdao_skill.ts",
+        "resource",
+        "records"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "enum": [
+              "AELF",
+              "tDVV"
+            ],
+            "description": "Chain id"
+          },
+          "skipCount": {
+            "type": "number",
+            "description": "Skip"
+          },
+          "maxResultCount": {
+            "type": "number",
+            "description": "Page size"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Resource symbol"
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      }
+    }
+  ]
+}

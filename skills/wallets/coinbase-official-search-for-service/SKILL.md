@@ -1,82 +1,65 @@
 ---
-name: search-for-service
-description: Search and browse the x402 bazaar marketplace for paid API services. Use when you or the user want to find available services, see what's available, discover APIs, or need an external service to accomplish a task. Also use as a fallback when no other skill clearly matches — search the bazaar to see if a paid service exists. Covers "what can I do?", "find me an API for...", "what services are available?", "search for...", "browse the bazaar".
+name: agentic-wallet
+description: "Crypto wallet operations via the awal CLI — sign in, check balances, send USDC/ETH/POL/SOL, trade tokens, fund the wallet, and use the x402 payment protocol to discover paid services, pay for API calls, monetize an API, or query onchain data. Use whenever the user mentions signing in, login, authentication, wallet status, balance, address, sending money, paying someone, transferring tokens, ENS names, swapping/trading/converting tokens, funding/topping up/onramp, USDC, ETH, POL, SOL, the x402 bazaar, paid APIs, monetizing an endpoint, or querying onchain data on Base."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: ["Bash(npx awal@2.0.3 x402 bazaar *)", "Bash(npx awal@2.0.3 x402 details *)"]
+allowed-tools: ["Bash(npx awal@2.12.1 *)", "Bash(npm *)", "Bash(node *)", "Bash(curl *)", "Bash(mkdir *)"]
 ---
 
-# Searching the x402 Bazaar
+# Agentic Wallet
 
-Use the `npx awal@2.0.3 x402` commands to discover and inspect paid API endpoints available on the x402 bazaar marketplace. No authentication or balance is required for searching.
+Operate a crypto wallet through the `awal` CLI. This skill is a router: read the relevant reference file in `references/` for the task at hand.
 
-## Commands
+## Preflight: Confirm wallet state
 
-### Search the Bazaar
-
-Find paid services by keyword using BM25 relevance search:
+Before any wallet operation that requires authentication (everything except x402 search/details), check status:
 
 ```bash
-npx awal@2.0.3 x402 bazaar search <query> [-k <n>] [--force-refresh] [--json]
+npx awal@2.12.1 status
 ```
 
-| Option            | Description                          |
-| ----------------- | ------------------------------------ |
-| `-k, --top <n>`   | Number of results (default: 5)       |
-| `--force-refresh` | Re-fetch resource index from CDP API |
-| `--json`          | Output as JSON                       |
+If the wallet is not authenticated, read `references/auth.md` and complete sign-in first.
 
-Results are cached locally at `~/.config/awal/bazaar/` and auto-refresh after 12 hours.
+## Routing
 
-### List Bazaar Resources
+Pick the reference that matches the task and `Read` it before acting:
 
-Browse all available resources:
+| Task | Reference |
+| --- | --- |
+| Sign in, log in, connect wallet, OTP verification, "not signed in" errors | `references/auth.md` |
+| Check balances, "how much USDC/ETH/POL/SOL do I have", balance per chain, JSON balance output | `references/balance.md` |
+| Send USDC / ETH / POL / SOL to an address or ENS name (Base, Polygon, Solana) | `references/send-usdc.md` |
+| Swap / trade / convert tokens on Base or Polygon | `references/trade.md` |
+| Add funds, top up, onramp, buy USDC | `references/fund.md` |
+| Find / browse / search paid services on the x402 bazaar | `references/x402-search.md` |
+| Call a paid x402 API endpoint with automatic USDC payment | `references/x402-pay.md` |
+| Build or deploy a paid API server that other agents can pay to use | `references/x402-monetize.md` |
+| Query onchain data on Base (events, transactions, blocks) via the CDP SQL API | `references/query-onchain.md` |
 
-```bash
-npx awal@2.0.3 x402 bazaar list [--network <network>] [--full] [--json]
-```
+If no clear match and the user wants an external capability, search the x402 bazaar (`references/x402-search.md`) — a paid service may exist.
 
-| Option             | Description                             |
-| ------------------ | --------------------------------------- |
-| `--network <name>` | Filter by network (base, base-sepolia)  |
-| `--full`           | Show complete details including schemas |
-| `--json`           | Output as JSON                          |
+## Shared rules
 
-### Discover Payment Requirements
+- **Input validation**: every reference lists the regexes / allowlists that user-provided values must match before being placed in a shell command. Validate strictly; reject inputs containing spaces, semicolons, pipes, backticks, or other shell metacharacters. Do not pass unvalidated user input into commands.
+- **Single-quote `$` amounts**: any amount written as `'$1.00'` must be single-quoted to prevent bash variable expansion.
+- **JSON output**: every `awal` command supports `--json` for machine-readable output.
+- **Auth errors mean re-auth**: if any command fails with "Not authenticated" or similar, read `references/auth.md` and run the sign-in flow.
+- **Insufficient balance**: read `references/fund.md` to top up.
 
-Inspect an endpoint's x402 payment requirements without paying:
+## Quick command index
 
-```bash
-npx awal@2.0.3 x402 details <url> [--json]
-```
-
-Auto-detects the correct HTTP method (GET, POST, PUT, DELETE, PATCH) by trying each until it gets a 402 response, then displays price, accepted payment schemes, network, and input/output schemas.
-
-## Examples
-
-```bash
-# Search for weather-related paid APIs
-npx awal@2.0.3 x402 bazaar search "weather"
-
-# Search with more results
-npx awal@2.0.3 x402 bazaar search "sentiment analysis" -k 10
-
-# Browse all bazaar resources with full details
-npx awal@2.0.3 x402 bazaar list --full
-
-# Check what an endpoint costs
-npx awal@2.0.3 x402 details https://example.com/api/weather
-```
-
-## Prerequisites
-
-- No authentication needed for search, list, or details commands
-
-## Next Steps
-
-Once you've found a service you want to use, use the `pay-for-service` skill to make a paid request to the endpoint.
-
-## Error Handling
-
-- "CDP API returned 429" - Rate limited; cached data will be used if available
-- "No X402 payment requirements found" - URL may not be an x402 endpoint
+| Command | Purpose |
+| --- | --- |
+| `npx awal@2.12.1 status` | Server health + auth status |
+| `npx awal@2.12.1 address` | Get wallet address |
+| `npx awal@2.12.1 balance` | Get balances across Base, Polygon, Solana (use `--chain` for one chain) |
+| `npx awal@2.12.1 show` | Open the wallet companion window (used for funding) |
+| `npx awal@2.12.1 auth login <email>` | Send OTP code |
+| `npx awal@2.12.1 auth verify <otp>` | Complete sign-in |
+| `npx awal@2.12.1 auth logout` | Sign out and clear the session |
+| `npx awal@2.12.1 send <amount> <recipient>` | Send tokens |
+| `npx awal@2.12.1 trade <amount> <from> <to>` | Swap tokens |
+| `npx awal@2.12.1 x402 bazaar search <query>` | Search paid services |
+| `npx awal@2.12.1 x402 bazaar list` | List bazaar resources |
+| `npx awal@2.12.1 x402 details <url>` | Inspect payment requirements |
+| `npx awal@2.12.1 x402 pay <url>` | Pay and call an x402 endpoint |

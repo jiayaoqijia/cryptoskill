@@ -7,7 +7,7 @@
 **Prompt Examples**:
 - "How is the market now"
 - "Market overview"
-- "Broad market"
+- "Overall market"
 
 **Expected Behavior**:
 1. Call in parallel (per SKILL): `info_marketsnapshot_get_market_snapshot` (BTC, ETH; timeframe=1d/4h, source=spot), `info_coin_get_coin_rankings` (gainers, optionally losers), `info_platformmetrics_get_defi_overview`, `news_events_get_latest_events` (time_range=24h), `info_macro_get_macro_summary`. If a tool is not available, omit that call and mark the section "No data".
@@ -21,7 +21,7 @@
 **Prompt Examples**:
 - "Market overview"
 - "How is the overall market"
-- "How is the broad market"
+- "How is the overall market"
 
 **Expected Behavior**:
 1. Same 5-tool parallel chain as Scenario 1; if a tool returns empty, that section shows "No data".

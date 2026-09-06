@@ -6,9 +6,9 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-1342-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-121-f59e0b)]() [![Official](https://img.shields.io/badge/official-785-22c55e)]() [![Categories](https://img.shields.io/badge/categories-13-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-1759-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-138-f59e0b)]() [![Official](https://img.shields.io/badge/official-1230-22c55e)]() [![Categories](https://img.shields.io/badge/categories-14-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
-[Website](https://cryptoskill.org) · [Browse Skills](#skills-1342overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
+[Website](https://cryptoskill.org) · [Browse Skills](#skills-overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -23,30 +23,31 @@ A developer building a crypto AI agent today has to hunt through Binance's repo,
 
 CryptoSkill is the crypto-native answer:
 
-- **977 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
-- **85 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
-- **270 official skills** from verified project teams (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
+- **1759 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
+- **138 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
+- **1230 official skills** according to the recorded source classification (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
 - **Quality scored** -- every skill rated 0-100 across documentation, security, and depth
 - **Security-scanned** -- credential detection (160+ patterns), code safety, permission analysis
-- **Auto-updated** -- bot scans 128+ projects every 6 hours, rescores all skills, tracks regressions
+- **Auto-updated** -- a scheduled workflow refreshes recorded sources every 6 hours, rescores skills, and reports failed or blocked updates
 
 ## Skills Overview
 
-| Category | Skills | Highlights |
-|---|---|---|
-| **DeFi** | 192 | Uniswap (8), Nethermind, GMX, Rocket Pool (7), Venus, Pendle (4), KyberSwap (5), Lido, Aave, OpenSea, Elsa |
-| **Exchanges** | 180 | Binance, OKX, Kraken (50), KuCoin, Gate.io, Bitget, Hyperliquid, Bybit, Coinbase |
-| **Analytics** | 98 | DefiLlama (11), Nansen (10), CoinMarketCap (7), CoinGecko, CoinPaprika, Dune, Etherscan, Elfa |
-| **Trading** | 87 | Bankr (20), Minara, Polyhub, grid trading, whale tracking, signals |
-| **MCP Servers** | 85 | Alchemy, Solana, CoinGecko, Tenderly, CoinPaprika, EigenLayer, Blockscout, NEAR, Monad, Chainflip |
-| **Payments** | 75 | MoonPay (35), Circle (9), x402, mpp, tempo |
-| **Chains** | 57 | Base (9), Ethereum, Solana, Bitcoin, Lightning, BNB Chain, Arbitrum, Sui, Monad |
-| **AI x Crypto** | 52 | Virtual Protocol, Heurist, Bittensor, Virtuals, ElizaOS |
-| **Prediction Markets** | 46 | Polymarket API, Builder, Research, trading bots, whale copying |
-| **Wallets** | 38 | Coinbase Wallet (9), MetaMask (2), Privy, Bitget Wallet, Cobo TSS |
-| **Dev Tools** | 33 | Alchemy, Tenderly, Moralis, Foundry, Hardhat, Trail of Bits, Cyfrin, ETH2 Quickstart |
-| **Identity** | 24 | ERC-8004, 8004scan, self-agent-id, Maiat Guard, Maiat Trust |
-| **Social** | 10 | Towns, Farcaster, Nostr, XMTP |
+| Category | Skills |
+|---|---:|
+| DeFi | 290 |
+| Trading | 235 |
+| Exchanges | 234 |
+| AI x Crypto | 215 |
+| Analytics | 141 |
+| MCP Servers | 138 |
+| Payments | 104 |
+| Chains | 94 |
+| Wallets | 93 |
+| Dev Tools | 86 |
+| Prediction Markets | 75 |
+| Identity | 37 |
+| Social | 15 |
+| dex | 2 |
 
 ## Quality Scores
 
@@ -64,16 +65,16 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 
 | Grade | Score | Skills | Meaning |
 |-------|-------|--------|---------|
-| **A** | 80-100 | 16 | Production-ready, well-documented, secure |
-| **B** | 60-79 | 361 | Good quality, minor gaps |
-| **C** | 40-59 | 594 | Usable but significant gaps |
-| **D** | 20-39 | 6 | Minimal quality, use with caution |
+| **A** | 80-100 | 28 | Production-ready, well-documented, secure |
+| **B** | 60-79 | 654 | Good quality, minor gaps |
+| **C** | 40-59 | 1074 | Usable but significant gaps |
+| **D** | 20-39 | 3 | Minimal quality, use with caution |
 
-**Risk Gate**: 93% pass (918/977). Fund-moving skills also get LLM-as-judge evaluation based on the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
+**Risk Gate**: 96% pass (1697/1759). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
 
 ## MCP Servers
 
-**85 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
+**138 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
 
 ### Official MCP Servers
 
@@ -114,49 +115,49 @@ npm i -g clawhub && clawhub install binance-spot-api
 
 ## Official Skills
 
-**270 skills** from verified project teams:
+**1230 skills** classified as official in the source metadata:
 
-| Project | Skills | Source |
-|---|---|---|
-| [Kraken](https://www.kraken.com/) | 50 | [krakenfx/kraken-cli](https://github.com/krakenfx/kraken-cli) |
-| [MoonPay](https://www.moonpay.com/) | 35 | [moonpay/skills](https://github.com/moonpay/skills) |
-| [Binance](https://www.binance.com/) | 20+ | [binance/binance-skills-hub](https://github.com/binance/binance-skills-hub) |
-| [Bankr](https://bankr.bot/) | 20 | [BankrBot/skills](https://github.com/BankrBot/skills) |
-| [Ottie](https://github.com/jiayaoqijia/ottie) | 18 | Crypto DeFi, wallets, market data |
-| [OKX](https://www.okx.com/) | 16+ | [okx/onchainos-skills](https://github.com/okx/onchainos-skills) |
-| [Gate.io](https://www.gate.io/) | 13 | ClawHub: gate-exchange |
-| [DefiLlama](https://defillama.com/) | 11 | [DefiLlama/defillama-skills](https://github.com/DefiLlama/defillama-skills) |
-| [Nansen](https://www.nansen.ai/) | 10 | ClawHub: nansen-devops |
-| [Base](https://base.org/) | 9 | [base/skills](https://github.com/base/skills) |
-| [Circle (USDC)](https://www.circle.com/) | 9 | [circlefin/skills](https://github.com/circlefin/skills) |
-| [Coinbase Wallet](https://www.coinbase.com/) | 9 | [coinbase/agentic-wallet-skills](https://github.com/coinbase/agentic-wallet-skills) |
-| [Uniswap](https://uniswap.org/) | 8 | [Uniswap/uniswap-ai](https://github.com/Uniswap/uniswap-ai) |
-| [Bitget](https://www.bitget.com/) | 7 | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) |
-| [KuCoin](https://www.kucoin.com/) | 7 | [Kucoin/kucoin-skills-hub](https://github.com/Kucoin/kucoin-skills-hub) |
-| [Rocket Pool](https://rocketpool.net/) | 7 | [rocket-pool/skills](https://github.com/rocket-pool/skills) |
-| [CoinMarketCap](https://coinmarketcap.com/) | 7 | ClawHub: bryan-cmc |
-| [KyberSwap](https://kyberswap.com/) | 5 | [KyberNetwork/kyberswap-skills](https://github.com/KyberNetwork/kyberswap-skills) |
-| [Pendle](https://www.pendle.finance/) | 4 | [pendle-finance/pendle-ai](https://github.com/pendle-finance/pendle-ai) |
-| [MetaMask](https://metamask.io/) | 2 | [MetaMask/openclaw-skills](https://github.com/MetaMask/openclaw-skills) |
-| [GMX](https://gmx.io/) | 2 | [gmx-io/gmx-ai](https://github.com/gmx-io/gmx-ai) |
-| [Nethermind](https://nethermind.io/) | 1 | [NethermindEth/defi-skills](https://github.com/NethermindEth/defi-skills) |
-| [GMGN](https://gmgn.ai/) | 1 | [GMGNAI/gmgn-skills](https://github.com/GMGNAI/gmgn-skills) |
-| [Chainlink](https://chain.link/) | 1 | [smartcontractkit/chainlink-agent-skills](https://github.com/smartcontractkit/chainlink-agent-skills) |
-| [Helius](https://helius.dev/) | 1 | [helius-labs/core-ai](https://github.com/helius-labs/core-ai) |
-| [QuickNode](https://www.quicknode.com/) | 1 | [quiknode-labs/blockchain-skills](https://github.com/quiknode-labs/blockchain-skills) |
-| [Worldcoin](https://worldcoin.org/) | 1 | [worldcoin/agentkit](https://github.com/worldcoin/agentkit) |
-| [Aptos](https://aptoslabs.com/) | 2 | [aptos-labs/aptos-agent-skills](https://github.com/aptos-labs/aptos-agent-skills) |
-| [SendAI](https://sendai.fun/) | 1 | [sendaifun/skills](https://github.com/sendaifun/skills) |
-| [Crypto.com](https://crypto.com/) | 1 | [crypto-com/crypto-agent-trading](https://github.com/crypto-com/crypto-agent-trading) |
-| [Blockscout](https://www.blockscout.com/) | 1 | [blockscout/agent-skills](https://github.com/blockscout/agent-skills) |
-| [Celo](https://celo.org/) | 2 | [celo-org/agent-skills](https://github.com/celo-org/agent-skills) |
-| [CoinPaprika](https://coinpaprika.com/) | 1 | [coinpaprika/claude-marketplace](https://github.com/coinpaprika/claude-marketplace) |
-| [Trail of Bits](https://trailofbits.com/) | 2 | [trailofbits/slither-mcp](https://github.com/trailofbits/slither-mcp) |
-| [Polymarket](https://polymarket.com/) | 1 | [Polymarket/agent-skills](https://github.com/Polymarket/agent-skills) |
-| [Dune Analytics](https://dune.com/) | 1 | [duneanalytics/skills](https://github.com/duneanalytics/skills) |
-| [Bybit](https://www.bybit.com/) | 1 | [bybit-exchange/skills](https://github.com/bybit-exchange/skills) |
+| Project | Source |
+|---|---|
+| [Kraken](https://www.kraken.com/) | [krakenfx/kraken-cli](https://github.com/krakenfx/kraken-cli) |
+| [MoonPay](https://www.moonpay.com/) | [moonpay/skills](https://github.com/moonpay/skills) |
+| [Binance](https://www.binance.com/) | [binance/binance-skills-hub](https://github.com/binance/binance-skills-hub) |
+| [Bankr](https://bankr.bot/) | [BankrBot/skills](https://github.com/BankrBot/skills) |
+| [Ottie](https://github.com/jiayaoqijia/ottie) | Crypto DeFi, wallets, market data |
+| [OKX](https://www.okx.com/) | [okx/onchainos-skills](https://github.com/okx/onchainos-skills) |
+| [Gate.io](https://www.gate.io/) | ClawHub: gate-exchange |
+| [DefiLlama](https://defillama.com/) | [DefiLlama/defillama-skills](https://github.com/DefiLlama/defillama-skills) |
+| [Nansen](https://www.nansen.ai/) | ClawHub: nansen-devops |
+| [Base](https://base.org/) | [base/skills](https://github.com/base/skills) |
+| [Circle (USDC)](https://www.circle.com/) | [circlefin/skills](https://github.com/circlefin/skills) |
+| [Coinbase Wallet](https://www.coinbase.com/) | [coinbase/agentic-wallet-skills](https://github.com/coinbase/agentic-wallet-skills) |
+| [Uniswap](https://uniswap.org/) | [Uniswap/uniswap-ai](https://github.com/Uniswap/uniswap-ai) |
+| [Bitget](https://www.bitget.com/) | [BitgetLimited/agent_hub](https://github.com/BitgetLimited/agent_hub) |
+| [KuCoin](https://www.kucoin.com/) | [Kucoin/kucoin-skills-hub](https://github.com/Kucoin/kucoin-skills-hub) |
+| [Rocket Pool](https://rocketpool.net/) | [rocket-pool/skills](https://github.com/rocket-pool/skills) |
+| [CoinMarketCap](https://coinmarketcap.com/) | ClawHub: bryan-cmc |
+| [KyberSwap](https://kyberswap.com/) | [KyberNetwork/kyberswap-skills](https://github.com/KyberNetwork/kyberswap-skills) |
+| [Pendle](https://www.pendle.finance/) | [pendle-finance/pendle-ai](https://github.com/pendle-finance/pendle-ai) |
+| [MetaMask](https://metamask.io/) | [MetaMask/openclaw-skills](https://github.com/MetaMask/openclaw-skills) |
+| [GMX](https://gmx.io/) | [gmx-io/gmx-ai](https://github.com/gmx-io/gmx-ai) |
+| [Nethermind](https://nethermind.io/) | [NethermindEth/defi-skills](https://github.com/NethermindEth/defi-skills) |
+| [GMGN](https://gmgn.ai/) | [GMGNAI/gmgn-skills](https://github.com/GMGNAI/gmgn-skills) |
+| [Chainlink](https://chain.link/) | [smartcontractkit/chainlink-agent-skills](https://github.com/smartcontractkit/chainlink-agent-skills) |
+| [Helius](https://helius.dev/) | [helius-labs/core-ai](https://github.com/helius-labs/core-ai) |
+| [QuickNode](https://www.quicknode.com/) | [quiknode-labs/blockchain-skills](https://github.com/quiknode-labs/blockchain-skills) |
+| [Worldcoin](https://worldcoin.org/) | [worldcoin/agentkit](https://github.com/worldcoin/agentkit) |
+| [Aptos](https://aptoslabs.com/) | [aptos-labs/aptos-agent-skills](https://github.com/aptos-labs/aptos-agent-skills) |
+| [SendAI](https://sendai.fun/) | [sendaifun/skills](https://github.com/sendaifun/skills) |
+| [Crypto.com](https://crypto.com/) | [crypto-com/crypto-agent-trading](https://github.com/crypto-com/crypto-agent-trading) |
+| [Blockscout](https://www.blockscout.com/) | [blockscout/agent-skills](https://github.com/blockscout/agent-skills) |
+| [Celo](https://celo.org/) | [celo-org/agent-skills](https://github.com/celo-org/agent-skills) |
+| [CoinPaprika](https://coinpaprika.com/) | [coinpaprika/claude-marketplace](https://github.com/coinpaprika/claude-marketplace) |
+| [Trail of Bits](https://trailofbits.com/) | [trailofbits/slither-mcp](https://github.com/trailofbits/slither-mcp) |
+| [Polymarket](https://polymarket.com/) | [Polymarket/agent-skills](https://github.com/Polymarket/agent-skills) |
+| [Dune Analytics](https://dune.com/) | [duneanalytics/skills](https://github.com/duneanalytics/skills) |
+| [Bybit](https://www.bybit.com/) | [bybit-exchange/skills](https://github.com/bybit-exchange/skills) |
 
-Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, Reown, Bitget Wallet, ChainGPT, SpoonOS, AIBTC, AElf ecosystem (TomorrowDAO, AelfScan, Portkey, Awaken), ICP/dfinity, Hedera, Injective, Flow, XMTP, OpenOcean, and [121 MCP servers](#mcp-servers).
+Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, Reown, Bitget Wallet, ChainGPT, SpoonOS, AIBTC, AElf ecosystem (TomorrowDAO, AelfScan, Portkey, Awaken), ICP/dfinity, Hedera, Injective, Flow, XMTP, OpenOcean, and [138 MCP servers](#mcp-servers).
 
 ## Submit a Skill
 
@@ -166,14 +167,18 @@ Or email maintainers+cryptoskills@altresear.ch with the skill name, GitHub URL, 
 
 ## Auto-Update Bot
 
-A bot scans 128+ projects every 6 hours:
-1. Checks official repos for new skills (SHA-tracked)
-2. Searches GitHub API for trending crypto repos
-3. AI-powered discovery via AltLLM
-4. Security scans all new skills
-5. Scores every skill (static + security + depth)
-6. Tracks score regressions over time
-7. Updates website and commits
+A GitHub Actions workflow runs every six hours:
+
+1. Refreshes recorded GitHub and ClawHub sources, including bundled libraries and references
+2. Finds real skills in configured repositories and searches GitHub for new candidates
+3. Checks changed bundles with the registry's security gate and preserves local edits
+4. Records upstream revisions, file hashes, and per-source failures
+5. Rebuilds the catalog, scores, trust manifests, pages, and statistics
+6. Runs regression and browser tests before committing skills and generated artifacts together
+
+Run `bash scripts/run-bot.sh` for a local refresh, or add `--dry-run` to preview.
+See [Maintenance](docs/MAINTENANCE.md) for setup and update modes and
+[the latest source report](docs/sync-report.json) for coverage and unresolved sources.
 
 ## Legal
 

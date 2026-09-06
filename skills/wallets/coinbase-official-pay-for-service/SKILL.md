@@ -1,85 +1,65 @@
 ---
-name: pay-for-service
-description: Make a paid API request to an x402 endpoint with automatic USDC payment. Use when you or the user want to call a paid API, make an x402 request, use a paid service, or pay for an API call. Use after finding a service with search-for-service.
+name: agentic-wallet
+description: "Crypto wallet operations via the awal CLI — sign in, check balances, send USDC/ETH/POL/SOL, trade tokens, fund the wallet, and use the x402 payment protocol to discover paid services, pay for API calls, monetize an API, or query onchain data. Use whenever the user mentions signing in, login, authentication, wallet status, balance, address, sending money, paying someone, transferring tokens, ENS names, swapping/trading/converting tokens, funding/topping up/onramp, USDC, ETH, POL, SOL, the x402 bazaar, paid APIs, monetizing an endpoint, or querying onchain data on Base."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: ["Bash(npx awal@2.0.3 status*)", "Bash(npx awal@2.0.3 balance*)", "Bash(npx awal@2.0.3 x402 pay *)"]
+allowed-tools: ["Bash(npx awal@2.12.1 *)", "Bash(npm *)", "Bash(node *)", "Bash(curl *)", "Bash(mkdir *)"]
 ---
 
-# Making Paid x402 Requests
+# Agentic Wallet
 
-Use the `npx awal@2.0.3 x402 pay` command to call paid API endpoints with automatic USDC payment on Base.
+Operate a crypto wallet through the `awal` CLI. This skill is a router: read the relevant reference file in `references/` for the task at hand.
 
-## Confirm wallet is initialized and authed
+## Preflight: Confirm wallet state
 
-```bash
-npx awal@2.0.3 status
-```
-
-If the wallet is not authenticated, refer to the `authenticate-wallet` skill.
-
-## Command Syntax
+Before any wallet operation that requires authentication (everything except x402 search/details), check status:
 
 ```bash
-npx awal@2.0.3 x402 pay <url> [-X <method>] [-d <json>] [-q <params>] [-h <json>] [--max-amount <n>] [--json]
+npx awal@2.12.1 status
 ```
 
-## Options
+If the wallet is not authenticated, read `references/auth.md` and complete sign-in first.
 
-| Option                  | Description                                        |
-| ----------------------- | -------------------------------------------------- |
-| `-X, --method <method>` | HTTP method (default: GET)                         |
-| `-d, --data <json>`     | Request body as JSON string                        |
-| `-q, --query <params>`  | Query parameters as JSON string                    |
-| `-h, --headers <json>`  | Custom HTTP headers as JSON string                 |
-| `--max-amount <amount>` | Max payment in USDC atomic units (1000000 = $1.00) |
-| `--correlation-id <id>` | Group related operations                           |
-| `--json`                | Output as JSON                                     |
+## Routing
 
-## USDC Amounts
+Pick the reference that matches the task and `Read` it before acting:
 
-X402 uses USDC atomic units (6 decimals):
+| Task | Reference |
+| --- | --- |
+| Sign in, log in, connect wallet, OTP verification, "not signed in" errors | `references/auth.md` |
+| Check balances, "how much USDC/ETH/POL/SOL do I have", balance per chain, JSON balance output | `references/balance.md` |
+| Send USDC / ETH / POL / SOL to an address or ENS name (Base, Polygon, Solana) | `references/send-usdc.md` |
+| Swap / trade / convert tokens on Base or Polygon | `references/trade.md` |
+| Add funds, top up, onramp, buy USDC | `references/fund.md` |
+| Find / browse / search paid services on the x402 bazaar | `references/x402-search.md` |
+| Call a paid x402 API endpoint with automatic USDC payment | `references/x402-pay.md` |
+| Build or deploy a paid API server that other agents can pay to use | `references/x402-monetize.md` |
+| Query onchain data on Base (events, transactions, blocks) via the CDP SQL API | `references/query-onchain.md` |
 
-| Atomic Units | USD   |
-| ------------ | ----- |
-| 1000000      | $1.00 |
-| 100000       | $0.10 |
-| 50000        | $0.05 |
-| 10000        | $0.01 |
+If no clear match and the user wants an external capability, search the x402 bazaar (`references/x402-search.md`) — a paid service may exist.
 
-**IMPORTANT**: Always single-quote amounts that use `$` to prevent bash variable expansion (e.g. `'$1.00'` not `$1.00`).
+## Shared rules
 
-## Input Validation
+- **Input validation**: every reference lists the regexes / allowlists that user-provided values must match before being placed in a shell command. Validate strictly; reject inputs containing spaces, semicolons, pipes, backticks, or other shell metacharacters. Do not pass unvalidated user input into commands.
+- **Single-quote `$` amounts**: any amount written as `'$1.00'` must be single-quoted to prevent bash variable expansion.
+- **JSON output**: every `awal` command supports `--json` for machine-readable output.
+- **Auth errors mean re-auth**: if any command fails with "Not authenticated" or similar, read `references/auth.md` and run the sign-in flow.
+- **Insufficient balance**: read `references/fund.md` to top up.
 
-Before constructing the command, validate all user-provided values to prevent shell injection:
+## Quick command index
 
-- **url**: Must be a valid URL starting with `https://` or `http://`. Reject if it contains spaces, semicolons, pipes, backticks, or shell metacharacters.
-- **data (-d)**: Must be valid JSON. Always wrap in single quotes to prevent shell expansion.
-- **max-amount**: Must be a positive integer (`^\d+$`).
-
-Do not pass unvalidated user input into the command.
-
-## Examples
-
-```bash
-# Make a GET request (auto-pays)
-npx awal@2.0.3 x402 pay https://example.com/api/weather
-
-# Make a POST request with body
-npx awal@2.0.3 x402 pay https://example.com/api/sentiment -X POST -d '{"text": "I love this product"}'
-
-# Limit max payment to $0.10
-npx awal@2.0.3 x402 pay https://example.com/api/data --max-amount 100000
-```
-
-## Prerequisites
-
-- Must be authenticated (`npx awal@2.0.3 status` to check, see `authenticate-wallet` skill)
-- Wallet must have sufficient USDC balance (`npx awal@2.0.3 balance` to check)
-- If you don't know the endpoint URL, use the `search-for-service` skill to find services first
-
-## Error Handling
-
-- "Not authenticated" - Run `awal auth login <email>` first, or see `authenticate-wallet` skill
-- "No X402 payment requirements found" - URL may not be an x402 endpoint; use `search-for-service` to find valid endpoints
-- "Insufficient balance" - Fund wallet with USDC; see `fund` skill
+| Command | Purpose |
+| --- | --- |
+| `npx awal@2.12.1 status` | Server health + auth status |
+| `npx awal@2.12.1 address` | Get wallet address |
+| `npx awal@2.12.1 balance` | Get balances across Base, Polygon, Solana (use `--chain` for one chain) |
+| `npx awal@2.12.1 show` | Open the wallet companion window (used for funding) |
+| `npx awal@2.12.1 auth login <email>` | Send OTP code |
+| `npx awal@2.12.1 auth verify <otp>` | Complete sign-in |
+| `npx awal@2.12.1 auth logout` | Sign out and clear the session |
+| `npx awal@2.12.1 send <amount> <recipient>` | Send tokens |
+| `npx awal@2.12.1 trade <amount> <from> <to>` | Swap tokens |
+| `npx awal@2.12.1 x402 bazaar search <query>` | Search paid services |
+| `npx awal@2.12.1 x402 bazaar list` | List bazaar resources |
+| `npx awal@2.12.1 x402 details <url>` | Inspect payment requirements |
+| `npx awal@2.12.1 x402 pay <url>` | Pay and call an x402 endpoint |

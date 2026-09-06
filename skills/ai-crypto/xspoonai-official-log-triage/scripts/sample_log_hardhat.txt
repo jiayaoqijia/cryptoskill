@@ -1,0 +1,28 @@
+Compiling 12 files with Solidity 0.8.20
+Compilation finished successfully
+
+An unexpected error occurred:
+
+HardhatError: HH600: Compilation failed
+
+Error: Compiler run failed:
+Error: Source file requires different compiler version (current compiler is 0.8.20+commit.a1b79de6.Linux.gcc) - note that nightly builds are considered to be strictly less than the released version
+  --> contracts/Token.sol:2:1:
+   |
+ 2 | pragma solidity ^0.8.21;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+Error HH600: Compilation failed
+
+For more info go to https://hardhat.org/HH600 or run Hardhat with --show-stack-traces
+
+    at CompilerDownloader.getCompiler (/home/runner/work/myproject/myproject/node_modules/hardhat/internal/solidity/compiler/downloader.ts:187:13)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async HardhatRuntimeEnvironment.run (/home/runner/work/myproject/myproject/node_modules/hardhat/internal/core/runtime-environment.ts:123:14)
+    at async main (/home/runner/work/myproject/myproject/scripts/deploy.ts:6:3)
+
+Hardhat version: 2.19.1
+Node version: v18.17.0
+Network: hardhat (local)
+
+Error: Process completed with exit code 1.

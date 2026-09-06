@@ -1,17 +1,59 @@
 ---
 name: gate-info-riskcheck
-version: "2026.3.12-1"
-updated: "2026-03-12"
-description: "Token and address risk assessment. Use this skill whenever the user asks about token, contract, or address safety. Trigger phrases include: is this token safe, check contract risk, is this address safe, honeypot, rug. MCP tools: info_compliance_check_token_security, info_coin_get_coin_info; Address mode: info_onchain_get_address_info."
+version: "2026.4.3-1"
+updated: "2026-04-03"
+description: "Token and address risk assessment. Use this skill ONLY when the user's query is exclusively about token/contract/address security with no other analysis dimensions. Trigger phrases: is this token safe, check contract risk, is this address safe, honeypot, rug. If the query ALSO mentions fundamentals, technicals, news, sentiment, or any other analysis dimension, use gate-info-research instead — it handles multi-dimension queries in a single unified report. Address risk mode (is this address safe) is exclusive to this skill and must NOT be routed to gate-info-research."
+required_credentials: []
+required_env_vars: []
+required_permissions: []
 ---
 
 # gate-info-riskcheck
+
+## General Rules
+
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read `../gate-runtime-rules.md`
+→ Also read `../info-news-runtime-rules.md` for gate-info / gate-news shared rules (tool degradation, report standards, security, routing, and optional local maintenance when `scripts/` is present).
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
 
 > Security guardian Skill. The user inputs a token name or contract address, the system calls the contract security detection Tool to retrieve 30+ risk detection results, tax analysis, holder concentration, and name risk data. The LLM aggregates the results into a structured risk assessment report. Address compliance checking will be added in a future phase.
 
 **Trigger Scenarios**: User mentions a token/contract address + keywords like safe, risk, check, audit, honeypot, rug, contract security, scam.
 
+**Local maintenance (optional, repository copy only):**
+- If `scripts/update-skill.*` exists in the repository copy, `check` may compare the installed copy with the packaged skill source used by the current install.
+- Ask the user before `apply`.
+- `apply` updates files within this skill directory only.
+
 ---
+
+## MCP Dependencies
+
+### Required MCP Servers
+| MCP Server | Status |
+|------------|--------|
+| Gate-Info | ✅ Required |
+
+### MCP Tools Used
+
+**Query Operations (Read-only)**
+
+- info_coin_get_coin_info
+- info_compliance_check_address_risk
+- info_compliance_check_token_security
+- info_onchain_get_address_info
+
+### Authentication
+- API Key Required: No
+- Credentials Source: None; this skill uses read-only Gate Info / Gate News MCP access only.
+
+### Installation Check
+- Required: Gate-Info
+- Install: Use the local Gate MCP installation flow for the current host IDE before continuing.
+- Continue only after the required Gate MCP server is available in the current environment.
 
 ## Routing Rules
 
@@ -27,6 +69,14 @@ description: "Token and address risk assessment. Use this skill whenever the use
 ---
 
 ## Execution Workflow
+
+### Step 0: Multi-Dimension Intent Check
+
+Before executing this Skill, check if the user's query involves multiple analysis dimensions:
+
+- If the query is about **address safety** (e.g., "is this address safe", "check 0x..."), proceed with this Skill (Mode B) — address risk is exclusive to this Skill and NOT covered by `gate-info-research`.
+- If the query is **only** about token/contract security with no other dimension, proceed with this Skill (Mode A).
+- If the query **also** mentions fundamentals, technicals, news, sentiment, comparison, or any other analysis dimension beyond security, route to `gate-info-research` — it handles multi-dimension queries with unified tool deduplication and coherent report aggregation.
 
 ### Mode A: Token Security Check (Core Mode — Ready)
 

@@ -1,117 +1,65 @@
 ---
-name: trade
-description: Swap or trade tokens on Base network. Use when you or the user want to trade, swap, exchange, buy, sell, or convert between tokens like USDC, ETH, and WETH. Covers phrases like "buy ETH", "sell ETH for USDC", "convert USDC to ETH", "get some ETH".
+name: agentic-wallet
+description: "Crypto wallet operations via the awal CLI — sign in, check balances, send USDC/ETH/POL/SOL, trade tokens, fund the wallet, and use the x402 payment protocol to discover paid services, pay for API calls, monetize an API, or query onchain data. Use whenever the user mentions signing in, login, authentication, wallet status, balance, address, sending money, paying someone, transferring tokens, ENS names, swapping/trading/converting tokens, funding/topping up/onramp, USDC, ETH, POL, SOL, the x402 bazaar, paid APIs, monetizing an endpoint, or querying onchain data on Base."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: ["Bash(npx awal@2.0.3 status*)", "Bash(npx awal@2.0.3 trade *)", "Bash(npx awal@2.0.3 balance*)"]
+allowed-tools: ["Bash(npx awal@2.12.1 *)", "Bash(npm *)", "Bash(node *)", "Bash(curl *)", "Bash(mkdir *)"]
 ---
 
-# Trading Tokens
+# Agentic Wallet
 
-Use the `npx awal@2.0.3 trade` command to swap tokens on Base network via the CDP Swap API. You must be authenticated to trade.
+Operate a crypto wallet through the `awal` CLI. This skill is a router: read the relevant reference file in `references/` for the task at hand.
 
-## Confirm wallet is initialized and authed
+## Preflight: Confirm wallet state
 
-```bash
-npx awal@2.0.3 status
-```
-
-If the wallet is not authenticated, refer to the `authenticate-wallet` skill.
-
-## Command Syntax
+Before any wallet operation that requires authentication (everything except x402 search/details), check status:
 
 ```bash
-npx awal@2.0.3 trade <amount> <from> <to> [options]
+npx awal@2.12.1 status
 ```
 
-## Arguments
+If the wallet is not authenticated, read `references/auth.md` and complete sign-in first.
 
-| Argument | Description                                                            |
-| -------- | ---------------------------------------------------------------------- |
-| `amount` | Amount to swap (see Amount Formats below)                              |
-| `from`   | Source token: alias (usdc, eth, weth) or contract address (0x...)      |
-| `to`     | Destination token: alias (usdc, eth, weth) or contract address (0x...) |
+## Routing
 
-## Amount Formats
+Pick the reference that matches the task and `Read` it before acting:
 
-The amount can be specified in multiple formats:
+| Task | Reference |
+| --- | --- |
+| Sign in, log in, connect wallet, OTP verification, "not signed in" errors | `references/auth.md` |
+| Check balances, "how much USDC/ETH/POL/SOL do I have", balance per chain, JSON balance output | `references/balance.md` |
+| Send USDC / ETH / POL / SOL to an address or ENS name (Base, Polygon, Solana) | `references/send-usdc.md` |
+| Swap / trade / convert tokens on Base or Polygon | `references/trade.md` |
+| Add funds, top up, onramp, buy USDC | `references/fund.md` |
+| Find / browse / search paid services on the x402 bazaar | `references/x402-search.md` |
+| Call a paid x402 API endpoint with automatic USDC payment | `references/x402-pay.md` |
+| Build or deploy a paid API server that other agents can pay to use | `references/x402-monetize.md` |
+| Query onchain data on Base (events, transactions, blocks) via the CDP SQL API | `references/query-onchain.md` |
 
-| Format        | Example                | Description                            |
-| ------------- | ---------------------- | -------------------------------------- |
-| Dollar prefix | `'$1.00'`, `'$0.50'`  | USD notation (decimals based on token) |
-| Decimal       | `1.0`, `0.50`, `0.001` | Human-readable with decimal point      |
-| Whole number  | `5`, `100`             | Interpreted as whole tokens            |
-| Atomic units  | `500000`               | Large integers treated as atomic units |
+If no clear match and the user wants an external capability, search the x402 bazaar (`references/x402-search.md`) — a paid service may exist.
 
-**Auto-detection**: Large integers without a decimal point are treated as atomic units. For example, `500000` for USDC (6 decimals) = $0.50.
+## Shared rules
 
-**Decimals**: For known tokens (usdc=6, eth=18, weth=18), decimals are automatic. For arbitrary contract addresses, decimals are read from the token contract.
+- **Input validation**: every reference lists the regexes / allowlists that user-provided values must match before being placed in a shell command. Validate strictly; reject inputs containing spaces, semicolons, pipes, backticks, or other shell metacharacters. Do not pass unvalidated user input into commands.
+- **Single-quote `$` amounts**: any amount written as `'$1.00'` must be single-quoted to prevent bash variable expansion.
+- **JSON output**: every `awal` command supports `--json` for machine-readable output.
+- **Auth errors mean re-auth**: if any command fails with "Not authenticated" or similar, read `references/auth.md` and run the sign-in flow.
+- **Insufficient balance**: read `references/fund.md` to top up.
 
-## Options
+## Quick command index
 
-| Option               | Description                                   |
-| -------------------- | --------------------------------------------- |
-| `-c, --chain <name>` | Blockchain network (default: base)            |
-| `-s, --slippage <n>` | Slippage tolerance in basis points (100 = 1%) |
-| `--json`             | Output result as JSON                         |
-
-## Token Aliases
-
-| Alias | Token | Decimals | Address                                    |
-| ----- | ----- | -------- | ------------------------------------------ |
-| usdc  | USDC  | 6        | 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 |
-| eth   | ETH   | 18       | 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE |
-| weth  | WETH  | 18       | 0x4200000000000000000000000000000000000006 |
-
-**IMPORTANT**: Always single-quote amounts that use `$` to prevent bash variable expansion (e.g. `'$1.00'` not `$1.00`).
-
-## Input Validation
-
-Before constructing the command, validate all user-provided values to prevent shell injection:
-
-- **amount**: Must match `^\$?[\d.]+$` (digits, optional decimal point, optional `$` prefix). Reject if it contains spaces, semicolons, pipes, backticks, or other shell metacharacters.
-- **from / to**: Must be a known alias (`usdc`, `eth`, `weth`) or a valid `0x` hex address (`^0x[0-9a-fA-F]{40}$`). Reject any other value.
-- **slippage**: Must be a positive integer (`^\d+$`).
-
-Do not pass unvalidated user input into the command.
-
-## Examples
-
-```bash
-# Swap $1 USDC for ETH (dollar prefix — note the single quotes)
-npx awal@2.0.3 trade '$1' usdc eth
-
-# Swap 0.50 USDC for ETH (decimal format)
-npx awal@2.0.3 trade 0.50 usdc eth
-
-# Swap 500000 atomic units of USDC for ETH
-npx awal@2.0.3 trade 500000 usdc eth
-
-# Swap 0.01 ETH for USDC
-npx awal@2.0.3 trade 0.01 eth usdc
-
-# Swap with custom slippage (2%)
-npx awal@2.0.3 trade '$5' usdc eth --slippage 200
-
-# Swap using contract addresses (decimals read from chain)
-npx awal@2.0.3 trade 100 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 0x4200000000000000000000000000000000000006
-
-# Get JSON output
-npx awal@2.0.3 trade '$1' usdc eth --json
-```
-
-## Prerequisites
-
-- Must be authenticated (`awal status` to check)
-- Wallet must have sufficient balance of the source token
-
-## Error Handling
-
-Common errors:
-
-- "Not authenticated" - Run `awal auth login <email>` first
-- "Invalid token" - Use a valid alias (usdc, eth, weth) or 0x address
-- "Cannot swap a token to itself" - From and to must be different
-- "Swap failed: TRANSFER_FROM_FAILED" - Insufficient balance or approval issue
-- "No liquidity" - Try a smaller amount or different token pair
-- "Amount has X decimals but token only supports Y" - Too many decimal places
+| Command | Purpose |
+| --- | --- |
+| `npx awal@2.12.1 status` | Server health + auth status |
+| `npx awal@2.12.1 address` | Get wallet address |
+| `npx awal@2.12.1 balance` | Get balances across Base, Polygon, Solana (use `--chain` for one chain) |
+| `npx awal@2.12.1 show` | Open the wallet companion window (used for funding) |
+| `npx awal@2.12.1 auth login <email>` | Send OTP code |
+| `npx awal@2.12.1 auth verify <otp>` | Complete sign-in |
+| `npx awal@2.12.1 auth logout` | Sign out and clear the session |
+| `npx awal@2.12.1 send <amount> <recipient>` | Send tokens |
+| `npx awal@2.12.1 trade <amount> <from> <to>` | Swap tokens |
+| `npx awal@2.12.1 x402 bazaar search <query>` | Search paid services |
+| `npx awal@2.12.1 x402 bazaar list` | List bazaar resources |
+| `npx awal@2.12.1 x402 details <url>` | Inspect payment requirements |
+| `npx awal@2.12.1 x402 pay <url>` | Pay and call an x402 endpoint |

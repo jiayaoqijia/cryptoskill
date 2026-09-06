@@ -3,12 +3,6 @@ name: kukapay-crypto-indicators-mcp
 description: "An MCP server providing a range of cryptocurrency technical analysis indicators and strategies, empowering AI trading agents to efficiently analyze market trends and develop robust quantitative strategies."
 ---
 
-# kukapay-crypto-indicators-mcp
-
-_Source: [github.com/kukapay/crypto-indicators-mcp](https://github.com/kukapay/crypto-indicators-mcp). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Crypto Indicators MCP Server
 
 An MCP server providing a range of cryptocurrency technical analysis indicators and strategies, empowering AI trading agents to efficiently analyze market trends and develop robust quantitative strategies.

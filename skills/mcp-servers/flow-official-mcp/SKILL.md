@@ -3,12 +3,6 @@ name: flow-official-mcp
 description: "The Flow network tools for Model Context Protocol (MCP). This package provides a set of tools for interacting with the Flow network through the Model Context Protocol."
 ---
 
-# flow-official-mcp
-
-_Source: [github.com/onflow/flow-mcp](https://github.com/onflow/flow-mcp). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # flow-mcp — Model Context Protocol Server for the Flow Network
 
 The Flow network tools for Model Context Protocol (MCP). This package provides a set of tools for interacting with the Flow network through the Model Context Protocol.

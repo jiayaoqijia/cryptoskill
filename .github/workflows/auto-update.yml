@@ -1,0 +1,60 @@
+name: Refresh skill registry
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: registry-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install registry dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium
+      - name: Test updater
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Fetch sources and rebuild all artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash scripts/run-bot.sh --discover-github
+      - name: Verify generated website
+        run: npm test
+      - name: Commit registry changes
+        id: commit
+        run: |
+          git config user.name 'CryptoSkill Bot'
+          git config user.email 'bot@cryptoskill.org'
+          git add skills docs README.md scripts/source-lock.json scripts/.skill-dates.json scripts/watchlist.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Refresh upstream skills and generated registry"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Rebuild GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"

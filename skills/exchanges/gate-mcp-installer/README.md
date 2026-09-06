@@ -1,22 +1,23 @@
-# Gate MCP
+# Gate MCP (OpenClaw / mcporter)
 
-One-click installer for all Gate MCP servers, supporting spot trading, futures, wallet, market data, and news queries.
+One-click installer for Gate MCP servers: **Local CEX**, **Remote CEX public**, **Remote CEX exchange (OAuth2)**, **Dex**, **Info**, **News**.
 
 ## Features
 
-- **One-Click Install** - Installs all MCP servers by default
-- **Flexible Selection** - Supports installing individual servers
-- **Secure Configuration** - Automatically manages API keys
-- **Ready to Use** - Works out of the box after download
+- **One-Click Install** — Installs all MCP servers by default (see table below).
+- **Flexible Selection** — `./scripts/install.sh --select` for individual servers.
+- **Secure Configuration** — API keys via mcporter; OAuth for remote exchange and Dex as documented in [gate-mcp](https://github.com/gate/gate-mcp).
 
 ## Included MCP Servers
 
 | Server | Type | Function | Auth |
 |--------|------|----------|------|
-| `gate` | stdio | Spot/Futures/Options trading | API Key + Secret |
-| `gate-dex` | HTTP | DEX operations | x-api-key built-in (MCP_AK_8W2N7Q) + Authorization: Bearer ${GATE_MCP_TOKEN} |
-| `gate-info` | HTTP | Market data | No auth required |
-| `gate-news` | HTTP | News feed | No auth required |
+| `gate` | stdio | Local CEX (`npx -y gate-mcp`) | API Key + Secret (optional for public-only) |
+| `gate-cex-pub` | HTTP | Remote public market data (`/mcp`) | None |
+| `gate-cex-ex` | HTTP | Remote private CEX (`/mcp/exchange`) | **Gate OAuth2** — run `mcporter auth gate-cex-ex` |
+| `gate-dex` | HTTP | DEX | x-api-key `MCP_AK_8W2N7Q` + Bearer `${GATE_MCP_TOKEN}` |
+| `gate-info` | HTTP | Info & analysis | None |
+| `gate-news` | HTTP | News | None |
 
 ## Quick Start
 
@@ -30,16 +31,19 @@ One-click installer for all Gate MCP servers, supporting spot trading, futures, 
 ### Usage
 
 ```bash
-# Check BTC price (no auth required)
+# Info / news (no auth)
 mcporter call gate-info.list_tickers currency_pair=BTC_USDT
-
-# Check account balance (requires auth)
-mcporter call gate.list_spot_accounts
-
-# Check news (no auth required)
 mcporter call gate-news.list_news
 
-# List installed servers
+# Remote CEX public — list tools first
+mcporter list gate-cex-pub
+
+# Remote CEX exchange — authorize once
+mcporter auth gate-cex-ex
+
+# Local CEX (requires API keys in mcporter config for `gate`)
+mcporter call gate.list_spot_accounts
+
 mcporter config list | grep gate
 ```
 
@@ -63,13 +67,12 @@ See [SKILL.md](SKILL.md) for full usage instructions.
 
 ## Getting API Keys
 
-1. Visit **https://www.gate.com/myaccount/profile/api-key/manage** (after login: Avatar -> API Management)
-2. Create an API Key and select the required permissions:
-   - **Read** - Market queries, account info
-   - **Trade** - Spot/Margin/Futures
-   - **Withdraw** - Wallet operations
+1. Visit **https://www.gate.com/myaccount/profile/api-key/manage** (after login: Avatar -> API Management).
+2. Create an API Key for the **gate** (local stdio) server as needed.
 
-**Gate-Dex Authorization**: When a gate-dex query (balance/transfer/swap, etc.) returns an authorization required message, first open [https://web3.gate.com/](https://web3.gate.com/) to create or bind a wallet; the assistant will return a clickable Google authorization link for you to complete OAuth.
+**gate-cex-ex**: Use `mcporter auth gate-cex-ex` (Gate OAuth2).
+
+**Gate-Dex**: When a query returns authorization required, open https://web3.gate.com/ for wallet setup, then complete OAuth via the assistant link.
 
 ## License
 

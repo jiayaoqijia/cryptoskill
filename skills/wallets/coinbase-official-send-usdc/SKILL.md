@@ -1,86 +1,65 @@
 ---
-name: send-usdc
-description: Send USDC to an Ethereum address or ENS name. Use when you or the user want to send money, pay someone, transfer USDC, tip, donate, or send funds to a wallet address or .eth name. Covers phrases like "send $5 to", "pay 0x...", or "transfer to vitalik.eth".
+name: agentic-wallet
+description: "Crypto wallet operations via the awal CLI — sign in, check balances, send USDC/ETH/POL/SOL, trade tokens, fund the wallet, and use the x402 payment protocol to discover paid services, pay for API calls, monetize an API, or query onchain data. Use whenever the user mentions signing in, login, authentication, wallet status, balance, address, sending money, paying someone, transferring tokens, ENS names, swapping/trading/converting tokens, funding/topping up/onramp, USDC, ETH, POL, SOL, the x402 bazaar, paid APIs, monetizing an endpoint, or querying onchain data on Base."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: ["Bash(npx awal@2.0.3 status*)", "Bash(npx awal@2.0.3 send *)", "Bash(npx awal@2.0.3 balance*)"]
+allowed-tools: ["Bash(npx awal@2.12.1 *)", "Bash(npm *)", "Bash(node *)", "Bash(curl *)", "Bash(mkdir *)"]
 ---
 
-# Sending USDC
+# Agentic Wallet
 
-Use the `npx awal@2.0.3 send` command to transfer USDC from the wallet to any Ethereum address or ENS name on Base.
+Operate a crypto wallet through the `awal` CLI. This skill is a router: read the relevant reference file in `references/` for the task at hand.
 
-## Confirm wallet is initialized and authed
+## Preflight: Confirm wallet state
 
-```bash
-npx awal@2.0.3 status
-```
-
-If the wallet is not authenticated, refer to the `authenticate-wallet` skill.
-
-## Command Syntax
+Before any wallet operation that requires authentication (everything except x402 search/details), check status:
 
 ```bash
-npx awal@2.0.3 send <amount> <recipient> [--chain <chain>] [--json]
+npx awal@2.12.1 status
 ```
 
-## Arguments
+If the wallet is not authenticated, read `references/auth.md` and complete sign-in first.
 
-| Argument    | Description                                                                                                                                                                                                                          |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `amount`    | Amount to send: '$1.00', '1.00', or atomic units (1000000 = $1). Always single-quote amounts that use `$` to prevent bash variable expansion. If the number looks like atomic units (no decimal or > 100), treat as atomic units. Assume that people won't be sending more than 100 USDC the majority of the time |
-| `recipient` | Ethereum address (0x...) or ENS name (vitalik.eth)                                                                                                                                                                                   |
+## Routing
 
-## Options
+Pick the reference that matches the task and `Read` it before acting:
 
-| Option           | Description                        |
-| ---------------- | ---------------------------------- |
-| `--chain <name>` | Blockchain network (default: base) |
-| `--json`         | Output result as JSON              |
+| Task | Reference |
+| --- | --- |
+| Sign in, log in, connect wallet, OTP verification, "not signed in" errors | `references/auth.md` |
+| Check balances, "how much USDC/ETH/POL/SOL do I have", balance per chain, JSON balance output | `references/balance.md` |
+| Send USDC / ETH / POL / SOL to an address or ENS name (Base, Polygon, Solana) | `references/send-usdc.md` |
+| Swap / trade / convert tokens on Base or Polygon | `references/trade.md` |
+| Add funds, top up, onramp, buy USDC | `references/fund.md` |
+| Find / browse / search paid services on the x402 bazaar | `references/x402-search.md` |
+| Call a paid x402 API endpoint with automatic USDC payment | `references/x402-pay.md` |
+| Build or deploy a paid API server that other agents can pay to use | `references/x402-monetize.md` |
+| Query onchain data on Base (events, transactions, blocks) via the CDP SQL API | `references/query-onchain.md` |
 
-## Input Validation
+If no clear match and the user wants an external capability, search the x402 bazaar (`references/x402-search.md`) — a paid service may exist.
 
-Before constructing the command, validate all user-provided values to prevent shell injection:
+## Shared rules
 
-- **amount**: Must match `^\$?[\d.]+$` (digits, optional decimal point, optional `$` prefix). Reject if it contains spaces, semicolons, pipes, backticks, or other shell metacharacters.
-- **recipient**: Must be a valid `0x` hex address (`^0x[0-9a-fA-F]{40}$`) or an ENS name (`^[a-zA-Z0-9.-]+\.eth$`). Reject any value containing spaces or shell metacharacters.
+- **Input validation**: every reference lists the regexes / allowlists that user-provided values must match before being placed in a shell command. Validate strictly; reject inputs containing spaces, semicolons, pipes, backticks, or other shell metacharacters. Do not pass unvalidated user input into commands.
+- **Single-quote `$` amounts**: any amount written as `'$1.00'` must be single-quoted to prevent bash variable expansion.
+- **JSON output**: every `awal` command supports `--json` for machine-readable output.
+- **Auth errors mean re-auth**: if any command fails with "Not authenticated" or similar, read `references/auth.md` and run the sign-in flow.
+- **Insufficient balance**: read `references/fund.md` to top up.
 
-Do not pass unvalidated user input into the command.
+## Quick command index
 
-## Examples
-
-```bash
-# Send $1.00 USDC to an address
-npx awal@2.0.3 send 1 0x1234...abcd
-
-# Send $0.50 USDC to an ENS name
-npx awal@2.0.3 send 0.50 vitalik.eth
-
-# Send with dollar sign prefix (note the single quotes)
-npx awal@2.0.3 send '$5.00' 0x1234...abcd
-
-# Get JSON output
-npx awal@2.0.3 send 1 vitalik.eth --json
-```
-
-## ENS Resolution
-
-ENS names are automatically resolved to addresses via Ethereum mainnet. The command will:
-
-1. Detect ENS names (any string containing a dot that isn't a hex address)
-2. Resolve the name to an address
-3. Display both the ENS name and resolved address in the output
-
-## Prerequisites
-
-- Must be authenticated (`npx awal@2.0.3 status` to check, `npx awal@2.0.3 auth login` to sign in, see skill `authenticate-wallet` for more information)
-- Wallet must have sufficient USDC balance (`npx awal balance` to check)
-
-## Error Handling
-
-Common errors:
-
-- "Not authenticated" - Run `awal auth login <email>` first
-- "Insufficient balance" - Check balance with `awal balance`
-- "Could not resolve ENS name" - Verify the ENS name exists
-- "Invalid recipient" - Must be valid 0x address or ENS name
+| Command | Purpose |
+| --- | --- |
+| `npx awal@2.12.1 status` | Server health + auth status |
+| `npx awal@2.12.1 address` | Get wallet address |
+| `npx awal@2.12.1 balance` | Get balances across Base, Polygon, Solana (use `--chain` for one chain) |
+| `npx awal@2.12.1 show` | Open the wallet companion window (used for funding) |
+| `npx awal@2.12.1 auth login <email>` | Send OTP code |
+| `npx awal@2.12.1 auth verify <otp>` | Complete sign-in |
+| `npx awal@2.12.1 auth logout` | Sign out and clear the session |
+| `npx awal@2.12.1 send <amount> <recipient>` | Send tokens |
+| `npx awal@2.12.1 trade <amount> <from> <to>` | Swap tokens |
+| `npx awal@2.12.1 x402 bazaar search <query>` | Search paid services |
+| `npx awal@2.12.1 x402 bazaar list` | List bazaar resources |
+| `npx awal@2.12.1 x402 details <url>` | Inspect payment requirements |
+| `npx awal@2.12.1 x402 pay <url>` | Pay and call an x402 endpoint |

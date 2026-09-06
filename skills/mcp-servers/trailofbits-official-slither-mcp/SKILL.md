@@ -3,12 +3,6 @@ name: trailofbits-official-slither-mcp
 description: "[![Tests](https://github.com/trailofbits/slither-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/trailofbits/slither-mcp/actions/workflows/test.yml)"
 ---
 
-# trailofbits-official-slither-mcp
-
-_Source: [github.com/trailofbits/slither-mcp](https://github.com/trailofbits/slither-mcp). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Slither MCP Server
 
 [![Tests](https://github.com/trailofbits/slither-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/trailofbits/slither-mcp/actions/workflows/test.yml)

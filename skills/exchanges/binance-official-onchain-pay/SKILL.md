@@ -12,7 +12,7 @@ description: |
   - crypto-network: Get supported blockchain networks with withdraw fees and limits
   - p2p/trading-pairs: List P2P-specific trading pairs
 metadata:
-  version: 0.1.1
+  version: 0.1.2
   author: onchain-pay-team
 license: MIT
 ---
@@ -84,7 +84,7 @@ This skill is designed for the following scenarios:
 | Payment Method List (v2) | `papi/v2/ramp/connect/buy/payment-method-list` | (none) | lang |
 | Trading Pairs | `papi/v1/ramp/connect/buy/trading-pairs` | (none) | (none) |
 | Estimated Quote | `papi/v1/ramp/connect/buy/estimated-quote` | fiatCurrency, requestedAmount, payMethodCode, amountType | cryptoCurrency, contractAddress, address, network |
-| Pre-order | `papi/v1/ramp/connect/gray/buy/pre-order` | externalOrderId, merchantCode, merchantName, ts | fiatCurrency, fiatAmount, cryptoCurrency, requestedAmount, amountType, address, network, payMethodCode, payMethodSubCode, redirectUrl, failRedirectUrl, redirectDeepLink, failRedirectDeepLink, customization, destContractAddress, destContractABI, destContractParams, affiliateCode, gtrTemplateCode, contractAddress |
+| Pre-order | `papi/v1/ramp/connect/buy/pre-order` | externalOrderId, merchantCode, merchantName, ts | fiatCurrency, fiatAmount, cryptoCurrency, requestedAmount, amountType, address, network, payMethodCode, payMethodSubCode, redirectUrl, failRedirectUrl, redirectDeepLink, failRedirectDeepLink, customization, destContractAddress, destContractABI, destContractParams, affiliateCode, gtrTemplateCode, contractAddress |
 | Get Order | `papi/v1/ramp/connect/order` | externalOrderId | (none) |
 | Crypto Network | `papi/v1/ramp/connect/crypto-network` | (none) | (none) |
 | P2P Trading Pairs | `papi/v1/ramp/connect/buy/p2p/trading-pairs` | (none) | fiatCurrency |
@@ -193,8 +193,8 @@ Create a buy pre-order and return the redirect link for payment.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | externalOrderId | string | Yes | Partner's unique order ID (must be unique) |
-| merchantCode | string | Yes | Merchant code (e.g., `connect-gray`) |
-| merchantName | string | Yes | Merchant display name (e.g., `GrayTest`) |
+| merchantCode | string | Yes | Merchant code assigned to you by Binance (provided by user) |
+| merchantName | string | Yes | Merchant display name (provided by user) |
 | ts | number | Yes | Current timestamp in milliseconds |
 | fiatCurrency | string | No* | Fiat currency code (e.g., `TWD`, `USD`, `EUR`) |
 | fiatAmount | number | No* | Fiat amount to spend |
@@ -355,7 +355,7 @@ Lock attribute codes:
 2. **Onchain-Pay Easy**: Only supported on BSC network currently. Requires contract integration.
 3. **Validation**: Invalid customization values (e.g., `null` for `MERCHANT_DISPLAY_NAME`) will return `ILLEGAL_CUSTOMIZATION_VALUE` error.
 4. **Combinations**: Some flags work together (e.g., `NET_RECEIVE` + `SEND_PRIMARY`), while others are independent.
-5. **Testing**: Use test accounts (`connect-gray`) for testing customization flags before production.
+5. **Testing**: Use a dedicated test merchant account (provided by Binance) to verify customization flags before production.
 6. **Internal Flags**: `OPERATION` (code 4) and `SKIP_WITHDRAW` (code 5) are internal use only and should NOT be passed from merchant side.
 7. **OPEN_NETWORK**: Currently only available for Web3 entrance, not available for Open API. Do not use this flag in Open API pre-order requests.
 8. **Flag Order**: Flags are ordered by their internal code (1-13). The code number is used internally for identification.
@@ -407,7 +407,7 @@ The account marked `(default)` is used automatically. You can define multiple ac
 
 ## User Agent Header
 
-Include `User-Agent` header with the following string: `onchain-pay-open-api/0.1.0 (Skill)`
+Include `User-Agent` header with the following string: `onchain-pay-open-api/0.1.2 (Skill)`
 
 ---
 
@@ -458,9 +458,9 @@ ORDER_ID="order$(date +%s)"
 
 bash /path/to/scripts/sign_and_call.sh \
   "https://api.commonservice.io" \
-  "papi/v1/ramp/connect/gray/buy/pre-order" \
-  "connect-gray" \
-  "your-api-key" \
+  "papi/v1/ramp/connect/buy/pre-order" \
+  "<YOUR_CLIENT_ID>" \
+  "<YOUR_API_KEY>" \
   "/path/to/private.pem" \
-  "{\"externalOrderId\":\"$ORDER_ID\",\"merchantCode\":\"connect-gray\",\"merchantName\":\"YourMerchant\",\"ts\":$TIMESTAMP,\"fiatCurrency\":\"USD\",\"requestedAmount\":100,\"cryptoCurrency\":\"BNB\",\"amountType\":1,\"address\":\"0x...\",\"network\":\"BSC\",\"payMethodCode\":\"BUY_CARD\"}"
+  "{\"externalOrderId\":\"$ORDER_ID\",\"merchantCode\":\"<YOUR_MERCHANT_CODE>\",\"merchantName\":\"<YOUR_MERCHANT_NAME>\",\"ts\":$TIMESTAMP,\"fiatCurrency\":\"USD\",\"requestedAmount\":100,\"cryptoCurrency\":\"BNB\",\"amountType\":1,\"address\":\"0x...\",\"network\":\"BSC\",\"payMethodCode\":\"BUY_CARD\"}"
 ```

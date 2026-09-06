@@ -219,13 +219,27 @@ def git_last_commit_ts(skill_dir: Path) -> int | None:
 
 # Cache for git timestamps
 _git_ts_cache: dict[str, int | None] = {}
+_source_dates = None
 
 
 def git_last_commit_ts_cached(skill_dir: Path) -> int | None:
-    """Get git timestamp with caching."""
+    """Prefer recorded source dates, including fresh uncommitted imports."""
+    global _source_dates
+    if _source_dates is None:
+        try:
+            _source_dates = json.loads((REPO_ROOT / 'scripts/.skill-dates.json').read_text())
+        except (OSError, ValueError):
+            _source_dates = {}
     key = str(skill_dir)
     if key not in _git_ts_cache:
-        _git_ts_cache[key] = git_last_commit_ts(skill_dir)
+        try:
+            date = _source_dates.get(str(skill_dir.relative_to(REPO_ROOT)), {}).get('last_updated')
+            parsed = datetime.fromisoformat(date.replace('Z', '+00:00')) if date else None
+            if parsed and parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            _git_ts_cache[key] = int(parsed.timestamp()) if parsed else git_last_commit_ts(skill_dir)
+        except (ValueError, TypeError):
+            _git_ts_cache[key] = git_last_commit_ts(skill_dir)
     return _git_ts_cache[key]
 
 

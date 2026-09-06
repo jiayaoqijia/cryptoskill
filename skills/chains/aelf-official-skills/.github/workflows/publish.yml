@@ -1,0 +1,77 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      SKILLS_BASE: ${{ github.workspace }}/testdata
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Generate fixture catalog
+        run: |
+          mkdir -p .tmp
+          bun run catalog:generate -- --workspace testdata/workspace.ci.json --include-local-paths --output .tmp/ci-catalog.json --no-readme-sync
+
+      - name: Health check (fixture catalog)
+        run: bun run health:check -- --catalog .tmp/ci-catalog.json
+
+      - name: README sync check
+        run: bun run readme:check
+
+      - name: Security audit
+        run: bun run security:audit -- --catalog .tmp/ci-catalog.json
+
+      - name: Bootstrap dependency closure (fixture skill)
+        run: ./bootstrap.sh --catalog .tmp/ci-catalog.json --only fixture-node-skill --source local --skip-install
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Ensure latest npm (trusted publishing requires >= 11.5.1)
+        run: npm install -g npm@latest
+
+      - name: Verify tag matches package.json version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match package.json ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Publish package
+        run: npm publish --provenance --access public

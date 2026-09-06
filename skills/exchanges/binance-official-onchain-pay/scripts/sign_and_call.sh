@@ -42,7 +42,7 @@ curl_args=(
   --header "X-Tesla-Timestamp: ${timestamp}"
   --header "Content-Type: application/json"
   --header "x-trace-id: skill_${timestamp}"
-  --header "User-Agent: onchain-pay-open-api/0.1.0 (Skill)"
+  --header "User-Agent: onchain-pay-open-api/0.1.2 (Skill)"
 )
 
 if [ -n "$JSON_BODY" ]; then

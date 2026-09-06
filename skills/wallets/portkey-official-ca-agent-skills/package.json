@@ -1,0 +1,68 @@
+{
+  "name": "@portkey/ca-agent-skills",
+  "version": "2.3.1",
+  "description": "AI Agent toolkit for Portkey Wallet on the aelf blockchain — Email registration, login, transfers, guardian management, and more.",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./mcp": "./src/mcp/server.ts"
+  },
+  "bin": {
+    "portkey-ca-setup": "./bin/setup.js"
+  },
+  "files": [
+    "index.ts",
+    "src/",
+    "lib/",
+    "bin/",
+    "SKILL.md",
+    "cli-helpers.ts",
+    "portkey_*_skill.ts",
+    "openclaw.json",
+    "mcp-config.example.json",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    ".env.example"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Portkey-Wallet/ca-agent-skills.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "scripts": {
+    "setup": "bun run bin/setup.ts",
+    "mcp": "bun run src/mcp/server.ts",
+    "test": "bun test __tests__/",
+    "test:unit": "bun test __tests__/unit/",
+    "test:unit:coverage": "bun run test:unit --coverage --coverage-reporter=text --coverage-reporter=lcov --coverage-dir=coverage",
+    "coverage:badge": "bun run bin/generate-coverage-badge.ts",
+    "test:integration": "bun test __tests__/integration/",
+    "test:e2e": "bun test __tests__/e2e/",
+    "coverage:gate": "bun run scripts/coverage-gate.ts",
+    "test:coverage:ci": "COVERAGE_MIN_LINES=85 COVERAGE_MIN_FUNCS=80 bun run test:unit:coverage && bun run coverage:gate",
+    "typecheck:src": "bunx tsc -p tsconfig.src.json --noEmit",
+    "typecheck:test": "bunx tsc -p tsconfig.test.json --noEmit",
+    "typecheck": "bun run typecheck:src && bun run typecheck:test",
+    "build:openclaw": "bun run bin/generate-openclaw.ts",
+    "build:openclaw:check": "bun run bin/generate-openclaw.ts --check",
+    "deps:check": "bun run scripts/check-deps-baseline.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@portkey/aelf-signer": "1.0.1",
+    "aelf-sdk": "^3.5.1-beta.0",
+    "commander": "^12.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "latest",
+    "ajv": "^8.17.1",
+    "typescript": "^5.7.0"
+  }
+}

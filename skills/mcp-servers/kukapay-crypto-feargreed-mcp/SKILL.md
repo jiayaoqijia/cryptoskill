@@ -3,12 +3,6 @@ name: kukapay-crypto-feargreed-mcp
 description: "A mcp server that provides real-time and historical Crypto Fear & Greed Index data, powered by the Alternative.me."
 ---
 
-# kukapay-crypto-feargreed-mcp
-
-_Source: [github.com/kukapay/crypto-feargreed-mcp](https://github.com/kukapay/crypto-feargreed-mcp). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Crypto Fear & Greed Index MCP Server
 
 A mcp server that provides real-time and historical Crypto Fear & Greed Index data, powered by the Alternative.me.

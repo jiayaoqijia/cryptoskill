@@ -1,10 +1,10 @@
 ---
 name: okx-cex-market
-description: "This skill should be used when the user asks for 'price of BTC', 'ETH ticker', 'show me the orderbook', 'market depth', 'BTC candles', 'OHLCV chart data', 'funding rate', 'open interest', 'mark price', 'index price', 'recent trades', 'price limit', 'list instruments', 'what instruments are available', or any request to query public market data on OKX CEX. All commands are read-only and do NOT require API credentials. Do NOT use for account balance/positions (use okx-cex-portfolio), placing/cancelling orders (use okx-cex-trade), or grid/DCA bots (use okx-cex-bot)."
+description: "Use this skill when the user asks for: price of any asset, ticker, order book, candles, OHLCV, funding rate, open interest, OI change scanner, market screener (top movers, high-volume, newly listed), mark price, index price, recent trades, instrument list, stock tokens, metals prices (gold, XAU, XAG), commodities (oil, OIL), forex rates (EUR/USD, EURUSDT), bond instruments, non-crypto assets, or any technical indicator query (RSI, MACD, EMA, Bollinger Bands, KDJ, SuperTrend, AHR999, BTC rainbow, and 70+ more). All commands are read-only and do NOT require API credentials. Do NOT use for account balance/positions (okx-cex-portfolio), placing/cancelling orders (okx-cex-trade), or bots (okx-cex-bot). Do NOT use when the user wants to TRADE a directional view as an event contract — that is okx-cex-trade. Merely ASKING which way an asset's price is moving is a market-data question and belongs here."
 license: MIT
 metadata:
   author: okx
-  version: "1.0.0"
+  version: "1.4.5"
   homepage: "https://www.okx.com"
   agent:
     requires:
@@ -12,452 +12,141 @@ metadata:
     install:
       - id: npm
         kind: node
-        package: "@okx_ai/okx-trade-cli"
+        package: "@okx_ai/okx-trade-cli@1.4.5"
         bins: ["okx"]
         label: "Install okx CLI (npm)"
 ---
 
 # OKX CEX Market Data CLI
 
-Public market data for OKX exchange: prices, order books, candles, funding rates, open interest, and instrument info. All commands are **read-only** and do **not require API credentials**.
+> **Compliance notice**: This skill provides raw market data only. No strategy, recommendation, or optimization logic is embedded. All indicator outputs are objective numerical values; interpretation and trading decisions remain solely with the user.
 
-## Prerequisites
+Public market data for OKX: prices, order books, candles, funding rates, open interest, instrument info, and technical indicators. All commands are **read-only** and require **no API credentials**.
 
-1. Install `okx` CLI:
-   ```bash
-   npm install -g @okx_ai/okx-trade-cli
-   ```
-2. No credentials needed for market data — all commands are public.
-3. Verify install:
-   ```bash
-   okx market ticker BTC-USDT
-   ```
+**Skill routing**
+- Market data / indicators → `okx-cex-market` (this skill)
+- Account balance / positions → `okx-cex-portfolio`
+- Place / cancel orders → `okx-cex-trade`
+- **Trading a directional view as an event contract** → `okx-cex-trade`
+- Market sentiment / most bullish-bearish coins → `okx-sentiment-tracker`
+- Grid / DCA bots → `okx-cex-bot`
 
-## Demo vs Live Mode
+## Preflight
 
-Market data commands are public and read-only — **demo mode has no effect**. The same data is returned with or without `--demo`. No confirmation needed before running any market command.
+Before running any command, follow [`../_shared/preflight.md`](../_shared/preflight.md).
+Use `metadata.version` from this file's frontmatter as the reference for Step 2.
 
-## Skill Routing
-
-- For market data (prices, charts, depth, funding rates) → use `okx-cex-market` (this skill)
-- For account balance, P&L, positions, fees, transfers → use `okx-cex-portfolio`
-- For regular spot/swap/futures/algo orders → use `okx-cex-trade`
-- For grid and DCA trading bots → use `okx-cex-bot`
-
-## Quickstart
+## Install
 
 ```bash
-# Current BTC spot price
-okx market ticker BTC-USDT
-
-# All SWAP (perp) tickers
-okx market tickers SWAP
-
-# BTC perp order book (top 5 levels each side)
-okx market orderbook BTC-USDT-SWAP
-
-# BTC hourly candles (last 20)
-okx market candles BTC-USDT --bar 1H --limit 20
-
-# BTC perp current funding rate
-okx market funding-rate BTC-USDT-SWAP
-
-# BTC perp funding rate history
-okx market funding-rate BTC-USDT-SWAP --history
-
-# Open interest for all SWAP instruments
-okx market open-interest --instType SWAP
-
-# List all active SPOT instruments
-okx market instruments --instType SPOT
-
-# List all tradeable stock token perpetuals (TSLA, NVDA, AAPL, etc.)
-okx market stock-tokens
+npm install -g @okx_ai/okx-trade-cli
+okx market ticker BTC-USDT   # verify
 ```
+
+Market data commands return the same public data regardless of demo/live mode — no API credentials required. If the user's profile has `demo=true` set and they want live data context, they can use `--live` to confirm they are in live mode (it has no effect on public market data but clarifies environment). Always inform the user which environment is active (demo or live) when it is relevant to their query. No confirmation needed before running any market command. Add `--json` to any command for raw OKX API v5 response. Add `--env` to wrap the output as `{"env", "profile", "data"}`.
+
+---
 
 ## Command Index
 
-| # | Command | Type | Description |
-|---|---|---|---|
-| 1 | `okx market ticker <instId>` | READ | Single instrument: last price, 24h high/low/vol |
-| 2 | `okx market tickers <instType>` | READ | All tickers for an instrument type |
-| 3 | `okx market instruments --instType <type>` | READ | List tradeable instruments |
-| 4 | `okx market orderbook <instId> [--sz <n>]` | READ | Order book top asks/bids |
-| 5 | `okx market candles <instId> [--bar] [--limit]` | READ | OHLCV candlestick data |
-| 6 | `okx market index-candles <instId> [--bar] [--limit]` | READ | Index OHLCV candles |
-| 7 | `okx market funding-rate <instId> [--history]` | READ | Current or historical funding rate |
-| 8 | `okx market trades <instId> [--limit <n>]` | READ | Recent public trades |
-| 9 | `okx market mark-price --instType <type> [--instId <id>]` | READ | Mark price for contracts |
-| 10 | `okx market index-ticker [--instId <id>] [--quoteCcy <ccy>]` | READ | Index price (e.g., BTC-USD) |
-| 11 | `okx market price-limit <instId>` | READ | Upper/lower price limits for contracts |
-| 12 | `okx market open-interest --instType <type> [--instId <id>]` | READ | Open interest in contracts and coins |
-| 13 | `okx market stock-tokens` | READ | List all tradeable stock token perpetuals (TSLA, NVDA, AAPL, etc.) |
-
-## Cross-Skill Workflows
-
-### Check price before placing an order
-> User: "What's the current BTC price? I want to place a limit buy."
-
-```
-1. okx-cex-market    okx market ticker BTC-USDT              → check last price and 24h range
-        ↓ user decides price
-2. okx-cex-portfolio okx account balance USDT                → confirm available funds
-        ↓ user approves
-3. okx-cex-trade     okx spot place --instId BTC-USDT --side buy --ordType limit --px <px> --sz <sz>
-```
-
-### Check funding rate before holding a perp position
-> User: "Is the BTC perp funding rate high right now?"
-
-```
-1. okx-cex-market    okx market funding-rate BTC-USDT-SWAP   → current rate + next funding time
-2. okx-cex-market    okx market funding-rate BTC-USDT-SWAP --history  → trend over recent periods
-        ↓ decide whether to hold position
-3. okx-cex-portfolio okx account positions                   → check existing exposure
-```
-
-### Research market before creating a grid bot
-> User: "I want to set up a BTC grid bot — what's the recent range?"
-
-```
-1. okx-cex-market    okx market candles BTC-USDT --bar 4H --limit 50  → recent OHLCV for range
-2. okx-cex-market    okx market ticker BTC-USDT                        → current price
-3. okx-cex-market    okx market orderbook BTC-USDT --sz 20             → liquidity check
-        ↓ decide minPx / maxPx
-4. okx-cex-bot       okx bot grid create --instId BTC-USDT ...
-```
-
-### Compare perp vs spot premium
-> User: "Is there a premium between BTC spot and BTC perp?"
-
-```
-1. okx-cex-market    okx market ticker BTC-USDT              → spot last price
-2. okx-cex-market    okx market ticker BTC-USDT-SWAP         → perp last price
-3. okx-cex-market    okx market mark-price --instType SWAP --instId BTC-USDT-SWAP  → mark price
-```
-
-### Discover stock tokens before trading
-> User: "I want to trade TSLA or NVDA — what's available?"
-
-```
-1. okx-cex-market   okx market stock-tokens              → list all stock token instIds and specs
-        ↓ pick instId (e.g., TSLA-USDT-SWAP)
-2. okx-cex-market   okx market ticker TSLA-USDT-SWAP     → current price and 24h range
-3. okx-cex-market   okx market instruments --instType SWAP --instId TSLA-USDT-SWAP --json
-                    → get ctVal, minSz, lotSz for sz conversion
-        ↓ ready to trade — see okx-cex-trade (max leverage: 5x)
-```
+| # | Command | Description |
+|---|---|---|
+| 1 | `okx market ticker <instId>` | Last price, 24h high/low/vol/change% |
+| 2 | `okx market tickers <instType>` | All tickers for SPOT / SWAP / FUTURES / OPTION |
+| 3 | `okx market instruments --instType <type> [--instId <id>]` | List instruments (instId, ctVal, lotSz, minSz, tickSz, state) |
+| 4 | `okx market orderbook <instId> [--sz <n>]` | Order book asks/bids (default top 5 per side, max 400) |
+| 5 | `okx market candles <instId> [--bar <bar>] [--limit <n>] [--after <ts>] [--before <ts>]` | OHLCV candles (default `--bar 1m`); auto-routes to historical endpoint for data back to 2021; `--after` paginates back in time, `--before` paginates forward |
+| 6 | `okx market index-candles <instId> [--bar <bar>] [--limit <n>] [--history]` | Index OHLCV (use `BTC-USD` not `BTC-USDT`) |
+| 7 | `okx market funding-rate <instId> [--history] [--limit <n>]` | Current or historical funding rate (SWAP only) |
+| 8 | `okx market trades <instId> [--limit <n>]` | Recent public trades |
+| 9 | `okx market mark-price --instType <type> [--instId <id>]` | Mark price (SWAP / FUTURES / OPTION) |
+| 10 | `okx market index-ticker [--instId <id>] [--quoteCcy <ccy>]` | Index price (e.g., BTC-USD) |
+| 11 | `okx market price-limit <instId>` | Upper/lower price limits (SWAP / FUTURES only) |
+| 12 | `okx market open-interest --instType <type> [--instId <id>]` | Open interest in contracts and base currency |
+| 13 | `okx market instruments-by-category --instCategory <3\|4\|5\|6\|7>` | Discover instruments by asset category: 3=Stock tokens (AAPL/TSLA), 4=Metals (gold/silver), 5=Commodities (oil/gas), 6=Forex (EUR/USD), 7=Bonds |
+| 13† | `okx market stock-tokens` | **Deprecated** — use `instruments-by-category --instCategory 3` instead |
+| 14 | `okx market filter --instType <SPOT\|SWAP\|FUTURES> [--sortBy <field>] [--sortOrder <asc\|desc>] [--limit <n>] [--baseCcy <ccy>] [--quoteCcy <ccy>] [--settleCcy <ccy>] [--instFamily <fam>] [--ctType <linear\|inverse>] [--minLast <n>] [--maxLast <n>] [--minChg24hPct <n>] [--maxChg24hPct <n>] [--minMarketCapUsd <n>] [--maxMarketCapUsd <n>] [--minVolUsd24h <n>] [--maxVolUsd24h <n>] [--minFundingRate <n>] [--maxFundingRate <n>] [--minOiUsd <n>] [--maxOiUsd <n>]` | Screen / rank instruments by multi-dimensional criteria (price, volume, OI, funding rate, market cap). Prints `Total: N` + a ranked table of matching instruments (`No results` only when nothing matches). Add `--json` for the raw OKX API v5 response (structurally unchanged). |
+| 15 | `okx market oi-history <instId> [--bar <5m\|15m\|1H\|4H\|1D>] [--limit <n>] [--ts <ms>]` | OI history time series with bar-over-bar delta for a single instrument |
+| 16 | `okx market oi-change --instType <SWAP\|FUTURES> [--bar <5m\|15m\|1H\|4H\|1D>] [--sortBy <field>] [--sortOrder <asc\|desc>] [--limit <n>] [--minOiUsd <n>] [--minVolUsd24h <n>] [--minAbsOiDeltaPct <n>]` | Find instruments with largest OI changes (accumulation/distribution scanner) |
+| 17 | `okx market indicator list` | List all supported indicator names and descriptions |
+| 18 | `okx market indicator <indicator> <instId> [--bar] [--params] [--list] [--limit] [--backtest-time]` | Technical indicator values. For period-based indicators (ema/ma/wma/rsi/macd/bb/…) the CLI applies a sensible default period when `--params` is omitted (e.g. EMA/RSI → `14`, MACD → `12,26,9`, BB → `20,2`) so values render without you specifying params; explicit `--params` always wins. If no values come back, the CLI prints a visible hint (`try --params …`) — never silent. |
+| 19 | `okx market pair-spread <instIdA> <instIdB> [--bar <5m\|15m>] [--window <window>] [--backtest-time <ms>]` | Spread statistics (abs + ratio: mean/stdDev/median/min/max) over a lookback window; supports backtest mode |
 
 ---
-
-### Discover and price an option
-> User: "What's the price of a BTC call option expiring this week?"
-
-```
-1. okx-cex-market    okx market open-interest --instType OPTION --instId BTC-USD  → list active option instIds
-        ↓ pick target instId from the list (e.g., BTC-USD-250328-95000-C)
-2. okx-cex-market    okx market ticker BTC-USD-250328-95000-C → option last price and stats
-3. okx-cex-market    okx market orderbook BTC-USD-250328-95000-C → bid/ask spread
-```
-
-> **Note**: `okx market instruments --instType OPTION` requires `--uly <underlying>` (e.g., `--uly BTC-USD`). If the underlying is unknown, use `open-interest` first to discover active option instIds.
 
 ## Operation Flow
 
-### Step 1: Identify the data needed
+### Step 1 — Identify data type and load reference
 
-- Current price → `okx market ticker`
-- All prices for a category → `okx market tickers`
-- Order book depth → `okx market orderbook`
-- Price history/chart → `okx market candles`
-- Funding cost → `okx market funding-rate`
-- Contract valuation → `okx market mark-price` or `okx market price-limit`
-- Market volume/OI → `okx market open-interest`
-- What instruments exist → `okx market instruments`
+| User intent | Reference to load |
+|---|---|
+| Price, candles, order book, recent trades | `{baseDir}/references/price-data-commands.md` |
+| Technical indicators (RSI, MACD, EMA, BB, KDJ, SuperTrend, AHR999, Rainbow, etc.) | `{baseDir}/references/indicator-commands.md` |
+| Funding rate, mark price, open interest, price limit, index ticker | `{baseDir}/references/derivatives-commands.md` |
+| Screen / rank instruments; find top movers, high-OI, high-volume contracts | Use `okx market filter` directly |
+| OI history time series for a single instrument | Use `okx market oi-history` directly |
+| OI change scanner; find contracts with large OI shifts | Use `okx market oi-change` directly |
+| Pair spread statistics; mean-reversion / pairs-trade sizing | Use `okx market pair-spread` directly |
+| List instruments, discover stock tokens, metals/commodities/forex/bonds, find option instIds | `{baseDir}/references/instrument-commands.md` |
+| Multi-step or cross-skill workflows; MCP tool names | `{baseDir}/references/workflows.md` |
 
-### Step 2: Run commands immediately
+**Event contracts are not served by this skill.**
+
+| User asks | Do |
+|---|---|
+| Which way an asset is moving — "is BTC going up", "what's the 15m trend" | **Answer here** with candles / indicators |
+| Direction *and* whether they can trade it | Answer the data half here, then name `okx-cex-trade` for the trade half |
+| To trade an event contract — "buy YES/NO on …" | **Route to `okx-cex-trade`**, serve nothing here |
+
+Never substitute another product for an event contract — not a perp, not a futures position,
+not market data presented as the contract they asked for. If you cannot load
+`okx-cex-trade`, say so and stop.
+
+### Step 2 — Run commands immediately
 
 All market data commands are read-only — no confirmation needed.
 
-- `--instType` values: `SPOT`, `SWAP`, `FUTURES`, `OPTION`
-- `--bar` values: `1m`, `3m`, `5m`, `15m`, `30m`, `1H`, `2H`, `4H`, `6H`, `12H`, `1D`, `1W`, `1M`
-- `--limit`: number of results (default varies per endpoint, typically 100)
-- `--history`: for `funding-rate`, returns historical records instead of current rate
+### Step 3 — No writes, no verification needed
 
-### Step 3: No writes — no verification needed
-
-All commands in this skill are read-only. No post-execution verification required.
-
-## CLI Command Reference
-
-### Ticker — Single Instrument
-
-```bash
-okx market ticker <instId> [--json]
-```
-
-Returns: `last`, `24h high/low`, `24h volume`, `sodUtc8` (24h change %).
+All commands in this skill are read-only.
 
 ---
-
-### Tickers — All Instruments of a Type
-
-```bash
-okx market tickers <instType> [--json]
-```
-
-| Param | Required | Values | Description |
-|---|---|---|---|
-| `instType` | Yes | `SPOT`, `SWAP`, `FUTURES`, `OPTION` | Instrument type |
-
-Returns table: `instId`, `last`, `high24h`, `low24h`, `vol24h`.
-
----
-
-### Instruments — List Tradeable Instruments
-
-```bash
-okx market instruments --instType <type> [--instId <id>] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--instType` | Yes | - | `SPOT`, `SWAP`, `FUTURES`, `OPTION` |
-| `--instId` | No | - | Filter to a single instrument |
-
-Returns: `instId`, `ctVal`, `lotSz`, `minSz`, `tickSz`, `state`. Displays up to 50 rows.
-
----
-
-### Order Book
-
-```bash
-okx market orderbook <instId> [--sz <n>] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `instId` | Yes | - | Instrument ID (e.g., `BTC-USDT-SWAP`) |
-| `--sz` | No | 5 | Depth levels per side (1–400) |
-
-Displays top 5 asks (ascending) and bids (descending) with price and size.
-
----
-
-### Candles — OHLCV
-
-```bash
-okx market candles <instId> [--bar <bar>] [--limit <n>] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `instId` | Yes | - | Instrument ID |
-| `--bar` | No | `1m` | Time granularity (`1m`, `1H`, `4H`, `1D`, etc.) |
-| `--limit` | No | 100 | Number of candles to return |
-
-Returns columns: `time`, `open`, `high`, `low`, `close`, `vol`.
-
----
-
-### Index Candles
-
-```bash
-okx market index-candles <instId> [--bar <bar>] [--limit <n>] [--history] [--json]
-```
-
-Same params as `candles`. Use index instrument IDs like `BTC-USD` (not `BTC-USDT`).
-
----
-
-### Funding Rate
-
-```bash
-okx market funding-rate <instId> [--history] [--limit <n>] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `instId` | Yes | - | SWAP instrument (e.g., `BTC-USDT-SWAP`) |
-| `--history` | No | false | Return historical funding rates |
-| `--limit` | No | - | Number of historical records |
-
-Current (no `--history`): returns `fundingRate`, `nextFundingRate`, `fundingTime`, `nextFundingTime`.
-Historical (`--history`): table with `fundingRate`, `realizedRate`, `fundingTime`.
-
----
-
-### Recent Trades
-
-```bash
-okx market trades <instId> [--limit <n>] [--json]
-```
-
-Returns: `tradeId`, `px`, `sz`, `side`, `ts`.
-
----
-
-### Mark Price
-
-```bash
-okx market mark-price --instType <type> [--instId <id>] [--json]
-```
-
-Returns: `instId`, `instType`, `markPx`, `ts`. Used for liquidation price calculation and contract valuation.
-
----
-
-### Index Ticker
-
-```bash
-okx market index-ticker [--instId <id>] [--quoteCcy <ccy>] [--json]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--instId` | Cond. | - | Index ID (e.g., `BTC-USD`) |
-| `--quoteCcy` | Cond. | - | Filter by quote currency (e.g., `USD`, `USDT`) |
-
-Returns: `idxPx`, `high24h`, `low24h`.
-
----
-
-### Price Limit
-
-```bash
-okx market price-limit <instId> [--json]
-```
-
-Returns: `buyLmt` (max buy price), `sellLmt` (min sell price). Applies to SWAP and FUTURES only.
-
----
-
-### Open Interest
-
-```bash
-okx market open-interest --instType <type> [--instId <id>] [--json]
-```
-
-Returns: `oi` (contracts), `oiCcy` (base currency amount), `ts`.
-
----
-
-### Stock Tokens — List All Stock Token Perpetuals
-
-```bash
-okx market stock-tokens [--json]
-```
-
-Returns: `instId`, `ctVal`, `lotSz`, `minSz`, `tickSz`, `state` for all active stock token SWAP instruments (`instCategory=3`, e.g., `TSLA-USDT-SWAP`, `NVDA-USDT-SWAP`).
-
-> **Fallback** (if command not yet available): `okx market instruments --instType SWAP --json | jq '[.[] | select(.instCategory == "3")]'` — requires `jq` installed.
-
----
-
-## MCP Tool Reference
-
-| Tool | Description |
-|---|---|
-| `market_get_ticker` | Single instrument ticker |
-| `market_get_tickers` | All tickers for instType |
-| `market_get_instruments` | List instruments |
-| `market_get_orderbook` | Order book depth |
-| `market_get_candles` | OHLCV candles |
-| `market_get_index_candles` | Index OHLCV candles |
-| `market_get_funding_rate` | Funding rate (current or history) |
-| `market_get_trades` | Recent public trades |
-| `market_get_mark_price` | Mark price for contracts |
-| `market_get_index_ticker` | Index price ticker |
-| `market_get_price_limit` | Price limits for contracts |
-| `market_get_open_interest` | Open interest |
-
----
-
-## Input / Output Examples
-
-**"What's the price of BTC?"**
-```bash
-okx market ticker BTC-USDT
-# → instId: BTC-USDT | last: 95000.5 | 24h change %: +1.2% | 24h high: 96000 | 24h low: 93000
-```
-
-**"Show me all SWAP tickers"**
-```bash
-okx market tickers SWAP
-# → table of all perpetual contracts with last price, 24h high/low/vol
-```
-
-**"What's the BTC/USDT order book look like?"**
-```bash
-okx market orderbook BTC-USDT
-# Asks (price / size):
-#          95100.0  2.5
-#          95050.0  1.2
-# Bids (price / size):
-#          95000.0  3.1
-#          94950.0  0.8
-```
-
-**"Show me BTC 4H candles for the last 30 periods"**
-```bash
-okx market candles BTC-USDT --bar 4H --limit 30
-# → table: time, open, high, low, close, vol
-```
-
-**"What's the current funding rate for BTC perp?"**
-```bash
-okx market funding-rate BTC-USDT-SWAP
-# → fundingRate: 0.0001 | nextFundingRate: 0.00012 | fundingTime: ... | nextFundingTime: ...
-```
-
-**"Show historical funding rates for ETH perp"**
-```bash
-okx market funding-rate ETH-USDT-SWAP --history --limit 20
-# → table: fundingRate, realizedRate, fundingTime
-```
-
-**"What's the open interest on BTC perp?"**
-```bash
-okx market open-interest --instType SWAP --instId BTC-USDT-SWAP
-# → oi: 125000 | oiCcy: 125000 | ts: ...
-```
-
-**"List all available SPOT instruments"**
-```bash
-okx market instruments --instType SPOT
-# → table: instId, ctVal, lotSz, minSz, tickSz, state (up to 50 rows)
-```
-
-**"What stock tokens can I trade?"**
-```bash
-okx market stock-tokens
-# → table: instId (TSLA-USDT-SWAP, NVDA-USDT-SWAP, AAPL-USDT-SWAP, ...), ctVal, minSz, tickSz, state
-```
-
-**"What's the TSLA price?"**
-```bash
-okx market ticker TSLA-USDT-SWAP
-# → instId: TSLA-USDT-SWAP | last: 310.5 | 24h change %: +2.1% | 24h high: 315 | 24h low: 302
-```
 
 ## Edge Cases
 
-- **instId format**: SPOT uses `BTC-USDT`; SWAP uses `BTC-USDT-SWAP`; FUTURES uses `BTC-USDT-250328`; OPTION uses `BTC-USD-250328-95000-C`; Index uses `BTC-USD`; Stock token SWAP uses `TSLA-USDT-SWAP` (identified by `instCategory=3`)
-- **Stock token trading hours**: stock tokens follow underlying exchange hours (US stocks: Mon–Fri ~09:30–16:00 ET). Orders outside trading hours may be queued or rejected — confirm a live last price with `okx market ticker` before trading
-- **OPTION instruments — cannot list directly**: `okx market instruments --instType OPTION` requires `--uly BTC-USD` (underlying). If the underlying is unknown, run `okx market open-interest --instType OPTION` first to discover active option instIds from the results, then use those instIds with `okx market ticker <instId>`
-- **No data returned**: instrument may be delisted or instId is wrong — verify with `okx market instruments`
-- **funding-rate**: only applies to SWAP instruments; returns error for SPOT/FUTURES
-- **price-limit**: only applies to SWAP and FUTURES instruments
-- **mark-price**: available for SWAP, FUTURES, OPTION; not applicable to SPOT
-- **candles --bar**: use uppercase `H`, `D`, `W`, `M` for hour/day/week/month (e.g., `1H` not `1h`)
-- **index-ticker**: use `BTC-USD` format (not `BTC-USDT`) for index IDs
-- **orderbook --sz**: max depth is 400; default display shows top 5 per side regardless of `--sz`
+- **instId format**: SPOT `BTC-USDT` · SWAP `BTC-USDT-SWAP` · FUTURES `BTC-USDT-250328` · OPTION `BTC-USD-250328-95000-C` · Index `BTC-USD` · Stock token `TSLA-USDT-SWAP` · Metals/Commodities/Forex/Bonds: use `instruments-by-category` to discover valid instIds first
+- **OPTION listing**: `instruments --instType OPTION` requires `--uly BTC-USD`; if unknown, run `open-interest --instType OPTION` first to discover active instIds
+- **funding-rate / price-limit**: SWAP only · mark-price: SWAP / FUTURES / OPTION only
+- **candles `--bar`**: uppercase — `1H` not `1h`; use `--after <ts>` to paginate back into historical data (back to 2021); index-candles supports `--history` for extended history
+- **⚠️ Large historical range**: before fetching with `--after`/`--before`, estimate candle count = `time_range_ms / bar_interval_ms`. If estimate > 500, tell the user the estimated count and ask for confirmation before proceeding. This prevents silently filling the context window.
+- **indicator `--bar`**: uses `1Dutc` not `1D`, `1Wutc` not `1W` — different from candle bar values
+- **`market filter` sortBy values**: `last` `chg24hPct` `marketCapUsd` `volUsd24h` `fundingRate` `oiUsd` `listTime` — default `volUsd24h`
+- **`market filter` ctType**: `linear` or `inverse` (SWAP/FUTURES only); omit for SPOT
+- **`market filter` quoteCcy**: comma-separated list supported, e.g. `--quoteCcy USDT,USDC`
+- **`market filter` SPOT + quoteCcy**: when `--instType SPOT`, the API returns instruments across **all** quote currencies (USDT, USDC, BTC, ETH, etc.) mixed together — this pollutes sort order and bloats results. Always pass `--quoteCcy USDT` by default unless the user explicitly asks for other quote currencies.
+- **`market filter` chg24hPct**: value is a percentage number — `--minChg24hPct -5` means -5%, `--maxChg24hPct 10` means 10%
+- **`market oi-history` ts**: Unix ms timestamp; returns bars with ts ≤ this value for historical pagination
+- **`market oi-history` / `oi-change` bar**: valid values `5m` `15m` `1H` `4H` `1D` — default `1H`. Server accepts case variants (`1h` == `1H`) but prefer canonical casing.
+- **`market oi-history` limit**: 1–500 (default 50)
+- **`market oi-change` instType**: only `SWAP` or `FUTURES` supported (not SPOT)
+- **`market oi-change` minAbsOiDeltaPct**: filters by absolute OI change — `1.0` keeps only rows where |oiDeltaPct| ≥ 1%
+- **`market oi-change` sortBy values**: `oiUsd` `oiDeltaUsd` `oiDeltaPct` `absOiDeltaPct` `volUsd24h` `fundingRate` `last` — default `oiDeltaPct` (signed). Use `absOiDeltaPct` to rank by |oiDeltaPct| (largest magnitude regardless of direction).
+- **`market oi-change` limit**: 1–100 (default 20). For deeper than 100 rows, fetch `oi-history` per instId.
+- **indicator `--bar` valid values**: `3m` `5m` `15m` `1H` `4H` `12Hutc` `1Dutc` `3Dutc` `1Wutc` — `1m` is **not supported** for indicators (use `candles` for 1-minute data)
+- **indicator `--limit`**: 1–100 (only used with `returnList`, i.e. when a historical series is requested)
+- **indicator arg order**: indicator name before instId — `okx market indicator rsi BTC-USDT`
+- **indicator `--params`**: comma-separated, no spaces — `--params 5,20`. For period-based indicators (ema/ma/wma/rsi/macd/bb/…) omitting `--params` makes the CLI substitute a default period (EMA/MA/WMA/RSI → `14`, MACD → `12,26,9`, BB → `20,2`) so the table is populated instead of empty; pass `--params` explicitly to override the default. (CLI-only convenience — the MCP `market_get_indicator` raw-data path still requires an explicit `paramList`.)
+- **indicator no values returned**: the CLI never prints nothing — if a query yields no values (e.g. a non-period indicator, or a period indicator with no default), it prints a visible hint: `No indicator values returned. This indicator may require a period — try --params (e.g. --params 14).`
+- **BTC-only indicators**: `ahr999`, `rainbow` — BTC-USDT only
+- **Unknown indicator name**: returns a `ValidationError` with similar-name suggestions before the API is called — use `market_list_indicators` / `okx market indicator list` to see all valid names
+- **Stock token hours**: US stocks trade Mon–Fri ~09:30–16:00 ET; verify live price before acting
+- **No data returned**: instrument may be delisted — verify with `okx market instruments`
+- **`boll`** is an alias for `bb`
 
 ## Global Notes
 
-- All market data commands are public — no API key required
-- `--json` returns raw OKX API v5 response for programmatic use
-- `--profile <name>` has no effect on market commands (no auth needed)
-- Rate limit: 20 requests per 2 seconds per IP for market data endpoints
-- Candle data is sorted newest-first by default
-- `vol24h` in tickers is in base currency (e.g., BTC for BTC-USDT)
+- No API key required for any command in this skill
+- Rate limit: 20 req / 2 s per IP
+- Candle data is sorted newest-first
+- `vol24h` is in base currency (e.g., BTC for BTC-USDT)
+- `--demo`/`--live` and `--profile` do not affect market data results via CLI (public endpoints); they only determine the active trading environment context

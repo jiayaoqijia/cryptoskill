@@ -1,17 +1,59 @@
 ---
 name: gate-info-trendanalysis
-version: "2026.3.12-1"
-updated: "2026-03-12"
-description: "Trend and technical analysis. Use this skill whenever the user asks for technical or trend analysis of one coin. Trigger phrases include: technical analysis, K-line, RSI, MACD, trend, support, resistance. MCP tools: info_markettrend_get_kline, info_markettrend_get_indicator_history, info_markettrend_get_technical_analysis, info_marketsnapshot_get_market_snapshot."
+version: "2026.4.3-1"
+updated: "2026-04-03"
+description: "Trend and technical analysis. Use this skill ONLY when the user's query is exclusively about technical indicators or trend analysis for one coin with no other analysis dimensions. Trigger phrases: technical analysis, K-line, RSI, MACD, trend, support, resistance. If the query ALSO mentions fundamentals, risk, news, sentiment, or any other analysis dimension, use gate-info-research instead — it handles multi-dimension queries in a single unified report."
+required_credentials: []
+required_env_vars: []
+required_permissions: []
 ---
 
 # gate-info-trendanalysis
+
+## General Rules
+
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read `../gate-runtime-rules.md`
+→ Also read `../info-news-runtime-rules.md` for gate-info / gate-news shared rules (tool degradation, report standards, security, routing, and optional local maintenance when `scripts/` is present).
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
 
 > A technicals-focused Skill. The user inputs a coin name + technical analysis intent; the system calls 4 Tools (K-line data, indicator history, multi-timeframe signals, real-time market snapshot) in parallel, then the LLM aggregates into a multi-dimensional technical analysis report.
 
 **Trigger Scenarios**: User explicitly mentions technical analysis, K-line, indicators, trend, support/resistance, or similar keywords.
 
+**Local maintenance (optional, repository copy only):**
+- If `scripts/update-skill.*` exists in the repository copy, `check` may compare the installed copy with the packaged skill source used by the current install.
+- Ask the user before `apply`.
+- `apply` updates files within this skill directory only.
+
 ---
+
+## MCP Dependencies
+
+### Required MCP Servers
+| MCP Server | Status |
+|------------|--------|
+| Gate-Info | ✅ Required |
+
+### MCP Tools Used
+
+**Query Operations (Read-only)**
+
+- info_marketsnapshot_get_market_snapshot
+- info_markettrend_get_indicator_history
+- info_markettrend_get_kline
+- info_markettrend_get_technical_analysis
+
+### Authentication
+- API Key Required: No
+- Credentials Source: None; this skill uses read-only Gate Info / Gate News MCP access only.
+
+### Installation Check
+- Required: Gate-Info
+- Install: Use the local Gate MCP installation flow for the current host IDE before continuing.
+- Continue only after the required Gate MCP server is available in the current environment.
 
 ## Routing Rules
 
@@ -25,6 +67,13 @@ description: "Trend and technical analysis. Use this skill whenever the user ask
 ---
 
 ## Execution Workflow
+
+### Step 0: Multi-Dimension Intent Check
+
+Before executing this Skill, check if the user's query involves multiple analysis dimensions:
+
+- If the query is exclusively about technical indicators or trend analysis for one coin, proceed with this Skill.
+- If the query **also** mentions fundamentals, risk, news, sentiment, or any other analysis dimension beyond technicals, route to `gate-info-research` — it handles multi-dimension queries with unified tool deduplication and coherent report aggregation.
 
 ### Step 1: Intent Recognition & Parameter Extraction
 

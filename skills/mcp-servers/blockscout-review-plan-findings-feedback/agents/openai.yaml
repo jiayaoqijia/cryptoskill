@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review Plan Findings Feedback"
+  short_description: "Check feedback fixes and adjudicate new findings"
+  default_prompt: "Use $review-plan-findings-feedback to review addressed implementation-plan findings and adjudicate only newly exposed problems."
+policy:
+  allow_implicit_invocation: false

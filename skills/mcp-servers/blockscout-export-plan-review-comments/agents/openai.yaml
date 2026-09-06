@@ -1,0 +1,6 @@
+interface:
+  display_name: "Export Plan Review Comments"
+  short_description: "Export plan-review comments to Markdown"
+  default_prompt: "Use $export-plan-review-comments to export the survived implementation-plan review comments into the plan timestamped findings Markdown file."
+policy:
+  allow_implicit_invocation: false

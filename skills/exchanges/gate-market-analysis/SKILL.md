@@ -1,15 +1,49 @@
 ---
 name: gate-exchange-marketanalysis
-version: "2026.3.11-1"
-updated: "2026-03-11"
-description: "The market analysis function of Gate Exchange, such as liquidity, momentum, liquidation, funding arbitrage, basis, manipulation risk, order book explainer, slippage simulation. Use when the user asks about liquidity, depth, slippage, buy/sell pressure, liquidation, funding rate arbitrage, basis/premium, manipulation risk, order book explanation, or slippage simulation (e.g. market buy $X slippage). Trigger phrases: liquidity, depth, slippage, momentum, buy/sell pressure, liquidation, squeeze, funding rate, arbitrage, basis, premium, manipulation, order book, spread, slippage simulation."
+version: "2026.3.23-1"
+updated: "2026-03-23"
+description: "Gate Exchange market analysis tool. Use when the user asks for deep market metrics like liquidity, slippage, funding arbitrage, or manipulation risk. Triggers on 'liquidity', 'depth', 'slippage', 'momentum', 'buy/sell pressure', 'squeeze', 'funding rate', 'arbitrage', 'basis', 'premium'."
 ---
 
 # gate-exchange-marketanalysis
 
+## General Rules
+
+⚠️ STOP — You MUST read and strictly follow the shared runtime rules before proceeding.
+Do NOT select or call any tool until all rules are read. These rules have the highest priority.
+→ Read [gate-runtime-rules.md](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md)
+- **Only call MCP tools explicitly listed in this skill.** Tools not documented here must NOT be called, even if they
+  exist in the MCP server.
+
 Market tape analysis covering thirteen scenarios, such as liquidity, momentum, liquidation monitoring, funding arbitrage, basis monitoring, manipulation risk, order book explanation, slippage simulation, K-line breakout/support–resistance, and liquidity with weekend vs weekday. This skill provides structured market insights by orchestrating Gate MCP tools; call order and judgment logic are defined in `references/scenarios.md`.
 
 ---
+
+## MCP Dependencies
+
+### Required MCP Servers
+| MCP Server | Status |
+|------------|--------|
+| Gate (main) | ✅ Required |
+
+### Authentication
+- API Key Required: Not necessarily
+- Note: This skill is read-only and primarily uses public market-data surfaces. In many runtimes these calls work without authentication, though some deployments may still route them through an authenticated MCP layer.
+
+### Installation Check
+- Required: Gate (main)
+- Install: Run installer skill for your IDE
+  - Cursor: `gate-mcp-cursor-installer`
+  - Codex: `gate-mcp-codex-installer`
+  - Claude: `gate-mcp-claude-installer`
+  - OpenClaw: `gate-mcp-openclaw-installer`
+
+## MCP Mode
+
+**Read and strictly follow** [`references/mcp.md`](./references/mcp.md), then execute this skill's market analysis workflow.
+
+- `SKILL.md` keeps intent routing, scenario mapping, and output semantics.
+- `references/mcp.md` is the authoritative MCP execution layer for tool sequencing, parameter checks, and degradation rules.
 
 ## Sub-Modules
 

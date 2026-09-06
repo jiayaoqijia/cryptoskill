@@ -1,0 +1,49 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+*.key
+credentials.json
+config.local.json
+
+# API keys embedded in URLs
+*rpc-url*.txt
+*.api-key
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Output/data from example runs
+out/
+output/
+data/
+*.jsonl.gz
+*_output.csv
+*_output.jsonl
+wallets.txt
+signatures.txt
+
+# Old / leftover
+dune_extracted/
+solscan_extracted/
+*.skill
+
+# Standalone mirror checkouts and generated previews
+standalone-builds/
+dist/

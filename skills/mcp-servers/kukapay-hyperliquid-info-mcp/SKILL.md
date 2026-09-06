@@ -3,12 +3,6 @@ name: kukapay-hyperliquid-info-mcp
 description: "An MCP server that provides real-time data and insights from the Hyperliquid perp DEX for use in bots, dashboards, and analytics."
 ---
 
-# kukapay-hyperliquid-info-mcp
-
-_Source: [github.com/kukapay/hyperliquid-info-mcp](https://github.com/kukapay/hyperliquid-info-mcp). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Hyperliquid Info MCP Server
 
 An MCP server that provides real-time data and insights from the Hyperliquid perp DEX for use in bots, dashboards, and analytics.

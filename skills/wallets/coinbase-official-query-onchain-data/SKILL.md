@@ -1,209 +1,65 @@
 ---
-name: query-onchain-data
-description: Query onchain data on Base using the CDP SQL API via x402. Use when you or your user want to view onchain information about decoded blocks, transactions, and event.
+name: agentic-wallet
+description: "Crypto wallet operations via the awal CLI — sign in, check balances, send USDC/ETH/POL/SOL, trade tokens, fund the wallet, and use the x402 payment protocol to discover paid services, pay for API calls, monetize an API, or query onchain data. Use whenever the user mentions signing in, login, authentication, wallet status, balance, address, sending money, paying someone, transferring tokens, ENS names, swapping/trading/converting tokens, funding/topping up/onramp, USDC, ETH, POL, SOL, the x402 bazaar, paid APIs, monetizing an endpoint, or querying onchain data on Base."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: ["Bash(npx awal@2.0.3 status*)", "Bash(npx awal@2.0.3 balance*)", "Bash(npx awal@2.0.3 x402 pay *)"]
+allowed-tools: ["Bash(npx awal@2.12.1 *)", "Bash(npm *)", "Bash(node *)", "Bash(curl *)", "Bash(mkdir *)"]
 ---
 
-# Query Onchain Data on Base
+# Agentic Wallet
 
-Use the CDP SQL API to query onchain data (events, transactions, blocks, transfers) on Base. Queries are executed via x402 and are charged per query.
+Operate a crypto wallet through the `awal` CLI. This skill is a router: read the relevant reference file in `references/` for the task at hand.
 
-## Confirm wallet is initialized and authed
+## Preflight: Confirm wallet state
 
-```bash
-npx awal@2.0.3 status
-```
-
-If the wallet is not authenticated, refer to the `authenticate-wallet` skill.
-
-## Executing a Query
+Before any wallet operation that requires authentication (everything except x402 search/details), check status:
 
 ```bash
-npx awal@2.0.3 x402 pay https://x402.cdp.coinbase.com/platform/v2/data/query/run -X POST -d '{"sql": "<YOUR_QUERY>"}' --json
+npx awal@2.12.1 status
 ```
 
-**IMPORTANT**: Always single-quote the `-d` JSON string to prevent bash variable expansion.
+If the wallet is not authenticated, read `references/auth.md` and complete sign-in first.
 
-## Input Validation
+## Routing
 
-Before constructing the command, validate inputs to prevent shell injection:
+Pick the reference that matches the task and `Read` it before acting:
 
-- **SQL query**: Always embed the query inside a single-quoted JSON string (`-d '{"sql": "..."}'`). Never use double quotes for the outer `-d` wrapper, as this enables shell expansion of `$` and backticks within the query.
-- **Addresses**: Must be valid `0x` hex addresses (`^0x[0-9a-fA-F]{40}$`). Reject any value containing shell metacharacters.
-
-Do not pass unvalidated user input into the command.
-
-## CRITICAL: Indexed Fields
-
-Queries against `base.events` **MUST** filter on indexed fields to avoid full table scans. The indexed fields are:
-
-| Indexed Field | Use For |
+| Task | Reference |
 | --- | --- |
-| `event_signature` | Filter by event type. Use this instead of `event_name` for performance. |
-| `address` | Filter by contract address. |
-| `block_timestamp` | Filter by time range. |
+| Sign in, log in, connect wallet, OTP verification, "not signed in" errors | `references/auth.md` |
+| Check balances, "how much USDC/ETH/POL/SOL do I have", balance per chain, JSON balance output | `references/balance.md` |
+| Send USDC / ETH / POL / SOL to an address or ENS name (Base, Polygon, Solana) | `references/send-usdc.md` |
+| Swap / trade / convert tokens on Base or Polygon | `references/trade.md` |
+| Add funds, top up, onramp, buy USDC | `references/fund.md` |
+| Find / browse / search paid services on the x402 bazaar | `references/x402-search.md` |
+| Call a paid x402 API endpoint with automatic USDC payment | `references/x402-pay.md` |
+| Build or deploy a paid API server that other agents can pay to use | `references/x402-monetize.md` |
+| Query onchain data on Base (events, transactions, blocks) via the CDP SQL API | `references/query-onchain.md` |
 
-**Always include at least one indexed field in your WHERE clause.** Combining all three gives the best performance.
+If no clear match and the user wants an external capability, search the x402 bazaar (`references/x402-search.md`) — a paid service may exist.
 
-## CoinbaseQL Syntax
+## Shared rules
 
-CoinbaseQL is a SQL dialect based on ClickHouse. Supported features:
+- **Input validation**: every reference lists the regexes / allowlists that user-provided values must match before being placed in a shell command. Validate strictly; reject inputs containing spaces, semicolons, pipes, backticks, or other shell metacharacters. Do not pass unvalidated user input into commands.
+- **Single-quote `$` amounts**: any amount written as `'$1.00'` must be single-quoted to prevent bash variable expansion.
+- **JSON output**: every `awal` command supports `--json` for machine-readable output.
+- **Auth errors mean re-auth**: if any command fails with "Not authenticated" or similar, read `references/auth.md` and run the sign-in flow.
+- **Insufficient balance**: read `references/fund.md` to top up.
 
-- **Clauses**: SELECT (DISTINCT), FROM, WHERE, GROUP BY, ORDER BY (ASC/DESC), LIMIT, WITH (CTEs), UNION (ALL/DISTINCT)
-- **Joins**: INNER, LEFT, RIGHT, FULL with ON
-- **Operators**: `=`, `!=`, `<>`, `<`, `>`, `<=`, `>=`, `+`, `-`, `*`, `/`, `%`, AND, OR, NOT, BETWEEN, IN, IS NULL, LIKE
-- **Expressions**: CASE/WHEN/THEN/ELSE, CAST (both `CAST()` and `::` syntax), subqueries, array/map indexing with `[]`, dot notation
-- **Literals**: Array `[...]`, Map `{...}`, Tuple `(...)`
-- **Functions**: Standard SQL functions, lambda functions with `->` syntax
+## Quick command index
 
-## Available Tables
-
-### base.events
-
-Decoded event logs from smart contract interactions. **This is the primary table for most queries.**
-
-| Column | Type | Description |
-| --- | --- | --- |
-| log_id | String | Unique log identifier |
-| block_number | UInt64 | Block number |
-| block_hash | FixedString(66) | Block hash |
-| block_timestamp | DateTime64(3, 'UTC') | Block timestamp (**INDEXED**) |
-| transaction_hash | FixedString(66) | Transaction hash |
-| transaction_to | FixedString(42) | Transaction recipient |
-| transaction_from | FixedString(42) | Transaction sender |
-| log_index | UInt32 | Log index within block |
-| address | FixedString(42) | Contract address (**INDEXED**) |
-| topics | Array(FixedString(66)) | Event topics |
-| event_name | LowCardinality(String) | Decoded event name |
-| event_signature | LowCardinality(String) | Event signature (**INDEXED** - prefer over event_name) |
-| parameters | Map(String, Variant(Bool, Int256, String, UInt256)) | Decoded event parameters |
-| parameter_types | Map(String, String) | ABI types for parameters |
-| action | Enum8('removed' = -1, 'added' = 1) | Added or removed (reorg) |
-
-### base.transactions
-
-Complete transaction data.
-
-| Column | Type | Description |
-| --- | --- | --- |
-| block_number | UInt64 | Block number |
-| block_hash | String | Block hash |
-| transaction_hash | String | Transaction hash |
-| transaction_index | UInt64 | Index in block |
-| from_address | String | Sender address |
-| to_address | String | Recipient address |
-| value | String | Value transferred (wei) |
-| gas | UInt64 | Gas limit |
-| gas_price | UInt64 | Gas price |
-| input | String | Input data |
-| nonce | UInt64 | Sender nonce |
-| type | UInt64 | Transaction type |
-| max_fee_per_gas | UInt64 | EIP-1559 max fee |
-| max_priority_fee_per_gas | UInt64 | EIP-1559 priority fee |
-| chain_id | UInt64 | Chain ID |
-| v | String | Signature v |
-| r | String | Signature r |
-| s | String | Signature s |
-| is_system_tx | Bool | System transaction flag |
-| max_fee_per_blob_gas | String | Blob gas fee |
-| blob_versioned_hashes | Array(String) | Blob hashes |
-| timestamp | DateTime | Block timestamp |
-| action | Int8 | Added (1) or removed (-1) |
-
-### base.blocks
-
-Block-level metadata.
-
-| Column | Type | Description |
-| --- | --- | --- |
-| block_number | UInt64 | Block number |
-| block_hash | String | Block hash |
-| parent_hash | String | Parent block hash |
-| timestamp | DateTime | Block timestamp |
-| miner | String | Block producer |
-| nonce | UInt64 | Block nonce |
-| sha3_uncles | String | Uncles hash |
-| transactions_root | String | Transactions merkle root |
-| state_root | String | State merkle root |
-| receipts_root | String | Receipts merkle root |
-| logs_bloom | String | Bloom filter |
-| gas_limit | UInt64 | Block gas limit |
-| gas_used | UInt64 | Gas used in block |
-| base_fee_per_gas | UInt64 | Base fee per gas |
-| total_difficulty | String | Total chain difficulty |
-| size | UInt64 | Block size in bytes |
-| extra_data | String | Extra data field |
-| mix_hash | String | Mix hash |
-| withdrawals_root | String | Withdrawals root |
-| parent_beacon_block_root | String | Beacon chain parent root |
-| blob_gas_used | UInt64 | Blob gas used |
-| excess_blob_gas | UInt64 | Excess blob gas |
-| transaction_count | UInt64 | Number of transactions |
-| action | Int8 | Added (1) or removed (-1) |
-
-## Example Queries
-
-### Get recent USDC Transfer events with decoded parameters
-
-```sql
-SELECT
-  parameters['from'] AS sender,
-  parameters['to'] AS to,
-  parameters['value'] AS amount,
-  address AS token_address
-FROM base.events
-WHERE
-  event_signature = 'Transfer(address,address,uint256)'
-  AND address = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913'
-  AND block_timestamp >= now() - INTERVAL 7 DAY
-LIMIT 10
-```
-
-### Get transactions from a specific address
-
-```bash
-npx awal@2.0.3 x402 pay https://x402.cdp.coinbase.com/platform/v2/data/query/run -X POST -d '{"sql": "SELECT transaction_hash, to_address, value, gas, timestamp FROM base.transactions WHERE from_address = lower('\''0xYOUR_ADDRESS'\'') AND timestamp >= now() - INTERVAL 1 DAY LIMIT 10"}' --json
-```
-
-### Count events by type for a contract in the last hour
-
-```bash
-npx awal@2.0.3 x402 pay https://x402.cdp.coinbase.com/platform/v2/data/query/run -X POST -d '{"sql": "SELECT event_signature, count(*) as cnt FROM base.events WHERE address = lower('\''0xCONTRACT_ADDRESS'\'') AND block_timestamp >= now() - INTERVAL 1 HOUR GROUP BY event_signature ORDER BY cnt DESC LIMIT 20"}' --json
-```
-
-### Get latest block info
-
-```bash
-npx awal@2.0.3 x402 pay https://x402.cdp.coinbase.com/platform/v2/data/query/run -X POST -d '{"sql": "SELECT block_number, timestamp, transaction_count, gas_used FROM base.blocks ORDER BY block_number DESC LIMIT 1"}' --json
-```
-
-## Common Contract Addresses (Base)
-
-| Token | Address |
+| Command | Purpose |
 | --- | --- |
-| USDC | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
-| WETH | `0x4200000000000000000000000000000000000006` |
-
-## Best Practices
-
-1. **Always filter on indexed fields** (`event_signature`, `address`, `block_timestamp`) in `base.events` queries.
-2. **Never use `SELECT *`** - specify only the columns you need.
-3. **Always include a `LIMIT`** clause to bound result size.
-4. **Use `event_signature` instead of `event_name`** for filtering - it is indexed and much faster.
-5. **Use time-bounded queries** with `block_timestamp` to narrow the scan range.
-6. **Always wrap address values in `lower()`** - the database stores lowercase addresses but users may provide checksummed (mixed-case) addresses. Use `address = lower('0xAbC...')` not `address = '0xAbC...'`.
-7. **Common event signatures**: `Transfer(address,address,uint256)`, `Approval(address,address,uint256)`, `Swap(address,uint256,uint256,uint256,uint256,address)`.
-
-## Prerequisites
-
-- Must be authenticated (`npx awal@2.0.3 status` to check, see `authenticate-wallet` skill)
-- Wallet must have sufficient USDC balance (`npx awal@2.0.3 balance` to check)
-- Each query costs $0.10 (100000 USDC atomic units)
-
-## Error Handling
-
-- "Not authenticated" - Run `awal auth login <email>` first, or see `authenticate-wallet` skill
-- "Insufficient balance" - Fund wallet with USDC; see `fund` skill
-- Query timeout or error - Ensure you are filtering on indexed fields and using a LIMIT
+| `npx awal@2.12.1 status` | Server health + auth status |
+| `npx awal@2.12.1 address` | Get wallet address |
+| `npx awal@2.12.1 balance` | Get balances across Base, Polygon, Solana (use `--chain` for one chain) |
+| `npx awal@2.12.1 show` | Open the wallet companion window (used for funding) |
+| `npx awal@2.12.1 auth login <email>` | Send OTP code |
+| `npx awal@2.12.1 auth verify <otp>` | Complete sign-in |
+| `npx awal@2.12.1 auth logout` | Sign out and clear the session |
+| `npx awal@2.12.1 send <amount> <recipient>` | Send tokens |
+| `npx awal@2.12.1 trade <amount> <from> <to>` | Swap tokens |
+| `npx awal@2.12.1 x402 bazaar search <query>` | Search paid services |
+| `npx awal@2.12.1 x402 bazaar list` | List bazaar resources |
+| `npx awal@2.12.1 x402 details <url>` | Inspect payment requirements |
+| `npx awal@2.12.1 x402 pay <url>` | Pay and call an x402 endpoint |

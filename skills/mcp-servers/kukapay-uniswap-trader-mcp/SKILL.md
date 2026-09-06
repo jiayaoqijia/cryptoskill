@@ -3,12 +3,6 @@ name: kukapay-uniswap-trader-mcp
 description: "[![smithery badge](https://smithery.ai/badge/@kukapay/uniswap-trader-mcp)](https://smithery.ai/server/@kukapay/uniswap-trader-mcp)"
 ---
 
-# kukapay-uniswap-trader-mcp
-
-_Source: [github.com/kukapay/uniswap-trader-mcp](https://github.com/kukapay/uniswap-trader-mcp). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Uniswap Trader MCP
 [![smithery badge](https://smithery.ai/badge/@kukapay/uniswap-trader-mcp)](https://smithery.ai/server/@kukapay/uniswap-trader-mcp)
 

@@ -1,84 +1,62 @@
 # Square Post Skill
 
-Post content to Binance Square.
+Publish text, image, article, and video posts to Binance Square through the
+local Node.js scripts in `scripts/`.
 
-## Features
+## Dependencies
 
-- Post pure text content to Binance Square
-- Auto-optimize content
-- Auto-manage API Key
+### Runtime
 
-## Usage
+- Node.js 18 or newer. The scripts use native ES modules and the built-in
+  `fetch` API.
+- Bash-capable shell for running the scripts through the agent tool.
 
-### Examples
+### System Tools
+
+- `ffmpeg` is required for video posts. `scripts/post-video.mjs` extracts the
+  first frame from the source video and uploads it as the post cover.
+- `ffprobe` is required when the user does not provide a video duration. The
+  agent uses it to determine the duration before calling `post-video.mjs`.
+
+### External Services
+
+- Binance Square OpenAPI access through `BINANCE_SQUARE_OPENAPI_KEY` or the
+  local saved key file.
+- Network access to the Square OpenAPI endpoints and to presigned upload URLs
+  returned by the API.
+
+No npm package install is required for the current scripts; they only use
+Node.js built-in modules.
+
+## Authentication
+
+Scripts read the OpenAPI key in this order:
+
+1. `BINANCE_SQUARE_OPENAPI_KEY`
+2. The saved key file at `~/.config/binance-square/openapi-key`
+
+Do not pass API keys as CLI arguments. `--key` is rejected because command-line
+arguments can appear in process listings and shell history.
+
+To save a key for future runs, explicitly run:
+
+```bash
+BINANCE_SQUARE_OPENAPI_KEY=<apiKey> node scripts/save-key.mjs
+```
+
+The saved key file is written with `0600` permissions. To remove it, delete
+`~/.config/binance-square/openapi-key`.
+
+## Directory Structure
 
 ```
-post to square: BTC is pumping, feeling bullish
+square-post/
+├── SKILL.md              # Skill instructions and publishing workflow
+├── README.md             # Directory overview
+├── scripts/
+│   ├── lib.mjs           # Shared API, upload, polling, and publish helpers
+│   ├── save-key.mjs      # Saves the OpenAPI key to a local private config file
+│   ├── post-text.mjs     # Text and article publishing script
+│   ├── post-image.mjs    # Image post and article-with-cover publishing script
+│   └── post-video.mjs    # Video publishing script with generated cover
 ```
-
-```
-square post: Market looking strong today, BTC breaking out
-```
-
-## Posting Flow
-
-1. **Trigger Skill** - Use the trigger phrases above
-2. **Content Optimization** - Agent auto-optimizes content
-3. **Choose Version** - Select optimized version or post original text
-4. **Post Success** - Returns post URL
-
-### Interaction Example
-
-```
-User: post to square: btc pumping feels like bull market
-
-Agent: Optimized content:
-       BTC surging, bull market signals are strong!
-
-       Choose:
-       1. Use optimized version
-       2. Use original text
-
-User: 1
-
-Agent: Post successful!
-       Post URL: https://www.binance.com/square/post/298177291743282
-```
-
-## First Time Setup
-
-On first use, Claude will prompt you for API Key:
-
-1. Get your `X-Square-OpenAPI-Key`
-2. Provide it to Claude
-3. Key will be stored securely for future use
-
-> ⚠️ **Security Reminder**: When creating a Square-OpenAPI-Key, please minimize its permissions. Avoid granting highly sensitive permissions such as withdrawal or trading privileges.
-
-## Common Errors
-
-| Code | Description |
-|------|-------------|
-| 000000 | Success |
-| 10004 | Network error. Please try again |
-| 10005 | Only allowed for users who have completed identity verification |
-| 10007 | Feature unavailable |
-| 20002 | Detected sensitive words |
-| 20013 | Content length is limited |
-| 20020 | Publishing empty content is not supported |
-| 20022 | Detected sensitive words (with risk segments) |
-| 20041 | Potential security risk with the URL |
-| 30004 | User not found |
-| 30008 | Banned for violating platform guidelines |
-| 220003 | API Key not found |
-| 220004 | API Key expired |
-| 220009 | Daily post limit exceeded for OpenAPI |
-| 220010 | Unsupported content type |
-| 220011 | Content body must not be empty |
-| 2000001 | Account permanently blocked from posting |
-| 2000002 | Device permanently blocked from posting |
-
-## Notes
-
-- Only pure text posts are supported currently
-- Daily post limit applies

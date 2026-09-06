@@ -14,6 +14,7 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from urllib.parse import quote
 
@@ -131,6 +132,7 @@ def category_display(cat_id, categories):
 
 # ── Trust manifest helpers (TRUST.md §"File viewer", §"UI: red flags first") ──
 
+@lru_cache(maxsize=4096)
 def load_trust_manifest(category, skill_name):
     """Read TRUST.auto.yaml for a skill, return parsed dict or None."""
     if parse_canonical_yaml is None:
@@ -438,7 +440,7 @@ def _related_strip(skill, all_skills, categories):
             # Skip — flags are visible on each linked card itself.
             break
         return (
-            f'<a class="related-strip-card" href="{url_path(s.get("name",""))}.html">'
+            f'<a class="related-strip-card" href="../{url_path(cat_id)}/{url_path(s.get("name",""))}.html">'
             f'<span class="related-strip-icon" aria-hidden="true">{ic}</span>'
             f'<span class="related-strip-name">{esc(s.get("displayName", s.get("name","")))}</span>'
             f'</a>'

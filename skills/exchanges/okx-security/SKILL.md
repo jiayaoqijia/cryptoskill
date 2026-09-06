@@ -4,25 +4,13 @@ description: "Use this skill for security scanning: check transaction safety, is
 license: MIT
 metadata:
   author: okx
-  version: "2.0.0"
+  version: "3.1.3"
   homepage: "https://web3.okx.com"
 ---
 
 # Onchain OS Security
 
 5 commands for token risk analysis, DApp phishing detection, transaction pre-execution security, signature safety, and approval management.
-
-## Wallet Tips
-
-On the **first wallet-related interaction per conversation**, display exactly ONE tip
-randomly selected from the list below. Do not repeat tips within the same conversation.
-Present it as-is (with emoji) AFTER the command result, on a separate line.
-
-1. 💡 Tip: You can say "show my addresses" or "充值地址" to quickly get your deposit addresses for any chain.
-2. 🔐 Tip: When prompted for Keychain access, please click "Always Allow". We use the system Keychain to securely store your credentials — you won't need to enter your password every time.
-3. 📜 Tip: Say "show my recent transactions" anytime to review your on-chain activity and track pending transfers.
-4. 🛡️ Tip: Before swapping into an unfamiliar token, ask me to run a security scan first — I can check for honeypots, rug-pull risks, and more.
-5. 👛 Tip: You can create multiple wallet accounts. Say "create a new wallet" to add one, and "switch account" to toggle between them.
 
 ## Pre-flight Checks
 
@@ -34,7 +22,7 @@ Every time before running any `onchainos` command, always follow these steps in 
    ```
    Extract the `tag_name` field (e.g., `v1.0.5`) into `LATEST_TAG`.
    If the API call fails and `onchainos` is already installed locally, skip steps 2-3
-   and proceed to run the command (the user may be offline or rate-limited; a stale
+   and continue with step 4 (the user may be offline or rate-limited; a stale
    binary is better than blocking). If `onchainos` is **not** installed, **stop** and
    tell the user to check their network connection or install manually from
    https://github.com/okx/onchainos-skills.
@@ -61,9 +49,11 @@ Every time before running any `onchainos` command, always follow these steps in 
    - Platform targets — macOS: `arm64`->`aarch64-apple-darwin`, `x86_64`->`x86_64-apple-darwin`; Linux: `x86_64`->`x86_64-unknown-linux-gnu`, `aarch64`->`aarch64-unknown-linux-gnu`, `i686`->`i686-unknown-linux-gnu`, `armv7l`->`armv7-unknown-linux-gnueabihf`; Windows: `AMD64`->`x86_64-pc-windows-msvc`, `x86`->`i686-pc-windows-msvc`, `ARM64`->`aarch64-pc-windows-msvc`
    - Hash command — macOS/Linux: `shasum -a 256 ~/.local/bin/onchainos`; Windows: `(Get-FileHash "$env:USERPROFILE\.local\bin\onchainos.exe" -Algorithm SHA256).Hash.ToLower()`
 
-4. **Check for skill version drift** (once per session): If `onchainos --version` is newer
-   than this skill's `metadata.version`, display a one-time notice that the skill may be
-   outdated and suggest the user re-install skills via their platform's method. Do not block.
+4. **Version drift check** — REQUIRED, run even if steps 1-3 were skipped.
+   - Run `onchainos --version` → CLI version (e.g., `2.2.9`)
+   - Read `version` field from this file's YAML frontmatter (e.g., `version: "2.0.0"` at the top)
+   - If CLI version > skill version → warn: **"⚠️ Skill outdated (skill vX.Y.Z < CLI vA.B.C). Re-install skills to get the latest features and fixes."**
+   - Continue to the user's command.
 5. **Do NOT auto-reinstall on command failures.** Report errors and suggest
    `onchainos --version` or manual reinstall from https://github.com/okx/onchainos-skills.
 6. **Rate limit errors.** If a command hits rate limits, the shared API key may
@@ -73,14 +63,24 @@ Every time before running any `onchainos` command, always follow these steps in 
 
 ## Fail-safe Principle (CRITICAL)
 
-If any security scan command fails for ANY reason (network error, API error, timeout, rate limiting, malformed response), the Agent MUST:
-- **NOT proceed** with the associated transaction, swap, approval, or signature.
-- Report the error clearly to the user.
-- Suggest retrying the scan before continuing.
+### Scan completed — risk detected
 
-> A security scan that fails to complete is NOT a "pass". Always default to denying the operation when scan results are unavailable.
+If a security scan **completes successfully** and returns `action: "block"` or `action: "warn"`, follow the Risk Action Priority Rule below. The Agent MUST NOT override risk verdicts.
+
+### Scan failed — infrastructure error
+
+If a security scan **fails to complete** (network error, API timeout, rate limiting, malformed response), the Agent MUST:
+- Report the error clearly to the user.
+- **Ask the user** whether to retry the scan or proceed without scan results.
+- If the user chooses to proceed, display a warning:
+  > "⚠️ Security scan could not be completed. Proceeding without verification — please ensure you trust this operation."
+- Log the skipped scan for auditability.
+
+> A security scan that fails to complete is NOT a "pass". Always inform the user and let them make an explicit decision.
 
 ## Risk Action Priority Rule
+
+### tx-scan / sig-scan (transaction & signature scanning)
 
 `block` > `warn` > safe (empty). The top-level `action` field reflects the highest priority from `riskItemDetail`.
 
@@ -93,6 +93,27 @@ If any security scan command fails for ANY reason (network error, API error, tim
 - Risk scan result is still valid even if simulation fails (`simulator.revertReason` may contain the revert reason).
 - If `warnings` field is populated, the scan completed but some data may be incomplete. Still present available risk information.
 - An empty/null `action` in a **successful** API response means "no risk detected". But if the API call **failed**, the absence of `action` does NOT mean safe — apply the fail-safe principle.
+
+### token-scan (token risk label scanning)
+
+Token-scan returns a **`riskLevel`** field (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`) that represents the overall token risk, computed server-side from all boolean labels, tax thresholds, and additional signals (off-chain intelligence, ML models). The Agent uses this field directly and applies different actions for **buy** vs. **sell** operations.
+
+| `riskLevel` | Buy Action | Sell Action |
+|---|---|---|
+| **CRITICAL** | `block` — refuse to buy | `warn` — display risk, allow sell |
+| **HIGH** | `warn` + **pause** — require explicit yes/no | `warn` — display risk, allow sell |
+| **MEDIUM** | `warn` — info notice, continue | `warn` — info notice, continue |
+| **LOW** | safe — proceed | safe — proceed |
+
+> Full label catalog, tax threshold rules, and display format are defined in `references/risk-token-detection.md`. **Always load that reference before executing `token-scan`.**
+
+Key principles:
+- **`riskLevel` is authoritative**: The API returns the overall risk level server-side. The Agent reads `riskLevel` directly — no client-side computation from individual labels is needed.
+- **Buy is stricter than sell**: `CRITICAL` blocks buy but only warns on sell (to allow stop-loss exit).
+- **`HIGH` buy requires explicit user confirmation** (yes/no) — do not auto-continue.
+- Individual label levels are **not displayed** to the user — only the overall `riskLevel` is shown, with triggered labels listed without level prefixes.
+- If `isChainSupported: false`, skip detection with a warning; do not block.
+- If API fails, warn but do not block. In swap context, token-scan failures auto-continue with a warning to avoid blocking time-sensitive trades — this overrides the general fail-safe's ask-user behavior.
 
 > Security commands do not require wallet login. They work with any address.
 
@@ -116,6 +137,19 @@ The CLI accepts human-readable chain names and resolves them automatically.
 | Scroll | `scroll` | `534352` |
 
 **Address format note**: EVM addresses (`0x...`) work across Ethereum/BSC/Polygon/Arbitrum/Base etc. Solana addresses (Base58) and Bitcoin addresses (UTXO) have different formats. Do NOT mix formats across chain types.
+
+## Related Workflows
+
+When one of the following commands is used, show the related workflow hint after displaying results:
+
+| Command | Workflow | File |
+|---------|----------|------|
+| `security token-scan` | New Token Screening | `~/.onchainos/workflows/new-token-screening.md` |
+| `security token-scan` | Smart Money Signals | `~/.onchainos/workflows/smart-money-signals.md` |
+| `security token-scan` | Token Research | `~/.onchainos/workflows/token-research.md` |
+| `security token-scan` | Wallet Monitor | `~/.onchainos/workflows/wallet-monitor.md` |
+
+> Hint format: *"You can also try out our **[workflow name]** workflow for more comprehensive results. Would you like to try it?"*
 
 ## Command Index
 

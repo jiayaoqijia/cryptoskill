@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "ca-agent-skills": {
+      "command": "bun",
+      "args": ["run", "/ABSOLUTE/PATH/TO/ca-agent-skills/src/mcp/server.ts"],
+      "env": {
+        "PORTKEY_PRIVATE_KEY": "<YOUR_PRIVATE_KEY>",
+        "PORTKEY_NETWORK": "mainnet"
+      }
+    }
+  }
+}

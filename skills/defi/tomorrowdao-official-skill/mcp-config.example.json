@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "tomorrowdao-agent-skills": {
+      "command": "bun",
+      "args": [
+        "run",
+        "/absolute/path/to/tomorrowDAO-skill/src/mcp/server.ts"
+      ],
+      "env": {
+        "TMRW_PRIVATE_KEY": "<YOUR_PRIVATE_KEY>",
+        "TMRW_API_BASE": "https://api.tmrwdao.com",
+        "TMRW_CHAIN_DEFAULT_DAO": "tDVV",
+        "TMRW_CHAIN_DEFAULT_NETWORK": "AELF"
+      }
+    }
+  }
+}

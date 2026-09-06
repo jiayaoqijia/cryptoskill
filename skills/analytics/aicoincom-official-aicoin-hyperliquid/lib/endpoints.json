@@ -1,0 +1,5444 @@
+{
+ "generated_at": "2026-05-19",
+ "count": 183,
+ "endpoints": [
+  {
+   "method": "GET",
+   "path": "/api/v3/_catalog",
+   "summary": "本接口：机器可读的全部 v3 接口清单（含参数）",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/airdrops",
+   "summary": "空投列表（多数据源）",
+   "params": [
+    {
+     "name": "source",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "all",
+      "hodler",
+      "xlaunch",
+      "earncoin",
+      "alpha",
+      "bitget_launchpool",
+      "bitget_poolx"
+     ],
+     "desc": "数据源，默认 all"
+    },
+    {
+     "name": "status",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "ongoing",
+      "finished"
+     ],
+     "desc": "状态，默认 ongoing"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 20"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，从 0 开始"
+    },
+    {
+     "name": "exchange",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "交易所筛选"
+    },
+    {
+     "name": "activity_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "活动类型筛选"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/airdrops/banners",
+   "summary": "空投热门 Banner",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "数量限制，默认 5"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/airdrops/calendar",
+   "summary": "空投日历",
+   "params": [
+    {
+     "name": "year",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "年份"
+    },
+    {
+     "name": "month",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "月份"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/airdrops/detail",
+   "summary": "空投详情",
+   "params": [
+    {
+     "name": "type",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "hodler",
+      "xlaunch"
+     ],
+     "desc": "详情类型"
+    },
+    {
+     "name": "project_id",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "项目标识（别名 token / airdrop_id）"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/airdrops/exchanges",
+   "summary": "空投交易所列表",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/coins",
+   "summary": "全部币种列表",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，从 0 开始"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/coins/detail",
+   "summary": "单个币种的详情数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/coins/profile",
+   "summary": "多币种简介资料",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "逗号分隔多个 AiCoin 币种 slug（小写），最多 100 个",
+     "example": "bitcoin,ethereum"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/coins/recommendations",
+   "summary": "按持仓 AI 推荐币种",
+   "params": [
+    {
+     "name": "coin_keys",
+     "in": "body",
+     "required": false,
+     "type": "array",
+     "desc": "币种 key 列表"
+    },
+    {
+     "name": "locale",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "语言，如 cn / en"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/coins/search",
+   "summary": "按关键词搜索币种",
+   "params": [
+    {
+     "name": "query",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "搜索关键词"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "限定 market slug"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/coins/tickers",
+   "summary": "多币种最新行情",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "逗号分隔多个 AiCoin 币种 slug（小写），省略返回空数组，最多 100 个",
+     "example": "bitcoin,ethereum"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/articles",
+   "summary": "资讯文章列表",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 20"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "行偏移量，默认 0；最多 5 页"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/articles/detail",
+   "summary": "资讯文章详情",
+   "params": [
+    {
+     "name": "article_id",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "文章 id（别名 id）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/articles/rss",
+   "summary": "资讯文章 RSS 列表",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 5，最大 5"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "行偏移量，默认 0；最多 5 页"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/newsflashes",
+   "summary": "快讯列表",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    },
+    {
+     "name": "last_id",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "游标 id"
+    },
+    {
+     "name": "tab",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "tab 分类"
+    },
+    {
+     "name": "only_important",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "仅看重要，1 开启"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    },
+    {
+     "name": "platform_show",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "平台过滤"
+    },
+    {
+     "name": "date_mode",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "日期模式"
+    },
+    {
+     "name": "jump_to_date",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "跳转日期"
+    },
+    {
+     "name": "start_date",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "起始日期"
+    },
+    {
+     "name": "end_date",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "结束日期"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/newsflashes/aicoin",
+   "summary": "AICoin 自营快讯",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/newsflashes/detail",
+   "summary": "快讯详情",
+   "params": [
+    {
+     "name": "id",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "快讯 id（别名 flash_id）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/newsflashes/exchange-listings",
+   "summary": "交易所上下币快讯",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间 Unix 毫秒（游标，对应底层 lastTime）"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    },
+    {
+     "name": "member_ids",
+     "in": "query",
+     "required": false,
+     "type": "array",
+     "desc": "来源成员 id，省略默认 [477,1509]"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/newsflashes/industry",
+   "summary": "行业快讯",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间 Unix 毫秒（游标，对应底层 lastTime）"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/newsflashes/search",
+   "summary": "搜索快讯",
+   "params": [
+    {
+     "name": "query",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "搜索关键词（别名 word/keyword/q）"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "行偏移量，默认 0"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/social/x/members/search",
+   "summary": "搜索 X（推特）用户",
+   "params": [
+    {
+     "name": "query",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "搜索关键词（别名 word/keyword/q）"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "行偏移量，默认 0"
+    },
+    {
+     "name": "type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "类型透传"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/content/social/x/posts/interaction-stats",
+   "summary": "X（推特）推文互动统计",
+   "params": [
+    {
+     "name": "flash_ids",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "推文 id 数组，1-50 个"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/social/x/posts/latest",
+   "summary": "X（推特）最新推文",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "行偏移量，默认 0"
+    },
+    {
+     "name": "last_time",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "按时间游标"
+    },
+    {
+     "name": "last_id",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "按 id 游标"
+    },
+    {
+     "name": "type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "tab/类型透传"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/content/social/x/posts/search",
+   "summary": "搜索 X（推特）推文",
+   "params": [
+    {
+     "name": "query",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "搜索关键词（别名 keyword/q）"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，最大 100"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "行偏移量，默认 0"
+    },
+    {
+     "name": "last_time",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "按时间游标"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/estimated-liquidations/history",
+   "summary": "历史预估爆仓图",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 perpetual"
+    },
+    {
+     "name": "window",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "24h",
+      "7d"
+     ],
+     "desc": "时间窗口"
+    },
+    {
+     "name": "leverage",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "10",
+      "25",
+      "50",
+      "100"
+     ],
+     "desc": "杠杆倍数，省略返回全部"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 100，上限 500"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/funding-rates",
+   "summary": "资金费率历史",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "周期，默认 8h；资金费率按 8h 结算，传小于 8h 的周期会返回空"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/liquidations",
+   "summary": "爆仓单历史（未实现，返回 501）",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/liquidations/heatmap",
+   "summary": "爆仓热力图（上游数据未接通，返回 501）",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/liquidations/map",
+   "summary": "最新清算地图",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 perpetual"
+    },
+    {
+     "name": "window",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "24h",
+      "7d"
+     ],
+     "desc": "时间窗口"
+    },
+    {
+     "name": "leverage",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "10",
+      "25",
+      "50",
+      "100"
+     ],
+     "desc": "杠杆倍数，省略返回全部"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/liquidations/summary",
+   "summary": "爆仓汇总",
+   "params": [
+    {
+     "name": "scope",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "enum": [
+      "0",
+      "1",
+      "2"
+     ],
+     "desc": "统计范围，默认 0"
+    },
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin，可选",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug，可选"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/long-short-ratio",
+   "summary": "多空比历史",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/long-short-ratio/summary",
+   "summary": "多空比汇总",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/open-interest/coin-margin",
+   "summary": "币本位持仓量历史（未实现，返回 501）",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/open-interest/ranking",
+   "summary": "合约持仓量排名列表",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "每页条数，默认 20，上限 100"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "偏移量，默认 0"
+    },
+    {
+     "name": "sort_by",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "排序字段"
+    },
+    {
+     "name": "sort",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "asc",
+      "desc"
+     ],
+     "desc": "排序方向"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/open-interest/stablecoin-margin",
+   "summary": "稳定币本位持仓量历史（未实现，返回 501）",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/derivatives/weighted-funding-rates",
+   "summary": "加权资金费率历史（未实现，返回 501）",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/events",
+   "summary": "Drop Radar 事件日历",
+   "params": [
+    {
+     "name": "project_id",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "项目标识（别名 airdrop_id）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/filters",
+   "summary": "Drop Radar 筛选项",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/projects",
+   "summary": "Drop Radar 项目列表",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，从 0 开始"
+    },
+    {
+     "name": "status",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "CONFIRMED",
+      "POTENTIAL",
+      "VERIFICATION",
+      "SNAPSHOT",
+      "DISTRIBUTED"
+     ],
+     "desc": "状态，逗号分隔"
+    },
+    {
+     "name": "activity_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "任务类型"
+    },
+    {
+     "name": "reward_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "Airdrop",
+      "Points",
+      "Role",
+      "Whitelist"
+     ],
+     "desc": "奖励类型"
+    },
+    {
+     "name": "min_total_raise",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "最小融资金额"
+    },
+    {
+     "name": "max_total_raise",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "最大融资金额"
+    },
+    {
+     "name": "created_at",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "创建时间戳（毫秒）"
+    },
+    {
+     "name": "query",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "搜索关键词"
+    },
+    {
+     "name": "board_keys",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "板块筛选，逗号分隔"
+    },
+    {
+     "name": "eco_keys",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "生态筛选，逗号分隔"
+    },
+    {
+     "name": "sort_by",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "status_update_at",
+      "moni_score"
+     ],
+     "desc": "排序字段"
+    },
+    {
+     "name": "sort_order",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "asc",
+      "desc"
+     ],
+     "desc": "排序方向"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/projects/detail",
+   "summary": "Drop Radar 项目详情",
+   "params": [
+    {
+     "name": "project_id",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "项目标识（别名 airdrop_id）"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/status-changes",
+   "summary": "Drop Radar 状态变更",
+   "params": [
+    {
+     "name": "days",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "查询天数，默认 7"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，从 0 开始"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/team",
+   "summary": "Drop Radar 团队成员",
+   "params": [
+    {
+     "name": "project_id",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "项目标识（别名 airdrop_id）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/tweets/search",
+   "summary": "Drop Radar 推文搜索",
+   "params": [
+    {
+     "name": "query",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "关键词，逗号分隔（别名 keywords / keyword / q）"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    },
+    {
+     "name": "last_id",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "游标分页 ID（上一页最后一条的 id）"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/widgets",
+   "summary": "Drop Radar 统计概览",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en",
+      "tc"
+     ],
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/drop-radar/x-following",
+   "summary": "Drop Radar X 关注列表",
+   "params": [
+    {
+     "name": "project_id",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "项目标识（别名 airdrop_id）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/equities/crypto-exposure/companies",
+   "summary": "加密相关上市公司信息",
+   "params": [
+    {
+     "name": "ticker",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "公司股票代码，接受裸代码（如 MSTR，即 /quotes 返回的 ticker）或完整 key（如 i:mstr:nasdaq）",
+     "example": "MSTR"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/equities/crypto-exposure/newsflashes/metaera",
+   "summary": "MetaEra 美股快讯",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/equities/crypto-exposure/quotes",
+   "summary": "加密相关上市公司行情",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/equities/crypto-exposure/top-gainers",
+   "summary": "加密相关上市公司涨幅榜",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/accumulated-taker-delta",
+   "summary": "Hyperliquid 累计主动买卖差",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "周期，1s ~ 60d"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/filled-orders/by-address",
+   "summary": "按地址查询已成交订单",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 1000，最大 1000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/filled-orders/by-oid",
+   "summary": "按 oid 查询已成交订单",
+   "params": [
+    {
+     "name": "oid",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "订单 ID"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/fills/by-address",
+   "summary": "按地址查询成交记录",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 1000，最大 2000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/fills/by-builder",
+   "summary": "按 builder 查询成交记录",
+   "params": [
+    {
+     "name": "builder",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "builder 地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 1000，最大 5000"
+    },
+    {
+     "name": "min_val",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "最小成交价值（px*sz）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/fills/by-oid",
+   "summary": "按订单 oid 查询成交记录",
+   "params": [
+    {
+     "name": "oid",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "订单 ID"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/fills/by-twap",
+   "summary": "按 TWAP 订单查询成交记录",
+   "params": [
+    {
+     "name": "twap_id",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "TWAP 订单 ID"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/fills/top-trades",
+   "summary": "近周期内 Top N 成交",
+   "params": [
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "周期，默认 1h，取值 1s~7d"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 10，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/info",
+   "summary": "Hyperliquid 统一 Info API 入口（按 type 分发；多数 type 在 /hyperliquid/raw/* 有等价 GET 接口，优先用后者）",
+   "params": [
+    {
+     "name": "type",
+     "in": "body",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "meta",
+      "spotMeta",
+      "perpDexs",
+      "allMids",
+      "clearinghouseState",
+      "spotClearinghouseState",
+      "openOrders",
+      "frontendOpenOrders",
+      "userFees",
+      "userFills",
+      "userFillsByTime",
+      "candleSnapshot",
+      "activeAssetData",
+      "webData2",
+      "historicalOrders",
+      "userTwapSliceFills",
+      "portfolio",
+      "orderStatus",
+      "userFunding",
+      "userNonFundingLedgerUpdates"
+     ],
+     "desc": "Info 类型，决定其余字段哪些必填"
+    },
+    {
+     "name": "user",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "账户地址；clearinghouseState/openOrders/userFills/userFees 等账户类 type 必填"
+    },
+    {
+     "name": "coin",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC；candleSnapshot/activeAssetData 必填",
+     "example": "BTC"
+    },
+    {
+     "name": "start_time",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间 Unix 毫秒；userFillsByTime/candleSnapshot/userFunding 等 type 必填"
+    },
+    {
+     "name": "end_time",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间 Unix 毫秒"
+    },
+    {
+     "name": "dex",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "DEX 名称；clearinghouseState/frontendOpenOrders 可选"
+    },
+    {
+     "name": "oid",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "订单 ID；orderStatus 必填"
+    },
+    {
+     "name": "aggregate_by_time",
+     "in": "body",
+     "required": false,
+     "type": "bool",
+     "desc": "是否按时间聚合；userFills 可选"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/klines-with-taker-volume",
+   "summary": "Hyperliquid 带主动成交量的 K 线",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "周期，1s ~ 1w"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "开始时间戳（Unix 毫秒）"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间戳（Unix 毫秒）"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 100，最大 2000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/ledger-updates/deposits-withdrawals",
+   "summary": "查询存取款记录（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "start_time",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间（毫秒）"
+    },
+    {
+     "name": "end_time",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间（毫秒）"
+    },
+    {
+     "name": "limit",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数上限"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/ledger-updates/net-flow",
+   "summary": "用户周期内账本净流入",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "days",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "enum": [
+      "1",
+      "7",
+      "30",
+      "60",
+      "90"
+     ],
+     "desc": "天数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/ledger-updates/net-flow/batch",
+   "summary": "批量获取账本净流入（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "days",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "天数：1/7/30/60/90/0"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/liquidations/history",
+   "summary": "Hyperliquid 清算历史",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "时间间隔，1m ~ 60d"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 20，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/liquidations/stat",
+   "summary": "Hyperliquid 清算统计",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "时间间隔，1s ~ 60d"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/liquidations/stat-by-coin",
+   "summary": "Hyperliquid 各币种清算统计",
+   "params": [
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "时间间隔，1s ~ 60d"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/liquidations/top-positions",
+   "summary": "Hyperliquid 待清算头部仓位",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "周期，1m ~ 60d"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 10，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/max-drawdown",
+   "summary": "用户周期内最大回撤",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "days",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "enum": [
+      "1",
+      "7",
+      "30",
+      "60",
+      "90"
+     ],
+     "desc": "天数"
+    },
+    {
+     "name": "scope",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "perp"
+     ],
+     "desc": "范围，默认 perp"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/max-drawdown/batch",
+   "summary": "批量获取最大回撤（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "days",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "天数：1/7/30/60/90/0"
+    },
+    {
+     "name": "scope",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "perp"
+     ],
+     "desc": "范围，默认 perp"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/open-interest/history",
+   "summary": "Hyperliquid 未平仓位历史",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "周期，默认 3d，15m ~ 180d"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/open-interest/summary",
+   "summary": "Hyperliquid 未平仓位汇总",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/open-interest/top-coins",
+   "summary": "Hyperliquid 头部币种未平仓位",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 10，最大 50"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/orderbooks/history-summaries",
+   "summary": "Hyperliquid 订单簿历史摘要",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "周期，默认 1d，1h ~ 180d"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/orders/active-stats",
+   "summary": "当前挂单统计",
+   "params": [
+    {
+     "name": "whale_threshold",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "鲸鱼订单价值阈值"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/orders/by-address",
+   "summary": "按地址查询订单",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 2000，最大 5000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/orders/by-oid",
+   "summary": "按 oid 查询订单",
+   "params": [
+    {
+     "name": "oid",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "订单 ID"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/orders/top-open",
+   "summary": "当前 Top N 挂单",
+   "params": [
+    {
+     "name": "min_val",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "最小挂单价值"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 10，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/pnls",
+   "summary": "指定周期的 pnl 曲线",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "period",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "enum": [
+      "0",
+      "1",
+      "7",
+      "30"
+     ],
+     "desc": "天数，0 表示 all-time"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/pnls/batch",
+   "summary": "批量获取 pnl 曲线（地址数 ≤200，超出静默截断；每个输入地址都返回一条 {address,pnls}，无数据的 pnls 为空数组）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "period",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "天数：1/7/30/0"
+    },
+    {
+     "name": "scope",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "all",
+      "perp"
+     ],
+     "desc": "范围，默认 all"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/portfolio",
+   "summary": "账户价值曲线与 pnl 曲线",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "window",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "day",
+      "week",
+      "month",
+      "allTime"
+     ],
+     "desc": "时间窗口"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/positions/completed/executions",
+   "summary": "Hyperliquid 单个已完成持仓的成交明细（start_time/end_time 须精确匹配 completed-trades 里的仓位时间戳）",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "目标已完成仓位的开仓时间戳（Unix 毫秒，须精确匹配）；取自 completed-trades 的 start_time_ms。与 end_time 至少传一个"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "目标已完成仓位的平仓时间戳（Unix 毫秒，须精确匹配）；取自 completed-trades 的 end_time_ms。与 start_time 至少传一个"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "周期，15m ~ 1d"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 20，最大 1000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/positions/completed/history",
+   "summary": "Hyperliquid 单个已完成持仓的变动历史（start_time/end_time 须精确匹配 completed-trades 里的仓位时间戳）",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "目标已完成仓位的开仓时间戳（Unix 毫秒，须精确匹配）；取自 completed-trades 的 start_time_ms。与 end_time 至少传一个"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "目标已完成仓位的平仓时间戳（Unix 毫秒，须精确匹配）；取自 completed-trades 的 end_time_ms。与 start_time 至少传一个"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/positions/completed/pnl",
+   "summary": "Hyperliquid 单个已完成持仓的盈亏曲线（start_time/end_time 须精确匹配 completed-trades 里的仓位时间戳）",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "目标已完成仓位的开仓时间戳（Unix 毫秒，须精确匹配）；取自 completed-trades 的 start_time_ms。与 end_time 至少传一个"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "目标已完成仓位的平仓时间戳（Unix 毫秒，须精确匹配）；取自 completed-trades 的 end_time_ms。与 start_time 至少传一个"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "周期，15m ~ 1d"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 20，最大 1000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/positions/current/executions",
+   "summary": "Hyperliquid 当前持仓成交明细",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "周期，15m ~ 1d"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 20，最大 1000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/positions/current/history",
+   "summary": "Hyperliquid 当前持仓变动历史",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/positions/current/pnl",
+   "summary": "Hyperliquid 当前持仓盈亏",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "周期，15m ~ 1d"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 20，最大 1000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/active-asset-data",
+   "summary": "Hyperliquid raw Info：活跃资产数据",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/candles",
+   "summary": "Hyperliquid raw Info：K 线快照",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "K 线周期，如 1m/1h/1d"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "开始时间戳（Unix 毫秒）"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间戳（Unix 毫秒）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/clearinghouse-state",
+   "summary": "Hyperliquid raw Info：账户清算状态",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "dex",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "DEX 名称，默认主 DEX"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/frontend-open-orders",
+   "summary": "Hyperliquid raw Info：前端未成交挂单",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "dex",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "永续 DEX 名称"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/historical-orders",
+   "summary": "Hyperliquid raw Info：历史订单",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/meta",
+   "summary": "Hyperliquid raw Info：永续合约元数据",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/open-orders",
+   "summary": "Hyperliquid raw Info：未成交挂单",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/order-status",
+   "summary": "Hyperliquid raw Info：订单状态",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "oid",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "订单 ID"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/perp-dexs",
+   "summary": "Hyperliquid raw Info：永续 DEX 列表",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/spot-clearinghouse-state",
+   "summary": "Hyperliquid raw Info：现货账户清算状态",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/spot-meta",
+   "summary": "Hyperliquid raw Info：现货元数据",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/user-fees",
+   "summary": "Hyperliquid raw Info：用户费率",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/user-fills",
+   "summary": "Hyperliquid raw Info：用户成交记录",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "aggregate_by_time",
+     "in": "query",
+     "required": false,
+     "type": "bool",
+     "desc": "是否按时间聚合"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/user-fills/by-time",
+   "summary": "Hyperliquid raw Info：用户指定时间范围成交记录",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "开始时间戳（Unix 毫秒）"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间戳（Unix 毫秒）"
+    },
+    {
+     "name": "aggregate_by_time",
+     "in": "query",
+     "required": false,
+     "type": "bool",
+     "desc": "是否按时间聚合"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/user-funding",
+   "summary": "Hyperliquid raw Info：用户资金费历史",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "开始时间戳（Unix 毫秒）"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间戳（Unix 毫秒）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/user-non-funding-ledger-updates",
+   "summary": "Hyperliquid raw Info：用户非资金费账本更新",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": true,
+     "type": "int",
+     "desc": "开始时间戳（Unix 毫秒）"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间戳（Unix 毫秒）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/user-twap-slice-fills",
+   "summary": "Hyperliquid raw Info：用户 TWAP 切片成交",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/raw/web-data2",
+   "summary": "Hyperliquid raw Info：Web 综合数据",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 用户地址"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/smart-money/find",
+   "summary": "发现聪明钱地址",
+   "params": [
+    {
+     "name": "limit",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 10"
+    },
+    {
+     "name": "offset",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，须为 limit 的整数倍（接口按页翻页），从 0 开始"
+    },
+    {
+     "name": "period",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "周期天数"
+    },
+    {
+     "name": "sort",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "排序方式"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/ticker",
+   "summary": "Hyperliquid 指定币种行情",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/tickers",
+   "summary": "Hyperliquid 全币种行情快照",
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/accounts",
+   "summary": "批量查询地址账户情况（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/behavior-metrics/batch",
+   "summary": "批量交易员行为指标（地址数 ≤100，超出静默截断；内部分片并发请求上游，慢/坏地址只影响所在分片、该地址条目带 error 字段，其余地址正常返回）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "period",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "天数：0/1/7/30，省略按 30"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/traders/best-trades",
+   "summary": "周期内收益最高的交易",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "period",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "统计周期天数：1/7/30，0 表示 all-time"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 10，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/clearinghouse-state",
+   "summary": "批量获取永续合约账户状态（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "dex",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "DEX 名称，空表示主 DEX"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/traders/completed-trades",
+   "summary": "最新完成的交易（仓位）",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 100，最大 2000"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/completed-trades/by-time",
+   "summary": "按时间查询完成的交易（仓位）",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "limit",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 10"
+    },
+    {
+     "name": "offset",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，须为 limit 的整数倍（接口按页翻页），从 0 开始"
+    },
+    {
+     "name": "coin",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "end_time_from",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间起始（毫秒）"
+    },
+    {
+     "name": "end_time_to",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间结束（毫秒）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/traders/detailed-trading-statistics",
+   "summary": "交易详情与胜率统计",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "period",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "统计周期天数：1/7/30，0 表示 all-time"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/discover",
+   "summary": "地址发现接口（addrs ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "limit",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 20"
+    },
+    {
+     "name": "offset",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，须为 limit 的整数倍（接口按页翻页），从 0 开始"
+    },
+    {
+     "name": "filters",
+     "in": "body",
+     "required": false,
+     "type": "array",
+     "desc": "筛选条件"
+    },
+    {
+     "name": "addrs",
+     "in": "body",
+     "required": false,
+     "type": "array",
+     "desc": "指定地址列表"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/discover/history",
+   "summary": "历史地址发现接口（addrs ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "limit",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 20"
+    },
+    {
+     "name": "offset",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，须为 limit 的整数倍（接口按页翻页），从 0 开始"
+    },
+    {
+     "name": "filters",
+     "in": "body",
+     "required": false,
+     "type": "array",
+     "desc": "筛选条件"
+    },
+    {
+     "name": "addrs",
+     "in": "body",
+     "required": false,
+     "type": "array",
+     "desc": "指定地址列表"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/traders/discover/total-count",
+   "summary": "已收录地址去重总数",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/traders/performance-by-coin",
+   "summary": "周期内交易分币种统计",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "period",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "统计周期天数：1/7/30，0 表示 all-time"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 10，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/spot-clearinghouse-state",
+   "summary": "批量获取现货账户状态（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/traders/stat",
+   "summary": "地址周期交易统计",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "period",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "统计周期天数：1/7/30，0 表示 all-time"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/stat/batch",
+   "summary": "批量地址交易统计（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "period",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "天数：1/7/30/0"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/statistics",
+   "summary": "批量查询地址周期交易统计（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "period",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "周期天数"
+    },
+    {
+     "name": "pnl_list",
+     "in": "body",
+     "required": false,
+     "type": "bool",
+     "desc": "是否返回 pnl 曲线"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/hyperliquid/traders/tags/query",
+   "summary": "批量查询地址标签（地址数 ≤2000，超出静默截断）",
+   "params": [
+    {
+     "name": "addresses",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "地址列表（超出上限静默截断）"
+    },
+    {
+     "name": "lang",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "语言"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/twap-states",
+   "summary": "TWAP 订单状态",
+   "params": [
+    {
+     "name": "address",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Hyperliquid 账户地址"
+    },
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号过滤（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 100，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/whales/directions",
+   "summary": "Hyperliquid 大户多空方向分布",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/whales/history-long-ratio",
+   "summary": "Hyperliquid 大户历史多空比",
+   "params": [
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "10m",
+      "1h",
+      "4h",
+      "1d"
+     ],
+     "desc": "周期，默认 1h"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 50，最大 200"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/whales/latest-events",
+   "summary": "Hyperliquid 大户最新动作",
+   "params": [
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 10，最大 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/hyperliquid/whales/open-positions",
+   "summary": "Hyperliquid 大户当前持仓",
+   "params": [
+    {
+     "name": "coin",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "Hyperliquid 币种符号（非 coin_key slug），如 BTC、HYPE",
+     "example": "BTC"
+    },
+    {
+     "name": "dir",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "long",
+      "short"
+     ],
+     "desc": "方向"
+    },
+    {
+     "name": "npnl_side",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "profit",
+      "loss"
+     ],
+     "desc": "浮动盈亏方向"
+    },
+    {
+     "name": "fr_side",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "profit",
+      "loss"
+     ],
+     "desc": "资金费盈亏方向"
+    },
+    {
+     "name": "top_by",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "position-value",
+      "margin-balance",
+      "create-time",
+      "profit",
+      "loss"
+     ],
+     "desc": "排序方式"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "默认 10，最大 200"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/indexes",
+   "summary": "指数列表",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/indexes/coins",
+   "summary": "指定指数类型下的币种列表",
+   "params": [
+    {
+     "name": "index_type",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "global",
+      "asia",
+      "america",
+      "europe",
+      "usa",
+      "japan",
+      "korea",
+      "britain"
+     ],
+     "desc": "区域指数类型"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/indexes/detail",
+   "summary": "单个指数的分市场明细",
+   "params": [
+    {
+     "name": "index_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "区域指数键值，取 GET /api/v3/indexes/coins 返回的 indexKey 字段（非 /indexes 列表的 key）",
+     "example": "btcGlobal"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/indexes/profile",
+   "summary": "单个指数的简介与元数据",
+   "params": [
+    {
+     "name": "index_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "index identifier, colon-separated tokens",
+     "example": "i:fgi:alternative"
+    },
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en"
+     ],
+     "desc": "文案语言，默认 cn"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/indexes/ticker",
+   "summary": "单个指数最新价格",
+   "params": [
+    {
+     "name": "index_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "index identifier, colon-separated tokens",
+     "example": "i:fgi:alternative"
+    },
+    {
+     "name": "currency",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价货币，默认随指数自身配置"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/indexes/types",
+   "summary": "区域指数类型列表",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/institutions/grayscale/holdings",
+   "summary": "灰度持仓数据",
+   "params": [
+    {
+     "name": "coin_keys",
+     "in": "query",
+     "required": false,
+     "type": "array",
+     "desc": "逗号分隔的币种标识，留空返回全部白名单币种",
+     "example": "btc,eth"
+    },
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "单个币种代码（灰度数据源原样透传，如 btc），coin_keys 的简写形式",
+     "example": "btc"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/institutions/grayscale/trusts",
+   "summary": "灰度信托数据",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/macro/stock-indices",
+   "summary": "全球股指行情",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/aggregate-trades",
+   "summary": "大单成交",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/market/average-price",
+   "summary": "多交易对法币平均价",
+   "params": [
+    {
+     "name": "pairs",
+     "in": "body",
+     "required": true,
+     "type": "array",
+     "desc": "交易对数组，1-5 项，每项含 coin_key、market、可选 quote_coin_key、contract_type"
+    },
+    {
+     "name": "currency",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cny",
+      "usd"
+     ],
+     "desc": "计价货币，默认 usd"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/big-orders",
+   "summary": "主力大单",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    },
+    {
+     "name": "show_canceled",
+     "in": "query",
+     "required": false,
+     "type": "bool",
+     "desc": "是否包含已撤单"
+    },
+    {
+     "name": "amount_down_bound",
+     "in": "query",
+     "required": false,
+     "type": "number",
+     "desc": "成交额下限过滤"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/etf-flows",
+   "summary": "比特币 ETF 资金流向",
+   "params": [
+    {
+     "name": "provider",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "binance"
+     ],
+     "desc": "数据提供方，默认 binance"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/indicator-klines",
+   "summary": "指标 K 线时序数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "交易所 slug，如 binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    },
+    {
+     "name": "indicator_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "fundflow",
+      "ttsi",
+      "ttmu",
+      "position",
+      "lsur",
+      "tvolume",
+      "ftbs",
+      "basis",
+      "mlr",
+      "bsv",
+      "fr",
+      "aibst",
+      "aili",
+      "aiaggtrade"
+     ],
+     "desc": "指标键"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期，默认 15m"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "窗口结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，1-500，默认 500"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/indicator-pairs",
+   "summary": "某指标可用的交易对列表",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "indicator_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "enum": [
+      "fundflow",
+      "ttsi",
+      "ttmu",
+      "position",
+      "lsur",
+      "tvolume",
+      "ftbs",
+      "basis",
+      "mlr",
+      "bsv",
+      "fr",
+      "aibst",
+      "aili",
+      "aiaggtrade"
+     ],
+     "desc": "指标键"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/klines",
+   "summary": "K 线数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/navigation",
+   "summary": "行情页导航栏数据",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en"
+     ],
+     "desc": "语言，默认 cn"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/orderbook/depth-history",
+   "summary": "订单簿深度历史",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    },
+    {
+     "name": "depth_range",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "深度档位范围"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/orderbook/full-depth",
+   "summary": "全量订单簿深度数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/orderbook/full-depth/grouped",
+   "summary": "全量订单簿深度按价格分组",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    },
+    {
+     "name": "group_size",
+     "in": "query",
+     "required": true,
+     "type": "number",
+     "desc": "价格分组间隔，正数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/orderbook/heatmap",
+   "summary": "订单簿热力图",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "interval",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "1m",
+      "3m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "4h",
+      "6h",
+      "8h",
+      "12h",
+      "1d",
+      "3d",
+      "1w"
+     ],
+     "desc": "K 线周期"
+    },
+    {
+     "name": "start_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间，Unix 毫秒"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结束时间，Unix 毫秒"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/orderbook/large-orders/history",
+   "summary": "订单簿大单挂单历史",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 100，上限 500"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/orderbook/latest-depth",
+   "summary": "最新订单簿深度数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回档位数量，默认 50，上限 500"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/orderbook/snapshots/history",
+   "summary": "订单簿历史挂单深度快照",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 100，上限 500"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/overview",
+   "summary": "市场多空综合概览",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/pair-flows",
+   "summary": "单个市场各交易对资金流向",
+   "params": [
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "market slug"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/ticker",
+   "summary": "单交易对实时行情",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug，如 binance",
+     "example": "binance"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/tickers",
+   "summary": "单个市场全部交易对行情",
+   "params": [
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "market slug"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/trades",
+   "summary": "最新成交数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型，默认 spot"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 100，上限 500"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/market/trends",
+   "summary": "单个交易对的价格趋势序列",
+   "params": [
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "market slug，如 binance"
+    },
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "交易对 key（小写），如 btcusdt —— 注意这里是交易对 symbol 不是币种 slug，传 bitcoin 这类币种 slug 会得到空价格序列",
+     "example": "btcusdt"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/markets",
+   "summary": "全部市场列表",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/markets/hot-coins",
+   "summary": "热门 tab 下的币种列表",
+   "params": [
+    {
+     "name": "tab_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "热门 tab 的 key"
+    },
+    {
+     "name": "currency",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价货币（如 cny / usd）"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/markets/tickers",
+   "summary": "多市场行情快照",
+   "params": [
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "逗号分隔多个 market slug，一次最多 100 个"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/pairs",
+   "summary": "交易对列表",
+   "params": [
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "市场 slug"
+    },
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "AiCoin 币种 slug 过滤（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug 过滤，如 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "contract_type",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "spot",
+      "perpetual"
+     ],
+     "desc": "合约类型"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数"
+    },
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，从 0 开始"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/bitget/coins",
+   "summary": "Bitget 市值排名币种列表",
+   "params": [
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "分页偏移量"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，上限 100"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/bitget/coins/profile",
+   "summary": "Bitget 单币种简介",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/bitget/coins/quote",
+   "summary": "Bitget 单币种行情",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/bitget/newsflashes",
+   "summary": "Bitget 快讯列表",
+   "params": [
+    {
+     "name": "offset",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "分页偏移量"
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，上限 20"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/purise/markets",
+   "summary": "Purise 支持的平台列表",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/purise/orderbook",
+   "summary": "Purise 单交易对盘口深度",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/purise/pairs/config",
+   "summary": "Purise 单交易对配置（价格/数量精度）",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "quote_coin_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "计价币 slug，默认 usdt",
+     "example": "usdt"
+    },
+    {
+     "name": "market",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "市场 slug"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/purise/rates",
+   "summary": "Purise 货币兑港币汇率",
+   "params": [
+    {
+     "name": "currency",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "货币代码，省略默认 usd"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/providers/purise/tickers",
+   "summary": "Purise 某平台全部交易对实时行情",
+   "params": [
+    {
+     "name": "market",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "Purise 平台 slug，目前仅支持 oslsg"
+    },
+    {
+     "name": "fields",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "逗号分隔字段白名单，省略返回全部字段"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/sdk/kline/auth-check",
+   "summary": "K 线 SDK 鉴权校验",
+   "params": [
+    {
+     "name": "app",
+     "in": "body",
+     "required": true,
+     "type": "string",
+     "desc": "SDK 应用名"
+    },
+    {
+     "name": "client_id",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "客户端 ID"
+    },
+    {
+     "name": "client",
+     "in": "body",
+     "required": false,
+     "type": "string",
+     "desc": "客户端标识"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/signals/alert-config",
+   "summary": "预警配置",
+   "params": [
+    {
+     "name": "locale",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "cn",
+      "en"
+     ],
+     "desc": "语言，默认 cn"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/signals/alert-sets",
+   "summary": "预警列表（当前生效的全部预警）",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/signals/alerts",
+   "summary": "预警信号数据列表",
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/signals/changes",
+   "summary": "异动信号列表",
+   "params": [
+    {
+     "name": "type",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "异动类型过滤，0 或省略返回全部"
+    },
+    {
+     "name": "currency",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "enum": [
+      "usd",
+      "cny"
+     ],
+     "desc": "计价货币，默认 usd"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/signals/strategies",
+   "summary": "指标胜率信号",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "AiCoin 币种 slug（小写，仅字母数字），如 bitcoin",
+     "example": "bitcoin"
+    },
+    {
+     "name": "signal_key",
+     "in": "query",
+     "required": false,
+     "type": "string",
+     "desc": "指标 signal key，省略返回空列表"
+    },
+    {
+     "name": "end_time",
+     "in": "query",
+     "required": false,
+     "type": "int",
+     "desc": "起始时间（Unix 秒），超过 6 个月会被截断"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/treasuries/entities",
+   "summary": "币种国库实体列表",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "body",
+     "required": true,
+     "type": "string",
+     "desc": "币种标识，解析为交易符号",
+     "example": "bitcoin"
+    },
+    {
+     "name": "limit",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 20，最大 100"
+    },
+    {
+     "name": "offset",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，从 0 开始"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/treasuries/entities/latest",
+   "summary": "最新币种国库实体数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "币种标识，解析为交易符号",
+     "example": "bitcoin"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/treasuries/history",
+   "summary": "币种国库历史记录",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "body",
+     "required": true,
+     "type": "string",
+     "desc": "币种标识，解析为交易符号",
+     "example": "bitcoin"
+    },
+    {
+     "name": "limit",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "返回条数，默认 20，最大 100"
+    },
+    {
+     "name": "offset",
+     "in": "body",
+     "required": false,
+     "type": "int",
+     "desc": "结果偏移量，从 0 开始"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "POST",
+   "path": "/api/v3/treasuries/history/accumulated",
+   "summary": "币种国库累计历史",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "body",
+     "required": true,
+     "type": "string",
+     "desc": "币种标识，须解析为 BTC 或 ETH",
+     "example": "bitcoin"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/treasuries/history/latest",
+   "summary": "最新币种国库历史数据",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "币种标识，解析为交易符号",
+     "example": "bitcoin"
+    }
+   ],
+   "auth": true
+  },
+  {
+   "method": "GET",
+   "path": "/api/v3/treasuries/summary",
+   "summary": "币种国库数据汇总",
+   "params": [
+    {
+     "name": "coin_key",
+     "in": "query",
+     "required": true,
+     "type": "string",
+     "desc": "币种标识，解析为交易符号",
+     "example": "bitcoin"
+    }
+   ],
+   "auth": true
+  }
+ ]
+}

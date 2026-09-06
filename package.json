@@ -1,13 +1,16 @@
 {
   "name": "cryptoskill",
   "version": "1.0.0",
-  "description": "<div align=\"center\">",
-  "main": "index.js",
+  "description": "Crypto AI skill registry, source updater, and static catalog",
+  "private": true,
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test",
+    "test:sync": "python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "registry:build": "python3 scripts/refresh-registry.py",
+    "registry:update": "bash scripts/run-bot.sh"
   },
   "repository": {
     "type": "git",
@@ -15,13 +18,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0-only",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/jiayaoqijia/cryptoskill/issues"
   },
   "homepage": "https://github.com/jiayaoqijia/cryptoskill#readme",
   "devDependencies": {
-    "@playwright/test": "^1.58.2"
+    "@playwright/test": "^1.63.0"
   }
 }

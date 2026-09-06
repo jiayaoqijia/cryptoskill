@@ -31,7 +31,7 @@
 set -euo pipefail
 
 # Ensure ETH_PRIVATE_KEY is always cleared on exit (normal, error, or signal)
-trap 'unset ETH_PRIVATE_KEY 2>/dev/null' EXIT
+trap 'unset ETH_PRIVATE_KEY PRIVATE_KEY 2>/dev/null' EXIT INT TERM
 
 # -----------------------------------------------------------------------------
 # Configuration
@@ -282,6 +282,10 @@ main() {
   # H-5: Validate slippage_bps and keystore_name
   if [[ -n "$slippage_bps" ]] && ! [[ "$slippage_bps" =~ ^[0-9]+$ ]]; then
     json_output false "Swap failed (pre-flight): Invalid slippage '$slippage_bps'. Must be a non-negative integer (basis points). No transaction was submitted."
+    exit 1
+  fi
+  if (( slippage_bps > 2000 )); then
+    json_output false "Swap failed (pre-flight): Slippage ${slippage_bps} bps exceeds maximum of 2000 bps (20%). No transaction was submitted."
     exit 1
   fi
   if [[ -n "$keystore_name" ]] && ! [[ "$keystore_name" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
@@ -622,6 +626,34 @@ main() {
     log "WARNING: No expected chain ID configured for '$chain' — skipping chain ID verification"
   fi
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # Step 5b: Pre-broadcast simulation via cast call
+  # ─────────────────────────────────────────────────────────────────────────
+
+  log "Simulating transaction (cast call)..."
+
+  local sim_output
+  local sim_exit=0
+
+  sim_output=$(cast call \
+    --rpc-url "$rpc_url" \
+    --from "$sender" \
+    --value "$value" \
+    --gas-limit "$gas" \
+    "$to" \
+    "$data" 2>&1) || sim_exit=$?
+
+  if [[ $sim_exit -ne 0 ]]; then
+    # Sanitize simulation error output (same pattern as tx error sanitization)
+    local safe_sim_output
+    safe_sim_output=$(echo "$sim_output" | sed -E \
+      -e 's/0x[a-fA-F0-9]{64}/[REDACTED_HEX]/g')
+    json_output false "Swap failed (pre-flight simulation): Transaction would revert on-chain. No transaction was submitted. Revert output: $safe_sim_output"
+    exit 1
+  fi
+
+  log "Simulation passed"
+
   log "Executing transaction..."
 
   local tx_output
@@ -633,6 +665,7 @@ main() {
     "${wallet_flags[@]}" \
     --gas-limit "$gas" \
     --value "$value" \
+    --timeout 120 \
     --json \
     "$to" \
     "$data" 2>&1) || exit_code=$?
@@ -650,6 +683,7 @@ main() {
         "${wallet_flags[@]}" \
         --gas-limit "$gas" \
         --value "$value" \
+        --timeout 120 \
         --json \
         "$to" \
         "$data" 2>&1) || exit_code=$?

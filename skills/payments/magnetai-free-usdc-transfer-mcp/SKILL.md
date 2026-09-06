@@ -3,12 +3,6 @@ name: magnetai-free-usdc-transfer-mcp
 description: "An MCP server implementation enabling free USDC transfers on **[Base](https://base.org)** with **[Coinbase CDP](https://docs.cdp.coinbase.com/)** MPC Wallet integration."
 ---
 
-# magnetai-free-usdc-transfer-mcp
-
-_Source: [github.com/magnetai/mcp-free-usdc-transfer](https://github.com/magnetai/mcp-free-usdc-transfer). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Free USDC Transfer MCP Server
 
 An MCP server implementation enabling free USDC transfers on **[Base](https://base.org)** with **[Coinbase CDP](https://docs.cdp.coinbase.com/)** MPC Wallet integration.

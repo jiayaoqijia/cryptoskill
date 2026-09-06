@@ -1,0 +1,26 @@
+{
+  "name": "fortune-skill",
+  "version": "1.0.0",
+  "description": "QLWY Fortune Casting skill — on-chain I Ching divination with VRF randomness and AI interpretation",
+  "license": "MIT",
+  "keywords": [
+    "fortune",
+    "i-ching",
+    "divination",
+    "agent-skill",
+    "VRF",
+    "hexagram",
+    "blockchain",
+    "BSC"
+  ],
+  "files": [
+    "SKILL.md",
+    "references/",
+    "examples/"
+  ],
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "viem": "^2.0.0"
+  }
+}
+

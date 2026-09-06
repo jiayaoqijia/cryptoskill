@@ -1,0 +1,6 @@
+interface:
+  display_name: "GitHub Issue Publisher"
+  short_description: "Publish a GitHub issue from a markdown file"
+  default_prompt: "Use $gh-issue-publish to publish a GitHub issue from a markdown file in .ai/gh_issues/ by running the publisher script and relaying the result."
+policy:
+  allow_implicit_invocation: false

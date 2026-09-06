@@ -91,24 +91,6 @@ okx --profile live earn dcd products --baseCcy BTC --quoteCcy USDT --optType C -
 
 ---
 
-## earn dcd quote
-
-Request a real-time quote (TTL 30s). Use `earn dcd buy --quoteId <id>` to execute, or prefer `quote-and-buy` to do both in one step.
-
-```bash
-okx --profile live earn dcd quote --productId BTC-USDT-260327-72000-C --sz 100 --notionalCcy USDT
-```
-
-| Parameter | Required | Description |
-|---|---|---|
-| `--productId` | Yes | From `earn dcd products` |
-| `--sz` | Yes | Notional size |
-| `--notionalCcy` | Yes | baseCcy or quoteCcy of the product |
-
-Output fields: `quoteId` · `annualizedYield` · `absYield` · `notionalSz` · `notionalCcy` · `idxPx` · `validUntil`
-
----
-
 ## earn dcd quote-and-buy
 
 ```bash
@@ -121,6 +103,23 @@ okx --profile live earn dcd quote-and-buy --productId BTC-USDT-260327-72000-C --
 | `--sz` | Yes | Notional size |
 | `--notionalCcy` | Yes | baseCcy or quoteCcy of the product |
 | `--clOrdId` | No | Client order ID for idempotency |
+| `--minAnnualizedYield` | No | Minimum yield in percent (e.g. 18 = 18%). Order rejected if quote yield is below this. |
+
+**`--json` output structure:**
+
+```json
+{
+  "quote": { "quoteId": "...", "annualizedYield": "0.185", "absYield": "0.00356", "notionalSz": "0.1", "notionalCcy": "BTC" },
+  "order": { "ordId": "...", "state": "initial" },
+  "state": { "ordId": "...", "state": "initial", "productId": "...", "strike": "72000", "notionalSz": "0.1", "settleTime": "..." }
+}
+```
+
+- `quote` — locked yield at time of execution
+- `order` — minimal trade confirmation from the placement API (ordId + state only)
+- `state` — full order detail from order-status API (adds productId, strike, settleTime, etc.)
+
+> `order` and `state` both contain `ordId` and `state`; `state` is richer and subsumes `order`. Use `state` for display. `order` is included only as a raw trade confirmation in case the follow-up status query fails.
 
 ---
 
@@ -178,19 +177,28 @@ After list: prompt user they can ask to view details or request early redemption
 
 ---
 
-## earn dcd redeem-quote + redeem-execute
+## earn dcd redeem-execute
 
 ```bash
-okx --profile live earn dcd redeem-quote --ordId <id>    # Phase 1: preview
-okx --profile live earn dcd redeem-execute --ordId <id>  # Phase 2: execute
+okx --profile live earn dcd redeem-execute --ordId <id>
 ```
 
-`redeem-quote` output: `redeemSz` · `redeemCcy` · `termRate` · `validUntil`
+Two-step flow (handled internally):
+1. Fetches a fresh redemption quote
+2. Immediately executes — no need to manage `quoteId` manually
 
-- `termRate` > 0 → gain; < 0 → loss
-- `validUntil` (from `redeem-quote` response) → display as estimated settlement time; note that `redeem-execute` re-fetches a fresh quote internally so the actual settlement time comes from the `redeem-execute` response or subsequent order status query
-- `redeem-execute` internally re-fetches a fresh quote — do NOT reuse `quoteId` from Phase 1
+Output fields: `redeemSz` · `redeemCcy` · `termRate` (positive = gain, negative = loss)
+
+- `redeem-execute` always fetches a fresh quote internally — do NOT pass a `quoteId`
 - Check early redemption support: if `redeemStartTime` / `redeemEndTime` are empty → not supported
+
+**Error: "Redemption request isn't within the redemption window."**
+
+When this error occurs, the order exists but the current time is outside the allowed redemption window. Do NOT just surface the raw error. Instead:
+
+1. Run `okx --profile live earn dcd orders --ordId <id> --json` to fetch the order's `redeemStartTime` and `redeemEndTime`
+2. Tell the user when the window opens: "Early redemption for this order is available from `{redeemStartTime}` to `{redeemEndTime}`. Please try again after that time."
+3. If `redeemStartTime` is empty, the product does not support early redemption at all — inform the user accordingly.
 
 ---
 
@@ -200,14 +208,10 @@ okx --profile live earn dcd redeem-execute --ordId <id>  # Phase 2: execute
 |---|---|
 | `dcd_get_currency_pairs` | `earn dcd pairs` |
 | `dcd_get_products` | `earn dcd products` |
-| `dcd_request_quote` | `earn dcd quote` |
-| `dcd_execute_quote` | `earn dcd buy` |
-| — | `earn dcd quote-and-buy` (AI preferred) |
+| `dcd_subscribe` | `earn dcd quote-and-buy` |
+| `dcd_redeem` | `earn dcd redeem-execute` |
 | `dcd_get_order_state` | `earn dcd order` (post-buy state check only) |
 | `dcd_get_orders` | `earn dcd orders` |
-| `dcd_request_redeem_quote` | `earn dcd redeem-quote` |
-| — | `earn dcd redeem-execute` (AI preferred) |
-| `dcd_execute_redeem` | `earn dcd redeem` (low-level, existing quoteId) |
 
 ---
 
@@ -216,7 +220,7 @@ okx --profile live earn dcd redeem-execute --ordId <id>  # Phase 2: execute
 | Error code | Meaning | Retry |
 |---|---|---|
 | **504** | **Gateway timeout — server may have executed the request** | **NEVER retry WRITE ops. Query `earn dcd orders` first to verify.** |
-| 50001 | DCD service down | Retry in a few minutes |
+| 50001 | Service temporarily unavailable | Retry in a few minutes |
 | 50026 | System error | Retry in a few minutes |
 | 50030 | Account not authorized for DCD | Guide user to complete verification in OKX app |
 | 50038 | DCD API feature disabled | Contact OKX support |

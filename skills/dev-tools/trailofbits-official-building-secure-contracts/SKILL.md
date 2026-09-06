@@ -3,12 +3,6 @@ name: trailofbits-official-building-secure-contracts
 description: "Brought to you by [Trail of Bits](https://www.trailofbits.com/), this repository offers guidelines and best practices for developing secure smart contracts. Contributions are welcome, you can contribute by following our [contributing guidel"
 ---
 
-# trailofbits-official-building-secure-contracts
-
-_Source: [github.com/crytic/building-secure-contracts](https://github.com/crytic/building-secure-contracts) (Trail of Bits' `crytic` security-research org). The body below is the upstream README.md captured at registration time._
-
----
-
 # Building Secure Smart Contracts
 
 ![](https://github.com/crytic/building-secure-contracts/actions/workflows/echidna.yml/badge.svg) ![](https://github.com/crytic/building-secure-contracts/actions/workflows/medusa.yml/badge.svg)

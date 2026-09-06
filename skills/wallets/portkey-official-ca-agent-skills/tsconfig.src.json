@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "index.ts",
+    "src/**/*.ts",
+    "lib/**/*.ts",
+    "lib/**/*.d.ts",
+    "types/**/*.d.ts",
+    "bin/**/*.ts",
+    "cli-helpers.ts",
+    "portkey_*_skill.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "__tests__"
+  ]
+}

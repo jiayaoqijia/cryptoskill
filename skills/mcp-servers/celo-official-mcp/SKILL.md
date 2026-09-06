@@ -3,12 +3,6 @@ name: celo-official-mcp
 description: "A Model Context Protocol (MCP) server for interacting with the Celo blockchain. This server provides comprehensive access to Celo blockchain data, token operations, NFT management, smart contract interactions, transaction handling, and governance operations."
 ---
 
-# celo-official-mcp
-
-_Source: [github.com/celo-org/celo-mcp](https://github.com/celo-org/celo-mcp). The body below is the upstream README.md captured at the time of registration._
-
----
-
 # Celo MCP Server
 
 A Model Context Protocol (MCP) server for interacting with the Celo blockchain. This server provides comprehensive access to Celo blockchain data, token operations, NFT management, smart contract interactions, transaction handling, and governance operations.
@@ -68,6 +62,46 @@ For Claude Desktop, add this configuration to your MCP settings file (`~/Library
   }
 }
 ```
+
+### Connect remotely (Streamable HTTP)
+
+The server can also run as a remote MCP endpoint over Streamable HTTP, so clients
+connect with a single URL — no local Python install. The stdio setup above is
+unchanged; this is an additional transport.
+
+Run it in HTTP mode:
+
+```bash
+celo-mcp-server --transport http --port 3000
+# or via env:
+MCP_TRANSPORT=http PORT=3000 celo-mcp-server
+```
+
+Then point any remote-capable MCP client at the URL:
+
+```json
+{
+  "mcpServers": {
+    "celo": { "url": "https://<your-host>/mcp" }
+  }
+}
+```
+
+Configuration (environment variables):
+
+| Var | Purpose | Default |
+|-----|---------|---------|
+| `MCP_TRANSPORT` | `stdio` or `http` | `stdio` |
+| `HOST` / `PORT` | HTTP bind host / port | `127.0.0.1` / `3000` |
+| `MCP_ALLOWED_HOSTS` | Hostnames accepted by the SDK's DNS-rebinding check, comma-separated. Set to your public hostname(s), or `*` to disable the check | localhost only |
+| `MCP_CORS_ORIGINS` | Comma-separated allowed origins (or `*`) | `*` |
+| `MCP_RATE_LIMIT` / `MCP_RATE_WINDOW` | Requests per client per window (seconds); `/health` is exempt | `60` / `60` |
+| `MCP_TRUST_PROXY` | Number of `X-Forwarded-For` hops your infrastructure appends, so the rate limiter keys on the client rather than the proxy address. `1` for a single reverse proxy, `2` behind a Google external load balancer. Counted from the right — see [deployment](docs/DEPLOYMENT.md) | unset |
+| `MCP_AUTH_TOKEN` | If set, requires `Authorization: Bearer <token>` on `/mcp` | unset (open) |
+| `CELO_RPC_URL` | Celo RPC endpoint | (existing default) |
+
+`GET /health` returns `200` for hosting health checks. See
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for container/hosting instructions.
 
 ## Usage
 

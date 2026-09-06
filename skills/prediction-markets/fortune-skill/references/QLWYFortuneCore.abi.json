@@ -1,0 +1,120 @@
+[
+  {
+    "inputs": [{ "name": "opts", "type": "bytes" }],
+    "name": "requestCast",
+    "outputs": [
+      { "name": "castId", "type": "uint256" },
+      { "name": "requestId", "type": "uint256" }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "name": "castId", "type": "uint256" }],
+    "name": "mintFortuneNFT",
+    "outputs": [{ "name": "tokenId", "type": "uint256" }],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "castFee",
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "name": "rarity", "type": "uint8" }],
+    "name": "mintFeeForRarity",
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jackpotBalanceOf",
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "name": "castId", "type": "uint256" }],
+    "name": "casts",
+    "outputs": [
+      { "name": "user", "type": "address" },
+      { "name": "ts", "type": "uint40" },
+      { "name": "minted", "type": "bool" },
+      {
+        "components": [
+          { "name": "lines", "type": "uint8[6]" },
+          { "name": "id", "type": "uint16" }
+        ],
+        "name": "hx",
+        "type": "tuple"
+      },
+      { "name": "rarity", "type": "uint8" },
+      { "name": "ready", "type": "bool" },
+      { "name": "luck", "type": "uint8" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "name": "tokenView",
+    "outputs": [
+      {
+        "components": [
+          { "name": "rarity", "type": "uint8" },
+          { "name": "luck", "type": "uint8" },
+          { "name": "lines", "type": "uint8[6]" },
+          { "name": "id", "type": "uint16" }
+        ],
+        "name": "view_",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "name": "tokenRarityOf",
+    "outputs": [{ "name": "", "type": "uint8" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "castId", "type": "uint256" },
+      { "indexed": true, "name": "user", "type": "address" },
+      { "indexed": false, "name": "requestId", "type": "uint256" }
+    ],
+    "name": "CastRequested",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "castId", "type": "uint256" },
+      { "indexed": false, "name": "hexagramId", "type": "uint16" },
+      { "indexed": false, "name": "rarity", "type": "uint8" },
+      { "indexed": false, "name": "luck", "type": "uint8" }
+    ],
+    "name": "CastFulfilled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "name": "tokenId", "type": "uint256" },
+      { "indexed": true, "name": "castId", "type": "uint256" },
+      { "indexed": true, "name": "owner", "type": "address" },
+      { "indexed": false, "name": "rarity", "type": "uint8" }
+    ],
+    "name": "FortuneMinted",
+    "type": "event"
+  }
+]
+

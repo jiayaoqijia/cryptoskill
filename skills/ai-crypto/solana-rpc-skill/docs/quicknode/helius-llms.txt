@@ -1,0 +1,515 @@
+# Helius
+
+> Helius is a developer platform for Solana.
+
+Helius provides APIs, RPC nodes, and developer tools for building on Solana.
+
+## Agent Signup
+
+AI agents can obtain Helius API keys programmatically via the Helius CLI.
+
+- [Agent Instructions (Markdown)](https://helius.dev/api/agents.md): Step-by-step guide for agents to sign up and get API keys
+- [Agent Instructions (JSON)](https://helius.dev/api/agents.json): Machine-readable structured instructions
+- Install CLI: `npm install -g helius-cli`
+- Cost: 1 USDC (Solana mainnet)
+
+## MCP Server
+
+Helius provides an official MCP (Model Context Protocol) server so AI assistants and agents can query Solana natively. The server is stdio-based and distributed via npm — run it locally with any MCP-compatible client (Claude, Cursor, Windsurf, Codex, Cline, etc.).
+
+- Install: `npx helius-mcp@latest`
+- [Server Card (machine-readable)](https://helius.dev/.well-known/mcp/server-card.json): tool inventory, install metadata, and transport details
+- [MCP Documentation](https://helius.dev/docs/agents/mcp): setup guides, configuration examples, and tool reference
+- Source: [helius-labs/core-ai (helius-mcp)](https://github.com/helius-labs/core-ai/tree/main/helius-mcp)
+
+**Capabilities:** Solana RPC, Digital Asset Standard (DAS), parsed transactions, wallet intelligence, webhooks, Laserstream, priority fees, staking, and autonomous API key signup via onchain USDC.
+
+**Authentication:** Set `HELIUS_API_KEY` from https://dashboard.helius.dev, or have the agent obtain one programmatically via the `agenticSignup` tool.
+
+**Claude Code plugin:** Helius is verified and listed in [Anthropic's official Claude Code plugin marketplace](https://github.com/anthropics/claude-plugins-official). The plugin bundles the Helius MCP server, the DFlow MCP server, and four expert skills (build, phantom, dflow, svm). Install with `/plugin marketplace add helius-labs/core-ai && /plugin install helius@helius-labs` in Claude Code.
+
+## Documentation
+
+last_updated: 2026-03-31
+---
+
+# Helius Documentation
+
+The leading Solana RPC and infrastructure platform. Fast, reliable APIs for building on Solana.
+
+## Getting Started
+
+1. Sign up at https://dashboard.helius.dev
+2. Get your API key
+3. Start building with any of our APIs below
+
+## Getting Started (Agents)
+
+Programmatically create a Helius account and generate an API key.
+
+Guide: https://www.helius.dev/docs/agents/cli.md
+Full instructions: https://dashboard.helius.dev/agents.md
+
+### Step 1: Install CLI
+
+Programmatically create accounts and get API keys via CLI:
+
+```bash
+npm install -g helius-cli
+```
+
+### Step 2: Generate Keypair
+
+```bash
+helius keygen
+```
+
+Output: Creates keypair at `~/.helius/keypair.json`
+
+Returns: Wallet address to fund
+
+### Step 3: Fund Wallet
+
+Send to the wallet address from Step 2:
+- 1 USDC (token: `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`)
+- ~0.001 SOL
+
+### Step 4: Signup and Get API Key
+
+```bash
+helius signup --json
+```
+
+#### Success Response (exit code 0):
+
+```json
+{
+  "status": "SUCCESS",
+  "wallet": "YourWalletAddress...",
+  "projectId": "project-uuid",
+  "projectName": "Project Name",
+  "apiKey": "your-api-key-here",
+  "endpoints": {
+    "mainnet": "https://mainnet.helius-rpc.com/?api-key=your-api-key-here",
+    "devnet": "https://devnet.helius-rpc.com/?api-key=your-api-key-here"
+  },
+  "credits": 1000000,
+  "transaction": "transaction-signature"
+}
+```
+
+Extract API key: `response.apiKey`
+
+Extract RPC URL: `response.endpoints.mainnet` or `response.endpoints.devnet`
+
+## Quick Reference
+
+- Mainnet RPC: https://mainnet.helius-rpc.com/?api-key=YOUR_API_KEY
+- Mainnet RPC (Gatekeeper Beta): https://beta.helius-rpc.com/?api-key=YOUR_API_KEY
+- Devnet RPC: https://devnet.helius-rpc.com/?api-key=YOUR_API_KEY
+- Mainnet WSS: wss://mainnet.helius-rpc.com/?api-key=YOUR_API_KEY (Standard and Enhanced WebSockets)
+- Mainnet WSS (Gatekeeper Beta): wss://beta.helius-rpc.com/?api-key=YOUR_API_KEY (Standard and Enhanced WebSockets)
+- Devnet WSS: wss://devnet.helius-rpc.com/?api-key=YOUR_API_KEY (Standard and Enhanced WebSockets)
+- Auth: API key via query parameter (?api-key=YOUR_API_KEY)
+- Billing: https://www.helius.dev/docs/billing/llms.txt
+- Dashboard: https://dashboard.helius.dev
+- Status: https://helius.statuspage.io
+
+## API Documentation
+
+### Solana RPC
+Standard Solana JSON-RPC methods with enhanced performance.
+https://www.helius.dev/docs/api-reference/rpc/http/llms.txt
+
+### Solana WebSockets (Standard)
+Solana WebSocket subscriptions for streaming real-time data. Powered by LaserStream and available on all plans.
+https://www.helius.dev/docs/api-reference/rpc/websocket/llms.txt
+
+### Helius Enhanced WebSockets
+Powered by LaserStream with advanced filtering and automatic transaction parsing. Available on Developer, Business, and Professional plans.
+https://www.helius.dev/docs/enhanced-websockets/llms.txt
+
+### Solana DAS API
+Unified interface for all Solana digital assets: NFTs, compressed NFTs, fungible tokens.
+https://www.helius.dev/docs/api-reference/das/llms.txt
+
+### Solana Enhanced Transactions API
+Parsed, human-readable transaction data with automatic labeling.
+https://www.helius.dev/docs/api-reference/enhanced-transactions/llms.txt
+
+### Helius LaserStream gRPC
+Lowest latency data streaming via gRPC.
+https://www.helius.dev/docs/api-reference/laserstream/grpc/llms.txt
+
+### Helius Sender
+Lowest latency transaction sending service.
+https://www.helius.dev/docs/api-reference/sender/llms.txt
+
+### Helius Shred Delivery
+Specialized delivery of raw Solana shreds via UDP.
+https://www.helius.dev/docs/shred-delivery/llms.txt
+
+### Helius Priority Fee API
+Optimal priority fee estimation for transaction landing.
+https://www.helius.dev/docs/api-reference/priority-fee/llms.txt
+
+### Dedicated Nodes
+Private Solana nodes with no rate limits, no credits, and full Yellowstone gRPC support.
+https://www.helius.dev/docs/dedicated-nodes/llms.txt
+
+### Solana Webhooks
+Real-time HTTP POST notifications for blockchain events.
+https://www.helius.dev/docs/api-reference/webhooks/llms.txt
+
+### Helius Wallet API
+Query Solana wallet balances, transaction history, transfers, identities, and funding sources with structured REST endpoints.
+https://www.helius.dev/docs/api-reference/wallet-api/llms.txt
+
+### ZK Compression API
+Compressed account and token operations.
+https://www.helius.dev/docs/api-reference/zk-compression/llms.txt
+
+### Deprecated APIs
+
+| Deprecated | Use Instead | Reason |
+|------------------|-------------|--------|
+| `mintCompressedNft` | Use Metaplex Bubblegum SDK directly | Helius mint API is deprecated |
+| `queryMetadataV1` | `getAsset` or `searchAssets` (DAS API) | Token Metadata API is deprecated |
+
+## Common Use Cases
+
+| I'm building... | Use these Helius products |
+|-----------------|---------------------------|
+| Trading bot | Helius Sender (fast tx submission) + Priority Fee API + LaserStream (real-time prices) |
+| Wallet app | DAS API (getAssetsByOwner) + getTransactionsForAddress (complete history with token accounts) or Wallet API for REST endpoints|
+| NFT marketplace | DAS API (searchAssets, getAssetsByGroup) + Webhooks (track sales/listings) |
+| Token launcher | Helius Sender + Priority Fee API + Webhooks (monitor new token) |
+| Analytics dashboard** | Enhanced Transactions API + getTransactionsForAddress (historical data) |
+| DeFi protocol | LaserStream (real-time account updates) + Helius Sender + Priority Fee API |
+| Sniper/MEV bot | LaserStream gRPC (lowest latency) + Helius Sender (staked connections) |
+| Portfolio tracker | DAS API (getAssetsByOwner with showFungible) + Enhanced Transactions |
+| Airdrop tool | AirShip (95% cheaper with ZK compression) |
+| Jupiter/swap integration | Helius RPC + Helius Sender for transaction submission |
+
+## Which API should I use?
+
+| Need | API |
+|------|-----|
+| Get wallet NFTs and tokens | DAS API |
+| Parse transaction history | Enhanced Transactions |
+| Real-time event notifications (HTTP) | Webhooks |
+| Real-time streaming (WebSocket) | WebSockets |
+| Lowest latency streaming | LaserStream gRPC |
+| Standard Solana RPC calls | RPC |
+| Estimate priority fees | Priority Fee API |
+| Work with compressed accounts | ZK Compression |
+| Simple REST endpoints for querying Solana wallet data | Wallet API |
+
+## Don't Confuse These
+
+| If you want to... | Use this | NOT this | Why |
+|-------------------|----------|----------|-----|
+| Get wallet's NFTs and tokens | `getAssetsByOwner` (DAS API) | `getTokenAccountsByOwner` | `getTokenAccountsByOwner` returns raw accounts, not token metadata |
+| Get complete transaction history | `getTransactionsForAddress` | `getSignaturesForAddress` | `getTransactionsForAddress` includes token accounts and `getSignaturesForAddress` does not |
+| Get transaction history for cNFTs | `getSignaturesForAsset` (DAS API) | `getSignaturesForAddress` | `getSignaturesForAddress` doesn't work for compressed NFTs |
+| Stream real-time data (new projects) | LaserStream gRPC | Yellowstone gRPC on dedicated nodes | LaserStream is simpler, provides 24-hour replay, supports auto-reconnects | 
+| Send transactions reliably | Helius Sender (dual routes to validators + Jito) | Standard `sendTransaction` | sendTransaction uses a single path and has lower landing rates |
+| Get priority fee estimates | `getPriorityFeeEstimate` | `getRecentPrioritizationFees` | `getRecentPrioritizationFees` requires manual calculation |
+| Search NFTs by collection | DAS API `getAssetsByGroup` or `searchAssets` | `getProgramAccounts` | `getProgramAccounts` is expensive, slow, and data could be unindexed |
+| Get real-time data | Enhanced WebSockets or LaserStream gRPC | Polling for real-time data | Polling is inefficient, higher latency, uses credits |
+
+## Key Concepts
+
+| Term | Definition |
+|------|------------|
+| DAS (Digital Asset Standard) | Standardized API for querying NFTs, tokens, and compressed assets with a unified interface |
+| cNFT (Compressed NFT) | NFTs stored in merkle trees instead of individual accounts; 1000x cheaper to mint |
+| ZK Compression | Technology to reduce on-chain storage costs by 98% using zero-knowledge proofs |
+| Helius Sender | Ultra low latency transaction submission service routing through staked connections (via Solana's largest validator) and Jito simultaneously |
+| LaserStream | Helius's managed gRPC streaming service with historical replay and auto-reconnection |
+| Yellowstone gRPC | Open-source Solana Geyser plugin for streaming; available on Helius dedicated nodes |
+| Priority Fee | Additional fee (in microlamports) to prioritize transaction inclusion in blocks |
+| Staked Connections | Direct connections to validators through stake-weighted routing for faster and more reliable transaction landing |
+| Associated Token Account (ATA) | The standard token account address derived from a wallet + mint; holds tokens on behalf of wallet |
+| Commitment Level | Transaction finality: `processed` (fastest, may revert), `confirmed` (basically final), `finalized` (guaranteed) |
+
+## Guides
+- Quickstart: https://www.helius.dev/docs/quickstart.md
+- Getting Data: https://www.helius.dev/docs/getting-data.md
+- Data Streaming: https://www.helius.dev/docs/data-streaming.md
+- Data Streaming quickstart: https://www.helius.dev/docs/data-streaming/quickstart.md
+- Authentication: https://www.helius.dev/docs/api-reference/authentication.md
+- Endpoints: https://www.helius.dev/docs/api-reference/endpoints.md
+- Autoscaling: https://www.helius.dev/docs/billing/autoscaling.md
+- Pay with Crypto: https://www.helius.dev/docs/billing/pay-with-crypto.md
+
+## SDKs
+Official SDKs that wrap all Helius APIs with type-safe methods and built-in error handling.
+
+- Node.js: https://github.com/helius-labs/helius-sdk
+- Rust: https://github.com/helius-labs/helius-rust-sdk
+- SDK Overview: https://www.helius.dev/docs/sdks.md
+- Rust SDK Docs: https://docs.rs/helius/latest/helius/
+
+## Developer Tools
+
+- Helius MCP: https://www.helius.dev/docs/agents/mcp.md
+- Orb Explorer: https://orbmarkets.io
+- AirShip: https://www.helius.dev/docs/airship/getting-started.md
+
+## Agents
+AI agent documentation, including programmatic signup, API guidance, MCP skills, and SDK usage.
+- Agents Index: https://www.helius.dev/docs/agents/llms.txt
+- Agents Overview: https://www.helius.dev/docs/agents/overview.md
+- Helius CLI: https://www.helius.dev/docs/agents/cli.md
+- Helius MCP: https://www.helius.dev/docs/agents/mcp.md
+- Build Skill: https://www.helius.dev/docs/agents/skills/build.md
+- Phantom Skill: https://www.helius.dev/docs/agents/skills/phantom.md
+- DFlow Trading Skill: https://www.helius.dev/docs/agents/skills/dflow.md
+- SVM Skill: https://www.helius.dev/docs/agents/skills/svm.md
+- Claude Code Plugin: https://www.helius.dev/docs/agents/claude-code-plugin.md
+- TypeScript SDK for Agents: https://www.helius.dev/docs/agents/typescript-sdk.md
+- Rust SDK for Agents: https://www.helius.dev/docs/agents/rust-sdk.md
+
+## Resources
+- Dashboard: https://dashboard.helius.dev
+- Status: https://helius.statuspage.io
+- Discord: https://discord.com/invite/6GXdee3gBj
+- Support: https://dashboard.helius.dev/support
+- FAQs: https://www.helius.dev/docs/faqs.md
+- Error Codes: https://www.helius.dev/docs/faqs/error-codes.md
+
+
+## Pages
+
+- [Preprocessed Transactions](https://www.helius.dev/preprocessed-transactions.md): Receive Solana transactions up to 8ms earlier with preprocessed streams. Delivered at the shred-decoding stage for ultra-low-latency trading, MEV, and real-time apps.
+- [MEV Disclosure](https://www.helius.dev/mev-disclosure.md): Page content
+- [Helius for Agents](https://www.helius.dev/agents.md): The complete toolkit for agents building on Solana — Helius Claude Code Plugin, MCP, Skills, CLI, and optimized SDKs.
+- [Solana Account Indexing](https://www.helius.dev/account-indexing.md): Instantly get data for any account on Solana with our low-latency RPCs, filters, cursor-based pagination, and incremental update support.
+- [Historical Solana Data APIs for Indexing and Backfills](https://www.helius.dev/historical-data.md): Build indexes up to 10x faster and eliminate complicated backfill workflows with custom archival Solana RPC methods and streaming tools.
+- [Staked Connections](https://www.helius.dev/staked-connections.md): Guarantee Solana transactions land on-chain by sending them through staked endpoints. Included with all paid plans by default.
+- [Solana Infrastructure for Exchanges](https://www.helius.dev/exchanges.md): Build the most performant exchange for trading Solana tokens. Get real-time token data, transaction landing services, earn SOL rebates.
+- [Solana Infrastructure for Traders and Market Makers](https://www.helius.dev/trading.md): Build the most performant trading stack for Solana with real-time data streams, raw shred delivery, transaction landing services, and RPCs.
+- [Solana Infrastructure for Traders and Market Makers](https://www.helius.dev/trading.md): Build the most performant trading stack for Solana with real-time data streams, raw shred delivery, transaction landing services, and RPCs.
+- [Solana Infrastructure for Traders and Market Makers](https://www.helius.dev/trading.md): Build the most performant trading stack for Solana with real-time data streams, raw shred delivery, transaction landing services, and RPCs.
+- [Solana Infrastructure for Traders and Market Makers](https://www.helius.dev/trading.md): Build the most performant trading stack for Solana with real-time data streams, raw shred delivery, transaction landing services, and RPCs.
+- [Shreds](https://www.helius.dev/shreds.md): Turn milliseconds into PnL. Get the earliest possible access to Solana’s raw, unprocessed transaction data with Helius Shred Delivery.
+- [Solana Breakpoint 2025 Giveaway — Official Rules](https://www.helius.dev/solana-breakpoint-2025-giveaway-official-rules.md): No purchase necessary. Open to everyone 18+ years and older. Ends Thursday, September 18th, 2025 at 11:59 pm UTC. Odds vary. Apply today.
+- [Sender](https://www.helius.dev/sender.md): Simultaneously send Solana transactions via staked connections and Jito to reliably land transactions on-chain. 7 global endpoints. 0 credits. Built for speed.
+- [Validator-as-a-Service](https://www.helius.dev/validator-as-a-service.md): Fully managed white label Solana validators. Maximize your rewards by leveraging the experience of Solana's most trusted infrastructure provider.
+- [LaserStream](https://www.helius.dev/laserstream.md): LaserStream is a scalable, low-latency, and fault-tolerant alternative to Yellowstone gRPC and WebSockets with new features such as historical replay.
+- [Careers at Helius](https://www.helius.dev/careers.md): Explore open roles, and join our mission to increase the economic potential of the world's developers.
+- [Solana Staking — Stake with Helius](https://www.helius.dev/stake.md): Stake Solana (SOL) and earn yield. Highest APYs. Connect your wallet. Native staking. Liquid staking (hSOL).  Manage stake accounts. Institutional-grade.
+- [ZK Compression & Photon API](https://www.helius.dev/zk-compression.md): Save up to 160x creating PDA accounts and 5000x creating token accounts without sacrificing L1 performance or security guarantees.
+- [Validator](https://www.helius.dev/validator.md): 0% commission. 100% MEV rewards. Highest APYs in Solana. Learn about our institutional staking options and liquid staking token, hSOL.
+- [Startup Launchpad](https://www.helius.dev/startup-launchpad.md): Accelerate your Startup on Solana with 8 months of free Business tier access, warm intros, and strategic mentorship from Solana's leading operators.
+- [Built with Helius](https://www.helius.dev/built-with-helius.md): Explore the growing list of enterprise companies and startups that trust us with their Solana infrastructure.
+- [Privacy Policy](https://www.helius.dev/privacy-policy.md): Protecting your private information is our priority. Read our Privacy Policy to learn about our data collection and usage.
+- [Terms of Service](https://www.helius.dev/terms.md): Read our Terms of Service. These terms apply to the content and functionality of helius.dev, helius.xyz, and to Helius Products.
+- [Pricing](https://www.helius.dev/pricing.md): Flexible pricing to suit all your Solana development needs: affordable shared plans, dedicated nodes, node fleets, staked connections, and more.
+- [Solana gRPC](https://www.helius.dev/solana-grpc.md): Stream Solana data directly to your backend with the fastest, most efficient Geyser Plugins running on your own dedicated node.
+- [Solana Webhooks & Websockets](https://www.helius.dev/solana-webhooks-websockets.md): Stream real-time Solana events like transactions, sales, and swaps in with our fault-tolerant, low latency Webhooks and WebSockets solutions.
+- [Solana Transaction APIs](https://www.helius.dev/solana-transaction-apis.md): Improve your transaction landing rates using our Priority Fee API, and know exactly what's happening on-chain with parsed transactions.
+- [Solana Token APIs](https://www.helius.dev/solana-token-apis.md): Every token. Every transaction. Instantly available. Trusted by Solana's leading wallets and DeFi applications.
+- [Solana NFT APIs](https://www.helius.dev/solana-nft-apis.md): Build powerful user experiences with our NFT APIs. Easily access metadata and on-chain activity for any Solana NFT.
+- [RPC Nodes](https://www.helius.dev/solana-rpc-nodes.md): Give your customers a flawless user experience with ultra-low latency RPCs and industry-leading transaction landing success rates.
+- [Home](https://www.helius.dev/home.md): Solana RPCs, APIs, gRPC, webhooks, and dedicated infrastructure to build and ship crypto apps, fast. Get started for free in 1 click.
+
+## Use Cases
+
+- [Solana Infra and APIs for Decentralized Finance (DeFi)](https://www.helius.dev/use-case/defi.md): Build the most performant Solana DeFi apps with real-time data streams, transaction landing services, enhanced WebSockets, and RPCs built for scale.
+- [Solana infrastructure for Fintech 3.0](https://www.helius.dev/use-case/fintech.md): Learn how to use blockchain technology to build disruptive, next-gen financial products on Solana.
+- [Integrate and scale your Solana wallet](https://www.helius.dev/use-case/wallets.md): Build the most performant Solana wallet with flexible token and NFT APIs, archival data, real-time data streams, and transaction landing services.
+- [Solana infra purpose-built for exchanges](https://www.helius.dev/use-case/exchanges.md): Build the most performant cryptocurrency exchange for listing, trading, and staking Solana tokens including real-time price data, staked connections, and RPCs.
+- [Trade and make any market with an edge](https://www.helius.dev/use-case/trading.md): Build the most performant Solana trading stack with ultra low-latency real-on-chain data streams, raw shred delivery, transaction landing services, and RPCs.
+
+## Staking
+
+- [Staking Rewards](https://www.helius.dev/staking/rewards.md): Compare Solana validators, LSTs, and stake pools to find the best APY for your SOL
+- [Staking Calculator](https://www.helius.dev/staking/calculator.md): Calculate daily, weekly, monthly, and annual SOL staking rewards
+
+## Blog
+
+- [Constellation: A Proposal For MCP on Solana](https://www.helius.dev/blog/constellation.md): Constellation is Anza's proposal to implement Multiple Concurrent Proposers (MCP) on Solana. Learn how it works, the problems it solves, and open questions.
+- [Helius Joins Solana Developer Platform](https://www.helius.dev/blog/solana-developer-platform.md): Learn how Helius is helping financial institutions and enterprises build applications on Solana.
+- [LaserStream Now Powers All Helius WebSockets](https://www.helius.dev/blog/laserstream-websockets.md): All WebSocket streaming is now powered by LaserStream infrastructure, delivering up to 200ms faster event delivery for Standard Solana WSS methods.
+- [Helius for Agents](https://www.helius.dev/blog/helius-for-agents.md): One-shot anything on Solana with the Helius Claude Code Plugin, MCP Server with 60+ tools, CLI with 95+ commands, skills, and agent-friendly SDKs.
+- [Introducing Gatekeeper: The Helius Edge Gateway](https://www.helius.dev/blog/introducing-gatekeeper.md): Gatekeeper is a unified, low-latency, global edge network that improves response times tens to hundreds of ms faster. Supports RPC, WSS, DAS, and more.
+- [Agave 3.1 Update: All You Need to Know](https://www.helius.dev/blog/agave-v3-1.md): A roundup of the most important features and performance upgrades in the Solana Agave 3.0 validator client release.
+- [Introducing Token Account Filters for gTFA](https://www.helius.dev/blog/solana-token-accounts-history.md): Get the complete transaction history for a Solana wallet’s token accounts with the new tokenAccounts filter for the getTransactionsForAddress RPC method.
+- [What Would Solana Need to Change to Become Quantum Ready?](https://www.helius.dev/blog/solana-post-quantum-cryptography.md): Post-quantum pathways for Solana, examining potential protocol and signature upgrades that could strengthen security.
+- [Top 13 Solana Block Explorers (2026)](https://www.helius.dev/blog/top-solana-block-explorers.md): Discover 13 of the best block explorers on Solana, including Orb, Jito's MEV bundle explorer, and the original explorer maintained by the Solana Foundation. 
+- [What is the Solana Virtual Machine (SVM)?](https://www.helius.dev/blog/solana-virtual-machine.md): Learn how the Solana Virtual Machine (SVM) works: from Rust source compiling through LLVM to sBPF bytecode, to how the SVM executes transactions.
+- [Introducing Orb: Solana's New Block Explorer](https://www.helius.dev/blog/orb-block-explorer.md): Orb is a fast, human-readable Solana block explorer built by Helius on state-of-the-art archival infrastructure. Discover its powerful new features and design.
+- [16 U.S. Solana Spot ETFs: Approvals, Fees, Tickers, S1s](https://www.helius.dev/blog/solana-etfs.md): After months of growing investor excitement, U.S.-listed Solana Spot ETFs are launching marking a major milestone for Solana's presence in traditional markets.
+- [getTransactionsForAddress and up to 10x Faster Archival Data](https://www.helius.dev/blog/introducing-gettransactionsforaddress.md): getTransactionsForAddress is a new Solana RPC method for querying historical data with powerful features, including reverse search, time-based filtering, and pagination.
+- [High-Performance Solana Streaming with LaserStream SDKs ](https://www.helius.dev/blog/laserstream-sdks.md): Learn how the LaserStream SDK improves Solana gRPC data streaming throughput 40x from 30 MB/s to 1.3GB/s.
+- [Agave 3.0 Update:  All You Need to Know](https://www.helius.dev/blog/agave-v3-0.md): A roundup of the most important features and performance upgrades in the Solana Agave 3.0 validator client release.
+- [The Solana Company Selects Helius as SOL Staking Provider](https://www.helius.dev/blog/the-solana-company-selects-helius-as-sol-staking-provider.md): The Solana Company, a Solana Digital Asset Treasury company, backed by Pantera Capital and Summer Capital selects Helius as a non-custodial staking provider.
+- [Introducing: Next-Generation Enhanced WebSockets](https://www.helius.dev/blog/introducing-next-generation-enhanced-websockets.md): Enhanced WebSockets are now powered by the same infra that powers LaserStream, our next-generation gRPC streaming service built for speed and fault-tolerance.
+- [Bitwise Selects Helius as Exclusive SOL Staking Provider](https://www.helius.dev/blog/bitwise-solana-etf.md): Bitwise selects Helius as the exclusive SOL staking provider to run their Bitwise Onchain Solutions validator for the Solana Staking ETF (NYSE: BSOL).
+- [The Rise of Solana Digital Asset Treasury Companies](https://www.helius.dev/blog/solana-digital-asset-treasury-companies.md): Explore Solana’s digital asset treasury firms: who’s raising, how much SOL they hold, and their impact on the ecosystem.
+- [Rockets, Quantum Threats, Zeros and Ones: Dean Little on Forging Solana's Truth](https://www.helius.dev/blog/dean-little.md): An interview exploring Dean's beginnings, cryptographic innovations, thoughts on assembly, and his educational work at Blueshift 
+- [Achieving Zero-Slot Execution with Sender and LaserStream](https://www.helius.dev/blog/zero-slot.md): Learn how to achieve zero-slot execution with Sender and LaserStream, a unified workflow that turns signals into profitable opportunities
+- [P-Token: Solana’s Next Big Efficiency Unlock](https://www.helius.dev/blog/solana-p-token.md): P-token is a new drop-in replacement for the SPL Token program that delivers an impressive 95%+ reduction in compute unit consumption.
+- [How to Write Solana Programs with SBPF Assembly](https://www.helius.dev/blog/sbpf-assembly.md): Learn about sBPF's virtual machine architecture, instruction set, and memory model. Then follow a simple SBPF Assembly tutorial to deploy your first program.
+- [Solana’s Proprietary AMM Revolution](https://www.helius.dev/blog/solanas-proprietary-amm-revolution.md): Learn all about proprietary AMMs, a new market-making primitive pioneered on Solana
+- [Hardware as Ideology: An Interview with Austin Federa](https://www.helius.dev/blog/hardware-as-ideology-austin-federa.md): An interview with Austin Federa, co-founder of DoubleZero, on hardware, Solana, and creating a new Internet for the next era of blockchains
+- [Winning the Millisecond Game: Shreds, LaserStream, and the Edge of Solana](https://www.helius.dev/blog/solana-shreds.md): Learn how Solana shreds work, compare shred delivery latency across Solana validators and data streaming solutions, and see how LaserStream gives you an edge.
+- [Bringing Slashing to Solana](https://www.helius.dev/blog/bringing-slashing-to-solana.md): Programmatic slashing is making its way to Solana. Discover what is being proposed and how it will impact the network.
+
+- [Solana Breakpoint 2025 Giveaway](https://www.helius.dev/blog/solana-breakpoint-2025-giveaway.md): Have you made significant contributions to OSS development on Solana? Apply for your chance to win a free trip to Solana Breakpoint 2025 in Abu Dhabi.
+- [How DFlow Uses LaserStream to Quote Solana's Best Prices](https://www.helius.dev/blog/dflow.md): Learn how DFlow uses LaserStream to offer Solana market makers the best prices, tightest spreads, and lowest latency routes. 
+- [Block Assembly Marketplace (BAM)](https://www.helius.dev/blog/block-assembly-marketplace-bam.md): Jito’s BAM is the most ambitious overhaul of Solana’s block construction yet, introducing private, programmable, and provably fair transaction sequencing.
+- [Agave v2.3 Update:  All You Need to Know](https://www.helius.dev/blog/agave-v23-update--all-you-need-to-know.md): Catch all the key release cycle features and optimizations to watch out for with the Solana Agave 2.3 client update.
+- [On-Chain Proof Storage in DePIN: Sector Patterns, Drivers, and the Coming Wave of Adoption](https://www.helius.dev/blog/depin-proof-storage.md): Learn why proof storage matters for data aggregation and service-based DePINs. Compare frameworks, read case studies, and decide which method is right for you.
+- [How to Write Solana Programs with Steel](https://www.helius.dev/blog/steel.md): Steel is a modular, lightweight development framework for writing smart, performant Solana programs. Learn how it works and how to create a token.
+- [Engineering Velocity: Inside Anza’s Performance Team with Alessandro Decina](https://www.helius.dev/blog/solana-performance-engineering.md): An interview with Alessandro Decina, who leads Anza's performance team, on making the fastest blockchain in existence even faster
+- [Internet Capital Markets](https://www.helius.dev/blog/internet-capital-markets.md): Internet Capital Markets presents a reimagining of finance, radically reducing the barriers to issuing and owning assets.
+- [How to Build Solana Apps with Gill](https://www.helius.dev/blog/gill.md): Learn how to develop Solana apps with Gill, a modern and developer-friendly JavaScript/TypeScript client library for interacting with the Solana blockchain.
+- [Staking with Helius and hSOL are Now Supported on BitGo](https://www.helius.dev/blog/bitgo.md): BitGo customers can now maximize their institutional staking rewards on Solana by delegating stake to Helius’s 0% commission, 0% fee validator.
+- [Solana Ecosystem Report (H1 2025)](https://www.helius.dev/blog/solana-ecosystem-report-h1-2025.md): A comprehensive analysis of Solana's current state as of mid-2025, examining its technical foundations, economics, and key ecosystem developments
+- [At The Edge Of Determinism: Transaction Lifecycle in Solana Sealevel and Sui Object Runtime](https://www.helius.dev/blog/solana-vs-sui-transaction-lifecycle.md): Learn how Solana transactions are created, submitted, propagated, executed, and validated compared to Sui's object runtime.
+- [Real World Assets on Solana: A Comprehensive Overview](https://www.helius.dev/blog/solana-real-world-assets.md): An overview of the Solana real world asset landscape, showcasing the growing diversity of RWA offerings and their practical applications. 
+- [Introducing Helius’s Solana Devnet Faucet](https://www.helius.dev/blog/solana-faucet.md): Access the Solana Devnet faucet in your dashboard. Claim Devnet SOL through the UI or request an airdrop through the Solana CLI.
+- [How to Build Solana Programs with Pinocchio](https://www.helius.dev/blog/pinocchio.md): Develop Solana programs with Pinocchio. Learn how Pinocchio works and compare Pinocchio vs. Anchor vs. Steel. Includes a tutorial on creating a Solana token.
+- [Solana Passkeys: The Future of Crypto Wallet UX](https://www.helius.dev/blog/solana-passkeys.md): Learn how to use passkeys on Solana to accelerate onboarding, eliminate the risk of losing seed phrases, and improve wallet UX.
+- [How to Build Mobile Apps with Send’s Solana AppKit](https://www.helius.dev/blog/solana-appkit.md): Introducing the Solana AppKit — an open-source React Native toolkit for building iOS and Android apps on Solana, with 18+ protocol integrations.
+- [Introducing the Builder Series Guest Blog Program](https://www.helius.dev/blog/guest-blog.md): Launch products. Educate developers. Build authority within the Solana ecosystem. Learn how to pitch articles and get featured on the Helius blog.
+- [Helius Receives SOC 2 Type II Certification](https://www.helius.dev/blog/soc2.md): Helius is now SOC 2 Type II certified. The audit was performed by Sensiba LLP. Visit our Trust Center to request a copy of our audit.
+- [Solana Consulting and Advisory Services](https://www.helius.dev/blog/solana-consulting.md): Consult with Helius before building on the Solana blockchain. Explore Solana advisory, Solana development services, and Solana launch strategies.
+- [Solana’s Stablecoin Landscape](https://www.helius.dev/blog/solanas-stablecoin-landscape.md): We explore the stablecoin ecosystem on Solana, tracking adoption, highlighting the growing variety of tokens, and examining real-world use cases.
+- [Solana Staking Taxes and Reporting Guide](https://www.helius.dev/blog/solana-staking-taxes.md): Learn about how Solana staking rewards are taxed, taxable events, tax advantages of LSTs, managing tax liabilities, reporting staking income, and tax software.
+- [Frictionless and secure UX: the tech stack onboarding millions of users to Solana](https://www.helius.dev/blog/web3-ux.md): Learn how to build seamless onchain user experiences with Privy's embedded wallets, gasless transactions, onramps, and native bridging.
+- [Alpenglow: Solana's Great Consensus Rewrite](https://www.helius.dev/blog/alpenglow.md): Learn about Alpenglow, Solana's consensus rewrite, how it works, its performance, security and fault-tolerance, impact, risks and open questions
+- [Announcing the [REDACTED] Hackathon Winners](https://www.helius.dev/blog/redacted-hackathon-winners.md): $175,000 in prizes. 38 bounties. 900+ submissions. Meet the winners of the 2025 [REDACTED] Hackathon for analysts, security researchers, and onchain sleuths
+- [What are Solana Commitment Levels?](https://www.helius.dev/blog/solana-commitment-levels.md): Understand Solana commitment levels. Processed, Confirmed, Finalized. Differences, use cases, and performance impacts.
+- [Stablecoin Payments Guide for Fintechs & Financial Institutions](https://www.helius.dev/blog/stablecoin-payments.md): Digital dollars are reshaping the global payments market. Explore stablecoin use cases, benefits, issuers, and the best blockchains for stablecoin apps.
+- [Solana Hacks, Bugs, and Exploits: A Complete History](https://www.helius.dev/blog/solana-hacks.md): Explore the cause, impact, and fix for 35+ Solana application exploits, supply chain attacks, network incidents, and protocol vulnerabilities.
+- [Introducing Surfpool: A Solana Devnet Alternative](https://www.helius.dev/blog/surfpool.md): Learn how Surfpool and Infrastructure as Code (IaC) is improving the way Solana developers test and deploy programs on Devnet and Mainnet-beta.
+- [Agave v2.2 Update:  All You Need to Know](https://www.helius.dev/blog/agave-v22-update--all-you-need-to-know.md): A roundup of the most important features and performance upgrades in the Solana Agave 2.2 validator client release.
+- [Introducing Helius Validator-as-a-Service](https://www.helius.dev/blog/introducing-validator-as-a-service.md): Launch an institutional-grade, white label Solana validator with Helius. Maximize your rewards. Leverage the experience of Solana's most trusted node provider.
+- [Building Permissioned Blockchains with Solana Permissioned Environments](https://www.helius.dev/blog/solana-permissioned-blockchains.md): This article dives into Solana’s ecosystem of private appchains, tailored for enterprise-grade performance and regulatory compliance.
+- [Introducing LaserStream: Next-Gen Solana Data Streaming](https://www.helius.dev/blog/introducing-laserstream.md): Stream Solana blocks, accounts and transactions faster. LaserStream is a scalable, low-latency, and fault-tolerant alternative to Yellowstone gRPC and WebSockets.
+- [Confidential Balances: Empowering Confidentiality in the Solana Ecosystem](https://www.helius.dev/blog/confidential-balances.md): Introducing Confidential Balances — new layers of confidentiality for asset owners and token issuers without sacrificing regulatory compliance.
+- [Solana Governance:  A Comprehensive Analysis](https://www.helius.dev/blog/solana-governance--a-comprehensive-analysis.md): This report provides a detailed overview of Solana's governance framework, tracing its evolution and explaining how decisions are proposed, evaluated, and implemented.
+- [How to Build a Solana Data Dashboard with Dune](https://www.helius.dev/blog/how-to-build-a-solana-data-dashboard-with-dune.md): Learn how to build a comprehensive Solana dashboard, leveraging real-time metrics, historical trends, and decoded program data.
+- [Embedded MPC Wallets for Payments Apps on Solana](https://www.helius.dev/blog/solana-mpc-wallet.md): Learn how embedded MPC wallets work on Solana. Get step-by-step instructions for integrating them in your stablecoin application with Portal.
+- [Announcing the [REDACTED] Hackathon](https://www.helius.dev/blog/redacted-hackathon.md): Compete for over $150,000 in bounties from Solana's leading data, forensics, and security companies. Submissions open April 1st, 2025.
+- [What are Solana Smart Wallets? Comparison & Implementation Guide](https://www.helius.dev/blog/solana-smart-wallets.md): Learn how Solana smart wallets work, compare different embedded wallet providers, and follow our step-by-step guide to integrate them in your app.
+- [SIMD-228: A Critical Analysis](https://www.helius.dev/blog/simd-228.md): This report analyzes SIMD-228: Market-Based Emission Mechanism, assessing its potential effects and evaluating key arguments for and against.
+- [Solana Arithmetic: Best Practices for Building Financial Apps](https://www.helius.dev/blog/solana-arithmetic.md): Learn how to safely perform mathematical operations on Solana tokens, including calculating interest, rounding numbers, and more.
+- [A Complete History of Solana Outages: Causes, Fixes, and Lessons Learnt](https://www.helius.dev/blog/solana-outages-complete-history.md): This article analyzes every Solana outage incident in detail, examining the root causes, triggering events, and the measures taken to resolve them.
+- [Arcium: Privacy 2.0 for Solana](https://www.helius.dev/blog/solana-privacy.md): Privacy 2.0 introduces a new paradigm—where shared private state unlocks an entirely new whitespace for on-chain applications.
+- [What are Solana PDAs? Explanation & Examples (2026)](https://www.helius.dev/blog/solana-pda.md): Learn how Program Derived Addresses (PDAs) work, and review four examples of how they are used to store data for Solana programs (smart contracts).
+- [Analyzing Solana On-chain Data: Tools & Dashboards](https://www.helius.dev/blog/solana-data-tools.md): This guide gives new analysts an overview of tools for accessing Solana data including tools for streaming data, historical analysis, and on-chain metrics.
+- [Introducing Kite: the Modern Solana TypeScript Framework](https://www.helius.dev/blog/kite-solana-typescript-framework.md): Kite leverages the speed and elegance of Solana web3.js version 2 but allows you to do most common Solana tasks in a single function. 
+- [Agave v2.1 Update: All You Need to Know](https://www.helius.dev/blog/agave-v21-update-all-you-need-to-know.md): A summary of all the key release cycle features and optimizations to watch out for with the Solana Agave 2.1 client update.
+- [How to Turn Your Idea into a Solana Program (Smart Contract)](https://www.helius.dev/blog/how-to-turn-your-idea-into-a-solana-program-smart-contract.md): We’ll use a Polymarket-style prediction market on Solana to show how to transform concepts into accounts, store tokens, and optimize performance.
+- [The Helius Manifesto](https://www.helius.dev/blog/manifesto.md): Helius’ mission is to increase the economic potential of the world’s developers. And we believe this is only possible with crypto rails.
+- [Solana App Onboarding: The Case for Embedded Wallets](https://www.helius.dev/blog/solana-embedded-wallets.md): Learn how to add embedded wallets to your Solana application and quickly onboard new users who may not already have a self-custodial wallet.
+- [How to Build a Secure AI Agent on Solana](https://www.helius.dev/blog/how-to-build-a-secure-ai-agent-on-solana.md): Learn how to build an AI Agent that can access its own Solana wallet without compromising security using Turnkey's policy-controlled credentials.
+- [The Cheapest Way to Airdrop Solana Tokens](https://www.helius.dev/blog/solana-airdrop.md): Discover how to send Solana airdrops at scale without draining your budget. This guide compares the traditional approach, details where costs come from, and shows how zero-knowledge (ZK) compression cuts fees by over 95%.
+- [$TRUMP’s Historic Weekend on Solana: Records, Trends, and Insights](https://www.helius.dev/blog/trump-solana-memecoin-records-trends-insights.md): January 18th and 19th, 2025 was a historic weekend for Solana. Discover the record-breaking activity, trends, and insights.
+- [How to Use AI to Build Solana Apps](https://www.helius.dev/blog/how-to-use-ai-to-build-solana-apps.md): Learn how to use AI programming tools to build Solana applications. Discover tips and engineering prompts to accelerate development cycles.
+- [The Truth about Solana Local Fee Markets](https://www.helius.dev/blog/solana-local-fee-markets.md): This article provides an accessible analysis of the current state of Solana's local fee markets and what needs to improve.
+- [Solana MEV Report: Trends, Insights, and Challenges ](https://www.helius.dev/blog/solana-mev-report.md): Explore the current Solana MEV landscape with concrete examples and quantifiable, contextual data to illustrate the scope and impact of MEV.
+- [Exploring NFT Compression on Solana](https://www.helius.dev/blog/solana-nft-compression.md): Learn how to work with NFT Compression on Solana.
+- [Beyond the Tech Bro: Rethinking Hero Worship in Crypto](https://www.helius.dev/blog/beyond-the-tech-bro-rethinking-hero-worship-in-crypto.md): Cult of Personality. Great Man Theory of History. The Potency of Ideas. Decentralized Leadership. Grassroot Organizations. Crypto-Optimism.
+- [All You Need to Know About hSOL ](https://www.helius.dev/blog/what-is-hsol.md): Learn the benefits of the hSOL Liquid Staking Token (LST), purchasing it on a DEX, and how to convert Helius stake accounts into hSOL using Sanctum.
+- [Announcing the Helius Startup Launchpad](https://www.helius.dev/blog/helius-startup-launchpad.md): Partnering with Solana's top investors to help early-stage startups with resources and support to execute like world-class companies.
+- [Solana Dev101- How to get the holders of an NFT collection (Snapshot)](https://www.helius.dev/blog/nft-holder-snapshots.md): Learn how to get all the owners of an NFT collection on Solana.
+- [An Introduction to Anchor: A Beginner’s Guide to Building Solana Programs](https://www.helius.dev/blog/an-introduction-to-anchor-a-beginners-guide-to-building-solana-programs.md): Learn everything you need to know to get started building on Solana with Anchor
+- [Plug and Play Token Extensions](https://www.helius.dev/blog/plug-and-play-token-extensions.md): Build with Token Extensions on Solana Playground
+- [A Guide to Testing Solana Programs](https://www.helius.dev/blog/a-guide-to-testing-solana-programs.md): Learn how to test Solana programs, from theory to practical examples
+- [How to Set Up a Solana Validator](https://www.helius.dev/blog/how-to-set-up-a-solana-validator.md): Learn how to set up a Solana validator with this step-by-step guide.
+- [DoubleZero: A Faster Internet](https://www.helius.dev/blog/doublezero-a-faster-internet.md): DoubleZero is building a fast global fiber optic network to meet the demands of high-throughput, low-latency distributed systems including Solana.
+- [Funding Announcement](https://www.helius.dev/blog/funding-announcement.md): With a $21.75M raise led by Haun Ventures & Founders Fund, we're boosting developers' economic potential via crypto.
+- [Introducing: Faster getProgramAccounts (gPA) Calls](https://www.helius.dev/blog/faster-getprogramaccounts.md): Learn how to optimize your getProgramAccount (gPA) calls on Solana to get up to 10x faster results
+- [Solana Staking Simplified:  A Complete Guide to SOL Staking](https://www.helius.dev/blog/solana-staking-simplified-guide-to-sol-staking.md): A concise overview of staking SOL. We answer the most common questions and cover all the key areas you need to know. 
+- [Poseidon: Build Solana Programs with TypeScript](https://www.helius.dev/blog/build-solana-programs-with-typescript-poseidon.md): Poseidon is a new transpiler framework that empowers web developers to create Solana on-chain programs with TypeScript.
+- [How to Start Building with the Solana Web3.js 2.0 SDK](https://www.helius.dev/blog/how-to-start-building-with-the-solana-web3-js-2-0-sdk.md): Anza Labs launched Web3.js 2.0 SDK with modern JavaScript features. This article covers updates and a transaction example.
+- [Measuring Solana’s Decentralization: Facts and Figures](https://www.helius.dev/blog/solana-decentralization-facts-and-figures.md): An analysis of Solana’s decentralization using verifiable data, comparing its metrics to other blockchains.
+- [Solana Congestion: How to Best Send Solana Transactions](https://www.helius.dev/blog/solana-congestion-how-to-best-send-solana-transactions.md): This guide covers strategies for successful transactions during congestion, including priority fees and optimization.
+- [Agave v2.0 Update All You Need to Know](https://www.helius.dev/blog/agave-v2-update.md): Summary of key Solana Agave 2.0 features and optimizations, including syscalls, economic changes, and ZK ElGamal Proof.
+- [Create a Solana Telegram Bot in Less Than 100 Lines of Code](https://www.helius.dev/blog/create-a-solana-telegram-bot-in-less-than-100-lines-of-code.md): This guide demonstrates how to create a customizable Telegram bot that tracks real-time events using Helius webhooks and Cloudflare Workers.
+- [Asynchronous Program Execution:  Dawn of a New Solana APE-och](https://www.helius.dev/blog/asynchronous-program-execution.md): A detailed examination of Async Execution, a major protocol update championed by Solana co-founder Anatoly Yakovenko
+- [Optimizing Solana Programs](https://www.helius.dev/blog/optimizing-solana-programs.md): A guide on Solana program optimization, covering Anchor to low-level unsafe Rust, balancing performance, safety, and usability.
+- [ZK Compression Keynote: Breakpoint 2024](https://www.helius.dev/blog/zk-compression-keynote-breakpoint-2024.md): ZK compression—what it is, how it works, and, most importantly, why it’s crucial for the future of Solana.
+- [Is Solana’s inflation too high?](https://www.helius.dev/blog/solana-issuance-inflation-schedule.md): A comprehensive analysis of Solana's inflation schedule and issuance.
+- [Agave 2.0 Transition:  A Developer Guide](https://www.helius.dev/blog/agave-2-0-transition.md): Helius strongly recommends our developer community to review the following changes before the Agave 2.0 Mainnet-Beta client release
+- [The Solana Foundation Delegation Program & the Challenges Facing Long-tail Validators](https://www.helius.dev/blog/solana-foundation-delegation-program-sfdp.md): Report analyzing the effects of the Solana Foundation's Delegation Program (SFDP) and the challenges facing Solana's long-tail validators.
+- [How to Mine Ore: A Beginner-Friendly Guide](https://www.helius.dev/blog/how-to-mine-ore-a-beginner-friendly-guide.md): This article explores Proof of Work, Bitcoin mining origins, and compares it to ORE mining via web app and CLI.
+- [A Short Introduction to DePIN](https://www.helius.dev/blog/a-short-introduction-to-depin.md): This short introduction will explain DePIN, its functions, and its applications, such as telecommunication, storage, maps, and computing.
+- [Solana Executive Overview](https://www.helius.dev/blog/solana-executive-overview.md): An overview of Solana's core protocol, covering Gulf Stream, TPU, Turbine, consensus, gossip, and block verification.
+- [Solana Builders - Ore: A New International Money](https://www.helius.dev/blog/solana-builders---ore-a-new-international-money.md): Learn about Ore, a Bitcoin-like peer-to-peer electronic currency implemented as a program atop Solana, with kel xyz
+- [Zero-Knowledge Proofs: Its Applications on Solana](https://www.helius.dev/blog/zero-knowledge-proofs-its-applications-on-solana.md): Learn about zero-knowledge proofs, and how Solana is shaping up to be a ZK juggernaut 
+- [Zero-Knowledge Proofs: An Introduction to the Fundamentals](https://www.helius.dev/blog/zero-knowledge-proofs-an-introduction-to-the-fundamentals.md): Learn the theory, mathematics, and cryptography that power the most powerful devised by cryptographers — zero-knowledge proofs.
+- [Solana Builders: ZK Compression](https://www.helius.dev/blog/solana-builders-zk-compression.md): Learn about ZK Compression — all its properties and caveats — with Overclock's dubbelosix
+- [Solana’s Gulf Stream: Mo Mempool, Mo problems](https://www.helius.dev/blog/solana-gulf-stream.md): An exploration of Gulf Stream, Solana's mempool-less transaction forwarding protocol
+- [All You Need to Know About Solana's v1.18 Update](https://www.helius.dev/blog/all-you-need-to-know-about-solanas-v1-18-update.md): Learn about the latest update to the Solana Labs (now Agave) client, as well as the new central scheduler
+- [Stake-Weighted Quality of Service: Everything You Need to Know](https://www.helius.dev/blog/stake-weighted-quality-of-service-everything-you-need-to-know.md): Learn about Stake-Weighted Quality of Service (SWQoS), how Solana processes transactions, and the growing importance of validators and stake
+- [How to Monitor Solana Transactions Using Geyser Enhanced Websockets](https://www.helius.dev/blog/how-to-monitor-solana-transactions-using-geyser-enhanced-websockets.md): Learn how to master Geyser Enhanced Websockets with simple and complex examples
+- [How to Deal with Blockhash Errors on Solana](https://www.helius.dev/blog/how-to-deal-with-blockhash-errors-on-solana.md): This blog explains blockhash errors, their causes, and best practices for avoiding them.
+- [How to Monitor a Raydium Liquidity Pool](https://www.helius.dev/blog/how-to-monitor-a-raydium-liquidity-pool.md): Liquidity pools enable crypto trading on DEXs and other DeFi platforms. Learn to monitor them using webhooks and websockets in this article.
+- [How to Stake SOL on Solana](https://www.helius.dev/blog/how-to-stake-solana.md): Learn how to natively stake SOL, how Liquid Staking Tokens (LSTs) like hSOL work, and how staking improves the Solana network.
+- [How to Land Transactions on Solana ](https://www.helius.dev/blog/how-to-land-transactions-on-solana.md): Learn why Solana transactions fail and follow these recommended best practices to improve landing rates and increase throughput.
+- [How to Fetch Newly Minted Tokens with Helius](https://www.helius.dev/blog/how-to-fetch-newly-minted-tokens-with-helius.md): This article explores how tokens are created on Solana, what SPL tokens are, and how to monitor new tokens and fetch their metadata using Helius.
+- [Build a cNFT Minter Mobile App in Under 5 Minutes](https://www.helius.dev/blog/build-a-cnft-minter-mobile-app-in-under-5-minutes.md): This tutorial explains building an Android app to capture images and mint compressed NFTs on Solana.
+- [A Hitchhiker's Guide to Solana Program Security](https://www.helius.dev/blog/a-hitchhikers-guide-to-solana-program-security.md): Learn about Solana program security and how to mitigate common vulnerabilities
+- [Solana MEV: An Introduction](https://www.helius.dev/blog/solana-mev-an-introduction.md): An introduction to MEV on Solana.
+- [Futarchy and Governance: Prediction Markets Meet DAOs on Solana](https://www.helius.dev/blog/futarchy-and-governance-prediction-markets-meet-daos-on-solana.md): Learn about Futarchy, how it works, and how it's being implemented on Solana via the Meta-DAO.
+- [Solana Frames: Minting a cNFT on Farcaster](https://www.helius.dev/blog/solana-frames-minting-a-cnft-on-farcaster.md): Learn about Farcaster, Frames, and how to create a Frame that mints a cNFT to a user's verified Solana address
+- [Liquid Staking and LSTs on Solana](https://www.helius.dev/blog/lsts-on-solana.md): An exploration into the mechanics of LSTs on Solana.
+- [How to Get Token Holders on Solana](https://www.helius.dev/blog/how-to-get-token-holders-on-solana.md): This guide explains how to retrieve all holders of a fungible token like USDC for tracking or airdrop purposes.
+- [All You Need to Know About Solana's v1.17 Update](https://www.helius.dev/blog/all-you-need-to-know-about-solanas-v1-17-update.md): Learn about Solana's v1.17 update, the latest upgrade to the Solana Labs validator client, as well as the recent February network outage.
+- [How to build a Solana Portfolio Viewer with Next.js and Helius's DAS API](https://www.helius.dev/blog/build-a-solana-portfolio-viewer.md): Learn how to integrate the DAS API into a front-end application to build a portfolio viewer for showcasing both NFTs and SPL tokens. 
+- [Solana Fees in Theory and Practice](https://www.helius.dev/blog/solana-fees-in-theory-and-practice.md): An exploration of Solana fees in theory and practice.
+- [Publishing Solana Mobile Apps: A How To Guide](https://www.helius.dev/blog/publishing-solana-mobile-apps.md): Learn the process of publishing a Solana Mobile dApp, from material preparation to submitting to the dApp store.
+- [Consensus on Solana](https://www.helius.dev/blog/consensus-on-solana.md): Contextualizing the Role of Proof-of-History within Slots in Tower BFT, Solana’s Consensus Mechanism
+- [Token Gating on Solana - A Solana Mobile Tutorial](https://www.helius.dev/blog/token-gating-on-solana-mobile-tutorial.md): Learn token-gating on Solana using the Saga Genesis Token.
+- [Solana Nodes — A Primer on Solana RPCs, Validators, and RPC providers](https://www.helius.dev/blog/solana-nodes-a-primer-on-solana-rpcs-validators-and-rpc-providers.md): Learn about Solana nodes, the different types, their importance, and the top RPC providers.
+- [Solana Validator Economics: A Primer](https://www.helius.dev/blog/solana-validator-economics-a-primer.md): Learn how validators earn revenue through fees, tips, and issuance, how they distribute rewards, and the costs to operate a validator.
+- [How to Migrate From Ethereum to Solana: A Guide for Devs](https://www.helius.dev/blog/how-to-migrate-from-ethereum-to-solana.md): Learn everything you need to know to start programming in Solidity on Solana
+- [The L1 vs L2 Landscape: Understanding the Design Differences, Tradeoffs, and Endgames](https://www.helius.dev/blog/the-l1-vs-l2-landscape.md): Understanding the L1 and L2 landscape from first principles.
+- [Priority Fees: Understanding Solana's Transaction Fee Mechanics](https://www.helius.dev/blog/priority-fees-understanding-solanas-transaction-fee-mechanics.md): Learn about Solana's transaction fee mechanics, priority fees, and how to implement them programmatically.
+- [Gaming: How Solana is Changing the Playfield](https://www.helius.dev/blog/gaming-how-solana-is-changing-the-playfield.md): Learn about Web3 gaming and all the tools you need to get started building Solana-integrated games, today.
+- [What is Firedancer? A Deep Dive into Solana 2.0](https://www.helius.dev/blog/what-is-firedancer.md): Learn everything you need to know about Firedancer, Solana's new independent validator client developed by Jump.
+- [The Solana Programming Model: An Introduction to Developing on Solana](https://www.helius.dev/blog/the-solana-programming-model-an-introduction-to-developing-on-solana.md): Learn about the complexities of Solana's architecture, the role of accounts, and how transactions facilitate on-chain interactions.
+- [Turbine: Block Propagation on Solana](https://www.helius.dev/blog/turbine-block-propagation-on-solana.md): Learn about Solana block propagation, its comparison to Ethereum, and future research on data availability.
+- [Solana for Enterprise: Reasons and Use Cases](https://www.helius.dev/blog/solana-for-enterprise.md): Learn why Solana is a strong contender for enterprise adoption, as well as why both new and established projects are choosing Solana
+- [Solana Geyser Plugins: Streaming Data at the Speed of Light](https://www.helius.dev/blog/solana-geyser-plugins-streaming-data-at-the-speed-of-light.md): Learn about Solana Geyser Plugins — how they work, how to make your own, and the streaming services Helius offers
+- [All You Need to Know About Solana's v1.16 Update](https://www.helius.dev/blog/all-you-need-to-know-about-solanas-v1-16-update.md): Learn about Solana's v1.16 update, the latest upgrade to the Solana Labs validator client
+- [All You Need to Know About Compression on Solana](https://www.helius.dev/blog/all-you-need-to-know-about-compression-on-solana.md): Learn about state compression, compressed NFTs (cNFTs), as well as how to fetch, mint or transfer them from our most comprehensive article yet
+- [How to set up a Solana Telegram bot](https://www.helius.dev/blog/solana-telegram-bot.md): Learn how to set up a Telegram bot that sends updates relating to on-chain activities with Helius webhooks. 
+- [Cryptographic Tools 101 - Hash Functions and Merkle Trees Explained](https://www.helius.dev/blog/cryptographic-tools-101-hash-functions-and-merkle-trees-explained.md): Learn the fundamentals of cryptographic primitives, and how primitives such as hash functions and Merkle trees are essential to blockchains.
+- [Proof of History, Proof of Stake, Proof of Work - Explained](https://www.helius.dev/blog/proof-of-history-proof-of-stake-proof-of-work-explained.md): Learn about consensus algorithms, their importance, how they coordinate network participants, and the importance of time in blockchain technology
+- [How to Mitigate Spam QUICkly: All You Need to Know About Solana and QUIC](https://www.helius.dev/blog/all-you-need-to-know-about-solana-and-quic.md): Learn about QUIC and how it has improved Solana's network
+- [Privacy on Solana with Elusiv and Light: All You Need to Know About Privacy on SOL](https://www.helius.dev/blog/privacy-on-solana-with-elusiv-and-light.md): Learn the importance of privacy and how to send SOL privately using Elusiv and the Light Protocol
+- [Solana DeFi: Jupiter Swap UI (2023)](https://www.helius.dev/blog/solana-defi.md): Start your Solana DeFi journey by building a Jupiter Swap app. Learn the UX flow of adding a Jupiter Swap component into your application.
+- [Solana Transactions: Durable Nonces (2023)](https://www.helius.dev/blog/solana-transactions.md): Learn how to submit Solana transactions with Durable Nonces by sending an offline transaction using JavaScript.
+- [Solana NFT: Modifying Compressed NFTs (2023)](https://www.helius.dev/blog/solana-nft.md): Learn to modify Solana NFTs that are set up through the compressed program. 
+- [All You Need to Know About Solana RPCs (2023)](https://www.helius.dev/blog/solana-rpc.md): Demystify the inner workings of Solana RPCs, what makes them function, and how they differ from RPCs on other networks.
+- [Shopify & Solana Pay: Step-by-Step Guide (2023)](https://www.helius.dev/blog/solana-pay-shopify.md): We demonstrate how to integrate Solana Pay into a Shopify store - looking over both the merchant set up & customer checkout flow.
+- [Solana Pay: All You Need To Know](https://www.helius.dev/blog/solana-pay.md): Solana Pay is a standard protocol & set of reference implementations that enable decentralised payments.
+- [Solana Dev 101 - Deserializing Account Data on Solana](https://www.helius.dev/blog/solana-dev-101-deserializing-account-data-on-solana.md): Learn how to deserialize raw account data on Solana.
+- [Top Solana RPCs — Helius vs. Other Node Providers](https://www.helius.dev/blog/top-solana-rpcs-helius-vs-other-node-providers.md): An analysis of Helius vs other RPC providers on Solana.
+- [Solana Dev 101 - File system wallets + How to create a custom wallet ](https://www.helius.dev/blog/file-system-wallets-how-to-create-a-custom-wallet.md): This blog aims to shed light on what file system wallets are, how to create them, and how to utilize them.
+- [Solidity on Solana — What is Solang?](https://www.helius.dev/blog/solidity-on-solana-what-is-solang.md): Solidity is now available for the Solana blockchain through Solang. Learn about it more here!
+- [Solana Dev 101 - Creating a SvelteKit App with the New DAS API](https://www.helius.dev/blog/solana-dev-101-creating-a-sveltekit-app-with-the-new-das-api.md): Learn how to display NFTs on SvelteKit using the DAS API's new SDK. 
+- [Solana RPCs and Helius](https://www.helius.dev/blog/solana-rpcs-and-helius.md): The story behind Helius RPCs and their evolution in the Solana ecosystem.
+- [Solana Dev 101 — How to Transfer Solana Tokens with Typescript](https://www.helius.dev/blog/solana-dev-101-how-to-transfer-solana-tokens-with-typescript.md): Learn how to transfer an NFT or SPL Token on Solana using TypeScript. 
+- [Solana Dev 101 - Making a Solana Discord Bot with Webhooks](https://www.helius.dev/blog/discord-sales-bot.md): Learn how to create a Discord sales bot for an NFT collection on Solana using Helius's Webhooks
+- [Uploading Files to Shadow Drive on Solana](https://www.helius.dev/blog/uploading-files-to-shadow-drive-on-solana.md): Learn how to upload files to SHDW on Solana using TypeScript. 
+- [All You Need to Know About Solana’s New DAS API ](https://www.helius.dev/blog/all-you-need-to-know-about-solanas-new-das-api.md): Learn all about Solana's new DAS API and it's methods. 
+- [What are Token Extensions?](https://www.helius.dev/blog/what-is-token-2022.md): A deep look into Token Extensions and how they will power the next generation of tokens on Solana.
+- [Solana Dev 101 - Using DAS API For Fetching all NFTs in a Collection](https://www.helius.dev/blog/solana-dev-101-using-das-to-return-all-collection-assets.md): Use the DAS API to fetch all NFTs in a Solana collection using JavaScript. 
+- [Solana Dev 101 - How to Mint an NFT on Solana](https://www.helius.dev/blog/how-to-mint-an-nft-on-solana.md): Learn how to create and mint your own NFTs on Solana using JavaScript.
+- [Solana Dev 101 - Email Notifications for dApps](https://www.helius.dev/blog/webhook-to-email.md): Vercel backend and Replit designed to receive onchain Solana data from Helius’ webhooks and send a message to a given email in real time.
+- [Solana Dev 101 - How to Create a Solana Transaction](https://www.helius.dev/blog/how-to-create-a-solana-transaction.md): Learn how to create and send a transaction with Javascript on Solana. This is a beginner-friendly guide, so don't worry if you're new to Solana.
+- [Solana Dev 101 - Mint SPL Tokens on Solana](https://www.helius.dev/blog/working-with-solana-tokens.md): Learn how to mint tokens on the Solana blockchain.
+- [Build a Wallet Tracker on Solana](https://www.helius.dev/blog/build-a-wallet-tracker-on-solana.md): Everything you need to know to setup a wallet tracker on Solana with Helius Webhooks.
+- [How Solana RPCs Work](https://www.helius.dev/blog/how-solana-rpcs-work.md): Demystify the inner workings of Solana RPCs, what makes them function, and how they differ from RPCs on Ethereum.
+- [Listening to Onchain Events on Solana](https://www.helius.dev/blog/solana-data-streaming.md): Listening to On-chain Events on Solana with Geyser, Websockets, or Webhooks.
+- [Join the Helius Hacker Program and Shape the Future of Solana](https://www.helius.dev/blog/join-the-helius-hacker-program-and-shape-the-future-of-solana.md): Join a like-minded community of Solana developers.
+- [Understanding Slots, Blocks, and Epochs on Solana](https://www.helius.dev/blog/solana-slots-blocks-and-epochs.md): A deep dive on how Solana slots, blocks, and epochs work together. 

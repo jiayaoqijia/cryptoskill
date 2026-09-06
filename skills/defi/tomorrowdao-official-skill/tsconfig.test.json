@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "index.ts",
+    "tomorrowdao_skill.ts",
+    "src/**/*.ts",
+    "lib/**/*.ts",
+    "lib/**/*.d.ts",
+    "types/**/*.d.ts",
+    "bin/**/*.ts",
+    "scripts/**/*.ts",
+    "cli-helpers.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "coverage"
+  ]
+}

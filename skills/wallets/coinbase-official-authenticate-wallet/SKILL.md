@@ -1,89 +1,65 @@
 ---
-name: authenticate-wallet
-description: Sign in to the wallet. Use when you or the user want to log in, sign in, connect, or set up the wallet, or when any wallet operation fails with authentication or "not signed in" errors. This skill is a prerequisite before sending, trading, or funding.
+name: agentic-wallet
+description: "Crypto wallet operations via the awal CLI — sign in, check balances, send USDC/ETH/POL/SOL, trade tokens, fund the wallet, and use the x402 payment protocol to discover paid services, pay for API calls, monetize an API, or query onchain data. Use whenever the user mentions signing in, login, authentication, wallet status, balance, address, sending money, paying someone, transferring tokens, ENS names, swapping/trading/converting tokens, funding/topping up/onramp, USDC, ETH, POL, SOL, the x402 bazaar, paid APIs, monetizing an endpoint, or querying onchain data on Base."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: ["Bash(npx awal@2.0.3 status*)", "Bash(npx awal@2.0.3 auth *)", "Bash(npx awal@2.0.3 balance*)", "Bash(npx awal@2.0.3 address*)", "Bash(npx awal@2.0.3 show*)"]
+allowed-tools: ["Bash(npx awal@2.12.1 *)", "Bash(npm *)", "Bash(node *)", "Bash(curl *)", "Bash(mkdir *)"]
 ---
 
-# Authenticating with the Payments Wallet
+# Agentic Wallet
 
-When the wallet is not signed in (detected via `npx awal status` or when wallet operations fail with authentication errors), use the `npx awal` CLI to authenticate.
+Operate a crypto wallet through the `awal` CLI. This skill is a router: read the relevant reference file in `references/` for the task at hand.
 
-If you have access to email, you can authenticate the wallet yourself, otherwise you'll need to ask your human to give you an email address and to tell you the OTP code they receive.
+## Preflight: Confirm wallet state
 
-## Authentication Flow
-
-Authentication uses a two-step email OTP process:
-
-### Step 1: Initiate login
+Before any wallet operation that requires authentication (everything except x402 search/details), check status:
 
 ```bash
-npx awal@2.0.3 auth login <email>
+npx awal@2.12.1 status
 ```
 
-This sends a 6-digit verification code to the email and outputs a `flowId`.
+If the wallet is not authenticated, read `references/auth.md` and complete sign-in first.
 
-### Step 2: Verify OTP
+## Routing
 
-```bash
-npx awal@2.0.3 auth verify <flowId> <otp>
-```
+Pick the reference that matches the task and `Read` it before acting:
 
-Use the `flowId` from step 1 and the 6-digit code from the user's email to complete authentication. If you have the ability to access the user's email, you can read the OTP code, or you can ask your human for the code.
+| Task | Reference |
+| --- | --- |
+| Sign in, log in, connect wallet, OTP verification, "not signed in" errors | `references/auth.md` |
+| Check balances, "how much USDC/ETH/POL/SOL do I have", balance per chain, JSON balance output | `references/balance.md` |
+| Send USDC / ETH / POL / SOL to an address or ENS name (Base, Polygon, Solana) | `references/send-usdc.md` |
+| Swap / trade / convert tokens on Base or Polygon | `references/trade.md` |
+| Add funds, top up, onramp, buy USDC | `references/fund.md` |
+| Find / browse / search paid services on the x402 bazaar | `references/x402-search.md` |
+| Call a paid x402 API endpoint with automatic USDC payment | `references/x402-pay.md` |
+| Build or deploy a paid API server that other agents can pay to use | `references/x402-monetize.md` |
+| Query onchain data on Base (events, transactions, blocks) via the CDP SQL API | `references/query-onchain.md` |
 
-## Input Validation
+If no clear match and the user wants an external capability, search the x402 bazaar (`references/x402-search.md`) — a paid service may exist.
 
-Before constructing the command, validate all user-provided values to prevent shell injection:
+## Shared rules
 
-- **email**: Must match a standard email format (`^[^\s;|&`]+@[^\s;|&`]+$`). Reject if it contains spaces, semicolons, pipes, backticks, or other shell metacharacters.
-- **flowId**: Must be alphanumeric (`^[a-zA-Z0-9_-]+$`).
-- **otp**: Must be exactly 6 digits (`^\d{6}$`).
+- **Input validation**: every reference lists the regexes / allowlists that user-provided values must match before being placed in a shell command. Validate strictly; reject inputs containing spaces, semicolons, pipes, backticks, or other shell metacharacters. Do not pass unvalidated user input into commands.
+- **Single-quote `$` amounts**: any amount written as `'$1.00'` must be single-quoted to prevent bash variable expansion.
+- **JSON output**: every `awal` command supports `--json` for machine-readable output.
+- **Auth errors mean re-auth**: if any command fails with "Not authenticated" or similar, read `references/auth.md` and run the sign-in flow.
+- **Insufficient balance**: read `references/fund.md` to top up.
 
-Do not pass unvalidated user input into the command.
+## Quick command index
 
-## Checking Authentication Status
-
-```bash
-npx awal@2.0.3 status
-```
-
-Displays wallet server health and authentication status including wallet address.
-
-## Example Session
-
-```bash
-# Check current status
-npx awal@2.0.3 status
-
-# Start login (sends OTP to email)
-npx awal@2.0.3 auth login user@example.com
-# Output: flowId: abc123...
-
-# After user receives code, verify
-npx awal@2.0.3 auth verify abc123 123456
-
-# Confirm authentication
-npx awal@2.0.3 status
-```
-
-## Available CLI Commands
-
-| Command                                      | Purpose                                |
-| -------------------------------------------- | -------------------------------------- |
-| `npx awal@2.0.3 status`                     | Check server health and auth status    |
-| `npx awal@2.0.3 auth login <email>`         | Send OTP code to email, returns flowId |
-| `npx awal@2.0.3 auth verify <flowId> <otp>` | Complete authentication with OTP code  |
-| `npx awal@2.0.3 balance`                    | Get USDC wallet balance                |
-| `npx awal@2.0.3 address`                    | Get wallet address                     |
-| `npx awal@2.0.3 show`                       | Open the wallet companion window       |
-
-## JSON Output
-
-All commands support `--json` for machine-readable output:
-
-```bash
-npx awal@2.0.3 status --json
-npx awal@2.0.3 auth login user@example.com --json
-npx awal@2.0.3 auth verify <flowId> <otp> --json
-```
+| Command | Purpose |
+| --- | --- |
+| `npx awal@2.12.1 status` | Server health + auth status |
+| `npx awal@2.12.1 address` | Get wallet address |
+| `npx awal@2.12.1 balance` | Get balances across Base, Polygon, Solana (use `--chain` for one chain) |
+| `npx awal@2.12.1 show` | Open the wallet companion window (used for funding) |
+| `npx awal@2.12.1 auth login <email>` | Send OTP code |
+| `npx awal@2.12.1 auth verify <otp>` | Complete sign-in |
+| `npx awal@2.12.1 auth logout` | Sign out and clear the session |
+| `npx awal@2.12.1 send <amount> <recipient>` | Send tokens |
+| `npx awal@2.12.1 trade <amount> <from> <to>` | Swap tokens |
+| `npx awal@2.12.1 x402 bazaar search <query>` | Search paid services |
+| `npx awal@2.12.1 x402 bazaar list` | List bazaar resources |
+| `npx awal@2.12.1 x402 details <url>` | Inspect payment requirements |
+| `npx awal@2.12.1 x402 pay <url>` | Pay and call an x402 endpoint |

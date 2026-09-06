@@ -14,18 +14,18 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Gate Exchange Market Analysis - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="The market analysis function of Gate Exchange, such as liquidity, momentum, liquidation, funding arbitrage, basis, manipulation risk, order book explainer, slip">
+  <meta name="description" content="Gate Exchange market analysis tool. Use when the user asks for deep market metrics like liquidity, slippage, funding arbitrage, or manipulation risk. Triggers o">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/exchanges/gate-market-analysis.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Gate Exchange Market Analysis - CryptoSkill">
-  <meta property="og:description" content="The market analysis function of Gate Exchange, such as liquidity, momentum, liquidation, funding arbitrage, basis, manipulation risk, order book explainer, slip">
+  <meta property="og:description" content="Gate Exchange market analysis tool. Use when the user asks for deep market metrics like liquidity, slippage, funding arbitrage, or manipulation risk. Triggers o">
   <meta property="og:url" content="https://cryptoskill.org/skills/exchanges/gate-market-analysis.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Gate Exchange Market Analysis - CryptoSkill">
-  <meta name="twitter:description" content="The market analysis function of Gate Exchange, such as liquidity, momentum, liquidation, funding arbitrage, basis, manipulation risk, order book explainer, slip">
+  <meta name="twitter:description" content="Gate Exchange market analysis tool. Use when the user asks for deep market metrics like liquidity, slippage, funding arbitrage, or manipulation risk. Triggers o">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Gate Exchange Market Analysis", "description": "The market analysis function of Gate Exchange, such as liquidity, momentum, liquidation, funding arbitrage, basis, manipulation risk, order book explainer, slippage simulation. Use when the user asks about liquidity, depth, slippage, buy/sell pressure, liquidation, funding rate arbitrage, basis/premium, manipulation risk, order book explanation, or slippage simulation (e.g. market buy $X slippage). Trigger phrases: liquidity, depth, slippage, momentum, buy/sell pressure, liquidation, squeeze, funding rate, arbitrage, basis, premium, manipulation, order book, spread, slippage simulation.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/exchanges/gate-market-analysis.html", "author": {"@type": "Organization", "name": "gate-exchange"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Gate Exchange Market Analysis", "description": "Gate Exchange market analysis tool. Use when the user asks for deep market metrics like liquidity, slippage, funding arbitrage, or manipulation risk. Triggers on 'liquidity', 'depth', 'slippage', 'momentum', 'buy/sell pressure', 'squeeze', 'funding rate', 'arbitrage', 'basis', 'premium'.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/exchanges/gate-market-analysis.html", "author": {"@type": "Organization", "name": "gate-exchange"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -64,12 +64,12 @@
     <div class="skill-meta">
       <span class="skill-badge">Exchanges</span>
       <span>by @gate-exchange</span>
-      <span>v1.0.0</span>
-      
-      
+      <span>v2026.3.23-1</span>
+      <span class="skill-badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">B</span>
+      <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-some" title="1 true, 1 unknown of 11 capability flags">1 flag</span>
     </div>
-    <p class="skill-page-desc">The market analysis function of Gate Exchange, such as liquidity, momentum, liquidation, funding arbitrage, basis, manipulation risk, order book explainer, slippage simulation. Use when the user asks about liquidity, depth, slippage, buy/sell pressure, liquidation, funding rate arbitrage, basis/premium, manipulation risk, order book explanation, or slippage simulation (e.g. market buy $X slippage). Trigger phrases: liquidity, depth, slippage, momentum, buy/sell pressure, liquidation, squeeze, funding rate, arbitrage, basis, premium, manipulation, order book, spread, slippage simulation.</p>
+    <p class="skill-page-desc">Gate Exchange market analysis tool. Use when the user asks for deep market metrics like liquidity, slippage, funding arbitrage, or manipulation risk. Triggers on &#x27;liquidity&#x27;, &#x27;depth&#x27;, &#x27;slippage&#x27;, &#x27;momentum&#x27;, &#x27;buy/sell pressure&#x27;, &#x27;squeeze&#x27;, &#x27;funding rate&#x27;, &#x27;arbitrage&#x27;, &#x27;basis&#x27;, &#x27;premium&#x27;.</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/exchanges/gate-market-analysis .claude/skills/</code></div>
@@ -77,13 +77,17 @@
 
     <h2>Tags</h2>
     <div class="skill-tags" style="margin-bottom:32px">
-      <span class="skill-tag">gate</span>
-<span class="skill-tag">analysis</span>
-<span class="skill-tag">technical</span>
-<span class="skill-tag">sentiment</span>
+      <span class="skill-tag">official</span>
+<span class="skill-tag">exchanges</span>
 
     </div>
 
+    <h2>Quality Score</h2>
+    <div class="skill-meta" style="margin-top:8px">
+      <span>Score: <strong>63/100</strong></span>
+      <span>Grade: <strong>B</strong></span>
+      <span>Risk Gate: <strong>PASS</strong></span>
+    </div>
 
 
     <h2 id="trust">Trust profile <span class="trust-stage-pill">trust grade not computed yet</span></h2>
@@ -111,8 +115,8 @@
       <p class="trust-foot">Auto-generated by cryptoskill/extract-capabilities/0.3.0 &middot; hosted-service list version 2026-04-26 &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
     </div>
 
-    <section class="related-strip"><h2>Other by @gate-exchange</h2><div class="related-strip-list"><a class="related-strip-card" href="gate-dex-market.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate DEX Market</span></a><a class="related-strip-card" href="gate-dex-trade.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate DEX Trade</span></a><a class="related-strip-card" href="gate-dex-wallet.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate DEX Wallet</span></a><a class="related-strip-card" href="gate-assets.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate Exchange Assets</span></a><a class="related-strip-card" href="gate-staking.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate Exchange Staking</span></a><a class="related-strip-card" href="gate-trading-copilot.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate Exchange Trading Copilot</span></a></div></section>
-<section class="related-strip"><h2>Other in Exchanges</h2><div class="related-strip-list"><a class="related-strip-card" href="aegis.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Aegis</span></a><a class="related-strip-card" href="ai-bybit-trade.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Ai Bybit Trade</span></a><a class="related-strip-card" href="ai-bybit-trader.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Ai Bybit Trader</span></a><a class="related-strip-card" href="apify-crypto-skill.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Apify Crypto Skill</span></a><a class="related-strip-card" href="binance-arbitrage-finder.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Arbitrage Finder</span></a><a class="related-strip-card" href="binance-futures-trading.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Futures Trading</span></a></div></section>
+    <section class="related-strip"><h2>Other by @gate-exchange</h2><div class="related-strip-list"><a class="related-strip-card" href="../exchanges/gate-mcp-installer.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate MCP OpenClaw Installer</span></a><a class="related-strip-card" href="../exchanges/gate-dex-wallet.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate DEX Wallet</span></a><a class="related-strip-card" href="../exchanges/gate-dex-market.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate DEX Market</span></a><a class="related-strip-card" href="../exchanges/gate-assets.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate Exchange Assets</span></a><a class="related-strip-card" href="../exchanges/gate-risk-check.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate Info Risk Check</span></a><a class="related-strip-card" href="../exchanges/gate-staking.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Gate Exchange Staking</span></a></div></section>
+<section class="related-strip"><h2>Other in Exchanges</h2><div class="related-strip-list"><a class="related-strip-card" href="../exchanges/bybit-official-skills.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Bybit Official Skills</span></a><a class="related-strip-card" href="../exchanges/binance-official-onchain-pay.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official Onchain Pay</span></a><a class="related-strip-card" href="../exchanges/binance-official-p2p.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Binance Official P2p</span></a><a class="related-strip-card" href="../exchanges/crypto-com-crypto-com-app.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">Crypto Com Crypto Com App</span></a><a class="related-strip-card" href="../exchanges/okx-official-dex-swap.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">OKX Official DEX Swap</span></a><a class="related-strip-card" href="../exchanges/okx-agentic-wallet.html"><span class="related-strip-icon" aria-hidden="true">🏦</span><span class="related-strip-name">OKX Agentic Wallet</span></a></div></section>
 
     <h2>Source</h2>
     <p><a href="https://github.com/jiayaoqijia/cryptoskill/tree/main/skills/exchanges/gate-market-analysis" target="_blank" rel="noopener">View on GitHub &rarr;</a></p>

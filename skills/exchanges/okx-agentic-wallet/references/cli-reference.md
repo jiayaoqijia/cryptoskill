@@ -1,6 +1,6 @@
 # Onchain OS — Agentic Wallet CLI Reference
 
-Complete parameter tables, return field schemas, and usage examples for all wallet commands (A-F).
+Complete parameter tables, return field schemas, and usage examples for all wallet commands (A-G).
 
 ---
 
@@ -105,6 +105,20 @@ onchainos wallet status
 | `currentAccountId` | String | Active account UUID |
 | `currentAccountName` | String | Active account name |
 | `accountCount` | Number | Total number of wallet accounts (0 if not logged in) |
+| `policy` | Object \| Null | Policy settings for the active account (null when not logged in or no policy configured). See **Policy fields** below. |
+
+#### Policy fields (inside `policy`)
+
+| Field | Type | Description |
+|---|---|---|
+| `singleTxLimit` | String | Per-transaction USD limit (`"0"` = not set) |
+| `singleTxFlag` | Boolean | Whether per-transaction limit is enabled |
+| `dailyTransferTxLimit` | String | Daily transfer USD limit (`"0"` = not set) |
+| `dailyTransferTxFlag` | Boolean | Whether daily transfer limit is enabled |
+| `dailyTransferTxUsed` | String | Daily transfer amount already used (USD) |
+| `dailyTradeTxLimit` | String | Daily trade USD limit (`"0"` = not set) |
+| `dailyTradeTxFlag` | Boolean | Whether daily trade limit is enabled |
+| `dailyTradeTxUsed` | String | Daily trade amount already used (USD) |
 
 ### A6. `onchainos wallet logout`
 
@@ -118,6 +132,29 @@ onchainos wallet logout
 
 **Success response:** `{"ok": true, "data": {}}`
 
+### A7. `onchainos wallet chains`
+
+List all chains supported by the wallet, including chain names, IDs, and capabilities.
+
+```bash
+onchainos wallet chains
+```
+
+**Parameters:** None.
+
+**Return fields** (per chain in array):
+
+| Field | Type | Description |
+|---|---|---|
+| `alias` | String | Internal alias (e.g., `"eth"`, `"matic"`) — for internal use only |
+| `chainIndex` | String | Chain index used in API responses (e.g., `"1"`) |
+| `chainName` | String | Technical chain name (e.g., `"eth"`, `"matic"`) — may differ from display name |
+| `isEvmChain` | Boolean | Whether this is an EVM-compatible chain |
+| `realChainIndex` | String | **The value to pass to `--chain`** in wallet commands (e.g., `"1"` for Ethereum) |
+| `showName` | String | **Human-readable display name** — always use this when showing chain names to users (e.g., `"Ethereum"`, `"Polygon"`, `"BNB Chain"`) |
+
+> **Usage**: Use `showName` for user-facing display. Use `realChainIndex` for `--chain` parameters in wallet commands.
+
 ---
 
 ## B. Balance Commands
@@ -127,32 +164,31 @@ onchainos wallet logout
 Query the authenticated wallet's token balances. Behavior varies by flags.
 
 ```bash
-onchainos wallet balance [--all] [--chain <chainId>] [--token-address <addr>] [--force]
+onchainos wallet balance [--all] [--chain <chain>] [--token-address <addr>] [--force]
 ```
 
 | Param | Required | Default | Description |
 |---|---|---|---|
 | `--all` | No | false | Query all accounts' assets (uses batch endpoint) |
-| `--chain` | No | all chains | Chain ID / `realChainIndex` (e.g., `1` for Ethereum, `501` for Solana, `196` for XLayer). Required when using `--token-address`. |
+| `--chain` | No | all chains | Chain name or numeric ID (e.g. `ethereum` or `1`, `solana` or `501`, `xlayer` or `196`). Required when using `--token-address`. |
 | `--token-address` | No | - | Single token contract address. Requires `--chain`. |
 | `--force` | No | false | Bypass all caches, re-fetch wallet accounts + balances from API |
 
 ---
 
-**Scenario 1: No flags — account overview (default)**
+**Scenario 1: No flags — active account balance (default)**
 
-Returns all accounts with EVM/SOL addresses and per-account USD totals.
+Returns the active account's EVM/SOL addresses, all-chain token list, and total USD value.
 
 | Field | Type | Description |
 |---|---|---|
-| `totalValueUsd` | String | Total value across all accounts |
-| `accounts[]` | Array | Account list |
-| `accounts[].accountId` | String | Account UUID |
-| `accounts[].accountName` | String | Account name |
-| `accounts[].evmAddress` | String | EVM address for this account |
-| `accounts[].solAddress` | String | Solana address for this account |
-| `accounts[].totalValueUsd` | String | Per-account total USD value |
-| `accounts[].isActive` | Boolean | Whether this is the currently selected account |
+| `totalValueUsd` | String | Total USD value for the active account |
+| `accountId` | String | Active account UUID |
+| `accountName` | String | Active account name |
+| `evmAddress` | String | EVM address for this account |
+| `solAddress` | String | Solana address for this account |
+| `accountCount` | Number | Total number of wallet accounts |
+| `details` | Array | Token balance groups from the API, enriched with `usdValue` |
 
 ---
 
@@ -170,7 +206,7 @@ Returns `totalValueUsd` plus a `details` map of per-account balance cache entrie
 
 ---
 
-**Scenario 3: `--chain <chainId>` (no `--token-address`) — chain-filtered balances**
+**Scenario 3: `--chain <chain>` (no `--token-address`) — chain-filtered balances**
 
 Returns token balances for the active account on the specified chain.
 
@@ -188,7 +224,7 @@ Returns token balances for the active account on the specified chain.
 
 ---
 
-**Scenario 4: `--chain <chainId> --token-address <addr>` — specific token balance**
+**Scenario 4: `--chain <chain> --token-address <addr>` — specific token balance**
 
 Returns balance data for a single token. No `totalValueUsd` at top level.
 
@@ -240,272 +276,10 @@ onchainos wallet balance --chain 1 --token-address "0x3883ec817f2a080cb035b0a383
 
 ---
 
-## C. Portfolio Commands (9 commands)
+## C. Portfolio Commands
 
-### C1. `onchainos portfolio chains`
-
-Get supported chains for balance queries. No parameters required.
-
-```bash
-onchainos portfolio chains
-```
-
-**Return fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `name` | String | Chain name (e.g., `"XLayer"`) |
-| `logoUrl` | String | Chain logo URL |
-| `shortName` | String | Chain short name (e.g., `"OKB"`) |
-| `chainIndex` | String | Chain unique identifier (e.g., `"196"`) |
-
-### C2. `onchainos portfolio supported-chains`
-
-Get supported chains for portfolio PnL endpoints. No parameters required.
-
-```bash
-onchainos portfolio supported-chains
-```
-
-**Return fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `name` | String | Chain name (e.g., `"Ethereum"`) |
-| `logoUrl` | String | Chain logo URL |
-| `shortName` | String | Chain short name |
-| `chainIndex` | String | Chain unique identifier (e.g., `"1"`) |
-
-### C3. `onchainos portfolio total-value`
-
-Get total asset value for a wallet address.
-
-```bash
-onchainos portfolio total-value --address <address> --chains <chains> [--asset-type <type>] [--exclude-risk <bool>]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--address` | Yes | - | Wallet address |
-| `--chains` | Yes | - | Chain names or IDs, comma-separated (e.g., `"xlayer,solana"` or `"196,501"`) |
-| `--asset-type` | No | `"0"` | `0`=all, `1`=tokens only, `2`=DeFi only |
-| `--exclude-risk` | No | `true` | `true`=filter risky tokens, `false`=include. Only ETH/BSC/SOL/BASE. Note: `all-balances` and `token-balances` use `"0"`/`"1"` instead of boolean. |
-
-**Return fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `totalValue` | String | Total asset value in USD |
-
-### C4. `onchainos portfolio all-balances`
-
-Get all token balances for a wallet address.
-
-```bash
-onchainos portfolio all-balances --address <address> --chains <chains> [--exclude-risk <value>]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--address` | Yes | - | Wallet address |
-| `--chains` | Yes | - | Chain names or IDs, comma-separated, max 50 |
-| `--exclude-risk` | No | `"0"` | `0`=filter out risky tokens (default), `1`=include. Only ETH/BSC/SOL/BASE |
-
-**Return fields** (per token in `tokenAssets[]`):
-
-| Field | Type | Description |
-|---|---|---|
-| `chainIndex` | String | Chain identifier |
-| `tokenContractAddress` | String | Token contract address |
-| `symbol` | String | Token symbol (e.g., `"OKB"`) |
-| `balance` | String | Token balance in UI units (e.g., `"10.5"`) |
-| `rawBalance` | String | Token balance in base units (e.g., `"10500000000000000000"`) |
-| `tokenPrice` | String | Token price in USD |
-| `isRiskToken` | Boolean | `true` if flagged as risky |
-
-### C5. `onchainos portfolio token-balances`
-
-Get specific token balances for a wallet address.
-
-```bash
-onchainos portfolio token-balances --address <address> --tokens <tokens> [--exclude-risk <value>]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--address` | Yes | - | Wallet address |
-| `--tokens` | Yes | - | Token list: `"chainIndex:tokenAddress"` pairs, comma-separated. Use empty address for native token (e.g., `"196:"` for native OKB). Max 20 items. |
-| `--exclude-risk` | No | `"0"` | `0`=filter out (default), `1`=include |
-
-**Return fields**: Same schema as `all-balances` (`tokenAssets[]`).
-
-### C6. `onchainos portfolio overview`
-
-Get wallet-level PnL summary and trading behaviour metrics.
-
-```bash
-onchainos portfolio overview --address <address> --chain <chain> [--time-frame <frame>]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--address` | Yes | - | Wallet address |
-| `--chain` | Yes | - | Chain name or ID (e.g., `ethereum`, `solana`, `xlayer`) |
-| `--time-frame` | No | `7d` | `1d`, `3d`, `7d`, `1m`, `3m` |
-
-**Return fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `realizedPnlUsd` | String | Realized PnL in USD |
-| `unrealizedPnlUsd` | String | Unrealized PnL in USD |
-| `totalPnlUsd` | String | Total PnL in USD |
-| `totalPnlPercent` | String | Total PnL as a percentage |
-| `winRate` | String | Ratio of profitable sells (e.g., `"0.65"` = 65%) |
-| `buyTxCount` | String | Number of buy transactions |
-| `sellTxCount` | String | Number of sell transactions |
-| `preferredMarketCap` | String | Most-traded market cap bucket (`1`-`5`, small->large) |
-| `topPnlTokenList[]` | Array | Top performing tokens in the period |
-
-### C7. `onchainos portfolio dex-history`
-
-Get wallet DEX transaction history with cursor pagination.
-
-```bash
-onchainos portfolio dex-history --address <address> --chain <chain> [--limit <n>] [--cursor <cursor>] [--token <address>] [--tx-type <types>]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--address` | Yes | - | Wallet address |
-| `--chain` | Yes | - | Chain name or ID |
-| `--limit` | No | `20` | Page size (1-100) |
-| `--cursor` | No | - | Pagination cursor from previous response (omit for first page) |
-| `--token` | No | - | Filter by token contract address |
-| `--tx-type` | No | all | Transaction type(s), comma-separated: `1`=buy, `2`=sell, `3`=transfer-in, `4`=transfer-out, `0`=all |
-
-**Return fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `cursor` | String | Next-page cursor (empty when no more pages) |
-| `historyList[]` | Array | Transaction records |
-| `historyList[].type` | String | Transaction type (`1`-`4`) |
-| `historyList[].timestamp` | String | Transaction time (Unix ms) |
-| `historyList[].tokenContractAddress` | String | Token involved |
-
-### C8. `onchainos portfolio recent-pnl`
-
-Get paginated list of recent per-token PnL records.
-
-```bash
-onchainos portfolio recent-pnl --address <address> --chain <chain> [--limit <n>] [--cursor <cursor>]
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--address` | Yes | - | Wallet address |
-| `--chain` | Yes | - | Chain name or ID |
-| `--limit` | No | `20` | Page size (1-100) |
-| `--cursor` | No | - | Pagination cursor from previous response |
-
-**Return fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `cursor` | String | Next-page cursor (empty when no more pages) |
-| `pnlList[]` | Array | Token PnL records |
-| `pnlList[].tokenSymbol` | String | Token symbol |
-| `pnlList[].tokenContractAddress` | String | Token contract address |
-| `pnlList[].realizedPnl` | String | Realized PnL in USD |
-| `pnlList[].unrealizedPnl` | String | Unrealized PnL in USD |
-| `pnlList[].totalPnl` | String | Total PnL in USD |
-| `pnlList[].buyTxCount` | String | Buy transaction count |
-| `pnlList[].sellTxCount` | String | Sell transaction count |
-| `pnlList[].tokenBalanceAmount` | String | Current token amount held |
-| `pnlList[].lastActiveTimestamp` | String | Last activity timestamp (Unix ms) |
-
-### C9. `onchainos portfolio token-pnl`
-
-Get latest PnL snapshot for a specific token in a wallet.
-
-```bash
-onchainos portfolio token-pnl --address <address> --chain <chain> --token <token>
-```
-
-| Param | Required | Default | Description |
-|---|---|---|---|
-| `--address` | Yes | - | Wallet address |
-| `--chain` | Yes | - | Chain name or ID |
-| `--token` | Yes | - | Token contract address |
-
-**Return fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `tokenSymbol` | String | Token symbol |
-| `tokenContractAddress` | String | Token contract address |
-| `realizedPnl` | String | Realized PnL in USD |
-| `unrealizedPnl` | String | Unrealized PnL in USD |
-| `totalPnl` | String | Total PnL in USD |
-| `buyAvgPrice` | String | Average buy price in USD |
-| `sellAvgPrice` | String | Average sell price in USD |
-| `buyTxCount` | String | Buy transaction count |
-| `sellTxCount` | String | Sell transaction count |
-| `tokenBalance` | String | Current position value in USD |
-| `tokenBalanceAmount` | String | Current token amount (`"0"` = fully closed position) |
-| `lastActiveTimestamp` | String | Last activity timestamp (Unix ms) |
-
-### C — Input / Output Examples
-
-**User says:** "Check my wallet total assets on XLayer and Solana"
-
-```bash
-onchainos portfolio total-value --address 0xYourWallet --chains "xlayer,solana"
-# -> Display: Total assets $12,345.67
-```
-
-**User says:** "Show all tokens in my wallet"
-
-```bash
-onchainos portfolio all-balances --address 0xYourWallet --chains "xlayer,solana,ethereum"
-# -> Display:
-#   OKB:  10.5 ($509.25)
-#   USDC: 2,000 ($2,000.00)
-#   USDT: 1,500 ($1,500.00)
-#   ...
-```
-
-**User says:** "Only check USDC and native OKB balances on XLayer"
-
-```bash
-onchainos portfolio token-balances --address 0xYourWallet --tokens "196:,196:0x74b7f16337b8972027f6196a17a631ac6de26d22"
-# -> Display: OKB: 10.5 ($509.25), USDC: 2,000 ($2,000.00)
-```
-
-**User says:** "Show my PnL on Ethereum for the last month"
-
-```bash
-onchainos portfolio overview --address 0xYourWallet --chain ethereum --time-frame 1m
-# -> Display: Total PnL $+1,234.56 | Win rate: 65% | Buys: 42 | Sells: 28
-```
-
-**User says:** "What tokens did I buy on Ethereum recently?"
-
-```bash
-onchainos portfolio dex-history --address 0xYourWallet --chain ethereum --tx-type 1 --limit 20
-# -> Display: list of buy transactions with token, amount, timestamp
-```
-
-**User says:** "How much profit have I made on USDC on Ethereum?"
-
-```bash
-onchainos portfolio token-pnl \
-  --address 0xYourWallet \
-  --chain ethereum \
-  --token 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
-# -> Display: Realized PnL $+500.00 | Unrealized $+12.50 | Avg buy $1.00 | Avg sell $1.001
-```
+> Portfolio commands (`portfolio total-value`, `portfolio all-balances`, `portfolio overview`, etc.)
+> are handled by the **okx-wallet-portfolio** skill. See that skill's cli-reference for full documentation.
 
 ---
 
@@ -517,57 +291,234 @@ Send native tokens or contract tokens (ERC-20 / SPL) from the Agentic Wallet.
 
 ```bash
 onchainos wallet send \
-  --amount <amount> \
-  --receipt <address> \
-  --chain <chainId> \
+  --readable-amount <amount> \
+  --recipient <address> \
+  --chain <chain> \
   [--from <address>] \
-  [--contract-token <address>]
+  [--contract-token <address>] \
+  [--force] \
+  [--gas-token-address <address>] \
+  [--relayer-id <id>] \
+  [--enable-gas-station]
 ```
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `--amount` | string | Yes | Amount in UI units (e.g. "0.01" for 0.01 ETH) |
-| `--receipt` | string | Yes | Recipient address (0x-prefixed for EVM, Base58 for Solana) |
-| `--chain` | string | Yes | Chain ID / `realChainIndex` (e.g. "1" for Ethereum, "501" for Solana, "56" for BSC) |
+| `--readable-amount` | string | One of | Human-readable amount (e.g. `"0.1"`, `"100"`). CLI converts to minimal units automatically. Preferred. |
+| `--amt` | string | One of | Raw minimal units. Use only when explicitly known. Mutually exclusive with `--readable-amount`. |
+| `--recipient` | string | Yes | Recipient address (0x-prefixed for EVM, Base58 for Solana) |
+| `--chain` | string | Yes | Chain name or numeric ID (e.g. `ethereum` or `1`, `solana` or `501`, `bsc` or `56`) |
 | `--from` | string | No | Sender address — defaults to selected account's address on the given chain |
 | `--contract-token` | string | No | Token contract address for ERC-20 / SPL transfers. Omit for native token transfers. |
+| `--force` | bool | No | Skip confirmation prompts from the backend (default false). Use when re-running a command after the user has confirmed a `confirming` response. |
+| `--gas-token-address` | string | No | Gas Station: token contract address to pay gas (from confirming response tokenList). Second-phase call only. |
+| `--relayer-id` | string | No | Gas Station: relayer ID (from confirming response tokenList). Second-phase call only. |
+| `--enable-gas-station` | bool | No | Gas Station: first-time activation flag. When `--gas-token-address` is also given, sets it as default (Scene A option 1). When passed alone, enables without a default (Scene A option 2, backend auto-picks highest-balance token). |
 
-**Return fields:**
+**Return fields (normal):**
 
 | Field | Type | Description |
 |---|---|---|
 | `txHash` | String | Broadcast transaction hash |
 
+**Return fields (Gas Station auto-path — gasStationStatus ∈ {READY_TO_USE / PENDING_UPGRADE / REENABLE_ONLY} with hash non-empty):**
+
+| Field | Type | Description |
+|---|---|---|
+| `txHash` | String | Broadcast transaction hash (may be empty; relayer returns async) |
+| `orderId` | String | Order ID for async status query via `wallet history --chain <chain> --order-id <id>` (routes to `/order/detail`) |
+| `gasStationUsed` | Boolean | `true` |
+| `gasStationStatus` | String | Enum: READY_TO_USE / PENDING_UPGRADE / REENABLE_ONLY |
+| `autoSelectedToken` | Boolean | Backend auto-selected the gas token |
+| `serviceCharge` | String | Gas fee amount (integer, multiplied by token decimal) |
+| `serviceChargeSymbol` | String | Gas fee token symbol (e.g. "USDT") |
+
+**Confirming response (Gas Station FIRST_TIME_PROMPT or READY_TO_USE with default-insufficient — exit code 2):**
+
+When Gas Station needs user input, the CLI returns a confirming response with the available token list in the `next` field. The `message` body distinguishes the two subcases:
+- FIRST_TIME_PROMPT (Scene A) — first-time enable, 3-option decision tree
+- READY_TO_USE with empty hash (Scene C) — default insufficient, 2-question decision tree
+
+See `references/gas-station.md` Step 2 for Agent handling instructions.
+
+**Return fields (Gas Station INSUFFICIENT_ALL):**
+
+| Field | Type | Description |
+|---|---|---|
+| `gasStationUsed` | Boolean | `true` |
+| `gasStationStatus` | String | `"INSUFFICIENT_ALL"` |
+| `insufficientAll` | Boolean | `true` — all gas tokens insufficient |
+| `gasStationTokenList` | Array | All items with `sufficient: false` |
+| `fromAddr` | String | User address for deposit guidance |
+
+**Return fields (Gas Station HAS_PENDING_TX):**
+
+| Field | Type | Description |
+|---|---|---|
+| `gasStationUsed` | Boolean | `true` |
+| `gasStationStatus` | String | `"HAS_PENDING_TX"` |
+| `hasPendingTx` | Boolean | `true` — a previous Gas Station tx is still pending |
+
+**Return fields (not routed through Gas Station — gasStationStatus=NOT_APPLICABLE):**
+
+Same as regular `wallet send` output (`txHash` / `orderId`). `gasStationUsed=false`.
+
+---
+
+## D-GS. Gas Station Management Commands
+
+### D-GS1. `onchainos wallet gas-station update-default-token`
+
+Update the default gas payment token for Gas Station on a specific chain.
+
+```bash
+onchainos wallet gas-station update-default-token \
+  --chain <chain> \
+  --gas-token-address <address>
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `--chain` | string | Yes | Chain name or ID (e.g. `ethereum` or `1`) |
+| `--gas-token-address` | string | Yes | Token contract address to set as default gas payment token |
+
+### D-GS2. `onchainos wallet gas-station enable`
+
+Turn Gas Station back on for a chain that was previously enabled. (Internal: DB flag flip only, no on-chain action. Requires prior on-chain setup — first-time activation happens via `wallet send` which bundles the setup with the first Gas Station broadcast. If the chain has never been activated, backend returns a msg in the response body — relay the backend msg verbatim, do NOT paraphrase with "7702" / "delegation" / "DB".) See `gas-station.md` User-Facing Reply Templates for user-facing wording.
+
+```bash
+onchainos wallet gas-station enable \
+  --chain <chain>
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `--chain` | string | Yes | Chain name or ID (e.g. `ethereum` or `1`) |
+
+### D-GS3. `onchainos wallet gas-station disable`
+
+Turn Gas Station off for a chain; the chain reverts to paying gas with native token. (Internal: DB flag flip only, no on-chain action. On-chain state and `default_gas_token_address` are preserved so re-enabling later is instant.) See `gas-station.md` User-Facing Reply Templates for user-facing wording — **never paraphrase "DB flag" / "7702" / "delegation" into the reply**.
+
+```bash
+onchainos wallet gas-station disable \
+  --chain <chain>
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `--chain` | string | Yes | Chain name or ID (e.g. `ethereum` or `1`) |
+
+### D-GS4. `onchainos wallet gas-station status`
+
+**Read-only Gas Station readiness probe.** Used by **third-party plugin pre-flight** — the agent runs this before invoking a plugin's on-chain command (e.g. `aave-v3-plugin --confirm supply ...`) to decide whether the chain needs first-time GS activation, re-enable, or is already ready. Never broadcasts. Safe to call repeatedly.
+
+Internally probes Phase 1 diagnostic via a 0-amount native self-transfer (the same call the regular `wallet send` would make on its first phase, but here we deliberately don't proceed past it).
+
+```bash
+onchainos wallet gas-station status \
+  --chain <chain> \
+  [--from <address>]
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `--chain` | string | Yes | Chain name or ID |
+| `--from` | string | No | Sender address; defaults to selectedAccountId |
+
+Response:
+
+```json
+{
+  "ok": true,
+  "data": {
+    "chainId": "42161",
+    "chainName": "arb_eth",
+    "fromAddress": "0xd13c...a136",
+    "gasStationActivated": false,
+    "gasStationDefaultToken": null,
+    "gasStationStatus": "FIRST_TIME_PROMPT",
+    "recommendation": "ENABLE_GAS_STATION",
+    "hasPendingTx": false,
+    "insufficientAll": false,
+    "tokenList": [
+      { "symbol": "USDC", "feeTokenAddress": "0xaf88...5831", "relayerId": "fcfc...3c87",
+        "balance": "1.49", "serviceCharge": "0.026", "sufficient": true }
+    ]
+  }
+}
+```
+
+`recommendation` enum:
+
+| Value | Agent action |
+|---|---|
+| `READY` | Chain has sufficient native gas, or GS already active. Proceed directly to plugin invocation. |
+| `ENABLE_GAS_STATION` | First-time. Render Scene A → user picks → run `wallet gas-station setup` → re-invoke plugin. |
+| `REENABLE_GAS_STATION` | User previously disabled GS. Render Scene B' → user picks → `setup` → re-invoke. |
+| `PENDING_UPGRADE` | Chain not yet 7702-delegated. Render Scene A' → user picks → `setup` (carries 7702 material) → re-invoke. |
+| `INSUFFICIENT_ALL` | No stablecoin has enough balance. Tell user to top up. Do NOT invoke plugin. |
+| `HAS_PENDING_TX` | A pending GS tx blocks new ones. Tell user to wait. Do NOT invoke plugin. |
+
+### D-GS5. `onchainos wallet gas-station setup`
+
+**Standalone first-time activation.** Decoupled from `wallet send` so the agent can activate Gas Station *before* invoking a third-party plugin. The plugin (which always passes `--force` internally) will then succeed transparently because GS is already active on the chain.
+
+Internally drives a 1-minimal-unit self-transfer of the picked gas token with `--enable-gas-station --force`. Backend Phase 2 returns 712 hash (and `authHashFor7702` if the chain still needs 7702 upgrade); CLI signs and broadcasts. The carrier transfer is from-self to from-self, so net value movement = 0; only the GS service charge is consumed.
+
+**Pre-condition**: the agent has already obtained user consent via Scene A / B' / A' (see `gas-station.md`). This command does NOT prompt — it executes the activation that the user has already approved.
+
+```bash
+onchainos wallet gas-station setup \
+  --chain <chain> \
+  --gas-token-address <addr> \
+  --relayer-id <relayer_id> \
+  [--from <address>]
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `--chain` | string | Yes | Chain name or ID |
+| `--gas-token-address` | string | Yes | Token address picked by the user from `tokenList` |
+| `--relayer-id` | string | Yes | Relayer ID paired with `--gas-token-address` |
+| `--from` | string | No | Sender address; defaults to selectedAccountId |
+
+Idempotency:
+- Already activated, same default → returns `{gasStationActivated: true, alreadyActivated: true}` without broadcasting.
+- Already activated, different default → switches via `update-default-token` and returns `{alreadyActivated: true, defaultTokenSwitched: true}`.
+- Not yet activated → drives the carrier transfer; on success returns the wallet send response (`{txHash, orderId, gasStationUsed: true, serviceCharge, ...}`).
+
 ---
 
 ## E. History Command (2 modes)
 
-### E1. List Mode (no `--tx-hash`)
+Routing:
+- If any of `--tx-hash` / `--order-id` / `--uop-hash` is provided → **Detail mode** → `/priapi/v5/wallet/agentic/order/detail` (precise single record)
+- Otherwise → **List mode** → `/priapi/v5/wallet/agentic/order/list` (browse paged list)
 
-Browse the transaction order list for the current or specified account.
+### E1. List Mode (browse paged list)
+
+Browse the transaction order list for the current or specified account. Use when the user wants to see recent transactions without knowing a specific identifier.
 
 ```bash
 onchainos wallet history \
   [--account-id <id>] \
-  [--chain <chainId>] \
+  [--chain <chain>] \
   [--begin <ms_timestamp>] \
   [--end <ms_timestamp>] \
   [--page-num <cursor>] \
-  [--limit <n>] \
-  [--order-id <id>] \
-  [--uop-hash <hash>]
+  [--limit <n>]
 ```
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `--account-id` | string | No | Account ID to query. Defaults to the currently selected account. |
-| `--chain` | string | No | Chain ID / `realChainIndex` (e.g. "1" for Ethereum, "501" for Solana). Resolved to chainIndex internally. |
+| `--chain` | string | No | Chain name or numeric ID (e.g. `ethereum` or `1`, `solana` or `501`). Resolved to chainIndex internally. |
 | `--begin` | string | No | Start time filter (millisecond timestamp) |
 | `--end` | string | No | End time filter (millisecond timestamp) |
 | `--page-num` | string | No | Page cursor for pagination |
 | `--limit` | string | No | Number of results per page |
-| `--order-id` | string | No | Filter by specific order ID |
-| `--uop-hash` | string | No | Filter by user operation hash |
+
+> Note: `--order-id` / `--tx-hash` / `--uop-hash` are **not** accepted in list mode — providing any of them routes to detail mode automatically.
 
 **Return fields:**
 
@@ -632,28 +583,41 @@ onchainos wallet history \
 }
 ```
 
-### E2. Detail Mode (with `--tx-hash`)
+### E2. Detail Mode (single order lookup)
 
-Look up a specific transaction by its hash.
+Look up a specific transaction by any of: `--order-id`, `--tx-hash`, or `--uop-hash`. Triggered whenever **any** of those flags is present.
+
+**Preferred for Gas Station**: right after a GS broadcast, the user has the `orderId` but `txHash` is returned asynchronously by the relayer — use `--order-id` to poll status without waiting for the hash.
 
 ```bash
+# Query by orderId (recommended right after broadcast)
 onchainos wallet history \
+  --chain <chain> \
+  --order-id <id> \
+  [--account-id <id>]
+
+# Query by txHash (once relayer returns hash / for non-GS transactions)
+onchainos wallet history \
+  --chain <chain> \
   --tx-hash <hash> \
-  --chain <chainId> \
-  --address <addr> \
-  [--account-id <id>] \
-  [--order-id <id>] \
-  [--uop-hash <hash>]
+  [--address <addr>] \
+  [--account-id <id>]
+
+# Query by user-operation hash
+onchainos wallet history \
+  --chain <chain> \
+  --uop-hash <hash> \
+  [--account-id <id>]
 ```
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `--tx-hash` | string | Yes | Transaction hash to look up |
-| `--chain` | string | Yes | Chain ID / `realChainIndex` where the transaction occurred (e.g. "1" for Ethereum, "501" for Solana) |
-| `--address` | string | Yes | Wallet address that sent/received the transaction |
+| `--chain` | string | Yes | Chain name or numeric ID where the transaction occurred (e.g. `ethereum` or `1`, `solana` or `501`) |
+| `--order-id` | string | No* | Order ID returned by broadcast. Any one of `--order-id` / `--tx-hash` / `--uop-hash` must be provided to enter detail mode. |
+| `--tx-hash` | string | No* | Transaction hash (may not be available yet for GS transactions — prefer `--order-id` in that case) |
+| `--uop-hash` | string | No* | User operation hash |
+| `--address` | string | No | Wallet address hint (optional; backend filters by identifier above) |
 | `--account-id` | string | No | Account ID. Defaults to the currently selected account. |
-| `--order-id` | string | No | Order ID filter |
-| `--uop-hash` | string | No | User operation hash filter |
 
 **Return fields (detail mode):**
 
@@ -738,8 +702,8 @@ Call a smart contract on an EVM chain or Solana program with TEE signing and aut
 ```bash
 onchainos wallet contract-call \
   --to <contract_address> \
-  --chain <chainId> \
-  [--value <amount>] \
+  --chain <chain> \
+  [--amt <amount>] \
   [--input-data <hex_calldata>] \
   [--unsigned-tx <base58_tx>] \
   [--gas-limit <number>] \
@@ -747,22 +711,28 @@ onchainos wallet contract-call \
   [--aa-dex-token-addr <address>] \
   [--aa-dex-token-amount <amount>] \
   [--mev-protection] \
-  [--jito-unsigned-tx <jito_base58_tx>]
+  [--jito-unsigned-tx <jito_base58_tx>] \
+  [--biz-type <biz_type>] \
+  [--strategy <strategy>] \
+  [--force]
 ```
 
-| Parameter | Type | Required | Description |
+| Parameter | Type | Required | Description                                                                                                                                     |
 |---|---|---|---|
-| `--to` | string | Yes | Contract address to interact with |
-| `--chain` | string | Yes | Chain ID / `realChainIndex` (e.g. "1" for Ethereum, "501" for Solana, "56" for BSC) |
-| `--value` | string | No | Native token amount to send with the call (default "0"). In UI units (e.g., "0.01" for 0.01 ETH). |
-| `--input-data` | string | Conditional | EVM call data (hex-encoded, e.g. "0xa9059cbb..."). **Required for EVM chains.** |
-| `--unsigned-tx` | string | Conditional | Solana unsigned transaction data (base58). **Required for Solana.** |
-| `--gas-limit` | string | No | Gas limit override (EVM only). If omitted, the CLI estimates gas automatically. |
-| `--from` | string | No | Sender address — defaults to the selected account's address on the given chain. |
-| `--aa-dex-token-addr` | string | No | AA DEX token contract address (for AA DEX interactions). |
-| `--aa-dex-token-amount` | string | No | AA DEX token amount (for AA DEX interactions). |
-| `--mev-protection` | bool | No | Enable MEV protection (default false). Supported on Ethereum, BSC, Base, and Solana. On Solana, `--jito-unsigned-tx` is also required. |
-| `--jito-unsigned-tx` | string | No | Jito unsigned transaction data (base58) for Solana MEV protection. **Required when `--mev-protection` is used on Solana.** |
+| `--to` | string | Yes | Contract address to interact with                                                                                                               |
+| `--chain` | string | Yes | Chain name or numeric ID (e.g. `ethereum` or `1`, `solana` or `501`, `bsc` or `56`)                                                             |
+| `--amt` | string | No | Native token amount in minimal units — whole number, no decimals (default "0"). See SKILL.md `--amt` section for conversion rules.              |
+| `--input-data` | string | Conditional | EVM call data (hex-encoded, e.g. "0xa9059cbb..."). **Required for EVM chains.**                                                                 |
+| `--unsigned-tx` | string | Conditional | Solana unsigned transaction data (base58). **Required for Solana.**                                                                             |
+| `--gas-limit` | string | No | Gas limit override (EVM only). If omitted, the CLI estimates gas automatically.                                                                 |
+| `--from` | string | No | Sender address — defaults to the selected account's address on the given chain.                                                                 |
+| `--aa-dex-token-addr` | string | No | AA DEX token contract address (for AA DEX interactions).                                                                                        |
+| `--aa-dex-token-amount` | string | No | AA DEX token amount (for AA DEX interactions).                                                                                                  |
+| `--mev-protection` | bool | No | Enable MEV protection (default false). Supported on Ethereum, BSC, Base, and Solana. On Solana, `--jito-unsigned-tx` is also required.          |
+| `--jito-unsigned-tx` | string | No | Jito unsigned transaction data (base58) for Solana MEV protection. **Required when `--mev-protection` is used on Solana.**                      |
+| `--biz-type` | string | No | Transaction category (`transfer`,`dex`, `defi`, `dapp`)                                                                                         |
+| `--strategy` | string | No | Strategy name                                                                                                                                   |
+| `--force` | bool | No | Skip confirmation prompts from the backend (default false). Use when re-running a command after the user has confirmed a `confirming` response. |
 
 > Either `--input-data` (EVM) or `--unsigned-tx` (Solana) must be provided. The CLI will fail if neither is present.
 
@@ -771,3 +741,74 @@ onchainos wallet contract-call \
 | Field | Type | Description |
 |---|---|---|
 | `txHash` | String | Broadcast transaction hash |
+
+---
+
+## G. Sign Message Command
+
+### G1. `onchainos wallet sign-message`
+
+Sign a message using the TEE-backed session key. Supports personalSign (EIP-191, EVM + Solana) and EIP-712 typed structured data (EVM only).
+
+```bash
+onchainos wallet sign-message \
+  --chain <chain> \
+  --message <message> \
+  [--type <type>] \
+  --from <address> \
+  [--force]
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `--chain` | string | Yes | Chain name or numeric ID (e.g. `ethereum` or `1`, `solana` or `501`, `bsc` or `56`) |
+| `--message` | string | Yes | Message to sign. For `personal`: arbitrary string. For `eip712`: JSON string of the typed data. |
+| `--type` | string | No | Signing type: `personal` (default, EVM + Solana) or `eip712` (EVM only). |
+| `--from` | string | Yes | Sender address — the address whose private key is used to sign. |
+| `--force` | bool | No | Skip confirmation prompts from the backend (default false). Use when re-running a command after the user has confirmed a `confirming` response. |
+
+> **Note:** Using `--type eip712` with `--chain 501` (Solana) will return an error. EIP-712 is only supported on EVM chains.
+
+**Return fields (EVM chains):**
+
+| Field | Type | Description |
+|---|---|---|
+| `signature` | String | The resulting signature (hex-encoded, as returned by the API) |
+
+**Return fields (Solana, chain 501):**
+
+| Field | Type | Description |
+|---|---|---|
+| `signature` | String | The resulting signature (base58-encoded, converted from hex) |
+| `publicKey` | String | The signer's public address (the `--from` address) |
+
+### G — Input / Output Examples
+
+**User says:** "Sign this message on Ethereum: Hello World"
+
+```bash
+onchainos wallet sign-message --chain 1 --from 0xYourAddress --message "Hello World"
+# -> personalSign (EVM). message.value is hex-encoded.
+#   Signature: 0xabcdef1234567890...
+```
+
+---
+
+**User says:** "Sign this message on Solana"
+
+```bash
+onchainos wallet sign-message --chain 501 --from SoLYourAddress --message "Hello World"
+# -> personalSign (Solana). message.value is base58-encoded.
+#   Signature: 3xB7mK9v... (base58)
+#   PublicKey: SoLYourAddress
+```
+
+---
+
+**User says:** "Sign this EIP-712 typed data on Ethereum"
+
+```bash
+onchainos wallet sign-message --chain 1 --from 0xYourAddress --type eip712 --message '{"types":{"EIP712Domain":[{"name":"name","type":"string"}],"Mail":[{"name":"contents","type":"string"}]},"primaryType":"Mail","domain":{"name":"Example"},"message":{"contents":"Hello"}}'
+# -> eip712 (EVM only). Solana is NOT supported for eip712.
+#   Signature: 0x1234abcd5678ef90...
+```

@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+venv/
+*.egg-info/
+dist/
+build/
+README_old.md
+# Never commit your API key
+.env.local

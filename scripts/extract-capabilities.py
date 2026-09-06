@@ -611,6 +611,11 @@ def write_trust_auto(skill_dir, caps, evidence, em, hosts, dry_run=False):
     body = "\n".join(lines) + "\n"
     if dry_run:
         return body
+    if target.exists():
+        old = target.read_text(encoding="utf-8")
+        without_date = lambda value: re.sub(r'^generated_at:.*$', '', value, flags=re.M)
+        if without_date(old) == without_date(body):
+            return old
     target.write_text(body, encoding="utf-8")
     return body
 

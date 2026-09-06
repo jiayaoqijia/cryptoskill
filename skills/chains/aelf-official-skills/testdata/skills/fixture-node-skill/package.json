@@ -1,0 +1,12 @@
+{
+  "name": "@fixture/node-skill",
+  "version": "0.1.0",
+  "description": "Fixture node skill depending on fixture core.",
+  "bin": {
+    "fixture-node-setup": "./bin/setup.js"
+  },
+  "scripts": {
+    "setup": "bun run setup",
+    "mcp": "bun run mcp"
+  }
+}

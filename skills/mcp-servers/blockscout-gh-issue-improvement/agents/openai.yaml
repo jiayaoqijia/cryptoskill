@@ -1,0 +1,6 @@
+interface:
+  display_name: "GitHub Improvement Proposal Generator"
+  short_description: "Generate structured GitHub improvement proposals"
+  default_prompt: "Use $gh-issue-improvement to turn the current conversation into a structured GitHub improvement proposal."
+policy:
+  allow_implicit_invocation: false

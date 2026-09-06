@@ -1,0 +1,848 @@
+{
+  "name": "ca-agent-skills",
+  "description": "AI Agent toolkit for Portkey Wallet on aelf blockchain",
+  "tools": [
+    {
+      "name": "portkey-query-check-account",
+      "description": "Check if an email is registered in Portkey",
+      "command": "bun run portkey_query_skill.ts check-account",
+      "args": [
+        "--email"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-guardian-list",
+      "description": "Get guardian list for an account on an explicit chain",
+      "command": "bun run portkey_query_skill.ts guardian-list",
+      "args": [
+        "--identifier",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "Guardian identifier"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Explicit chain ID"
+          }
+        },
+        "required": [
+          "identifier",
+          "chain-id"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-prepare-auth-flow",
+      "description": "Prepare register/recovery flow for an email account and return resolvedChainId",
+      "command": "bun run portkey_query_skill.ts prepare-auth-flow",
+      "args": [
+        "--email",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Optional registration chain override for new accounts"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-chain-info",
+      "description": "Get chain configuration info",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run portkey_query_skill.ts chain-info"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-balance",
+      "description": "Get token balance",
+      "command": "bun run portkey_query_skill.ts balance",
+      "args": [
+        "--ca-address",
+        "--chain-id",
+        "--symbol"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-token-price",
+      "description": "Get token prices in USD",
+      "command": "bun run portkey_query_skill.ts token-price",
+      "args": [
+        "--symbols"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-get-verifier",
+      "description": "Get an assigned verifier server on an explicit chain",
+      "command": "bun run portkey_auth_skill.ts get-verifier",
+      "args": [
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chain-id": {
+            "type": "string",
+            "description": "Resolved chain ID from prepare-auth-flow"
+          }
+        },
+        "required": [
+          "chain-id"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-send-code",
+      "description": "Send verification code to email",
+      "command": "bun run portkey_auth_skill.ts send-code",
+      "args": [
+        "--email",
+        "--verifier-id",
+        "--operation",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "verifier-id": {
+            "type": "string",
+            "description": "Verifier service ID"
+          },
+          "operation": {
+            "type": "string",
+            "description": "Operation type: register | recovery"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Resolved chain ID from prepare-auth-flow"
+          }
+        },
+        "required": [
+          "email",
+          "verifier-id",
+          "operation",
+          "chain-id"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-verify-code",
+      "description": "Verify a 6-digit code",
+      "command": "bun run portkey_auth_skill.ts verify-code",
+      "args": [
+        "--email",
+        "--code",
+        "--verifier-id",
+        "--session-id",
+        "--operation",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-digit verification code"
+          },
+          "verifier-id": {
+            "type": "string",
+            "description": "Verifier service ID"
+          },
+          "session-id": {
+            "type": "string",
+            "description": "Verifier session ID"
+          },
+          "operation": {
+            "type": "string",
+            "description": "Operation type: register | recovery"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Resolved chain ID from prepare-auth-flow"
+          }
+        },
+        "required": [
+          "email",
+          "code",
+          "verifier-id",
+          "session-id",
+          "operation",
+          "chain-id"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-create-wallet",
+      "description": "Create a new manager wallet. After registration/recovery succeeds, use portkey-auth-save-keystore to persist it.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run portkey_auth_skill.ts create-wallet"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-register",
+      "description": "Register a new Portkey CA wallet",
+      "command": "bun run portkey_auth_skill.ts register",
+      "args": [
+        "--email",
+        "--manager",
+        "--verifier-id",
+        "--verification-doc",
+        "--signature",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "manager": {
+            "type": "string",
+            "description": "Manager wallet address"
+          },
+          "verifier-id": {
+            "type": "string",
+            "description": "Verifier service ID"
+          },
+          "verification-doc": {
+            "type": "string",
+            "description": "Verification document"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Verifier signature"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Resolved chain ID from prepare-auth-flow"
+          }
+        },
+        "required": [
+          "email",
+          "manager",
+          "verifier-id",
+          "verification-doc",
+          "signature",
+          "chain-id"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-check-status",
+      "description": "Check registration/recovery status",
+      "command": "bun run portkey_auth_skill.ts check-status",
+      "args": [
+        "--session-id",
+        "--type"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-save-keystore",
+      "description": "Encrypt and save Manager wallet to keystore file (~/.portkey/ca/)",
+      "command": "bun run portkey_auth_skill.ts save-keystore",
+      "args": [
+        "--password",
+        "--private-key",
+        "--mnemonic",
+        "--ca-hash",
+        "--ca-address",
+        "--login-email",
+        "--origin-chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "Password to encrypt the keystore"
+          },
+          "private-key": {
+            "type": "string",
+            "description": "Manager private key"
+          },
+          "mnemonic": {
+            "type": "string",
+            "description": "Manager mnemonic"
+          },
+          "ca-hash": {
+            "type": "string",
+            "description": "CA hash"
+          },
+          "ca-address": {
+            "type": "string",
+            "description": "CA address"
+          },
+          "login-email": {
+            "type": "string",
+            "description": "Login email associated with this CA account"
+          },
+          "origin-chain-id": {
+            "type": "string",
+            "description": "Resolved origin chain ID from prepare-auth-flow"
+          }
+        },
+        "required": [
+          "password",
+          "private-key",
+          "mnemonic",
+          "ca-hash",
+          "ca-address",
+          "origin-chain-id"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-recover-and-save",
+      "description": "Recover an existing CA wallet, wait for pass status, and immediately save the new manager to a reusable local keystore.",
+      "command": "bun run portkey_auth_skill.ts recover-and-save",
+      "args": [
+        "--email",
+        "--guardians-approved",
+        "--chain-id",
+        "--password",
+        "--login-email"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to recover"
+          },
+          "guardians-approved": {
+            "type": "string",
+            "description": "JSON array of approved guardians"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Resolved chain ID from prepare-auth-flow"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password to encrypt the reusable keystore"
+          },
+          "login-email": {
+            "type": "string",
+            "description": "Optional profile email to persist with the recovered keystore"
+          }
+        },
+        "required": [
+          "email",
+          "guardians-approved",
+          "chain-id",
+          "password"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-unlock",
+      "description": "Unlock the encrypted keystore with a password. If the password was forgotten, use recover-and-save to re-login / recover with fresh guardian verification codes.",
+      "command": "bun run portkey_auth_skill.ts unlock",
+      "args": [
+        "--password",
+        "--login-email",
+        "--keystore-file"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "Keystore password"
+          },
+          "login-email": {
+            "type": "string",
+            "description": "Login email associated with this CA account"
+          },
+          "keystore-file": {
+            "type": "string",
+            "description": "Explicit keystore file path"
+          }
+        },
+        "required": [
+          "password"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-lock",
+      "description": "Lock the wallet (clear private key from memory)",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run portkey_auth_skill.ts lock"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-wallet-status",
+      "description": "Check wallet status for the active or targeted CA keystore, including the recommended next step (unlock) and fallback guidance for wrong-profile selection or forgotten passwords.",
+      "command": "bun run portkey_auth_skill.ts wallet-status",
+      "args": [
+        "--login-email"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "login-email": {
+            "type": "string",
+            "description": "Login email associated with this CA account"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-list-wallet-profiles",
+      "description": "List locally saved CA keystore profiles",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run portkey_auth_skill.ts list-wallet-profiles"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-holder-info",
+      "description": "Get CA holder info from blockchain (guardians, managers, CA address)",
+      "command": "bun run portkey_query_skill.ts holder-info",
+      "args": [
+        "--ca-hash",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-manager-sync-status",
+      "description": "Check whether the current manager address has synced to the CA holder on the target chain before forward-call or transfer.",
+      "command": "bun run portkey_query_skill.ts manager-sync-status",
+      "args": [
+        "--ca-hash",
+        "--chain-id",
+        "--manager-address"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ca-hash": {
+            "type": "string",
+            "description": "CA hash"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Target chain ID"
+          },
+          "manager-address": {
+            "type": "string",
+            "description": "Manager wallet address"
+          }
+        },
+        "required": [
+          "ca-hash",
+          "chain-id",
+          "manager-address"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-token-list",
+      "description": "Get all tokens with balances for CA addresses across chains. Defaults to AA first and falls back to EOA on 401.",
+      "command": "bun run portkey_query_skill.ts token-list",
+      "args": [
+        "--ca-address-infos",
+        "--strategy"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ca-address-infos": {
+            "type": "string",
+            "description": "JSON array of { chainId, caAddress }"
+          },
+          "strategy": {
+            "type": "string",
+            "description": "aa | auto | eoa (default auto)"
+          }
+        },
+        "required": [
+          "ca-address-infos"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-nft-collections",
+      "description": "Get NFT collections owned by CA addresses",
+      "command": "bun run portkey_query_skill.ts nft-collections",
+      "args": [
+        "--ca-address-infos"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ca-address-infos": {
+            "type": "string",
+            "description": "JSON array of { chainId, caAddress }"
+          }
+        },
+        "required": [
+          "ca-address-infos"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-nft-items",
+      "description": "Get NFT items within a specific collection",
+      "command": "bun run portkey_query_skill.ts nft-items",
+      "args": [
+        "--ca-address-infos",
+        "--symbol"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-view-call",
+      "description": "Call a read-only (view) method on any contract",
+      "command": "bun run portkey_query_skill.ts view-call",
+      "args": [
+        "--rpc-url",
+        "--contract-address",
+        "--method-name"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-query-tx-result",
+      "description": "Get the result of a blockchain transaction",
+      "command": "bun run portkey_query_skill.ts tx-result",
+      "args": [
+        "--tx-id",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-auth-recover",
+      "description": "Recover (login to) an existing Portkey CA wallet",
+      "command": "bun run portkey_auth_skill.ts recover",
+      "args": [
+        "--email",
+        "--manager",
+        "--guardians-approved",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "manager": {
+            "type": "string",
+            "description": "New manager wallet address"
+          },
+          "guardians-approved": {
+            "type": "string",
+            "description": "JSON array of approved guardians"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Resolved chain ID from prepare-auth-flow"
+          }
+        },
+        "required": [
+          "email",
+          "manager",
+          "guardians-approved",
+          "chain-id"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-tx-transfer",
+      "description": "Transfer tokens on the same chain",
+      "command": "bun run portkey_tx_skill.ts transfer",
+      "args": [
+        "--ca-hash",
+        "--token-contract",
+        "--symbol",
+        "--to",
+        "--amount",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-tx-cross-chain-transfer",
+      "description": "Transfer tokens cross-chain (e.g. tDVV to AELF)",
+      "command": "bun run portkey_tx_skill.ts cross-chain-transfer",
+      "args": [
+        "--ca-hash",
+        "--token-contract",
+        "--symbol",
+        "--to",
+        "--amount",
+        "--chain-id",
+        "--to-chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-tx-recover-stuck-transfer",
+      "description": "Recover tokens stuck on Manager after failed cross-chain transfer",
+      "command": "bun run portkey_tx_skill.ts recover-stuck-transfer",
+      "args": [
+        "--token-contract",
+        "--symbol",
+        "--amount",
+        "--ca-address",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-tx-add-guardian",
+      "description": "Add a guardian to a CA wallet (requires existing guardian approvals)",
+      "command": "bun run portkey_tx_skill.ts add-guardian",
+      "args": [
+        "--ca-hash",
+        "--guardian-to-add",
+        "--guardians-approved",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-tx-remove-guardian",
+      "description": "Remove a guardian from a CA wallet (requires existing guardian approvals)",
+      "command": "bun run portkey_tx_skill.ts remove-guardian",
+      "args": [
+        "--ca-hash",
+        "--guardian-to-remove",
+        "--guardians-approved",
+        "--chain-id"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "portkey-tx-forward-call",
+      "description": "Generic ManagerForwardCall to any contract. Blocks early if the current manager is not yet synced on the target chain.",
+      "command": "bun run portkey_tx_skill.ts forward-call",
+      "args": [
+        "--ca-hash",
+        "--contract-address",
+        "--method-name",
+        "--args",
+        "--guardians-approved",
+        "--chain-id",
+        "--login-email",
+        "--password",
+        "--keystore-file"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ca-hash": {
+            "type": "string",
+            "description": "CA hash"
+          },
+          "contract-address": {
+            "type": "string",
+            "description": "Target contract address"
+          },
+          "method-name": {
+            "type": "string",
+            "description": "Target method name"
+          },
+          "args": {
+            "type": "string",
+            "description": "JSON method arguments"
+          },
+          "guardians-approved": {
+            "type": "string",
+            "description": "Optional JSON array of approved guardians for transfer-related calls"
+          },
+          "chain-id": {
+            "type": "string",
+            "description": "Chain ID"
+          },
+          "login-email": {
+            "type": "string",
+            "description": "Use a saved CA keystore profile by login email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Keystore password for this command"
+          },
+          "keystore-file": {
+            "type": "string",
+            "description": "Explicit CA keystore file path"
+          }
+        },
+        "required": [
+          "ca-hash",
+          "contract-address",
+          "method-name",
+          "args",
+          "chain-id"
+        ],
+        "additionalProperties": true
+      }
+    }
+  ]
+}

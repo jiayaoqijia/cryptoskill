@@ -1,5 +1,25 @@
 const { test, expect } = require('@playwright/test');
 
+test('generated catalog, capability data and detail pages agree', async ({ request }) => {
+  const catalogResponse = await request.get('/skills.json');
+  expect(catalogResponse.ok()).toBeTruthy();
+  const catalog = await catalogResponse.json();
+  const capabilities = await (await request.get('/capabilities.json')).json();
+  const ids = catalog.skills.map(s => `${s.category}/${s.name}`);
+  expect(new Set(ids).size).toBe(ids.length);
+  for (const skill of catalog.skills) {
+    expect(skill.score?.total).toBeGreaterThanOrEqual(0);
+    expect(skill.score?.total).toBeLessThanOrEqual(100);
+    expect(capabilities.skills[`${skill.category}/${skill.name}`]).toBeDefined();
+  }
+  const newest = [...catalog.skills].sort((a, b) => (b.last_updated || '').localeCompare(a.last_updated || ''));
+  for (const skill of newest.slice(0, 3)) {
+    const response = await request.get(`/skills/${encodeURIComponent(skill.category)}/${encodeURIComponent(skill.name)}.html`);
+    expect(response.ok()).toBeTruthy();
+    expect(await response.text()).toContain('TRUST.auto.yaml');
+  }
+});
+
 test.describe('CryptoSkill Homepage', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');

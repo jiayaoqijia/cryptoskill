@@ -7,6 +7,15 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MANIFEST="$SCRIPT_DIR/mcp-fragments/openclaw/servers.manifest"
+SERVERS=()
+while IFS= read -r line || [[ -n "$line" ]]; do
+  [[ -z "$line" ]] && continue
+  [[ "$line" == \#* ]] && continue
+  SERVERS+=("$line")
+done < "$MANIFEST"
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -42,14 +51,7 @@ fi
 # DEX MCP fixed x-api-key (consistent with Cursor/Claude/Codex installers)
 GATE_DEX_API_KEY="MCP_AK_8W2N7Q"
 
-# MCP Server definitions
-# Format: name|type|endpoint|auth_type|description
-declare -a SERVERS=(
-    "gate|stdio|npx -y gate-mcp|api_key_secret|Spot/Futures/Options Trading"
-    "gate-dex|http|https://api.gatemcp.ai/mcp/dex|x_api_key|DEX Operations"
-    "gate-info|http|https://api.gatemcp.ai/mcp/info|none|Market Data"
-    "gate-news|http|https://api.gatemcp.ai/mcp/news|none|News Feed"
-)
+# MCP server list: see mcp-fragments/openclaw/servers.manifest
 
 # Check if server exists
 check_existing() {
@@ -90,6 +92,13 @@ install_http() {
     fi
 }
 
+# Remote CEX Exchange: Gate OAuth2 (browser login)
+install_oauth_http() {
+    local name="$1"
+    local url="$2"
+    mcporter config add "$name" --url "$url" --auth oauth 2>/dev/null || return 1
+}
+
 # Install single server
 install_server() {
     local config="$1"
@@ -111,6 +120,12 @@ install_server() {
     case "$auth_type" in
         api_key_secret)
             install_stdio "$name" "$endpoint" "$gate_key" "$gate_secret" || {
+                echo -e "${RED}failed${NC}"
+                return 1
+            }
+            ;;
+        oauth)
+            install_oauth_http "$name" "$endpoint" || {
                 echo -e "${RED}failed${NC}"
                 return 1
             }
@@ -166,13 +181,15 @@ selective_install() {
     done
     
     echo ""
-    read -p "Enter choice [1-4]: " choice
+    read -p "Enter choice [1-6]: " choice
     
     case $choice in
         1) local selected="${SERVERS[0]}" ;;
         2) local selected="${SERVERS[1]}" ;;
         3) local selected="${SERVERS[2]}" ;;
         4) local selected="${SERVERS[3]}" ;;
+        5) local selected="${SERVERS[4]}" ;;
+        6) local selected="${SERVERS[5]}" ;;
         *) echo -e "${RED}Invalid choice${NC}"; exit 1 ;;
     esac
     
@@ -197,6 +214,10 @@ selective_install() {
                 exit 1
             fi
             ;;
+        oauth)
+            echo "This server uses Gate OAuth2. After install, run: mcporter auth $name"
+            echo ""
+            ;;
         x_api_key)
             # Uses fixed GATE_DEX_API_KEY, consistent with Cursor/Claude/Codex installers
             ;;
@@ -215,7 +236,7 @@ install_all() {
     echo -e "${BLUE}Installing ALL Gate MCP servers${NC}"
     echo ""
     
-    # Check if gate (main) needs credentials
+    # Check if gate (stdio) needs credentials
     local need_gate=false
     for server in "${SERVERS[@]}"; do
         IFS='|' read -r name type endpoint auth_type desc <<< "$server"
@@ -296,7 +317,13 @@ if mcporter config list 2>/dev/null | grep -q "^gate-dex$"; then
     echo "  2) The assistant will return a clickable Google authorization link for you to complete OAuth."
     echo ""
 fi
+if mcporter config list 2>/dev/null | grep -q "^gate-cex-ex$"; then
+    echo -e "${CYAN}Remote CEX Exchange (OAuth2):${NC}"
+    echo "  mcporter auth gate-cex-ex"
+    echo ""
+fi
 echo "Quick commands:"
+echo "  mcporter list gate-cex-pub    # Remote CEX public tools (cex_* names)"
 echo "  mcporter call gate-info.list_tickers currency_pair=BTC_USDT"
 echo "  mcporter call gate-news.list_news"
 echo "  mcporter call gate.list_spot_accounts"

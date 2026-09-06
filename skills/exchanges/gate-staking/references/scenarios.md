@@ -10,7 +10,8 @@ This document is a cross-reference index of all scenarios defined in the sub-mod
 | `staking-coins.md` | 8 | Products: browse all, specific coin, high APY, flexible only, sold out, lock period comparison, min requirements, DeFi vs traditional |
 | `staking-list.md` (Part 1) | 5 | Order history: all orders, specific coin, filter by type, recent activity, failed/pending |
 | `staking-list.md` (Part 2) | 9 | Rewards: all rewards, specific coin, yesterday, sources, monthly, verify APY, empty, reward types, pagination |
-| **Total** | **28** | |
+| `staking-swap.md` | 5 | Stake single product, stake multiple products (confirm pid), redeem with pid, redeem by coin (resolve pid), redeem multiple positions (confirm pid) |
+| **Total** | **33** | |
 
 ## Quick lookup by user intent
 
@@ -62,6 +63,16 @@ This document is a cross-reference index of all scenarios defined in the sub-mod
 | Reward types | staking-list.md (Part 2) | Scenario 13 |
 | Pagination handling | staking-list.md (Part 2) | Scenario 14 |
 
+### Stake / Redeem
+
+| Scenario | Sub-module | ID |
+|----------|------------|----|
+| Stake (single product for coin) | staking-swap.md | Scenario 1 |
+| Stake (multiple products — user must confirm) | staking-swap.md | Scenario 2 |
+| Redeem (user specifies pid) | staking-swap.md | Scenario 3 |
+| Redeem (user specifies only coin — resolve pid) | staking-swap.md | Scenario 4 |
+| Redeem (multiple positions — user must confirm) | staking-swap.md | Scenario 5 |
+
 ## Error scenarios (summary)
 
 Error handling is embedded within the sub-module scenarios listed above. Key error paths:
@@ -73,6 +84,11 @@ Error handling is embedded within the sub-module scenarios listed above. Key err
 | Product sold out / not found | staking-coins.md Scenario 5 |
 | Failed / pending orders | staking-list.md Scenario 5 |
 | API error / 401 | SKILL.md Safety rules → Errors table |
+| No products for coin / multiple products need confirmation | staking-swap.md workflows |
+
+## Mint (treated as stake)
+
+**Mint** is supported and handled as **immediate stake**. Route to `references/staking-swap.md` and execute the **Stake** workflow: resolve product (pid), amount, and coin (for GUSD choose USDT or USDC); then call `cex_earn_swap_staking_coin` with **side=0**. Same behavior as "Stake" (e.g. "mint 100 USDT" → stake 100 USDT).
 
 ## Unsupported operations
 
@@ -80,5 +96,4 @@ These intents are handled by the routing rules in `SKILL.md` and never reach a s
 
 | Intent | Response |
 |--------|----------|
-| Stake / Redeem | "Staking and redemption are not supported here; please use the Gate website or app." |
-| Mint | "Mint is not supported here; please use the Gate website or app." |
+| Cancel redeem | "Cancelling or revoking a redeem is not supported here; please use the Gate website or app if needed." |

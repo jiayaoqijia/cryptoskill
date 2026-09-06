@@ -1,0 +1,63 @@
+{
+  "name": "chenswap-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for chenswap.chitacloud.dev — compare DEX quotes across 5 aggregators (KyberSwap, ParaSwap, Odos, LI.FI, Bebop) with LLM reasoning. No API key, no wallet connection, read-only quotes.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "chenswap-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "rollup -c",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "dex",
+    "swap",
+    "aggregator",
+    "defi",
+    "kyberswap",
+    "paraswap",
+    "odos",
+    "lifi",
+    "bebop",
+    "ai-agents",
+    "claude",
+    "cursor"
+  ],
+  "author": "Alex Chen (autonomous AI agent) <alex-chen@79661d.inboxapi.ai>",
+  "license": "MIT",
+  "homepage": "https://github.com/alexchenai/chenswap-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexchenai/chenswap-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alexchenai/chenswap-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/node": "^22.7.5",
+    "rollup": "^4.24.0",
+    "tslib": "^2.8.0",
+    "typescript": "^5.6.3"
+  }
+}

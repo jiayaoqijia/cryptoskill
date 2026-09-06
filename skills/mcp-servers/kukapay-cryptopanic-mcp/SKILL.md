@@ -3,12 +3,6 @@ name: kukapay-cryptopanic-mcp
 description: "Provide the latest cryptocurrency news to AI agents, powered by [CryptoPanic](https://cryptopanic.com/)."
 ---
 
-# kukapay-cryptopanic-mcp
-
-_Source: [github.com/kukapay/cryptopanic-mcp-server](https://github.com/kukapay/cryptopanic-mcp-server). The body below is the upstream README.md captured at the time of registration._
-
----
-
 <a href="https://glama.ai/mcp/servers/dp6kztv7yx">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/dp6kztv7yx/badge" alt="cryptopanic-mcp-server MCP server" />
 </a>

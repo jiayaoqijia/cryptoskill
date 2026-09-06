@@ -1,0 +1,271 @@
+/* =====================================================================
+   ICP / DFINITY: Brand Tokens v2
+   Source of truth. Mirrors the live internetcomputer.org system.
+
+   Default theme: light editorial (parchment).
+   Dark theme: opt-in via [data-theme="dark"] on <html>, documented
+   for product surfaces that need a dark reading environment (NNS at
+   night, terminal-style developer tools, etc).
+
+   Three-face type system, each with one job:
+     --icp-serif      Newsreader      editorial display + body
+     --icp-ui         Inter           UI chrome (nav, eyebrows, footer, buttons)
+     --icp-mono       JetBrains Mono  numbers, technical readouts, markers, code
+
+   One primary accent: rust (#a8482b).
+   A small set of section-stripe accents for category coding only.
+   ===================================================================== */
+
+:root {
+  /* ---- Type faces ------------------------------------------------- */
+  --icp-serif:
+    "Newsreader", "Newsreader Fallback", Charter, Georgia, Cambria,
+    "Times New Roman", serif;
+  --icp-ui:
+    "Inter", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial,
+    sans-serif;
+  --icp-mono:
+    "JetBrains Mono", "JetBrains Mono Fallback", ui-monospace, SFMono-Regular,
+    Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* ---- Type scale ------------------------------------------------- */
+  --icp-fz-eyebrow: 11px;
+  --icp-fz-body: 17px;
+  --icp-fz-body-sm: 15px;
+  --icp-fz-h3: 24px;
+  --icp-fz-h2: 36px;
+  --icp-fz-h1: clamp(40px, 6.4vw, 86px);
+  --icp-fz-marker: 12px;
+
+  --icp-lh-tight: 1.05;
+  --icp-lh-display: 1.15;
+  --icp-lh-body: 1.55;
+  --icp-lh-meta: 1.4;
+
+  --icp-tracking-display: -0.015em;   /* matches live hero, -1.29px at 86px */
+  --icp-tracking-h2: -0.012em;
+  --icp-tracking-eyebrow: 0.18em;
+  --icp-tracking-mono: 0.04em;
+
+  --icp-weight-display: 380;          /* live-site Newsreader at hero */
+  --icp-weight-body: 400;
+  --icp-weight-ui: 400;
+  --icp-weight-ui-strong: 500;
+
+  /* ---- Spacing ---------------------------------------------------- */
+  --icp-space-1: 4px;
+  --icp-space-2: 8px;
+  --icp-space-3: 12px;
+  --icp-space-4: 16px;
+  --icp-space-5: 24px;
+  --icp-space-6: 32px;
+  --icp-space-7: 48px;
+  --icp-space-8: 64px;
+  --icp-space-9: 96px;
+  --icp-space-10: 128px;
+  --icp-space-section: 144px;
+
+  /* ---- Layout ----------------------------------------------------- */
+  --icp-container: 1280px;
+  --icp-prose: 720px;
+  --icp-gutter: 32px;
+
+  /* ---- Radii ------------------------------------------------------ */
+  --icp-radius-inline: 3px;
+  --icp-radius-card: 6px;
+  --icp-radius-input: 8px;
+  --icp-radius-pill: 9999px;
+
+  /* ---- Border weights -------------------------------------------- */
+  --icp-rule-w: 1px;
+  --icp-card-stripe-w: 3px;          /* matches live site, 3px not 2px */
+
+  /* =================================================================
+     LIGHT THEME (default, editorial parchment)
+     Mirrors data-theme="editorial" on the live site.
+     ================================================================= */
+
+  /* Backgrounds */
+  --icp-bg: #faf9f5;                  /* parchment, the page default. live site --editorial-paper. */
+  --icp-bg-sunk: #f3f1ea;             /* a deeper parchment for alternating sections, panels, sunk cards. live site --editorial-paper-sunk. */
+  --icp-bg-elev: #ffffff;             /* slight lift above the parchment for cards that need to read as raised */
+  --icp-bg-cta-inverse: #1a1a1a;      /* CTA bar always inverts to near-black */
+  --icp-bg-card: #ffffff;
+
+  /* Grid paper texture: ink line color used by the .icp-grid-paper utility. */
+  --icp-grid-line: rgba(26, 26, 26, 0.04);   /* near-invisible ink hairline at 4% on parchment */
+  --icp-grid-tile: 24px;                     /* live site uses 24px tile */
+
+  /* Text */
+  --icp-fg: #1a1a1a;                  /* ink, never pure black */
+  --icp-fg-body: #1a1a1a;
+  --icp-fg-secondary: #4b4943;        /* meta strips, secondary copy */
+  --icp-fg-muted: #868078;            /* captions, attributions */
+  --icp-fg-disabled: #b3ada3;
+  --icp-fg-inverse: #ffffff;
+
+  /* Rules and borders */
+  --icp-rule: #e7e3da;                /* hairline, live site value */
+  --icp-rule-strong: #4b4943;
+
+  /* Accent: primary (rust) */
+  --icp-accent: #a8482b;              /* rust, the single brand color */
+  --icp-accent-strong: #8e3b22;       /* hover, focus */
+  --icp-accent-dim: rgba(168, 72, 43, 0.10);
+
+  /* Section stripes (3px card top stripes, category coding) */
+  /* Live-site palette: rust + deep teal + ink-blue. Three only. */
+  --icp-section-default: var(--icp-accent);   /* rust by default */
+  --icp-section-teal: #0b5e5c;
+  --icp-section-blue: #1c3d5a;
+
+  /* Indicator (small dots in tickers, system status) */
+  --icp-indicator-teal: #14938e;
+  --icp-indicator-rust: var(--icp-accent);
+
+  /* Code surfaces */
+  --icp-code-bg: #efe8da;
+  --icp-code-fg: #1a1a1a;
+
+  /* Focus */
+  --icp-focus: #8e3b22;
+}
+
+/* ===================================================================
+   DARK THEME (opt-in)
+   Apply on <html data-theme="dark">.
+   For product surfaces that need a dark reading environment, e.g.
+   NNS late-night use, dashboards, developer tools. Marketing and
+   the main site stay on the light default.
+   =================================================================== */
+
+[data-theme="dark"] {
+  /* Backgrounds */
+  --icp-bg: #14110d;                  /* deep bark, never pure black */
+  --icp-bg-elev: #1b1812;             /* card lift */
+  --icp-bg-cta-inverse: #ffffff;      /* CTA bar flips to white in dark */
+  --icp-bg-card: #1b1812;
+
+  /* Text */
+  --icp-fg: #f0ebe0;                  /* bone, never pure white */
+  --icp-fg-body: #f0ebe0;
+  --icp-fg-secondary: #a29a8d;
+  --icp-fg-muted: #7a7367;
+  --icp-fg-disabled: #4a453d;
+  --icp-fg-inverse: #1a1a1a;
+
+  /* Rules and borders */
+  --icp-rule: #2d2820;                /* soil */
+  --icp-rule-strong: #5a5446;
+
+  /* Sunk parchment in dark mode is a slightly raised bark, not a deeper hole. */
+  --icp-bg-sunk: #1b1812;
+
+  /* Grid line in dark mode: warm bone at very low opacity */
+  --icp-grid-line: rgba(240, 235, 224, 0.05);
+
+  /* Accent: primary (rust), warmed slightly for dark surfaces */
+  --icp-accent: #c25a37;              /* ember, brighter for AA on bark */
+  --icp-accent-strong: #d96a45;
+  --icp-accent-dim: rgba(194, 90, 55, 0.16);
+
+  /* Section stripes, deepened for AA on dark */
+  --icp-section-default: var(--icp-accent);
+  --icp-section-teal: #2c8a85;
+  --icp-section-blue: #4a7da8;
+
+  /* Indicators */
+  --icp-indicator-teal: #2c8a85;
+  --icp-indicator-rust: var(--icp-accent);
+
+  /* Code surfaces */
+  --icp-code-bg: #1b1812;
+  --icp-code-fg: #f0ebe0;
+
+  /* Focus */
+  --icp-focus: var(--icp-accent);
+}
+
+/* ===================================================================
+   Base element styling: apply once at the root.
+   =================================================================== */
+
+html {
+  background: var(--icp-bg);
+  color: var(--icp-fg);
+  font-family: var(--icp-ui);          /* body/UI default is Inter, like live site */
+  font-size: 17px;
+  line-height: var(--icp-lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  background: var(--icp-bg);
+  color: var(--icp-fg);
+}
+
+::selection {
+  background: var(--icp-accent);
+  color: #ffffff;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--icp-rule-strong);
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--icp-accent); }
+
+:focus-visible {
+  outline: 2px solid var(--icp-focus);
+  outline-offset: 2px;
+}
+
+/* Editorial copy uses the serif. Apply selectively, not at root. */
+.icp-prose,
+.icp-display,
+h1, h2, h3, h4, h5 {
+  font-family: var(--icp-serif);
+}
+
+/* ===================================================================
+   Surface utilities
+   =================================================================== */
+
+/* Sunk parchment surface: alternating section background, sunk panels.
+   Use to differentiate adjacent sections without resorting to boxes,
+   shadows, or color blocks. Pair with --icp-rule hairlines as needed. */
+.icp-bg-sunk {
+  background: var(--icp-bg-sunk);
+}
+
+/* Grid paper texture: the hero pattern from internetcomputer.org.
+   Two crossed linear-gradients draw a 24x24px hairline grid in
+   --icp-grid-line. Apply as an overlay layer (absolute, inset 0,
+   pointer-events: none) over a parchment surface, OR directly on a
+   container as a background. The opacity 0.8 multiplier matches the
+   live site's slight wash. */
+.icp-grid-paper {
+  background-image:
+    linear-gradient(90deg, var(--icp-grid-line) 1px, transparent 1px),
+    linear-gradient(var(--icp-grid-line) 1px, transparent 1px);
+  background-size: var(--icp-grid-tile) var(--icp-grid-tile);
+  background-position: -1px -1px;
+  background-repeat: repeat;
+}
+
+/* Hero overlay variant: drop into a positioned hero container. */
+.icp-grid-paper-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.8;
+  background-image:
+    linear-gradient(90deg, var(--icp-grid-line) 1px, transparent 1px),
+    linear-gradient(var(--icp-grid-line) 1px, transparent 1px);
+  background-size: var(--icp-grid-tile) var(--icp-grid-tile);
+  background-position: -1px -1px;
+  background-repeat: repeat;
+}

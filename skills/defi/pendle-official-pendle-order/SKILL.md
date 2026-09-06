@@ -79,7 +79,7 @@ submit_limit_order({ chainId, signature: "0x...", ...order })
 
 ## Error Handling
 
-Tool errors return structured JSON with `error.code` and `error.retryable`. Use `error.action` for guidance.
+Tool errors return structured JSON with an error message. Check the message for guidance.
 
 ---
 
@@ -88,7 +88,7 @@ Tool errors return structured JSON with `error.code` and `error.retryable`. Use 
 - `market` param resolves YT address automatically — no need to look it up
 - `targetApy` is a decimal: 0.09 = 9%
 - `expiry` is a Unix timestamp string (must be within 30 days)
-- `token` must be a valid market token: `TOKEN_FOR_XX` types accept `tokensIn`, `XX_FOR_TOKEN` types accept `tokensOut`. Use `get_market` to find valid tokens.
+- `token` must be a valid market token: `TOKEN_FOR_XX` types accept `inputTokens`, `XX_FOR_TOKEN` types accept `outputTokens`. Use `get_market` to find valid tokens.
 - `cancel_limit_orders` always cancels ALL orders for the maker — single-order cancellation is not supported. This is an **on-chain transaction that costs gas**.
 - `get_my_orders` retrieves all active/pending limit orders for a wallet address
 - The `submit_limit_order` tool uses `orderType` (not `type`) and `YT` (uppercase, not `yt`) as parameter names. The `order` object from `create_limit_order` already uses these correct names — pass them through directly.

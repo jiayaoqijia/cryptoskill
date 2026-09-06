@@ -1,0 +1,171 @@
+{
+  "name": "@awaken-finance/agent-kit",
+  "description": "AI Agent toolkit for Awaken DEX on aelf blockchain — swap tokens, manage liquidity, fetch K-line data. Supports MCP, CLI, and SDK usage.",
+  "tools": [
+    {
+      "name": "awaken-query-quote",
+      "description": "Query the best swap route and price quote on Awaken DEX. Use this when you need to know how much tokenOut you'll receive for a given tokenIn amount. Parameters: --symbol-in (input token, e.g. ELF), --symbol-out (output token, e.g. USDT), --amount-in (human-readable amount, e.g. 100). Optionally use --amount-out instead of --amount-in for reverse quote. Returns: amountIn, amountOut, route splits, fee rates. Network: defaults to mainnet, override with --network testnet.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_query_skill.ts quote --symbol-in {{symbolIn}} --symbol-out {{symbolOut}} --amount-in {{amountIn}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-query-pair",
+      "description": "Get detailed trade pair information from Awaken DEX. Use this to find pair ID, price, TVL, volume, and reserve data. Parameters: --token0 (first token symbol), --token1 (second token symbol), --fee-rate (fee tier: 0.05, 0.1, 0.3, 3, or 5, default 0.3). The returned pair ID is needed for K-line queries and other operations.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_query_skill.ts pair --token0 {{token0}} --token1 {{token1}} --fee-rate {{feeRate}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-query-balance",
+      "description": "Query the token balance of an aelf address on-chain. Parameters: --address (aelf wallet address), --symbol (token symbol, e.g. ELF, USDT). Returns human-readable balance.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_query_skill.ts balance --address {{address}} --symbol {{symbol}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-query-allowance",
+      "description": "Query the token spending allowance between an owner and a spender contract. Parameters: --owner (token holder address), --spender (approved contract address), --symbol (token symbol). Returns human-readable allowance amount.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_query_skill.ts allowance --owner {{owner}} --spender {{spender}} --symbol {{symbol}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-query-liquidity",
+      "description": "Query all liquidity positions for an aelf address on Awaken DEX, including USD value. Use this when you need to know how much liquidity a user has provided, the underlying token amounts, and the total value in USD. Parameters: --address (wallet address, required), --token0 (filter by token symbol, optional), --token1 (filter by token symbol, optional). Returns: list of positions with lpTokenAmount, token0Amount, token1Amount, assetUSD, pairPrice, feeRate. Also returns portfolio detail with positionValueUSD, feeEarnedUSD, estimatedAPR, dynamicAPR, impermanentLossUSD when available.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_query_skill.ts liquidity --address {{address}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-trade-swap",
+      "description": "Execute a token swap on Awaken DEX. Requires wallet env vars: AELF_PRIVATE_KEY (EOA) or PORTKEY_PRIVATE_KEY + PORTKEY_CA_HASH + PORTKEY_CA_ADDRESS (CA). This sends a real on-chain transaction. Parameters: --symbol-in (token to sell), --symbol-out (token to buy), --amount-in (human-readable amount to sell), --slippage (tolerance, default 0.005 = 0.5%). The tool auto-queries the best route, approves if needed, and executes the swap. Returns: transactionId, estimated amounts, explorer URL.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_trade_skill.ts swap --symbol-in {{symbolIn}} --symbol-out {{symbolOut}} --amount-in {{amountIn}} --slippage {{slippage}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-trade-add-liquidity",
+      "description": "Add liquidity to an Awaken DEX trading pair. Requires wallet env vars (EOA or CA). Parameters: --token-a and --token-b (token symbols), --amount-a and --amount-b (human-readable amounts), --fee-rate (pool fee tier, default 0.3), --slippage (tolerance, default 0.005). Auto-approves both tokens before adding.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_trade_skill.ts add-liquidity --token-a {{tokenA}} --token-b {{tokenB}} --amount-a {{amountA}} --amount-b {{amountB}} --fee-rate {{feeRate}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-trade-remove-liquidity",
+      "description": "Remove liquidity from an Awaken DEX trading pair. Requires wallet env vars (EOA or CA). Parameters: --token-a and --token-b (token symbols), --lp-amount (LP token amount to burn), --fee-rate (pool fee tier, default 0.3). Returns the underlying tokens to your wallet.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_trade_skill.ts remove-liquidity --token-a {{tokenA}} --token-b {{tokenB}} --lp-amount {{lpAmount}} --fee-rate {{feeRate}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-trade-approve",
+      "description": "Approve a contract to spend your tokens. Requires wallet env vars (EOA or CA). Parameters: --symbol (token to approve), --spender (contract address), --amount (human-readable amount). Use this before swap/liquidity if you need manual control over approvals.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_trade_skill.ts approve --symbol {{symbol}} --spender {{spender}} --amount {{amount}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-kline-fetch",
+      "description": "Fetch historical K-line (candlestick) data for a trading pair via SignalR. Use 'awaken-query-pair' first to get the pair ID. Parameters: --pair-id (UUID from pair query), --interval (1m, 15m, 30m, 1h, 4h, 1D, 1W; default 1D), --from (start date ISO or unix ms), --to (end date ISO or unix ms). Returns array of OHLCV bars with time, open, high, low, close, volume.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_kline_skill.ts fetch --pair-id {{pairId}} --interval {{interval}} --from {{from}} --to {{to}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "awaken-kline-intervals",
+      "description": "List all supported K-line time intervals with their period in seconds. Use this to discover valid --interval values for the kline fetch command.",
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run awaken_kline_skill.ts intervals"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    }
+  ]
+}

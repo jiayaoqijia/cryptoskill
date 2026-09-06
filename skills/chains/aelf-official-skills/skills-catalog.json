@@ -1,0 +1,422 @@
+{
+  "schemaVersion": "1.3.0",
+  "generatedAt": "2026-03-30T06:41:47.001Z",
+  "source": "workspace.json",
+  "skills": [
+    {
+      "id": "aelf-node-skill",
+      "displayName": "AElf Node Skill",
+      "npm": {
+        "name": "@blockchain-forever/aelf-node-skill",
+        "version": "0.1.3"
+      },
+      "repository": {
+        "https": "https://github.com/AElfProject/aelf-node-skill.git"
+      },
+      "distributionSources": {
+        "githubRepo": "https://github.com/AElfProject/aelf-node-skill.git",
+        "npmPackage": "@blockchain-forever/aelf-node-skill"
+      },
+      "description": "AElf node querying and contract execution skill for agents.",
+      "description_zh": "AElf 节点查询与合约调用技能。",
+      "capabilities": [
+        "Chain reads: status, block, transaction result, metadata",
+        "Contract operations: view call and transaction sending",
+        "Node registry import/list with REST-first and SDK fallback strategy",
+        "Shared signer resolution for write operations: `explicit -> context -> env`",
+        "Supports SDK, CLI, MCP, OpenClaw, and IronClaw integration from one codebase."
+      ],
+      "artifacts": {
+        "skillMd": true,
+        "mcpServer": true,
+        "openclaw": true
+      },
+      "setupCommands": {
+        "install": "bun install",
+        "list": "bun run setup list",
+        "openclaw": "bun run setup openclaw",
+        "cursor": "bun run setup cursor",
+        "claudeDesktop": "bun run setup claude",
+        "ironclaw": "bun run setup ironclaw"
+      },
+      "clientSupport": {
+        "openclaw": "native",
+        "cursor": "native-setup",
+        "claude_desktop": "native-setup",
+        "ironclaw": "native-setup",
+        "claude_code": "manual-mcp",
+        "codex": "manual-cli-or-mcp"
+      },
+      "clientInstall": {
+        "openclaw": {
+          "source": "npm",
+          "mode": "package-setup",
+          "installCommand": "bunx -p @blockchain-forever/aelf-node-skill aelf-node-setup openclaw"
+        },
+        "ironclaw": {
+          "source": "npm",
+          "mode": "trusted-local-install",
+          "installCommand": "bunx -p @blockchain-forever/aelf-node-skill aelf-node-setup ironclaw",
+          "requiresTrustPromotion": true
+        }
+      },
+      "openclawToolCount": 11
+    },
+    {
+      "id": "aelfscan-skill",
+      "displayName": "AelfScan Skill",
+      "npm": {
+        "name": "@aelfscan/agent-skills",
+        "version": "0.2.2"
+      },
+      "repository": {
+        "https": "https://github.com/AelfScanProject/aelfscan-skill.git"
+      },
+      "distributionSources": {
+        "githubRepo": "https://github.com/AelfScanProject/aelfscan-skill.git",
+        "npmPackage": "@aelfscan/agent-skills"
+      },
+      "description": "AelfScan explorer data retrieval and analytics skill for agents.",
+      "description_zh": "AelfScan 浏览器数据检索与分析技能。",
+      "capabilities": [
+        "Domain coverage: search, blockchain, address, token, NFT, statistics",
+        "Single tool descriptor source for SDK/CLI/MCP/OpenClaw",
+        "Supports SDK, CLI, MCP, OpenClaw, and IronClaw integration from one codebase.",
+        "MCP output governance controls and standardized trace-aware errors"
+      ],
+      "artifacts": {
+        "skillMd": true,
+        "mcpServer": true,
+        "openclaw": true
+      },
+      "setupCommands": {
+        "install": "bun install",
+        "list": "bun run setup list",
+        "openclaw": "bun run setup openclaw",
+        "cursor": "bun run setup cursor",
+        "claudeDesktop": "bun run setup claude",
+        "ironclaw": "bun run setup ironclaw"
+      },
+      "clientSupport": {
+        "openclaw": "native",
+        "cursor": "native-setup",
+        "claude_desktop": "native-setup",
+        "ironclaw": "native-setup",
+        "claude_code": "manual-mcp",
+        "codex": "manual-cli-or-mcp"
+      },
+      "clientInstall": {
+        "openclaw": {
+          "source": "npm",
+          "mode": "package-setup",
+          "installCommand": "bunx -p @aelfscan/agent-skills aelfscan-setup openclaw"
+        },
+        "ironclaw": {
+          "source": "npm",
+          "mode": "trusted-local-install",
+          "installCommand": "bunx -p @aelfscan/agent-skills aelfscan-setup ironclaw",
+          "requiresTrustPromotion": true
+        }
+      },
+      "openclawToolCount": 61
+    },
+    {
+      "id": "awaken-agent-skills",
+      "displayName": "Awaken Agent Skill",
+      "npm": {
+        "name": "@awaken-finance/agent-kit",
+        "version": "1.2.4"
+      },
+      "repository": {
+        "https": "https://github.com/Awaken-Finance/awaken-agent-skills.git"
+      },
+      "distributionSources": {
+        "githubRepo": "https://github.com/Awaken-Finance/awaken-agent-skills.git",
+        "npmPackage": "@awaken-finance/agent-kit"
+      },
+      "description": "Awaken DEX trading and market data operations for agents.",
+      "description_zh": "Awaken DEX 交易与行情数据技能。",
+      "capabilities": [
+        "Read operations: quote, pair info, balances, allowance, positions",
+        "Write operations: swap, add/remove liquidity, approve",
+        "SignalR-based K-line retrieval and interval discovery",
+        "Shared signer resolution for write tools: `explicit -> context -> env`",
+        "Supports SDK, CLI, MCP, OpenClaw, and IronClaw integration from one codebase."
+      ],
+      "artifacts": {
+        "skillMd": true,
+        "mcpServer": true,
+        "openclaw": true
+      },
+      "setupCommands": {
+        "install": "bun install",
+        "list": "bun run setup list",
+        "openclaw": "bun run setup openclaw",
+        "cursor": "bun run setup cursor",
+        "claudeDesktop": "bun run setup claude",
+        "ironclaw": "bun run setup ironclaw"
+      },
+      "clientSupport": {
+        "openclaw": "native",
+        "cursor": "native-setup",
+        "claude_desktop": "native-setup",
+        "ironclaw": "native-setup",
+        "claude_code": "manual-mcp",
+        "codex": "manual-cli-or-mcp"
+      },
+      "clientInstall": {
+        "openclaw": {
+          "source": "npm",
+          "mode": "package-setup",
+          "installCommand": "bunx -p @awaken-finance/agent-kit awaken-setup openclaw"
+        },
+        "ironclaw": {
+          "source": "npm",
+          "mode": "trusted-local-install",
+          "installCommand": "bunx -p @awaken-finance/agent-kit awaken-setup ironclaw",
+          "requiresTrustPromotion": true
+        }
+      },
+      "openclawToolCount": 11
+    },
+    {
+      "id": "eforest-agent-skills",
+      "displayName": "eForest Agent Skill",
+      "npm": {
+        "name": "@eforest-finance/agent-skills",
+        "version": "0.4.3"
+      },
+      "repository": {
+        "https": "https://github.com/eforest-finance/eforest-agent-skills.git"
+      },
+      "distributionSources": {
+        "githubRepo": "https://github.com/eforest-finance/eforest-agent-skills.git",
+        "npmPackage": "@eforest-finance/agent-skills"
+      },
+      "description": "eForest symbol and forest NFT operations for agent workflows.",
+      "description_zh": "eForest 代币与 NFT 市场操作技能。",
+      "capabilities": [
+        "Symbol-market operations: buy seed, create token, issue token",
+        "Forest operations: collection/item creation, listing, offer, trade",
+        "Config-first service gating and graceful degradation",
+        "Shared signer resolution for write operations: `explicit -> context -> env`",
+        "Supports SDK, CLI, MCP, and OpenClaw integration from one codebase."
+      ],
+      "artifacts": {
+        "skillMd": true,
+        "mcpServer": true,
+        "openclaw": true
+      },
+      "setupCommands": {
+        "install": "bun install",
+        "list": "bun run setup list",
+        "openclaw": "bun run setup openclaw",
+        "cursor": "bun run setup cursor",
+        "claudeDesktop": "bun run setup claude",
+        "ironclaw": "bun run setup ironclaw"
+      },
+      "clientSupport": {
+        "openclaw": "native",
+        "cursor": "native-setup",
+        "claude_desktop": "native-setup",
+        "ironclaw": "native-setup",
+        "claude_code": "manual-mcp",
+        "codex": "manual-cli-or-mcp"
+      },
+      "clientInstall": {
+        "openclaw": {
+          "source": "npm",
+          "mode": "package-setup",
+          "installCommand": "bunx -p @eforest-finance/agent-skills eforest-setup openclaw"
+        },
+        "ironclaw": {
+          "source": "npm",
+          "mode": "trusted-local-install",
+          "installCommand": "bunx -p @eforest-finance/agent-skills eforest-setup ironclaw",
+          "requiresTrustPromotion": true
+        }
+      },
+      "openclawToolCount": 48
+    },
+    {
+      "id": "portkey-ca-agent-skills",
+      "displayName": "Portkey CA Agent Skill",
+      "npm": {
+        "name": "@portkey/ca-agent-skills",
+        "version": "2.3.0"
+      },
+      "repository": {
+        "https": "https://github.com/Portkey-Wallet/ca-agent-skills.git"
+      },
+      "distributionSources": {
+        "githubRepo": "https://github.com/Portkey-Wallet/ca-agent-skills.git",
+        "npmPackage": "@portkey/ca-agent-skills"
+      },
+      "description": "Portkey CA wallet registration/auth/guardian/transfer operations for agents.",
+      "description_zh": "Portkey CA 钱包注册、认证、Guardian 与转账技能。",
+      "capabilities": [
+        "Auth operations: verifier, email code, register, recover, status",
+        "Query operations: account, guardian, assets, chain config, transfer preflight",
+        "Tx operations: transfer, contract call, approvals, keystore workflows",
+        "Shared wallet context: auto-set active CA profile for cross-skill signer resolution",
+        "Supports SDK, CLI, MCP, OpenClaw, and IronClaw integration from one codebase."
+      ],
+      "artifacts": {
+        "skillMd": true,
+        "mcpServer": true,
+        "openclaw": true
+      },
+      "setupCommands": {
+        "install": "bun install",
+        "list": "bun run setup list",
+        "openclaw": "bun run setup openclaw",
+        "cursor": "bun run setup cursor",
+        "claudeDesktop": "bun run setup claude",
+        "ironclaw": "bun run setup ironclaw"
+      },
+      "clientSupport": {
+        "openclaw": "native",
+        "cursor": "native-setup",
+        "claude_desktop": "native-setup",
+        "ironclaw": "native-setup",
+        "claude_code": "manual-mcp",
+        "codex": "manual-cli-or-mcp"
+      },
+      "clientInstall": {
+        "openclaw": {
+          "source": "npm",
+          "mode": "package-setup",
+          "installCommand": "bunx -p @portkey/ca-agent-skills portkey-ca-setup openclaw"
+        },
+        "ironclaw": {
+          "source": "npm",
+          "mode": "trusted-local-install",
+          "installCommand": "bunx -p @portkey/ca-agent-skills portkey-ca-setup ironclaw",
+          "requiresTrustPromotion": true
+        }
+      },
+      "openclawToolCount": 32
+    },
+    {
+      "id": "portkey-eoa-agent-skills",
+      "displayName": "Portkey EOA Agent Skill",
+      "npm": {
+        "name": "@portkey/eoa-agent-skills",
+        "version": "1.2.6"
+      },
+      "repository": {
+        "https": "https://github.com/Portkey-Wallet/eoa-agent-skills.git"
+      },
+      "distributionSources": {
+        "githubRepo": "https://github.com/Portkey-Wallet/eoa-agent-skills.git",
+        "npmPackage": "@portkey/eoa-agent-skills"
+      },
+      "description": "Portkey EOA wallet and asset operations for aelf agents.",
+      "description_zh": "Portkey EOA 钱包与资产操作技能。",
+      "capabilities": [
+        "Wallet lifecycle: create, import, list, backup, delete",
+        "Shared wallet context: auto-set active wallet for cross-skill signer resolution",
+        "Asset/query operations: token balances, NFTs, history, prices",
+        "Transfer and contract execution via CLI/MCP/SDK adapters",
+        "Supports SDK, CLI, MCP, OpenClaw, and IronClaw integration from one codebase."
+      ],
+      "artifacts": {
+        "skillMd": true,
+        "mcpServer": true,
+        "openclaw": true
+      },
+      "setupCommands": {
+        "install": "bun install",
+        "list": "bun run setup list",
+        "openclaw": "bun run setup openclaw",
+        "cursor": "bun run setup cursor",
+        "claudeDesktop": "bun run setup claude",
+        "ironclaw": "bun run setup ironclaw"
+      },
+      "clientSupport": {
+        "openclaw": "native",
+        "cursor": "native-setup",
+        "claude_desktop": "native-setup",
+        "ironclaw": "native-setup",
+        "claude_code": "manual-mcp",
+        "codex": "manual-cli-or-mcp"
+      },
+      "clientInstall": {
+        "openclaw": {
+          "source": "npm",
+          "mode": "package-setup",
+          "installCommand": "bunx -p @portkey/eoa-agent-skills portkey-setup openclaw"
+        },
+        "ironclaw": {
+          "source": "npm",
+          "mode": "trusted-local-install",
+          "installCommand": "bunx -p @portkey/eoa-agent-skills portkey-setup ironclaw",
+          "requiresTrustPromotion": true
+        }
+      },
+      "openclawToolCount": 21
+    },
+    {
+      "id": "tomorrowdao-agent-skills",
+      "displayName": "TomorrowDAO Agent Skill",
+      "npm": {
+        "name": "@tomorrowdao/agent-skills",
+        "version": "0.2.0"
+      },
+      "repository": {
+        "https": "https://github.com/TomorrowDAOProject/tomorrowDAO-skill.git"
+      },
+      "distributionSources": {
+        "githubRepo": "https://github.com/TomorrowDAOProject/tomorrowDAO-skill.git",
+        "npmPackage": "@tomorrowdao/agent-skills"
+      },
+      "description": "TomorrowDAO governance, BP, and resource operations for agents.",
+      "description_zh": "TomorrowDAO 治理、BP 与资源操作技能。",
+      "capabilities": [
+        "DAO domain: create/update/proposal/discussion operations",
+        "Token read helpers: allowance view, balance view",
+        "DAO read helpers: proposal my-info, DAO token allowance view alias, DAO token balance view alias",
+        "Network governance and BP election operation set",
+        "Resource token trading with unified ToolResult/TxReceipt outputs",
+        "Shared signer resolution for send mode: `explicit -> context -> env`",
+        "Supports SDK, CLI, MCP, OpenClaw, and IronClaw integration from one codebase."
+      ],
+      "artifacts": {
+        "skillMd": true,
+        "mcpServer": true,
+        "openclaw": true
+      },
+      "setupCommands": {
+        "install": "bun install",
+        "list": "bun run setup list",
+        "openclaw": "bun run setup openclaw",
+        "cursor": "bun run setup cursor",
+        "claudeDesktop": "bun run setup claude",
+        "ironclaw": "bun run setup ironclaw"
+      },
+      "clientSupport": {
+        "openclaw": "native",
+        "cursor": "native-setup",
+        "claude_desktop": "native-setup",
+        "ironclaw": "native-setup",
+        "claude_code": "manual-mcp",
+        "codex": "manual-cli-or-mcp"
+      },
+      "clientInstall": {
+        "openclaw": {
+          "source": "npm",
+          "mode": "package-setup",
+          "installCommand": "bunx -p @tomorrowdao/agent-skills tomorrowdao-setup openclaw"
+        },
+        "ironclaw": {
+          "source": "npm",
+          "mode": "trusted-local-install",
+          "installCommand": "bunx -p @tomorrowdao/agent-skills tomorrowdao-setup ironclaw",
+          "requiresTrustPromotion": true
+        }
+      },
+      "openclawToolCount": 44
+    }
+  ],
+  "warnings": []
+}

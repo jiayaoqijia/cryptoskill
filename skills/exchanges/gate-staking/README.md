@@ -1,183 +1,101 @@
 # Gate Exchange Staking Skill
 
-A comprehensive skill for querying and managing staking operations on Gate's earn platform.
-
 ## Overview
 
-This skill provides users with complete visibility into their staking activities on Gate, including positions, rewards, available products, and transaction history. It supports multiple staking types including flexible staking, locked staking, DeFi staking, and treasury products.
+A comprehensive skill for querying and executing staking operations on Gate's on-chain earn platform. It supports five modules: positions, rewards, products, order history, and stake/redeem (swap).
 
 ### Core Capabilities
 
 | Capability | Description | MCP Tools |
 |------------|-------------|-----------|
-| Query staking positions | View positions, available vs locked amounts, values | `cex_earn_asset_list` |
-| Check staking rewards | Daily/cumulative rewards, trends, APY | `cex_earn_award_list` |
-| Browse staking products | Discover products, compare APY, filter by coin/lock | `cex_earn_find_coin` |
+| Query staking positions | View positions, available vs locked amounts, redeemable amounts | `cex_earn_asset_list`, `cex_earn_find_coin` |
+| Check staking rewards | Daily/cumulative rewards, earnings history | `cex_earn_award_list` |
+| Browse staking products | Discover products, compare APY, filter by coin | `cex_earn_find_coin` |
 | View transaction history | Staking/redemption history, filters, order status | `cex_earn_order_list` |
-
-### 1. Query Staking Positions
-- View all staking positions across different cryptocurrencies
-- Check available vs locked amounts
-- Monitor real-time position values
-- Track individual product performance
-
-### 2. Check Staking Rewards
-- View daily, weekly, and monthly earnings
-- Track cumulative rewards by coin
-- Analyze reward trends and patterns
-- Calculate actual vs advertised APY
-
-### 3. Browse Staking Products
-- Discover available staking opportunities
-- Compare APY rates across products
-- Filter by coin type or lock period
-- Check minimum staking requirements
-
-### 4. View Transaction History
-- Track all staking and redemption operations
-- Filter by date range or operation type
-- Monitor order status and completion
-- Export transaction records
+| Stake / Redeem / Mint | Execute stake or redeem via swap (pid required); mint treated as immediate stake | `cex_earn_swap_staking_coin` |
 
 ## Architecture
 
 ```
-┌─────────────────────┐
-│   User Request      │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│  Intent Detection   │
-│  - Position Query   │
-│  - Reward Check     │
-│  - Product Browse   │
-│  - History View     │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│   MCP Tool Call     │
-│  - asset_list       │
-│  - award_list       │
-│  - find_coin        │
-│  - order_list       │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│  Response Format    │
-│  - Tables           │
-│  - Summaries        │
-│  - Calculations     │
-└─────────────────────┘
+gate-exchange-staking/
+├── SKILL.md                        # AI Agent runtime instructions
+├── README.md                       # Human-readable documentation
+├── CHANGELOG.md                    # Version changelog
+└── references/
+    ├── staking-assets.md           # Positions query workflow
+    ├── staking-coins.md            # Products query workflow
+    ├── staking-list.md             # Order history and reward list workflows
+    ├── staking-swap.md             # Stake/redeem swap workflow
+    └── scenarios.md                # Usage scenarios and prompt examples
 ```
-
-## Key Features
-
-### Smart Query Recognition
-- Multilingual support (English)
-- Natural language processing
-- Context-aware responses
-- Intelligent parameter extraction
-
-### Comprehensive Data Display
-- Real-time position tracking
-- Historical reward analysis
-- Product comparison tables
-- Transaction timelines
-
-### Advanced Calculations
-- Total portfolio value
-- Weighted average APY
-- Daily/monthly earnings
-- ROI calculations
-
-### Number Formatting Standards
-- **General amounts**: 8 decimal places precision with trailing zeros removed
-- **Rate fields** (APY, APR): 2 decimal places precision with trailing zeros retained
-- Consistent formatting across all displays for better readability
 
 ## Usage Examples
 
-### Basic Queries
+### Query Operations
 ```
 "Show my staking positions"
 "What are my staking rewards?"
 "Find BTC staking products"
 "Show staking history"
-```
-
-### Advanced Queries
-```
-"Calculate my total staking earnings this month"
-"Compare APY rates for USDT staking"
-"Show locked vs flexible positions"
-"What's my actual vs advertised APY?"
-```
-
-### Multilingual Support
-```
-"Check my staking assets"
-"Show yesterday's earnings"
 "What coins can I stake?"
-"View staking records"
+```
+
+### Execution Operations
+```
+"Stake 100 USDT"
+"Redeem my ETH"
+"Mint GT"
+"Stake 1 BTC"
 ```
 
 ## Product Types Supported
 
-| Type | Description | Lock Period | Liquidity |
-|------|-------------|-------------|-----------|
-| **Flexible** | Instant redemption | None | High |
-| **Locked** | Fixed-term staking | 7-90 days | Low |
-| **DeFi** | Protocol staking | Variable | Medium |
-| **Treasury** | Stable returns | None | High |
+| productType | Label | Description |
+|-------------|-------|-------------|
+| 0 | Certificate | Flexible staking with instant redemption (redeemPeriod = 0) |
+| 1 | Lock-up | Fixed-term staking with a defined lock period (redeemPeriod > 0) |
+| 2 | US Treasury Bond | Products backed by US Treasury bonds (e.g. GUSD) |
 
-## MCP Tools Used
+## MCP Tools
 
-- `cex_earn_asset_list`: Query current staking positions
-- `cex_earn_award_list`: Retrieve reward history
-- `cex_earn_find_coin`: Discover available products
-- `cex_earn_order_list`: View transaction history
+| Tool | Purpose | Auth Required |
+|------|---------|---------------|
+| `cex_earn_asset_list` | Query current staking positions | Yes |
+| `cex_earn_award_list` | Retrieve reward history | Yes |
+| `cex_earn_find_coin` | Discover available products and exchange rates | No |
+| `cex_earn_order_list` | View transaction history | Yes |
+| `cex_earn_swap_staking_coin` | Execute stake or redeem (requires pid, side) | Yes |
+
+## Safety & Compliance
+
+- **User confirmation required**: All stake/redeem/mint operations require explicit user confirmation before execution. An Action Draft is shown first summarizing the operation details.
+- **Query operations**: No confirmation needed for read-only queries.
+- **Cancel redeem**: Not supported — users are directed to the Gate website or app.
+- No investment advice; APY and rates are for reference only.
+- Sensitive user data (API keys, balances) is never logged or exposed in responses.
+- Amounts and rates are displayed as-is from the API without modification.
+
+## Number Formatting
+
+| Category | Precision | Trailing zeros | Examples |
+|----------|-----------|----------------|----------|
+| General amounts | 8 decimals | Removed | `1.23` not `1.23000000` |
+| Rate fields (APY, APR) | 2 decimals | Retained | `5.20%` not `5.2%` |
 
 ## Error Handling
 
 The skill gracefully handles various error scenarios:
 - Empty positions: Suggests available products
-- No rewards: Explains reward accrual timing
+- No rewards: Explains reward accrual timing (T+1)
+- Product not found / no capacity: Suggests alternatives by APY
 - API failures: Provides retry guidance
-- Invalid queries: Offers query suggestions
+- Auth failures (401): Prompts API key configuration
 
-## Security Considerations
+## Authentication
 
-- **Read-only access**: No execution of staking operations
-- **Authentication required**: All queries need user authentication
-- **Data privacy**: Sensitive information displayed only to account owner
-- **Rate limiting**: Respects API rate limits
+This skill does **not** handle credentials directly. Authentication is managed by the Gate MCP platform layer — the MCP server holds the user's API key and injects it into API calls automatically. No environment variables or secrets are required by the skill itself. Users should configure their Gate API key in the MCP server settings (see [Gate MCP](https://github.com/gateio/gate-mcp) for setup instructions).
 
-## Best Practices
+## Source
 
-1. **Regular Monitoring**: Check positions and rewards daily
-2. **Diversification**: Spread stakes across multiple products
-3. **APY Comparison**: Always compare rates before staking
-4. **Lock Period Awareness**: Understand redemption restrictions
-5. **Reward Tracking**: Monitor actual vs expected returns
-
-## Limitations
-
-- Cannot execute staking or redemption operations
-- Historical data limited by API constraints
-- Real-time prices may have slight delays
-- Some DeFi products may have additional restrictions
-
-## Future Enhancements
-
-- Staking operation execution
-- Automated reward reinvestment
-- Price alerts and notifications
-- Portfolio optimization suggestions
-- Tax reporting features
-
-## Support
-
-For issues or questions:
-- Check Gate API documentation
-- Review error messages for guidance
-- Contact Gate support for account-specific issues
+- **Repository**: [github.com/gate/gate-skills](https://github.com/gate/gate-skills)
+- **Publisher**: [Gate.com](https://www.gate.com)

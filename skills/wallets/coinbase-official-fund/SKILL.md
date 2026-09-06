@@ -1,75 +1,65 @@
 ---
-name: fund
-description: Add money to the wallet. Use when you or the user want to fund, deposit, top up, load, buy USDC, add funds, onramp, or get USDC. Also use when the wallet has insufficient balance for a send or trade operation, or when someone asks "how do I get USDC?"
+name: agentic-wallet
+description: "Crypto wallet operations via the awal CLI — sign in, check balances, send USDC/ETH/POL/SOL, trade tokens, fund the wallet, and use the x402 payment protocol to discover paid services, pay for API calls, monetize an API, or query onchain data. Use whenever the user mentions signing in, login, authentication, wallet status, balance, address, sending money, paying someone, transferring tokens, ENS names, swapping/trading/converting tokens, funding/topping up/onramp, USDC, ETH, POL, SOL, the x402 bazaar, paid APIs, monetizing an endpoint, or querying onchain data on Base."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: ["Bash(npx awal@2.0.3 status*)", "Bash(npx awal@2.0.3 show*)", "Bash(npx awal@2.0.3 address*)", "Bash(npx awal@2.0.3 balance*)"]
+allowed-tools: ["Bash(npx awal@2.12.1 *)", "Bash(npm *)", "Bash(node *)", "Bash(curl *)", "Bash(mkdir *)"]
 ---
 
-# Funding the Wallet
+# Agentic Wallet
 
-Use the wallet companion app to fund the wallet with USDC via Coinbase Onramp. This supports multiple payment methods including Apple Pay, debit cards, bank transfers, and funding from a Coinbase account.
+Operate a crypto wallet through the `awal` CLI. This skill is a router: read the relevant reference file in `references/` for the task at hand.
 
-## Confirm wallet is initialized and authed
+## Preflight: Confirm wallet state
 
-```bash
-npx awal@2.0.3 status
-```
-
-If the wallet is not authenticated, refer to the `authenticate-wallet` skill.
-
-## Opening the Funding Interface
+Before any wallet operation that requires authentication (everything except x402 search/details), check status:
 
 ```bash
-npx awal@2.0.3 show
+npx awal@2.12.1 status
 ```
 
-This opens the wallet companion window where users can:
+If the wallet is not authenticated, read `references/auth.md` and complete sign-in first.
 
-1. Select a preset amount ($10, $20, $50) or enter a custom amount
-2. Choose their preferred payment method
-3. Complete the purchase through Coinbase Pay
+## Routing
 
-## Payment Methods
+Pick the reference that matches the task and `Read` it before acting:
 
-| Method    | Description                                    |
-| --------- | ---------------------------------------------- |
-| Apple Pay | Fast checkout with Apple Pay (where available) |
-| Coinbase  | Transfer from existing Coinbase account        |
-| Card      | Debit card payment                             |
-| Bank      | ACH bank transfer                              |
+| Task | Reference |
+| --- | --- |
+| Sign in, log in, connect wallet, OTP verification, "not signed in" errors | `references/auth.md` |
+| Check balances, "how much USDC/ETH/POL/SOL do I have", balance per chain, JSON balance output | `references/balance.md` |
+| Send USDC / ETH / POL / SOL to an address or ENS name (Base, Polygon, Solana) | `references/send-usdc.md` |
+| Swap / trade / convert tokens on Base or Polygon | `references/trade.md` |
+| Add funds, top up, onramp, buy USDC | `references/fund.md` |
+| Find / browse / search paid services on the x402 bazaar | `references/x402-search.md` |
+| Call a paid x402 API endpoint with automatic USDC payment | `references/x402-pay.md` |
+| Build or deploy a paid API server that other agents can pay to use | `references/x402-monetize.md` |
+| Query onchain data on Base (events, transactions, blocks) via the CDP SQL API | `references/query-onchain.md` |
 
-## Alternative
+If no clear match and the user wants an external capability, search the x402 bazaar (`references/x402-search.md`) — a paid service may exist.
 
-You can also ask your human to send usdc on Base to your wallet address. You can find your wallet address buy running the following:
+## Shared rules
 
-```bash
-npx awal@2.0.3 address
-```
+- **Input validation**: every reference lists the regexes / allowlists that user-provided values must match before being placed in a shell command. Validate strictly; reject inputs containing spaces, semicolons, pipes, backticks, or other shell metacharacters. Do not pass unvalidated user input into commands.
+- **Single-quote `$` amounts**: any amount written as `'$1.00'` must be single-quoted to prevent bash variable expansion.
+- **JSON output**: every `awal` command supports `--json` for machine-readable output.
+- **Auth errors mean re-auth**: if any command fails with "Not authenticated" or similar, read `references/auth.md` and run the sign-in flow.
+- **Insufficient balance**: read `references/fund.md` to top up.
 
-## Prerequisites
+## Quick command index
 
-- Must be authenticated (`npx awal@2.0.3 status` to check)
-- Coinbase Onramp is available in supported regions (US, etc.)
-
-## Flow
-
-1. Run `npx awal@2.0.3 show` to open the wallet UI
-2. Instruct the user to click the Fund button
-3. User selects amount and payment method in the UI
-4. User completes payment through Coinbase Pay (opens in browser)
-5. USDC is deposited to the wallet once payment confirms
-
-## Checking Balance After Funding
-
-```bash
-# Check updated balance
-npx awal@2.0.3 balance
-```
-
-## Notes
-
-- Funding goes through Coinbase's regulated onramp
-- Processing time varies by payment method (instant for card/Apple Pay, 1-3 days for bank)
-- Funds are deposited as USDC on Base network
-- If funding is not available, users can also send USDC on Base directly to the wallet address
+| Command | Purpose |
+| --- | --- |
+| `npx awal@2.12.1 status` | Server health + auth status |
+| `npx awal@2.12.1 address` | Get wallet address |
+| `npx awal@2.12.1 balance` | Get balances across Base, Polygon, Solana (use `--chain` for one chain) |
+| `npx awal@2.12.1 show` | Open the wallet companion window (used for funding) |
+| `npx awal@2.12.1 auth login <email>` | Send OTP code |
+| `npx awal@2.12.1 auth verify <otp>` | Complete sign-in |
+| `npx awal@2.12.1 auth logout` | Sign out and clear the session |
+| `npx awal@2.12.1 send <amount> <recipient>` | Send tokens |
+| `npx awal@2.12.1 trade <amount> <from> <to>` | Swap tokens |
+| `npx awal@2.12.1 x402 bazaar search <query>` | Search paid services |
+| `npx awal@2.12.1 x402 bazaar list` | List bazaar resources |
+| `npx awal@2.12.1 x402 details <url>` | Inspect payment requirements |
+| `npx awal@2.12.1 x402 pay <url>` | Pay and call an x402 endpoint |

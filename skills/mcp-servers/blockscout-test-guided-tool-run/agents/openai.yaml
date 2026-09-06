@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test-Guided Tool Run"
+  short_description: "Standalone tool testing with integration test guidance"
+  default_prompt: "Use $test-guided-tool-run when running an MCP tool directly outside the server, and follow its integration-test-driven mock Context workflow before executing the tool."

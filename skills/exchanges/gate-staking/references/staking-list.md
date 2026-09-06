@@ -23,12 +23,12 @@ Query staking/redemption order history and reward distribution records.
 | list | array | Order records |
 | list[].pid | integer | Product ID |
 | list[].coin | string | Coin |
-| list[].amount | string | Amount |
+| list[].amount | string | Base amount (staked coin for stake; redeemed coin for redeem). For **redeem** display, show this. |
 | list[].type | integer | 0=Stake, 1=Redeem |
 | list[].status | integer | Status |
-| list[].redeem_stamp | integer | Redeem settlement time |
-| list[].createStamp | integer | Order time |
-| list[].exchange_amount | string | Exchange rate |
+| list[].redeem_stamp | integer | Redeem settlement time (do not display) |
+| list[].createStamp | integer | Order time (do not display) |
+| list[].exchange_amount | string | For **dynamic-rate** products (exchangeRate ≠ 1): received quote/reward coin amount. For **stake** display, show this when product is dynamic-rate; otherwise show amount. |
 | list[].fee | string | Fee |
 
 **cex_earn_award_list response (object):**
@@ -47,8 +47,8 @@ Query staking/redemption order history and reward distribution records.
 | list[].interest | string | Interest amount |
 | list[].fee | string | Fee |
 | list[].status | integer | Status |
-| list[].bonus_date | string | Date |
-| list[].should_bonus_stamp | integer | Expected distribution timestamp |
+| list[].bonus_date | string | Date (OK to show as-is) |
+| list[].should_bonus_stamp | integer | Expected distribution timestamp (do not display) |
 
 ---
 
@@ -58,12 +58,17 @@ Query staking/redemption order history and reward distribution records.
 
 1. **Parse parameters**: Extract `coin`, `pid`, `type` (0=stake, 1=redeem), `page` from user query.
 2. **Call tool**: Call `cex_earn_order_list` with `status="finished"` (required) and optional filters.
-3. **Key data to extract**: From response object: `page`, `pageSize`, `pageCount`, `totalCount`. From each `list` item: `pid`, `coin`, `amount`, `type`, `createStamp`, `redeem_stamp`, `status`, `fee`.
-4. **Format response**: Show as table or list; convert timestamps to dates; map type 0=Stake, 1=Redeem.
+<<<<<<< HEAD
+3. **Key data to extract**: From response object: `page`, `pageSize`, `pageCount`, `totalCount`. From each `list` item: `pid`, `coin`, `amount`, `exchange_amount`, `type`, `createStamp`, `redeem_stamp`, `status`, `fee`.
+4. **Format response**: Show as table or list; convert timestamps to dates; map type 0=Stake, 1=Redeem. **Dynamic-rate products** (exchangeRate ≠ 1 from `cex_earn_find_coin` for same pid): for **Stake** (type=0) show **exchange_amount** (what the user received); for **Redeem** (type=1) show **amount** (what the user received). When exchangeRate = 1, show amount for both.
+=======
+3. **Key data to extract**: From response object: `page`, `pageSize`, `pageCount`, `totalCount`. From each `list` item: `pid`, `coin`, `amount`, `exchange_amount`, `type`, `status`, `fee`. Do not display `createStamp`, `redeem_stamp` or any timestamp formatting.
+4. **Format response**: Show as table or list; map type 0=Stake, 1=Redeem. **Do not display or format timestamp fields** (omit createStamp, redeem_stamp from output; see SKILL.md). **Dynamic-rate products** (exchangeRate ≠ 1 from `cex_earn_find_coin` for same pid): for **Stake** (type=0) show **exchange_amount** (what the user received); for **Redeem** (type=1) show **amount** (what the user received). When exchangeRate = 1, show amount for both.
+>>>>>>> master
 
 ## Report Template
 
-Use the **Response Template** block from the scenario that matches the user intent (all orders, specific coin, stake only, redeem only). Show coin, amount, type (Stake/Redeem), createStamp as date, status; include pagination info.
+Use the **Response Template** block from the scenario that matches the user intent (all orders, specific coin, stake only, redeem only). Show coin, amount, type (Stake/Redeem), status; include pagination info. **Do not display or format timestamps** (omit createStamp, redeem_stamp).
 
 **Number formatting**: 
 - For amounts (amount, fee): Use 8 decimal places precision with trailing zeros removed
@@ -83,7 +88,7 @@ Use the **Response Template** block from the scenario that matches the user inte
 
 **Expected Behavior**:
 1. Call `cex_earn_order_list(status="finished")`
-2. Display recent orders first (already sorted by createStamp desc)
+2. Display recent orders first (API returns newest first)
 3. Show both stake and redeem orders
 4. Include pagination info
 
@@ -97,14 +102,11 @@ Recent Orders (Page 1 of {pageCount}):
 
 1. {coin} - {type: 0=Stake, 1=Redeem}
    Amount: {amount}
-   Date: {createStamp as YYYY-MM-DD HH:mm}
    Status: {status}
    Product: pid {pid}
-   {if type=1: Settlement: {redeem_stamp as date}}
 
 2. {coin} - {type}
    Amount: {amount}
-   Date: {createStamp}
    ...
 
 Total: {totalCount} orders
@@ -139,14 +141,13 @@ Orders (Page {page} of {pageCount}):
 
 1. USDT - Stake
    Amount: {amount}
-   Date: {createStamp}
    Product: pid {pid}
    Fee: {fee}
 
 2. USDT - Redeem
    Amount: {amount}
-   Date: {createStamp}
-   Settlement: {redeem_stamp}
+   Product: pid {pid}
+   Status: {status}
 
 Summary:
 - Total Orders: {totalCount}
@@ -182,7 +183,6 @@ Stake Orders (Page {page} of {pageCount}):
 
 1. {coin} - Stake
    Amount: {amount}
-   Date: {createStamp}
    Product: pid {pid}
    Status: {status}
 
@@ -208,8 +208,7 @@ Total Orders: {totalCount}
 **Expected Behavior**:
 1. Call `cex_earn_order_list(status="finished", page=1, limit=10)`
 2. Focus on first page results
-3. Highlight today's orders if any
-4. Show time relative to now
+3. Do not display or format timestamps (omit createStamp, redeem_stamp)
 
 **Response Template**:
 ```
@@ -217,16 +216,16 @@ Total Orders: {totalCount}
 
 Latest 10 Orders:
 
-1. {coin} - {type} - {relative time, e.g., "2 hours ago"}
+1. {coin} - {type}
    Amount: {amount}
-   Time: {createStamp as HH:mm}
+   Status: {status}
+   Product: pid {pid}
    
-2. {coin} - {type} - {relative time}
+2. {coin} - {type}
    Amount: {amount}
    ...
 
-{If any today: "Today: {count} orders"}
-{If none today: "No orders today"}
+Total: {totalCount} orders
 ```
 
 ---
@@ -268,8 +267,8 @@ All orders shown have been successfully processed.
 
 1. **Parse parameters**: Extract `coin`, `pid`, `page` from user query.
 2. **Call tool**: Call `cex_earn_award_list` with optional filters.
-3. **Key data to extract**: From response: `page`, `pageSize`, `pageCount`, `totalCount`. From each `list` item: `pid`, `mortgage_coin`, `amount`, `reward_coin`, `interest`, `bonus_date`, `should_bonus_stamp`, `status`.
-4. **Format response**: Group by reward_coin; sum interest; show daily/monthly views.
+3. **Key data to extract**: From response: `page`, `pageSize`, `pageCount`, `totalCount`. From each `list` item: `pid`, `mortgage_coin`, `amount`, `reward_coin`, `interest`, `bonus_date`, `status`. Do not display `should_bonus_stamp` or any timestamp formatting.
+4. **Format response**: Group by reward_coin; sum interest; show daily/monthly views. Do not display or format timestamp fields.
 
 ## Report Template
 

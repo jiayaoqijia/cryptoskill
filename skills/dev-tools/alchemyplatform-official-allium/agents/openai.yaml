@@ -1,0 +1,4 @@
+interface:
+  display_name: "Allium"
+  short_description: "Wallet PnL, holdings history, Hyperliquid HyperCore trading, and custom SQL via Allium"
+  default_prompt: "Use Allium for wallet PnL (current/historical, by-wallet/by-token), holdings timeseries, Hyperliquid HyperCore trading data (fills, orders, orderbook), or custom SQL against Allium's warehouse (DeFi, NFT, bridges, MEV, Solana staking). For HyperEVM smart contracts, current balances, historical balances, prices, transfers, and NFT metadata, use alchemy-api instead."

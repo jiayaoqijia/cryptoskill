@@ -1,54 +1,78 @@
 # Gate DEX Market
 
-> **Market Data Skill** — OpenAPI mode, AK/SK authentication for direct API calls
+> **Comprehensive Market Data Skill** — Dual-mode MCP + OpenAPI with intelligent routing for optimal call selection
 
-Provides complete market data query capabilities through Gate DEX OpenAPI, supporting K-line charts, token information, security audits, rankings, and other functions.
+Provides complete market data query capabilities through Gate DEX, supporting K-line charts, token information, security audits, rankings, and more.
+
+## 🔄 Auto-Update Feature
+
+This skill automatically checks for updates from the [Gate Skills Repository](https://github.com/gate/gate-skills/tree/master/skills/gate-dex-market) **only at session start or first installation**:
+
+- ⚡ **Performance Optimized**: Only checks once per session (no interaction delays)
+- 🕐 **Smart Cooldown**: 1-hour minimum between version checks
+- ✅ **Session Caching**: Skip repeated checks within the same session
+- 🛡️ **Stable Operation**: Update failures never interrupt normal functionality  
+- 🔍 **Version Tracking**: Current version displayed at session start
+- 🌐 **Remote Source**: Official Gate Skills repository on GitHub
+
+**Update Timing**:
+- 🚀 **Session Start**: Check once when session begins
+- 📦 **First Install**: Check during initial skill installation  
+- 🔧 **Manual Trigger**: User can request "check for updates"
+- ❌ **Never**: During normal user interactions (for performance)
+
+**Update Rules**:
+- 📈 Update: Local version < Remote version
+- ⏭️ Skip: Remote skill doesn't exist or Local version ≥ Remote  
+- 💡 User-friendly notifications for all update statuses
 
 ---
 
-## 🎯 Architecture
+## 🎯 Core Modes
 
 | Mode | Connection Method | Features | Use Cases |
-|------|---------|------|---------|
-| ⚡ **OpenAPI Mode** | AK/SK direct calls | Independent and fast, rich functionality | Market queries, token info, security audits |
+|------|------------------|----------|-----------|
+| 🔗 **MCP Mode** | gate-dex MCP Server | No credentials required, high integration | Wallet collaboration, unified sessions |
+| ⚡ **OpenAPI Mode** | Direct AK/SK calls | Independent & fast, feature-rich | Independent queries, lightweight scenarios |
 
 ---
 
 ## 🚀 Quick Installation
 
-### Method 1: Automated Installation Script (Recommended)
+### Option 1: Auto Install Script (Recommended)
 
 ```bash
-# Run market data-specific installation script
+# Run market data specialized install script
 ./gate-dex-market/install.sh
 ```
 
 Script features:
-- 🔍 Auto-detects AI platform and configures
-- 📈 Optimizes Skill loading order for market data
-- 🎯 Generates market data-prioritized routing file
+- 🔍 Auto-detect AI platforms and configure
+- 📈 Optimize market data Skill loading order
+- 📊 Configure MCP + OpenAPI dual-mode support
+- 🎯 Generate market data prioritized routing files
 
-### Method 2: Manual Configuration
+### Option 2: Manual Configuration
 
-See [Root README.md](../README.md) for detailed configuration methods.
+Detailed configuration methods see [Root README.md](../README.md).
 
 ---
 
 ## 🚀 Quick Usage
 
-### Trigger Methods
+### Trigger Keywords
 
 - **Market Data**: `K-line`, `quotes`, `price trends`, `trading volume`
 - **Token Information**: `token details`, `holder analysis`, `new token discovery`
 - **Security Audit**: `token security`, `risk check`, `honeypot detection`
-- **Rankings**: `gainers/losers`, `volume rankings`, `trending tokens`
+- **Rankings**: `gainers list`, `volume ranking`, `trending tokens`
 
 ### Example Conversations
 
 ```text
-💬 "View ETH USDT K-line chart"          → Query K-line data
-💬 "Latest token security audit reports"  → Security risk analysis
-💬 "Today's biggest gainers ranking"      → Rankings query
+💬 "Show me the K-line chart for USDT on ETH"    → Auto-select best mode
+💬 "Latest token security audit report"          → Security risk analysis  
+💬 "Today's top gaining tokens ranking"          → Rankings query
 ```
 
 ---
@@ -58,26 +82,33 @@ See [Root README.md](../README.md) for detailed configuration methods.
 ```text
 gate-dex-market/
 ├── README.md              # This document
-├── SKILL.md               # Agent specification
+├── SKILL.md               # Agent dual-mode routing specification
 ├── CHANGELOG.md           # Change log
-└── references/            # Sub-module reference documentation
-    ├── openapi.md         # ⚡ OpenAPI complete specification
-    └── README-openapi.md  # OpenAPI usage guide
+└── references/            # Sub-module reference docs
+    ├── mcp.md             # 🔗 MCP mode detailed specification
+    └── openapi.md         # ⚡ OpenAPI mode detailed specification
 ```
+
+**MCP Mode** detailed specification see `references/mcp.md`.
+**OpenAPI Mode** detailed specification see `references/openapi.md`.
 
 ---
 
 ## 🔧 Prerequisites
 
+**MCP Mode**:
+- Server Name: `gate-dex`
+- URL: `https://api.gatemcp.ai/mcp/dex`
+
 **OpenAPI Mode**:
 - Config file: `~/.gate-dex-openapi/config.json`
 - Endpoint: `https://openapi.gateweb3.cc/api/v1/dex`
 
-See [Root README.md](../README.md) for detailed configuration methods.
+Detailed configuration methods see [Root README.md](../README.md).
 
 ---
 
 ## 🔗 Related Skills
 
 - [gate-dex-wallet](../gate-dex-wallet/) — Wallet comprehensive (auth, assets, transfer, DApp)
-- [gate-dex-trade](../gate-dex-trade/) — Trade execution
+- [gate-dex-trade](../gate-dex-trade/) — Trading execution
