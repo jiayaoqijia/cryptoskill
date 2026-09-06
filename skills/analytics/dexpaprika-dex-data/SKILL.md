@@ -1,7 +1,7 @@
 ---
 name: dexpaprika-dex-data
-description: "Real-time DEX pool data, token prices, and liquidity metrics across 5M+ tokens."
-version: 1.0.0
+description: "DEX pool data, token prices, and liquidity metrics across 33M+ tokens on 36 chains."
+version: 1.1.0
 metadata:
   openclaw:
     tags:
@@ -12,7 +12,7 @@ metadata:
 
 # DexPaprika DEX Analytics
 
-Real-time DEX pool data, token prices, and liquidity metrics across 5M+ tokens.
+DEX pool data, token prices, and liquidity metrics across 33M+ tokens on 36 chains.
 
 ## Source
 
