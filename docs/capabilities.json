@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T12:41:23.617249+00:00",
+  "generated_at": "2026-09-07T21:37:31.346181+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -77424,6 +77424,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/alekskram-dydx-gateway": {
+      "name": "dydx-gateway",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/alertio-mcp": {
       "name": "alertio-mcp",
       "execution_model": "read_only",
@@ -120033,13 +120095,13 @@
     }
   },
   "summary": {
-    "discovered": 1925,
-    "processed": 1925,
+    "discovered": 1926,
+    "processed": 1926,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1211,
       "router_orchestrator": 102,
-      "unknown": 217,
+      "unknown": 218,
       "installer_bootstrap": 37,
       "analysis_only": 178,
       "local_executor": 85,
@@ -120048,8 +120110,8 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 857,
-      "can_install_code": 438,
+      "can_execute_shell": 858,
+      "can_install_code": 439,
       "can_write_files": 102,
       "can_browse_web": 181,
       "can_spawn_subagents": 189,
@@ -120057,7 +120119,7 @@
       "requires_private_key": 372,
       "requires_hosted_operator": 304,
       "uses_remote_install_script": 42,
-      "mutable_remote_runtime": 438
+      "mutable_remote_runtime": 439
     }
   }
 }
