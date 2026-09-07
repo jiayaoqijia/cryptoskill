@@ -8,10 +8,17 @@
       "official": false
     },
     {
-      "org": "bnmbnmai",
-      "repo": "mcp-proxy",
+      "org": "CoinRithm",
+      "repo": "coinrithm-agent-trading",
       "category": "mcp-servers",
-      "prefix": "bnmbnmai-",
+      "prefix": "coinrithm-",
+      "official": false
+    },
+    {
+      "org": "RiaoMike",
+      "repo": "crypto-research-agent-skills",
+      "category": "dev-tools",
+      "prefix": "riaomike-",
       "official": false
     },
     {
@@ -19,13 +26,6 @@
       "repo": "RL-for-Crypto-and-stocks-",
       "category": "exchanges",
       "prefix": "danny-397-",
-      "official": false
-    },
-    {
-      "org": "CoinRithm",
-      "repo": "coinrithm-agent-trading",
-      "category": "mcp-servers",
-      "prefix": "coinrithm-",
       "official": false
     },
     {
@@ -43,31 +43,17 @@
       "official": false
     },
     {
-      "org": "GMGNAI",
-      "repo": "gmgn-skills",
-      "category": "chains",
-      "prefix": "gmgnai-",
+      "org": "FarseenSh",
+      "repo": "earnforge",
+      "category": "mcp-servers",
+      "prefix": "farseensh-",
       "official": false
     },
     {
-      "org": "0xSardius",
-      "repo": "solenrich",
+      "org": "ExpertVagabond",
+      "repo": "sui-mcp-server",
       "category": "mcp-servers",
-      "prefix": "0xsardius-",
-      "official": false
-    },
-    {
-      "org": "Eschatological-cpi959",
-      "repo": "Finance-mcp",
-      "category": "mcp-servers",
-      "prefix": "eschatological-cpi959-",
-      "official": false
-    },
-    {
-      "org": "Excaliber9271",
-      "repo": "asterdex-mcp-server",
-      "category": "mcp-servers",
-      "prefix": "excaliber9271-",
+      "prefix": "expertvagabond-",
       "official": false
     },
     {
@@ -78,10 +64,17 @@
       "official": false
     },
     {
-      "org": "Fibrous-Finance",
-      "repo": "fibx",
+      "org": "UdotCASH",
+      "repo": "agents",
       "category": "mcp-servers",
-      "prefix": "fibrous-finance-",
+      "prefix": "udotcash-",
+      "official": false
+    },
+    {
+      "org": "0xSardius",
+      "repo": "solenrich",
+      "category": "mcp-servers",
+      "prefix": "0xsardius-",
       "official": false
     },
     {
@@ -178,19 +171,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-08-30",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-08-31",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-08-30",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-08-31",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-08-30",
+      "query": "crypto agent skills language:Python pushed:>2026-08-31",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-08-30",
+      "query": "DeFi MCP server pushed:>2026-08-31",
       "status": "checked"
     },
     {

@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "e96efcfe03a0a37ab8f573945b4d89557107c5f6",
+      "revision": "fa73136a4aaf1b85e8cf6cb37d3c8fd972052eae",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -6048,7 +6048,7 @@
     "mcp-servers/coinrithm-coinrithm-trader": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/coinrithm-trader/SKILL.md",
-      "revision": "7a858a66b8c5072cc508c9ed3f4c8b0cf09bf13a",
+      "revision": "25b345a291d0c024b4d8f0dd88a294d8d13c2ba6",
       "files": {
         "SKILL.md": "301e627d9b12c6942089fc97b6ba0085c29f6527765312a598f0b51bdd704fb6",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -6061,7 +6061,7 @@
     "mcp-servers/coinrithm-momentum-futures": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/momentum-futures/SKILL.md",
-      "revision": "7a858a66b8c5072cc508c9ed3f4c8b0cf09bf13a",
+      "revision": "25b345a291d0c024b4d8f0dd88a294d8d13c2ba6",
       "files": {
         "SKILL.md": "0c251da5f3c4f6bcef5cc04b9e4391872775c67243e64fc7a5f6f8387e7560fe",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -20772,6 +20772,341 @@
         "SKILL.md": 420,
         "_meta.json": 420
       }
+    },
+    "dev-tools/riaomike-ccs-writing-style": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/ccs-writing-style/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "1d0dc4a8c08bbdbefaaa00fc4da86f620920563c03938db1bd513e86a3216232",
+        "references/evaluation-scenarios.md": "da32beb907ecb7bde281bf33088714eba3b2119508690d22236a1b5454c8df7b",
+        "references/sentence-rewrites.md": "feae97242c1fb5df862b1b9f5bb26971435f87c2ebb402d95e565897f26efb06",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/sentence-rewrites.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-experiment-reproducibility": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-experiment-reproducibility/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "1b194b513463150d8ff16bb09d6ecb5597bb450d01fb30265273fc14be060213",
+        "references/artifact-checklist.md": "afebea469e34bf3fd76b9789b9944e2fcf352532ac2eb15e031950e980262015",
+        "references/evaluation-scenarios.md": "445e3ca74281482e895924d11218fd1881f0336a3aa66fceadf13308b8e193c5",
+        "references/protocol.md": "53629f1ed4fe453765e17338432f207f37993420ce66dd389d20f34e3119a727",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/artifact-checklist.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-idea-evaluator": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-idea-evaluator/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "611344ef3ba286d0c34f3cbc7591f153b0d9758c448f320b233113d15115a444",
+        "references/evaluation-scenarios.md": "fe5a942edc07ef445f3d34af1e86c7a2013e8d12786e6d69ad2a75c93ea20567",
+        "references/protocol.md": "8774294c1bde8503e6ea13ee406b5f9ef2b422f83b8d4ba9503129573fa65f74",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-literature-search": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-literature-search/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "7005ac48f06baa68f99b7f7ff93040d8f8e73f07349509650bed34a66d52a34b",
+        "references/corpus-schema.md": "9efbedb473ab25185aacc36e7caf7c273ab341822cb9e9cd6bf2608f8f47c051",
+        "references/evaluation-scenarios.md": "5aa42da7a487ce922f9d739aeb4cfb2694d1d72bf125b6fa61a2ec25bcf8f572",
+        "references/novelty-assessment.md": "592aa5b319cf6f0067366bb00f55f824b1a62e20b2a46cd922e44acd30c35404",
+        "references/search-protocol.md": "d8b0c47524363f21a526d3360a713419bcd3a26b0893144df289a1164dc7bb0f",
+        "references/source-verification.md": "66e8fbb2f4707d6e5d22e7afd743f2afae1133a9aa997347c7d1b42f5a2b0750",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/corpus-schema.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/novelty-assessment.md": 420,
+        "references/search-protocol.md": 420,
+        "references/source-verification.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-novelty-check": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-novelty-check/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "aacec4f09f69063fb1a36ae1d02ca34a4a40eeae20fed5ed6fd7a189a25be4a5",
+        "references/evaluation-scenarios.md": "d13944f0b28082804d184df5a97d57efe5a658a263a2bda84687055beac05d0d",
+        "references/protocol.md": "f3438b15f86374e761718a3457b5b06f232c67c4ec46ab3d9eab4c4a655c19d2",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-paper-reader": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-paper-reader/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "2e90f10d6727a90e891df8cba8a0e60dd8c45a27bcc543eb76b5d6f9534d0d07",
+        "references/evaluation-scenarios.md": "4003ee826d222cf2674168ec092fb7868c9275c4a15896067835a763bd4d8395",
+        "references/protocol.md": "8f0e4bafffbae0a374e6daea4c47dec534980dcbd56b1f8fd9d0c53604e09c6f",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-paper-review": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-paper-review/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "732852411cfc7db753a4818579f419071029fb7983e348e4f9e7f94cf0334f6b",
+        "references/evaluation-scenarios.md": "fba9dd0b3bf0670550bea8a0ce4a6a3cce6aa7ca55d1d6bb0efbf3560e43954d",
+        "references/protocol.md": "271b108ffa2b7ef63d041ebad852ad0bfa92e86b786fd0dd0f9f2b44f2a3c511",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-paper-writing": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-paper-writing/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "56950a335871f09cc26b96481dfb8b863bf1dd2bebbd0a78c8f6b7bbf0f51cd9",
+        "references/evaluation-scenarios.md": "0408708d24598b6e6b1dfc30e47ad03456da063dd38647c27e3eef04933ac06f",
+        "references/protocol.md": "838cf5501244fe6c8e35a96e057a175af5a2f9a45c0ae6c17953cb02f83f196d",
+        "references/top-venue-gates.md": "ad3e1e26968a3b201b70a70dce3044a719f516a6c9bc650e8bb298c40cdd8d74",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "references/top-venue-gates.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-related-work-synthesis": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-related-work-synthesis/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "dbb1c489356b054e0095cd50c84f6f068b4ea8584bf64f662eebf93eca732fc1",
+        "references/evaluation-scenarios.md": "3d50a3dd457495fffbbe9163f70a2824ad84b02a4ae5c5760ad6c21d87315a94",
+        "references/protocol.md": "b4898e0d136f9a4499c1854021882a70aad3eda67e069085012930b2f17d8918",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-research-pipeline": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-research-pipeline/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "43f4a3ef1ae058aa943afa380f05a775efbd4e6acc330069d61a951660621afd",
+        "references/evaluation-scenarios.md": "a349fed7d33c5eb965dd8b492b63c7b3dd260cddef024225dd1ce54d7ff28457",
+        "references/research-state.md": "8b23b5778a883eb0a4a34556cf0818d804437032bea9c0586d6565acd94cefdb",
+        "references/stage-gates.md": "73898f0e4697f8371ba9402b6bdb7a81c59c1a193f4c77f32910211d6b186b6a",
+        "references/top-venue-gates.md": "e30569d3f650533d0ae7dc8859433b538624d0b7d7121707f171d964948056e8",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/research-state.md": 420,
+        "references/stage-gates.md": 420,
+        "references/top-venue-gates.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-research-skill-creator": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-research-skill-creator/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "README.md": "ea5274ab11abd1645e533435540ebc2a646c5c60bd85262a1e1693e1ee9e33c2",
+        "SKILL.md": "db19415e93c9ebb9bafcf6f2b09d6401b9249523d8581aa7e2bd86dc004b1003",
+        "examples/literature-search/EXAMPLE.md": "e334d3e491e7a9c6fcf7dbbc7791d01a57e2adcc6879da7ec72933b33b8ef442",
+        "examples/literature-search/references/search-protocol.md": "1df6c656aad3029389cb8b119935e512eb3b60fed6eaf523a9a525e80abe3f92",
+        "examples/theorem-review/EXAMPLE.md": "7cf1a6ef584181f60ccef4f82e2cc495d67f539d2dc68d15938c1414225555b2",
+        "examples/theorem-review/references/review-protocol.md": "5244819801bdf8481b7d6daaefc6f744e6922f3a5a887959b8a8f43668d1dcd3",
+        "references/crypto-research-conventions.md": "7c2d38b2f0de97ae6bf5852fcf22ea13c8c9f9c75f1d6ce4ba7b0beb100359f6",
+        "references/design-principles.md": "1bfea80dc33f728f1d423e0c21428852e49a2958c60fdd74e7037d740968dd32",
+        "references/skill-template.md": "7b6bb9e78120d1a9336eb036b3991c4c3f9ecbc2ef7cadce65eab5b36c075535",
+        "references/validation-checklist.md": "9d01a0fbab3004160346ed258b5092814840a7cb78ed8a382ec41317d8c4f2a4",
+        "scripts/validate_skill.py": "cf0de44026da249e55093b7957a952e4d04170e9e2506cd654ded0d4773f0add",
+        "tests/test_validate_skill.py": "27760df44b48192532e265e7e8d6f10a9b7bad4ab009088787803add450d6732",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "README.md": 420,
+        "SKILL.md": 420,
+        "examples/literature-search/EXAMPLE.md": 420,
+        "examples/literature-search/references/search-protocol.md": 420,
+        "examples/theorem-review/EXAMPLE.md": 420,
+        "examples/theorem-review/references/review-protocol.md": 420,
+        "references/crypto-research-conventions.md": 420,
+        "references/design-principles.md": 420,
+        "references/skill-template.md": 420,
+        "references/validation-checklist.md": 420,
+        "scripts/validate_skill.py": 420,
+        "tests/test_validate_skill.py": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-theorem-review": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-theorem-review/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "4e9801c617af9210b3e258fcb649e28bd652eea60d094ebd6fa3aa512cef3a4d",
+        "references/core-review-protocol.md": "a007e5db90a9c9a4606013d2bbdb80827725191fbbaf4356a41314b387783e31",
+        "references/evaluation-scenarios.md": "6c2d1e782ea51a227f7c8b7f194be31f116f5004551cfa5a0f36bbc852360293",
+        "references/lattice-review.md": "c9c9efe9bc98a3edc404c386137e067c36a82c584641e9cbf6ac377db0f84800",
+        "references/report-schema.md": "0752bb152cbf0909c9f5d3f5da681edb6a853d2da66de9b33bdbc66fc86e57a3",
+        "references/zkp-review.md": "ee570365bf9d084b10997eeb318ed552b9ea3a97a2b2a4bed5c89e5a60349b2f",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/core-review-protocol.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/lattice-review.md": 420,
+        "references/report-schema.md": 420,
+        "references/zkp-review.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-crypto-venue-paper-writing": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/crypto-venue-paper-writing/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "239f9c42d0caabaab8ca49e1bfeea540d7614f3312bd90901e29c1664cbecd43",
+        "references/de-ai-and-style.md": "66e9fafc324a556503265aa7097af9cc33f5acaa3bceb48d991270da7512e912",
+        "references/evaluation-scenarios.md": "8fadac334222934756fd98340feb911b960c831cd2d069e746440f97e9044577",
+        "references/venue-structure.md": "39bfb464c0fbb82a7420025538d5091efecbe2d382af5cfe14683a53d37953bf",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/de-ai-and-style.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/venue-structure.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-lattice-parameter-audit": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/lattice-parameter-audit/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "6f2e348f0b3f4a6ca301a87ed25920139a529bfe32802de9281bed8399d06645",
+        "references/evaluation-scenarios.md": "0cea4c1c2bedabb56a5e29e08511bc8aeae4e0ccceaa4614448497c1c41bfb05",
+        "references/protocol.md": "aabf5a8db04438cac4bd3ba6b35d25429b7a2e179af7a23cb80af3668e59ac66",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-usenixsec-writing-style": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/usenixsec-writing-style/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "f630ed5d49cb5a117c399ddcd8f6c9d892d8125e4b2a4941519636ad7e04bf23",
+        "references/evaluation-scenarios.md": "56246ec20e3b38b1f6ac8d3d256a5d4c5fe02d2c6e46878ad6e2d3c715dee6b4",
+        "references/section-budget.md": "c227f45d699d65c955805fe93ed9ffdfb3783491b0fda42433236aa38ee727da",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/section-budget.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "dev-tools/riaomike-zkp-security-review": {
+      "repo": "riaomike/crypto-research-agent-skills",
+      "path": "skills/zkp-security-review/SKILL.md",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+      "files": {
+        "SKILL.md": "16f99b6b00be810d9c059fe09bbce5bf6cce2d022700f767a438348450d5de84",
+        "references/evaluation-scenarios.md": "5820654cdf85080d924dcbfeb58d6025368d2cf0d0b4d60aa605de4899847b3c",
+        "references/protocol.md": "ab87d9399e404a1d13c36fe9d0ffecc2c9ec83a0b287657b03e60e55d41a4c53",
+        "LICENSE": "d8d356ebf8a251880026e0848f5d01ddca7bcafbe41a3fa730a336a57deed63f"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/evaluation-scenarios.md": 420,
+        "references/protocol.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/farseensh-earnforge": {
+      "repo": "farseensh/earnforge",
+      "path": "skills/earnforge/SKILL.md",
+      "revision": "41284154a71927bc20818420fca7bba9cac89bf8",
+      "files": {
+        "SKILL.md": "7c2e2e9c06c1ebe979b375a03db5eb3577544b5420e3368c0de09451afe9158c",
+        "references/chains.md": "92c8613d94bf0998b91460bb4932f234fc7e1b31257610e5871ad3ca3406e3ea",
+        "references/examples.md": "bd1c67065d0dcbdae38f0a0de643e8829ad4130ea635c9e5e8b85b815ca71772",
+        "references/pitfalls.md": "8716ddf611d9e23e684218b6d3a9852f577c245491f7a33e882768bacf3e27dc",
+        "references/protocols.md": "0aaf09c13b71b18cb298eeed07857caecb5ea627958ebe270fac671432f11958",
+        "references/strategies.md": "f514c304f3f2081144acfbf5375565f9f530e836c2684dfc9c67a1c4910ee6a8",
+        "LICENSE": "19c465ed7c31cc3cea0a0f2b473be2d1a7a47acd7bf52de78e810e7276456790"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/chains.md": 420,
+        "references/examples.md": 420,
+        "references/pitfalls.md": 420,
+        "references/protocols.md": 420,
+        "references/strategies.md": 420,
+        "LICENSE": 420
+      }
     }
   },
   "repositories": {
@@ -20805,7 +21140,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "19d519892ed13329b5f3ce4ad8204a59d6945984",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "e96efcfe03a0a37ab8f573945b4d89557107c5f6",
+    "jiayaoqijia/cryptoskill": "fa73136a4aaf1b85e8cf6cb37d3c8fd972052eae",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "b56c32f70fdc4bb2fda244b2848abe509dfe424b",
@@ -20816,7 +21151,7 @@
     "chainstacklabs/rpc-nodes-mcp": "8920ed796409e2efc32953f787cdcdfff2e6c335",
     "celo-org/celo-mcp": "f6287609980b847d13011bd146014d30d7e57734",
     "alexchenai/chenswap-mcp": "df99e1a7861004abfb0f2b0c77bdacd50d44f361",
-    "coinrithm/coinrithm-agent-trading": "7a858a66b8c5072cc508c9ed3f4c8b0cf09bf13a",
+    "coinrithm/coinrithm-agent-trading": "25b345a291d0c024b4d8f0dd88a294d8d13c2ba6",
     "dexter-dao/dexter-mcp": "b6404d3fb61cce9969a487477ad105c627c38263",
     "onflow/flow-mcp": "2afc462130e957e3f311f27cd0d0201698cad8ce",
     "injectivelabs/mcp-server": "daa98388cdf6c472c93211b1e9059725d72bc42e",
@@ -20840,7 +21175,7 @@
     "portkey-wallet/ca-agent-skills": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74",
     "bitget-ai/agent-mcp": "486a7c5b2769e452bc7d3b39337cb6d3f9b1a0d3",
     "bnmbnmai/mcp-proxy": "67132d34daef3f3e5130c7ec89cc84039ca7f037",
-    "scutuatua-crypto/whaletrucker-ecosystem": "0642dd090633c2f744f52d399d01d66fa7475492",
+    "scutuatua-crypto/whaletrucker-ecosystem": "ed4b24a304b3b983ee8a2799a89ef2597a1584fd",
     "eschatological-cpi959/finance-mcp": "68a926394b0079b0e9f5b1a98e811932f6a45d9f",
     "fibrous-finance/fibx": "a742b16f54dffabb0afe622fb4ab7e1a5baa1a93",
     "danny-397/rl-for-crypto-and-stocks-": "89c3a008410161fe7b36efa184d25ced1677a1a0",
@@ -20853,6 +21188,9 @@
     "ton-blockchain/skills": "35ddd7f67836e18b9bbce265e82a281980ecb920",
     "ton-blockchain/ton-triage-skill": "7412797497c49ea9f38fdef7938d5abda6a70b4e",
     "ethereum/beaconrunner": "04a607f072c5fbc461bc50529cdb94c21528d4e5",
-    "0xsardius/solenrich": "8f76be8fceaacbf009ff05f7d187b67bf992268e"
+    "0xsardius/solenrich": "19086b43db86f4538a8996e3845ee423cf162781",
+    "riaomike/crypto-research-agent-skills": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
+    "udotcash/agents": "a00ac0339f4f88834fa2b9fa3cb7644dd63f72a2",
+    "farseensh/earnforge": "41284154a71927bc20818420fca7bba9cac89bf8"
   }
 }
