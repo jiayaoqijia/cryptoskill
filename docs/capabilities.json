@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T11:29:43.122682+00:00",
+  "generated_at": "2026-09-08T16:45:25.372784+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -104460,6 +104460,68 @@
       },
       "hosted_operators": []
     },
+    "trading/bankrbot-official-defi-native": {
+      "name": "defi-native",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "trading/bankrbot-official-delu-oracle": {
       "name": "delu-oracle",
       "execution_model": "unknown",
@@ -120854,12 +120916,12 @@
     }
   },
   "summary": {
-    "discovered": 1938,
-    "processed": 1938,
+    "discovered": 1939,
+    "processed": 1939,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1219,
-      "router_orchestrator": 102,
+      "router_orchestrator": 103,
       "unknown": 219,
       "installer_bootstrap": 37,
       "analysis_only": 181,
@@ -120869,16 +120931,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 862,
-      "can_install_code": 441,
+      "can_execute_shell": 863,
+      "can_install_code": 442,
       "can_write_files": 103,
-      "can_browse_web": 181,
-      "can_spawn_subagents": 189,
-      "can_move_funds": 231,
-      "requires_private_key": 373,
+      "can_browse_web": 182,
+      "can_spawn_subagents": 190,
+      "can_move_funds": 232,
+      "requires_private_key": 374,
       "requires_hosted_operator": 307,
       "uses_remote_install_script": 42,
-      "mutable_remote_runtime": 441
+      "mutable_remote_runtime": 442
     }
   }
 }
