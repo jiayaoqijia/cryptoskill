@@ -2,7 +2,7 @@
 name: mops-cli
 description: "Manage Motoko projects with the mops CLI — toolchain pinning, dependency management, type-checking, building, and linting. Use when working with mops.toml, mops.lock, running mops commands, adding/removing packages, pinning moc or lintoko versions, checking or building canisters, configuring moc flags, or setting up a new Motoko project."
 license: Apache-2.0
-compatibility: "mops >= 3.1.0"
+compatibility: "mops >= 3.2.0"
 metadata:
   title: Mops CLI
   category: Infrastructure
@@ -40,7 +40,7 @@ main = "src/backend/main.mo"
 
 [canisters.backend.migrations]
 chain = "src/backend/migrations"
-check-limit = 10   # optional — speeds up `mops check` when the chain gets long
+# check-limit = 10   # optional — speeds up `mops check` when the chain gets long
 
 [canisters.backend.check-stable]
 path = "deployed/backend.most"
@@ -48,8 +48,8 @@ path = "deployed/backend.most"
 [build]
 outputDir = "src/backend/dist"
 args = ["--release"]
-check-wasm = true    # optional: analyze final Wasm complexity
-check-deploy = true  # optional: verify fresh PocketIC installation after build
+# check-wasm = true    # optional: analyze final Wasm complexity
+# check-deploy = true  # optional: verify fresh PocketIC installation after build
 
 # Opt-in Wasm optimization (Binaryen wasm-opt) for build + bench
 [optimize]
@@ -133,7 +133,7 @@ Adding a package that is already declared in the other section **moves** it rath
 
 Primary correctness command — runs moc check, then check-stable (if configured), then lint (if lintoko is in toolchain).
 
-On moc 1.12.0+, canisters with `[migrations]` get stricter upgrade diagnostics: a field the initial actor requires that no migration produces fails as an `M0267` error instead of only warning (`M0254`), and compat errors carry a source location. **Temporarily disabled** — `moc --stable-baseline` is buggy, so every pin runs the pre-1.12.0 check. Older moc pins and canisters without `[migrations]` are unaffected either way.
+On moc 1.15.0+, canisters with `[migrations]` get stricter upgrade diagnostics: a field the initial actor requires that no migration produces fails as an `M0267` error instead of only warning (`M0254`), and compat errors carry a source location. Older moc pins and canisters without `[migrations]` are unaffected either way.
 
 The `check-stable` baseline is always a `.most` file — as `[canisters.<name>.check-stable].path` or as the `mops check-stable <baseline.most>` argument. A `.mo` source is rejected. See [`mops deployed`](#mops-deployed) for where the baseline comes from — that differs between a fresh project and an already-deployed canister.
 
@@ -221,7 +221,7 @@ After `mops check --fix` (or `mops check <canister>`) confirms the chain compile
 
 Use `mops build --check-deploy`, or set `[build].check-deploy = true` for every build, to install each built Wasm on a fresh PocketIC canister and catch module validation, initialization, and installation failures. Requires `[toolchain] pocket-ic` (a version from `9.0.0` up, or a local binary path) — or set `MOPS_POCKET_IC_URL` to an already-running PocketIC server (the pin is then ignored). Unpinned with no URL, the build errors naming `mops toolchain use pocket-ic 15.0.0`. Use `--no-check-deploy` to skip configured validation once. The command uses each canister's `initArg`, or `()` when omitted. Set `wasmMemoryLimit` to a positive integer byte limit on a canister to check deployment under that limit. PocketIC errors are reported as provided by the client, and installation failures are collected across canisters. Before installation, Mops runs `moc --stable-compatible` from a temporary empty-actor `.most` to each generated `.most`. If moc reports incompatibility, Mops emits `MOPS-CHECK-DEPLOY-SKIPPED` with the compiler diagnostic and does not check that canister on fresh PocketIC. Eligible siblings are still checked; validate the skipped upgrade against representative baseline state.
 
-`check-limit` (optional) caps how many recent chain files `mops check` and `mops lint` consider — useful when the chain grows long and re-checking every old migration slows feedback down. `mops build` is unaffected by `check-limit`. When the limit kicks in, mops stages the included files into `.migrations-<canister>/` next to the `chain` directory (auto-`.gitignore`d). `moc` diagnostics may then print paths there — the real file lives in the `chain` directory with the same name.
+`check-limit` (optional) caps how many recent chain files `mops check` and `mops lint` consider — useful when the chain grows long and re-checking every old migration slows feedback down. `mops build` is unaffected by `check-limit`; it compiles the full chain, and when `[canisters.<name>.check-stable].path` is set it also folds the deployed baseline via `--stable-baseline`, so an applied migration edited, deleted, or backdated since deploy fails the build with `M0268` — the backstop for when `check-limit` trims that migration out of the folded `mops check`. When the limit kicks in, mops stages the included files into `.migrations-<canister>/` next to the `chain` directory (auto-`.gitignore`d). `moc` diagnostics may then print paths there — the real file lives in the `chain` directory with the same name.
 
 Override `check-limit` for a single run with `--no-check-limit` (`mops check`, `mops check-stable`, `mops lint`) — e.g. `mops check --fix --no-check-limit` to autofix older, normally-trimmed migrations. On `mops check` and `mops check-stable`, `--no-check-limit` also suppresses the pending-migration warning.
 

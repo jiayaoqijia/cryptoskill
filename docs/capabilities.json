@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T04:46:43.330028+00:00",
+  "generated_at": "2026-09-08T11:29:43.122682+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -83940,6 +83940,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/mrnetwork0001-deltr-binance": {
+      "name": "deltr-binance",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/nate-the-grait": {
       "name": "nate-the-grait",
       "execution_model": "read_only",
@@ -120792,13 +120854,13 @@
     }
   },
   "summary": {
-    "discovered": 1937,
-    "processed": 1937,
+    "discovered": 1938,
+    "processed": 1938,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1219,
       "router_orchestrator": 102,
-      "unknown": 218,
+      "unknown": 219,
       "installer_bootstrap": 37,
       "analysis_only": 181,
       "local_executor": 85,
@@ -120807,16 +120869,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 861,
-      "can_install_code": 440,
+      "can_execute_shell": 862,
+      "can_install_code": 441,
       "can_write_files": 103,
       "can_browse_web": 181,
       "can_spawn_subagents": 189,
       "can_move_funds": 231,
-      "requires_private_key": 372,
+      "requires_private_key": 373,
       "requires_hosted_operator": 307,
       "uses_remote_install_script": 42,
-      "mutable_remote_runtime": 440
+      "mutable_remote_runtime": 441
     }
   }
 }
