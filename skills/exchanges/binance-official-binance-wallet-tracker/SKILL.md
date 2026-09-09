@@ -13,7 +13,8 @@ description: |
   group management, address import, follow list, real-time push, WebSocket — even without "tracker" explicitly.
 metadata:
   author: binance-web3-team
-  version: "1.1"
+  version: "1.3"
+  requiredCliVersion: '1.9.1'
   openclaw:
     requires:
       bins:
@@ -97,6 +98,9 @@ Full 9-scenario analysis rules: [`references/analytics.md`](references/analytics
 | Solana | `CT_501` |
 | Base | `8453` |
 | Ethereum | `1` |
+| Robinhood | `4663` |
+
+This table lists chains verified for tracker use; it is a subset of `baw wallet chains` (which returns all wallet-supported chains, e.g. Arbitrum 42161, Polygon 137). Before treating a chain as unsupported for tracking, probe it first — the wallet chain list is dynamic.
 
 ## Command Tree
 

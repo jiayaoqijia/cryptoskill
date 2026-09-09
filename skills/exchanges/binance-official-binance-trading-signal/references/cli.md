@@ -9,7 +9,7 @@ Complete reference for every command in `scripts/cli.mjs`.
 
 ## `smart-money` — On-chain Smart Money trading signals
 
-> ⚠️ Only `"56"` (BSC) and `"CT_501"` (Solana) are supported. `pageSize` max is `100`. Signals with `status: "timeout"` are stale — prefer `"valid"` / `"active"` signals.
+> `pageSize` max is `100`. Signals with `status: "timeout"` are stale — prefer `"valid"` / `"active"` signals.
 
 ```bash
 node <skill-dir>/scripts/cli.mjs smart-money '{"chainId":"CT_501","page":1,"pageSize":20}'

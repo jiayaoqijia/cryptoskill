@@ -173,6 +173,20 @@ Returns a map where key = followed address, value = `{label}`.
 
 Subscribe to WSP WebSocket push events for real-time trade monitoring.
 
+> **This is a state stream, not an alert stream.** The same `signalId` is pushed
+> repeatedly with updated state (price, maxGain, exitRate) throughout its
+> lifetime — live measurement shows the order of magnitude is tens to hundreds
+> of pushes per signal. A single push does NOT mean a new buy signal. Consumers
+> MUST dedupe by `signalId` (merge state across pushes) and treat
+> `(chainId, contractAddress)` as the business-level identity for "is this a
+> new position". Three push types: **initial** (first arrival — `status`,
+> `exitRate`, `maxGain` are typically `null`; `signalTriggerTime` and
+> `alertPrice` are carried — see [Signal field nullability](#signal-field-nullability)
+> below), **state updates** (same `signalId`, refreshed fields), and **expiry**
+> (`status=timeout` at T+120min — this is an overdue notice, not a new signal).
+> Implementing "one push = one buy" will repeatedly open positions on the same
+> token.
+
 ```bash
 # Smart Money buy/sell signals (all chains)
 baw tracker ws --smy --duration 15 --json
@@ -206,6 +220,21 @@ baw tracker ws --following -c 56 --duration 15 --json
 | `-c, --chain-id` | string | conditional | Chain ID (required for `--kol`, `--address`, `--address-list`, `--following`) |
 | `--duration` | number | yes* | Auto-disconnect after N seconds. Default 15. Omit only when the user explicitly requests an unlimited stream. Extract from user instruction when available (e.g. "monitor for 60 seconds" → `--duration 60`). |
 
+### Connection lifecycle
+
+> **Requires CLI ≥ 1.9.1.** The built-in keepalive/reconnect below was added in `@binance/agentic-wallet` 1.9.1 (PR fe/web3-libs#235). On CLI 1.9.0 (currently the latest published), `--duration 0` has NO keepalive and NO reconnect — `onclose` rejects immediately. If you are on CLI < 1.9.1, you MUST implement your own connection-level reconnect (exponential backoff + re-SUBSCRIBE) even in `--duration 0` mode; the guidance in this section only applies once 1.9.1 is installed.
+
+`--duration` selects two connection modes with different resilience semantics:
+
+| Mode | Trigger | Behavior (CLI ≥ 1.9.1) |
+|------|---------|----------|
+| Bounded | `--duration N > 0` | Single connection. Auto-disconnects at N seconds. If the connection drops early, the command rejects (`TRACKER_WS_CONNECT_ERROR`) — callers needing resilience must wrap their own retry. |
+| Unlimited | `--duration 0` / omitted | **Built-in keepalive + auto-reconnect.** A 30s app-level PING holds the connection; on close, the CLI reconnects with exponential backoff (5s start, ×2 per failure, cap 120s) and re-SUBSCRIBES automatically. Backoff resets to 5s on any received push. |
+
+**For integrations wrapping `--duration 0` (CLI ≥ 1.9.1)**: the CLI handles connection-level care internally. Callers should NOT also implement connection-level reconnect/keepalive — that doubles up (e.g. an external "active rotation" that kills the process every 45min would terminate a healthy self-maintained connection; a watchdog that force-kills during CLI backoff would abort a pending reconnect). Keep only process-level supervision (restart on crash/exit) and let the CLI manage the WebSocket.
+
+**On CLI < 1.9.1**: `--duration 0` has no keepalive and no reconnect. Callers MUST implement their own connection-level reconnect (exponential backoff + re-SUBSCRIBE) and keepalive, or accept that idle connections will be killed and one disconnect ends the stream. Do NOT follow the "do not also implement connection-level reconnect" guidance above on 1.9.0 — that would leave you with no reconnect at all.
+
 ### Filter Combinations
 
 At least one of `--smy`, `--kol`, `--wallet`, `--following`, `--address`, `--address-list` is required. `--following` is mutually exclusive with all other filters. Multiple non-following filters can be combined (e.g. `--smy --kol -c 56` subscribes to both streams concurrently).
@@ -215,6 +244,20 @@ At least one of `--smy`, `--kol`, `--wallet`, `--following`, `--address`, `--add
 In `--json` mode, only push message JSON is written to stdout — no meta info (streams, subKeys, connection status). This enables pipeline processing with `| jq`. In terminal mode, connection info and human-readable event summaries are printed.
 
 Push message fields vary by stream type but typically include: `address`, `ticker`/`tokenName`, `tradeSide`, `txUsdValue`, `tokenPrice`, `timestamp`, `chainId`, `contractAddress`.
+
+### Signal field nullability
+
+For Smart Money signals, the **initial push** of a new `signalId` carries
+`signalTriggerTime` and `alertPrice`/`alertMarketCap` (trigger-time data), but
+`status`, `currentPrice`, `maxGain`, and `exitRate` are typically `null` — they
+fill in on subsequent state-update pushes. `signalTriggerTime` is now reliably
+present on first arrival and can be used directly to compute delivery latency.
+Implications:
+
+- **Do NOT fall back to `alertPrice` as a live entry price when `currentPrice` is null.** `alertPrice` is the historical trigger price; using it as a tradable price books an order that can't fill. Instead query the live market (`binance-web3-query-token-info` skill, `wallet/market/token/dynamic/info/ai`) and skip if unavailable.
+- **Do NOT gate on `status` to decide whether a push is actionable.** `status` is `null` on ~99% of initial pushes (only `timeout`/`exitRate`/`outDecline` are set later). Filtering `if status not in ("valid", "active") → reject` will silently drop ~99% of real first pushes — the symptom looks identical to "no signals on this chain". Treat `status == null` as a fresh signal whose lifecycle state hasn't been assigned yet.
+- **Merge fields across pushes by `signalId`.** The initial push carries `alertPrice`/`alertMarketCap`/`signalTriggerTime` while later pushes carry `currentPrice`/`maxGain`/`status`/`exitRate` — together they form the full signal state. See the field table in `binance-trading-signal/references/custom-signal.md` for which fields are nullable.
+- **Render templates need null guards**: `Current:{currentPrice}` renders as `Current:None` for initial pushes. Guard with `currentPrice ?? 'pending'`.
 
 ### Fallback Filtering (`--following` with large lists)
 

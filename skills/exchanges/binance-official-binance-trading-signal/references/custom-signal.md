@@ -22,7 +22,7 @@ baw signal list -c 56 --source user --sort-by maxGain --time-range 24h --json
 | Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `-c, --chain-id` | string | no | `56` | Chain ID (`56` BSC, `CT_501` Solana) |
-| `-n, --page-size` | number | no | `100` | Items per source |
+| `-n, --page-size` | number | no | `100` | Items per source. **Max 100** — values >100 return `INVALID_PARAMS` (1001002). |
 | `-s, --source` | enum | no | `all` | `all` / `user` / `meme` / `smart-money` |
 | `--strategy-id` | string | no | — | Filter by strategy ID (USER_STRATEGY only). When specified with `--source all`, CLI auto-switches to `user` source. |
 | `--strategy-type` | enum | no | — | `meme-rush` / `fomo-call` (USER_STRATEGY only; aliases: `meme`, `fomo`). Filtered client-side since the API ignores this parameter. |
@@ -762,6 +762,7 @@ Used to resolve wallet group IDs for `baw signal strategy create --wallet-group-
 
 | CLI Error Code | API Code | Description |
 |----------------|----------|-------------|
+| 1001002 | — | Invalid params (e.g. `--page-size` > 100 → "Invalid page size: 101") |
 | 60002001 | 13323005 | Strategy not found |
 | 60002002 | 13323006 | Not strategy owner |
 | 60002003 | 13323010 | Daily signal limit reached |

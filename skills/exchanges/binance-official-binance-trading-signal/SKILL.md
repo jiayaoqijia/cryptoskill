@@ -14,7 +14,8 @@ description: |
   impact analysis — even if they don't say "signal" or "strategy".
 metadata:
   author: binance-web3-team
-  version: "3.3"
+  version: "3.5"
+  requiredCliVersion: '1.9.1'
   openclaw:
     requires:
       bins:
@@ -48,6 +49,7 @@ Verify: `baw --version` should print `1.6.2` or higher. If installation fails or
 | User intent | Mode | Command |
 |-------------|------|---------|
 | Smart money buy/sell signals with gain + exit-rate data | Smart Money | `smart-money` |
+| Real-time Smart Money / KOL / address trade-event push | Real-time push | `baw tracker ws` (see `binance-wallet-tracker` skill) |
 | Latest signal feed (all sources) | Custom Signal | `baw signal list` |
 | Filter signals by source (user/meme/smart-money) | Custom Signal | `baw signal list --source` |
 | Token status from signals ("can I still buy $X?") | Custom Signal | `baw signal list` + `query-token-info` |
@@ -71,8 +73,11 @@ Verify: `baw --version` should print `1.6.2` or higher. If installation fails or
 | Solana | `CT_501` |
 | Base | `8453` |
 | ETH | `1` |
+| Robinhood | `4663` |
 
 **Chain isolation**: Strategies are isolated by chain — cross-chain is not possible. Daily and monthly reports fetch BSC + Solana concurrently by default for comparison.
+
+This table lists chains verified for signal/tracker use; it is a subset of `baw wallet chains` (which returns all wallet-supported chains, e.g. Arbitrum 42161, Polygon 137). Before treating a chain as unsupported for signals, probe it first — the wallet chain list is dynamic.
 
 ## Mode 1: Smart Money Signals
 
@@ -384,7 +389,7 @@ When a user asks "can I still buy $X?" or "can I still buy $X?", combine signal 
 1. Find the token in recent signals: `baw signal list -c <chainId> --json` → filter by `ticker` or `contractAddress`
 2. Extract signal context: `alertPrice`, `alertMarketCap`, `signalTriggerTime`
 3. Get current market data:
-   - **SMART_MONEY signals**: use `currentPrice` / `currentMarketCap` directly from the signal for price — no extra call needed for price. However, liquidity and security audit still require calling `binance-web3-query-token-info`.
+   - **SMART_MONEY signals**: use `currentPrice` / `currentMarketCap` directly from the signal for price — no extra call needed for price. However, liquidity and security audit still require calling `binance-web3-query-token-info`. **If `currentPrice` is null** (common on the initial push of a signal — see `binance-wallet-tracker` skill "Signal field nullability"), do NOT fall back to `alertPrice` as a live price; call `binance-web3-query-token-info` for the current price instead.
    - **USER_STRATEGY / MEME_OFFICIAL signals**: call `binance-web3-query-token-info` skill for current price, liquidity, and security audit
 4. Assess buyability:
    - **Pullback from peak**: if current price vs `highestPrice` has pulled back < 30%, there may still be upside. If > 50% pullback, the momentum may be gone.
@@ -531,6 +536,11 @@ Limited-time events: +15 credits/day. If credits exhausted (error 13323011), inf
 
 ### Auto-Scan Script (D3)
 
+> **Prefer push over polling when available.** For Smart Money / KOL / address-level
+> events, `baw tracker ws` (see the `binance-wallet-tracker` skill) provides real-time
+> WebSocket push — use it instead of a polling loop. Fall back to `signal list` polling
+> only for custom-strategy signals, which have no push channel.
+
 When the user asks "scan signals every 5 min" or "auto-scan top 3 signals":
 
 **Scan logic**:
@@ -552,8 +562,9 @@ When the user asks "scan signals every 5 min" or "auto-scan top 3 signals":
 
 **Smart Money signal**:
 ```
-{ticker} | SmartMoney×{smartMoneyCount} | Trigger:{alertPrice} -> Current:{currentPrice} | Gain:+{maxGain}%
+{ticker} | SmartMoney×{smartMoneyCount} | Trigger:{alertPrice} -> Current:{currentPrice ?? 'pending'} | Gain:+{maxGain ?? '—'}%
 ```
+> `currentPrice`/`maxGain` are typically null on the initial push of a signal (see `binance-wallet-tracker` "Signal field nullability"). Guard with `?? 'pending'` / `?? '—'` — never render `None`.
 
 **User/Meme signal**:
 ```

@@ -29,13 +29,17 @@ async function call({ url, method = 'GET', body, headers = {} }) {
 }
 
 // ---- per-command supported chains (client-side fail-fast) ----
+// Smart Money HTTP endpoint accepts any chainId the backend supports.
+// Do NOT restrict here — the backend returns authoritative errors for
+// unsupported chains. Restricting client-side silently hides chains the
+// backend actually serves (verified: 4663/8453/1 return data).
 const CHAINS = {
-  'smart-money': new Set(['56', 'CT_501']),
+  'smart-money': null, // no client-side restriction; backend is the authority
 };
 
 function validateChainId(cmd, chainId) {
   const allowed = CHAINS[cmd];
-  if (!allowed) return;
+  if (!allowed) return; // null = no restriction
   const id = String(chainId ?? '');
   if (!allowed.has(id)) {
     const supported = [...allowed].map((c) => `"${c}"`).join(', ');
