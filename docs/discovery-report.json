@@ -43,6 +43,20 @@
       "official": false
     },
     {
+      "org": "QBT-Labs",
+      "repo": "openmm-mcp",
+      "category": "mcp-servers",
+      "prefix": "qbt-labs-",
+      "official": false
+    },
+    {
+      "org": "donnywin85",
+      "repo": "dex-data-mcp",
+      "category": "mcp-servers",
+      "prefix": "donnywin85-",
+      "official": false
+    },
+    {
       "org": "alekskram",
       "repo": "dydx-agent-gateway",
       "category": "mcp-servers",
@@ -64,22 +78,22 @@
       "official": false
     },
     {
-      "org": "dziuba0x",
-      "repo": "flario",
+      "org": "bybit-exchange",
+      "repo": "kaas",
       "category": "mcp-servers",
-      "prefix": "dziuba0x-",
-      "official": false
-    },
-    {
-      "org": "mrpkk",
-      "repo": "crypto-mcp-server",
-      "category": "mcp-servers",
-      "prefix": "mrpkk-",
-      "official": false
+      "prefix": "bybit-exchange-",
+      "official": true
     },
     {
       "org": "bybit-exchange",
-      "repo": "kaas",
+      "repo": "skills",
+      "category": "exchanges",
+      "prefix": "bybit-exchange-",
+      "official": true
+    },
+    {
+      "org": "bybit-exchange",
+      "repo": "trading-mcp",
       "category": "mcp-servers",
       "prefix": "bybit-exchange-",
       "official": true
