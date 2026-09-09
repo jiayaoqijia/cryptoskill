@@ -43,10 +43,17 @@
       "official": false
     },
     {
-      "org": "ExpertVagabond",
-      "repo": "sui-mcp-server",
+      "org": "scutuatua-crypto",
+      "repo": "whaletrucker-ecosystem",
       "category": "mcp-servers",
-      "prefix": "expertvagabond-",
+      "prefix": "scutuatua-crypto-",
+      "official": false
+    },
+    {
+      "org": "dziuba0x",
+      "repo": "flario",
+      "category": "mcp-servers",
+      "prefix": "dziuba0x-",
       "official": false
     },
     {
@@ -57,24 +64,17 @@
       "official": false
     },
     {
-      "org": "holistis",
-      "repo": "bug-bounty-intelligence-mcp",
+      "org": "mrpkk",
+      "repo": "crypto-mcp-server",
       "category": "mcp-servers",
-      "prefix": "holistis-",
+      "prefix": "mrpkk-",
       "official": false
     },
     {
-      "org": "wisdomnova",
-      "repo": "multipu-docs",
+      "org": "nirholas",
+      "repo": "cryptocurrency.cv",
       "category": "mcp-servers",
-      "prefix": "wisdomnova-",
-      "official": false
-    },
-    {
-      "org": "mrnetwork0001",
-      "repo": "Deltr",
-      "category": "mcp-servers",
-      "prefix": "mrnetwork0001-",
+      "prefix": "nirholas-",
       "official": false
     },
     {
@@ -171,19 +171,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-01",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-02",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-01",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-02",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-09-01",
+      "query": "crypto agent skills language:Python pushed:>2026-09-02",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-09-01",
+      "query": "DeFi MCP server pushed:>2026-09-02",
       "status": "checked"
     },
     {
