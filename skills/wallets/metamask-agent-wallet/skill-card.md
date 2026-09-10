@@ -1,39 +1,55 @@
-## Description: <br>
-Control a sandboxed MetaMask browser extension wallet for autonomous blockchain transactions with configurable permission guardrails, including spend limits, chain allowlists, protocol restrictions, and approval thresholds. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Controls a sandboxed MetaMask browser extension wallet for autonomous blockchain transactions with configurable spend limits, chain allowlists, protocol restrictions, and approval thresholds.
 
-## Publisher: <br>
-[andreolf](https://clawhub.ai/user/andreolf) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[andreolf](https://clawhub.ai/user/andreolf)
 
-## Use Case: <br>
-Developers and agents use this skill to operate a dedicated MetaMask browser wallet for dapp connections, token swaps, token transfers, message signing, balance checks, and transaction history while applying configured permission guardrails. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill supports irreversible crypto wallet actions while the available evidence does not include full setup code, package scripts, lockfile, or verified permission enforcement. <br>
-Mitigation: Review before installing, use only a brand-new MetaMask wallet with very small funds, never use a main wallet or seed phrase, and do not rely on advertised spend limits or approval flow until the full source and enforcement logic are reviewed. <br>
-Risk: The skill can sign arbitrary messages and submit transactions through a dedicated browser wallet. <br>
-Mitigation: Keep the wallet isolated, restrict configured chains and protocols, require explicit user approval above low thresholds, and review logged transaction intent and outcomes. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/andreolf/skills/metamask-agent-wallet-skill) <br>
+## Use Case:
+
+Developers and external users can use this skill to let an agent interact with dapps through a separate MetaMask wallet while enforcing configured wallet permissions and transaction limits.
+
+### Deployment Geography for Use:
+
+Global
+
+## Known Risks and Mitigations:
+
+Risk: The skill asks users to run setup and dependency commands for wallet automation code that has not been fully reviewed in the provided evidence.
+
+Mitigation: Review package.json, the lockfile, setup scripts, source code, and MetaMask extension provenance before running npm install or npm run setup.
+
+Risk: The skill persists browser wallet state under ~/.agent-wallet, which can retain sensitive wallet session material.
+
+Mitigation: Use only a new low-value wallet in a dedicated unprivileged environment, and delete or rotate ~/.agent-wallet when retiring the setup.
+
+Risk: Automated blockchain transactions can spend real assets if permission constraints are too broad or configured incorrectly.
+
+Mitigation: Start with small funds, strict spend caps, narrow chain and protocol allowlists, and explicit approval thresholds for higher-value transactions.
+
+## Reference(s):
 
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands, JSON configuration examples, and command syntax] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Includes wallet action commands, permission configuration guidance, and transaction logging examples.] <br>
+## Skill Output:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release evidence) <br>
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+**Output Format:** [Markdown with command examples and JSON configuration snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Outputs may include transaction intents, approval requests, balances, transaction history, and setup or troubleshooting guidance.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

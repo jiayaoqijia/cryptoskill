@@ -1,49 +1,66 @@
-## Description: <br>
-ERC-8004 Trustless Agents helps agents and developers register on-chain identities, query ERC-8004 registries, submit reputation feedback, and manage registration URIs on Ethereum. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+ERC-8004 Trustless Agents helps agents register, discover, query, update, and submit reputation feedback for ERC-8004 identities on Ethereum networks.
 
-## Publisher: <br>
-[sp0oby](https://clawhub.ai/user/sp0oby) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-CC0 - Public Domain <br>
+## Publisher:
 
+[sp0oby](https://clawhub.ai/user/sp0oby)
 
-## Use Case: <br>
-Developers and engineers use this skill to prepare ERC-8004 registration metadata, interact with Identity and Reputation registries, and manage agent reputation records on Ethereum mainnet or Sepolia. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+CC0
 
-## Known Risks and Mitigations: <br>
-Risk: Live blockchain transactions can spend funds or permanently change on-chain registration, URI, or reputation records. <br>
-Mitigation: Use Sepolia or dry-run mode first, review the network, registry, agent ID, URI, and transaction details before signing, and use a dedicated low-value wallet. <br>
-Risk: The scripts can use raw private keys from PRIVATE_KEY, command-line key arguments, or a local deployer key file. <br>
-Mitigation: Use a dedicated low-value key, avoid primary funded wallets, restrict local key-file permissions, and avoid exposing secrets in shell history or logs. <br>
-Risk: Pinata/IPFS uploads and on-chain URIs or feedback can be public and difficult to remove. <br>
-Mitigation: Do not include secrets, private endpoints, personal data, or sensitive operational details in registration JSON, feedback URIs, endpoints, or uploaded files. <br>
-Risk: The workflow depends on external tooling and RPC endpoints, including Foundry/cast, jq, public RPC URLs, and Pinata for uploads. <br>
-Mitigation: Verify the Foundry installation source and binaries, confirm RPC and contract addresses before use, and review command output before broadcasting transactions. <br>
+## Use Case:
 
+Developers and agent operators use this skill to work with ERC-8004 agent identity, reputation, and validation registries. It supports preparing registration metadata, querying registered agents, updating agent URIs, and submitting reputation feedback.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/sp0oby/skills/erc-8004) <br>
-- [EIP-8004 Specification](https://eips.ethereum.org/EIPS/eip-8004) <br>
-- [ERC-8004 Official Website](https://8004.org) <br>
-- [ERC-8004 Reference Implementation](https://github.com/erc-8004/erc-8004-contracts) <br>
-- [A2A Protocol](https://a2a-protocol.org/) <br>
-- [ERC-721 Specification](https://eips.ethereum.org/EIPS/eip-721) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with bash command examples and JSON configuration templates] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include commands that sign and broadcast Ethereum transactions; dry-run modes are available for transaction simulation in supported scripts.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.2.1 (source: server-resolved release metadata) <br>
+Risk: The scripts can submit real Ethereum transactions for registration, URI updates, and feedback.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use Sepolia and dry-run modes first, verify the target network and contract addresses, and treat mainnet commands as irreversible transactions that may cost ETH.
+
+Risk: Wallet private keys are accepted through environment variables, command-line flags, or a documented default file path.
+
+Mitigation: Use a dedicated low-balance wallet, avoid command-line private key arguments, and do not store broad-use deployer keys in the default wallet path.
+
+Risk: The setup guidance includes installing Foundry by piping a remote script into bash.
+
+Mitigation: Install Foundry through a verifiable method and review installer integrity before execution.
+
+Risk: IPFS uploads use a Pinata JWT when available.
+
+Mitigation: Scope and rotate Pinata credentials, avoid committing them to files, and review uploaded registration metadata before publication.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/sp0oby/skills/erc-8004)
+- [EIP-8004 specification](https://eips.ethereum.org/EIPS/eip-8004)
+- [ERC-8004 website](https://8004.org)
+- [ERC-8004 reference implementation](https://github.com/erc-8004/erc-8004-contracts)
+- [A2A Protocol](https://a2a-protocol.org/)
+- [Ethereum Magicians discussion](https://ethereum-magicians.org/t/erc-8004-trustless-agents/25098)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with shell commands and JSON snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May call local shell scripts that query Ethereum RPC endpoints or submit transactions when the user supplies wallet credentials.]
+
+## Skill Version(s):
+
+1.2.1 (source: ClawHub release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

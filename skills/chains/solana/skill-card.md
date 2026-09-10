@@ -1,49 +1,65 @@
-## Description: <br>
-Solana Dev Skill guides agents through Solana dApp, wallet, transaction, program, codegen, testing, and security work using framework-kit, @solana/kit, Anchor, Pinocchio, Codama, LiteSVM, Mollusk, and Surfpool. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+End-to-end Solana development playbook (Jan 2026). Prefer Solana Foundation framework-kit (@solana/client + @solana/react-hooks) for React/Next.js UI. Prefer @solana/kit for all new client/RPC/transaction code. When legacy dependencies require web3.js, isolate it behind @solana/web3-compat (or @solana/web3.js as a true legacy fallback). Covers wallet-standard-first connection (incl. ConnectorKit), Anchor/Pinocchio programs, Codama-based client generation, LiteSVM/Mollusk/Surfpool testing, and security checklists.
 
-## Publisher: <br>
-[h4rkl](https://clawhub.ai/user/h4rkl) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[h4rkl](https://clawhub.ai/user/h4rkl)
 
-## Use Case: <br>
-Developers and engineers use this skill to plan and implement Solana application, wallet, transaction, on-chain program, client generation, testing, payment, and security tasks. It helps agents choose modern Solana tooling and produce implementation guidance, code, commands, and review notes. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Pinocchio zero-copy pointer-cast examples may be unsafe if copied without validating Rust preconditions. <br>
-Mitigation: Prefer field-by-field parsing, or explicitly verify unsafe Rust preconditions before using zero-copy pointer casts. <br>
-Risk: Wallet, signing, payment, or mainnet-facing code can affect user funds or transaction authority. <br>
-Mitigation: Review recipients, amounts, signers, fees, CPIs, token program variants, and confirmation behavior before deployment. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/h4rkl/skills/solana-dev-skill) <br>
-- [Solana documentation](https://solana.com/docs) <br>
-- [Solana Kit docs](https://solana.com/docs/clients/kit) <br>
-- [framework-kit repository](https://github.com/solana-foundation/framework-kit) <br>
-- [Anchor documentation](https://www.anchor-lang.com/) <br>
-- [Pinocchio repository](https://github.com/anza-xyz/pinocchio) <br>
-- [Codama repository](https://github.com/codama-idl/codama) <br>
-- [Solana security best practices](https://solana.com/docs/programs/security) <br>
-- [LiteSVM repository](https://github.com/LiteSVM/litesvm) <br>
-- [Mollusk repository](https://github.com/buffalojoec/mollusk) <br>
-- [Surfpool documentation](https://docs.surfpool.dev/) <br>
+## Use Case:
 
+Developers and engineers use this skill to build and review Solana dApps, wallet flows, transactions, on-chain programs, generated clients, tests, and security checklists.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration instructions, Guidance] <br>
-**Output Format:** [Markdown responses with code snippets, shell commands, checklists, and file-level guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include risk notes for signing, fees, CPIs, token transfers, payments, and mainnet-facing changes.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: evidence.release.version) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Examples used directly on mainnet or in payment flows could cause production-impacting transaction or settlement behavior if not reviewed.
+
+Mitigation: Pin tool versions, isolate dependency installation from secrets, and manually review generated or adapted code before mainnet or payment use.
+
+Risk: Smart-contract examples may need project-specific account closing, zero-copy read, and batch input validation checks before production use.
+
+Mitigation: Review generated program code against the skill's Solana security checklist and run focused tests before deployment.
+
+## Reference(s):
+
+- [Solana Documentation](https://solana.com/docs)
+- [Next.js + Solana React Hooks](https://solana.com/docs/frontend/nextjs-solana)
+- [@solana/web3-compat](https://solana.com/docs/frontend/web3-compat)
+- [Solana Kit Docs](https://solana.com/docs/clients/kit)
+- [framework-kit Repository](https://github.com/solana-foundation/framework-kit)
+- [@solana/kit Repository](https://github.com/anza-xyz/kit)
+- [Anchor Documentation](https://www.anchor-lang.com/)
+- [Pinocchio Repository](https://github.com/anza-xyz/pinocchio)
+- [LiteSVM Repository](https://github.com/LiteSVM/litesvm)
+- [Mollusk Repository](https://github.com/buffalojoec/mollusk)
+- [Surfpool Documentation](https://docs.surfpool.dev/)
+- [Codama Generating Clients](https://solana.com/docs/programs/codama-generating-clients)
+- [Solana Security Best Practices](https://solana.com/docs/programs/security)
+- [ClawHub Skill Release](https://clawhub.ai/h4rkl/skills/solana-dev-skill)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline code and shell command blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include file diffs, install/build/test commands, and risk notes for signing, fees, CPIs, token transfers, and mainnet or payment flows.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

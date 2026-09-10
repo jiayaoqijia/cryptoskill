@@ -1,45 +1,61 @@
-## Description: <br>
-AI-powered trading insights suite: prediction markets (Polymarket/Kalshi) and social sentiment signals powered by UnifAI. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+AI-powered trading insights suite: prediction markets (Polymarket/Kalshi) and social sentiment signals powered by UnifAI.
 
-## Publisher: <br>
-[zbruceli](https://clawhub.ai/user/zbruceli) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[zbruceli](https://clawhub.ai/user/zbruceli)
 
-## Use Case: <br>
-Developers and trading analysts use this skill to query prediction markets, compare Polymarket and Kalshi market data, and analyze social sentiment signals for research and trading insight workflows. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill gives an AI broad external tool access for trading-related workflows, which can produce incorrect or overly actionable trading guidance. <br>
-Mitigation: Use it for analysis unless live trading controls are explicitly reviewed, add user confirmation and limits before any trading authority, and treat outputs as decision support rather than financial advice. <br>
-Risk: API keys, wallets, or accounts with live trading authority could expose financial activity if connected directly. <br>
-Mitigation: Use sandbox or read-only API keys where possible and avoid connecting wallets or accounts with live trading authority without additional safeguards. <br>
-Risk: The included FastAPI server may expose trading analysis capabilities and configured credentials if published as-is. <br>
-Mitigation: Do not expose the server publicly without authentication, network controls, secret handling review, and dependency pinning. <br>
+## Use Case:
 
+Developers and external agent users use this skill to query prediction-market data, compare Polymarket and Kalshi markets, and summarize social sentiment signals for market analysis.
 
-## Reference(s): <br>
-- [UnifAI SDK](https://github.com/unifai-network/unifai-sdk-py) <br>
-- [LiteLLM Documentation](https://docs.litellm.ai/) <br>
-- [Kalshi API Documentation](https://docs.kalshi.com) <br>
-- [Polymarket Documentation](https://docs.polymarket.com) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown and terminal-oriented text with shell command examples and market analysis summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Outputs may include market prices, probabilities, volume, sentiment scores, news summaries, and setup guidance that depend on external APIs and configured API keys.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: SKILL.md frontmatter and server release metadata) <br>
+Risk: Credential-backed tool execution may be under-scoped for a trading analysis workflow.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use dedicated low-privilege API keys and review permissions before installation or execution.
+
+Risk: Trade or portfolio-related behavior may be misleading if treated as confirmed execution or investment advice.
+
+Mitigation: Do not rely on trade or portfolio actions unless they are verified as read-only, simulated, or protected by explicit human confirmation and platform-side limits.
+
+Risk: The included web interface may expose trading analysis capabilities if bound to a public interface.
+
+Mitigation: Run the web server only on a trusted local or private interface unless separately reviewed and secured.
+
+## Reference(s):
+
+- [UnifAI SDK](https://github.com/unifai-network/unifai-sdk-py)
+- [LiteLLM Documentation](https://docs.litellm.ai/)
+- [Google Gemini API](https://ai.google.dev/docs)
+- [Kalshi API Documentation](https://docs.kalshi.com)
+- [Polymarket Documentation](https://docs.polymarket.com)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown and command-line text output]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires configured API keys for UnifAI-backed and LLM-backed analysis paths.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter and ClawHub release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

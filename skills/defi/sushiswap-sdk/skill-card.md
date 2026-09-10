@@ -1,39 +1,53 @@
-## Description: <br>
-TypeScript SDK guidance for interacting with the SushiSwap Aggregator and related primitives, including typed helpers for token amounts, prices, quotes, and swap transaction generation. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+TypeScript SDK for interacting with the SushiSwap Aggregator and related primitives.
 
-## Publisher: <br>
-[0xmasayoshi](https://clawhub.ai/user/0xmasayoshi) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[0xmasayoshi](https://clawhub.ai/user/0xmasayoshi)
 
-## Use Case: <br>
-Developers use this skill to integrate SushiSwap quote and swap flows into TypeScript or JavaScript applications with typed token, amount, price, and transaction helpers. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Swap execution examples can lead to live mainnet transactions using an environment private key if copied into an agent runtime. <br>
-Mitigation: Do not expose a primary wallet private key to an agent or environment, and require human review of chain, token addresses, amount, recipient or router, calldata, value, slippage, fees, and expected output before any transaction is signed or broadcast. <br>
-Risk: Unvalidated swap inputs can produce unsafe quote or transaction requests. <br>
-Mitigation: Validate chain ID, token addresses, amount, slippage, supported network, and referrer before requesting quotes or transaction data. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [SushiSwap SDK Reference](references/REFERENCE.md) <br>
+## Use Case:
 
+Developers and integrators use this skill to add SushiSwap Aggregator support to TypeScript or JavaScript applications, including token primitives, quotes, and swap transaction generation.
 
-## Skill Output: <br>
-**Output Type(s):** [Code, Shell commands, Configuration instructions, Guidance] <br>
-**Output Format:** [Markdown with TypeScript and shell code blocks] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Includes quote and swap transaction examples; swap execution requires human review before signing or broadcasting.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Swap execution examples can lead an agent or developer to sign and broadcast real SushiSwap transactions from a private key.
+
+Mitigation: Use only with explicit user approval, decoded transaction review, chain/router/spender/amount/slippage checks, simulation that verifies asset changes, pinned dependencies, and preferably a low-balance or test wallet.
+
+Risk: The skill gives under-scoped guidance for signing mainnet swap transactions that can move real funds.
+
+Mitigation: Review the skill carefully before installing and require transaction simulation and human approval before execution.
+
+## Reference(s):
+
+- [SushiSwap SDK Reference](references/REFERENCE.md)
+- [ClawHub Skill Page](https://clawhub.ai/0xmasayoshi/skills/sushiswap-sdk)
+
+## Skill Output:
+
+**Output Type(s):** [Markdown, Code, Shell commands, Configuration instructions, Guidance]
+
+**Output Format:** [Markdown with TypeScript and shell code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes SDK installation commands, typed SushiSwap API examples, and integration guidance.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

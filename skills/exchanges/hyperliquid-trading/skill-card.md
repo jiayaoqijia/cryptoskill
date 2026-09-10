@@ -1,45 +1,63 @@
-## Description: <br>
-Trade and monitor Hyperliquid perpetual futures, including balance and position checks, market analysis, order placement, cancellation, and execution. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Trade and monitor Hyperliquid perpetual futures, including balances, positions with P&L, market analysis, order placement, market trades, and order cancellation.
 
-## Publisher: <br>
-[anajuliabit](https://clawhub.ai/user/anajuliabit) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[anajuliabit](https://clawhub.ai/user/anajuliabit)
 
-## Use Case: <br>
-External users and developers use this skill to monitor Hyperliquid portfolios, analyze crypto market momentum, and prepare or execute perpetual futures trades through agent-run CLI commands. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can give an agent live Hyperliquid trading authority when HYPERLIQUID_PRIVATE_KEY is available. <br>
-Mitigation: Use testnet or a dedicated limited wallet, avoid exposing a main wallet private key, and manually approve every order or cancel-all action before execution. <br>
-Risk: Open orders or account state may differ from the agent's last response after a command runs. <br>
-Mitigation: Verify open orders, fills, and positions directly after any trade or cancellation. <br>
-Risk: The position checker writes portfolio state to a hard-coded local path. <br>
-Mitigation: Change or remove the hard-coded trading-state path if local portfolio data should not be written there. <br>
-Risk: Automated market signals and strategy examples may be mistaken for financial advice. <br>
-Mitigation: Treat signals as informational decision support and verify trade rationale, size, and risk independently before trading. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Hyperliquid API Reference](references/api.md) <br>
-- [Hyperliquid Official Docs](https://hyperliquid.gitbook.io/hyperliquid-docs/) <br>
+## Use Case:
 
+External users and developers use this skill to monitor Hyperliquid perpetual futures portfolios, analyze market momentum, and prepare or execute trading actions through agent-guided CLI workflows.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands and JSON command outputs] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Uses live Hyperliquid and CoinGecko data when commands are run; trading commands require an explicit private key environment variable.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata and scripts/package.json) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill can place live Hyperliquid trades and cancel orders when a private key is available.
+
+Mitigation: Use testnet first, keep only minimal funds in a dedicated wallet, and require manual confirmation before every trade or cancel action.
+
+Risk: Market analysis and CoinGecko-based momentum signals can be wrong, stale, or unsuitable for a user's financial situation.
+
+Mitigation: Treat signals as decision support, not financial advice, and independently verify market data, sizing, and risk limits before trading.
+
+Risk: NPM dependencies run in the same environment that may receive a trading private key.
+
+Mitigation: Review or sandbox dependencies before exposing private keys and avoid using a wallet with broad or unnecessary funds.
+
+Risk: The position monitor attempts to write local trading state outside the skill directory.
+
+Mitigation: Inspect or redirect the state path and run the skill with filesystem permissions limited to expected locations.
+
+## Reference(s):
+
+- [Hyperliquid API Reference](artifact/references/api.md)
+- [Official Hyperliquid Docs](https://hyperliquid.gitbook.io/hyperliquid-docs/)
+- [Hyperliquid Mainnet API](https://api.hyperliquid.xyz)
+- [Hyperliquid Testnet API](https://api.hyperliquid-testnet.xyz)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, json, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with shell commands and JSON command outputs]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Trading operations require HYPERLIQUID_PRIVATE_KEY; read-only portfolio checks can use HYPERLIQUID_ADDRESS.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata and scripts/package.json)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

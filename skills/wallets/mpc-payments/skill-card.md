@@ -1,45 +1,55 @@
-## Description: <br>
-Accept crypto payments on Solana via MoonPay Commerce by creating Pay Links, generating checkout URLs, checking transactions, and listing supported currencies. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Accept crypto payments on Solana via MoonPay Commerce (formerly Helio) by creating Pay Links, generating checkout URLs, checking transactions, and listing supported currencies.
 
-## Publisher: <br>
-[mavagio](https://clawhub.ai/user/mavagio) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[mavagio](https://clawhub.ai/user/mavagio)
 
-## Use Case: <br>
-Developers, merchants, and agents assisting merchant operators use this skill to configure MoonPay Commerce credentials, create Solana Pay Links, generate checkout URLs, and review payment transactions. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill handles MoonPay Commerce API credentials for a merchant account. <br>
-Mitigation: Run setup only in a trusted terminal, avoid sharing terminal logs or screenshots, use the least-privilege API key available, and clear the saved config when finished. <br>
-Risk: The skill can create, disable, or enable live Pay Links. <br>
-Mitigation: Verify payment amounts, currencies, wallet selection, and Pay Link IDs before allowing create, disable, or enable commands to run. <br>
-Risk: Saved credentials are stored on disk for later shell-script use. <br>
-Mitigation: Keep the config file restricted to the current user with mode 600 and remove it when the agent no longer needs payment-account access. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [MoonPay Commerce API Reference](artifact/references/api-reference.md) <br>
-- [MoonPay Commerce OpenAPI Spec](https://api.hel.io/v1/docs-json) <br>
-- [MoonPay Commerce Swagger UI](https://api.hel.io/v1/docs) <br>
-- [MoonPay Commerce Docs](https://docs.hel.io) <br>
-- [MoonPay Commerce Dashboard](https://app.hel.io) <br>
+## Use Case:
 
+Developers, engineers, and merchants use this skill to configure MoonPay Commerce credentials and operate Solana crypto-payment flows for products, services, invoices, or payment status checks.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline bash commands and JSON API examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May instruct an agent to run setup and helper shell scripts that call MoonPay Commerce APIs.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.3.0 (source: server release metadata and CHANGELOG) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill can create and modify real payment links with MoonPay Commerce merchant credentials.
+
+Mitigation: Confirm amounts, currencies, pay-link IDs, wallet selection, and intended payment action before running generated commands or helper scripts.
+
+Risk: API credentials are stored locally and may be exposed on shared, managed, recorded, or multi-user machines.
+
+Mitigation: Store the config with owner-only permissions, avoid setup during screen sharing or recording, and rotate the API secret if it may have appeared in terminal output or process logs.
+
+## Reference(s):
+
+- [MoonPay Commerce API Reference](references/api-reference.md)
+- [MoonPay Commerce OpenAPI Specification](https://api.hel.io/v1/docs-json)
+- [MoonPay Commerce Documentation](https://docs.hel.io)
+- [MoonPay Commerce Dashboard](https://app.hel.io)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline bash commands and JSON API examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May call MoonPay Commerce APIs through curl and jq when the user runs the provided helper scripts.]
+
+## Skill Version(s):
+
+0.3.0 (source: server release metadata and changelog)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

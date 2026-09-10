@@ -1,40 +1,59 @@
-## Description: <br>
-Register and manage agent identity, reputation, and feedback on Solana and EVM chains using the multi-chain ERC-8004 Agent Registry protocol. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Register and manage agent identity, reputation, and feedback on Solana and EVM chains using the multi-chain ERC-8004 Agent Registry protocol.
 
-## Publisher: <br>
-[montecrypto999](https://clawhub.ai/user/montecrypto999) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[montecrypto999](https://clawhub.ai/user/montecrypto999)
 
-## Use Case: <br>
-Developers and agent operators use this skill to connect agents to an ERC-8004 MCP server for registry lookup, reputation review, wallet-backed registration, feedback, transfer, URI update, and validation workflows across supported Solana and EVM networks. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can give an agent high-impact crypto wallet and blockchain transaction authority. <br>
-Mitigation: Use testnet and dry-run modes first, prefer a dedicated low-balance wallet, and require explicit approval before mainnet switches, wallet imports, transfers, registrations, feedback submissions, URI updates, or other write operations. <br>
-Risk: Wallet material and master passwords are sensitive and may be exposed if copied into chat, examples, or broad environment variables. <br>
-Mitigation: Avoid putting real passwords or private keys into prompts or copied examples, and pass only the environment variables needed for the intended operation. <br>
+## Use Case:
 
+Developers and autonomous-agent builders use this MCP server to discover, register, update, and evaluate agents across Solana and EVM registry networks. It supports read-only registry lookups as well as wallet-backed write operations such as registration, feedback, metadata updates, and payment-linked reputation workflows.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/montecrypto999/skills/8004-mcp) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown and TypeScript examples with MCP tool-call guidance and shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Includes read-only registry queries and wallet-backed blockchain write operations; dry-run options are documented for supported writes.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-0.2.3 (source: server release metadata) <br>
+Risk: The external MCP package can access wallet, signing, mainnet transaction, and storage capabilities.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Pin and audit the package version, run it in a restricted environment with a clean allowlisted environment, keep testnet as the default, and require explicit user confirmation before signing or mainnet transactions.
+
+Risk: Shared or public IPFS storage can make wallet, endpoint, payment, or feedback metadata public and persistent.
+
+Mitigation: Avoid publishing sensitive metadata to shared IPFS storage unless the data is intentionally public and persistent; use controlled storage for private data.
+
+Risk: Wallet-backed write operations can spend real funds or submit irreversible on-chain updates.
+
+Mitigation: Use dry-run or cost-estimation flows before broadcasting, keep wallets minimally funded, and prefer testnets or lower-cost L2 networks for routine work.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/montecrypto999/skills/8004-mcp)
+- [README](artifact/README.md)
+- [AI agent integration guide](artifact/skill.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, JSON, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown documentation with code examples and JSON-like MCP tool responses]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include transaction hashes, unsigned transaction payloads, wallet status, registry records, reputation summaries, feedback records, cost estimates, and troubleshooting guidance.]
+
+## Skill Version(s):
+
+0.2.3 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

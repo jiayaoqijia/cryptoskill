@@ -1,46 +1,60 @@
-## Description: <br>
-Executes perpetual trades through Maxxit's Lazy Trading API, supports Indian stock trading through Zerodha Kite, and provides market research, risk management, copy-trading, and ZK-verified alpha workflows. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Execute perpetual trades on Ostium, Aster, and Avantis via Maxxit's Lazy Trading API, and trade Indian stocks through Zerodha Kite.
 
-## Publisher: <br>
-[abhi152003](https://clawhub.ai/user/abhi152003) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[abhi152003](https://clawhub.ai/user/abhi152003)
 
-## Use Case: <br>
-External traders and trading agents use this skill to inspect account state, research markets, and execute or manage confirmed trades on supported venues. Developers can also run bundled strategy scripts that fetch Binance market data and route signals through Maxxit endpoints. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can place or change live financial trades automatically with limited safeguards. <br>
-Mitigation: Run only with intentional trading access, require an approval gate or dry-run controls before live funds, and set strict venue, symbol, collateral, and leverage limits. <br>
-Risk: MAXXIT_API_KEY and related trading credentials can authorize account access and order execution. <br>
-Mitigation: Keep credentials secret, verify MAXXIT_API_URL is the official HTTPS Maxxit origin, and rotate or revoke keys when access is no longer needed. <br>
-Risk: Strategy scripts derive trading signals from market data and can route those signals to Maxxit execution endpoints. <br>
-Mitigation: Review generated orders and strategy parameters before deployment, start with minimal exposure, and monitor logs and account positions during execution. <br>
+## Use Case:
 
+External users and trading agents use this skill to research markets, inspect balances and positions, place or close trades, manage TP/SL settings, run predefined strategy scripts, and interact with ZK-verified alpha listings through Maxxit-supported venues.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/abhi152003/skills/maxxit-lazy-trading) <br>
-- [Maxxit App](https://maxxit.ai) <br>
-- [Lazy Trading Setup](https://maxxit.ai/lazy-trading) <br>
-- [Maxxit OpenClaw Verification](https://www.maxxit.ai/openclaw) <br>
-- [Binance Klines API](https://api.binance.com/api/v3/klines) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, API calls, Shell commands, Configuration, Code] <br>
-**Output Format:** [Markdown with inline shell commands and JSON request examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires MAXXIT_API_KEY and MAXXIT_API_URL; bundled strategy scripts may create local state and log files.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.2.20 (source: SKILL.md frontmatter and server release metadata) <br>
+Risk: The skill can place leveraged trades, close positions, adjust TP/SL settings, spend agent-wallet USDC, and execute purchased alpha.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Require explicit confirmation for every payment, order, cancellation, close, TP/SL change, and Alpha execution; review or disable autonomous strategy scripts before use.
+
+Risk: Trading credentials and delegated wallet permissions could be exposed or misused in untrusted environments.
+
+Mitigation: Keep MAXXIT_API_KEY and trading credentials out of untrusted environments, verify the installer, and set MAXXIT_API_URL only to the trusted Maxxit origin.
+
+Risk: Automated strategies rely on external market data and local signal rules that may produce poor or stale trading decisions.
+
+Mitigation: Use test or low-risk settings first, apply collateral and leverage limits, monitor executions, and review generated signals before allowing live trades.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/abhi152003/skills/maxxit-lazy-trading)
+- [Maxxit App](https://maxxit.ai)
+- [Lazy Trading setup](https://maxxit.ai/lazy-trading)
+- [Binance Klines API](https://api.binance.com/api/v3/klines)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance, API calls]
+
+**Output Format:** [Markdown guidance with inline shell commands, API call examples, and generated trading actions when executed by an agent]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Uses MAXXIT_API_KEY and MAXXIT_API_URL; some Zerodha flows also use Kite credentials.]
+
+## Skill Version(s):
+
+1.2.20 (source: frontmatter and server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

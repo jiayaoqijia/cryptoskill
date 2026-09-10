@@ -1,41 +1,57 @@
-## Description: <br>
-Query real-time crypto wallet portfolios, transactions, DeFi positions, token prices, NFTs, and gas fees across EVM chains and Solana via Zerion's MCP API. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Query real-time crypto wallet portfolios, transactions, DeFi positions, token prices, NFTs, and gas fees across EVM chains and Solana via Zerion's MCP API.
 
-## Publisher: <br>
-[abishekdharshan](https://clawhub.ai/user/abishekdharshan) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[abishekdharshan](https://clawhub.ai/user/abishekdharshan)
 
-## Use Case: <br>
-Developers and analysts use this skill to configure Zerion's MCP server and ask an agent to retrieve read-only wallet, transaction, DeFi, NFT, token price, and gas-fee information across supported chains. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: Wallet addresses, token and NFT lookups, portfolio questions, and related query patterns may reveal sensitive financial activity when sent to Zerion's remote service. <br>
-Mitigation: Use the skill only for wallets you are authorized to analyze, avoid personally identifying or sensitive wallets unless necessary, and review Zerion API usage before sharing query data. <br>
+## Use Case:
 
+Developers, analysts, and agent users use this skill to configure and query Zerion wallet-data tools for portfolio analysis, transaction review, DeFi position inspection, token and NFT lookup, and gas-fee checks across supported chains.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/abishekdharshan/skills/zerion-api) <br>
-- [Zerion API Documentation](https://developers.zerion.io) <br>
-- [Zerion AI and MCP Documentation](https://developers.zerion.io/reference/building-with-ai) <br>
-- [Zerion llms.txt](https://developers.zerion.io/llms.txt) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with JSON configuration examples and natural-language query prompts] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires a Zerion API key and a compatible MCP client; wallet queries are sent to Zerion's remote service.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.5 (source: server release metadata and package.json) <br>
+Risk: Wallet addresses, query parameters, and analysis context may be sent to Zerion when the configured MCP tools are used.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use an API key and wallet-analysis workflow appropriate for the data involved, and avoid customer, competitor, or third-party wallet analysis unless authorized and lawful.
+
+Risk: Installation through an unpinned ClawHub installer may rely on a changing installer source.
+
+Mitigation: Verify the installer source before installing, or use a pinned installer version.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/abishekdharshan/skills/zerion-api)
+- [Zerion API Documentation](https://developers.zerion.io)
+- [Zerion MCP AI Documentation](https://developers.zerion.io/reference/building-with-ai)
+- [Zerion Dashboard](https://dashboard.zerion.io)
+- [Zerion llms.txt](https://developers.zerion.io/llms.txt)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline JSON and shell command examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires a Zerion API key and authenticated MCP configuration.]
+
+## Skill Version(s):
+
+1.0.5 (source: server release metadata and package.json)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

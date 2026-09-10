@@ -1,48 +1,63 @@
-## Description: <br>
-Building and extending XMTP agents with the Agent SDK for setup and features such as commands, attachments, reactions, groups, transactions, inline actions, and domain resolution. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Building and extending XMTP agents with the Agent SDK for setup, commands, attachments, reactions, groups, transactions, inline actions, and domain resolution.
 
-## Publisher: <br>
-[humanagent](https://clawhub.ai/user/humanagent) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[humanagent](https://clawhub.ai/user/humanagent)
 
-## Use Case: <br>
-Developers and engineers use this skill to build event-driven XMTP messaging agents, configure agent environments, and add messaging, wallet, group, attachment, command, inline action, and identity-resolution behavior. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: Copied attachment examples could save untrusted filenames unsafely. <br>
-Mitigation: Sanitize attachment filenames, restrict writes to a dedicated download directory, and prevent path traversal or unintended overwrites. <br>
-Risk: Attachment upload examples may publish encrypted objects through public URLs unless that exposure is intentional. <br>
-Mitigation: Use private storage or signed URLs where appropriate, document retention and access expectations, and confirm public URL behavior before production use. <br>
-Risk: Wallet, payment, group membership, and environment variable flows can expose secrets or perform unintended financial or administrative actions. <br>
-Mitigation: Protect .env secrets, use a dedicated low-value agent wallet, and require explicit confirmations, spending limits, and group membership limits. <br>
+## Use Case:
 
+Developers building XMTP messaging agents use this skill for setup and feature implementation, including command routing, attachments, reactions, group management, USDC transaction flows, inline action menus, and Web3 identity resolution.
 
-## Reference(s): <br>
-- [ClawHub XMTP skill release](https://clawhub.ai/humanagent/skills/xmtp-agent) <br>
-- [Publisher profile](https://clawhub.ai/user/humanagent) <br>
-- [Skill overview](artifact/SKILL.md) <br>
-- [Building agents](artifact/building-agents/SKILL.md) <br>
-- [Handling attachments](artifact/handling-attachments/SKILL.md) <br>
-- [Handling transactions](artifact/handling-transactions/SKILL.md) <br>
-- [Managing groups](artifact/managing-groups/SKILL.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with TypeScript and bash code blocks] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Produces implementation guidance and snippets for XMTP agent behavior; it does not directly execute code.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: evidence.release.version and SKILL.md frontmatter) <br>
+Risk: Transaction examples create USDC wallet requests and can affect funds if copied without user review.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Add explicit transaction previews and confirmations, keep token amounts as precise integer base units, and validate sender, recipient, network, and amount before sending wallet calls.
+
+Risk: Attachment examples download, decrypt, save, and upload files, including public storage examples.
+
+Mitigation: Sanitize attachment filenames, constrain download directories, enforce size and type limits, and use private or signed storage URLs where appropriate.
+
+Risk: Group examples add members and change roles, which can expose private conversations or grant elevated access.
+
+Mitigation: Require authorization checks before member, admin, super-admin, or group-gating changes.
+
+Risk: Examples use environment secrets and log message bodies or transaction metadata.
+
+Mitigation: Protect .env secrets, avoid logging message bodies or sensitive metadata, and redact addresses or hashes when logs are shared.
+
+## Reference(s):
+
+- [ClawHub XMTP Skill Release](https://clawhub.ai/humanagent/skills/xmtp-agent)
+- [Circle Faucet](https://faucet.circle.com)
+- [Base Faucet](https://portal.cdp.coinbase.com/products/faucet)
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Markdown, Code, Shell commands, Configuration]
+
+**Output Format:** [Markdown guidance with TypeScript and shell code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes copy-paste XMTP Agent SDK examples that need application-specific review before deployment.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

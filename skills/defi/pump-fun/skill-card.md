@@ -1,39 +1,53 @@
-## Description: <br>
-Buy, sell, and launch tokens on Pump.fun using the PumpPortal API. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Buy, sell, and launch tokens on Pump.fun using the PumpPortal API.
 
-## Publisher: <br>
-[playdadev](https://clawhub.ai/user/playdadev) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[playdadev](https://clawhub.ai/user/playdadev)
 
-## Use Case: <br>
-External users and developers can use this skill to request Pump.fun token buys, sells, and launches through PumpPortal after configuring a dedicated Solana wallet. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill requests Solana wallet authority and describes real fund-moving actions without enough visible implementation or transaction safeguards. <br>
-Mitigation: Use only a dedicated low-balance wallet, do not set SOLANA_PRIVATE_KEY unless the implementation can be inspected and trusted, and manually verify mint addresses, amounts, slippage, fees, and wallet impact before any transaction. <br>
-Risk: This release contains only documentation, so command behavior and transaction safeguards cannot be verified from the artifact. <br>
-Mitigation: Confirm the installed release includes the expected implementation and review it before using buy, sell, or launch commands. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Pump.fun](https://pump.fun) <br>
+## Use Case:
 
+Developers and external users can use this skill to direct an agent to buy, sell, and launch Pump.fun tokens through PumpPortal. The skill requires a Solana private key and may cause real mainnet trading activity.
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Shell commands, Configuration] <br>
-**Output Format:** [Markdown with slash-command examples and inline bash code blocks] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Commands require wallet configuration and transaction parameters such as mint address, amount, slippage, or token launch details.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.1 (source: release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill gives an agent authority to buy, sell, or launch Pump.fun tokens using a Solana private key.
+
+Mitigation: Use only a dedicated Solana trading wallet with limited funds and do not provide a private key unless that authority is intended.
+
+Risk: Commands may execute real Pump.fun mainnet transactions and the evidence does not show clear irreversible-transaction warnings or confirmation controls.
+
+Mitigation: Review the runtime for confirmation prompts or dry-run support before using real funds, and start with small test amounts.
+
+## Reference(s):
+
+- [Pump.fun](https://pump.fun)
+- [ClawHub Skill Page](https://clawhub.ai/playdadev/skills/pump-fun)
+
+## Skill Output:
+
+**Output Type(s):** [Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with command syntax and environment variable configuration]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires SOLANA_PRIVATE_KEY; optional SOLANA_RPC_URL, PUMP_PRIORITY_FEE, and PUMP_DEFAULT_SLIPPAGE settings are documented.]
+
+## Skill Version(s):
+
+1.0.1 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

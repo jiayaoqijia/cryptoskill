@@ -1,43 +1,58 @@
-## Description: <br>
-Manage crypto wallets, transfers, swaps, and balances via the Sponge Wallet API. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Manage crypto wallets, transfers, swaps, and balances via the Sponge Wallet API.
 
-## Publisher: <br>
-[rishabluthra](https://clawhub.ai/user/rishabluthra) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[rishabluthra](https://clawhub.ai/user/rishabluthra)
 
-## Use Case: <br>
-External developers and agents use Sponge Wallet to manage crypto balances and execute wallet actions through REST API requests, including transfers, swaps, bridging, x402 payments, Polymarket activity, and Amazon checkout. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can give an agent durable authority over wallet funds, transfers, swaps, bridging, withdrawals, prediction-market activity, paid x402 requests, and Amazon purchases. <br>
-Mitigation: Use testnet or low-balance accounts, keep API-key permissions narrow, and require human confirmation before any transaction, trade, paid request, checkout, or withdrawal. <br>
-Risk: Agent-first registration can issue an API key before a human owner claims the wallet. <br>
-Mitigation: Avoid agent-first registration for real funds; prefer a human-approved device flow and revoke or rotate the key when the task is finished. <br>
-Risk: Leaked Sponge Wallet API keys can expose funds or purchasing authority. <br>
-Mitigation: Store credentials only in the documented credential file, avoid logging or screenshotting keys, restrict file permissions, and rotate exposed keys immediately. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Sponge Wallet Skill on ClawHub](https://clawhub.ai/rishabluthra/skills/wallet-skills) <br>
-- [Sponge Wallet](https://wallet.paysponge.com) <br>
-- [Sponge Wallet API](https://api.wallet.paysponge.com) <br>
+## Use Case:
 
+External users and developers use this skill to guide agents through Sponge Wallet REST API operations, including wallet registration, balance checks, transfers, swaps, bridges, Polymarket actions, Amazon checkout, and x402 paid fetches.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, shell commands, configuration] <br>
-**Output Format:** [Markdown with curl examples and JSON request bodies] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires SPONGE_API_KEY; wallet actions may spend funds, place trades, make paid x402 requests, or initiate purchases.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.2 (source: ClawHub release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill can guide agents toward real-money actions, including transfers, trading, bridge operations, withdrawals, checkout, and paid x402 fetches.
+
+Mitigation: Use low-balance or tightly scoped API keys, prefer testnet, and require explicit human confirmation before any funds movement, trade, purchase, or paid fetch.
+
+Risk: SPONGE_API_KEY exposure could give broad wallet authority.
+
+Mitigation: Restrict permissions on ~/.spongewallet/credentials.json, avoid broad environment exports, keep keys out of logs and screenshots, and rotate keys if exposure is suspected.
+
+Risk: x402 URLs and Amazon checkout inputs can cause the agent to spend funds or place orders.
+
+Mitigation: Treat x402 URLs and checkout inputs as high-risk, verify destination and purchase details, and use dry-run checkout behavior when available.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/rishabluthra/skills/wallet-skills)
+- [Sponge Wallet homepage](https://wallet.paysponge.com)
+- [Sponge Wallet API base](https://api.wallet.paysponge.com)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with REST API endpoint tables, JSON examples, and curl command blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Doc-only skill; agents call the Sponge Wallet REST API directly and use SPONGE_API_KEY for authenticated requests.]
+
+## Skill Version(s):
+
+0.1.2 (source: server release metadata; artifact frontmatter says 1.0.0)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

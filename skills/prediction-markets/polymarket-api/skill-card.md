@@ -1,37 +1,49 @@
-## Description: <br>
-Query Polymarket prediction markets for market prices, event probabilities, betting odds, and related public market data. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Query Polymarket prediction markets for market prices, betting odds, event probabilities, and related market data.
 
-## Publisher: <br>
-[dannyshmueli](https://clawhub.ai/user/dannyshmueli) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[dannyshmueli](https://clawhub.ai/user/dannyshmueli)
 
-## Use Case: <br>
-External users, developers, and analysts use this skill to retrieve public Polymarket market and event data, including top markets, search results, individual market slugs, prices, volumes, and probabilities. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill sends lookup requests, including search terms or slugs, to Polymarket's public API. <br>
-Mitigation: Avoid entering private or sensitive information in market searches, and allow network access only to the disclosed Polymarket API endpoint where strict governance is required. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Polymarket Gamma API](https://gamma-api.polymarket.com) <br>
+## Use Case:
 
+Developers and agents use this skill to retrieve and summarize Polymarket prediction market data, including top markets, text searches, specific market slugs, and grouped events.
 
-## Skill Output: <br>
-**Output Type(s):** [text, JSON, shell commands, guidance] <br>
-**Output Format:** [Plain text market summaries or raw JSON from the Polymarket public API] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Outputs may include market questions, Yes/No prices as percentages, 24h volume, total volume, liquidity, status, end date, and truncated descriptions.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill makes outbound read-only requests to Polymarket's public API for market data.
+
+Mitigation: Install only if this network access is acceptable, and invoke it only for Polymarket-specific questions or market slugs when tighter control is needed.
+
+## Reference(s):
+
+- [Polymarket Gamma API](https://gamma-api.polymarket.com)
+- [ClawHub skill page](https://clawhub.ai/dannyshmueli/skills/polymarket-api)
+
+## Skill Output:
+
+**Output Type(s):** [text, json, shell commands, guidance]
+
+**Output Format:** [Plain text market summaries or raw JSON]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Read-only public API lookups; no API key required.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.
