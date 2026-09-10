@@ -1,40 +1,51 @@
-## Description: <br>
-Assist with XRP transactions, destination tags, reserves, and XRPL features. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with XRP transactions, destination tags, reserves, and XRPL features.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-External users and agents use this skill for concise XRP reference guidance on destination tags, account reserves, transaction failures, trust lines, XRPL features, and scam recognition. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Cryptocurrency transaction guidance may be misapplied to current exchange requirements, reserve rules, or destination tag handling. <br>
-Mitigation: Verify destination tags, addresses, exchange requirements, and reserve rules against current authoritative sources before sending funds. <br>
-Risk: Users may expose wallet recovery material while acting on XRP guidance. <br>
-Mitigation: Never share seed phrases, family seeds, private keys, or recovery material. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/ivangdavila/xrp) <br>
-- [Publisher Profile](https://clawhub.ai/user/ivangdavila) <br>
+## Use Case:
+
+External users and developers use this skill for concise operational guidance on XRP transfers, destination tags, account reserves, trust lines, transaction outcomes, and common scams.
+
+### Deployment Geography for Use:
+
+Global
+
+## Known Risks and Mitigations:
+
+Risk: Unsafe key-handling or delegated-signing guidance could lead users to expose signing authority or lose funds.
+
+Mitigation: Treat XRP family seeds, secret keys, mnemonics, and delegated signing keys as highly sensitive, and verify security advice against current XRPL documentation before acting.
+
+Risk: Incorrect transaction-finality or retry guidance could cause duplicate, failed, or misdirected payments.
+
+Mitigation: Verify destination tags, reserve requirements, and transaction hashes in a validated ledger before retrying, replacing, or escalating a payment.
+
+## Reference(s):
 
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, markdown, text] <br>
-**Output Format:** [Markdown reference guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Text-only XRP reference; no code execution, credential requests, wallet access, persistence, or data transfer behavior.] <br>
+## Skill Output:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence) <br>
+**Output Type(s):** [Text, Markdown, Guidance]
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+**Output Format:** [Markdown]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [No code execution or persistence; guidance should be reviewed before use with real XRP transfers.]
+
+## Skill Version(s):
+
+1.0.0 (source: evidence.release.version)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,43 +1,60 @@
-## Description: <br>
-Search and discover 43k+ AI agents registered via ERC-8004. Find agents by skill, chain, or reputation. View leaderboards, ecosystem stats, and monitor metadata changes. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Search and discover 43k+ AI agents registered via ERC-8004. Find agents by skill, chain, or reputation. View leaderboards, ecosystem stats, and monitor metadata changes.
 
-## Publisher: <br>
-[aetherstacey](https://clawhub.ai/user/aetherstacey) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[aetherstacey](https://clawhub.ai/user/aetherstacey)
 
-## Use Case: <br>
-Developers and external users use this skill to search ERC-8004 agent listings, inspect agent details, compare reputation signals, view ecosystem statistics, and monitor selected agents for metadata changes. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can fetch untrusted agent metadata URLs, including HTTP(S) or IPFS-derived content, which may contact internal or attacker-controlled services. <br>
-Mitigation: Run the script in an environment with constrained outbound network access and add URL allowlists plus private and link-local address blocking before autonomous use. <br>
-Risk: Automated monitor workflows may act on untrusted or misleading agent metadata changes. <br>
-Mitigation: Avoid cron or notifier automation unless monitored agents are trusted, and review change output before taking follow-up action. <br>
+## Use Case:
 
+Developers, operators, and external users use this skill to search ERC-8004 agent registrations, compare reputation and chain coverage, inspect agent metadata, and monitor selected agents for changes before interaction or competitive analysis.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/aetherstacey/erc8004-discover) <br>
-- [Agentscan](https://agentscan.info) <br>
-- [Agentscan agents API](https://agentscan.info/api/agents) <br>
-- [Agentscan networks API](https://agentscan.info/api/networks) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, guidance] <br>
-**Output Format:** [Terminal text and Markdown guidance with inline shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only API lookups; monitor command writes local cache files under /tmp.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.1.1 (source: server release metadata) <br>
+Risk: Agent info lookups may fetch metadata from third-party URLs.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use the skill only when outbound metadata requests are acceptable, and prefer restricted or opt-in metadata fetching before broad deployment.
+
+Risk: Monitor mode stores baseline state in a shared /tmp cache path.
+
+Mitigation: Avoid running monitor mode as root or on shared systems until the cache is moved to a private per-user directory.
+
+Risk: Discovery queries are sent to the public Agentscan service.
+
+Mitigation: Avoid submitting sensitive search terms or agent identifiers unless disclosure to Agentscan is acceptable.
+
+## Reference(s):
+
+- [Agentscan](https://agentscan.info)
+- [Agentscan Agents API](https://agentscan.info/api/agents)
+- [Agentscan Networks API](https://agentscan.info/api/networks)
+- [ClawHub Skill Page](https://clawhub.ai/aetherstacey/skills/erc8004-discover)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, guidance]
+
+**Output Format:** [Terminal text and Markdown instructions with inline shell commands]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Read-only public API queries; monitor mode writes a local baseline cache under /tmp.]
+
+## Skill Version(s):
+
+1.1.1 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

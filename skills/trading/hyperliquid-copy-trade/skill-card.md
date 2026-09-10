@@ -1,46 +1,66 @@
-## Description: <br>
-Automate copy trading on Hyperliquid via Coinpilot to discover, investigate, and mirror top on-chain traders in real time with low execution latency. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Automate copy trading on Hyperliquid via Coinpilot to discover, investigate, and mirror top on-chain traders in real time with low execution latency.
 
-## Publisher: <br>
-[alannkl](https://clawhub.ai/user/alannkl) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[alannkl](https://clawhub.ai/user/alannkl)
 
-## Use Case: <br>
-External users and developers use this skill to configure a trusted local agent runtime for Coinpilot, discover Hyperliquid lead wallets, manage copy-trading subscriptions, adjust risk settings, and review performance. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill handles raw wallet private keys and can execute live trading actions. <br>
-Mitigation: Use dedicated low-balance wallets, keep credentials in the fixed local file with strict permissions, and require user confirmation before start, stop, update, close, or recurring automation actions. <br>
-Risk: A malicious or incorrect API destination could expose secrets or trading authority. <br>
-Mitigation: Verify the Coinpilot API URL and allow only trusted Coinpilot endpoints before runtime use. <br>
-Risk: Copy trading perpetuals can cause financial loss and does not provide financial advice. <br>
-Mitigation: Review leader selection, allocation, leverage, stop-loss, and take-profit settings before enabling or changing subscriptions. <br>
+## Use Case:
 
+External users and developers use this skill to configure a trusted local agent runtime for Coinpilot, discover Hyperliquid lead wallets, start or stop copy-trading subscriptions, adjust risk settings, and inspect subscription performance.
 
-## Reference(s): <br>
-- [Coinpilot endpoints and auth](references/coinpilot-api.md) <br>
-- [Credential format](references/coinpilot-json.md) <br>
-- [Hyperliquid info endpoints](references/hyperliquid-api.md) <br>
-- [Coinpilot documentation](https://docs.coinpilot.com/) <br>
-- [Skill source homepage](https://github.com/coinpilot-labs/skills) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline shell commands and JSON configuration guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May create a local placeholder credentials file; live operations require user-provided local credentials and explicit trading intent.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.7 (source: server release metadata and frontmatter) <br>
+Risk: The skill stores a Coinpilot API key and multiple wallet private keys in a local credentials file.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a trusted local runtime, keep ~/.coinpilot/coinpilot.json owner-readable only, never paste secrets into chat, and avoid committing credential files.
+
+Risk: Live copy-trading actions can move funds and expose configured wallets to trading losses.
+
+Mitigation: Use wallets funded only for this strategy, confirm balances and subscription settings before state-changing actions, and apply stop loss, take profit, leverage, and margin limits appropriate to the user's risk tolerance.
+
+Risk: Coinpilot receives wallet private keys for API authentication and experimental copy-trading routes.
+
+Mitigation: Install only when the user trusts Coinpilot and its infrastructure with control of the configured wallets, and do not store unrelated funds or permissions on those wallets.
+
+Risk: Unpinned or unexpected installation sources can change the runtime behavior reviewed here.
+
+Mitigation: Prefer pinned installation sources and verify the release version and file hashes before deployment.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/alannkl/skills/coinpilot-hyperliquid-copy-trade)
+- [Coinpilot skill repository homepage](https://github.com/coinpilot-labs/skills)
+- [Coinpilot documentation](https://docs.coinpilot.com/)
+- [Coinpilot API reference](references/coinpilot-api.md)
+- [Coinpilot credentials format](references/coinpilot-json.md)
+- [Hyperliquid info endpoints](references/hyperliquid-api.md)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, markdown, shell commands, configuration, code]
+
+**Output Format:** [Markdown with inline shell commands and JSON configuration references]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May trigger serialized Coinpilot and Hyperliquid API calls through the bundled Node.js CLI when the user has configured local credentials.]
+
+## Skill Version(s):
+
+1.0.7 (source: frontmatter and server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

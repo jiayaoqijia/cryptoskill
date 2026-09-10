@@ -1,48 +1,58 @@
-## Description: <br>
-ERC-8004 Trustless Agents - Register and manage AI agent identities on TRON and BSC blockchains with on-chain reputation tracking <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+ERC-8004 Trustless Agents - Register and manage AI agent identities on TRON and BSC blockchains with on-chain reputation tracking.
 
-## Publisher: <br>
-[SpyderJR](https://clawhub.ai/user/SpyderJR) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-CC0-1.0 <br>
+## Publisher:
 
+[spyderjr](https://clawhub.ai/user/spyderjr)
 
-## Use Case: <br>
-Developers and engineers use this skill to register, query, update, and submit feedback for AI agent identities on TRON and BSC networks using ERC-8004/TRC-8004 registries. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+CC0-1.0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can use wallet private keys to sign irreversible TRON or BSC transactions. <br>
-Mitigation: Use a dedicated low-balance wallet, start on testnets, and require explicit approval before any register, feedback, or set-uri command on mainnet. <br>
-Risk: Persistent plaintext private key storage can expose wallet funds if the host is compromised. <br>
-Mitigation: Avoid storing private keys in shell startup files or plaintext wallet files; prefer scoped environment variables or a managed secret store. <br>
-Risk: Wrong or spoofed contract addresses could route transactions to unintended contracts. <br>
-Mitigation: Verify contract addresses independently before mainnet use. <br>
+## Use Case:
 
+Developers and agent builders use this skill to register, query, update, and submit reputation feedback for AI agent identities on TRON and BNB Smart Chain networks.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/SpyderJR/8004-skill) <br>
-- [EIP-8004 specification](https://eips.ethereum.org/EIPS/eip-8004) <br>
-- [8004.org](https://8004.org) <br>
-- [TRON Developers documentation](https://developers.tron.network/) <br>
-- [TronWeb JavaScript SDK](https://github.com/tronprotocol/tronweb) <br>
-- [TronScan](https://tronscan.org/) <br>
-- [TronGrid API service](https://www.trongrid.io/) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands and JSON configuration examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May produce commands that read wallet private keys and submit TRON or BSC transactions.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.1 (source: ClawHub release metadata) <br>
+Risk: Wallet private keys are required for TRON and BSC write transactions.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a testnet or low-value dedicated wallet, prefer environment variables over persistent plaintext key storage, and avoid exposing private keys in logs or shared files.
+
+Risk: Mainnet registration, feedback, and URI update commands can create irreversible blockchain transactions.
+
+Mitigation: Verify the selected network and contract addresses, test on Nile or BSC testnet first, and review every mainnet transaction before signing or running write commands.
+
+## Reference(s):
+
+- [EIP-8004 Specification](https://eips.ethereum.org/EIPS/eip-8004)
+- [8004.org](https://8004.org)
+- [TRON Developer Documentation](https://developers.tron.network/)
+- [TronWeb](https://github.com/tronprotocol/tronweb)
+- [A2A Protocol](https://a2a-protocol.org/)
+- [Awesome ERC-8004](https://github.com/sudeepb02/awesome-erc8004)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and JSON examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Write operations require a user-selected chain and network plus a wallet private key.]
+
+## Skill Version(s):
+
+1.0.1 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

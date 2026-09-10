@@ -1,42 +1,59 @@
-## Description: <br>
-Autonomous Binance spot trading bot with LLM-powered market analysis for momentum, mean reversion, and DCA strategies on Binance spot pairs. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Autonomous Binance spot trading bot that combines technical indicators with LLM sentiment analysis to place and track trades across Binance spot pairs.
 
-## Publisher: <br>
-[srikanthbellary](https://clawhub.ai/user/srikanthbellary) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[srikanthbellary](https://clawhub.ai/user/srikanthbellary)
 
-## Use Case: <br>
-Developers and operators use this skill to configure and run automated Binance spot trading workflows, including technical-analysis strategies, LLM sentiment filtering, and portfolio checks. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can place live Binance spot market orders from the configured account. <br>
-Mitigation: Use a Binance sub-account, disable withdrawals, IP-restrict API keys, begin with read-only or testnet/paper trading when available, and review order limits and confirmation behavior before providing trading-enabled keys. <br>
-Risk: The skill requires private Binance and LLM API credentials. <br>
-Mitigation: Store credentials only in a secured environment, restrict exchange-key permissions to the minimum needed for spot trading, and do not enable withdrawal permissions. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/srikanthbellary/binance-spot-trader) <br>
-- [Publisher homepage](https://github.com/srikanthbellary) <br>
-- [Binance REST API Reference](references/binance-api.md) <br>
-- [Technical Indicators](references/indicators.md) <br>
+## Use Case:
 
+External developers and trading operators use this skill to configure and run an automated Binance spot trading workflow with momentum, mean reversion, or DCA strategies and optional LLM sentiment checks.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Shell commands, Configuration, Code] <br>
-**Output Format:** [Markdown guidance with bash commands, environment configuration, and Python script execution] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires Binance and LLM API credentials; may write local trade history and logs during operation.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: ClawHub release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill can place live Binance spot market orders when configured with valid Binance API credentials.
+
+Mitigation: Use API keys with withdrawals disabled, IP restrictions, and limited funds; verify or add dry-run mode and confirmation gates before live use.
+
+Risk: Documented trading safety limits are incomplete or unenforced for position caps, DCA scheduling, exchange filters, and stop-loss or take-profit behavior.
+
+Mitigation: Review and implement those controls before enabling cron execution or using real funds.
+
+Risk: API keys are loaded from environment or .env files and may be stored on disk.
+
+Mitigation: Restrict file permissions, secure the host, and rotate keys if the environment or logs are exposed.
+
+## Reference(s):
+
+- [Binance REST API Reference](references/binance-api.md)
+- [Technical Indicators](references/indicators.md)
+- [Publisher homepage](https://github.com/srikanthbellary)
+- [ClawHub skill page](https://clawhub.ai/srikanthbellary/skills/binance-spot-trader)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline shell commands, configuration snippets, and Python script references]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May execute live Binance spot market orders and write trade history to trades.jsonl when configured with valid API keys.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,40 +1,49 @@
-## Description: <br>
-Assist with SUI transactions, object model, staking, and Move smart contracts. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with SUI transactions, object model, staking, and Move smart contracts.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-Developers and external users use this skill as a Sui blockchain reference for transactions, object ownership, staking, gas, wallet behavior, and Move smart contract concepts. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Blockchain facts, wallet support, validator terms, bridge routes, and package addresses can change after release. <br>
-Mitigation: Verify current Sui facts, official addresses, and wallet or bridge status with authoritative sources before acting. <br>
-Risk: Guidance about transactions, staking, or signing could affect financial assets if followed without review. <br>
-Mitigation: Review transaction previews, validator choices, dApp permissions, and package addresses before signing or making financial decisions. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/ivangdavila/sui-network) <br>
-- [Publisher Profile](https://clawhub.ai/user/ivangdavila) <br>
+## Use Case:
 
+Developers, operators, and Sui users use this skill for practical guidance on Sui transactions, object ownership, staking, coin management, Move smart contracts, wallets, and common troubleshooting scenarios.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, markdown] <br>
-**Output Format:** [Markdown] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Informational reference output; no executable behavior or sensitive access is described in the security evidence.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.2 (source: server release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Sui wallet, bridge, staking, validator, and package-address details can change, and blockchain transactions can be irreversible.
+
+Mitigation: Verify current details from official sources and review transaction effects before signing or relying on guidance for real Sui activity.
+
+## Reference(s):
+
+- [Sui Network skill page](https://clawhub.ai/ivangdavila/skills/sui-network)
+- [Publisher profile](https://clawhub.ai/user/ivangdavila)
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Markdown, Code]
+
+**Output Format:** [Markdown or plain text responses]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Static reference guidance; may include Move smart contract examples or Sui workflow advice when requested.]
+
+## Skill Version(s):
+
+1.0.2 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

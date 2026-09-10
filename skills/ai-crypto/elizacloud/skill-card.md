@@ -1,42 +1,68 @@
-## Description: <br>
-Manage elizaOS Cloud - deploy AI agents, chat completions, image/video generation, voice cloning, knowledge base, containers, and marketplace. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Manage elizaOS Cloud - deploy AI agents, chat completions, image/video generation, voice cloning, knowledge base, containers, and marketplace.
 
-## Publisher: <br>
-[odilitime](https://clawhub.ai/user/odilitime) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[odilitime](https://clawhub.ai/user/odilitime)
 
-## Use Case: <br>
-Developers and operators use this skill to manage elizaOS Cloud accounts, deploy and interact with hosted agents, generate media, manage knowledge bases and containers, and work with billing or API-key workflows. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can perform broad elizaOS Cloud account-management actions, including destructive, deployment, billing, payment, and API-key workflows. <br>
-Mitigation: Use a least-privilege API key and manually approve deletes, deployments, API-key creation, knowledge uploads, public registrations, credit purchases, auto top-up, crypto payments, and other cost-incurring actions. <br>
-Risk: Requests may be sent to an unintended service if the configurable base URL is changed. <br>
-Mitigation: Keep ELIZACLOUD_BASE_URL pointed at the official trusted endpoint unless a reviewed alternative endpoint is intentionally required. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill listing](https://clawhub.ai/odilitime/elizacloud) <br>
-- [elizaOS Cloud API reference](references/api-reference.md) <br>
-- [elizaOS Cloud documentation](https://www.elizacloud.ai/docs) <br>
-- [elizaOS Cloud OpenAPI specification](https://elizacloud.ai/api/openapi.json) <br>
+## Use Case:
 
+Developers and operators use this skill to manage elizaOS Cloud agents, invoke generation endpoints, work with knowledge and A2A APIs, and perform cloud account operations from chat guidance or shell/API examples.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, markdown, code, shell commands, configuration] <br>
-**Output Format:** [Markdown with inline JSON and bash examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires ELIZACLOUD_API_KEY; ELIZACLOUD_BASE_URL can override the default API endpoint.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.1.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill uses ELIZACLOUD_API_KEY for cloud changes and API calls.
+
+Mitigation: Use a narrowly scoped API key, keep it out of version control, and rotate separate development and production keys.
+
+Risk: Agent deletion, billing changes, top-ups, API-key creation, and public or discoverable registration can have account or cost impact.
+
+Mitigation: Require explicit user approval before executing destructive, billing, credential, or public registration actions.
+
+Risk: Chat, image, knowledge, and A2A payloads may send sensitive content to elizaOS Cloud endpoints.
+
+Mitigation: Avoid sending secrets or regulated data unless the user has confirmed the data handling requirements for the account and use case.
+
+Risk: ELIZACLOUD_BASE_URL can redirect requests to a different endpoint.
+
+Mitigation: Set ELIZACLOUD_BASE_URL only to a trusted HTTPS elizaOS endpoint.
+
+Risk: The optional global CLI install shown in the artifact is not pinned.
+
+Mitigation: Prefer a pinned version or local project install before running CLI commands.
+
+## Reference(s):
+
+- [elizaOS Cloud API Reference](references/api-reference.md)
+- [elizaOS Cloud Docs](https://www.elizacloud.ai/docs)
+- [elizaOS Cloud OpenAPI Spec](https://elizacloud.ai/api/openapi.json)
+- [elizaOS Cloud Dashboard](https://elizacloud.ai/dashboard)
+- [ClawHub Skill Page](https://clawhub.ai/odilitime/skills/elizacloud)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline JSON and bash examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include API request examples and shell commands that require ELIZACLOUD_API_KEY.]
+
+## Skill Version(s):
+
+1.1.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,42 +1,55 @@
-## Description: <br>
-Build and sign XRP Ledger transactions, including payments, NFT mint or burn transactions, Xaman-signed submission, and direct XRPL submission. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Build and sign XRP Ledger transactions. Use for: (1) Creating payment transactions, (2) Building NFT mint/burn transactions, (3) Signing with Xaman wallet, (4) Submitting to XRPL.
 
-## Publisher: <br>
-[HarleysCodes](https://clawhub.ai/user/HarleysCodes) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[harleyscodes](https://clawhub.ai/user/harleyscodes)
 
-## Use Case: <br>
-Developers building XRP Ledger integrations use this skill to draft transaction objects, prepare Xaman-signed submissions, and reference common XRPL transaction fields. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Signed XRP Ledger transactions can affect real funds or account state. <br>
-Mitigation: Verify destination, amount, destination tag, transaction type, NFT fields, issuer, flags, fees, and network before signing or submitting. <br>
-Risk: Experimenting against a mainnet endpoint can submit irreversible ledger actions. <br>
-Mitigation: Use XRPL testnet or devnet examples while experimenting, then switch networks only after reviewing the finalized transaction. <br>
-Risk: Unpinned dependencies can change transaction-building behavior in downstream projects. <br>
-Mitigation: Pin the xrpl npm dependency in production projects and review dependency updates before release. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/HarleysCodes/xrpl-tx-builder) <br>
-- [Publisher profile](https://clawhub.ai/user/HarleysCodes) <br>
+## Use Case:
+
+Developers and engineers use this skill to draft XRPL payment and NFT transaction examples, integrate Xaman-signed submission flows, and review key XRPL transaction fields before implementation.
+
+### Deployment Geography for Use:
+
+Global
+
+## Known Risks and Mitigations:
+
+Risk: Real XRPL transaction submission can affect live wallets if users apply examples without enough safety checks.
+
+Mitigation: Prefer testnet or devnet during development and confirm destination, amount, network, fees, and full transaction contents before submitting any signed transaction.
+
+Risk: A likely incorrect transaction example could mislead implementation.
+
+Mitigation: Independently verify every transaction type and field against XRPL documentation before adapting the example.
+
+Risk: The skill depends on the `xrpl` package for transaction construction and submission examples.
+
+Mitigation: Pin and audit the `xrpl` dependency before using the skill in wallet-connected workflows.
+
+## Reference(s):
 
 
-## Skill Output: <br>
-**Output Type(s):** [Markdown, Code, Shell commands, Guidance] <br>
-**Output Format:** [Markdown with TypeScript examples and shell command snippets] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [None] <br>
+## Skill Output:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+**Output Type(s):** [Code, Shell commands, Configuration instructions, Guidance, API Calls]
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+**Output Format:** [Markdown with bash and TypeScript code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes XRPL transaction examples and public RPC endpoint guidance.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,45 +1,59 @@
-## Description: <br>
-Automates Solana memecoin trading with fdv.lol CLI and Agent Gary full AI control using a locally generated user profile. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Automates headless memecoin trading on Solana by guiding an agent to configure and run the fdv.lol CLI with Agent Gary Full AI Control.
 
-## Publisher: <br>
-[build23w](https://clawhub.ai/user/build23w) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[build23w](https://clawhub.ai/user/build23w)
 
-## Use Case: <br>
-External users and agent operators use this skill to configure and run a headless fdv.lol memecoin trading workflow with local wallet, RPC, Jupiter, and LLM credentials. It is intended for users who understand that autonomous trading can execute financial actions and lose the funded balance. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Autonomous trading can spend or lose the wallet balance. <br>
-Mitigation: Use only a fresh burner wallet funded with a very small amount, and assume the funded balance can be lost. <br>
-Risk: The workflow requires wallet secrets, RPC credentials, Jupiter API keys, and LLM API keys. <br>
-Mitigation: Keep the profile local, restrict file permissions, never publish real secrets, and avoid printing secrets in logs. <br>
-Risk: The documented run path includes unpinned remote code execution for fdv.lol CLI. <br>
-Mitigation: Prefer a pinned and verified fdv.lol release instead of curl-pipe execution. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/build23w/agentic-powered-memecoin-trader) <br>
-- [fdv.lol upstream repository](https://github.com/build23w/fdv.lol) <br>
-- [fdv.lol profile example](https://github.com/build23w/fdv.lol/blob/main/tools/profiles/fdv.profiles.example.json) <br>
-- [Jupiter API pricing](https://portal.jup.ag/pricing) <br>
-- [QuickNode signup](https://quicknode.com/signup?via=lf) <br>
+## Use Case:
 
+External users and agent operators use this skill to create a local trading profile, supply required Solana RPC, wallet, Jupiter, and LLM credentials, and run a fully agent-controlled memecoin trading CLI. The skill is intended for users who understand autonomous crypto-trading risk and can enforce small balances and local secret handling.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, configuration, shell commands] <br>
-**Output Format:** [Markdown instructions with JSON configuration examples and inline shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Produces local profile setup guidance and command-line run instructions; generated profiles may contain secrets and should remain local.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill supports autonomous crypto trading and can authorize AI-directed trading decisions.
+
+Mitigation: Use only a burner wallet with a strict small balance and configure hard trading limits before running.
+
+Risk: The skill asks the agent to run remote CLI code while using wallet and API secrets.
+
+Mitigation: Independently review and pin the exact CLI version before execution, prefer a sandboxed run, and keep profile files private with owner-only permissions.
+
+Risk: Profile files contain sensitive wallet and API credentials.
+
+Mitigation: Keep credentials local, avoid logging secrets, redact outputs, and do not upload or publish populated profiles.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/build23w/skills/agentic-powered-memecoin-trader)
+- [fdv.lol repository](https://github.com/build23w/fdv.lol)
+- [fdv.lol upstream profile example](https://github.com/build23w/fdv.lol/blob/main/tools/profiles/fdv.profiles.example.json)
+- [Local OpenClaw example profile](artifact/openclaw.example.json)
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Shell commands, Configuration]
+
+**Output Format:** [Markdown guidance with inline shell commands and JSON profile configuration]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires a locally generated profile containing user-provided RPC, wallet, Jupiter, and LLM credentials.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

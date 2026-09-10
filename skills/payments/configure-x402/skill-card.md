@@ -1,43 +1,56 @@
-## Description: <br>
-Configure x402 micropayments for agent-to-agent commerce via Uniswap, enabling an agent to pay per MCP request in USDC on Base or accept x402 payments as a service provider. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Configure x402 micropayments for agent-to-agent commerce via Uniswap, enabling agents to pay per MCP request in USDC on Base or accept x402 payments as service providers.
 
-## Publisher: <br>
-[wpank](https://clawhub.ai/user/wpank) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[wpank](https://clawhub.ai/user/wpank)
 
-## Use Case: <br>
-Developers and agent operators use this skill to configure pay-per-request x402 payments for MCP tools and external API access, or to monetize an agent by accepting USDC micropayments. It guides wallet, chain, facilitator, pricing, tool-scope, and spending-limit configuration. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: x402 payment configuration can lead to real USDC spending when pay mode is used at runtime. <br>
-Mitigation: Use a dedicated low-balance Base USDC wallet and keep the hourly spend cap low. <br>
-Risk: Accept mode can expose tools for paid public use beyond the intended service scope. <br>
-Mitigation: Choose pay, accept, or both explicitly and limit accepted-payment tools to those intended for public access. <br>
-Risk: Generated payment configuration or manifests may not match production intent. <br>
-Mitigation: Review the generated .uniswap/x402-config.json and .well-known/x402-manifest.json before production use. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/wpank/configure-x402) <br>
-- [Skill specification](artifact/SKILL.md) <br>
-- [Artifact README](artifact/README.md) <br>
+## Use Case:
 
+Developers and engineers use this skill to configure agents that pay for MCP or API calls through x402, accept per-request USDC payments, or support both payment flows.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with JSON configuration details and setup summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May produce .uniswap/x402-config.json and .well-known/x402-manifest.json with wallet, chain, facilitator, pricing, tool-gating, and spending-limit settings.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Generated x402 configuration can cause future agent requests to send or request USDC payments.
+
+Mitigation: Confirm the wallet address, payment mode, gated tools, public manifest behavior, and maxSpendPerHour limit before using the configuration.
+
+Risk: Incorrect wallet, chain, balance, or facilitator settings can prevent settlement or route payments incorrectly.
+
+Mitigation: Validate the wallet address, confirm USDC availability on the selected chain, and verify facilitator availability before deployment.
+
+Risk: Accept mode can publish a manifest that exposes x402-enabled endpoints and payment parameters.
+
+Mitigation: Review .well-known/x402-manifest.json and the supportedTools scope before publishing the service.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/wpank/skills/configure-x402)
+
+## Skill Output:
+
+**Output Type(s):** [text, configuration, guidance]
+
+**Output Format:** [Text summary with JSON configuration files]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Generates .uniswap/x402-config.json and, for accept mode, .well-known/x402-manifest.json.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,38 +1,54 @@
-## Description: <br>
-Analyze Uniswap pool data including liquidity distribution, fee tiers, tick ranges, TVL, and on-chain pool state. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Analyze Uniswap pool data including liquidity distribution, fee tiers, tick ranges, and TVL for on-chain pool state questions.
 
-## Publisher: <br>
-[wpank](https://clawhub.ai/user/wpank) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[wpank](https://clawhub.ai/user/wpank)
 
-## Use Case: <br>
-Developers, analysts, and DeFi operators use this skill to inspect Uniswap v3/v4 pool structure, query read-only pool state, and reason about liquidity distribution, fee tiers, tick ranges, and TVL. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: On-chain analysis may require an Ethereum RPC endpoint or API key. <br>
-Mitigation: Use a dedicated read-only endpoint or API key that is appropriate for these queries, and avoid exposing credentials unnecessarily. <br>
-Risk: Pool analysis can be misleading if the chain, pool address, or RPC data is incorrect. <br>
-Mitigation: Confirm the chainId, pool address, and important results against trusted sources before using the analysis for operational decisions. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
+## Use Case:
 
+Developers, analysts, and DeFi operators use this skill to inspect Uniswap v3/v4 pool structure, liquidity distribution, fee tiers, tick ranges, TVL, and on-chain state for LP or trading analysis.
 
-## Skill Output: <br>
-**Output Type(s):** [Analysis, Markdown, Code, Shell commands, Guidance] <br>
-**Output Format:** [Markdown with TypeScript and bash code blocks] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May reference read-only on-chain RPC queries and chain configuration.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Mutable installer commands or unpinned revisions can install a different skill or dependency version than the reviewed release.
+
+Mitigation: Pin the ClawHub or npm installer version and review the exact skill revision before use, especially in wallet, trading, or production analytics environments.
+
+Risk: Pool analysis can inform LP or trading decisions and may be misleading if RPC data, pool addresses, token decimals, or chain configuration are wrong.
+
+Mitigation: Verify pool addresses, chain IDs, RPC endpoints, token decimals, and computed metrics against trusted sources before acting on analysis.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/wpank/skills/uniswap-pool-analysis)
+- [Skill specification](artifact/SKILL.md)
+- [Artifact README](artifact/README.md)
+
+## Skill Output:
+
+**Output Type(s):** [analysis, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with TypeScript examples and command snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include on-chain query guidance, pool metric interpretation, price and tick conversion logic, and multi-chain RPC configuration guidance.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

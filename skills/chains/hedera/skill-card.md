@@ -1,40 +1,48 @@
-## Description: <br>
-Assist with Hedera HBAR transactions, account creation, token service, and consensus features. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with Hedera HBAR transactions, account creation, token service, and consensus features.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-Developers, operators, and external users use this skill as a concise Hedera reference for HBAR transfers, account setup, token association, consensus services, staking, and common transaction errors. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Crypto transfers or token operations may be irreversible if an account ID, memo, token association, or permission is wrong. <br>
-Mitigation: Verify recipient account IDs, required memos, token associations, and token admin permissions before taking real action. <br>
-Risk: Private keys, seed phrases, or wallet prompts could be mishandled during account setup or transfers. <br>
-Mitigation: Never share private keys or seed phrases, and independently review wallet prompts before approving transactions. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Hedera Skill on ClawHub](https://clawhub.ai/ivangdavila/hedera) <br>
-- [Publisher Profile](https://clawhub.ai/user/ivangdavila) <br>
+## Use Case:
 
+Developers and external users use this skill for concise guidance on Hedera account setup, HBAR transfers, token association, memo handling, staking, consensus features, and common transaction errors.
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Markdown, Configuration instructions] <br>
-**Output Format:** [Markdown guidance and concise reference text] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Text-only reference content; no executable behavior detected.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Blockchain transaction guidance can become outdated or may be misapplied when moving funds.
+
+Mitigation: Verify current Hedera fees, account requirements, recipient account IDs, token associations, and memo requirements before submitting transactions.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/ivangdavila/skills/hedera)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, markdown, text]
+
+**Output Format:** [Markdown guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Does not run code, request credentials, or persist data.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

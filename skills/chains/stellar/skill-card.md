@@ -1,40 +1,51 @@
-## Description: <br>
-Assist with Stellar XLM transactions, anchors, memo requirements, and cross-border payments. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with Stellar XLM transactions, anchors, memo requirements, and cross-border payments.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-External users and developers use this skill as a concise Stellar/XLM reference for transaction setup, memo requirements, anchors, trustlines, wallets, and cross-border payment considerations. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Incorrect recipient addresses, memo values, fees, or transaction details can cause blockchain payment loss. <br>
-Mitigation: Independently verify recipient addresses, memo values, fees, and full transaction details before signing or sending funds. <br>
-Risk: Anchor or exchange requirements may vary, and untrusted anchors can introduce payment or redemption risk. <br>
-Mitigation: Confirm the current requirements and reputation of each anchor, exchange, or wallet before relying on the skill's guidance. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/ivangdavila/stellar) <br>
-- [ClawHub publisher profile](https://clawhub.ai/user/ivangdavila) <br>
+## Use Case:
+
+External users and agents use this skill for concise Stellar network guidance, including XLM transactions, exchange memo handling, anchors, trustlines, wallets, and cross-border payment considerations.
+
+### Deployment Geography for Use:
+
+Global
+
+## Known Risks and Mitigations:
+
+Risk: Stellar transactions and exchange deposits can be irreversible, and missing or incorrect memos may cause loss of funds.
+
+Mitigation: Verify recipient details, memo type and value, and exchange deposit instructions directly before sending funds.
+
+Risk: Network fees, reserve requirements, and anchor reputation can change over time.
+
+Mitigation: Check current Stellar network parameters and independently evaluate anchor trustworthiness before acting on guidance.
+
+## Reference(s):
 
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown guidance and concise reference text] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Informational Stellar/XLM guidance; security evidence indicates no code execution, credential access, persistence, or hidden behavior.] <br>
+## Skill Output:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+**Output Type(s):** [Guidance, Markdown, Text]
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+**Output Format:** [Markdown guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Markdown-only reference content; no code execution, persistence, credential access, or hidden tool behavior.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

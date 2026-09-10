@@ -1,47 +1,62 @@
-## Description: <br>
-Multi-source trading analyzer combining cryptocurrency data, stock data, and market intelligence into unified reports with price trends, technical indicators, and sentiment analysis. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Multi-source trading analyzer (`/drunk-trading-analyzer`) combining crypto data from TradingView, stock data from Alpha Vantage, and market intelligence from Yahoo Finance into unified analysis reports with price trends, technical indicators, and sentiment analysis.
 
-## Publisher: <br>
-[baoduy](https://clawhub.ai/user/baoduy) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[baoduy](https://clawhub.ai/user/baoduy)
 
-## Use Case: <br>
-Developers, analysts, and agents use this skill to query configured MCP market-data tools and produce cryptocurrency, stock, and market screening analysis reports. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill depends on mcporter and configured MCP server packages that can access third-party market-data providers. <br>
-Mitigation: Install only trusted MCP packages and prefer pinned package versions for repeatable review. <br>
-Risk: Stock analysis requires an Alpha Vantage API key and examples show shell-profile configuration. <br>
-Mitigation: Store API keys in appropriate environment or secret-management channels and avoid committing or syncing shell profiles that contain credentials. <br>
-Risk: Market queries, watchlists, and trading research may be sent to configured third-party providers. <br>
-Mitigation: Avoid submitting confidential watchlists or proprietary trading research unless sharing those queries with the configured providers is acceptable. <br>
+## Use Case:
 
+External users, developers, and market analysts use this skill to gather crypto and stock market data, screen assets, and produce consolidated market analysis reports. Outputs should be treated as informational analysis rather than investment advice.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/baoduy/drunk-trading-analyzer) <br>
-- [Alpha Vantage API](https://www.alphavantage.co/api/) <br>
-- [Alpha Vantage Documentation](https://www.alphavantage.co/documentation) <br>
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/spec) <br>
-- [TradingView](https://www.tradingview.com/) <br>
-- [Yahoo Finance](https://finance.yahoo.com/) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown reports with inline shell commands and optional JSON output] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Uses configured MCP servers and external market-data providers; report completeness depends on provider availability and configured credentials.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-0.0.6 (source: server release metadata) <br>
+Risk: Mutable third-party MCP packages and broad MCP discovery can run unexpected server code or expose local context.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review configured MCP servers before use, pin package versions instead of relying on @latest examples, and run market-data MCP servers with a limited environment.
+
+Risk: The skill handles an Alpha Vantage API key for stock analysis.
+
+Mitigation: Use a dedicated revocable Alpha Vantage key and avoid exposing unrelated environment variables to MCP servers.
+
+Risk: Generated trading signals may be incomplete, stale, or misleading.
+
+Mitigation: Treat outputs as informational market analysis only and do not rely on them as investment advice.
+
+## Reference(s):
+
+- [Trading Analyzer ClawHub Skill Page](https://clawhub.ai/baoduy/skills/drunk-trading-analyzer)
+- [mcporter Documentation](https://github.com/steipete/mcporter)
+- [Model Context Protocol Specification](https://modelcontextprotocol.io/spec)
+- [TradingView](https://www.tradingview.com/)
+- [Alpha Vantage Documentation](https://www.alphavantage.co/documentation)
+- [Yahoo Finance](https://finance.yahoo.com/)
+
+## Skill Output:
+
+**Output Type(s):** [Markdown, JSON, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown reports and JSON data, with shell command examples and configuration snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May require configured MCP servers and ALPHAVANTAGE_API_KEY for stock analysis.]
+
+## Skill Version(s):
+
+0.0.6 (source: ClawHub release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

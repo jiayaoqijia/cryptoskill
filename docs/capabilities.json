@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T16:31:51.515254+00:00",
+  "generated_at": "2026-09-10T21:00:34.376158+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -24563,7 +24563,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -106761,6 +106761,68 @@
       },
       "hosted_operators": []
     },
+    "trading/bankrbot-official-lienfi": {
+      "name": "lienfi",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "trading/bankrbot-official-litcoin-miner": {
       "name": "litcoin-miner",
       "execution_model": "router_orchestrator",
@@ -122471,12 +122533,12 @@
     }
   },
   "summary": {
-    "discovered": 1964,
-    "processed": 1964,
+    "discovered": 1965,
+    "processed": 1965,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1233,
-      "router_orchestrator": 104,
+      "router_orchestrator": 105,
       "unknown": 225,
       "analysis_only": 183,
       "unsigned_tx_builder": 78,
@@ -122486,13 +122548,13 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 870,
+      "can_execute_shell": 871,
       "can_install_code": 447,
       "can_write_files": 105,
       "can_browse_web": 184,
-      "can_spawn_subagents": 193,
+      "can_spawn_subagents": 194,
       "can_move_funds": 234,
-      "requires_private_key": 381,
+      "requires_private_key": 383,
       "requires_hosted_operator": 309,
       "uses_remote_install_script": 42,
       "mutable_remote_runtime": 447

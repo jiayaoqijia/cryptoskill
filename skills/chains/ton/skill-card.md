@@ -1,42 +1,55 @@
-## Description: <br>
-Ton provides brand identity and static feature information for the Netsnek e.U. audio and media processing namespace on ClawHub. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Ton is an informational ClawHub namespace package for Netsnek e.U. audio and media processing tools.
 
-## Publisher: <br>
-[kleberbaum](https://clawhub.ai/user/kleberbaum) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[kleberbaum](https://clawhub.ai/user/kleberbaum)
 
-## Use Case: <br>
-Developers and agents can invoke this skill to retrieve a concise Ton brand summary, feature list, or JSON metadata for Netsnek e.U. audio and media tooling. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill requests exec permission even though the reviewed behavior is static informational output. <br>
-Mitigation: Install only the reviewed version and inspect future updates before allowing script execution. <br>
-Risk: The public feature claims may exceed the behavior observed in the reviewed artifact. <br>
-Mitigation: Treat the skill as an informational namespace package unless a later release includes implemented audio-processing workflows. <br>
+## Use Case:
 
+Developers and agents use this skill to present the ton brand summary, list claimed audio and media workflow capabilities, and return structured metadata about the namespace.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/kleberbaum/ton) <br>
-- [Publisher profile](https://clawhub.ai/user/kleberbaum) <br>
-- [Netsnek website](https://netsnek.com) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Plain text, Markdown usage examples, or JSON metadata returned by the bundled shell script] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [The reviewed release prints static Ton/Netsnek information and can optionally list features or emit JSON.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-0.1.0 (source: release metadata and skill frontmatter) <br>
+Risk: The package describes audio-processing capabilities that the bundled artifact does not implement.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Present it as an informational namespace placeholder unless the publisher adds working audio-processing behavior.
+
+Risk: The bundled shell script may fail to execute because security evidence reports a UTF-8 BOM and mixed line endings.
+
+Mitigation: Normalize the script file before relying on its command examples in an execution workflow.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/kleberbaum/skills/ton)
+- [Publisher profile](https://clawhub.ai/user/kleberbaum)
+- [Netsnek e.U.](https://netsnek.com)
+
+## Skill Output:
+
+**Output Type(s):** [Text, JSON, Shell commands, Guidance]
+
+**Output Format:** [Markdown with inline bash commands and optional JSON output]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Static informational output; no audio files are processed by the packaged script.]
+
+## Skill Version(s):
+
+0.1.0 (source: release evidence and artifact metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

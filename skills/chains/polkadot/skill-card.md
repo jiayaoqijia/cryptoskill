@@ -1,39 +1,48 @@
-## Description: <br>
-Assist with Polkadot DOT transactions, staking, parachains, and cross-chain transfers. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with Polkadot DOT transactions, staking, parachains, and cross-chain transfers.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-External users and developers use this skill as a concise Polkadot reference for DOT transfers, staking choices, parachains, XCM routes, wallet behavior, and common transaction issues. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Cryptocurrency network details, fees, validator information, staking thresholds, and wallet behavior can change. <br>
-Mitigation: Verify current details through official Polkadot or wallet sources before acting on staking, transfer, or validator guidance. <br>
-Risk: Incorrect handling of seed phrases, private keys, or network addresses can lead to irreversible loss of funds. <br>
-Mitigation: Never share seed phrases or private keys, and confirm the target network and address format before sending funds. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub Polkadot skill page](https://clawhub.ai/ivangdavila/polkadot) <br>
+## Use Case:
 
+External users and agents use this skill as a concise Polkadot reference for DOT transfers, staking, wallets, parachains, XCM, governance, and common transaction issues.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown guidance and concise reference text] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Informational only; it does not run code, request credentials, or execute transactions.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server evidence release.version) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Polkadot staking thresholds, fees, and network details in static guidance can become outdated.
+
+Mitigation: Verify current values in a trusted wallet or official Polkadot source before making financial decisions.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/ivangdavila/skills/polkadot)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Guidance]
+
+**Output Format:** [Markdown or plain text guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Static reference content; no code, installation hooks, credential handling, or automatic actions.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

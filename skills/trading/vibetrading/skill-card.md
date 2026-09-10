@@ -1,41 +1,57 @@
-## Description: <br>
-Build, backtest, and deploy cryptocurrency trading strategies using the vibetrading Python framework. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Build, backtest, and deploy cryptocurrency trading strategies using the vibetrading Python framework.
 
-## Publisher: <br>
-[crabbytt](https://clawhub.ai/user/crabbytt) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[crabbytt](https://clawhub.ai/user/crabbytt)
 
-## Use Case: <br>
-Developers and trading agents use this skill to generate, validate, backtest, compare, and deploy crypto trading strategies within the vibetrading framework. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Generated strategies or live-trading examples can place real crypto trades using private keys. <br>
-Mitigation: Start with backtests or testnet/paper trading, manually review generated strategy logic, and deploy only with explicit position and loss limits. <br>
-Risk: Exchange credentials and private keys may be exposed if copied into chat, code, or repositories. <br>
-Mitigation: Keep secrets out of chat and source control, store them in local environment files, and use least-privilege, low-balance accounts. <br>
-Risk: The external vibetrading package controls backtesting and live-trading behavior. <br>
-Mitigation: Verify the package and its dependencies before installation, then test behavior in an isolated environment before any funded deployment. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [vibetrading API Details](references/api-details.md) <br>
+## Use Case:
 
+Developers and agents use this skill to generate Python crypto trading strategies, backtest them on historical data, compare performance, and prepare deployments for supported live exchanges. It is limited to the vibetrading framework and crypto trading workflows.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with Python code snippets, shell commands, and configuration guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include strategy code, backtest instructions, live deployment setup, credential handling guidance, and risk controls.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.1 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill supports ready-to-run live crypto trading, which can place real orders and cause financial losses.
+
+Mitigation: Review generated strategies before use, start with paper trading or testnet where possible, and run live examples only when intending to trade and accepting possible losses.
+
+Risk: Exchange credentials and private keys may be needed for live deployment.
+
+Mitigation: Use least-privilege exchange keys with withdrawals disabled, keep secrets out of chat, logs, and source control, and prefer isolated environments.
+
+Risk: Package or environment changes can affect strategy execution and trading behavior.
+
+Mitigation: Use a virtual environment or container and pin package versions before backtesting or deployment.
+
+## Reference(s):
+
+- [vibetrading API Details](references/api-details.md)
+- [ClawHub Skill Page](https://clawhub.ai/crabbytt/skills/vibetrading)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with Python and shell code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include trading strategy code, backtest setup, live exchange configuration guidance, and risk-management checks.]
+
+## Skill Version(s):
+
+1.0.1 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

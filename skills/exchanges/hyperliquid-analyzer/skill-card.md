@@ -1,42 +1,53 @@
-## Description: <br>
-Analyze Hyperliquid market data and provide trading insights, including real-time price monitoring, trend analysis, and risk assessment. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Analyze Hyperliquid market data and provide trading insights, including real-time price monitoring, trend analysis, and risk assessment.
 
-## Publisher: <br>
-[B0on](https://clawhub.ai/user/B0on) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[b0on](https://clawhub.ai/user/b0on)
 
-## Use Case: <br>
-Developers and traders use this skill to query Hyperliquid market data, review short-term market conditions, and draft trading insight summaries. It can also help with portfolio-aware analysis when the user provides optional wallet or API credentials. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill queries Hyperliquid over the network for market data. <br>
-Mitigation: Use it only in environments where outbound requests to Hyperliquid are acceptable and expected. <br>
-Risk: Portfolio or authenticated features may use a wallet address or API key. <br>
-Mitigation: Provide only the minimum necessary wallet address or a limited, read-only API key; do not provide private keys or highly privileged credentials. <br>
-Risk: Trading guidance can be affected by volatile or stale market data. <br>
-Mitigation: Review market context and risk tolerance before acting on generated analysis. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Hyperliquid API info endpoint](https://api.hyperliquid.xyz/info) <br>
-- [Hyperliquid Analyzer on ClawHub](https://clawhub.ai/B0on/hyperliquid-analyzer) <br>
+## Use Case:
 
+Developers and traders use this skill to query Hyperliquid market data, summarize trends, assess volatility, and review portfolio-related context when optional wallet configuration is provided.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, guidance] <br>
-**Output Format:** [Markdown with inline bash commands and market analysis text] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include market prices, trend labels, volatility and risk summaries, portfolio observations, and trading guidance.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: frontmatter and server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Optional wallet or API-key configuration could expose account context if shared with an agent or stored insecurely.
+
+Mitigation: Review environment variables before use and provide only the access needed for the intended market-analysis task.
+
+Risk: Market-analysis output may be mistaken for authorized trading execution or financial advice.
+
+Mitigation: Treat outputs as informational analysis, keep trading authority separate, and review recommendations before acting.
+
+## Reference(s):
+
+- [Hyperliquid Analyzer on ClawHub](https://clawhub.ai/b0on/skills/hyperliquid-analyzer)
+- [Hyperliquid public info API endpoint](https://api.hyperliquid.xyz/info)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, guidance]
+
+**Output Format:** [Markdown with inline bash commands and market-analysis text]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May use curl and jq; optional wallet and API-key environment variables can add portfolio context.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

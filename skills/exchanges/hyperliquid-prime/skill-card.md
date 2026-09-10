@@ -1,37 +1,54 @@
-## Description: <br>
-Hyperliquid Prime helps agents quote, route, and execute Hyperliquid perpetual-market trades across native and HIP-3 markets with cross-market splitting and collateral swaps. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Trade on Hyperliquid perp markets across native and HIP-3 venues with quote generation, order routing, split execution, funding and orderbook comparisons, position management, and optional automatic collateral swaps.
 
-## Publisher: <br>
-[mehranhydary](https://clawhub.ai/user/mehranhydary) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[mehranhydary](https://clawhub.ai/user/mehranhydary)
 
-## Use Case: <br>
-Developers and trading operators use this skill to ask an agent for Hyperliquid market discovery, order routing quotes, funding and orderbook comparisons, position views, and explicit trade-execution commands. Trading flows require a wallet private key and should be reviewed before any execute, long, short, or split-order action. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: Review before execution as proposals could introduce incorrect or misleading guidance into skills. <br>
-Mitigation: Review and scan skill before deployment. <br>
+## Use Case:
 
-## Reference(s): <br>
-- [Hyperliquid Prime ClawHub page](https://clawhub.ai/mehranhydary/hyperliquid-prime) <br>
+External developers and trading workflow operators use this skill to inspect Hyperliquid perp market liquidity, compare funding and orderbooks, generate routing quotes, and execute single-market or split-market trades when a wallet is configured.
 
+### Deployment Geography for Use:
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, code, shell commands, configuration] <br>
-**Output Format:** [Markdown with TypeScript and bash code blocks] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include quote plans, CLI commands, SDK usage examples, and configuration notes; execution-related outputs require explicit review of asset, side, size, leverage, fees, collateral swaps, and wallet use.] <br>
+Global
 
-## Skill Version(s): <br>
-0.1.4 (source: server release metadata) <br>
+## Known Risks and Mitigations:
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Risk: The skill relies on an external SDK that is not pinned in the artifact and that may handle private keys and transaction signing.
+
+Mitigation: Review and pin the exact SDK version before installation, start with read-only quote and market-data methods, and use a limited-purpose wallet for any trading tests.
+
+Risk: Trading methods can trigger financial and on-chain actions, including fee approval and collateral-swap behavior.
+
+Mitigation: Prefer quote-then-execute flows, avoid one-step trade methods unless the automatic behavior is acceptable, and disable the builder fee with builder: null when it is not desired.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/mehranhydary/skills/hyperliquid-prime)
+- [Source Repository](https://github.com/mehranhydary/hl-prime)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with TypeScript and bash code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May describe read-only quote workflows, CLI usage, SDK configuration, and wallet-gated trading execution steps.]
+
+## Skill Version(s):
+
+0.1.4 (source: server-resolved release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

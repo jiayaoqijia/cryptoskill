@@ -1,43 +1,56 @@
-## Description: <br>
-Generates crypto market intelligence reports with prices, sentiment, trending coins, Polymarket markets, and simple data-driven commentary. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Automated crypto market intelligence - prices, sentiment, trending coins, and Polymarket hot markets.
 
-## Publisher: <br>
-[cassh100k](https://clawhub.ai/user/cassh100k) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[cassh100k](https://clawhub.ai/user/cassh100k)
 
-## Use Case: <br>
-External users, developers, and channel operators use this skill to generate one-command crypto market monitoring reports from public data sources for alpha channels or routine market review. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Reports depend on outbound calls to public crypto and prediction-market APIs, so data can be unavailable, stale, rate limited, or incomplete. <br>
-Mitigation: Use generated reports for monitoring, review them before acting or sharing, and handle missing API data in any downstream workflow. <br>
-Risk: Optional Telegram posting and cron examples can publish reports or write logs if configured by the user. <br>
-Mitigation: Inspect or implement the Telegram helper before use, protect bot tokens, and add cron jobs only under an intended user account with controlled log paths. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/cassh100k/crypto-alpha-scanner) <br>
-- [CoinGecko simple price endpoint](https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true) <br>
-- [CoinGecko trending endpoint](https://api.coingecko.com/api/v3/search/trending) <br>
-- [Alternative.me Fear and Greed endpoint](https://api.alternative.me/fng/?limit=1) <br>
-- [Polymarket Gamma markets endpoint](https://gamma-api.polymarket.com/markets?closed=false&limit=5&order=volume24hr&ascending=false) <br>
+## Use Case:
 
+Developers, market operators, and crypto community teams use this skill to generate concise market monitoring reports covering major token prices, sentiment, trending coins, and active prediction markets.
 
-## Skill Output: <br>
-**Output Type(s):** [text, shell commands, guidance] <br>
-**Output Format:** [Plain text market report with optional shell command examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Uses public API responses at runtime; optional examples show file output, Telegram posting, and cron scheduling.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: frontmatter and server release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The documented hourly cron setup can create persistent execution without sufficient operational guardrails.
+
+Mitigation: Prefer manual runs or a user-owned scheduler with a user-owned log path, log rotation, and a clear removal command.
+
+Risk: Telegram publishing can expose market reports publicly or leak bot-token access if the destination and credentials are not controlled.
+
+Mitigation: Verify the Telegram destination before posting and secure any bot token outside shared logs, shell history, and public files.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/cassh100k/skills/crypto-alpha-scanner)
+- [CoinGecko simple price API](https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true)
+- [CoinGecko trending search API](https://api.coingecko.com/api/v3/search/trending)
+- [Alternative.me Fear and Greed API](https://api.alternative.me/fng/?limit=1)
+- [Polymarket Gamma markets API](https://gamma-api.polymarket.com/markets?closed=false&limit=5&order=volume24hr&ascending=false)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, guidance]
+
+**Output Format:** [Plain text market report with Markdown-style sections and inline shell command examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Uses live third-party market APIs at runtime; no API keys are required for the documented scanner.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

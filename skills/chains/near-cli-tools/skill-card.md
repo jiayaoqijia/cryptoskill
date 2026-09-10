@@ -1,46 +1,57 @@
-## Description: <br>
-Guides agents through installing, configuring, verifying, and using near-cli-rs for NEAR Protocol account, token, staking, smart contract, and transaction workflows. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+This skill guides agents through installing, configuring, verifying, and using the NEAR Protocol CLI (near-cli-rs) across common platforms.
 
-## Publisher: <br>
-[cuongdcdev](https://clawhub.ai/user/cuongdcdev) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[cuongdcdev](https://clawhub.ai/user/cuongdcdev)
 
-## Use Case: <br>
-Developers and agents use this skill to install and operate the NEAR CLI across Linux, macOS, Windows, WSL, Node.js, and Rust environments. It supports setup, verification, troubleshooting, and common NEAR blockchain actions. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: NEAR CLI actions can send tokens, stake assets, deploy contracts, sign transactions, or change account state. <br>
-Mitigation: Before execution, confirm the exact account, network, recipient, amount, fees, and full command text with the user. <br>
-Risk: Account import and export workflows can expose seed phrases, private keys, or other credentials. <br>
-Mitigation: Do not ask users to share seed phrases or private keys in chat or logs, and prefer testnet or low-value accounts for first runs. <br>
-Risk: Installer examples include remote shell scripts and package-manager commands. <br>
-Mitigation: Use verified release downloads and review installer commands before running them, especially when commands pipe remote content into a shell. <br>
+## Use Case:
 
+Developers and engineers use this skill to help agents install NEAR CLI, find the absolute near binary path, verify setup, and prepare safe commands for NEAR account, token, staking, contract, and transaction workflows.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/cuongdcdev/near-cli-tools) <br>
-- [NEAR CLI GitHub Repository](https://github.com/near/near-cli-rs) <br>
-- [NEAR CLI Releases](https://github.com/near/near-cli-rs/releases) <br>
-- [NEAR Protocol Documentation](https://docs.near.org/) <br>
-- [Rustup](https://rustup.rs/) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline bash commands and setup steps] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Documentation-only guidance; commands should be reviewed before execution.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: release evidence and package.json) <br>
+Risk: Remote or unpinned installer commands can execute changing code during setup.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Prefer a pinned, verified NEAR CLI release and review installer sources before running shell, npx, npm, or cargo installation commands.
+
+Risk: Mainnet signing, transfer, staking, deployment, account import, or account export actions can move assets or expose credentials.
+
+Mitigation: Use testnet or read-only commands by default, never share seed phrases or private keys with an agent, and require explicit confirmation before any mainnet signing or credential operation.
+
+## Reference(s):
+
+- [NEAR CLI GitHub](https://github.com/near/near-cli-rs)
+- [NEAR CLI Releases](https://github.com/near/near-cli-rs/releases)
+- [NEAR Protocol Docs](https://docs.near.org/)
+- [Rustup](https://rustup.rs/)
+- [NEAR Explorer](https://nearblocks.io/)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, markdown, shell commands, configuration]
+
+**Output Format:** [Markdown with inline bash code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Commands should use the absolute path to the near binary before execution.]
+
+## Skill Version(s):
+
+1.0.0 (source: package.json and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

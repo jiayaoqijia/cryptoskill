@@ -1,39 +1,51 @@
-## Description: <br>
-Create and manage tokens on Hedera (HTS). <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Create and manage tokens on Hedera (HTS), including fungible token minting, NFT collection creation, token supply setup, and token permission configuration.
 
-## Publisher: <br>
-[HarleysCodes](https://clawhub.ai/user/HarleysCodes) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[harleyscodes](https://clawhub.ai/user/harleyscodes)
 
-## Use Case: <br>
-Developers use this skill to draft Hedera Token Service code and commands for creating fungible tokens, creating NFT collections, minting NFTs, transferring tokens, burning tokens, and configuring token supply and permissions. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Create, mint, transfer, and burn examples can submit live Hedera transactions that may incur fees or be irreversible. <br>
-Mitigation: Use Hedera testnet first, verify the selected network and all account IDs, token IDs, recipients, and amounts, and require explicit human confirmation before execution. <br>
-Risk: Private keys and privileged token keys are required for the demonstrated operations. <br>
-Mitigation: Keep keys out of prompts, source files, and logs; load credentials from a secure secret store or environment and limit key permissions to the operation being performed. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/HarleysCodes/hedera-token-mint) <br>
+## Use Case:
+
+Developers and engineers use this skill to draft Hedera Token Service token-management workflows for creating fungible tokens and NFT collections, minting NFTs, configuring supply and token keys, transferring tokens, and burning tokens.
+
+### Deployment Geography for Use:
+
+Global
+
+## Known Risks and Mitigations:
+
+Risk: Transfer and burn examples can execute high-impact token operations against real Hedera accounts if used with production credentials.
+
+Mitigation: Run workflows on testnet first, require explicit user confirmation before execution, and verify token IDs, account IDs, amounts, and signing keys before submitting transactions.
+
+Risk: Unpinned Hedera SDK installation can change behavior as dependencies update.
+
+Mitigation: Pin the @hashgraph/sdk version and review SDK release notes before using the examples with real assets.
+
+## Reference(s):
 
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with TypeScript and bash code blocks] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Outputs are implementation snippets and operational guidance; users must supply their own Hedera accounts, token IDs, keys, network, amounts, and recipient details.] <br>
+## Skill Output:
 
-## Skill Version(s): <br>
-1.0.0 (source: server-resolved release metadata) <br>
+**Output Type(s):** [Guidance, Code, Shell commands, Configuration instructions]
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+**Output Format:** [Markdown with TypeScript and bash code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Examples use the Hedera JavaScript SDK and require user-provided account IDs, token IDs, keys, and client configuration.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

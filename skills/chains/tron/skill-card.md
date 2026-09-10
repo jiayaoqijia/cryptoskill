@@ -1,40 +1,52 @@
-## Description: <br>
-Assist with TRON TRX transactions, bandwidth, energy, and TRC-20 token transfers. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with TRON TRX transactions, bandwidth, energy, and TRC-20 token transfers.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-External users and developers use this skill for guidance on TRON TRX transfers, bandwidth and energy planning, staking resources, and TRC-20 token transfer precautions. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: TRON transfers, staking, and TRC-20 network choices can involve irreversible real-fund actions. <br>
-Mitigation: Independently verify network selection, full wallet addresses, contract addresses, resource costs, and wallet confirmation screens before acting. <br>
-Risk: Wallet troubleshooting can lead users to expose seed phrases, private keys, or sensitive wallet credentials. <br>
-Mitigation: Never request, enter, or share seed phrases, private keys, or sensitive wallet credentials when using this skill. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub TRON skill page](https://clawhub.ai/ivangdavila/tron) <br>
-- [TRONSCAN](https://tronscan.org) <br>
+## Use Case:
 
+External users and agents use this skill for practical guidance on TRON transfers, resource usage, staking, wallet choices, and common transaction issues.
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Markdown, Text] <br>
-**Output Format:** [Markdown prose] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Advisory guidance only; no executable code, wallet access, or credential handling.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: TRON resource costs, fee limits, and transaction behavior can change or vary by wallet, contract, and network conditions.
+
+Mitigation: Verify current bandwidth, energy, fee limits, and transaction receipts with a current TRON wallet or explorer before sending, retrying, or batching transactions.
+
+Risk: The skill provides financially relevant guidance but is documentation-only and not an authoritative transaction-safety source.
+
+Mitigation: Treat outputs as reference guidance and independently confirm addresses, network selection, contract details, wallet permissions, and resource availability before acting.
+
+## Reference(s):
+
+- [ClawHub TRON skill page](https://clawhub.ai/ivangdavila/skills/tron)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, markdown, text]
+
+**Output Format:** [Markdown or plain text guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Documentation-only responses about TRON concepts and transaction considerations.]
+
+## Skill Version(s):
+
+1.0.0 (source: server-resolved release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

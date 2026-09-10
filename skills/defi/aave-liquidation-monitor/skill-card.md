@@ -1,45 +1,65 @@
-## Description: <br>
-Aave Liquidation Monitor monitors Aave V3 borrow positions across supported chains, checks health factor and collateral/debt data, and sends alerts when liquidation risk crosses configured thresholds. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Monitors Aave V3 borrow positions by querying collateral, debt, and health factor across supported chains and producing liquidation-risk alerts for configured messaging channels.
 
-## Publisher: <br>
-[jgramajo4](https://clawhub.ai/user/jgramajo4) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[jgramajo4](https://clawhub.ai/user/jgramajo4)
 
-## Use Case: <br>
-External DeFi users and operators use this skill to monitor Aave V3 borrowing health, receive liquidation-risk alerts, and tune thresholds or check intervals for positions they manage. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Wallet checks, health factors, alerts, and logs can reveal sensitive financial metadata. <br>
-Mitigation: Use a private notification channel, review OpenClaw log retention, and avoid sharing alert output publicly. <br>
-Risk: Periodic monitoring continues until disabled and may keep querying Aave or sending alerts after it is no longer needed. <br>
-Mitigation: Disable or remove the cron job when monitoring is no longer required. <br>
-Risk: Alerts depend on the selected messaging channel and OpenClaw routing configuration. <br>
-Mitigation: Configure and test Telegram, Discord, or Slack delivery before relying on the monitor for liquidation-risk notifications. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Aave V3 GraphQL API Reference](references/aave-api.md) <br>
-- [Configuration Guide](references/config-guide.md) <br>
-- [Cron Integration Guide](references/cron-integration.md) <br>
-- [Security Practices](SECURITY.md) <br>
-- [Aave V3 GraphQL API](https://api.v3.aave.com/graphql) <br>
+## Use Case:
 
+External Aave users and DeFi operators use this skill to monitor wallet health factors, review collateral and debt summaries, and receive alerts when liquidation risk approaches. It is intended for read-only monitoring and does not execute transactions or modify positions.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance, command examples, JSON configuration, and alert text] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Produces read-only monitoring results, risk-level summaries, and scheduled alert messages routed through the user's configured OpenClaw channel.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.1 (source: server release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Users could miss financial-risk alerts if alerting or automation behavior does not match the skill documentation.
+
+Mitigation: Run manual checks and verify scheduled checks before relying on the skill, and keep independent Aave or portfolio alerts enabled for liquidation protection.
+
+Risk: Wallet-position details may be sent to Aave and routed through the user's configured messaging service.
+
+Mitigation: Use private notification channels, limit channel membership, and review whether the wallet address and position summaries are acceptable to share through those services.
+
+Risk: The monitor runs persistently when enabled.
+
+Mitigation: Confirm scheduler status after setup, review logs periodically, and disable monitoring when it is no longer needed.
+
+Risk: Custom alert thresholds may not be honored by the packaged implementation.
+
+Mitigation: Test threshold behavior with representative health-factor values before using custom thresholds for risk decisions.
+
+## Reference(s):
+
+- [Aave V3 GraphQL API Reference](artifact/references/aave-api.md)
+- [Configuration Guide](artifact/references/config-guide.md)
+- [Cron Integration Guide](artifact/references/cron-integration.md)
+- [Security Practices](artifact/SECURITY.md)
+- [Aave V3 GraphQL API](https://api.v3.aave.com/graphql)
+- [Aave Status](https://status.aave.com)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown-style alert text with command examples and JSON configuration]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include health factor, collateral and debt summaries, borrowed and supplied assets, risk level, timestamp, and setup or scheduler guidance.]
+
+## Skill Version(s):
+
+1.0.1 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

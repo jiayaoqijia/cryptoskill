@@ -1,46 +1,57 @@
-## Description: <br>
-Builds and configures the MCP server for Lightning Node Connect so AI assistants can query lnd node state through encrypted WebSocket tunnels using pairing phrases, without direct network access or TLS certificates. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Build and configure the MCP server for Lightning Node Connect (LNC) that connects AI assistants to lnd nodes via encrypted WebSocket tunnels using pairing phrases, without direct network access or TLS certs, and provides 18 read-only tools for querying node state, channels, payments, invoices, peers, and on-chain data.
 
-## Publisher: <br>
-[Roasbeef](https://clawhub.ai/user/Roasbeef) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[roasbeef](https://clawhub.ai/user/roasbeef)
 
-## Use Case: <br>
-Developers and operators use this skill to install, configure, and register a read-only Lightning Node Connect MCP server for Claude Code. It helps an agent connect to an lnd node with a Lightning Terminal pairing phrase and query node, channel, payment, invoice, peer, graph, and on-chain data. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The LNC pairing phrase and password grant access to read Lightning node state. <br>
-Mitigation: Treat the pairing phrase and password as secrets, provide them only when connecting, and avoid storing or sharing them in project files or chat history. <br>
-Risk: Development settings can disable TLS verification through LNC_INSECURE. <br>
-Mitigation: Use insecure mode only in controlled local or regtest environments, and keep TLS verification enabled for production use. <br>
-Risk: MCP setup can modify project or user configuration files. <br>
-Mitigation: Review generated .mcp.json or ~/.claude.json changes before restarting Claude Code or sharing project configuration. <br>
-Risk: Docker host networking broadens local network exposure. <br>
-Mitigation: Prefer npx or a locally built binary unless Docker host networking is specifically required. <br>
-Risk: Installing a prebuilt package or binary introduces package trust risk. <br>
-Mitigation: Prefer verified packages or source-built binaries from the intended release before enabling the MCP server. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Lightning MCP Server on ClawHub](https://clawhub.ai/Roasbeef/lightning-mcp-server) <br>
-- [Go Downloads](https://go.dev/dl/) <br>
+## Use Case:
 
+Developers and node operators use this skill to build, configure, and register a read-only MCP server that lets an assistant inspect Lightning Network node state through Lightning Node Connect.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline bash and JSON snippets] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Guides setup through npx, a locally built binary, or Docker; accompanying scripts can write environment and MCP configuration files when executed.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill can register persistent assistant tooling through project or global MCP configuration.
+
+Mitigation: Prefer project scope, review any .mcp.json or ~/.claude.json changes, and remove entries that are no longer needed.
+
+Risk: The release guidance allows unpinned remote packages or Docker execution with broad networking.
+
+Mitigation: Use a locally audited build, pin npm packages to an exact version, and pin Docker images by digest while avoiding host networking unless required.
+
+Risk: The MCP server handles sensitive Lightning Node Connect pairing phrases and passwords.
+
+Mitigation: Treat pairing phrases and passwords as secrets, keep LNC_INSECURE=false outside isolated development, and avoid logging or sharing connection credentials.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/roasbeef/skills/lightning-mcp-server)
+- [Go downloads](https://go.dev/dl/)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, shell commands, configuration, code]
+
+**Output Format:** [Markdown with inline bash and JSON configuration examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May produce or update local MCP configuration and environment files when the included scripts are run.]
+
+## Skill Version(s):
+
+1.0.0 (source: ClawHub release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

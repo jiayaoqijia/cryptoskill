@@ -1,43 +1,63 @@
-## Description: <br>
-Register and manage ERC-8004 Identity NFTs on Monad for CEO Protocol registration and other ERC-8004-integrated flows. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Register and manage ERC-8004 Identity NFTs on Monad. Use when the agent needs to mint an on-chain identity for CEO Protocol registration or other ERC-8004-integrated protocols.
 
-## Publisher: <br>
-[fabriziogianni7](https://clawhub.ai/user/fabriziogianni7) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[fabriziogianni7](https://clawhub.ai/user/fabriziogianni7)
 
-## Use Case: <br>
-Developers and agent operators use this skill to mint and manage an ERC-8004 on-chain identity NFT, publish registration metadata, and preserve the resulting agent identity for CEO Protocol onboarding. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can broadcast wallet-signed transactions to register identities and update agent URIs. <br>
-Mitigation: Use a dedicated wallet with limited funds and confirm the transaction details before broadcasting. <br>
-Risk: Identity metadata uploaded to IPFS may be public and difficult to remove. <br>
-Mitigation: Review registration metadata before upload and avoid secrets, private endpoint details, or sensitive personal data. <br>
-Risk: The scripted flow requires wallet and Pinata credentials. <br>
-Mitigation: Provide credentials only in a trusted environment and avoid using a primary wallet private key. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub release page](https://clawhub.ai/fabriziogianni7/8004-skill-monad) <br>
-- [EIP-8004 Trustless Agents](https://eips.ethereum.org/EIPS/eip-8004) <br>
-- [ERC-8004 Identity contract on MonadScan](https://monadscan.com/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432) <br>
+## Use Case:
 
+Developers and agent operators use this skill to register an agent identity NFT on Monad, prepare ERC-8004 registration metadata, upload it to IPFS through Pinata, set the token URI, and verify ownership for CEO Protocol or other ERC-8004-integrated workflows.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, markdown, code, shell commands, configuration] <br>
-**Output Format:** [Markdown guidance with JSON templates and shell command examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May create JSON registration files and an agent identity Markdown file during scripted workflows.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Wallet private keys may be exposed to commands that do not need signing.
+
+Mitigation: Use a minimal environment and provide AGENT_PRIVATE_KEY only to registration or URI-setting commands that must sign transactions.
+
+Risk: Verification can fetch tokenURI metadata from externally controlled IPFS content.
+
+Mitigation: Verify trusted identities only and use trusted, restricted IPFS gateways before relying on fetched metadata.
+
+Risk: Pinata uploads publish agent registration metadata externally.
+
+Mitigation: Review registration JSON for secrets or sensitive operational details before uploading.
+
+Risk: On-chain registration and URI updates spend gas and create persistent blockchain state.
+
+Mitigation: Review transaction details, chain ID, registry address, agent ID, and wallet ownership before broadcasting.
+
+## Reference(s):
+
+- [EIP-8004 Trustless Agents](https://eips.ethereum.org/EIPS/eip-8004)
+- [ERC-8004 Registration Schema](https://eips.ethereum.org/EIPS/eip-8004#registration-v1)
+- [Monad ERC-8004 Identity Contract](https://monadscan.com/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432)
+- [ClawHub Skill Page](https://clawhub.ai/fabriziogianni7/skills/8004-skill-monad)
+
+## Skill Output:
+
+**Output Type(s):** [Shell commands, JSON, Markdown, Configuration guidance]
+
+**Output Format:** [Markdown guidance with shell commands and JSON outputs]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May produce ERC-8004 registration JSON, IPFS token URIs, transaction hashes, verification JSON, and a local agent identity Markdown file.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

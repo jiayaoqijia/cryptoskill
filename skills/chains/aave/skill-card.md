@@ -1,40 +1,53 @@
-## Description: <br>
-Assist with Aave lending, borrowing, liquidations, and risk management across chains. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with Aave lending, borrowing, liquidations, and risk management across chains.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-External users and developers use this skill as an informational Aave reference for lending, borrowing, health factor monitoring, liquidation risk, and cross-chain protocol concepts. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Aave usage can involve real financial loss from changing protocol parameters, rates, liquidation thresholds, asset support, chain availability, or incorrect transaction details. <br>
-Mitigation: Verify current Aave market data, supported assets, risk parameters, chain availability, and transaction details before making DeFi decisions. <br>
-Risk: Static informational guidance can become stale as markets and protocol configurations change. <br>
-Mitigation: Treat the skill as reference material and confirm live protocol state before acting on lending, borrowing, liquidation, or cross-chain guidance. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Aave ClawHub skill page](https://clawhub.ai/ivangdavila/aave) <br>
-- [Publisher profile](https://clawhub.ai/user/ivangdavila) <br>
+## Use Case:
 
+External users and developers use this skill for guidance on Aave lending, borrowing, liquidation prevention, multi-chain market differences, and DeFi risk management.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Informational DeFi reference only; no wallet access, transaction automation, code execution, or hidden behavior is present in the release evidence.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Aave market parameters, asset liquidity, rates, and health-factor risk can change quickly, so stale guidance may mislead users managing real funds.
+
+Mitigation: Verify current Aave market parameters and transaction details before acting, and keep additional collateral or repayment capacity available when borrowing.
+
+Risk: Wallet transactions and DeFi borrowing can cause irreversible losses through liquidation, slippage, fees, or user error.
+
+Mitigation: Treat the skill as informational guidance, review every wallet prompt independently, and avoid using real funds without understanding the transaction and liquidation exposure.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/ivangdavila/skills/aave)
+- [Publisher profile](https://clawhub.ai/user/ivangdavila)
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Markdown, Text]
+
+**Output Format:** [Markdown guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [No code, shell commands, tools, persistence, or external API calls; informational DeFi guidance only.]
+
+## Skill Version(s):
+
+1.0.0 (source: server-resolved release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

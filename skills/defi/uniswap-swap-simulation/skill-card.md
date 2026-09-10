@@ -1,43 +1,56 @@
-## Description: <br>
-Simulate and analyze Uniswap swaps including price impact, slippage, optimal routing, and gas estimation. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Simulate and analyze Uniswap swaps including price impact, slippage, optimal routing, and gas estimation.
 
-## Publisher: <br>
-[wpank](https://clawhub.ai/user/wpank) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[wpank](https://clawhub.ai/user/wpank)
 
-## Use Case: <br>
-Developers and engineers use this skill to simulate proposed Uniswap swaps, compare routes, estimate price impact, slippage, and gas, and reason about MEV exposure before execution. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Swap simulations and route comparisons can be mistaken for guaranteed execution outcomes or trading advice. <br>
-Mitigation: Treat outputs as estimates and verify current pool state, fees, route, slippage, and gas before making any transaction decision. <br>
-Risk: Users may expose sensitive wallet material when working around DeFi workflows. <br>
-Mitigation: Use only public token, pool, route, amount, chain, and RPC information; never provide seed phrases or private keys. <br>
-Risk: Large or high-impact swaps can be exposed to MEV and sandwich attack risk. <br>
-Mitigation: Consider private RPCs, deadline parameters, and conservative slippage limits for high-impact swaps. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/wpank/uniswap-swap-simulation) <br>
-- [README](artifact/README.md) <br>
-- [Skill specification](artifact/SKILL.md) <br>
+## Use Case:
 
+External developers and engineers use this skill to simulate proposed Uniswap swaps, compare routing options, and reason about price impact, slippage, gas cost, and MEV exposure before building or advising on swap execution.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, markdown, code, configuration] <br>
-**Output Format:** [Markdown with TypeScript examples and parameter guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Provides estimated swap outputs, price impact, slippage tolerance, routing, gas, and MEV considerations; results should be treated as estimates rather than trading advice.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The README includes unpinned remote install commands that may execute mutable code.
+
+Mitigation: Review the install path before running commands; prefer a pinned clawhub version and immutable Git commit or release tag.
+
+Risk: Swap simulations and estimates can be mistaken for authority to execute trades or handle private wallet material.
+
+Mitigation: Use the skill for simulation and risk analysis only, and keep private keys, seed phrases, and signing authority out of the workflow.
+
+Risk: Large or high-impact swaps may face slippage, sandwich attacks, or execution-price changes between simulation and submission.
+
+Mitigation: Check price impact, set explicit slippage and deadline controls, consider private RPCs for large swaps, and re-simulate close to execution.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/wpank/skills/uniswap-swap-simulation)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, guidance]
+
+**Output Format:** [Markdown with TypeScript and bash code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include quoted swap outputs, price-impact calculations, routing analysis, slippage guidance, gas estimates, and MEV risk notes.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.
