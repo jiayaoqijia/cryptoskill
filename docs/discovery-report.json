@@ -43,6 +43,27 @@
       "official": false
     },
     {
+      "org": "cyberwareX",
+      "repo": "cyberwarex-mcp",
+      "category": "mcp-servers",
+      "prefix": "cyberwarex-",
+      "official": false
+    },
+    {
+      "org": "scutuatua-crypto",
+      "repo": "whaletrucker-ecosystem",
+      "category": "mcp-servers",
+      "prefix": "scutuatua-crypto-",
+      "official": false
+    },
+    {
+      "org": "0xSardius",
+      "repo": "solenrich",
+      "category": "mcp-servers",
+      "prefix": "0xsardius-",
+      "official": false
+    },
+    {
       "org": "holistis",
       "repo": "bug-bounty-intelligence-mcp",
       "category": "mcp-servers",
@@ -54,27 +75,6 @@
       "repo": "openmm-mcp",
       "category": "mcp-servers",
       "prefix": "qbt-labs-",
-      "official": false
-    },
-    {
-      "org": "donnywin85",
-      "repo": "dex-data-mcp",
-      "category": "mcp-servers",
-      "prefix": "donnywin85-",
-      "official": false
-    },
-    {
-      "org": "alekskram",
-      "repo": "dydx-agent-gateway",
-      "category": "mcp-servers",
-      "prefix": "alekskram-",
-      "official": false
-    },
-    {
-      "org": "Eschatological-cpi959",
-      "repo": "Finance-mcp",
-      "category": "mcp-servers",
-      "prefix": "eschatological-cpi959-",
       "official": false
     },
     {
@@ -185,19 +185,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-02",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-03",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-02",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-03",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-09-02",
+      "query": "crypto agent skills language:Python pushed:>2026-09-03",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-09-02",
+      "query": "DeFi MCP server pushed:>2026-09-03",
       "status": "checked"
     },
     {
