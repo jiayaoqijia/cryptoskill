@@ -1,47 +1,62 @@
-## Description: <br>
-Interactive ERC-8004 agent registration via chat. Guides users through a prefill form, shows draft, confirms, then registers on-chain using agent0-sdk. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Interactive ERC-8004 agent registration via chat. Guides users through a prefill form, shows draft, confirms, then registers on-chain using agent0-sdk.
 
-## Publisher: <br>
-[Callmedas69](https://clawhub.ai/user/Callmedas69) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[callmedas69](https://clawhub.ai/user/callmedas69)
 
-## Use Case: <br>
-Developers and OpenClaw operators use this skill to prefill, review, edit, and submit ERC-8004 agent registrations for on-chain identity records. It also supports related search, update, and feedback workflows through chat guidance and bundled scripts. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can use raw wallet private keys to sign blockchain transactions. <br>
-Mitigation: Use a fresh low-balance wallet, keep .env files out of source control and logs, and run a dry run before signing. <br>
-Risk: Registration and feedback actions can create persistent public on-chain or IPFS records. <br>
-Mitigation: Review the exact chain, wallet, endpoints, metadata, and transaction intent before confirming; avoid sensitive or private metadata. <br>
-Risk: Accidental duplicate agent registration may create additional on-chain records. <br>
-Mitigation: Check for existing agents for the wallet first and prefer update workflows when an agent is already registered. <br>
+## Use Case:
 
+Developers and OpenClaw agent operators use this skill to collect registration metadata, preview it, and submit ERC-8004 agent registrations, updates, searches, or feedback on supported EVM mainnets.
 
-## Reference(s): <br>
-- [ClawHub Release Page](https://clawhub.ai/Callmedas69/basecred-8004-registration) <br>
-- [ERC-8004 Registry](https://8004.org) <br>
-- [Supported Chains](references/chains.md) <br>
-- [Agent0 SDK Reference](references/sdk-reference.md) <br>
-- [agent0-sdk](https://github.com/agent0lab/agent0-ts) <br>
-- [OpenClaw](https://openclaw.ai) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Chat guidance with Markdown drafts, JSON registration templates, and inline shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Can prepare registration, search, update, and feedback commands; on-chain actions require explicit confirmation and wallet credentials.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: package.json and server release metadata) <br>
+Risk: The skill can use raw wallet private keys from environment variables for signed on-chain actions.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a dedicated low-value wallet, avoid primary funded wallets, and prefer pasting a public address or using an external signer when possible.
+
+Risk: Registration, update, and feedback flows can publish persistent on-chain data and spend gas.
+
+Mitigation: Review the draft carefully, require explicit confirmation before execution, and use dry-run or search/update flows before creating duplicate registrations.
+
+Risk: An untrusted .env file could provide signing credentials or RPC settings to the agent.
+
+Mitigation: Only run the skill in trusted workspaces and inspect environment files before allowing the agent to source them.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/callmedas69/skills/basecred-8004-registration)
+- [ERC-8004](https://8004.org)
+- [OpenClaw](https://openclaw.ai)
+- [Agent0 SDK](https://github.com/agent0lab/agent0-ts)
+- [Supported Chains](references/chains.md)
+- [Agent0 SDK Reference](references/sdk-reference.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and JSON registration data]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May propose or execute on-chain registration, update, search, and feedback commands after user confirmation.]
+
+## Skill Version(s):
+
+1.0.0 (source: package.json, server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

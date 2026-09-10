@@ -1,41 +1,54 @@
-## Description: <br>
-Assist with Bitcoin transactions, wallets, Lightning, and security decisions. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with Bitcoin transactions, wallets, Lightning, and security decisions.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-External users and developers use this skill for practical Bitcoin wallet, transaction, Lightning Network, fee, privacy, and scam-avoidance guidance. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Bitcoin addresses or transaction IDs queried through mempool.space may be revealed to that public service. <br>
-Mitigation: Avoid querying addresses or transaction IDs that should not be linked to the user's usage. <br>
-Risk: Bitcoin and Lightning guidance can affect irreversible transactions if copied into wallet actions without review. <br>
-Mitigation: Review destination addresses, fees, confirmations, and hardware-wallet device prompts before broadcasting transactions. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [mempool.space transaction API](https://mempool.space/api/tx/{txid}) <br>
-- [mempool.space address API](https://mempool.space/api/address/{address}) <br>
-- [ClawHub skill page](https://clawhub.ai/ivangdavila/bitcoin) <br>
+## Use Case:
 
+External users and agents use this skill for concise Bitcoin wallet, transaction, Lightning Network, fee, privacy, and scam-avoidance guidance.
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Shell commands, API Calls, Markdown] <br>
-**Output Format:** [Markdown with inline shell commands and API request examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only guidance; no credentials, persistence, or wallet actions were identified in the security evidence.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Wallet or transaction guidance can affect irreversible Bitcoin transfers.
+
+Mitigation: Users should verify destination addresses on trusted devices and never share seed phrases or private keys.
+
+Risk: Public block explorer lookups may disclose queried addresses or transaction IDs to the service.
+
+Mitigation: Users should consider the privacy impact before querying public APIs and avoid unnecessary address reuse.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/ivangdavila/skills/bitcoin)
+- [mempool.space Transaction API](https://mempool.space/api/tx/{txid})
+- [mempool.space Address API](https://mempool.space/api/address/{address})
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Shell commands, API Calls]
+
+**Output Format:** [Markdown with inline shell commands and API endpoint examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Read-only guidance; no credentials or executable helper scripts were detected.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

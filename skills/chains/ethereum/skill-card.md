@@ -1,37 +1,48 @@
-## Description: <br>
-Assist with Ethereum transactions, gas optimization, token approvals, and L2 bridges. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Assist with Ethereum transactions, gas optimization, token approvals, and L2 bridges.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-External users and developers use this skill for Ethereum transaction troubleshooting, gas-fee reasoning, token approval safety checks, L2 bridge planning, MEV protection, and address validation. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Cryptocurrency actions can be financially risky and often irreversible. <br>
-Mitigation: Independently verify addresses, approvals, bridge choices, and transaction previews before acting on the guidance. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/ivangdavila/ethereum) <br>
+## Use Case:
 
+External users and developers use this skill for practical Ethereum transaction guidance, including gas settings, stuck transactions, token approvals, failed transactions, L2 bridge timing, MEV protection, and address validation.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Guidance] <br>
-**Output Format:** [Markdown guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Does not execute code, access credentials, install hooks, or persist state.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Ethereum transactions and approvals can be irreversible or expose funds if addresses, contract approvals, bridge terms, gas data, or external services are incorrect.
+
+Mitigation: Independently verify all addresses, token approvals, bridge terms, gas data, and external services before taking on-chain action, and never share seed phrases or private keys with any wallet, site, or agent.
+
+## Reference(s):
+
+- [ClawHub Ethereum Skill Page](https://clawhub.ai/ivangdavila/skills/ethereum)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, markdown]
+
+**Output Format:** [Markdown guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Plain-text educational Ethereum guidance; no executable code or system access.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

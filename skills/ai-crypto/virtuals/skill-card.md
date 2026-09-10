@@ -1,45 +1,62 @@
-## Description: <br>
-Virtuals Protocol integration for OpenClaw. Create, manage and trade tokenized AI agents on Base. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Virtuals Protocol integration for OpenClaw. Create, manage and trade tokenized AI agents on Base.
 
-## Publisher: <br>
-[rojasjuniore](https://clawhub.ai/user/rojasjuniore) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[rojasjuniore](https://clawhub.ai/user/rojasjuniore)
 
-## Use Case: <br>
-External users and developers use this skill to query Virtuals Protocol token and agent market data, inspect balances, configure wallet details, and get command-line guidance for creating or trading tokenized AI agents on Base. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill asks users to store a raw wallet private key locally, and the security evidence says the resulting config should be treated as a recoverable secret. <br>
-Mitigation: Do not enter a real or funded wallet private key; use a disposable wallet with minimal funds for testing and remove the local config when finished. <br>
-Risk: The security evidence flags unclear mainnet/testnet behavior because the code uses Base mainnet despite testnet-only wording. <br>
-Mitigation: Verify the network and contract addresses before running wallet, create, buy, or sell workflows, and avoid funded mainnet activity unless it is explicitly intended. <br>
+## Use Case:
 
+Developers and external users use this skill to inspect Virtuals Protocol token and agent information, check wallet balances, and receive command-line guidance for configuring a wallet and creating tokenized AI agents on Base.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/rojasjuniore/skills/virtuals) <br>
-- [Virtuals Homepage](https://virtuals.io) <br>
-- [Virtuals App](https://app.virtuals.io) <br>
-- [Virtuals Agent Creation](https://fun.virtuals.io) <br>
-- [Virtuals Whitepaper](https://whitepaper.virtuals.io) <br>
-- [GAME SDK](https://github.com/game-by-virtuals/game-node) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline shell commands and CLI text output] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include wallet configuration guidance, market data summaries, contract addresses, and links to Virtuals resources.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: frontmatter, package.json, release metadata) <br>
+Risk: The skill asks users to provide a crypto private key and persists it in a local plaintext configuration file.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use only a throwaway testnet wallet, do not provide a real mainnet private key, and treat any key already entered through the documented command as exposed.
+
+Risk: The skill advertises trading and agent-creation capabilities that the inspected release does not fully implement.
+
+Mitigation: Verify command behavior before relying on it, and use the official Virtuals web applications for creation or trading flows until the implementation is confirmed.
+
+Risk: Market-data and wallet-balance output can influence crypto decisions.
+
+Mitigation: Confirm balances, prices, and transaction requirements with authoritative sources before moving funds or acting on the output.
+
+## Reference(s):
+
+- [Virtuals homepage](https://virtuals.io)
+- [Virtuals app](https://app.virtuals.io)
+- [Virtuals agent creation](https://fun.virtuals.io)
+- [Virtuals whitepaper](https://whitepaper.virtuals.io)
+- [GAME SDK](https://github.com/game-by-virtuals/game-node)
+- [ClawHub skill page](https://clawhub.ai/rojasjuniore/skills/virtuals)
+
+## Skill Output:
+
+**Output Type(s):** [text, shell commands, configuration, guidance]
+
+**Output Format:** [CLI text output and Markdown guidance with inline shell commands]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include wallet configuration steps and blockchain/API query results; trading and create-agent flows should be treated as advisory unless verified.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter, package.json, ClawHub release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

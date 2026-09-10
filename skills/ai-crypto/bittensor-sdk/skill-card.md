@@ -1,49 +1,62 @@
-## Description: <br>
-Complete Bittensor SDK reference for Subtensor, AsyncSubtensor, Metagraph, Axon, Dendrite, Synapse, chain data models, extrinsics, extras, and utilities used in Bittensor wallet, staking, subnet, registration, liquidity, proxy, coldkey swap, and weight-setting workflows. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Complete Bittensor SDK reference covering Subtensor, AsyncSubtensor, Metagraph, Axon, Dendrite, Synapse, chain data models, sync and async extrinsics, extras, and utilities for Bittensor development and operations.
 
-## Publisher: <br>
-[taoleeh](https://clawhub.ai/user/taoleeh) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[taoleeh](https://clawhub.ai/user/taoleeh)
 
-## Use Case: <br>
-Developers and engineers use this skill as Bittensor SDK reference material for building, reviewing, and operating agents or applications that query Bittensor networks, manage wallets, stake, register neurons, set weights, and perform chain operations. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill covers wallet-signing and administrator blockchain actions, including staking, registration, proxy changes, coldkey swaps, sudo/root operations, and other financial-authority workflows. <br>
-Mitigation: Treat transaction-building suggestions as high risk and verify the network, wallet, destination addresses, amounts, coldkey or proxy changes, and sudo/root calls before signing. <br>
-Risk: Documentation examples may lead an agent toward live chain operations without strong scoping or safety warnings. <br>
-Mitigation: Prefer read-only queries, testnet execution, dry-run checks, or explicit human approval before any live transaction or wallet mutation. <br>
-Risk: The skill may involve sensitive wallet material or credentials. <br>
-Mitigation: Do not expose coldkeys, hotkeys, seed phrases, private keys, wallet files, or signing credentials to the agent; sign only through trusted local wallet flows. <br>
+## Use Case:
 
+Developers and engineers use this skill as a Bittensor Python SDK reference for querying chain state, building miners or validators, and drafting code for wallet, staking, registration, subnet, liquidity, proxy, weight-setting, and networking workflows.
 
-## Reference(s): <br>
-- [Bittensor SDK skill page](https://clawhub.ai/taoleeh/bittensor-sdk) <br>
-- [Publisher profile](https://clawhub.ai/user/taoleeh) <br>
-- [Bittensor Docs](https://docs.bittensor.com/) <br>
-- [Bittensor SDK Reference](https://bittensor-sdk.readthedocs.io/) <br>
-- [Learn Bittensor](https://docs.learnbittensor.org/) <br>
-- [Bittensor GitHub](https://github.com/opentensor) <br>
-- [Publisher website](https://bittensor.quest) <br>
-- [Full autoapi reference](references/autoapi/index.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline Python and shell code examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Documentation-only reference output; any transaction-building guidance requires user review before signing.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-2.0.0 (source: server release metadata and artifact frontmatter) <br>
+Risk: The skill covers real wallet and blockchain operations that may be irreversible, including transfers, staking changes, liquidity actions, proxy changes, coldkey swaps, registrations, crowdloans, and root or admin calls.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Require explicit human approval before any agent-submitted transaction, and verify destination addresses, account identities, fees, slippage, and action scope before execution.
+
+Risk: The skill is documentation-only and should not be treated as a safety layer for Bittensor operations.
+
+Mitigation: Use testnet or dry-run validation where possible and review generated code or commands before connecting them to funded wallets or production network endpoints.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/taoleeh/skills/bittensor-sdk)
+- [Publisher Profile](https://clawhub.ai/user/taoleeh)
+- [Bittensor Docs](https://docs.bittensor.com/)
+- [Bittensor SDK Reference](https://bittensor-sdk.readthedocs.io/)
+- [Learn Bittensor](https://docs.learnbittensor.org/)
+- [Taostats API](https://dash.taostats.io/)
+- [Full autoapi reference](references/autoapi/index.md)
+- [Bittensor core API reference](references/autoapi/core/index.md)
+- [Bittensor extras API reference](references/autoapi/extras/index.md)
+- [Bittensor utils API reference](references/autoapi/utils/index.md)
+
+## Skill Output:
+
+**Output Type(s):** [Markdown, Code, Shell commands, Configuration instructions, Guidance]
+
+**Output Format:** [Markdown with Python examples and inline command guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include operational guidance for Bittensor network and wallet workflows.]
+
+## Skill Version(s):
+
+2.0.0 (source: server release metadata and skill frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

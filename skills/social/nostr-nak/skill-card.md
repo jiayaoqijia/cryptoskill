@@ -1,39 +1,51 @@
-## Description: <br>
-General purpose skill for using the Nostr Army Knife (nak) CLI tool with PTY support. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+General purpose skill for using the Nostr Army Knife (nak) CLI tool with PTY support.
 
-## Publisher: <br>
-[samthomson](https://clawhub.ai/user/samthomson) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[samthomson](https://clawhub.ai/user/samthomson)
 
-## Use Case: <br>
-Developers and agents use this skill to query and post to Nostr through the nak CLI, including relay selection and PTY wrapping needed for reliable command execution. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Users may expose Nostr private keys when asking an agent to sign or post events. <br>
-Mitigation: Only provide a private key when intentionally signing or posting, and avoid placing nsec or hex private keys in prompts, reusable chat context, shell history, logs, or transcripts. <br>
-Risk: Running nak from an untrusted installation source can execute an unexpected CLI binary. <br>
-Mitigation: Install nak only from a trusted source and review generated commands before execution. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Nostr Nak on ClawHub](https://clawhub.ai/samthomson/nostr-nak) <br>
+## Use Case:
+
+Developers and agents use this skill to query and post Nostr events with the nak CLI, including relay selection and PTY-wrapped command patterns for non-interactive environments.
+
+### Deployment Geography for Use:
+
+Global
+
+## Known Risks and Mitigations:
+
+Risk: Private Nostr keys can be exposed through prompts, command history, logs, or transcripts when posting with nak.
+
+Mitigation: Keep private keys out of prompts and logs, and prefer safer signer or credential-storage workflows when posting.
+
+Risk: Shell-string command templates can be unsafe when relay, key, or other user-provided values are inserted into script -c commands.
+
+Mitigation: Strictly validate and shell-escape user-provided relay and key values before command construction.
+
+## Reference(s):
 
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, guidance] <br>
-**Output Format:** [Markdown with inline shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include Nostr relay URLs, public-key query arguments, and posting command examples.] <br>
+## Skill Output:
 
-## Skill Version(s): <br>
-1.0.2 (source: server release evidence) <br>
+**Output Type(s):** [Shell commands, Configuration, Guidance]
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+**Output Format:** [Markdown with inline bash code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Commands are expected to use a PTY wrapper for nak CLI execution.]
+
+## Skill Version(s):
+
+1.0.2 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,37 +1,49 @@
-## Description: <br>
-Avoid common Solidity mistakes - reentrancy, gas traps, storage collisions, and security pitfalls. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Avoid common Solidity mistakes - reentrancy, gas traps, storage collisions, and security pitfalls.
 
-## Publisher: <br>
-[ivangdavila](https://clawhub.ai/user/ivangdavila) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ivangdavila](https://clawhub.ai/user/ivangdavila)
 
-## Use Case: <br>
-Developers and smart-contract reviewers use this skill as a Solidity reference for spotting common security, gas, access-control, Ether-handling, storage, and upgradeability mistakes before changing or deploying contracts. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Solidity guidance may be incomplete or misapplied to a specific contract or deployment context. <br>
-Mitigation: Use the skill as educational assistance and rely on tests, audits, and explicit user review before deploying or changing smart contracts. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/ivangdavila/solidity) <br>
+## Use Case:
 
+Developers and engineers use this skill as a compact Solidity safety reference when reviewing or drafting smart contracts for common security, gas, storage, upgradeability, and Ether-handling pitfalls.
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Text, Markdown] <br>
-**Output Format:** [Markdown guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Educational Solidity review guidance; no command execution, network access, persistence, or credential use is indicated by the security evidence.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Solidity safety guidance may be mistaken for a contract-specific audit or for current compiler and library documentation.
+
+Mitigation: Use the skill as a reference aid only, and confirm findings against the target contract, active compiler version, library documentation, and a formal security review before deployment.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/ivangdavila/skills/solidity)
+- [Publisher Profile](https://clawhub.ai/user/ivangdavila)
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Markdown, Code]
+
+**Output Format:** [Markdown with inline code snippets and concise review guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Reference-only guidance; no code execution, credentials, persistence, or hidden behavior identified by security evidence.]
+
+## Skill Version(s):
+
+1.0.0 (source: ClawHub release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,44 +1,57 @@
-## Description: <br>
-Post, read, search, and engage on Farcaster via the Neynar API. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Post, read, search, and engage on Farcaster via the Neynar API.
 
-## Publisher: <br>
-[openclaw-consensus-bot](https://clawhub.ai/user/openclaw-consensus-bot) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[openclaw-consensus-bot](https://clawhub.ai/user/openclaw-consensus-bot)
 
-## Use Case: <br>
-Developers and agent operators use this skill to read Farcaster data and perform account actions through Neynar, including posting casts, replying, searching, looking up users, reacting, deleting casts, and browsing channels. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can give an agent live Farcaster account authority for posting, deleting, liking, recasting, following, and unfollowing. <br>
-Mitigation: Require explicit user confirmation before any public or account-changing action. <br>
-Risk: API keys and signer UUIDs may be exposed if passed on command lines or loaded through shell eval patterns in shared or logged environments. <br>
-Mitigation: Prefer environment or secret-management mechanisms that avoid command history and logs, and avoid the eval credential-loading example. <br>
-Risk: Media upload workflows can send local files and metadata to third-party hosts before embedding them in casts. <br>
-Mitigation: Review file contents and metadata before upload and only use third-party hosts that the operator accepts. <br>
-Risk: Some Neynar endpoints require paid access and may fail at runtime with payment or rate-limit errors. <br>
-Mitigation: Confirm the Neynar plan and handle 402 and 429 errors before relying on automated workflows. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Farcaster Skill on ClawHub](https://clawhub.ai/openclaw-consensus-bot/farcaster-skill) <br>
-- [Neynar v2 API Endpoint Reference](references/neynar_endpoints.md) <br>
+## Use Case:
 
+Developers and agents use this skill to read Farcaster data and perform account actions such as posting casts, replying, reacting, deleting casts, searching casts, and looking up users or channels through Neynar.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown guidance with bash commands and JSON command output] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Scripts emit JSON on success and JSON error objects to stderr on failure.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.1 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill uses a Neynar API key and signer UUID that can act on a Farcaster account.
+
+Mitigation: Store credentials in protected environment variables or a secret store; avoid passing secrets on the command line.
+
+Risk: The documented eval credential-loading pattern can execute shell text derived from a JSON file.
+
+Mitigation: Avoid that pattern and load credentials through a trusted secret manager or manually exported environment variables.
+
+Risk: Posting, reacting, following, and deleting casts can create public or destructive account changes.
+
+Mitigation: Require explicit confirmation before write actions and treat cast deletion as irreversible unless recovery is available outside this skill.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/openclaw-consensus-bot/skills/farcaster-skill)
+- [Neynar v2 API endpoint reference](references/neynar_endpoints.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with bash commands and JSON API responses]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires curl, jq, python3, NEYNAR_API_KEY, and NEYNAR_SIGNER_UUID for write operations.]
+
+## Skill Version(s):
+
+1.0.1 (source: evidence.release.version)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.
