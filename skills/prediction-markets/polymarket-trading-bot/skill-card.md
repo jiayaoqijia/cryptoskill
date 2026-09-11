@@ -1,46 +1,60 @@
-## Description: <br>
-Autonomous prediction market agent - analyzes markets, researches news, and identifies trading opportunities <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Autonomous prediction market agent that analyzes markets, researches news, and identifies trading opportunities.
 
-## Publisher: <br>
-[BOMBFUOCK](https://clawhub.ai/user/BOMBFUOCK) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[bombfuock](https://clawhub.ai/user/bombfuock)
 
-## Use Case: <br>
-External users and developers use this skill to inspect Polymarket markets, research news and sentiment, estimate trading edge, and prepare or execute user-approved trades through a local poly CLI. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can interact with real-money Polymarket trading flows and asks for wallet private-key access. <br>
-Mitigation: Use a dedicated low-balance wallet, avoid primary wallet keys, and confirm each trade unless explicit limits and monitoring are configured. <br>
-Risk: Autonomous trading behavior could place orders based on incorrect analysis or stale market information. <br>
-Mitigation: Keep autonomous mode disabled by default, require user approval for trades, and set clear trade-size limits. <br>
-Risk: The install path uses Python dependencies that are not pinned in the supplied requirements. <br>
-Mitigation: Install in an isolated virtual environment and pin or review dependencies before production use. <br>
+## Use Case:
 
+External users and developers use this skill to search Polymarket markets, gather market data, research related news, estimate edge, and prepare or execute user-approved trades through the poly CLI.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/BOMBFUOCK/polymarket-trading-bot) <br>
-- [BOMBFUOCK Publisher Profile](https://clawhub.ai/user/BOMBFUOCK) <br>
-- [Clawdis Homepage Metadata](https://clawdhub.com/polymarket-agent) <br>
-- [Polymarket Gamma API Endpoint](https://gamma-api.polymarket.com) <br>
-- [Polymarket CLOB Endpoint](https://clob.polymarket.com) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown reports with inline shell commands and CLI status tables] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May invoke local poly CLI commands and Polymarket API calls when credentials are configured.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata; artifact pyproject.toml lists 0.1.0) <br>
+Risk: The skill handles a wallet private key and the security scan notes unsafe secret handling.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use only a dedicated low-value wallet, avoid commands that print secrets, and require secret redaction plus safer key storage before meaningful funds are used.
+
+Risk: The skill can place live Polymarket orders with weak safeguards.
+
+Mitigation: Keep autonomous mode disabled, require explicit per-trade confirmation, add dry-run behavior, validate token, price, and size inputs, and enforce per-trade limits.
+
+Risk: Market recommendations may rely on incomplete news, social sentiment, or ambiguous market resolution criteria.
+
+Mitigation: Verify sources, market liquidity, and resolution rules before trading, and keep position sizes small relative to the user's bankroll.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/bombfuock/skills/polymarket-trading-bot)
+- [Configured Skill Homepage](https://clawdhub.com/polymarket-agent)
+- [Polymarket Gamma API](https://gamma-api.polymarket.com)
+- [Polymarket CLOB API](https://clob.polymarket.com)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown analysis reports with tables and inline shell commands]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May call Polymarket APIs, web search, Clawdbot config, and live trading commands when configured.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata; artifact/pyproject.toml reports 0.1.0)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

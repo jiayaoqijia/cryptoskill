@@ -1,7 +1,7 @@
 ---
 name: gmgn-track
 description: Get real-time crypto buy/sell activity from Smart Money wallets, KOL influencer wallets, and personally followed wallets via GMGN API — alpha signals, whale tracking, meme token copy-trading ideas on Solana, BSC, Base, or Ethereum. Also query which tokens a wallet has followed (bookmarked) on GMGN. Use when user asks what smart money or KOLs are buying, wants whale alerts, on-chain alpha, copy-trade signals, or wants to check a wallet's followed tokens. (For a specific wallet address's portfolio, use gmgn-portfolio.)
-argument-hint: "<follow-tokens|follow-wallet|kol|smartmoney> --chain <sol|bsc|base|eth|robinhood|arc|stable> [--wallet <wallet_address>]"
+argument-hint: "<follow-tokens|follow-wallet|kol|smartmoney> --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> [--wallet <wallet_address>]"
 metadata:
   cliHelp: "gmgn-cli track --help"
 ---

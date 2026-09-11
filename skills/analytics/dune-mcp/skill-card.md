@@ -1,44 +1,57 @@
-## Description: <br>
-Use Dune MCP through UXC for blockchain table discovery, SQL query creation/execution, execution result retrieval, and visualization with help-first schema inspection, explicit auth binding, and guarded credit-consuming operations. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Use Dune MCP through UXC for blockchain table discovery, SQL query creation/execution, execution result retrieval, and visualization with help-first schema inspection, explicit auth binding, and guarded credit-consuming operations.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and blockchain analysts use this skill to discover Dune tables, create and run Dune SQL queries, retrieve execution results, and generate visualizations through the Dune MCP endpoint. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill uses a Dune API key for authenticated MCP calls. <br>
-Mitigation: Use a dedicated or least-privileged Dune API key and remove the UXC credential binding when access is no longer needed. <br>
-Risk: Some operations can consume Dune credits or change saved Dune resources. <br>
-Mitigation: Review SQL, query IDs, privacy settings, and likely credit usage before approving create, update, execute, or visualization operations. <br>
-Risk: Query privacy can change if a private query is made public or a temporary query is visible. <br>
-Mitigation: Inspect privacy fields such as is_private and is_temp before changing or sharing query artifacts. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [Dune MCP endpoint](https://api.dune.com/mcp/v1) <br>
-- [ClawHub skill page](https://clawhub.ai/jolestar/dune-mcp-skill) <br>
-- [Publisher profile](https://clawhub.ai/user/jolestar) <br>
+## Use Case:
 
+Developers and analysts use this skill to discover Dune blockchain tables, draft and run SQL queries, retrieve execution results, and generate visualizations through UXC-mediated Dune MCP commands.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline shell commands, SQL examples, and workflow guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include Dune MCP command examples, credential binding steps, query IDs, execution IDs, and result-handling guidance.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Authenticated Dune operations can consume credits or create, update, execute, publish, or visualize queries.
+
+Mitigation: Use explicit user confirmation before credit-consuming or state-changing operations, and check usage before heavy experimentation.
+
+Risk: Dune API credentials, SQL, and query metadata may be exposed if handled carelessly.
+
+Mitigation: Use a least-privilege Dune API key through UXC credential binding and confirm privacy settings before making queries public.
+
+Risk: Unbounded SQL queries can increase cost, latency, or result volume.
+
+Mitigation: Inspect operation schemas and table metadata first, prefer partition-aware filters such as block_date or evt_block_date, and keep initial result sets small.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [Dune MCP endpoint](https://api.dune.com/mcp/v1)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with inline shell commands, SQL snippets, and configuration guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Uses structured JSON command output envelopes when automating Dune MCP calls.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

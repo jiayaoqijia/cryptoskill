@@ -1,42 +1,59 @@
-## Description: <br>
-Live crypto trading on Hyperliquid via Katbot.ai. Signal-triggered research to recommendation to execution workflow with Market Intelligence, research, and configurable signal monitoring. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Live crypto trading on Hyperliquid via Katbot.ai. Signal-triggered research, recommendation, and execution workflow with market intelligence and configurable signal monitoring.
 
-## Publisher: <br>
-[claytantor](https://clawhub.ai/user/claytantor) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[claytantor](https://clawhub.ai/user/claytantor)
 
-## Use Case: <br>
-External users and developers use this skill to connect an agent to Katbot.ai for signal-triggered Hyperliquid portfolio research, recommendations, monitoring, and user-confirmed trade execution. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can perform live crypto trading actions that affect real funds and depends on persistent trading credentials. <br>
-Mitigation: Use paper/testnet mode or a dedicated limited-permission agent wallet with minimal funds, and keep auto-execution disabled unless explicitly reviewed. <br>
-Risk: The skill requires trust in Katbot.ai with a Hyperliquid agent key and remote API calls. <br>
-Mitigation: Install only if the user trusts Katbot.ai with the agent key, review any cron schedule before enabling it, and remove the local identity directory when no longer using the skill. <br>
+## Use Case:
 
+External developers and trading operators use this skill to configure signal-triggered Hyperliquid paper or live trading workflows through Katbot.ai, review market intelligence and research, request trade recommendations, and execute or close positions after confirmation.
 
-## Reference(s): <br>
-- [ClawHub release page](https://clawhub.ai/claytantor/katbot-trading) <br>
-- [ClawHub publisher profile](https://clawhub.ai/user/claytantor) <br>
-- [Katbot API endpoint](https://api.katbot.ai) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands and JSON configuration examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May create local identity and signal-trigger configuration files during setup.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-0.5.0 (source: frontmatter and server release metadata) <br>
+Risk: The Hyperliquid agent trading private key may be transmitted to the Katbot API for recommendations, execution, position close, and portfolio timeseries operations.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Warn the user before onboarding or trading calls, proceed only after acknowledgement, use only trusted Katbot API endpoints, and avoid custom KATBOT_BASE_URL values unless the endpoint is controlled and trusted.
+
+Risk: Live trading and unattended automation can place or close real Hyperliquid positions.
+
+Mitigation: Prefer paper or testnet mode first, require explicit confirmation before any live trade or position close, and keep auto_execute_trade disabled unless the user makes a clear informed choice.
+
+Risk: Local identity files can contain the agent trading key and session tokens.
+
+Mitigation: Store identity files outside the project tree with owner-only permissions, never print or summarize secret values, and never place wallet or agent private keys in env files or shell profiles.
+
+## Reference(s):
+
+- [ClawHub Katbot Trading Skill Page](https://clawhub.ai/claytantor/skills/katbot-trading)
+- [Katbot API](https://api.katbot.ai)
+- [Hyperliquid App](https://app.hyperliquid.xyz)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands, Python calls, JSON configuration examples, and API response summaries.]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May produce or modify local identity and trigger configuration files during onboarding and setup; trading execution requires explicit user confirmation.]
+
+## Skill Version(s):
+
+0.5.0 (source: frontmatter and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

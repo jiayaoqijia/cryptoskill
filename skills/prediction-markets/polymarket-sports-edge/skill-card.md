@@ -1,44 +1,60 @@
-## Description: <br>
-Find odds divergence between sportsbook consensus and Polymarket sports markets, then trade the gap. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Find odds divergence between sportsbook consensus and Polymarket sports markets, then trade the gap.
 
-## Publisher: <br>
-[0xjims](https://clawhub.ai/user/0xjims) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[0xjims](https://clawhub.ai/user/0xjims)
 
-## Use Case: <br>
-External users and developers can use this skill to monitor sports prediction markets for sportsbook consensus divergence and optionally execute Polymarket trades through Simmer. It is intended for users who understand prediction-market trading risk and can configure API keys, trade sizing, dry-run review, and live execution controls. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can run as a scheduled prediction-market trading bot and can place real-money trades when LIVE=true. <br>
-Mitigation: Keep LIVE=false until dry-run output has been reviewed over multiple cycles, use small trade sizes, and add approval and loss-limit controls before enabling live execution. <br>
-Risk: The release evidence reports ambiguous duplicate manifests and limited live-trading safeguards. <br>
-Mitigation: Confirm which manifest and script will run in the deployment environment, then restrict or revoke API keys when not in active use. <br>
-Risk: Market matching and sportsbook consensus signals can be wrong, stale, or incomplete. <br>
-Mitigation: Review proposed trades, tune divergence thresholds and resolution windows, and avoid relying on the skill as the sole basis for trading decisions. <br>
+## Use Case:
 
+External users and developers use this skill to scan sports prediction markets for sportsbook-to-Polymarket price divergence, configure trading thresholds and position size, and run dry-run or live trading cycles.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/0xjims/polymarket-sports-edge) <br>
-- [The Odds API](https://the-odds-api.com) <br>
-- [Simmer markets API endpoint](https://api.simmer.markets/api/sdk/markets) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, shell commands, configuration, guidance] <br>
-**Output Format:** [Console logs and Markdown setup guidance with shell command examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires SIMMER_API_KEY and THE_ODDS_API_KEY; dry-run is the default unless LIVE=true is set.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.2.0 (source: server release evidence and skill frontmatter) <br>
+Risk: The skill can perform real-money trading when live mode is enabled, including from scheduled hourly automation.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Run dry-run cycles first, keep LIVE unset or false in scheduled environments, and set small trade and quota limits before any live run.
+
+Risk: API keys and request details may be exposed if full request URLs or logs are retained.
+
+Mitigation: Limit log exposure, avoid logging full URLs with credentials, and rotate keys if credential-bearing requests may have been captured.
+
+Risk: Duplicate stale package copies and mismatched documented defaults can cause users to run behavior different from what they reviewed.
+
+Mitigation: Use the release-root artifact as the reviewed package, remove stale duplicates before unattended use, and align setup documentation with code defaults.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/0xjims/skills/polymarket-sports-edge)
+- [0xjims publisher profile](https://clawhub.ai/user/0xjims)
+- [The Odds API](https://the-odds-api.com)
+- [Simmer markets API](https://api.simmer.markets/api/sdk/markets)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and script log output]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Dry-run by default; live trading requires LIVE=true and configured API keys.]
+
+## Skill Version(s):
+
+1.2.0 (source: ClawHub release evidence and root SKILL.md frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

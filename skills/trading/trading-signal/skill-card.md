@@ -1,38 +1,57 @@
-## Description: <br>
-Trading Signal retrieves on-chain Smart Money buy/sell signals and related token metrics, including trigger price, current price, max gain, and exit rate. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Retrieves on-chain Smart Money buy/sell signals with trigger price, current price, max gain, exit rate, token tags, and chain filters.
 
-## Publisher: <br>
-[Awessh](https://clawhub.ai/user/Awessh) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[awessh](https://clawhub.ai/user/awessh)
 
-## Use Case: <br>
-External users and developers use this skill to query Binance Web3 smart-money signal data for crypto market monitoring and signal analysis. Outputs should be treated as market data and not as personalized financial advice. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Crypto buy/sell signals, max gain, and exit rate can be mistaken for personalized financial advice or proof that a trade is safe. <br>
-Mitigation: Treat outputs as risky market data; independently verify token risks, liquidity, timing, and user suitability before acting. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub Trading Signal Release](https://clawhub.ai/Awessh/trading-signal) <br>
-- [Binance Web3 Smart Money Signals API Endpoint](https://web3.binance.com/bapi/defi/v1/public/wallet-direct/buw/wallet/web/signal/smart-money) <br>
+## Use Case:
 
+External users and agents use this skill to retrieve and summarize Binance Web3 Smart Money signals for BSC and Solana so they can monitor market activity and evaluate potential trades as informational data.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Guidance] <br>
-**Output Format:** [Markdown with inline JSON and bash examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include token symbols, chain identifiers, buy/sell direction, prices, market cap, max gain, exit rate, status, and token tags returned by the API.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: ClawHub release metadata; artifact frontmatter lists 1.0) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill can surface speculative crypto trading signals that may be mistaken for financial advice.
+
+Mitigation: Treat outputs as informational market data only and verify independently before making any trade.
+
+Risk: The skill calls a Binance Web3 public endpoint and may summarize live market-related data from that service.
+
+Mitigation: Install only if that external network behavior is acceptable for the agent environment.
+
+Risk: Signals can become stale or timed out, and high exit rates may indicate an expired signal.
+
+Mitigation: Check signal status, timestamps, current price, and exit rate before relying on any displayed signal.
+
+## Reference(s):
+
+- [ClawHub Trading Signal Skill](https://clawhub.ai/awessh/skills/trading-signal)
+- [Binance Web3 Smart Money Signals API](https://web3.binance.com/bapi/defi/v1/public/wallet-direct/buw/wallet/web/signal/smart-money)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Guidance]
+
+**Output Format:** [Markdown with JSON and bash examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include paginated Smart Money signal data, chain filters, price fields, token tags, and informational risk caveats.]
+
+## Skill Version(s):
+
+0.1.0 (source: ClawHub release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

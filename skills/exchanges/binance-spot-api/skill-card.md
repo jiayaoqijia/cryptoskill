@@ -1,46 +1,60 @@
-## Description: <br>
-Operate Binance Spot market, account, and order APIs through UXC with a curated OpenAPI schema, Binance query signing, and separate mainnet/testnet link flows. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Binance Spot market, account, and order APIs through UXC with a curated OpenAPI schema, Binance query signing, and separate mainnet/testnet link flows.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and engineers use this skill to configure UXC access to Binance Spot REST APIs, inspect market and account data, and prepare or execute order-related operations with testnet-first guardrails. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Live Binance Spot credentials can expose account data or allow order placement and cancellation. <br>
-Mitigation: Use least-privilege API keys with withdrawals disabled, keep mainnet and testnet keys separate, and require explicit confirmation before any live trade or cancellation. <br>
-Risk: Mainnet writes can create real financial exposure if an agent executes an unintended order. <br>
-Mitigation: Start on testnet, validate order shape with order/test before real writes, and treat all mainnet write operations as high-risk. <br>
-Risk: Exported API keys or signing material can be exposed through the local environment. <br>
-Mitigation: Clear exported secrets after use and revoke keys promptly if exposure is suspected. <br>
+## Use Case:
 
+Developers and engineers use this skill to discover, configure, and execute Binance Spot REST operations for market data, account reads, order queries, test orders, and carefully reviewed order placement or cancellation.
 
-## Reference(s): <br>
-- [Usage patterns](references/usage-patterns.md) <br>
-- [Curated Binance Spot OpenAPI schema](references/binance-spot.openapi.json) <br>
-- [Official Binance Spot API docs](https://github.com/binance/binance-spot-api-docs) <br>
-- [Binance Spot skill source material](https://github.com/binance/binance-skills-hub/tree/main/skills/binance/spot) <br>
-- [ClawHub skill page](https://clawhub.ai/jolestar/binance-spot-openapi-skill) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline bash commands and JSON-oriented API response guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Guidance emphasizes JSON output envelopes, separate mainnet and testnet credentials, and explicit confirmation before live mainnet writes.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.1 (source: server release evidence) <br>
+Risk: Agent access to Binance Spot account data and trading actions can expose financial data or execute trades.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Prefer testnet first, use read-only or narrowly permissioned API keys where possible, and require explicit review before any mainnet write.
+
+Risk: A changeable remote OpenAPI schema can affect signed financial operations.
+
+Mitigation: Use the bundled schema or replace the remote schema reference with a pinned, hash-verified copy.
+
+Risk: Mixing Binance API keys and signing material from different key records can cause invalid signatures.
+
+Mitigation: Keep each API key paired with the matching Ed25519 private key or HMAC secret for the same mainnet or testnet key record.
+
+## Reference(s):
+
+- [Usage patterns](references/usage-patterns.md)
+- [Curated OpenAPI schema](references/binance-spot.openapi.json)
+- [Official Binance Spot API docs](https://github.com/binance/binance-spot-api-docs)
+- [Binance Spot skill source material](https://github.com/binance/binance-skills-hub/tree/main/skills/binance/spot)
+
+## Skill Output:
+
+**Output Type(s):** [Shell commands, Configuration instructions, API Calls, Guidance]
+
+**Output Format:** [Markdown with inline bash commands, JSON-oriented response guidance, and configuration snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Prefers testnet-first signed examples, JSON output envelopes, and explicit review before mainnet writes.]
+
+## Skill Version(s):
+
+1.0.1 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -50,6 +50,7 @@ Always pair measurement with the **power-user scenario on Android** — see [ref
 
 | Symptom / task | Start with |
 |---|---|
+| Authoring a new or changed Redux selector (file, naming, tests) | `yarn skills --include coding/selector-patterns --save`. Memoization audits stay on this skill ([mm-selector-memoization.md](references/mm-selector-memoization.md)). |
 | Component re-renders too much; account/network switch is laggy | [mm-selector-memoization.md](references/mm-selector-memoization.md) → [js-profile-react.md](references/js-profile-react.md) |
 | `useSelector` returns new refs; `useSelector(x, isEqual)` band-aids | [mm-redux-antipatterns.md](references/mm-redux-antipatterns.md) |
 | Whole subtree re-renders under a Context provider | [mm-context-performance.md](references/mm-context-performance.md) |

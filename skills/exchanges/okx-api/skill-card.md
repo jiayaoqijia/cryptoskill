@@ -1,47 +1,63 @@
-## Description: <br>
-OKX API helps agents work with OKX REST API v5 and WebSocket workflows for market data, account and position queries, and order management. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Provides guidance for interacting with OKX REST API v5 including authentication, market data, and order management.
 
-## Publisher: <br>
-[XHFkindergarten](https://clawhub.ai/user/XHFkindergarten) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[xhfkindergarten](https://clawhub.ai/user/xhfkindergarten)
 
-## Use Case: <br>
-Developers and trading automation teams use this skill to help an agent prepare OKX API calls, configuration, and example code for market data, account checks, and order lifecycle tasks. It is most relevant when the agent is expected to guide REST or WebSocket access to OKX with user-provided credentials. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can guide live OKX financial account access and order placement. <br>
-Mitigation: Use demo mode first, prefer read-only or least-privilege API keys, disable withdrawals, consider IP allowlisting, and require manual confirmation before any live order, amendment, or cancellation. <br>
-Risk: The release includes an unrelated local git-push permission. <br>
-Mitigation: Remove or review the git-push permission before deployment unless it is intentionally needed in the target environment. <br>
-Risk: Misconfigured or over-privileged API credentials could expose account data or enable unwanted trading activity. <br>
-Mitigation: Store credentials only in the intended environment mechanism, keep secrets out of prompts and logs, and scope keys to the minimum OKX permissions required for the task. <br>
+## Use Case:
 
+Developers and agents use this skill to query OKX market data, inspect balances and positions, and prepare authenticated REST or WebSocket interactions for account and order workflows.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/XHFkindergarten/okx-api) <br>
-- [OKX](https://www.okx.com) <br>
-- [Authentication Reference](references/authentication.md) <br>
-- [Market Data Endpoints Reference](references/market-data-endpoints.md) <br>
-- [Trading Endpoints Reference](references/trading-endpoints.md) <br>
-- [WebSocket Reference](references/websocket.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with JSON snippets, Python examples, and shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include live API request guidance requiring configured OKX credentials and user confirmation for trading actions.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: frontmatter, package.json, release metadata) <br>
+Risk: The skill can expose OKX exchange credentials broadly when live API keys are injected into agent environments.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use demo mode or separate least-privilege OKX API keys, prefer read-only keys for account queries, and avoid global credential injection for live trading keys.
+
+Risk: The skill can support live order placement, amendment, and cancellation against a real OKX account.
+
+Mitigation: Require explicit confirmation before any live order placement, amendment, or cancellation, and keep OKX_DEMO enabled for testing.
+
+Risk: The artifact includes an unrelated pre-approved git push permission.
+
+Mitigation: Remove the packaged .claude git-push allow rule before installing or running the skill.
+
+## Reference(s):
+
+- [OKX API Skill README](README.md)
+- [Authentication Reference](references/authentication.md)
+- [Market Data Endpoints](references/market-data-endpoints.md)
+- [Trading Endpoints](references/trading-endpoints.md)
+- [WebSocket Reference](references/websocket.md)
+- [OKX](https://www.okx.com)
+- [ClawHub Skill Page](https://clawhub.ai/xhfkindergarten/skills/okx-api)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline code, shell commands, and JSON examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include authenticated OKX API request patterns, environment variable configuration, and example scripts.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter, package.json, server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

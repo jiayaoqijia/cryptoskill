@@ -1,41 +1,55 @@
-## Description: <br>
-Multi-timeframe crypto technical analysis with scored trading signals, structured trade plans, and position sizing via Binance public API. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Multi-timeframe crypto technical analysis with scored trading signals, structured trade plans, and position sizing via Binance public API.
 
-## Publisher: <br>
-[eplt](https://clawhub.ai/user/eplt) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[eplt](https://clawhub.ai/user/eplt)
 
-## Use Case: <br>
-External users and developers use this skill to analyze Binance-listed crypto pairs, generate directional technical-analysis signals, and produce structured trade plans with position sizing for independent review. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: Trading signals, leverage, and position-sizing output may be mistaken for financial advice or automated trading authorization. <br>
-Mitigation: Treat all buy, sell, futures, leverage, and position-sizing output as informational analysis and review it independently before risking capital. <br>
-Risk: The skill fetches public market data from exchange APIs using requested symbols and timeframes. <br>
-Mitigation: Install only if public exchange API requests are acceptable for your environment, and do not provide exchange API keys to this tool. <br>
+## Use Case:
 
+External users and developers use this skill to analyze Binance-listed cryptocurrency pairs, generate directional signal summaries, and produce structured trade plans with position sizing. It is intended as decision support and does not execute trades.
 
-## Reference(s): <br>
-- [Complete Reference Guide](references/guide.md) <br>
-- [ClawHub Skill Page](https://clawhub.ai/eplt/binance-signal-engine) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Analysis, Text, JSON, Shell commands, Guidance] <br>
-**Output Format:** [Markdown summaries or JSON reports] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include scored signals, per-timeframe reasoning, trade plans, position sizing, and backtest-ready rows.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.2 (source: frontmatter and server release metadata) <br>
+Risk: Trading signals, entries, stops, and position sizes may be mistaken for financial advice or treated as automatic trading instructions.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Treat outputs as decision support only, validate the market context independently, and apply user-controlled risk management before acting.
+
+Risk: The skill installs third-party Python dependencies and fetches public market data at runtime.
+
+Mitigation: Install in an isolated environment where possible, consider pinning dependency versions, and account for public API availability or rate-limit issues.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/eplt/skills/binance-signal-engine)
+- [Binance Signal Engine Reference Guide](references/guide.md)
+- [Binance Public API Endpoint](https://api.binance.com)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, JSON, shell commands, configuration, guidance]
+
+**Output Format:** [Human-readable command-line summary or structured JSON report with signal, trade plan, position size, and backtest row sections.]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Outputs are generated from public market data and local calculations; no exchange orders are placed.]
+
+## Skill Version(s):
+
+1.0.2 (source: frontmatter and server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,43 +1,59 @@
-## Description: <br>
-Use The Graph Subgraph MCP through UXC via native SSE with a fixed linked command for subgraph discovery, schema retrieval, deployment selection, and GraphQL query execution with help-first inspection and explicit auth handling. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Guides agents to discover The Graph subgraphs, inspect schemas, select deployments, and run scoped GraphQL queries through The Graph MCP with explicit API-key authentication.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and engineers use this skill to discover The Graph subgraphs, inspect schemas, choose stable deployments, and execute scoped GraphQL queries through The Graph Subgraph MCP. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill requires a The Graph Gateway API key for authenticated MCP calls. <br>
-Mitigation: Use a dedicated or revocable API key and store it through the documented UXC credential binding rather than in prompts or logs. <br>
-Risk: The fixed local command name could conflict with an existing command. <br>
-Mitigation: Check `command -v thegraph-mcp-cli` before linking and stop for maintainer review if the command cannot be safely reused. <br>
-Risk: Unscoped GraphQL queries can fetch more data than intended. <br>
-Mitigation: Inspect operation help and schema first, then start with `_meta` or narrow selections using limits and filters. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [The Graph Subgraph MCP documentation](https://thegraph.com/docs/en/ai-suite/subgraph-mcp/introduction/) <br>
-- [ClawHub release page](https://clawhub.ai/jolestar/thegraph-mcp-skill) <br>
+## Use Case:
 
+Developers and agents use this skill to explore The Graph subgraphs, inspect schemas, choose stable deployments, and run small GraphQL queries after confirming operation help and authentication.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, shell commands, configuration, markdown] <br>
-**Output Format:** [Markdown with inline shell commands and GraphQL snippets] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Uses UXC JSON envelopes and expects The Graph Gateway API key handling through configured credentials.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill guides agents to store or reference a The Graph API key in uxc and create a scoped auth binding.
+
+Mitigation: Review the local uxc credential and auth binding entries before use, and rotate or remove the credential when access changes.
+
+Risk: The skill creates or uses a local linked command named thegraph-mcp-cli.
+
+Mitigation: Confirm the command name does not conflict with an existing local tool before linking, and remove the link during uninstall if it is no longer needed.
+
+Risk: GraphQL queries against subgraphs can be too broad or target an unstable latest-version reference.
+
+Mitigation: Inspect operation help and schema first, prefer deployment-oriented identifiers for stable workflows, and start with narrow queries using filters, limits, and required fields only.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [The Graph Subgraph MCP Documentation](https://thegraph.com/docs/en/ai-suite/subgraph-mcp/introduction/)
+- [The Graph Subgraph MCP SSE Endpoint](https://subgraphs.mcp.thegraph.com/sse)
+- [ClawHub Skill Page](https://clawhub.ai/jolestar/skills/thegraph-mcp-skill)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, shell commands, configuration, markdown]
+
+**Output Format:** [Markdown with inline shell commands and GraphQL examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Uses JSON envelope parsing guidance for MCP responses and recommends small, schema-informed GraphQL queries.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

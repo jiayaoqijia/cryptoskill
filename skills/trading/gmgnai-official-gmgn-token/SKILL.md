@@ -1,7 +1,7 @@
 ---
 name: gmgn-token
 description: Research any crypto or meme token by address — real-time price, market cap, liquidity, holder list, trader list, top Smart Money and KOL positions, security audit (honeypot, rug pull risk, dev wallet, renounced status), social links (Twitter/X, website) via GMGN API on Solana, BSC, Base, or Ethereum. Use when user asks about a token's price, safety, holders, traders, smart money exposure, or wants due diligence before buying.
-argument-hint: "<sub-command> --chain <sol|bsc|base|eth|robinhood|arc|stable> --address <token_address>"
+argument-hint: "<sub-command> --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> --address <token_address>"
 metadata:
   cliHelp: "gmgn-cli token --help"
 ---

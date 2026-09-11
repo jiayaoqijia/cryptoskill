@@ -1,43 +1,59 @@
-## Description: <br>
-YieldShark helps agents monitor stablecoin yield opportunities across DeFi platforms using DeFiLlama data and local Node.js scripts. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+YieldShark helps agents monitor stablecoin DeFi yields, compare APYs across supported platforms, estimate gas-adjusted returns, and generate yield reports.
 
-## Publisher: <br>
-[gztanht](https://clawhub.ai/user/gztanht) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[gztanht](https://clawhub.ai/user/gztanht)
 
-## Use Case: <br>
-External users and developers use this skill to query, compare, calculate, alert on, and report DeFi stablecoin APY data for USDT, USDC, and DAI. The outputs are informational and should be reviewed before making financial decisions. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: Bundled promotion and publishing documents may encourage public posting or ClawHub token handling outside the yield-monitoring workflow. <br>
-Mitigation: Use the local yield-query scripts only, and ignore promotion or publishing instructions unless you are intentionally maintaining this package from your own account. <br>
-Risk: Displayed APYs, risk labels, and wallet addresses may be mistaken for financial advice or deposit instructions. <br>
-Mitigation: Treat all APY output as informational, independently verify protocols and addresses, and avoid using author wallet addresses as deposit destinations. <br>
+## Use Case:
 
+External users and developers use this skill to query and compare DeFi stablecoin yield opportunities for USDT, USDC, and DAI across supported protocols and chains. Its outputs are informational and should be independently verified before any financial action.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/gztanht/yield-shark) <br>
-- [README](README.md) <br>
-- [Skill Definition](SKILL.md) <br>
-- [DeFiLlama Yield Pools API](https://yields.llama.fi/pools) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Terminal text and generated Markdown or JSON reports from Node.js scripts] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires node and npm; scripts may fetch live DeFi yield data and fall back to bundled sample data if the API request fails.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.6 (source: server release metadata and package.json; SKILL.md frontmatter lists 1.0.3) <br>
+Risk: The skill can print financial-looking APYs, rankings, risk ratings, and recommendations that may be hard-coded, stale, or misleading.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Treat all outputs as informational only and independently verify APYs, protocol risk, liquidity, and destination URLs before making any financial decision.
+
+Risk: The skill prints sponsorship wallet addresses that could be mistaken for user wallets or deposit destinations.
+
+Mitigation: Do not send funds to any printed address unless you intentionally choose to sponsor the publisher and have verified the address through a trusted source.
+
+Risk: Bundled publishing-token instructions may be unsafe for users who are not the authorized publisher.
+
+Mitigation: Ignore publishing-token workflows unless you are the authorized publisher using a secure, pinned CLI workflow.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/gztanht/skills/yield-shark)
+- [DeFiLlama Yields API](https://yields.llama.fi/pools)
+- [Platform Configuration](config/platforms.json)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, JSON, shell commands, guidance]
+
+**Output Format:** [Console text, Markdown reports, and JSON reports from Node.js scripts]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Outputs may include APY rankings, gas estimates, risk ratings, platform links, sponsorship wallet addresses, and locally generated report files.]
+
+## Skill Version(s):
+
+1.0.6 (source: server release evidence and package.json)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

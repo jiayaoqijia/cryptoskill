@@ -44,7 +44,7 @@ Independently of the path above, the controller class itself comes from one of t
 | 8 | `app/core/Engine/constants.ts` | Append `'<Name>:stateChange'` to `BACKGROUND_STATE_CHANGE_EVENT_NAMES`. ⚠️ Copy the exact event name from the package's `Events` type — some emit `:stateChanged` |
 | 9 | `app/core/Engine/Engine.ts` | (a) import init fn (b) add to `initFunctions` **after** every controller it depends on — insertion order is init order (c) add to `this.context` (d) add to **both** the destructuring and return object of `get state()` |
 | 10 | `app/util/test/initial-background-state.json` | Add default state (run step in §7 verify to get the exact expected value) |
-| 11 | `app/selectors/<name>.ts` (+ test) | `state.engine.backgroundState.<Name> ?? getDefault<Name>State()`; derive with `createSelector` |
+| 11 | `app/selectors/<name>.ts` (+ test) | Leaf: `state.engine.backgroundState.<Name> ?? getDefault<Name>State()`. Naming, factory choice, and tests: `yarn skills --include coding/selector-patterns --save`. |
 | 12 | `.github/CODEOWNERS` | Add glob entries for the init and messenger paths |
 | 13 | `tests/feature-flags/feature-flag-registry.ts` | Register the flag key, if the controller is remote-flag gated |
 

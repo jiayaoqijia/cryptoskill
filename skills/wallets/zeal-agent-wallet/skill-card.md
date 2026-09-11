@@ -1,42 +1,56 @@
-## Description: <br>
-Propose transactions to a Zeal Wallet. Use when the user wants to set up an agent as a Zeal Wallet signer, propose transactions, or manage a delegate wallet. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Propose transactions to a Zeal Wallet. Use when the user wants to set up an agent as a Zeal Wallet signer, propose transactions, or manage a delegate wallet.
 
-## Publisher: <br>
-[Nicvaniek](https://clawhub.ai/user/Nicvaniek) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[nicvaniek](https://clawhub.ai/user/nicvaniek)
 
-## Use Case: <br>
-External wallet users and agents use this skill to create or reuse a local agent wallet, connect it to a Zeal Wallet, submit transaction proposals on supported networks, and remove the local Zeal Wallet configuration when disconnecting. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill creates or reuses a persistent local private key for the agent wallet. <br>
-Mitigation: Protect ~/.zeal-agent-wallet/wallet.json as a secret, avoid exposing it in chat or logs, and remove or rotate the delegate permission if the key may be compromised. <br>
-Risk: The skill can submit transaction proposals without a built-in user confirmation step. <br>
-Mitigation: Require explicit approval before every proposal, including recipient, value, calldata meaning, network, operation type, and purpose. <br>
-Risk: DelegateCall proposals and unclear calldata can create high-impact wallet risk even when execution still requires owner approval. <br>
-Mitigation: Use DelegateCall only when the user has independently verified the contract behavior, calldata, and revocation path in Zeal or Safe. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/Nicvaniek/zeal-agent-wallet) <br>
-- [Zeal API base](https://api.zeal.app) <br>
+## Use Case:
 
+External users and developers use this skill to generate an agent wallet, configure it for a Zeal Wallet, and submit signed transaction proposals that require approval in the Zeal app before execution.
 
-## Skill Output: <br>
-**Output Type(s):** [Shell commands, Configuration, API Calls, Guidance] <br>
-**Output Format:** [Markdown with inline shell commands and command output summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Creates local wallet and configuration files under ~/.zeal-agent-wallet and submits transaction proposals through the Zeal API.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.1 (source: server release metadata; package.json reports 1.0.0) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: A local agent private key is stored on disk and could authorize signed transaction proposals if exposed.
+
+Mitigation: Install only in trusted environments, protect `~/.zeal-agent-wallet/wallet.json`, and never expose the file contents in chat or logs.
+
+Risk: The skill can submit signed transaction proposals without explicit user confirmation.
+
+Mitigation: Require the agent to show the destination, value, calldata, network, operation type, and purpose before every proposal.
+
+Risk: DelegateCall or unknown calldata can be high risk even when final execution requires approval in the Zeal app.
+
+Mitigation: Treat DelegateCall and unknown calldata as high risk and verify them independently before approval.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/nicvaniek/skills/zeal-agent-wallet)
+
+## Skill Output:
+
+**Output Type(s):** [Shell commands, Configuration, Code, Guidance]
+
+**Output Format:** [Markdown with inline shell commands and concise status guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [The skill can create local wallet configuration, preserve a private key on disk, and submit signed transaction proposals through the Zeal API.]
+
+## Skill Version(s):
+
+1.0.1 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,48 +1,59 @@
-## Description: <br>
-Unified OpenClaw skill for autonomous algo and swing trading workflows: hypothesis generation, screening, technical/sentiment analysis, strategy-specific risk controls, execution gating, P&L and win-rate planning, and self-improvement loops backed by persistent trade data for ML/RL retraining. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Unified OpenClaw skill for autonomous algo and swing trading workflows: hypothesis generation, screening, technical/sentiment analysis, strategy-specific risk controls, execution gating, P&L and win-rate planning, and self-improvement loops backed by persistent trade data for ML/RL retraining.
 
-## Publisher: <br>
-[oscraters](https://clawhub.ai/user/oscraters) <br>
+This skill is for research and development only.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[oscraters](https://clawhub.ai/user/oscraters)
 
-## Use Case: <br>
-External developers and OpenClaw agents use this skill to scaffold trading-agent workflows for market research, hypothesis creation, risk-gated paper execution, reporting, and iterative strategy improvement. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Trading automation can create real financial exposure if live broker credentials are configured or free-agent live mode is enabled. <br>
-Mitigation: Keep the workflow in paper mode by default, review live credentials before use, require hard exposure limits, and maintain manual kill switches. <br>
-Risk: The skill stores local trading databases, reports, raw snapshots, and logs that may contain sensitive operational history. <br>
-Mitigation: Define retention and deletion rules before deployment and apply the included redaction and secret-reference guidance to logs and reports. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/oscraters/openclaw-trading-suite) <br>
-- [OpenClaw Gateway secrets management](https://docs.openclaw.ai/gateway/secrets#secrets-management) <br>
-- [Strategy profiles](references/strategy_profiles.md) <br>
-- [Data retention schema](references/data_retention_schema.md) <br>
-- [Autonomy modes](references/autonomy_modes.md) <br>
-- [Adapter plugin contract](references/adapter_plugin_contract.md) <br>
-- [Strategy builder and gates](references/strategy_builder_and_gates.md) <br>
-- [Secrets management](references/secrets_management.md) <br>
-- [System orchestration](references/system_orchestration.md) <br>
-- [Public release scope](references/public_release_scope.md) <br>
+## Use Case:
 
+Developers and external OpenClaw users use this skill to scaffold trading-agent workflows for market research, hypothesis generation, paper trading, risk gating, retention, and controlled promotion planning. Live trading should remain user-governed and strategy-gated.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with code, shell commands, configuration examples, and structured reports.] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May produce trading hypotheses, risk-gate decisions, overnight research summaries, persistence schemas, and implementation scaffolding.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: ClawHub release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Live or autonomous trading controls are under-scoped for real-money use.
+
+Mitigation: Keep deployments in research or paper-trading mode until order validation, free-agent limits, promotion-policy enforcement, kill switches, and retention/deletion controls are strengthened and tested.
+
+Risk: Broker or exchange credentials could enable real-money actions if connected before controls are ready.
+
+Mitigation: Do not connect live broker or exchange credentials until the control gaps identified by security evidence are resolved; use SecretRefs and redaction guidance when configuring non-live providers.
+
+## Reference(s):
+
+- [Strategy Profiles](references/strategy_profiles.md)
+- [Data Retention Schema](references/data_retention_schema.md)
+- [Autonomy Modes](references/autonomy_modes.md)
+- [Adapter Plugin Contract](references/adapter_plugin_contract.md)
+- [Strategy Builder and Promotion Gates](references/strategy_builder_and_gates.md)
+- [Secrets Management](references/secrets_management.md)
+- [System Orchestration](references/system_orchestration.md)
+- [OpenClaw Secrets Management](https://docs.openclaw.ai/gateway/secrets#secrets-management)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with code, configuration snippets, and shell commands]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Produces research, paper-trading, risk-gating, retention, and promotion-planning guidance for an agent; live trading requires user governance.]
+
+## Skill Version(s):
+
+1.0.0 (source: ClawHub release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

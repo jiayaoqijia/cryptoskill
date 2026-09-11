@@ -36,7 +36,7 @@ description: >-
   and an amount needs sizing, so both start here; a bare address needs only a
   verdict, so it is gmgn-contract-dd's; a signed transaction is always
   gmgn-swap's.
-argument-hint: "<token name | symbol | contract address> [amount, e.g. 200u | 0.5 ETH | 1 sol] [--chain <sol|bsc|base|eth|robinhood|arc|stable>]"
+argument-hint: "<token name | symbol | contract address> [amount, e.g. 200u | 0.5 ETH | 1 sol] [--chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable>]"
 metadata:
   cliHelp: "gmgn-cli market search --help"
 ---
@@ -53,7 +53,7 @@ metadata:
 
 | 步 | 做什么 | 跑什么 | 出口 |
 |---|---|---|---|
-| 0 | 确认链在 7 条支持链内 | `market search`（仅当用户裸贴合约地址） | 不支持的链或查不到 → **硬停** |
+| 0 | 确认链在 9 条支持链内 | `market search`（仅当用户裸贴合约地址） | 不支持的链或查不到 → **硬停** |
 | 1 | 名字 → 唯一合约 | `market search` | 定不到唯一一个 → **列候选让用户选** |
 | 2 | 四道闸门：量 / 深度 / 方向 / 安全 | `token info` + `token security`（安全优先交 `gmgn-contract-dd`） | 任一项不过 → **不下单，出「不建议买入」** |
 | 3 | 组装订单卡 | `gas-price` | 用户明确确认 → **参数交给 `gmgn-swap`** |
@@ -68,7 +68,7 @@ metadata:
 | 发币方（一个人，不是一个币）值不值得跟 | `gmgn-dev-score` |
 
 - **单币尽调固定 4 个请求，与同名候选有多少个无关。** `market search` 一次就带回每个候选的池子/量/笔数/持有人/存续时长，排序与粗筛全在这一份结果里做完；**不要给每个候选各打一次 `token info`**。只有最终锁定的那一个才继续。
-- **只覆盖 7 条链**：`sol` `eth` `bsc` `base` `robinhood` `arc` `stable`。这是刻意的边界——只在能做完整 GMGN 搜币+行情+安检的链上下单。其余链的处理见第 0 步与 `## Rules` 第 4–6 条。
+- **只覆盖 9 条链**：`sol` `eth` `bsc` `base` `arbitrum` `hyperevm` `robinhood` `arc` `stable`。这是刻意的边界——只在能做完整 GMGN 搜币+行情+安检的链上下单。其余链的处理见第 0 步与 `## Rules` 第 4–6 条。
 - 全是读接口，只需 API Key，不需要私钥（私钥只有 gmgn-swap 下单才用）。凭证由 CLI 自己管，本技能不读、不存、不传。
 - 被限流（`RATE_LIMIT_BANNED`）时读 `reset_at` 等到解封再试，**期间绝不重试**——每重试一次封禁延长 5 秒。
 - 用户明确要求跳过某一项筛选（"我知道它没开源，照买"）时，把该项标为**用户已知悉并豁免**，其余项照常执行，并在订单卡里显式列出被豁免的项。
@@ -86,7 +86,7 @@ gmgn-cli market search -q <CA> --raw          # 不要给 --chain，链正是要
 
 **关键字段**：`coins[].chain` / `coins[].address` / `coins[].symbol`。判断"有没有搜到"**只看 `coins` 的长度**，`wallets` 非空不算（实测用不存在的地址去搜会返回 0 个 coins、11 个 wallets）。
 
-**出口**：落在 7 条支持链之一 → 进 Step 1；落在别的链（Arbitrum / Polygon / Tron / 各种 L2）或 GMGN 查不到 → **硬停，不进任何后续步骤**；同一地址跨多链命中 → 列出来问用户要哪条，不支持的标"不可交易"。
+**出口**：落在 9 条支持链之一 → 进 Step 1；落在别的链（Polygon / Tron / 其他 L2）或 GMGN 查不到 → **硬停，不进任何后续步骤**；同一地址跨多链命中 → 列出来问用户要哪条，不支持的标"不可交易"。
 
 - 地址格式只能分大类，分不出具体是哪条 EVM 链：`0x`+40 位十六进制 = EVM 系；base58、约 44 位 = Solana；`T` 开头 = Tron。所以链必须靠上面这条命令反查，不能靠猜。
 - 硬停时可以把搜到的基础信息（符号、市值）念给用户，但**绝不进入下单流程**：只在能做完整 GMGN 安检的链上下单，查不到就诚实说查不到。

@@ -1,48 +1,62 @@
-## Description: <br>
-Fetch real-world asset (RWA) data and proof-of-reserve status from the QXMP Oracle for tokenized assets, reserve proofs, valuations, portfolio statistics, and proof freshness without requiring an API key. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+QXMP Oracle helps agents fetch real-world asset data and proof-of-reserve status for tokenized mining assets on the QELT blockchain.
 
-## Publisher: <br>
-[PRQELT](https://clawhub.ai/user/PRQELT) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[prqelt](https://clawhub.ai/user/prqelt)
 
-## Use Case: <br>
-Developers and agents use this skill to query public QXMP/QELT real-world asset oracle data, report proof-of-reserve freshness, summarize portfolio statistics, and inspect individual tokenized mining assets. It supports read-only API lookups and optional on-chain verification references. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Asset values and proof-of-reserve claims come from an external oracle and are not independent financial assurance. <br>
-Mitigation: Treat reported values as external oracle data, cite proof timestamps and freshness status, and avoid presenting the data as audited financial advice. <br>
-Risk: Proof data may be stale when latestProof.isFresh is false or when the proof is outside the expected update window. <br>
-Mitigation: Report stale status plainly, include proof age when available, and avoid fabricating timestamps, values, or freshness claims. <br>
-Risk: The public API can rate limit requests. <br>
-Mitigation: Use short-lived caching and respect HTTP 429 Retry-After guidance before retrying. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub release page](https://clawhub.ai/PRQELT/qelt-rwa-oracle) <br>
-- [QXMP homepage](https://qxmp.ai) <br>
-- [QXMP Oracle API base](https://api.qxmp.ai/api/v1/rwa) <br>
-- [QXMP Oracle Asset Reference](references/asset-types.md) <br>
-- [QXMP Oracle Smart Contracts](references/contracts.md) <br>
-- [OracleController on QELTScan](https://qeltscan.ai/address/0xB2a332dE80923134393306808Fc2CFF330de03bA) <br>
-- [ProofOfReserveV3 on QELTScan](https://qeltscan.ai/address/0x6123287acBf0518E0bD7F79eAcAaFa953e10a768) <br>
-- [DynamicRegistryV2 on QELTScan](https://qeltscan.ai/address/0xd00cD3a986746cf134756464Cb9Eaf024DF110fB) <br>
+## Use Case:
 
+Developers and external agents use this skill to query QXMP asset portfolios, individual asset records, proof freshness, and proof-of-reserve status. It supports read-only RWA lookup workflows through the public QXMP REST API and optional QELT on-chain references.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with API response summaries and curl command examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only public API lookups; no API key required; values and proof freshness should be reported from live oracle responses.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill contacts QXMP and QELT services when answering asset and proof questions.
+
+Mitigation: Use it for public lookup workflows and avoid including confidential business context in asset lookup prompts.
+
+Risk: Returned valuation and proof data could be stale or misused as financial advice.
+
+Mitigation: Report proof freshness and timestamps exactly, warn when proofs are stale, and avoid treating returned valuations as financial advice.
+
+Risk: QXMP API requests can be rate limited.
+
+Mitigation: Respect HTTP 429 responses and Retry-After headers, and cache stable proof data briefly as described in the artifact.
+
+## Reference(s):
+
+- [QXMP homepage](https://qxmp.ai)
+- [QXMP RWA API base](https://api.qxmp.ai/api/v1/rwa)
+- [QXMP Oracle asset reference](artifact/references/asset-types.md)
+- [QXMP Oracle smart contracts](artifact/references/contracts.md)
+- [QXMP OracleController on QELTScan](https://qeltscan.ai/address/0xB2a332dE80923134393306808Fc2CFF330de03bA)
+- [QXMP ProofOfReserveV3 on QELTScan](https://qeltscan.ai/address/0x6123287acBf0518E0bD7F79eAcAaFa953e10a768)
+- [QXMP DynamicRegistryV2 on QELTScan](https://qeltscan.ai/address/0xd00cD3a986746cf134756464Cb9Eaf024DF110fB)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Guidance]
+
+**Output Format:** [Markdown with inline bash commands and JSON response fields]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Read-only public API lookups; no credentials required.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

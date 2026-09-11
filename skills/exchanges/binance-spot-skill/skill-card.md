@@ -1,45 +1,61 @@
-## Description: <br>
-Binance Spot request using the Binance API. Authentication requires API key and secret key. Supports testnet and mainnet. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Provides Binance Spot requests through the Binance API, including authenticated endpoints that require an API key and secret key, with support for mainnet and testnet.
 
-## Publisher: <br>
-[Sum-li](https://clawhub.ai/user/Sum-li) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[sum-li](https://clawhub.ai/user/sum-li)
 
-## Use Case: <br>
-Developers and trading-system operators use this skill to prepare Binance Spot API requests, including market-data queries and authenticated account or order operations. It is suitable for agents that need Binance request parameters, signing guidance, and JSON-oriented API interaction support. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can guide agents through live Binance Spot trading and account-changing actions. <br>
-Mitigation: Require fresh explicit user confirmation before every mainnet order, cancellation, or account-changing request. <br>
-Risk: The skill requires Binance API keys and secret keys for authenticated endpoints. <br>
-Mitigation: Use restricted API keys, disable withdrawals, enable IP allowlisting, and avoid storing raw secrets in agent instruction files. <br>
-Risk: Local credential handling guidance may expose sensitive exchange credentials if copied or displayed carelessly. <br>
-Mitigation: Mask credentials in responses, keep testnet credentials separate from mainnet, and prefer testnet validation before mainnet use. <br>
+## Use Case:
 
+External users and developers use this skill to query Binance Spot market and account endpoints and prepare signed spot trading requests against mainnet, testnet, or demo environments.
 
-## Reference(s): <br>
-- [Authentication reference](references/authentication.md) <br>
-- [Binance Spot API mainnet](https://api.binance.com) <br>
-- [Binance Spot testnet](https://testnet.binance.vision) <br>
-- [ClawHub skill page](https://clawhub.ai/Sum-li/binance-spot-skill) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [JSON, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown guidance with JSON API responses and bash examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Authenticated endpoints require Binance API credentials and signed request parameters.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: ClawHub release metadata; artifact frontmatter says 1.0.1) <br>
+Risk: Agents may access Binance Spot credentials and perform real trading actions.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Prefer testnet or demo, use least-privilege keys with withdrawals disabled and IP allowlisting, and require explicit confirmation before mainnet transactions.
+
+Risk: Credential examples can lead users to persist API keys or secrets in plaintext files.
+
+Mitigation: Use a dedicated secret manager for real keys and do not store secrets in TOOLS.md or repository files.
+
+Risk: Incorrect timestamp, recvWindow, or signature handling can cause authenticated requests to fail.
+
+Mitigation: Check Binance server time, sync the local clock, and keep recvWindow within the documented maximum.
+
+## Reference(s):
+
+- [Authentication reference](references/authentication.md)
+- [ClawHub skill page](https://clawhub.ai/sum-li/skills/binance-spot-skill)
+- [Binance API mainnet](https://api.binance.com)
+- [Binance Spot testnet](https://testnet.binance.vision)
+- [Binance demo API](https://demo-api.binance.com)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [JSON API responses with Markdown guidance and shell command examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Authenticated endpoints require signed Binance API requests and may affect real spot trading accounts.]
+
+## Skill Version(s):
+
+1.0.0 (source: ClawHub release metadata; artifact frontmatter reports 1.0.1)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

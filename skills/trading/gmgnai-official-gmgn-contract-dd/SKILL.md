@@ -1,7 +1,7 @@
 ---
 name: gmgn-contract-dd
 description: "Contract due-diligence score for one token address — contract safety, holder structure and price action combined into a single 0-100 composite, capped by GMGN's own rug label, where every deduction names the field it read and an absent field is never a passing check. Use when the user wants one verdict number rather than fields: 尽调, CA 尽调, 给这个币打个分, 这个币安全吗, 能不能买, 有没有貔貅, is this token safe, rug check, honeypot check, due-diligence score, score this contract, or pastes a bare token contract address. A bare address may equally be a wallet — Step 0 resolves which and hands wallets to gmgn-wallet-analysis. Prefer this over gmgn-token whenever the ask is a verdict rather than a field dump; the raw fields themselves — price, market cap, liquidity, holder and trader lists, the unscored security fields — are gmgn-token, chip structure is gmgn-holder-analysis, chart-pattern naming is gmgn-kline-pattern. Buy intent narrows to this skill only when the ask is a bare address: the input is --address, and no name is ever resolved here. When the user names the token instead — 帮我买 200u 的 PENGU, XX 能不能买, 能不能冲, 我想梭, buy me $500 of BONK — or wants a position size, gmgn-token-buy owns it, because picking the one right contract out of the same-name copycats and sizing slippage and gas are both outside this skill's input. That skill calls this one for the safety verdict rather than replacing it, so a bare address with no name and no amount still scores here exactly as before."
-argument-hint: "--chain <sol|bsc|base|eth|robinhood|arc|stable> --address <token_address>"
+argument-hint: "--chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> --address <token_address>"
 metadata:
   cliHelp: "gmgn-cli token security --help"
 ---
@@ -51,9 +51,9 @@ Nothing else. Do not call swap, order, or cooking commands from this skill.
 
 ## Supported Chains
 
-`sol` · `bsc` · `base` · `eth` · `robinhood` · `arc` · `stable`
+`sol` · `bsc` · `base` · `eth` · `arbitrum` · `hyperevm` · `robinhood` · `arc` · `stable`
 
-The GMGN API itself accepts 13 chains on all three of these endpoints (the seven above plus `arbitrum`, `tron`, `monad`, `megaeth`, `xlayer`, `hyperevm`), but `gmgn-cli` hard-validates the chain argument and exits 1 on anything outside the seven. If the user asks for one of the other six, say plainly that the CLI gates it, not the API.
+The GMGN API itself accepts 13 chains on all three of these endpoints (the nine above plus `tron`, `monad`, `megaeth`, and `xlayer`), but `gmgn-cli` hard-validates the chain argument and exits 1 on anything outside the nine. If the user asks for one of the other four, say plainly that the CLI gates it, not the API.
 
 ## Prerequisites
 
@@ -64,7 +64,7 @@ The GMGN API itself accepts 13 chains on all three of these endpoints (the seven
 
 | Parameter | Required | Notes |
 |-----------|----------|-------|
-| `--chain` | yes | One of the seven above |
+| `--chain` | yes | One of the nine above |
 | `--address` | yes | Token contract address, validated below |
 | `--resolution` | no | `15m` is the default this skill scores on |
 | `--raw` | no | Always pass it — single-line JSON is what you parse |
@@ -72,11 +72,11 @@ The GMGN API itself accepts 13 chains on all three of these endpoints (the seven
 ### Validate the address before spending a request
 
 - `sol` → base58, 32-44 chars, `^[1-9A-HJ-NP-Za-km-z]{32,44}$`
-- all six EVM chains → `^0x[0-9a-fA-F]{40}$`
+- all eight EVM chains → `^0x[0-9a-fA-F]{40}$`
 
 **Check the format yourself before spending a request.** `gmgn-cli` also validates it and exits 1 with `[gmgn-cli] Invalid --address address for chain "<chain>"`, so a malformed address never reaches the API — but validating first lets you say "that address is malformed" without a round trip, and keeps the two cases apart: malformed is a typo, while a well-formed address with no record is Step 0's "no record" path.
 
-If the user gives an address without a chain: a `0x…` address could be on any of the six EVM chains, so ask, or probe `token info` per chain and report which one hit. Never assume `eth`.
+If the user gives an address without a chain: a `0x…` address could be on any of the eight EVM chains, so ask, or probe `token info` per chain and report which one hit. Never assume `eth`.
 
 ## Usage Examples
 
@@ -170,7 +170,7 @@ Read these two unconditionally once Step 0 has confirmed the token exists — St
 - `renounced_mint` is not `true` → **−25**, mint authority not renounced, the project can inflate supply
 - `renounced_freeze_account` is not `true` → **−20**, freeze authority not renounced, the project can freeze your account and block selling
 
-**The six EVM chains** — the real signals are `is_honeypot`, `is_open_source`, `is_renounced`, `is_blacklist`, and the taxes.
+**The eight EVM chains** — the real signals are `is_honeypot`, `is_open_source`, `is_renounced`, `is_blacklist`, and the taxes.
 
 Only when the `security` block is populated:
 - `is_honeypot === true` → **hard stop, composite 0**, buyable but not sellable. **Run Step 7 first — it is the only exemption, and it must be checked before the stop is final.** If Step 7 does not apply, stop scoring and say so.
@@ -410,7 +410,7 @@ Then, in this order:
 | Holders | 10 | `top_10_holder_rate`, `info.holder_count`, and the eight `stat` metrics of Step 4 |
 | Price | 4 | drawdown, worst single candle, `info.price.price / info.price.price_24h`, `vol_ratio` |
 
-**Inventory total: 23 on `sol`, 25 on the six EVM chains.** Solana's `is_honeypot` and `is_open_source` are not in the Solana list at all — being not applicable, they are absent by construction rather than subtracted, which is the same outcome by a clearer route. `vol_ratio` is a check like any other: executed when the window holds at least 40 candles with non-zero earlier volume, skipped otherwise.
+**Inventory total: 23 on `sol`, 25 on the eight EVM chains.** Solana's `is_honeypot` and `is_open_source` are not in the Solana list at all — being not applicable, they are absent by construction rather than subtracted, which is the same outcome by a clearer route. `vol_ratio` is a check like any other: executed when the window holds at least 40 candles with non-zero earlier volume, skipped otherwise.
 
 One group is **held out of both sides** when it applies: the nine `stat` checks (eight in Holders, `creator_created_count` in Contract) when Step 1B finds the block unpopulated. Held-out checks still appear in the unavailable list, and holding them out additionally requires the disclosure line Step 4 names. Everything else that could not be read is **skipped** — it stays in the denominator.
 
@@ -478,7 +478,7 @@ Report in this order:
   | `market trending` | **wrapped** — `{"code":0,"data":{"rank":[…]}}` |
 
   So do not look for `code` or `data` on the four unwrapped ones, and do look for them on `market trending`. Decide "no record" from `info.symbol` per Step 0, never from a `code` field.
-- `gmgn-cli` exits **1** with a printed message on a chain outside the seven and on a malformed address, before any request is sent. It exits **0** for a well-formed address GMGN has no record of — that case is Step 0's job, not the exit code's.
+- `gmgn-cli` exits **1** with a printed message on a chain outside the nine and on a malformed address, before any request is sent. It exits **0** for a well-formed address GMGN has no record of — that case is Step 0's job, not the exit code's.
 - This skill is read-only: three GET endpoints for scoring, the two listing endpoints Step 5B scans for `rug_ratio`, and Step 0's conditional `portfolio stats` probe — no signing, no private key, no local file access beyond the API key `gmgn-cli config` already manages. All six are on the CLI's API-key-only auth path.
 - Chain support is **per endpoint**, not global. Do not assume that a chain accepted by one GMGN endpoint is accepted by another.
 - For chart-pattern naming rather than a risk score, that is `gmgn-kline-pattern`. For holder chip structure in depth, that is `gmgn-holder-analysis`. For raw fields with no scoring, that is `gmgn-token`. This skill owns the composite risk score and nothing else.

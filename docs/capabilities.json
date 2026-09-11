@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-11T04:49:09.811908+00:00",
+  "generated_at": "2026-09-11T11:28:24.391363+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -25591,7 +25591,7 @@
     },
     "chains/base-official-vibenet": {
       "name": "vibenet",
-      "execution_model": "unknown",
+      "execution_model": "local_executor",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -25624,7 +25624,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -61666,6 +61666,70 @@
         }
       },
       "hosted_operators": []
+    },
+    "exchanges/binance-official-binance-onchain-copy-trader": {
+      "name": "binance-onchain-copy-trader",
+      "execution_model": "analysis_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": [
+        "binance.com"
+      ]
     },
     "exchanges/binance-official-binance-sports-ai-analyzer": {
       "name": "binance-sports-ai-analyzer",
@@ -120914,6 +120978,68 @@
       },
       "hosted_operators": []
     },
+    "wallets/metamask-official-selector-patterns": {
+      "name": "selector-patterns",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/metamask-official-smart-accounts-kit": {
       "name": "smart-accounts-kit",
       "execution_model": "router_orchestrator",
@@ -122533,29 +122659,29 @@
     }
   },
   "summary": {
-    "discovered": 1965,
-    "processed": 1965,
+    "discovered": 1967,
+    "processed": 1967,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1233,
+      "read_only": 1234,
       "router_orchestrator": 105,
-      "unknown": 225,
-      "analysis_only": 183,
+      "unknown": 224,
+      "analysis_only": 184,
       "unsigned_tx_builder": 78,
-      "local_executor": 86,
+      "local_executor": 87,
       "installer_bootstrap": 37,
       "custodial_executor": 18
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 871,
+      "can_execute_shell": 872,
       "can_install_code": 447,
-      "can_write_files": 105,
-      "can_browse_web": 184,
+      "can_write_files": 106,
+      "can_browse_web": 185,
       "can_spawn_subagents": 194,
-      "can_move_funds": 234,
+      "can_move_funds": 235,
       "requires_private_key": 383,
-      "requires_hosted_operator": 309,
+      "requires_hosted_operator": 310,
       "uses_remote_install_script": 42,
       "mutable_remote_runtime": 447
     }

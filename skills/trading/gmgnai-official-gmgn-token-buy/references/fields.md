@@ -4,7 +4,7 @@
 
 **全部数据只经 `gmgn-cli` 取。** 不抓网页、不接第三方源、不自己拼 HTTP 请求。API Key 由 CLI 自己从本机配置读取并签发，**本技能不读、不存、不传任何凭证**；下面四条命令全是读接口，只需 API Key，不需要私钥（私钥只有 gmgn-swap 下单才用）。
 
-- **只覆盖 7 条链**：`sol` `eth` `bsc` `base` `robinhood` `arc` `stable`。其余链一律硬停、不下单。
+- **只覆盖 9 条链**：`sol` `eth` `bsc` `base` `arbitrum` `hyperevm` `robinhood` `arc` `stable`。其余链一律硬停、不下单。
 - **限流**：漏桶 20 次/秒。**单币尽调固定 4 个请求，与同名候选有多少个无关**（见下面的搜币说明），碰不到限流。被限返回 `RATE_LIMIT_BANNED` + `reset_at`（Unix 秒）。**读 `reset_at` 等到解封再试，期间绝不重试**——每重试一次封禁延长 5 秒（最多 5 分钟）。
 
 ## 命令

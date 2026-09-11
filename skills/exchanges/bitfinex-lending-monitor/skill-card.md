@@ -1,40 +1,53 @@
-## Description: <br>
-Monitor Bitfinex lending (funding) performance via API. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Monitor Bitfinex lending (funding) performance via API for funding income summaries and lending status checks.
 
-## Publisher: <br>
-[reed1898](https://clawhub.ai/user/reed1898) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[reed1898](https://clawhub.ai/user/reed1898)
 
-## Use Case: <br>
-External users and developers use this skill to check Bitfinex funding wallet balances, active funding credits, and recent funding interest without opening the Bitfinex app. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill requires Bitfinex API credentials for authenticated account reporting. <br>
-Mitigation: Use a dedicated read-only Bitfinex API key limited to wallet, funding, and ledger/history reads. <br>
-Risk: Over-permissioned exchange credentials could expose trading, transfer, or withdrawal capabilities beyond the monitor's reporting purpose. <br>
-Mitigation: Do not grant trading, transfer, or withdrawal permissions to the API key used with this skill. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Bitfinex API Notes](references/api-notes.md) <br>
-- [Bitfinex API](https://api.bitfinex.com) <br>
+## Use Case:
 
+External users and developers use this skill to fetch Bitfinex funding wallet balances, active funding credits, and recent funding ledger entries, then summarize lending income without opening the Bitfinex app.
 
-## Skill Output: <br>
-**Output Type(s):** [text, JSON, shell commands, guidance] <br>
-**Output Format:** [Plain text summary or JSON emitted by a local Python command] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Defaults to USD/fUSD and supports currency, lookback days, and JSON output options.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: ClawHub release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Bitfinex API credentials are required to fetch account funding data.
+
+Mitigation: Use a dedicated read-only API key limited to wallet, funding, and ledger/history reads; do not grant trading, transfer, or withdrawal permissions.
+
+Risk: Running the script fetches funding account data from Bitfinex.
+
+Mitigation: Run it only when an account holder intentionally wants a lending status or income summary.
+
+## Reference(s):
+
+- [Bitfinex API Notes (Funding Monitor)](references/api-notes.md)
+- [Bitfinex API Base URL](https://api.bitfinex.com)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, json]
+
+**Output Format:** [Markdown guidance with shell commands and optional JSON summary output]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires user-provided Bitfinex API credentials through environment variables.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.
