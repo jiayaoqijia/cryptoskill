@@ -1,40 +1,58 @@
-## Description: <br>
-Query EVM chain data via Etherscan API v2 for balances, transactions, token transfers, contract source or ABI, gas prices, event logs, and transaction confirmation. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Query EVM chain data via Etherscan API v2 for balances, transactions, token transfers, contract source and ABI, gas prices, event logs, and transaction completion checks.
 
-## Publisher: <br>
-[0xV4L3NT1N3](https://clawhub.ai/user/0xV4L3NT1N3) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[0xv4l3nt1n3](https://clawhub.ai/user/0xv4l3nt1n3)
 
-## Use Case: <br>
-Developers and agents use this skill to perform read-only on-chain lookups across EVM chains through Etherscan API v2 and confirm whether submitted transactions finalized. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: API keys can be exposed if full request URLs containing apikey values are logged or shared. <br>
-Mitigation: Prefer an environment variable or secure secret store and avoid logging or sharing full request URLs that include API keys. <br>
-Risk: Wallet, transaction, and contract lookups can reveal financial metadata to Etherscan. <br>
-Mitigation: Use the skill only when the user is comfortable sending the requested addresses, transactions, and contracts to Etherscan. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub Etherscan skill page](https://clawhub.ai/0xV4L3NT1N3/etherscan) <br>
-- [Etherscan API documentation](https://docs.etherscan.io/llms.txt) <br>
+## Use Case:
 
+Developers and agents use this skill to query supported EVM-chain data through Etherscan API v2 without guessing chains, endpoints, pagination, or transaction finality checks.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with API request examples and shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include Etherscan API URLs, pagination guidance, chain ID mapping guidance, and transaction status interpretation.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: ClawHub release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill may send wallet addresses, transaction hashes, and lookup parameters to Etherscan.
+
+Mitigation: Use it only for lookups you are comfortable sharing with Etherscan and avoid submitting unnecessary sensitive addresses or transaction details.
+
+Risk: An Etherscan API key may be stored in a plaintext credentials file under ~/.config/etherscan.
+
+Mitigation: Prefer ETHERSCAN_API_KEY or a credential manager, and restrict file permissions if a local credentials file is used.
+
+Risk: Wrong chain selection or endpoint choice can return empty or misleading lookup results.
+
+Mitigation: Fetch the chain list, map the requested chain explicitly, and verify transaction finality with receipt or transaction-status endpoints.
+
+## Reference(s):
+
+- [Etherscan API v2 LLM documentation](https://docs.etherscan.io/llms.txt)
+- [Etherscan API dashboard](https://etherscan.io/apidashboard)
+- [ClawHub skill page](https://clawhub.ai/0xv4l3nt1n3/skills/etherscan)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with inline shell commands and API request examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guidance may include Etherscan API endpoints, chain IDs, pagination advice, and transaction verification steps.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

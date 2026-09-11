@@ -1,42 +1,59 @@
-## Description: <br>
-Queries cryptocurrency prices, market rankings, 24-hour changes, and coin search results through the CoinGecko API. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Query cryptocurrency prices, market rankings, 24-hour changes, and coin search results through the CoinGecko API.
 
-## Publisher: <br>
-[ouyangAbel](https://clawhub.ai/user/ouyangAbel) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[ouyangabel](https://clawhub.ai/user/ouyangabel)
 
-## Use Case: <br>
-External users, developers, and agents use this skill to search cryptocurrencies and retrieve current price, market-cap ranking, and 24-hour change data from CoinGecko. Prices are reference data and not financial advice. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Search terms, coin IDs, and currency codes are sent to CoinGecko. <br>
-Mitigation: Avoid entering private or sensitive information in cryptocurrency search, coin ID, or currency fields. <br>
-Risk: CoinGecko's free API may rate-limit requests. <br>
-Mitigation: Wait and retry later when the API reports excessive request frequency. <br>
-Risk: Cryptocurrency prices can be volatile and may be inappropriate as sole decision inputs. <br>
-Mitigation: Treat returned prices as reference data, not financial advice. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [CoinGecko API documentation](https://www.coingecko.com/api/documentation) <br>
-- [ClawHub skill page](https://clawhub.ai/ouyangAbel/coingecko-price) <br>
+## Use Case:
 
+Developers and agent users use this skill to look up cryptocurrency prices, market-cap rankings, 24-hour price changes, and CoinGecko coin IDs from an agent workflow. The price data is for reference and should not be treated as financial advice.
 
-## Skill Output: <br>
-**Output Type(s):** [text, shell commands, API calls] <br>
-**Output Format:** [Plain text command output with price, ranking, search result, and error messages] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Calls CoinGecko's public API; query terms, coin IDs, and currency codes are sent to CoinGecko.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill contacts CoinGecko over the network whenever an agent performs price lookups or coin searches.
+
+Mitigation: Allow network access only to api.coingecko.com where policy controls support domain restrictions.
+
+Risk: Cryptocurrency prices returned by the external API may be delayed, unavailable, rate limited, or unsuitable for financial decisions.
+
+Mitigation: Treat returned market data as reference information and verify important decisions against authoritative sources.
+
+Risk: Some command-line output is partly Chinese, which may reduce readability for operators who expect English-only logs.
+
+Mitigation: Review sample output before deployment and document expected messages for support staff.
+
+## Reference(s):
+
+- [CoinGecko API Documentation](https://www.coingecko.com/api/documentation)
+- [CoinGecko API v3 Endpoint](https://api.coingecko.com/api/v3)
+- [ClawHub Skill Page](https://clawhub.ai/ouyangabel/skills/coingecko-price)
+- [ClawHub Publisher Profile](https://clawhub.ai/user/ouyangabel)
+
+## Skill Output:
+
+**Output Type(s):** [text, shell commands, guidance]
+
+**Output Format:** [Plain text and Markdown-friendly command examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Command output may include current prices, 24-hour percentage changes, market-cap rankings, coin IDs, and API rate-limit errors.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

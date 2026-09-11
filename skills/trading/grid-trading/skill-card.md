@@ -1,41 +1,61 @@
-## Description: <br>
-Create and manage grid trading strategies with OpenMM. Automated buy/sell around center price. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Create and manage grid trading strategies with OpenMM. Automated buy/sell around center price.
 
-## Publisher: <br>
-[adacapo21](https://clawhub.ai/user/adacapo21) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[adacapo21](https://clawhub.ai/user/adacapo21)
 
-## Use Case: <br>
-External users and developers use this skill to configure and run OpenMM grid-trading strategies on supported crypto exchanges, including dry runs, balance checks, and risk controls before placing live orders. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can automate crypto trading and place real exchange orders. <br>
-Mitigation: Run in dry-run mode first, start with small sizes and conservative limits, and monitor the bot while it is running. <br>
-Risk: Live exchange use requires API credentials. <br>
-Mitigation: Use trade-only exchange API keys with withdrawals disabled and provide only the exchange key needed for the selected exchange. <br>
-Risk: Grid trading can perform poorly in strong trends, low-liquidity markets, or high-fee environments. <br>
-Mitigation: Check balances, current price, exchange minimum order values, fees, and market conditions before enabling live trading. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [OpenMM Grid Trading on ClawHub](https://clawhub.ai/adacapo21/openmm-grid-trading) <br>
+## Use Case:
 
+Developers and trading agents use this skill to configure OpenMM grid trading workflows, generate dry-run and live trading commands, and tune grid parameters for supported crypto exchanges.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline shell commands and JSON configuration examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Guides OpenMM command usage, exchange selection, grid parameters, dry runs, and risk controls.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: frontmatter and server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Commands without --dry-run may place real crypto exchange orders.
+
+Mitigation: Start with --dry-run, review the proposed orders, check balances and prices, and use live mode only after explicit user approval.
+
+Risk: Exchange API credentials are required for supported trading venues.
+
+Mitigation: Use keys with withdrawals disabled, grant the smallest permissions possible, and apply exchange-side spending or position limits where available.
+
+Risk: The external npm package is not pinned in the artifact.
+
+Mitigation: Verify the exact @3rd-eye-labs/openmm package version and publisher trust before installing it or exposing credentials.
+
+Risk: Grid trading can lose money in strong trends, low-liquidity pairs, or high-fee markets.
+
+Mitigation: Use conservative order sizes, respect max-position and safety-reserve controls, and avoid market conditions the artifact identifies as unsuitable.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/adacapo21/skills/openmm-grid-trading)
+- [Publisher profile](https://clawhub.ai/user/adacapo21)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with inline bash commands and JSON configuration examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes dry-run guidance, exchange setup notes, grid parameter recommendations, and risk-control reminders.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata and artifact frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

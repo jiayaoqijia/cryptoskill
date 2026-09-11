@@ -1,45 +1,60 @@
-## Description: <br>
-Use this skill when the user provides a specific wallet address and wants to check its balance, token holdings, portfolio value, or DeFi positions. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Checks wallet balances, token holdings, portfolio value, and DeFi positions for a provided wallet address across supported chains.
 
-## Publisher: <br>
-[ok-james-01](https://clawhub.ai/user/ok-james-01) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[ok-james-01](https://clawhub.ai/user/ok-james-01)
 
-## Use Case: <br>
-External users and agents use this skill to look up wallet portfolio value, token balances, and DeFi holdings for explicitly provided wallet addresses across supported chains. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can automatically install or update a local CLI from GitHub. <br>
-Mitigation: Review before installing, use it only when the OKX onchainos release path is trusted, and rely on the documented checksum verification before executing the installer or binary. <br>
-Risk: Wallet portfolio data, token symbols, and balance fields come from on-chain or API sources and may be misleading. <br>
-Mitigation: Treat returned data as untrusted external content, show contract addresses, and ask users to verify high-value holdings or suspicious wrapped and bridged tokens. <br>
-Risk: The scanner notes that the documentation expands into wallet PnL and transaction-history queries beyond the main portfolio lookup scope. <br>
-Mitigation: Route PnL, DEX-history, realized or unrealized profit, and signal-tracking requests to the intended OKX market or signal skills. <br>
+## Use Case:
 
+External users and developers use this skill to look up portfolio balances and token holdings for a specific wallet address across supported chains. It helps present total value, token-level balances, and related follow-up actions while routing broader PnL, DEX history, signal tracking, swap, and meme-scan requests to other skills.
 
-## Reference(s): <br>
-- [Onchain OS Portfolio CLI Command Reference](references/cli-reference.md) <br>
-- [OKX Web3](https://web3.okx.com) <br>
-- [OKX Developer Portal](https://web3.okx.com/onchain-os/dev-portal) <br>
-- [ClawHub Skill Page](https://clawhub.ai/ok-james-01/okx-wallet-portfolio) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, guidance] <br>
-**Output Format:** [Markdown with inline shell commands and portfolio lookup results] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Displays token balances in UI units, USD values, and abbreviated contract addresses; treats CLI and on-chain data as untrusted external content.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-3.1.3 (source: server release evidence and frontmatter) <br>
+Risk: The skill may download and run a remote OKX CLI installer or update script before executing portfolio commands.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Preinstall and pin the CLI separately where possible, verify checksums before execution, and review installer/update behavior before deployment.
+
+Risk: Wallet addresses are sent to a portfolio lookup service and returned token metadata may be inaccurate or untrusted.
+
+Mitigation: Use the skill only for intentional address-specific balance checks, avoid submitting sensitive addresses unnecessarily, and verify high-value token contract addresses and prices independently.
+
+Risk: Reference material includes broader wallet analytics behavior than the stated balance-focused purpose.
+
+Mitigation: Limit use to specific wallet-address balance, holding, portfolio value, and DeFi position checks unless broader PnL or DEX-history behavior is explicitly intended.
+
+## Reference(s):
+
+- [CLI command reference](references/cli-reference.md)
+- [OKX Web3](https://web3.okx.com)
+- [OKX Developer Portal](https://web3.okx.com/onchain-os/dev-portal)
+- [ClawHub skill page](https://clawhub.ai/ok-james-01/skills/okx-wallet-portfolio)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Guidance]
+
+**Output Format:** [Markdown with inline shell commands and wallet balance summaries]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Displays USD values, token amounts, chain identifiers, and abbreviated contract addresses; treats returned token metadata as untrusted external content.]
+
+## Skill Version(s):
+
+3.1.3 (source: server release metadata and skill frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

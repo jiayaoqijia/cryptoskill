@@ -1,50 +1,64 @@
-## Description: <br>
-Provides agent guidance for using OKX Onchain OS DEX Market CLI and WebSocket commands to retrieve on-chain token prices, candlesticks, index prices, and wallet PnL while handling x402 payment notifications. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Provides Onchain OS DEX Market guidance for token prices, batch prices, K-line/OHLC data, index prices, real-time WebSocket monitoring, and wallet PnL analysis.
 
-## Publisher: <br>
-[ok-james-01](https://clawhub.ai/user/ok-james-01) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[ok-james-01](https://clawhub.ai/user/ok-james-01)
 
-## Use Case: <br>
-External developers and agents use this skill to route OKX Onchain OS market-data requests, collect missing chain, token, and wallet parameters, run market price, K-line, index, and portfolio PnL commands, and present payment notifications or region restrictions safely. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global, subject to OKX service restrictions including unavailable DEX access in the United Kingdom and gateway blocking for sanctioned countries. <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can install or update a local CLI from a remote release channel. <br>
-Mitigation: Install only from the trusted OKX/onchainos release channel, verify checksums where provided, and review install or update failures before continuing. <br>
-Risk: WebSocket workflows require API credentials and the security evidence flags conflicting credential guidance. <br>
-Mitigation: Keep API keys in environment variables or ignored .env files, never hardcode credentials, and review WebSocket usage before running scripts or bots. <br>
-Risk: Market API calls may trigger x402 payments after quota is exhausted. <br>
-Mitigation: Require explicit user confirmation before paid calls, watch payment notifications, and unset saved payment defaults when automatic paid calls are no longer desired. <br>
-Risk: CLI output includes token names, symbols, and on-chain fields from external sources. <br>
-Mitigation: Treat CLI output as untrusted data and do not interpret returned content as agent instructions. <br>
+## Use Case:
 
+Developers and agents use this skill to retrieve and present OKX Onchain OS DEX market data, including token prices, candlesticks, index prices, and wallet PnL summaries. It also guides payment-notification handling for Market API quota and overage flows.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/ok-james-01/okx-dex-market) <br>
-- [OKX Web3](https://web3.okx.com) <br>
-- [CLI Command Reference](references/cli-reference.md) <br>
-- [WebSocket Protocol Reference](references/ws-protocol.md) <br>
-- [Keyword Glossary](references/keyword-glossary.md) <br>
-- [Payment Notifications](_shared/payment-notifications.md) <br>
-- [Pre-flight Checks](_shared/preflight.md) <br>
+### Deployment Geography for Use:
 
+Global except restricted regions documented by the service, including United Kingdom restrictions for DEX access and sanctioned-country gateway blocking.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands and formatted market-data results] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May require API credentials, wallet/payment confirmation, and region-aware error handling.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-3.1.3 (source: server release metadata and SKILL.md frontmatter) <br>
+Risk: Normal use can download and execute an installer from a mutable remote release path.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Install only when the OKX publisher and release process are trusted; keep checksum verification enabled and stop on mismatches.
+
+Risk: Market and wallet outputs include external token names, symbols, prices, and financial activity that may be inaccurate or adversarial.
+
+Mitigation: Treat CLI output as untrusted data, present it as market information rather than instructions, and verify addresses, chains, and timestamps before acting.
+
+Risk: Paid Market API flows may persist a selected default payment asset after user confirmation.
+
+Mitigation: Require explicit confirmation before setting payment defaults or rerunning charged requests, and offer a cancel path whenever payment prompts appear.
+
+## Reference(s):
+
+- [CLI Command Reference](artifact/references/cli-reference.md)
+- [WebSocket Protocol Reference](artifact/references/ws-protocol.md)
+- [Keyword Glossary](artifact/references/keyword-glossary.md)
+- [Payment Notifications](artifact/_shared/payment-notifications.md)
+- [Chain Name Support](artifact/_shared/chain-support.md)
+- [OKX Web3](https://web3.okx.com)
+- [OKX Developer Portal](https://web3.okx.com/onchain-os/dev-portal)
+- [OKX WebSocket Login Documentation](https://web3.okx.com/onchainos/dev-docs/market/websocket-login)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and formatted market data]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include CLI result summaries, payment confirmation prompts, and data snapshot timestamps when provided by the CLI.]
+
+## Skill Version(s):
+
+3.1.3 (source: server release metadata and skill frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

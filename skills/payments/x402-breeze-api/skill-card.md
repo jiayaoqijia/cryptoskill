@@ -1,42 +1,60 @@
-## Description: <br>
-Operates Breeze x402 payment-gated endpoints for balance checks, deposits, and withdrawals on Solana. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operates Breeze x402 payment-gated endpoints for balance checks, deposits, and withdrawals on Solana.
 
-## Publisher: <br>
-[keeganthomp](https://clawhub.ai/user/keeganthomp) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[keeganthomp](https://clawhub.ai/user/keeganthomp)
 
-## Use Case: <br>
-Developers and external users use this skill to check Breeze balances, build deposit or withdrawal transactions, and execute x402-paid API calls from a funded Solana wallet. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill handles live Solana wallet private keys and can sign or broadcast transactions. <br>
-Mitigation: Install only with a dedicated low-balance wallet, never a primary wallet, and review recipient, amount, and network before allowing signing or broadcast. <br>
-Risk: Generated .env or wallet-backup.json files may contain private key material. <br>
-Mitigation: Secure or avoid these files, keep them out of version control, and do not print or return raw secret values. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [ClawHub release page](https://clawhub.ai/keeganthomp/breeze-x402-payment-api) <br>
-- [Breeze](https://breeze.baby) <br>
-- [Breeze x402 API](https://x402.breeze.baby) <br>
-- [agent-using-x402 example](https://github.com/anagrambuild/breeze-agent-kit/tree/main/apps/examples/agent-using-x402) <br>
+## Use Case:
 
+External users and developers use this skill to check Breeze balances, build deposit or withdrawal transactions, and execute paid x402 API calls for Solana positions.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline code blocks, command examples, and transaction or balance summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include Solana transaction signatures and explorer URLs after successful deposit or withdrawal actions.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.7 (source: server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill handles a Solana wallet private key and can sign transactions.
+
+Mitigation: Use a dedicated low-balance Solana wallet, avoid plaintext private-key storage, and redact secrets from all logs and outputs.
+
+Risk: The skill signs server-supplied deposit or withdrawal transactions.
+
+Mitigation: Require explicit review of destination, amount, token, strategy, fees, and decoded transaction instructions before signing or broadcasting.
+
+Risk: Runtime dependencies and paid x402 API calls can affect wallet funds.
+
+Mitigation: Pin dependencies and confirm x402 payment amounts, selected tokens, and transaction fees before execution.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/keeganthomp/skills/breeze-x402-payment-api)
+- [Breeze](https://breeze.baby)
+- [Breeze x402 API](https://x402.breeze.baby)
+- [Solana Mainnet RPC](https://api.mainnet-beta.solana.com)
+- [Breeze x402 Example Implementation](https://github.com/anagrambuild/breeze-agent-kit/tree/main/apps/examples/agent-using-x402)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline code blocks, command snippets, API workflow guidance, balance summaries, and transaction results]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include required environment variables, Solana transaction signatures, explorer URLs, converted token amounts, and explicit pre-signing review steps.]
+
+## Skill Version(s):
+
+1.0.7 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

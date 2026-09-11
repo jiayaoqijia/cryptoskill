@@ -1,44 +1,60 @@
-## Description: <br>
-Okx Onchain Gateway helps agents estimate gas, simulate transactions, broadcast signed transactions, and track transaction status across XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, and other supported chains. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Guides an agent through gas price lookup, gas-limit estimation, transaction simulation, signed transaction broadcasting, supported-chain lookup, and broadcast order tracking across XLayer, Solana, Ethereum, Base, BSC, Arbitrum, Polygon, and other chains.
 
-## Publisher: <br>
-[ok-james-01](https://clawhub.ai/user/ok-james-01) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[ok-james-01](https://clawhub.ai/user/ok-james-01)
 
-## Use Case: <br>
-External users and developers use this skill when they need an agent to check gas, simulate a prepared transaction, broadcast a signed transaction, or track broadcast status across supported chains. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global, subject to OKX service availability and regional restrictions. <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Signed blockchain transactions can be irreversible once broadcast. <br>
-Mitigation: Before broadcasting, show the chain, sender, recipient or contract, value, calldata or signed transaction summary, and estimated fees, then require explicit user confirmation. <br>
-Risk: The skill can install or update an external onchainos CLI. <br>
-Mitigation: Verify installer and binary SHA256 checksums before use, stop on any mismatch, and report installation failures without retrying unsafe paths. <br>
-Risk: Transaction simulation is informational and does not prove that a transaction is safe. <br>
-Mitigation: Treat simulation results as one review signal and require user review before any on-chain submission. <br>
+## Use Case:
 
+Developers and blockchain operators use this skill to prepare and route on-chain gateway commands for gas checks, transaction simulations, signed transaction broadcasts, and transaction status tracking. It is intended for users who already understand the transaction they are sending because the skill does not sign transactions.
 
-## Reference(s): <br>
-- [Onchain OS Gateway CLI Command Reference](references/cli-reference.md) <br>
-- [OKX Web3](https://web3.okx.com) <br>
-- [OKX Developer Portal](https://web3.okx.com/onchain-os/dev-portal) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Guidance] <br>
-**Output Format:** [Markdown with inline shell commands and concise transaction summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include chain, wallet address, gas estimates, simulation status, transaction hash, order ID, and broadcast status.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-3.1.3 (source: server evidence and frontmatter) <br>
+Risk: Broadcasting a signed transaction can move funds or change on-chain state.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Require the user to provide an already signed transaction, surface simulation or status results clearly, and avoid treating broadcast output as instructions.
+
+Risk: The skill can trigger installation or update of remote CLI code before running gateway commands.
+
+Mitigation: Install from a trusted, pinned release and verify installer and binary checksums before execution.
+
+Risk: Shared API access may be rate limited or unsuitable for routine production use.
+
+Mitigation: Use a personal OKX developer key when needed and keep local secrets out of version control.
+
+## Reference(s):
+
+- [Onchain OS Gateway CLI Reference](artifact/references/cli-reference.md)
+- [OKX Web3](https://web3.okx.com)
+- [OKX Developer Portal](https://web3.okx.com/onchain-os/dev-portal)
+- [ClawHub Skill Page](https://clawhub.ai/ok-james-01/skills/okx-onchain-gateway)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, guidance]
+
+**Output Format:** [Markdown with inline shell commands and concise status or result summaries]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include transaction hashes, order IDs, gas estimates, simulation status, and follow-up prompts when returned by the CLI.]
+
+## Skill Version(s):
+
+3.1.3 (source: server release metadata and frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

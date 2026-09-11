@@ -1,46 +1,62 @@
-## Description: <br>
-Execute cross-chain token trading on EVM and Solana with Particle Network Universal Account SDK. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Execute cross-chain token trading on EVM and Solana with Particle Network Universal Account SDK.
 
-## Publisher: <br>
-[0xMomo-NGClubs](https://clawhub.ai/user/0xMomo-NGClubs) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[0xmomo-ngclubs](https://clawhub.ai/user/0xmomo-ngclubs)
 
-## Use Case: <br>
-Developers and external users use this skill to set up Particle Network Universal Account examples, perform cross-chain buys, sells, swaps, transfers, and custom transactions, and monitor transaction outcomes. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can handle wallet private keys and execute real trading or transfer workflows. <br>
-Mitigation: Use a new low-value wallet, avoid importing a funded private key through the command line, and require explicit confirmation of chain, token, amount, recipient, slippage, fees, and transaction ID before sending transactions. <br>
-Risk: First-time setup performs account-affecting actions, including automatic invite binding, and downloads or uses an upstream trading example. <br>
-Mitigation: Review the setup before installing, disable automatic invite binding if unwanted, and inspect or pin the upstream project before running setup. <br>
-Risk: Demo Particle credentials may be rate-limited or unsuitable for production workloads. <br>
-Mitigation: Replace demo credentials with project-specific Particle credentials for production use. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Environment Setup](references/env-setup.md) <br>
-- [Universal Account SDK API Reference](references/api.md) <br>
-- [Code Examples](references/examples.md) <br>
-- [UniversalX](https://universalx.app) <br>
-- [Particle Network Dashboard](https://dashboard.particle.network/) <br>
-- [ClawHub Release Page](https://clawhub.ai/0xMomo-NGClubs/universal-trading) <br>
+## Use Case:
 
+Developers and trading operators use this skill to set up Particle Network universal-account-example and execute or monitor cross-chain EVM and Solana token trades with wallet, slippage, and transaction status handling.
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, markdown, code, shell commands, configuration] <br>
-**Output Format:** [Markdown with inline bash and TypeScript snippets] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include transaction status, transactionId, explorer URL, selected slippage settings, Solana tip settings, wallet setup notes, and configuration changes.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release evidence) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: The skill asks for wallet authority and stores a private key in a local .env file.
+
+Mitigation: Use a fresh low-value wallet and avoid importing an existing funded private key.
+
+Risk: First-time setup can auto-bind invite code 666666 and run a smoke test.
+
+Mitigation: Set DISABLE_AUTO_INVITE_BIND=1 unless invite binding is intended, and skip or sandbox the smoke test before live use.
+
+Risk: Dynamic retry buys may create more than one transaction attempt when outcomes are ambiguous.
+
+Mitigation: Use fixed slippage for cautious trades, review retry settings before execution, and verify final transaction status before retrying manually.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/0xmomo-ngclubs/skills/universal-trading)
+- [Publisher profile](https://clawhub.ai/user/0xmomo-ngclubs)
+- [Environment Setup](references/env-setup.md)
+- [API Reference](references/api.md)
+- [Examples](references/examples.md)
+- [UniversalX](https://universalx.app)
+- [Particle Network dashboard](https://dashboard.particle.network/)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline shell commands and TypeScript examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guides setup, wallet configuration, trading commands, slippage choices, and transaction status follow-up.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

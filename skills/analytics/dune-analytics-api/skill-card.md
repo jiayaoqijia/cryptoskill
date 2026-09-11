@@ -1,50 +1,69 @@
-## Description: <br>
-Dune Analytics API helps agents query, analyze, optimize, and upload blockchain data using the Dune API and DuneSQL references. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Dune Analytics API helps agents query, analyze, optimize, and upload blockchain data through Dune using reference guidance and helper scripts.
 
-## Publisher: <br>
-[LZ-Web3](https://clawhub.ai/user/LZ-Web3) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[lz-web3](https://clawhub.ai/user/lz-web3)
 
-## Use Case: <br>
-Developers, analysts, and agents use this skill to run Dune queries, inspect blockchain table schemas, optimize DuneSQL, analyze wallet and DEX activity, and upload CSV or NDJSON datasets with a DUNE_API_KEY. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Use of DUNE_API_KEY can run queries, consume Dune credits, and access account-scoped Dune resources. <br>
-Mitigation: Confirm credit-consuming executions when appropriate, reuse cached results or existing queries when possible, and report execution or credit metadata back to the user. <br>
-Risk: Saved-query updates, public query creation, CSV overwrites, table clears, deletes, and uploads can create persistent remote changes. <br>
-Mitigation: Require explicit user confirmation before these actions, prefer private Dune resources by default, and prefer append-style uploads for important datasets. <br>
-Risk: Uploading local CSV or NDJSON files may expose sensitive data to Dune. <br>
-Mitigation: Confirm the file path, intended table, privacy setting, and data sensitivity before upload. <br>
+## Use Case:
 
+Developers, analysts, and agents use this skill to discover Dune tables, run or inspect saved queries, write DuneSQL for EVM and Solana analytics, track Dune credits, and upload CSV or NDJSON data for analysis.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/LZ-Web3/dune-analytics-api) <br>
-- [Dune Analytics](https://dune.com) <br>
-- [Dune API key settings](https://dune.com/settings/api) <br>
-- [Table Discovery](references/table-discovery.md) <br>
-- [Query Execution](references/query-execution.md) <br>
-- [Common Tables](references/common-tables.md) <br>
-- [SQL Optimization](references/sql-optimization.md) <br>
-- [Wallet Analysis](references/wallet-analysis.md) <br>
-- [Data Upload](references/data-upload.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown, JSON, CSV, table-formatted text, SQL, Python snippets, and shell commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires python3, dune-client, and DUNE_API_KEY for live Dune API operations.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-2.0.0 (source: frontmatter and server release metadata) <br>
+Risk: The skill can run credit-consuming Dune operations.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Confirm query execution, performance tier, and expected scan scope before running live Dune calls, and report credits consumed when available.
+
+Risk: The skill can update saved query SQL, upload data, clear tables, delete tables, or create public queries.
+
+Mitigation: Require explicit user review before account-changing actions, prefer private queries and tables, and avoid public creation unless the user accepts that fallback.
+
+Risk: The skill requires access to a Dune API key.
+
+Mitigation: Use a scoped DUNE_API_KEY in an isolated environment and avoid exposing the key in prompts, logs, generated SQL, or shared artifacts.
+
+Risk: Unpinned dependencies can change behavior over time.
+
+Mitigation: Pin dune-client in production environments and review dependency changes before upgrading.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/lz-web3/skills/dune-analytics-api)
+- [Dune Analytics](https://dune.com)
+- [Dune API Key Settings](https://dune.com/settings/api)
+- [Table Discovery](references/table-discovery.md)
+- [Query Execution Patterns](references/query-execution.md)
+- [Dune Common Tables Reference](references/common-tables.md)
+- [SQL Optimization Patterns for Dune](references/sql-optimization.md)
+- [Wallet Analysis Patterns](references/wallet-analysis.md)
+- [Data Upload (CSV/NDJSON)](references/data-upload.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown, SQL, JSON, CSV, shell commands, and tabular text depending on the requested Dune task.]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires Python 3, dune-client, and DUNE_API_KEY for live Dune operations.]
+
+## Skill Version(s):
+
+2.0.0 (source: frontmatter and server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

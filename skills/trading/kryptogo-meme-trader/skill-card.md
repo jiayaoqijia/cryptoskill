@@ -1,50 +1,68 @@
-## Description: <br>
-[DEPRECATED 2026-05-04] Analyze and trade meme coins using KryptoGO's on-chain cluster analysis platform; the kg-xyz analysis backend shutdown affects cluster analysis, wallet labels, signal dashboards, and DCA/limit tools, while Solana swap execution via the OKX DEX aggregator continues to function. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+KryptoGO Meme Trader is a deprecated agent skill for meme-coin analysis and Solana swap execution, with cluster analysis and related kg-xyz backend features marked as unavailable after 2026-05-04.
 
-## Publisher: <br>
-[a00012025](https://clawhub.ai/user/a00012025) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[a00012025](https://clawhub.ai/user/a00012025)
 
-## Use Case: <br>
-External users and developers use this skill to analyze meme-coin opportunities, monitor portfolio positions, and execute Solana swaps with local signing. Its analysis workflow is degraded after the 2026-05-04 backend shutdown, so remaining use should focus on carefully supervised swap execution and any independently verified market analysis. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The security summary reports that the default monitoring path can execute live sells even though the documentation describes supervised notifications. <br>
-Mitigation: Do not enable default cron or monitor.py automation until the auto-sell behavior is reviewed and fixed or explicitly accepted; require manual confirmation for buys and sells. <br>
-Risk: The skill requires sensitive trading credentials and can sign Solana transactions. <br>
-Mitigation: Use a dedicated low-value wallet, never reuse a main wallet, load secrets only from the protected environment file, and restrict access to ~/.openclaw/workspace/.env and memory/trading-*.json. <br>
-Risk: The kg-xyz analysis backend shutdown means cluster analysis, wallet labels, signal dashboards, and DCA/limit tools may no longer provide reliable safeguards after 2026-05-04. <br>
-Mitigation: Treat analysis-dependent recommendations as degraded, verify signals independently, and limit usage to supervised workflows unless the backend behavior is confirmed. <br>
+## Use Case:
 
+External developers and crypto traders use this skill to inspect meme-coin opportunities, monitor portfolio positions, and execute Solana swaps with local signing. The reader should treat the analysis workflow as degraded because the documented kg-xyz analysis backend was scheduled to shut down on 2026-05-04.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/a00012025/kryptogo-meme-trader) <br>
-- [Publisher profile](https://clawhub.ai/user/a00012025) <br>
-- [KryptoGO homepage](https://www.kryptogo.xyz) <br>
-- [KryptoGO user guide](https://kryptogo.notion.site/Product-Guide-EN-26c3499de8a28179aafacb68304458ea) <br>
-- [KryptoGO whitepaper](https://wallet-static.kryptogo.com/public/whitepaper/kryptogo-xyz-whitepaper-v1.0.pdf) <br>
-- [API Reference](references/api-reference.md) <br>
-- [Autonomous Trading Reference](references/autonomous-trading.md) <br>
-- [Core Concepts](references/concepts.md) <br>
-- [Decision Framework](references/decision-framework.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands, Python scripts, JSON configuration, and trade-analysis summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires a KryptoGO API key, a Solana wallet private key and address, Python tooling, network access to wallet-data.kryptogo.app for degraded analysis paths, and local filesystem writes for environment and trading memory files.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-2.6.0 (source: server release metadata, SKILL.md frontmatter, package.json) <br>
+Risk: Crypto trading can cause direct financial loss, and server security evidence says the default supervised monitoring path can still execute wallet sales without fresh confirmation.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a dedicated low-value wallet, review the trading scripts before installation, and do not enable cron until the monitor path is read-only by default or requires an explicit execution flag and fresh approval before signing.
+
+Risk: Remote-built swap transactions can be risky if the signed instructions do not match the user's intent.
+
+Mitigation: Decode and independently validate transaction instructions before signing any remote-built transaction.
+
+Risk: The documented kg-xyz analysis backend was scheduled to shut down on 2026-05-04, so cluster analysis, wallet labels, signal dashboards, and related DCA or limit-order analysis may fail.
+
+Mitigation: Treat analysis outputs as unavailable after the shutdown date and rely only on functions that still have current service support.
+
+Risk: The skill depends on API keys and a Solana private key loaded from local environment state.
+
+Mitigation: Keep secrets in the local .env file with restricted permissions, never paste them into chat or command arguments, and avoid sharing logs that may expose wallet or transaction details.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/a00012025/skills/kryptogo-meme-trader)
+- [KryptoGO homepage](https://www.kryptogo.xyz)
+- [KryptoGO product guide](https://kryptogo.notion.site/Product-Guide-EN-26c3499de8a28179aafacb68304458ea)
+- [KryptoGO whitepaper](https://wallet-static.kryptogo.com/public/whitepaper/kryptogo-xyz-whitepaper-v1.0.pdf)
+- [API Reference](references/api-reference.md)
+- [Autonomous Trading Reference](references/autonomous-trading.md)
+- [Core Concepts](references/concepts.md)
+- [Decision Framework](references/decision-framework.md)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with inline shell commands, JSON snippets, and generated local memory files]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires KryptoGO and Solana wallet environment variables; setup and trading paths can write local .env and memory files.]
+
+## Skill Version(s):
+
+2.6.0 (source: release evidence, SKILL.md frontmatter, package.json)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

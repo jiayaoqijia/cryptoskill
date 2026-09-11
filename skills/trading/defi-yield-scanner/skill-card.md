@@ -1,39 +1,54 @@
-## Description: <br>
-Scans DeFi protocols for yield opportunities by comparing APY, rewards, TVL movement, and risk signals across Aave, Compound, Curve, Yearn, Uniswap v3, and L2 protocols. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Scans DeFi protocols for yield opportunities, compares APY against risk and sustainability signals, tracks TVL changes, and flags new farming opportunities.
 
-## Publisher: <br>
-[JamieRossouw](https://clawhub.ai/user/JamieRossouw) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[jamierossouw](https://clawhub.ai/user/jamierossouw)
 
-## Use Case: <br>
-External users, analysts, and developers use this skill to research DeFi yield opportunities, compare stablecoin and liquidity yields, and generate ranked opportunities with entry considerations. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Yield figures, TVL, audit status, and protocol risks can change quickly and may be inaccurate or stale. <br>
-Mitigation: Verify APY, TVL, audit status, and protocol risk from official sources before depositing funds. <br>
-Risk: The skill provides informational DeFi research and may influence financial decisions. <br>
-Mitigation: Treat outputs as research guidance only and use separate trusted tooling for wallet connections, transaction review, and signing. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Defi Yield Scanner on ClawHub](https://clawhub.ai/JamieRossouw/defi-yield-scanner) <br>
+## Use Case:
 
+External users and developers can use this skill to compare DeFi yield opportunities across protocols such as Aave, Compound, Curve, Uniswap v3, and Yearn. It is intended for informational yield research and should not replace independent financial, tax, liquidity, or smart-contract risk review.
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown table with ranked yield opportunities and concise guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Uses public DeFi yield and protocol data sources when available; users should verify figures before acting.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: frontmatter and server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Yield rankings can become stale or incomplete because APY, TVL, liquidity, fees, and protocol incentives change frequently.
+
+Mitigation: Independently verify current APY, liquidity, smart-contract risk, fees, and tax implications before acting on any opportunity.
+
+Risk: Entry instructions may be misread as authorization to connect wallets or move funds.
+
+Mitigation: Treat the skill output as informational research only and do not connect wallets or transfer funds unless you explicitly decide to do so outside the skill.
+
+## Reference(s):
+
+- [DeFiLlama API](https://api.llama.fi)
+- [Curve API](https://curve.fi/api)
+- [Yearn API](https://yearn.fi/api)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Guidance]
+
+**Output Format:** [Markdown table with concise explanatory text]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Ranks DeFi opportunities by APY, risk, sustainability, gas efficiency, TVL, and recommendation signal.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

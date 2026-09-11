@@ -1,41 +1,53 @@
-## Description: <br>
-Funding Rate Trader scans crypto funding rates for Binance Futures opportunities without an API key and can run a Binance API-backed trader with configurable stop-loss and take-profit controls. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Crypto funding rate arbitrage strategy. Scan negative funding rates, auto-trade with stop-loss/take-profit. No API key needed for scanning, Binance API for trading.
 
-## Publisher: <br>
-[dagangtj](https://clawhub.ai/user/dagangtj) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT <br>
+## Publisher:
 
+[dagangtj](https://clawhub.ai/user/dagangtj)
 
-## Use Case: <br>
-External users and developers use this skill to scan Binance Futures funding rates, identify negative-rate opportunities, monitor open positions, and optionally run automated leveraged trades through a Binance API key. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: Running trader.js can place live leveraged Binance Futures trades with stored API keys without a dry run or confirmation gate. <br>
-Mitigation: Require an explicit dry-run or manual confirmation step before live trading, and review leverage, order size, and symbol selection before execution. <br>
-Risk: Stored Binance API credentials could expose the account to trading activity if mishandled. <br>
-Mitigation: Use a dedicated API key with withdrawals disabled, minimal permissions, IP restrictions, strict local file permissions, and small exchange-side risk limits. <br>
+## Use Case:
 
+External users and developers use this skill to scan Binance Futures funding rates, identify negative-rate opportunities, and optionally run scripts that place and monitor leveraged futures positions using local Binance API credentials.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/dagangtj/funding-rate-trader) <br>
-- [Binance Futures premium index endpoint](https://fapi.binance.com/fapi/v1/premiumIndex) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Shell commands, Configuration instructions, Guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands and JSON configuration snippets] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May also run Node.js scripts that call Binance Futures APIs and print tabular console output.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.1 (source: SKILL.md frontmatter and server release metadata) <br>
+Risk: The trader command can place leveraged Binance Futures orders using local API keys, which can create immediate financial exposure and loss.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use restricted Binance API keys without withdrawal permissions, test with dry-run or testnet settings first, and run live trading only after confirming the leverage, position size, stop-loss, and take-profit settings.
+
+Risk: The skill stores Binance API credentials in a local file under the user's home directory.
+
+Mitigation: Protect the credential file with strict filesystem permissions and rotate keys if the file may have been exposed.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/dagangtj/skills/funding-rate-trader)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with shell commands, JSON credential configuration, and terminal output from Node.js scripts]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Some commands call Binance Futures APIs; scanning can run without API keys, while trading and monitoring require local Binance API credentials.]
+
+## Skill Version(s):
+
+1.0.1 (source: frontmatter and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,36 +1,52 @@
-## Description: <br>
-Paper and live perpetual futures trading on Hyperliquid with leverage selection, OBV divergence, and auto-stop-loss guidance. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Provides agent guidance for paper and live perpetual futures trading on Hyperliquid, including leverage selection, OBV divergence, and auto-stop-loss workflows.
 
-## Publisher: <br>
-[JamieRossouw](https://clawhub.ai/user/JamieRossouw) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[jamierossouw](https://clawhub.ai/user/jamierossouw)
 
-## Use Case: <br>
-External users and trading automation developers use this skill to guide agents working with Hyperliquid perpetual futures workflows, including paper trading, live trading, leverage management, signal handling, and stop-loss setup. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: The skill can influence live leveraged crypto trades without documented opt-in, confirmation, or risk limits. <br>
-Mitigation: Use paper trading by default and require explicit live opt-in, per-trade confirmation, strict leverage and position limits, maximum-loss rules, and easy credential revocation before connecting live Hyperliquid credentials. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
+## Use Case:
 
+External developers and trading operators use this skill to guide an agent through Hyperliquid perpetual futures automation, including paper/live trading, leverage management, signal-based entries, and stop-loss handling.
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Shell commands, Configuration] <br>
-**Output Format:** [Markdown with inline commands or setup guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May influence real leveraged trading decisions and should default to paper trading unless live-trading controls are explicitly enforced.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-1.0.0 (source: frontmatter and server release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Live leveraged crypto futures automation can cause financial loss if an agent places orders or changes leverage without clear consent.
+
+Mitigation: Use paper mode where possible; require explicit confirmation for live orders, leverage changes, and stop-loss changes; apply account and position-size limits.
+
+Risk: The security review notes that paper/live separation and confirmation requirements are not clearly defined.
+
+Mitigation: Document and enforce separate paper and live workflows before deployment, with live trading disabled unless the user explicitly enables it.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/jamierossouw/skills/hyperliquid-perps)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, shell commands, configuration]
+
+**Output Format:** [Markdown with inline shell commands and configuration guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May steer an agent toward paper or live leveraged trading workflows; require human confirmation before live orders or leverage changes.]
+
+## Skill Version(s):
+
+1.0.0 (source: frontmatter and server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

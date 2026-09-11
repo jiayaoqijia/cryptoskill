@@ -1,48 +1,63 @@
-## Description: <br>
-Provides agent guidance for quoting, approving, executing, and preparing calldata for OKX DEX aggregated token swaps across supported chains. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Guides agents through OKX OnchainOS DEX aggregation workflows for token quotes, approvals, unsigned swap calldata, and user-confirmed swap broadcasts across supported chains.
 
-## Publisher: <br>
-[ok-james-01](https://clawhub.ai/user/ok-james-01) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[ok-james-01](https://clawhub.ai/user/ok-james-01)
 
-## Use Case: <br>
-External users and developers use this skill to guide agents through OKX DEX aggregated token swaps, swap quotes, token approvals, transaction broadcasts, and unsigned calldata generation. It is intended for wallet-connected crypto workflows where the user reviews route, amount, slippage, spender, and transaction details before signing. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can guide real token approvals and wallet-signed swap broadcasts, which may result in fund loss if details are wrong or unsafe. <br>
-Mitigation: Use a limited-purpose wallet and require the user to review token addresses, chain, amount, route, slippage, spender or approval details, and expected receive amount before signing. <br>
-Risk: The skill can install or update the onchainos CLI before use. <br>
-Mitigation: Install only from a trusted OKX/onchainos release source and verify installer and binary checksums before running swap commands. <br>
-Risk: Silent mode and force execution can bypass normal per-transaction review or risk warnings. <br>
-Mitigation: Avoid silent mode unless explicitly authorized, and never use force unless the user understands and confirms the fund-loss warning. <br>
-Risk: Diagnostics and transaction output may expose wallet addresses or transaction details. <br>
-Mitigation: Redact wallet addresses, transaction hashes, and sensitive transaction details before sharing diagnostics. <br>
+## Use Case:
 
+External users and developers use this skill to ask an agent for OKX-aggregated token swap quotes, transaction preparation, and explicitly confirmed swap execution. It is intended for venue-unspecified swaps and redirects named DApp workflows to a protocol-specific skill.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/ok-james-01/okx-dex-swap) <br>
-- [OKX Web3](https://web3.okx.com) <br>
-- [OKX DEX Aggregator API Reference](https://web3.okx.com/onchainos/dev-docs/trade/dex-api-reference) <br>
-- [Onchain OS DEX Swap CLI Command Reference](references/cli-reference.md) <br>
-- [Swap Troubleshooting](references/troubleshooting.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline shell commands, parameter summaries, warnings, and transaction result summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include wallet addresses, token addresses, quote details, approval data, calldata, and transaction hashes that should be reviewed and redacted when shared.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-3.1.3 (source: server release metadata and skill metadata) <br>
+Risk: The skill can prepare approvals and broadcast real token swaps, which can cause fund loss if token addresses, amounts, slippage, wallet selection, or override flags are wrong.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Require explicit user confirmation for fund-action steps, verify token addresses and quote details before execution, block honeypot buys, and re-quote stale prices before broadcasting.
+
+Risk: The pre-flight flow may install or update the onchainos CLI from OKX GitHub releases before use.
+
+Mitigation: Use the installer only from a trusted OKX release path, verify installer and binary checksums, and stop on any hash mismatch.
+
+Risk: Failure diagnostics can include wallet addresses, token pairs, transaction hashes, amounts, and other transaction details.
+
+Mitigation: Share diagnostic summaries only when the user accepts disclosure of those wallet and transaction details.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/ok-james-01/skills/okx-dex-swap)
+- [OKX Web3](https://web3.okx.com)
+- [OKX DEX Aggregator API Reference](https://web3.okx.com/onchainos/dev-docs/trade/dex-api-reference)
+- [CLI command reference](references/cli-reference.md)
+- [Swap troubleshooting](references/troubleshooting.md)
+- [Pre-flight checks](_shared/preflight.md)
+- [Chain support](_shared/chain-support.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and transaction summaries]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May include token address choices, quote summaries, risk warnings, calldata fields, transaction hashes, explorer follow-up guidance, and diagnostic summaries.]
+
+## Skill Version(s):
+
+3.1.3 (source: server release metadata and skill frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

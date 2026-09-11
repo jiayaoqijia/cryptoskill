@@ -1,40 +1,49 @@
-## Description: <br>
-Build and extend the core Pump SDK, an offline-first TypeScript SDK that constructs Solana TransactionInstructions for token creation, buying, selling, migration, and creator fee collection across Pump, PumpAMM, PumpFees, and Mayhem programs. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Build and extend the core Pump SDK, an offline-first TypeScript SDK that constructs Solana TransactionInstructions for token creation, buying, selling, migration, and creator fee collection across Pump, PumpAMM, PumpFees, and Mayhem programs.
 
-## Publisher: <br>
-[speraxos](https://clawhub.ai/user/speraxos) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
+## Publisher:
 
+[speraxos](https://clawhub.ai/user/speraxos)
 
-## Use Case: <br>
-Developers and engineers use this skill to build, extend, and maintain TypeScript SDK code that creates Solana transaction instructions and decodes Pump protocol account state. It supports instruction-builder patterns for token creation, buying, selling, migration, creator fee collection, and safe account validation. <br>
-
-### Deployment Geography for Use: <br>
-Global <br>
-
-## Known Risks and Mitigations: <br>
-Risk: Generated or edited Solana instruction code could be incorrect before transaction signing or broadcasting. <br>
-Mitigation: Review generated instructions and transaction-building code before signing or broadcasting. <br>
-Risk: RPC URLs may include provider credentials. <br>
-Mitigation: Treat SOLANA_RPC_URL and any embedded provider tokens as sensitive; avoid logging or committing them. <br>
+### License/Terms of Use:
 
 
-## Reference(s): <br>
-- [Pump SDK repository homepage](https://github.com/nirholas/pump-fun-sdk) <br>
-- [ClawHub skill page](https://clawhub.ai/speraxos/pump-sdk-core) <br>
+## Use Case:
 
+Developers and engineers use this skill for guidance when building, extending, and maintaining TypeScript code that composes Pump protocol Solana transaction instructions and decodes on-chain account state.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Configuration, Guidance] <br>
-**Output Format:** [Markdown with TypeScript code and configuration guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May reference SOLANA_RPC_URL for online SDK workflows; review generated Solana instruction code before signing or broadcasting transactions.] <br>
+### Deployment Geography for Use:
 
-## Skill Version(s): <br>
-0.1.0 (source: release metadata) <br>
+Global
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+## Known Risks and Mitigations:
+
+Risk: Generated or suggested Solana transaction instructions for financial blockchain workflows may be incorrect or unsuitable for a specific deployment.
+
+Mitigation: Review transaction instruction composition carefully before signing or submitting transactions, and keep signing keys and seed phrases out of scope.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/speraxos/skills/pump-sdk-core)
+- [Pump Fun SDK Repository](https://github.com/nirholas/pump-fun-sdk)
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Markdown, Code, Shell commands, Configuration]
+
+**Output Format:** [Markdown with inline code and command examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May reference the SOLANA_RPC_URL environment variable for online SDK workflows.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.
