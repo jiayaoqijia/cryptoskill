@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-09-10T01:16:48.062Z",
+  "preRegistered": {
+    "h1Lift": 1.3,
+    "h1MinN": 40,
+    "h2Ratio": 1.5,
+    "h2P": 0.05,
+    "h3Rho": 0.3
+  },
+  "poolsTested": 25,
+  "real": {
+    "h1": {
+      "n": 250,
+      "baseRate": 0.3333333333333333,
+      "condRate": 0.632,
+      "lift": 1.8960000000000001
+    },
+    "h2": {
+      "ratio": 2.3028,
+      "chi2": 27.072660491855643,
+      "df": 6,
+      "p": 0.0001701047872135072,
+      "perWeekday": [
+        {
+          "weekday": 0,
+          "n": 101,
+          "hotRate": 0.248
+        },
+        {
+          "weekday": 1,
+          "n": 100,
+          "hotRate": 0.26
+        },
+        {
+          "weekday": 2,
+          "n": 100,
+          "hotRate": 0.25
+        },
+        {
+          "weekday": 3,
+          "n": 124,
+          "hotRate": 0.306
+        },
+        {
+          "weekday": 4,
+          "n": 124,
+          "hotRate": 0.419
+        },
+        {
+          "weekday": 5,
+          "n": 100,
+          "hotRate": 0.57
+        },
+        {
+          "weekday": 6,
+          "n": 101,
+          "hotRate": 0.267
+        }
+      ]
+    },
+    "h3": {
+      "n": 725,
+      "rho": 0.6686758752946251
+    }
+  },
+  "control": {
+    "h1": {
+      "n": 249,
+      "baseRate": 0.3333333333333333,
+      "condRate": 0.40562248995983935,
+      "lift": 1.216867469879518
+    },
+    "h2": {
+      "ratio": 2.3028,
+      "chi2": 27.072660491855643,
+      "df": 6,
+      "p": 0.0001701047872135072,
+      "perWeekday": [
+        {
+          "weekday": 0,
+          "n": 101,
+          "hotRate": 0.248
+        },
+        {
+          "weekday": 1,
+          "n": 100,
+          "hotRate": 0.26
+        },
+        {
+          "weekday": 2,
+          "n": 100,
+          "hotRate": 0.25
+        },
+        {
+          "weekday": 3,
+          "n": 124,
+          "hotRate": 0.306
+        },
+        {
+          "weekday": 4,
+          "n": 124,
+          "hotRate": 0.419
+        },
+        {
+          "weekday": 5,
+          "n": 100,
+          "hotRate": 0.57
+        },
+        {
+          "weekday": 6,
+          "n": 101,
+          "hotRate": 0.267
+        }
+      ]
+    },
+    "h3": {
+      "n": 725,
+      "rho": 0.5625570553383643
+    }
+  },
+  "verdicts": {
+    "H1_persistence": "SIGNAL",
+    "H2_weekday": "VOID (fires on shuffled data too -- test is broken)",
+    "H3_volumeLead": "VOID (fires on shuffled data too -- test is broken)"
+  }
+}

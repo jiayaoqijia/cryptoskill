@@ -1,0 +1,140 @@
+{
+  "generatedAt": "2026-09-10T01:30:58.042Z",
+  "method": "formation/holdout split, score on first half only, one round trip charged, random-selection control",
+  "preRegistered": {
+    "minEdgePp": 1,
+    "maxP": 0.05
+  },
+  "costModel": {
+    "roundTripPct": 0.1
+  },
+  "poolsScored": 61,
+  "pickedCount": 12,
+  "allMedianHoldoutPct": -0.027,
+  "pickedMeanHoldoutPct": 1.612,
+  "edgePp": 1.638,
+  "randomControlP": 0,
+  "verdict": "SIGNAL",
+  "picks": [
+    {
+      "id": "0x6c561b446416e1a00e8e93e221854d6ea4171372",
+      "dex": "uniswap-v3",
+      "chain": "base",
+      "score": 3.086,
+      "persistence": 0.8,
+      "weekdayLoad": 0.286,
+      "feeLevelPct": 0.1393,
+      "holdoutReturnPct": 1.441
+    },
+    {
+      "id": "0x7aea2e8a3843516afa07293a10ac8e49906dabd1",
+      "dex": "uniswap-v3",
+      "chain": "base",
+      "score": 3.086,
+      "persistence": 0.8,
+      "weekdayLoad": 0.286,
+      "feeLevelPct": 0.1597,
+      "holdoutReturnPct": 1.312
+    },
+    {
+      "id": "0x3e66e55e97ce60096f74b7c475e8249f2d31a9fb",
+      "dex": "aerodrome",
+      "chain": "base",
+      "score": 3.029,
+      "persistence": 0.6,
+      "weekdayLoad": 0.429,
+      "feeLevelPct": 0.9503,
+      "holdoutReturnPct": 9.943
+    },
+    {
+      "id": "0x433a00819c771b33fa7223a5b3499b24fbcd1bbc",
+      "dex": "uniswap-v3",
+      "chain": "mainnet",
+      "score": 2.973,
+      "persistence": 0.8,
+      "weekdayLoad": 0.429,
+      "feeLevelPct": 0.0872,
+      "holdoutReturnPct": 1.301
+    },
+    {
+      "id": "0x5116773e18a9c7bb03ebb961b38678e45e238923",
+      "dex": "uniswap-v3",
+      "chain": "base",
+      "score": 2.886,
+      "persistence": 0.6,
+      "weekdayLoad": 0.286,
+      "feeLevelPct": 0.1628,
+      "holdoutReturnPct": 1.502
+    },
+    {
+      "id": "0xc200f21efe67c7f41b81a854c26f9cda80593065",
+      "dex": "aerodrome",
+      "chain": "base",
+      "score": 2.491,
+      "persistence": 0.4,
+      "weekdayLoad": 0.286,
+      "feeLevelPct": 0.0903,
+      "holdoutReturnPct": 0.825
+    },
+    {
+      "id": "0xbe00ff35af70e8415d0eb605a286d8a45466a4c1",
+      "dex": "aerodrome",
+      "chain": "base",
+      "score": 2.48,
+      "persistence": 0.6,
+      "weekdayLoad": 0.286,
+      "feeLevelPct": 0.0797,
+      "holdoutReturnPct": 1.04
+    },
+    {
+      "id": "0x8c7080564b5a792a33ef2fd473fba6364d5495e5",
+      "dex": "uniswap-v3",
+      "chain": "base",
+      "score": 2.352,
+      "persistence": 0.8,
+      "weekdayLoad": 0.429,
+      "feeLevelPct": 0.0562,
+      "holdoutReturnPct": 0.274
+    },
+    {
+      "id": "0x4e962bb3889bf030368f56810a9c96b83cb3e778",
+      "dex": "aerodrome",
+      "chain": "base",
+      "score": 2.322,
+      "persistence": 0.6,
+      "weekdayLoad": 0.429,
+      "feeLevelPct": 0.0647,
+      "holdoutReturnPct": 0.372
+    },
+    {
+      "id": "0x4e962bb3889bf030368f56810a9c96b83cb3e778",
+      "dex": "aerodrome",
+      "chain": "base",
+      "score": 2.322,
+      "persistence": 0.6,
+      "weekdayLoad": 0.429,
+      "feeLevelPct": 0.0647,
+      "holdoutReturnPct": 0.372
+    },
+    {
+      "id": "0xe0554a476a092703abdb3ef35c80e0d76d32939f",
+      "dex": "uniswap-v3",
+      "chain": "mainnet",
+      "score": 2.133,
+      "persistence": 0.6,
+      "weekdayLoad": 0.429,
+      "feeLevelPct": 0.0552,
+      "holdoutReturnPct": 0.52
+    },
+    {
+      "id": "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36",
+      "dex": "uniswap-v3",
+      "chain": "mainnet",
+      "score": 1.961,
+      "persistence": 0.6,
+      "weekdayLoad": 0.429,
+      "feeLevelPct": 0.0466,
+      "holdoutReturnPct": 0.437
+    }
+  ]
+}

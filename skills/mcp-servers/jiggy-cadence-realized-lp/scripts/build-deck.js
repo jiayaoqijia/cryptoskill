@@ -1,0 +1,377 @@
+#!/usr/bin/env node
+/**
+ * build-deck.js — render deck.html, the judge-facing slide page.
+ *
+ * WHY A DECK PAGE AND NOT A PDF: a judge opens one link. If the deck is a separate artifact
+ * it drifts from the site the moment either changes. This renders from the SAME generated
+ * data files as index.html, so a slide can never claim a number the API doesn't serve.
+ *
+ * DESIGN RULE (inherited from build-app.js): this script performs NO measurement. Every
+ * figure below is read out of data/*.json or recomputed with the same closed form the rest
+ * of the repo uses. If an input file is missing, its slide degrades to an honest note --
+ * it is never faked and never silently dropped.
+ *
+ * THE HARD RULE THIS FILE EXISTS TO RESPECT:
+ *   Predictive pool-picking is REFUTED. spike-hunt3 found +1.64pp edge on a single
+ *   formation/holdout split; walk-forward (h4-h8) failed it at every horizon. We ship a
+ *   TRACK RECORD -- what already happened, measured -- and never a forecast. The refutation
+ *   gets its own slide, stated in OUR OWN numbers, because a judge who finds a buried
+ *   negative result trusts everything else less.
+ *
+ * ESTIMATOR NOTE (matters, do not "simplify"): the pre-registered bar for the walk-forward
+ * is `minMedianEdgePp: 0.5` -- it tests the MEDIAN window edge. The means (-0.11/+0.04/+0.26)
+ * are a different statistic. Quoting means against a median bar is exactly the estimator
+ * swap this repo's honesty box exists to catch, so the slide reports the median (the
+ * pre-registered statistic) and shows the mean beside it, both labelled.
+ *
+ * Run: node scripts/build-deck.js
+ */
+import { readFileSync, writeFileSync } from 'fs';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const R = (p) => JSON.parse(readFileSync(`${__dirname}/../${p}`, 'utf8'));
+const opt = (p) => { try { return R(p); } catch { return null; } };
+
+const pools = R('data/pools.json');
+const hist = R('data/history.json');
+const corpus = opt('data/corpus.json');
+const pricecheck = opt('data/pricecheck.json');
+const leaderboard = opt('data/leaderboard.json');
+
+// Walk-forward refutation inputs. All five are optional on disk but the REFUTED slide is
+// not optional -- if they're all missing we still say the claim is refuted, we just can't
+// show the table. Silence about a negative result is the one degradation we don't allow.
+const hunts = [3, 4, 5, 6, 7, 8].map((n) => ({ n, d: opt(`data/spike-hunt${n}.json`) }));
+const h3 = hunts.find((h) => h.n === 3)?.d;
+const walkForward = hunts.filter((h) => h.n >= 4 && h.d && Array.isArray(h.d.windows));
+
+const fmtPct = (v, d = 1) => (v === null || v === undefined ? '—' : (v >= 0 ? '+' : '') + v.toFixed(d) + '%');
+const fmtPp = (v, d = 2) => (v === null || v === undefined ? '—' : (v >= 0 ? '+' : '') + v.toFixed(d) + 'pp');
+const usd = (v) => (v < 0 ? '−' : '') + '$' + Math.abs(Math.round(v)).toLocaleString('en-US');
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// ---- slide 1 input: the same shock pool the site leads with -------------------------------
+// Chosen by the SAME rule as build-app.js (highest-TVL currently-misleading measurable pool),
+// not hand-picked, so the deck and the site can never disagree about the headline example.
+const shock = (() => {
+  const p = pools.pools
+    .filter((x) => x.misleading === true && x.realizedAprPct !== null && x.trustLabel !== 'unmeasurable')
+    .sort((a, b) => b.tvl - a.tvl)[0];
+  if (!p) return null;
+  const windowRealizedPct = (p.realizedAprPct / 365) * p.days;
+  const windowAdvertisedPct = (p.adv / 365) * p.days;
+  const stake = 100_000;
+  return {
+    ...p,
+    windowRealizedPct,
+    windowAdvertisedPct,
+    ilPct: windowRealizedPct - p.fees,
+    stake,
+    endValue: stake * (1 + windowRealizedPct / 100),
+    advertisedEnd: stake * (1 + windowAdvertisedPct / 100),
+  };
+})();
+
+// ---- slide 3 input: the range grid, straight out of history.json --------------------------
+const RANGE_ROWS = [
+  ['tight', 'tight ±1.25x'],
+  ['moderate', 'moderate ±2x'],
+  ['wide', 'wide ±4x'],
+  ['full', 'full-range (v2-equivalent)'],
+];
+const stabilityRows = RANGE_ROWS.map(([key, label]) => {
+  const per = Object.values(hist.stability).map((s) => s?.[key]).filter(Boolean);
+  if (!per.length) return null;
+  const medians = per.map((s) => s.median).filter((v) => typeof v === 'number');
+  const windows = per.reduce((a, s) => a + (s.windows || 0), 0);
+  const withDefect = per.reduce((a, s) => a + (s.windowsWithDefect || 0), 0);
+  const med = medians.length ? medians.reduce((a, b) => a + b, 0) / medians.length : null;
+  return { label, med, windows, withDefect };
+}).filter(Boolean);
+
+const chainsValidated = Object.values(hist.stability).filter((s) => s?.tight).length;
+const venueList = [...new Set(pools.pools.map((p) => `${p.dex}/${p.chain}`))];
+
+// ---- slide 5 input: walk-forward refutation table -----------------------------------------
+const wfRows = walkForward.map(({ n, d }) => ({
+  run: `spike-hunt${n}`,
+  windows: d.windowsTested ?? d.windows.length,
+  median: d.medianEdgePp,
+  mean: d.meanEdgePp,
+  posPct: d.positiveWindowsPct,
+  p: d.pooledRandomP,
+  verdict: d.verdict,
+  bar: d.preRegistered?.minMedianEdgePp,
+}));
+const preReg = walkForward[0]?.d?.preRegistered || { minMedianEdgePp: 0.5, minPositiveWindowsPct: 60, maxP: 0.05 };
+const allFail = wfRows.length > 0 && wfRows.every((r) => r.verdict === 'FAILS');
+
+const generatedAt = new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+
+// ---------------------------------------------------------------------------------------------
+const slides = [];
+
+// SLIDE 1 — the defect, in dollars, on the biggest pool in DeFi
+slides.push(`
+<section class="slide" id="s1">
+  <div class="kicker">The defect</div>
+  ${shock ? `
+  <h2>Advertised <b class="up">${fmtPct(shock.adv, 2)} APR</b>. Realized <b class="down">${fmtPct(shock.realizedAprPct, 1)} APR</b>.</h2>
+  <p class="lede">${esc(shock.pair)} · ${esc(shock.dex)}/${esc(shock.chain)} · ${usd(shock.tvl)} TVL — the most-used pool in DeFi, live from The Graph.</p>
+  <div class="money">
+    <div class="mc"><span class="mk">You deposit</span><span class="mv">${usd(shock.stake)}</span></div>
+    <div class="ma">→ ${shock.days} days later, if the advertised number were real →</div>
+    <div class="mc"><span class="mk">Advertised</span><span class="mv up">${usd(shock.advertisedEnd)}</span></div>
+    <div class="ma">→ what an LP actually took home →</div>
+    <div class="mc"><span class="mk">Realized</span><span class="mv down">${usd(shock.endValue)}</span></div>
+  </div>
+  <p class="note">Fees earned ${fmtPct(shock.fees, 2)} of stake. Impermanent loss ${fmtPct(shock.ilPct, 2)}. Net over the window: <b class="down">${fmtPct(shock.windowRealizedPct, 2)}</b>. Annualized once, labelled: ${fmtPct(shock.realizedAprPct, 1)} APR at a moderate ±2x range.</p>
+  ` : `<h2>No currently-misleading pool in the live corpus.</h2>
+  <p class="lede">That would be good news for LPs. The deck degrades to the honest headline rather than hunting for a scarier pool.</p>`}
+</section>`);
+
+// SLIDE 2 — why this happens everywhere
+slides.push(`
+<section class="slide" id="s2">
+  <div class="kicker">The cause</div>
+  <h2>Advertised APR has <em>no price term</em>. It cannot show a loss.</h2>
+  <p class="lede">Every DEX computes advertised APR as fees ÷ liquidity, annualized. Fees are always ≥ 0, so the number is <b>positive by construction</b> — it is structurally incapable of reporting that you lost money.</p>
+  <p class="lede">What's missing is impermanent loss: the cost of the pool rebalancing you out of the asset that went up. Add the price term back and you get the number that was always the actual answer.</p>
+  <div class="eq">realized return = fees + impermanent loss(price ratio, range width)</div>
+  <p class="note">Not our discovery that LPs can lose to HODL — Topaze Blue / Bancor established that in 2021. Our contribution is calibrating <em>the advertised metric itself</em>, pool by pool, against what happened.</p>
+</section>`);
+
+// SLIDE 3 — it survives every knob
+slides.push(`
+<section class="slide" id="s3">
+  <div class="kicker">It is not a cherry-pick</div>
+  <h2>The defect survives every knob we can turn.</h2>
+  <div class="tscroll">
+  <table class="t">
+    <thead><tr><th>assumed LP range</th><th>median % misleading</th><th class="hide-s">windows tested</th><th>windows w/ defect</th></tr></thead>
+    <tbody>
+      ${stabilityRows.map((r) => `<tr><td>${esc(r.label)}</td><td class="num"><b>${r.med === null ? '—' : r.med.toFixed(1) + '%'}</b></td><td class="num hide-s">${r.windows}</td><td class="num">${r.withDefect}/${r.windows}</td></tr>`).join('\n      ')}
+    </tbody>
+  </table>
+  </div>
+  <p class="note">Same pools, same window, only the assumed range changes. The direction never flips: <b>the tighter and more realistic your position, the more the advertised number lies to you.</b> Full-range is the most generous possible case for the pool, and the defect is still there. Measured across ${chainsValidated} chains — ${esc(hist.chainsMeasured.join(', '))}.</p>
+  <p class="note dim">Fees are held constant across ranges, which is deliberately unfair to us: concentrating earns more fees too. We can't measure per-position fees from pool-level data, so we report the direction and treat magnitudes as bounded by that caveat.</p>
+</section>`);
+
+// SLIDE 4 — what we built
+slides.push(`
+<section class="slide" id="s4">
+  <div class="kicker">What we built</div>
+  <h2>One dataset. Two consumers. No key required.</h2>
+  <div class="cols">
+    <div class="col">
+      <h3>For humans</h3>
+      <p>Pick a pool, pick your entry date, see what you actually made. ${pools.pools.length} live pools across ${venueList.length} venues.</p>
+      <code>realized.drainfun.xyz</code>
+    </div>
+    <div class="col">
+      <h3>For agents</h3>
+      <p>CORS-open JSON + an MCP server (<code>find_pool</code>, <code>realized_return</code>, <code>audit_pools</code>, <code>rank_pools</code>, <code>explain_gap</code>). No scraping the HTML.</p>
+      <code>GET /api/pools</code>
+    </div>
+    <div class="col">
+      <h3>For builders</h3>
+      <p>The math is an installable package, not a repo you read. Same closed form the page and the API use.</p>
+      <code>@realized-lp/core</code>
+    </div>
+  </div>
+  <p class="note"><b>A test vector ships in the API response.</b> Real pool, real inputs, real output — implement the formula, run it on those inputs, and check you match before trusting your own math. An agent shouldn't have to take our word for it.</p>
+</section>`);
+
+// SLIDE 4b — BUILT ON. Each integration stated as the job it does, not as a logo.
+// Uniswap was the gap: it was present only as a pool label and inside a subgraph list,
+// so it read as a data source rather than the thing every entity on the site comes from.
+slides.push(`
+<section class="slide" id="s4b">
+  <div class="kicker">Built on</div>
+  <h2>Three integrations, each doing a job the project could not do without.</h2>
+  <div class="cols">
+    <div class="col">
+      <h3>The Graph — the dataset</h3>
+      <p>Per-day <code>feesUSD</code> are <b>indexer-derived aggregates</b>. You could reconstruct fee accrual from RPC &mdash; <code>feeGrowthGlobal0X128</code> is public pool state at any historical block, and we verified that against a live archive node rather than assuming. What is not tractable is the join: that accumulator is Q128 in <i>token</i> units, so per-day USD needs an archive node, a block lookup per day boundary, and a historical price for <b>both</b> tokens at each one &mdash; then repeated for every pool. At ${pools.pools.length} pools across ${hist.chainsMeasured.length} chains that is thousands of archive calls per rebuild. The Graph publishes that join already computed and consistent. <b>The claim is practicality, not impossibility</b> &mdash; an earlier draft of this slide said &ldquo;impossible,&rdquo; which was too strong, and correcting it is the same discipline the rest of this deck is about.</p>
+      <code>${esc(hist.chainsMeasured.join(' · '))}</code>
+    </div>
+    <div class="col">
+      <h3>Uniswap v3 — what we measure</h3>
+      <p>Every number here is a Uniswap v3 entity. <code>poolDayData</code> gives the fee and price history; the <b>Position NFT</b> gives real <code>tickLower</code>/<code>tickUpper</code>, so pasting an address reads <b>the band an LP actually set</b> instead of assuming ±2×. Concentrated liquidity is also <i>why</i> the defect exists — range width drives impermanent loss.</p>
+      <code>Position · poolDayData</code>
+    </div>
+    <div class="col">
+      <h3>1inch — the second opinion</h3>
+      <p>An instrument that grades others must be graded too. The <b>Spot Price Aggregator</b> has never seen our subgraph, so every pool price gets an independent check${pricecheck ? ` — <b>${pricecheck.agreementPct.toFixed(1)}% agree, median divergence ${pricecheck.medianAbsDivergencePct.toFixed(3)}%</b>` : ''}. It audits <i>our</i> price leg, which is the half of realized return we don't get from fees.</p>
+      <code>Spot Price Aggregator</code>
+    </div>
+  </div>
+  <p class="note">Built on <b>The Graph decentralized network</b> — Uniswap v3 and Aerodrome subgraphs across ${esc(hist.chainsMeasured.join(', '))}. Every figure regenerates from live subgraph data; <b>nothing is mocked or checked in as a static answer</b>. No API key is required to use any of it — the server proxies its own.</p>
+</section>`);
+
+// SLIDE 5 — THE REFUTATION. Non-negotiable slide.
+slides.push(`
+<section class="slide" id="s5">
+  <div class="kicker warn">What we refused to ship</div>
+  <h2>We tried to predict which pools will pay. <em class="down">It failed. So we killed it.</em></h2>
+  <p class="lede">A single formation/holdout split said we had a pool-picking edge${h3 ? ` of <b>${fmtPp(h3.edgePp)}</b> (${h3.pickedCount} picks from ${h3.poolsScored} pools, verdict "${esc(h3.verdict)}")` : ''}. That would have been the flashiest thing in this submission. So we tried to break it: same scoring function, deliberately not retuned, walked forward across real time.</p>
+  ${wfRows.length ? `
+  <div class="tscroll">
+  <table class="t">
+    <thead><tr><th>run</th><th class="hide-s">windows</th><th>median edge <span class="dim">(pre-reg)</span></th><th>mean edge</th><th class="hide-s">positive windows</th><th>pooled p</th><th></th></tr></thead>
+    <tbody>
+      ${wfRows.map((r) => `<tr><td><code>${esc(r.run)}</code></td><td class="num hide-s">${r.windows}</td><td class="num"><b>${fmtPp(r.median)}</b></td><td class="num dim">${fmtPp(r.mean)}</td><td class="num hide-s">${r.posPct?.toFixed(1)}%</td><td class="num">${r.p?.toFixed(3)}</td><td><span class="fail">${esc(r.verdict)}</span></td></tr>`).join('\n      ')}
+    </tbody>
+  </table>
+  </div>
+  <p class="swipe">Swipe the table sideways for every column →</p>
+  <p class="note">Pre-registered bar, set <em>before</em> the runs: median edge ≥ ${preReg.minMedianEdgePp}pp, ≥ ${preReg.minPositiveWindowsPct}% positive windows, p ≤ ${preReg.maxP}. Every run clears the positive-window gate and still <b>fails</b> — the median edge never reaches the bar and the p-value never gets close. A cost model of ${(walkForward[0]?.d?.costModel?.roundTripPct ?? 0.1)}% round-trip is charged on every pick.</p>
+  <p class="note dim">The bar tests the <b>median</b> window edge, so the median is what's bolded; the mean is shown beside it because they disagree, and picking whichever one looks better after the fact is the exact error this table exists to prevent. Caveat we can't remove: adjacent windows share market regime, so they are not fully independent.</p>
+  ` : `<p class="note">Walk-forward result files are not present in this build, but the verdict stands: refuted, do not ship forecasts.</p>`}
+  <p class="lede punch">So REALIZED ships a <b>track record</b> — what already happened, measured — and <b>never a forecast</b>. ${allFail ? 'Five independent walk-forward runs, five failures, zero retuning.' : ''} The interesting result was the one we threw away.</p>
+</section>`);
+
+// SLIDE 6 — how we know the data is real
+slides.push(`
+<section class="slide" id="s6">
+  <div class="kicker">Why you can trust the numbers</div>
+  <h2>Every instrument proves it can find a known signal first.</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="ck">Stable-pair canary</div>
+      <p>Stable/stable pairs <b>must</b> show ~0 impermanent loss or the run is marked untrusted and the build <b>refuses to write output</b>.</p>
+      <div class="cv">worst |IL| = ${(() => { const w = Object.values(pools.canaryByVenue).map((c) => c.worstAbsIlPct); return w.length ? (Math.max(...w) * 1).toFixed(4) + '%' : '—'; })()}</div>
+    </div>
+    ${pricecheck ? `
+    <div class="card">
+      <div class="ck">Independent price audit</div>
+      <p>1inch Spot Price Aggregator has never seen our subgraph. We compare every pool's price against it.</p>
+      <div class="cv">${pricecheck.agreementPct.toFixed(1)}% agree · median divergence ${pricecheck.medianAbsDivergencePct.toFixed(3)}%</div>
+    </div>` : ''}
+    <div class="card">
+      <div class="ck">Three cutoffs, always</div>
+      <p>Every headline is reported at three liveness cutoffs. If a finding flips across them we label it a <b>parameter, not a finding</b>.</p>
+      <div class="cv">no single-cutoff headlines</div>
+    </div>
+    <div class="card">
+      <div class="ck">Unmeasurable ≠ zero</div>
+      <p>A missing price returns <code>measurable: false</code>, never a fabricated 0.</p>
+      <div class="cv">nulls stay null</div>
+    </div>
+  </div>
+  <p class="note">${pricecheck ? `The two pools that disagree with 1inch are real findings, not noise: <code>USDC/UST</code> and <code>WBTC/PAX</code> — dead tokens whose subgraph price is stale. Finding them is the audit working. ` : ''}The README carries a public <b>honesty box</b> listing our own retractions: a headline correlation that didn't reproduce, a v2 formula applied to a v3 venue, and a canary that nearly deleted correct code. We publish those because a project that has never caught itself being wrong has not been looking.</p>
+</section>`);
+
+// SLIDE 7 — close
+slides.push(`
+<section class="slide" id="s7">
+  <div class="kicker">REALIZED</div>
+  <h2>The advertised number can't show a loss.<br>So we shipped the one that can.</h2>
+  <div class="links">
+    <a href="/">realized.drainfun.xyz</a>
+    <a href="/api/pools">/api/pools</a>
+    <a href="/llms.txt">llms.txt</a>
+    <a href="/SKILL.md">SKILL.md</a>
+  </div>
+  <p class="note">ETHOnline 2026 · The Graph — AI Tooling / AI Use Case. Built on the decentralized network across ${esc(hist.chainsMeasured.join(', '))}. ${corpus ? `Live corpus: ${corpus.headline.misleadingPct.toFixed(1)}% of measured pools currently advertise a positive APR while realizing a negative return.` : ''}</p>
+  <p class="note dim">Deck generated ${generatedAt} from the same data files that serve the API. If a number here disagrees with the API, the API is right and this page is stale — rebuild with <code>node scripts/build-deck.js</code>.</p>
+</section>`);
+
+const html = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REALIZED — deck</title>
+<meta name="description" content="ETHOnline 2026 submission deck for REALIZED: advertised LP APR has no price term, so it cannot show a loss.">
+<style>
+:root{--bg:#0b0f14;--fg:#e6edf3;--dim:#7d8590;--acc:#e07a5f;--good:#3fb950;--line:#1c2229;--card:#111820;--down:#ff6b6b;--up:#6fd89a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 20px 80px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+.brand{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--acc);font-weight:700}
+.top a{color:var(--dim);text-decoration:none;font-weight:600;font-size:11.5px;border:1px solid var(--line);border-radius:5px;padding:4px 9px;margin-left:6px}
+.top a:hover{color:var(--fg);border-color:#333}
+.slide{background:linear-gradient(180deg,#141c26 0%,var(--card) 100%);border:1px solid #24303d;border-radius:18px;padding:34px 34px 30px;margin-bottom:16px;scroll-margin-top:16px}
+.kicker{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:14px}
+.kicker.warn{color:var(--acc)}
+h2{font-size:clamp(24px,3.5vw,34px);line-height:1.16;letter-spacing:-.03em;margin:0 0 16px;font-weight:750}
+h2 em{font-style:normal;color:var(--acc)}
+h2 em.down{color:var(--down)}
+h3{font-size:14px;margin:0 0 8px;letter-spacing:.02em}
+.lede{color:#c3ccd6;max-width:78ch;margin:0 0 14px;font-size:15.5px}
+.lede.punch{color:var(--fg);font-size:17px;font-weight:600;border-left:3px solid var(--acc);padding-left:14px;margin-top:18px}
+.note{color:var(--dim);font-size:13px;max-width:88ch;margin:12px 0 0}
+.note.dim{color:#5f6a75;font-size:12.5px}
+.note b{color:var(--fg)}
+b.up,.up{color:var(--up)} b.down,.down{color:var(--down)}
+.money{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 0;border-top:1px solid #222c38;border-bottom:1px solid #222c38;margin:18px 0 0}
+.mc{display:flex;flex-direction:column;gap:3px}
+.mk{font-size:11.5px;color:var(--dim)}
+.mv{font-size:23px;font-weight:750;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ma{color:#4b5560;font-size:11.5px;white-space:nowrap}
+@media(max-width:640px){.ma{display:none}}
+.eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;background:#0d141b;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:16px 0 0;color:var(--up)}
+/* Tables: on a phone these are wider than the viewport. Two-part fix, because either half
+   alone is still broken:
+   1. .tscroll wraps every table so the overflow SCROLLS instead of being silently clipped at
+      the screen edge (Jiggy, 2026-09-11: the last column fell off the right on mobile, with
+      no affordance saying content was there). A right-edge fade + a one-line hint appear
+      only when scrolling is actually possible.
+   2. .hide-s drops the LOWEST-VALUE column under 680px -- same mechanism index.html already
+      uses, so the two pages behave identically. Never drop a column that carries a headline
+      number; only ones whose absence cannot change a reader's conclusion. */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:6px 0 0;position:relative;scrollbar-width:thin}
+.tscroll::-webkit-scrollbar{height:6px}
+.tscroll::-webkit-scrollbar-thumb{background:#2b3743;border-radius:3px}
+.t{width:100%;border-collapse:collapse;font-size:13.5px;min-width:min(100%,430px)}
+.t th{text-align:left;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--dim);font-weight:700;padding:8px 10px;border-bottom:1px solid #24303d}
+.t td{padding:9px 10px;border-bottom:1px solid #19212a}
+.t td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.t .dim{color:var(--dim)}
+.t th:first-child,.t td:first-child{white-space:normal;min-width:104px}
+.hide-s{display:table-cell}
+.swipe{display:none;font-size:11.5px;color:#5f6a75;margin:7px 0 0;letter-spacing:.02em}
+@media(max-width:680px){
+  .hide-s{display:none}
+  .swipe{display:block}
+  /* min-width:0 + table-layout:fixed makes the table obey the wrapper instead of sizing to
+     its widest cell. Without fixed layout the browser still grows the table past the
+     viewport even with columns hidden, which was the original bug. */
+  .t{font-size:12.5px;min-width:0;table-layout:fixed}
+  .t th,.t td{padding:8px 6px;overflow-wrap:anywhere}
+  .t th{white-space:normal}
+  .t td.num{white-space:normal}
+  .t th:first-child,.t td:first-child{min-width:0}
+  .t code{font-size:11px;padding:1px 3px}
+  .slide{padding:24px 16px 22px;border-radius:14px}
+  .wrap{padding:22px 12px 60px}
+  h2{font-size:22px}
+}
+.fail{color:var(--down);font-weight:700;font-size:12px;letter-spacing:.04em}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:8px 0 0}
+.col{background:#0d141b;border:1px solid var(--line);border-radius:12px;padding:16px}
+.col p{color:var(--dim);font-size:13px;margin:0 0 10px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--acc);background:#161d26;padding:2px 6px;border-radius:5px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin:8px 0 0}
+.card{background:#0d141b;border:1px solid var(--line);border-radius:12px;padding:16px}
+.card p{color:var(--dim);font-size:12.5px;margin:0 0 10px}
+.ck{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg);font-weight:700;margin-bottom:8px}
+.cv{font-size:12.5px;color:var(--up);font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 0}
+.links a{color:var(--fg);text-decoration:none;border:1px solid #2b3743;border-radius:8px;padding:9px 14px;font-size:13.5px;font-weight:600}
+.links a:hover{border-color:var(--acc);color:var(--acc)}
+@media print{body{background:#fff}.slide{page-break-after:always;break-after:page}}
+</style></head>
+<body><div class="wrap">
+<div class="top">
+  <div class="brand">REALIZED — ETHOnline 2026</div>
+  <div><a href="/">Live app</a><a href="/api/pools">API</a><a href="https://github.com/jiggy-cadence/realized" rel="noopener">Source</a></div>
+</div>
+${slides.join('\n')}
+</div></body></html>`;
+
+writeFileSync(`${__dirname}/../deck.html`, html);
+console.log(`wrote deck.html (${(html.length / 1024).toFixed(1)} KB) · ${slides.length} slides`);
+if (!allFail && wfRows.length) console.warn('WARNING: a walk-forward run no longer reports FAILS — re-read slide 5 before shipping.');

@@ -1,0 +1,244 @@
+{
+  "generatedAt": "2026-09-10T01:20:11.625Z",
+  "preRegistered": {
+    "h1Lift": 1.3,
+    "h1MinN": 40,
+    "h2Ratio": 1.5,
+    "h2P": 0.05,
+    "h3Rho": 0.3
+  },
+  "costModel": {
+    "swapFeePctPerSide": 0.05,
+    "gasUsdPerTx": 0.02,
+    "positionUsd": 10000
+  },
+  "poolsTested": 41,
+  "h1": {
+    "real": {
+      "n": 410,
+      "baseRate": 0.3333333333333333,
+      "condRate": 0.624390243902439,
+      "lift": 1.8731707317073172
+    },
+    "control": {
+      "n": 396,
+      "baseRate": 0.3333333333333333,
+      "condRate": 0.3181818181818182,
+      "lift": 0.9545454545454546
+    },
+    "verdict": "SIGNAL"
+  },
+  "h2": {
+    "real": {
+      "ratio": 2.0232558139534884,
+      "chi2": 31.4626489574345,
+      "df": 6,
+      "p": 0.00002865823148778154,
+      "perWeekday": [
+        {
+          "weekday": 0,
+          "n": 165,
+          "hotRate": 0.273
+        },
+        {
+          "weekday": 1,
+          "n": 164,
+          "hotRate": 0.268
+        },
+        {
+          "weekday": 2,
+          "n": 165,
+          "hotRate": 0.267
+        },
+        {
+          "weekday": 3,
+          "n": 205,
+          "hotRate": 0.312
+        },
+        {
+          "weekday": 4,
+          "n": 203,
+          "hotRate": 0.409
+        },
+        {
+          "weekday": 5,
+          "n": 164,
+          "hotRate": 0.53
+        },
+        {
+          "weekday": 6,
+          "n": 164,
+          "hotRate": 0.262
+        }
+      ]
+    },
+    "control": {
+      "ratio": 1.4363636363636363,
+      "chi2": 6.843438773169641,
+      "df": 6,
+      "p": 0.33529573754217623,
+      "perWeekday": [
+        {
+          "weekday": 0,
+          "n": 165,
+          "hotRate": 0.285
+        },
+        {
+          "weekday": 1,
+          "n": 164,
+          "hotRate": 0.366
+        },
+        {
+          "weekday": 2,
+          "n": 165,
+          "hotRate": 0.382
+        },
+        {
+          "weekday": 3,
+          "n": 205,
+          "hotRate": 0.385
+        },
+        {
+          "weekday": 4,
+          "n": 203,
+          "hotRate": 0.315
+        },
+        {
+          "weekday": 5,
+          "n": 164,
+          "hotRate": 0.323
+        },
+        {
+          "weekday": 6,
+          "n": 164,
+          "hotRate": 0.268
+        }
+      ]
+    },
+    "verdict": "SIGNAL"
+  },
+  "h3": {
+    "real": {
+      "n": 1189,
+      "rhoRaw": 0.6950804951794414,
+      "rhoDemeaned": 0.5121552364861126,
+      "pearsonDemeaned": 0.4643466063494764
+    },
+    "control": {
+      "n": 1189,
+      "rhoRaw": 0.5863224052013445,
+      "rhoDemeaned": -0.054823289256574766,
+      "pearsonDemeaned": -0.11064994818404172
+    },
+    "verdict": "SIGNAL"
+  },
+  "h4": {
+    "pools": 41,
+    "medianEdgePct": -0.235,
+    "meanEdgePct": -0.075,
+    "poolsWhereStrategyWins": 19,
+    "winRatePct": 46.3,
+    "perPool": [
+      {
+        "days": 30,
+        "entries": 4,
+        "stratFeesPct": 0.2,
+        "stratIlPct": 0.048,
+        "stratCostPct": 0.402,
+        "stratNetPct": -0.249,
+        "holdNetPct": -1.859,
+        "edgePct": 1.61
+      },
+      {
+        "days": 30,
+        "entries": 4,
+        "stratFeesPct": 0.597,
+        "stratIlPct": 0.356,
+        "stratCostPct": 0.402,
+        "stratNetPct": -0.161,
+        "holdNetPct": -1.62,
+        "edgePct": 1.46
+      },
+      {
+        "days": 30,
+        "entries": 1,
+        "stratFeesPct": 0.013,
+        "stratIlPct": 0.019,
+        "stratCostPct": 0.1,
+        "stratNetPct": -0.107,
+        "holdNetPct": -1.007,
+        "edgePct": 0.9
+      },
+      {
+        "days": 30,
+        "entries": 3,
+        "stratFeesPct": 0.008,
+        "stratIlPct": 0.076,
+        "stratCostPct": 0.301,
+        "stratNetPct": -0.369,
+        "holdNetPct": -1.012,
+        "edgePct": 0.643
+      },
+      {
+        "days": 30,
+        "entries": 3,
+        "stratFeesPct": 0.01,
+        "stratIlPct": 0.075,
+        "stratCostPct": 0.301,
+        "stratNetPct": -0.367,
+        "holdNetPct": -1.006,
+        "edgePct": 0.64
+      },
+      {
+        "days": 30,
+        "entries": 4,
+        "stratFeesPct": 0.025,
+        "stratIlPct": 0.075,
+        "stratCostPct": 0.402,
+        "stratNetPct": -0.453,
+        "holdNetPct": -0.968,
+        "edgePct": 0.516
+      },
+      {
+        "days": 30,
+        "entries": 4,
+        "stratFeesPct": 0.083,
+        "stratIlPct": 0.032,
+        "stratCostPct": 0.402,
+        "stratNetPct": -0.351,
+        "holdNetPct": -0.866,
+        "edgePct": 0.515
+      },
+      {
+        "days": 30,
+        "entries": 3,
+        "stratFeesPct": 0.143,
+        "stratIlPct": 0.076,
+        "stratCostPct": 0.301,
+        "stratNetPct": -0.234,
+        "holdNetPct": -0.737,
+        "edgePct": 0.503
+      },
+      {
+        "days": 30,
+        "entries": 4,
+        "stratFeesPct": 0.016,
+        "stratIlPct": 0.08,
+        "stratCostPct": 0.402,
+        "stratNetPct": -0.465,
+        "holdNetPct": -0.938,
+        "edgePct": 0.473
+      },
+      {
+        "days": 30,
+        "entries": 4,
+        "stratFeesPct": 0.106,
+        "stratIlPct": 0.071,
+        "stratCostPct": 0.402,
+        "stratNetPct": -0.366,
+        "holdNetPct": -0.785,
+        "edgePct": 0.419
+      }
+    ]
+  }
+}

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REALIZED — what LPs actually took home</title>
+<style>
+:root{--bg:#0d1117;--fg:#e6edf3;--dim:#8b949e;--accent:#e07a5f;--line:#21262d;--card:#141a21}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:56px 24px 96px}
+h1{font-size:15px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin:0 0 28px;font-weight:600}
+h2{font-size:23px;margin:56px 0 6px;letter-spacing:-.01em}
+h2 .n{color:var(--dim);font-weight:400;font-size:15px;margin-right:10px}
+.lede{font-size:26px;line-height:1.4;font-weight:600;letter-spacing:-.02em;margin:0 0 20px}
+.lede em{color:var(--accent);font-style:normal}
+.sub{color:var(--dim);font-size:16px;max-width:74ch;margin:0 0 8px}
+p{max-width:74ch;color:#c9d1d9}
+.dim{color:var(--dim)}.sm{font-size:12.5px;line-height:1.45}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14.5px}
+th{text-align:left;font-weight:600;color:var(--dim);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+ padding:0 12px 9px 0;border-bottom:1px solid var(--line)}
+td{padding:13px 12px 13px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td.big{font-size:19px;font-weight:600;color:var(--accent)}
+tr.untrusted td{background:rgba(139,148,158,.05)}
+.spark,.bar{display:block;width:100%;height:auto}
+.spark{max-width:260px}.bar{max-width:210px}
+.mid{stroke:#30363d;stroke-width:1;stroke-dasharray:2 3}
+.box{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);
+ padding:18px 22px;margin:22px 0;border-radius:0 8px 8px 0}
+.box.warn{border-left-color:#8b949e}
+.box h3{margin:0 0 8px;font-size:15px;letter-spacing:.02em}
+.box p{margin:0;font-size:14.5px;color:#adbac7}
+code{background:#1c2128;padding:2px 6px;border-radius:4px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.foot{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+.kpi{display:flex;gap:38px;flex-wrap:wrap;margin:26px 0 8px}
+.kpi div b{display:block;font-size:32px;color:var(--accent);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi div span{font-size:12.5px;color:var(--dim)}
+</style></head><body><div class="wrap">
+
+<h1>Realized</h1>
+<p class="lede">Advertised LP APR is positive by construction. <em>It cannot tell you that you lost money.</em></p>
+<p class="sub">Advertised APR is fee income, annualized. It has no price term, so a pool cannot advertise a loss
+no matter what happened to the people in it. Realized return = fees <b>+ impermanent loss</b>. Measured on live
+data from The&nbsp;Graph across 4 chains and 2 DEXes.</p>
+
+<div class="kpi">
+  <div><b>110</b><span>independent months measured</span></div>
+  <div><b>4</b><span>chains validated <span class="dim">of 5 queried</span></span></div>
+  <div><b>67%</b><span>median pools misleading a tight-range LP (base)</span></div>
+  <div><b>55%</b><span>even in that chain's best month</span></div>
+</div>
+
+<h2><span class="n">01</span>The defect survives every knob we can turn</h2>
+<p class="sub">Uniswap v3 LPs <b>concentrate</b> into a price band. Inside a band impermanent loss is amplified;
+once price leaves it you are fully converted into the losing asset and the loss is no longer impermanent.
+Full-range is therefore the <b>most generous possible case for the pool</b> — so we report all of them.</p>
+<table><thead><tr><th>LP range</th><th>median IL</th><th>median realized</th><th>knocked out of range</th><th>advertised + / real −</th></tr></thead>
+<tbody><tr>
+  <td><b>tight</b> <span class="dim">±1.25x</span></td>
+  <td class="num">-1.49%</td>
+  <td class="num">-1.06%</td>
+  <td class="num">29/102</td>
+  <td class="num big">64%</td></tr><tr>
+  <td><b>moderate</b> <span class="dim">±2x</span></td>
+  <td class="num">-0.54%</td>
+  <td class="num">-0.13%</td>
+  <td class="num">0/102</td>
+  <td class="num big">53%</td></tr><tr>
+  <td><b>wide</b> <span class="dim">±4x</span></td>
+  <td class="num">-0.31%</td>
+  <td class="num">0.02%</td>
+  <td class="num">0/102</td>
+  <td class="num big">48%</td></tr><tr>
+  <td><b>full</b> <span class="dim">full-range</span></td>
+  <td class="num">-0.16%</td>
+  <td class="num">0.08%</td>
+  <td class="num">0/102</td>
+  <td class="num big">37%</td></tr></tbody></table>
+<div class="box warn"><h3>Held deliberately unfair to us</h3><p>The fee term is constant across ranges.
+Concentrating earns more fees too, so some of that IL is earned back — we cannot measure per-position fees from
+pool-level data, so we did not model the uplift. The <b>direction</b> is what survives; treat magnitudes as bounded by that.</p></div>
+
+<h2><span class="n">02</span>Not one lucky month, and not one chain</h2>
+<p class="sub">Strictly <b>non-overlapping</b> 30-day tiles — no shared days, so the window count is a real sample count.
+Each window runs its own stable-pair canary. Sparkline shows tight-range misleading% over time, oldest → newest, 50% mid-line.</p>
+<table><thead><tr><th>chain</th><th>months</th><th>tight ±1.25x</th><th>moderate ±2x</th><th>full-range</th><th>over time</th></tr></thead>
+<tbody><tr>
+    <td><b>mainnet</b><div class="dim sm">2024-04-20 →</div></td>
+    <td class="num">30</td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="55.5" y="6" width="88.4" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="112.8" y1="2" x2="112.8" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">26%–69% · med <b>54%</b></div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="47.4" y="6" width="73.1" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="81.0" y1="2" x2="81.0" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 39%</div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="23.8" y="6" width="65.7" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="48.8" y1="2" x2="48.8" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 23%</div></td>
+    <td><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><path d="M0.0,25.4 L9.0,20.1 L17.9,18.8 L26.9,27.6 L35.9,21.2 L44.8,22.1 L53.8,20.4 L62.8,19.2 L71.7,14.5 L80.7,25.0 L89.7,19.7 L98.6,19.6 L107.6,23.8 L116.6,18.2 L125.5,26.2 L134.5,19.4 L143.4,21.4 L152.4,29.6 L161.4,21.1 L170.3,20.7 L179.3,27.1 L188.3,31.2 L197.2,18.2 L206.2,33.8 L215.2,29.0 L224.1,22.6 L233.1,17.9 L242.1,28.9 L251.0,25.8 L260.0,19.3 L260,46 L0,46 Z" fill="rgba(224,122,95,.13)"/><line x1="0" y1="23.0" x2="260" y2="23.0" class="mid"/><path d="M0.0,25.4 L9.0,20.1 L17.9,18.8 L26.9,27.6 L35.9,21.2 L44.8,22.1 L53.8,20.4 L62.8,19.2 L71.7,14.5 L80.7,25.0 L89.7,19.7 L98.6,19.6 L107.6,23.8 L116.6,18.2 L125.5,26.2 L134.5,19.4 L143.4,21.4 L152.4,29.6 L161.4,21.1 L170.3,20.7 L179.3,27.1 L188.3,31.2 L197.2,18.2 L206.2,33.8 L215.2,29.0 L224.1,22.6 L233.1,17.9 L242.1,28.9 L251.0,25.8 L260.0,19.3" fill="none" stroke="#e07a5f" stroke-width="1.8"/></svg></td></tr><tr>
+    <td><b>arbitrum</b><div class="dim sm">2024-04-20 →</div></td>
+    <td class="num">30</td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="65.0" y="6" width="117.4" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="126.0" y1="2" x2="126.0" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">31%–87% · med <b>60%</b></div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="29.3" y="6" width="128.2" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="97.6" y1="2" x2="97.6" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 46%</div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="5.5" y="6" width="116.1" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="54.2" y1="2" x2="54.2" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 26%</div></td>
+    <td><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><path d="M0.0,16.5 L9.0,26.9 L17.9,24.7 L26.9,28.5 L35.9,16.6 L44.8,20.9 L53.8,26.7 L62.8,22.5 L71.7,15.9 L80.7,23.5 L89.7,17.0 L98.6,16.0 L107.6,11.5 L116.6,6.7 L125.5,25.1 L134.5,19.0 L143.4,12.2 L152.4,30.0 L161.4,10.3 L170.3,16.0 L179.3,18.4 L188.3,31.8 L197.2,9.6 L206.2,30.3 L215.2,18.4 L224.1,9.4 L233.1,7.3 L242.1,18.9 L251.0,18.7 L260.0,6.1 L260,46 L0,46 Z" fill="rgba(224,122,95,.13)"/><line x1="0" y1="23.0" x2="260" y2="23.0" class="mid"/><path d="M0.0,16.5 L9.0,26.9 L17.9,24.7 L26.9,28.5 L35.9,16.6 L44.8,20.9 L53.8,26.7 L62.8,22.5 L71.7,15.9 L80.7,23.5 L89.7,17.0 L98.6,16.0 L107.6,11.5 L116.6,6.7 L125.5,25.1 L134.5,19.0 L143.4,12.2 L152.4,30.0 L161.4,10.3 L170.3,16.0 L179.3,18.4 L188.3,31.8 L197.2,9.6 L206.2,30.3 L215.2,18.4 L224.1,9.4 L233.1,7.3 L242.1,18.9 L251.0,18.7 L260.0,6.1" fill="none" stroke="#e07a5f" stroke-width="1.8"/></svg></td></tr><tr>
+    <td><b>polygon</b><div class="dim sm">2024-04-20 →</div></td>
+    <td class="num">23</td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="35.0" y="6" width="158.8" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="117.6" y1="2" x2="117.6" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">17%–92% · med <b>56%</b></div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="8.7" y="6" width="182.2" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="90.0" y1="2" x2="90.0" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 43%</div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="0.0" y="6" width="143.2" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="43.8" y1="2" x2="43.8" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 21%</div></td>
+    <td><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><path d="M0.0,26.0 L11.8,30.7 L23.6,24.9 L35.5,38.3 L47.3,10.0 L59.1,24.9 L70.9,32.0 L82.7,23.0 L94.5,3.5 L106.4,26.5 L118.2,16.6 L130.0,7.7 L141.8,15.3 L153.6,7.7 L165.5,23.0 L177.3,20.2 L189.1,15.3 L200.9,24.8 L212.7,8.8 L224.5,15.3 L236.4,19.7 L248.2,21.9 L260.0,4.2 L260,46 L0,46 Z" fill="rgba(224,122,95,.13)"/><line x1="0" y1="23.0" x2="260" y2="23.0" class="mid"/><path d="M0.0,26.0 L11.8,30.7 L23.6,24.9 L35.5,38.3 L47.3,10.0 L59.1,24.9 L70.9,32.0 L82.7,23.0 L94.5,3.5 L106.4,26.5 L118.2,16.6 L130.0,7.7 L141.8,15.3 L153.6,7.7 L165.5,23.0 L177.3,20.2 L189.1,15.3 L200.9,24.8 L212.7,8.8 L224.5,15.3 L236.4,19.7 L248.2,21.9 L260.0,4.2" fill="none" stroke="#e07a5f" stroke-width="1.8"/></svg></td></tr><tr class="untrusted"><td><b>optimism</b></td><td colspan="5" class="dim">
+      no trusted windows — n=12 per window, below the n≥20 bar. No number quoted.</td></tr><tr>
+    <td><b>base</b><div class="dim sm">2024-04-20 →</div></td>
+    <td class="num">27</td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="114.5" y="6" width="85.9" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="140.0" y1="2" x2="140.0" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">55%–95% · med <b>67%</b></div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="80.0" y="6" width="91.8" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="112.5" y1="2" x2="112.5" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 54%</div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="37.7" y="6" width="81.6" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="68.3" y1="2" x2="68.3" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 33%</div></td>
+    <td><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><path d="M0.0,19.7 L10.0,20.7 L20.0,8.8 L30.0,17.3 L40.0,12.7 L50.0,15.3 L60.0,20.9 L70.0,12.0 L80.0,8.3 L90.0,13.0 L100.0,9.5 L110.0,17.9 L120.0,17.6 L130.0,12.1 L140.0,18.6 L150.0,13.6 L160.0,10.7 L170.0,16.4 L180.0,18.4 L190.0,2.1 L200.0,19.7 L210.0,19.1 L220.0,12.0 L230.0,12.0 L240.0,17.7 L250.0,18.2 L260.0,13.8 L260,46 L0,46 Z" fill="rgba(224,122,95,.13)"/><line x1="0" y1="23.0" x2="260" y2="23.0" class="mid"/><path d="M0.0,19.7 L10.0,20.7 L20.0,8.8 L30.0,17.3 L40.0,12.7 L50.0,15.3 L60.0,20.9 L70.0,12.0 L80.0,8.3 L90.0,13.0 L100.0,9.5 L110.0,17.9 L120.0,17.6 L130.0,12.1 L140.0,18.6 L150.0,13.6 L160.0,10.7 L170.0,16.4 L180.0,18.4 L190.0,2.1 L200.0,19.7 L210.0,19.1 L220.0,12.0 L230.0,12.0 L240.0,17.7 L250.0,18.2 L260.0,13.8" fill="none" stroke="#e07a5f" stroke-width="1.8"/></svg></td></tr></tbody></table>
+<div class="box"><h3>No Wayback Machine required</h3><p>We were about to reconstruct history by scraping archived
+DeFi dashboards. Checked the primary source first: <code>poolDayData</code> reaches <b>2021-05-05</b> on mainnet —
+1,952 days for USDC/WETH. The subgraph carries full history natively. One query saved an entire subsystem.</p></div>
+<div class="box warn"><h3>Unavailable is never reported as clean</h3><p>bnb (bad indexers) · celo (indexer timeout) · avalanche (no allocations).
+A chain we could not measure is never reported as a chain without the defect.</p></div>
+
+<h2><span class="n">03</span>Not a Uniswap artifact</h2>
+<p class="sub">The same instrument, unchanged, on an independent DEX. Different team, different codebase,
+different incentive model — same defect, same shape, same range-ordering.</p>
+<table><thead><tr><th>venue</th><th>months</th><th>tight ±1.25x</th><th>moderate ±2x</th><th>full-range</th></tr></thead>
+<tbody><tr>
+    <td><b>Aerodrome</b><div class="dim sm">base · 2024-06-19 →</div></td>
+    <td class="num">24</td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="48.5" y="6" width="95.7" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="106.8" y1="2" x2="106.8" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">23%–69% · med <b>51%</b></div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="24.7" y="6" width="106.9" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="62.9" y1="2" x2="62.9" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 30%</div></td>
+    <td><svg viewBox="0 0 210 22" class="bar"><rect x="0" y="8" width="210" height="6" fill="#1c2128" rx="3"/><rect x="0.0" y="6" width="90.9" height="10" fill="rgba(224,122,95,.42)" rx="5"/><line x1="33.2" y1="2" x2="33.2" y2="20" stroke="#e07a5f" stroke-width="2.5"/></svg><div class="dim sm">med 16%</div></td></tr><tr class="untrusted"><td><b>sushiswap-v3</b><div class="dim sm">mainnet</div></td>
+      <td colspan="4" class="dim">unmeasurable — 8 pools clear the TVL floor, canary could not be proven.
+      All 30 windows <code>trusted:false</code>. No number quoted.</td></tr></tbody></table>
+
+<h2><span class="n">04</span>The volatility check is a falsification test, not a finding</h2>
+<p class="sub">Impermanent loss is <b>mathematically</b> a function of price divergence, so the defect <b>must</b>
+worsen in volatile months. That is a prediction our own theory makes — if the data did not show it, our instrument
+would be broken. We ran it to try to break ourselves and failed to.</p>
+<table><thead><tr><th>range</th><th>n</th><th>Pearson</th><th>Spearman</th></tr></thead><tbody><tr>
+  <td><b>tight</b></td><td class="num">110</td>
+  <td class="num">0.430</td><td class="num">0.572</td></tr><tr>
+  <td><b>moderate</b></td><td class="num">110</td>
+  <td class="num">0.341</td><td class="num">0.447</td></tr><tr>
+  <td><b>wide</b></td><td class="num">110</td>
+  <td class="num">0.303</td><td class="num">0.384</td></tr><tr>
+  <td><b>full</b></td><td class="num">110</td>
+  <td class="num">0.235</td><td class="num">0.285</td></tr></tbody></table>
+<div class="box warn"><h3>This is not evidence about macro or equities</h3><p>We did not test those series and will
+not imply we did. With enough candidate predictors you can find a "relationship" to anything. A correlation predicted
+in advance from an identity is a self-check; a correlation found by fishing would be a story.</p></div>
+
+<h2><span class="n">05</span>Honesty box</h2>
+<div class="box"><h3>Retracted: corr(advertised, realized) = 0.06</h3><p>It was this page's headline and it does
+<b>not reproduce</b> — it existed in no committed code. Recomputed honestly it spans Pearson 0.38–0.30
+depending on gate, trimming and estimator. That spread <i>is</i> the finding: quoting any single value as "the"
+correlation was the mistake. The headline is now the pool-count result, which is measured rather than estimated.</p></div>
+<table><thead><tr><th>liveness gate</th><th>n</th><th>Pearson</th><th>Spearman</th><th>trimmed 2% (P / S)</th></tr></thead>
+<tbody><tr>
+  <td><b>loose</b></td><td class="num">129</td>
+  <td class="num">0.382</td><td class="num">0.332</td>
+  <td class="num">0.326 / 0.329</td></tr><tr>
+  <td><b>mid</b></td><td class="num">102</td>
+  <td class="num">0.378</td><td class="num">0.338</td>
+  <td class="num">0.307 / 0.298</td></tr><tr>
+  <td><b>strict</b></td><td class="num">66</td>
+  <td class="num">0.394</td><td class="num">0.366</td>
+  <td class="num">0.299 / 0.339</td></tr></tbody></table>
+<div class="box"><h3>Base first returned 0 of 30 trusted windows — the canary working</h3><p>Base's top pools by
+volume contained no stable/stable pair, so the instrument could not prove it measures IL correctly and refused to
+certify. The fix was to <b>fetch the canary its reference pools</b>, never to weaken the canary. Those pools are
+validation-only and excluded from every headline.</p></div>
+<div class="box warn"><h3>Survivorship bias, and it points against us</h3><p>Pools are ranked by <i>current</i>
+volume, so pools that died are absent from historical windows. That makes the past look <b>better</b> than it was,
+weakening our thesis rather than inflating it. The subgraph exposes no point-in-time ranking, so we state the bias
+instead of pretending to correct it.</p></div>
+<div class="box warn"><h3>The stability check is not a hypothesis test</h3><p>A separate 13-window run
+(<code>walkforward.json</code>) steps 15 days across a 30-day span, so adjacent windows share half their data.
+13/13 trusted, defect in every one — but they are <b>not</b> independent samples.</p></div>
+
+<div class="foot">
+Corpus generated 2026-09-11 14:00 UTC ·
+history 2026-09-07 04:57 UTC ·
+cross-DEX 2026-09-07 05:04 UTC<br>
+Source: The Graph decentralized network. Every number on this page is read from committed JSON —
+this page performs no measurement of its own. Regenerate: <code>node scripts/build-report.js</code>
+</div>
+</div></body></html>

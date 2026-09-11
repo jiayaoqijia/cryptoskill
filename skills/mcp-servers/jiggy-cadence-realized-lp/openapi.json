@@ -1,0 +1,423 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "REALIZED API",
+    "version": "1.0.0",
+    "summary": "What a liquidity provider actually made, not what the DEX advertised.",
+    "description": "Advertised LP APR is fee income annualized. It has no price term, so it is positive by construction and cannot report a loss. REALIZED adds the missing term: realized return = fees + impermanent loss, computed from The Graph's historical poolDayData.\n\nNo API key is required. This server proxies its own Graph key, so an agent can call every endpoint below with a bare GET. CORS is open (`access-control-allow-origin: *`).\n\nHonesty constraints that hold across every endpoint:\n- Unmeasurable is reported as `measurable: false` with a reason, NEVER as 0. A fabricated zero is a number whose label lies, which is the exact defect this project exists to expose.\n- Corpus aggregates carry a stable-pair canary: stable/stable pairs must show ~0 impermanent loss, or the instrument is considered broken and refuses to rank.\n- `/api/rank` is a TRACK RECORD, not a forecast. Predictive pool selection was tested and failed walk-forward validation five times against a pre-registered bar; it was removed rather than shipped.",
+    "license": { "name": "MIT" }
+  },
+  "servers": [
+    { "url": "https://realized.drainfun.xyz", "description": "Live production" }
+  ],
+  "tags": [
+    { "name": "discovery", "description": "Find a pool or a wallet's positions" },
+    { "name": "measurement", "description": "Realized return for a pool or a specific position" },
+    { "name": "corpus", "description": "Aggregate sweeps and rankings across the cached corpus" },
+    { "name": "meta", "description": "Health, venues, cache observability" }
+  ],
+  "paths": {
+    "/api/pools": {
+      "get": {
+        "tags": ["corpus"],
+        "operationId": "getPools",
+        "summary": "The full cached corpus, with a field schema and a runnable test vector",
+        "description": "Returns every cached pool with realizedAprPct, gapPts and misleading precomputed at a moderate (±2x) range. Ships a `testVector` containing real inputs and the real expected output from this server: implement the closed-form IL formula, run it on those inputs, and verify you match before trusting your own math on any other pool. An agent should not have to take our word for it.",
+        "responses": {
+          "200": {
+            "description": "Corpus plus schema and test vector",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "generatedAt": { "type": "string", "format": "date-time" },
+                    "pools": { "type": "array", "items": { "$ref": "#/components/schemas/Pool" } },
+                    "schema": { "type": "object", "description": "Plain-language meaning of each pool field.", "additionalProperties": { "type": "string" } },
+                    "testVector": { "$ref": "#/components/schemas/TestVector" },
+                    "liveEndpoints": { "type": "object", "additionalProperties": { "type": "string" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/find": {
+      "get": {
+        "tags": ["discovery"],
+        "operationId": "findPool",
+        "summary": "Resolve a pair name to a poolId",
+        "description": "Searches the cached corpus first, then falls back to a live Uniswap v3 mainnet lookup unless `live=0`. Pass `matches[].poolId` into /api/pool/{poolId} or /api/position/{poolId}.",
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" }, "example": "WETH/USDC", "description": "Pair query, e.g. WETH/USDC or a single symbol." },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "default": 5 } },
+          { "name": "live", "in": "query", "required": false, "schema": { "type": "string", "enum": ["0"] }, "description": "Set to 0 to suppress the live fallback and search the cache only." }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matches, with the source that produced them",
+            "content": { "application/json": { "schema": {
+              "type": "object",
+              "properties": {
+                "query": { "type": "string" },
+                "source": { "type": "string", "description": "`cache` or `live:uniswap-v3/mainnet`.", "examples": ["cache", "live:uniswap-v3/mainnet"] },
+                "matches": { "type": "array", "items": { "$ref": "#/components/schemas/Match" } },
+                "note": { "type": "string" }
+              }
+            } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/api/pool/{poolId}": {
+      "get": {
+        "tags": ["measurement"],
+        "operationId": "getPool",
+        "summary": "Realized vs advertised return for one pool over a trailing window",
+        "description": "Computes realized return (fees + impermanent loss) for a pool over the last `days`, at an assumed range width. For a specific entry date rather than a trailing window, use /api/position/{poolId}.",
+        "parameters": [
+          { "$ref": "#/components/parameters/PoolId" },
+          { "name": "range", "in": "query", "required": false, "schema": { "type": "number" }, "description": "Assumed range width multiplier. 1.25 = tight, 2 = moderate, 4 = wide, 1e8 ≈ full-range (v2-equivalent). Omit for the server default.", "example": 2 },
+          { "name": "days", "in": "query", "required": false, "schema": { "type": "integer", "default": 30 } },
+          { "$ref": "#/components/parameters/Dex" },
+          { "$ref": "#/components/parameters/Chain" }
+        ],
+        "responses": {
+          "200": { "description": "Realized measurement for the pool", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PoolMeasurement" } } } },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/position/{poolId}": {
+      "get": {
+        "tags": ["measurement"],
+        "operationId": "getPositionRealized",
+        "summary": "THE MAIN ONE — what a specific position made from a specific entry date",
+        "description": "The actual LP question: \"I entered THIS pool on THIS date at THIS range — what have I made since?\" Not a fixed lookback window. Returns a daily series so the path is visible, not just the endpoint.\n\nRefuses rather than fabricates: a window shorter than 2 days returns `measurable: false`. If the position went out of range, `outOfRange` is true and the return is flagged as realized-not-impermanent, because the loss stopped being reversible.",
+        "parameters": [
+          { "$ref": "#/components/parameters/PoolId" },
+          { "name": "entry", "in": "query", "required": true, "schema": { "type": "string", "format": "date" }, "example": "2026-07-28", "description": "Entry date, YYYY-MM-DD." },
+          { "name": "range", "in": "query", "required": false, "schema": { "type": "number", "default": 2 }, "description": "Range width multiplier the LP actually set. Get the real one from /api/wallet/{address} instead of assuming." },
+          { "$ref": "#/components/parameters/Dex" },
+          { "$ref": "#/components/parameters/Chain" }
+        ],
+        "responses": {
+          "200": { "description": "Realized return for the position", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PositionRealized" }, "example": {
+            "measurable": true, "pair": "USDC/WETH", "entryDate": "2026-07-28", "latestDate": "2026-09-11", "daysHeld": 46,
+            "rangeWidthX": 2, "entryPrice": 1919.4645158802757, "currentPrice": 2456.5595984319816, "priceRatio": 1.2798150620176438,
+            "feeReturnPct": 0.48465715497856365, "impermanentLossPct": -2.5813595901512554, "realizedReturnPct": -2.0967024351726917,
+            "realizedAprPct": -16.6368780182181, "outOfRange": false, "outOfRangeNote": null,
+            "dailySeries": [{ "date": "2026-07-28", "realizedReturnPct": 0.016 }, { "date": "2026-07-29", "realizedReturnPct": 0.039 }]
+          } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/api/simulate-exit/{poolId}": {
+      "get": {
+        "tags": ["measurement"],
+        "operationId": "simulateExit",
+        "summary": "Decision support: what would closing this position TODAY actually net, in dollars?",
+        "description": "Not a new claim \u2014 calls the identical position_realized math and reframes it around the question a holder has at the moment of deciding whether to exit: dollars on a stated stake, not just percentages since entry.\n\nGAS is real: live gas price from 1inch \u00d7 estimated gas units for decreaseLiquidity + collect (~270k). The price is measured, the units are an estimate, so the dollar figure is approximate and labelled isEstimate.\n\nSLIPPAGE: closing a v3 position is NOT a swap. decreaseLiquidity + collect returns BOTH tokens at the current tick, so price impact is a measured ZERO \u2014 not an unavailable field. Slippage applies only if you then choose to swap one side into the other; pass consolidate=true for that case, where the estimate is an explicit LOWER BOUND (modelled against total pool TVL, while a concentrated pool's depth at the active tick is thinner).\n\nnetAfterCostsUsd is populated only when BOTH gas and slippage are known, and is null otherwise rather than a partial subtraction presented as a complete figure. If outOfRange is true, the loss is locked in regardless of timing.",
+        "parameters": [
+          { "$ref": "#/components/parameters/PoolId" },
+          { "name": "entry", "in": "query", "required": true, "schema": { "type": "string", "format": "date" }, "example": "2026-07-28", "description": "Entry date, YYYY-MM-DD." },
+          { "name": "range", "in": "query", "required": false, "schema": { "type": "number", "default": 2 }, "description": "Range width the LP actually set. Get the real one from /api/wallet/{address}." },
+          { "name": "stake", "in": "query", "required": false, "schema": { "type": "number", "default": 10000 }, "description": "Position size in USD, for a dollar answer instead of only percentages." },
+          { "name": "consolidate", "in": "query", "required": false, "schema": { "type": "boolean", "default": false }, "description": "Set true ONLY if you intend to swap one token into the other after closing. Closing alone is not a swap and costs zero slippage." },
+          { "$ref": "#/components/parameters/Dex" },
+          { "$ref": "#/components/parameters/Chain" }
+        ],
+        "responses": {
+          "200": { "description": "Exit simulation for the position", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SimulateExit" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/api/wallet/{address}": {
+      "get": {
+        "tags": ["discovery"],
+        "operationId": "getWalletPositions",
+        "summary": "Which pools an address holds, and at what REAL tick range",
+        "description": "Position DISCOVERY, not per-position P&L — and that distinction is a measured decision, not a missing feature.\n\nReads the Position entity and resolves each position's real tick bounds, so you can stop assuming ±2x. Feed `positions[].range.widthX` into /api/position/{poolId} to get realized return at the range the LP actually set.\n\nWhat it deliberately does NOT return, and why:\n- **Uncollected fees.** `collectedFees*` is a withdrawal record, not an earnings record — it only populates when the LP calls collect(). Measured live: of 150 positions with `collectedFeesToken0 == 0`, 71 had non-zero `feeGrowthInside0LastX128` — they earned fees and never collected. So uncollected fees return `measurable: false` with a reason, never $0.\n- **Position value at entry.** `deposited*`/`withdrawn*` are lifetime cumulative, not entry state (75% of live positions read as one-sided because of it), so they are namespaced under `cumulative` and must not be read as position value.\n\nEvery response carries a `limits` block stating both. Token `decimals` ship beside every raw amount so no consumer has to guess the divisor. Read-only: no signing, no wallet connection, no permissions.",
+        "parameters": [
+          { "name": "address", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }, "description": "Owner address. Read-only lookup.", "example": "0x5777d92f208679db4b9778590fa3cab3ac9e2168" },
+          { "$ref": "#/components/parameters/Dex" },
+          { "$ref": "#/components/parameters/Chain" },
+          { "name": "includeClosed", "in": "query", "required": false, "schema": { "type": "boolean", "default": false }, "description": "Include positions with zero current liquidity." }
+        ],
+        "responses": {
+          "200": { "description": "Positions held, with real ranges and explicit limits", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WalletPositions" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/api/audit": {
+      "get": {
+        "tags": ["corpus"],
+        "operationId": "auditPools",
+        "summary": "Corpus-wide sweep with a stable-pair canary and a sensitivity table",
+        "description": "Sweeps the corpus and reports what share of pools advertised a positive APR while LPs realized a negative return. Ships a sensitivity table across three liveness gates, because a headline that only survives one cutoff is a parameter, not a finding.",
+        "parameters": [
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "default": 250 } },
+          { "name": "days", "in": "query", "required": false, "schema": { "type": "integer", "default": 30 } },
+          { "$ref": "#/components/parameters/Dex" },
+          { "$ref": "#/components/parameters/Chain" }
+        ],
+        "responses": {
+          "200": { "description": "Audit summary with canary and sensitivity", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Audit" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/api/rank": {
+      "get": {
+        "tags": ["corpus"],
+        "operationId": "rankPools",
+        "summary": "Which advertised APRs have actually been trustworthy (track record, NOT a forecast)",
+        "description": "Ranks pools by track record over the measured window. This is explicitly not a prediction: predictive pool selection was tested (+1.64pp on one split) and then failed five walk-forward re-runs against a pre-registered bar of ≥0.5pp median edge, ≥60% positive windows, p ≤ 0.05. It was killed rather than shipped. The response carries `notAPrediction` so an agent cannot mistake it.",
+        "parameters": [
+          { "name": "top", "in": "query", "required": false, "schema": { "type": "integer", "default": 25, "maximum": 200 } },
+          { "name": "trust", "in": "query", "required": false, "schema": { "type": "string", "enum": ["historically honest", "gap-prone", "routinely misleading", "unmeasurable"] }, "description": "Filter to a single trust label." },
+          { "name": "sort", "in": "query", "required": false, "schema": { "type": "string", "enum": ["realized", "gap", "tvl"], "default": "realized" } }
+        ],
+        "responses": {
+          "200": { "description": "Ranked pools with trust-label definitions and counts", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Rank" } } } }
+        }
+      }
+    },
+    "/api/venues": {
+      "get": {
+        "tags": ["meta"],
+        "operationId": "getVenues",
+        "summary": "Supported dex/chain combinations",
+        "responses": {
+          "200": { "description": "Known venues and which are cached", "content": { "application/json": { "schema": { "type": "object", "properties": {
+            "venues": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+            "cachedVenues": { "type": "array", "items": { "type": "string" }, "examples": [["uniswap-v3/mainnet", "aerodrome/base"]] }
+          } } } } }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["meta"],
+        "operationId": "getHealth",
+        "summary": "Liveness plus cache observability",
+        "description": "Cache stats are surfaced deliberately rather than kept as a silent optimization: if a demo starts failing, the first question is whether upstream is actually being hit.",
+        "responses": {
+          "200": { "description": "Health and cache statistics", "content": { "application/json": { "schema": { "type": "object", "properties": {
+            "ok": { "type": "boolean" },
+            "pools": { "type": "integer" },
+            "generatedAt": { "type": "string", "format": "date-time" },
+            "cache": { "type": "object", "properties": {
+              "entries": { "type": "integer" }, "hits": { "type": "integer" }, "misses": { "type": "integer" },
+              "hitRatePct": { "type": ["number", "null"] },
+              "ttlSeconds": { "type": "object", "additionalProperties": { "type": "number" } }
+            } }
+          } } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "PoolId": { "name": "poolId", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Pool contract address. Get one from /api/find.", "example": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640" },
+      "Dex": { "name": "dex", "in": "query", "required": false, "schema": { "type": "string", "enum": ["uniswap-v3", "aerodrome"], "default": "uniswap-v3" } },
+      "Chain": { "name": "chain", "in": "query", "required": false, "schema": { "type": "string", "enum": ["mainnet", "arbitrum", "polygon", "optimism", "base"], "default": "mainnet" } }
+    },
+    "responses": {
+      "BadRequest": { "description": "Missing or invalid parameter", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+      "NotFound": { "description": "Pool not found at this dex/chain", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Errors are returned as JSON with a human-readable `error` string. The Graph API key is scrubbed from every error path.",
+        "properties": { "error": { "type": "string" }, "try": { "type": "array", "items": { "type": "string" }, "description": "Suggested valid endpoints, present on 404." } }
+      },
+      "Pool": {
+        "type": "object",
+        "properties": {
+          "pair": { "type": "string", "description": "token0/token1 symbols." },
+          "poolId": { "type": "string" },
+          "dex": { "type": "string" },
+          "chain": { "type": "string" },
+          "fee": { "type": "number", "description": "Pool fee tier, percent." },
+          "tvl": { "type": "number", "description": "Current TVL, USD." },
+          "r": { "type": "number", "description": "Price ratio over the window (exit/entry)." },
+          "fees": { "type": "number", "description": "Fee income over the window, % of entry TVL." },
+          "adv": { "type": "number", "description": "Advertised APR %, fees-only. Cannot be negative — that is the defect." },
+          "days": { "type": "integer" },
+          "realizedAprPct": { "type": ["number", "null"], "description": "Realized return (fees + IL), annualized, at moderate ±2x range. null if unmeasurable — never 0." },
+          "gapPts": { "type": ["number", "null"], "description": "adv − realizedAprPct. Positive means advertised overstated reality." },
+          "misleading": { "type": ["boolean", "null"], "description": "true if adv > 0 and realizedAprPct < 0. null if unmeasurable." },
+          "trustLabel": { "type": "string", "enum": ["historically honest", "gap-prone", "routinely misleading", "unmeasurable"] }
+        }
+      },
+      "Match": {
+        "type": "object",
+        "properties": { "pair": { "type": "string" }, "poolId": { "type": "string" }, "tvl": { "type": "number" }, "fee": { "type": "number" } }
+      },
+      "TestVector": {
+        "type": "object",
+        "description": "Real pool, real inputs, real output from this server right now — so an agent can verify its own implementation instead of trusting ours.",
+        "properties": {
+          "note": { "type": "string" },
+          "input": { "type": "object", "properties": {
+            "pair": { "type": "string" }, "r": { "type": "number" }, "feesPct": { "type": "number" },
+            "advertisedAprPct": { "type": "number" }, "windowDays": { "type": "integer" }, "rangeWidthX": { "type": "number" }
+          } },
+          "expectedOutput": { "type": "object", "properties": {
+            "realizedAprPct": { "type": ["number", "null"] }, "gapPts": { "type": ["number", "null"] }, "misleading": { "type": ["boolean", "null"] }
+          } },
+          "formula": { "type": "string", "description": "Closed-form IL, stated so it can be independently implemented." }
+        }
+      },
+      "PoolMeasurement": {
+        "type": "object",
+        "properties": {
+          "pair": { "type": "string" },
+          "poolId": { "type": "string" },
+          "days": { "type": "integer" },
+          "advertisedAprPct": { "type": "number" },
+          "feeReturnPct": { "type": "number" },
+          "impermanentLossPct": { "type": "number" },
+          "realizedReturnPct": { "type": "number" },
+          "realizedAprPct": { "type": ["number", "null"] },
+          "measurable": { "type": "boolean" }
+        }
+      },
+      "SimulateExit": {
+        "type": "object",
+        "required": ["measurable"],
+        "properties": {
+          "measurable": { "type": "boolean" },
+          "stakeUsd": { "type": "number" },
+          "feesUsd": { "type": "number" },
+          "impermanentLossUsd": { "type": "number" },
+          "netUsd": { "type": "number", "description": "What the stake would be worth net of fees and impermanent loss, excluding gas and slippage." },
+          "netPct": { "type": "number" },
+          "outOfRange": { "type": "boolean" },
+          "gas": { "type": "object", "description": "Live gas price \u00d7 estimated gas units, priced in the chain's native token. Degrades to { available:false, reason } rather than guessing.", "properties": {
+            "available": { "type": "boolean" },
+            "costUsd": { "type": "number" },
+            "gasPriceGwei": { "type": "number", "description": "Measured live." },
+            "gasUnits": { "type": "number", "description": "Estimated, not measured: decreaseLiquidity ~150k + collect ~120k." },
+            "nativeTokenUsd": { "type": "number" },
+            "isEstimate": { "type": "boolean" },
+            "reason": { "type": "string", "description": "Present when available is false." }
+          } },
+          "slippage": { "type": "object", "description": "Zero and MEASURED for a plain close; a lower-bound ESTIMATE when consolidate=true.", "properties": {
+            "available": { "type": "boolean" },
+            "measured": { "type": "boolean", "description": "true means a genuine zero (closing is not a swap), not a missing value." },
+            "slippagePct": { "type": "number" },
+            "costUsd": { "type": "number" },
+            "isEstimate": { "type": "boolean" },
+            "assumesConsolidationToOneToken": { "type": "boolean" },
+            "note": { "type": "string" }
+          } },
+          "netAfterCostsUsd": { "type": ["number", "null"], "description": "Null unless BOTH gas and slippage are known. Never a partial subtraction." },
+          "verdict": { "type": "string" }
+        }
+      },
+      "PositionRealized": {
+        "type": "object",
+        "required": ["measurable"],
+        "properties": {
+          "measurable": { "type": "boolean", "description": "false when the window is too short (<2 days) or data is missing. The response explains why rather than returning a fabricated number." },
+          "reason": { "type": "string", "description": "Present when measurable is false." },
+          "pair": { "type": "string" },
+          "entryDate": { "type": "string", "format": "date" },
+          "latestDate": { "type": "string", "format": "date" },
+          "daysHeld": { "type": "integer" },
+          "rangeWidthX": { "type": "number" },
+          "entryPrice": { "type": "number" },
+          "currentPrice": { "type": "number" },
+          "priceRatio": { "type": "number", "description": "currentPrice / entryPrice." },
+          "feeReturnPct": { "type": "number", "description": "Fee income over the hold, % of stake." },
+          "impermanentLossPct": { "type": "number", "description": "Negative. The term advertised APR structurally lacks." },
+          "realizedReturnPct": { "type": "number", "description": "feeReturnPct + impermanentLossPct. The actual answer." },
+          "realizedAprPct": { "type": "number", "description": "realizedReturnPct annualized once, labelled." },
+          "outOfRange": { "type": "boolean" },
+          "outOfRangeNote": { "type": ["string", "null"], "description": "When out of range, the loss is realized rather than impermanent — flagged here." },
+          "dailySeries": { "type": "array", "description": "Day-by-day path, so the shape is visible and not just the endpoint.", "items": { "type": "object", "properties": {
+            "date": { "type": "string", "format": "date" }, "realizedReturnPct": { "type": "number" }
+          } } }
+        }
+      },
+      "WalletPositions": {
+        "type": "object",
+        "properties": {
+          "owner": { "type": "string" },
+          "dex": { "type": "string" },
+          "chain": { "type": "string" },
+          "openPositions": { "type": "integer" },
+          "pools": { "type": "array", "items": { "type": "object", "additionalProperties": true }, "description": "Distinct pools this address holds." },
+          "positions": { "type": "array", "items": { "$ref": "#/components/schemas/WalletPosition" } },
+          "feeReporting": { "type": "object", "properties": {
+            "measurable": { "type": "integer" },
+            "earnedButUncollected": { "type": "integer", "description": "Positions that provably earned fees and never collected them. These are reported as not-measurable, never as $0." },
+            "note": { "type": "string" }
+          } },
+          "limits": { "type": "object", "description": "Ships in EVERY response so the caller cannot miss it.", "properties": {
+            "measured": { "type": "string" },
+            "weReport": { "type": "array", "items": { "type": "string" } },
+            "weDoNotReport": { "type": "array", "items": { "type": "string" } },
+            "why": { "type": "string" }
+          } },
+          "next": { "type": "string", "description": "The suggested follow-up call, with the real range width substituted in." }
+        }
+      },
+      "WalletPosition": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "pair": { "type": "string" },
+          "poolId": { "type": "string" },
+          "range": { "type": "object", "properties": {
+            "tickLower": { "type": "integer" }, "tickUpper": { "type": "integer" },
+            "priceLower": { "type": "number" }, "priceUpper": { "type": "number" },
+            "widthX": { "type": "number", "description": "Real range width multiplier. Feed this into /api/position/{poolId}?range= instead of assuming ±2x." },
+            "label": { "type": "string", "description": "Plain-language band description, e.g. 'Very wide band / spans most of price space'. A finite band can still have widthX in the billions, so the label is authoritative for humans." }
+          } },
+          "inRange": { "type": "boolean" },
+          "fees": { "type": "object", "properties": {
+            "measurable": { "type": "boolean", "description": "false when fees were earned but never collected. Never rendered as 0." },
+            "reason": { "type": "string" }
+          } },
+          "cumulative": { "type": "object", "description": "Lifetime cumulative deposits/withdrawals. NOT entry state and must not be read as position value.", "additionalProperties": true },
+          "decimals": { "type": "object", "description": "Token decimals, shipped so no consumer has to guess the divisor.", "properties": {
+            "token0": { "type": "integer" }, "token1": { "type": "integer" }
+          } }
+        }
+      },
+      "Audit": {
+        "type": "object",
+        "properties": {
+          "pools": { "type": "integer" },
+          "misleadingPct": { "type": "number", "description": "Share advertising a positive APR while realizing negative." },
+          "canary": { "type": "object", "description": "Stable-pair canary. If it fails, the instrument is untrusted and output is refused.", "properties": {
+            "pass": { "type": "boolean" }, "worstAbsIlPct": { "type": "number" }
+          } },
+          "sensitivity": { "type": "array", "description": "The headline at three liveness gates. If a finding flips across them it is a parameter, not a finding.", "items": { "type": "object", "additionalProperties": true } }
+        }
+      },
+      "Rank": {
+        "type": "object",
+        "properties": {
+          "generatedAt": { "type": "string", "format": "date-time" },
+          "question": { "type": "string" },
+          "notAPrediction": { "type": "string", "description": "Present on every response. Track record over the measured window, not a forecast." },
+          "sort": { "type": "string" },
+          "counts": { "type": "object", "additionalProperties": { "type": "integer" } },
+          "trustLabels": { "type": "object", "description": "Definition of each label, in plain language.", "additionalProperties": { "type": "string" } },
+          "pools": { "type": "array", "items": { "$ref": "#/components/schemas/Pool" } }
+        }
+      }
+    }
+  }
+}

@@ -1,44 +1,60 @@
-## Description: <br>
-Sign and submit Cardano transactions with explicit user confirmation. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Sign and submit Cardano transactions with explicit user confirmation.
 
-## Publisher: <br>
-[adacapo21](https://clawhub.ai/user/adacapo21) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[adacapo21](https://clawhub.ai/user/adacapo21)
 
-## Use Case: <br>
-External users and developers use this skill to review, sign, and broadcast pre-built Cardano transaction CBOR through a connected wallet after explicit confirmation. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can authorize real, irreversible Cardano wallet transactions. <br>
-Mitigation: Require explicit user confirmation after summarizing recipient addresses, assets, amounts, fees, and network; use a wallet with limited funds. <br>
-Risk: Invalid or misleading transaction interpretation could cause the user to approve the wrong transaction. <br>
-Mitigation: Treat transaction summaries as review aids and ask the user to verify all transaction details independently before confirmation. <br>
-Risk: The connected wallet environment depends on a seed phrase. <br>
-Mitigation: Keep seed phrases outside the agent context and avoid using a primary wallet or high-value seed phrase. <br>
+## Use Case:
 
+External users and developers use this skill to sign and broadcast pre-built Cardano transaction CBOR through a connected wallet after the agent summarizes the transaction and receives explicit confirmation.
 
-## Reference(s): <br>
-- [Cardano Transactions ClawHub Page](https://clawhub.ai/adacapo21/cardano-transactions) <br>
-- [Transaction Concepts](references/concepts.md) <br>
-- [Transaction MCP Tools Reference](references/mcp-tools.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown transaction summary, confirmation prompt, and transaction hash or status] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires unsigned Cardano transaction CBOR and explicit user confirmation before submission.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Risk: The skill can sign and broadcast real Cardano transactions using wallet secrets.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use only wallets and funds the user is prepared to risk, and independently verify every transaction in a trusted wallet or explorer before approval.
+
+Risk: A process with access to wallet secrets can expose or misuse funds.
+
+Mitigation: Prefer a pinned and audited MCP package, a hardware wallet or scoped signer instead of a raw seed phrase, and strict isolation for any process that can access wallet secrets.
+
+Risk: Submitted Cardano transactions are irreversible once confirmed on-chain.
+
+Mitigation: Require a plain-language transaction summary and explicit user confirmation before calling submit_transaction.
+
+## Reference(s):
+
+- [Cardano Transactions ClawHub Page](https://clawhub.ai/adacapo21/skills/cardano-transactions)
+- [Transaction Concepts](artifact/references/concepts.md)
+- [Transaction MCP Tools Reference](artifact/references/mcp-tools.md)
+- [Submit a Transaction](artifact/sub-skills/submit-tx.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, API calls, guidance]
+
+**Output Format:** [Markdown or plain text transaction summary, confirmation prompt, and transaction result]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Reports transactionHash and timestamp on success; signing or submission errors may be reported.]
+
+## Skill Version(s):
+
+1.0.0 (source: ClawHub release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

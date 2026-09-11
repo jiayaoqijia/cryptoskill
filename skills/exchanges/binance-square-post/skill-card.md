@@ -1,43 +1,54 @@
-## Description: <br>
-Post pure text content to Binance Square and return the resulting post URL. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Post text content to Binance Square and return the resulting post URL when publishing succeeds.
 
-## Publisher: <br>
-[ai-chen2050](https://clawhub.ai/user/ai-chen2050) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[ai-chen2050](https://clawhub.ai/user/ai-chen2050)
 
-## Use Case: <br>
-External users use this skill to publish prepared text updates to Binance Square through an agent workflow. It is intended for drafting or optimizing post text, confirming the final version, submitting it through the Binance Square OpenAPI, and returning the public post URL. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can publish public Binance Square posts. <br>
-Mitigation: Require explicit user confirmation of the exact final post text before submission. <br>
-Risk: The artifact tells the agent to store the Binance Square OpenAPI key in the skill file. <br>
-Mitigation: Store credentials only in a proper secret manager or environment variable, and never in SKILL.md or prompt files. <br>
-Risk: A broad Binance credential could expose trading or withdrawal privileges. <br>
-Mitigation: Use a dedicated least-privilege Binance Square posting key with no trading or withdrawal permissions. <br>
+## Use Case:
 
+External users use this skill to draft, optionally polish, and publish pure text posts to Binance Square through an agent workflow.
 
-## Reference(s): <br>
-- [ClawHub skill listing](https://clawhub.ai/ai-chen2050/binance-square-post) <br>
-- [Binance Square content add API endpoint](https://www.binance.com/bapi/composite/v1/public/pgc/openApi/content/add) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, API calls, configuration, guidance] <br>
-**Output Format:** [Markdown text with API request guidance and post URLs] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Produces pure text Binance Square posts; successful posts return a Binance Square post URL.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Risk: The skill asks the agent to save a Binance Square API key in the skill file while claiming secure storage without showing a secure mechanism.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a narrowly scoped Binance Square posting key, avoid trading or withdrawal permissions, and do not provide keys unless plaintext storage risk is acceptable.
+
+Risk: A previously provided API key may have been stored or shared by the agent workflow.
+
+Mitigation: Rotate any key that may have been exposed and review the skill before installing or using it.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/ai-chen2050/skills/binance-square-post)
+- [Binance Square Content Add Endpoint](https://www.binance.com/bapi/composite/v1/public/pgc/openApi/content/add)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, guidance]
+
+**Output Format:** [Markdown with posting guidance, curl examples, API response summaries, and post URLs]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Pure text posts only; successful posts return a Binance Square post URL when the API response includes an id.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

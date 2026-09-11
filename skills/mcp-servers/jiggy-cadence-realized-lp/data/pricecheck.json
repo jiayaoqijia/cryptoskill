@@ -1,0 +1,83 @@
+{
+ "generatedAt": "2026-09-10T22:30:39.899Z",
+ "source": "1inch Spot Price Aggregator v1.1 vs Uniswap/Aerodrome subgraph token0Price",
+ "method": "Independent USD prices for both tokens of each pool, ratio compared to the subgraph's own latest token0Price. 1inch has never seen our subgraph.",
+ "threshold": 2,
+ "counts": {
+  "poolsInCorpus": 256,
+  "compared": 255,
+  "unpriced": 1,
+  "agreeing": 253,
+  "disagreeing": 2
+ },
+ "agreementPct": 99.2156862745098,
+ "medianAbsDivergencePct": 0.07819020010614514,
+ "p90AbsDivergencePct": 0.5166410782420898,
+ "worstDivergences": [
+  {
+   "pair": "USDC/UST",
+   "chain": "mainnet",
+   "tvl": 626510,
+   "divergencePct": -99.479
+  },
+  {
+   "pair": "WBTC/PAX",
+   "chain": "mainnet",
+   "tvl": 26674650,
+   "divergencePct": -75.464
+  },
+  {
+   "pair": "LDO/WETH",
+   "chain": "mainnet",
+   "tvl": 10211709,
+   "divergencePct": -1.231
+  },
+  {
+   "pair": "USDC/CARV",
+   "chain": "base",
+   "tvl": 284146,
+   "divergencePct": 0.993
+  },
+  {
+   "pair": "WETH/CRV",
+   "chain": "mainnet",
+   "tvl": 2892071,
+   "divergencePct": 0.977
+  },
+  {
+   "pair": "WETH/BRETT",
+   "chain": "base",
+   "tvl": 3782389,
+   "divergencePct": 0.759
+  },
+  {
+   "pair": "WETH/ARB",
+   "chain": "arbitrum",
+   "tvl": 1374875,
+   "divergencePct": -0.644
+  },
+  {
+   "pair": "USDC/WETH",
+   "chain": "mainnet",
+   "tvl": 8815304,
+   "divergencePct": 0.634
+  },
+  {
+   "pair": "WETH/MAMO",
+   "chain": "base",
+   "tvl": 315286,
+   "divergencePct": -0.62
+  },
+  {
+   "pair": "USDC/DIEM",
+   "chain": "base",
+   "tvl": 1182138,
+   "divergencePct": -0.618
+  }
+ ],
+ "caveats": [
+  "Spot vs spot: this corroborates the CURRENT price leg. It does not audit the historical series, which only the indexer provides.",
+  "Unpriced pools are reported, never silently dropped and never counted as agreement.",
+  "A large divergence is not automatically a subgraph error -- thin 1inch routing on illiquid tokens produces the same signal. Treat it as \"unconfirmed\", not \"wrong\"."
+ ]
+}

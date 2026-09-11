@@ -1,50 +1,66 @@
-## Description: <br>
-AI trading assistant skill for AEVO, a decentralized derivatives exchange, connecting MCP-compatible clients to market data, portfolio management, order execution, risk analysis, and options strategies. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+AI trading assistant for AEVO, a decentralized derivatives exchange, connecting MCP-compatible clients to tools for market data, portfolio management, order execution, risk analysis, and options strategies.
 
-## Publisher: <br>
-[yichulau](https://clawhub.ai/user/yichulau) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[yichulau](https://clawhub.ai/user/yichulau)
 
-## Use Case: <br>
-External users and developers use this skill to connect MCP-compatible clients to AEVO for crypto derivatives market analysis, portfolio risk review, and user-confirmed order, cancellation, leverage, and strategy workflows. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can connect an agent to AEVO trading credentials and real order execution. <br>
-Mitigation: Use testnet or read-only credentials first, verify the MCP server or hosted endpoint, and review every order, cancellation, leverage change, and strategy execution before confirming. <br>
-Risk: Private API, signing, or wallet credentials may be exposed if mishandled during setup or responses. <br>
-Mitigation: Avoid wallet private keys unless necessary, clear credentials after use, and redact any private keys or secrets from user-visible output. <br>
-Risk: Leveraged derivatives and options workflows can create liquidation, slippage, concentration, or partial-execution risk. <br>
-Mitigation: Run pre-trade risk checks, inspect margin and liquidity, use stop-losses for leveraged positions, and report partial strategy failures with manual cleanup steps. <br>
+## Use Case:
 
+External users and developers use this skill to analyze AEVO crypto derivatives markets, review portfolio risk, and prepare or execute AEVO trades through an MCP-compatible client. It supports market analysis, position management, order workflows, options strategies, hedging, and credential-aware onboarding.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/yichulau/aevo-trading-skill) <br>
-- [AEVO Exchange](https://aevo.xyz) <br>
-- [AEVO API Docs](https://docs.aevo.xyz) <br>
-- [MCP Server Package](https://pypi.org/project/mcp-aevo-server/) <br>
-- [Risk Rules](references/risk-rules.md) <br>
-- [Tool Reference](references/tools.md) <br>
-- [Workflows](references/workflows.md) <br>
-- [Options Reference](references/options.md) <br>
-- [Instrument Naming](references/instruments.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown and plain text with inline tool names, command snippets, JSON configuration, and quantitative trading analysis.] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include trade plans, risk summaries, order details, credential setup guidance, and confirmation prompts before trading actions.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Risk: The skill handles highly sensitive exchange credentials and private-key material.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Prefer testnet or read-only credentials first, avoid pasting wallet private keys into chat, and use limited, revocable AEVO keys.
+
+Risk: Confirmed trading or cancellation actions can place, modify, or cancel real orders and affect funds.
+
+Mitigation: Require explicit user confirmation, run pre-trade risk checks, preview with dry-run order building when possible, and verify order state after execution.
+
+Risk: The skill depends on an externally installed MCP server package or hosted MCP endpoint.
+
+Mitigation: Pin and verify the MCP server package or endpoint before use and only enable live trading after reviewing the server and credential flow.
+
+## Reference(s):
+
+- [AEVO Trading Skill README](README.md)
+- [AEVO MCP Tools Reference](references/tools.md)
+- [Risk Management Rules](references/risk-rules.md)
+- [Common Trading Workflows](references/workflows.md)
+- [Options Strategy Reference](references/options.md)
+- [AEVO Instrument Naming Conventions](references/instruments.md)
+- [AEVO Exchange](https://aevo.xyz)
+- [AEVO API Docs](https://docs.aevo.xyz)
+- [MCP Server Package](https://pypi.org/project/mcp-aevo-server/)
+- [ClawHub Skill Page](https://clawhub.ai/yichulau/skills/aevo-trading-skill)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, API calls, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with tables, tool-call plans, JSON configuration snippets, and shell commands]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May call AEVO MCP tools for market data, account review, risk checks, order construction, order execution, cancellation, and strategy workflows; live trading actions can affect funds and should require explicit user confirmation.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata and user changelog)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

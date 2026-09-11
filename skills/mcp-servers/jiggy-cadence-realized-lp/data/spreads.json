@@ -1,0 +1,895 @@
+{
+  "generatedAt": "2026-09-10T01:05:00.531Z",
+  "sourceGeneratedAt": "2026-09-10T00:38:55.880Z",
+  "method": "Same pair compared across one axis (fee tier, or chain) holding the other constant. Groups are dropped unless every member's observed price ratio agrees within 3% -- otherwise the pools did not see the same price path and the comparison is not apples-to-apples.",
+  "windowDays": 30,
+  "feeTier": {
+    "groups": 35,
+    "advertisedPickedWrong": 8,
+    "top": [
+      {
+        "pair": "USDC/cbBTC",
+        "dex": "aerodrome",
+        "axis": "feeTier",
+        "spreadPts": 295.89,
+        "best": {
+          "feeTier": 1,
+          "realizedAprPct": 290.03,
+          "advertisedAprPct": 5.843,
+          "chain": "base",
+          "fee": 1,
+          "poolId": "0x3e66e55e97ce60096f74b7c475e8249f2d31a9fb"
+        },
+        "worst": {
+          "feeTier": 0.05,
+          "realizedAprPct": -5.857,
+          "advertisedAprPct": 0.233,
+          "chain": "base",
+          "fee": 0.05,
+          "poolId": "0x4e962bb3889bf030368f56810a9c96b83cb3e778"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 1,
+            "fee": 1,
+            "chain": "base",
+            "realizedAprPct": 290.03,
+            "advertisedAprPct": 5.843,
+            "poolId": "0x3e66e55e97ce60096f74b7c475e8249f2d31a9fb"
+          },
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "base",
+            "realizedAprPct": -5.857,
+            "advertisedAprPct": 0.233,
+            "poolId": "0x4e962bb3889bf030368f56810a9c96b83cb3e778"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/cbBTC",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 45.26,
+        "best": {
+          "feeTier": 0.05,
+          "realizedAprPct": 60.131,
+          "advertisedAprPct": 0.329,
+          "chain": "base",
+          "fee": 0.05,
+          "poolId": "0x7aea2e8a3843516afa07293a10ac8e49906dabd1"
+        },
+        "worst": {
+          "feeTier": 0.3,
+          "realizedAprPct": 14.868,
+          "advertisedAprPct": 0.061,
+          "chain": "base",
+          "fee": 0.3,
+          "poolId": "0x8c7080564b5a792a33ef2fd473fba6364d5495e5"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "base",
+            "realizedAprPct": 60.131,
+            "advertisedAprPct": 0.329,
+            "poolId": "0x7aea2e8a3843516afa07293a10ac8e49906dabd1"
+          },
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "base",
+            "realizedAprPct": 14.868,
+            "advertisedAprPct": 0.061,
+            "poolId": "0x8c7080564b5a792a33ef2fd473fba6364d5495e5"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/USDC",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 38.81,
+        "best": {
+          "feeTier": 0.3,
+          "realizedAprPct": 9.218,
+          "advertisedAprPct": 0.632,
+          "chain": "base",
+          "fee": 0.3,
+          "poolId": "0x6c561b446416e1a00e8e93e221854d6ea4171372"
+        },
+        "worst": {
+          "feeTier": 0.05,
+          "realizedAprPct": -29.591,
+          "advertisedAprPct": 0.259,
+          "chain": "base",
+          "fee": 0.05,
+          "poolId": "0xd0b53d9277642d899df5c87a3966a349a798f224"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "base",
+            "realizedAprPct": 9.218,
+            "advertisedAprPct": 0.632,
+            "poolId": "0x6c561b446416e1a00e8e93e221854d6ea4171372"
+          },
+          {
+            "feeTier": 0.01,
+            "fee": 0.01,
+            "chain": "base",
+            "realizedAprPct": -6.719,
+            "advertisedAprPct": 0.89,
+            "poolId": "0xb4cb800910b228ed3d0834cf79d697127bbb00e5"
+          },
+          {
+            "feeTier": 1,
+            "fee": 1,
+            "chain": "base",
+            "realizedAprPct": -13.124,
+            "advertisedAprPct": 10.899,
+            "poolId": "0x0b1c2dcbbfa744ebd3fc17ff1a96a1e1eb4b2d69"
+          },
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "base",
+            "realizedAprPct": -29.591,
+            "advertisedAprPct": 0.259,
+            "poolId": "0xd0b53d9277642d899df5c87a3966a349a798f224"
+          }
+        ]
+      },
+      {
+        "pair": "wTAO/WETH",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 34.88,
+        "best": {
+          "feeTier": 1,
+          "realizedAprPct": 39.331,
+          "advertisedAprPct": 0.216,
+          "chain": "mainnet",
+          "fee": 1,
+          "poolId": "0x433a00819c771b33fa7223a5b3499b24fbcd1bbc"
+        },
+        "worst": {
+          "feeTier": 0.3,
+          "realizedAprPct": 4.448,
+          "advertisedAprPct": 0.146,
+          "chain": "mainnet",
+          "fee": 0.3,
+          "poolId": "0x2982d3295a0e1a99e6e88ece0e93ffdfc5c761ae"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 1,
+            "fee": 1,
+            "chain": "mainnet",
+            "realizedAprPct": 39.331,
+            "advertisedAprPct": 0.216,
+            "poolId": "0x433a00819c771b33fa7223a5b3499b24fbcd1bbc"
+          },
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "mainnet",
+            "realizedAprPct": 4.448,
+            "advertisedAprPct": 0.146,
+            "poolId": "0x2982d3295a0e1a99e6e88ece0e93ffdfc5c761ae"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/USDT",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 28.37,
+        "best": {
+          "feeTier": 0.05,
+          "realizedAprPct": -6.481,
+          "advertisedAprPct": 0.922,
+          "chain": "polygon",
+          "fee": 0.05,
+          "poolId": "0xbb98b3d2b18aef63a3178023a920971cf5f29be4"
+        },
+        "worst": {
+          "feeTier": 0.3,
+          "realizedAprPct": -34.851,
+          "advertisedAprPct": 0.019,
+          "chain": "polygon",
+          "fee": 0.3,
+          "poolId": "0x4ccd010148379ea531d6c587cfdd60180196f9b1"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "polygon",
+            "realizedAprPct": -6.481,
+            "advertisedAprPct": 0.922,
+            "poolId": "0xbb98b3d2b18aef63a3178023a920971cf5f29be4"
+          },
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "polygon",
+            "realizedAprPct": -34.851,
+            "advertisedAprPct": 0.019,
+            "poolId": "0x4ccd010148379ea531d6c587cfdd60180196f9b1"
+          }
+        ]
+      },
+      {
+        "pair": "LINK/WETH",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 24.19,
+        "best": {
+          "feeTier": 0.05,
+          "realizedAprPct": 29.468,
+          "advertisedAprPct": 0.585,
+          "chain": "polygon",
+          "fee": 0.05,
+          "poolId": "0x3dc10d7bfb94eeb009203e84a653e5764f71771d"
+        },
+        "worst": {
+          "feeTier": 0.3,
+          "realizedAprPct": 5.279,
+          "advertisedAprPct": 0.035,
+          "chain": "polygon",
+          "fee": 0.3,
+          "poolId": "0x3e31ab7f37c048fc6574189135d108df80f0ea26"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "polygon",
+            "realizedAprPct": 29.468,
+            "advertisedAprPct": 0.585,
+            "poolId": "0x3dc10d7bfb94eeb009203e84a653e5764f71771d"
+          },
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "polygon",
+            "realizedAprPct": 5.279,
+            "advertisedAprPct": 0.035,
+            "poolId": "0x3e31ab7f37c048fc6574189135d108df80f0ea26"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/ARB",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 18.39,
+        "best": {
+          "feeTier": 0.05,
+          "realizedAprPct": -71.732,
+          "advertisedAprPct": 0.756,
+          "chain": "arbitrum",
+          "fee": 0.05,
+          "poolId": "0xc6f780497a95e246eb9449f5e4770916dcd6396a"
+        },
+        "worst": {
+          "feeTier": 0.3,
+          "realizedAprPct": -90.118,
+          "advertisedAprPct": 0.011,
+          "chain": "arbitrum",
+          "fee": 0.3,
+          "poolId": "0x92c63d0e701caae670c9415d91c474f686298f00"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "arbitrum",
+            "realizedAprPct": -71.732,
+            "advertisedAprPct": 0.756,
+            "poolId": "0xc6f780497a95e246eb9449f5e4770916dcd6396a"
+          },
+          {
+            "feeTier": 1,
+            "fee": 1,
+            "chain": "arbitrum",
+            "realizedAprPct": -85.584,
+            "advertisedAprPct": 0.14,
+            "poolId": "0x92fd143a8fa0c84e016c2765648b9733b0aa519e"
+          },
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "arbitrum",
+            "realizedAprPct": -90.118,
+            "advertisedAprPct": 0.011,
+            "poolId": "0x92c63d0e701caae670c9415d91c474f686298f00"
+          }
+        ]
+      },
+      {
+        "pair": "USDC/WETH",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 17.89,
+        "best": {
+          "feeTier": 0.01,
+          "realizedAprPct": -20.916,
+          "advertisedAprPct": 0.289,
+          "chain": "mainnet",
+          "fee": 0.01,
+          "poolId": "0xe0554a476a092703abdb3ef35c80e0d76d32939f"
+        },
+        "worst": {
+          "feeTier": 1,
+          "realizedAprPct": -38.803,
+          "advertisedAprPct": 0.243,
+          "chain": "mainnet",
+          "fee": 1,
+          "poolId": "0x7bea39867e4169dbe237d55c8242a8f2fcdcc387"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.01,
+            "fee": 0.01,
+            "chain": "mainnet",
+            "realizedAprPct": -20.916,
+            "advertisedAprPct": 0.289,
+            "poolId": "0xe0554a476a092703abdb3ef35c80e0d76d32939f"
+          },
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "mainnet",
+            "realizedAprPct": -34.601,
+            "advertisedAprPct": 0.068,
+            "poolId": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640"
+          },
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "mainnet",
+            "realizedAprPct": -35.444,
+            "advertisedAprPct": 0.028,
+            "poolId": "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8"
+          },
+          {
+            "feeTier": 1,
+            "fee": 1,
+            "chain": "mainnet",
+            "realizedAprPct": -38.803,
+            "advertisedAprPct": 0.243,
+            "poolId": "0x7bea39867e4169dbe237d55c8242a8f2fcdcc387"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/USDT",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 15.63,
+        "best": {
+          "feeTier": 0.3,
+          "realizedAprPct": -19.428,
+          "advertisedAprPct": 0.173,
+          "chain": "mainnet",
+          "fee": 0.3,
+          "poolId": "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"
+        },
+        "worst": {
+          "feeTier": 0.05,
+          "realizedAprPct": -35.058,
+          "advertisedAprPct": 0.045,
+          "chain": "mainnet",
+          "fee": 0.05,
+          "poolId": "0x11b815efb8f581194ae79006d24e0d814b7697f6"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "mainnet",
+            "realizedAprPct": -19.428,
+            "advertisedAprPct": 0.173,
+            "poolId": "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"
+          },
+          {
+            "feeTier": 0.01,
+            "fee": 0.01,
+            "chain": "mainnet",
+            "realizedAprPct": -32.387,
+            "advertisedAprPct": 0.051,
+            "poolId": "0xc7bbec68d12a0d1830360f8ec58fa599ba1b0e9b"
+          },
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "mainnet",
+            "realizedAprPct": -35.058,
+            "advertisedAprPct": 0.045,
+            "poolId": "0x11b815efb8f581194ae79006d24e0d814b7697f6"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/LINK",
+        "dex": "uniswap-v3",
+        "axis": "feeTier",
+        "spreadPts": 14.16,
+        "best": {
+          "feeTier": 0.05,
+          "realizedAprPct": 19.767,
+          "advertisedAprPct": 0.156,
+          "chain": "arbitrum",
+          "fee": 0.05,
+          "poolId": "0x91308bc9ce8ca2db82aa30c65619856cc939d907"
+        },
+        "worst": {
+          "feeTier": 0.3,
+          "realizedAprPct": 5.604,
+          "advertisedAprPct": 0.052,
+          "chain": "arbitrum",
+          "fee": 0.3,
+          "poolId": "0x468b88941e7cc0b88c1869d68ab6b570bcef62ff"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "feeTier": 0.05,
+            "fee": 0.05,
+            "chain": "arbitrum",
+            "realizedAprPct": 19.767,
+            "advertisedAprPct": 0.156,
+            "poolId": "0x91308bc9ce8ca2db82aa30c65619856cc939d907"
+          },
+          {
+            "feeTier": 0.3,
+            "fee": 0.3,
+            "chain": "arbitrum",
+            "realizedAprPct": 5.604,
+            "advertisedAprPct": 0.052,
+            "poolId": "0x468b88941e7cc0b88c1869d68ab6b570bcef62ff"
+          }
+        ]
+      }
+    ]
+  },
+  "crossChain": {
+    "groups": 16,
+    "advertisedPickedWrong": 2,
+    "top": [
+      {
+        "pair": "WETH/USDC",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 46.65,
+        "best": {
+          "chain": "base",
+          "realizedAprPct": 9.218,
+          "advertisedAprPct": 0.632,
+          "fee": 0.3,
+          "poolId": "0x6c561b446416e1a00e8e93e221854d6ea4171372"
+        },
+        "worst": {
+          "chain": "arbitrum",
+          "realizedAprPct": -37.435,
+          "advertisedAprPct": 0.005,
+          "fee": 0.3,
+          "poolId": "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "base",
+            "fee": 0.3,
+            "realizedAprPct": 9.218,
+            "advertisedAprPct": 0.632,
+            "poolId": "0x6c561b446416e1a00e8e93e221854d6ea4171372"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.3,
+            "realizedAprPct": -27.203,
+            "advertisedAprPct": 0.114,
+            "poolId": "0xc473e2aee3441bf9240be85eb122abb059a3b57c"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.3,
+            "realizedAprPct": -37.435,
+            "advertisedAprPct": 0.005,
+            "poolId": "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/USDC",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 28.97,
+        "best": {
+          "chain": "base",
+          "realizedAprPct": -6.719,
+          "advertisedAprPct": 0.89,
+          "fee": 0.01,
+          "poolId": "0xb4cb800910b228ed3d0834cf79d697127bbb00e5"
+        },
+        "worst": {
+          "chain": "arbitrum",
+          "realizedAprPct": -35.692,
+          "advertisedAprPct": 0.02,
+          "fee": 0.01,
+          "poolId": "0x6f38e884725a116c9c7fbf208e79fe8828a2595f"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "base",
+            "fee": 0.01,
+            "realizedAprPct": -6.719,
+            "advertisedAprPct": 0.89,
+            "poolId": "0xb4cb800910b228ed3d0834cf79d697127bbb00e5"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.01,
+            "realizedAprPct": -35.692,
+            "advertisedAprPct": 0.02,
+            "poolId": "0x6f38e884725a116c9c7fbf208e79fe8828a2595f"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/USDT",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 28.58,
+        "best": {
+          "chain": "polygon",
+          "realizedAprPct": -6.481,
+          "advertisedAprPct": 0.922,
+          "fee": 0.05,
+          "poolId": "0xbb98b3d2b18aef63a3178023a920971cf5f29be4"
+        },
+        "worst": {
+          "chain": "mainnet",
+          "realizedAprPct": -35.058,
+          "advertisedAprPct": 0.045,
+          "fee": 0.05,
+          "poolId": "0x11b815efb8f581194ae79006d24e0d814b7697f6"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "polygon",
+            "fee": 0.05,
+            "realizedAprPct": -6.481,
+            "advertisedAprPct": 0.922,
+            "poolId": "0xbb98b3d2b18aef63a3178023a920971cf5f29be4"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.05,
+            "realizedAprPct": -34.405,
+            "advertisedAprPct": 0.06,
+            "poolId": "0x641c00a822e8b671738d32a431a4fb6074e5c79d"
+          },
+          {
+            "chain": "mainnet",
+            "fee": 0.05,
+            "realizedAprPct": -35.058,
+            "advertisedAprPct": 0.045,
+            "poolId": "0x11b815efb8f581194ae79006d24e0d814b7697f6"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/USDT",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 15.42,
+        "best": {
+          "chain": "mainnet",
+          "realizedAprPct": -19.428,
+          "advertisedAprPct": 0.173,
+          "fee": 0.3,
+          "poolId": "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"
+        },
+        "worst": {
+          "chain": "polygon",
+          "realizedAprPct": -34.851,
+          "advertisedAprPct": 0.019,
+          "fee": 0.3,
+          "poolId": "0x4ccd010148379ea531d6c587cfdd60180196f9b1"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "mainnet",
+            "fee": 0.3,
+            "realizedAprPct": -19.428,
+            "advertisedAprPct": 0.173,
+            "poolId": "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.3,
+            "realizedAprPct": -32.935,
+            "advertisedAprPct": 0.038,
+            "poolId": "0xc82819f72a9e77e2c0c3a69b3196478f44303cf4"
+          },
+          {
+            "chain": "polygon",
+            "fee": 0.3,
+            "realizedAprPct": -34.851,
+            "advertisedAprPct": 0.019,
+            "poolId": "0x4ccd010148379ea531d6c587cfdd60180196f9b1"
+          }
+        ]
+      },
+      {
+        "pair": "WBTC/USDT",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 9.11,
+        "best": {
+          "chain": "mainnet",
+          "realizedAprPct": -6.886,
+          "advertisedAprPct": 0.187,
+          "fee": 0.05,
+          "poolId": "0x56534741cd8b152df6d48adf7ac51f75169a83b2"
+        },
+        "worst": {
+          "chain": "arbitrum",
+          "realizedAprPct": -16,
+          "advertisedAprPct": 0.112,
+          "fee": 0.05,
+          "poolId": "0x5969efdde3cf5c0d9a88ae51e47d721096a97203"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "mainnet",
+            "fee": 0.05,
+            "realizedAprPct": -6.886,
+            "advertisedAprPct": 0.187,
+            "poolId": "0x56534741cd8b152df6d48adf7ac51f75169a83b2"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.05,
+            "realizedAprPct": -16,
+            "advertisedAprPct": 0.112,
+            "poolId": "0x5969efdde3cf5c0d9a88ae51e47d721096a97203"
+          }
+        ]
+      },
+      {
+        "pair": "WETH/USDC",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 8.98,
+        "best": {
+          "chain": "arbitrum",
+          "realizedAprPct": -29.342,
+          "advertisedAprPct": 0.166,
+          "fee": 0.05,
+          "poolId": "0xc6962004f452be9203591991d15f6b388e09e8d0"
+        },
+        "worst": {
+          "chain": "arbitrum",
+          "realizedAprPct": -38.32,
+          "advertisedAprPct": 0.003,
+          "fee": 0.05,
+          "poolId": "0xc31e54c7a869b9fcbecc14363cf510d1c41fa443"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "arbitrum",
+            "fee": 0.05,
+            "realizedAprPct": -29.342,
+            "advertisedAprPct": 0.166,
+            "poolId": "0xc6962004f452be9203591991d15f6b388e09e8d0"
+          },
+          {
+            "chain": "base",
+            "fee": 0.05,
+            "realizedAprPct": -29.591,
+            "advertisedAprPct": 0.259,
+            "poolId": "0xd0b53d9277642d899df5c87a3966a349a798f224"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.05,
+            "realizedAprPct": -38.32,
+            "advertisedAprPct": 0.003,
+            "poolId": "0xc31e54c7a869b9fcbecc14363cf510d1c41fa443"
+          }
+        ]
+      },
+      {
+        "pair": "WBTC/WETH",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 8.05,
+        "best": {
+          "chain": "arbitrum",
+          "realizedAprPct": 7.417,
+          "advertisedAprPct": 0.046,
+          "fee": 0.05,
+          "poolId": "0x2f5e87c9312fa29aed5c179e456625d79015299c"
+        },
+        "worst": {
+          "chain": "polygon",
+          "realizedAprPct": -0.631,
+          "advertisedAprPct": 0.007,
+          "fee": 0.05,
+          "poolId": "0x50eaedb835021e4a108b7290636d62e9765cc6d7"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "arbitrum",
+            "fee": 0.05,
+            "realizedAprPct": 7.417,
+            "advertisedAprPct": 0.046,
+            "poolId": "0x2f5e87c9312fa29aed5c179e456625d79015299c"
+          },
+          {
+            "chain": "mainnet",
+            "fee": 0.05,
+            "realizedAprPct": 0.832,
+            "advertisedAprPct": 0.007,
+            "poolId": "0x4585fe77225b41b697c938b018e2ac67ac5a20c0"
+          },
+          {
+            "chain": "polygon",
+            "fee": 0.05,
+            "realizedAprPct": -0.631,
+            "advertisedAprPct": 0.007,
+            "poolId": "0x50eaedb835021e4a108b7290636d62e9765cc6d7"
+          }
+        ]
+      },
+      {
+        "pair": "USDC/WETH",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 5.99,
+        "best": {
+          "chain": "polygon",
+          "realizedAprPct": -32.239,
+          "advertisedAprPct": 0.08,
+          "fee": 0.05,
+          "poolId": "0xa4d8c89f0c20efbe54cba9e7e7a7e509056228d9"
+        },
+        "worst": {
+          "chain": "polygon",
+          "realizedAprPct": -38.227,
+          "advertisedAprPct": 0.002,
+          "fee": 0.05,
+          "poolId": "0x45dda9cb7c25131df268515131f647d726f50608"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "polygon",
+            "fee": 0.05,
+            "realizedAprPct": -32.239,
+            "advertisedAprPct": 0.08,
+            "poolId": "0xa4d8c89f0c20efbe54cba9e7e7a7e509056228d9"
+          },
+          {
+            "chain": "mainnet",
+            "fee": 0.05,
+            "realizedAprPct": -34.601,
+            "advertisedAprPct": 0.068,
+            "poolId": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640"
+          },
+          {
+            "chain": "polygon",
+            "fee": 0.05,
+            "realizedAprPct": -38.227,
+            "advertisedAprPct": 0.002,
+            "poolId": "0x45dda9cb7c25131df268515131f647d726f50608"
+          }
+        ]
+      },
+      {
+        "pair": "WBTC/USDC",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 5.35,
+        "best": {
+          "chain": "polygon",
+          "realizedAprPct": -16.473,
+          "advertisedAprPct": 0.062,
+          "fee": 0.05,
+          "poolId": "0xeef1a9507b3d505f0062f2be9453981255b503c8"
+        },
+        "worst": {
+          "chain": "arbitrum",
+          "realizedAprPct": -21.827,
+          "advertisedAprPct": 0.006,
+          "fee": 0.05,
+          "poolId": "0xac70bd92f89e6739b3a08db9b6081a923912f73d"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "polygon",
+            "fee": 0.05,
+            "realizedAprPct": -16.473,
+            "advertisedAprPct": 0.062,
+            "poolId": "0xeef1a9507b3d505f0062f2be9453981255b503c8"
+          },
+          {
+            "chain": "mainnet",
+            "fee": 0.05,
+            "realizedAprPct": -21.292,
+            "advertisedAprPct": 0.02,
+            "poolId": "0x9a772018fbd77fcd2d25657e5c547baff3fd7d16"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.05,
+            "realizedAprPct": -21.827,
+            "advertisedAprPct": 0.006,
+            "poolId": "0xac70bd92f89e6739b3a08db9b6081a923912f73d"
+          }
+        ]
+      },
+      {
+        "pair": "PENDLE/WETH",
+        "dex": "uniswap-v3",
+        "axis": "chain",
+        "spreadPts": 3.64,
+        "best": {
+          "chain": "mainnet",
+          "realizedAprPct": 0.896,
+          "advertisedAprPct": 0.235,
+          "fee": 0.3,
+          "poolId": "0x57af956d3e2cca3b86f3d8c6772c03ddca3eaacb"
+        },
+        "worst": {
+          "chain": "arbitrum",
+          "realizedAprPct": -2.743,
+          "advertisedAprPct": 0.211,
+          "fee": 0.3,
+          "poolId": "0xdbaeb7f0dfe3a0aafd798ccecb5b22e708f7852c"
+        },
+        "advertisedPickedWrong": false,
+        "options": [
+          {
+            "chain": "mainnet",
+            "fee": 0.3,
+            "realizedAprPct": 0.896,
+            "advertisedAprPct": 0.235,
+            "poolId": "0x57af956d3e2cca3b86f3d8c6772c03ddca3eaacb"
+          },
+          {
+            "chain": "arbitrum",
+            "fee": 0.3,
+            "realizedAprPct": -2.743,
+            "advertisedAprPct": 0.211,
+            "poolId": "0xdbaeb7f0dfe3a0aafd798ccecb5b22e708f7852c"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-09-11T15:29:31.859Z",
+  "ranges": [
+    {
+      "range": "tight",
+      "w": 1.25,
+      "theoreticalUplift": 9.472,
+      "regimes": [
+        {
+          "regime": "none (as shipped)",
+          "feeFactor": 1,
+          "measurable": 256,
+          "misleading": 159,
+          "misleadingPct": 62.1,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "theoretical",
+          "feeFactor": 9.472,
+          "measurable": 256,
+          "misleading": 115,
+          "misleadingPct": 44.9,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "2x theoretical (absurdly generous)",
+          "feeFactor": 17.944,
+          "measurable": 256,
+          "misleading": 100,
+          "misleadingPct": 39.1,
+          "canaryWorstStableIlPct": 0
+        }
+      ]
+    },
+    {
+      "range": "moderate",
+      "w": 2,
+      "theoreticalUplift": 3.414,
+      "regimes": [
+        {
+          "regime": "none (as shipped)",
+          "feeFactor": 1,
+          "measurable": 256,
+          "misleading": 141,
+          "misleadingPct": 55.1,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "theoretical",
+          "feeFactor": 3.414,
+          "measurable": 256,
+          "misleading": 95,
+          "misleadingPct": 37.1,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "2x theoretical (absurdly generous)",
+          "feeFactor": 5.828,
+          "measurable": 256,
+          "misleading": 64,
+          "misleadingPct": 25,
+          "canaryWorstStableIlPct": 0
+        }
+      ]
+    },
+    {
+      "range": "wide",
+      "w": 4,
+      "theoreticalUplift": 2,
+      "regimes": [
+        {
+          "regime": "none (as shipped)",
+          "feeFactor": 1,
+          "measurable": 256,
+          "misleading": 120,
+          "misleadingPct": 46.9,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "theoretical",
+          "feeFactor": 2,
+          "measurable": 256,
+          "misleading": 95,
+          "misleadingPct": 37.1,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "2x theoretical (absurdly generous)",
+          "feeFactor": 3,
+          "measurable": 256,
+          "misleading": 71,
+          "misleadingPct": 27.7,
+          "canaryWorstStableIlPct": 0
+        }
+      ]
+    },
+    {
+      "range": "full",
+      "w": 100000000,
+      "theoreticalUplift": 1,
+      "regimes": [
+        {
+          "regime": "none (as shipped)",
+          "feeFactor": 1,
+          "measurable": 256,
+          "misleading": 95,
+          "misleadingPct": 37.1,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "theoretical",
+          "feeFactor": 1,
+          "measurable": 256,
+          "misleading": 95,
+          "misleadingPct": 37.1,
+          "canaryWorstStableIlPct": 0
+        },
+        {
+          "regime": "2x theoretical (absurdly generous)",
+          "feeFactor": 1,
+          "measurable": 256,
+          "misleading": 95,
+          "misleadingPct": 37.1,
+          "canaryWorstStableIlPct": 0
+        }
+      ]
+    }
+  ],
+  "note": "Defect survives fee-uplift crediting at every regime tested, including 2x theoretical."
+}

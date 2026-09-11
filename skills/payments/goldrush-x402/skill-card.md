@@ -1,47 +1,61 @@
-## Description: <br>
-GoldRush x402 helps agents access GoldRush blockchain data through pay-per-request x402 endpoints using wallet-based stablecoin payments instead of API keys. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+GoldRush x402 provides pay-per-request blockchain data access through the x402 protocol, letting agents and applications use GoldRush Foundational API endpoints with wallet-based micropayments instead of API keys.
 
-## Publisher: <br>
-[gane5h](https://clawhub.ai/user/gane5h) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gane5h](https://clawhub.ai/user/gane5h)
 
-## Use Case: <br>
-Developers and agents use this skill to discover, price, and call GoldRush blockchain data endpoints through the x402 payment protocol without API-key onboarding. It is especially relevant for autonomous agents, serverless applications, and prototypes that can operate with wallet-based per-request payments. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Wallet-paid x402 requests can spend funds when an app or agent makes paid API calls. <br>
-Mitigation: Use a dedicated low-balance or testnet wallet, set explicit spend limits, and apply request-rate controls before autonomous use. <br>
-Risk: The skill relies on a private key for wallet payment signing. <br>
-Mitigation: Store the private key in a secrets manager or environment variable and never commit it to source control. <br>
-Risk: Autonomous agents could call unintended paid endpoints or use unreviewed client dependencies. <br>
-Mitigation: Pin and review npm dependencies, add endpoint allowlists, and require budget checks before payment. <br>
+## Use Case:
 
+Developers and agent builders use this skill to add autonomous, no-account access to GoldRush blockchain data through x402 payments. It helps agents discover endpoints, evaluate pricing, configure a wallet, and call paid blockchain data APIs.
 
-## Reference(s): <br>
-- [GoldRush x402 overview](artifact/references/overview.md) <br>
-- [x402 for AI agents](artifact/references/ai-agents.md) <br>
-- [x402 endpoints](artifact/references/endpoints.md) <br>
-- [x402 protocol](https://x402.org) <br>
-- [GoldRush x402 endpoint discovery](https://x402.goldrush.dev/v1/x402/endpoints) <br>
-- [ClawHub skill page](https://clawhub.ai/gane5h/goldrush-x402) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Code, Shell commands, Configuration] <br>
-**Output Format:** [Markdown with TypeScript and bash snippets] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include endpoint URLs, pricing and tier guidance, wallet setup notes, and risk controls.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-3.0.5 (source: server release metadata) <br>
+Risk: Automatic wallet payments can spend funds without sufficient local limits.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a dedicated low-balance wallet, preferably testnet-only, and enforce local controls for chain, token, recipient, per-request amount, retries, and total spend before autonomous use.
+
+Risk: Wallet private keys may be exposed if copied into code, logs, or shared environments.
+
+Mitigation: Store private keys in a secrets manager or protected environment variable and never reuse a wallet that holds valuable assets.
+
+Risk: Payment client dependencies can affect transaction signing and payment behavior.
+
+Mitigation: Pin and audit the x402 dependencies before deployment.
+
+## Reference(s):
+
+- [GoldRush x402 Overview](references/overview.md)
+- [x402 for AI Agents](references/ai-agents.md)
+- [x402 Endpoints](references/endpoints.md)
+- [x402 Protocol](https://x402.org)
+- [Goldrush X402 on ClawHub](https://clawhub.ai/gane5h/skills/goldrush-x402)
+
+## Skill Output:
+
+**Output Type(s):** [Guidance, Code, Shell commands, Configuration]
+
+**Output Format:** [Markdown with TypeScript and bash code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes endpoint discovery, pricing, wallet setup, and x402 payment guidance.]
+
+## Skill Version(s):
+
+3.0.5 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

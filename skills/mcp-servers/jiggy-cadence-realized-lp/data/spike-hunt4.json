@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-09-10T01:34:17.198Z",
+  "method": "walk-forward: score on 15d formation, measure 15d holdout, step 15d, one round trip charged. Scoring function identical to spike-hunt3, deliberately not retuned.",
+  "caveat": "Adjacent windows share market regime, so windows are not fully independent.",
+  "preRegistered": {
+    "minMedianEdgePp": 0.5,
+    "minPositiveWindowsPct": 60,
+    "maxP": 0.05
+  },
+  "costModel": {
+    "roundTripPct": 0.1
+  },
+  "windowsTested": 9,
+  "medianEdgePp": 0.286,
+  "meanEdgePp": -0.105,
+  "positiveWindows": 6,
+  "positiveWindowsPct": 66.7,
+  "pooledRandomP": 0.2353,
+  "verdict": "FAILS",
+  "windows": [
+    {
+      "startDayIndex": 0,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.099,
+      "pickedMeanPct": 0.461,
+      "edgePp": 0.56,
+      "randomP": 0
+    },
+    {
+      "startDayIndex": 15,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": 0.186,
+      "edgePp": 0.286,
+      "randomP": 0.005
+    },
+    {
+      "startDayIndex": 30,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.106,
+      "pickedMeanPct": 0.333,
+      "edgePp": 0.438,
+      "randomP": 0
+    },
+    {
+      "startDayIndex": 45,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": 0.272,
+      "edgePp": 0.372,
+      "randomP": 0
+    },
+    {
+      "startDayIndex": 60,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": 0.283,
+      "edgePp": 0.383,
+      "randomP": 0
+    },
+    {
+      "startDayIndex": 75,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.101,
+      "pickedMeanPct": -0.035,
+      "edgePp": 0.066,
+      "randomP": 0.085
+    },
+    {
+      "startDayIndex": 90,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": -1.848,
+      "edgePp": -1.748,
+      "randomP": 0.8125
+    },
+    {
+      "startDayIndex": 105,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.099,
+      "pickedMeanPct": -0.393,
+      "edgePp": -0.294,
+      "randomP": 0.5725
+    },
+    {
+      "startDayIndex": 120,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.128,
+      "pickedMeanPct": -1.14,
+      "edgePp": -1.012,
+      "randomP": 0.6425
+    }
+  ]
+}

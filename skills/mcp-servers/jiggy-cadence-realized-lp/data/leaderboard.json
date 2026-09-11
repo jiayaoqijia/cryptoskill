@@ -1,0 +1,457 @@
+{
+  "generatedAt": "2026-09-09T21:35:48.784Z",
+  "method": "full-range advertised-vs-realized gap, ranked. Live sample, same canary/liveness gate as the corpus-wide audit.",
+  "canary": {
+    "worstStableIlPct": 0.00001903301908301458,
+    "passed": true
+  },
+  "sampleSize": 55,
+  "topEarners": [
+    {
+      "pair": "USDC/SEI",
+      "poolId": "0xf8e349d1d827a6edf17ee673664cfad4ca78c533",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 5487451.7548085,
+      "advertisedAprPct": 23.49068663230889,
+      "realizedAprPct": 13.603899215213909,
+      "gapPts": 9.88678741709498,
+      "absGapPts": 9.88678741709498,
+      "misleading": false
+    },
+    {
+      "pair": "WBTC/WETH",
+      "poolId": "0xe6ff8b9a37b0fab776134636d9981aa778c4e718",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 751273.1490110484,
+      "advertisedAprPct": 4.313014320233702,
+      "realizedAprPct": 11.74216018657666,
+      "gapPts": -7.429145866342958,
+      "absGapPts": 7.429145866342958,
+      "misleading": false
+    },
+    {
+      "pair": "AAVE/WETH",
+      "poolId": "0x5ab53ee1d50eef2c1dd3d5402789cd27bb52c1bb",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 14453724.51337167,
+      "advertisedAprPct": 2.8883104982153496,
+      "realizedAprPct": 10.08614990476687,
+      "gapPts": -7.1978394065515205,
+      "absGapPts": 7.1978394065515205,
+      "misleading": false
+    },
+    {
+      "pair": "WBTC/USDT",
+      "poolId": "0x56534741cd8b152df6d48adf7ac51f75169a83b2",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 26067051.926974677,
+      "advertisedAprPct": 12.532289988571726,
+      "realizedAprPct": 9.225318693143748,
+      "gapPts": 3.306971295427978,
+      "absGapPts": 3.306971295427978,
+      "misleading": false
+    },
+    {
+      "pair": "PAXG/USDC",
+      "poolId": "0x5ae13baaef0620fdae1d355495dc51a17adb4082",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 3205283.811469802,
+      "advertisedAprPct": 5.436824772277792,
+      "realizedAprPct": 9.156930595171735,
+      "gapPts": -3.7201058228939434,
+      "absGapPts": 3.7201058228939434,
+      "misleading": false
+    },
+    {
+      "pair": "LINK/WETH",
+      "poolId": "0xa6cc3c2531fdaa6ae1a3ca84c2855806728693e8",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 57480117.94308046,
+      "advertisedAprPct": 22.832681886114827,
+      "realizedAprPct": 8.431133065562697,
+      "gapPts": 14.40154882055213,
+      "absGapPts": 14.40154882055213,
+      "misleading": false
+    },
+    {
+      "pair": "ENA/WETH",
+      "poolId": "0xc3db44adc1fcdfd5671f555236eae49f4a8eea18",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 5526079.717930932,
+      "advertisedAprPct": 11.202889304360811,
+      "realizedAprPct": 8.287680204755176,
+      "gapPts": 2.915209099605635,
+      "absGapPts": 2.915209099605635,
+      "misleading": false
+    },
+    {
+      "pair": "WETH/USDT",
+      "poolId": "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 294551521.18177265,
+      "advertisedAprPct": 14.307790279556054,
+      "realizedAprPct": 7.209195141649103,
+      "gapPts": 7.09859513790695,
+      "absGapPts": 7.09859513790695,
+      "misleading": false
+    },
+    {
+      "pair": "USDC/WETH",
+      "poolId": "0xe0554a476a092703abdb3ef35c80e0d76d32939f",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 8802621.346356917,
+      "advertisedAprPct": 15.07752534373682,
+      "realizedAprPct": 6.890699846665775,
+      "gapPts": 8.186825497071045,
+      "absGapPts": 8.186825497071045,
+      "misleading": false
+    },
+    {
+      "pair": "XAUt/USDT",
+      "poolId": "0x6546055f46e866a4b9a4a13e81273e3152bae5da",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 3603025.600917386,
+      "advertisedAprPct": 3.9261402359469773,
+      "realizedAprPct": 5.209772954880807,
+      "gapPts": -1.2836327189338301,
+      "absGapPts": 1.2836327189338301,
+      "misleading": false
+    }
+  ],
+  "worstLosers": [
+    {
+      "pair": "HEX/WETH",
+      "poolId": "0x9e0905249ceefffb9605e034b534544684a58be6",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 4595241.264742156,
+      "advertisedAprPct": 0.3485251641241518,
+      "realizedAprPct": -51.96022422212837,
+      "gapPts": 52.30874938625252,
+      "absGapPts": 52.30874938625252,
+      "misleading": true
+    },
+    {
+      "pair": "DAI/WETH",
+      "poolId": "0x60594a405d53811d3bc4766596efd80fd545a270",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 16578035.21482049,
+      "advertisedAprPct": 0.18932403367088768,
+      "realizedAprPct": -10.7337249277267,
+      "gapPts": 10.923048961397587,
+      "absGapPts": 10.923048961397587,
+      "misleading": true
+    },
+    {
+      "pair": "DAI/WETH",
+      "poolId": "0xc2e9f25be6257c210d7adf0d4cd6e3e881ba25f8",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 49540304.46940199,
+      "advertisedAprPct": 3.3394471885296104,
+      "realizedAprPct": -10.28692427462153,
+      "gapPts": 13.626371463151141,
+      "absGapPts": 13.626371463151141,
+      "misleading": true
+    },
+    {
+      "pair": "USDC/WETH",
+      "poolId": "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 303362342.87685114,
+      "advertisedAprPct": 2.0110390846165864,
+      "realizedAprPct": -8.695859012450276,
+      "gapPts": 10.706898097066862,
+      "absGapPts": 10.706898097066862,
+      "misleading": true
+    },
+    {
+      "pair": "WETH/USDT",
+      "poolId": "0x11b815efb8f581194ae79006d24e0d814b7697f6",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 74586591.9422253,
+      "advertisedAprPct": 2.078394501018676,
+      "realizedAprPct": -7.621605247881438,
+      "gapPts": 9.699999748900114,
+      "absGapPts": 9.699999748900114,
+      "misleading": true
+    },
+    {
+      "pair": "USDC/WETH",
+      "poolId": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 413678185.59829974,
+      "advertisedAprPct": 3.399714498765918,
+      "realizedAprPct": -7.014746782739113,
+      "gapPts": 10.41446128150503,
+      "absGapPts": 10.41446128150503,
+      "misleading": true
+    },
+    {
+      "pair": "WETH/USDT",
+      "poolId": "0xc7bbec68d12a0d1830360f8ec58fa599ba1b0e9b",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 11286139.348462999,
+      "advertisedAprPct": 4.811714375837683,
+      "realizedAprPct": -5.008978499815584,
+      "gapPts": 9.820692875653268,
+      "absGapPts": 9.820692875653268,
+      "misleading": true
+    },
+    {
+      "pair": "WBTC/USDC",
+      "poolId": "0x9a772018fbd77fcd2d25657e5c547baff3fd7d16",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 7937041.981666755,
+      "advertisedAprPct": 1.1079981164386825,
+      "realizedAprPct": -4.928812557204879,
+      "gapPts": 6.036810673643561,
+      "absGapPts": 6.036810673643561,
+      "misleading": true
+    },
+    {
+      "pair": "WBTC/USDC",
+      "poolId": "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 167564830.7084635,
+      "advertisedAprPct": 0.7655473480408002,
+      "realizedAprPct": -4.4695535073352195,
+      "gapPts": 5.23510085537602,
+      "absGapPts": 5.23510085537602,
+      "misleading": true
+    },
+    {
+      "pair": "RLB/WETH",
+      "poolId": "0x510100d5143e011db24e2aa38abe85d73d5b2177",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 5049893.873447159,
+      "advertisedAprPct": 2.5703817548358194,
+      "realizedAprPct": -3.8449303915206627,
+      "gapPts": 6.415312146356483,
+      "absGapPts": 6.415312146356483,
+      "misleading": true
+    }
+  ],
+  "mostHonest": [
+    {
+      "pair": "Metis/WETH",
+      "poolId": "0x1c98562a2fab5af19d8fb3291a36ac3c618835d9",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 3198622.7994934986,
+      "advertisedAprPct": 1.5034075700184462,
+      "realizedAprPct": 1.490496255664248,
+      "gapPts": 0.012911314354198122,
+      "absGapPts": 0.012911314354198122,
+      "misleading": false
+    },
+    {
+      "pair": "PEPE/WETH",
+      "poolId": "0x11950d141ecb863f01007add7d1a342041227b58",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 28061604.88077583,
+      "advertisedAprPct": 0.033756325475272075,
+      "realizedAprPct": -0.0017484899593667137,
+      "gapPts": 0.03550481543463879,
+      "absGapPts": 0.03550481543463879,
+      "misleading": true
+    },
+    {
+      "pair": "WETH/weETH",
+      "poolId": "0x7a415b19932c0105c82fdb6b720bb01b0cc2cae3",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 13302935.256980995,
+      "advertisedAprPct": 0.19160325650635937,
+      "realizedAprPct": 0.15324158926055342,
+      "gapPts": 0.03836166724580595,
+      "absGapPts": 0.03836166724580595,
+      "misleading": false
+    },
+    {
+      "pair": "WETH/weETH",
+      "poolId": "0x202a6012894ae5c288ea824cbc8a9bfb26a49b93",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 6002548.221643114,
+      "advertisedAprPct": 0.07930928253900539,
+      "realizedAprPct": 0.2534193888636959,
+      "gapPts": -0.17411010632469054,
+      "absGapPts": 0.17411010632469054,
+      "misleading": false
+    },
+    {
+      "pair": "cbETH/WETH",
+      "poolId": "0x840deeef2f115cf50da625f7368c24af6fe74410",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 2169940.2925716494,
+      "advertisedAprPct": 0.13819957840886618,
+      "realizedAprPct": 0.46444323567702267,
+      "gapPts": -0.3262436572681565,
+      "absGapPts": 0.3262436572681565,
+      "misleading": false
+    },
+    {
+      "pair": "WBTC/WETH",
+      "poolId": "0xcbcdf9626bc03e24f779434178a73a0b4bad62ed",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 202451103.75126523,
+      "advertisedAprPct": 0.11864427288671289,
+      "realizedAprPct": -0.22249059201797886,
+      "gapPts": 0.34113486490469175,
+      "absGapPts": 0.34113486490469175,
+      "misleading": true
+    },
+    {
+      "pair": "wTAO/WETH",
+      "poolId": "0x2982d3295a0e1a99e6e88ece0e93ffdfc5c761ae",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 4204114.36127719,
+      "advertisedAprPct": 5.563472469009042,
+      "realizedAprPct": 5.167603911258197,
+      "gapPts": 0.3958685577508456,
+      "absGapPts": 0.3958685577508456,
+      "misleading": false
+    },
+    {
+      "pair": "USD0/USDC",
+      "poolId": "0x4e665157291dbcb25152ebb01061e4012f58add2",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 1968818.0340683553,
+      "advertisedAprPct": 0.06887307927040867,
+      "realizedAprPct": 0.4680538941223262,
+      "gapPts": -0.3991808148519175,
+      "absGapPts": 0.3991808148519175,
+      "misleading": false
+    },
+    {
+      "pair": "wM/USDC",
+      "poolId": "0x970a7749ecaa4394c8b2bf5f2471f41fd6b79288",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 5164704.523545476,
+      "advertisedAprPct": 0.020440441775017346,
+      "realizedAprPct": 0.5804241196142631,
+      "gapPts": -0.5599836778392457,
+      "absGapPts": 0.5599836778392457,
+      "misleading": false
+    },
+    {
+      "pair": "AUSD/USDC",
+      "poolId": "0xbafead7c60ea473758ed6c6021505e8bbd7e8e5d",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 34261388.47208342,
+      "advertisedAprPct": 1.509033184455344,
+      "realizedAprPct": 0.9380117540262789,
+      "gapPts": 0.5710214304290651,
+      "absGapPts": 0.5710214304290651,
+      "misleading": false
+    }
+  ],
+  "mostMisleading": [
+    {
+      "pair": "HEX/WETH",
+      "poolId": "0x9e0905249ceefffb9605e034b534544684a58be6",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 4595241.264742156,
+      "advertisedAprPct": 0.3485251641241518,
+      "realizedAprPct": -51.96022422212837,
+      "gapPts": 52.30874938625252,
+      "absGapPts": 52.30874938625252,
+      "misleading": true
+    },
+    {
+      "pair": "DAI/WETH",
+      "poolId": "0xc2e9f25be6257c210d7adf0d4cd6e3e881ba25f8",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 49540304.46940199,
+      "advertisedAprPct": 3.3394471885296104,
+      "realizedAprPct": -10.28692427462153,
+      "gapPts": 13.626371463151141,
+      "absGapPts": 13.626371463151141,
+      "misleading": true
+    },
+    {
+      "pair": "DAI/WETH",
+      "poolId": "0x60594a405d53811d3bc4766596efd80fd545a270",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 16578035.21482049,
+      "advertisedAprPct": 0.18932403367088768,
+      "realizedAprPct": -10.7337249277267,
+      "gapPts": 10.923048961397587,
+      "absGapPts": 10.923048961397587,
+      "misleading": true
+    },
+    {
+      "pair": "USDC/WETH",
+      "poolId": "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 303362342.87685114,
+      "advertisedAprPct": 2.0110390846165864,
+      "realizedAprPct": -8.695859012450276,
+      "gapPts": 10.706898097066862,
+      "absGapPts": 10.706898097066862,
+      "misleading": true
+    },
+    {
+      "pair": "USDC/WETH",
+      "poolId": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 413678185.59829974,
+      "advertisedAprPct": 3.399714498765918,
+      "realizedAprPct": -7.014746782739113,
+      "gapPts": 10.41446128150503,
+      "absGapPts": 10.41446128150503,
+      "misleading": true
+    },
+    {
+      "pair": "WETH/USDT",
+      "poolId": "0xc7bbec68d12a0d1830360f8ec58fa599ba1b0e9b",
+      "feeTierPct": 0.01,
+      "currentTvlUsd": 11286139.348462999,
+      "advertisedAprPct": 4.811714375837683,
+      "realizedAprPct": -5.008978499815584,
+      "gapPts": 9.820692875653268,
+      "absGapPts": 9.820692875653268,
+      "misleading": true
+    },
+    {
+      "pair": "WETH/USDT",
+      "poolId": "0x11b815efb8f581194ae79006d24e0d814b7697f6",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 74586591.9422253,
+      "advertisedAprPct": 2.078394501018676,
+      "realizedAprPct": -7.621605247881438,
+      "gapPts": 9.699999748900114,
+      "absGapPts": 9.699999748900114,
+      "misleading": true
+    },
+    {
+      "pair": "WBTC/USDT",
+      "poolId": "0x9db9e0e53058c89e5b94e29621a205198648425b",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 57397347.46687347,
+      "advertisedAprPct": 7.351094142855465,
+      "realizedAprPct": -1.76868648785538,
+      "gapPts": 9.119780630710846,
+      "absGapPts": 9.119780630710846,
+      "misleading": true
+    },
+    {
+      "pair": "RLB/WETH",
+      "poolId": "0x510100d5143e011db24e2aa38abe85d73d5b2177",
+      "feeTierPct": 0.3,
+      "currentTvlUsd": 5049893.873447159,
+      "advertisedAprPct": 2.5703817548358194,
+      "realizedAprPct": -3.8449303915206627,
+      "gapPts": 6.415312146356483,
+      "absGapPts": 6.415312146356483,
+      "misleading": true
+    },
+    {
+      "pair": "WBTC/USDC",
+      "poolId": "0x9a772018fbd77fcd2d25657e5c547baff3fd7d16",
+      "feeTierPct": 0.05,
+      "currentTvlUsd": 7937041.981666755,
+      "advertisedAprPct": 1.1079981164386825,
+      "realizedAprPct": -4.928812557204879,
+      "gapPts": 6.036810673643561,
+      "absGapPts": 6.036810673643561,
+      "misleading": true
+    }
+  ]
+}

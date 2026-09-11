@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-09-09T21:02:01.130Z",
+  "source": {
+    "what": "DefiLlama yield predictions (predictedClass / predictedProbability), graded retrospectively",
+    "how": "Wayback-archived yields.llama.fi/pools snapshots graded against DefiLlama's own chart apy 30d forward",
+    "snapshots": 26,
+    "nInstances": 8092,
+    "nPools": 459,
+    "gradedAt": "2026-09-07T00:21:11.928876+00:00"
+  },
+  "canary": {
+    "oracle": 100,
+    "inverted": 0,
+    "coinflip": 50,
+    "passed": true,
+    "note": "oracle must score 100, inverted 0, coinflip ~50"
+  },
+  "headline": {
+    "rawAccuracyIsAMirage": true,
+    "rawAccuracyNote": "Edge over baseline FLIPS SIGN across tolerance bands -- it is a parameter, not a finding.",
+    "confidenceIsCalibrated": true,
+    "confidenceNote": "Edge rises monotonically with DefiLlama's own stated confidence tier. Their uncertainty is honest even when their point estimate is not."
+  },
+  "byBand": [
+    {
+      "band": "strict 0%",
+      "n": 8092,
+      "accuracyPct": 53.806228373702425,
+      "baselinePct": 55.20266930301533,
+      "edgePp": -1.3964409293129023
+    },
+    {
+      "band": "mid 5%",
+      "n": 8092,
+      "accuracyPct": 57.674246169055856,
+      "baselinePct": 53.18833415719229,
+      "edgePp": 4.485912011863569
+    },
+    {
+      "band": "loose 10%",
+      "n": 8092,
+      "accuracyPct": 60.73900148294612,
+      "baselinePct": 59.21898171033119,
+      "edgePp": 1.5200197726149298
+    }
+  ],
+  "byConfidence": [
+    {
+      "tier": 1,
+      "n": 1987,
+      "accuracyPct": 52.541519879214896,
+      "baselinePct": 52.793155510820334,
+      "edgePp": -0.25163563160543845
+    },
+    {
+      "tier": 2,
+      "n": 2639,
+      "accuracyPct": 56.68813944676014,
+      "baselinePct": 53.61879499810534,
+      "edgePp": 3.069344448654796
+    },
+    {
+      "tier": 3,
+      "n": 3466,
+      "accuracyPct": 61.36757068667051,
+      "baselinePct": 53.08713214079631,
+      "edgePp": 8.280438545874205
+    }
+  ],
+  "howToUseThis": [
+    "Trust DefiLlama's prediction ONLY in its top confidence tier -- that is where the edge is real (+8.3pp over baseline, n=3466).",
+    "Treat its low-confidence predictions as noise (-0.3pp, i.e. no better than the base rate).",
+    "In every tier, remember what is being predicted: fee-only APY. That target is near-orthogonal to what an LP actually takes home, because it has no impermanent-loss term.",
+    "Use /api/pools or the realized_return MCP tool to get the realized figure for the specific pool before acting on any advertised or predicted APR."
+  ]
+}

@@ -2,6 +2,8 @@
 name: senpi-strategy-author
 description: >-
   Build or edit a Senpi trading strategy — interactively, ONE decision at a time.
+  There is no paper-trading mode: a strategy is tested with `senpi validate` and a
+  $10-floor live run, never with a scanner re-run on a timer (a model call per firing).
   Use for "build a strategy", "create a strategy from scratch", "design a
   strategy", "I have a trading idea", or ANY strategy that needs DSL (a
   runtime-supervised exit: stop-loss, trailing stop, profit-lock ladder) — a
@@ -13,7 +15,7 @@ description: >-
 license: Apache-2.0
 metadata:
   author: Senpi
-  version: "3.2.1"
+  version: "3.5.0"
   platform: senpi
   exchange: hyperliquid
   requires:
@@ -117,7 +119,7 @@ Before the template offer / Decision 1, read the user's accessible balance ONCE:
 `account_get_portfolio` → `data.portfolio.total_in_hyperliquid` (fall back to
 `total_withdrawable`). Deploy needs a little **over $10 USDC per wallet (~$11.50, to cover
 the ~$1.50 creation fee)** — `deploy.py create` reserves the fee first, so a wallet funded
-to exactly $10 still refuses with `[E_FUNDS_BELOW_FLOOR]`.
+to exactly $10 still refuses with `[E_FUNDS_BELOW_FLOOR]`. That floor is also how a strategy is **tested**: there is no paper-trading mode, and a scan re-run on a timer is a model call per tick, not a simulation — [`references/shadow-testing.md`](references/shadow-testing.md).
 
 - **Balance ≥ ~$11.50/wallet, or unreadable** → say nothing about funding and move on. Unreadable
   means move on too — no retry loop, no blocking; funding is re-checked at deploy anyway.
@@ -245,7 +247,7 @@ the catalog entry, then unit-test → lint → `senpi validate` → hand to ops.
 8. **Lint — advisory, instant, no credentials** (pass the package's absolute path,
    `/data/workspace/strategies/<id>`, so they hit the authored copy from any CWD):
    (a) **authoring lint** → `python3 senpi-strategy-author/scripts/validate_strategy.py /data/workspace/strategies/<id>`
-   (candle keys, null-in-schema, mandate description, retention/cooldown bounds);
+   (candle keys, null-in-schema, mandate description, retention/cooldown bounds) **+ advisory warns you relay to the user**: the stop's distance in price at the recipe's leverage, multi-slot sizing with no free-margin gate, a daily entry cap at or below the slot count;
    (b) **universe gate** → `python3 senpi-strategy-ops/scripts/validate_universe.py /data/workspace/strategies/<id>`
    — every hardcoded ticker you TRADE must be a live HL instrument (derived universes, and names under an exclusion key, pass trivially);
    (c) **deploy contract** → `python3 senpi-strategy-ops/scripts/deploy.py validate /data/workspace/strategies/<id>`
@@ -358,7 +360,7 @@ makes one new wallet per instance). Authoring just designs the package; **concur
 
 Same references; usually no rebuild: tune `runtime.yaml` `inputs` (universe/thresholds/sizing), swap
 the `dsl_preset`, adjust `risk.guard_rails`, or change the `scoring.py` math. Re-validate, then
-re-smoke-test if you touched `scan.py`/`runtime.yaml`.
+re-smoke-test if you touched `scan.py`/`runtime.yaml` — on the runtime (`senpi validate`, or a floor-budget wallet), **never by scheduling agent turns to watch it**: an `openclaw cron` job is a model call every time it fires, and a 5-minute one is 288 a day — [`references/shadow-testing.md`](references/shadow-testing.md).
 
 ## Handoff & the live gate — deploy is `senpi-strategy-ops` (NEVER raw MCP); "done" means verified LIVE
 
@@ -367,13 +369,13 @@ only once **`senpi-strategy-ops` deploys it AND that deploy's report says `overa
 loop every time:
 
 > **Was this an edit to a strategy that is ALREADY LIVE?** (you changed the scoring / scanner / DSL of a
-> deployed package — "make my live strategy more aggressive", re-tune, re-score) — then say so before you
-> do anything. **There is no single verb for this today, and re-running `create` will NOT apply your
-> edit**: the deploy verb is idempotent, so it adopts the wallet that already exists and leaves the
-> deployed scanner as it is. Applying an edit to a live strategy means **closing it and redeploying** —
-> `close.py <id>` (which flattens its open positions and returns the funds) and then the loop below on a
-> fresh wallet. That is real money and a market exit, so **confirm it with the user in those words
-> first**; never present it as a re-tune. The steps below are for a strategy that is not yet live.
+> deployed package — "make my live strategy more aggressive", re-tune, re-score) — then hand it to
+> **`senpi-strategy-ops`**, which applies it IN PLACE with `openclaw senpi update`: no close, no fresh
+> wallet, no market exit. **Re-running `create` will NOT apply it** — the deploy verb is idempotent, so it
+> adopts the existing wallet and leaves the deployed scanner as it is. Tell the user two things:
+> `dsl_preset` is **forward-only** — new entries only, never a position already open (other `exit:` fields
+> like `order_type` DO reach open ones); and a changed `strategy.wallet`, a renamed or moved external
+> scanner or a changed `action_type` still forces close-and-redeploy — a market exit. Below: the not-yet-live path.
 
 1. **Confirm with the user** — budget + "ready to deploy?" Funding a wallet is real money and one-way, so
    this is an explicit yes, not an assumption.

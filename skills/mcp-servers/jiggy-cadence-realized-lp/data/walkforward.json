@@ -1,0 +1,975 @@
+{
+  "generatedAt": "2026-09-07T04:47:12.645Z",
+  "method": "30-day windows stepped every 15 days across 210 days of poolDayData, same pools, same gates, instrument re-run independently in each window",
+  "caveats": [
+    "OVERLAPPING WINDOWS: step 15d < window 30d, so adjacent windows share half their data. They are NOT independent samples and must not be treated as n=13 for significance.",
+    "SURVIVORSHIP BIAS: pools are ranked by CURRENT volume, so pools that died are absent from historical windows. This makes the past look better than it was, which works AGAINST our thesis rather than for it. The subgraph does not expose point-in-time ranking.",
+    "Each window carries its own stable-pair canary. Untrusted windows are reported, not dropped."
+  ],
+  "windowsTotal": 13,
+  "windowsTrusted": 13,
+  "windowsUntrusted": 0,
+  "stability": {
+    "tight": {
+      "windows": 13,
+      "min": 44.09448818897638,
+      "median": 59.22330097087378,
+      "max": 68.59504132231406,
+      "mean": 57.3970794762963,
+      "everyWindowAbove50": false,
+      "everyWindowAbove33": true
+    },
+    "moderate": {
+      "windows": 13,
+      "min": 34.645669291338585,
+      "median": 46.15384615384615,
+      "max": 60.33057851239669,
+      "mean": 47.129676317925494,
+      "everyWindowAbove50": false,
+      "everyWindowAbove33": true
+    },
+    "wide": {
+      "windows": 13,
+      "min": 28.346456692913385,
+      "median": 42.06349206349206,
+      "max": 54.54545454545454,
+      "mean": 41.75028023002983,
+      "everyWindowAbove50": false,
+      "everyWindowAbove33": false
+    },
+    "full": {
+      "windows": 13,
+      "min": 17.322834645669293,
+      "median": 29.807692307692307,
+      "max": 45.45454545454545,
+      "mean": 31.276114007152096,
+      "everyWindowAbove50": false,
+      "everyWindowAbove33": false
+    }
+  },
+  "windows": [
+    {
+      "offsetDaysAgo": 0,
+      "endDate": "2026-09-07",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0006759740914796808,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 102,
+          "medianIlPct": -1.2601948138419472,
+          "medianRealizedPct": -0.8420866596551406,
+          "medianAdvertisedAprPct": 0.49686674852492874,
+          "misleadingCount": 63,
+          "misleadingPct": 61.76470588235294,
+          "leftBandCount": 25
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0006759740914796808,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 102,
+          "medianIlPct": -0.4542348468278279,
+          "medianRealizedPct": -0.03627951862515898,
+          "medianAdvertisedAprPct": 0.49686674852492874,
+          "misleadingCount": 51,
+          "misleadingPct": 50,
+          "leftBandCount": 0
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0006759740914796808,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 102,
+          "medianIlPct": -0.266084612769274,
+          "medianRealizedPct": 0.019569012986240534,
+          "medianAdvertisedAprPct": 0.49686674852492874,
+          "misleadingCount": 45,
+          "misleadingPct": 44.11764705882353,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0006759740914796808,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 102,
+          "medianIlPct": -0.1330423063846342,
+          "medianRealizedPct": 0.06496273965110588,
+          "medianAdvertisedAprPct": 0.49686674852492874,
+          "misleadingCount": 35,
+          "misleadingPct": 34.31372549019608,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 102,
+        "pearson": 0.14950854251751144,
+        "spearman": 0.32311380766860237
+      }
+    },
+    {
+      "offsetDaysAgo": 15,
+      "endDate": "2026-08-23",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00042643694270205756,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 121,
+          "medianIlPct": -2.0274545818698253,
+          "medianRealizedPct": -1.9689651703400024,
+          "medianAdvertisedAprPct": 2.365695261788585,
+          "misleadingCount": 83,
+          "misleadingPct": 68.59504132231406,
+          "leftBandCount": 33
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00042643694270205756,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 121,
+          "medianIlPct": -0.7307921849307619,
+          "medianRealizedPct": -0.4432537853581188,
+          "medianAdvertisedAprPct": 2.365695261788585,
+          "misleadingCount": 73,
+          "misleadingPct": 60.33057851239669,
+          "leftBandCount": 5
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00042643694270205756,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 121,
+          "medianIlPct": -0.42808815065619177,
+          "medianRealizedPct": -0.15453065325637727,
+          "medianAdvertisedAprPct": 2.365695261788585,
+          "misleadingCount": 66,
+          "misleadingPct": 54.54545454545454,
+          "leftBandCount": 1
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00042643694270205756,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 121,
+          "medianIlPct": -0.21404407532810144,
+          "medianRealizedPct": 0.023097893476830805,
+          "medianAdvertisedAprPct": 2.365695261788585,
+          "misleadingCount": 55,
+          "misleadingPct": 45.45454545454545,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 121,
+        "pearson": 0.19364911239923174,
+        "spearman": 0.36360926703698687
+      }
+    },
+    {
+      "offsetDaysAgo": 30,
+      "endDate": "2026-08-08",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0014842913069301744,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 104,
+          "medianIlPct": -0.36723689618611277,
+          "medianRealizedPct": -0.12363745341138098,
+          "medianAdvertisedAprPct": 1.0074681953874816,
+          "misleadingCount": 56,
+          "misleadingPct": 53.84615384615385,
+          "leftBandCount": 13
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0014842913069301744,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 104,
+          "medianIlPct": -0.1323698474683277,
+          "medianRealizedPct": 0.03586341490230264,
+          "medianAdvertisedAprPct": 1.0074681953874816,
+          "misleadingCount": 44,
+          "misleadingPct": 42.30769230769231,
+          "leftBandCount": 4
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0014842913069301744,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 104,
+          "medianIlPct": -0.07754046139767934,
+          "medianRealizedPct": 0.040963858279835334,
+          "medianAdvertisedAprPct": 1.0074681953874816,
+          "misleadingCount": 40,
+          "misleadingPct": 38.46153846153847,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0014842913069301744,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 104,
+          "medianIlPct": -0.038770230698842445,
+          "medianRealizedPct": 0.07446723206369699,
+          "medianAdvertisedAprPct": 1.0074681953874816,
+          "misleadingCount": 31,
+          "misleadingPct": 29.807692307692307,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 104,
+        "pearson": 0.11176118559776549,
+        "spearman": 0.2399125146697962
+      }
+    },
+    {
+      "offsetDaysAgo": 45,
+      "endDate": "2026-07-24",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.007622889722624926,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 103,
+          "medianIlPct": -0.889372946810485,
+          "medianRealizedPct": -0.47283325497213136,
+          "medianAdvertisedAprPct": 1.9066310591342228,
+          "misleadingCount": 61,
+          "misleadingPct": 59.22330097087378,
+          "leftBandCount": 16
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.007622889722624926,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 103,
+          "medianIlPct": -0.32057280337126626,
+          "medianRealizedPct": 0.001249873250858403,
+          "medianAdvertisedAprPct": 1.9066310591342228,
+          "misleadingCount": 51,
+          "misleadingPct": 49.51456310679612,
+          "leftBandCount": 3
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.007622889722624926,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 103,
+          "medianIlPct": -0.18778720048692188,
+          "medianRealizedPct": 0.019144479993542345,
+          "medianAdvertisedAprPct": 1.9066310591342228,
+          "misleadingCount": 45,
+          "misleadingPct": 43.689320388349515,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.007622889722624926,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 103,
+          "medianIlPct": -0.09389360024346649,
+          "medianRealizedPct": 0.08075141430704616,
+          "medianAdvertisedAprPct": 1.9066310591342228,
+          "misleadingCount": 34,
+          "misleadingPct": 33.00970873786408,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 103,
+        "pearson": 0.03104900921472883,
+        "spearman": 0.38817379080086106
+      }
+    },
+    {
+      "offsetDaysAgo": 60,
+      "endDate": "2026-07-09",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00004107498416949795,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 113,
+          "medianIlPct": -0.29990243034477837,
+          "medianRealizedPct": -0.0583284315773569,
+          "medianAdvertisedAprPct": 2.083810945729713,
+          "misleadingCount": 59,
+          "misleadingPct": 52.21238938053098,
+          "leftBandCount": 13
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00004107498416949795,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 113,
+          "medianIlPct": -0.10809926609331999,
+          "medianRealizedPct": 0.022350958380707484,
+          "medianAdvertisedAprPct": 2.083810945729713,
+          "misleadingCount": 50,
+          "misleadingPct": 44.24778761061947,
+          "leftBandCount": 3
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00004107498416949795,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 113,
+          "medianIlPct": -0.06332308399493725,
+          "medianRealizedPct": 0.04149207742759223,
+          "medianAdvertisedAprPct": 2.083810945729713,
+          "misleadingCount": 42,
+          "misleadingPct": 37.16814159292036,
+          "leftBandCount": 1
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00004107498416949795,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 113,
+          "medianIlPct": -0.03166154199746307,
+          "medianRealizedPct": 0.10762574565794225,
+          "medianAdvertisedAprPct": 2.083810945729713,
+          "misleadingCount": 32,
+          "misleadingPct": 28.31858407079646,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 113,
+        "pearson": -0.10452616818796073,
+        "spearman": 0.46103366824139996
+      }
+    },
+    {
+      "offsetDaysAgo": 75,
+      "endDate": "2026-06-24",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.000029442144977576135,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 118,
+          "medianIlPct": -0.6498856013662013,
+          "medianRealizedPct": -0.2842774564661133,
+          "medianAdvertisedAprPct": 2.8762924405348036,
+          "misleadingCount": 70,
+          "misleadingPct": 59.32203389830508,
+          "leftBandCount": 22
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.000029442144977576135,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 118,
+          "medianIlPct": -0.2342500408267778,
+          "medianRealizedPct": 0.01991635859005817,
+          "medianAdvertisedAprPct": 2.8762924405348036,
+          "misleadingCount": 54,
+          "misleadingPct": 45.76271186440678,
+          "leftBandCount": 2
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.000029442144977576135,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 118,
+          "medianIlPct": -0.13722049692987404,
+          "medianRealizedPct": 0.0387408728512174,
+          "medianAdvertisedAprPct": 2.8762924405348036,
+          "misleadingCount": 48,
+          "misleadingPct": 40.67796610169492,
+          "leftBandCount": 1
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.000029442144977576135,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 118,
+          "medianIlPct": -0.0686102484649398,
+          "medianRealizedPct": 0.09652756152800981,
+          "medianAdvertisedAprPct": 2.8762924405348036,
+          "misleadingCount": 31,
+          "misleadingPct": 26.27118644067797,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 118,
+        "pearson": 0.16900900285026374,
+        "spearman": 0.546284224250326
+      }
+    },
+    {
+      "offsetDaysAgo": 90,
+      "endDate": "2026-06-09",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019923462994952956,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.681014157520865,
+          "medianRealizedPct": -0.4382780051844186,
+          "medianAdvertisedAprPct": 2.350783820703066,
+          "misleadingCount": 77,
+          "misleadingPct": 60.629921259842526,
+          "leftBandCount": 30
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019923462994952956,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.24547027025605406,
+          "medianRealizedPct": -0.013001625473431366,
+          "medianAdvertisedAprPct": 2.350783820703066,
+          "misleadingCount": 64,
+          "misleadingPct": 50.39370078740157,
+          "leftBandCount": 2
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019923462994952956,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.14379315515663516,
+          "medianRealizedPct": 0.023093812984241114,
+          "medianAdvertisedAprPct": 2.350783820703066,
+          "misleadingCount": 59,
+          "misleadingPct": 46.45669291338583,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019923462994952956,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.07189657757831203,
+          "medianRealizedPct": 0.05357578535774188,
+          "medianAdvertisedAprPct": 2.350783820703066,
+          "misleadingCount": 49,
+          "misleadingPct": 38.582677165354326,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 127,
+        "pearson": 0.27811624258472784,
+        "spearman": 0.30935976752905886
+      }
+    },
+    {
+      "offsetDaysAgo": 105,
+      "endDate": "2026-05-25",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019744364642138024,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 126,
+          "medianIlPct": -0.8289491633104273,
+          "medianRealizedPct": -0.28548901615716293,
+          "medianAdvertisedAprPct": 1.7413089618933533,
+          "misleadingCount": 69,
+          "misleadingPct": 54.761904761904766,
+          "leftBandCount": 25
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019744364642138024,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 126,
+          "medianIlPct": -0.2987931644286068,
+          "medianRealizedPct": 0.023090213375270684,
+          "medianAdvertisedAprPct": 1.7413089618933533,
+          "misleadingCount": 58,
+          "misleadingPct": 46.03174603174603,
+          "leftBandCount": 0
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019744364642138024,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 126,
+          "medianIlPct": -0.17502898337791173,
+          "medianRealizedPct": 0.04334665168583317,
+          "medianAdvertisedAprPct": 1.7413089618933533,
+          "misleadingCount": 53,
+          "misleadingPct": 42.06349206349206,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00019744364642138024,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 126,
+          "medianIlPct": -0.08751449168895586,
+          "medianRealizedPct": 0.07619677321813564,
+          "medianAdvertisedAprPct": 1.7413089618933533,
+          "misleadingCount": 37,
+          "misleadingPct": 29.365079365079367,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 126,
+        "pearson": 0.8321695429609648,
+        "spearman": 0.39228796400449945
+      }
+    },
+    {
+      "offsetDaysAgo": 120,
+      "endDate": "2026-05-10",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00015925124492444098,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.7761247577514452,
+          "medianRealizedPct": -0.35063304931367123,
+          "medianAdvertisedAprPct": 2.447355542869197,
+          "misleadingCount": 79,
+          "misleadingPct": 60.76923076923077,
+          "leftBandCount": 28
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00015925124492444098,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.2797527069498984,
+          "medianRealizedPct": 0.012903279313567375,
+          "medianAdvertisedAprPct": 2.447355542869197,
+          "misleadingCount": 60,
+          "misleadingPct": 46.15384615384615,
+          "leftBandCount": 2
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00015925124492444098,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.1638753416206673,
+          "medianRealizedPct": 0.029104727593369902,
+          "medianAdvertisedAprPct": 2.447355542869197,
+          "misleadingCount": 55,
+          "misleadingPct": 42.30769230769231,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00015925124492444098,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.08193767081033365,
+          "medianRealizedPct": 0.06268268781222715,
+          "medianAdvertisedAprPct": 2.447355542869197,
+          "misleadingCount": 44,
+          "misleadingPct": 33.84615384615385,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 130,
+        "pearson": 0.44118765812797367,
+        "spearman": 0.40467301205806444
+      }
+    },
+    {
+      "offsetDaysAgo": 135,
+      "endDate": "2026-04-25",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00046408188009161577,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.7334613519394406,
+          "medianRealizedPct": -0.3881280516742789,
+          "medianAdvertisedAprPct": 1.2099676464624367,
+          "misleadingCount": 81,
+          "misleadingPct": 62.30769230769231,
+          "leftBandCount": 17
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00046408188009161577,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.26437476268977855,
+          "medianRealizedPct": 0.00719132972764526,
+          "medianAdvertisedAprPct": 1.2099676464624367,
+          "misleadingCount": 63,
+          "misleadingPct": 48.46153846153846,
+          "leftBandCount": 3
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00046408188009161577,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.15486715043449562,
+          "medianRealizedPct": 0.047662763262485155,
+          "medianAdvertisedAprPct": 1.2099676464624367,
+          "misleadingCount": 55,
+          "misleadingPct": 42.30769230769231,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.00046408188009161577,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 130,
+          "medianIlPct": -0.07743357521724503,
+          "medianRealizedPct": 0.0865985867877971,
+          "medianAdvertisedAprPct": 1.2099676464624367,
+          "misleadingCount": 36,
+          "misleadingPct": 27.692307692307693,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 130,
+        "pearson": 0.799802803060265,
+        "spearman": 0.4401015990932554
+      }
+    },
+    {
+      "offsetDaysAgo": 150,
+      "endDate": "2026-04-10",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0017885655855365279,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 120,
+          "medianIlPct": -0.7463081143629868,
+          "medianRealizedPct": -0.2425982517057244,
+          "medianAdvertisedAprPct": 2.1886964390086163,
+          "misleadingCount": 68,
+          "misleadingPct": 56.666666666666664,
+          "leftBandCount": 22
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0017885655855365279,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 120,
+          "medianIlPct": -0.26900535400595227,
+          "medianRealizedPct": 0.005410639168201557,
+          "medianAdvertisedAprPct": 2.1886964390086163,
+          "misleadingCount": 59,
+          "misleadingPct": 49.166666666666664,
+          "leftBandCount": 3
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0017885655855365279,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 120,
+          "medianIlPct": -0.15757968802572742,
+          "medianRealizedPct": 0.02164273050297265,
+          "medianAdvertisedAprPct": 2.1886964390086163,
+          "misleadingCount": 50,
+          "misleadingPct": 41.66666666666667,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0017885655855365279,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 120,
+          "medianIlPct": -0.07878984401286093,
+          "medianRealizedPct": 0.05465812417456862,
+          "medianAdvertisedAprPct": 2.1886964390086163,
+          "misleadingCount": 43,
+          "misleadingPct": 35.833333333333336,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 120,
+        "pearson": 0.7420607684636191,
+        "spearman": 0.4189735398291548
+      }
+    },
+    {
+      "offsetDaysAgo": 165,
+      "endDate": "2026-03-26",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0005745046759875194,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.8750493756541133,
+          "medianRealizedPct": -0.5979207065913257,
+          "medianAdvertisedAprPct": 2.003654246135319,
+          "misleadingCount": 66,
+          "misleadingPct": 51.96850393700787,
+          "leftBandCount": 26
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0005745046759875194,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.31540989912920425,
+          "medianRealizedPct": 0.014773480921015936,
+          "medianAdvertisedAprPct": 2.003654246135319,
+          "misleadingCount": 58,
+          "misleadingPct": 45.66929133858268,
+          "leftBandCount": 3
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0005745046759875194,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.18476284120314546,
+          "medianRealizedPct": 0.04167609539555778,
+          "medianAdvertisedAprPct": 2.003654246135319,
+          "misleadingCount": 52,
+          "misleadingPct": 40.94488188976378,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0005745046759875194,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.09238142060157273,
+          "medianRealizedPct": 0.09088915944643183,
+          "medianAdvertisedAprPct": 2.003654246135319,
+          "misleadingCount": 34,
+          "misleadingPct": 26.77165354330709,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 127,
+        "pearson": 0.6081217784197804,
+        "spearman": 0.5138263967004124
+      }
+    },
+    {
+      "offsetDaysAgo": 180,
+      "endDate": "2026-03-11",
+      "byRange": {
+        "tight": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0025257787002685994,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.18278138035501268,
+          "medianRealizedPct": 0.02909793003132606,
+          "medianAdvertisedAprPct": 2.224091866416258,
+          "misleadingCount": 56,
+          "misleadingPct": 44.09448818897638,
+          "leftBandCount": 15
+        },
+        "moderate": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0025257787002685994,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.06588320424478766,
+          "medianRealizedPct": 0.07364532201043827,
+          "medianAdvertisedAprPct": 2.224091866416258,
+          "misleadingCount": 44,
+          "misleadingPct": 34.645669291338585,
+          "leftBandCount": 1
+        },
+        "wide": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0025257787002685994,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.038593487513971514,
+          "medianRealizedPct": 0.10791267424804625,
+          "medianAdvertisedAprPct": 2.224091866416258,
+          "misleadingCount": 36,
+          "misleadingPct": 28.346456692913385,
+          "leftBandCount": 0
+        },
+        "full": {
+          "canary": {
+            "stablePairsFound": 11,
+            "worstAbsIlPct": 0.0025257787002685994,
+            "passed": true
+          },
+          "trusted": true,
+          "n": 127,
+          "medianIlPct": -0.019296743756991308,
+          "medianRealizedPct": 0.16617133279228255,
+          "medianAdvertisedAprPct": 2.224091866416258,
+          "misleadingCount": 22,
+          "misleadingPct": 17.322834645669293,
+          "leftBandCount": 0
+        }
+      },
+      "correlation": {
+        "n": 127,
+        "pearson": 0.9556897739549726,
+        "spearman": 0.6570291994750657
+      }
+    }
+  ]
+}

@@ -1,48 +1,65 @@
-## Description: <br>
-Solana token launch and trading tools via the OpenPump MCP server for creating pump.fun tokens, trading tokens, managing custodial wallets, transferring SOL and SPL tokens, running market-making and sniping workflows, and monitoring portfolio positions. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+OpenPump Solana MCP gives agents tools to launch pump.fun tokens, trade SOL and SPL tokens, manage OpenPump wallets, run market-making and sniping workflows, and monitor portfolio positions through the OpenPump MCP server.
 
-## Publisher: <br>
-[fullstacktard](https://clawhub.ai/user/fullstacktard) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[fullstacktard](https://clawhub.ai/user/fullstacktard)
 
-## Use Case: <br>
-External developers and agent users use this skill to connect an agent to OpenPump MCP tools for Solana pump.fun token launch, trading, wallet, transfer, market-making, sniping, stop-loss, portfolio, and creator-fee workflows. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global, excluding US persons <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can move real SOL and SPL tokens, launch tokens, and execute trades or transfers that may be irreversible. <br>
-Mitigation: Use a dedicated low-balance account, check balances and quotes first, use dry-run previews where supported, and require explicit confirmation for every trade, transfer, launch, bundle, snipe, and market-making action. <br>
-Risk: Automated market-making, sniping, stop-loss, and heartbeat workflows can create standing trading behavior with loss exposure. <br>
-Mitigation: Avoid standing automation unless the operator explicitly accepts the risk; enforce position limits, drawdown limits, circuit breakers, and user approval for buy and sell actions. <br>
-Risk: The OpenPump API key grants access to live wallet and trading operations. <br>
-Mitigation: Keep OPENPUMP_API_KEY out of prompts, logs, and shared files; store it in the environment or a local secret store and rotate it if exposed. <br>
-Risk: The stdio setup installs and runs the npm MCP package with npx. <br>
-Mitigation: Pin or independently verify the @openpump/mcp package before use instead of relying on an unpinned latest install. <br>
+## Use Case:
 
+External developers and operators use this skill to connect an agent to OpenPump's MCP server for user-supervised pump.fun token trading, token launch workflows, wallet management, portfolio monitoring, and trading risk checks.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/fullstacktard/openpump-solana-mcp) <br>
-- [OpenPump](https://openpump.io) <br>
-- [OpenPump documentation](https://docs.openpump.io) <br>
-- [@openpump/mcp npm package](https://www.npmjs.com/package/@openpump/mcp) <br>
-- [OpenClaw](https://github.com/openclaw/openclaw) <br>
+### Deployment Geography for Use:
 
+Global where legally available, excluding US persons.
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, API/tool calls, Guidance] <br>
-**Output Format:** [Markdown with inline bash, JSON configuration snippets, and MCP tool-call guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires Node.js/npx and OPENPUMP_API_KEY; may direct an agent to invoke OpenPump MCP tools that affect live Solana wallets and trades.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.2.0 (source: server release metadata and artifact _meta.json; artifact SKILL.md frontmatter reports 2.0.0) <br>
+Risk: The skill gives an agent broad real-money wallet and trading authority for Solana and pump.fun activity.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use low-balance, revocable, tightly scoped OpenPump credentials when available and require explicit, transaction-specific approval for buys, sells, transfers, token launches, sniping, market making, and spam launches.
+
+Risk: The MCP server configuration uses a mutable @latest npm startup package.
+
+Mitigation: Avoid @latest startup execution for production use; pin and review the package version before enabling the MCP server.
+
+Risk: The skill requires an OPENPUMP_API_KEY credential that could expose trading authority if stored insecurely.
+
+Mitigation: Store the key in a secure secret manager or protected environment and avoid committing or persisting it in plaintext.
+
+Risk: The README states the agent is not available to US persons.
+
+Mitigation: Verify user eligibility and legal availability before installing or operating the skill.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/fullstacktard/skills/openpump-solana-mcp)
+- [OpenPump](https://openpump.io)
+- [OpenPump Docs](https://docs.openpump.io)
+- [@openpump/mcp npm Package](https://www.npmjs.com/package/@openpump/mcp)
+- [OpenClaw](https://github.com/openclaw/openclaw)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with JSON and shell command snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires OPENPUMP_API_KEY and Node.js/npx; may guide MCP tool calls that affect real Solana funds only after explicit user confirmation.]
+
+## Skill Version(s):
+
+1.2.0 (source: ClawHub release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,43 +1,57 @@
-## Description: <br>
-Check stake delegation and available ADA rewards for the connected wallet. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Check stake delegation and available ADA rewards for the connected wallet.
 
-## Publisher: <br>
-[adacapo21](https://clawhub.ai/user/adacapo21) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[adacapo21](https://clawhub.ai/user/adacapo21)
 
-## Use Case: <br>
-External users and agents use this skill to check whether a connected Cardano wallet is delegated to a stake pool and to report available ADA staking rewards. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill requires a wallet seed phrase through the associated MCP package even though the described task is a read-only rewards lookup. <br>
-Mitigation: Do not provide a real seed phrase unless the MCP package has been audited and trusted; prefer a read-only public stake address or equivalent method where available. <br>
-Risk: A seed phrase can control wallet funds if exposed to an untrusted dependency or runtime. <br>
-Mitigation: Use a dedicated low-value wallet for testing and keep production wallet credentials out of agent and MCP environments. <br>
+## Use Case:
 
+External users and agents use this skill to check whether a connected Cardano wallet is delegated to a stake pool and to report claimable ADA staking rewards.
 
-## Reference(s): <br>
-- [Cardano Staking ClawHub release](https://clawhub.ai/adacapo21/cardano-staking) <br>
-- [Staking Concepts](references/concepts.md) <br>
-- [Staking MCP Tools Reference](references/mcp-tools.md) <br>
-- [Check Stake Delegation](sub-skills/check-delegation.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Guidance] <br>
-**Output Format:** [Markdown text with delegation status and ADA reward values] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Reports poolId as a bech32 pool identifier and availableAdaRewards in ADA.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: ClawHub release metadata; artifact frontmatter reports 0.1.0) <br>
+Risk: The skill requires a wallet seed phrase for a read-only staking check, and a seed phrase can grant control over wallet funds.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a public stake address, reward address, or another read-only identifier instead of a seed phrase whenever possible.
+
+Risk: The staking check depends on an external MCP package that handles wallet-related input.
+
+Mitigation: Review and pin the MCP package to a trusted version before installation, and only provide sensitive wallet material if the package and runtime are fully trusted.
+
+## Reference(s):
+
+- [Cardano Staking ClawHub Page](https://clawhub.ai/adacapo21/skills/cardano-staking)
+- [adacapo21 Publisher Profile](https://clawhub.ai/user/adacapo21)
+- [@indigoprotocol/cardano-mcp package](https://www.npmjs.com/package/@indigoprotocol/cardano-mcp)
+- [Staking Concepts](references/concepts.md)
+- [Staking MCP Tools Reference](references/mcp-tools.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, guidance]
+
+**Output Format:** [Markdown or concise text summary of stake pool ID and available ADA rewards]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Uses the connected MCP server's get_stake_delegation response; rewards are reported in ADA.]
+
+## Skill Version(s):
+
+1.0.0 (source: server-resolved release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

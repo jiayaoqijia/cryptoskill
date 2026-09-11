@@ -1,44 +1,54 @@
-## Description: <br>
-Agent APIs x402 Skill helps agents call x402-protected paid endpoints for QR code generation and image hosting, with additional image, video, and vision APIs documented as planned. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Helps agents call paid x402 API endpoints for QR code generation and image hosting, with documented planned image, vision, and video APIs.
 
-## Publisher: <br>
-[parsonssss](https://clawhub.ai/user/parsonssss) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[parsonssss](https://clawhub.ai/user/parsonssss)
 
-## Use Case: <br>
-Developers and external agent builders use this skill to configure an agent to pay for and call x402 API endpoints. The documented live uses are generating QR code images and uploading images to receive a public URL. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can give an agent authority to sign x402 payments with an EVM private key. <br>
-Mitigation: Use a dedicated low-balance wallet, store the private key only in a secure secret store, and require explicit approval before each paid request. <br>
-Risk: Paid requests could be sent to an unexpected endpoint or with unexpected payment details. <br>
-Mitigation: Verify the API base URL, endpoint path, and x402 payment requirements before signing and retrying a request. <br>
-Risk: Image uploads may return publicly reachable URLs. <br>
-Mitigation: Do not upload sensitive images unless public accessibility is intended and acceptable. <br>
+## Use Case:
 
+Developers and agent users use this skill to integrate paid x402 API calls for QR code image generation and image upload hosting while following the required payment flow.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/parsonssss/x402-agent-api-skill) <br>
-- [Publisher profile](https://clawhub.ai/user/parsonssss) <br>
-- [x402 API base URL](https://www.x402api.app/) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Code, Shell commands, Configuration] <br>
-**Output Format:** [Markdown guidance with TypeScript and shell command examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May guide agents through x402 payment signing, endpoint retries, QR image responses, and public image upload URLs.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.2 (source: server release metadata) <br>
+Risk: Paid x402 requests can give an agent payment-signing authority without enough user control or payment validation.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a dedicated low-balance wallet, pin the API URL to the intended service, and require manual confirmation for each paid request.
+
+Risk: Image upload behavior can make private or regulated images externally hosted.
+
+Mitigation: Avoid uploading private or regulated images unless external hosting is intended.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/parsonssss/skills/x402-agent-api-skill)
+- [x402 API service](https://www.x402api.app/)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with TypeScript code examples, shell commands, and JSON request examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [May guide paid API calls that return PNG QR code image data or public image URLs.]
+
+## Skill Version(s):
+
+1.0.2 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

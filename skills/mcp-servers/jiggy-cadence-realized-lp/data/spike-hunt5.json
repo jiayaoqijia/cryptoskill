@@ -1,0 +1,121 @@
+{
+  "generatedAt": "2026-09-10T01:43:26.489Z",
+  "method": "walk-forward: score on 15d formation, measure 15d holdout, step 15d, one round trip charged. Scoring function identical to spike-hunt3, deliberately not retuned.",
+  "caveat": "Adjacent windows share market regime, so windows are not fully independent.",
+  "preRegistered": {
+    "minMedianEdgePp": 0.5,
+    "minPositiveWindowsPct": 60,
+    "maxP": 0.05
+  },
+  "costModel": {
+    "roundTripPct": 0.1
+  },
+  "windowsTested": 9,
+  "medianEdgePp": 0.152,
+  "meanEdgePp": 0.037,
+  "positiveWindows": 8,
+  "positiveWindowsPct": 88.9,
+  "pooledRandomP": 0.1217,
+  "verdict": "FAILS",
+  "windows": [
+    {
+      "startDayIndex": 0,
+      "pickedMedianDrift": 0.0531,
+      "allMedianDrift": 0.0509,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.099,
+      "pickedMeanPct": 0.228,
+      "edgePp": 0.326,
+      "randomP": 0.005
+    },
+    {
+      "startDayIndex": 15,
+      "pickedMedianDrift": 0.0561,
+      "allMedianDrift": 0.06,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": -0.062,
+      "edgePp": 0.038,
+      "randomP": 0.155
+    },
+    {
+      "startDayIndex": 30,
+      "pickedMedianDrift": 0.0761,
+      "allMedianDrift": 0.0632,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.106,
+      "pickedMeanPct": 0.046,
+      "edgePp": 0.152,
+      "randomP": 0.1025
+    },
+    {
+      "startDayIndex": 45,
+      "pickedMedianDrift": 0.0488,
+      "allMedianDrift": 0.0646,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": 0.273,
+      "edgePp": 0.373,
+      "randomP": 0
+    },
+    {
+      "startDayIndex": 60,
+      "pickedMedianDrift": 0.0371,
+      "allMedianDrift": 0.0424,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": -0.068,
+      "edgePp": 0.031,
+      "randomP": 0.105
+    },
+    {
+      "startDayIndex": 75,
+      "pickedMedianDrift": 0.0534,
+      "allMedianDrift": 0.0493,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.101,
+      "pickedMeanPct": -0.031,
+      "edgePp": 0.07,
+      "randomP": 0.0825
+    },
+    {
+      "startDayIndex": 90,
+      "pickedMedianDrift": 0.0376,
+      "allMedianDrift": 0.0501,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.1,
+      "pickedMeanPct": 0.076,
+      "edgePp": 0.176,
+      "randomP": 0
+    },
+    {
+      "startDayIndex": 105,
+      "pickedMedianDrift": 0.0528,
+      "allMedianDrift": 0.053,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.099,
+      "pickedMeanPct": 0.094,
+      "edgePp": 0.193,
+      "randomP": 0.0025
+    },
+    {
+      "startDayIndex": 120,
+      "pickedMedianDrift": 0.0661,
+      "allMedianDrift": 0.051,
+      "pools": 248,
+      "picked": 50,
+      "allMedianPct": -0.13,
+      "pickedMeanPct": -1.152,
+      "edgePp": -1.023,
+      "randomP": 0.6425
+    }
+  ]
+}

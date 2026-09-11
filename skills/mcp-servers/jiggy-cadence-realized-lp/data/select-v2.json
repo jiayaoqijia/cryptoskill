@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-09-11T02:58:14.809Z",
+  "preRegistered": {
+    "minMedianEdgePp": 0.5,
+    "minPositiveWindowsPct": 60,
+    "maxP": 0.05
+  },
+  "prereg": "PREREG-selection-v2.md, committed before this ran",
+  "cutoffs": [
+    10,
+    15,
+    21
+  ],
+  "costModel": {
+    "roundTripPct": 0.1
+  },
+  "candidates": {
+    "avoid": "skip bottom decile by formation return; edge = survivors vs field median",
+    "honesty": "pick tightest advertised-vs-realized gap in formation; edge = how much smaller their holdout gap is vs field",
+    "decoy": "deterministic hash of pool address — pure noise, MUST fail or the run is void"
+  },
+  "results": {
+    "10": {
+      "avoid": {
+        "windows": 140,
+        "medianEdgePp": 0.0028,
+        "meanEdgePp": 0.0067,
+        "positiveWindows": 131,
+        "positiveWindowsPct": 93.6,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      },
+      "honesty": {
+        "windows": 140,
+        "medianEdgePp": 0.0207,
+        "meanEdgePp": 0.0299,
+        "positiveWindows": 138,
+        "positiveWindowsPct": 98.6,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      },
+      "decoy": {
+        "windows": 140,
+        "medianEdgePp": 0.0059,
+        "meanEdgePp": 0.0068,
+        "positiveWindows": 101,
+        "positiveWindowsPct": 72.1,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      }
+    },
+    "15": {
+      "avoid": {
+        "windows": 130,
+        "medianEdgePp": 0.0046,
+        "meanEdgePp": 0.0079,
+        "positiveWindows": 124,
+        "positiveWindowsPct": 95.4,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      },
+      "honesty": {
+        "windows": 130,
+        "medianEdgePp": 0.0362,
+        "meanEdgePp": 0.0571,
+        "positiveWindows": 126,
+        "positiveWindowsPct": 96.9,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      },
+      "decoy": {
+        "windows": 130,
+        "medianEdgePp": 0.0075,
+        "meanEdgePp": 0.005,
+        "positiveWindows": 89,
+        "positiveWindowsPct": 68.5,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      }
+    },
+    "21": {
+      "avoid": {
+        "windows": 125,
+        "medianEdgePp": 0.0055,
+        "meanEdgePp": 0.0076,
+        "positiveWindows": 120,
+        "positiveWindowsPct": 96,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      },
+      "honesty": {
+        "windows": 125,
+        "medianEdgePp": 0.0512,
+        "meanEdgePp": 0.0865,
+        "positiveWindows": 118,
+        "positiveWindowsPct": 94.4,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      },
+      "decoy": {
+        "windows": 125,
+        "medianEdgePp": 0.0126,
+        "meanEdgePp": 0.0038,
+        "positiveWindows": 88,
+        "positiveWindowsPct": 70.4,
+        "pooledP": 0,
+        "verdict": "FAILS"
+      }
+    }
+  },
+  "caveat": "Adjacent windows share market regime, so windows are not fully independent."
+}

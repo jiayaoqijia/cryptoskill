@@ -1,0 +1,15 @@
+{
+  "name": "realized-lp-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that answers what LPs ACTUALLY earned (fees minus impermanent loss) from The Graph's historical subgraph data — not the fees-only APR that DEX UIs advertise.",
+  "type": "module",
+  "bin": { "realized-lp-mcp": "./bin/mcp-server.js" },
+  "scripts": {
+    "test": "node test/canary.test.js",
+    "corpus": "node scripts/build-corpus.js"
+  },
+  "keywords": ["mcp", "the-graph", "subgraph", "uniswap", "impermanent-loss", "liquidity", "defi", "ai-agent"],
+  "license": "MIT",
+  "dependencies": { "@modelcontextprotocol/sdk": "^1.0.0" },
+  "engines": { "node": ">=20" }
+}

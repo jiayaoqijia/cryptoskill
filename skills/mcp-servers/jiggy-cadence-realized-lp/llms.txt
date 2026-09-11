@@ -1,0 +1,109 @@
+# REALIZED
+
+> What a Uniswap v3 liquidity provider ACTUALLY earned: fees minus impermanent loss,
+> computed from The Graph's historical poolDayData. DEX-advertised APR is fee income
+> annualised — it has no price term, so it is positive by construction and cannot show
+> a loss. This service computes the number that can.
+
+Base URL: https://realized.drainfun.xyz
+Repo: https://github.com/jiggy-cadence/realized
+Library: packages/core in the repo above (plain ESM, no build step)
+License: MIT
+
+## Why The Graph is load-bearing here
+
+Per-day fee totals in USD are derived aggregates produced by the indexer.
+
+RPC is not impossible, and we checked rather than asserted: feeGrowthGlobal0X128 is public
+pool state readable at any historical block (verified live against an archive node on
+2026-09-11). What is impractical is the rest -- that accumulator is Q128 in token units, so
+per-day USD needs an archive node, a block lookup per day boundary, and a historical price
+for BOTH tokens at each boundary, repeated for every pool. At 256 pools across 5 chains that
+is thousands of archive calls per rebuild.
+
+The Graph publishes that join already computed and consistent. The claim is practicality,
+not impossibility.
+
+## Endpoints (GET, CORS-open, no auth, read-only)
+
+### /api/pools
+Full cached corpus. Every pool carries precomputed realizedAprPct, gapPts, misleading,
+and trustLabel at the moderate (±2x) range, plus a machine-readable `schema` block and a
+`testVector` you can use to self-verify your own implementation of the IL formula.
+
+### /api/find?q=WETH/USDC&limit=6
+Resolve a human pair name to a poolId. No address needed.
+
+### /api/pool/{poolId}?dex=uniswap-v3&chain=mainnet&days=30
+Advertised vs realized for one pool over a trailing window.
+
+### /api/position/{poolId}?entry=2026-07-28&range=2
+THE MAIN ONE. What a specific position actually made, from a specific entry date, at a
+specific range width. Returns feeReturnPct, impermanentLossPct, realizedReturnPct,
+realizedAprPct, outOfRange, dailySeries[], and a plain-language `verdict`.
+
+### /api/wallet/{address}?dex=uniswap-v3&chain=mainnet
+Which pools an address actually holds, and AT WHAT RANGE. Reads the Position entity and
+resolves each position's real tick bounds, so you can stop assuming +/-2x. Feed a
+position's `range.widthX` into /api/position/{poolId} for realized return at the range
+the LP actually set.
+
+This is position DISCOVERY, not per-position P&L, and that is a measured decision:
+- `collectedFees*` is a WITHDRAWAL record, not an earnings record. It only populates when
+  the LP calls collect(). Measured live: of 150 positions with collectedFeesToken0 == 0,
+  71 had non-zero feeGrowthInside0LastX128 -- they earned fees and never collected.
+  So uncollected fees return `measurable: false` with a reason, NEVER $0.
+- `deposited*`/`withdrawn*` are lifetime cumulative, not entry state (75% of live
+  positions read as one-sided because of it), so they are namespaced under `cumulative`
+  and must not be read as position value.
+Every response carries a `limits` block stating both. Token decimals ship beside the
+amounts so you never have to guess the divisor.
+
+### /api/audit?limit=250&days=30
+Corpus-wide sweep with a stable-pair canary and a sensitivity table across three
+liveness gates.
+
+## MCP server
+
+    node bin/mcp-server.js          # requires GRAPH_API_KEY
+
+Tools:
+- find_pool(query)                      — resolve "WETH/USDC" to a poolId
+- realized_return(poolId, days, rangeWidthX)
+- position_realized(poolId, entryDate, rangeWidthX)  — the personal question
+- audit_pools(limit, days)              — corpus sweep + canary
+- explain_gap(poolId)                   — plain-language verdict with evidence
+- rank_pools(limit, top, rangeWidthX, excludeMisleading)
+      — THE ACTIONABLE ONE. Rank by what LPs actually took home, not advertised APR.
+        Each pool gets a trustLabel: "historically honest" (advertised tracked reality
+        within 2pts), "gap-prone", "routinely misleading" (advertised positive while
+        LPs lost money), or "unmeasurable" (never a fabricated zero).
+        This is what a yield dashboard should call INSTEAD of sorting by APR.
+
+## Library
+
+    git clone https://github.com/jiggy-cadence/realized && cd realized && npm install
+
+    import { gatewayUrl, fetchPoolFrom, positionRealized } from './packages/core/src/index.js';
+    const pool = await fetchPoolFrom(gatewayUrl(process.env.GRAPH_API_KEY), poolId, entryTs);
+    positionRealized(pool, 2).realizedReturnPct;
+
+impermanentLossPct(r) and concentratedIlPct(r, w) are pure functions — no network, no
+API key, no dependencies.
+
+## Honesty constraints an agent should propagate
+
+- Unmeasurable is ALWAYS reported as unmeasurable, never as zero. This applies hardest to
+  wallet fees: a position that earned fees but never collected them reports
+  `measurable: false`, because $0 would be a number whose label lies -- the exact defect
+  this tool exists to expose, pointed at the user's own money.
+- Every corpus aggregate carries a canary: stable/stable pairs must show ~0 impermanent
+  loss. If the canary fails, the instrument is considered broken and rank_pools refuses
+  to return a ranking rather than ranking on bad math.
+- Fee uplift for concentrated ranges is NOT modelled. Tight-range realized figures are
+  therefore LOWER BOUNDS. Ordering is robust; treat magnitudes as bounded.
+- Fees are pool-level, not per-position. This is what a representative LP at that range
+  earned, not any specific wallet.
+- We do NOT claim "LPs lose to HODL". The claim is narrower and stronger: the advertised
+  metric is systematically uninformative about realized outcomes for concentrated
+  positions, and here is the live measurement.

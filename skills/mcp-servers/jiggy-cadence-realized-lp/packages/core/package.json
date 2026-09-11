@@ -1,0 +1,35 @@
+{
+  "name": "@realized-lp/core",
+  "version": "0.1.0",
+  "description": "What a Uniswap v3 LP actually earned: fees plus impermanent loss, computed from The Graph's historical poolDayData. The number DEX UIs cannot show you.",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./concentrated": "./src/concentrated.js",
+    "./venues": "./src/venues.js"
+  },
+  "files": ["src", "README.md"],
+  "scripts": {
+    "test": "node --test ../../test/"
+  },
+  "keywords": [
+    "the-graph",
+    "subgraph",
+    "uniswap-v3",
+    "impermanent-loss",
+    "liquidity-provider",
+    "defi",
+    "apr",
+    "mcp",
+    "ai-agent"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiggy-cadence/realized.git",
+    "directory": "packages/core"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {}
+}
