@@ -36,7 +36,20 @@ TAXONOMY = REPO / "docs" / "error-code-taxonomy.md"
 # profit-taking" sentence, the instruction to render the ladder as outcomes, and the four
 # doesn't-fit checks. The worked example, the template and the per-mismatch wording went to
 # references/explaining-the-exit.md, which is where this budget says depth belongs.
-BODY_BUDGET = {"senpi-strategy-ops": 300, "senpi-strategy-author": 386}
+# ops 300 -> 317 (2026-09-11): the walkthrough-before-the-budget rule (Step 0.75). The resident lines are
+# what must fire on EVERY template deploy before money moves and cannot be deferred to a pay-per-read
+# file: that the walkthrough comes before the budget question, the four things it says (what it does, two
+# levers, fee load and design budget, the name — `<User>'s <Template>`), the one as-is-or-fork question,
+# the two consents (below the design budget; a guardrail removed), the post-live ownership line and
+# "update, never redeploy". The lever ranking, the name rules, the cost classes and the fork-on-disk
+# mechanics went to references/walkthrough.md. Set at the post-edit count with no slack.
+# author 386 -> 425 (2026-09-11): the four peer routes with cost classes (the product change — the route is
+# the user's choice, its cost class a fact, never a downsell), budget-never-before-build, pre-fill from the
+# thesis, the proven-cohort source rule, let-winners-run exits stated in price terms, the user names it,
+# protection removal as consent. Every one is a what-to-ASK / what-to-CLAIM rule that fires in the
+# interview, which this file says has nowhere else to live; the fork mechanics live in ops'
+# references/walkthrough.md and are named here, not repeated. Set at the post-edit count with no slack.
+BODY_BUDGET = {"senpi-strategy-ops": 317, "senpi-strategy-author": 425}
 
 
 def _skill_body(path):

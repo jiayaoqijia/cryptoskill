@@ -1,39 +1,50 @@
-## Description: <br>
-DeFi liquidity analysis reference covering AMM mechanics, Uniswap V2/V3 math, Curve StableSwap, impermanent loss calculation, and MEV protection strategies. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+DeFi liquidity analysis reference covering AMM mechanics, Uniswap V2/V3 math, Curve StableSwap, impermanent loss calculation, and MEV protection strategies.
 
-## Publisher: <br>
-[bytesagain1](https://clawhub.ai/user/bytesagain1) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[bytesagain1](https://clawhub.ai/user/bytesagain1)
 
-## Use Case: <br>
-Developers, DeFi analysts, and liquidity providers use this skill to get plain-text reference guidance for liquidity pool mechanics, AMM formulas, impermanent loss, routing, gas optimization, and common DEX security concerns. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The release evidence security guidance recommends review before use even though the verdict is clean. <br>
-Mitigation: Review the skill and its shell command handlers before deployment, and install it only for the intended ClawHub skill use case. <br>
+## Use Case:
 
+Developers, analysts, and external users can use this skill as a static DeFi liquidity reference for pool mechanics, LP risk, AMM formulas, routing, gas considerations, security checks, and migration planning.
 
-## Reference(s): <br>
-- [Liquidity Monitor on ClawHub](https://clawhub.ai/bytesagain1/liquidity-monitor) <br>
-- [BytesAgain](https://bytesagain.com) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, guidance] <br>
-**Output Format:** [Plain-text reference documentation with Markdown headings emitted by shell command handlers.] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [No external API calls, credentials, or network access are described by the artifact.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-4.0.0 (source: frontmatter and server release evidence) <br>
+Risk: DeFi examples, TVL figures, API endpoints, and contract addresses can become stale or unsuitable for a user's current financial context.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Verify current protocol documentation, contract addresses, market data, and financial assumptions before acting on the reference material.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/bytesagain1/skills/liquidity-monitor)
+- [BytesAgain homepage](https://bytesagain.com)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Guidance]
+
+**Output Format:** [Plain-text reference documentation with Markdown headings]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Static documentation output; no API keys, credentials, network access, persistence, or mutation authority requested.]
+
+## Skill Version(s):
+
+4.0.0 (source: frontmatter and server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

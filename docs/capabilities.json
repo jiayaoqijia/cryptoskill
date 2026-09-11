@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-11T16:35:50.653434+00:00",
+  "generated_at": "2026-09-11T21:05:21.579992+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -28497,6 +28497,68 @@
         },
         "uses_remote_install_script": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/dfinity-official-autoupgrade-icp-cli": {
+      "name": "autoupgrade-icp-cli",
+      "execution_model": "installer_bootstrap",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -125473,8 +125535,8 @@
     }
   },
   "summary": {
-    "discovered": 2012,
-    "processed": 2012,
+    "discovered": 2013,
+    "processed": 2013,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1255,
@@ -125483,21 +125545,21 @@
       "analysis_only": 196,
       "unsigned_tx_builder": 78,
       "local_executor": 88,
-      "installer_bootstrap": 38,
+      "installer_bootstrap": 39,
       "custodial_executor": 18
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 901,
-      "can_install_code": 456,
+      "can_execute_shell": 902,
+      "can_install_code": 457,
       "can_write_files": 109,
       "can_browse_web": 188,
-      "can_spawn_subagents": 195,
+      "can_spawn_subagents": 196,
       "can_move_funds": 239,
       "requires_private_key": 390,
       "requires_hosted_operator": 322,
-      "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 456
+      "uses_remote_install_script": 44,
+      "mutable_remote_runtime": 457
     }
   }
 }

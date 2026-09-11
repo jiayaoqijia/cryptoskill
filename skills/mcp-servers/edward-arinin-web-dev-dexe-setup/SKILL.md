@@ -106,8 +106,13 @@ Creating a DAO or proposal pins metadata to IPFS, which needs a **Pinata JWT**
 
 1. Call `dexe_doctor` (no input).
 2. Read `summary` and `checks` from the structured response.
-   - `summary.status === "pass"` (only warnings) → reads are healthy. Ask which
-     tier (if any) the user wants; don't block on warnings.
+   - **Success is `summary.failures === 0`** — equivalently `summary.advisoryOnly`
+     when there are warnings. Reads are healthy; ask which tier (if any) the user
+     wants, and don't block on warnings.
+   - `summary.status === "pass"` means zero warnings AND zero failures. A
+     zero-config install always carries warnings (public RPC, shared defaults),
+     so `status` is `"warn"` there and never reaches `"pass"` — treating it as
+     the success test loops fix → restart forever with nothing left to fix.
    - Treat `warn` checks (`chain.publicRpcFallback`, `env.sharedDefaults`) as
      *offers*, not problems.
 3. For each `fail` or the user's chosen tier, collect the env key(s). Use the
@@ -158,5 +163,9 @@ wins. Tell them to keep it in one place (prefer `.env`) and restart.
 - `dexe_doctor` — diagnostic (read-only, safe to call repeatedly).
 - `dexe_context` — signer/mode + env readiness + `usingSharedDefaults` list.
 - `npx dexe-mcp doctor` — CLI form; useful when the MCP server failed to start.
+  It exits **0** when nothing failed (warnings included), **2** on a real failure
+  or an unknown flag; pass `--strict` (or set `DEXE_DOCTOR_STRICT=1`) to make
+  warnings exit **1** instead, which is what a CI gate wants and a setup session
+  does not.
 - `npx dexe-mcp init` — fresh-start wizard (prompts + live-validates Pinata JWT).
   Overwrites `.env`; use for new installs, not for fixing an existing setup.
