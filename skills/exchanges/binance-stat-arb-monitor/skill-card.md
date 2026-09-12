@@ -1,45 +1,64 @@
-## Description: <br>
-Monitors Binance ETH/BTC perpetual futures price ratios, calculates z-scores, records signal JSON, and can send mean-reversion trade alerts to Telegram or Feishu. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Monitors Binance ETH/BTC perpetual futures price ratios, calculates z-scores, generates mean-reversion trading signals, and can send alerts to Telegram or Feishu.
 
-## Publisher: <br>
-[lemonea](https://clawhub.ai/user/lemonea) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[lemonea](https://clawhub.ai/user/lemonea)
 
-## Use Case: <br>
-External developers and quantitative-trading operators use this skill to monitor ETH/BTC statistical-arbitrage conditions, generate local signal records, and optionally send alert messages for manual review. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Generated trading signals may be mistaken for automated financial advice. <br>
-Mitigation: Treat signals as informational, manually review them, and validate strategy behavior before using them for live trading. <br>
-Risk: Telegram or Feishu notification credentials can be exposed if configuration files are shared. <br>
-Mitigation: Keep notification tokens private, use environment-specific configuration, and avoid committing real secrets. <br>
-Risk: Market data access, regional API restrictions, fees, or extreme market moves can make signal estimates unreliable. <br>
-Mitigation: Use testnet or dry-run validation, monitor API failures, and account for fees, slippage, and funding costs before acting. <br>
+## Use Case:
 
+Developers, quant researchers, and trading operations users can use this skill to configure and run an ETH/BTC statistical-arbitrage monitor that emits signal files and optional chat alerts. The alerts are informational and should be reviewed before any live trading action.
 
-## Reference(s): <br>
-- [Binance Stat Arb Monitor release page](https://clawhub.ai/lemonea/binance-stat-arb-monitor) <br>
-- [Binance Futures API reference](references/binance_api.md) <br>
-- [Statistical arbitrage strategy theory](references/stat_arb_theory.md) <br>
-- [Binance Futures API documentation](https://binance-docs.github.io/apidocs/futures/cn/) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, JSON] <br>
-**Output Format:** [Markdown guidance, shell commands, configuration JSON, local signal JSON, and notification text] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Writes latest and historical signal files under data/ and may send Telegram or Feishu alerts when configured.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata and SKILL.md frontmatter) <br>
+Risk: Trading signals and PnL estimates may be incorrect, stale, or unsuitable for live market conditions.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Treat alerts as informational, validate the strategy on test data or testnet, and require human review before acting with real funds.
+
+Risk: Telegram bot tokens, chat IDs, Feishu webhooks, and cron logs can expose sensitive notification channels.
+
+Mitigation: Keep tokens and webhooks private, restrict log permissions, and avoid committing live credentials in configuration files.
+
+Risk: Binance API access may be unavailable or region-limited, and fallback mock data can generate non-market signals.
+
+Mitigation: Confirm the active data source before relying on output and clearly separate mock or testnet runs from production monitoring.
+
+Risk: Unpinned dependencies can change behavior between installations.
+
+Mitigation: Pin and review dependency versions before production use.
+
+## Reference(s):
+
+- [Binance API reference](references/binance_api.md)
+- [Statistical arbitrage theory](references/stat_arb_theory.md)
+- [Binance Futures API documentation](https://binance-docs.github.io/apidocs/futures/cn/)
+- [ClawHub skill page](https://clawhub.ai/lemonea/skills/binance-stat-arb-monitor)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, JSON, Shell commands, Configuration]
+
+**Output Format:** [Markdown guidance, shell commands, JSON signal files, and plain-text alert messages]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Signal JSON includes timestamp, signal type, direction, z-score, ratio, thresholds, prices, recommendation, estimated PnL, strength, reason, and volatility.]
+
+## Skill Version(s):
+
+1.0.0 (source: release metadata, SKILL.md frontmatter, changelog)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

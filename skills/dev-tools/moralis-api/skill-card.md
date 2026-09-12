@@ -1,47 +1,61 @@
-## Description: <br>
-Operate Moralis EVM wallet and token reads through UXC with a curated OpenAPI schema, API-key auth, and wallet-intelligence guardrails. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Moralis EVM wallet and token reads through UXC with a curated OpenAPI schema, API-key auth, and wallet-intelligence guardrails.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and agents use this skill to configure Moralis API-key authentication and run read-only EVM wallet and token queries through UXC. It supports balance, token, history, swap, net-worth, metadata, and price lookups while keeping chain selection and query scope explicit. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Moralis API keys can be exposed if pasted directly into prompts, scripts, or logs. <br>
-Mitigation: Use a dedicated Moralis API key through the documented secret environment variable and UXC auth binding. <br>
-Risk: Wallet queries can reveal sensitive or privacy-relevant account activity. <br>
-Mitigation: Query only wallets you are authorized to analyze and keep results handling consistent with privacy requirements. <br>
-Risk: Broad wallet history or swap queries can be expensive, slow, or noisy. <br>
-Mitigation: Start with narrow chains, small limits, and bounded query windows before expanding scope. <br>
-Risk: A remotely linked OpenAPI schema can change after setup. <br>
-Mitigation: Review or pin the schema used for UXC linking when repeatability matters. <br>
+## Use Case:
 
+Developers and agents use this skill to configure and run read-only Moralis EVM wallet and token data queries through UXC, including balances, token holdings, history, swaps, net worth, metadata, and prices.
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [Curated OpenAPI Schema](references/moralis-evm.openapi.json) <br>
-- [Moralis Wallet Docs](https://docs.moralis.com/data-api/evm/wallet) <br>
-- [Moralis Token Docs](https://docs.moralis.com/data-api/evm/token) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline bash commands and JSON-oriented API guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only Moralis EVM operations with explicit chain parameters and API-key authentication.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: ClawHub release evidence) <br>
+Risk: The default setup can pull a mutable remote API schema.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Prefer linking UXC to the bundled schema or an immutable pinned commit before using the skill.
+
+Risk: Wallet addresses and analysis patterns are disclosed to Moralis when queries are sent.
+
+Mitigation: Treat queried wallet data as shared with a third-party service, especially for private investigations or client work.
+
+Risk: The skill requires a Moralis API key.
+
+Mitigation: Use a Moralis API key with limited intended use and review the binding before installing or running commands.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/jolestar/skills/moralis-openapi-skill)
+- [Usage Patterns](references/usage-patterns.md)
+- [Curated OpenAPI Schema](references/moralis-evm.openapi.json)
+- [Moralis Wallet API Documentation](https://docs.moralis.com/data-api/evm/wallet)
+- [Moralis Token API Documentation](https://docs.moralis.com/data-api/evm/token)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and JSON-oriented API output expectations]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Read-only EVM wallet and token operations; requires MORALIS_API_KEY and explicit chain parameters.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

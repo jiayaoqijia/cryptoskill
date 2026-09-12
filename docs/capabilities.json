@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-11T21:05:21.579992+00:00",
+  "generated_at": "2026-09-12T04:41:23.625560+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -67670,7 +67670,7 @@
     },
     "exchanges/gate-dex-market": {
       "name": "gate-dex-market",
-      "execution_model": "router_orchestrator",
+      "execution_model": "analysis_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -74370,7 +74370,7 @@
           "source": "extracted"
         },
         "uses_remote_install_script": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -74771,7 +74771,7 @@
     },
     "exchanges/okx-official-dex-market": {
       "name": "okx-dex-market",
-      "execution_model": "installer_bootstrap",
+      "execution_model": "analysis_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -74819,7 +74819,7 @@
           "source": "extracted"
         },
         "uses_remote_install_script": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -75203,7 +75203,7 @@
           "source": "extracted"
         },
         "uses_remote_install_script": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -75232,7 +75232,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -75252,7 +75252,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -75272,7 +75272,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -75493,7 +75493,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -75539,7 +75539,7 @@
     },
     "exchanges/okx-official-okx-defi": {
       "name": "okx-defi",
-      "execution_model": "installer_bootstrap",
+      "execution_model": "custodial_executor",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -75587,7 +75587,7 @@
           "source": "extracted"
         },
         "uses_remote_install_script": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -75651,7 +75651,7 @@
           "source": "extracted"
         },
         "uses_remote_install_script": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -125540,26 +125540,26 @@
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1255,
-      "router_orchestrator": 107,
+      "router_orchestrator": 106,
       "unknown": 232,
-      "analysis_only": 196,
+      "analysis_only": 198,
       "unsigned_tx_builder": 78,
       "local_executor": 88,
-      "installer_bootstrap": 39,
-      "custodial_executor": 18
+      "installer_bootstrap": 37,
+      "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 902,
-      "can_install_code": 457,
-      "can_write_files": 109,
+      "can_install_code": 456,
+      "can_write_files": 108,
       "can_browse_web": 188,
       "can_spawn_subagents": 196,
-      "can_move_funds": 239,
+      "can_move_funds": 238,
       "requires_private_key": 390,
       "requires_hosted_operator": 322,
-      "uses_remote_install_script": 44,
-      "mutable_remote_runtime": 457
+      "uses_remote_install_script": 39,
+      "mutable_remote_runtime": 456
     }
   }
 }

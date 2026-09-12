@@ -1,45 +1,56 @@
-## Description: <br>
-Operate DefiLlama public analytics APIs through UXC with a curated OpenAPI schema and read-first guardrails. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate DefiLlama public analytics APIs through UXC with a curated OpenAPI schema and read-first guardrails.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and agents use this skill to inspect and run read-only DefiLlama public analytics operations for protocol TVL, per-protocol details, and chain overview data through UXC. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill links a local CLI command to a GitHub-hosted OpenAPI schema source. <br>
-Mitigation: Confirm trust in UXC and the referenced schema source before use, and remove the created CLI link when it is no longer needed. <br>
-Risk: The curated schema covers only selected read-only endpoints on api.llama.fi. <br>
-Mitigation: Use the documented operations for protocol and chain reads, and choose a separate DefiLlama skill or API surface for Pro, wallet, trading, admin, coins, or yields workflows. <br>
-Risk: Automation that parses free-text output can mis-handle API responses. <br>
-Mitigation: Keep automation on the JSON output envelope and parse stable fields such as ok, kind, protocol, data, and error. <br>
+## Use Case:
 
+Developers and engineers use this skill to inspect and execute read-only DefiLlama public protocol and chain analytics operations through UXC. It supports protocol TVL lists, per-protocol details, and chain overview reads without authentication.
 
-## Reference(s): <br>
-- [Usage patterns](references/usage-patterns.md) <br>
-- [Curated OpenAPI schema](references/defillama-public.openapi.json) <br>
-- [DefiLlama API docs](https://defillama.com/docs/api) <br>
-- [Hosted curated schema source](https://raw.githubusercontent.com/holon-run/uxc/main/skills/defillama-openapi-skill/references/defillama-public.openapi.json) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, shell commands, configuration, API calls] <br>
-**Output Format:** [Markdown guidance with inline shell commands and JSON API responses] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only public DefiLlama API operations; no authentication required.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata and OpenAPI info.version) <br>
+Risk: The setup flow references an external OpenAPI schema URL that can change over time.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Prefer the bundled schema or a schema URL pinned to a specific commit before installation or automation.
+
+Risk: Users may mistake the skill for wallet, trading, admin, or authenticated DefiLlama Pro tooling.
+
+Mitigation: Keep use limited to unauthenticated, read-only public analytics operations on api.llama.fi.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [Curated OpenAPI Schema](references/defillama-public.openapi.json)
+- [DefiLlama API Documentation](https://defillama.com/docs/api)
+- [Skill Page](https://clawhub.ai/jolestar/skills/defillama-openapi-skill)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, shell commands, configuration, text]
+
+**Output Format:** [Markdown with inline shell commands and JSON-oriented API usage guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guidance is scoped to public read-only DefiLlama endpoints on api.llama.fi and favors stable JSON output handling.]
+
+## Skill Version(s):
+
+1.0.0 (source: release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

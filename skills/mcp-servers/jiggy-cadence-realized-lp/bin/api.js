@@ -26,11 +26,12 @@ import { readFileSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import {
-  gatewayUrl, fetchPool, fetchPoolFrom, fetchTopPools, scorePool, positionRealized, simulateExit, summarize, sensitivity, DEFAULT_LIVENESS,
+  gatewayUrl, query, fetchPool, fetchPoolFrom, fetchTopPools, scorePool, positionRealized, simulateExit, summarize, sensitivity, DEFAULT_LIVENESS,
 } from '../lib/realized.js';
 import { concentratedIlPct, outOfRange } from '../lib/concentrated.js';
 import { VENUES, subgraphId, venueList } from '../lib/venues.js';
 import { fetchWalletPositions, describePosition, WALLET_LIMITS } from '../packages/core/src/wallet.js';
+import { walletV4 } from '../packages/core/src/v4.js';
 import { crossCheckPrice, exitGasCost } from '../packages/core/src/oneinch.js';
 
 // 1inch key is optional. Present -> position responses carry an independent price cross-check.
@@ -215,10 +216,31 @@ async function livePosition(poolId, { entry, range = 2 } = {}, dex = 'uniswap-v3
 async function liveWallet(owner, { dex = 'uniswap-v3', chain = 'mainnet', includeClosed = false } = {}) {
   const id = subgraphId(dex, chain);
   if (!id) return { error: `unknown venue ${dex}/${chain}` };
+
+  // Address shape is validated HERE, before any venue branch, because each branch used to own
+  // its own guard and only one of them had it. fetchWalletPositions (v3) rejected malformed
+  // input with a 400; walletV4 had no check, so the same garbage address was interpolated
+  // straight into a GraphQL `where` and came back as a subgraph 500:
+  // "Failed to decode `Bytes` value: `Odd number of digits`". Measured 2026-09-11 against the
+  // live API with "0x996d...": v3 => 400 with a readable message, v4 => 500 leaking subgraph
+  // internals. Same malformed input, two different contracts, and the one an agent is most
+  // likely to hit was the one that failed worst. A validator that lives on one path is not a
+  // validator, it is a coincidence -- so it moves up to the dispatch point both paths cross.
+  const addr = String(owner || '').toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(addr)) {
+    return { error: `"${owner}" is not a 0x-prefixed 40-hex-character address` };
+  }
+
+  // v4 answers through event reconstruction, not a Position-state read. Different evidence
+  // class, different code path, and it reports ranges WITHOUT realized return on purpose.
+  if (dex === 'uniswap-v4') {
+    return await walletV4(query, gatewayUrl(API_KEY, id), addr);
+  }
+
   // Aerodrome's subgraph does not expose the same Position entity, so say so rather than
   // returning a confusing empty list that reads as "you have no positions".
   if (dex !== 'uniswap-v3') {
-    return { error: `wallet positions are only available for uniswap-v3; ${dex} does not expose a comparable Position entity` };
+    return { error: `wallet positions are only available for uniswap-v3 and uniswap-v4; ${dex} does not expose a comparable Position entity` };
   }
   const r = await fetchWalletPositions(gatewayUrl(API_KEY, id), owner, { includeClosed });
   if (!r.ok) return { error: r.error };
@@ -413,9 +435,41 @@ const server = createServer(async (req, res) => {
     // response so the caller cannot miss it.
     if (p.startsWith('/api/wallet/')) {
       const owner = decodeURIComponent(p.slice('/api/wallet/'.length)).trim();
-      const dex = url.searchParams.get('dex') || 'uniswap-v3';
+      const dexParam = url.searchParams.get('dex');
       const chain = url.searchParams.get('chain') || 'mainnet';
       const includeClosed = url.searchParams.get('includeClosed') === 'true';
+
+      // No explicit ?dex= -> look in BOTH v3 and v4 and return whatever the wallet actually
+      // holds. Defaulting to v3 alone is what made a wallet with 8 live v4 ranges read as
+      // "no positions" -- an absence of evidence rendered as evidence of absence. Each venue
+      // is reported with its own source/limits so the two are never silently merged: they are
+      // different evidence classes (state read vs event reconstruction), not one list.
+      if (!dexParam && chain === 'mainnet') {
+        const [v3, v4] = await Promise.all([
+          cached('pool', `wallet|uniswap-v3|${chain}|${owner.toLowerCase()}|${includeClosed}`,
+            () => liveWallet(owner, { dex: 'uniswap-v3', chain, includeClosed })).catch((e) => ({ error: String(e?.message || e) })),
+          cached('pool', `wallet|uniswap-v4|${chain}|${owner.toLowerCase()}|${includeClosed}`,
+            () => liveWallet(owner, { dex: 'uniswap-v4', chain, includeClosed })).catch((e) => ({ error: String(e?.message || e) })),
+        ]);
+
+        const found = [];
+        if (!v3?.error && v3?.openPositions > 0) found.push('uniswap-v3');
+        if (!v4?.error && v4?.openPositions > 0) found.push('uniswap-v4');
+
+        return json(res, 200, {
+          owner: String(owner).toLowerCase(),
+          chain,
+          searched: ['uniswap-v3', 'uniswap-v4'],
+          foundIn: found,
+          openPositions: (v3?.openPositions || 0) + (v4?.openPositions || 0),
+          venues: { 'uniswap-v3': v3, 'uniswap-v4': v4 },
+          note: found.length === 0
+            ? 'No open positions in Uniswap v3 or v4 on mainnet. We searched both; this does not cover v2, other chains, or other DEXes.'
+            : `Open positions found in: ${found.join(' and ')}. v3 supports realized return; v4 reports ranges only (reconstructed from events).`,
+        });
+      }
+
+      const dex = dexParam || 'uniswap-v3';
       const out = await cached('pool', `wallet|${dex}|${chain}|${owner.toLowerCase()}|${includeClosed}`,
         () => liveWallet(owner, { dex, chain, includeClosed }));
       return json(res, out.error ? 400 : 200, out);

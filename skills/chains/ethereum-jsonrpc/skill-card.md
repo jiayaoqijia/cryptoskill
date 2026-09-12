@@ -1,45 +1,57 @@
-## Description: <br>
-Operate Ethereum execution JSON-RPC through UXC with the official execution OpenRPC schema, public EVM read methods, and eth_subscribe pubsub guardrails. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Ethereum execution JSON-RPC through UXC with the official execution OpenRPC schema, public EVM read methods, and eth_subscribe pubsub guardrails.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and engineers use this skill to link a UXC Ethereum JSON-RPC CLI, inspect schema-backed read operations, run safe public state queries, and manage provider-verified eth_subscribe streams. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Ethereum RPC endpoint or live OpenRPC schema trust can affect command behavior. <br>
-Mitigation: Use trusted RPC providers and schema sources before linking or automating requests. <br>
-Risk: Wallet, signing, write, admin, debug, engine, or txpool calls can exceed the skill's documented safety scope. <br>
-Mitigation: Keep usage to documented read-only methods and eth_subscribe unless a separate design and review approves broader methods. <br>
-Risk: Subscription jobs can continue writing local event logs longer than intended. <br>
-Mitigation: Monitor subscription status, use explicit sink files, and stop jobs when collection is complete. <br>
+## Use Case:
 
+Developers and engineers use this skill to query public Ethereum execution RPC data, inspect schema-backed method help, and manage validated eth_subscribe streams while keeping agents on a read-first Ethereum workflow.
 
-## Reference(s): <br>
-- [Ethereum JSON-RPC usage patterns](references/usage-patterns.md) <br>
-- [Ethereum execution API specs](https://github.com/ethereum/execution-apis) <br>
-- [Ethereum execution OpenRPC schema](https://raw.githubusercontent.com/ethereum/execution-apis/assembled-spec/refs-openrpc.json) <br>
-- [Ethereum JSON-RPC overview](https://ethereum.org/developers/docs/apis/json-rpc/) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline shell commands and JSON-RPC examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Focuses on read-only JSON-RPC methods and file-backed subscription streams.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: ClawHub release metadata) <br>
+Risk: Subscription streams can create long-running jobs and local event log files.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review subscription use, require a verified WebSocket RPC provider, write events to a sink file, and stop subscription jobs when finished.
+
+Risk: Broader Ethereum RPC authority could allow methods outside the documented read-only scope.
+
+Mitigation: Keep the documented read-only and eth_subscribe guardrails unless a separate review approves transaction, admin, debug, engine, or provider-specific authority.
+
+## Reference(s):
+
+- [Ethereum JSON-RPC usage patterns](references/usage-patterns.md)
+- [Ethereum execution API specs](https://github.com/ethereum/execution-apis)
+- [Ethereum execution OpenRPC schema](https://raw.githubusercontent.com/ethereum/execution-apis/assembled-spec/refs-openrpc.json)
+- [Ethereum JSON-RPC overview](https://ethereum.org/developers/docs/apis/json-rpc/)
+- [ClawHub skill page](https://clawhub.ai/jolestar/skills/ethereum-jsonrpc-skill)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and JSON-RPC examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Read-only RPC guidance by default; subscription examples use sink files for event review.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

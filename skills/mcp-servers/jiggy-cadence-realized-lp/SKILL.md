@@ -108,6 +108,44 @@ derived `range.widthX`, and a plain-language `range.label`. **Feed `range.widthX
 `position_realized` (or `/api/position/{poolId}?range=`) to get realized return at the LP's actual
 band instead of an assumed one.** That is the whole point of the endpoint.
 
+#### It searches Uniswap v3 AND v4 — and they are not the same kind of answer
+
+With no `?dex=`, the endpoint queries **both v3 and v4 on mainnet in parallel** and returns
+`{ searched, foundIn, openPositions, venues: { "uniswap-v3": {…}, "uniswap-v4": {…} } }`.
+The venues stay in separate blocks deliberately: merging them would produce one position list
+where some rows silently cannot support a realized-return number.
+
+| | v3 (+ arbitrum/polygon/base), Aerodrome | v4 (mainnet) |
+|---|---|---|
+| source | position **state** read | **event reconstruction** |
+| real range | yes | yes |
+| realized return | **yes** | **no** |
+| exit simulation | **yes** | **no** |
+
+Why the asymmetry: the v4 `Position` entity carries only `id/tokenId/owner/origin/timestamps` —
+**no tick range at all.** Ranges are reconstructed by summing signed `ModifyLiquidity.amount` per
+`(pool, tickLower, tickUpper)`. That is a strictly weaker evidence class than reading a struct the
+chain already maintains, so we report the range and `inRange` and **refuse to price a v4 exit.**
+`/api/venues` exposes this per venue as `realizedReturn` / `exitSimulation` booleans, so an agent
+can check capability instead of assuming it.
+
+**If you are an agent consuming v4 results, respect these four things:**
+1. **Check `audit.allPass` before using any number.** Every v4 response ships `audit.checks[]` with
+   5 invariants (completeness, negatives classified, positions strictly positive, ticks ordered,
+   all keys accounted).
+2. **`openPositions: null` + `error` means the history was truncated** (>5000 ModifyLiquidity
+   events). A truncated sum is self-consistent and wrong, so no positions are reported at all
+   rather than a partial total that looks authoritative.
+3. **`incompleteHistory[]`** lists ranges where liquidity was *removed* with no matching add in this
+   wallet's events — almost always a position transferred in. Their size is deliberately not
+   reported; do not infer one.
+4. Lookups key on **`origin`** (the EOA). `sender` is the position manager contract and matches
+   nothing — if you query v4 events yourself, do not use `sender`.
+
+Uniswap **v2 is not supported, on purpose.** v2 LP shares are fungible and always full-range, so
+"read the range you actually set" has no meaning there — including it would dilute the claim rather
+than extend it.
+
 **It is position discovery, not per-position P&L — deliberately.** Two fields look like they'd
 give you fees and entry value. Both lie:
 
@@ -215,7 +253,7 @@ Data: The Graph. Per-day `feesUSD` are indexer-derived aggregates. **Not** unrea
 `feeGrowthGlobal0X128` is public pool state readable at any historical block, verified live
 2026-09-11 — but reconstructing per-day USD from it needs an archive node, a block lookup per
 day boundary, and a historical price for both tokens at each one, repeated per pool. The Graph
-publishes that join already computed across 256 pools and 5 chains. The claim is practicality,
+publishes that join already computed across 256 pools and 4 chains. The claim is practicality,
 not impossibility.
 
 ## Machine-readable API spec

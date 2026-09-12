@@ -15,7 +15,7 @@ const H = {};
 if (process.env.BAZZ_AUTH_TOKEN) H["X-BAZZ-Token"] = process.env.BAZZ_AUTH_TOKEN;
 
 async function jget(pathname) {
-  let lastErr;
+  const errs = [];
   for (const port of PORTS) {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
@@ -24,13 +24,17 @@ async function jget(pathname) {
       clearTimeout(timer);
       if (res.ok) return await res.json();
       // 非 200（401/404/5xx）也可能是「该端口被别的带鉴权服务占用」——换下一端口再试
-      lastErr = new Error(`HTTP ${res.status}: ${(await res.text()).slice(0, 160)}`);
+      errs.push(`:${port} HTTP ${res.status}: ${(await res.text()).slice(0, 120)}`);
     } catch (e) {
       clearTimeout(timer);
-      lastErr = e;
+      errs.push(`:${port} ${e.message}`);
     }
   }
-  throw Object.assign(new Error(`本地后端不可达(${PORTS.join("/")}): ${lastErr?.message || lastErr}`), { exitCode: 3 });
+  // v1.5.30：逐端口错误全部保留。旧实现只留最后一个（通常是未监听端口的连接错误），
+  // 会把真正的原因（如 :8080 HTTP 401 令牌缺失）掩盖成「不可达」，极难排查。
+  throw Object.assign(
+    new Error(`本地后端不可达(${PORTS.join("/")}) — ${errs.join(" | ")}`),
+    { exitCode: 3 });
 }
 
 const num = (v) => { const n = Number(v); return isFinite(n) ? n : 0; };

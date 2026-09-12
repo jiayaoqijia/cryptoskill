@@ -18,7 +18,7 @@ RPC is not impossible, and we checked rather than asserted: feeGrowthGlobal0X128
 pool state readable at any historical block (verified live against an archive node on
 2026-09-11). What is impractical is the rest -- that accumulator is Q128 in token units, so
 per-day USD needs an archive node, a block lookup per day boundary, and a historical price
-for BOTH tokens at each boundary, repeated for every pool. At 256 pools across 5 chains that
+for BOTH tokens at each boundary, repeated for every pool. At 256 pools across 4 chains that
 is thousands of archive calls per rebuild.
 
 The Graph publishes that join already computed and consistent. The claim is practicality,
@@ -42,11 +42,38 @@ THE MAIN ONE. What a specific position actually made, from a specific entry date
 specific range width. Returns feeReturnPct, impermanentLossPct, realizedReturnPct,
 realizedAprPct, outOfRange, dailySeries[], and a plain-language `verdict`.
 
-### /api/wallet/{address}?dex=uniswap-v3&chain=mainnet
-Which pools an address actually holds, and AT WHAT RANGE. Reads the Position entity and
-resolves each position's real tick bounds, so you can stop assuming +/-2x. Feed a
-position's `range.widthX` into /api/position/{poolId} for realized return at the range
-the LP actually set.
+### /api/wallet/{address}
+Which pools an address actually holds, and AT WHAT RANGE.
+
+**With no `?dex=` it searches Uniswap v3 AND v4 on mainnet in parallel** and returns
+`{ searched, foundIn, openPositions, venues: { "uniswap-v3": {...}, "uniswap-v4": {...} } }`.
+The two venues stay in SEPARATE blocks on purpose -- they are different evidence classes and
+merging them would produce rows that silently cannot support realized return. Pass
+`?dex=uniswap-v3` or `?dex=uniswap-v4` to query one.
+
+**v3 (`?dex=uniswap-v3`, also arbitrum/polygon/base) -- POSITION STATE.** Reads the Position
+entity and resolves each position's real tick bounds, so you can stop assuming +/-2x. Feed a
+position's `range.widthX` into /api/position/{poolId} for realized return at the range the LP
+actually set.
+
+**v4 (`?dex=uniswap-v4`, mainnet only) -- EVENT RECONSTRUCTION.** The v4 Position entity carries
+no tick range (only id/tokenId/owner/origin/timestamps), so ranges CANNOT be read the way they
+are on v3. They are reconstructed by summing signed `ModifyLiquidity.amount` per
+(pool, tickLower, tickUpper). Consequences an agent must respect:
+- Returns the range and `inRange`, and does **NOT** return realized return or exit pricing.
+  Event-derived liquidity is a strictly weaker evidence class than a state read; we will not
+  price an exit off it. `/api/venues` exposes this as `realizedReturn:false, exitSimulation:false`.
+- Ships a self-audit in every response: `audit.checks[]` + `audit.allPass`. **Check `allPass`
+  before using the numbers.**
+- `incompleteHistory[]` lists ranges where liquidity was REMOVED with no matching add in this
+  wallet's events (position most likely transferred in). Their size is deliberately not reported.
+- If the wallet has more than 5000 ModifyLiquidity events the fetch is truncated and the endpoint
+  returns `openPositions: null` with an `error` instead of a partial sum. A truncated sum is
+  self-consistent and wrong, so no numbers are reported at all.
+- Queried by `origin` (the EOA). `sender` is the position manager contract and matches nothing.
+
+Aerodrome (base) is pool-level only; it has no comparable Position entity, so wallet lookups
+return an explicit error rather than an empty list that reads as "you have no positions".
 
 This is position DISCOVERY, not per-position P&L, and that is a measured decision:
 - `collectedFees*` is a WITHDRAWAL record, not an earnings record. It only populates when

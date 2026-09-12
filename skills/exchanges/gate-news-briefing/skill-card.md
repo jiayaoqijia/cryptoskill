@@ -1,45 +1,60 @@
-## Description: <br>
-Gate News Briefing produces crypto news briefings from recent events, trending headlines, and social sentiment returned by the read-only Gate-News MCP server. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Provides recent crypto news briefings by retrieving Gate-News events, top headlines, and social sentiment, then deduplicating and summarizing them with source attribution.
 
-## Publisher: <br>
-[gate-exchange](https://clawhub.ai/user/gate-exchange) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gate-exchange](https://clawhub.ai/user/gate-exchange)
 
-## Use Case: <br>
-External users and agents use this skill to generate timely crypto market news briefings, including general market updates, coin-specific news, major events, trending headlines, and social sentiment. It is intended for news-only requests and routes multi-dimension analysis to other skills. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Crypto news queries and topics are shared with the enabled Gate-News MCP service. <br>
-Mitigation: Install and use this skill only with a trusted Gate-News MCP server, and avoid sending private or sensitive trading context. <br>
-Risk: Crypto headlines, event feeds, and sentiment summaries can be incomplete, stale, or misleading. <br>
-Mitigation: Verify important crypto headlines independently before acting, and treat the briefing as news context rather than investment advice. <br>
-Risk: Required Gate-News MCP tools can be unavailable or partially fail. <br>
-Mitigation: Label degraded sections, continue only with available sources, and do not fabricate missing headlines, events, or sentiment. <br>
+## Use Case:
 
+External users and agents use this skill to generate concise crypto market news briefings, including recent events, trending headlines, and social sentiment. It is intended for news-only requests and routes multi-dimension analysis to other Gate skills.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/gate-exchange/gate-news-briefing) <br>
-- [Gate News Briefing Runtime Rules](artifact/references/gate-runtime-rules.md) <br>
-- [Info & News Common Runtime Rules](artifact/references/info-news-runtime-rules.md) <br>
-- [Gate News Briefing MCP Specification](artifact/references/mcp.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown briefing with sections for major events, trending headlines, social sentiment, and watch items.] <br>
-**Output Parameters:** [1D; optional coin, time_range, and topic inputs guide the briefing.] <br>
-**Other Properties Related to Output:** [Requires Gate-News MCP availability; partial tool failures are labeled or omitted rather than fabricated.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.3 (source: ClawHub release evidence) <br>
+Risk: The general briefing path may favor English sources, which can limit coverage for non-English or region-specific news.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Ask for the desired language or region when that coverage matters, and adjust the news query path accordingly.
+
+Risk: MCP tool failures or sparse feeds can result in missing events, news, or sentiment sections.
+
+Mitigation: Label degraded sections clearly, continue with available sources, and avoid fabricating missing headlines or events.
+
+Risk: Crypto news and sentiment summaries can be mistaken for trading recommendations.
+
+Mitigation: Keep summaries objective, preserve time range and source attribution, and state that the briefing is not investment advice.
+
+## Reference(s):
+
+- [Gate News Briefing Runtime Rules](references/gate-runtime-rules.md)
+- [Info & News Common Runtime Rules](references/info-news-runtime-rules.md)
+- [Gate News Briefing MCP Specification](references/mcp.md)
+- [ClawHub skill page](https://clawhub.ai/gate-exchange/skills/gate-news-briefing)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, guidance]
+
+**Output Format:** [Markdown briefing with ranked events, headlines, sentiment summary, and fallback notices.]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Uses read-only Gate-News MCP data; does not produce local files, credentials, or executable code.]
+
+## Skill Version(s):
+
+1.0.3 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

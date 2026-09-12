@@ -5,6 +5,7 @@
 //   klines <SYMBOL> [interval=1h] [limit=24] [market=spot]
 //   bundle <SYMBOL> [market=futures]
 //   fng
+//   funding [SYM[,SYM...]]        ← v1.5.31 新增（此前描述宣传 funding 却无此命令）
 //   oi <SYM[,SYM...]>
 //   longshort [SYMBOL]
 //   liq [SYMBOL] [limit=60] [window=300]
@@ -18,7 +19,7 @@ const H = {};
 if (process.env.BAZZ_AUTH_TOKEN) H["X-BAZZ-Token"] = process.env.BAZZ_AUTH_TOKEN;
 
 async function jget(path) {
-  let lastErr;
+  const errs = [];
   for (const port of PORTS) {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
@@ -27,13 +28,17 @@ async function jget(path) {
       clearTimeout(timer);
       if (res.ok) return await res.json();
       // 非 200（401/404/5xx）也可能是「该端口被别的带鉴权服务占用」——换下一端口再试
-      lastErr = new Error(`HTTP ${res.status}: ${(await res.text()).slice(0, 160)}`);
+      errs.push(`:${port} HTTP ${res.status}: ${(await res.text()).slice(0, 120)}`);
     } catch (e) {
       clearTimeout(timer);
-      lastErr = e;
+      errs.push(`:${port} ${e.message}`);
     }
   }
-  throw Object.assign(new Error(`本地后端不可达(${PORTS.join("/")}): ${lastErr?.message || lastErr}`), { exitCode: 3 });
+  // v1.5.30：逐端口错误全部保留。旧实现只留最后一个（通常是未监听端口的连接错误），
+  // 会把真正的原因（如 :8080 HTTP 401 令牌缺失）掩盖成「不可达」，极难排查。
+  throw Object.assign(
+    new Error(`本地后端不可达(${PORTS.join("/")}) — ${errs.join(" | ")}`),
+    { exitCode: 3 });
 }
 
 const num = (v, d = 6) => (v == null || !isFinite(Number(v)) ? null : Number(Number(v).toPrecision(d)));
@@ -72,6 +77,50 @@ const CMDS = {
     const d = await jget("/market/fng");
     return { value: d.value, classification: d.classification,
              history: (d.history || []).map((h) => h.value) };
+  },
+
+  // v1.5.31 新增：资金费率查询。
+  // 此前 SKILL.md 的 description 把「资金费率 / funding」列为触发词，但 CLI 并无该子命令，
+  // 模型据此调用 `market-data funding BTCUSDT` 只会得到「未知命令」。资金费率当时只在
+  // bundle 里出现过 —— 为了拿单个币的费率要跑完整个分析包（90d K线 + 24h + FNG + OI + 多空比），
+  // 代价过高且容易超时。
+  async funding(rest) {
+    const syms = (rest.join(",") || "").split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
+    const d = await jget("/market/futures");
+    const rows = d.futures || [];
+    const pick = (r) => {
+      const fr = Number(r.funding_rate || 0);
+      return {
+        symbol: r.symbol, price: num(r.price), change_pct: r.change_pct,
+        funding_rate: num(fr, 6),
+        funding_pct_8h: Number((fr * 100).toFixed(4)),          // 每 8 小时费率（百分比）
+        annualized_pct: Number((fr * 3 * 365 * 100).toFixed(2)), // 年化（百分比）
+        quote_volume: num(r.quote_volume, 8),
+      };
+    };
+    if (syms.length) {
+      const bySym = new Map(rows.map((r) => [r.symbol, r]));
+      const items = syms.filter((s) => bySym.has(s)).map((s) => pick(bySym.get(s)));
+      const missing = syms.filter((s) => !bySym.has(s));
+      if (!items.length) {
+        throw Object.assign(new Error(
+          `funding: 未找到 ${syms.join(",")} 的 USDT 永续合约。` +
+          `现货没有资金费率，现货标的请改用 bundle <SYM> spot；也可能是符号拼写错误或合约已下架`),
+          { exitCode: 1 });
+      }
+      const out = { items };
+      if (missing.length) out.missing = missing;
+      out.note = "funding_pct_8h >0.05 多头拥挤 / <-0.05 空头拥挤；annualized_pct 为年化";
+      return out;
+    }
+    // 无参数：返回资金费率两端极值（谁在多付钱）
+    const ranked = rows.slice().sort((a, b) => Number(b.funding_rate || 0) - Number(a.funding_rate || 0));
+    return {
+      long_crowded: ranked.slice(0, 10).map(pick),
+      short_crowded: ranked.slice(-10).reverse().map(pick),
+      total: rows.length,
+      note: "long_crowded = 费率最高 10 个（多头付费、多头拥挤）；short_crowded = 费率最低 10 个（空头拥挤）",
+    };
   },
 
   async oi(rest) {
@@ -141,7 +190,15 @@ const CMDS = {
 const [cmd, ...rest] = process.argv.slice(2);
 const fn = CMDS[cmd];
 if (!fn) {
-  console.log(JSON.stringify({ error: `未知命令 "${cmd}"`, available: Object.keys(CMDS) }));
+  // v1.5.31：只回 available 列表不足以纠正 —— 模型常把 description 里的「名词」
+  // 直接当子命令用（典型就是 funding）。这里把最可能的替代写法点出来。
+  console.log(JSON.stringify({
+    error: `未知命令 "${cmd}"`,
+    available: Object.keys(CMDS),
+    hint: "资金费率用 `funding <SYM>`（单个，或逗号分隔多个）或 `bundle <SYM>`（完整分析包）；" +
+          "K线用 `klines <SYM> [interval] [limit] [market]`；恐惧贪婪用 `fng`；" +
+          "持仓量用 `oi <SYM,...>`；爆仓用 `liq [SYM]`。",
+  }));
   process.exit(1);
 }
 fn(rest)

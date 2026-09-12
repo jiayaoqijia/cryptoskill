@@ -1,5 +1,32 @@
 # REALIZED
 
+<!-- Judge front door. The repo root carries build notes next to judge docs because the
+     README permalinks cite exact line numbers (v4.js#L101-L194 etc.) and moving files hours
+     before a deadline breaks those anchors for cosmetic gain. This map is the fix instead. -->
+
+### Start here
+
+| if you are… | read | why |
+|---|---|---|
+| **judging, 2 minutes** | [`FOR-JUDGES.md`](FOR-JUDGES.md) | problem, method, key numbers with ranges, 30-second reproduction |
+| **judging The Graph — AI track** | [`SKILL.md`](SKILL.md) + [`llms.txt`](llms.txt) | the agent surface: 7 MCP tools, reporting rules |
+| **judging The Graph — composability** | [`COMPOSABILITY.md`](COMPOSABILITY.md) | one query shape across 3 protocols / 4 chains / 6 venue-chain pairs |
+| **judging Uniswap** | [`FEEDBACK.md`](FEEDBACK.md) + [Verify our integration](#verify-our-integration--every-claim-at-its-line) | developer feedback citing Uniswap's own schema; every claim at its line |
+| **running it** | [Use it in 30 seconds](#use-it-in-30-seconds) | no API key needed, CORS open |
+| **checking our honesty** | [Honesty box](#honesty-box) · [Canaries](#canaries) | our own retractions, and the failure we shipped instead of a signal |
+
+**Repo layout**
+
+```
+packages/core/src/   the library — all math and subgraph access (start at realized.js, v4.js)
+bin/                 api.js (HTTP) · mcp-server.js (7 agent tools)
+scripts/             build-*.js regenerate everything; spike-hunt*/probe-* are the
+                     experiments we ran and published as failures, kept on purpose
+data/                generated corpora + the evidence behind published findings.
+                     Large and tracked deliberately — see REVIEW-GUARDRAILS.md before grepping
+test/                canary.test.js — the negative control this project exists for
+```
+
 > **TL;DR** — Every DEX shows liquidity providers an APR made only of fees, so it can never
 > display a loss. Realized computes the number that can: **fees + impermanent loss**, from The
 > Graph's historical `poolDayData`. Live site: **[realized.drainfun.xyz](https://realized.drainfun.xyz)**
@@ -8,6 +35,10 @@
 > **Judging this?** [`FOR-JUDGES.md`](FOR-JUDGES.md) is the one-page version: problem, method,
 > key numbers with their ranges, what refuses to produce a number, what we deliberately did
 > *not* ship, and a 30-second reproduction.
+>
+> **Uniswap judges:** [`FEEDBACK.md`](FEEDBACK.md) is our developer feedback on the v3 and v4
+> subgraphs — what worked, and the four things that cost us build time, each with the file and
+> line it produced. Integration points to verify are listed at the bottom of that file.
 
 **The problem.** You provide liquidity, the dashboard says +12% APR, and months later your
 position is worth less than if you had done nothing. The dashboard was not lying about fees —
@@ -194,6 +225,54 @@ outcome was about **−14%**, because resolution was fee-only and arithmetically
 That call is the negative control in [`test/canary.test.js`](test/canary.test.js) — the test
 that failure never had.
 
+## Verify our integration — every claim, at its line
+
+*For Uniswap and The Graph judges: this table is the map. Each row is a claim we make somewhere
+else in this README, next to the exact code that implements it.*
+
+### Uniswap stack integration
+
+| what we integrated | where, exactly |
+|---|---|
+| **Uniswap v3 subgraph IDs, 4 chains** (mainnet, Arbitrum, Polygon, Base) | [`venues.js:10-15`](packages/core/src/venues.js#L10-L15) |
+| **Uniswap v4 subgraph ID** (mainnet) | [`venues.js:20-22`](packages/core/src/venues.js#L20-L22) · [`v4.js:30`](packages/core/src/v4.js#L30) |
+| **v3 position-state read** — the range is on the NFT, so `tickLower`/`tickUpper` is a lookup | [`wallet.js:121-144`](packages/core/src/wallet.js#L121-L144) (`POSITION_FIELDS`) · fetch at [`wallet.js:146`](packages/core/src/wallet.js#L146) |
+| **v4 position reconstruction** — the v4 `Position` entity has no tick range, so we replay events | [`v4.js:101-194`](packages/core/src/v4.js#L101-L194) (`reconstructPositions`) |
+| **v4 paging by `origin`, not `sender`** (`sender` is the position manager contract — returns zero rows) | [`v4.js:39-93`](packages/core/src/v4.js#L39-L93), query at [`v4.js:58`](packages/core/src/v4.js#L58) |
+| **v4 `amount: 0` filter** — ~48% of events are fee-collection no-ops; counting them invents positions | [`v4.js:107`](packages/core/src/v4.js#L107) and [`v4.js:216`](packages/core/src/v4.js#L216) |
+| **v4 transferred-in positions** — net-negative keys classified, size withheld | [`v4.js:140-153`](packages/core/src/v4.js#L140-L153) (`incompleteHistory`) |
+| **v4 self-audit shipped in every response** (`audit.checks[]` + `allPass`) | [`v4.js:196-251`](packages/core/src/v4.js#L196-L251) (`auditReconstruction`) |
+| **Per-venue capability map** — v4 is `realizedReturn:false, exitSimulation:false` on purpose | [`venues.js:38-74`](packages/core/src/venues.js#L38-L74) (`CAPABILITIES`) |
+| **Concentrated-liquidity IL math** (v3/v4 range geometry, not the v2 formula) | [`concentrated.js:17-54`](packages/core/src/concentrated.js#L17-L54) |
+| **Developer feedback for the Uniswap track** | [`FEEDBACK.md`](FEEDBACK.md) |
+
+### The Graph integration
+
+| what | where, exactly |
+|---|---|
+| **Gateway URL built from a Subgraph Studio key** (live data, no mocks) | [`realized.js:43-46`](packages/core/src/realized.js#L43-L46) (`gatewayUrl`) |
+| **The single query function every venue and chain goes through** | [`realized.js:48-69`](packages/core/src/realized.js#L48-L69) (`query`) |
+| **`poolDayData` historical fetch** — the join that makes realized return computable | [`realized.js:86-166`](packages/core/src/realized.js#L86-L166) |
+| **Realized return = fees + IL**, one implementation for all venues/chains | [`realized.js:251-321`](packages/core/src/realized.js#L251-L321) (`positionRealized`) |
+| **Exit simulation** with live gas and measured-zero slippage | [`realized.js:168-249`](packages/core/src/realized.js#L168-L249) |
+| **Venue/chain resolution** — one map, not one code path per chain | [`venues.js:81-89`](packages/core/src/venues.js#L81-L89) (`subgraphId`, `venueList`) |
+| **MCP server, 7 tools** | [`bin/mcp-server.js`](bin/mcp-server.js) — tool defs at lines [24](bin/mcp-server.js#L24), [44](bin/mcp-server.js#L44), [73](bin/mcp-server.js#L73), [104](bin/mcp-server.js#L104), [136](bin/mcp-server.js#L136), [155](bin/mcp-server.js#L155), [167](bin/mcp-server.js#L167) |
+| **HTTP API** (`/api/wallet`, `/api/position`, `/api/simulate-exit`, `/api/venues`) | [`bin/api.js`](bin/api.js) — venue dispatch + address validation at [`api.js:216-240`](bin/api.js#L216-L240) |
+
+### The refusals — where we decline to produce a number
+
+These are the lines that make the honesty claims checkable rather than rhetorical.
+
+| refusal | where |
+|---|---|
+| **Uncollected fees → `measurable:false`, never `$0`** (of 150 positions reading zero collected, 71 had real accrued fees) | [`wallet.js:174-200`](packages/core/src/wallet.js#L174-L200) (`describePosition`), rationale at [`wallet.js:241`](packages/core/src/wallet.js#L241) |
+| **Truncated v4 event history → `openPositions:null`**, positions withheld entirely | [`v4.js:253-300`](packages/core/src/v4.js#L253-L300) (`walletV4`) |
+| **Aerodrome wallet lookup → explicit error** (no per-owner Position entity) | [`venues.js:64-72`](packages/core/src/venues.js#L64-L72) · [`api.js:229`](bin/api.js#L229) |
+| **Malformed address → `400` on every venue path** | [`api.js:216-232`](bin/api.js#L216-L232) |
+| **Stable-pair canary fails → the build refuses to write output** | [`test/canary.test.js`](test/canary.test.js) |
+
+---
+
 ## What this is
 
 An MCP server + library that computes **realized** LP return from The Graph's historical
@@ -302,6 +381,51 @@ unchanged**, on an independent DEX: [`scripts/cross-dex.js`](scripts/cross-dex.j
 Different team, different codebase, different incentive model (veAERO emissions rather than pure
 fee capture) — **same defect, same shape, same range-ordering.** It is a property of how
 concentrated liquidity advertises itself, not a quirk of one DEX.
+
+### What each venue can actually answer
+
+Not every venue supports every question, and the differences are not cosmetic — they come from
+what the subgraph exposes. `/api/venues` publishes this as booleans so an agent can **check**
+capability instead of assuming it.
+
+| venue | chains | source | pool analytics | wallet lookup | real range | realized return | exit sim |
+|---|---|---|---|---|---|---|---|
+| **Uniswap v3** | mainnet, arbitrum, polygon, base | position **state** | yes | yes | yes | **yes** | **yes** |
+| **Uniswap v4** | mainnet | **event reconstruction** | yes | yes | yes | **no** | **no** |
+| **Aerodrome** | base | pool-only | yes | **no** | — | — | — |
+
+**Why v4 is a different kind of answer.** The v4 `Position` entity carries only
+`id`/`tokenId`/`owner`/`origin`/`createdAtTimestamp` — **no tick range at all.** In v3 the range
+sits on the position NFT, so reading "the band you actually set" is a lookup: the chain already
+did the bookkeeping. In v4 the range exists only in the event log, so we reconstruct it by summing
+signed `ModifyLiquidity.amount` per `(pool, tickLower, tickUpper)`.
+
+That is bookkeeping, not new mathematics — and it is worth being precise about what it buys and
+what it costs. It supports the range and in/out-of-range. It does **not** support realized return
+or exit pricing, and we refuse to compute them rather than publish a confident wrong number:
+**event-derived state is a strictly weaker evidence class than a state read, and it inherits gaps
+a state read never has.** Three of those gaps are handled explicitly, each found by measurement:
+
+- **~48% of v4 events are `amount: 0`** fee-collection no-ops. Counting them invents positions at
+  real-looking tick ranges, so they are discarded.
+- **Removals with no matching add** mean the position was transferred in — its adds happened under
+  a different `origin`. Reported as `incompleteHistory[]` with the reason, size deliberately
+  withheld. Neither dropped silently nor counted as liquidity.
+- **Over 5000 events, we report nothing.** `openPositions: null` plus an explicit error. Found by
+  running the reconstruction across five unrelated wallets: two hit the fetch cap and reported
+  **1471 and 501 "open positions"** while every consistency check passed. A truncated sum is
+  self-consistent and wrong — **consistency is not completeness.** The audit now checks both, and
+  ships `audit.checks[]` + `audit.allPass` in every v4 response.
+
+Lookups key on **`origin`** (the EOA), never `sender` — `sender` is the position manager contract
+and matches nothing.
+
+**Uniswap v2 is excluded on purpose.** v2 LP shares are fungible and always full-range, so "read
+the range you actually set" has no meaning there. Adding it would dilute the claim, not extend it.
+
+**Aerodrome is pool-level only.** Its subgraph exposes no per-owner Position entity, so
+`/api/wallet?dex=aerodrome` returns an explicit error. Our own capability map claimed otherwise
+until we tested it — the map was the thing that was wrong, not the endpoint.
 
 **SushiSwap v3 is reported as unmeasurable, not as clean.** Its subgraph answers, but only 8 pools
 clear the $250k TVL floor and none is a stable/stable pair — so the canary cannot prove the

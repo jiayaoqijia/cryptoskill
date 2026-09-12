@@ -1,6 +1,13 @@
 # SHOT LIST — REALIZED demo video
 ### Companion to `TALKING-POINTS.md` (riff sheet + do-not-say list). This is the sequence.
 
+**Tracks:** The Graph — AI Tooling / AI Use Case (**Start Fresh** pool) · The Graph — Composable &
+Standardized Products · Uniswap — Stack Contribution. **Not 1inch** — that track is "Build an Aqua
+App" (Aqua/SwapVM contracts, onchain transfers) and we use 1inch only as an independent price and
+gas source. Saying "submitted to 1inch" on camera would be a claim a judge can falsify in one read.
+
+**Say "4 chains," never 5.** Optimism is queried but never clears its canary (`optimism.tight: null`).
+
 **Target 3:00. Seven shots.** Everything below is live and verified 2026-09-11 14:05 UTC.
 If a number on screen differs from this file, **the screen is right** — it recomputes every build.
 
@@ -96,6 +103,17 @@ Point down the column: **59.1% → 45.4% → 36.0% → 25.6%**
 > bounds. And concentrated liquidity is *why* the defect exists — range width drives
 > impermanent loss."
 
+**Uniswap v4 — the part that shows we didn't just wrap v3** (optional, ~15s; strong if time allows)
+> "Paste an address and it searches v3 **and** v4 — you don't pick a version. But v4 is a
+> different *kind* of answer: its Position entity has no tick range at all, so we rebuild the
+> range by replaying `ModifyLiquidity` events. That gives us the range — and it does **not**
+> support exit pricing, so we refuse to compute one. The API publishes
+> `realizedReturn: false` for v4 so an agent checks instead of assuming."
+
+> **Do not say "novel math."** Summing signed deltas is bookkeeping. The claim that survives a
+> skeptical judge is: *event-derived state is a strictly weaker evidence class than a state read,
+> and we detect exactly where it's weaker.*
+
 **1inch — the second opinion**
 > "An instrument that grades others has to be graded too. 1inch has never seen our subgraph.
 > **99.2% agreement, median divergence 0.078%.**"
@@ -164,7 +182,8 @@ Close on the deck's final slide:
 Cut in this order — **never cut 5 or 6.**
 1. Shot 3 (cherry-pick table) — the deck carries it
 2. Shot 2 (the cause) — Shot 1 implies it
-3. Trim Shot 4 to The Graph + 1inch only
+3. Trim Shot 4 to The Graph + the 1inch price cross-check only
+   (1inch is our *second opinion on price*, not a track we entered — keep the framing exact)
 
 Shots 5 and 6 are the two nobody else in the track will have.
 

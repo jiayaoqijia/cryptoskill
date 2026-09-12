@@ -18,7 +18,7 @@
  * TOKEN units, so turning it into per-day USD needs (a) an archive node, (b) a block-number
  * lookup for every day boundary, (c) a historical USD price for BOTH tokens at each of
  * those boundaries, and (d) the same again for every pool you want to compare. The Graph
- * publishes that join already computed and consistent across 256 pools and 5 chains.
+ * publishes that join already computed and consistent across 256 pools and 4 chains.
  *
  * So the honest claim is PRACTICALITY, not impossibility: the indexer is the only route
  * that makes a cross-pool, multi-chain, daily-resolution corpus tractable. Overstating it

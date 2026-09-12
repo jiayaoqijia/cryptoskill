@@ -1,43 +1,57 @@
-## Description: <br>
-What DeFi positions does a wallet hold? Protocol-by-protocol breakdown of assets, debts, and rewards across chains. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+What DeFi positions does a wallet hold? Protocol-by-protocol breakdown of assets, debts, and rewards across chains.
 
-## Publisher: <br>
-[nansen-devops](https://clawhub.ai/user/nansen-devops) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[nansen-devops](https://clawhub.ai/user/nansen-devops)
 
-## Use Case: <br>
-Developers, analysts, and agent operators use this skill to ask the Nansen CLI for protocol-level DeFi positions and spot token balances for a wallet address across supported chains. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill requires a Nansen API key and the nansen-cli package. <br>
-Mitigation: Install only from a trusted nansen-cli source and provide NANSEN_API_KEY through normal secret-management practices rather than embedding it in prompts or files. <br>
-Risk: Wallet addresses queried through the skill are processed by Nansen. <br>
-Mitigation: Use the skill only for wallet addresses you are comfortable sending to Nansen for position and balance lookups. <br>
-Risk: The DeFi position command may return empty results for wallets without tracked positions. <br>
-Mitigation: Treat empty DeFi results as an absence of tracked positions and cross-check spot balances when a complete exposure view is required. <br>
+## Use Case:
 
+Developers, analysts, and external users use this skill to inspect a wallet's DeFi positions across protocols and chains, including assets, debts, rewards, and related spot balances.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/nansen-devops/nansen-defi-positions) <br>
-- [Publisher Profile](https://clawhub.ai/user/nansen-devops) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline bash commands] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires the NANSEN_API_KEY environment variable and the nansen CLI binary; commands return wallet portfolio and token balance data from Nansen.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-0.1.0 (source: server release evidence) <br>
+Risk: The skill requires installing and running the nansen-cli package.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Confirm the package source is trusted before installation and pin the CLI version for reproducible deployments.
+
+Risk: The skill requires a NANSEN_API_KEY.
+
+Mitigation: Use an API key with the least access needed and manage it as a secret.
+
+Risk: A wallet may have no tracked DeFi positions or incomplete DeFi coverage.
+
+Mitigation: Treat empty DeFi responses as no tracked positions for that query and combine DeFi results with spot balance checks as the skill instructs.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/nansen-devops/skills/nansen-defi-positions)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, guidance]
+
+**Output Format:** [Markdown with Nansen CLI shell commands and tabular result descriptions]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires NANSEN_API_KEY and the nansen CLI; DeFi position queries may return empty results for wallets with no tracked positions.]
+
+## Skill Version(s):
+
+0.1.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

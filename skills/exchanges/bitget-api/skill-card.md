@@ -1,43 +1,56 @@
-## Description: <br>
-Operate Bitget public exchange market APIs through UXC with a curated OpenAPI schema, market-first discovery, and explicit private-auth boundary notes. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Bitget public exchange market APIs through UXC with a curated OpenAPI schema, market-first discovery, and explicit private-auth boundary notes.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and agents use this skill to inspect and run read-only Bitget public spot market-data requests for symbols, tickers, candles, and order book snapshots. It is scoped away from private account access, order placement, and other authenticated trading workflows. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill creates a reusable UXC link and depends on a referenced remote OpenAPI schema. <br>
-Mitigation: Install only when UXC and the schema source are trusted, and inspect operation help before execution. <br>
-Risk: Adding credentials, private endpoints, or trading actions would exceed the reviewed public-read scope. <br>
-Mitigation: Keep usage to the documented public GET market-data operations unless a separate Bitget signing and authentication flow is reviewed. <br>
+## Use Case:
 
+Developers and engineers use this skill to discover and execute read-only Bitget public spot market-data operations, including symbols, tickers, candles, and order book snapshots.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/jolestar/bitget-openapi-skill) <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [Curated Bitget V2 OpenAPI Schema](references/bitget-v2.openapi.json) <br>
-- [Official Bitget API Intro](https://www.bitget.com/api-doc/common/intro) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown guidance with inline shell commands; API responses are JSON envelopes from UXC.] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only public market-data operations; no credentials are required for the documented endpoints.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Risk: Remote schema retrieval can introduce supply-chain drift if the schema URL changes after review.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Prefer the bundled schema or a pinned reviewed schema URL when reproducible behavior is required.
+
+Risk: Extending the skill to private account or trading endpoints would add signing, credential, and transaction risks outside this release scope.
+
+Mitigation: Keep this release limited to public read-only market data unless a separate Bitget signer flow and review are completed.
+
+## Reference(s):
+
+- [Usage patterns](references/usage-patterns.md)
+- [Curated OpenAPI schema](references/bitget-v2.openapi.json)
+- [Official Bitget API intro](https://www.bitget.com/api-doc/common/intro)
+- [Skill page](https://clawhub.ai/jolestar/skills/bitget-openapi-skill)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline shell commands and JSON-oriented API response guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guidance emphasizes JSON output envelopes, narrow spot market reads, and public read-only endpoints.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

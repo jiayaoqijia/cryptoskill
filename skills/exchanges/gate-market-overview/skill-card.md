@@ -1,46 +1,62 @@
-## Description: <br>
-Provides a crypto market overview for queries about overall market conditions, using Gate Info and Gate News MCP data to summarize market breadth, sector leaders, DeFi metrics, recent events, and macro context. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Market overview skill for crypto-wide market conditions, intended only for requests that do not ask for specific coin analysis or another analysis dimension.
 
-## Publisher: <br>
-[gate-exchange](https://clawhub.ai/user/gate-exchange) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gate-exchange](https://clawhub.ai/user/gate-exchange)
 
-## Use Case: <br>
-External users and analysts use this skill to ask for a market-wide crypto briefing rather than coin-specific analysis. The skill gathers read-only market snapshot, rankings, DeFi, events, and macro data and returns a concise Markdown overview with missing data clearly labeled. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill depends on the Gate Info and Gate News MCP server configured in the user's environment. <br>
-Mitigation: Install and run it only in environments where the configured MCP server is trusted, and use the documented Gate tools only. <br>
-Risk: Market summaries may be mistaken for investment advice or over-applied to coin-specific, technical, risk, or portfolio questions. <br>
-Mitigation: Treat the report as informational market context, keep the non-investment-advice disclaimer, and route specialized requests to the appropriate Gate skill. <br>
-Risk: Unavailable or stale market, macro, DeFi, or event data can make the overview incomplete. <br>
-Mitigation: Label missing or stale sections clearly, avoid fabricating unavailable metrics, and provide a partial report only from available data. <br>
+## Use Case:
 
+External users and agents use this skill to produce a market-wide crypto briefing from Gate Info MCP market, ranking, DeFi, macro, and event data. It is for broad market status questions, not single-coin analysis, contract risk review, trading advice, or news-only requests.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/gate-exchange/gate-info-market-overview) <br>
-- [Gate Info Market Overview Runtime Rules](references/gate-runtime-rules.md) <br>
-- [Info & News Common Runtime Rules](references/info-news-runtime-rules.md) <br>
-- [Gate Info MarketOverview MCP Specification](references/mcp.md) <br>
-- [Scenarios & Prompt Examples](references/scenarios.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, API calls, guidance] <br>
-**Output Format:** [Markdown report with tables, section summaries, data freshness notes, and a non-investment-advice disclaimer.] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only workflow; uses documented Gate Info and Gate News MCP tools and degrades gracefully when data is unavailable.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.3 (source: server release metadata; artifact frontmatter version: 2026.4.6-1) <br>
+Risk: Users may treat a broad crypto market summary as investment advice.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Present outputs as informational market data, keep a neutral tone, and include the skill's not-investment-advice framing.
+
+Risk: Unavailable or stale MCP data could make a market overview incomplete.
+
+Mitigation: Use the documented graceful degradation behavior: omit unavailable dimensions, label missing data clearly, and avoid fabricating values.
+
+Risk: The skill may be used for requests outside its intended scope, such as single-coin analysis, technical analysis, or contract risk review.
+
+Mitigation: Route those requests to the more specific Gate skill instead of stretching this market overview workflow.
+
+## Reference(s):
+
+- [Gate Info Market Overview Skill](https://clawhub.ai/gate-exchange/skills/gate-info-market-overview)
+- [Gate publisher profile](https://clawhub.ai/user/gate-exchange)
+- [Gate Info MarketOverview MCP Specification](references/mcp.md)
+- [Gate Info Market Overview Runtime Rules](references/gate-runtime-rules.md)
+- [Info & News Common Runtime Rules](references/info-news-runtime-rules.md)
+- [Scenarios & Prompt Examples](references/scenarios.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, API calls, guidance]
+
+**Output Format:** [Markdown market overview report with tables and concise narrative sections]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires Gate Info MCP availability; partial outputs should clearly mark missing market, DeFi, macro, ranking, or event data.]
+
+## Skill Version(s):
+
+1.0.3 (source: ClawHub release metadata; artifact frontmatter version 2026.4.6-1)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

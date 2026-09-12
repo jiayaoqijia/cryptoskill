@@ -1,41 +1,54 @@
-## Description: <br>
-Subscribe to OKX public exchange WebSocket channels through UXC raw WebSocket mode for ticker, trade, book, and candle events with explicit subscribe frames. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Subscribe to OKX public exchange WebSocket channels through UXC raw WebSocket mode for ticker, trade, book, and candle events with explicit subscribe frames.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and agents use this skill to prepare UXC raw WebSocket subscription commands for OKX public market-data channels and inspect the resulting NDJSON event stream. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Subscriptions can keep a network connection open and continue growing local output files. <br>
-Mitigation: Choose sink paths intentionally, monitor subscription status, and stop jobs when finished. <br>
-Risk: Using an untrusted local UXC binary or mixing this public-channel workflow with private trading flows could create operational risk. <br>
-Mitigation: Trust the local UXC installation before use and keep this skill limited to OKX public market-data endpoints and subscribe frames. <br>
+## Use Case:
 
+Developers and engineers use this skill to subscribe agents to OKX public market-data WebSocket channels and inspect ticker, trade, book, and candle events written to NDJSON sinks.
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [OKX WebSocket API](https://www.okx.com/docs-v5/en/) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with inline bash and JSON examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Produces commands and subscribe frames for public OKX WebSocket channels; sink output is NDJSON when executed through UXC.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence) <br>
+Risk: A running public market-data subscription can continue writing NDJSON records and grow local disk usage.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Choose an appropriate sink path, monitor output size, and stop the subscription when finished.
+
+Risk: Adapting this public-channel workflow to private authentication or trading could introduce credential and transaction risk outside the reviewed scope.
+
+Mitigation: Keep usage limited to public OKX WebSocket channels unless a separate review covers private login, trading, account, or order-management workflows.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [OKX WebSocket API](https://www.okx.com/docs-v5/en/)
+
+## Skill Output:
+
+**Output Type(s):** [Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and JSON subscribe frames]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guides public OKX market-data subscriptions that write NDJSON sink files; excludes private authentication, trading, account, order-management, and REST workflows.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

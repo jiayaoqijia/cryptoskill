@@ -1,44 +1,59 @@
-## Description: <br>
-Use a Bash CLI to query Kraken Spot and Futures APIs, inspect account state, run guarded trading and funding actions, and work with Kraken websocket payloads using OpenClaw-managed secrets. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Use a Bash CLI to query Kraken Spot and Futures APIs, inspect account state, run guarded trading and funding actions, and work with Kraken websocket payloads using OpenClaw-managed secrets.
 
-## Publisher: <br>
-[Gabriel-0110](https://clawhub.ai/user/Gabriel-0110) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gabriel-0110](https://clawhub.ai/user/gabriel-0110)
 
-## Use Case: <br>
-Developers and operators use this skill to let an agent inspect Kraken market data and account state, then prepare or execute guarded Spot, Futures, funding, earn, subaccount, and websocket workflows through a local CLI. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can send signed Kraken API requests, including arbitrary private and futures raw calls outside the confirmed alias workflow. <br>
-Mitigation: Use least-privilege API keys, prefer read-only keys unless trading is required, and require explicit operator approval before raw private, futures raw, withdrawal, transfer, or arbitrary websocket use. <br>
-Risk: Trading, funding, earn, subaccount, and withdrawal workflows can change account state or move assets. <br>
-Mitigation: Require confirmation for state-changing operations and avoid withdrawal permissions unless they are essential for the deployment. <br>
-Risk: Credential exposure or endpoint tampering could lead to unauthorized exchange activity. <br>
-Mitigation: Provide secrets through managed environment references, keep OPENCLAW_KRAKEN_CONFIG and base URL settings under operator control, and rely on the skill's redaction and base URL validation behavior. <br>
+## Use Case:
 
+Developers, operators, and external agents use this skill to query Kraken market data, inspect account state, and perform guarded account-changing Kraken Spot and Futures actions through a local Bash CLI.
 
-## Reference(s): <br>
-- [ClawHub Kraken CLI release page](https://clawhub.ai/Gabriel-0110/kraken-spot) <br>
-- [Kraken skill homepage](https://github.com/oscraters/kraken-skill.git) <br>
-- [OpenClaw secrets documentation](https://docs.openclaw.ai/gateway/secrets) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline shell commands and configuration examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [API responses are emitted by the CLI; stderr is intended for sanitized operational messages.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.2.0 (source: server release evidence) <br>
+Risk: Raw private calls and configurable workflows can weaken safeguards around account-changing Kraken actions.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review raw private and WebSocket workflows before installation, prefer registry-backed read-only aliases where possible, and require explicit confirmation for trading, withdrawals, earn allocation, and transfer actions.
+
+Risk: Kraken API credentials, signatures, or challenge material could be exposed through logs or shared transcripts.
+
+Mitigation: Use least-privilege API keys, prefer read-only keys unless trading is required, inject secrets through environment or OpenClaw secret refs, and keep command output containing challenge signatures out of logs.
+
+Risk: Untrusted configuration can redirect endpoints or alter runtime behavior.
+
+Mitigation: Avoid untrusted OPENCLAW_KRAKEN_CONFIG files and keep Kraken REST and WebSocket endpoint variables pinned to official Kraken hosts.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/gabriel-0110/skills/kraken-spot)
+- [Declared homepage](https://github.com/oscraters/kraken-skill.git)
+- [OpenClaw secrets documentation](https://docs.openclaw.ai/gateway/secrets)
+
+## Skill Output:
+
+**Output Type(s):** [Shell commands, API calls, Configuration instructions, Guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands; CLI responses are text or JSON from Kraken APIs.]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires bash, curl, openssl, base64, and od; jq is optional for compact, pretty, and filtered JSON output.]
+
+## Skill Version(s):
+
+1.2.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,8 +1,12 @@
 # REALIZED — one page, for judges
 
-**ETHOnline 2026 · The Graph — AI Tooling / AI Use Case · also submitted to 1inch**
+**ETHOnline 2026 — submitted to three tracks:**
+**The Graph** (AI Tooling / AI Use Case, *Start Fresh* pool) · **The Graph** (Composable & Standardized Products) · **Uniswap** (Stack Contribution)
 
 Live: **[realized.drainfun.xyz](https://realized.drainfun.xyz)** · Deck: **[/deck](https://realized.drainfun.xyz/deck)** · Repo: **[jiggy-cadence/realized](https://github.com/jiggy-cadence/realized)**
+
+**Uniswap track:** developer feedback in **[`FEEDBACK.md`](FEEDBACK.md)** — v4's `Position` entity
+carries no tick range, `origin` vs `sender`, ~48% `amount:0` events, and the integration points to verify.
 
 ---
 
@@ -46,7 +50,8 @@ Copy-paste MCP config for Claude Desktop / Cursor is in the [README](README.md#3
 | Pools advertising positive while LPs realized negative | **37%** of the 102 pools clearing our liveness gate · **141 of 256** tracked overall |
 | Across assumed range widths (tight → full) | 62.1% · 55.1% · 46.9% · 37.1% |
 | Independent windows tested | **110 of 110** show the defect at tight and moderate ranges |
-| Chains · venues | 5 chains · Uniswap v3 + Aerodrome (different codebase, same defect shape) |
+| Chains · venues | **4 chains · 6 venue/chain pairs** · Uniswap v3 + Aerodrome (different codebase, same defect shape) + Uniswap **v4** |
+| Wallet position reads | v3 (4 chains) from position **state**; v4 (mainnet) by **event reconstruction** — range only, no exit pricing |
 | 1inch price cross-check | **99.2% agreement** across 255 pools, median divergence **0.078%** |
 
 ## Why The Graph is load-bearing
@@ -55,7 +60,7 @@ Not because the data is unreachable by RPC — **we checked that claim and it wa
 `feeGrowthGlobal0X128` is public pool state readable at any historical block (verified against a
 live archive node, 2026-09-11). What isn't tractable is the join: a Q128 token-unit accumulator
 becomes per-day USD only with an archive node, a block lookup per day boundary, and a historical
-price for *both* tokens at each one — repeated per pool. At 256 pools across 5 chains that's
+price for *both* tokens at each one — repeated per pool. At 256 pools across 4 chains that's
 thousands of archive calls per rebuild. The Graph publishes that join already computed.
 
 **The claim is practicality, not impossibility.** We corrected it rather than keep the stronger-
@@ -102,6 +107,20 @@ Script: [`scripts/fee-uplift-bound.js`](scripts/fee-uplift-bound.js)
   earned, not your exact wallet share. The wallet endpoint gives your real *range*, which is the
   input that actually moves the answer.
 - Adjacent walk-forward windows share market regime — not fully independent.
+- **v4 is a weaker evidence class than v3, and we say so in the response.** The v4 `Position`
+  entity carries no tick range at all (only id/tokenId/owner/origin/timestamps), so v4 ranges are
+  reconstructed by summing signed `ModifyLiquidity.amount` per (pool, tickLower, tickUpper). That
+  supports the range and in/out-of-range; it does **not** support realized return or exit pricing,
+  and we refuse to compute them rather than publish a confident wrong number. `/api/venues`
+  exposes this as `realizedReturn:false, exitSimulation:false` so an agent can check instead of
+  assume. Three things that fell out of building it, all shipped as guards: ~48% of v4 events are
+  `amount:0` fee-collection no-ops (counting them invents positions); ranges with removals but no
+  matching add are a transferred-in position, reported as `incompleteHistory` with their size
+  deliberately withheld; and a wallet over 5000 events returns `openPositions:null`, because a
+  truncated sum is self-consistent and wrong — caught when a spread check across 5 wallets
+  reported 1471 phantom positions with every consistency check passing.
+- **Aerodrome is pool-level only** — its subgraph exposes no per-owner Position entity, so wallet
+  lookup returns an explicit error. Our own capability map claimed otherwise until we tested it.
 - Coverage is Uniswap v3-heavy plus Aerodrome. Venues that can't clear the stable-pair canary are
   **excluded and marked untrusted**, never reported as clean.
 - Packages aren't published to npm; the repo is the install path.

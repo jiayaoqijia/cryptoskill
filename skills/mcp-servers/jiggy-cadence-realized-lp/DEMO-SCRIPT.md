@@ -1,6 +1,7 @@
 # REALIZED — demo video script (2:00 target, 2:20 hard ceiling)
 
-**ETHOnline 2026 · The Graph — Best AI Tooling or AI Use Case (net-new pool)**
+**ETHOnline 2026 — three tracks:** The Graph — Best AI Tooling or AI Use Case (**Start Fresh** pool) ·
+The Graph — Composable & Standardized Products · Uniswap — Stack Contribution
 Requirement: 2–4 min. We aim ~2:00 — judges watch ~40 of these. Short and dense beats long.
 
 > **Every number below was pulled live from the running site/API on 2026-09-10 18:32 UTC.**
@@ -29,6 +30,14 @@ Requirement: 2–4 min. We aim ~2:00 — judges watch ~40 of these. Short and de
 
 > "This is the biggest pool on Uniswap v3. USDC/WETH, four hundred million dollars in it.
 > The interface advertises **plus zero point six five percent APR**.
+
+<!-- v4 NOTE (added 2026-09-11): the wallet box now searches Uniswap v3 AND v4 together. If you
+     demo a wallet read, see the "Uniswap v4" beat in SHOT-LIST.md / TALKING-POINTS.md. Two hard
+     rules when narrating it: (1) do NOT call the reconstruction novel math -- summing signed
+     deltas is bookkeeping; the defensible claim is that event-derived state is a strictly weaker
+     evidence class than a state read and we detect where it's weaker. (2) v4 returns the range
+     and in/out-of-range only -- we deliberately refuse realized return and exit pricing there,
+     and /api/venues publishes realizedReturn:false so an agent checks instead of assuming. -->
 >
 > Anyone who put a hundred grand in thirty days ago is **down about three thousand dollars**."
 
@@ -195,6 +204,8 @@ node -e "import('@realized-lp/core').then(m=>console.log('IL at 2x, full-range:'
 - [ ] Repo public: github.com/jiggy-cadence/realized
 - [ ] README TL;DR + "what we do NOT claim" visible without scrolling far
 - [ ] Live site up: realized.drainfun.xyz (+ `/llms.txt`, `/api/pools`)
-- [ ] Track: **The Graph — Best AI Tooling or AI Use Case, NET-NEW pool**
+- [ ] Tracks: **The Graph AI (Start Fresh pool)** · **The Graph Composability** · **Uniswap Stack Contribution**
+- [ ] Say **"4 chains"**, never 5 — optimism is queried but never clears its canary (`optimism.tight: null`)
+- [ ] Uniswap track needs the feedback form submitted with the FEEDBACK.md link (done)
 - [ ] Say "The Graph" out loud in the video (sponsors check)
 - [ ] Deadline **Sun Sep 13 2026, 12:00pm EDT**

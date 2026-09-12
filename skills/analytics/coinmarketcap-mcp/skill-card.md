@@ -1,47 +1,62 @@
-## Description: <br>
-Use CoinMarketCap MCP through UXC for crypto market quotes, technical analysis, on-chain metrics, global market overview, narratives, macro events, news, and semantic search with help-first schema inspection and API-key auth. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Use CoinMarketCap MCP through UXC for crypto market quotes, technical analysis, on-chain metrics, global market overview, narratives, macro events, news, and semantic search with help-first schema inspection and API-key auth.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and agents use this skill to configure and query CoinMarketCap MCP through uxc for read-only cryptocurrency quotes, market metrics, narratives, news, and semantic search. It emphasizes help-first schema inspection, API-key setup, and focused read workflows before broader or plan-gated calls. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: CoinMarketCap MCP requires an API key, and incorrect credential handling could expose or misuse the key. <br>
-Mitigation: Use a dedicated CoinMarketCap API key, store it through uxc credential binding or a secret manager, and verify the binding targets only https://mcp.coinmarketcap.com/mcp. <br>
-Risk: Queries may reveal confidential portfolio, trading, or business strategy information to the external data service. <br>
-Mitigation: Avoid sending confidential portfolio details or business strategy in searches; keep queries focused and use non-sensitive identifiers where possible. <br>
-Risk: CoinMarketCap plan limits, quotas, or pay-per-call scope can affect availability or cost. <br>
-Mitigation: Start with focused read-only requests, inspect operation help before use, and verify the account tier before retrying quota or plan-gated failures. <br>
-Risk: The upstream MCP tool surface can change independently of this skill. <br>
-Mitigation: Run help-first schema inspection for each operation before execution and avoid assuming argument names from memory. <br>
+## Use Case:
 
+Developers and analysts use this skill to configure UXC access to CoinMarketCap MCP and run read-only cryptocurrency market data, metrics, technical analysis, news, narrative, and semantic search queries.
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [CoinMarketCap MCP endpoint](https://mcp.coinmarketcap.com/mcp) <br>
-- [ClawHub skill page](https://clawhub.ai/jolestar/coinmarketcap-mcp-skill) <br>
-- [Publisher profile](https://clawhub.ai/user/jolestar) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Shell commands, Configuration, Markdown] <br>
-**Output Format:** [Markdown with inline shell commands and JSON-oriented usage guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [The skill directs agents to inspect live MCP operation schemas before execution and to parse the JSON envelope returned by uxc.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: release evidence) <br>
+Risk: The skill depends on a third-party MCP service and the UXC command-line tool.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Confirm that CoinMarketCap MCP and UXC are trusted before installing or running the skill.
+
+Risk: Authenticated CoinMarketCap calls may consume account quota or require a paid plan.
+
+Mitigation: Use a user-controlled CoinMarketCap API key or secret-manager path and verify account tier, quota, and plan-gated endpoint access before broad queries.
+
+Risk: API credentials could be exposed if copied into prompts, logs, or unprotected files.
+
+Mitigation: Provide the API key through the documented environment variable or secret-manager binding rather than embedding the secret in commands or skill text.
+
+Risk: Users may mistake market-data access for trading authority.
+
+Mitigation: Treat the skill as read-only market-data guidance; it does not request trading authority or provide order-routing access.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [CoinMarketCap MCP endpoint](https://mcp.coinmarketcap.com/mcp)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, shell commands, configuration]
+
+**Output Format:** [Markdown with inline shell commands and JSON examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes API-key setup steps and read-only query patterns; authenticated calls may consume CoinMarketCap quota.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

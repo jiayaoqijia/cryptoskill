@@ -271,7 +271,7 @@ td[class^="trust-"]{font-size:11.5px}
   <div class="ask-title">Or paste an address — we read your real range</div>
   <p class="ask-hint" style="margin:-6px 0 13px">Read-only. No signing, no wallet connection, no permissions. Everything above assumes a &plusmn;2x band; an address lets us use the range you actually set.</p>
   <div class="wal-row">
-    <input id="waddr" type="text" placeholder="0x… (Uniswap v3, mainnet)" autocomplete="off" spellcheck="false">
+    <input id="waddr" type="text" placeholder="0x… (searches Uniswap v3 + v4, mainnet)" autocomplete="off" spellcheck="false">
     <button class="wal-go" id="wgo">Read positions</button>
   </div>
   <div class="wal-out" id="wout"></div>
@@ -1180,10 +1180,53 @@ function feeLine(f,p){
   return '<span class="wpos-unk">none recorded</span>';
 }
 
+// v4 positions come from ModifyLiquidity replay, so they carry a range and in/out-of-range but
+// deliberately NO realized return. Rendered as their own block for that reason -- merging them
+// into the v3 list would produce rows that silently cannot support the P&L column.
+function renderV4Block(v4){
+  if(!v4 || v4.error || !v4.openPositions) return '';
+  const rows=v4.positions.map(function(p){
+    const ir = p.inRange===true ? '<span class="wpos-in">in range</span>'
+             : p.inRange===false ? '<span class="wpos-unk">out of range</span>'
+             : '<span class="wpos-unk">range unknown</span>';
+    return '<div class="wpos"><b>'+esc(p.pool.pair)+'</b> '+ir
+      + '<br><span class="wpos-unk">ticks ['+p.tickLower+', '+p.tickUpper+'] · '
+      + esc(String(p.events))+' event(s) · added ~$'+esc(String(p.grossAddedUsd))+'</span></div>';
+  }).join('');
+  const inc = (v4.incompleteHistory&&v4.incompleteHistory.length)
+    ? '<div class="wpos-note"><b>'+v4.incompleteHistory.length+' range(s) with incomplete history.</b> '
+      + 'Liquidity was removed at these ranges with no matching add in this wallet\'s events — the position was most likely transferred in. '
+      + 'We do not report their size rather than invent one.</div>'
+    : '';
+  const ev=v4.evidence||{};
+  return '<div class="wpos-note" style="margin-top:14px"><b>Uniswap v4 · '+v4.openPositions+' open range(s)</b><br>'
+    + '<span class="wpos-unk">Reconstructed from '+esc(String(ev.modifyLiquidityEvents||0))+' ModifyLiquidity events. '
+    + 'The v4 Position entity carries no tick range, so ranges are derived from events — a weaker evidence class than a v3 state read. '
+    + 'We report the range and whether it is in range; we do <b>not</b> price a v4 exit.</span></div>'
+    + rows + inc;
+}
+
 function renderWallet(d){
   if(d.error){ wOutEl.innerHTML='<div class="wal-err">'+esc(d.error)+'</div>'; return; }
+
+  // Combined shape from /api/wallet/{addr} with no ?dex= : { venues:{...}, foundIn:[...] }
+  if(d.venues){
+    const v3=d.venues['uniswap-v3'], v4=d.venues['uniswap-v4'];
+    if(!d.openPositions){
+      wOutEl.innerHTML='<div class="wpos-note"><b>No open positions in Uniswap v3 or v4 on mainnet</b> for '+esc(shortAddr(d.owner))+'.<br>'
+        + 'We searched <b>both</b> v3 and v4. This does not cover Uniswap v2, other chains, or other DEXes — '
+        + 'absence here is a limit of what we queried, not proof the wallet is empty. Closed positions are excluded: no live range to reason about.</div>';
+      return;
+    }
+    var html='';
+    if(v3 && !v3.error && v3.openPositions) { renderWallet(v3); html=wOutEl.innerHTML; }
+    html += renderV4Block(v4);
+    wOutEl.innerHTML = '<div class="wpos-note">Searched <b>v3</b> and <b>v4</b> · found in: <b>'+esc((d.foundIn||[]).join(' + ')||'neither')+'</b></div>' + html;
+    return;
+  }
+
   if(!d.openPositions){
-    wOutEl.innerHTML='<div class="wpos-note">No open Uniswap v3 positions on mainnet for '+esc(shortAddr(d.owner))+'. Closed positions are excluded — they have no live range to reason about.</div>';
+    wOutEl.innerHTML='<div class="wpos-note"><b>No open Uniswap v3 positions on mainnet</b> for '+esc(shortAddr(d.owner))+'.<br>This box reads <b>Uniswap v3 only</b>. A wallet can hold <b>v4</b>, v2, or another DEX\'s liquidity and still show nothing here — that is a limit of what we queried, not a claim that the wallet is empty. Closed positions are also excluded: they have no live range to reason about.<br><span class="wpos-unk">v4 is supported via <code>/api/wallet/'+esc(d.owner)+'?dex=uniswap-v4</code> — ranges are reconstructed from ModifyLiquidity events, so we report the range but not realized return.</span></div>';
     return;
   }
   const rows=d.positions.map(p=>{

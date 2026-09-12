@@ -1,44 +1,60 @@
-## Description: <br>
-Operate Alchemy Prices API reads through UXC with a curated OpenAPI schema, path-templated API-key auth, and read-first guardrails. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Alchemy Prices API reads through UXC with a curated OpenAPI schema, path-templated API-key auth, and read-first guardrails.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and engineers use this skill to configure an agent for read-only Alchemy Prices API calls through UXC, including token price lookup by symbol or contract address and historical price requests. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Alchemy API keys are sensitive and this integration places the key in the request path. <br>
-Mitigation: Use UXC secret-backed credentials such as ALCHEMY_API_KEY, avoid literal secrets in shell history or logs, and verify the auth binding after setup. <br>
-Risk: The referenced OpenAPI schema URL points at a mutable main-branch location. <br>
-Mitigation: Prefer a bundled or pinned schema copy when repeatability matters. <br>
+## Use Case:
 
+Developers and engineers use this skill to configure UXC and run read-only Alchemy Prices API requests for token price lookup by symbol, contract address, or historical range.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/jolestar/alchemy-openapi-skill) <br>
-- [Usage patterns](references/usage-patterns.md) <br>
-- [Curated OpenAPI schema](references/alchemy-prices.openapi.json) <br>
-- [Alchemy Prices API docs](https://www.alchemy.com/docs/reference/prices-api) <br>
-- [Alchemy Prices API endpoints](https://www.alchemy.com/docs/reference/prices-api-endpoints) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with inline bash commands and JSON request examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Guides read-only API calls and expects JSON API responses from UXC-managed commands.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Risk: The Alchemy API key is placed in the request path for this API surface.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use environment-backed or secret-store-backed credentials such as ALCHEMY_API_KEY and avoid entering API keys as shell history literals.
+
+Risk: Historical price requests can expand into larger backfills than intended.
+
+Mitigation: Keep historical time windows tight unless a larger range is explicitly needed.
+
+Risk: Users may overextend the skill beyond its intended Alchemy Prices API scope.
+
+Mitigation: Treat the skill as read-only and prices-only; do not use it for node RPC, NFT, portfolio, trade execution, or wallet mutation workflows.
+
+## Reference(s):
+
+- [Usage patterns](references/usage-patterns.md)
+- [Curated OpenAPI schema](references/alchemy-prices.openapi.json)
+- [Alchemy Prices API docs](https://www.alchemy.com/docs/reference/prices-api)
+- [Prices API endpoints](https://www.alchemy.com/docs/reference/prices-api-endpoints)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown with inline bash commands and JSON request examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guidance centers on read-only API calls and stable JSON response fields.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata and OpenAPI info.version)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

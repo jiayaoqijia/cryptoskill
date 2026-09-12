@@ -1,47 +1,59 @@
-## Description: <br>
-Operate Sui public JSON-RPC through UXC with OpenRPC-driven discovery, mainnet fullnode defaults, and read-only query plus pubsub subscription guardrails. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Sui public JSON-RPC through UXC with OpenRPC-driven discovery, mainnet fullnode defaults, and read-only query plus pubsub subscription guardrails.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and engineers use this skill to discover and run safe Sui JSON-RPC reads through UXC against the public mainnet fullnode, and to set up controlled pubsub subscriptions with verified WebSocket providers. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: A compromised or untrusted UXC setup could affect JSON-RPC execution. <br>
-Mitigation: Install and use the skill only with a trusted UXC setup. <br>
-Risk: Using unreviewed write, signing, or unsafe Sui methods could move beyond the skill's read-only scope. <br>
-Mitigation: Stay on the listed read-only methods unless a separate design and review covers broader transaction flows. <br>
-Risk: An unverified WebSocket provider may not support the expected pubsub behavior. <br>
-Mitigation: Verify the provider endpoint before starting subscriptions. <br>
-Risk: Long-running subscription jobs can continue network and disk use. <br>
-Mitigation: Write subscriptions to explicit sink files, monitor job status, and stop jobs when finished. <br>
+## Use Case:
 
+Developers and engineers use this skill to discover and execute safe Sui mainnet JSON-RPC reads through UXC and to set up controlled pubsub subscriptions that write event data to sink files.
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [Sui Documentation](https://docs.sui.io/) <br>
-- [Sui Public Mainnet Fullnode](https://fullnode.mainnet.sui.io) <br>
-- [ClawHub Skill Page](https://clawhub.ai/jolestar/sui-jsonrpc-skill) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Guidance, Shell commands, Configuration, API calls] <br>
-**Output Format:** [Markdown with inline bash commands and JSON-RPC examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only JSON-RPC query guidance by default; subscription examples write NDJSON sink files.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence) <br>
+Risk: The skill can create a local UXC command alias.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review the alias command before installation and keep it pointed at the intended Sui public mainnet fullnode endpoint.
+
+Risk: Subscription workflows can start long-running jobs that write event data under the user's home directory.
+
+Mitigation: Write subscriptions to explicit sink files, monitor job status, and stop subscription jobs when finished.
+
+Risk: Pubsub behavior depends on the selected Sui WebSocket provider.
+
+Mitigation: Use only verified WebSocket providers that explicitly support JSON-RPC subscriptions.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [Sui Documentation](https://docs.sui.io/)
+- [Sui Public Mainnet Fullnode](https://fullnode.mainnet.sui.io)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance]
+
+**Output Format:** [Markdown with inline shell commands and JSON-RPC examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Emphasizes JSON output envelopes, read-only methods, verified WebSocket providers for subscriptions, and sink files for subscription data.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

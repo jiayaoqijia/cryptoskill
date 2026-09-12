@@ -1,50 +1,64 @@
-## Description: <br>
-Gate on-chain staking skill. Use when the user asks to stake POS coins, mint, or redeem staked assets. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Gate on-chain staking skill for querying staking positions, rewards, products, and order history, and for preparing confirmed stake, redeem, or mint actions.
 
-## Publisher: <br>
-[gate-exchange](https://clawhub.ai/user/gate-exchange) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gate-exchange](https://clawhub.ai/user/gate-exchange)
 
-## Use Case: <br>
-External users use this skill to query Gate on-chain earn staking positions, rewards, products, and order history, and to draft stake, redeem, or mint actions through the Gate MCP server. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can submit financial stake, redeem, or mint actions through an Earn:Write MCP permission. <br>
-Mitigation: Install only with a trusted Gate MCP server, use the narrowest Gate API key possible with no withdrawal permission, and require a clear action draft plus immediate explicit user confirmation before every write action. <br>
-Risk: Security evidence reports conflicting or under-scoped safety instructions. <br>
-Mitigation: Review the skill before deployment and verify that every stake, redeem, or mint workflow enforces mandatory confirmation and result verification. <br>
-Risk: Security evidence flags an unpinned remote runtime rule as a concern. <br>
-Mitigation: Prefer a revised release that removes or pins the remote runtime rule before production deployment. <br>
+## Use Case:
 
+External users and agents use this skill to inspect Gate on-chain earn staking positions, rewards, available products, and staking history. With Gate MCP access and explicit confirmation, it can help submit stake, redeem, or mint actions.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/gate-exchange/gate-exchange-staking) <br>
-- [Gate Staking MCP Specification](references/mcp.md) <br>
-- [Gate Staking Assets](references/staking-assets.md) <br>
-- [Gate Staking Products](references/staking-coins.md) <br>
-- [Gate Staking Orders and Rewards](references/staking-list.md) <br>
-- [Gate Staking Swap](references/staking-swap.md) <br>
-- [Gate Staking Scenarios](references/scenarios.md) <br>
-- [Gate API v4 documentation](https://www.gate.io/docs/developers/apiv4/) <br>
-- [Gate MCP setup](https://github.com/gateio/gate-mcp) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, API calls, guidance] <br>
-**Output Format:** [Markdown responses with MCP tool calls, action drafts, confirmations, and staking result summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Financial staking actions require immediate explicit user confirmation before execution; read-only queries can return positions, rewards, products, and order history.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.2 (source: ClawHub release metadata) <br>
+Risk: The skill can submit financial staking, redemption, or mint orders when granted Earn:Write permission.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Install only with a trusted Gate MCP setup and require a fresh Action Draft confirmation immediately before any write action.
+
+Risk: Mutable external runtime rules and unresolved artifact ambiguity can make approval or execution behavior unclear.
+
+Mitigation: Pin or vendor runtime rules, resolve the documented merge conflict, and review all stake, redeem, and mint paths before deployment.
+
+Risk: Incorrect staking product, amount, coin, or side selection could lead to unintended financial actions.
+
+Mitigation: Confirm product ID, side, amount, coin, lock period, and exchange-rate note with the user before submitting an order.
+
+## Reference(s):
+
+- [Gate Staking MCP Specification](references/mcp.md)
+- [Gate Staking Assets](references/staking-assets.md)
+- [Gate Staking Products](references/staking-coins.md)
+- [Gate Staking List](references/staking-list.md)
+- [Gate Staking Swap](references/staking-swap.md)
+- [Gate Exchange Staking Scenario Index](references/scenarios.md)
+- [Gate API v4 Documentation](https://www.gate.io/docs/developers/apiv4/)
+- [Gate API Key Management](https://www.gate.io/myaccount/profile/api-key/manage)
+
+## Skill Output:
+
+**Output Type(s):** [Markdown, API calls, Guidance]
+
+**Output Format:** [Markdown result summaries, staking action drafts, and confirmation or error messages]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires Gate MCP access and explicit user confirmation before stake, redeem, or mint execution.]
+
+## Skill Version(s):
+
+1.0.2 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

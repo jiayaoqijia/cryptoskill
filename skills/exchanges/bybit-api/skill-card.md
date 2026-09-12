@@ -1,45 +1,60 @@
-## Description: <br>
-Operate Bybit V5 public market APIs through UXC with a curated OpenAPI schema, market-first discovery, and explicit private-auth boundary notes. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Bybit V5 public market APIs through UXC with a curated OpenAPI schema, market-first discovery, and explicit private-auth boundary notes.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and agents use this skill to inspect and call Bybit V5 public market-data endpoints through UXC, including server time, instruments, tickers, order book snapshots, and kline reads. It is intended for public read-only market data workflows, not private account access or trading. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global, subject to Bybit API region and IP restrictions. <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The curated OpenAPI schema controls which Bybit endpoints and parameters an agent can call. <br>
-Mitigation: Review or pin the OpenAPI schema before important workflows, as recommended by the security guidance. <br>
-Risk: Bybit API access may be limited by region or IP restrictions. <br>
-Mitigation: Verify that the execution environment is permitted for Bybit API access before treating request failures as schema or parameter issues. <br>
-Risk: Adding private Bybit credentials would expand the skill beyond its documented public read-only scope. <br>
-Mitigation: Do not add private credentials unless a future version clearly documents signed private endpoint support. <br>
+## Use Case:
 
+Developers and agents use this skill to inspect and run Bybit V5 public market-data reads through UXC, including server time, instruments metadata, tickers, order books, and klines. It is intended for public-data workflows and excludes private account and trading operations in this release.
 
-## Reference(s): <br>
-- [Usage patterns](references/usage-patterns.md) <br>
-- [Curated Bybit V5 OpenAPI schema](references/bybit-v5.openapi.json) <br>
-- [Official Bybit V5 docs](https://bybit-exchange.github.io/docs/v5/guide) <br>
-- [ClawHub release page](https://clawhub.ai/jolestar/bybit-openapi-skill) <br>
+### Deployment Geography for Use:
 
+Global, subject to Bybit regional and IP access restrictions.
 
-## Skill Output: <br>
-**Output Type(s):** [Shell commands, Configuration, API calls, JSON, Guidance] <br>
-**Output Format:** [Markdown guidance with shell commands and JSON API responses from UXC] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Public read-only Bybit market-data operations; no credential use or private trading authority in this version.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata) <br>
+Risk: The skill creates or uses a UXC CLI alias and sends outbound requests to Bybit and the referenced schema URL.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review the alias target and schema URL before installation, and allow those network destinations only in approved environments.
+
+Risk: Private account access and trading actions are outside the inspected v1 scope and would require signing support not included in this release.
+
+Mitigation: Keep use to public market-data endpoints unless a future reviewed version adds and validates a Bybit signer flow.
+
+Risk: Bybit API access may be affected by regional or IP restrictions.
+
+Mitigation: Confirm the execution environment is permitted for Bybit API access before relying on results or debugging request parameters.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [Curated Bybit V5 OpenAPI Schema](references/bybit-v5.openapi.json)
+- [Official Bybit V5 Docs](https://bybit-exchange.github.io/docs/v5/guide)
+- [ClawHub Skill Page](https://clawhub.ai/jolestar/skills/bybit-openapi-skill)
+
+## Skill Output:
+
+**Output Type(s):** [text, shell commands, configuration, API calls, guidance]
+
+**Output Format:** [Markdown guidance with inline shell commands and JSON API responses]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Public market-data endpoints only; no API keys or trading authority in the inspected release.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

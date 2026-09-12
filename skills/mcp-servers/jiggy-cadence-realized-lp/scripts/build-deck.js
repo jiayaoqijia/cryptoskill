@@ -91,7 +91,16 @@ const stabilityRows = RANGE_ROWS.map(([key, label]) => {
   return { label, med, windows, withDefect };
 }).filter(Boolean);
 
-const chainsValidated = Object.values(hist.stability).filter((s) => s?.tight).length;
+// Count AND name only the chains we could actually validate. hist.chainsMeasured lists every
+// chain the history run QUERIED -- optimism is in there and its stability entry is `tight: null`,
+// meaning it never cleared the bar and its numbers are ones we refuse to publish. Rendering that
+// list as "built on" inflated the claim with a chain we exclude, which is the same drift that put
+// "5 chains" into six documents when we index 4. Name the validated set, derived from the same
+// predicate as the count, so the label and the number can never disagree again.
+const chainsValidatedList = Object.entries(hist.stability)
+  .filter(([, s]) => s?.tight)
+  .map(([chain]) => chain);
+const chainsValidated = chainsValidatedList.length;
 const venueList = [...new Set(pools.pools.map((p) => `${p.dex}/${p.chain}`))];
 
 // ---- slide 5 input: walk-forward refutation table -----------------------------------------
@@ -156,7 +165,7 @@ slides.push(`
     </tbody>
   </table>
   </div>
-  <p class="note">Same pools, same window, only the assumed range changes. The direction never flips: <b>the tighter and more realistic your position, the more the advertised number lies to you.</b> Full-range is the most generous possible case for the pool, and the defect is still there. Measured across ${chainsValidated} chains — ${esc(hist.chainsMeasured.join(', '))}.</p>
+  <p class="note">Same pools, same window, only the assumed range changes. The direction never flips: <b>the tighter and more realistic your position, the more the advertised number lies to you.</b> Full-range is the most generous possible case for the pool, and the defect is still there. Measured across ${chainsValidated} chains — ${esc(chainsValidatedList.join(', '))}.</p>
   <p class="note dim">Fees are held constant across ranges, which is deliberately unfair to us: concentrating earns more fees too. We can't measure per-position fees from pool-level data, so we report the direction and treat magnitudes as bounded by that caveat.</p>
 </section>`);
 
@@ -195,8 +204,8 @@ slides.push(`
   <div class="cols">
     <div class="col">
       <h3>The Graph — the dataset</h3>
-      <p>Per-day <code>feesUSD</code> are <b>indexer-derived aggregates</b>. You could reconstruct fee accrual from RPC &mdash; <code>feeGrowthGlobal0X128</code> is public pool state at any historical block, and we verified that against a live archive node rather than assuming. What is not tractable is the join: that accumulator is Q128 in <i>token</i> units, so per-day USD needs an archive node, a block lookup per day boundary, and a historical price for <b>both</b> tokens at each one &mdash; then repeated for every pool. At ${pools.pools.length} pools across ${hist.chainsMeasured.length} chains that is thousands of archive calls per rebuild. The Graph publishes that join already computed and consistent. <b>The claim is practicality, not impossibility</b> &mdash; an earlier draft of this slide said &ldquo;impossible,&rdquo; which was too strong, and correcting it is the same discipline the rest of this deck is about.</p>
-      <code>${esc(hist.chainsMeasured.join(' · '))}</code>
+      <p>Per-day <code>feesUSD</code> are <b>indexer-derived aggregates</b>. You could reconstruct fee accrual from RPC &mdash; <code>feeGrowthGlobal0X128</code> is public pool state at any historical block, and we verified that against a live archive node rather than assuming. What is not tractable is the join: that accumulator is Q128 in <i>token</i> units, so per-day USD needs an archive node, a block lookup per day boundary, and a historical price for <b>both</b> tokens at each one &mdash; then repeated for every pool. At ${pools.pools.length} pools across ${chainsValidated} chains that is thousands of archive calls per rebuild. The Graph publishes that join already computed and consistent. <b>The claim is practicality, not impossibility</b> &mdash; an earlier draft of this slide said &ldquo;impossible,&rdquo; which was too strong, and correcting it is the same discipline the rest of this deck is about.</p>
+      <code>${esc(chainsValidatedList.join(' · '))}</code>
     </div>
     <div class="col">
       <h3>Uniswap v3 — what we measure</h3>
@@ -209,7 +218,7 @@ slides.push(`
       <code>Spot Price Aggregator</code>
     </div>
   </div>
-  <p class="note">Built on <b>The Graph decentralized network</b> — Uniswap v3 and Aerodrome subgraphs across ${esc(hist.chainsMeasured.join(', '))}. Every figure regenerates from live subgraph data; <b>nothing is mocked or checked in as a static answer</b>. No API key is required to use any of it — the server proxies its own.</p>
+  <p class="note">Built on <b>The Graph decentralized network</b> — Uniswap v3 and Aerodrome subgraphs across ${esc(chainsValidatedList.join(', '))}. Every figure regenerates from live subgraph data; <b>nothing is mocked or checked in as a static answer</b>. No API key is required to use any of it — the server proxies its own.</p>
 </section>`);
 
 // SLIDE 5 — THE REFUTATION. Non-negotiable slide.
@@ -276,7 +285,7 @@ slides.push(`
     <a href="/llms.txt">llms.txt</a>
     <a href="/SKILL.md">SKILL.md</a>
   </div>
-  <p class="note">ETHOnline 2026 · The Graph — AI Tooling / AI Use Case. Built on the decentralized network across ${esc(hist.chainsMeasured.join(', '))}. ${corpus ? `Live corpus: ${corpus.headline.misleadingPct.toFixed(1)}% of measured pools currently advertise a positive APR while realizing a negative return.` : ''}</p>
+  <p class="note">ETHOnline 2026 · The Graph — AI Tooling / AI Use Case · The Graph — Composable &amp; Standardized Products · Uniswap — Stack Contribution. Built on the decentralized network across ${esc(chainsValidatedList.join(', '))}. ${corpus ? `Live corpus: ${corpus.headline.misleadingPct.toFixed(1)}% of measured pools currently advertise a positive APR while realizing a negative return.` : ''}</p>
   <p class="note dim">Deck generated ${generatedAt} from the same data files that serve the API. If a number here disagrees with the API, the API is right and this page is stale — rebuild with <code>node scripts/build-deck.js</code>.</p>
 </section>`);
 

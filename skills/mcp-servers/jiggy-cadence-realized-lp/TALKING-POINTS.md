@@ -65,14 +65,38 @@ Say that last part. It signals you know the literature and aren't overclaiming.
 
 **The Graph — the dataset.**
 - Per-day `feesUSD` are **indexer-derived aggregates that exist nowhere on-chain**.
-- "There is no RPC path to this. You cannot ask a node what an LP earned last Tuesday."
-- Without the decentralized network this measurement isn't harder — it's **impossible**.
-- 5 chains: mainnet, arbitrum, polygon, optimism, base.
+- "You *could* reconstruct fee accrual from RPC — we checked, rather than asserting. What isn't
+  tractable is the join: Q128 token-unit accumulators into per-day USD needs an archive node, a
+  block lookup per day boundary, and a historical price for both tokens at each one, per pool."
+- The claim is **practicality, not impossibility** — say it that way. An earlier draft said
+  "impossible" and that was too strong; the README already carries the correction.
+- **4 chains indexed: mainnet, arbitrum, polygon, base. 6 venue/chain pairs.**
+  (Optimism is queried by `history-run.js` but never clears the canary, so it is NOT quotable —
+  `data/history.json` has `optimism.tight: null`. Saying "5 chains" on camera inflates the claim
+  with a chain whose numbers we refuse to publish.)
 
 **Uniswap v3 — what we measure.**
 - Every number is a Uniswap v3 entity. `poolDayData` for fee and price history.
 - The **Position NFT** gives real `tickLower`/`tickUpper` — so pasting an address reads
   **the band you actually set**, not an assumed ±2×.
+
+**Uniswap v4 — and why it's a different KIND of answer.** (say this one carefully, it's the
+differentiator)
+- Paste an address and we search **v3 and v4 together**. You don't pick a version.
+- v4 has **no tick range on the Position entity at all** — only id/tokenId/owner/origin/timestamps.
+  So v3 is *asking the chain what you have*; v4 is *replaying every event and deriving it*.
+- We rebuild the range from `ModifyLiquidity` events. That gives the range and in/out-of-range —
+  and it **cannot** support realized return or exit pricing, so **we refuse to compute them.**
+  `/api/venues` publishes `realizedReturn:false` for v4 so an agent checks instead of assumes.
+- **Do NOT call the math novel.** Summing signed deltas is bookkeeping. The real result is a
+  reasoning one: *event-derived state is a strictly weaker evidence class than a state read, and
+  you can detect exactly where it's weaker.*
+- Three guards worth naming if asked: ~48% of v4 events are `amount:0` fee no-ops (counting them
+  invents positions); removals with no matching add = transferred in, reported as
+  `incompleteHistory` with size withheld; over 5000 events we return **nothing** rather than a
+  truncated sum — found when 5 test wallets all "passed" while two reported 1471 phantom positions.
+- **Aerodrome is pool-level only** — no per-owner Position entity, so no wallet lookup. Our own
+  capability map claimed otherwise until we tested it.
 - **Concentrated liquidity is *why* the defect exists** — range width drives impermanent loss.
   That's the connection worth making; it's not just "we used their data."
 
@@ -173,7 +197,7 @@ Judges see a hundred projects claiming alpha. This is the slide that separates y
 
 **"Isn't this just impermanent loss, which everyone knows?"**
 > IL is well known. What's not measured is that the advertised metric is *systematically*
-> uninformative about realized outcomes — pool by pool, across 5 chains, at every range width.
+> uninformative about realized outcomes — pool by pool, across 4 chains, at every range width.
 > We publish the calibration, not the concept.
 
 **"Why The Graph and not an RPC node?"**

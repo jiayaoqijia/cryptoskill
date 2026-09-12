@@ -1,43 +1,58 @@
-## Description: <br>
-Monitor Binance spot and futures balances, open positions with P&L, portfolio performance, and price alert requests through an AI assistant. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Monitor Binance spot and futures balances, open positions with P&L, portfolio performance, and price alerts through an AI assistant.
 
-## Publisher: <br>
-[dagangtj](https://clawhub.ai/user/dagangtj) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[dagangtj](https://clawhub.ai/user/dagangtj)
 
-## Use Case: <br>
-Crypto traders and developers use this skill to let an AI assistant query Binance balances, futures positions, P&L, and portfolio information from a configured Binance account. It is intended for account monitoring and read-only reporting, not placing trades. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill handles sensitive Binance API credentials and account data, including balances, futures positions, and P&L. <br>
-Mitigation: Use read-only API keys with withdrawals and trading disabled, protect local secret storage, rotate keys periodically, and consider Binance IP allowlisting. <br>
-Risk: Balance and position details may appear in command output or agent logs. <br>
-Mitigation: Run the skill only in trusted agent sessions and avoid sharing transcripts or logs that contain account details. <br>
-Risk: The security evidence says the release under-discloses credential and account-data handling. <br>
-Mitigation: Review the artifact scripts and data handling before installation, and disclose local credential paths and account data exposure to users before use. <br>
+## Use Case:
 
+External crypto traders use this skill to check Binance account balances, review futures positions and unrealized P&L, and monitor portfolio status from an agent workflow.
 
-## Reference(s): <br>
-- [ClawHub listing](https://clawhub.ai/dagangtj/binance-trading-assistant) <br>
-- [Publisher profile](https://clawhub.ai/user/dagangtj) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, JSON, shell commands, configuration, guidance] <br>
-**Output Format:** [JSON command output and concise natural-language responses] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include Binance balances, futures positions, unrealized P&L, and credential setup guidance.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release metadata and package.json) <br>
+Risk: The skill handles high-value Binance API credentials and account data.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a dedicated API key with withdrawals disabled, read-only permissions where possible, IP restrictions, and strong local file protection.
+
+Risk: The documentation claims keys and data stay local, but the scripts make authenticated Binance API calls and print account data for assistant consumption.
+
+Mitigation: Treat Binance balances and positions as sensitive data, review assistant logs and sharing settings, and correct the safety documentation before broad deployment.
+
+Risk: The exchange dependency is unpinned.
+
+Mitigation: Pin and review the ccxt dependency before installation or production use.
+
+## Reference(s):
+
+- [ClawHub Skill Page](https://clawhub.ai/dagangtj/skills/binance-trading-assistant)
+- [Publisher Profile](https://clawhub.ai/user/dagangtj)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance and JSON command output from Binance account-check scripts]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Produces account balances, futures position summaries, timestamps, and unrealized P&L for assistant consumption.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata and package.json)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

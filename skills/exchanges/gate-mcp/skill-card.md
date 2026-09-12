@@ -1,42 +1,55 @@
-## Description: <br>
-Use Gate MCP through UXC for public spot and futures market data workflows with a fixed streamable-http endpoint and read-first guardrails. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Use Gate MCP through UXC for public spot and futures market data workflows with a fixed streamable-http endpoint and read-first guardrails.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and agents use this skill to inspect and run read-only Gate MCP public spot and futures market-data workflows, including market discovery, tickers, order books, trades, candlesticks, funding rates, and premium data. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill sends public market-data requests to Gate's MCP endpoint through uxc. <br>
-Mitigation: Use it only when you trust uxc and are comfortable contacting the fixed Gate MCP endpoint. <br>
-Risk: Using the skill outside its documented read-only scope could expose private account, wallet, credential, or trading information. <br>
-Mitigation: Keep requests within the documented read-only commands and do not provide Gate API keys, wallet details, account credentials, or private trading instructions. <br>
+## Use Case:
 
+Developers and market-data analysts use this skill to inspect and run read-only Gate MCP public spot and futures market-data commands with help-first discovery and JSON output parsing.
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [Official Gate for AI / MCP docs](https://www.gate.com/gate-mcp-skills) <br>
-- [Gate MCP setup article](https://www.gate.com/ru/help/gateforai/gateforaibasics/50102/gate-for-ai-one-click-integration-with-major-ai-agents-no-api-keys-required-zero-barriers) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, shell commands, configuration] <br>
-**Output Format:** [Markdown with inline shell commands and MCP operation examples] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only public market-data requests should use the documented JSON output envelope.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: release metadata) <br>
+Risk: Market-data queries are sent to Gate's remote MCP endpoint.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use the skill only when remote public market-data requests to Gate are acceptable.
+
+Risk: The reusable gate-mcp-cli link could be used outside the documented read-only workflow.
+
+Mitigation: Keep usage limited to the documented /mcp endpoint and avoid trading, wallet, account, funding, and API-key workflows.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [Official Gate for AI / MCP docs](https://www.gate.com/gate-mcp-skills)
+- [Gate MCP setup article](https://www.gate.com/ru/help/gateforai/gateforaibasics/50102/gate-for-ai-one-click-integration-with-major-ai-agents-no-api-keys-required-zero-barriers)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, shell commands, configuration, text]
+
+**Output Format:** [Markdown with inline shell commands and JSON-oriented output guidance]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guidance is scoped to public market-data reads through the fixed Gate MCP streamable-http endpoint.]
+
+## Skill Version(s):
+
+1.0.0 (source: release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

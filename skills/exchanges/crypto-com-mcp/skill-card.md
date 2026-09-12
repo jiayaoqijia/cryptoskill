@@ -1,45 +1,60 @@
-## Description: <br>
-Use Crypto.com MCP through UXC for exchange market data workflows with help-first discovery and read-only guardrails. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Use Crypto.com MCP through UXC for exchange market data workflows with help-first discovery and read-only guardrails.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and engineers use this skill to discover Crypto.com exchange markets and run read-only public market-data queries such as instruments, tickers, order books, trades, and candlesticks through MCP. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Queries are sent to Crypto.com's external MCP market-data endpoint. <br>
-Mitigation: Use only public market-data parameters and avoid submitting trading credentials, account details, or private financial information. <br>
-Risk: Local execution depends on the installed UXC tooling and linked command. <br>
-Mitigation: Install and run the skill only in environments where the local UXC tool is trusted. <br>
-Risk: Market data can be time-sensitive or incomplete for downstream decisions. <br>
-Mitigation: Keep requests narrow, parse the JSON output envelope, and verify results before using them in financial workflows. <br>
+## Use Case:
 
+Developers and agents use this skill to inspect and run read-only Crypto.com exchange market data workflows through UXC and the official MCP endpoint. It supports market discovery, ticker, order book, candlestick, and recent trade reads while excluding trading, account, private data, REST, and WebSocket workflows.
 
-## Reference(s): <br>
-- [Usage Patterns](references/usage-patterns.md) <br>
-- [Official Crypto.com MCP Docs](https://mcp.crypto.com/docs) <br>
-- [Crypto.com MCP Market Data Endpoint](https://mcp.crypto.com/market-data/mcp) <br>
-- [ClawHub Release Page](https://clawhub.ai/jolestar/crypto-com-mcp-skill) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [guidance, shell commands, configuration, markdown] <br>
-**Output Format:** [Markdown with inline shell commands and JSON-oriented workflow guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only public market-data workflows; automation should parse the JSON output envelope.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence) <br>
+Risk: The skill creates or uses a local UXC command link to Crypto.com's market-data MCP endpoint.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review the fixed endpoint before use and only create the local command link when that connection is acceptable.
+
+Risk: Using the skill outside its intended scope could imply trading, account, private data, or credential workflows.
+
+Mitigation: Keep usage limited to public, read-only market data operations and avoid trading, balance, private account, or credential-bearing requests.
+
+Risk: Automation can become brittle if it parses human-readable command output.
+
+Mitigation: Use the JSON output envelope and parse stable fields such as ok, kind, protocol, data, and error.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [Official Crypto.com MCP docs](https://mcp.crypto.com/docs)
+- [Crypto.com market-data MCP endpoint](https://mcp.crypto.com/market-data/mcp)
+- [ClawHub skill page](https://clawhub.ai/jolestar/skills/crypto-com-mcp-skill)
+
+## Skill Output:
+
+**Output Type(s):** [Shell commands, Configuration instructions, Guidance]
+
+**Output Format:** [Markdown with inline bash code blocks]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guidance is scoped to JSON-output, read-only market-data MCP operations.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

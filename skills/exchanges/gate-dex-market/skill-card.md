@@ -1,50 +1,64 @@
-## Description: <br>
-Gate DEX Market helps agents retrieve Gate DEX market data such as token prices, K-lines, rankings, holder information, liquidity, and token risk checks without initiating swaps or wallet actions. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Gate DEX read-only market data skill for prices, K-lines, rankings, holder analysis, liquidity, and token risk checks without executing transactions.
 
-## Publisher: <br>
-[gate-exchange](https://clawhub.ai/user/gate-exchange) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gate-exchange](https://clawhub.ai/user/gate-exchange)
 
-## Use Case: <br>
-External users and developers use this skill to route read-only Gate DEX market-data requests through MCP by default, or through Gate OpenAPI when explicitly requested. It supports price lookup, candlestick data, token rankings, token security checks, tradable-token discovery, holder analysis, and liquidity-event review. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The server security summary rates the release as suspicious because it can introduce persistent Gate API credentials, mutable remote runtime rules, installer-side agent routing changes, and broad signed API access. <br>
-Mitigation: Install only after reviewing the release, constraining or avoiding OpenAPI mode where possible, and using a dedicated low-privilege Gate API key instead of broadly privileged credentials. <br>
-Risk: OpenAPI mode stores Gate API credentials locally and uses signed API requests. <br>
-Mitigation: Prefer MCP mode for unauthenticated market queries; when OpenAPI is required, protect the local credential file, mask secrets in responses, and rotate credentials if exposed. <br>
-Risk: The installer can modify agent routing files and may affect existing local configuration. <br>
-Mitigation: Back up existing agent configuration before running the installer and review generated routing changes before relying on them. <br>
-Risk: The skill depends on remote runtime rules, and server-resolved provenance for this release is unavailable. <br>
-Mitigation: Review the remote runtime rules before use and do not infer source provenance from artifact text when assessing release origin. <br>
+## Use Case:
 
+External users and developers use this skill to query and analyze Gate DEX market data, including token prices, candlestick data, rankings, token risk reports, holders, liquidity, and volume. It is not intended for swaps, wallet authentication, or transaction execution.
 
-## Reference(s): <br>
-- [ClawHub skill page](https://clawhub.ai/gate-exchange/gate-dex-market) <br>
-- [Gate DEX Market MCP reference](references/mcp.md) <br>
-- [Market OpenAPI shared reference](references/openapi/_shared.md) <br>
-- [Market OpenAPI token data reference](references/openapi/token-data.md) <br>
-- [Market OpenAPI market data reference](references/openapi/market-data.md) <br>
-- [Gate DEX MCP endpoint](https://api.gatemcp.ai/mcp/dex) <br>
-- [Gate DEX OpenAPI endpoint](https://openapi.gateweb3.cc/api/v1/dex) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown responses with tool-call guidance, shell command examples, configuration snippets, and JSON API response summaries] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Read-only market-data posture in MCP mode; OpenAPI mode may use persistent local Gate API credentials when explicitly requested.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.3 (source: server release metadata) <br>
+Risk: The skill relies on mutable remote runtime instructions.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review the referenced runtime rules before use and pin or vendor reviewed rules where operational consistency is required.
+
+Risk: OpenAPI mode stores API credentials in a home-directory configuration file and signs API actions.
+
+Mitigation: Prefer MCP mode for market queries, use scoped user-owned read-only credentials for OpenAPI mode, remove embedded defaults, and protect the credential file with owner-only permissions.
+
+Risk: The installer may overwrite an existing persistent agent instruction file.
+
+Mitigation: Back up or inspect any existing CLAUDE.md before running the installer from a project directory.
+
+## Reference(s):
+
+- [Gate DEX Market Skill Page](https://clawhub.ai/gate-exchange/skills/gate-dex-market)
+- [Gate Publisher Profile](https://clawhub.ai/user/gate-exchange)
+- [Gate DEX Market - MCP Mode Detailed Skill](references/mcp.md)
+- [Market OpenAPI Shared: Environment Detection + API Call](references/openapi/_shared.md)
+- [Market OpenAPI: Token Data Actions](references/openapi/token-data.md)
+- [Market OpenAPI: Market Data Actions](references/openapi/market-data.md)
+- [Gate DEX MCP Endpoint](https://api.gatemcp.ai/mcp/dex)
+- [Gate DEX OpenAPI Endpoint](https://openapi.gateweb3.cc/api/v1/dex)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, configuration, guidance, API calls]
+
+**Output Format:** [Markdown guidance with API call instructions, command examples, and summarized market data responses.]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [MCP mode is read-only and does not require credentials for market queries; OpenAPI mode uses a home-directory credential file and signed requests when explicitly requested.]
+
+## Skill Version(s):
+
+1.0.3 (source: ClawHub release metadata; artifact frontmatter reports 2026.3.24-1)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,38 +1,53 @@
-## Description: <br>
-Bybit AI Trading Skill - deprecated. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Bybit AI Trading Skill is a deprecated skill notice that directs users to a replacement Bybit trading skill.
 
-## Publisher: <br>
-[woodliang](https://clawhub.ai/user/woodliang) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[woodliang](https://clawhub.ai/user/woodliang)
 
-## Use Case: <br>
-External users and developers use this deprecated bootstrap skill to see that the former Bybit trading workflow has moved and to follow the replacement ClawHub skill link before using any Bybit account automation. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Users may treat the linked replacement as equivalent to this deprecated release. <br>
-Mitigation: Review the replacement skill separately, including publisher, permissions, credential handling, and trading authority before using it with a Bybit account. <br>
+## Use Case:
 
+External users and developers use this skill only to learn that the Bybit trading skill version is deprecated and to find the replacement skill before attempting trading workflows.
 
-## Reference(s): <br>
-- [Replacement Bybit exchange trading skill](https://clawhub.ai/victorwu-bybit/bybit-exchange-trading-skill) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown notice with a ClawHub link] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Deprecated release only; ClawScan reports no executable code or credential request in this artifact.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.4 (source: evidence release and artifact metadata, updated 2026-04-30) <br>
+Risk: Users may assume the linked replacement has the same security posture as this deprecated notice.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Review the replacement skill separately before use, including permissions, scanner findings, and any authority to place or modify trades.
+
+Risk: Trading workflows can affect funds if a replacement skill is granted exchange access.
+
+Mitigation: Use least-privilege API keys, confirm trading permissions explicitly, and test any replacement workflow before enabling live trading.
+
+## Reference(s):
+
+- [Replacement Bybit exchange trading skill](https://clawhub.ai/victorwu-bybit/bybit-exchange-trading-skill)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, text]
+
+**Output Format:** [Markdown]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Deprecation notice with a link to the replacement skill.]
+
+## Skill Version(s):
+
+1.0.4 (source: server release metadata and skill frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

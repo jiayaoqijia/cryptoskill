@@ -1,48 +1,71 @@
-## Description: <br>
-Detects x402 payment-required responses, checks a spending policy, signs USDC payments on Base, and retries requests through a fetch wrapper for agents. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Detects x402 crypto paywalls for AI agents, checks payment policy, signs USDC payments on Base through the Coinbase facilitator, and retries the original request.
 
-## Publisher: <br>
-[tara-quinn-ai](https://clawhub.ai/user/tara-quinn-ai) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[tara-quinn-ai](https://clawhub.ai/user/tara-quinn-ai)
 
-## Use Case: <br>
-Developers and agent builders use this skill to let agents handle x402 paywalls with policy controls, spend limits, domain filtering, and payment logging. Web developers can also use the included Express middleware to add USDC paywalls to API routes. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can authorize real crypto payments from an agent-controlled wallet. <br>
-Mitigation: Use a dedicated low-balance or testnet wallet, strict per-request and daily limits, a domain allowlist, and human approval where possible. <br>
-Risk: Wallet private keys and payment logs are sensitive financial data. <br>
-Mitigation: Load private keys only from protected environment variables, avoid hardcoding secrets, and restrict access to JSONL payment logs. <br>
-Risk: Bundled storefront and Stripe integration files are separate commerce code paths. <br>
-Mitigation: Review and deploy those files separately from the agent auto-payment skill. <br>
+## Use Case:
 
+Developers and agent builders use this skill to let agents access x402-enabled paid APIs or premium content while enforcing spending limits, network and asset restrictions, domain controls, optional human approval, and payment logging.
 
-## Reference(s): <br>
-- [ClawHub listing](https://clawhub.ai/tara-quinn-ai/x402-paywall-kit) <br>
-- [Publisher profile](https://clawhub.ai/user/tara-quinn-ai) <br>
-- [Homepage](https://taraquinn.ai) <br>
-- [README](README.md) <br>
-- [Agent setup example](references/agent-setup.example.ts) <br>
-- [Policy example](references/policy.example.json) <br>
-- [Product requirements](docs/PRD.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, Code, Shell commands, Configuration, Guidance] <br>
-**Output Format:** [Markdown with TypeScript, JSON, and shell code blocks] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Guidance centers on Node packages, x402 payment configuration, wallet environment variables, spending policy, and optional JSONL payment logs.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: server release evidence and skill frontmatter) <br>
+Risk: The skill requires wallet signing authority and can initiate real USDC payments.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use a dedicated low-balance wallet, start on Base Sepolia testnet, and require human approval before enabling mainnet spending.
+
+Risk: Payments may be sent to unintended services if domain or recipient controls are too broad.
+
+Mitigation: Configure non-empty domain and recipient allowlists before production use.
+
+Risk: Server security evidence reports unresolved package-identity concerns.
+
+Mitigation: Confirm the npm packages are published by the expected owner and match this source before installing.
+
+Risk: Server security evidence warns against relying on the current policy engine until malformed and negative amount handling is fixed.
+
+Mitigation: Keep conservative spend limits, inspect payment requirements before approval, and avoid unattended production use until the policy handling issue is resolved.
+
+## Reference(s):
+
+- [ClawHub skill page](https://clawhub.ai/tara-quinn-ai/skills/x402-paywall-kit)
+- [Tara Quinn homepage](https://taraquinn.ai)
+- [x402 protocol](https://x402.org)
+- [README](README.md)
+- [Agent package README](packages/agent/README.md)
+- [Express package README](packages/express/README.md)
+- [Shared package README](packages/shared/README.md)
+- [Demo README](demo/README.md)
+- [Product requirements](docs/PRD.md)
+- [Agent setup example](references/agent-setup.example.ts)
+- [Policy example](references/policy.example.json)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance]
+
+**Output Format:** [Markdown guidance with TypeScript examples, shell commands, and JSON configuration snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes guidance for wallet environment variables, policy controls, network selection, and payment logging.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release metadata and skill frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

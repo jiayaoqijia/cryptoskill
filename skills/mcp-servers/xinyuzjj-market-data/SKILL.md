@@ -24,6 +24,7 @@ metadata:
 | `klines <SYMBOL> [interval] [limit] [market]` | 收盘价数组（旧→新）+ 涨跌/区间统计。interval: 1h/4h/1d；market: spot/futures |
 | `bundle <SYMBOL> [market=futures]` | **分析包**：90d 日K 统计 + 24h 统计 + 恐惧贪婪 + 资金费率 + OI + 大户多空比（spot 时自动省略衍生品项） |
 | `fng` | 恐惧贪婪指数（当前值 + 8 天历史） |
+| `funding [SYM[,SYM...]]` | **资金费率**：给 SYM 返回每 8h 费率 + 年化；**不给参数**则返回费率最高/最低各 10 个（谁在多付钱）。取单币费率请用这个，不要为了费率跑 `bundle` |
 | `oi <SYM[,SYM...]>` | 合约持仓量（币本位 OI × 最新价 = USD 名义） |
 | `longshort [SYMBOL]` | 大户多空比 / 全球多空比 / 背离标记（全量时仅返回关键字段） |
 | `liq [SYMBOL] [limit] [window]` | 近 5 分钟爆仓流（可按币筛选，含多空统计） |
@@ -34,6 +35,7 @@ metadata:
 ```
 run_skill market-data "bundle WLDUSDT"
 run_skill market-data "klines RAYUSDT 1d 90 spot"
+run_skill market-data "funding WLDUSDT"
 run_skill market-data "liq BTCUSDT 100"
 ```
 
@@ -42,5 +44,5 @@ run_skill market-data "liq BTCUSDT 100"
 1. **先 `bundle` 后下结论**：任何代币分析必须包含 90d 区间位置、收盘分位、资金费率、OI。
 2. 区间位置 = (现价−90d最低)/(90d最高−90d最低)，<33% 低位 / >66% 高位。
 3. 收盘分位 = 90 天里收在现价之下的天数占比（区分"低位区间"与"长期低价区"）。
-4. 资金费率 >0.05%/8h 多头拥挤、<-0.05% 空头拥挤；接近 0 为中性。
+4. 资金费率用 `funding <SYM>` 取：>0.05%/8h 多头拥挤、<-0.05% 空头拥挤；接近 0 为中性。
 5. 报告中明确区分 **事实**（本技能返回的数字）与 **推测**（你的判断）。

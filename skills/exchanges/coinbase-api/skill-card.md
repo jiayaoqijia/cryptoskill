@@ -1,43 +1,60 @@
-## Description: <br>
-Operate Coinbase Advanced Trade REST APIs through UXC with a curated OpenAPI schema, products-first discovery, and explicit JWT bearer auth guidance. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Operate Coinbase Advanced Trade REST APIs through UXC with a curated OpenAPI schema, products-first discovery, and explicit JWT bearer auth guidance.
 
-## Publisher: <br>
-[jolestar](https://clawhub.ai/user/jolestar) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[jolestar](https://clawhub.ai/user/jolestar)
 
-## Use Case: <br>
-Developers and operators use this skill to discover Coinbase Advanced Trade products, inspect accounts and orders, and run selected Coinbase REST operations through UXC with JWT bearer authentication. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can enable live Coinbase trading actions using persistent API credentials. <br>
-Mitigation: Use a dedicated least-privilege Coinbase API key, keep it read-only unless trading is required, protect and rotate the private key, and require manual approval for every live order or cancellation. <br>
-Risk: The curated OpenAPI schema controls which Coinbase operations the agent can call. <br>
-Mitigation: Prefer a reviewed or pinned schema and inspect operation help before running private account, order, or cancellation workflows. <br>
+## Use Case:
 
+Developers and operators use this skill to discover Coinbase Advanced Trade products, inspect account and order data, and execute selected order workflows through UXC. It is intended for agents that need structured Coinbase API guidance with explicit authentication and write-operation guardrails.
 
-## Reference(s): <br>
-- [Usage patterns](references/usage-patterns.md) <br>
-- [Curated OpenAPI schema](references/coinbase-advanced-trade.openapi.json) <br>
-- [Coinbase Advanced Trade overview](https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/overview) <br>
-- [Coinbase OpenAPI Skill on ClawHub](https://clawhub.ai/jolestar/coinbase-openapi-skill) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Shell commands, Configuration instructions, API Calls, Guidance] <br>
-**Output Format:** [Markdown with inline bash commands and JSON API responses] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Uses UXC command output envelopes; keep automation on stable JSON fields such as ok, kind, protocol, data, and error.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.0 (source: evidence release metadata) <br>
+Risk: The skill can guide live Coinbase order creation and cancellation.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use read-only Coinbase credentials for discovery and require explicit review of exact order or cancellation parameters before any write operation.
+
+Risk: Trading-enabled API credentials may allow unintended financial actions.
+
+Mitigation: Avoid trading-enabled keys unless live order placement is intended, and scope credentials as narrowly as Coinbase allows.
+
+Risk: A mutable remote schema URL can change behavior after installation.
+
+Mitigation: Use the bundled OpenAPI schema or another pinned schema reference instead of a mutable main-branch URL.
+
+## Reference(s):
+
+- [Usage Patterns](references/usage-patterns.md)
+- [Curated Coinbase Advanced Trade OpenAPI Schema](references/coinbase-advanced-trade.openapi.json)
+- [Coinbase Advanced Trade API Overview](https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/overview)
+- [ClawHub Skill Page](https://clawhub.ai/jolestar/skills/coinbase-openapi-skill)
+
+## Skill Output:
+
+**Output Type(s):** [guidance, shell commands, configuration, code, text]
+
+**Output Format:** [Markdown with inline shell commands and JSON examples]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Guidance emphasizes stable JSON output envelopes and narrow Coinbase product, account, and order queries.]
+
+## Skill Version(s):
+
+1.0.0 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

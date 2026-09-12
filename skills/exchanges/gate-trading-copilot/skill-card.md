@@ -1,48 +1,67 @@
-## Description: <br>
-Orchestrates cryptocurrency trade judgment, risk control, order drafting, explicit-confirmation execution, and post-trade management on Gate Exchange. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+An AI agent skill that orchestrates cryptocurrency trade judgment, risk control, order drafting, explicit confirmation, execution, and post-trade management on Gate Exchange.
 
-## Publisher: <br>
-[gate-exchange](https://clawhub.ai/user/gate-exchange) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gate-exchange](https://clawhub.ai/user/gate-exchange)
 
-## Use Case: <br>
-External Gate users and trading agents use this skill to analyze a specific crypto trade, produce a risk-gated Trading Brief and Order Draft, and execute or manage spot and USDT perpetual futures actions only after explicit confirmation. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can affect live trading accounts through order placement, cancellation, amendment, close, reverse, leverage, or margin-mode actions. <br>
-Mitigation: Use a restricted Gate API key, preferably without withdrawal permission, and require fresh explicit confirmation for every write action. <br>
-Risk: The release evidence flags unclear boundaries around unsupported triggers and products. <br>
-Mitigation: Keep use to supported spot and USDT perpetual futures workflows; block Alpha, TradFi, margin borrowing, DeFi, options, and other unsupported products unless future evidence explicitly supports them. <br>
-Risk: Runtime behavior depends partly on a remote mutable rules file and available MCP tools. <br>
-Mitigation: Review the runtime rules at use time, verify the current tool surface before relying on it, and stay in analysis-only or draft-only mode when required tools or authentication are unavailable. <br>
+## Use Case:
 
+External users and developers use this skill to move from Gate Exchange market analysis to a risk-gated trading brief, order draft, explicit confirmation, execution, and post-trade verification for spot and USDT perpetual futures workflows.
 
-## Reference(s): <br>
-- [Gate Exchange Trading Copilot on ClawHub](https://clawhub.ai/gate-exchange/gate-exchange-trading-copilot) <br>
-- [MCP orchestration specification](references/mcp.md) <br>
-- [Routing and analysis](references/routing-and-analysis.md) <br>
-- [Execution and guardrails](references/execution-and-guardrails.md) <br>
-- [Runtime dependencies](references/runtime-dependencies.md) <br>
-- [Scenario examples](references/scenarios.md) <br>
-- [Gate runtime rules](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [Text, Markdown, API calls, Guidance] <br>
-**Output Format:** [Markdown trading briefs, order drafts, execution results, and concise guidance.] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Requires explicit confirmation before trade actions; execution depends on available Gate MCP tools and authentication.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.2 (source: server release metadata) <br>
+Risk: Real trading authority can place or modify orders when authenticated Gate execution tools are available.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Use narrowly scoped Gate API permissions and an agent/runtime that enforces confirmations outside natural-language skill text before any write action.
+
+Risk: The release evidence says the manifest overstates some supported capabilities.
+
+Mitigation: Treat the supported execution scope as spot and USDT perpetual futures only; block options, Alpha trading, DeFi execution, copy trading, wealth products, and unsupported products.
+
+Risk: Mutable external runtime rules or missing MCP tools can change the quality of analysis and execution coverage.
+
+Mitigation: Verify the current runtime tool list before relying on a tool, label sparse results as supporting context, and block new-trade drafting when required analysis or execution surfaces are unavailable.
+
+Risk: Market analysis and order drafts may be mistaken for certainty or automatic trading authority.
+
+Mitigation: Require a Trading Brief with GO, CAUTION, or BLOCK; produce an Order Draft only when hard blocks are absent; execute only after fresh explicit confirmation.
+
+## Reference(s):
+
+- [Gate Exchange Trading Copilot skill page](https://clawhub.ai/gate-exchange/skills/gate-exchange-trading-copilot)
+- [Gate runtime rules](https://github.com/gate/gate-skills/blob/master/skills/gate-runtime-rules.md)
+- [MCP orchestration specification](references/mcp.md)
+- [Runtime dependencies](references/runtime-dependencies.md)
+- [Scenarios and prompt examples](references/scenarios.md)
+- [Routing and analysis](references/routing-and-analysis.md)
+- [Execution and guardrails](references/execution-and-guardrails.md)
+
+## Skill Output:
+
+**Output Type(s):** [Analysis, Markdown, API Calls, Shell commands, Configuration instructions, Guidance]
+
+**Output Format:** [Markdown trading briefs, order drafts, execution results, and guidance with structured MCP tool-use recommendations]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Requires explicit user confirmation before private trading actions; unsupported or under-evidenced flows stay in analysis-only or draft-only mode.]
+
+## Skill Version(s):
+
+1.0.2 (source: server release evidence)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

@@ -1,45 +1,59 @@
-## Description: <br>
-Single-coin comprehensive analysis for crypto assets, combining fundamentals, market data, technical signals, news, and social sentiment into a structured report. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Produces a single-coin crypto analysis report by combining fundamentals, market snapshot, technical signals, recent news, and social sentiment from Gate MCP tools.
 
-## Publisher: <br>
-[gate-exchange](https://clawhub.ai/user/gate-exchange) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[gate-exchange](https://clawhub.ai/user/gate-exchange)
 
-## Use Case: <br>
-External users and agents use this skill to analyze one identified crypto asset and receive a concise, data-driven market report. It is intended for standard single-coin analysis, not multi-coin comparison, risk-only checks, or investment advice. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Broad activation wording may route broad crypto questions to this single-coin workflow when a specialized risk, security, news, technical-analysis, or comparison skill would be more appropriate. <br>
-Mitigation: Use the skill only for standard single-coin comprehensive analysis and route comparison, risk-only, news-only, technical-only, address, or multi-dimension requests to the dedicated skill. <br>
-Risk: Crypto analysis outputs can be mistaken for financial advice or trade recommendations. <br>
-Mitigation: Keep conclusions neutral and data-driven, avoid explicit buy/sell advice and price predictions, and include a clear investment-advice disclaimer. <br>
-Risk: Required market, fundamentals, news, or sentiment data may be unavailable if the Gate Info or Gate News MCP tools are missing or fail. <br>
-Mitigation: Confirm tool availability before use, continue with available feeds when possible, label degraded sections clearly, and do not fabricate missing data. <br>
+## Use Case:
 
+External users and analysts use this skill to request a standard analysis of one crypto asset and receive a neutral, data-driven Markdown report covering fundamentals, market data, technicals, news, sentiment, and risk warnings.
 
-## Reference(s): <br>
-- [ClawHub Skill Page](https://clawhub.ai/gate-exchange/gate-info-coin-analysis) <br>
-- [Gate Info CoinAnalysis MCP Specification](references/mcp.md) <br>
-- [Gate Info Coin Analysis Runtime Rules](references/gate-runtime-rules.md) <br>
-- [Info & News Common Runtime Rules](references/info-news-runtime-rules.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown structured analysis report with tables, bullet points, links, and risk warnings] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Uses read-only Gate Info and Gate News MCP data when available; unavailable dimensions are labeled rather than fabricated.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.0.3 (source: server-resolved release metadata) <br>
+Risk: Users may treat crypto market analysis as investment advice.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Keep the output neutral and data-driven, include the not-investment-advice disclaimer, and avoid explicit buy or sell recommendations.
+
+Risk: External market, news, technical, or sentiment feeds may be unavailable, stale, or incomplete.
+
+Mitigation: Label unavailable dimensions clearly, continue only with available data, and avoid fabricating missing facts or signals.
+
+Risk: The workflow depends on the Gate MCP server and external public crypto data services.
+
+Mitigation: Before installing or running the skill, confirm the Gate MCP server source is trusted and that users understand the analysis is informational.
+
+## Reference(s):
+
+- [Gate Info CoinAnalysis MCP Specification](references/mcp.md)
+- [Gate Info Coin Analysis Runtime Rules](references/gate-runtime-rules.md)
+- [Info & News Common Runtime Rules](references/info-news-runtime-rules.md)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, guidance]
+
+**Output Format:** [Structured Markdown report]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Includes degraded-data notes, data-driven risk warnings, and a not-investment-advice disclaimer.]
+
+## Skill Version(s):
+
+1.0.3 (source: server release metadata; artifact frontmatter version 2026.4.6-1)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.

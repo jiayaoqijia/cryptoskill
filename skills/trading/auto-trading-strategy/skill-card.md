@@ -1,44 +1,56 @@
-## Description: <br>
-Professional trading strategy guides for prediction markets and crypto, including risk management, trend analysis, and best practices. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Professional trading strategy guides for prediction markets and crypto, covering risk management, trend analysis, and best practices.
 
-## Publisher: <br>
-[863king](https://clawhub.ai/user/863king) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[863king](https://clawhub.ai/user/863king)
 
-## Use Case: <br>
-External prediction-market and crypto traders use this skill to request educational strategy guidance, position sizing help, trend-following analysis, whale-tracking considerations, and risk-management checklists. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT-0
 
-## Known Risks and Mitigations: <br>
-Risk: Trading claims, win-rate statements, whale signals, or backtesting claims may be incorrect or unverified. <br>
-Mitigation: Treat the skill as educational guidance only and independently verify any trading analysis before acting. <br>
-Risk: An agent could be asked to place trades or connect wallets or exchanges based on the guide. <br>
-Mitigation: Do not grant trading, wallet, exchange, credential, or account access based only on this skill. <br>
+## Use Case:
 
+External prediction-market and crypto traders use this skill for educational strategy guidance, risk-management framing, and market-analysis checklists. It supports analysis and learning rather than trade execution or personalized financial advice.
 
-## Reference(s): <br>
-- [Auto Trading Strategy on ClawHub](https://clawhub.ai/863king/auto-trading-strategy) <br>
-- [Publisher profile: 863king](https://clawhub.ai/user/863king) <br>
-- [Risk Management Framework](artifact/strategies/risk_management.md) <br>
-- [Trend Following Strategy](artifact/strategies/trend_follow.md) <br>
-- [Whale Tracking Strategy](artifact/strategies/whale_tracking.md) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, guidance] <br>
-**Output Format:** [Markdown guidance and checklists] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [Static educational trading content; no code execution, credentials, account access, or persistence reported by the security evidence.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-1.1.0 (source: server release metadata and skill frontmatter) <br>
+Risk: Users may mistake educational trading examples, win-rate claims, or position-sizing formulas for personalized financial advice.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Treat outputs as educational guidance only and require independent review before making financial decisions.
+
+Risk: Whale-following and market-signal examples may imply live monitoring, backtesting, or automated trading that the skill does not perform.
+
+Mitigation: Verify market data and any execution workflow through separate trusted systems before acting.
+
+## Reference(s):
+
+- [Auto Trading Strategy ClawHub Page](https://clawhub.ai/863king/skills/auto-trading-strategy)
+- [Risk Management Framework](artifact/strategies/risk_management.md)
+- [Trend Following Strategy](artifact/strategies/trend_follow.md)
+- [Whale Tracking Strategy](artifact/strategies/whale_tracking.md)
+
+## Skill Output:
+
+**Output Type(s):** [Text, Markdown, Guidance]
+
+**Output Format:** [Markdown guidance with examples, formulas, checklists, and strategy summaries]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Does not execute trades or fetch real-time market data.]
+
+## Skill Version(s):
+
+1.1.0 (source: server release metadata and skill frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.
