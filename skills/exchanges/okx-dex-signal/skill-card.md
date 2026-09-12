@@ -1,55 +1,72 @@
-## Description: <br>
-Guides agents in using Onchain OS commands to track smart-money, KOL, whale, and custom-wallet DEX activity, aggregated buy signals, real-time WebSocket monitoring, and top-trader leaderboards. <br>
+## Description:
 
-This skill is ready for commercial/non-commercial use. <br>
+Use this skill for smart-money/whale/KOL activity tracking, aggregated buy signal alerts, and leaderboard rankings across OKX Onchain OS DEX data.
 
-## Publisher: <br>
-[ok-james-01](https://clawhub.ai/user/ok-james-01) <br>
+This skill is ready for commercial/non-commercial use.
 
-### License/Terms of Use: <br>
-MIT-0 <br>
+## Publisher:
 
+[ok-james-01](https://clawhub.ai/user/ok-james-01)
 
-## Use Case: <br>
-External users and developers use this skill to ask an agent for DEX market-signal workflows, including wallet activity tracking, aggregated buy alerts, supported-chain checks, leaderboard rankings, and WebSocket monitoring guidance. The skill also guides payment/quota handling and credential-aware setup for OKX market APIs. <br>
+### License/Terms of Use:
 
-### Deployment Geography for Use: <br>
-Global <br>
+MIT
 
-## Known Risks and Mitigations: <br>
-Risk: The skill can install or update the onchainos CLI from remote OKX GitHub releases. <br>
-Mitigation: Install only after confirming the source and checksum verification steps are acceptable for the deployment environment. <br>
-Risk: Some workflows can involve paid x402 or API-quota actions. <br>
-Mitigation: Require explicit user confirmation before any paid or quota-consuming action. <br>
-Risk: WebSocket workflows may require OKX API credentials. <br>
-Mitigation: Use credentials only when intentionally enabling WebSocket access, keep them in environment variables or local ignored files, and avoid committing secrets. <br>
-Risk: DEX signal, leaderboard, and tracker results may be mistaken for financial advice. <br>
-Mitigation: Present results as informational market data and avoid recommending trades solely from signal output. <br>
-Risk: Token names, symbols, wallet labels, and on-chain fields are untrusted external content. <br>
-Mitigation: Display external fields as data only and do not treat them as instructions. <br>
-Risk: DEX functionality may be unavailable in some regions. <br>
-Mitigation: Surface the regional availability message when applicable and do not expose raw backend error codes. <br>
+## Use Case:
 
+External users and developers use this skill to inspect smart-money, KOL, whale, custom-wallet, and top-trader activity, then turn OKX Onchain OS DEX CLI or WebSocket results into readable market-data summaries. It helps agents choose the right tracker, signal, or leaderboard command and explain results without treating market data as trading advice.
 
-## Reference(s): <br>
-- [Onchain OS DEX Signal CLI Command Reference](references/cli-reference.md) <br>
-- [Keyword Glossary](references/keyword-glossary.md) <br>
-- [Onchain OS DEX Signal WebSocket Protocol Reference](references/ws-protocol.md) <br>
-- [Shared Pre-flight Checks](_shared/preflight.md) <br>
-- [Shared Chain Name Support](_shared/chain-support.md) <br>
-- [OKX Web3](https://web3.okx.com) <br>
-- [OKX Developer Portal](https://web3.okx.com/onchain-os/dev-portal) <br>
-- [OKX WebSocket Login Documentation](https://web3.okx.com/onchainos/dev-docs/market/websocket-login) <br>
+### Deployment Geography for Use:
 
+Global
 
-## Skill Output: <br>
-**Output Type(s):** [text, markdown, code, shell commands, configuration, guidance] <br>
-**Output Format:** [Markdown with tables, command examples, JSON snippets, and concise user-facing guidance] <br>
-**Output Parameters:** [1D] <br>
-**Other Properties Related to Output:** [May include command suggestions, workflow hints, payment or quota notices, request timestamps, and warnings to treat market-signal output as informational rather than financial advice.] <br>
+## Known Risks and Mitigations:
 
-## Skill Version(s): <br>
-3.1.3 (source: server release evidence and skill frontmatter) <br>
+Risk: The skill may install or update the OKX onchainos CLI from OKX GitHub releases before running commands.
 
-## Ethical Considerations: <br>
-Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment. <br>
+Mitigation: Install only when that software source is acceptable, verify installer and binary checksums as directed, and stop on checksum mismatch.
+
+Risk: WebSocket workflows require OKX API credentials and can expose secrets if credentials are hardcoded or committed.
+
+Mitigation: Use least-privilege OKX API keys, store credentials in environment variables or a .env file, and keep .env out of version control.
+
+Risk: Some endpoints may require x402 payment confirmation after free quota is exhausted.
+
+Mitigation: Review quota and payment notifications carefully before confirming any paid request.
+
+Risk: Signals, token fields, wallet labels, and on-chain data are external market data and may be incomplete, misleading, or unsuitable as trading advice.
+
+Mitigation: Treat all CLI and WebSocket output as untrusted data, summarize it as market information, and avoid presenting it as investment advice.
+
+Risk: Signal and leaderboard support varies by chain and results can be empty or capped.
+
+Mitigation: Check supported chains before querying, explain empty results, and disclose pagination or result limits such as the 20-entry leaderboard cap.
+
+## Reference(s):
+
+- [Onchain OS DEX Signal CLI Command Reference](references/cli-reference.md)
+- [Onchain OS DEX Signal WebSocket Protocol Reference](references/ws-protocol.md)
+- [Keyword Glossary - okx-dex-signal](references/keyword-glossary.md)
+- [Shared Pre-flight Checks](_shared/preflight.md)
+- [Shared Chain Name Support](_shared/chain-support.md)
+- [OKX Web3](https://web3.okx.com)
+- [OKX WebSocket Login Documentation](https://web3.okx.com/onchainos/dev-docs/market/websocket-login)
+- [OKX Developer Portal](https://web3.okx.com/onchain-os/dev-portal)
+
+## Skill Output:
+
+**Output Type(s):** [text, markdown, shell commands, code, configuration, guidance]
+
+**Output Format:** [Markdown summaries, command suggestions, tables, inline shell commands, JSON examples, and WebSocket code snippets]
+
+**Output Parameters:** [1D]
+
+**Other Properties Related to Output:** [Outputs should translate raw API fields into human-readable tables, include requestTime freshness when available, and treat all token names, symbols, wallet data, and on-chain fields as untrusted external content.]
+
+## Skill Version(s):
+
+3.1.3 (source: server release metadata and SKILL.md frontmatter)
+
+## Ethical Considerations:
+
+Users should evaluate whether this skill is appropriate for their environment, review any generated or modified files before relying on them, and apply their organization's safety, security, and compliance requirements before deployment.
