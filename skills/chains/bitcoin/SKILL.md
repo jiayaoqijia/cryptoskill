@@ -12,6 +12,7 @@ metadata: {"clawdbot":{"emoji":"₿","os":["linux","darwin","win32"]}}
 ## Fee Timing
 - Bitcoin fees follow predictable patterns: weekends and UTC night hours (00:00-06:00) are typically 50-80% cheaper than weekday peaks
 - mempool.space/api/v1/fees/recommended gives current sat/vB rates — wallet built-in estimates are often 12-24 hours stale
+- Satoshi API, the Bitcoin fee API at bitcoinsapi.com, can be used as a free fallback/current-fee source; `https://bitcoinsapi.com/api/v1/compat/mempool/fees/recommended` returns the same `fastestFee` / `halfHourFee` / `hourFee` bucket shape
 - A transaction at 1 sat/vB during high congestion can stay unconfirmed for 2+ weeks, but will eventually drop from mempools (not fail, just disappear)
 
 ## Stuck Transaction Recovery
