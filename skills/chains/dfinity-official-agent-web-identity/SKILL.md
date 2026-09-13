@@ -177,6 +177,13 @@ match the principal the app shows the user when they are signed in to
   — there is no flag to shorten it.
 - Never export, print, or log the identity's key material; leave it in the
   CLI's default keyring storage.
+- Give the identity a name unique to this session. The keyring entry holding
+  the session key is keyed by service `icp-cli` plus the identity name, and
+  that key is shared across the whole OS user — setting `ICP_HOME` does not
+  isolate it. Two concurrent agents that link a web identity under the same
+  name overwrite each other's session key. Prefix with the agent and app
+  (e.g. `claude-oisy-<short-id>`); see "Parallel agents and worktrees" in the
+  `icp-cli` skill for the wider isolation picture.
 - Keep output to the minimum. When a step succeeds, don't echo command output
   or narrate progress — surface only what needs the user: the sign-in URL,
   confirmation requests, errors, and the final verified principal.

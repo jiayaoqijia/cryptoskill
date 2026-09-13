@@ -130,7 +130,7 @@ async function main() {
       "--title-file", meta.title_file, "--cover", meta.cover, "--text-file", meta.text_file,
     ], { encoding: "utf8", timeout: 240_000, maxBuffer: 16 * 1024 * 1024 });
   } else {
-    const imgs = [meta.cover, path.join(meta.dir, "chart_24h.png")]
+    const imgs = [meta.cover, path.join(meta.dir, "chart_24h.png"), path.join(meta.dir, "chart_4h.png")]
       .filter((p, i, a) => p && fs.existsSync(p) && a.indexOf(p) === i)
       .slice(0, 4);
     if (!imgs.length) usageExit("短贴至少需要 1 张图（cover.png / chart_24h.png）");
