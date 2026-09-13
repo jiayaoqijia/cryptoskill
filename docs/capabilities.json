@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T16:23:40.755326+00:00",
+  "generated_at": "2026-09-13T20:56:53.215984+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -61475,6 +61475,68 @@
       },
       "hosted_operators": []
     },
+    "dev-tools/sicomelure-design-generate-changelog": {
+      "name": "sicomelure-design-generate-changelog",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "dev-tools/smart-contract-security": {
       "name": "smart-contract-security",
       "execution_model": "read_only",
@@ -87109,6 +87171,68 @@
         },
         "mutable_remote_runtime": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "mcp-servers/mangrovetechnologies-app": {
+      "name": "app",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -126095,13 +126219,13 @@
     }
   },
   "summary": {
-    "discovered": 2022,
-    "processed": 2022,
+    "discovered": 2024,
+    "processed": 2024,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1255,
+      "read_only": 1256,
       "router_orchestrator": 112,
-      "unknown": 234,
+      "unknown": 235,
       "analysis_only": 198,
       "unsigned_tx_builder": 79,
       "local_executor": 88,
@@ -126110,9 +126234,9 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 911,
+      "can_execute_shell": 912,
       "can_install_code": 463,
-      "can_write_files": 117,
+      "can_write_files": 118,
       "can_browse_web": 197,
       "can_spawn_subagents": 205,
       "can_move_funds": 240,
