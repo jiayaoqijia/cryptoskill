@@ -83,7 +83,7 @@ real, not cosmetic:
    - Shared logic (controller state, math, stream/data transforms, validation)
      → **Core** + release + affected clients.
    - Rendering/formatting/navigation specific to one app → that **client only**.
-   - Use `knowledge/architecture.md` and `knowledge/mobile-extension-map.md` to
+   - Use the perps library's `docs/knowledge/architecture.md` and `review/parity.md` to
      confirm whether a screen/util exists on both clients or diverges. Mobile is
      source of truth for behavior.
    - **Watch for hidden Core dependencies.** A task can look client-only but
@@ -136,9 +136,9 @@ Real example — the shape to emit (TAT-3398 / TAT-3429 / TAT-3430):
 
 ## Ticket format (per layer, agent-ingestion)
 
-Keep every field tight. Pull routes/components from `knowledge/screens.md` and
-`knowledge/mobile-extension-map.md`; pull number rules from
-`knowledge/formatting-rules.md` — don't restate them.
+Keep every field tight. Pull routes/components from the library's `docs/knowledge/screens.md`
+and `review/parity.md`; pull number rules from `docs/knowledge/formatting-rules.md` — don't
+restate them.
 
 **Title** — `[core|core-release|mobile|extension] <one-line outcome>`
 
@@ -164,11 +164,13 @@ Layer specifics:
 - A Core change with no release + client tickets → incomplete chain.
 - Verbose restated context the agent can read from code → cut it.
 
-## References (read installed, don't duplicate)
+## References (read from the library, don't duplicate)
 
-- `knowledge/architecture.md` — where perps logic lives across Core/clients.
-- `knowledge/mobile-extension-map.md` — screen/route/component parity + divergences.
-- `knowledge/screens.md` — route/component names for the "Affected" field.
-- `knowledge/formatting-rules.md` — perps number/precision rules for acceptance criteria.
-- `knowledge/shared-package-analysis.md` — duplicated utilities to check both sides.
+Files live in the perps library (`MetaMask/experimental-metamask-recipe-perps`; root printed by `mm-harness help review --domain perps`, or `RECIPE_LIBRARY_PATH`).
+
+- `docs/knowledge/architecture.md` — where perps logic lives across Core/clients.
+- `review/parity.md` — screen/route/component parity + divergences.
+- `docs/knowledge/screens.md` — route/component names for the "Affected" field.
+- `docs/knowledge/formatting-rules.md` — perps number/precision rules for acceptance criteria.
+- `review/shared-packages.md` — duplicated utilities to check both sides.
 - Related skills: `recipe-fix-ticket` (implement a client fix), `perps-review-pr` (review the resulting PRs).

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T12:55:14.001340+00:00",
+  "generated_at": "2026-09-14T21:57:08.905210+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -5647,6 +5647,68 @@
         },
         "mutable_remote_runtime": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "ai-crypto/ianalloway-judge-audit": {
+      "name": "judge-audit",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -126219,13 +126281,13 @@
     }
   },
   "summary": {
-    "discovered": 2024,
-    "processed": 2024,
+    "discovered": 2025,
+    "processed": 2025,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1256,
       "router_orchestrator": 112,
-      "unknown": 235,
+      "unknown": 236,
       "analysis_only": 198,
       "unsigned_tx_builder": 79,
       "local_executor": 88,
@@ -126234,8 +126296,8 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 912,
-      "can_install_code": 463,
+      "can_execute_shell": 913,
+      "can_install_code": 464,
       "can_write_files": 118,
       "can_browse_web": 197,
       "can_spawn_subagents": 205,
@@ -126243,7 +126305,7 @@
       "requires_private_key": 394,
       "requires_hosted_operator": 323,
       "uses_remote_install_script": 39,
-      "mutable_remote_runtime": 463
+      "mutable_remote_runtime": 464
     }
   }
 }

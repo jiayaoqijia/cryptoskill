@@ -220,7 +220,7 @@ version, say so explicitly and keep the snapshot for a later restore.
 
 For Mobile <-> Extension checks:
 
-1. Load relevant installed perps knowledge from `knowledge/`: `mobile-extension-map`, `screens`, `shared-package-analysis`, architecture docs as needed.
+1. Load the relevant files from the perps library (`MetaMask/experimental-metamask-recipe-perps`; root printed by `mm-harness help review --domain perps`, or `RECIPE_LIBRARY_PATH`): `review/parity.md`, `docs/knowledge/screens.md`, `review/shared-packages.md`, `docs/knowledge/architecture.md` as needed.
 2. Find the equivalent screen/hook/flow in the other client.
 3. Validate with real flow evidence; do not inject UI state.
 4. Report semantic differences separately from regressions.

@@ -129,11 +129,13 @@ A bug or EPIC produced here is the **input** to `perps-breakdown-tickets`, which
 emits the engineering task tickets. Keep this skill on the product side of that
 line.
 
-## References (read installed, don't duplicate)
+## References (read from the library, don't duplicate)
 
-- `../../knowledge/screens.md` — screen/area names, if you want to use precise
+Files live in the perps library (`MetaMask/experimental-metamask-recipe-perps`; root printed by `mm-harness help review --domain perps`, or `RECIPE_LIBRARY_PATH`).
+
+- `docs/knowledge/screens.md` — screen/area names, if you want to use precise
   surface labels (optional; plain words are fine for a product ticket).
-- `../../knowledge/formatting-rules.md` — number semantics, to describe expected
+- `docs/knowledge/formatting-rules.md` — number semantics, to describe expected
   values correctly without prescribing decimals.
 - Related skills: `perps-breakdown-tickets` (engineering split + routing — the
   next pass), `recipe-fix-ticket` (implement a fix).
