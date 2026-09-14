@@ -1,8 +1,8 @@
 ---
 name: gmgn-market
 description: Get crypto and meme token price charts (K-line, candlestick, OHLCV), trending meme coin rankings by volume, newly launched tokens on launchpads (pump.fun, fourmeme, letsbonk, Raydium, etc.), the hot-search ranking (most-searched tokens), and search for a specific token or wallet by name, symbol, contract address, wallet address, or ENS via GMGN API on Solana, BSC, Base, or Ethereum. Use when user asks for price chart, trending tokens, what's pumping, hot coins, most searched tokens, new launches, token signals, wants to look up / find / search a specific token or wallet by name or address, or wants to discover early-stage opportunities.
-argument-hint: "kline --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> --address <token_address> --resolution <30s|1m|5m|15m|1h|4h|1d> [--from <unix_ts>] [--to <unix_ts>] | trending --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> --interval <1m|5m|1h|6h|24h> | trenches --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> | signal --chain <sol|bsc|robinhood> | hot-searches [--chain <sol|bsc|base|eth|robinhood...>] [--interval <1m|5m|1h|6h|24h>] | search --query <name|symbol|address|ens> [--chain <chain>] [--launchpad-platform <p>...] [--is-og <true|false>] [--is-launched <true|false>] [--order-by weight]"
 metadata:
+  argument-hint: "kline --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> --address <token_address> --resolution <1s|30s|1m|5m|15m|1h|4h|1d> [--from <unix_ts>] [--to <unix_ts>] | trending --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> --interval <1m|5m|1h|6h|24h> | trenches --chain <sol|bsc|base|eth|arbitrum|hyperevm|robinhood|arc|stable> | signal --chain <sol|bsc|robinhood> | hot-searches [--chain <sol|bsc|base|eth|robinhood...>] [--interval <1m|5m|1h|6h|24h>] | search --query <name|symbol|address|ens> [--chain <chain>] [--launchpad-platform <p>...] [--is-og <true|false>] [--is-launched <true|false>] [--order-by weight]"
   cliHelp: "gmgn-cli market --help"
 ---
 
@@ -65,11 +65,12 @@ Use the `gmgn-cli` tool to query K-line data for a token, browse trending tokens
 
 ## Rate Limit Handling
 
-All market routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full.
+All standard market routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full. The Pro-only `1s` K-line route instead uses the Pro API-key bucket plus its separate shared global bucket.
 
 | Command | Route | Weight |
 |---------|-------|--------|
-| `market kline` | `GET /v1/market/token_kline` | 2 |
+| `market kline` (standard resolutions) | `GET /v1/market/token_kline` | 2 |
+| `market kline --resolution 1s` (**Pro only**) | `GET /v1/market/token_kline` | 3 against the Pro API-key bucket; shared global limit: 500 req/s |
 | `market trending` | `GET /v1/market/rank` | 1 |
 | `market trenches` | `POST /v1/trenches` | 3 |
 | `market signal` | `POST /v1/market/token_signal` | 3 |
@@ -91,7 +92,7 @@ When a request returns `429`:
 |-----------|----------|-------------|
 | `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
 | `--address` | Yes | Token contract address |
-| `--resolution` | Yes | Candlestick resolution: `30s` / `1m` / `5m` / `15m` / `1h` / `4h` / `1d` |
+| `--resolution` | Yes | Candlestick resolution: `1s` (**Pro only; at most 500 candles per request**) / `30s` / `1m` / `5m` / `15m` / `1h` / `4h` / `1d` |
 | `--from` | No | Start time (Unix seconds) |
 | `--to` | No | End time (Unix seconds) |
 
@@ -170,7 +171,17 @@ Optional `--min-*` / `--max-*` flags apply server-side numeric range filtering (
 
 ### Kline
 
+`1s` is available only to Pro API keys. Keep the requested range to 500 seconds or less because a 1-second request returns at most 500 candles. Free and Plus keys receive `403 PRO_PLAN_REQUIRED`; do not retry with the same key. If the installed CLI rejects `1s`, update it before retrying; do not silently fall back to a coarser resolution.
+
 ```bash
+# Last 500 seconds of 1-second candles (Pro only; macOS)
+gmgn-cli market kline \
+  --chain sol \
+  --address <token_address> \
+  --resolution 1s \
+  --from $(date -v-500S +%s) \
+  --to $(date +%s)
+
 # Last 1 hour of 1-minute candles
 # macOS:
 gmgn-cli market kline \

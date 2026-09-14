@@ -1,8 +1,8 @@
 ---
 name: gmgn-kline-pattern
 description: Price-action pattern reading — classifies a token's candles into a named pattern (uptrend channel, breakdown, bounce off the lows, distribution at highs, basing, wide chop, consolidation) and scores it 0-100 from six measurements you compute directly from the kline response. Every point added or deducted states its reason. Use when the user asks about K 线, K线形态, 走势, 趋势, 形态, price action, chart pattern, whether a chart looks strong or weak, is it breaking down, is it consolidating, or wants a technical read of a token's chart rather than the raw numbers.
-argument-hint: "--chain <sol|bsc|base|eth> --address <token_address> [--resolution 15m]"
 metadata:
+  argument-hint: "--chain <sol|bsc|base|eth> --address <token_address> [--resolution <1s|30s|1m|5m|15m|1h|4h|1d>]"
   cliHelp: "gmgn-cli market kline --help"
 ---
 
@@ -38,7 +38,7 @@ Nothing else. No Python, no local script, no other tool.
 |-----------|----------|-------------|
 | `--chain` | Yes | `sol` for base58 addresses, `bsc` for EVM `0x...` unless the user names another chain |
 | `--address` | Yes | Token contract address |
-| `--resolution` | No | `1m 5m 15m 30m 1h 4h 1d` — default `15m` |
+| `--resolution` | No | `1s` (**Pro only; max 500 candles**) / `30s` / `1m` / `5m` / `15m` / `1h` / `4h` / `1d` — default `15m` |
 
 ### Validate the address before you run anything
 
@@ -79,6 +79,11 @@ that you guess.
 
 `--resolution` must be one of the values listed above, chosen by you — never pass user text
 through to it.
+
+Use `1s` only when the user explicitly needs second-level price action and has a Pro API key. A
+request returns at most 500 candles (about 8 minutes 20 seconds); Free and Plus keys receive
+`403 PRO_PLAN_REQUIRED`. If the installed CLI rejects `1s`, update it before retrying. Do not
+retry the Pro entitlement error with the same key.
 
 ## Usage Examples
 
