@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T11:51:03.151914+00:00",
+  "generated_at": "2026-09-15T17:06:58.005117+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -123546,6 +123546,68 @@
         "infura.io"
       ]
     },
+    "wallets/metamask-official-navigation": {
+      "name": "navigation",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/metamask-official-oh-my-opencode": {
       "name": "oh-my-opencode",
       "execution_model": "router_orchestrator",
@@ -126777,11 +126839,11 @@
     }
   },
   "summary": {
-    "discovered": 2033,
-    "processed": 2033,
+    "discovered": 2034,
+    "processed": 2034,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1264,
+      "read_only": 1265,
       "router_orchestrator": 112,
       "unknown": 236,
       "analysis_only": 198,

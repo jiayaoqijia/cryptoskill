@@ -4,7 +4,7 @@ description: "Discover and manage OKX-aggregated DeFi products and positions acr
 license: MIT
 metadata:
   author: okx
-  version: "4.6.0"
+  version: "4.6.1"
   homepage: "https://web3.okx.com"
 ---
 
