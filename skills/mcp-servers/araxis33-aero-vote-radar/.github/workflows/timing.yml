@@ -1,0 +1,57 @@
+name: Timing
+
+# What the page uses to say how much of itself to believe. Unlike the snapshot
+# this only changes when an epoch settles, so it runs weekly rather than
+# six-hourly — an hour or so after the Thursday 00:00 UTC flip, late enough that
+# the epoch that just closed is readable on chain.
+on:
+  schedule:
+    - cron: "37 2 * * 4"
+  workflow_dispatch:
+
+concurrency:
+  group: timing
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  timing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The whole measurement is the git history of the snapshot file: every
+          # committed revision is one mid-week vantage point. A shallow clone
+          # would leave it with a single scan and nothing to measure.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Measure how much of the ranking survives the week
+        run: npm run timing
+
+      - name: Separate real accrual from reward-token repricing
+        run: npm run accrual
+
+      - name: Commit the measurement if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/timing.json docs/data/accrual.json
+          if git diff --cached --quiet -- docs/data/timing.json docs/data/accrual.json; then
+            echo "measurement unchanged — nothing to commit"
+            exit 0
+          fi
+          git commit -m "Refresh the survival, accuracy and accrual measurements"
+          # The snapshot job and the daily improvement routine push to this same
+          # branch, so rebasing the single commit on top is the safe way in: this
+          # job only ever writes the files that nothing else writes.
+          git pull --rebase
+          git push

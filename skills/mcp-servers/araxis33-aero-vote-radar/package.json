@@ -1,0 +1,61 @@
+{
+  "name": "aero-vote-radar",
+  "version": "0.1.0",
+  "description": "MCP server + CLI that reads live Aerodrome (Base) on-chain data to rank pools by veAERO vote efficiency and recommend a self-dilution-aware vote allocation.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/araxis33/aero-vote-radar.git"
+  },
+  "homepage": "https://github.com/araxis33/aero-vote-radar#readme",
+  "bugs": {
+    "url": "https://github.com/araxis33/aero-vote-radar/issues"
+  },
+  "keywords": [
+    "aerodrome",
+    "base",
+    "mcp",
+    "veaero",
+    "defi",
+    "ai-agent"
+  ],
+  "bin": {
+    "aero-vote-radar": "dist/cli.js",
+    "aero-vote-radar-mcp": "dist/mcp-server.js"
+  },
+  "files": [
+    "dist",
+    "SKILL.md"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc",
+    "typecheck": "tsc -p tsconfig.typecheck.json",
+    "cli": "tsx src/cli.ts",
+    "mcp": "tsx src/mcp-server.ts",
+    "snapshot": "tsx src/snapshot-cli.ts",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "predict-check": "tsx src/predict-cli.ts",
+    "timing": "tsx src/timing-cli.ts",
+    "accrual": "tsx src/accrual-cli.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "viem": "^2.55.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "fast-uri": "^3.1.6",
+    "qs": "^6.16.0",
+    "hono": "^4.13.7"
+  }
+}

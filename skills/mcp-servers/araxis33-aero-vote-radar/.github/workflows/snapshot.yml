@@ -1,0 +1,55 @@
+name: Snapshot
+
+on:
+  schedule:
+    # Every 6 hours, at :17 rather than on the hour — GitHub's scheduler queues
+    # on-the-hour jobs from every repo at once and delays them under load.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+# A scan takes several minutes. If a scheduled run is still going when the next
+# one fires, let the running one finish rather than starting a second scan
+# against the same public RPC and racing it to commit the same file.
+concurrency:
+  group: snapshot
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Scan Aerodrome and write the snapshot
+        run: npm run snapshot
+
+      - name: Commit the snapshot if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Stage first, then diff the index: a plain `git diff` reports no change
+          # for a file git isn't tracking yet, so on a fresh checkout where the
+          # snapshot has never been committed this would report "unchanged"
+          # forever and never publish anything.
+          git add docs/data/snapshot.json
+          if git diff --cached --quiet -- docs/data/snapshot.json; then
+            echo "snapshot unchanged — nothing to commit"
+            exit 0
+          fi
+          git commit -m "Refresh the Aerodrome pool snapshot"
+          # The daily improvement routine pushes to the same branch, so a scan
+          # that started before its commit would be rejected as non-fast-forward.
+          # Rebasing the single snapshot commit on top is always safe here: this
+          # job only ever touches one file that nothing else writes.
+          git pull --rebase
+          git push

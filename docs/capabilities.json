@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T17:06:58.005117+00:00",
+  "generated_at": "2026-09-15T21:30:18.997564+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -81033,6 +81033,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/araxis33-aero-vote-radar": {
+      "name": "aero-vote-radar",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/armor-crypto-mcp": {
       "name": "armor-crypto-mcp",
       "execution_model": "read_only",
@@ -126839,12 +126901,12 @@
     }
   },
   "summary": {
-    "discovered": 2034,
-    "processed": 2034,
+    "discovered": 2035,
+    "processed": 2035,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1265,
-      "router_orchestrator": 112,
+      "router_orchestrator": 113,
       "unknown": 236,
       "analysis_only": 198,
       "unsigned_tx_builder": 79,
@@ -126854,16 +126916,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 919,
-      "can_install_code": 464,
+      "can_execute_shell": 920,
+      "can_install_code": 465,
       "can_write_files": 118,
       "can_browse_web": 197,
-      "can_spawn_subagents": 205,
+      "can_spawn_subagents": 206,
       "can_move_funds": 240,
-      "requires_private_key": 394,
+      "requires_private_key": 395,
       "requires_hosted_operator": 323,
       "uses_remote_install_script": 39,
-      "mutable_remote_runtime": 464
+      "mutable_remote_runtime": 465
     }
   }
 }

@@ -1,0 +1,15 @@
+// tsconfig.json's "include" is deliberately src-only, so `tsc` (the build)
+// emits dist/ from just the package's own source. That means a bare
+// `tsc --noEmit` — what CI's "Typecheck" step used to run — never looks at
+// test/ either, so type errors in tests (wrong fixture shapes, unsound
+// mock casts) can sit unnoticed since `npm test` runs on tsx, which
+// transpiles but does not typecheck. This config adds test/ back in for a
+// real typecheck pass, without touching what the build itself compiles.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

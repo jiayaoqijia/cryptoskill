@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2026-09-15T17:46:05.504Z",
+  "scans": 69,
+  "from": "2026-08-27T22:14:40.000Z",
+  "to": "2026-09-15T11:41:53.000Z",
+  "windows": [
+    {
+      "hours": 48,
+      "observations": 5094,
+      "negativeNaive": 0.5308205732234,
+      "negativeAccrual": 0,
+      "withAccrual": 0.04397330192383196,
+      "medianNaiveUsd": -0.010404724558715384,
+      "medianAccrualUsd": 0,
+      "medianAccrualWhenMoved": 477.5949678285802,
+      "medianRepricingShare": 1,
+      "amountFell": 0,
+      "withUnpriced": 52
+    },
+    {
+      "hours": 72,
+      "observations": 4140,
+      "negativeNaive": 0.5314009661835749,
+      "negativeAccrual": 0,
+      "withAccrual": 0.06545893719806763,
+      "medianNaiveUsd": -0.013925669884043312,
+      "medianAccrualUsd": 0,
+      "medianAccrualWhenMoved": 482.2533406900964,
+      "medianRepricingShare": 1,
+      "amountFell": 0,
+      "withUnpriced": 44
+    },
+    {
+      "hours": 96,
+      "observations": 2973,
+      "negativeNaive": 0.501849983181971,
+      "negativeAccrual": 0,
+      "withAccrual": 0.08274470232088799,
+      "medianNaiveUsd": -0.00014555344710220908,
+      "medianAccrualUsd": 0,
+      "medianAccrualWhenMoved": 500.4724210133305,
+      "medianRepricingShare": 1,
+      "amountFell": 0,
+      "withUnpriced": 34
+    },
+    {
+      "hours": 120,
+      "observations": 1915,
+      "negativeNaive": 0.4950391644908616,
+      "negativeAccrual": 0,
+      "withAccrual": 0.09921671018276762,
+      "medianNaiveUsd": 0.0003775543595532227,
+      "medianAccrualUsd": 0,
+      "medianAccrualWhenMoved": 558.2213273263765,
+      "medianRepricingShare": 1,
+      "amountFell": 0,
+      "withUnpriced": 24
+    }
+  ],
+  "pureRepricing": [
+    {
+      "symbol": "vAMM-USDC/AERO",
+      "pool": "0x6cdcb1c4a4d1c3c6d054b27ac5b77e89eafb971d",
+      "repricingUsd": 7259.271804834207
+    },
+    {
+      "symbol": "vAMM-WETH/VVV",
+      "pool": "0x01784ef301d79e4b2df3a21ad9a536d4cf09a5ce",
+      "repricingUsd": 1324.9966727103201
+    },
+    {
+      "symbol": "vAMM-VIRTUAL/WETH",
+      "pool": "0x21594b992f68495dd28d605834b58889d0a727c7",
+      "repricingUsd": -1153.395635427707
+    },
+    {
+      "symbol": "vAMM-fBOMB/AERO",
+      "pool": "0xbbf71aad6e1f8d180d3b1d898528654c1d18b2ff",
+      "repricingUsd": 898.7893111702128
+    },
+    {
+      "symbol": "vAMM-WETH/AERO",
+      "pool": "0x7f670f78b17dec44d5ef68a48740b6f8849cc2e6",
+      "repricingUsd": -503.4743522340541
+    },
+    {
+      "symbol": "sAMM-msUSD/USDC",
+      "pool": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
+      "repricingUsd": 281.2397729883521
+    },
+    {
+      "symbol": "sAMM-WETH/msETH",
+      "pool": "0xde4fb30ccc2f1210fce2c8ad66410c586c8d1f9a",
+      "repricingUsd": 258.4005636887223
+    },
+    {
+      "symbol": "vAMM-WETH/VEIL",
+      "pool": "0xf207d02becd4417aaa3383804b6b87b17602c86d",
+      "repricingUsd": 227.87463475577806
+    },
+    {
+      "symbol": "vAMM-WETH/SPX",
+      "pool": "0xe96a4e9ea3a2c6db214174738a19eb7dbb8a3069",
+      "repricingUsd": -220.255206462959
+    },
+    {
+      "symbol": "vAMM-WETH/fBOMB",
+      "pool": "0x4f9dc2229f2357b27c22db56cb39582c854ad6d5",
+      "repricingUsd": 196.13225755576377
+    }
+  ],
+  "didAccrue": [
+    {
+      "symbol": "vAMM-WETH/VVV",
+      "pool": "0x01784ef301d79e4b2df3a21ad9a536d4cf09a5ce",
+      "accrualUsd": 7197.513843214943,
+      "repricingUsd": -1242.7379486323734
+    },
+    {
+      "symbol": "vAMM-WETH/VEIL",
+      "pool": "0xf207d02becd4417aaa3383804b6b87b17602c86d",
+      "accrualUsd": 4778.729504523771,
+      "repricingUsd": -46.42001623220676
+    },
+    {
+      "symbol": "sAMM-msUSD/USDC",
+      "pool": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
+      "accrualUsd": 3499.3216200928205,
+      "repricingUsd": -73.89619941238925
+    },
+    {
+      "symbol": "vAMM-WETH/TLOS",
+      "pool": "0xc3b22240657fa67b77d0f1b7a1c1012db60d46fb",
+      "accrualUsd": 2863.3374138113395,
+      "repricingUsd": -11.054622585145808
+    },
+    {
+      "symbol": "vAMM-cbBTC/CHAMP",
+      "pool": "0x32450cebe156b2ca77dd517e0182409d89b723ff",
+      "accrualUsd": 2499.9229519531614,
+      "repricingUsd": 5.273793265612312
+    },
+    {
+      "symbol": "vAMM-BOTTO/WETH",
+      "pool": "0x55f618171d851d57906431ce9feee96dc6f3877e",
+      "accrualUsd": 2416.4153949435376,
+      "repricingUsd": 5.922245201635633
+    },
+    {
+      "symbol": "vAMM-WETH/LRDS",
+      "pool": "0x14f7ce67e16c435c876aff4092eb547584121312",
+      "accrualUsd": 2291.347764477906,
+      "repricingUsd": -25.322642637070203
+    },
+    {
+      "symbol": "vAMM-WETH/MET",
+      "pool": "0xf91e0dfe1265b914182de54e08c9ca2068beddde",
+      "accrualUsd": 1593.6154677197237,
+      "repricingUsd": -3.8557620197757387
+    },
+    {
+      "symbol": "sAMM-USDC/MAI",
+      "pool": "0x2a1463cebe85315224c536afd389b381b43f3206",
+      "accrualUsd": 1276.2392829683024,
+      "repricingUsd": -0.009012629949666007
+    },
+    {
+      "symbol": "sAMM-jEUR/EURC",
+      "pool": "0xc75799e0646470128a42d07335ab3bfa9e8ee7c2",
+      "accrualUsd": 1194.2152937850046,
+      "repricingUsd": -0.2875342524851021
+    }
+  ]
+}

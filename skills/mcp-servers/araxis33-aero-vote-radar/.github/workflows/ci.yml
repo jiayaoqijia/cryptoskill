@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  # Deliberately unfiltered by base branch. With `branches: [main]` here, a pull
+  # request aimed anywhere else ran no checks at all — and that is the dangerous
+  # failure mode, because nothing fails: the checks are simply absent, so the PR
+  # reads as unremarkable rather than as untested. It happened to #2, which was
+  # stacked on #1's branch and sat without a single run until someone looked.
+  # Stacking is the normal way to keep reviewable changes small, so CI has to
+  # cover it.
+  #
+  # Worth knowing when a stacked PR is retargeted afterwards: changing a PR's
+  # base fires `edited`, which is not one of the default `pull_request` types,
+  # so no run starts by itself. Closing and reopening the PR is what starts one.
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
