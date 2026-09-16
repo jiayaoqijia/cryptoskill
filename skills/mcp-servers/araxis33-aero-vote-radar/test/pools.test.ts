@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { filterAlivePools, resolvePoolInfo } from "../src/pools.js";
+import { filterAlivePools, isMigratingFactory, resolvePoolInfo, withoutMigrating } from "../src/pools.js";
 
 test("filterAlivePools drops pools (and their paired gauge) whose gauge is not alive", () => {
   const result = filterAlivePools(
@@ -116,6 +116,57 @@ test("resolvePoolInfo skips a pool if either token0 or token1 (not just symbol) 
   );
   assert.equal(skipped1, 1);
   assert.deepEqual(skippedOnToken1, []);
+});
+
+// 16.09.2026: a voter could not find the radar's CL-cbBTC/EDGE pick on
+// Aerodrome's vote page. Its factory is one Aerodrome is migrating away from,
+// and the vote page's default list leaves those pools out. That day they were
+// 163 of the 360 ranked pools and 9 of the top 20.
+const OLD_SLIPSTREAM = "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A";
+const NEW_SLIPSTREAM = "0xf8f2eB4940CFE7d13603DDDD87f123820Fc061Ef";
+
+test("isMigratingFactory recognises both migrating factories in any letter case, and nothing else", () => {
+  assert.equal(isMigratingFactory(OLD_SLIPSTREAM), true);
+  assert.equal(isMigratingFactory(OLD_SLIPSTREAM.toLowerCase()), true);
+  assert.equal(isMigratingFactory("0xaDe65c38CD4849aDBA595a4323a8C7DdfE89716a"), true);
+  assert.equal(isMigratingFactory(NEW_SLIPSTREAM), false);
+  assert.equal(isMigratingFactory(null), false);
+  assert.equal(isMigratingFactory(undefined), false);
+});
+
+test("resolvePoolInfo marks a pool from a migrating factory, and only that pool", () => {
+  const { pools } = resolvePoolInfo(
+    ["0xold", "0xnew"],
+    ["0xg1", "0xg2"],
+    [{ status: "failure" }, { status: "failure" }],
+    [{ status: "success", result: "0xcbBTC" }, { status: "success", result: "0xcbBTC" }],
+    [{ status: "success", result: "0xEDGE" }, { status: "success", result: "0xEDGE" }],
+    new Map([["0xcbbtc", "cbBTC"], ["0xedge", "EDGE"]]),
+    [{ status: "success", result: OLD_SLIPSTREAM }, { status: "success", result: NEW_SLIPSTREAM }],
+  );
+  assert.equal(pools[0].migrating, true);
+  assert.equal("migrating" in pools[1], false);
+});
+
+test("resolvePoolInfo keeps a pool unmarked when its factory call failed or was not made", () => {
+  const { pools } = resolvePoolInfo(
+    ["0xpool"],
+    ["0xgauge"],
+    [{ status: "success", result: "vAMM-A/B" }],
+    [{ status: "success", result: "0xA" }],
+    [{ status: "success", result: "0xB" }],
+    undefined,
+    [{ status: "failure" }],
+  );
+  assert.equal("migrating" in pools[0], false);
+});
+
+test("withoutMigrating drops migrating pools and keeps the order of the rest", () => {
+  const row = (address: string, migrating?: true) => ({
+    pool: { address, symbol: address, token0: "0xa", token1: "0xb", gauge: "0xg", gaugeAlive: true, ...(migrating ? { migrating } : {}) },
+  });
+  const kept = withoutMigrating([row("0x1"), row("0x2", true), row("0x3"), row("0x4", true)]);
+  assert.deepEqual(kept.map((r) => r.pool.address), ["0x1", "0x3"]);
 });
 
 test("resolvePoolInfo pairs each resolved pool with its gauge by matching index, not original position", () => {

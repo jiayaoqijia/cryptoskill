@@ -42,6 +42,14 @@ test("toSnapshotPool publishes the allocator's inputs, not just the derived per-
   assert.equal(p.pool, "0xpool");
 });
 
+test("toSnapshotPool publishes whether Aerodrome is migrating the pool, false when not known to be", () => {
+  const plain = toSnapshotPool(ranked({}), new Date("2026-08-17T00:00:00Z"));
+  assert.equal(plain.migrating, false);
+  const base = ranked({ symbol: "CL-cbBTC/EDGE" });
+  const migrating = toSnapshotPool({ ...base, pool: { ...base.pool, migrating: true } }, new Date("2026-08-17T00:00:00Z"));
+  assert.equal(migrating.migrating, true);
+});
+
 test("toSnapshotPool publishes the epoch series and the pool's own epoch date", () => {
   const p = toSnapshotPool(
     ranked({ epochUsdSeries: [300, 200, 100, 100, 100, 100], latestEpochTs: 1_786_579_200 }),

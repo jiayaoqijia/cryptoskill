@@ -12,7 +12,7 @@ import { backtestLive } from "./backtest.js";
 import { buildVoteCalldata } from "./calldata.js";
 import { fetchVeAeroPositions, type VeNftSummary } from "./veAero.js";
 import { fetchVotesFor, fetchLastVoted, fetchPoolSymbols, scoreVotes } from "./voted.js";
-import { fetchPoolEpochs, type EpochData } from "./pools.js";
+import { fetchPoolEpochs, withoutMigrating, type EpochData } from "./pools.js";
 import { getTokenPrices } from "./prices.js";
 import { mapWithConcurrency } from "./util.js";
 import { periodStartOf, WEEKLY_EPOCH } from "./trend.js";
@@ -68,6 +68,7 @@ export function poolEfficiencyToJson(p: PoolEfficiency, asOfUnixSeconds: number)
     volatility: p.volatility,
     consistency: p.consistency,
     momentum,
+    migrating: !!p.pool.migrating,
   };
 }
 
@@ -159,7 +160,7 @@ async function cmdPools(args: string[]) {
   for (const p of topRanked) {
     console.log(
       [
-        padCol(p.pool.symbol, 18),
+        padCol(p.pool.migrating ? `${p.pool.symbol} (migrating)` : p.pool.symbol, 18),
         p.currentVotesVeAero.toLocaleString("en-US", { maximumFractionDigits: 0 }).padEnd(18),
         fmtUsdPerVote(p.currentValuePerVote).padEnd(18),
         fmtUsdPerVote(p.predictedValuePerVote).padEnd(18),
@@ -391,7 +392,14 @@ async function cmdRecommend(args: string[]) {
   }
   const { veaero, positions } = resolved;
 
-  const ranked = (await rankPoolsByEfficiency()).filter((p) => p.consistency >= minConsistency);
+  // Pools Aerodrome is migrating still rank in `pools`, but are never recommended:
+  // its vote page hides them by default and their liquidity is being told to leave.
+  const allRanked = await rankPoolsByEfficiency();
+  const ranked = withoutMigrating(allRanked).filter((p) => p.consistency >= minConsistency);
+  const migratingLeftOut = allRanked.length - withoutMigrating(allRanked).length;
+  if (migratingLeftOut > 0) {
+    console.error(`(left out ${migratingLeftOut} pool(s) Aerodrome is migrating to new gauges; they are hidden from its default vote list)`);
+  }
   const allocation = recommendAllocation(ranked, veaero, topK, undefined, maxWeight, voteBasis);
 
   // A cap too tight for the candidate set leaves part of the budget unplaced,

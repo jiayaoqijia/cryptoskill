@@ -124,7 +124,18 @@ test("poolEfficiencyToJson includes epochsObserved and the consistency fields, m
     volatility: 0.25,
     consistency: 0.8,
     momentum: null,
+    migrating: false,
   });
+});
+
+test("poolEfficiencyToJson says when a pool is one Aerodrome is migrating", () => {
+  const p = {
+    pool: { address: "0xpool", symbol: "CL-cbBTC/EDGE", token0: "0xa", token1: "0xb", gauge: "0xg", gaugeAlive: true, migrating: true as const },
+    latestEpochTs: 100, currentVotesVeAero: 10, latestEpochUsd: 5, trailingAvgUsd: 4, epochsObserved: 3,
+    epochUsdSeries: [5, 4, 3], epochVotesSeries: [10, 10, 10], currentValuePerVote: 0.5, predictedValuePerVote: 0.4,
+    predictiveEdge: -0.2, volatility: 0.25, consistency: 0.8, latestEpochBribes: [], latestEpochFees: [],
+  } satisfies PoolEfficiency;
+  assert.equal(poolEfficiencyToJson(p, 1000).migrating, true);
 });
 
 test("poolEfficiencyToJson wires momentum from the pool's epoch series and the given time, matching the MCP tool", () => {

@@ -147,3 +147,22 @@ export const PRICE_CACHE_TTL_MS = 5 * 60 * 1000;
 // failure costs one refetch; a genuinely unpriced token costs a cheap retry per
 // batch, since it is looked up alongside the rest of its batch either way.
 export const PRICE_FAILURE_CACHE_TTL_MS = 30 * 1000;
+
+// Concentrated-liquidity factories whose pools Aerodrome is migrating to new
+// MEV-resistant gauges ahead of the Aero launch. Its own app badges every pool
+// they created "Migrating", tells liquidity providers to move to the new
+// version, and leaves those pools out of the vote page's default "Most
+// rewarded" list — so a recommendation into one points at a pool the voter
+// cannot find where they vote, and whose fees are draining away.
+//
+// Read from Aerodrome's front end on 2026-09-16, after a voter could not find
+// the radar's CL-cbBTC/EDGE pick: the first address is its
+// VITE_OLD_SLIPSTREAM_FACTORY_ADDRESS_8453, and every pool listed from the
+// second carried the same badge. Together they held 163 of the 360 ranked
+// pools and 9 of the top 20 that day. The replacement factory,
+// 0xf8f2eB4940CFE7d13603DDDD87f123820Fc061Ef, is not migrating. Lower-case, as
+// compared by `isMigratingFactory`.
+export const MIGRATING_POOL_FACTORIES: ReadonlySet<string> = new Set([
+  "0x5e7bb104d84c7cb9b682aac2f3d509f5f406809a",
+  "0xade65c38cd4849adba595a4323a8c7ddfe89716a",
+]);

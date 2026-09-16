@@ -1,6 +1,6 @@
 import { client } from "./chain.js";
 import { POOL_ABI, REWARDS_SUGAR_ABI, VOTER_ABI } from "./abi.js";
-import { REWARDS_SUGAR_ADDRESS, VOTER_ADDRESS } from "./constants.js";
+import { MIGRATING_POOL_FACTORIES, REWARDS_SUGAR_ADDRESS, VOTER_ADDRESS } from "./constants.js";
 
 export interface PoolInfo {
   address: string;
@@ -9,6 +9,22 @@ export interface PoolInfo {
   token1: string;
   gauge: string;
   gaugeAlive: boolean;
+  /**
+   * Present and true when Aerodrome is migrating this pool to a new gauge (see
+   * MIGRATING_POOL_FACTORIES). Its gauge is still alive, so it still ranks, but
+   * recommendations leave it out.
+   */
+  migrating?: true;
+}
+
+/** Whether a pool's factory is one Aerodrome is migrating away from. Case-insensitive; null and undefined are not. */
+export function isMigratingFactory(factory: string | null | undefined): boolean {
+  return typeof factory === "string" && MIGRATING_POOL_FACTORIES.has(factory.toLowerCase());
+}
+
+/** Drops the pools Aerodrome is migrating — the ones a voter cannot find on its default vote list. */
+export function withoutMigrating<T extends { pool: PoolInfo }>(ranked: readonly T[]): T[] {
+  return ranked.filter((p) => !p.pool.migrating);
 }
 
 export interface EpochReward {
@@ -61,6 +77,7 @@ export function resolvePoolInfo<TPool extends string, TGauge extends string>(
   token0s: readonly MulticallOutcome[],
   token1s: readonly MulticallOutcome[],
   tokenSymbols?: ReadonlyMap<string, string>,
+  factories?: readonly MulticallOutcome[],
 ): { pools: PoolInfo[]; skipped: number } {
   const pools: PoolInfo[] = [];
   let skipped = 0;
@@ -95,7 +112,18 @@ export function resolvePoolInfo<TPool extends string, TGauge extends string>(
       return;
     }
 
-    pools.push({ address: pool, symbol, token0, token1, gauge: aliveGauges[i], gaugeAlive: true });
+    // A failed factory() call leaves the pool unflagged: better to keep ranking a
+    // pool than to hide one on a transient RPC error.
+    const factory = factories?.[i]?.status === "success" ? (factories[i].result as string) : null;
+    pools.push({
+      address: pool,
+      symbol,
+      token0,
+      token1,
+      gauge: aliveGauges[i],
+      gaugeAlive: true,
+      ...(isMigratingFactory(factory) ? { migrating: true as const } : {}),
+    });
   });
 
   return { pools, skipped };
@@ -176,6 +204,15 @@ export async function fetchActivePools(): Promise<PoolInfo[]> {
     }),
   ]);
 
+  // Its own round, not a fourth in the parallel batch above. With four at once
+  // over ~860 pools, the first scan on 2026-09-16 came back with every
+  // token0/token1 call failed and no pools at all; run separately, the same scan
+  // succeeded. A shared public RPC is the likely limit.
+  const factories = await client.multicall({
+    contracts: alivePools.map((pool) => ({ address: pool, abi: POOL_ABI, functionName: "factory" }) as const),
+    allowFailure: true,
+  });
+
   // The tokens of every pool whose own `symbol()` failed — which is every
   // Slipstream pool. One extra multicall over the distinct tokens is what buys
   // back the half of the protocol this function used to drop on the floor.
@@ -196,7 +233,7 @@ export async function fetchActivePools(): Promise<PoolInfo[]> {
     });
   }
 
-  const { pools: resolved, skipped } = resolvePoolInfo(alivePools, aliveGauges, symbols, token0s, token1s, tokenSymbols);
+  const { pools: resolved, skipped } = resolvePoolInfo(alivePools, aliveGauges, symbols, token0s, token1s, tokenSymbols, factories);
 
   if (skipped > 0) {
     console.error(`(skipped ${skipped} voter-registered pool(s) that would not name themselves or their tokens)`);

@@ -76,6 +76,12 @@ export interface SnapshotPool {
    */
   latestEpochBribes: [string, string][];
   latestEpochFees: [string, string][];
+  /**
+   * True when Aerodrome is migrating this pool to a new gauge (see
+   * MIGRATING_POOL_FACTORIES). The page still lists it, marked, but never puts
+   * it in a suggested allocation: Aerodrome's own vote page hides it by default.
+   */
+  migrating: boolean;
 }
 
 /**
@@ -186,6 +192,7 @@ export function toSnapshotPool(p: PoolEfficiency, generatedAt: Date): SnapshotPo
     dilutionAdjustedValuePerVote: dilutedVotes > 0 ? p.trailingAvgUsd / dilutedVotes : 0,
     latestEpochBribes: toAmountPairs(p.latestEpochBribes),
     latestEpochFees: toAmountPairs(p.latestEpochFees),
+    migrating: !!p.pool.migrating,
   };
 }
 

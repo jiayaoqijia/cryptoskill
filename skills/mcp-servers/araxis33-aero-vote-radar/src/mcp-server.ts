@@ -5,6 +5,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { createRequire } from "node:module";
 import { rankPoolsByEfficiency } from "./efficiency.js";
+import { withoutMigrating } from "./pools.js";
 import {
   recommendAllocation,
   toWholePercentWeights,
@@ -106,6 +107,7 @@ server.registerTool(
         volatility: p.volatility,
         consistency: p.consistency,
         momentum,
+        migrating: !!p.pool.migrating,
       };
     });
 
@@ -158,7 +160,8 @@ server.registerTool(
   },
   withErrorHandling(async ({ veAero, address, topCandidates = 15, minConsistency = 0, maxWeight = 1, voteBasis = "previous" }) => {
     const budget = await resolveVeAeroBudget(veAero, address);
-    const ranked = (await rankPoolsByEfficiency()).filter((p) => p.consistency >= minConsistency);
+    // Same rule as the CLI: pools Aerodrome is migrating are never recommended.
+    const ranked = withoutMigrating(await rankPoolsByEfficiency()).filter((p) => p.consistency >= minConsistency);
     const allocation = recommendAllocation(ranked, budget, topCandidates, undefined, maxWeight, voteBasis);
 
     // Zero qualifying pools is a distinct failure from "maxWeight too tight":

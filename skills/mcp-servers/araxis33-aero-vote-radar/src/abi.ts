@@ -17,6 +17,8 @@ export const POOL_ABI = [
   { type: "function", name: "symbol", stateMutability: "view", inputs: [], outputs: [{ type: "string" }] },
   { type: "function", name: "token0", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },
   { type: "function", name: "token1", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },
+  // The factory that created the pool — how a pool Aerodrome is migrating is recognised.
+  { type: "function", name: "factory", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },
 ] as const;
 
 export const VOTER_ABI = [

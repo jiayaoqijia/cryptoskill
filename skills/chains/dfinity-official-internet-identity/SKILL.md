@@ -16,7 +16,7 @@ Internet Identity (II) is the Internet Computer's native authentication system. 
 
 ## Prerequisites
 
-- `@icp-sdk/auth` (>= 7.0.0), `@icp-sdk/core` (>= 5.3.0) (`AttributesIdentity` was added in core v5.3.0)
+- `@icp-sdk/auth` (>= 9.0.0), `@icp-sdk/core` (>= 5.3.0) (`AttributesIdentity` was added in core v5.3.0)
 - For the Motoko backend example: `mo:identity-attributes` >= 0.4.0 (mops) — the mixin that injects the two sign-in methods and verifies the bundle for you. It pulls in `mo:core` >= 2.5.0 and requires `moc` >= 1.6.0 for the `include` mixin.
 
 ## Canister IDs
@@ -28,17 +28,17 @@ Internet Identity (II) is the Internet Computer's native authentication system. 
 
 ## Mistakes That Break Your Build
 
-1. **Using the wrong II URL for the environment.** The identity provider URL must point to the **frontend** canister (`uqzsh-gqaaa-aaaaq-qaada-cai`), not the backend. Mainnet uses `https://id.ai/authorize`. Local-only II (when `ii: true` is set in `icp.yaml`) uses `http://id.ai.localhost:8000/authorize`. Both canister IDs are well-known and identical on mainnet and local replicas — hardcode them rather than doing a dynamic lookup.
+1. **Using the wrong II URL for the environment.** `authorizeUrl` must point to the **frontend** canister (`uqzsh-gqaaa-aaaaq-qaada-cai`), not the backend. Mainnet uses `https://id.ai/authorize`. Local-only II (when `ii: true` is set in `icp.yaml`) uses `http://id.ai.localhost:8000/authorize`. Both canister IDs are well-known and identical on mainnet and local replicas — hardcode them rather than doing a dynamic lookup.
 
-2. **Forgetting `/authorize` in the `identityProvider` URL.** In `@icp-sdk/auth` 7.x the URL is used verbatim; the client does **not** append `/authorize` for you (it did in 5.x). Passing `https://id.ai` opens the II home page in the popup and never returns a delegation — the login button appears to do nothing. Always include the `/authorize` path.
+2. **Passing `identityProvider` as a URL string, or naming only half of it.** In 9.x it is an object — `{ authorizeUrl, canisterId }` — and both fields are required together: the page a ceremony renders at and the canister that mints delegations are separate facts, and neither is derived from the other. A string or a `URL` throws a `TypeError`. Omit the option entirely to get mainnet Internet Identity, which is what most apps want. The URL is used verbatim, so include the `/authorize` path: `https://id.ai` opens the II home page and never returns a delegation.
 
-3. **Setting delegation expiry too long.** Maximum delegation expiry is 30 days (2_592_000_000_000_000 nanoseconds). Longer values are silently clamped, which causes confusing session behavior. Use 8 hours for normal apps, 30 days maximum for "remember me" flows.
+3. **Treating `maxTimeToLive` as the lifetime of the key the frontend signs with.** In 9.x it bounds the **session** at Internet Identity, and `maxTimeToIdle` ends a session nobody has used; the delegation your calls are signed with is short-lived and replaced for you. Leave both unset unless the app has a policy of its own — the provider applies seven days of idleness and thirty days in total. Bound them where the data is sensitive, not to keep key material fresh.
 
 4. **Not awaiting `signIn()` or skipping the `try`/`catch`.** `authClient.signIn()` returns a promise that rejects when the user closes the popup or authentication fails. Without `await` and a `catch`, those failures are silently swallowed.
 
 5. **Using `shouldFetchRootKey` or `fetchRootKey()` instead of the `ic_env` cookie.** The `ic_env` cookie (set by the frontend canister or the Vite dev server) already contains the root key as `IC_ROOT_KEY`. Pass it via the `rootKey` option to `HttpAgent.create()` — this works in both local and production environments without environment branching. See the icp-cli skill's `references/binding-generation.md` for the pattern. Never call `fetchRootKey()` — it fetches the root key from the replica at runtime, which lets a man-in-the-middle substitute a fake key on mainnet.
 
-6. **Getting `2vxsx-fae` as the principal after sign-in.** That is the anonymous principal -- it means authentication silently failed. Common causes: wrong `identityProvider` URL passed to the `AuthClient` constructor (especially missing `/authorize`), an unhandled rejection from `signIn()`, or reading `getIdentity()` before `signIn()` resolved.
+6. **Getting `2vxsx-fae` as the principal after sign-in.** That is the anonymous principal -- it means authentication silently failed. Common causes: a wrong `authorizeUrl` on the `AuthClient` constructor (especially missing `/authorize`), an unhandled rejection from `signIn()`, or reading `getIdentity()` before `signIn()` resolved. Note that `getIdentity()` throws `SessionNotHeldError` rather than handing back an anonymous identity when a sign-in exists that this origin holds no credential for.
 
 7. **Passing principal as string to backend.** The `AuthClient` gives you an `Identity` object. Backend canister methods receive the caller principal automatically via the IC protocol -- you do not pass it as a function argument. The caller principal is available on the backend via `shared(msg) { msg.caller }` in Motoko or `ic_cdk::api::msg_caller()` in Rust. For backend access control patterns, see the **canister-security** skill.
 
@@ -57,15 +57,19 @@ Internet Identity (II) is the Internet Computer's native authentication system. 
     - `verified_email` is the same email as `email`, but only present when the source OpenID provider (e.g., Google) marked it as verified and II surfaced that signal through.
     Use `verified_email` for any access gating (admin allowlists, capability checks). Use `email` only for soft uses like contact info or mailing lists. Request both for fallback behaviour: both are returned with the same value when the source provider marked the email as verified, only `email` when it didn't.
 
-13. **Serving `/.well-known/ii-app-metadata` on the wrong origin, or without CORS.** II reads app metadata from the origin identities are derived for — your validated `derivationOrigin` when the request sets one, the request's own origin otherwise. A document published only on the alternative origin the user visits is never fetched. The document *and* the logo it points at are both read cross-origin, and they fail differently: without `Access-Control-Allow-Origin` on the document none of your metadata is used (II falls back to its curated entry if it ships one for your app, and to your origin alone otherwise), while an unreadable logo costs you the logo alone — the name and description still render. See "Showing your app's name, description, and logo on the sign-in screen".
+13. **Sharing a cookie domain without a shared `derivationOrigin`.** Sibling subdomains only share a sign-in when they share a principal, and principals are per origin: without one derivation origin authorized for all of them, the shared record names an account the reading origin can never hold, so `/reauth` bounces the user back forever. Set the derivation origin first, then the cookie domain.
 
-14. **Assuming a bad field in `ii-app-metadata` is just dropped, or confusing a rejected logo with a rejected document.** One field that fails validation invalidates the **whole document**: none of your metadata is applied, not just the offending field (II then falls back to its curated entry if it ships one for your app, and to your origin alone otherwise). `name` is capped at 40 Unicode code points and `description` at 120, counted on the value as served. `logo` straddles the two failure modes — a URL that is not on the **same origin** as the document fails document validation and takes the whole document down with it, and that includes your own canister on a sibling gateway domain, since II may fetch the document from any of `ic0.app`, `icp0.io`, or `icp.net` (write the URL relative) — while an SVG (`image/svg+xml` is not accepted; serve a raster copy), an oversized image, or one that cannot be fetched or decoded costs you the logo alone.
+14. **A silent re-issue without `hint`, on the default transport, or to an undeclared callback.** `prompt: 'none'` asks the provider to answer from the session it holds. Without `hint`, a provider holding more than one session refuses rather than guessing — `InteractionRequiredError` with `reason` `account_selection_required` — so what you lose is the resume, not the user's identity: a mint for an unexpected account is rejected client-side as `AccountMismatchError`. The re-issue also runs on page load with no user gesture, so the default `window` transport is popup-blocked: use `transport: 'redirect'` on a route of its own, and declare that route in the origin's `/.well-known/ii-auth-callbacks`, or the redirect never comes back.
+
+15. **Serving `/.well-known/ii-app-metadata` on the wrong origin, or without CORS.** II reads app metadata from the origin identities are derived for — your validated `derivationOrigin` when the request sets one, the request's own origin otherwise. A document published only on the alternative origin the user visits is never fetched. The document *and* the logo it points at are both read cross-origin, and they fail differently: without `Access-Control-Allow-Origin` on the document none of your metadata is used (II falls back to its curated entry if it ships one for your app, and to your origin alone otherwise), while an unreadable logo costs you the logo alone — the name and description still render. See "Showing your app's name, description, and logo on the sign-in screen".
+
+16. **Assuming a bad field in `ii-app-metadata` is just dropped, or confusing a rejected logo with a rejected document.** One field that fails validation invalidates the **whole document**: none of your metadata is applied, not just the offending field (II then falls back to its curated entry if it ships one for your app, and to your origin alone otherwise). `name` is capped at 40 Unicode code points and `description` at 120, counted on the value as served. `logo` straddles the two failure modes — a URL that is not on the **same origin** as the document fails document validation and takes the whole document down with it, and that includes your own canister on a sibling gateway domain, since II may fetch the document from any of `ic0.app`, `icp0.io`, or `icp.net` (write the URL relative) — while an SVG (`image/svg+xml` is not accepted; serve a raster copy), an oversized image, or one that cannot be fetched or decoded costs you the logo alone.
 
 ## Using II during local development
 
 **Default: use mainnet II from your local network.** Starting with `icp-cli >= 0.2.4`, the local network (pocket-ic, launched by `icp-cli-network-launcher`) is configured to trust the mainnet subnet's BLS signatures. Delegations signed by `https://id.ai` are accepted by your local replica, so both the sign-in flow *and* authenticated calls to a locally-deployed backend just work — no extra config in `icp.yaml`, no local II canister to manage, and the UI is the real one your users will see.
 
-Point your frontend at `https://id.ai/authorize` unconditionally and you're done.
+Construct the client with no `identityProvider` at all: mainnet Internet Identity is what it defaults to, and you're done.
 
 ### Fallback: deploy II locally
 
@@ -78,7 +82,7 @@ networks:
     ii: true
 ```
 
-This deploys the II canisters automatically when the local network is started. The II frontend will be available at `http://id.ai.localhost:8000`, and the `identityProvider` URL becomes `http://id.ai.localhost:8000/authorize`. No canister entry is needed in your project — II is not part of your project's canisters. For the full `icp.yaml` canister configuration, see the **icp-cli** and **static-site** skills.
+This deploys the II canisters automatically when the local network is started. The II frontend will be available at `http://id.ai.localhost:8000`, so the client is constructed with `identityProvider: { authorizeUrl: 'http://id.ai.localhost:8000/authorize', canisterId: 'rdmx6-jaaaa-aaaaa-aaadq-cai' }` — the canister id is the same locally, since system canisters keep their mainnet ids on the local network. No canister entry is needed in your project — II is not part of your project's canisters. For the full `icp.yaml` canister configuration, see the **icp-cli** and **static-site** skills.
 
 ### Frontend: Vanilla JavaScript/TypeScript Sign-In Flow
 
@@ -93,25 +97,26 @@ import { safeGetCanisterEnv } from "@icp-sdk/core/agent/canister-env";
 // Contains the root key and canister IDs — works in both local and production.
 const canisterEnv = safeGetCanisterEnv();
 
-// Construct once — identityProvider (and optionally derivationOrigin or
-// openIdProvider for one-click sign-in: 'google' | 'apple' | 'microsoft')
-// are configured at construction time, not per sign-in. Always include the
-// `/authorize` path — the client uses the URL verbatim in 7.x.
+// Mainnet Internet Identity is the default, so no identityProvider is needed:
+// pocket-ic (icp-cli >= 0.2.4) trusts mainnet subnet signatures, so this works
+// from local dev too. Pass { authorizeUrl, canisterId } only for a local II
+// (`ii: true` in icp.yaml) or another deployment; both halves are required
+// together, and a bare URL string throws.
 //
-// Use mainnet II even from local dev: pocket-ic (icp-cli >= 0.2.4) trusts
-// mainnet subnet signatures. Override to http://id.ai.localhost:8000/authorize
-// only if you have `ii: true` in icp.yaml and want fully-offline dev.
-const authClient = new AuthClient({
-  identityProvider: "https://id.ai/authorize",
-});
+// derivationOrigin, and openIdProvider for one-click sign-in
+// ('google' | 'apple' | 'microsoft'), are also constructor options.
+//
+// Several clients may share an origin and read the same sign-in, so construct
+// one where you need it and dispose of it when that view goes away.
+const authClient = new AuthClient();
 
 // Sign in: signIn() returns the new Identity directly and rejects if the user
-// closes the popup or authentication fails.
+// closes the popup or authentication fails. The session's bounds
+// (maxTimeToIdle, maxTimeToLive) are optional; unset means Internet Identity's
+// own, currently seven days idle and thirty days in total.
 async function signIn() {
   try {
-    const identity = await authClient.signIn({
-      maxTimeToLive: BigInt(8) * BigInt(3_600_000_000_000), // 8 hours in nanoseconds
-    });
+    const identity = await authClient.signIn();
     console.log("Signed in as:", identity.getPrincipal().toText());
     return identity;
   } catch (error) {
@@ -120,10 +125,11 @@ async function signIn() {
   }
 }
 
-// Sign out
+// Sign out, which ends the session at Internet Identity: every tab of this
+// origin is signed out and the session cannot be resumed. Nothing to reset or
+// reload here — the state changes, so the subscription below re-renders.
 async function signOut() {
   await authClient.signOut();
-  // Optionally reload or reset UI state
 }
 
 // Create an authenticated agent and actor.
@@ -147,10 +153,44 @@ async function init() {
     const actor = await createAuthenticatedActor(identity, canisterId, idlFactory);
     // Use actor to call backend methods
   }
+
+  // Re-render when who is signed in here changes, including in another tab:
+  // getStatus() is 'signed-in' | 'signed-in-elsewhere' | 'expired' |
+  // 'signed-out', and the last three each want a different screen.
+  authClient.subscribe(() => render(authClient.getStatus()));
 }
 
 init();
 ```
+
+### The client's lifecycle
+
+One client for the page, or one per component: both work, and they read and write
+the same sign-in.
+
+```javascript
+// Page-lifetime: one client for the app, nothing to dispose. Views come and go,
+// so each hands back the teardown for its own listener.
+const authClient = new AuthClient();
+
+function watchHeader() {
+  const unsubscribe = authClient.subscribe(() => render(authClient.getStatus()));
+  return unsubscribe; // when the header goes; the client carries on
+}
+
+// Component-lifetime: the client belongs to the view, so it goes with the view.
+function openReauthDialog(principal) {
+  const client = new AuthClient({ prompt: "none", hint: principal });
+  return () => client.dispose(); // covers its subscription, and is not a sign-out
+}
+```
+
+`prompt: "none"` with `hint` is a silent re-issue, which an app wants when a
+sibling subdomain is already signed in: see "Sharing a sign-in across sibling
+subdomains" below.
+
+The client is browser-only, so under a server-rendering framework whatever owns it
+must be client-rendered.
 
 ### Serving an app at more than one origin
 
@@ -162,7 +202,6 @@ Pick the **canister address** as the derivation origin. Custom domains can be ch
 
 ```js
 const authClient = new AuthClient({
-  identityProvider: "https://id.ai/authorize",
   derivationOrigin: "https://<canister-id>.icp.net",
 });
 ```
@@ -188,6 +227,140 @@ Going over the cap is not a truncation: II rejects the entire list with `has too
 Do **not** reach for `.ic-assets.json5` — that is the legacy asset canister's config file, and the static-site recipe does not read or even upload it, so the headers would silently never apply. See the `static-site` skill.
 
 **Order matters.** Pin the derivation origin before an origin has users. Repointing an origin that has already collected sign-ins orphans every account made under it.
+
+### Sharing a sign-in across sibling subdomains
+
+`chat.example.com` and `hr.example.com` can share one sign-in: sign in on one and
+the others are signed in without a second visit to the provider, and signing out
+on one signs the user out on all of them.
+
+This builds on the section above. Every app must derive from **one** derivation
+origin, listed in that origin's `ii-alternative-origins`, or each subdomain gets
+its own principal and there is nothing to share. A shared cookie does not change
+that. On top of it, two things:
+
+**1. Share the record.** Every app builds its client with the same cookie domain,
+so a sign-in on one writes a record the others read:
+
+```javascript
+import { AuthClient, CookieStateStorage, InteractionRequiredError } from "@icp-sdk/auth/client";
+
+const clientOptions = {
+  derivationOrigin: "https://auth.example.com",
+  stateStorage: new CookieStateStorage({ domain: "example.com" }),
+};
+```
+
+Choosing that domain means trusting every origin under it. Don't do it on a domain
+whose subdomains you don't control.
+
+**2. Acquire the sign-in where a sibling made it.** An app that reads
+`signed-in-elsewhere` asks the provider for its own credential for that account,
+on a route of its own:
+
+```javascript
+// /reauth — a route of its own, because this runs on page load with no user
+// gesture, and a popup opened without one is blocked.
+async function reauth() {
+  const status = new AuthClient(clientOptions).getStatus();
+
+  if (status.state !== "signed-in-elsewhere") {
+    location.replace("/");
+    return;
+  }
+
+  // A second client: prompt and hint are set when a client is built.
+  const authClient = new AuthClient({
+    ...clientOptions,
+    transport: "redirect",
+    prompt: "none",
+    hint: status.principal, // answer for the account already signed in
+  });
+
+  try {
+    await authClient.signIn({
+      returnTo: new URLSearchParams(location.search).get("next") ?? "/",
+    });
+  } catch (error) {
+    if (error instanceof InteractionRequiredError) {
+      // The provider has nothing to resume, so the sign-in is stale: clear it,
+      // or every app on the domain keeps sending the user back here.
+      await authClient.signOut().catch(() => {});
+    }
+    location.replace("/");
+  }
+}
+
+reauth();
+```
+
+**Each app origin declares the callback.** A redirect sign-in is delivered only to
+a callback the returning origin itself declares, so every app serves
+`/.well-known/ii-auth-callbacks` on its own origin, listing its own `/reauth`:
+
+```json
+{ "callbacks": ["https://chat.example.com/reauth"] }
+```
+
+One file per app origin, not one on the derivation origin. The entry is matched
+exactly, so it must be the full URL with no fragment, and II reads the document
+cross-origin, so serve it as `application/json` with CORS. With
+`@dfinity/static-site`, that is another `_headers` block, for the same reason
+`ii-alternative-origins` needs one:
+
+```
+/.well-known/ii-auth-callbacks
+  Content-Type: application/json
+  Access-Control-Allow-Origin: *
+```
+
+Validation fails closed: undeclared, unreadable, or not exactly matching, and the
+sign-in never comes back. A declared callback also has to terminate locally, since
+the response arrives in the URL fragment and a `3xx` that carries none re-attaches
+it to wherever it forwards.
+
+**3. Pick it up on load, on every page.** Not only the pages that require a
+sign-in: a visitor who is already signed in on a sibling would otherwise land on
+a public page here and see a signed-out header. Each page reads the status as it
+loads and hands `signed-in-elsewhere` to `/reauth`, naming the page to come back
+to, which is what makes the sharing automatic rather than something the user has
+to click:
+
+```javascript
+// On load, on every page of the app.
+const status = new AuthClient(clientOptions).getStatus();
+
+// This state only: a sibling is signed in and this app can pick that up without
+// asking the user anything. signed-out and expired both mean a normal sign-in,
+// and sending those to /reauth just bounces the user back.
+if (status.state === "signed-in-elsewhere") {
+  location.replace(`/reauth?next=${encodeURIComponent(location.pathname + location.search)}`);
+}
+```
+
+`/reauth` reads that `next` and passes it as `returnTo`, so the user lands back on
+the page they asked for, signed in, having seen nothing.
+
+**4. Jump on load, ask afterwards.** Step 3 redirects because the page has only
+just started. Once a page is open the status can still turn `signed-in-elsewhere`,
+when someone signs in on a sibling in another tab, and redirecting a page the user
+is working on would throw away what they are doing. So subscribe, and offer the
+same redirect behind a button:
+
+```javascript
+authClient.subscribe(() => {
+  if (authClient.getStatus().state === "signed-in-elsewhere") {
+    // A banner or dialog whose button runs the same redirect as step 3.
+    showResumeDialog(() =>
+      location.replace(`/reauth?next=${encodeURIComponent(location.pathname + location.search)}`),
+    );
+  }
+});
+```
+
+The full walkthrough, including what ends a session on its own and what a sign-out
+does to the siblings, is in the library's [shared sessions
+guide](https://js.icp.build/auth/latest/shared-sessions/).
 
 ### Showing your app's name, description, and logo on the sign-in screen
 
@@ -276,17 +449,15 @@ async function signInWithAttributes(authClient, canisterId, idl) {
   const anonymousAgent = await HttpAgent.create();
   const anonymousActor = Actor.createActor(idl, { agent: anonymousAgent, canisterId });
 
-  // Mint the nonce, sign in, and request attributes in parallel. Passing the
-  // nonce as a promise lets requestAttributes start before it resolves, so the
-  // user still sees a single Internet Identity interaction. A frontend-generated
-  // nonce would defeat replay protection — see Mistake #9.
-  const noncePromise = anonymousActor._internet_identity_sign_in_start();
-  const signInPromise = authClient.signIn({
-    maxTimeToLive: BigInt(8) * BigInt(3_600_000_000_000), // 8 hours in nanoseconds
-  });
+  // Mint the nonce, sign in, and request attributes in parallel. `nonce` is the
+  // function that fetches it, called when the client needs the value, so the
+  // request is in flight while the Internet Identity window opens and the user
+  // still sees a single interaction. A frontend-generated nonce would defeat
+  // replay protection — see Mistake #9.
+  const signInPromise = authClient.signIn();
   const attributesPromise = authClient.requestAttributes({
     keys: ["name", "verified_email"], // library reads verified_email for its email field
-    nonce: noncePromise,
+    nonce: () => anonymousActor._internet_identity_sign_in_start(),
   });
 
   const identity = await signInPromise;
@@ -324,7 +495,6 @@ For OpenID one-click sign-in, scope the attributes to the provider with the `sco
 import { AuthClient, scopedKeys } from "@icp-sdk/auth/client";
 
 const authClient = new AuthClient({
-  identityProvider: "https://id.ai/authorize",
   openIdProvider: "google",
 });
 
@@ -333,7 +503,7 @@ const authClient = new AuthClient({
 // and the mo:identity-attributes library maps them onto the same name/email fields.
 const attributesPromise = authClient.requestAttributes({
   keys: scopedKeys({ openIdProvider: "google", keys: ["name", "verified_email"] }),
-  nonce: noncePromise,
+  nonce: () => anonymousActor._internet_identity_sign_in_start(),
 });
 ```
 
@@ -541,9 +711,20 @@ fn _internet_identity_sign_in_finish() -> SignInResult {
 
 Backend access control (anonymous principal rejection, role guards, caller binding in async functions) is not II-specific — the same patterns apply regardless of authentication method. See the **canister-security** skill for complete Motoko and Rust examples.
 
-## 5.x API notes
+## Older API notes
 
-If you are pinned to `@icp-sdk/auth` 5.x, the same flow uses a different (callback-based) API:
+Everything above targets `@icp-sdk/auth` 9.x. On an older major the same flow differs:
+
+**8.x** — what 9.x changed:
+
+- `identityProvider` was a URL string; it is now `{ authorizeUrl, canisterId }`, and a string throws.
+- `storage` and its `IdbStorage` / `LocalStorage` classes became `credentialStorage` with `IdbCredentialStorage` (the default), `LocalCredentialStorage`, `MemoryCredentialStorage` and `SharedMemoryCredentialStorage`. `stateStorage` is new and holds the record of who is signed in, which is what makes tabs converge; `CookieStateStorage` extends that to sibling subdomains.
+- `IdleManager` and its options (`idleOptions`, `onIdle`, `idleTimeout`, `disableIdle`) were removed. The session is bounded at Internet Identity instead, via `maxTimeToIdle` and `maxTimeToLive` on `signIn()`.
+- `maxTimeToLive` bounded a delegation and capped every sign-in at 8 hours; it now bounds the session, and unset means the provider's own 30 days.
+- `getStatus()`, `subscribe()`, `getPrincipal()` and `dispose()` are new; the `identity`, `keyType` and `targets` options are gone.
+- See the [v9 upgrade guide](https://js.icp.build/auth/latest/upgrading/v9/) for the full list.
+
+**5.x** — a callback-based API:
 
 - `await AuthClient.create({...})` instead of `new AuthClient({...})`
 - `identityProvider` passed per-call to `login({...})` rather than at construction
@@ -551,7 +732,7 @@ If you are pinned to `@icp-sdk/auth` 5.x, the same flow uses a different (callba
 - `authClient.logout()` instead of `authClient.signOut()`
 - `await authClient.isAuthenticated()` (async) instead of sync
 - `authClient.getIdentity()` (sync) instead of async
-- 5.x auto-appends `/authorize` to the `identityProvider` URL, so you can pass just `https://id.ai`. In 7.x the path is required.
-- No `requestAttributes` / `AttributesIdentity` support — the identity-attributes flow above requires 7.x.
+- 5.x auto-appends `/authorize` to the `identityProvider` URL, so you can pass just `https://id.ai`.
+- No `requestAttributes` / `AttributesIdentity` support — the identity-attributes flow above requires 7.x or later.
 
-Upgrade to 7.x when you can — the promise-based API is harder to misuse and the callback variant has been removed.
+Upgrade when you can: the promise-based API is harder to misuse, the callback variant has been removed, and 9.x re-mints the delegation your calls are signed with instead of leaving one key alive for the whole session.
