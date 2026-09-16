@@ -1,17 +1,31 @@
 ---
 name: square-rich-post
 description: |
-  广场富媒体发文：一句话生成并发布「4h SMC 全维度行情拆解」文章到币安广场。
+  广场富媒体发文（代币专用）：一句话生成并发布「4h SMC 全维度行情拆解」文章到币安广场。
   自动取 90d 日线 + 4h K线/费率/OI/恐惧贪婪 → Pillow 画深色封面图（K线+成交量）与 24h 分时图
   → 组稿（SMC 推理链：结构/BOS・CHoCH/扫流动性/OTE/OB/FVG + 方向意见 + 仓位方案，
   $cashtag + #hashtag，事实与推测分栏，文末带项目 GitHub 链接）→ 调 square-post 发布。
   触发词：富媒体发文、图文帖、行情快报、深度行情文、SMC 分析发文、square rich、发文带图。
+  妖币 / meme / 百倍币 / 异动币的拆解请改用 square-monster-post（剧本三轴引擎，不是 SMC）。
 metadata:
   author: bazz-agent
-  version: "1.1"
+  version: "1.2"
 ---
 
-# Square Rich Post（广场富媒体发文模板）
+# Square Rich Post（广场富媒体发文模板 · 代币 / SMC）
+
+## ⚠️ 边界：本技能只负责**代币**
+
+SMC 成立的前提是「价格由众多参与者的共同行为堆出来」—— 结构位、订单块之所以有用，
+是因为那里真的有人挂单。**妖币（控盘盘）不满足这个前提**：它的 K 线是画出来的，
+你看到的 OB 就是诱多区，你看到的「扫流动性」就是专门去点你止损的那一下。
+
+| 标的 | 用哪个技能 | 分析技巧 |
+|---|---|---|
+| 普通代币 / 主流币 / 有现货深度的币 | **本技能** | SMC：结构、BOS・CHoCH、OTE、OB、FVG |
+| 妖币 / meme / 百倍币 / 雷达里的异动币 | **`square-monster-post`** | 剧本三轴：位阶、控盘度、燃料 |
+
+拿不准就看它有没有出现在「行情 → 妖币雷达」里；出现了就走 monster。
 
 ## 命令
 
@@ -41,7 +55,8 @@ metadata:
 
 ## 发布形态
 
-- 默认：**长文章 + 封面图**（contentType=2，走 square-post `image --title-file --cover --text-file`）
+- 默认：**短贴多图**（contentType=1，封面 + 24h 图直接显示在正文里，v1.5.22 起）
+- `--article`：长文章 + 封面（contentType=2，OpenAPI 限制正文无法插图）
 - 台账：经 agent/skills_client 发布会自动记入 Square 台账页（skill=square-rich-post）
 
 ## Agent 约定

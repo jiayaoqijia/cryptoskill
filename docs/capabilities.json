@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T11:39:48.060529+00:00",
+  "generated_at": "2026-09-16T17:00:36.634244+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -91742,6 +91742,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/xinyuzjj-square-monster-post": {
+      "name": "square-monster-post",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/xinyuzjj-square-post": {
       "name": "square-post",
       "execution_model": "analysis_only",
@@ -126901,13 +126963,13 @@
     }
   },
   "summary": {
-    "discovered": 2035,
-    "processed": 2035,
+    "discovered": 2036,
+    "processed": 2036,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1265,
       "router_orchestrator": 113,
-      "unknown": 236,
+      "unknown": 237,
       "analysis_only": 199,
       "unsigned_tx_builder": 79,
       "local_executor": 88,
@@ -126918,7 +126980,7 @@
       "auto_invocable": 3,
       "can_execute_shell": 920,
       "can_install_code": 464,
-      "can_write_files": 119,
+      "can_write_files": 120,
       "can_browse_web": 197,
       "can_spawn_subagents": 206,
       "can_move_funds": 240,

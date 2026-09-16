@@ -41,6 +41,8 @@ bankr login email user@example.com --code 123456 --accept-terms --key-name "My A
 
 This creates a wallet, accepts terms, and generates an API key — no browser needed. Before running step 2, ask the user which APIs they need (wallet, agent, both via `--read-write`, LLM gateway) and their preferred key name.
 
+> **Not for MFA-enabled accounts.** Minting an API key requires a passkey step-up when MFA is on, and the CLI can't complete that ceremony — step 2 fails with `MFA_STEP_UP_REQUIRED`. Use Option B: create the key in the Bankr Terminal (the passkey prompt happens there), then run `bankr login --api-key bk_...`.
+
 **Option B: Bankr Terminal**
 
 1. Visit [bankr.bot/api-keys](https://bankr.bot/api-keys)
@@ -67,7 +69,7 @@ npm install -g @bankr/cli
 
 #### Headless email login (recommended for agents)
 
-When the user asks to log in with an email, walk them through this flow:
+When the user asks to log in with an email, walk them through this flow. If the user has MFA enabled on their Bankr account, skip this and use "Login with existing API key" below — the headless flow cannot pass the passkey step-up.
 
 **Step 1 — Send verification code**
 
@@ -135,7 +137,7 @@ Any option not provided on the command line will be prompted interactively by th
 
 #### Login with existing API key
 
-If the user already has an API key:
+If the user already has an API key (this is also the only route for MFA-enabled accounts):
 
 ```bash
 bankr login --api-key bk_YOUR_KEY_HERE
@@ -542,7 +544,7 @@ The [Bankr LLM Gateway](https://docs.bankr.bot/llm-gateway/overview) is a unifie
 - In OpenClaw config, prefix model IDs with `bankr/` (e.g. `bankr/claude-sonnet-5`). In direct API calls, use bare IDs (e.g. `claude-sonnet-5`). Run `bankr llm models` for the current model list
 - **Claude Code's `[1m]` context-tier suffix is optional through the gateway** — it's stripped before model lookup and the 1M window comes from the model's own context window, so `claude-opus-5` and `claude-opus-5[1m]` behave identically. If you do use it, quote it (`--model "claude-opus-5[1m]"`) — in zsh it's a glob character class and the command aborts before the CLI runs
 - **Per-model discounts** available for Bankr Club members and partners — applied automatically at billing time
-- **Image generation**: generate images via the OpenAI-native `/v1/images/generations` endpoint (model `gpt-image-2`), billed from the same LLM credit balance — see the reference
+- **Image generation**: generate images via the OpenAI-native `/v1/images/generations` endpoint — the `gpt-image-2.5` line (`-flare` for speed, `-sunburst` for precision) plus the previous `gpt-image-2`, all priced identically and billed from the same LLM credit balance — see the reference
 - **Expiring credit grants**: promotional or developer grants may carry an expiry date. Your spendable balance is your permanent (purchased) credits plus any unexpired grants — grants are spent first (soonest-expiring first) and drop off automatically at expiry
 - **Privacy tiers**: every request is served at `standard`, `zdr` (zero data retention), or `private` (TEE). Ask for a tier per request, per model, per base URL, or account-wide — see below
 
@@ -787,11 +789,13 @@ Spot stocks work with swaps, transfers, limit orders, and DCA. Only issuer-token
 |------|-------|
 | Counted launch attempts | **3 per Bankr wallet per rolling 24 hours** — identical for Standard, Bankr Club, partner organization and provisioned partner wallets |
 | Launch rate | At most **one token per minute** |
-| Launch-wallet age | Wallet must be **≥ 24 hours old** (measured from when Bankr created it, not from your X/social account's age) |
+| Launch-wallet age | Wallet must be **≥ 24 hours old** (measured from when Bankr created it, not from your X/social account's age) — **≥ 72 hours** if the wallet's only linked account is an email |
 | Launch-wallet balance | Must hold **≥ 0.002 native ETH on the launch chain** — required even on Base, where deploy gas is sponsored |
+| Simulations | **20 per wallet per 24 hours** — capped separately from the launch quota, and still never consumes a launch slot |
 | Same name, per account | 3 launches of the same token name per hour → `429` |
 | Same name, all accounts | 10 launches of the same name per hour → `429` |
 | Per fee-recipient address | 20 launches per 24 hours across *all* accounts → `429` |
+| Per client IP | ~10 **successful** deploys per 24 hours → `429` — non-partner only, approximate; the ceiling a single deploying host hits first |
 
 - **Only launches that actually went out consume budget.** Quota is reserved just before metadata pinning, and an attempt Bankr can prove never reached the chain hands its slot — and its name/fee-recipient allowance — back. Anything that was broadcast, or that Bankr can't prove wasn't, keeps counting: the classification fails safe, so never assume a failed deploy was free.
 - Validation, resolution and pricing failures before that reservation point never consume a slot, and **simulations don't either** (`--simulate` / `simulateOnly`). Retail simulations still require the 24h-old wallet; the balance minimum is skipped.
@@ -1180,6 +1184,8 @@ See [references/safety.md](references/safety.md) for comprehensive safety guidan
 - "What's my ETH balance?"
 - "Total portfolio value"
 - "Holdings on Base"
+
+> **Balance lists are filtered, including through the agent.** Low-value holdings are hidden by default on every balance surface — the wallet's `showLowValueTokens` preference and its $1 threshold — and the agent reports how many it dropped as `hiddenLowValueTokens`. Native gas rows are never hidden, and a filtered list is never proof the wallet holds nothing else; ask with `includeLowValueTokens` when you need everything. Selling and transferring by ticker resolve against your actual holdings with no floor, so a dust-sized position is still tradeable. See [references/portfolio.md](references/portfolio.md).
 
 ### Market Research
 

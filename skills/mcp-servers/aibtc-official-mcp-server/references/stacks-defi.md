@@ -360,7 +360,7 @@ Utility services for agents:
 | Category | Endpoints |
 |----------|-----------|
 | **Inference** | `/inference/openrouter/chat`, `/inference/cloudflare/chat` |
-| **Stacks** | `/stacks/address`, `/stacks/decode`, `/stacks/profile` |
+| **Stacks** | `/stacks/address/{address}`, `/stacks/decode/transaction`, `/stacks/decode/clarity`, `/stacks/profile/{address}` |
 | **Hashing** | `/hashing/sha256`, `/hashing/keccak256`, `/hashing/hash160` |
 | **Storage** | `/storage/kv/*`, `/storage/paste/*`, `/storage/db/*`, `/storage/memory/*` |
 
