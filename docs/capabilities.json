@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T21:30:18.997564+00:00",
+  "generated_at": "2026-09-16T04:57:36.995090+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -92835,7 +92835,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -126918,7 +126918,7 @@
       "auto_invocable": 3,
       "can_execute_shell": 920,
       "can_install_code": 465,
-      "can_write_files": 118,
+      "can_write_files": 119,
       "can_browse_web": 197,
       "can_spawn_subagents": 206,
       "can_move_funds": 240,

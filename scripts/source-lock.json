@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "e49b1774abc49bcda08dbc357031f02cd770603d",
+      "revision": "d67fae00bfd83ff29a284f3a42454ffcfab234fb",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3845,7 +3845,7 @@
     "exchanges/senpi-ai-senpi-account-status": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-account-status/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "22acc8f973d8d2901a4b6c6c650c50255ff1ce57d8d5e8948dce239f748be323",
         "references/presentation-notes.md": "8d2b874195f95d991f27d779b20dcc1094776640e987fad1fa5f29c6ae77958f",
@@ -3868,7 +3868,7 @@
     "exchanges/senpi-ai-senpi-deposit-withdraw-transfer": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-deposit-withdraw-transfer/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "66c4c0241d472038ccad833218289242b63a5dc18706cea60b58d0cc619212f9",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
@@ -3881,7 +3881,7 @@
     "exchanges/senpi-ai-senpi-market-pulse": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-market-pulse/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "1567681dbb2fcfc6dc90c3b2c458a06f88d19b61c2b298d0333934fbe7e732ac",
         "references/analysis-framework.md": "f28318e3cff4ded3a3c58369a6b7157d7d0e88b1f16f15ee4609fdd05813d634",
@@ -3906,7 +3906,7 @@
     "exchanges/senpi-ai-senpi-trader-research": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trader-research/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "138e09f18d9ba33785054457da073958fad7c312ec47fe8030d1ad76059bab4a",
         "references/analysis-framework.md": "251247922522a5a2c546fd5f44b8c5f865f34ebabd7f52c9ba140231f328d379",
@@ -3929,18 +3929,19 @@
     "exchanges/senpi-ai-senpi-trading-runtime": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trading-runtime/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
-        "SKILL.md": "dbf7d60bbd43fa0411168beaf4dc14939b1bcdfedcbe05224767757deadb1877",
+        "SKILL.md": "9ed988d0dcecf65bc8b9ef15dd00dc49a95de74c0650bf5f149ddfba1bee3b56",
         "references/dsl-protection-check.md": "2b004cd3b65834e9adf9964087fa97e9e65e81feb3d4d7a8a70e494ed138dd96",
         "references/runtime-cli.md": "b9489e76c232c5f08d5ad07735b38cbce69874b8606a2791a180102e211ad9c2",
-        "references/runtime-concepts.md": "abb1b028f914e2cd094ba960c3ef73c639263e15327555732671275661f2381b",
+        "references/runtime-concepts.md": "da442cd43f573961c58c33800b35b37f4b07c7acc3d7a526297cafa6d67522f4",
         "references/runtime-yaml.md": "bf93224b2083aa58488f6b8bdec0976681601e69b643cf6a6fa9696927b68d08",
         "references/scan-contract.md": "4b4bcff2b24e9e30794dd0631cae2cf417adcb9e8a775c31c0e155e7cdd29a51",
         "scripts/gen_catalog.py": "7fdff3995a77144cef09ab61676d401e3c26fe393fcc115c2ef6e97a880af3b1",
         "scripts/min_budget.py": "0b6044c095942e061e27f2156cf57c9715e1ec28f79991764905128d7f19ccde",
-        "tests/fixtures/min_budget_golden.json": "c4946e9bffda3dd2617d9066362daeadc6b68781fd5f2f48b301c275ff9a8640",
+        "tests/fixtures/min_budget_golden.json": "1b818937f9112a21e013af760a93769dfd8570c020801d19add99d3d53961347",
         "tests/test_min_budget_golden.py": "70df3ee13bb696ec87755c33a4cbad11ea15a7585c7a93a9e4d8b87f9ee3c7e1",
+        "tests/test_reference_time_cuts_either_phase.py": "ce2dad234213becba147c69d34698f297d99e74869662bd6902a40ce075cb9ce",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
       "modes": {
@@ -3954,13 +3955,14 @@
         "scripts/min_budget.py": 420,
         "tests/fixtures/min_budget_golden.json": 420,
         "tests/test_min_budget_golden.py": 420,
+        "tests/test_reference_time_cuts_either_phase.py": 420,
         "LICENSE": 420
       }
     },
     "exchanges/senpi-ai-senpi-why": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-why/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "10a286125f15eae58c6a16bd30b5f44166f44ca5af49e9326fe6c309801537d3",
         "references/overview-positioning.md": "4174702e1a53b0f145c1460fd0de59934254825e523762c7631269f9a4e049a7",
@@ -4295,7 +4297,7 @@
     "mcp-servers/dexter-mcp": {
       "repo": "dexter-dao/dexter-mcp",
       "path": "skills/dexter-mcp/SKILL.md",
-      "revision": "2781bb4ac09fcdc0237589bf04f83c3dc3d8d211",
+      "revision": "554baf797bd81b59b8ab43ad631feb2ddc2638c3",
       "files": {
         "SKILL.md": "be782604f6204a7e4ebf4d6e5ba2265a0225a89a9689cc97ec3ecea6203302e4"
       },
@@ -4394,9 +4396,10 @@
     "payments/circle-official-bridge-stablecoin": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/bridge-stablecoin/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "8d45873f8ef434352a8c732632d093f020c8dc996de2d18c035597a816beb27d",
+        "SKILL.md": "4b34477cd925170284b9be568b46f46c08007ceb1e18c7d09d6ddf08257079a5",
+        "references/adapter-browser-wallet.md": "a9fa6fa542f888b5f3e4d043cdaf8577a71c03ece3721c6a69b91b7887b1ac32",
         "references/adapter-circle-wallets.md": "4a6ff7f80b58b614fb37af399589edac384c7a33d05988be932addf9412346ad",
         "references/adapter-private-key.md": "3b3df1313b081d3b8d890779624445f993f6c06b4823e39b491f4425a981e346",
         "references/adapter-wagmi.md": "3ac3b0a55e1d11cdef68a3b485cb380c094c509182518aabc4e4a8578989a99d",
@@ -4405,6 +4408,7 @@
       },
       "modes": {
         "SKILL.md": 420,
+        "references/adapter-browser-wallet.md": 420,
         "references/adapter-circle-wallets.md": 420,
         "references/adapter-private-key.md": 420,
         "references/adapter-wagmi.md": 420,
@@ -4415,51 +4419,55 @@
     "payments/circle-official-use-arc": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-arc/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "c67e5e9dd4fe40fdc079e1f08da1834aa2062d3e2b2df19b6b48fc2bd25fba1e",
+        "SKILL.md": "80c265829afd35a844fd468c211dd6071857894f3dd0db797c36e71d325d4b0c",
+        "references/deploying-on-arc.md": "da7010fadfeb12eecfbd4bd7f7bfe93c7f036a67427736e44deedf5d8bb0c2f8",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
+        "references/deploying-on-arc.md": 420,
         "LICENSE": 420
       }
     },
     "payments/circle-official-use-circle-wallets": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-circle-wallets/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "5515c3b5f57cca6091d129fed89713e65abb733e4b44f9fc22c058f142b46d57",
+        "SKILL.md": "f7036da034d6dffb4322d48fa7d11b87a6f3b87e91bc93d5039c58dfd6e98878",
+        "references/example-scenarios.md": "47cb20701572fa446882f25784784c363c4ea0cba829a0bc27f1fbe0243a71bd",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
+        "references/example-scenarios.md": 420,
         "LICENSE": 420
       }
     },
     "payments/circle-official-use-gateway": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-gateway/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "7f768210547b93d070b950c2afc906a92a87a5a0d49a1e1b51c463d51c80861b",
-        "references/deposit-evm-browser-wallet.md": "98e0b071582aee8bdef2df45ee4ff913fadfe1036c49ae451df470b612ffb89e",
-        "references/deposit-evm-circle-wallet.md": "c5e072504860b11e6914d1da99ba57020c60fce90e2648880a03c1674a636703",
-        "references/deposit-evm.md": "11bd42efddcad502c00427e1bb0345a5f557036e316dd8b215326c3a3c9f39bf",
+        "SKILL.md": "44f043b0172267c7551b9b8bbdccbd22181c9f48be6a0d7b805845d4cb3bf0d3",
+        "references/deposit-evm-browser-wallet.md": "78944e78065b600d3f6d6b5b49f09155a058e1f1ff64fb5031dd7a9b2f32d7cd",
+        "references/deposit-evm-circle-wallet.md": "5051996cf19962d9a7e71e5f8150b3a814fd92f3d463b526eb153e5c1e6f51d2",
+        "references/deposit-evm.md": "9e39793c9f907a188825d39f794c8566ea45b52d00018cd18494a8eddd84fbf5",
         "references/deposit-solana-circle-wallet.md": "80dcbaabb706cf2b625c274cf2d50b7928f13cce1b170e974aadd67f9046780d",
         "references/deposit-solana.md": "4efb6f6e1e3c3dba5f3e98fbe9928bf7b6d24d3a99aeeb744d54818bcac28631",
         "references/evm-to-evm-browser-wallet.md": "bed6507f58f0d7ad60682c7f23312b956d6fc7d550bc29191a9f1708534f74a5",
-        "references/evm-to-evm.md": "f2fe2cc4ddc93cd8e34f0aa7e10e70092f1e8dd1d4022d8cf615900291392b9e",
+        "references/evm-to-evm.md": "20808f5093f0775a4e643f36e37e8088d750f3314457efc12cf046eabd9d127c",
         "references/evm-to-solana-circle-wallet.md": "621d7ad07dca796c01a96a6fc9012b5907976010e5521e1e6eadedf457b6ed16",
-        "references/evm-to-solana.md": "c479243b6a174afc49eb7e9f567aff555b83bba3b4bc8b5ca44159d30e6962f7",
+        "references/evm-to-solana.md": "2566309388bfa697731e97f96eee7161c1404b34fd32e917336bb23b302315e3",
         "references/query-balance.md": "ceb00cb6047df6130c7a558e74f08142f715db254435b4a1ee0657c4230d754b",
-        "references/solana-to-evm-circle-wallet.md": "017670696a171ebf3ea8f0a3b3a5d29ad648e7af7e913b0ae97b50b3ce246930",
-        "references/solana-to-evm.md": "a71efe94e5229f69deda44b49543fb2cc55b35798bd0a3c01d9eb26ef5fafc60",
+        "references/solana-to-evm-circle-wallet.md": "f9d3d4723ff7d16fd6f17afe52a1d79af8b1239ce39f119c07e918a60935c36f",
+        "references/solana-to-evm.md": "fb58355f4dc310455d6a2b335bf773350be9be4626834955b5029f96bafceafd",
         "references/solana-to-solana-circle-wallet.md": "70e5736a26eb33becaa27ec25bcab2a36ab9a343d0af362c253d3130a8326688",
         "references/solana-to-solana.md": "38e3716bf78a008d9c7889511dfe7893060f1149f889dcff16e110df17ed953a",
-        "references/transfer-evm-circle-wallet.md": "7ac5b824b1e1e3043bf3a6675be9c0ccadd679950e2d782de3454be59a5af629",
-        "references/transfer-evm-delegate.md": "f602c74fe47fe3afddca1642e8aa557e3725fcb77a9dfbe76a8d99a9958486db",
+        "references/transfer-evm-circle-wallet.md": "739a2a17e76989d6993ba5a782e2a8c8b632eb50ea246ef229751a4d7f71e242",
+        "references/transfer-evm-delegate.md": "403cbffeecd08eea1fb40f91c3666630cd24803cc975d1d2ddbbe823e2452b8e",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
@@ -4486,13 +4494,13 @@
     "payments/circle-official-use-smart-contract-platform": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-smart-contract-platform/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "3363efe6e95da05665f5a861b9dbb7a6c393d5777373b5ea13ecc1f8abc4c6dd",
+        "SKILL.md": "3733e3f8b337a1d7d7efbca326261b27fc72d2c2bd6842531479b37da02c464d",
         "references/deploy-bytecode.md": "c846be17fb5bdb20749dfe35a6e6462352ddef493a8bfcb58062ceb138fbe670",
         "references/deploy-template.md": "9f73f00ac4e497567f1c5227fe8538a1406d00bcddbe7d1e65b514cf20324665",
         "references/import-contract.md": "4e337dba1cd3191228a4bba5ffdbdf0dfd8feb02c3f8e0709efcc926741c7c5a",
-        "references/interact.md": "7c5480dbfb079d86e2ae0a1b546d04882b1839a4854f94e667e4ef536b2c0c69",
+        "references/interact.md": "5bea9c01cf487c245ff9ef3ac58e4be99eff24eb21f0f18ed52dbf37b8e44901",
         "references/monitor-events.md": "1d27d28630a0413bacf28175c8883c0129c3911639fff414d2097ea26e996c5f",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
@@ -4509,11 +4517,11 @@
     "payments/circle-official-use-usdc": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-usdc/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "a84fe1966841fd57297917bdbaaa2b97836ba45fb374bea7ef24981b296f97b8",
-        "references/evm.md": "fa2ea7bb8d4796f5ae9b71d5f49fbfcaa511d4b96271120f2fd97768382a053d",
-        "references/solana.md": "1194b7231d5714a0047c7a7d5531f2deb146d0214023eb4ab5d020bc87309c75",
+        "SKILL.md": "234b616ac688a71a464757c9f77af2973d029ce9c30b49bcf12d87a38d6c7b42",
+        "references/evm.md": "13855f234f0d4245a863e1fed490012f88c66c4cf3aeff40fc045a54964d07a3",
+        "references/solana.md": "1fdf9c5adb6333f4a79f2101c4a1efc8a19660f00185946aac43be6d55bc56fd",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
@@ -6060,7 +6068,7 @@
     "mcp-servers/coinrithm-coinrithm-trader": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/coinrithm-trader/SKILL.md",
-      "revision": "47ee776d0c1d10b2a22da23ae562fa633f747ee2",
+      "revision": "4c851bf818b4ed23bd6b74161f4c35ab28075248",
       "files": {
         "SKILL.md": "301e627d9b12c6942089fc97b6ba0085c29f6527765312a598f0b51bdd704fb6",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -6073,7 +6081,7 @@
     "mcp-servers/coinrithm-momentum-futures": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/momentum-futures/SKILL.md",
-      "revision": "47ee776d0c1d10b2a22da23ae562fa633f747ee2",
+      "revision": "4c851bf818b4ed23bd6b74161f4c35ab28075248",
       "files": {
         "SKILL.md": "0c251da5f3c4f6bcef5cc04b9e4391872775c67243e64fc7a5f6f8387e7560fe",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -12405,31 +12413,37 @@
     "payments/circlefin-official-agent-wallet-policy": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/agent-wallet-policy/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "f523dce272e2933c55db5a28a9f41efa1623f8f4d55b9077b07241fbab6a3164",
+        "SKILL.md": "c36f831db6538b7b2e36b6b4186045f1f636e5311f4c29cdbdb808bcdf9357eb",
+        "references/commands.md": "fd82545ba28ffe3f41490faa3b5148b16c1446cd8b709ccb1596bd37ad9bc34f",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
+        "references/commands.md": 420,
         "LICENSE": 420
       }
     },
     "payments/circlefin-official-fund-agent-wallet": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/fund-agent-wallet/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "dd0ed0aae2aec2be18f0498a59f3d2d623905ac26921a8ee9dff96d7535b8d17",
-        "references/crypto-transfer-alternatives.md": "099d760aaf65b56f2400d646afdea22390d2a091b90474e58e21f26a0f604661",
-        "references/gateway-direct-and-withdraw.md": "299fa42507d20aef1f25b05766565377d2f33918cfaad663f524bfa98b12d9a1",
-        "references/troubleshooting.md": "c36008179672b49d1ce8861d56ec9a1dd88deacc85782d86d955fa7f040ca4fc",
+        "SKILL.md": "3ebe75938c166c1f77b8a56373f770818662fe3a059b34ca85ab4c82551f93eb",
+        "references/crypto-transfer-alternatives.md": "daa043cb3d2dd66f6d275f54068afa6ada76e409468e935aa45cbf83e2c36f8a",
+        "references/fiat-on-ramp.md": "b1096ed0e8b225f03d799960d5c120ce70cd1f63c29669157affba4e2e6f2781",
+        "references/gateway-direct-and-withdraw.md": "7d58ec482f07350f5dedb69707fd9f62dc080f8cb835ae9de87229032c203baa",
+        "references/gateway-eco-deposit.md": "e4fa838f2649c14351931878fafdb62412055516824fc58e0c65b09da4cb0356",
+        "references/troubleshooting.md": "4856547e8d776904af22704589bb15e4a61b9e3be448309061aee42534a3cd5a",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
         "references/crypto-transfer-alternatives.md": 420,
+        "references/fiat-on-ramp.md": 420,
         "references/gateway-direct-and-withdraw.md": 420,
+        "references/gateway-eco-deposit.md": 420,
         "references/troubleshooting.md": 420,
         "LICENSE": 420
       }
@@ -12437,41 +12451,55 @@
     "payments/circlefin-official-pay-via-agent-wallet": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/pay-via-agent-wallet/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "a4a96e7561fb63e1da3ca3499631cc7735019a4a3846c83f964cfa48af82c50c",
-        "references/errors.md": "03af00dba3820c78c6d1f922a1104f15c110c52198c6d2a0d8873026dd5ac0e9",
+        "SKILL.md": "23bfb42c31430d532edbaef9d8be61ccebd5a595a0ec84a090900bb75a6a2457",
+        "references/errors.md": "67bc6f7ae30e6fcbec4f5c8edd29fee78345b8015fabf64391311a8c84d041a5",
+        "references/estimate.md": "42a3a6a2d5a206681eddcc31d03cb584834a144213ba72cf0720ece9f90f6866",
+        "references/inspect.md": "deb0d746d38e7d1c49b5657ef4dba5f20de66aa97e7d7ab5ae80f86c76e6e7f3",
+        "references/prerequisites.md": "90352847adb279a78e74669334e29af6574f4e372dd1452ef4fd02c247103fec",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
         "references/errors.md": 420,
+        "references/estimate.md": 420,
+        "references/inspect.md": 420,
+        "references/prerequisites.md": 420,
         "LICENSE": 420
       }
     },
     "payments/circlefin-official-use-agent-wallet": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-agent-wallet/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "8c233ec8045cbaa22eb8ca373ec9cdaf9831082fca1b44d12dd1e166ae0d19a4",
+        "SKILL.md": "22027006323ce5a950c93c8e369aa9024416479ee2352217a53f99848ecba737",
+        "references/install-and-login.md": "6d129b6ac5dd154851d8ec326ac382d15b043e078bfb1d08863c0c73364c9cad",
+        "references/terms-of-use.md": "3ff754ea5554897d0252e40ff9657f31ffdd8edcadfe2eb221b5185f5047d5e8",
+        "references/wallet-management.md": "dceb6208c9cbbc262ca6974e4f31a04c1eab64f14724432798308377db4718a7",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
+        "references/install-and-login.md": 420,
+        "references/terms-of-use.md": 420,
+        "references/wallet-management.md": 420,
         "LICENSE": 420
       }
     },
     "payments/circlefin-official-use-circle-cli": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-circle-cli/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "0614733d84a2c94377457e8f0cda89ffc54599aa9c339bab62d556f34330b2bd",
+        "SKILL.md": "cbbedfca761924fa759b7894fc945b6bec370a0379299d12970b18eeee4a10f5",
+        "references/cli-operations.md": "f5169f79e5725c38407824177e8352fe4d141ffcbe63c6fa7eaf4f15bdd276ff",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
+        "references/cli-operations.md": 420,
         "LICENSE": 420
       }
     },
@@ -17708,7 +17736,7 @@
     "exchanges/senpi-ai-senpi-improve-trades": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-improve-trades/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "a9a3fd2b084519e533daae8ba6edadaead72006101ad674015f43125b0561083",
         "references/event-log.md": "d7482c6647e679b4c69db7f5b74f8522462a90ef9ec7341b3491899bdcbae0ef",
@@ -17743,9 +17771,9 @@
     "exchanges/senpi-ai-senpi-portfolio": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-portfolio/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
-        "SKILL.md": "df07fcef362fc215ed28c57a95287e703e71736c8cb822141545665a65ef9ea7",
+        "SKILL.md": "9a038691132a6b06aa49e801cd0ac9d34899e7e8bbeff4072faad2a769cf1300",
         "references/analysis-framework.md": "4ed518f59b9ddb2c7c54f0ae0c4dce947ba048feee7320360d8ce8e3d80a23f9",
         "scripts/mcp_client.py": "1bb95ac39e0cdc2219efd19b6397c58b6ea0749071504a90f16c7f587a890ca2",
         "scripts/portfolio.py": "12db3dea82cb7db3db1fa0c60288414826384c0f7ae3efa871504f66db328e79",
@@ -17755,6 +17783,7 @@
         "tests/test_name_reader_parity.py": "c3229a742346095ce257076794bd1dc29589899712439aa748b411b56c08532d",
         "tests/test_portfolio.py": "227c9f7be764d44eaba58ac5420cdb9837648318f6a5ab136c6d204a783d5a50",
         "tests/test_prescribed_tools_exist.py": "57ebc5ce299bd4b3e8d8eeb3a8b173925fee855d0a6c6d74e062502a17f797c8",
+        "tests/test_skill_raw_position_stop.py": "20f511a2918f061c3a5c01d47ad28f5c3f0c464ae9124ed2e88c6aba8b2b4e9c",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
       "modes": {
@@ -17768,13 +17797,14 @@
         "tests/test_name_reader_parity.py": 420,
         "tests/test_portfolio.py": 420,
         "tests/test_prescribed_tools_exist.py": 420,
+        "tests/test_skill_raw_position_stop.py": 420,
         "LICENSE": 420
       }
     },
     "exchanges/senpi-ai-senpi-smart-money": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-smart-money/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "681330dcdf03d60759dc387de03ff73795b4a1663680176b290ee50d3ba593cd",
         "references/analysis-framework.md": "0b0487582583aa9c9ac17daa49ec2eb140a164cb7cd65af514b66786b6cc4ba7",
@@ -17797,7 +17827,7 @@
     "exchanges/senpi-ai-senpi-strategy-author": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-author/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "e426e05e977b7d069638dc51713b9cc081e4c6960ac4616bfbc69bb21eec9ed7",
         "references/creating-a-strategy.md": "8dc6a1c9e4182b66061c8a18839e88070954085fe526a11e39b1f03dac2f5731",
@@ -17846,10 +17876,10 @@
     "exchanges/senpi-ai-senpi-strategy-discover": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-discover/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
-        "SKILL.md": "18b8156f379d941647e164eca70069f52d40334d10fff78f4606e1775ba30cc5",
-        "catalog.json": "a1205dcb9ff8d544469a70691d37ed9440110408876bd6a320fc82e188118f87",
+        "SKILL.md": "c9afa64c7454ff8f2405208ceae8096f88b444c92b859887b7a70ac366c58340",
+        "catalog.json": "1a5706c720d7fb8901cd18865afb8b3983a8f48ddc384ac8b95c30ce8f35db7b",
         "references/glossary.yaml": "d127d3d4658437ab36f85abdf6f966bb3bd8188b5eb0d9d893e9e3c3bde54f55",
         "scripts/discover.py": "ec89e2489839232cba29fbc3db5bf0928b6915db14cf4a3b2a7d9c1fee9827de",
         "scripts/mcp_client.py": "2eaa9a1d241751caf0a07584f66ea6c7c04fc8af6d00278da91cc376ad162228",
@@ -17865,7 +17895,7 @@
         "tests/test_fullfleet.py": "1c404771ac65ba5317ebbde7c51637d0aefd6c6f8a6463f06228c8fc9296f26e",
         "tests/test_new_strategy_discoverability.py": "680f30b2bf6fcdb71049c55d8f96cdd2d3dc10d246cbeedcdda40d9634319790",
         "tests/test_scenarios.py": "1b1c100389c8da024433d11e2f240cf3e89ed23792e2d91e57db7fb7e40dc99e",
-        "tests/test_skill_surface_discover.py": "f348a0c41b08d7667a6a23f1054df5b3618a911bdeefdf82edc031e9cb5a6982",
+        "tests/test_skill_surface_discover.py": "7077b529cbb2c52fba3671277b31916939be63703de499f307d5c8357bb81c7c",
         "tests/test_theme.py": "8e51dbacc47fbefa6e056cd6ebc8ad5f794a349f91fe7739763162abb1db8d8d",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
@@ -17895,7 +17925,7 @@
     "exchanges/senpi-ai-senpi-strategy-ops": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-ops/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "56a69b9c2e6b30925bd41ba301c84fa10edaa4235b11b264b97db363bc7ec6ca",
         "references/editing-a-live-strategy.md": "69b47ad3fcbf40bf44b0db266348712967f7dd2e5d59dc3d9af102158e979fbd",
@@ -17910,7 +17940,7 @@
         "scripts/_pkg.py": "a1d9c547eb46bf516089af95cb65794a86cc90c91712d96ce210e0b6e21d2e29",
         "scripts/_yaml.py": "e9153c92832cb60c4010cd68521f4851ef2ee1a4ecabbafa24ee2757e8bef365",
         "scripts/close.py": "3b50150471b83e8547897b781e2947e0e77bc0de3c84218407d5b0a91001c9fa",
-        "scripts/deploy.py": "1d3825a19ef684d8aaa68a5cf1b19188a468108b388237be74151c74c06f7897",
+        "scripts/deploy.py": "913fd0be1a521a0848df0cdd03571f3b2a89a8e611176dd8a2a4eca9cbd9810d",
         "scripts/mcp_client.py": "1a4c3202890cf54e6938a9e347038c5181b6dcaa331fcc20a1781e5a89ccb0ec",
         "scripts/min_budget.py": "0b6044c095942e061e27f2156cf57c9715e1ec28f79991764905128d7f19ccde",
         "scripts/run.sh": "f9cad631a6a9bb666c08b19417b72bb61b44147341c425dada0adb99cfd15e05",
@@ -17921,7 +17951,7 @@
         "tests/test_deploy_update.py": "c7e3b7065f726e512a84b5d7fdd6555326dade389e7bc293789575c35f512bbd",
         "tests/test_deploy_where.py": "b2f3e4c7f2b7250f4150a78401f81b942c19ab4d895a0f17f74cf426a266ba57",
         "tests/test_deploy_wrapper.py": "456699db53ce7291a3e886023b0638920bb8a5f13b4eeac4faf3e48e573bb524",
-        "tests/test_dex_awareness.py": "d70b09e4c5d2a71ae0e6fe426778c27a14c6dca2159022e988ea6a0d214d318b",
+        "tests/test_dex_awareness.py": "5255c33e28226fef46856f8316e416e4fe45900d12141676eda75fc5672ef175",
         "tests/test_entry_gate_reachability.py": "3b9b3176cf3514fce56f31d75b1b605668e40d136c999ccdd53eb3b905c10b2a",
         "tests/test_error_tail.py": "4dc8d5abf485fc8e6eac9318cd41980bbaa24ccc05b3671c15e056588e7e00a0",
         "tests/test_fork.py": "851ce8291221f3e78805fee7ba2dd2bb782ba255c246938cc9da75ea92d66806",
@@ -17978,7 +18008,7 @@
     "exchanges/senpi-ai-senpi-trade": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trade/SKILL.md",
-      "revision": "55ea4bbb683f41f33ea761872425ffaab0f02a23",
+      "revision": "a5ce61c1a352140a20fe64a7f7eae1503ac28a13",
       "files": {
         "SKILL.md": "9d156ee504aa835812bb71bd57cc302411f8b4e7d6f6285689e15a22dc317126",
         "references/mirror-monitoring.md": "cdccc8739732d67d95a369a94229194a1af0b6a7c4edddb6b4de9e7d8ebaf542",
@@ -18103,15 +18133,15 @@
     "payments/circle-official-use-developer-controlled-wallets": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-developer-controlled-wallets/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "4cb96aece38d1ddd91e0d17f233bfe8066ad110b4a76700c17db9777422eb1fa",
+        "SKILL.md": "3f14a4139d82acd810af92072dcc0208b61fcef60b3ea3a0a764b4782aa7a1cc",
         "references/check-balance-and-transfer-tokens.md": "4aea6e982f2030d73540cd348def458eeb8a792d6f673c56e14f76deabc40cfc",
         "references/contract-execution.md": "571e7d5a9f8665315e7a313429df3e4f17fdde9cc1852f7c996bb610e1686590",
         "references/create-dev-wallet.md": "d96b159d56ee498fb1ba942e504150eebcf4ee149ed7998391811b23b79855a9",
         "references/receive-transfer.md": "5017855f924562b00221fd1f836f5653d11383d0c8e9b2038faf8fdfc1ec9c11",
         "references/register-secret.md": "23a5d56ba87887fbfe526611942b58752e448894722ef57326d02e6a36d5a769",
-        "references/sign-with-wallet.md": "a7fcc8e56eee70296f0769f3ad44e51a9ebfb52503aa352d0b224726e8ce9d8e",
+        "references/sign-with-wallet.md": "19e5d7fa15951789918d6ee9f1b866ad5577c036d1de75963a48542366d9bcb4",
         "references/wallet-management.md": "cf37bfa213f930b38d4182efd2256243925c27e6bb25e9bbe528e1f7a61889bc",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
@@ -18130,10 +18160,10 @@
     "payments/circle-official-use-modular-wallets": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-modular-wallets/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "abc6b52d9ca2dade9e98f68f8c05eb090fd7e351e5dc8a687f40d4576d932a23",
-        "references/circle-smart-account.md": "6c3b67914dd9fcdbf6953687330b752f01eaa2fe6a302fa90cfb831839a430b4",
+        "SKILL.md": "8541c507100a566d6ef7d420dd92e9c3a7878ba7b020f7fd4e520bac1acf6ac8",
+        "references/circle-smart-account.md": "73e5eb48ac438b35fca14369d01fb7c8a164dbf93b521cd044c8d319d5699440",
         "references/passkey-recovery.md": "ae37ad995d83423350603fe7c02b279846ce21bcd819e4871cda2c8ad89273e2",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
@@ -18147,13 +18177,13 @@
     "payments/circle-official-use-user-controlled-wallets": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/use-user-controlled-wallets/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "0be0d2c90be96affa72a8a5f0dae897c5f8c8dd692ec6a5c29b1f1c5acdfdf68",
+        "SKILL.md": "18efadafdf4b8ab650973ce72e55386c5497ecfdac47e4f971750b60cc232246",
         "references/contract-execution.md": "fb2de745c5a0ea9c76e7482dff297b533ed7b05028ae2f90be3487b033218a7a",
-        "references/create-wallet-email-otp.md": "fa1ad328cb5a3e8ea856965bda482713b8d2a11c41f3a509ad5b35bef7e1c088",
-        "references/create-wallet-pin.md": "2e9ff0658df213188f170370428b647fe009682bcf7d633c735b8e206719b1bd",
-        "references/create-wallet-social-login.md": "b939faaa63e43a047dbe480dd998b82e70fbe834fda42861678b5081899486cb",
+        "references/create-wallet-email-otp.md": "047bb4ddfb33e22bd9740acdea01d3bdf5ac0486d6b4c145d712b9697614d036",
+        "references/create-wallet-pin.md": "acec14526ecefb192d5da7e3193be11832e64f98a91a3821e254f1e3630ab12e",
+        "references/create-wallet-social-login.md": "282f73a75af0763ced69e5dd5e74959f0dcdb79fef1fa2d3901e2cc3b7a4f858",
         "references/send-transaction.md": "e537b23c3792143af5905b51c1812569269db08d1899d8f88cc3a5b6006b82b6",
         "references/sign-message.md": "766c13493fb1d94b94d8fc08ea992940d8765f85e228148ac7c766ce95c0dd13",
         "references/wallet-management.md": "989a86703896bb4c316c7304bbed25abaa35d0b3eec7bd0a93cc652c66b1dbc6",
@@ -18174,22 +18204,26 @@
     "payments/circlefin-official-accept-agent-payments": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/accept-agent-payments/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "4b2909acd8ad1f4762f60ca5ce0382056b1bb5a0c565e0c6b4cad500db4d9229",
+        "SKILL.md": "2f2075f64a2aa0496273e8ee5ea6bbbf153b4bdb438488612a03d124d3a497cc",
+        "references/express-integration.md": "e2c8b48103181e8c1d4f337d093d91f8651f8e5583342cbb8f0665a1c232fed2",
+        "references/testing.md": "712ed88435f1a9f9142b0febfc48d5d6655469f0570a584e41bf8c726a631479",
         "LICENSE": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
       },
       "modes": {
         "SKILL.md": 420,
+        "references/express-integration.md": 420,
+        "references/testing.md": 420,
         "LICENSE": 420
       }
     },
     "payments/circlefin-official-recover-eco-funds": {
       "repo": "circlefin/skills",
       "path": "plugins/circle/skills/recover-eco-funds/SKILL.md",
-      "revision": "26dc09ea0746a038c969c6f197feee1267f834b5",
+      "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1",
       "files": {
-        "SKILL.md": "946f27443e420072912a7eaa47f1a1c59fe3ab8bd002ec8668190691d95ac688",
+        "SKILL.md": "6881a32cb3dd8f6e5510bab538004942b4ef9ccb9a2eca025658ec10e6f6a225",
         "references/eoa-to-sca.md": "75e0ed550be37ada1e798afbbb5c4f477689d48bf71a49679271f47216de35fb",
         "references/self-refund.md": "0597ecaa296cf59fee19600c142c017cbe6c2daa66d79f6f56509047900314c6",
         "scripts/_shared.mjs": "1e66116a7d1c3b1c579d1e23cb04dd6668daebeadd61a6fc67f3abda12f8830b",
@@ -22480,7 +22514,7 @@
     "mcp-servers/xinyuzjj-binance-leaderboard": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/binance-leaderboard/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "b323ddc4bd06c47a900d82da600137136365882296f312af1efcd48b4e438337",
         "references/cli.md": "fe1a26251171422972253da841001371090ab55a7236f48fe1023bf565a91d8e",
@@ -22497,7 +22531,7 @@
     "mcp-servers/xinyuzjj-binance-sports-ai-analyzer": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/binance-sports-ai-analyzer/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "944cf5fc0fbafe490a0181efc19780b697b10cac892f011dcef1823bb5260f44",
         "references/api.md": "28633e7aca7f1597eb5a441b1796e33be4acf3977fbc1004a4a67bf34c1782b8",
@@ -22514,7 +22548,7 @@
     "mcp-servers/xinyuzjj-binance-tokenized-securities-info": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/binance-tokenized-securities-info/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "9331ea094a9862a27c1e9bdb578b430450294f5230f5085cfceaed141217f008",
         "scripts/cli.mjs": "a3e31bcb5403edf5eff6155e3febb8ce8f2f2855781a7b55bc521a37cffc5715",
@@ -22529,7 +22563,7 @@
     "mcp-servers/xinyuzjj-binance-trading-signal": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/binance-trading-signal/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "e849dba3d713d2b69e9f7bd5adbdaeeb6b0c6d2ab987c856a309cdcccb069f9c",
         "knowledge.md": "f5e909bcaca07b28e76c923e8c766d5bbc21b01bf5bd025c28c9a51f04f98a7a",
@@ -22550,7 +22584,7 @@
     "mcp-servers/xinyuzjj-binance-wallet-tracker": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/binance-wallet-tracker/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "e64466500126c43895ca9ac8f6ded22211a0211236a51ee9ade400755f558c2d",
         "references/analytics.md": "2f488658db5aa649876b4b4660cd2c2896fe4be38eef30eb98caa67ad5c9aa76",
@@ -22567,7 +22601,7 @@
     "mcp-servers/xinyuzjj-binance": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/binance/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "CHANGELOG.md": "51e2b981fb20f7b468cea106d414d96d8b0db83d67b89c030b284f4b1829fc6a",
         "LICENSE.md": "f72b32bd41b493a04d1c4d6959639a0694991988f08b33d619e4133d37d1d3c7",
@@ -22650,7 +22684,7 @@
     "mcp-servers/xinyuzjj-coin-report": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/coin-report/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "25788b8ba74ebbf22b2d5bca30e3dec74cd29cf88053f1f5f23e727a487b5aa9",
         "scripts/cli.mjs": "3ae07fac8ae4a046d76a77e40d959fd1d94641c7f7b771cefd6bcbd1b87702e8",
@@ -22665,7 +22699,7 @@
     "mcp-servers/xinyuzjj-crypto-market-rank": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/crypto-market-rank/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "4ce81b7b31cc4a09c85d349a009a723cf56b3396bf4348fda3e935c9014eae1c",
         "references/cli.md": "309052c3fd91c2b3ce8350b8157e3e2380c2e1a249736895fa30ac593f054e36",
@@ -22682,7 +22716,7 @@
     "mcp-servers/xinyuzjj-market-data": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/market-data/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "35859503506318bf218849f2e0b0e8f12501f193f942e2d33db1180d8075682c",
         "scripts/cli.mjs": "5713c3ad6299a27296bb8d6a84b4d01cc4737978c1578c25b6425ad22e042310",
@@ -22697,7 +22731,7 @@
     "mcp-servers/xinyuzjj-meme-rush": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/meme-rush/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "7ed6756fe1bbcf144b95de156e376a80458cef1089cca0741926c8bd566b688c",
         "references/cli.md": "c178bbea6854d48273081c1436e8e3c145476442d02d4d97e5164ad5e78d8ca0",
@@ -22714,7 +22748,7 @@
     "mcp-servers/xinyuzjj-news-sentiment": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/news-sentiment/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "fd7af8e44428c8c4ebc2bc4a3aa687e1c73994116bbae0bb47fbda4cc8c968fb",
         "scripts/cli.mjs": "db70a5dc4898d946b55cbe8eb3e3d714626086d3ee9bc6b88c272e8e8f1ebafb",
@@ -22729,7 +22763,7 @@
     "mcp-servers/xinyuzjj-portfolio-review": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/portfolio-review/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "30cb93d14fcda13ef335cba70eb813b9d00f0405da36fbba4aaf0840f140e526",
         "scripts/cli.mjs": "bcafaeb694cc4df75d6a94f044f07c45e7f257667bdf1126d6cdf903e711b20e",
@@ -22744,7 +22778,7 @@
     "mcp-servers/xinyuzjj-query-address-info": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/query-address-info/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "7a57fe486a0c163fff8f317f8b102a2a4e16acbc8bdf8fe585355bcd52c9faf1",
         "references/cli.md": "8634a221c87bf9f1b5706cb0143e20bb28925e93497ff61d8214565ac01bbafa",
@@ -22761,7 +22795,7 @@
     "mcp-servers/xinyuzjj-query-token-audit": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/query-token-audit/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "fa6b4750e92f21414084d84ec46f90c3e5946999e36a8db5b4d3e9fd6b267b17",
         "scripts/cli.mjs": "13f7f53ee868b0881671ef7fc36dec7ca07123d6ea48911fabda3b304e20a950",
@@ -22776,7 +22810,7 @@
     "mcp-servers/xinyuzjj-query-token-info": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/query-token-info/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "5883e006e5848a5d988eb52795313e905ca0daa1f20192d530765a060be46a01",
         "references/cli.md": "923b43ae85178df4cc3300dfe0fd682ece6b52afa6a3c3e555f0b6e8b83e66fa",
@@ -22793,7 +22827,7 @@
     "mcp-servers/xinyuzjj-risk-guard": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/risk-guard/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "d65aeced6cdf113ae08688b81dba53a8550ddd4bad36d944510936bb0f0ec369",
         "scripts/cli.mjs": "b2524f2e708930d2ba101c4f6b94468e4573abf5a96c9727fad0cf3d1f0bef67",
@@ -22808,7 +22842,7 @@
     "mcp-servers/xinyuzjj-square-post": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/square-post/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "README.md": "0b616e9aa63c33e3365c2e9fc29e64ef58ed90b313955ab6a4b4ccb3e40277f1",
         "SKILL.md": "f8d0de32c0e72e271f9804567f1e054b52fc6a89aa5e15bcfab227ad7e5f8eea",
@@ -22835,7 +22869,7 @@
     "mcp-servers/xinyuzjj-square-rich-post": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/square-rich-post/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "3caebf3f2e428f89af3f1d00de45c715456da4f57e8bd61639b6acea473a2e0b",
         "scripts/cli.mjs": "622beada4d4e4c290fdd4755b03b361203d676def2989c4be9330ed1abc4e137",
@@ -22850,7 +22884,7 @@
     "mcp-servers/xinyuzjj-track-monitor": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/track-monitor/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "c9904cf4564826347c4236235b86a87477a7896ab595314eb23b46a3ea80b08c",
         "scripts/cli.mjs": "b89a20c7a6a41e3d284c21170444e7a30c3d6ee6d63d4175e8272bfa1054f270",
@@ -22865,7 +22899,7 @@
     "mcp-servers/xinyuzjj-trading-signal": {
       "repo": "xinyuzjj/bazz.agent",
       "path": ".agents/skills/trading-signal/SKILL.md",
-      "revision": "f5cee4eee4cef1e6b8c750922d191cb587ce0453",
+      "revision": "7343623a24e9ba054a7f8f64ed852b966ab73adc",
       "files": {
         "SKILL.md": "6f093f2994507f039ee9e675072e3559413d86cb834be0c979791f00d98e4c63",
         "references/cli.md": "7a3e3251c652f8f0ec69198c6365481418a7a66ba65e7fffb6e8cad9c7cac3a1",
@@ -23338,7 +23372,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "989c01e79c13f362ab4bba43d84d443f89015d54",
+      "revision": "6fc17396c5a5024c239fbfeea2febf497228c4a4",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "8f38e7b7566e8d3956459e15458cfad54aa92827a608a616dcad2c43cb62b3ca",
@@ -23349,7 +23383,7 @@
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "7301b3f2e0c8e9098d7bd44c9fc331302db6ad5bd43cdb1668f01943ad149a38",
-        "docs/data/snapshot.json": "36de54d4082bd89d72382f8376e4fa37168e579f01ba10f7a17c7c911db7aafc",
+        "docs/data/snapshot.json": "3a2580cd123eca1f26274f7624a1e9c77449fcc6f1c398f28c93ff8cb9db2462",
         "docs/data/timing.json": "9ac7f9d52f0ffee4640ad99a787386931cc7614a6a9807aeae744ef4693edce4",
         "docs/index.html": "d70307edb8aca5b4cf67ce9ae2b56f36820136ac12291248a78b3e73dbf26567",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
@@ -23502,7 +23536,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "9683b5ba0139c7a5c16cc0a45391a196b633afcf",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "e49b1774abc49bcda08dbc357031f02cd770603d",
+    "jiayaoqijia/cryptoskill": "d67fae00bfd83ff29a284f3a42454ffcfab234fb",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "266dfd19c96104d8dcef14373215ab0bcd6ea98b",
@@ -23513,8 +23547,8 @@
     "chainstacklabs/rpc-nodes-mcp": "8920ed796409e2efc32953f787cdcdfff2e6c335",
     "celo-org/celo-mcp": "f6287609980b847d13011bd146014d30d7e57734",
     "alexchenai/chenswap-mcp": "df99e1a7861004abfb0f2b0c77bdacd50d44f361",
-    "coinrithm/coinrithm-agent-trading": "47ee776d0c1d10b2a22da23ae562fa633f747ee2",
-    "dexter-dao/dexter-mcp": "2781bb4ac09fcdc0237589bf04f83c3dc3d8d211",
+    "coinrithm/coinrithm-agent-trading": "4c851bf818b4ed23bd6b74161f4c35ab28075248",
+    "dexter-dao/dexter-mcp": "554baf797bd81b59b8ab43ad631feb2ddc2638c3",
     "onflow/flow-mcp": "2afc462130e957e3f311f27cd0d0201698cad8ce",
     "injectivelabs/mcp-server": "daa98388cdf6c472c93211b1e9059725d72bc42e",
     "kukapay/crypto-feargreed-mcp": "b1f22947d81be0e34a502dfed0b866024db46e6a",
@@ -23537,7 +23571,7 @@
     "portkey-wallet/ca-agent-skills": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74",
     "bitget-ai/agent-mcp": "486a7c5b2769e452bc7d3b39337cb6d3f9b1a0d3",
     "bnmbnmai/mcp-proxy": "67132d34daef3f3e5130c7ec89cc84039ca7f037",
-    "scutuatua-crypto/whaletrucker-ecosystem": "8ccbd654b5c3976978a71ada2cd3a08bb2c5b963",
+    "scutuatua-crypto/whaletrucker-ecosystem": "df71f0b9236af57ae5c4eaf35b1ff5b0d46c1403",
     "eschatological-cpi959/finance-mcp": "5437f1db20486994c8f00ebaccab1b787701dbc7",
     "fibrous-finance/fibx": "a742b16f54dffabb0afe622fb4ab7e1a5baa1a93",
     "danny-397/rl-for-crypto-and-stocks-": "f4f26a269d263e623599613a6a44e55d8258b8a1",
@@ -23568,7 +23602,7 @@
     "mrpkk/crypto-mcp-server": "8a7098b257cb86ae134f4d7d155a852e67bd4899",
     "donnywin85/dex-data-mcp": "17892206b72737543a51dceda9a9aa28e5b292e9",
     "bybit-exchange/trading-mcp": "a54780e69eb2a71516dfeaff645efc83f14831d4",
-    "cyberwarex/cyberwarex-mcp": "d9c8568a9d40eae6de0572ad344cf17be4d7b387",
+    "cyberwarex/cyberwarex-mcp": "6dd5a59f885f5f6ce66be9d1c92a1419401eee19",
     "nichsedge/portfolio-integration": "ff2d718d6e563906f771e5d839ee965f53937969",
     "riskstate/mcp": "d4773c8945d3bbde6dc78bdc882299ad20d44d25",
     "ianalloway/openclaw-skills": "2b718be688230ba59b3be7c4f40f63d432be9985",
@@ -23585,7 +23619,7 @@
     "udotcash/mcp-ucash": "62d47205f69040c2ab195b53fec48a542c799b37",
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "faef244b55dd8841a281f966ec74fbcf0b8e72f1",
-    "caiovicentino/polymarket-mcp-server": "4ff8026ee94337a69ef6ff055ffeba3476f11d26",
-    "araxis33/aero-vote-radar": "989c01e79c13f362ab4bba43d84d443f89015d54"
+    "caiovicentino/polymarket-mcp-server": "869e42a447897f58bb6ffb14d49ee8bf369d3b1a",
+    "araxis33/aero-vote-radar": "6fc17396c5a5024c239fbfeea2febf497228c4a4"
   }
 }
