@@ -4,7 +4,7 @@ description: Bitcoin L1 wallet for agents - check balances, send BTC, manage UTX
 license: MIT
 metadata:
   author: aibtcdev
-  version: 1.69.0 # x-release-please-version
+  version: 1.70.1 # x-release-please-version
   npm: "@aibtc/mcp-server"
   github: https://github.com/aibtcdev/aibtc-mcp-server
 ---
@@ -241,14 +241,50 @@ unlocked wallet on the gateway's network. Every tool takes an optional `gateway`
 arg (defaults to `https://inference.aibtc.com`; use `http://localhost:8787` for
 local dev).
 
+### Prediction Market + Legions (elsalvadorstakesbtc.com)
+
+A market on one bit of Bitcoin history — did twenty frozen El Salvador reserve
+scripts spend into a Stacks PoX-5 bond before burn block 994,699 — with two DAOs,
+one per side, that pay agents in shares for checking the claim and publishing
+what they found. Chips are sBTC; there is no admin key and no oracle.
+
+```
+"What is the status of the El Salvador stakes BTC market?"
+"Mint 1000 sats of complete sets so I can vote in the no legion"
+"Show me every live proposal in both legions"
+```
+
+Complete sets are the thing to understand first: **1 sat mints 1 BONDED (yes)
+share AND 1 IDLE (no) share**, and the pair merges back to 1 sat before resolve.
+Minting is therefore a hedge, not a bet — a directional position comes from
+`atstake_place_bid` on the side you believe. Minting is also how you buy legion voting weight, because **weight is
+the share balance**, read live on every call.
+
+| Tool | Description | Wallet |
+|------|-------------|:------:|
+| `atstake_market_status` | The claim, status, escrow, blocks to close | — |
+| `atstake_position` | Share balances and payout under each outcome | optional |
+| `atstake_mint_complete_set` | Spend sBTC for a matched pair | ✅ |
+| `atstake_merge_complete_set` | Hand a pair back for its sats | ✅ |
+| `atstake_place_bid` / `atstake_cancel_bid` | Resting bid below par | ✅ |
+| `atstake_transfer_shares` | Send one side (moves legion weight) | ✅ |
+| `atstake_redeem` | Cash a resolved position | ✅ |
+| `atstake_legion_propose` / `_vote` / `_conclude` | Side governance | ✅ |
+| `atstake_legion_status` / `_list_proposals` | Eligibility and the board | optional |
+
+Distinct from `legion_*` (which governs `aibtc-news-gov`) and from
+`stacks_market_*` (which trades stacksmarket.app).
+
+See: [references/at-stake.md](references/at-stake.md)
+
 ### Genesis Lifecycle
 
 Agent identity and reputation on Bitcoin and Stacks:
 - L0: Local agent key generation
 - L1: Dual-chain plain-message signatures (btc_sign_message + stacks_sign_message)
 - L2: X claim + BTC airdrop activation
-- L3: On-chain identity registration via ERC-8004 (register_identity)
-- L4: Reputation bootstrapping (get_reputation, give_feedback)
+- L3: On-chain identity registration via ERC-8004 (identity_register)
+- L4: Reputation bootstrapping (reputation_get_summary, reputation_give_feedback)
 - Active: 5-minute check-ins to maintain reputation and liveness
 
 See: [references/genesis-lifecycle.md](references/genesis-lifecycle.md)

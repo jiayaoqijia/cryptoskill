@@ -118,7 +118,7 @@ Only these fields are confirmed against the live API. Anything else — degrade 
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable`
 
 `robinhood` is a real chain hosting tokenized-stock tickers with the `longxyz` launchpad — do not assume a `0x…` address is on BSC/ETH. If `created-tokens` returns `inner_count=0, open_count=0`, probe the other chains before concluding the address is not a dev.
 
@@ -176,7 +176,7 @@ chain before deciding whether to ask for it.
 
 ## Rate limits
 
-Leaky-bucket limiter, `rate=20` / `capacity=20`; sustained throughput ≈ `20 ÷ weight` req/s.
+Plan-based leaky-bucket limiter: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity); sustained throughput ≈ `tier rate ÷ weight` req/s.
 
 | Command | Route | Weight |
 |---|---|---|

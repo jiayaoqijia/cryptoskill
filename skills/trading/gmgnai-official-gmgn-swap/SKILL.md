@@ -90,7 +90,7 @@ This is a hard, code-level barrier — do not attempt to work around it.
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable`
 
 ## Chain Currencies
 
@@ -113,14 +113,14 @@ Currency tokens are the base/native assets of each chain. They are used to buy o
 
 ## Rate Limit Handling
 
-All swap-related routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full.
+All swap-related routes used by this skill use GMGN's plan-based leaky bucket: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity). Sustained throughput is roughly `tier rate ÷ weight` requests/second, and the max burst is roughly `floor(tier capacity ÷ weight)`.
 
 | Command | Route | Weight |
 |---------|-------|--------|
-| `swap` | `POST /v1/trade/swap` | 5 |
-| `multi-swap` | `POST /v1/trade/multi_swap` | 5 |
-| `order quote` | `GET /v1/trade/quote` | 2 |
-| `order get` | `GET /v1/trade/query_order` | 1 |
+| `swap` | `POST /v1/trade/swap` | 10 |
+| `multi-swap` | `POST /v1/trade/multi_swap` | 10 |
+| `order quote` | `GET /v1/trade/quote` | 10 |
+| `order get` | `GET /v1/trade/query_order` | 5 |
 | `order strategy create` | `POST /v1/trade/strategy/create` | 5 |
 | `order strategy cancel` | `POST /v1/trade/strategy/cancel` | 2 |
 | `order strategy list` | `GET /v1/trade/strategy/orders` | 1 |
@@ -188,7 +188,7 @@ gmgn-cli swap \
 
 | Parameter | Required | Chain | Description |
 |-----------|----------|-------|-------------|
-| `--chain` | Yes | all | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | all | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--from` | Yes | all | Wallet address (must match API Key binding) |
 | `--input-token` | Yes | all | Input token contract address |
 | `--output-token` | Yes | all | Output token contract address |
@@ -407,7 +407,7 @@ gmgn-cli multi-swap \
 
 | Parameter | Required | Chain | Description |
 |-----------|----------|-------|-------------|
-| `--chain` | Yes | all | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | all | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--accounts` | Yes | all | Comma-separated wallet addresses (1–100, all must be bound to the API Key) |
 | `--input-token` | Yes | all | Input token contract address |
 | `--output-token` | Yes | all | Output token contract address |
@@ -575,7 +575,7 @@ gmgn-cli order strategy create \
 
 | Parameter | Required | Chain | Description |
 |-----------|----------|-------|-------------|
-| `--chain` | Yes | all | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | all | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--from` | Yes | all | Wallet address (must match API Key binding) |
 | `--base-token` | Yes | all | Base token contract address |
 | `--quote-token` | Yes | all | Quote token contract address |
@@ -633,7 +633,7 @@ gmgn-cli order strategy list --chain sol --group-tag STMix --base-token <token_a
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--type` | No | `open` (default) / `history` |
 | `--from` | No | Filter by wallet address |
 | `--group-tag` | Yes | Filter by order group: `LimitOrder` (limit orders only) / `STMix` (mixed strategy orders: take-profit, stop-loss, trailing take-profit, trailing stop-loss) |
@@ -657,7 +657,7 @@ gmgn-cli order strategy list --chain sol --group-tag STMix --base-token <token_a
 | `auto_slippage`            | bool   | Whether auto slippage is enabled |
 | `base_decimal`             | int    | Base token decimal places |
 | `base_token`               | string | Base token contract address |
-| `chain`                    | string | Chain: `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `chain`                    | string | Chain: `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `close_amount`             | string | Token amount sold on close; empty when order is open |
 | `close_price`              | string | Token price at close; empty when order is open |
 | `close_sell_model`         | string | Sell model used on close; empty when order is open |
@@ -771,7 +771,7 @@ gmgn-cli order strategy cancel \
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--from` | Yes | Wallet address (must match API Key binding) |
 | `--order-id` | Yes | Order ID to cancel |
 | `--order-type` | No | Order type: `limit_order` (limit order) / `smart_trade` (mixed strategy order: take-profit, stop-loss, trailing take-profit, trailing stop-loss) |

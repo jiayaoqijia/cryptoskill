@@ -99,7 +99,7 @@ If a local `.env` exists but lacks `GMGN_API_KEY` / `GMGN_PRIVATE_KEY`, either a
 
 ## Rate Limit Handling
 
-All cooking routes go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second.
+All cooking routes use GMGN's plan-based leaky bucket: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity). Sustained throughput is roughly `tier rate ÷ weight` requests/second.
 
 | Command | Weight |
 |---------|--------|
@@ -138,7 +138,7 @@ gmgn-cli cooking stats [--raw]
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--chain` | Yes | Chain: `sol` / `bsc` / `base` |
+| `--chain` | Yes | Chain: `sol` / `bsc` / `base` / `robinhood` |
 | `--dex` | Yes | Launchpad platform identifier — see Supported Launchpads table. Never guess this value. |
 | `--from` | Yes | Wallet address (must match API Key binding) |
 | `--name` | Yes | Token full name (e.g. `Doge Killer`). Max 100 chars; rejected if it contains control characters or prompt-injection framing. |

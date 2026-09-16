@@ -206,7 +206,7 @@ Uses `pillar_unwind` - repays borrowed sBTC and withdraws collateral.
 
 - [Pillar Website](https://pillarbtc.com)
 - [Twitter @pillar_btc](https://x.com/pillar_btc)
-- [CLAUDE.md Pillar Section](../../CLAUDE.md#pillar-smart-wallet)
+- [Pillar tool reference](../../docs/TOOLS.md)
 
 ---
 

@@ -506,7 +506,7 @@ Fields the script reads, confirmed against `portfolio stats` / `portfolio activi
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable`
 
 ## Prerequisites
 
@@ -515,7 +515,7 @@ Fields the script reads, confirmed against `portfolio stats` / `portfolio activi
 
 ## Rate Limit Handling
 
-All routes this skill calls go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full. All of them use **exist auth** (API Key only, no private key needed).
+All routes this skill calls use GMGN's plan-based leaky bucket: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity). Sustained throughput is roughly `tier rate ÷ weight` requests/second, and the max burst is roughly `floor(tier capacity ÷ weight)`. All of them use **exist auth** (API Key only, no private key needed).
 
 | Command | Route | Weight |
 |---------|-------|--------|

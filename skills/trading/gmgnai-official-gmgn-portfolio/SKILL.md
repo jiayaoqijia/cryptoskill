@@ -46,7 +46,7 @@ Use the `gmgn-cli` tool to query wallet portfolio data based on the user's reque
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable`
 
 ## Prerequisites
 
@@ -55,23 +55,23 @@ Use the `gmgn-cli` tool to query wallet portfolio data based on the user's reque
 
 ## Rate Limit Handling
 
-All portfolio routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full.
+All portfolio routes used by this skill use GMGN's plan-based leaky bucket: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity). Sustained throughput is roughly `tier rate ÷ weight` requests/second, and the max burst is roughly `floor(tier capacity ÷ weight)`.
 
 **Critical auth** (`GMGN_API_KEY` + `GMGN_PRIVATE_KEY` required):
 
 | Command | Route | Weight |
 |---------|-------|--------|
-| `portfolio holdings` | `GET /v1/user/wallet_holdings` | 5 |
+| `portfolio holdings` | `GET /v1/user/wallet_holdings` | 2 |
 
 **Exist auth** (`GMGN_API_KEY` only):
 
 | Command | Route | Weight |
 |---------|-------|--------|
-| `portfolio info` | `GET /v1/user/info` | 1 |
+| `portfolio info` | `GET /v1/user/info` | 2 |
 | `portfolio activity` | `GET /v1/user/wallet_activity` | 3 |
 | `portfolio stats` | `GET /v1/user/wallet_stats` | 3 |
 | `portfolio profits` | `POST /v1/user/wallet_profits` | 3 |
-| `portfolio token-balance` | `GET /v1/user/wallet_token_balance` | 1 |
+| `portfolio token-balance` | `GET /v1/user/wallet_token_balance` | 2 |
 | `portfolio created-tokens` | `GET /v1/user/created_tokens` | 2 |
 
 When a request returns `429`:

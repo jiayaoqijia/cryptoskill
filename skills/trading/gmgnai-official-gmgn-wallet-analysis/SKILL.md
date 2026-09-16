@@ -342,7 +342,7 @@ Two things you *should* add after the report, when they apply:
 
 ## Data plan and rate limits
 
-All routes go through GMGN's leaky-bucket limiter (`rate=20`, `capacity=20`). A full run costs
+All routes use GMGN's plan-based leaky bucket (Free `5/5`, Plus `20/20`, Pro `50/50`, rate/capacity). A full run costs
 roughly **weight 26–28** — more than one full bucket, so do not batch several wallets back to back.
 
 | Tier | Call | Weight | Auth | Purpose | If it fails |
@@ -385,7 +385,7 @@ cross-check — and the CLI remains the only supported way to read wallet data.)
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` — whatever `gmgn-cli portfolio` accepts. `portfolio stats --period` accepts only `7d` and `30d`; `portfolio profits --period` accepts `1d` / `7d` / `30d` / `all`. Every conclusion is a statement about its window — the report names the window, and so should you.
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` — whatever `gmgn-cli portfolio` accepts. `portfolio stats --period` accepts only `7d` and `30d`; `portfolio profits --period` accepts `1d` / `7d` / `30d` / `all`. Every conclusion is a statement about its window — the report names the window, and so should you.
 
 ## Notes
 

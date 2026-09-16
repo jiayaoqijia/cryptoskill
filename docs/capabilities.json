@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T04:57:36.995090+00:00",
+  "generated_at": "2026-09-16T11:39:48.060529+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -74878,7 +74878,7 @@
     },
     "exchanges/okx-dex-token": {
       "name": "okx-dex-token",
-      "execution_model": "installer_bootstrap",
+      "execution_model": "analysis_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -74891,7 +74891,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -74926,12 +74926,12 @@
           "source": "extracted"
         },
         "uses_remote_install_script": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -126908,24 +126908,24 @@
       "read_only": 1265,
       "router_orchestrator": 113,
       "unknown": 236,
-      "analysis_only": 198,
+      "analysis_only": 199,
       "unsigned_tx_builder": 79,
       "local_executor": 88,
-      "installer_bootstrap": 37,
+      "installer_bootstrap": 36,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 920,
-      "can_install_code": 465,
+      "can_install_code": 464,
       "can_write_files": 119,
       "can_browse_web": 197,
       "can_spawn_subagents": 206,
       "can_move_funds": 240,
       "requires_private_key": 395,
       "requires_hosted_operator": 323,
-      "uses_remote_install_script": 39,
-      "mutable_remote_runtime": 465
+      "uses_remote_install_script": 38,
+      "mutable_remote_runtime": 464
     }
   }
 }

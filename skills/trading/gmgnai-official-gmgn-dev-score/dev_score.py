@@ -67,7 +67,8 @@ def run_cli(args, timeout=40, tries=3):
     import re as _re
     global _last_call, _gap
     for k in range(tries):
-        # Pace, don't recover. The limiter is rate=20 capacity=20; a weight-3 route
+        # Pace, don't recover. Limits vary by plan (Free 5/5, Plus 20/20, Pro 50/50);
+        # a weight-3 route
         # sustains ~6.7 req/s, but violations ACCUMULATE into a ban across runs, so
         # stay well under. 0.35s between calls costs ~6s on a 16-page walk and is the
         # difference between finishing and being banned for 45s at a time.

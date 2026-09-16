@@ -46,7 +46,7 @@ Use the `gmgn-cli` tool to query token information based on the user's request.
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable`
 
 ## Prerequisites
 
@@ -55,7 +55,7 @@ Use the `gmgn-cli` tool to query token information based on the user's request.
 
 ## Rate Limit Handling
 
-All token routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full.
+All token routes used by this skill use GMGN's plan-based leaky bucket: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity). Sustained throughput is roughly `tier rate ÷ weight` requests/second, and the max burst is roughly `floor(tier capacity ÷ weight)`.
 
 | Command | Route | Weight |
 |---------|-------|--------|
@@ -78,7 +78,7 @@ When a request returns `429`:
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--address` | Yes | Token contract address |
 | `--raw` | No | Output raw single-line JSON (for piping or further processing) |
 
@@ -86,7 +86,7 @@ When a request returns `429`:
 
 | Parameter | Required | Default | Description |
 |-----------|----------|---------|-------------|
-| `--chain` | Yes | — | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | — | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--address` | Yes | — | Token contract address |
 | `--limit` | No | `20` | Number of results, max `100` |
 | `--order-by` | No | `amount_percentage` | Sort field — see table below |

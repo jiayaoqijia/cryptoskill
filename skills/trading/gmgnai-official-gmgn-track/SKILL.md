@@ -59,7 +59,7 @@ Use the `gmgn-cli` tool to query on-chain tracking data based on the user's requ
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable`
 
 ## Prerequisites
 
@@ -69,13 +69,13 @@ Use the `gmgn-cli` tool to query on-chain tracking data based on the user's requ
 
 ## Rate Limit Handling
 
-All tracking routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full.
+All tracking routes used by this skill use GMGN's plan-based leaky bucket: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity). Sustained throughput is roughly `tier rate ÷ weight` requests/second, and the max burst is roughly `floor(tier capacity ÷ weight)`.
 
 | Command | Route | Weight |
 |---------|-------|--------|
 | `track follow-tokens` | `GET /v1/user/follow_tokens` | 3 |
 | `track follow-token-groups` | `GET /v1/user/follow_token_groups` | 1 |
-| `track follow-wallet` | `GET /v1/trade/follow_wallet` | 3 |
+| `track follow-wallet` | `GET /v1/trade/follow_wallet` | 10 |
 | `track kol` | `GET /v1/user/kol` | 1 |
 | `track smartmoney` | `GET /v1/user/smartmoney` | 1 |
 
@@ -132,7 +132,7 @@ gmgn-cli track smartmoney --chain sol --side sell --limit 10 --raw
 
 | Option | Description |
 |--------|-------------|
-| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--wallet <address>` | Required. Wallet address to query |
 | `--group-id <id>` | Filter by group: `all_group` (all tokens across groups), `default` (default group), or a user-defined group ID |
 | `--interval <interval>` | Time interval for price change stats (e.g. `1m`, `5m`, `1h`, `6h`, `24h`) |
@@ -174,7 +174,7 @@ Each item in `followings` contains:
 
 | Option | Description |
 |--------|-------------|
-| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--wallet <address>` | Required. Wallet address to query |
 
 ## `track follow-token-groups` Response Fields
@@ -192,7 +192,7 @@ Each item in `followings` contains:
 
 | Option | Description |
 |--------|-------------|
-| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--wallet <address>` | Filter by wallet address |
 | `--limit <n>` | Page size (1–100, default 10) |
 | `--side <side>` | Trade direction: `buy` / `sell` |

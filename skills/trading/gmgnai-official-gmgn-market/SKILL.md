@@ -56,7 +56,7 @@ Use the `gmgn-cli` tool to query K-line data for a token, browse trending tokens
 
 ## Supported Chains
 
-`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` (kline / trending / trenches; signal: `sol` / `bsc` / `robinhood` / `arc` / `stable`; hot-searches: `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`; search: `--chain` is **optional** — omit to search all chains; accepts `all` and any chain the search module has enabled, including the 7 above plus dynamically-enabled chains such as `tron` / `monad` / `megaeth` / `xlayer` / `hyperevm`)
+`sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` (kline / trending / trenches / hot-searches; signal: `sol` / `bsc` / `robinhood` / `arc` / `stable`; search: `--chain` is **optional** — omit to search all chains; accepts `all` and any chain the search module has enabled, including dynamically-enabled chains such as `tron` / `monad` / `megaeth` / `xlayer`)
 
 ## Prerequisites
 
@@ -65,15 +65,15 @@ Use the `gmgn-cli` tool to query K-line data for a token, browse trending tokens
 
 ## Rate Limit Handling
 
-All standard market routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full. The Pro-only `1s` K-line route instead uses the Pro API-key bucket plus its separate shared global bucket.
+All standard market routes used by this skill use GMGN's plan-based leaky bucket: Free `5/5`, Plus `20/20`, Pro `50/50` (rate/capacity). Sustained throughput is roughly `tier rate ÷ weight` requests/second, and the max burst is roughly `floor(tier capacity ÷ weight)`. The Pro-only `1s` K-line route instead uses the Pro API-key bucket plus its separate shared global bucket.
 
 | Command | Route | Weight |
 |---------|-------|--------|
 | `market kline` (standard resolutions) | `GET /v1/market/token_kline` | 2 |
 | `market kline --resolution 1s` (**Pro only**) | `GET /v1/market/token_kline` | 3 against the Pro API-key bucket; shared global limit: 500 req/s |
-| `market trending` | `GET /v1/market/rank` | 1 |
-| `market trenches` | `POST /v1/trenches` | 3 |
-| `market signal` | `POST /v1/market/token_signal` | 3 |
+| `market trending` | `GET /v1/market/rank` | 3 |
+| `market trenches` | `POST /v1/trenches` | 2 |
+| `market signal` | `POST /v1/market/token_signal` | 1 |
 | `market hot-searches` | `POST /v1/market/hot_searches` | 3 |
 | `market search` | `GET /v1/market/search` | 1 |
 
@@ -90,7 +90,7 @@ When a request returns `429`:
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--address` | Yes | Token contract address |
 | `--resolution` | Yes | Candlestick resolution: `1s` (**Pro only; at most 500 candles per request**) / `30s` / `1m` / `5m` / `15m` / `1h` / `4h` / `1d` |
 | `--from` | No | Start time (Unix seconds) |
@@ -102,19 +102,19 @@ The response is an object with a `list` array. Each element in `list` is one can
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `time` | number | Candle open time — Unix timestamp in **milliseconds** (divide by 1000 for seconds) |
+| `time` | number | Candle open time — Unix timestamp in **seconds** |
 | `open` | string | Opening price in USD at the start of the period |
 | `close` | string | Closing price in USD at the end of the period |
 | `high` | string | Highest price in USD during the period |
 | `low` | string | Lowest price in USD during the period |
-| `volume` | string | Trading volume in **USD** (dollar value of all trades in this period) |
-| `amount` | string | Trading volume in **base token units** (number of tokens traded) |
+| `volume` | string | Trading volume in **base token units** (number of tokens traded) |
+| `amount` | string | Trading volume in **USD** (dollar value of all trades in this period) |
 
 **Important distinctions (naming is counterintuitive — do not guess):**
-- `volume` = USD dollar value (e.g. `1214` means ~$1,214 traded) — use this for "how much was traded in USD"
-- `amount` = token count (e.g. `5379110` means ~5.38M tokens changed hands) — use this for "how many tokens were traded"
-- For tokens not priced at $1, `volume` and `amount` will differ by orders of magnitude (e.g. a $0.0002 token: $1,214 volume = 5,379,110 tokens)
-- To get **total USD volume over a time range**, sum `volume` across all candles in the range
+- `volume` = token count (e.g. `5379110` means ~5.38M tokens changed hands)
+- `amount` = USD dollar value (e.g. `1214` means ~$1,214 traded) — use this for "how much was traded in USD"
+- For tokens not priced at $1, `volume` and `amount` will differ by orders of magnitude (e.g. $1,214 amount = 5,379,110 tokens for a $0.0002 token)
+- To get **total USD volume over a time range**, sum `amount` across all candles in the range
 - To get **price trend**, read `close` values in chronological order (`time` ascending)
 - To detect **volatility**, compare `high` vs `low` within each candle
 - Candles are returned in chronological order (oldest first)
@@ -133,7 +133,7 @@ The response is an object with a `list` array. Each element in `list` is one can
 
 | Option | Description |
 |--------|-------------|
-| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Required. `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--interval` | Required. `1m` / `5m` / `1h` / `6h` / `24h` (default `1h`) |
 | `--limit <n>` | Number of results (default 100, max 100) |
 | `--order-by <field>` | Sort field: `default` / `swaps` / `marketcap` / `history_highest_market_cap` / `liquidity` / `volume` / `holder_count` / `smart_degen_count` / `renowned_count` / `gas_fee` / `price` / `change1m` / `change5m` / `change1h` / `creation_timestamp` |
@@ -557,16 +557,16 @@ Use field combinations to determine what stage a token is in. This affects how s
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable` |
+| `--chain` | Yes | `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable` |
 | `--type` | No | Categories to query, repeatable: `new_creation` / `near_completion` / `completed` (default: all three) |
-| `--launchpad-platform` | No | Launchpad platform filter, repeatable (default: all platforms for the chain) |
+| `--launchpad-platform` | No | Launchpad platform filter, repeatable. Omitted: sol/bsc/base/eth/robinhood use the server's fixed default allow-list; arc/stable apply no platform filter. Passing values replaces that default. |
 | `--limit` | No | Max results per category, max 80 (default: 80) |
 | `--filter-preset` | No | Named server-side filter preset: `safe` / `smart-money` / `strict` |
 | `--sort-by` | No | Client-side sort per category: `smart_degen_count` / `renowned_count` / `volume_24h` / `volume_1h` / `swaps_24h` / `swaps_1h` / `rug_ratio` / `holder_count` / `usd_market_cap` / `created_timestamp` |
 | `--direction` | No | Sort direction: `asc` / `desc` (default: `desc`; `asc` for `rug_ratio`) |
 | `--min-*` / `--max-*` | No | Server-side filter range flags — see Filter Fields Reference below |
 
-**`--launchpad-platform` values by chain** (omit `--launchpad-platform` to use all of the chain's platforms):
+**`--launchpad-platform` values by chain** (on sol/bsc/base/eth/robinhood, omitting the flag uses the server default allow-list rather than all platforms):
 
 | Chain | Platforms |
 |-------|-----------|
@@ -1004,12 +1004,12 @@ Chains: `sol` / `bsc` / `robinhood` / `arc` / `stable` only. **Maximum 50 result
 
 **Single-group (individual flags):**
 
-Do **not** pass signal types **14, 15, or 16** in `signal_type` / `--signal-type` / `--groups` JSON — OpenAPI returns **400** if any group includes them. Omitting `--signal-type` (empty filter) still queries all types upstream; responses may still include 14–16 in that case.
+Do **not** pass signal types **14, 15, or 16** in `signal_type` / `--signal-type` / `--groups` JSON — OpenAPI returns **400** if any group includes them. Omitting `--signal-type` queries all supported types: **1–13 and 17–21**.
 
 | Option | Required | Description |
 |--------|----------|-------------|
-| `--chain` | Yes | `sol` / `bsc` |
-| `--signal-type` | No | Signal type(s), repeatable (1–21, default: all). See Signal Types below. |
+| `--chain` | Yes | `sol` / `bsc` / `robinhood` / `arc` / `stable` |
+| `--signal-type` | No | Signal type(s), repeatable: `1`–`13`, `17`–`21`; default: all supported types. See Signal Types below. |
 | `--mc-min` | No | Min market cap at trigger time (USD) |
 | `--mc-max` | No | Max market cap at trigger time (USD) |
 | `--trigger-mc-min` | No | Min market cap at signal trigger moment (USD) |
@@ -1084,7 +1084,7 @@ Each item in the response array is one signal event:
 ### Usage Examples
 
 ```bash
-# All signals on SOL (no --signal-type: upstream returns all types, including 14–16 if present)
+# All supported signal types on SOL (no --signal-type)
 gmgn-cli market signal --chain sol --raw
 
 # Smart money buys only (type 12)
@@ -1113,7 +1113,7 @@ Returns the hot-search ranking — the tokens people are searching for most righ
 
 | Option | Description |
 |--------|-------------|
-| `--chain <chain...>` | Repeatable. `sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`. **Omit to query the default 9-chain set** (sol / bsc / base / eth / arbitrum / hyperevm / robinhood / arc / stable, each at `24h` with chain-appropriate safety filters). |
+| `--chain <chain...>` | Repeatable. `sol` / `bsc` / `base` / `eth` / `arbitrum` / `hyperevm` / `robinhood` / `arc` / `stable`. **Omit to query the default 9-chain set** (each at `24h` with chain-appropriate safety filters). |
 | `--interval <interval>` | `1m` / `5m` / `1h` / `6h` / `24h` (default `24h`). Applies to every `--chain` provided. |
 | `--limit <n>` | Max results per chain (default `500`). |
 | `--filter <tag...>` | Repeatable **boolean** filter tags (the downstream `filter.filters` array). **⚠️ SOL defaults: `renounced frozen`; EVM defaults: `not_honeypot verified renounced`.** Omitting `--filter` is NOT "no filter" — the server applies chain defaults. See the Filter Tags table below for the exact vocabulary. |
