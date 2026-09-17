@@ -8,7 +8,7 @@ metadata:
 
 # Eth2 Quickstart
 
-Use this skill for Ethereum node workflows inside an `eth2-quickstart` checkout. Publish/install it through ClawHub or `npx clawhub`, then run it from the repo so it can use the canonical wrapper commands.
+Use this skill for Ethereum node workflows inside an `eth2-quickstart` checkout. Get the repo with `git clone https://github.com/chimera-defi/eth2-quickstart.git`, then run the skill from the repo so it can use the canonical wrapper commands. The skill is not yet published to a registry such as ClawHub — install from the git checkout.
 
 ## Routing
 

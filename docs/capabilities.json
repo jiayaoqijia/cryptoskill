@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-17T11:48:28.417047+00:00",
+  "generated_at": "2026-09-17T17:09:12.117583+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -25971,7 +25971,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -26012,7 +26012,6 @@
         }
       },
       "hosted_operators": [
-        "circle.com",
         "coinbase.com",
         "etherscan.io"
       ]
@@ -77113,7 +77112,7 @@
     },
     "exchanges/senpi-ai-senpi-account-status": {
       "name": "senpi-account-status",
-      "execution_model": "read_only",
+      "execution_model": "router_orchestrator",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -126967,8 +126966,8 @@
     "processed": 2036,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1265,
-      "router_orchestrator": 113,
+      "read_only": 1264,
+      "router_orchestrator": 114,
       "unknown": 237,
       "analysis_only": 199,
       "unsigned_tx_builder": 79,
@@ -126980,7 +126979,7 @@
       "auto_invocable": 3,
       "can_execute_shell": 920,
       "can_install_code": 464,
-      "can_write_files": 120,
+      "can_write_files": 119,
       "can_browse_web": 197,
       "can_spawn_subagents": 206,
       "can_move_funds": 240,

@@ -4,7 +4,7 @@ Use the wrapper first.
 
 ## Choose The Path
 
-- Install path for external agents: `clawhub install eth2-quickstart` or `npx clawhub install eth2-quickstart`
+- Install path for external agents: `git clone https://github.com/chimera-defi/eth2-quickstart.git && cd eth2-quickstart` (registry installs like `clawhub install eth2-quickstart` are not yet published and do not work today)
 - If you are already in the repo root, resolve it explicitly with: `REPO_ROOT="$(bash ./skills/eth2-quickstart/scripts/resolve_repo_root.sh)" && cd "$REPO_ROOT"`
 - If you are already in the skill directory, use: `REPO_ROOT="$(bash ./scripts/resolve_repo_root.sh)" && cd "$REPO_ROOT"`
 - Fresh bootstrap from a host shell: `./scripts/eth2qs.sh bootstrap --non-interactive`
@@ -23,7 +23,7 @@ Use the wrapper first.
 
 ## Agent Guidance
 
-- This skill is installable through ClawHub, but only makes sense inside an `eth2-quickstart` repo checkout.
+- This skill ships inside the eth2-quickstart repo and only makes sense inside a repo checkout. It is not yet published to ClawHub or any other skill registry.
 - Prefer non-interactive/bootstrap defaults unless a human asks for TUI interaction.
 - Use explicit flags for `run_2.sh` client selection when reproducibility matters.
 - After installs or updates, verify state with `./scripts/eth2qs.sh doctor --json`.
