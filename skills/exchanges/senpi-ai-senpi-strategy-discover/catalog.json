@@ -1,6 +1,6 @@
 {
   "_version": "2.1",
-  "_updated": "2026-09-16",
+  "_updated": "2026-09-17",
   "_generated": true,
   "_instructions": "GENERATED from each strategy package's strategy.yaml — do not hand-edit; run senpi-trading-runtime/scripts/gen_catalog.py. Agents read this via senpi-strategy-discover (scripts/discover.py). DECLARED fields (archetype, sub_style, asset_classes, asset_scope, risk_level, tier, belief_plain, direction) are author-set in strategy.yaml `catalog:`; DERIVED fields (assets, leverage_max, funding_split, instance_count, cadence_seconds, time_horizon, max_slots) are computed from instances/params. Labels/glosses come from senpi-strategy-discover/references/glossary.yaml. 'min_budget' is the machine-COMPUTED minimum total budget at which the design functions (min_budget.py) — the smallest budget where every wallet funds and its smallest slot clears the $12 bumped notional; 'wallet_count' + 'min_budget_binding_wallet' explain it. It is NOT authored — deleting an authored min_budget is a no-op; use min_budget_floor to RAISE it. Positions scale with budget above the min. A strategy is a deployable package; install via senpi-strategy-ops.",
   "skills": [
@@ -10,7 +10,7 @@
       "emoji": "🦈",
       "tagline": null,
       "belief_plain": "Continuously scans every liquid crypto and xyz: equity perp for breakouts and breakdowns, opens with the strongest momentum in either direction (confirmed by smart-money positioning, funding squeeze and rising open interest, with a size bonus for the harder-pumping small caps), lets winners run on a trailing stop, and banks the whole book once total profit hits its target.\n",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "thesis": "You want an always-on screener that hunts the hottest moves across the entire market — long the breakouts, short the breakdowns — instead of watching a fixed basket, and you accept the higher turnover and leverage that pump-chasing implies.\n",
       "tags": [
         "breakout",
@@ -503,7 +503,7 @@
       "emoji": "🦔",
       "tagline": "Scans every liquid perp for funding that has stayed extreme for hours — the crowd piled onto one side and is paying to hold it — then fades that crowd at exhaustion, collecting funding while the over-stretched position mean-reverts.",
       "belief_plain": "When everyone crowds the same side of a trade and keeps paying a steep funding fee to stay there for hours, that crowd usually unwinds. Pangolin waits for the crowding to actually persist, checks the 4h leaders (the last four hours' winners) aren't on the crowd's side, then takes the OTHER side and gets paid funding while it waits for the snap-back.",
-      "version": "1.2.2",
+      "version": "1.3.0",
       "thesis": "Persistent extreme funding is a crowding signal, not noise. A fresh funding spike means nothing — but funding that stays extreme for 3+ hours means real positioning that has to unwind. Fade the crowd only once the regime confirms (or is at least neutral), size conservatively because crowded unwinds are violent, and let the funding you collect pay you to be patient through a 24-48h mean reversion.",
       "tags": [
         "funding-fade",
@@ -592,7 +592,7 @@
       "emoji": "🦅",
       "tagline": "Hunts ELITE/RELIABLE traders who are winning big this week, reads the single bet driving their streak, confirms the 4h leaders' side agrees (where the last four hours' winners sit) and the asset hasn't already run away from the whale's entry, then piggybacks the same trade — sizing leverage to conviction (7/8/10x).",
       "belief_plain": "Finds the traders who are crushing it right now AND have a proven track record, figures out which position is making them the money, checks the last four hours' winners are leaning the same way, and copies that trade — but skips it if the price already ran too far past where the whale got in.",
-      "version": "1.1.4",
+      "version": "1.2.0",
       "thesis": "A trader who is both proven (ELITE/RELIABLE) and hot right now is the best signal you can ride. Don't average a cohort and don't chase one-week wonders — find the quality account on a live streak, isolate the conviction bet driving it, confirm the 4h leaders' side and recent price action agree, and follow only if you can still get in near the whale's entry.",
       "tags": [
         "leader-momentum",
@@ -911,7 +911,7 @@
       "emoji": "🦬",
       "tagline": "A patient multi-asset momentum holder on liquid majors (BTC/ETH/SOL): enters only when a 9-factor composite (4h/1h trend structure, 1h/4h momentum, 4h-leader lean, funding, volume, OI proxy, RSI) clears a high conviction floor, then sizes margin to conviction (25/31/37%) and lets a wide DSL ratchet ride the move for days.",
       "belief_plain": "Trades only the big, liquid coins (BTC, ETH, SOL). It waits until the 4-hour and 1-hour trend, momentum, the last four hours' winners, and funding all line up the same way before entering, bets bigger when more of them agree, and then trails a wide stop so a real move can run for days instead of getting chopped out early.",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "thesis": "You want few, high-conviction trades on coins deep enough to size into, not a scattergun across thin small-caps. Restricting to BTC/ETH/SOL kills the small-cap-volume-spike failure mode (a thin coin spiking into the universe and consuming a slot), and a demanding multi-factor floor means the agent only acts when a real directional thesis exists — then it holds, because the edge is in the tail of the move, not the entry.",
       "tags": [
         "btc",
@@ -941,10 +941,10 @@
       "direction": "long_short",
       "risk_level": "aggressive",
       "tier": "advanced",
-      "leverage_max": 10,
+      "leverage_max": 5,
       "time_horizon": "swing",
       "cadence_seconds": 300,
-      "min_budget": 10,
+      "min_budget": 15,
       "wallet_count": 1,
       "min_budget_binding_wallet": "main",
       "instance_count": 1,
@@ -1112,7 +1112,7 @@
       "emoji": "🦅",
       "tagline": "Scans the top 50 Hyperliquid crypto assets by volume and fires at most one position at a time — only when 4h, 1h and 15m momentum all align, the 4h leaders (the traders winning the last four hours on the board) are leaning the same way on a market they are actually concentrated in, and the move isn't a runaway counter-trend. Sizes margin to conviction (50/70/80%) at 10x, then rides a wide DSL.",
       "belief_plain": "Watches every liquid coin on Hyperliquid and waits, doing nothing until ONE setup is near-perfect: the trend, the momentum and the traders winning the last four hours all pointing the same direction at once. Then it rides the 4h leaders' side with a single, well-sized swing and trails a stop instead of guessing the top.",
-      "version": "1.2.2",
+      "version": "1.3.0",
       "thesis": "The biggest swings happen when 4h + 1h + 15m momentum are perfectly unified AND the 4h leaderboard (a momentum read of who is winning right now, not a proven cohort) is leaning that same way on a market its leaders have meaningful skin in — a runaway trend's continuation, not a reversal. One amazing trade a day beats a scattergun: scan broadly, fire rarely, size to conviction, and never fight a trend already up >10% on the 4h.",
       "tags": [
         "momentum",
@@ -1794,7 +1794,7 @@
       "emoji": "🦦",
       "tagline": "Watches the rate of change of open interest across every liquid Hyperliquid crypto perp and fires at most a couple of positions — only when 1h OI jumps >=5% while price moves >=0.5% the same way (fresh leveraged money entering with conviction), 4h isn't unwinding, and the spread is tight. Sizes margin to conviction at 5/7/10x, then rides the flow 1-3h on a tight DSL.",
       "belief_plain": "Open interest only grows when new leveraged money enters a perp. When that money piles in fast (OI up 5%+ in an hour) AND price moves the same direction, that's real conviction — not just a wick. Otter rides that fresh flow for an hour or three, then trails a tight stop. It does nothing on the much more common days when no coin shows that burst, and it never trades unwinds.",
-      "version": "1.2.2",
+      "version": "1.3.0",
       "thesis": "OI velocity — the delta of open interest over time — is a perp-native conviction signal nobody else in the fleet trades (others read OI only as a static size filter). Fresh OI growth aligned with price (the top two quadrants of the OI/price matrix) is new leveraged positioning with direction; unwinds (the bottom two) are exhaustion and get skipped. Confluence scoring (OI tier, 4h confirmation, price magnitude, the 4h leaders' lean, spread, time-of-day) at a high floor keeps it a sniper, and a tight DSL locks profit early because the flow edge is in the first 1-3 hours.",
       "tags": [
         "open-interest",
@@ -2318,7 +2318,7 @@
       "emoji": "🐜",
       "tagline": "Finds the most heavily-traded perps where longs are paying shorts a rich funding rate, and — only when that crowd of longs looks tired (overbought and rolling over, not still charging) — shorts them to collect the funding, hour after hour. Low leverage, a tight stop in case of a squeeze, and it rotates daily, dropping names once the funding dries up.",
       "belief_plain": "When too many traders pile long into a perp, the funding rate turns positive — longs literally pay shorts every hour to hold. Ant gets on the receiving side of that payment by shorting those names, but it's careful: it only shorts when the long crowd is already exhausted, so it's fading a tired move rather than standing in front of a freight train. It keeps size and leverage modest because the money is in the funding, not in calling the direction, and a tight trailing stop caps the damage if a name squeezes.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "thesis": "Perpetual funding is a harvestable yield: sustained positive funding pays shorts. True cash-and-carry hedges the short with long spot for delta-neutral carry, but Senpi is perps-only (no HyperEVM spot execution), so ant runs the DIRECTIONAL half — short the funding-payer — and manages the price risk with an exhaustion entry gate (RSI/structure), low leverage, a tight DSL squeeze-stop, and a 24h rotation. It ranks the top-OI names, requires annualized funding >= targetApr with multi-hour persistence, and never shorts a name still in a fresh uptrend. Not delta-neutral — the missing spot leg is the residual risk (NOTES.md).",
       "tags": [
         "funding",
@@ -2762,7 +2762,7 @@
       "emoji": "🐟",
       "tagline": "Follows the wallets with a real track record — but only while they are still building a position, not after everyone can see it. It watches how hard that group is leaning on each coin and buys in when the leaning is actively getting stronger, which is the part of the move that has not been priced in yet.",
       "belief_plain": "Most copy strategies show you what good traders already hold, which is old news by the time you see it. Pilotfish watches the same group of proven wallets and measures whether their commitment to a coin is still growing. When they are actively piling in, it goes with them; when they have simply been sitting on a position for days, it leaves it alone. It never sells manually — a profit ratchet locks gains and a fixed stop caps the loss.",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "thesis": "You want to be early to where proven money is going, not late to where it already is. A standing position is priced; the DERIVATIVE of that positioning is not. Pilotfish runs on Phalanx's smart-money engine: each read it counts, per name and direction, how many proven wallets (>= $1M all-time realized) hold it — one vote per wallet, so a whale's size buys no extra weight and a price move cannot fake a headcount — takes ONLY the side more of them are on, and fires while that side holds >= 65% of the positioned wallets (at least 10 of them) AND its net headcount has grown by two or more wallets since the last read — never a thin lean like 30-vs-26, never one wallet's move, and never on the first read, which only sets the baseline. A hit-rate ledger marks every signal right or wrong an hour later and raises the bar for an asset class that keeps missing. Size scales with how many wallets agree.",
       "tags": [
         "smart-money",
@@ -3004,7 +3004,7 @@
       "emoji": "🐦",
       "tagline": "Watches a flock of the most profitable wallets on Hyperliquid and moves when they do — the instant several of them start piling into the SAME trade in the SAME direction at the SAME time, it buys (or shorts) alongside them, betting more the more of them agree. It only acts on a rotation that's just forming, not a crowd that's been standing in a name for hours, and it never sells manually — a fixed max-loss floor caps the downside while a profit ratchet that can only ever lock GAINS (never breakeven) protects the upside, so winners are given room to run and last week's follows wind down on their own as the flock rotates into the next name.",
       "belief_plain": "The proven winners on Hyperliquid tend to rotate into the same trades at the same time, and the freshest edge is the moment that agreement is FORMING — not once everyone can already see it. Starling keeps a live shortlist of the wallets with the best all-time track record, watches what they're opening, and when enough of them freshly line up on one name in one direction it opens with them, sizing up when the agreement is strongest. It never manually closes — a ratchet stop protects and exits every position, so the book rotates as the smart money does, and a hard drawdown halt is the backstop.",
-      "version": "1.4.1",
+      "version": "1.4.2",
       "thesis": "Cohort copiers average a pool's standing net bias (already priced); Starling instead trades the DERIVATIVE of that bias — the read-to-read change — on Phalanx's smart-money engine. Each tick it counts, per name and direction, how many proven wallets hold it (one vote per wallet), takes ONLY the side more of them are on, and fires when that side holds >= 65% of the positioned wallets (at least 10 of them) AND its net headcount has grown by two or more wallets since the last read — never a thin lean like 30-vs-26, never one wallet's move, and never on the first read, which only sets the baseline. A hit-rate ledger marks every signal right or wrong an hour later and raises the bar for an asset class that keeps missing. Conviction sizing scales with the agreement count. It force-closes nothing — turnover is set by the market via DSL (rotate-by-attrition), the same never-close discipline as the gibbon/orangutan rotation riders.",
       "tags": [
         "smart-money",
@@ -4072,7 +4072,7 @@
       "emoji": "🕷️",
       "tagline": "An AI/Tech momentum long book plus a macro/majors mean-reversion book — two legs, two wallets, one package.",
       "belief_plain": "AI/tech equities and crypto majors trend over days, while majors and energy snap back from short-term extremes — run both books side by side; the swing book adds a bonus when 4h leader momentum (which side the last four hours' winners sit on) agrees.",
-      "version": "6.1.2",
+      "version": "6.2.0",
       "thesis": null,
       "tags": [
         "ai",
@@ -4116,7 +4116,7 @@
       "direction": "long_short",
       "risk_level": "moderate",
       "tier": "advanced",
-      "leverage_max": 10,
+      "leverage_max": 5,
       "time_horizon": "swing",
       "cadence_seconds": 60,
       "min_budget": 50,
@@ -4329,10 +4329,10 @@
       "id": "aegis",
       "name": "Aegis — Regime-Adaptive Dynamic Hedge",
       "emoji": "🛡️",
-      "tagline": "Reads the tape — funding crowding, haven flows, OI velocity — to dynamically hedge across risk-off and risk-on regimes. Cash in neutral. Built as Phalanx's companion — its signal is independent of Phalanx's cohort read.",
-      "belief_plain": "A hedge that's always long is foolish — it bleeds in risk-off and misses the downside. Aegis reads market structure itself (funding regime, gold and yen haven trends, per-asset OI velocity) to compute a graduated regime score, then positions defensively: shorting risk assets and longing defensives when the tape says risk-off, going long risk when it says risk-on, and sitting in cash when it says neutral. The signal sources are independent of Phalanx's proven-cohort reads — Aegis reads the tape, Phalanx reads the crowd — so when the cohort hasn't rotated yet but the tape has, Aegis is hedging while Phalanx is still long.",
-      "version": "1.2.0",
-      "thesis": "You want a dynamic hedge that adapts to regime, not a static long book. Aegis reads market-wide funding crowding, haven-asset trends (gold and the yen), and per-asset OI velocity to compute a graduated regime score from -2.0 (severe risk-off) to +2.0 (strong risk-on). In risk-off it shorts risk assets (BTC/ETH/SOL/HYPE/SP500/XYZ100) buys the yen (short USD/JPY) and longs defensives (GOLD/BRENTOIL/NATGAS). In risk-on it longs risk and fades defensives. In neutral it goes to cash — no funding bleed, no drawdowns in chop. The DSL banks gains early (first lock at +12% ROE) because regime calls can reverse violently — a ceasefire dumps oil, a headline flips risk-on. Tighter stops (10% margin) than Phalanx (15%) because a hedge that gives back gains defeats its purpose. Paired with Phalanx at 70/30: Phalanx provides alpha via cohort rotation, Aegis provides dynamic hedging via regime adaptation.",
+      "tagline": "Reads the tape — funding crowding, haven flows, OI velocity — to dynamically hedge across risk-off and risk-on regimes. Opens nothing new in neutral. Built as Phalanx's companion — its signal is independent of Phalanx's cohort read.",
+      "belief_plain": "A hedge that's always long is foolish — it bleeds in risk-off and misses the downside. Aegis reads market structure itself (funding regime, gold and yen haven trends, per-asset OI velocity) to compute a graduated regime score, then positions defensively: shorting risk assets and longing defensives when the tape says risk-off, going long risk when it says risk-on, and opening nothing new when it says neutral. The signal sources are independent of Phalanx's proven-cohort reads — Aegis reads the tape, Phalanx reads the crowd — so when the cohort hasn't rotated yet but the tape has, Aegis is hedging while Phalanx is still long.",
+      "version": "1.3.0",
+      "thesis": "You want a dynamic hedge that adapts to regime, not a static long book. Aegis reads market-wide funding crowding, haven-asset trends (gold and the yen), and per-asset OI velocity to compute a graduated regime score from -2.0 (severe risk-off) to +2.0 (strong risk-on). In risk-off it shorts risk assets (BTC/ETH/SOL/HYPE/SP500/XYZ100) buys the yen (short USD/JPY) and longs defensives (GOLD/BRENTOIL/NATGAS). In risk-on it longs risk and fades defensives. In neutral it opens nothing new and the DSL manages whatever is already on. The DSL locks profit early (first lock at +12% ROE) because regime calls can reverse violently — a ceasefire dumps oil, a headline flips risk-on. Tighter stops (10% margin) than Phalanx (15%) because a hedge that gives back its move defeats its purpose. Paired with Phalanx at 70/30: Phalanx takes the directional side via cohort rotation, Aegis provides dynamic hedging via regime adaptation.",
       "tags": [
         "hedge",
         "dynamic-hedge",
@@ -4444,7 +4444,7 @@
       "emoji": "🦎",
       "tagline": "A relative-value pairs trader on correlated crypto majors: for each pair (ETH/BTC, SOL/ETH, SOL/BTC) it z-scores the latest price ratio vs its 48-bar (1h) mean, and when the ratio stretches >=2 sigma AND starts reverting, it takes a directional bet on the high-beta leg in the snap-back direction — sizing one slot and letting a tight mean-reversion DSL bank the reversion.",
       "belief_plain": "Trades the spread between two coins, not the market. When ETH gets expensive relative to BTC (or SOL vs ETH), the ratio stretches far from its usual level — and ratios snap back more reliably than outright prices. Chameleon measures how stretched a pair is, waits until the ratio starts turning back, then bets on the high-beta coin (ETH or SOL) in the direction that profits from the snap-back, and trails a tight stop to bank the reversion.",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "thesis": "Correlated majors trade as a pack, but their ratios oscillate around a mean. A 3-sigma ETH/BTC extension is a cleaner edge than guessing ETH's absolute direction — the pair's correlation does the work. The Senpi runtime is single-position, so instead of a two-leg market-neutral spread Chameleon takes a directional bet on the high-beta leg (4h leader momentum on that leg — which side the last four hours' winners sit on — adds a point of conviction, never a gate); it captures most of the reversion edge without spread-level position management, and the move is bounded, so a tight ladder banks the snap-back rather than holding for a trend.",
       "tags": [
         "eth",
@@ -5330,9 +5330,9 @@
       "name": "Athena — Smart-Money Hedge Fund",
       "emoji": "🏛️",
       "tagline": "The smart-money hedge fund in one package: a Phalanx sleeve follows the proven cohort's rotation for alpha, an Aegis sleeve reads the tape to hedge the regime. 65/35 by default — you set the weighting.",
-      "belief_plain": "One strategy is one bet. A fund is two that disagree on purpose. Athena runs Phalanx and Aegis side by side in two wallets: Phalanx follows where the proven cohort (traders with >=$1M lifetime realized PnL) is moving its headcount — the smart money — and Aegis reads market structure itself (funding crowding, gold and yen haven flows, OI velocity) to short risk and buy defensives when the tape turns risk-off, go long risk when it turns risk-on, and sit in cash in between. The two read different things, so when the cohort hasn't rotated yet but the tape has, the hedge is already on. You choose the weighting; 65% alpha / 35% hedge is the default.",
-      "version": "1.2.0",
-      "thesis": "A smart-money hedge fund needs an alpha engine and a hedge that doesn't share its blind spot. Phalanx supplies the alpha: it reads the proven cohort's positioning (headcount, not notional), requires conviction to be growing, boosts on divergence from the 4h crowd, and lets winners run on 3x with wide stops. Aegis supplies the hedge: a graduated regime score from funding regime, haven trends and OI velocity drives it short risk and long defensives in risk-off, long risk in risk-on, and flat in neutral — with tighter stops and earlier profit locks because regime calls reverse fast. The signals are independent by construction (crowd vs tape), which is what makes the second sleeve a real hedge rather than a second alpha bet. Each sleeve carries its own DSL protection and guard rails. The weighting is the user's lever: 65/35 alpha/hedge by default, moved in the fork before funding; every other number is each sleeve's own template, unchanged.",
+      "belief_plain": "One strategy is one bet. A fund is two that disagree on purpose. Athena runs Phalanx and Aegis side by side in two wallets: Phalanx follows where the proven cohort (traders with >=$1M lifetime realized PnL) is moving its headcount — the smart money — and Aegis reads market structure itself (funding crowding, gold and yen haven flows, OI velocity) to short risk and buy defensives when the tape turns risk-off, go long risk when it turns risk-on, and open nothing new in between. The two read different things, so when the cohort hasn't rotated yet but the tape has, the hedge is already on. You choose the weighting; 65% alpha / 35% hedge is the default.",
+      "version": "1.3.0",
+      "thesis": "A smart-money hedge fund needs an alpha engine and a hedge that doesn't share its blind spot. Phalanx is the alpha sleeve: it reads the proven cohort's positioning (headcount, not notional), requires conviction to be growing, boosts on divergence from the 4h crowd, and lets winners run on 3x with wide stops. Aegis is the hedge sleeve: a graduated regime score from funding regime, haven trends and OI velocity drives it short risk and long defensives in risk-off, long risk in risk-on, and flat in neutral — with tighter stops and earlier profit locks because regime calls reverse fast. The signals are independent by construction (crowd vs tape), which is what makes the second sleeve a real hedge rather than a second alpha bet. Each sleeve carries its own DSL protection and guard rails. The weighting is the user's lever: 65/35 alpha/hedge by default, moved in the fork before funding; every other number is each sleeve's own template, unchanged.",
       "tags": [
         "smart-money",
         "hedge-fund",
@@ -5387,7 +5387,7 @@
       "emoji": "🐦",
       "tagline": "Auto-discovers the platform's top-performing strategies, then trades the asset + direction they agree on most — performance-weighted, so a stronger strategy gets more say (capped so one outlier can't dominate).",
       "belief_plain": "Lets the best strategies on the platform do the work. Every few minutes it finds the top performers, looks at what they're holding right now, and copies whatever the most (and best) of them are piling into together — going long what they're long and short what they're short.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "thesis": "Following one trader or one leaderboard is one layer; Cuckoo is a layer above it. The strategies it follows are themselves copy/algo/trader-following strategies, so it captures the consensus of the consensus. When the best strategies independently pile into the same asset+direction, that agreement is a strong, self-cleaning signal — underperformers fall out of the top-N automatically, so the pool refreshes toward whatever is working.",
       "tags": [
         "copy-trading",
@@ -5414,7 +5414,7 @@
       "leverage_max": 10,
       "time_horizon": "swing",
       "cadence_seconds": 600,
-      "min_budget": 25,
+      "min_budget": 50.0,
       "wallet_count": 1,
       "min_budget_binding_wallet": "main",
       "instance_count": 1,
@@ -5478,7 +5478,7 @@
       "emoji": "🛡️",
       "tagline": "Follows the proven cohort's headcount flow — not the 4h leaderboard's state — with delta-gated entries, divergence boosting, and wide stops that let winners run.",
       "belief_plain": "The 4h gain leaderboard is a consequence of price moves, not a predictor — by the time 58% of the board is long ETH, ETH already moved. Phalanx instead tracks the proven cohort (traders with >=$1M lifetime realized PnL) and follows where their headcount is shifting: long the assets they're crowding into, short the ones they're fleeing — but only when conviction is growing (delta gate), and with a divergence booster when the cohort disagrees with the 4h crowd. Wide stops and reachable profit locks on 3x leverage let winners run through noise to pay back losers.",
-      "version": "1.3.3",
+      "version": "1.3.4",
       "thesis": "Smart money doesn't just pick coins, it rotates capital across the whole board. But the 4h gain leaderboard — which state-based followers read — is mechanically biased toward whatever side of the trade is currently winning, making it a lagging indicator. Phalanx reads the proven cohort's actual positioning (headcount, not notional) and requires conviction to be growing (delta >= +2 since last tick), not just already high. A divergence booster multiplies conviction when the cohort disagrees with the 4h crowd (the proven cohort has historically been right when they disagree), and an overcrowding gate requires a 12h price breakout before entering trades that are >85% one-sided. Per-class hit-rate tracking auto-tunes the tilt threshold so the strategy learns which crowd to trust. The exit philosophy: on 3x leverage, a 15% margin stop (3.75% price) is wide enough to survive normal noise, and a first profit lock at +20% ROE (6.67% price) only engages on real moves — letting winners run far enough to pay for multiple losers.",
       "tags": [
         "smart-money",
@@ -5528,7 +5528,7 @@
       "emoji": "🐟",
       "tagline": "Autonomous smart-money whale mirror — auto-builds a top-trader cohort and mirrors their highest-conviction positions; optionally mirror specific whales you name via inputs.whales. Like a remora fish riding a shark, it leans hardest when several whales pile into the same trade (consensus) or when a whale is ELITE/RELIABLE tier.",
       "belief_plain": "Out of the box, Remora finds the most proven traders on Hyperliquid, watches their open positions, and copies the strongest bets — betting bigger when several of them are in the same trade and one has an elite track record. Prefer to ride specific traders you trust? Name them and Remora mirrors exactly those instead. Either way it trails a wide stop so the trade can run.",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "thesis": "Riding the highest-conviction position of proven traders keeps your exposure tracking real smart money, and the consensus multiplier means it leans hardest exactly when those traders independently agree — one whale can be wrong, three agreeing is a much stronger signal. By default Remora is autonomous: it auto-builds a top-trader cohort (all-time realized PnL, refreshed daily) so it always has whales to mirror — no config required. Name your own whales to make it ride exactly the traders you choose. Whales hold winners, so the exit lets the mirror run and only caps staleness.",
       "tags": [
         "whale",
@@ -5574,7 +5574,7 @@
       "emoji": "🕶️",
       "tagline": "Watches a handful of vetted Hyperliquid traders and mirrors only the positions they NEWLY open — never inheriting a stale book mid-move — with a hard entry-slippage guard so you never chase a fill that already ran, plus budget-relative sizing with a min-notional floor.",
       "belief_plain": "Instead of copying one trader's whole account — and inheriting trades already deep in profit or loss at a worse price than they got — Shadow watches two or three proven traders and only acts when one of them OPENS a brand-new position. It checks how far price has already moved from their entry and skips the trade if it is too late to get a comparable fill. It sizes each mirror to your budget with a floor so a position is never too small to matter, and it manages its own exit.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "thesis": "The failure mode of naive mirroring is entry drift: you inherit a book at a 1-5% worse price than the trader got, so the same trade is a loss for you. Shadow fires ONLY on fresh opens (a snapshot-diff against a seeded book, so nothing pre-existing is ever inherited), rejects any entry whose price has already run past a slippage cap, and can require multi-trader confirmation before committing size. You follow proven money at their price, not yesterday's book at yours. Leverage is capped, so a trader's 40x book becomes something survivable.",
       "tags": [
         "copy-trading",
@@ -5618,7 +5618,7 @@
       "emoji": "🐋",
       "tagline": "Buckets Hyperliquid traders by lifetime realized PnL into a smart-money cohort and a crowd, then positions WITH the smartest money the moment several of them freshly line up on the SAME coin in the SAME direction — one vote per wallet, never a position that merely grew in dollars — and bets a little more when the crowd is on the other side.",
       "belief_plain": "Looks at where the most profitable traders on Hyperliquid are putting their money as a group and copies that lean — going long what they're piling into and short what they're dumping — but only while the pile-on is still forming: it counts wallets, not dollars, so a coin only counts when most of the smart money agrees on it AND more of them just joined. It bets a little more when the average crowd is on the other side.",
-      "version": "1.3.1",
+      "version": "1.3.2",
       "thesis": "You trust the aggregate of proven winners over any single guru or your own read — but the edge is the CHANGE in their positioning, not its state, and a change is a headcount, not a dollar figure: a notional bias drifts with price (a long that merely rose reads as 'adding'), while a wallet either holds the position or it doesn't. So WhaleHunter runs Phalanx's smart-money engine: per coin and side it counts how many >$1M-realized wallets hold it (one vote per wallet), takes only the side more of them are on, and fires when that side holds >= 65% of the positioned wallets (at least 10 of them) AND its net headcount grew by two or more since the last read — never a thin lean, never one wallet's move, never on the first read, which only sets the baseline. A hit-rate ledger marks each signal right or wrong an hour later and raises the bar for an asset class that keeps missing. When the small accounts ($10k–100k) lean the other way, that divergence sizes the bet up. Long and short sleeves run on separate wallets; the DSL owns every exit.",
       "tags": [
         "smart-money",
