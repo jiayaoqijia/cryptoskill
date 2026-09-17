@@ -57,13 +57,6 @@
       "official": false
     },
     {
-      "org": "caiovicentino",
-      "repo": "polymarket-mcp-server",
-      "category": "mcp-servers",
-      "prefix": "caiovicentino-",
-      "official": false
-    },
-    {
       "org": "MangroveTechnologies",
       "repo": "mangrove-agent",
       "category": "mcp-servers",
@@ -71,10 +64,17 @@
       "official": false
     },
     {
-      "org": "api-evangelist",
-      "repo": "farmdash",
+      "org": "scutuatua-crypto",
+      "repo": "whaletrucker-ecosystem",
       "category": "mcp-servers",
-      "prefix": "api-evangelist-",
+      "prefix": "scutuatua-crypto-",
+      "official": false
+    },
+    {
+      "org": "caiovicentino",
+      "repo": "polymarket-mcp-server",
+      "category": "mcp-servers",
+      "prefix": "caiovicentino-",
       "official": false
     },
     {
@@ -185,19 +185,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-09",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-10",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-09",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-10",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-09-09",
+      "query": "crypto agent skills language:Python pushed:>2026-09-10",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-09-09",
+      "query": "DeFi MCP server pushed:>2026-09-10",
       "status": "checked"
     },
     {

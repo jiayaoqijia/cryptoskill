@@ -352,7 +352,7 @@
       "archetype": "contrarian_fade",
       "archetype_label": "Contrarian / Fade",
       "sub_style": "risk_off_rotation",
-      "sub_style_label": "Shorts the crypto block when smart money rotates out and longs are crowded — a risk-off hedge.",
+      "sub_style_label": "Shorts the crypto block when the 4h leaders rotate out and longs are crowded — a risk-off hedge.",
       "asset_classes": [
         "btc_eth",
         "major_alts",
@@ -457,7 +457,7 @@
       "emoji": "🦉",
       "tagline": "Scans every liquid Hyperliquid crypto perp (OI > $3M) for one-sided crowding — extreme funding + the 4h leaders lopsided to one side (where the last four hours' winners sit) + concentrated OI — then waits for that crowding to persist 1h+ AND for exhaustion to fire (volume fading, price stalling, RSI divergence) before fading the crowd. Conviction-scaled leverage (7/8/10) at 25% margin, with a macro gate that stands down when BTC's 4h move is extreme.",
       "belief_plain": "The crowd is wrong at the extremes. When everyone piles onto one side of a coin — paying punishing funding, the last four hours' winners all leaning the same way, open interest stacking up — and the price then stops following through, the unwind is violent and predictable. Owl waits for both the crowded state AND the exhaustion trigger, then takes the other side. Most days it does nothing, because most days one or both is missing.",
-      "version": "1.3.1",
+      "version": "1.3.2",
       "thesis": "Crowded trades unwind violently. Owl's edge is timing the unwind: it never fades on crowding alone (which can persist and grind), it waits for crowding to PERSIST 1h+ and for distinct exhaustion signals (declining volume under extreme funding, price stalling against the crowd, capitulation wicks, 4h RSI divergence) to confirm the move is dying. Mean reversion fails in trending macro, so a hard gate blocks all fades when |BTC 4h| > 3%. XYZ banned — the funding/4h-leader scoring is calibrated on crypto data shape.",
       "tags": [
         "contrarian",
@@ -503,7 +503,7 @@
       "emoji": "🦔",
       "tagline": "Scans every liquid perp for funding that has stayed extreme for hours — the crowd piled onto one side and is paying to hold it — then fades that crowd at exhaustion, collecting funding while the over-stretched position mean-reverts.",
       "belief_plain": "When everyone crowds the same side of a trade and keeps paying a steep funding fee to stay there for hours, that crowd usually unwinds. Pangolin waits for the crowding to actually persist, checks the 4h leaders (the last four hours' winners) aren't on the crowd's side, then takes the OTHER side and gets paid funding while it waits for the snap-back.",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "thesis": "Persistent extreme funding is a crowding signal, not noise. A fresh funding spike means nothing — but funding that stays extreme for 3+ hours means real positioning that has to unwind. Fade the crowd only once the regime confirms (or is at least neutral), size conservatively because crowded unwinds are violent, and let the funding you collect pay you to be patient through a 24-48h mean reversion.",
       "tags": [
         "funding-fade",
@@ -592,7 +592,7 @@
       "emoji": "🦅",
       "tagline": "Hunts ELITE/RELIABLE traders who are winning big this week, reads the single bet driving their streak, confirms the 4h leaders' side agrees (where the last four hours' winners sit) and the asset hasn't already run away from the whale's entry, then piggybacks the same trade — sizing leverage to conviction (7/8/10x).",
       "belief_plain": "Finds the traders who are crushing it right now AND have a proven track record, figures out which position is making them the money, checks the last four hours' winners are leaning the same way, and copies that trade — but skips it if the price already ran too far past where the whale got in.",
-      "version": "1.1.3",
+      "version": "1.1.4",
       "thesis": "A trader who is both proven (ELITE/RELIABLE) and hot right now is the best signal you can ride. Don't average a cohort and don't chase one-week wonders — find the quality account on a live streak, isolate the conviction bet driving it, confirm the 4h leaders' side and recent price action agree, and follow only if you can still get in near the whale's entry.",
       "tags": [
         "leader-momentum",
@@ -1794,7 +1794,7 @@
       "emoji": "🦦",
       "tagline": "Watches the rate of change of open interest across every liquid Hyperliquid crypto perp and fires at most a couple of positions — only when 1h OI jumps >=5% while price moves >=0.5% the same way (fresh leveraged money entering with conviction), 4h isn't unwinding, and the spread is tight. Sizes margin to conviction at 5/7/10x, then rides the flow 1-3h on a tight DSL.",
       "belief_plain": "Open interest only grows when new leveraged money enters a perp. When that money piles in fast (OI up 5%+ in an hour) AND price moves the same direction, that's real conviction — not just a wick. Otter rides that fresh flow for an hour or three, then trails a tight stop. It does nothing on the much more common days when no coin shows that burst, and it never trades unwinds.",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "thesis": "OI velocity — the delta of open interest over time — is a perp-native conviction signal nobody else in the fleet trades (others read OI only as a static size filter). Fresh OI growth aligned with price (the top two quadrants of the OI/price matrix) is new leveraged positioning with direction; unwinds (the bottom two) are exhaustion and get skipped. Confluence scoring (OI tier, 4h confirmation, price magnitude, the 4h leaders' lean, spread, time-of-day) at a high floor keeps it a sniper, and a tight DSL locks profit early because the flow edge is in the first 1-3 hours.",
       "tags": [
         "open-interest",
@@ -4331,7 +4331,7 @@
       "emoji": "🛡️",
       "tagline": "Reads the tape — funding crowding, haven flows, OI velocity — to dynamically hedge across risk-off and risk-on regimes. Cash in neutral. Built as Phalanx's companion — its signal is independent of Phalanx's cohort read.",
       "belief_plain": "A hedge that's always long is foolish — it bleeds in risk-off and misses the downside. Aegis reads market structure itself (funding regime, gold and yen haven trends, per-asset OI velocity) to compute a graduated regime score, then positions defensively: shorting risk assets and longing defensives when the tape says risk-off, going long risk when it says risk-on, and sitting in cash when it says neutral. The signal sources are independent of Phalanx's proven-cohort reads — Aegis reads the tape, Phalanx reads the crowd — so when the cohort hasn't rotated yet but the tape has, Aegis is hedging while Phalanx is still long.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "thesis": "You want a dynamic hedge that adapts to regime, not a static long book. Aegis reads market-wide funding crowding, haven-asset trends (gold and the yen), and per-asset OI velocity to compute a graduated regime score from -2.0 (severe risk-off) to +2.0 (strong risk-on). In risk-off it shorts risk assets (BTC/ETH/SOL/HYPE/SP500/XYZ100) buys the yen (short USD/JPY) and longs defensives (GOLD/BRENTOIL/NATGAS). In risk-on it longs risk and fades defensives. In neutral it goes to cash — no funding bleed, no drawdowns in chop. The DSL banks gains early (first lock at +12% ROE) because regime calls can reverse violently — a ceasefire dumps oil, a headline flips risk-on. Tighter stops (10% margin) than Phalanx (15%) because a hedge that gives back gains defeats its purpose. Paired with Phalanx at 70/30: Phalanx provides alpha via cohort rotation, Aegis provides dynamic hedging via regime adaptation.",
       "tags": [
         "hedge",
@@ -5331,7 +5331,7 @@
       "emoji": "🏛️",
       "tagline": "The smart-money hedge fund in one package: a Phalanx sleeve follows the proven cohort's rotation for alpha, an Aegis sleeve reads the tape to hedge the regime. 65/35 by default — you set the weighting.",
       "belief_plain": "One strategy is one bet. A fund is two that disagree on purpose. Athena runs Phalanx and Aegis side by side in two wallets: Phalanx follows where the proven cohort (traders with >=$1M lifetime realized PnL) is moving its headcount — the smart money — and Aegis reads market structure itself (funding crowding, gold and yen haven flows, OI velocity) to short risk and buy defensives when the tape turns risk-off, go long risk when it turns risk-on, and sit in cash in between. The two read different things, so when the cohort hasn't rotated yet but the tape has, the hedge is already on. You choose the weighting; 65% alpha / 35% hedge is the default.",
-      "version": "1.1.3",
+      "version": "1.2.0",
       "thesis": "A smart-money hedge fund needs an alpha engine and a hedge that doesn't share its blind spot. Phalanx supplies the alpha: it reads the proven cohort's positioning (headcount, not notional), requires conviction to be growing, boosts on divergence from the 4h crowd, and lets winners run on 3x with wide stops. Aegis supplies the hedge: a graduated regime score from funding regime, haven trends and OI velocity drives it short risk and long defensives in risk-off, long risk in risk-on, and flat in neutral — with tighter stops and earlier profit locks because regime calls reverse fast. The signals are independent by construction (crowd vs tape), which is what makes the second sleeve a real hedge rather than a second alpha bet. Each sleeve carries its own DSL protection and guard rails. The weighting is the user's lever: 65/35 alpha/hedge by default, moved in the fork before funding; every other number is each sleeve's own template, unchanged.",
       "tags": [
         "smart-money",
