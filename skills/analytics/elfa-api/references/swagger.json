@@ -2803,7 +2803,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "2.7.0",
+		"version": "2.7.4",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -3100,30 +3100,6 @@
 					}
 				],
 				"x-deprecated-description": "**Legacy — scheduled for removal on 28 October 2026.** This endpoint returns raw account metrics, not a reputation score, and is being retired rather than extended. Plan migrations before that date."
-			}
-		},
-		"/v2/data/market-events": {
-			"get": {
-				"operationId": "getMarketEvents-v2",
-				"responses": {
-					"204": {
-						"description": "No content"
-					},
-					"403": {
-						"description": "Only available to select Enterprise customers"
-					}
-				},
-				"description": "Market Events is currently available only to select Enterprise customers.",
-				"summary": "Market events",
-				"tags": [
-					"v2 Data"
-				],
-				"security": [
-					{
-						"api_key": []
-					}
-				],
-				"parameters": []
 			}
 		},
 		"/v2/data/top-mentions": {
@@ -3441,6 +3417,9 @@
 					},
 					"401": {
 						"description": "Unauthorized"
+					},
+					"503": {
+						"description": "The upstream model declined to process the matched posts. Retryable — not an empty result. The 4 fixed credits are not charged; the 1 base per-request credit still applies."
 					}
 				},
 				"description": "Generate event summaries based on keyword mentions within a time period.\nThis endpoint costs 5 credits total",
@@ -4235,7 +4214,7 @@
 				],
 				"parameters": [
 					{
-						"description": "Exchange to check support on: `hyperliquid`, `gmx`, or `binance`.",
+						"description": "Exchange to check support on: `hyperliquid` or `binance`.",
 						"in": "path",
 						"name": "exchange",
 						"required": true,
@@ -4243,7 +4222,6 @@
 							"type": "string",
 							"enum": [
 								"hyperliquid",
-								"gmx",
 								"binance"
 							]
 						}

@@ -1,231 +1,232 @@
 {
-  "generatedAt": "2026-09-15T20:31:21.877Z",
+  "generatedAt": "2026-09-17T07:57:05.755Z",
   "epochs": [
     "2026-08-06",
     "2026-08-13",
     "2026-08-20",
     "2026-08-27",
-    "2026-09-03"
+    "2026-09-03",
+    "2026-09-10"
   ],
-  "scans": 131,
-  "pools": 114,
-  "observations": 13423,
-  "medianPoolsPerScan": 102,
+  "scans": 160,
+  "pools": 365,
+  "observations": 18276,
+  "medianPoolsPerScan": 103,
   "trust": [
     {
       "label": "Thursday–Friday",
       "fromHours": 120,
       "toHours": 168,
-      "scans": 31,
-      "keptAll": 3,
+      "scans": 39,
+      "keptAll": 2,
       "keptThick": 2,
-      "keptRich": 7
+      "keptRich": 6
     },
     {
       "label": "Saturday–Sunday",
       "fromHours": 72,
       "toHours": 120,
-      "scans": 39,
-      "keptAll": 3,
+      "scans": 47,
+      "keptAll": 2,
       "keptThick": 2,
-      "keptRich": 7
+      "keptRich": 6
     },
     {
       "label": "Monday–Tuesday",
       "fromHours": 24,
       "toHours": 72,
-      "scans": 39,
-      "keptAll": 3,
+      "scans": 47,
+      "keptAll": 2,
       "keptThick": 2,
-      "keptRich": 7
+      "keptRich": 6
     },
     {
       "label": "Wednesday",
       "fromHours": 5,
       "toHours": 24,
-      "scans": 17,
-      "keptAll": 3,
-      "keptThick": 3,
-      "keptRich": 7
+      "scans": 21,
+      "keptAll": 2,
+      "keptThick": 2,
+      "keptRich": 6
     },
     {
       "label": "final hours",
       "fromHours": 0,
       "toHours": 5,
-      "scans": 5,
+      "scans": 6,
       "keptAll": 3,
-      "keptThick": 5,
+      "keptThick": 4,
       "keptRich": 7
     }
   ],
   "lateMovers": [
     {
-      "address": "0x1524a14c55f097bb54f0b24383f3ae3e3743804a",
-      "symbol": "vAMM-YFI/wstETH",
-      "medianSurge": 2.609226839266702,
-      "readings": 20
-    },
-    {
-      "address": "0x6d0b9c9e92a3de30081563c3657b5258b3ffa38b",
-      "symbol": "sAMM-USDz/USDC",
-      "medianSurge": 1.7909667453664873,
-      "readings": 8
-    },
-    {
-      "address": "0x594b83709464a83f37ac77e69ddd447a8a33c0ee",
-      "symbol": "vAMM-cbBTC/EDGE",
-      "medianSurge": 1.442945515051028,
-      "readings": 20
-    },
-    {
-      "address": "0x3d36cf85a0c275cf4894315a6c1d6c558d6d984c",
-      "symbol": "vAMM-fBOMB/cbBTC",
-      "medianSurge": 1.2548149914663327,
-      "readings": 20
-    },
-    {
-      "address": "0xac4e562d7c6108f971321f14238e24ae2cc398ac",
-      "symbol": "vAMM-WETH/DRV",
-      "medianSurge": 0.628580241685887,
-      "readings": 20
-    },
-    {
-      "address": "0xef70044c0249a07234e07d673606e09b364dc977",
-      "symbol": "vAMM-cbETH/SPECTRA",
-      "medianSurge": 0.5300144779188436,
-      "readings": 20
-    },
-    {
-      "address": "0x3667af77ff1481aca513d2c97a32c0ac31ba813d",
-      "symbol": "vAMM-Anon/USDC",
-      "medianSurge": 0.5095554749097142,
-      "readings": 20
-    },
-    {
-      "address": "0xa260a129622c5600e67d75b6006fb3c612cf26c3",
-      "symbol": "sAMM-SOL/uSOL",
-      "medianSurge": 0.5018658143537769,
-      "readings": 8
-    },
-    {
-      "address": "0xb909f567c5c2bb1a4271349708cc4637d7318b4a",
-      "symbol": "vAMM-VIRTUAL/cbBTC",
-      "medianSurge": 0.4990081801912143,
-      "readings": 20
-    },
-    {
-      "address": "0x23da62ce083687cd72ebcba36eec6752fa51b715",
-      "symbol": "vAMM-1000X/WETH",
-      "medianSurge": 0.48581563925914706,
-      "readings": 16
-    },
-    {
-      "address": "0x9941dfa4d724fd7a2e5e5d9777560b20de98ce0d",
-      "symbol": "vAMM-wIRON/USDC",
-      "medianSurge": 0.43957756830043104,
-      "readings": 20
-    },
-    {
-      "address": "0x32450cebe156b2ca77dd517e0182409d89b723ff",
-      "symbol": "vAMM-cbBTC/CHAMP",
-      "medianSurge": 0.3496040591720262,
-      "readings": 20
-    },
-    {
-      "address": "0x26029ed89a19b919b5698f10cf776a4f4aea1529",
-      "symbol": "vAMM-WETH/CHAMP",
-      "medianSurge": 0.3075160008991136,
-      "readings": 20
-    },
-    {
-      "address": "0xef724d142f283411f66bde8de4d863e7295b9972",
-      "symbol": "vAMM-FLOCK/VVV",
-      "medianSurge": 0.2998483231686475,
-      "readings": 20
-    },
-    {
-      "address": "0xb7e0c9caeb559429b5b8b37c118e1d2764550416",
-      "symbol": "vAMM-VIRTUAL/FLOCK",
-      "medianSurge": 0.29887748537775183,
-      "readings": 12
-    },
-    {
-      "address": "0x9c38b55f9a9aba91bbcedeb12bf4428f47a6a0b8",
-      "symbol": "vAMM-USDC/cbBTC",
-      "medianSurge": 0.28808080066716624,
-      "readings": 20
-    },
-    {
-      "address": "0xc395664b295ed5bf1d249ae8be9740655aa174ef",
-      "symbol": "vAMM-fBOMB/USDbC",
-      "medianSurge": 0.284879848525041,
-      "readings": 8
-    },
-    {
-      "address": "0x17c9a4b6cad28f5074c81b056c32bad334329f25",
-      "symbol": "vAMM-BNKR/wBLT",
-      "medianSurge": 0.26800681369944357,
-      "readings": 8
-    },
-    {
-      "address": "0x7f670f78b17dec44d5ef68a48740b6f8849cc2e6",
-      "symbol": "vAMM-WETH/AERO",
-      "medianSurge": -0.2602160440211835,
-      "readings": 20
-    },
-    {
-      "address": "0x24dfbc9e3eeda5a4d5c8851ed4e656d306815498",
-      "symbol": "vAMM-WETH/APU",
-      "medianSurge": -0.26232596029620847,
-      "readings": 16
-    },
-    {
-      "address": "0x14f7ce67e16c435c876aff4092eb547584121312",
-      "symbol": "vAMM-WETH/LRDS",
-      "medianSurge": -0.2700041158418408,
-      "readings": 20
-    },
-    {
-      "address": "0x2d25e0514f23c6367687de89bd5167dc754d4934",
-      "symbol": "vAMM-WETH/TAROT",
-      "medianSurge": -0.28407203523674374,
-      "readings": 20
-    },
-    {
-      "address": "0x923bebd9fbcaf0f85251a3d5a11bf5bfaa19942f",
-      "symbol": "vAMM-WETH/CXT",
-      "medianSurge": -0.37368606059887133,
-      "readings": 20
-    },
-    {
-      "address": "0x6fb655476fdcfb9712dd200308d941a1c6d1119e",
-      "symbol": "vAMM-OGN/OETHb",
-      "medianSurge": -0.3739953093608699,
-      "readings": 20
-    },
-    {
-      "address": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
-      "symbol": "sAMM-msUSD/USDC",
-      "medianSurge": -0.3759296127087479,
-      "readings": 20
+      "address": "0x5aac53d1b18f1eaf908c223a94916b339b74309f",
+      "symbol": "vAMM-MET/cbBTC",
+      "medianSurge": 4.67290180095242,
+      "readings": 9
     },
     {
       "address": "0x69bc1d350fe13f499c6aeded2c5ea9471b2a599a",
       "symbol": "vAMM-USDC/SEND",
-      "medianSurge": -0.3940309463332392,
-      "readings": 12
+      "medianSurge": 4.4443787860861095,
+      "readings": 17
+    },
+    {
+      "address": "0x1524a14c55f097bb54f0b24383f3ae3e3743804a",
+      "symbol": "vAMM-YFI/wstETH",
+      "medianSurge": 2.7625214915593435,
+      "readings": 25
+    },
+    {
+      "address": "0x3d36cf85a0c275cf4894315a6c1d6c558d6d984c",
+      "symbol": "vAMM-fBOMB/cbBTC",
+      "medianSurge": 1.9652289490477441,
+      "readings": 25
+    },
+    {
+      "address": "0xa6c7fbd1b4c71673dfdadfaa9d17f14833d3245e",
+      "symbol": "vAMM-USDC/SQD",
+      "medianSurge": 1.6747176078253387,
+      "readings": 25
+    },
+    {
+      "address": "0xa260a129622c5600e67d75b6006fb3c612cf26c3",
+      "symbol": "sAMM-SOL/uSOL",
+      "medianSurge": 1.6453171481381896,
+      "readings": 13
+    },
+    {
+      "address": "0x6d0b9c9e92a3de30081563c3657b5258b3ffa38b",
+      "symbol": "sAMM-USDz/USDC",
+      "medianSurge": 1.6445279032812263,
+      "readings": 13
+    },
+    {
+      "address": "0xb7e0c9caeb559429b5b8b37c118e1d2764550416",
+      "symbol": "vAMM-VIRTUAL/FLOCK",
+      "medianSurge": 1.5981472326888855,
+      "readings": 17
+    },
+    {
+      "address": "0xd162c4444d5efead433f080696d1f4dc2bcd58fb",
+      "symbol": "vAMM-FLOCK/cbBTC",
+      "medianSurge": 1.5931590233972797,
+      "readings": 25
+    },
+    {
+      "address": "0xc395664b295ed5bf1d249ae8be9740655aa174ef",
+      "symbol": "vAMM-fBOMB/USDbC",
+      "medianSurge": 1.5473457911938047,
+      "readings": 13
+    },
+    {
+      "address": "0x26029ed89a19b919b5698f10cf776a4f4aea1529",
+      "symbol": "vAMM-WETH/CHAMP",
+      "medianSurge": 1.284485421238334,
+      "readings": 25
+    },
+    {
+      "address": "0x74f22a01da78294f8df640c98a414fe209e33f60",
+      "symbol": "vAMM-WETH/BID",
+      "medianSurge": 1.2204092493687964,
+      "readings": 17
+    },
+    {
+      "address": "0x4f9dc2229f2357b27c22db56cb39582c854ad6d5",
+      "symbol": "vAMM-WETH/fBOMB",
+      "medianSurge": 1.1828571675125232,
+      "readings": 25
+    },
+    {
+      "address": "0xb909f567c5c2bb1a4271349708cc4637d7318b4a",
+      "symbol": "vAMM-VIRTUAL/cbBTC",
+      "medianSurge": 0.9658392056422938,
+      "readings": 25
+    },
+    {
+      "address": "0xf91e0dfe1265b914182de54e08c9ca2068beddde",
+      "symbol": "vAMM-WETH/MET",
+      "medianSurge": 0.7688034663725001,
+      "readings": 25
+    },
+    {
+      "address": "0xac4e562d7c6108f971321f14238e24ae2cc398ac",
+      "symbol": "vAMM-WETH/DRV",
+      "medianSurge": 0.7638042811860113,
+      "readings": 25
+    },
+    {
+      "address": "0x23da62ce083687cd72ebcba36eec6752fa51b715",
+      "symbol": "vAMM-1000X/WETH",
+      "medianSurge": 0.6921042272371392,
+      "readings": 21
+    },
+    {
+      "address": "0x21594b992f68495dd28d605834b58889d0a727c7",
+      "symbol": "vAMM-VIRTUAL/WETH",
+      "medianSurge": 0.6724989439084117,
+      "readings": 25
+    },
+    {
+      "address": "0xc75799e0646470128a42d07335ab3bfa9e8ee7c2",
+      "symbol": "sAMM-jEUR/EURC",
+      "medianSurge": 0.6639837445676811,
+      "readings": 25
+    },
+    {
+      "address": "0xff8e0bd2d8f02904e7e18dd00ea50aec68f37a10",
+      "symbol": "vAMM-fBOMB/USDC",
+      "medianSurge": 0.6147481217468429,
+      "readings": 25
+    },
+    {
+      "address": "0x3667af77ff1481aca513d2c97a32c0ac31ba813d",
+      "symbol": "vAMM-Anon/USDC",
+      "medianSurge": 0.5254105814082399,
+      "readings": 25
+    },
+    {
+      "address": "0x9c38b55f9a9aba91bbcedeb12bf4428f47a6a0b8",
+      "symbol": "vAMM-USDC/cbBTC",
+      "medianSurge": 0.4732101360805516,
+      "readings": 25
+    },
+    {
+      "address": "0xef724d142f283411f66bde8de4d863e7295b9972",
+      "symbol": "vAMM-FLOCK/VVV",
+      "medianSurge": 0.3489188635609535,
+      "readings": 25
+    },
+    {
+      "address": "0xb452f81d9322936c2c8ac6445f6892cb957afb4c",
+      "symbol": "vAMM-WETH/OVER",
+      "medianSurge": 0.3342981011713022,
+      "readings": 25
+    },
+    {
+      "address": "0xef70044c0249a07234e07d673606e09b364dc977",
+      "symbol": "vAMM-cbETH/SPECTRA",
+      "medianSurge": 0.2663040124811238,
+      "readings": 25
+    },
+    {
+      "address": "0x923bebd9fbcaf0f85251a3d5a11bf5bfaa19942f",
+      "symbol": "vAMM-WETH/CXT",
+      "medianSurge": -0.3132541877497834,
+      "readings": 25
+    },
+    {
+      "address": "0x32450cebe156b2ca77dd517e0182409d89b723ff",
+      "symbol": "vAMM-cbBTC/CHAMP",
+      "medianSurge": -0.34195238613456624,
+      "readings": 25
     },
     {
       "address": "0x55f618171d851d57906431ce9feee96dc6f3877e",
       "symbol": "vAMM-BOTTO/WETH",
-      "medianSurge": -0.4005370149960814,
-      "readings": 20
-    },
-    {
-      "address": "0x4660ff55a4db144734ae76550ee3093e0ba7f8d1",
-      "symbol": "vAMM-AERO/TOSHI",
-      "medianSurge": -0.41457299103696743,
-      "readings": 16
+      "medianSurge": -0.4105022378255534,
+      "readings": 25
     },
     {
       "address": "0xa678c47022f2e5286c51cc433be1599bba88df05",
@@ -234,76 +235,34 @@
       "readings": 12
     },
     {
-      "address": "0x04e5a1c883dafd1eae6b11bd6d3eb784d90ce515",
-      "symbol": "vAMM-WETH/PDT",
-      "medianSurge": -0.4649378227987838,
-      "readings": 20
-    },
-    {
-      "address": "0xd448670823ff9667848c821bee829c642f67e064",
-      "symbol": "vAMM-WETH/RWAX",
-      "medianSurge": -0.472931159830118,
-      "readings": 20
-    },
-    {
-      "address": "0xda9b1279a069a7166560f3d7f20b5b0237af8459",
-      "symbol": "vAMM-USDC/MET",
-      "medianSurge": -0.5246025892875792,
-      "readings": 20
-    },
-    {
       "address": "0x1dda8b6469df243971381f1f3f4137814ca68722",
       "symbol": "vAMM-WMTX/WETH",
-      "medianSurge": -0.5264334765025848,
-      "readings": 20
-    },
-    {
-      "address": "0xf91e0dfe1265b914182de54e08c9ca2068beddde",
-      "symbol": "vAMM-WETH/MET",
-      "medianSurge": -0.5851456901140253,
-      "readings": 20
-    },
-    {
-      "address": "0xa6c7fbd1b4c71673dfdadfaa9d17f14833d3245e",
-      "symbol": "vAMM-USDC/SQD",
-      "medianSurge": -0.7157834492983683,
-      "readings": 20
-    },
-    {
-      "address": "0x74f22a01da78294f8df640c98a414fe209e33f60",
-      "symbol": "vAMM-WETH/BID",
-      "medianSurge": -0.727449010054189,
-      "readings": 12
-    },
-    {
-      "address": "0x8a24d81c24f125341b46a52de3e4cf0e0c7e7f72",
-      "symbol": "vAMM-PRE/USDC",
-      "medianSurge": -0.7822051962594657,
-      "readings": 20
+      "medianSurge": -0.499534984465956,
+      "readings": 25
     }
   ],
   "accuracy": {
     "overall": [
       {
         "name": "previous",
-        "observations": 12926,
-        "medianAbsError": 0.28812765698416265,
-        "medianBias": 0.000026674173353224973,
-        "closestOn": 5990
+        "observations": 17537,
+        "medianAbsError": 0.36859362590434275,
+        "medianBias": 0,
+        "closestOn": 7495
       },
       {
         "name": "current",
-        "observations": 12926,
-        "medianAbsError": 0.27239163883641626,
+        "observations": 17537,
+        "medianAbsError": 0.34960405917202597,
         "medianBias": 0,
-        "closestOn": 5280
+        "closestOn": 6596
       },
       {
         "name": "typical",
-        "observations": 12926,
-        "medianAbsError": 0.3631763046333156,
-        "medianBias": 0.09969610121966554,
-        "closestOn": 1656
+        "observations": 17537,
+        "medianAbsError": 0.3806112435107629,
+        "medianBias": 0.05111316588331172,
+        "closestOn": 3446
       }
     ],
     "buckets": [
@@ -312,24 +271,24 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 1488,
-            "medianAbsError": 0.2931106808577473,
-            "medianBias": 0,
-            "closestOn": 985
+            "observations": 2345,
+            "medianAbsError": 0.6293773299027872,
+            "medianBias": -0.09176886625462677,
+            "closestOn": 1269
           },
           {
             "name": "current",
-            "observations": 1488,
-            "medianAbsError": 0.25168164665575876,
-            "medianBias": 0,
-            "closestOn": 270
+            "observations": 2345,
+            "medianAbsError": 0.555249433282391,
+            "medianBias": -0.09607654381242581,
+            "closestOn": 346
           },
           {
             "name": "typical",
-            "observations": 1488,
-            "medianAbsError": 0.6056176706922853,
-            "medianBias": 0.23761466923907504,
-            "closestOn": 233
+            "observations": 2345,
+            "medianAbsError": 0.7098550258699465,
+            "medianBias": 0.14387181629427337,
+            "closestOn": 730
           }
         ]
       },
@@ -338,24 +297,24 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 4388,
-            "medianAbsError": 0.21595158346615784,
-            "medianBias": 1.393420454576244e-7,
-            "closestOn": 2426
+            "observations": 5759,
+            "medianAbsError": 0.2637497421328123,
+            "medianBias": 0,
+            "closestOn": 2876
           },
           {
             "name": "current",
-            "observations": 4388,
-            "medianAbsError": 0.18641481907127866,
+            "observations": 5759,
+            "medianAbsError": 0.2149198338169338,
             "medianBias": 0,
-            "closestOn": 1398
+            "closestOn": 1810
           },
           {
             "name": "typical",
-            "observations": 4388,
-            "medianAbsError": 0.33095769634860006,
-            "medianBias": 0.045470857967166545,
-            "closestOn": 564
+            "observations": 5759,
+            "medianAbsError": 0.31204784491136484,
+            "medianBias": 0.022886961749106982,
+            "closestOn": 1073
           }
         ]
       },
@@ -364,24 +323,24 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 4833,
-            "medianAbsError": 0.20525762572792772,
-            "medianBias": 6.282302951188257e-7,
-            "closestOn": 1863
+            "observations": 6525,
+            "medianAbsError": 0.36774069846613644,
+            "medianBias": 0,
+            "closestOn": 2505
           },
           {
             "name": "current",
-            "observations": 4833,
-            "medianAbsError": 0.2558588492951799,
+            "observations": 6525,
+            "medianAbsError": 0.3632765159215463,
             "medianBias": 0,
-            "closestOn": 2442
+            "closestOn": 2986
           },
           {
             "name": "typical",
-            "observations": 4833,
-            "medianAbsError": 0.2961678464481201,
-            "medianBias": 0.02391664723645648,
-            "closestOn": 528
+            "observations": 6525,
+            "medianAbsError": 0.3628064236793689,
+            "medianBias": 0.01756094830855348,
+            "closestOn": 1034
           }
         ]
       },
@@ -390,24 +349,24 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 2217,
-            "medianAbsError": 0.4043392231801497,
-            "medianBias": 0.14234443095334637,
-            "closestOn": 716
+            "observations": 2908,
+            "medianAbsError": 0.4615416181677672,
+            "medianBias": 0.056042016524374016,
+            "closestOn": 845
           },
           {
             "name": "current",
-            "observations": 2217,
-            "medianAbsError": 0.3707178440799046,
-            "medianBias": 0.138203566583047,
-            "closestOn": 1170
+            "observations": 2908,
+            "medianAbsError": 0.3785967224995428,
+            "medianBias": 0.04375242865324447,
+            "closestOn": 1454
           },
           {
             "name": "typical",
-            "observations": 2217,
-            "medianAbsError": 0.4526481836575922,
-            "medianBias": 0.30866475792833525,
-            "closestOn": 331
+            "observations": 2908,
+            "medianAbsError": 0.4021473379043514,
+            "medianBias": 0.1845371301298777,
+            "closestOn": 609
           }
         ]
       }
@@ -417,7 +376,8 @@
       "2026-08-13",
       "2026-08-20",
       "2026-08-27",
-      "2026-09-03"
+      "2026-09-03",
+      "2026-09-10"
     ]
   }
 }

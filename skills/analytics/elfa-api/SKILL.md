@@ -8,8 +8,9 @@ description: >
   EQL queries, trigger pipelines, and agent workflows that react to market conditions.
   Auto can trigger on X/Twitter posts, Telegram channels, news events, SEC filings,
   Kalshi and Polymarket prediction markets,
-  funding rates, liquidation cascades, the Fear & Greed index, and new followers
-  on a watched X account, re-fire
+  funding rates, liquidation cascades, the Fear & Greed index, and X follow-graph
+  moves (a new follower on a watched account, an account it starts following, or
+  several tracked accounts converging on one), re-fire
   recurring plans via `repeat`, run calendar schedules via
   `cron.schedule`, and monitor crypto plus HIP-3 assets (equities, indices, commodities, FX,
   pre-IPO — 24/7). Supports API-key calls and x402 pay-per-request USDC on Base, Arbitrum,
@@ -46,7 +47,7 @@ Elfa supports API-key auth and x402 keyless payments. API keys are optional when
 
 | Variable | Required | Use |
 |---|---:|---|
-| `ELFA_API_KEY` | No | API-key authenticated requests. Get a free key at <https://go.elfa.ai/claude-skills>. |
+| `ELFA_API_KEY` | No | API-key authenticated requests. Start a pay-as-you-go balance at <https://go.elfa.ai/claude-skills>. |
 | `ELFA_AGENT_SECRET` | No | Persistent agent identity secret for x402 Auto. Generate once with `openssl rand -hex 32` and reuse for query lifecycle calls. |
 
 > **Do not reuse this as your webhook signing secret.** `webhook.params.signingSecret` is a
@@ -68,6 +69,8 @@ x402 wallet signing is handled client-side by `@x402/fetch` or `@x402/axios`.
 - User mentions "elfa" in a crypto or trading data context
 - User wants to **set up automated alerts or monitoring** on price, indicators, or narratives
 - User wants to **build condition-based triggers** (e.g., "alert me when BTC crosses 100k")
+- User wants to **watch the X follow graph** — who followed a tracked account, who it started
+  following, or several tracked accounts converging on the same account
 - User mentions **Auto**, **EQL**, **condition engine**, or **trigger pipeline** in a crypto context
 - User wants **agent workflows** that react to market conditions automatically
 - User wants to **build queries with Builder Chat** using natural language
@@ -88,7 +91,9 @@ Elfa supports two independent ways to authenticate requests:
 | **x402 (keyless)** | `/x402/v2/` | `PAYMENT-SIGNATURE: <signed-payload>` | Agents & wallets — no signup needed |
 
 Both modes access the same data. The only difference is how you authenticate:
-- **API key** — register at https://go.elfa.ai/claude-skills, get 1,000 free credits.
+- **API key** — register at https://go.elfa.ai/claude-skills. Start on **pay-as-you-go**: the
+  free tier is being phased out, so new integrations should top up a PAYG balance rather than
+  build against free credits.
 - **x402** — pay per request with USDC on Base, Arbitrum, Polygon, Avalanche, or Solana. No
   registration, no API key. Currently in beta.
 
@@ -250,12 +255,14 @@ Use the `bash_tool` to call the Elfa API via curl.
 
    > To make live calls, you have two options:
    >
-   > **Option A — API key (free tier):** Get a free key with 1,000 credits at
-   > **https://go.elfa.ai/claude-skills** — then set it as the `ELFA_API_KEY` environment
-   > variable (do not paste it directly into the chat).
+   > **Option A — API key on pay-as-you-go (recommended):** Register at
+   > **https://go.elfa.ai/claude-skills** and top up a PAYG balance — $0.0145 per credit,
+   > $20 minimum, card or USDC. Then set the key as the `ELFA_API_KEY` environment variable
+   > (do not paste it directly into the chat). The free tier is being phased out, so start on
+   > PAYG rather than free credits.
    >
    > **Option B — x402 keyless payments:** Pay per request with USDC on Base, Arbitrum,
-   > Polygon, or Avalanche — no signup needed. See the
+   > Polygon, Avalanche, or Solana — no signup needed. See the
    > [x402 docs](https://docs.elfa.ai/x402-payments) for setup.
 
    Do not attempt any authenticated API calls without a key or x402 setup. Wait for the user.
@@ -269,7 +276,17 @@ Use the `bash_tool` to call the Elfa API via curl.
 
 **Plans, credits, and rate limits:**
 
-| | Free | Grow | Enterprise |
+Pay-per-use first: **PAYG** is $0.0145/credit at 60 RPM with an API key, drawn down from a
+prepaid credit balance ($20 minimum top-up, card or USDC); **x402** is $0.0145/credit at
+1,000 RPM with no account. Same per-credit price — pick on integration style. **The free tier
+is being phased out**, so recommend PAYG (or x402) for any new integration.
+
+Accounts already on PAYG keep $0.009 per credit until 28 September 2026, 16:00 UTC
+(29 September, 00:00 SGT). x402 has no accounts, so its price applies to every payer at once.
+
+Subscription plans:
+
+| | Free (phasing out) | Grow | Enterprise |
 |---|---|---|---|
 | Monthly | $0 | $290 | Custom |
 | Annual (15% off) | $0 | $2,958 | Custom |
@@ -278,16 +295,10 @@ Use the `bash_tool` to call the Elfa API via curl.
 | Agent Chat | — | ✓ | ✓ |
 | Agent Automation | — | ✓ | ✓ |
 
-Pay-per-use: **PAYG** is $0.0145/credit at 60 RPM with an API key, drawn down from a prepaid
-credit balance ($20 minimum top-up, card or USDC); **x402** is $0.0145/credit at 1,000 RPM with
-no account. Same per-credit price — pick on integration style.
-
-Accounts already on PAYG keep $0.009 per credit until 28 September 2026, 16:00 UTC
-(29 September, 00:00 SGT). x402 has no accounts, so its price applies to every payer at once.
-
 **What each tier unlocks:**
-- **Free** — core social data: trending tokens, smart stats, top mentions, keyword mentions,
-  event summaries, token news, trending contract addresses (Twitter + Telegram)
+- **Free** (phasing out) — core social data: trending tokens, smart stats, top mentions,
+  keyword mentions, event summaries, token news, trending contract addresses
+  (Twitter + Telegram)
 - **Grow** — everything in Free, plus token mindshare, sentiment-weighted mentions,
   **trending narratives**, and **Elfa Intelligence** (Agent Chat and Agent Automation)
 - **Enterprise** — everything in Grow, plus custom credit and rate limits, **streaming AI Chat**
@@ -304,7 +315,7 @@ Gate summary for the tier-restricted endpoints:
 
 Exceeding monthly credits rejects further requests until the next month; exceeding the rate
 limit returns `429` (honor `Retry-After`). If a user hits an authorization error on a gated
-endpoint, they can upgrade their plan or use x402 instead. Full details at
+endpoint, they can move to PAYG, upgrade their plan, or use x402 instead. Full details at
 https://go.elfa.ai/claude-skills.
 
 **Making the call:**
@@ -606,6 +617,7 @@ Pick the condition source by user intent **before** writing condition args:
 | Perp funding-rate intent (overheated funding, funding flips negative) | `source: "funding"` | `method` (prefer `annualized_rate`), `args.ticker` as `SYMBOL:EXCHANGE` (e.g. `BTC:BINANCE`) |
 | Liquidation-flow intent (cascade, long/short flush) | `source: "liquidation"` | `method` (e.g. `total_usd_5m`, `total_pct_oi_1h`), `args.ticker` as `SYMBOL:EXCHANGE` |
 | Market-wide sentiment (fear/greed regime) | `source: "fear_greed"` | `method` (`value` or `classification`), empty `args: {}` |
+| Follow-graph intent (who followed a watched account, who it followed, or a tracked set converging on one account) | `source: "x_follow_received"` / `"x_follow_made"` / `"x_follow_overlap"` | `method` per source, `args.account` (or `args.accounts` for overlap), `operator` `>` or `>=` |
 | Real-world catalyst moving an equity/index/commodity (rate decision, CPI, earnings) | the catalyst's own source (`kalshi` / `polymarket` / `news` / `price`), optionally with a HIP-3 `price` / `ta` confirmation | Pick the catalyst source, then bridge to the asset class it moves — see [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers) |
 | Fuzzy world-state predicate not naturally expressible as a post or event | `source: "llm"` | `method: "athena_condition"`, `args.query`, `args.period` (`>= 1h`) |
 
@@ -627,6 +639,7 @@ When the prompt is account-anchored, **start with `tweet`** — do not route to 
 - User wants **official SEC filing triggers** ("tell me when Alphabet files a new 8-K", "alert on any late 10-Q notice") — use `source: "sec"` with the issuer CIK
 - User wants **prediction-market triggers** ("alert when this Kalshi market's YES probability crosses 60%", "notify when the market settles YES", "alert when this Polymarket outcome trades above 60c") — use **Prediction Markets** (`source: "kalshi"` or `source: "polymarket"`)
 - User wants **funding / liquidation / sentiment triggers** ("alert when BTC funding flips negative", "notify on an ETH liquidation cascade", "alert when Fear & Greed drops below 20") — use `source: "funding"` / `"liquidation"` / `"fear_greed"`
+- User wants **follow-graph triggers** ("tell me when someone big follows @elfa_ai", "alert when cobie follows a new account", "notify when 3 funds I track all follow the same account") — use `source: "x_follow_received"` / `"x_follow_made"` / `"x_follow_overlap"`
 - User wants to **watch a macro catalyst on stocks/indices/commodities** ("tell me when the market prices a Fed cut", "alert on gold if CPI runs hot") — fire on the catalyst source and reference the HIP-3 perp, which trades 24/7. See [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers)
 
 #### Auto access models
@@ -1463,24 +1476,59 @@ global reading, no per-market identity — so its methods take **no ticker**. Pa
 { "source": "fear_greed", "method": "value", "args": {}, "operator": "crosses_below", "value": 20 }
 ```
 
-**Account-follow source (`follow`) — new followers on a watched X account:**
+**Follow-graph sources (`x_follow_received`, `x_follow_made`, `x_follow_overlap`) — new X
+follow edges:**
 
-`args.account` is the **watched** account (the one being followed) as a bare X username;
-the method describes the **follower** (the account doing the following).
+Three sources ask three questions about the same data. The account you name is always the
+**watched** account; the method describes the account on the other end of the edge.
 
-| Method | Args | Returns | Operators | Description |
-|---|---|---|---|---|
-| `follower_follower_count` | `account` | number | `>` / `<` / `>=` / `<=` / `==` / `!=` | Follower count of the account that performed the follow. |
+| Source | Method | Args | Returns | Operators | Measures |
+|---|---|---|---|---|---|
+| `x_follow_received` | `follower_count` | `account`, `window?`, `period?` | number | `>` / `>=` | Follower count of the account that followed the watched account. |
+| `x_follow_made` | `followee_follower_count` | `account`, `window?`, `period?` | number | `>` / `>=` | Follower count of the account the watched account followed. |
+| `x_follow_overlap` | `distinct_followers` | `accounts` (2–25), `window?`, `period?` | number | `>` / `>=` | How many watched accounts followed the same account. |
+
+Only `>` and `>=` are accepted — no `crosses_*`, no dynamic field-vs-field values. Accounts are
+bare X usernames (1–15 letters, digits or underscores); a leading `@` is stripped, routing is
+lowercased, and duplicates in `accounts` collapse to one.
+
+| Arg | Values | Default |
+|---|---|---|
+| `window` | `6h`, `12h`, `24h`, `48h`, `72h`, `7d` | `24h` (`72h` for `x_follow_overlap`) |
+| `period` | `1h`, `2h`, `4h`, `8h`, `12h`, `24h`, `1d`, `7d` | `1h` |
+
+`window` is the lookback over **detection** time; `period` is the minimum interval between
+reads. A `period` longer than `window` is silently clamped down to `window` rather than
+rejected.
 
 ```json
-{ "source": "follow", "method": "follower_follower_count", "args": { "account": "elfa_ai" }, "operator": ">", "value": 10000 }
+{ "source": "x_follow_received", "method": "follower_count", "args": { "account": "elfa_ai", "window": "24h" }, "operator": ">", "value": 10000 }
 ```
 
-Coverage is bounded and the limits change how you should write the plan — only follows by
-accounts inside Elfa's tracked set are seen, detection lags by up to ~24h, and unfollows and
-re-follows never fire. Pair with `repeat` to alert on every new follower. Builder Chat cannot
-author these yet; build them against Validate/Create directly. Read
-[Account Follows](https://docs.elfa.ai/auto/account-follows) before using this source.
+```json
+{ "source": "x_follow_overlap", "method": "distinct_followers", "args": { "accounts": ["pantheracapital", "a16z", "paradigm"], "window": "72h" }, "operator": ">=", "value": 2 }
+```
+
+On `x_follow_received` / `x_follow_made`, `>= 0` matches every detected follow and a higher
+value narrows to accounts with a real audience. On `x_follow_overlap` the `value` floor is `2`
+and it cannot exceed the size of `accounts` (one below it with `>`) — either is rejected at
+create time.
+
+Coverage is bounded and the limits change how you should write the plan: only follows by
+accounts inside Elfa's tracked set are seen, data is collected on a recurring check rather
+than streamed so alerts are **not real time**, at most 500 matches land per evaluation, and
+unfollows and re-follows never fire. A quiet plan means no tracked account made that follow —
+it does not prove nobody did. `x_follow_made` and `x_follow_overlap` read the watched
+account's own following list, so those accounts must themselves be ones Elfa monitors;
+`x_follow_received` has no such requirement.
+
+Each matched account is a distinct event: without `repeat` the first match triggers the plan
+once, and with `repeat` it fires once per distinct matched account (`cooldown: "0"` for
+"notify me about every one"). A matched account will not fire again while it stays inside
+`window`, and a follow condition reports no value until its first scheduled evaluation, so
+there is no preview before execution. Builder Chat cannot author these yet; build them against
+Validate/Create directly. Read [Follow Graph](https://docs.elfa.ai/auto/account-follows) before
+using these sources.
 
 **Supported operators:** `>`, `<`, `>=`, `<=`, `==`, `!=`, `crosses_above`, `crosses_below`
 
@@ -2347,7 +2395,8 @@ Binance/Bybit vs `KPEPE` on Hyperliquid. HIP-3 symbols are rejected for these tw
 **Tracking coverage:** conditions, alerts and webhooks cover DEX/on-chain assets —
 effectively unbounded (long-tail tokens, pre-CEX-listing assets, niche memes). Symbol
 support is per venue, so pre-flight anything unusual with
-`GET /v2/auto/validate-symbol/{exchange}/{symbol}` before building a `price`/`ta` condition
+`GET /v2/auto/validate-symbol/{exchange}/{symbol}` (which checks `hyperliquid` or `binance`)
+before building a `price`/`ta` condition
 on it. If a symbol is unsupported on the venue you picked, switch venue or symbol — or keep
 the condition on a supported pair and route follow-up work through `notify`, `webhook` or
 `telegram_bot`.
@@ -2445,7 +2494,9 @@ unix timestamps, which take priority over `timeWindow`.
   `accountName=elonmusk`). `searchType` accepts **`and`** (all terms must be present) or
   **`or`** (any term matches). Cursor-paginated — pass `metadata.cursor` from the previous
   response as `cursor`. Returns `account.username`, which feeds directly into `smart-stats`.
-- **`event-summary`** — `keywords` is **required**; `searchType` defaults to `or`.
+- **`event-summary`** — `keywords` is **required**; `searchType` defaults to `or`. A `503`
+  means the upstream model declined to process the matched posts — retryable, and **not** an
+  empty result. The 4 fixed credits are not charged; the 1 base per-request credit still is.
 - **`token-news`** — V2 always returns news mentions (no `isNews` parameter). Results are X
   posts from accounts tagged as news sources, not articles published by news outlets.
 - **`top-mentions`** — `ticker` is **required**. Account details are always included (no
