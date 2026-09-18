@@ -110,6 +110,25 @@ if ctx.state is not None:
         print(f"[scan] WARNING: state append failed: {exc!r}", file=sys.stderr)
 ```
 
+### What a tick keeps, and when an edit reaches a running scanner
+
+- **Every key of every record you `append` is saved** to the state file as JSON — nothing is dropped
+  or trimmed, and the scaffold adds its own `recorded_at` (seconds). `state_history_max_count` caps
+  how many records are kept, not how large each one is. A restarted scanner reads the file back, so
+  an `int` key returns as a string and a tuple as a list.
+- **These discard the whole tick — state not advanced, no signals delivered:** `scan()` raises, runs
+  past its timeout or returns something other than a list; a record holds anything `json.dumps`
+  rejects (a `set`, a `datetime`, a `Decimal`, a tuple key); or `scan()` returns `[]` after any
+  `ctx.senpi_mcp` call in that tick failed, even one your code caught.
+- **`scan.py` is imported once, when the scanner process starts**, and so is everything it imports,
+  `scoring.py` included. A running scanner keeps the code it started with; an edit on disk runs from
+  its next start, which `openclaw senpi update <recipe-dir> --id <runtime_id> --apply` triggers (add
+  `--code-only` when only scanner code changed) — and which a crash or a gateway restart also
+  triggers, unannounced. Re-running a deploy on a strategy that is already running applies nothing:
+  it keeps the runtime that is running.
+- **`openclaw senpi validate` never inspects the running scanner.** It runs the code on disk in a
+  fresh process against empty, throwaway state, so a `PASS` proves the edit runs, not that it is live.
+
 ---
 
 ## Gates and `ctx.dry_run`
@@ -199,6 +218,9 @@ Runtimes **newer than 3.0.32** numeric-cast the two market tools at the `ctx.sen
 - Drops are never silent: a `senpi_mcp_cast_dropped` scaffold event + a `_cast_dropped` marker on
   the payload. A series can come back **shorter / non-contiguous** — guard `len(candles)`, don't
   assume fixed `t` spacing.
+- `t` (candle open) and `T` (candle close) are **epoch milliseconds** on every runtime version;
+  the cast changes their type, not their unit. `time.time()` is seconds, so a candle has closed
+  when `_f(c["t"]) / 1000 + candle_seconds <= time.time()` (`candle_seconds`: `4h` = 14400).
 - Originals: a single `_raw` key beside the cast sections.
 - Every other tool's response is untouched, on every runtime version.
 

@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "74b370e1e149a959c7722d885eda8b2fc7458ac5",
+      "revision": "cf2af96bb6624e1a710d057ba0ee54f301ccdd1a",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3845,7 +3845,7 @@
     "exchanges/senpi-ai-senpi-account-status": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-account-status/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
         "SKILL.md": "3e74da9ea08cc849442967dd8c623cc59c0e5ed520f053c545c0e0c4724b83d7",
         "references/presentation-notes.md": "8d2b874195f95d991f27d779b20dcc1094776640e987fad1fa5f29c6ae77958f",
@@ -3870,28 +3870,31 @@
     "exchanges/senpi-ai-senpi-deposit-withdraw-transfer": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-deposit-withdraw-transfer/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
-        "SKILL.md": "66c4c0241d472038ccad833218289242b63a5dc18706cea60b58d0cc619212f9",
+        "SKILL.md": "17d402c90840a69974a493bf9745c74b8a607b793f2eee5e6e39f2b0a6afb6d1",
+        "tests/test_money_rails_skill.py": "8387ab4b9c0e49db8bd1117ee9db06d7826c4319fbf769d9f611770261161909",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
       "modes": {
         "SKILL.md": 420,
+        "tests/test_money_rails_skill.py": 420,
         "LICENSE": 420
       }
     },
     "exchanges/senpi-ai-senpi-market-pulse": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-market-pulse/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
-        "SKILL.md": "1567681dbb2fcfc6dc90c3b2c458a06f88d19b61c2b298d0333934fbe7e732ac",
+        "SKILL.md": "cc861832f1dcafd8e4586f589bdbffe10633acf5f939fc03d490e11007365c11",
         "references/analysis-framework.md": "f28318e3cff4ded3a3c58369a6b7157d7d0e88b1f16f15ee4609fdd05813d634",
         "references/scope.md": "5fcfab3deea82abbca335617cff71cff38bf041b68ecb06bcc4f3b45a78c3d03",
         "scripts/mcp_client.py": "b9c72ab1aac6f1ee906a389171ec3c968048fb76c9b3e18bff2e5b6d0762e23b",
         "scripts/pulse.py": "3b7d48b15b5e74c5d301b7881f191510a08d906eaefae00858cd29500af66a51",
         "tests/fixtures/pulse_fixture.json": "d15ecdd606ea46a17f31cf3f6c3d132b964b7ecadf604b03e68d6693894e5b63",
         "tests/test_pulse.py": "b686a98897e4ccdb6c6b9c8005d573a77d7a151f3368e027d192bfd32ec87841",
+        "tests/test_signals_closing.py": "a68d7343d5ae6743798135a69636c7c3609f984301e751194259675a9d7d49be",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
       "modes": {
@@ -3902,13 +3905,14 @@
         "scripts/pulse.py": 493,
         "tests/fixtures/pulse_fixture.json": 420,
         "tests/test_pulse.py": 420,
+        "tests/test_signals_closing.py": 420,
         "LICENSE": 420
       }
     },
     "exchanges/senpi-ai-senpi-trader-research": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trader-research/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
         "SKILL.md": "138e09f18d9ba33785054457da073958fad7c312ec47fe8030d1ad76059bab4a",
         "references/analysis-framework.md": "251247922522a5a2c546fd5f44b8c5f865f34ebabd7f52c9ba140231f328d379",
@@ -3931,18 +3935,20 @@
     "exchanges/senpi-ai-senpi-trading-runtime": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trading-runtime/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
-        "SKILL.md": "9ed988d0dcecf65bc8b9ef15dd00dc49a95de74c0650bf5f149ddfba1bee3b56",
+        "SKILL.md": "4bba8a960438ff0d5c305bbab0df29ec54da3ff6e18a153b447b483f55d9620b",
         "references/dsl-protection-check.md": "2b004cd3b65834e9adf9964087fa97e9e65e81feb3d4d7a8a70e494ed138dd96",
         "references/runtime-cli.md": "b9489e76c232c5f08d5ad07735b38cbce69874b8606a2791a180102e211ad9c2",
         "references/runtime-concepts.md": "da442cd43f573961c58c33800b35b37f4b07c7acc3d7a526297cafa6d67522f4",
         "references/runtime-yaml.md": "bf93224b2083aa58488f6b8bdec0976681601e69b643cf6a6fa9696927b68d08",
-        "references/scan-contract.md": "4b4bcff2b24e9e30794dd0631cae2cf417adcb9e8a775c31c0e155e7cdd29a51",
+        "references/scan-contract.md": "056a3a736f9ebcdf872948c0ff1fd5c555e6992b6cd123ae77cddd6cdf7f54ce",
         "scripts/gen_catalog.py": "7fdff3995a77144cef09ab61676d401e3c26fe393fcc115c2ef6e97a880af3b1",
         "scripts/min_budget.py": "0b6044c095942e061e27f2156cf57c9715e1ec28f79991764905128d7f19ccde",
         "tests/fixtures/min_budget_golden.json": "9c37c5b75cd81b05be8f992d746a187076c75b82a1c8f5e0ce15c00309334384",
+        "tests/test_edit_is_live_only_after_apply.py": "f0c00afbbfbcb13302418836015a2781c9436120e395cf4052a7aca7886c11ec",
         "tests/test_min_budget_golden.py": "70df3ee13bb696ec87755c33a4cbad11ea15a7585c7a93a9e4d8b87f9ee3c7e1",
+        "tests/test_reference_candle_time_units.py": "9468b89dcaafc054f32d76f6af79b388a1eafb07efc684abc910dbd2dfac5b45",
         "tests/test_reference_time_cuts_either_phase.py": "ce2dad234213becba147c69d34698f297d99e74869662bd6902a40ce075cb9ce",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
@@ -3956,7 +3962,9 @@
         "scripts/gen_catalog.py": 420,
         "scripts/min_budget.py": 420,
         "tests/fixtures/min_budget_golden.json": 420,
+        "tests/test_edit_is_live_only_after_apply.py": 420,
         "tests/test_min_budget_golden.py": 420,
+        "tests/test_reference_candle_time_units.py": 420,
         "tests/test_reference_time_cuts_either_phase.py": 420,
         "LICENSE": 420
       }
@@ -3964,7 +3972,7 @@
     "exchanges/senpi-ai-senpi-why": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-why/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
         "SKILL.md": "3701dfa99c719752ae6f6a95c0585b3b4ab4575c3effe155b6622541df1165f2",
         "references/overview-positioning.md": "4174702e1a53b0f145c1460fd0de59934254825e523762c7631269f9a4e049a7",
@@ -5075,7 +5083,7 @@
     "trading/bankr-official-0xwork": {
       "repo": "bankrbot/skills",
       "path": "0xwork/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "2ad467846eb8ef76f657cf072029d20576b18e2912bda12e9847d9fc834e3550",
         "catalog.json": "5d0afeea15a5f2018518a4091c5da4396573ffb751b8c20804b11584095a398c",
@@ -5090,15 +5098,15 @@
     "trading/bankr-official-bankr": {
       "repo": "bankrbot/skills",
       "path": "bankr/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
-        "SKILL.md": "bb016088245a8e0f45f05d9b92ed075e2d69184a3b7edc70ae28711a919d7ab0",
+        "SKILL.md": "96c9854063315b7b8d388721cdbc563084ea92b118df4632e8bca6614c927a2c",
         "catalog.json": "a7067037cfc8acb13111e84f13cdf3924bd8c8d14a0ea8f4775cd15aaaf5812e",
         "references/agent-profiles.md": "939c10ab9e0c0608faf9298f6995426655ee3e49e72e0ac6596e7093d80d5b94",
         "references/api-workflow.md": "709d1162df1fa8e3d6cf9efd115ece6d2489b9fc9ac55ef23d725988d13efe7a",
         "references/arbitrary-transaction.md": "03df247336a20d7e329c5d2f0dd8b6cca08bd9cf84ad15c500e78f800c52e12e",
         "references/automation.md": "39ca4c6807deba680941a516cd376bffcbeadd817ae89b8c655483deb6971b5e",
-        "references/error-handling.md": "c942a7631270d962d4b0d41011ab8e085bf7357f5355236cc190947a183d3c65",
+        "references/error-handling.md": "5f68d4010ad45427953230821d74e45f2c14e5e340eedaf0e014e8722d1a61f8",
         "references/files.md": "f686c6eaa89f49f2971686ec23dfb1b234c1d370b49d4d5c066f5280a1adaa7d",
         "references/hyperliquid.md": "fee21768b0cec9afdc9097216e7647892c018e79db0b49b4e044f44c4b7c3475",
         "references/leverage-trading.md": "5cb2bfc35dc3ecccc6f6e6df87493699118a70f991260156ba0b0a6d3187e8a5",
@@ -5143,7 +5151,7 @@
     "trading/bankr-official-bankr-signals": {
       "repo": "bankrbot/skills",
       "path": "signals/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "HEARTBEAT.md": "f80401546743f822afd70d8e06547778a192f15926e595bcfeaeb400f7fa61cd",
         "SKILL.md": "f2569a2af4e5285b618ae2aa95fbb3be1e857d0798fb6f7bad192198c2fa6759",
@@ -5162,7 +5170,7 @@
     "trading/bankr-official-base": {
       "repo": "bankrbot/skills",
       "path": "base/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "cce3c15b0fd6f9b87bbaccfc552cb67aeb26c46ea2f958e1f7cc367848f74a07",
         "catalog.json": "9fd2bcaaa206079e43985273ca06fd20a4faf92905e78e9d08d2b3ad67a186ab"
@@ -5175,7 +5183,7 @@
     "trading/bankr-official-botchan": {
       "repo": "bankrbot/skills",
       "path": "botchan/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "2d13e47f02a60825671fd14cb08fdfa2d881bee756db28152dc647f9ff151502",
         "catalog.json": "3387943873e8d5f6c8c8475257a8e389285a341bc8a5fc5a9ceaa01e4de14fec"
@@ -5188,7 +5196,7 @@
     "trading/bankr-official-clanker": {
       "repo": "bankrbot/skills",
       "path": "clanker/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "54dba8d688cdf7dc2ec07281058d517cc5b272a1f9656d81d5d26f928b897b23",
         "catalog.json": "0919f1938c0928a73809bddde58bba045aa49c97882db9b2e35e5623b22b7cec",
@@ -5213,7 +5221,7 @@
     "trading/bankr-official-ens-primary-name": {
       "repo": "bankrbot/skills",
       "path": "ens-primary-name/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "047f5094266678435c74b16fcec6a9e49f832e144bfa86ae977550b317cbffef",
         "catalog.json": "9becaf53bba6a74f8ab07de1c5c480081de6a53f3f7d623d8e9a73d0e34b252f",
@@ -5232,7 +5240,7 @@
     "trading/bankr-official-erc-8004": {
       "repo": "bankrbot/skills",
       "path": "erc-8004/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "e90b1b17c77ac01e7db5a888bf751d6f4b9830ce1b6d5ba506690ac49fa740ee",
         "catalog.json": "458c5d0edcfbe25f93ba07bee023c1cf390f2af3cf478972e5faef39623dd152",
@@ -5263,7 +5271,7 @@
     "trading/bankr-official-helixa": {
       "repo": "bankrbot/skills",
       "path": "helixa/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "6a35f204955b48b266fd63f6f51fe4354f0be7d24bfe80db1e5ee837828ea869",
         "catalog.json": "06c2837fa5e84cc2b61b5b38d83817f3c1d683cc139da625d7837ed73142faa4",
@@ -5314,7 +5322,7 @@
     "trading/bankr-official-hydrex": {
       "repo": "bankrbot/skills",
       "path": "hydrex/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "20dfb422aff901dd0d68f188a5050faa1998db74b7bbaa014ac0ec3d923044e6",
         "catalog.json": "662ae50ef10daae4f7b722d96d3bbf75ab47b9db3b260ec9a3f3e4e5e9ca1d72",
@@ -5335,7 +5343,7 @@
     "trading/bankr-official-neynar": {
       "repo": "bankrbot/skills",
       "path": "neynar/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "1e96fae4d84f3fb099216f77e6ac1be61b6591a879219e6a128e3fd6f66fd08e",
         "catalog.json": "939b2039fa697d27f56793984ef82b222ba690a82ace4e77b5d6bd6ea6002e79",
@@ -5350,7 +5358,7 @@
     "trading/bankr-official-qrcoin": {
       "repo": "bankrbot/skills",
       "path": "qrcoin/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "2866b9092c54e96b5010275efc8ff214b54e89ad095639fd5033194d70cf87d9",
         "catalog.json": "c570e690c85b987761f66197da5021d0371a9690bae59f333a2fb85bfdcbdd07"
@@ -5363,7 +5371,7 @@
     "trading/bankr-official-siwa": {
       "repo": "bankrbot/skills",
       "path": "siwa/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "2ab8f24bb01ea5b24222bdff88ca576e6b74c91ded31fadbc333e1ea4503c4c1",
         "catalog.json": "46baca30994c6f5cee2be15cc4b1dd556a0aaa3da1ddc551158df10cf63ff15d",
@@ -5380,7 +5388,7 @@
     "trading/bankr-official-trails": {
       "repo": "bankrbot/skills",
       "path": "trails/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "970889572e3b05920ceecfe1f2e86531c188af42e34bdb9870044858c12019b0",
         "catalog.json": "9c2e870f4194bcce7101fe89ae20d0fa96e836020dd8497d24a6dbdeb14aa9a0",
@@ -5395,7 +5403,7 @@
     "trading/bankr-official-veil": {
       "repo": "bankrbot/skills",
       "path": "veil/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "README.md": "e5680b0bdc49fc4d5a8bed02b33c2170e2cb752fcfc61712d459d813c6a3493c",
         "SKILL.md": "54c502ff13073b9712ba7c0775a634d9e69b7f092239978a520dd870b00d1d6e",
@@ -5446,7 +5454,7 @@
     "trading/bankr-official-yoink": {
       "repo": "bankrbot/skills",
       "path": "yoink/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "e84ca789803084a93606736db081a293c9f8415f42799fdf569565cfbbe5ec10",
         "catalog.json": "513c80e53485f53fa458246d1ce335b51cde23d424d4042047c2f7a40f634d57"
@@ -5459,7 +5467,7 @@
     "trading/bankr-official-zapper": {
       "repo": "bankrbot/skills",
       "path": "zapper/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "5faa84f05dd6fa388c65751f4f5a2a2930c327752b1b9d193e57500b916dbc31",
         "catalog.json": "26f6fac1de87940446d1d7469b070db133fd038d57318963adeb58449dc4c200"
@@ -10834,7 +10842,7 @@
     "trading/bankrbot-official-1claw": {
       "repo": "bankrbot/skills",
       "path": "1claw/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "6a048fde363b8f6053cc5f0a001afc0a6939c09aedfb0633d1f72e557d931998",
         "catalog.json": "2494e99453e4006663596c62927e6a7e83981d88e04383870bca119cbe7bcad9",
@@ -10851,7 +10859,7 @@
     "trading/bankrbot-official-Indexing": {
       "repo": "bankrbot/skills",
       "path": "ethskills-indexing/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "62bde3239264fcd4129d78bbb5b26f14d81e3b0c7e30780b1d2ab074245e0df2",
         "catalog.json": "0031961cc70581a2227457e90017aac2eacbabb93081b1a760ea41f6e0da39d4",
@@ -10866,7 +10874,7 @@
     "trading/bankrbot-official-Orchestration": {
       "repo": "bankrbot/skills",
       "path": "ethskills-orchestration/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "4f1e6d20d3d1e56d942f57edb0240c0303c044870ec8338f5bd9afbb1b080965",
         "catalog.json": "2c7c99943502d627b6a1067ae165e144a027ff95f8b8b62633d4aba262730d47",
@@ -10881,7 +10889,7 @@
     "trading/bankrbot-official-Security": {
       "repo": "bankrbot/skills",
       "path": "ethskills-security/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "fe19de9dbf0bcd04787b58a2c3d8b97cf706b517c7521852fd84b1a75e3382e9",
         "catalog.json": "2b00bbf72679d139e17805f69dfb8266ab58a08431966f65cef57b449f3cb3e2",
@@ -10896,7 +10904,7 @@
     "trading/bankrbot-official-Standards": {
       "repo": "bankrbot/skills",
       "path": "ethskills-standards/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "cdb2d2554ddb96bc14859fa194c589385325416a43d439cb536f18446a8d2e7f",
         "catalog.json": "00035dbaa9e3b979370bbdaa2f0989e90c1d8932d9812b5ce0dfc3b0ce2381bf",
@@ -10911,7 +10919,7 @@
     "trading/bankrbot-official-Testing": {
       "repo": "bankrbot/skills",
       "path": "ethskills-testing/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "c63a42bdf93afdc69cf189d441b9d4daa53ea7bb5b4f885ef4f7d1adbcce52e6",
         "catalog.json": "617105cfd00818d58bf9113bd8663c9a1d7cd8032d3425b6a93053bf98120087",
@@ -10926,7 +10934,7 @@
     "trading/bankrbot-official-Tools": {
       "repo": "bankrbot/skills",
       "path": "ethskills-tools/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "9035ecaa8efbbe3d4ae2d74dc9ea349bd4652bc64f3b3195318161f517b42829",
         "catalog.json": "0455dec8b66755599c6ec2dbe0bc602d448c981784eb4079c2eaa6287071e5f6",
@@ -10941,7 +10949,7 @@
     "trading/bankrbot-official-Wallets": {
       "repo": "bankrbot/skills",
       "path": "ethskills-wallets/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "7bf8413b69693b554aec977c9383aeab77854fc6393e3c8d7039eb134ac6d667",
         "catalog.json": "2a86101b0cab036642b0e7b2f106ec09cb82f40529bdfb9e7953d9657cd83860",
@@ -10956,7 +10964,7 @@
     "trading/bankrbot-official-aeon-autoresearch": {
       "repo": "bankrbot/skills",
       "path": "aeon-autoresearch/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "b3003d23529454d047887c53bf8d5c8eb65937ffb805f67fbc2bc89eec19ae08",
         "catalog.json": "5ddbbaf959596a343f52926668303fcf79bb60045a656f59b0bfc775959ab38c"
@@ -10969,7 +10977,7 @@
     "trading/bankrbot-official-aeon-deal-flow": {
       "repo": "bankrbot/skills",
       "path": "aeon-deal-flow/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "7d775d633903cf2f0d48a80c196987271c31f4edf9d6d5775bcaee4d7a39b930",
         "catalog.json": "152f22ab70ccf50cd8a7316ba6abfac88caf64646e3c0dec69a431ee0a26075e"
@@ -10982,7 +10990,7 @@
     "trading/bankrbot-official-aeon-deep-research": {
       "repo": "bankrbot/skills",
       "path": "aeon-deep-research/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "157901b3f27c93989dc1320a52f52362d26659abbb00be3b9d66964e35d6bfe4",
         "aeon-deep-research.png": "d290575245a8fb0c354f2349f02d025348bd28ac7dc29fe102deaf69b2ae4299",
@@ -10997,7 +11005,7 @@
     "trading/bankrbot-official-aeon-defi-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-defi-monitor/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "0fa84e6c20003f9046422411884abd7617aa5cf4cc6038e63e03d6e6eb4b134e",
         "catalog.json": "1e723409ba95f27cfff3ef9d81de7ad8021c2bdf6bcec66de728a4322608de24"
@@ -11010,7 +11018,7 @@
     "trading/bankrbot-official-aeon-defi-overview": {
       "repo": "bankrbot/skills",
       "path": "aeon-defi-overview/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "3b7344283e2318d3319dd734a95b6ae14ba530e0913e37d8d2ea200092ebbe2a",
         "catalog.json": "d286a81ab39fbb30ad0017946204843840285357644658726ef0d40b23ebf0eb"
@@ -11023,7 +11031,7 @@
     "trading/bankrbot-official-aeon-distribute-tokens": {
       "repo": "bankrbot/skills",
       "path": "aeon-distribute-tokens/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "2867ef3dadf4c5ec6ec3b6a2eca12b48c37ce95b830906001213d0aeb968ac34",
         "catalog.json": "db473b10635964deb057e183f118db387d2106228d8afd48b1dec4bc691b8e3e"
@@ -11036,7 +11044,7 @@
     "trading/bankrbot-official-aeon-hacker-news-digest": {
       "repo": "bankrbot/skills",
       "path": "aeon-hacker-news-digest/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "ed7dcdeebbafc87f16c108f19dc1618ab6b54bd0641570e619a40812d4d8fafb",
         "catalog.json": "2055000d65b23f1bc4bb7fb5a64b4fd7cf0437afeb97b3008ed4122ba2c05287"
@@ -11049,7 +11057,7 @@
     "trading/bankrbot-official-aeon-huggingface-trending": {
       "repo": "bankrbot/skills",
       "path": "aeon-huggingface-trending/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "3ab8867027a3bf03501760611e261ce207555ee60ea1f66731e512e36d6129e6",
         "catalog.json": "0e7b914792a5459f0a15689fb55765dbfdc18c0199c7bf2b930f5ad27c7b84fd"
@@ -11062,7 +11070,7 @@
     "trading/bankrbot-official-aeon-last30": {
       "repo": "bankrbot/skills",
       "path": "aeon-last30/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "4e962b5c49300e7f38bf8ab3467ede14cac5edfb7da5078482860b3beba01ee3",
         "catalog.json": "17d58623dd3364d0e3cafd592b3525660f782d2b0df5354649db6763d2ffa75b"
@@ -11075,7 +11083,7 @@
     "trading/bankrbot-official-aeon-monitor-kalshi": {
       "repo": "bankrbot/skills",
       "path": "aeon-monitor-kalshi/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "b26747c6ece3d3f8b4b14538c53f1b673f1cfff633ff44a3f631378b5d3ee22c",
         "catalog.json": "a64f3bd537be2c06ae134e70a7fa8c0806d1760f6ccde8f3628f61f8f757815e"
@@ -11088,7 +11096,7 @@
     "trading/bankrbot-official-aeon-monitor-polymarket": {
       "repo": "bankrbot/skills",
       "path": "aeon-monitor-polymarket/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "6915ca0acb7f64ffcb9b30a0a596f38b9363bb59a1e814992b2d8e5cf31ec2ce",
         "catalog.json": "6312ad92bcdd2a239acc385d0243e42fb72866eff78aab64ac6785ff5e606519"
@@ -11101,7 +11109,7 @@
     "trading/bankrbot-official-aeon-monitor-runners": {
       "repo": "bankrbot/skills",
       "path": "aeon-monitor-runners/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "d52b7907241ac89a1b080cbb82bbe761addb922e3c4dc9682e870fa4dfbe48a5",
         "catalog.json": "aeb1af678a1715f60d6b9800b95987c2db609578b25e2f665e80aa3f21ae3ee5"
@@ -11114,7 +11122,7 @@
     "trading/bankrbot-official-aeon-narrative-tracker": {
       "repo": "bankrbot/skills",
       "path": "aeon-narrative-tracker/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "867d6822fee11cf9e67a05bc728c4f953216de6f8f55e7354c9b846d86863c52",
         "catalog.json": "58a0894ac5ac612680811942af6c29194115db95e9fb198dccef3098f90f2814"
@@ -11127,7 +11135,7 @@
     "trading/bankrbot-official-aeon-on-chain-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-on-chain-monitor/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "ac237e3d0d7ca10cb08498401d419dd6bc8a5d941480cf136ff6ea1fdd526c81",
         "catalog.json": "48db600244a7b170e0f891e9a7ef55777755b6041fcf5aaebec08ffbbf86987e"
@@ -11140,7 +11148,7 @@
     "trading/bankrbot-official-aeon-paper-pick": {
       "repo": "bankrbot/skills",
       "path": "aeon-paper-pick/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "e6552098f8bd7517e70d00e3894c816830662f383fa0f5941e5311fac1ef2360",
         "catalog.json": "aada992d5b922ae146b1088205068c72bf27e5b9ef2f45855c8fbe8ad7ad5b3d"
@@ -11153,7 +11161,7 @@
     "trading/bankrbot-official-aeon-reg-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-reg-monitor/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "f72295cf0cc5c61fe6982176478b0832453ea698d841d048e54aa234aec2b6ab",
         "catalog.json": "946e7fb594f306040d55b8e5fce1df6a9c411c21d551ecdaf0c98d9d31625ff9"
@@ -11166,7 +11174,7 @@
     "trading/bankrbot-official-aeon-rss-digest": {
       "repo": "bankrbot/skills",
       "path": "aeon-rss-digest/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "eea6614b629dfa64cfef064acca084c647d2f8ca2f8238844b7db8fd67fb29d5",
         "catalog.json": "157f89c63071690dc0655814338dea4b468d38ba7ed27b6573cf5412368cb46d"
@@ -11179,7 +11187,7 @@
     "trading/bankrbot-official-aeon-skill-evals": {
       "repo": "bankrbot/skills",
       "path": "aeon-skill-evals/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "fcaf52e5a151491ad4b9f601636fa6dd93dbc6e965030d7826a427238aaaf642",
         "catalog.json": "0a06368396db1c2086d3c6165fef5c53d6091defd11a17a66e6c349296d4e4cb"
@@ -11192,7 +11200,7 @@
     "trading/bankrbot-official-aeon-skill-repair": {
       "repo": "bankrbot/skills",
       "path": "aeon-skill-repair/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "7973c50e79c7bccdb4df23639f177e30e3564e3dff10455e4b800865534be3c9",
         "catalog.json": "51f1b2485db1d1bb158212438cce4373bec695ed7d7e59cf5d95561870dafb68"
@@ -11205,7 +11213,7 @@
     "trading/bankrbot-official-aeon-skill-security-scan": {
       "repo": "bankrbot/skills",
       "path": "aeon-skill-security-scan/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "fa25e09ae3453f183d7503733d66a2cd02d9dc8b81adfcbed19e7e898d6ac506",
         "catalog.json": "8b1b70a9663d4827d37131591a94a49b696e58a101f252ce8d73ec76c157172f"
@@ -11218,7 +11226,7 @@
     "trading/bankrbot-official-aeon-token-movers": {
       "repo": "bankrbot/skills",
       "path": "aeon-token-movers/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "83ab802524c5c8779acf2e3e96bf6ec243837eaf820adbf019835f00c3a37101",
         "catalog.json": "127fc0daf72556690779f2bb827157c138ad0e62f51ed705b58b3f505fd35544"
@@ -11231,7 +11239,7 @@
     "trading/bankrbot-official-aeon-token-pick": {
       "repo": "bankrbot/skills",
       "path": "aeon-token-pick/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "c87684d2fe5a1465514da514107ba62c5b8aa9488531b365ffe3a4e020901ca9",
         "catalog.json": "47badf5e5d1ece2ac49237cccde86276fa86b4379c572a5517955e424d19416a"
@@ -11244,7 +11252,7 @@
     "trading/bankrbot-official-aeon-unlock-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-unlock-monitor/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "3ad8a9383acfbe0fbbe482c55cda0b6f88641302be7152ecf2c027d46497a1a7",
         "catalog.json": "e88e7be21c1ef02cc540a766b98df48da9b619b02ebdb644b7418f335a930adb"
@@ -11257,7 +11265,7 @@
     "trading/bankrbot-official-aeon-vuln-scanner": {
       "repo": "bankrbot/skills",
       "path": "aeon-vuln-scanner/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "7cf22ee13c170f90ddc66acd0b69f65d9badc45d08214845a01b278ce87ff12f",
         "catalog.json": "c9884bd5e2d47f58eee63a31c1927d61a42913a9e8a21fd979a59eba5d4a5ff0"
@@ -11270,7 +11278,7 @@
     "trading/bankrbot-official-agent-wormhole": {
       "repo": "bankrbot/skills",
       "path": "agent-wormhole/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "03994f0eec37e363d8904a93682a3174d351d319d666d74809c4f379d8341768",
         "catalog.json": "6a4ec887ae7fce6adbd28901ce9f2754f4a6a1dbfeee48bf548b1cb185518667"
@@ -11283,7 +11291,7 @@
     "trading/bankrbot-official-agenticbets": {
       "repo": "bankrbot/skills",
       "path": "agenticbets/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "fac9e5063d2859e89562cd1aada1c84fe7d060c8bfa2dc997096ac11a514da27",
         "catalog.json": "1f96ea87ba4551ad92d8d437986cf0f7caf3cbbc9e99568eccde42b280f137ff",
@@ -11300,7 +11308,7 @@
     "trading/bankrbot-official-ai2human-task-router": {
       "repo": "bankrbot/skills",
       "path": "ai2human-task-router/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "README.md": "117470a79ebf7df7d48b5b54aff526cac06467fe3d0a335c7686388fd120574b",
         "SKILL.md": "e826f994921bedec651621039e925748cceb9ad1b6dc61d0f3c0999799e32e86",
@@ -11325,7 +11333,7 @@
     "trading/bankrbot-official-autoboy": {
       "repo": "bankrbot/skills",
       "path": "autoboy/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "62376a98388a0ec0151840fd39debeec54d7d626cf516f520d673b1721f0456f",
         "catalog.json": "fcdbc471bb0626c7aef29f1d3b034d87c26debd3debc7c58e51cd6dd1321e30d",
@@ -11344,7 +11352,7 @@
     "trading/bankrbot-official-b20-console": {
       "repo": "bankrbot/skills",
       "path": "b20-console/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "bf1f64592e0624c983c41083d3026f4df1f59591a45f690538066223e263e554",
         "catalog.json": "baaf20cba9befb814cd9d55932be0c3a8f76b5f0624f6b0ec85ac6bd38feb409",
@@ -11365,7 +11373,7 @@
     "trading/bankrbot-official-bankr-communities": {
       "repo": "bankrbot/skills",
       "path": "bankr-communities/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "AGENT-WALLETS.md": "75b4aa59ccdc5a8687dbc668832a949d644e2dd67bbe292437ba6c0b50a14391",
         "BANKR-PROJECT-FALLBACK.md": "25f1676b7931acc77947bd19b001d64fa032005714feb1488a7f4a165dacbac3",
@@ -11458,7 +11466,7 @@
     "trading/bankrbot-official-bankr-shopify": {
       "repo": "bankrbot/skills",
       "path": "bankr-shopify/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "4d1d006db18c90f30ff386dce938913412f87453d05fbfe65c09332e715ac242",
         "catalog.json": "5945cdcdcfee10b4cc57d4a3849dbf06b3c574f92e3fd82d5c76a3babc87f818"
@@ -11471,7 +11479,7 @@
     "trading/bankrbot-official-blueagent-x402": {
       "repo": "bankrbot/skills",
       "path": "blueagent/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "61817c7800aa2b484e67890abdd4598bd185372310f3858f59752e5265e0e7c3",
         "catalog.json": "22f1ced78649a7f33c063832f254bdd230d9d83c42383a0bf88e35d6d578ad63"
@@ -11484,7 +11492,7 @@
     "trading/bankrbot-official-botcoin-miner": {
       "repo": "bankrbot/skills",
       "path": "BOTCOIN/skill.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "catalog.json": "376f1ecb2250115e84eef90407968ae1e1b63ccfa0ed7af761bdc2f1438a2e15",
         "SKILL.md": "a7a03a4187c0b6374e33732eff225c3be601d6e82fb0ef5b2632507a70382631"
@@ -11497,7 +11505,7 @@
     "trading/bankrbot-official-checkr": {
       "repo": "bankrbot/skills",
       "path": "checkr/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "a179c6bed4c68ff7b062613e092547c40f110737348fe5f6136f80df1786c3be",
         "catalog.json": "5ecf3c26fa7a57f272be81e7808dc2b20ebd1e88e2c7def7ca8858003b851e2a",
@@ -11514,7 +11522,7 @@
     "trading/bankrbot-official-codegrid": {
       "repo": "bankrbot/skills",
       "path": "codegrid/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "e0aa7ad1013cc482c67a96abbe1de423d2604454feb7ae214882614d1d56c4c4",
         "catalog.json": "cf420b8a17ef876af5557ae59e676aa507c53edbdd2e8692dc85da48c68b5488",
@@ -11531,7 +11539,7 @@
     "trading/bankrbot-official-coinhero": {
       "repo": "bankrbot/skills",
       "path": "coinhero/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "b318ea6c261b71546f55cad64f0174db9d0e1010886f13b8c9bb00cf2d8d707f",
         "catalog.json": "a83358db24ebc2c5dd16caf3871298d2e764fa44596472af2efe710e160f6016",
@@ -11546,7 +11554,7 @@
     "trading/bankrbot-official-cortx": {
       "repo": "bankrbot/skills",
       "path": "cortx/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "32abebff04e32040579979d38908133f8a263b7a233e71d82601b045e3b11e09",
         "catalog.json": "dee4e91c4b5928d88299d529eb9fffcc38fb6b4ad6d8a763b9ecd47c4ac5afad",
@@ -11561,7 +11569,7 @@
     "trading/bankrbot-official-darksol-random-oracle": {
       "repo": "bankrbot/skills",
       "path": "darksol-random-oracle/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "44f2036efb399db52c9111a9390524330323ee52c6b0dd117dd31511a929f674",
         "catalog.json": "d3f622347decc7d73336685127267443acba05979c0c923c38390157e9a57833"
@@ -11574,7 +11582,7 @@
     "trading/bankrbot-official-delu-oracle": {
       "repo": "bankrbot/skills",
       "path": "delu-oracle/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "f78fc5886206efe0a6531a29ba93b4ee6d78fdb64c1fa8d8e8c94ed73bf6f62d",
         "catalog.json": "1b9a750dd25c55279fc72c2f42447073ac03cc9df2e1adeb7a5389eadffb3369",
@@ -11599,7 +11607,7 @@
     "trading/bankrbot-official-gem-miner": {
       "repo": "bankrbot/skills",
       "path": "gem-miner/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "8d5c20401384b88ac97080541bf329ff52b68b7072494d525ab94ea13891185e",
         "catalog.json": "65ee63e820a33f2c4d5b9dcb15de9ac3e011e4ce58f4b0ba93b8ab346abdbd64"
@@ -11612,7 +11620,7 @@
     "trading/bankrbot-official-github-vesting": {
       "repo": "bankrbot/skills",
       "path": "github-vesting/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "1f8625e33d414a8b8636169d443bce00c0fec1438cd006e6a6e5813f322d7f70",
         "catalog.json": "3aa4eea7cbc7ed1ef7e645dc5f2860fd874820898bb19f7ab05cf80d183d0f6f",
@@ -11647,7 +11655,7 @@
     "trading/bankrbot-official-gitlawb": {
       "repo": "bankrbot/skills",
       "path": "gitlawb/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "61e387bae39f3fb9e0fbcf95defe61ccfba5451d6384e42eb4a2428c2bb3e67b",
         "catalog.json": "cacf9845d7a0a8806a906792b2fc7216d23a06ca3455305f117850e928c19eb1",
@@ -11664,7 +11672,7 @@
     "trading/bankrbot-official-gmfarcaster": {
       "repo": "bankrbot/skills",
       "path": "gmfarcaster/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "6cb9fca069b9e5f16a247f1ecbbfab0fb319a023f6654e96aa473cb6dbe8cf3c",
         "catalog.json": "3b96fb65e8c440bec5f039c526112198923893d6f25e9b76ffd11bc0597432e5",
@@ -11683,7 +11691,7 @@
     "trading/bankrbot-official-harness-collaboration": {
       "repo": "bankrbot/skills",
       "path": "harness-collaboration/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "c0cbc4df5e08ed4e5d21dfe01c367141b3348da9683d297577294d473eeafcff",
         "catalog.json": "ed36733970135b24e3fcd3183d58fe176b908f0ea711d141f314cb8da710205e",
@@ -11698,7 +11706,7 @@
     "trading/bankrbot-official-harness-venice": {
       "repo": "bankrbot/skills",
       "path": "harness-venice/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "1b67508bd548087e7ce9058b5d9f54e3e223179d5d4220315089a0ed283b81bf",
         "catalog.json": "be0d480eb72d782d5eb5cfe24e29d7da31daf916df160942816bfc0be36eaef3"
@@ -11711,7 +11719,7 @@
     "trading/bankrbot-official-hermesone": {
       "repo": "bankrbot/skills",
       "path": "hermesone/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "6a7f288b44addfc5e01506531190ba55446e73479af351c032fa52e3f56cc8ac",
         "catalog.json": "f0547937b0b16996afe39c3e96e7f63aae8d863739a5fb01fcd5abc42da33e8e",
@@ -11726,7 +11734,7 @@
     "trading/bankrbot-official-hoodmarkets": {
       "repo": "bankrbot/skills",
       "path": "hoodmarkets/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "README.md": "9b46bf3999538883d01835effce6ca0318413c368ac83e56c70e6e38eb6201ee",
         "SKILL.md": "32d886503ed37020ff2754fb7479baebf862f04737810cf80e90700b6bd4c455",
@@ -11771,7 +11779,7 @@
     "trading/bankrbot-official-hunch": {
       "repo": "bankrbot/skills",
       "path": "hunch/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "4409740be2ab01220944fadffe6fa29f86463beb851369a4376917b9b0872614",
         "catalog.json": "9b946c92593ba68ab575997289b598966615f74c847e96eeb81cde237190c665",
@@ -11812,7 +11820,7 @@
     "trading/bankrbot-official-litcoin-miner": {
       "repo": "bankrbot/skills",
       "path": "litcoin/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "README.md": "cb3491e92186b81989b05de73bbe362898b1423235b774b82d0be563ae770ed6",
         "SKILL.md": "a89f439ac635b7948970ff730e1dbb81b157c4472c97d3b436143e4d27f3582f",
@@ -11831,7 +11839,7 @@
     "trading/bankrbot-official-lonestaroracle-data": {
       "repo": "bankrbot/skills",
       "path": "lonestaroracle-data/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "a0f245245c6465f43a4c960939bc2f2674e819f21b4ab307f016721a7dad9c21",
         "catalog.json": "590f82830112baf78fe48c4d7d9be63c92ccee7db5ade918ae7a6a48dfa4a9eb",
@@ -11846,7 +11854,7 @@
     "trading/bankrbot-official-metr-merchant-payments": {
       "repo": "bankrbot/skills",
       "path": "metr-merchant-payments/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "2e4b2160012af45de169dc98390ca15f328497757a72599ff690109d61922a31",
         "catalog.json": "47341dc07f84bbd001fd37aa094f7340d51061cba700b4b811c8c4e2461743ac"
@@ -11859,7 +11867,7 @@
     "trading/bankrbot-official-moltycash": {
       "repo": "bankrbot/skills",
       "path": "moltycash/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "edefa815cbb80cf6bd6ca8433084a73d9c29ec2fb85bf9c3b51a92e866e6f75e",
         "catalog.json": "88003ae21266aabaaca7f78f83961bb6650992aa9d71b7accb08429ec08ea0b4"
@@ -11872,7 +11880,7 @@
     "trading/bankrbot-official-onair-shoutout": {
       "repo": "bankrbot/skills",
       "path": "onair-shoutout/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "dab2e456a559b91bd1caca18f89a10845c7436e160b74cecf53a4c59d4f903bf",
         "catalog.json": "a75addb536c35e115cb2eea9762821b8ea9cd1448b0b63be89a8e77ef53eec15",
@@ -11891,7 +11899,7 @@
     "trading/bankrbot-official-opensea-api": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-api/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "10052eca22f137bcfec28f984f1da51072b502c65a094a9f4533a2fffc56604a",
         "references/rest-api.md": "c7fcfd10dc26f9c8d9ff16baf7bfff1f260c14b19ccfd981b8db3529a6b2b220",
@@ -11956,7 +11964,7 @@
     "trading/bankrbot-official-opensea-swaps": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-swaps/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "349c3a7c09422d6222b25dfc133fb3079ae3873de2112bdfea59dab8d278c76c",
         "references/token-swaps.md": "6c21a3bcd015064ea47ed8bf4e0d1f480c6b50a3052f234be3ed379dfacb6066",
@@ -11971,7 +11979,7 @@
     "trading/bankrbot-official-opensea-tool-sdk": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-tool-sdk/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "70bb8d7a782733b117b2de121da0cb0b434dad1eaf1a1953740785f243d48cc7",
         "references/known-predicates.md": "60da1bc39f06c7310acffe599cddd24734f64be542ab1816c69d433507f6b519",
@@ -11988,7 +11996,7 @@
     "trading/bankrbot-official-opensea-wallet": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-wallet/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "1525dbe2a270055fa00b5ddaadcff10ca791c3cdd0c5f90acb57086704fa61b2",
         "references/wallet-funding.md": "8f549506a438a07627b72a50ce19739e2f3a835447c9c1869b260abaeb4b62a1",
@@ -12005,7 +12013,7 @@
     "trading/bankrbot-official-orlix": {
       "repo": "bankrbot/skills",
       "path": "orlix/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "14ce10853b6ac6a75b0ee1a8b1be710ec9b47645f3854bfd21ddbc15e86a1f11",
         "catalog.json": "ff4b07ae2986f10c662291512922a43c8202ec36bd7eab999aec055cc769804c",
@@ -12024,7 +12032,7 @@
     "trading/bankrbot-official-productclank-campaigns": {
       "repo": "bankrbot/skills",
       "path": "productclank/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "094d031557e1f74c474cc91b410a01df15fdb3274714b768b92a6a0abbf7ab44",
         "catalog.json": "6c977daa737079dd093215a621424eb1919b97e5b74f503c7a0efd1f2200a577",
@@ -12047,7 +12055,7 @@
     "trading/bankrbot-official-rider-battle": {
       "repo": "bankrbot/skills",
       "path": "rider-battle/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "349e07f9a2c0ba597523b69901f0abe020ade0a6f59db07b9a874e90ca3cae3f",
         "catalog.json": "d1a52146c72525947bde6dbd177906e511b6d4cf29c5cef51cd13b9e02a04134",
@@ -12076,7 +12084,7 @@
     "trading/bankrbot-official-signa": {
       "repo": "bankrbot/skills",
       "path": "signa/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "e75e0c841966e6eec84eed0cddf1ee1b09a9b54c4254629b97bf3d81d6bb5b4b",
         "catalog.json": "27907b38b3bb3c0f7252a66383daf99918173cd80ed3253f78bedc38690cbb4d"
@@ -12089,7 +12097,7 @@
     "trading/bankrbot-official-skopos": {
       "repo": "bankrbot/skills",
       "path": "skopos/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "40694e73e424e37a871cd2ea1a48d187804436464ea787610cc353689a9f9e0e",
         "catalog.json": "6a1c70b447fb7aecf0fd22df9924e8bf021d709fd5f7e9bac0c5fdd0a21924ae",
@@ -12104,7 +12112,7 @@
     "trading/bankrbot-official-sleuth-ai": {
       "repo": "bankrbot/skills",
       "path": "sleuth-ai/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "6e1ef44392d1ba34325404805ad9517ca7ccf7dbd33c7bec764a00897703ca4c",
         "catalog.json": "8e3015effe7ca9434b3c1d971a09ee3d0c836e0dcb79c8e400c3158a45f74ca5",
@@ -12121,7 +12129,7 @@
     "trading/bankrbot-official-splits": {
       "repo": "bankrbot/skills",
       "path": "splits/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "b0d3af7b2a9a8372a9105612ac9d66d1504e13c05dd0236b3fbe3f4218907937",
         "catalog.json": "7b71cf3c7f6f18f6fa57fcee6a2d800af924840b8844af4d868192a336d24393",
@@ -12146,7 +12154,7 @@
     "trading/bankrbot-official-stakr-protocol": {
       "repo": "bankrbot/skills",
       "path": "stakr/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "66f7c2eabc40b3a81f96820d58aa0ce625be58a4a4e3e96ca4b48f235fb19aad",
         "catalog.json": "e4138454db3e8c2ae86e6f5b0979eadf7782f8d3f2d2cdd467af9af3b3617237",
@@ -12161,7 +12169,7 @@
     "trading/bankrbot-official-suwappu-dex": {
       "repo": "bankrbot/skills",
       "path": "suwappu-dex/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "d71852aa5bc314a13187a845c5d31ab6006b9d38f4d76d517c2b8748a05e16db",
         "catalog.json": "46058aeb6eaec2b4ac1f0f69c0fb901c46f7c51bb409b6315ba677624529fe12"
@@ -12174,7 +12182,7 @@
     "trading/bankrbot-official-symbiosis": {
       "repo": "bankrbot/skills",
       "path": "symbiosis/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "add5f6ebe67e86b3c7e071eb57aeed8a5d5b2fe5b1754cfdc10b4730fb2d7c94",
         "catalog.json": "c5d23157c4a1194b8becba59ce0762cbd5189d8f36002bcd22df5d1a5f34583a",
@@ -12195,7 +12203,7 @@
     "trading/bankrbot-official-token-scam-analysis": {
       "repo": "bankrbot/skills",
       "path": "bankr-token-scam-analysis/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "91ec6366decd7b5b0cd6b56ea98021c3d7152203e4fe93adb47ba09b843be475",
         "catalog.json": "2910faedb69679be6326056b201a3002d7383bc03acdf9edefddfeec282b718b"
@@ -12208,7 +12216,7 @@
     "trading/bankrbot-official-trustlayer-sybil-scanner": {
       "repo": "bankrbot/skills",
       "path": "trustlayer-sybil-scanner/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "0edbcd31158c111be8d659ad9c2cd3a56d71984550c738571017a8cbfb2182b0",
         "catalog.json": "b031549b43b6bd1bf122f8892ca3f99371f9bf6297d188bb290deed2d92461d3"
@@ -12221,7 +12229,7 @@
     "trading/bankrbot-official-twitter-agent": {
       "repo": "bankrbot/skills",
       "path": "bankr-twitter-agent/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "8a7e684f35d13f539b4a111a03f2b78ff82d3114d73e0501f16901d49d292cb1",
         "bankr-twitter-agent.png": "57d996916905796431da24cbcd1d5c88d4ae67f86a33cb5f187c25fdbe358d19",
@@ -12236,7 +12244,7 @@
     "trading/bankrbot-official-urizen": {
       "repo": "bankrbot/skills",
       "path": "urizen/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "677f3fea8691098645bbda329f1879ab78a4be6296b920b5cae98dc495e89944",
         "catalog.json": "fa096c9f7bdc0a8e8319a984e77c4a75ce969c891134996a7d4e1c2081e968f0",
@@ -12251,7 +12259,7 @@
     "trading/bankrbot-official-versa-deploy": {
       "repo": "bankrbot/skills",
       "path": "versa/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "23d1b11f75d468d0c1a800d702238f494be8e83909302924170e5d11a62ada0e",
         "catalog.json": "edb66ae8a93a7486b570729ee2ef4d11628528783d795aa2a5a06f33c0abf918",
@@ -12272,7 +12280,7 @@
     "trading/bankrbot-official-wake-token-spotter-analysis": {
       "repo": "bankrbot/skills",
       "path": "wake-token-spotter-analysis/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "3b5a54bd8ac3557c347817faaae6b76751035f8b206fe286d82c4aed5773f10c",
         "catalog.json": "949a90cc6309c9bb0444e99a0405656bf8ee24e85446dccc575771313207d641",
@@ -12289,7 +12297,7 @@
     "trading/bankrbot-official-zerion": {
       "repo": "bankrbot/skills",
       "path": "zerion/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "29d3169ad68849df0a55a35bc48c153a50c60fcf122c2ad0a9a82a70b0c75587",
         "catalog.json": "e2a4eaa3383913d07cd84c5e3f19a7792d778e0c672220b6bcf3fd607ad85843",
@@ -12310,7 +12318,7 @@
     "trading/bankrbot-official-zyfai": {
       "repo": "bankrbot/skills",
       "path": "zyfai/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "98475444f494c0201c5e937d9b69c3e0f393b48a79d5b2647de15931b9b9b3f2",
         "catalog.json": "1b991cdccebaf93774b6756b46a648ce5129d3a19016cf149f1d45a3a99d04f6"
@@ -17380,7 +17388,7 @@
     "dev-tools/eth2-quickstart": {
       "repo": "chimera-defi/eth2-quickstart",
       "path": "skills/eth2-quickstart/SKILL.md",
-      "revision": "a1480e566e6b08421d42755d4d70ae7a2cf25931",
+      "revision": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
       "files": {
         "SKILL.md": "5b1b76c2c4ad5ecf5a77a456bc121bc310914bb529cfd9785d0f5bbc051a703c",
         "evals/evals.json": "24af89da13714e05dbeee8eb97198468ce5bdc7e9e686941aa8c54fe376f29ac",
@@ -17694,20 +17702,20 @@
     "exchanges/senpi-ai-senpi-improve-trades": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-improve-trades/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
-        "SKILL.md": "b677c2fc4b0fe91c8069c5b6ffb162d274d9e33d0f59bc84715976d9a77086d3",
+        "SKILL.md": "abf16d08456b96764e474057db38e6ac7b9f31982bfd6f8ae749d3a274a1e730",
         "references/event-log.md": "d7482c6647e679b4c69db7f5b74f8522462a90ef9ec7341b3491899bdcbae0ef",
         "references/output-shape.md": "c62d920be613b586498f0ab86064fc8fbe0607a1642b4ba04ff673ec0a6a580b",
         "scripts/_yaml.py": "41487a1db5854b892e3a15caf48c5068b47c4407008fea2fedb0025ccf8c8df4",
         "scripts/mcp_client.py": "f6405ac9b288638af8af127a731719911a7789288782d58518a5898cd4fe4f61",
-        "scripts/review.py": "ba0625812dda359d31528e8ca8ee412d1d697ecaee69494914c64c1166d0b4c3",
+        "scripts/review.py": "1098eb7788675000363ef0f56aee87a9215f936c772be93c9b1b2bb52bf91a3a",
         "tests/fixtures/events_fixture.json": "f849e40406274a16d1fe1a0ec744a78025bbac01d1e16a5c36850b827606d2fb",
         "tests/fixtures/registry/installed_runtimes.json": "c94779277ce90e1ca39ed4049c2b051715cbbd5beb7cd5c983d4f134456d891a",
-        "tests/fixtures/review_fixture.json": "2d1445ef04ff4b853e8687ad420a7aab3a6d3b21e0a5973ea4bb3593fcf4c8b5",
-        "tests/fixtures/review_mixed_status_fixture.json": "263c75468e91913334997450c987af0dd9d4d56a82561108b264cd56c9681d8b",
+        "tests/fixtures/review_fixture.json": "258cdfd6c0a519c473af012e0958418d430462e17b2756a647d651c7f9c870ad",
+        "tests/fixtures/review_mixed_status_fixture.json": "2cc4d9417e039f7d319b63a58577659506a1961464182077f4335b3eeeea3678",
         "tests/test_book_state.py": "6332f7f1bbd1999467d76a13cddad87b4a7c7723ed09faac86818d7a77089a8c",
-        "tests/test_review.py": "be8b907f4456557ad7dedeed8ca7aaf099d17888c22027c22e2dca1aa61ed4ad",
+        "tests/test_review.py": "3876e914d5142e15a8bbebe647cb7fcdc3cc3a7c588754133e249b854e11eb13",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
       "modes": {
@@ -17729,15 +17737,15 @@
     "exchanges/senpi-ai-senpi-portfolio": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-portfolio/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
-        "SKILL.md": "e037f8ebdee8f79cd5568f4de9decc4e0e3ba730a8e06cebca8b65e175d30938",
+        "SKILL.md": "e24d169c78d44422853f3eb46544553cd9d05c793da67d9fc1384cb56d28e370",
         "references/analysis-framework.md": "4ed518f59b9ddb2c7c54f0ae0c4dce947ba048feee7320360d8ce8e3d80a23f9",
         "scripts/mcp_client.py": "1bb95ac39e0cdc2219efd19b6397c58b6ea0749071504a90f16c7f587a890ca2",
-        "scripts/portfolio.py": "68617802438785252525f8c4f0c43606e7c70ea330b12331a4a0b457ecc9cee8",
+        "scripts/portfolio.py": "ccbf74271f83045774093742b6398bb6941ff7c3232895b1ee43a56c05df6163",
         "tests/fixtures/portfolio_fixture.json": "9b1ce64fa930b6e532e629f42f7cb89eee986260bc9f2a03ceae760462e90317",
         "tests/fixtures/runtimes_list.json": "d9464c52428645df1720ae6278559cacf0da34274d78d19d088a44c8c48c85fa",
-        "tests/test_closed_stats.py": "55da631c2e7fd223aae2c20b18ad4d90cb3c7e052888be80b3a7b2175a0a820c",
+        "tests/test_closed_stats.py": "c7057cea83db5b88b5fad942fad1ab09dfbde2133f5d054ac51fca46e447a9ba",
         "tests/test_name_reader_parity.py": "c3229a742346095ce257076794bd1dc29589899712439aa748b411b56c08532d",
         "tests/test_portfolio.py": "227c9f7be764d44eaba58ac5420cdb9837648318f6a5ab136c6d204a783d5a50",
         "tests/test_prescribed_tools_exist.py": "57ebc5ce299bd4b3e8d8eeb3a8b173925fee855d0a6c6d74e062502a17f797c8",
@@ -17762,7 +17770,7 @@
     "exchanges/senpi-ai-senpi-smart-money": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-smart-money/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
         "SKILL.md": "681330dcdf03d60759dc387de03ff73795b4a1663680176b290ee50d3ba593cd",
         "references/analysis-framework.md": "0b0487582583aa9c9ac17daa49ec2eb140a164cb7cd65af514b66786b6cc4ba7",
@@ -17785,10 +17793,10 @@
     "exchanges/senpi-ai-senpi-strategy-author": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-author/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
-        "SKILL.md": "875ccd67a360ca3e29630393d8fd1b37aef6da178af933a5c422a9990993613d",
-        "references/creating-a-strategy.md": "47f26dec322bd0185952353e426fecb6ebef9f203f9577b8eabf440b280f755c",
+        "SKILL.md": "ca6c039c0eb2f23110c7010f3729d16dc02d138d57ed54cd407e0bd9bf7aca46",
+        "references/creating-a-strategy.md": "448e30a27bad96f82bededa8dbf4337daf8edb191c69f76aa53cb414b86ef531",
         "references/discovery-catalog-fields.md": "d5057ca5e142562d0042d6dace3e3e8e50c6ba9388d75452384978a315c011ab",
         "references/dsl-configuration.md": "ae8f3ea02e9efa2141c08d670a4e240640e066067a5315fedacf070be51c2c22",
         "references/dsl-presets.yaml": "e7f44f47acbc8d64701335296fa3fa355e3e6e8c069a04d43a6d0f8642068cb1",
@@ -17799,6 +17807,7 @@
         "scripts/_yaml.py": "e9153c92832cb60c4010cd68521f4851ef2ee1a4ecabbafa24ee2757e8bef365",
         "scripts/validate_strategy.py": "e47e19d968eb88385d5f902ebecaa0970bf8084fd7c7b9720a2b573e3292dc69",
         "tests/test_exit_preview_matches_presets.py": "aa9b18d67a186af9a1704fb55dcd59c82e6cbe0b858aa57cde06d67300c01c11",
+        "tests/test_reference_time_units.py": "b33f919e203c12a537fba92bb7ab4a5d914fa55ed782f200d3d84aa2014006a4",
         "tests/test_scaffold_margin.py": "2529f12d414458717f7e86c67f917ddd329ababffd533d1d7a4174187547006b",
         "tests/test_validate_close_wiring.py": "8809c93310d768e5ea59b0daa826c91146f941adaaf01fedd88da2c272edaf17",
         "tests/test_validate_fees.py": "3a7677c01e4ac4adf7715fb3ffb0e6bef1b43ee32f4da7558362956739d0aa85",
@@ -17822,6 +17831,7 @@
         "scripts/_yaml.py": 420,
         "scripts/validate_strategy.py": 420,
         "tests/test_exit_preview_matches_presets.py": 420,
+        "tests/test_reference_time_units.py": 420,
         "tests/test_scaffold_margin.py": 420,
         "tests/test_validate_close_wiring.py": 420,
         "tests/test_validate_fees.py": 420,
@@ -17836,7 +17846,7 @@
     "exchanges/senpi-ai-senpi-strategy-discover": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-discover/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
         "SKILL.md": "8b5d59af376832930c9ca5f4e3dac85bd3d629e6fcfa619b19bc1c2cc44b1584",
         "catalog.json": "e50de8ca0f1f1ee1f9b036c5c9a3852c71d9556c7dce5b92fc4405c84c0d60fe",
@@ -17885,10 +17895,10 @@
     "exchanges/senpi-ai-senpi-strategy-ops": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-ops/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
-        "SKILL.md": "d9d5993476e346ad54fe162d79844d97082fb1d346bcc12b2724e6e2befb3ab6",
-        "references/editing-a-live-strategy.md": "69b47ad3fcbf40bf44b0db266348712967f7dd2e5d59dc3d9af102158e979fbd",
+        "SKILL.md": "53d6b27a83bc8d9362a3af3b6ca8b13ef4a422fd2ff2ded08357bb636724194b",
+        "references/editing-a-live-strategy.md": "6b3591ebd70539966d5bf08d945a105426a150bdbee6dbf2b571e6826fbcfc35",
         "references/lifecycle.md": "c395da9e5b5675bbd3fcf153bf62ed27fc37c98f737b7b8d26cfd401a426cfb0",
         "references/liveness-verification.md": "1ac762e5c032c72f13c705587c597624101c39adbc8f811f6822dec60bd11a97",
         "references/refusal-playbook.md": "5936bd328d39c9bb73ff4919a6a259290d44bdf7491f85465445c6c77417dcc1",
@@ -17918,8 +17928,9 @@
         "tests/test_min_budget_vendor_parity.py": "371b4dcbb3adaa5e9e5be1a26bea640290dd228399461ad73cfe77bf762b5f33",
         "tests/test_pkg.py": "49a83a9e57194549e64afe079c00206c39e2082ddcf9f388b7f1797b3d89abbb",
         "tests/test_run_sh.py": "1920b93284c7bb597e5d9a6ade2d3e543ec2860da83f90868bcd99c40819111a",
+        "tests/test_skill_edit_not_live_until_applied.py": "3aa4c09b253c806e44511d2128f167515437c903b69a13ee979ad44cfb111887",
         "tests/test_skill_serr124.py": "cc2bf364b51bcd45e944b90375cba1dbfe2fdf03d915fb6cc609c79236c873f2",
-        "tests/test_skill_surface.py": "77f5961cccd02b96bebdb4e6cd193f0bd9eaf104c40ebd4a15dc7f262336c969",
+        "tests/test_skill_surface.py": "4c877b6a400375b9a1372b7d8f453a9ea5b51a8033c031adfb96001af62f1e09",
         "tests/test_status.py": "34ad02bef43d9bd642d2a70490d96c484dc6f5722fbc7d4e15a7832b906f9a0e",
         "tests/test_status_health.py": "acb127d500738f8a015fc209eb0beba094bdc6dcc9aa4cb11829410eb739ed26",
         "tests/test_status_risk.py": "527cd8293a4e57e857daa63d6ed03c0c59a880624c7c22e823857e177b330af5",
@@ -17957,6 +17968,7 @@
         "tests/test_min_budget_vendor_parity.py": 420,
         "tests/test_pkg.py": 420,
         "tests/test_run_sh.py": 420,
+        "tests/test_skill_edit_not_live_until_applied.py": 420,
         "tests/test_skill_serr124.py": 420,
         "tests/test_skill_surface.py": 420,
         "tests/test_status.py": 420,
@@ -17968,7 +17980,7 @@
     "exchanges/senpi-ai-senpi-trade": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trade/SKILL.md",
-      "revision": "f8bfcb3049dcaef598fbd29bb8a304196c13b198",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
       "files": {
         "SKILL.md": "16fea707a929076420dcef0ec26a459855ad4c2fb601ac234d276d8ebc12d56a",
         "references/mirror-monitoring.md": "cdccc8739732d67d95a369a94229194a1af0b6a7c4edddb6b4de9e7d8ebaf542",
@@ -18204,7 +18216,7 @@
     "trading/bankrbot-official-based-mining": {
       "repo": "bankrbot/skills",
       "path": "based-mining/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "a7cf76c6dd129fb5764323c986585f88374708fa4a612fcf572503e5690ba032",
         "catalog.json": "f1db08db33597343093822431c0db7e079ce563f6e36c4e68335428ef88c96e5"
@@ -18217,7 +18229,7 @@
     "trading/bankrbot-official-berry-juicer": {
       "repo": "bankrbot/skills",
       "path": "berry-juicer/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "ce46c3e1e6046a7a000bf17ad1e3642009d4fc6abed98bb6f60bdf5195effdab",
         "catalog.json": "cf221845f62ed6c1d1511a717faacea06f23d1e3ef7bacf1cb417fa814bed638",
@@ -18232,7 +18244,7 @@
     "trading/bankrbot-official-cattown": {
       "repo": "bankrbot/skills",
       "path": "cattown/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "README.md": "ea107f485a2e0775390fe2f2b61ffcd8e4a48d6be8b6fea50f9517fc62b58662",
         "SKILL.md": "7b76dd1ca8f5d064d301241144d60c6ae2acb9c5108f15e8ec09807559ae5c95",
@@ -18275,7 +18287,7 @@
     "trading/bankrbot-official-grantr": {
       "repo": "bankrbot/skills",
       "path": "grantr/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "a7b5164e5e968dcb64df6c9dfe6b30f005856ca3dbb935f80f73619b9cf625f8",
         "catalog.json": "8700f0b0d5f4c1eb17b76ad144f5bf22c03eeb23e95cd91ddd8eed3e3a295a01",
@@ -18292,7 +18304,7 @@
     "trading/bankrbot-official-harness": {
       "repo": "bankrbot/skills",
       "path": "harness/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "1530919f6330c9c26a41272bcb6053aa62983c98782396f430f6304139d81b73",
         "catalog.json": "ebd8cee0c5efe8f55e68c422bfca574dbb837e1ce78f6682d0e42253a44e6cfc",
@@ -18307,7 +18319,7 @@
     "trading/bankrbot-official-nookplot": {
       "repo": "bankrbot/skills",
       "path": "nookplot/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "afb6b7c328357f848fc11410095a98a3685d5109cccf21c4d44ffc0bef12f5db",
         "catalog.json": "87b1ddd7101eb172cac4543ad85f95c25de446639b78900419da18092833ab63",
@@ -18380,7 +18392,7 @@
     "trading/bankrbot-official-pantheon-staking": {
       "repo": "bankrbot/skills",
       "path": "pantheon-staking/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "ca294f210cc7aff1751ffa424da735f572b9df59d26cf890e1bc9c506507bfb8",
         "catalog.json": "eb86195a0fec28e25e88b35a20aa342157ec8a2c75cb0b0cb1d29895d03936cb",
@@ -18399,7 +18411,7 @@
     "trading/bankrbot-official-rhagent": {
       "repo": "bankrbot/skills",
       "path": "rhagent/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "HEARTBEAT.md": "c68f69178c1b5046b7d6be8a0a2c30c7664d65fe00abbc0c088c35c20e82c065",
         "SKILL.md": "c9984fae1f83a861dc99b81fc5c3c906c73776c850a3a03e4975317b7cfb3380",
@@ -18476,7 +18488,7 @@
     "trading/bankrbot-official-bankr-twitter-agent": {
       "repo": "bankrbot/skills",
       "path": "skills/bankr-twitter-agent/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "c9f3c8385c328cc0948e932b7fcde1314da14b23393f11a1009147b6045810a4"
       },
@@ -18487,7 +18499,7 @@
     "trading/bankrbot-official-waybackclaw": {
       "repo": "bankrbot/skills",
       "path": "waybackclaw/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "1f15d1bdf7db4c8e17863763c1ec4a9aaaa4227c8ec3c787a2ae582a3228c9ac",
         "catalog.json": "d165ad04e7ddb1d2ac7bb4a9b4a19012925a59e00cb59620fd08742bd97d778b",
@@ -21434,7 +21446,7 @@
     "trading/bankrbot-official-defi-native": {
       "repo": "bankrbot/skills",
       "path": "defi-native/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "AGENTS.md": "ecaaa7a625a0e34d87acb83e38aa73d1c402b7a83c694299956e3d1ea5cfebc8",
         "CHANGELOG.md": "f1e818fa4264a6eb13221c9743eb5b067d5ef8c1b7a734eb0324cb1bea5b6845",
@@ -21908,7 +21920,7 @@
     "trading/bankrbot-official-lienfi": {
       "repo": "bankrbot/skills",
       "path": "lienfi/SKILL.md",
-      "revision": "8a007c297a17598dfe17d5917ddd3bd2b42a2a6a",
+      "revision": "48bc5851af8a436446afd137e7054bb0711ef70e",
       "files": {
         "SKILL.md": "2d7b9abe3c69f253e27039ae84768f9969f43e6c7ba8d1d69f688af7c2e5708e",
         "catalog.json": "1a2102d674c732b1044049fff55cc0a9ec048cd234d97422eee9369de31910f3",
@@ -23332,7 +23344,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "692fef01bcc08565d3abfa76634848dfe6911868",
+      "revision": "ed2225adb7b192cdb97c3100cd42336d6a97e250",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "8f38e7b7566e8d3956459e15458cfad54aa92827a608a616dcad2c43cb62b3ca",
@@ -23343,7 +23355,7 @@
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "8180e6337cda5ee319d7a170bfc1766f5a9d61aaf35f14d75ef279c99cf086dd",
-        "docs/data/snapshot.json": "f46bfa0c0fb1d043fff3ada60dcec250bb690e271554e910255945de7ddfcfc5",
+        "docs/data/snapshot.json": "80c3af428404073229e1720ebd6e980bbf353b38aefb8eef2795e022d15fda9b",
         "docs/data/timing.json": "f3a938d82781e7268f38ea41377b0c9577794438b00a3db7de09ab1ccc9c0cf8",
         "docs/index.html": "fb499b9bea59370940228e65198415e27d248a2193d5772bf10fbf5d3131f712",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
@@ -23518,6 +23530,94 @@
         "scripts/cli.mjs": 420,
         "LICENSE": 420
       }
+    },
+    "exchanges/senpi-ai-quant-desk": {
+      "repo": "senpi-ai/senpi-skills",
+      "path": "quant-desk/SKILL.md",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
+      "files": {
+        "SKILL.md": "706361ed64484a74bff6965c987e2c8f3b95daef3c103ddbbbcc8e9b172d09f2",
+        "references/methodology.md": "14bb36f943357baa7bb940923df9f59a6ba892c19d2cac9d75345b57b0b07c7e",
+        "scripts/benchmark.py": "7fdc99472b1a8dc84d3cf55ae46ec250fc6b4997057e42b9aadb6b3916daab90",
+        "scripts/deep.py": "0d51b6d31e3888ce179b08b9bd1b0541598e35a9a7d2def8e34940d2a7c4b8a7",
+        "scripts/desk.py": "622a98a5c3525813533a5ee036cf28498bf3bcd5349bfd3d04948e25e4a8a225",
+        "scripts/followups.py": "1a9e2444645e5678fcf5b73f5cf0186ec4343aef47622769b4a4319bde251fcc",
+        "scripts/hl_api.py": "d9d6fcc5bec2c65b27db40162ceb7304ae20618cae0df1d7b31c416813629cf1",
+        "scripts/market.py": "2531526452b4db02db4dbe3693811664e52fcd0b2a976590c8158ece813777e2",
+        "scripts/mcp_client.py": "3ad917e908a06c61d1ab427af491b909664e8ad43083dba015b1beb661900ede",
+        "scripts/metrics.py": "ab80ee964ee15a8ebc4b56c090fcbe4f8b71bd6ac8321b3a4bbd993eefe89227",
+        "scripts/opportunities.py": "954cceb8a39f762f40d76531e21ce1e510811667e3379d1acbd15488285d4a08",
+        "scripts/render.py": "a0694e244a0be4d74bbd3a77c7d93d6f06caaf28ae05a25cc2c9b1fb651ee422",
+        "scripts/roundtrips.py": "24c30075b4e7b59194b7fb98b43a344831629c344c6d5da9542a4e96f43c7466",
+        "scripts/score.py": "de26dd043282e88df16557610e451207e9d5a61ce35d9a1a30e4ba0adc452651",
+        "scripts/senpi_history.py": "bbc216d3c6a4cdd229de97f3a4c6fa13396df59ffa09646648b046dd4856cfcb",
+        "scripts/smart_money.py": "b24b7993f3718947176b89c886bc1edd444bfdde136fc2fc4f5a2e10cafacc00",
+        "scripts/strategy_read.py": "5f7ecaec2cbc37d652e87007832ba37e5ea724bb20d4dc6c6a1c1d162cc2ecb3",
+        "scripts/taxonomy.py": "827862543415ab82ab7c63cfa8ec05468c95ccd91387087cc2d872fc31aaa071",
+        "scripts/timing.py": "329c86ad0dec1daeca5d56088f78bef2cb553696bbdce72d2788e3d939a22d3f",
+        "scripts/voice.py": "74b2f1ab0ba10dbca85adac7b44b7684bd3909d4db362f5cbd9c2a51369318ad",
+        "tests/fixtures/sample_trader.json": "1e79902a65038e74ad0e9c0ed22056301096b8a1575ad75e23e749f471052d1c",
+        "tests/test_quant.py": "1d9dca4f7ebd416e0bc427a0e4a5682ae153936f53099e28fb5b7c977e795bed",
+        "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/methodology.md": 420,
+        "scripts/benchmark.py": 420,
+        "scripts/deep.py": 420,
+        "scripts/desk.py": 420,
+        "scripts/followups.py": 420,
+        "scripts/hl_api.py": 420,
+        "scripts/market.py": 420,
+        "scripts/mcp_client.py": 493,
+        "scripts/metrics.py": 420,
+        "scripts/opportunities.py": 420,
+        "scripts/render.py": 420,
+        "scripts/roundtrips.py": 420,
+        "scripts/score.py": 420,
+        "scripts/senpi_history.py": 420,
+        "scripts/smart_money.py": 420,
+        "scripts/strategy_read.py": 420,
+        "scripts/taxonomy.py": 420,
+        "scripts/timing.py": 420,
+        "scripts/voice.py": 420,
+        "tests/fixtures/sample_trader.json": 420,
+        "tests/test_quant.py": 420,
+        "LICENSE": 420
+      }
+    },
+    "exchanges/senpi-ai-senpi-signals": {
+      "repo": "senpi-ai/senpi-skills",
+      "path": "senpi-signals/SKILL.md",
+      "revision": "0e028cb035580dcbbe61662002927fdaf5e3851c",
+      "files": {
+        "SKILL.md": "18bdf3885ae2df6acf75256f78fcb82ad68acc7183b8a708726b48c755e7891f",
+        "references/detectors.md": "f0ecf86348bc6d746f400c4e8c272295f9fdb7ca38fedb48d273c5573b72df45",
+        "references/worked-examples.md": "14b6de3570a383f300a9a3eff1362dbc3e72741a1c0da215d82e04c8db490491",
+        "scripts/mcp_client.py": "86c29aaacc692d09655d3687e6b3068f46fa0fe3985773e596e065f6d226f1c2",
+        "scripts/score.py": "1027a3a667a03b1cb8b5b967170af538d238d390933e7fd62289d6e08462a1b8",
+        "scripts/smartmoney.py": "146e9d5361c25479ac258407e23fa3ea700691844d7d766fdee91c235df9f11d",
+        "scripts/sweep.py": "6b208e906bfadd160866a6422f39af8bb88dded1e9b9a8762a06cc65b6069100",
+        "tests/test_score.py": "f5ea0011cc5859234948950a62511f0631f01c8d0f6ac7fe5cf17d0742c82ccb",
+        "tests/test_signals_skill_text.py": "5c9aed3fb90e82620ec43bdb8223cc1ca16f464a0b85f25d311713eff8cbdc36",
+        "tests/test_sweep.py": "4fb3c668fa3340c7811979ddb4cabf94297df0f7c8e0e35bbbb1f114b8ae681f",
+        "tests/test_vendored_parity.py": "51a1f8573ec32a06020888c22c928abe943fcefe818d9ed0ff48f483c642fa77",
+        "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/detectors.md": 420,
+        "references/worked-examples.md": 420,
+        "scripts/mcp_client.py": 493,
+        "scripts/score.py": 420,
+        "scripts/smartmoney.py": 493,
+        "scripts/sweep.py": 420,
+        "tests/test_score.py": 420,
+        "tests/test_signals_skill_text.py": 420,
+        "tests/test_sweep.py": 420,
+        "tests/test_vendored_parity.py": 420,
+        "LICENSE": 420
+      }
     }
   },
   "repositories": {
@@ -23551,10 +23651,10 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "32c5b3c27f2d523df12686ae3e1e9e3446b91fc3",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "74b370e1e149a959c7722d885eda8b2fc7458ac5",
+    "jiayaoqijia/cryptoskill": "cf2af96bb6624e1a710d057ba0ee54f301ccdd1a",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
-    "chimera-defi/eth2-quickstart": "a1480e566e6b08421d42755d4d70ae7a2cf25931",
+    "chimera-defi/eth2-quickstart": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
     "okx/agent-skills": "6a7d03b60f42fe39f0bd4a18039ec49265ed0914",
     "hypurrquant/perp-cli": "ed94cfd46259ff9186bf4f2489252a4f8f773e31",
     "aibtcdev/aibtc-mcp-server": "b4b57f5ab9740bd57c328162ec5cb05b4e1e354b",
@@ -23586,8 +23686,8 @@
     "portkey-wallet/ca-agent-skills": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74",
     "bitget-ai/agent-mcp": "486a7c5b2769e452bc7d3b39337cb6d3f9b1a0d3",
     "bnmbnmai/mcp-proxy": "67132d34daef3f3e5130c7ec89cc84039ca7f037",
-    "scutuatua-crypto/whaletrucker-ecosystem": "44cc3e961afc53318128d9a2d4fccbb2f5fefca2",
-    "eschatological-cpi959/finance-mcp": "9b533480ce76d46584c4a4facbaa9cea7b8cca86",
+    "scutuatua-crypto/whaletrucker-ecosystem": "ca5365a7ddb5b93bd0e7964660f879b517e794e3",
+    "eschatological-cpi959/finance-mcp": "a37d988056d70abc13e835f0d8b8b75021e1d21f",
     "fibrous-finance/fibx": "a742b16f54dffabb0afe622fb4ab7e1a5baa1a93",
     "danny-397/rl-for-crypto-and-stocks-": "f4f26a269d263e623599613a6a44e55d8258b8a1",
     "jup-ag/agent-skills": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f",
@@ -23634,8 +23734,8 @@
     "udotcash/mcp-ucash": "62d47205f69040c2ab195b53fec48a542c799b37",
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "faef244b55dd8841a281f966ec74fbcf0b8e72f1",
-    "caiovicentino/polymarket-mcp-server": "7d918560755761f5a25dc2dc6c8aff8ba4aad970",
-    "araxis33/aero-vote-radar": "692fef01bcc08565d3abfa76634848dfe6911868",
+    "caiovicentino/polymarket-mcp-server": "b240bb96bd99c876f9288b9c18e8b3729134001a",
+    "araxis33/aero-vote-radar": "ed2225adb7b192cdb97c3100cd42336d6a97e250",
     "paulf280-ui/cabal-hunter-mcp": "91cc47a6a8247da6c4bc53ddc819ae1c7c5d6153",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413"
   }

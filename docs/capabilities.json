@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-17T21:29:12.129805+00:00",
+  "generated_at": "2026-09-18T04:52:53.455573+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -77110,6 +77110,68 @@
       },
       "hosted_operators": []
     },
+    "exchanges/senpi-ai-quant-desk": {
+      "name": "quant-desk",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "exchanges/senpi-ai-senpi-account-status": {
       "name": "senpi-account-status",
       "execution_model": "router_orchestrator",
@@ -77298,7 +77360,7 @@
     },
     "exchanges/senpi-ai-senpi-market-pulse": {
       "name": "senpi-market-pulse",
-      "execution_model": "unknown",
+      "execution_model": "router_orchestrator",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -77360,6 +77422,68 @@
     },
     "exchanges/senpi-ai-senpi-portfolio": {
       "name": "senpi-portfolio",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "exchanges/senpi-ai-senpi-signals": {
+      "name": "senpi-signals",
       "execution_model": "router_orchestrator",
       "capabilities": {
         "auto_invocable": {
@@ -105425,7 +105549,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -126962,12 +127086,12 @@
     }
   },
   "summary": {
-    "discovered": 2036,
-    "processed": 2036,
+    "discovered": 2038,
+    "processed": 2038,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1264,
-      "router_orchestrator": 114,
+      "router_orchestrator": 116,
       "unknown": 237,
       "analysis_only": 199,
       "unsigned_tx_builder": 79,
@@ -126977,11 +127101,11 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 921,
+      "can_execute_shell": 923,
       "can_install_code": 464,
-      "can_write_files": 119,
-      "can_browse_web": 197,
-      "can_spawn_subagents": 206,
+      "can_write_files": 122,
+      "can_browse_web": 199,
+      "can_spawn_subagents": 207,
       "can_move_funds": 240,
       "requires_private_key": 395,
       "requires_hosted_operator": 323,
