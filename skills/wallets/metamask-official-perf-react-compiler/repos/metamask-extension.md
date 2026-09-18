@@ -694,6 +694,46 @@ const TokenList = ({ tokens, filter }: TokenListProps) => {
 };
 ```
 
+### ❌ Anti-Pattern: Dependencies the Effect Never Reads
+
+**Problem:** An entry the effect does not read is not a harmless extra. The compiler's
+effect-dependency validation treats it as an error and **skips the whole function**, so the
+hook ships with no memoization at all. A comment next to the array does not help: the check
+reads the array, not the prose.
+
+**Solution:** Make the value one the effect actually reads, by passing it into the work the
+effect starts. Where it marks a scope that must reset as a whole, put a `key` on a component
+instead. Never satisfy it with a comment, with `'use no memo'`, or with a parameter the callee
+ignores.
+
+**Example - WRONG:**
+
+```typescript
+useEffect(() => {
+  const session = manager.startPreload({ address, accountChanged });
+  return () => session.stop();
+}, [
+  address,
+  // Provider or network changes release the old preload and register a new one.
+  provider,
+  isTestnet,
+]);
+```
+
+**Example - CORRECT:**
+
+```typescript
+useEffect(() => {
+  // `provider` and `isTestnet` are now read, so the array describes the code.
+  const session = manager.startPreload({ address, accountChanged, provider, isTestnet });
+  return () => session.stop();
+}, [address, provider, isTestnet]);
+```
+
+**Why this lives here as well as in `perf-hooks-effects`:** the rule is stated there as an
+effects rule, and the cost is a React Compiler cost. Someone asking what loses them compiler
+coverage opens this file, so the rule has to be reachable from this side too.
+
 ### ❌ Anti-Pattern: Using Index as Key for Dynamic Lists
 
 **Problem:** Breaks React's reconciliation when lists can be reordered, filtered, or have items added/removed.

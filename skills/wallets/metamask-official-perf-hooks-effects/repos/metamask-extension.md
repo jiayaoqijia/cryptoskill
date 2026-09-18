@@ -48,37 +48,39 @@ const TokenDisplay = ({ token }: TokenDisplayProps) => {
 
 **DO:**
 
-- Reduce dependencies by moving values to default parameters when possible
-- Only include dependencies that actually trigger the effect
+- Depend on the primitive the effect reads (an ID, an address, a number) rather than an object rebuilt on each render
+- Keep values the effect does not use out of the effect
 
 **DON'T:**
 
 - Include unnecessary dependencies that cause effects to run too often
+- Drop a value the effect reads to make it run less often. A default parameter does not stop it being a dependency (see Rule: Include All Dependencies in useEffect)
 
 **Example - WRONG:**
 
 ```typescript
-const TokenBalance = ({ address, network, refreshInterval }: Props) => {
+const TokenBalance = ({ account, network, refreshInterval }: Props) => {
   const [balance, setBalance] = useState('0');
 
   useEffect(() => {
     const fetch = async () => {
-      const result = await fetchBalance(address, network);
+      const result = await fetchBalance(account.address, network);
       setBalance(result);
     };
 
     fetch();
     const interval = setInterval(fetch, refreshInterval);
     return () => clearInterval(interval);
-  }, [address, network, refreshInterval]); // Effect runs too often
+  }, [account, network, refreshInterval]); // A parent passing account={{ address }} rebuilds it on every render, so the effect refetches and resets the interval each time
 };
 ```
 
 **Example - CORRECT:**
 
 ```typescript
-const TokenBalance = ({ address, network, refreshInterval = 10000 }: Props) => {
+const TokenBalance = ({ account, network, refreshInterval }: Props) => {
   const [balance, setBalance] = useState('0');
+  const { address } = account;
 
   useEffect(() => {
     const fetch = async () => {
@@ -89,7 +91,7 @@ const TokenBalance = ({ address, network, refreshInterval = 10000 }: Props) => {
     fetch();
     const interval = setInterval(fetch, refreshInterval);
     return () => clearInterval(interval);
-  }, [address, network]); // refreshInterval moved to default param
+  }, [address, network, refreshInterval]); // The address string is equal across renders
 };
 ```
 
@@ -344,7 +346,7 @@ const useHistoricalPrices = () => {
 **DO:**
 
 - Split effects when conditional logic excludes some dependencies
-- Ensure all dependencies in array are actually used
+- Ensure the effect reads every dependency (see Rule: Don't List Dependencies the Effect Doesn't Read)
 
 **DON'T:**
 
@@ -374,19 +376,61 @@ const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
       fetchPrices(chainId, address);
     }
   }, [isEvm, chainId, address]); // All deps are used
-
-  // OR Option 2: Separate effects
-  useEffect(() => {
-    if (isEvm) return;
-    fetchPrices(chainId, address);
-  }, [isEvm]); // Only depends on condition
-
-  useEffect(() => {
-    if (!isEvm) {
-      fetchPrices(chainId, address);
-    }
-  }, [chainId, address]); // Only when not EVM
 };
+```
+
+### Rule: Don't List Dependencies the Effect Doesn't Read
+
+The dependency array describes the effect's code. A value that must restart the effect when it changes has to be a value the effect uses.
+
+**DO:**
+
+- Treat a dependency the effect never reads as a finding, even when the effect is meant to restart when it changes
+- If the effect's work depends on the value, pass the value into that work: the call that starts the connection, subscription or background registration
+- If the value marks a scope whose state must all reset when it changes, render that scope as a component and give it the value as its `key`
+- If the value changes because of a specific action, do the work where that action is handled instead of in an effect that watches for the change
+
+**DON'T:**
+
+- Delete the dependency without one of the changes above. The effect then keeps a session bound to the old value
+- Keep the unread dependency and explain it in a comment. React Compiler's effect-dependency validation (`validateExhaustiveEffectDependencies`, lint rule `react-hooks/exhaustive-effect-dependencies`, off by default) reports it as unnecessary, and with that validation on, the compiler leaves the whole component or hook uncompiled, or fails the build under a strict `panicThreshold`
+- Add `'use no memo'` to protect the dependency array. It opts the whole function out of React Compiler, and React documents it as a temporary debugging tool
+- Add a parameter the called code ignores just so the effect reads the value. That moves the unread value into the call
+
+**Reference:** [Removing Effect Dependencies](https://react.dev/learn/removing-effect-dependencies), [Resetting all state when a prop changes](https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes), [`"use no memo"`](https://react.dev/reference/react-compiler/directives/use-no-memo)
+
+**Example - WRONG:**
+
+```typescript
+const useSession = ({ address, networkId }: Props) => {
+  useEffect(() => {
+    const session = startSession(address);
+    return () => session.stop();
+  }, [address, networkId]); // networkId is never read
+};
+```
+
+**Example - CORRECT:**
+
+```typescript
+// The session is for one network, so the effect passes the network in
+const useSession = ({ address, networkId }: Props) => {
+  useEffect(() => {
+    const session = startSession({ address, networkId });
+    return () => session.stop();
+  }, [address, networkId]);
+};
+
+// Caches must be cleared when the account or network changes:
+// a keyed child unmounts on the change, and its cleanup clears them
+const CacheScope = () => {
+  useEffect(() => () => clearCaches(), []);
+  return null;
+};
+
+const Root = ({ address, networkId }: Props) => (
+  <CacheScope key={`${address}:${networkId}`} />
+);
 ```
 
 ### Rule: Use useRef for Persistent Values
@@ -854,6 +898,76 @@ const PriceTicker = ({ tokenAddress }: PriceTickerProps) => {
     };
   }, [tokenAddress]);
 };
+```
+
+### Rule: Keep Multi-Step Async Protocols Out of the Effect
+
+**DO:**
+
+- When an effect acquires an external resource through more than one async step, with a timeout or more than one way to end, move that protocol into a plain object owned outside React: `start()` returns a handle, and `handle.stop()` releases the resource
+- Keep the effect to acquiring and releasing: start in the body, stop in the cleanup
+- Unit-test the object's end paths directly (ready, timeout, failure, stop while a step is in flight), without rendering
+
+**DON'T:**
+
+- Grow a state machine of closure flags (`cancelled`, `ended`, `ready`) inside the effect. Every end path needs its own cleanup, every fix has to reason about every flag at once, and the only way to test it is through `renderHook`
+
+**Why:** every line of such an effect can pass the rules above (stable dependencies, timers cleared, a cancelled flag on the async chain) while the bugs sit between its end paths: a timeout that fires mid-acquire, a release sent before registration, a release that also runs on the success path. Those bugs belong to the protocol, not to any one line, so a line-level review does not catch them.
+
+**Example - WRONG:**
+
+```typescript
+useEffect(() => {
+  let cancelled = false;
+  let ended = false;
+  let ready = false;
+  const finish = (reason: string) => {
+    if (!ended) {
+      ended = true;
+      report(reason);
+    }
+  };
+  const timeout = setTimeout(() => {
+    cancelled = true;
+    finish('timeout');
+    release(id);
+  }, 30_000);
+  register(id)
+    .then(() => !cancelled && init(address))
+    .then(() => !cancelled && start(id))
+    .then(() => {
+      if (!cancelled) {
+        ready = true;
+        finish('ready');
+      }
+    })
+    .catch(() => {
+      finish('failed');
+      if (!cancelled) release(id);
+    })
+    .finally(() => clearTimeout(timeout));
+  return () => {
+    cancelled = true;
+    clearTimeout(timeout);
+    finish('released');
+    release(id, ready);
+  };
+}, [address]);
+```
+
+**Example - CORRECT:**
+
+```typescript
+// preload-session.ts: a plain object, unit-tested without React
+export function startPreloadSession(address: string): { stop: () => void } {
+  // register, init, start, the timeout, and every end path live here
+}
+
+// The hook only acquires and releases
+useEffect(() => {
+  const session = startPreloadSession(address);
+  return () => session.stop();
+}, [address]);
 ```
 
 ### Rule: Avoid Large Object Retention in Closures

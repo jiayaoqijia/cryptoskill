@@ -84,6 +84,9 @@ Then read what's emitted — a load log (e.g. `source: 'cache' | 'fresh_fetch'`,
 
 "Components re-render too much"
   → React Native DevTools → "why did this render?" → mm-selector-memoization.md / mm-redux-antipatterns.md
+  → or WDYR (wired at wdyr.js, tracks useSelector diffs): ENABLE_WHY_DID_YOU_RENDER=true yarn start
+    — logs consumers re-rendering on same-values/new-reference; ideal for tracing a selector cascade
+      → mm-selector-cascade.md
 
 "Search/filter input lags while typing"
   → js-concurrent-react.md (useDeferredValue) — and memo() the expensive child
@@ -166,6 +169,7 @@ endTrace({ name: TraceName.AssetDetails });                              // end
 const x = trace({ name: TraceName.Tokens, op: TraceOperation.UIStartup }, () => build());
 ```
 - New flow → add a `TraceName` (+ `TraceOperation`) to `app/util/trace.ts`, then wrap it.
+- **Quota guardrail:** never start a span per list item, per row, or per poll tick — span volume multiplies by data size × user count. A one-span-per-transaction ratio is still fan-out if the transaction fires at high volume, and its failure spans should stay at 100% rather than being flat-sampled to zero. A high-frequency span needs a deterministic sub-sample gate (and a kill-switch, which only reaches the population already running the build that contains it and is not an immediate brake on a partial rollout) before it ships.
 - **Component-level: use a per-feature measurement hook, not raw `trace()`.** The repo convention is a declarative `useXMeasurement` hook (e.g. `app/components/UI/Predict/hooks/usePredictMeasurement.ts`, `usePerpsMeasurement`, `useSectionPerformance`) that starts on mount and ends when conditions are true — which structurally enforces the "end on data-loaded, not mount" rule below:
   ```ts
   usePredictMeasurement({ traceName: TraceName.PredictMarketDetailsView, conditions: [dataLoaded, !isLoading] });

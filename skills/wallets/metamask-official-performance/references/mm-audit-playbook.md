@@ -12,6 +12,7 @@ For reviewing a PR/diff or auditing a file, component, or feature. Output: findi
 
 - **Targeted** (single file / component / small diff): read the files and report concrete findings with `file:line`.
 - **Broad** (whole feature / repo): run the grep sweeps below and triage hits; don't read everything.
+- **Audit wave / program** (scheduled audit of a surface or division): per-surface audits miss mechanism-level patterns that live in *shared* infrastructure (`app/selectors`, shared hooks, the store) — run the cross-cutting sweeps below over the shared dirs **once per wave**, not once per team, and route findings to surface owners. Attach quantified acceptance criteria up front (template in [mm-planning.md](mm-planning.md)). If the surface ships on both platforms, cross-check the sibling platform's audit findings for the same surface before fresh discovery — the React/Redux mechanism patterns recur across extension and mobile.
 
 Always: **measure before asserting impact** where feasible, and respect the guardrails at the bottom (don't over-flag).
 
@@ -42,8 +43,10 @@ Read the call sites: is a data hook running for tabs/pages/items that aren't vis
 grep -rn "createSelector(" app/selectors --include="*.ts" | grep -v createDeepEqualSelector
 grep -rn "=> .*\.\(map\|filter\|sort\|reverse\)\|new Set\|new Map\|Object\.\(values\|keys\|entries\)\|?? {}\|?? \[\]" app/selectors --include="*.ts"
 grep -rn "\.sort(\|\.reverse(\|\.push(\|\.splice(" app/selectors --include="*.ts"   # mutation
+grep -rn "(_state\|(_," app/selectors --include="*.ts"   # parameterized selectors, cache thrashing on unstable args → mm-state-normalization.md
+grep -rnE "export (function|const) (get|select)[A-Z][A-Za-z]* = \(state|export function (get|select)" app/selectors --include="*.ts"   # plain unmemoized function selectors (no createSelector at all)
 ```
-Check each result function for: identity/passthrough, new collection without deep-equal, mutation, `state=>state` input.
+Check each result function for: identity/passthrough, new collection without deep-equal, mutation, `state=>state` input. If one broken selector has **many consumers**, switch to the cascade playbook — map the dependency tree to closure and plan the fix order *before* fixing anything: [mm-selector-cascade.md](mm-selector-cascade.md).
 
 ### Redux / useSelector → [mm-redux-antipatterns.md](mm-redux-antipatterns.md)
 ```bash
@@ -57,11 +60,12 @@ grep -rn "dispatch(" app --include="*.ts" --include="*.tsx" | grep -v ".test." |
 grep -rn "Provider value={{" app --include="*.tsx" | grep -v ".test."
 ```
 
-### Hooks → [mm-hook-dependency-arrays.md](mm-hook-dependency-arrays.md)
+### Hooks → [mm-hook-dependency-arrays.md](mm-hook-dependency-arrays.md) / [mm-useeffect-antipatterns.md](mm-useeffect-antipatterns.md)
 ```bash
 grep -rn "\[JSON.stringify\|, JSON.stringify" app --include="*.ts" --include="*.tsx" | grep -v ".test."
+grep -rn -A6 "useEffect(" app --include="*.ts" --include="*.tsx" | grep -E "fetch\(|\.then\(" | grep -v "signal\|cancelled\|abort" | grep -v ".test."   # async effects without cancellation
 ```
-(`exhaustive-deps` is NOT linted in this repo — check effect deps by hand.)
+(`exhaustive-deps` is NOT linted in this repo — check effect deps by hand.) For effect-body problems — derived state via useEffect+setState, effect chains, post-unmount setState — use the read pass in [mm-useeffect-antipatterns.md](mm-useeffect-antipatterns.md).
 
 ### Animations → [mm-layout-animations.md](mm-layout-animations.md)
 ```bash
@@ -97,6 +101,7 @@ Grep finds *syntactic* patterns. The highest-impact re-render bugs are *data-flo
 - **Render-phase side effects / setState** — any `setState(...)`, `dispatch(...)`, or `trackEvent(...)` in a render body (not inside `useEffect`/`useCallback`)? Triggers extra render passes.
 - **O(n²) reduce-with-spread** — `reduce((acc, x) => ({ ...acc, ... }), {})` rebuilt every render.
 - **Per-item subscription hooks** — trace each into its manager; shared subscription = fine, per-subscriber whole-dataset snapshot = bug. → [mm-streaming-realtime.md](mm-streaming-realtime.md)
+- **Deep-equal selector inputs** — for every `createDeepEqualSelector`, read its *input selectors*: an input function that allocates a fresh composite per call (object spreads of controller state, other selectors' results collected into a new object) forces the deep compare to run over the whole composite on every check — and no result-function grep catches it. `grep -rn -B3 "createDeepEqualSelector(" app/selectors` lists the sites; read each first argument. → [mm-selector-cascade.md](mm-selector-cascade.md) (proactive mode)
 
 Confirm any hit with the Profiler ("why did this render?") before asserting — see [mm-tools.md](mm-tools.md).
 
@@ -107,6 +112,8 @@ Confirm any hit with the Profiler ("why did this render?") before asserting — 
 - [ ] No real-time / high-frequency data dispatched to Redux
 - [ ] `Context.Provider value` is memoized (not an inline object)
 - [ ] No `JSON.stringify` in a hot dependency array
+- [ ] Async effects guard against post-unmount / stale setState (cancelled flag or `AbortController`)
+- [ ] No new parameterized selector (cache thrashing on unstable args) on a list/hot path — use a lookup-map selector instead
 - [ ] Layout animations use Reanimated v3, not `Animated` + `useNativeDriver:false`
 - [ ] Growable lists use FlashList with stable keys (+ `getItemType` if mixed)
 - [ ] New event listeners / timers / subscriptions have cleanup

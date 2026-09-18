@@ -13,38 +13,22 @@ Broken or absent memoization in widely-used selectors is the single highest-impa
 - `createSelector` from `reselect` — reference-equality on inputs.
 - **`createDeepEqualSelector`** from `app/selectors/util.ts` — `createSelectorCreator(lruMemoize, deepEqual)`. Recomputes only when inputs are **deeply** equal-or-not. Use this when an input selector returns a fresh object/array on every dispatch (very common with controller state slices).
 
-## The four deadly patterns
+## The patterns, and what they look like here
 
-### 1. Identity / passthrough in a plain `createSelector`
-```ts
-// ❌ Does nothing — output is the input, but the input ref changes every dispatch
-export const selectX = createSelector(selectControllerState, (s) => s.things);
-```
-A plain `createSelector` only helps if its **inputs** are reference-stable. Controller-state slices usually are not. Result: recomputes + new ref every dispatch.
+The pattern taxonomy itself lives in the **`selector-antipatterns`** knowledge file,
+installed alongside this skill under `knowledge/`. It is the single source — read it for the
+full definition, the worked before/after of each, and the selector-creator decision tree.
+This section maps each pattern onto *this* codebase.
 
-**Fix:** use `createDeepEqualSelector`, or narrow the input to the smallest stable slice.
+| Pattern | How it shows up in Mobile | Fix here |
+|---|---|---|
+| **Identity / passthrough result** | `createSelector(selectControllerState, (s) => s.things)`, where `selectControllerState` returns the whole controller: that reference changes whenever any field in the controller updates, even when `.things` did not, so the selector recomputes and returns a new ref on every update to that controller | `createDeepEqualSelector`, or narrow the input to the smallest stable slice |
+| **New collection in the result function** | `Object.values(...).sort(...)`, `new Set(...flatMap(...))`, `items.filter(...)`, `state.swapsTransactions ?? {}` | `createDeepEqualSelector`, a stable module-level constant for the empty case, or a `resultEqualityCheck` |
+| **Mutation in the result function** | `createSelector([getItems], (items) => { items.sort(cmp); return items; })` | copy first — `[...items].sort(cmp)` |
+| **Over-broad input** | `state => state`, or a whole controller slice, as an input selector | narrow the input |
+| **Unnecessary deep equality** | reaching for `createDeepEqualSelector` on an already-stable slice | plain `createSelector`; see *Don't over-correct* below |
 
-### 2. New collection in the result function
-```ts
-// ❌ new array/Set/Map/object every call → always "changed"
-(accounts) => Object.values(accounts).sort(...)
-(transactions) => new Set(transactions.flatMap(...))
-(items) => items.filter(...)
-(state) => state.swapsTransactions ?? {}   // new {} when nullish
-```
-Even a correct `createSelector` produces a new reference whenever it recomputes; if the inputs aren't stable, that's every dispatch.
-
-**Fix:** `createDeepEqualSelector` (deep-compares so it returns the *cached* ref when data is unchanged), or a stable module-level constant for the empty case, or a `resultEqualityCheck`.
-
-### 3. Mutation in the result function
-```ts
-// ❌ mutates the input array AND returns a new-but-corrupting ref
-createSelector([getItems], (items) => { items.sort(cmp); return items; })
-```
-**Fix:** copy first — `[...items].sort(cmp)`.
-
-### 4. `state => state` (or a huge slice) as an input selector
-Forces recomputation on **any** state change anywhere. Narrow the input.
+The two that dominate the verified instances below are the first two.
 
 ## Verified MetaMask instances
 
@@ -113,4 +97,6 @@ Escalate severity by one level if the selector is imported in **10+ files**.
 ## Related
 
 - [mm-redux-antipatterns.md](mm-redux-antipatterns.md) — `useSelector(x, isEqual)` is the *symptom* of a broken selector; fix the selector, then remove the `isEqual`.
+- [mm-selector-cascade.md](mm-selector-cascade.md) — graph-level view: blast radius of one broken root, and sweeping out downstream band-aids after the fix.
+- [mm-state-normalization.md](mm-state-normalization.md) — state/selector *shape*: O(1) lookups, parameterized-selector cache thrashing, view-selector consolidation.
 - [js-profile-react.md](js-profile-react.md) — prove the re-render reduction.

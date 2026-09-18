@@ -16,7 +16,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Senpi
-  version: "2.1.0"
+  version: "2.3.0"
   platform: senpi
   exchange: hyperliquid
 ---
@@ -101,11 +101,19 @@ per detector family reach either feed. Give a **user** the trade feed; content u
    in the closing step (below), on the user's explicit yes to a specific order or strategy.
 4. **Public data only.** On-chain wallet addresses are public — frame as "a top trader (0x12…)".
    Never attach a real person's identity.
-5. **Now, never "since".** The feed is a snapshot of where things stand, with nothing earlier to
-   compare against. Never claim a move since an earlier time: no "just shifted", "up 10% since this
-   morning", "a whale added". A change measured against an earlier reading — whale moves, OI surges,
-   funding flips, conviction jumps, positioning trends, base-unit flow — is not in this feed.
-   Never describe the feed as if it carried them. The only time words allowed are the sources' own
+5. **Now, never "since".** The feed is a snapshot of where things stand, with nothing earlier of
+   ours to compare against. Never claim a move since an earlier time: no "just shifted", "up 10%
+   since this morning", "a whale **added**". A change measured against an earlier reading — whale
+   adds and flips, OI surges, funding flips, conviction jumps, positioning trends, base-unit flow —
+   is not in this feed. Never describe the feed as if it carried them.
+
+   **The one exception, because it dates itself: a whale OPEN.** A proven wallet's position reports
+   its own age, so "$12.4M short, opened 18 minutes ago" is a fact about the position, not a diff
+   against a sweep of ours. An **add** needs the old size and a **flip** needs the old side — those
+   are still v2. Say *opened*, never *added* or *flipped*, and never date a position the feed did
+   not date: an undated whale position is dropped rather than called fresh.
+
+   The only other time words allowed are the sources' own
    windows: the 4h board, the 24h price move, a momentum event's time.
 6. **Derive the universe, don't hardcode.** The sweep pulls it from `market_list_instruments` (a
    liquidity floor + top-N by volume). Identity baskets (e.g. "the AI names") are the only allowed
@@ -170,8 +178,16 @@ python3 scripts/sweep.py                # debugging: run JSON, coverage lines, r
   `discovery_get_trader_state` · 1 `leaderboard_get_markets` · 1 `leaderboard_get_momentum_events` ·
   1 `market_get_cross_asset_flows` = **~8 reads**, no model tokens. Every read fails soft: a dead
   service degrades its detector and is named in the feed's not-measured line.
+- **The time budget per sweep.** The whole run is bounded: **45s** on `--brief` (it closes another
+  skill's answer, on that skill's budget) and **100s** on `--print-feed`. A read is not started once
+  what is left cannot pay for it, so a slow upstream costs a lens, never the answer — the market
+  reads go first, the proven cohort (the slowest, and the only one that can spend the whole budget
+  alone) goes last. A lens dropped for time is named in the not-measured line like any other, and its
+  `[coverage]` line says it was never started, which is not the same fact as a read that failed.
 - **Auth.** `SENPI_AUTH_TOKEN` + `SENPI_MCP_URL` from env. `discovery_*` needs a **user-scoped**
-  token — an app-scoped one returns nothing and the cohort lens goes dark.
+  token — an app-scoped one returns nothing and the cohort lens goes dark. A dark cohort lens is not
+  by itself a token problem: the `[coverage] cohort:` line quotes the read that failed, so read it
+  before naming a cause.
 - **Dependencies.** The sweep carries verbatim copies of senpi-smart-money's cohort engine
   (`scripts/smartmoney.py`) and its stdlib MCP transport (`scripts/mcp_client.py`), so it runs with
   only this skill installed. `tests/test_vendored_parity.py` fails if either copy drifts.
@@ -183,8 +199,9 @@ python3 scripts/sweep.py                # debugging: run JSON, coverage lines, r
 
 ## v2 — compare over periods (not in 2.0)
 
-Everything that needs an earlier reading — whale moves, OI surges, funding flips, conviction jumps,
-the cohort's positioning trend and base-unit flow — is v2. Where that history lives is v2's decision,
+Everything that needs an earlier reading — whale **adds and flips**, OI surges, funding flips,
+conviction jumps, the cohort's positioning trend and base-unit flow — is v2. (A whale **open** is
+not among them: the position carries its own age, so it ships in 2.3.) Where that history lives is v2's decision,
 kept on Senpi's side rather than on a user's box, so nothing here schedules, deploys or funds anything.
 
 ## How every run ends — one question

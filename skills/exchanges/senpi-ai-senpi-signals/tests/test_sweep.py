@@ -8,7 +8,9 @@ No real wallet addresses. Run: python3 -m pytest senpi-signals/scripts -q
 import json
 import os
 import pathlib
+import re
 import sys
+import time
 
 import pytest
 
@@ -379,3 +381,288 @@ def test_brief_names_a_failed_source_in_one_plain_line(state_dir, monkeypatch, c
     out = capsys.readouterr().out.strip()
     assert out.endswith("_Not measured this run: the 4h leaderboard._")
     assert "leaderboard_get_markets" not in out
+
+
+# ──────────────────────────────────────────────── the per-read budget (it has to reach the socket)
+def test_the_budget_a_read_asks_for_reaches_the_socket(state_dir, monkeypatch, capsys):
+    """`Client.mcp_call(tool, timeout=..., **kw)` bound `timeout` to its own parameter and forwarded
+    only `kw`, so every read silently ran on the transport's 12s default — including the cohort
+    reads the vendored engine asks 20s for. The MCP server's own upstream budget is 20s, so a 12s
+    client budget abandons every read that takes 12-20s before the server can answer it, and the
+    server keeps working a query it can no longer deliver. On a slow upstream that is the whole
+    smart-money lens, on about half the runs. Counting is the only way to see it: the sweep still
+    lands either way, it just loses the lens it is named after."""
+    seen = {}
+
+    class _Client:
+        def mcp_call(self, tool, timeout=12, **kw):
+            seen.setdefault(tool, []).append(timeout)
+            return fake_call_tool(tool, kw)
+
+    fake_mod = type(sys)("mcp_client")
+    fake_mod.MCPClient = _Client
+    monkeypatch.setitem(sys.modules, "mcp_client", fake_mod)
+    assert sweep.main(["--now", NOW]) == 0
+    capsys.readouterr()
+    for tool in sweep.COHORT_TOOLS:
+        # the budget must OUTLIVE the server's 20s upstream budget, or the client always gives up first
+        assert seen[tool] and min(seen[tool]) > 20, (tool, seen.get(tool))
+    for tool in ("market_list_instruments", "leaderboard_get_markets",
+                 "leaderboard_get_momentum_events", "market_get_cross_asset_flows"):
+        assert set(seen[tool]) == {sweep.READ_TIMEOUT_S}, (tool, seen[tool])   # short reads stay short
+
+
+def test_the_budget_is_never_sent_to_the_server_as_a_tool_argument(state_dir):
+    """`args` is the tool-arguments payload the MCP server receives, so a budget folded into it
+    would be sent as a tool argument. A `call_tool(name, args)` that knows nothing about budgets —
+    the runtime's, and this fixture's — is still called with two arguments and still reads."""
+    calls = []
+
+    def two_arg(name, args):
+        calls.append((name, dict(args)))
+        return fake_call_tool(name, args)
+
+    rep = sweep.run(two_arg, now=NOW)
+    assert rep["coverage"]["cohort"].startswith("ok"), rep["coverage"]["cohort"]
+    assert calls and all("timeout" not in args for _, args in calls), calls
+
+
+def test_a_call_tool_that_can_carry_a_budget_is_given_one(state_dir):
+    budgets = {}
+
+    def with_budget(name, args, timeout=None):
+        budgets[name] = timeout
+        return fake_call_tool(name, args)
+
+    sweep.run(with_budget, now=NOW)
+    assert budgets["discovery_get_top_traders"] == sweep.COHORT_TIMEOUT_S
+    assert budgets["discovery_get_trader_state"] == sweep.COHORT_TIMEOUT_S
+    assert budgets["market_list_instruments"] == sweep.READ_TIMEOUT_S
+
+
+# ──────────────────────────────── the run-level deadline (patient reads still have to come back)
+class _Clock:
+    """A monotonic source the fake reads advance themselves — a degraded upstream, without the wait."""
+
+    def __init__(self, t=0.0):
+        self.t = t
+
+    def __call__(self):
+        return self.t
+
+
+def _slow_call_tool(clock, seconds_per_read, calls=None):
+    def call_tool(name, args, timeout=None):
+        if calls is not None:
+            calls.append(name)
+        clock.t += seconds_per_read
+        return fake_call_tool(name, args)
+    return call_tool
+
+
+def test_a_read_the_deadline_cannot_pay_for_is_never_started():
+    """The projection, not elapsed time, is the cap: a 30s cohort read starting at 31s of a 45s
+    deadline lands at 61s, which is the overrun the deadline exists to prevent."""
+    clock, calls = _Clock(), []
+    c = sweep.Client(_slow_call_tool(clock, 0.0, calls), deadline_s=45, clock=clock)
+
+    clock.t = 20.0
+    assert c.mcp_call("market_list_instruments") is not None       # 20 + 15 fits
+    clock.t = 31.0
+    with pytest.raises(sweep.SweepDeadline):
+        c.mcp_call("discovery_get_top_traders")                    # 31 + 30 does not
+
+    assert calls == ["market_list_instruments"], calls             # the second read was never asked for
+    assert c.skipped == 1 and c.failed == 0                        # skipped, NOT failed
+
+
+def test_an_unbounded_client_is_still_unbounded():
+    """deadline_s=None is the old behaviour, and it is what the tests and any caller with its own
+    bound get. A deadline that cannot be turned off would be a second, invisible timeout."""
+    clock = _Clock(t=10_000.0)
+    c = sweep.Client(_slow_call_tool(clock, 0.0), clock=clock)
+    assert c.mcp_call("market_list_instruments") is not None
+    assert c.skipped == 0
+
+
+def test_the_deadline_renders_a_thin_feed_instead_of_being_killed_mid_flight(state_dir):
+    """The reads got more patient (15s/30s) and the caller above them did not: `--brief` runs inside
+    another skill's ~60s answer. Without a run-level bound a degraded upstream does not return a
+    shorter feed, it returns none at all — the agent kills the process mid-read. So the market lenses
+    are read first, the cohort last, and what did get fed is rendered."""
+    clock, calls = _Clock(), []
+    rep = sweep.run(_slow_call_tool(clock, 8.0, calls), now=NOW,
+                    deadline_s=sweep.BRIEF_DEADLINE_S, clock=clock)
+
+    assert calls == ["market_list_instruments", "leaderboard_get_markets",
+                     "leaderboard_get_momentum_events", "market_get_cross_asset_flows"], calls
+    for key in ("universe", "board_4h", "momentum", "cross_asset"):
+        assert rep["coverage"][key].startswith("ok"), (key, rep["coverage"][key])
+    assert rep["coverage"]["cohort"].startswith("NO DATA: the proven-cohort read was not started")
+    assert clock.t <= sweep.BRIEF_DEADLINE_S, clock.t     # the run is capped AT the deadline
+
+    feed = sweep.brief_text(rep, 3)
+    assert feed != sweep.OUTAGE_LINE and feed.strip()
+    assert feed.endswith("_Not measured this run: proven-trader positions._"), feed
+
+
+def test_a_read_the_deadline_skipped_is_never_reported_as_a_failed_read(state_dir):
+    """Nothing was asked of the server, so there is no upstream fault to chase. Saying "failed" here
+    sends the next investigation at a service that was never called — the same shape of wrong answer
+    that "an app-scoped token returns nothing" was, on this very line."""
+    clock = _Clock()
+    rep = sweep.run(_slow_call_tool(clock, 12.0), now=NOW, deadline_s=sweep.BRIEF_DEADLINE_S, clock=clock)
+
+    cross = rep["coverage"]["cross_asset"]                 # skipped inside _read, at 36s + 15s > 45s
+    assert cross.startswith("NO DATA: market_get_cross_asset_flows not started"), cross
+    assert "deadline" in cross and not cross.startswith("failed")
+
+    cohort = rep["coverage"]["cohort"]                     # skipped as a whole lens, before its first read
+    assert "Not a failed read and not a token problem." in cohort, cohort
+    assert rep["current"]["reads_skipped"] == 2
+    assert f"past the {sweep.BRIEF_DEADLINE_S}s deadline" in rep["summary"], rep["summary"]
+
+
+def test_the_brief_path_is_given_less_time_than_the_full_feed(state_dir, monkeypatch, capsys):
+    """`--brief` closes another skill's answer on that skill's budget (~60s today); `--print-feed` is
+    the whole answer (~120s). One deadline for both would either strand the feed or overrun the brief."""
+    seen, real_run = [], sweep.run
+    monkeypatch.setattr(sweep, "run", lambda ct, **kw: (seen.append(kw["deadline_s"]), real_run(ct, **kw))[1])
+    _cli_client(monkeypatch)
+
+    assert sweep.main(["--now", NOW, "--brief", "2"]) == 0
+    assert sweep.main(["--now", NOW, "--print-feed"]) == 0
+    capsys.readouterr()
+    assert seen == [sweep.BRIEF_DEADLINE_S, sweep.FEED_DEADLINE_S]
+    assert sweep.BRIEF_DEADLINE_S < sweep.FEED_DEADLINE_S
+
+
+def _whale_tool(pos, coin="BTC"):
+    """fake_call_tool, with one proven wallet holding `pos` on `coin`. The cohort is cut from
+    discovery_get_top_traders by lifetime realized, so _W[0] is the most proven wallet there is."""
+    def call(name, args):
+        resp = fake_call_tool(name, args)
+        if name == "discovery_get_trader_state" and _W[0] in args.get("trader_addresses", []):
+            for row in resp["data"]["traders"]:
+                if row["address"] == _W[0]:
+                    row["openPositions"] = [dict(pos, coin=coin)]
+        return resp
+    return call
+
+
+def _whale(age_s, notional="12400000", entry="77500"):
+    """A $12.4M short whose startTime is `age_s` ago. `startTime` is Unix SECONDS, absolute — the
+    field the detector actually reads, so the fixture exercises the real code path."""
+    return {"szi": "-160.0", "positionValue": notional, "entryPx": entry,
+            "startTime": int(time.time()) - age_s}
+
+
+FRESH_WHALE = _whale(1080)                     # $12.4M short, opened 18 minutes ago
+
+
+def test_a_proven_wallet_opening_size_is_read_from_one_sweep(state_dir):
+    """The whole point: no history. `discovery_get_trader_state` returns the position's own age, so
+    "opened 18 minutes ago" is a fact about the position rather than a diff against an earlier sweep
+    of ours — which is why this ships in 2.0 while adds and flips (they need the old size / old side)
+    stay in v2."""
+    rep = sweep.run(_whale_tool(FRESH_WHALE), now=NOW)
+    btc = rep["current"]["asset_metrics"]["BTC"]
+    assert btc["whale_opens"], "a $12.4M position opened 18 minutes ago was not picked up"
+    o = btc["whale_opens"][0]
+    assert o["direction"] == "short" and o["notional_usd"] == 12_400_000.0
+    assert 1080 <= o["age_seconds"] < 1140, o["age_seconds"]   # measured from startTime, so it ticks
+    sigs = [s for s in rep["result"]["trade"] + rep["result"]["social"] if s["detector"] == "whale_open"]
+    assert sigs, "the open never reached a feed"
+    nums = " ".join(sigs[0]["numbers"])
+    # not a fixed minute: the age is measured from startTime and ceil never under-reports, so a
+    # fixture set 1080s back reads as 18 or 19 minutes depending on how long the sweep took
+    assert "12.4M" in nums and "SHORT" in nums
+    assert re.search(r"(18|19) minutes ago$", nums), nums
+    assert sigs[0]["concrete_entity"], "a whale read with no wallet on it is just a number"
+
+
+def test_a_position_we_cannot_date_is_never_called_an_open(state_dir):
+    """An undated whale position is almost always an OLD one. "Opened just now" is exactly the claim
+    that must never be guessed — golden rule 1, and rule 5's ban on claiming a move we cannot time."""
+    undated = {k: v for k, v in FRESH_WHALE.items() if k != "startTime"}
+    rep = sweep.run(_whale_tool(undated), now=NOW)
+    assert rep["current"]["asset_metrics"]["BTC"]["whale_opens"] == []
+
+
+def test_an_old_or_small_position_is_a_holding_not_news(state_dir):
+    for pos, why in ((_whale(5 * 3600), "5h old — a holding"),
+                     (_whale(1080, "500000"), "$500k — a position, not a statement")):
+        rep = sweep.run(_whale_tool(pos), now=NOW)
+        assert rep["current"]["asset_metrics"]["BTC"]["whale_opens"] == [], why
+
+
+def test_whale_open_is_not_a_history_detector(state_dir):
+    """It must be reachable from `--print-feed`, which is gated against every detector that needs an
+    earlier reading. If it ever lands in HISTORY_DETECTORS this skill silently stops carrying it."""
+    import score
+    assert "whale_open" not in score.HISTORY_DETECTORS
+    assert "whale_open" in score.EDGE and "whale_open" in score.NON_OBVIOUS
+    rep = sweep.run(_whale_tool(FRESH_WHALE), now=NOW)
+    assert "whale_open" in sweep.feed_text(rep) or "opened" in sweep.feed_text(rep)
+
+
+def test_an_age_always_rounds_away_from_freshness():
+    """The previous version of this test named the rounding rule and then tested only values that do
+    not round — so `f"{s/3600:.0f}"` (round to NEAREST) passed it while reporting 2h30m as "2 hours
+    ago". Understating an age is the overstatement for a detector whose claim is "this just
+    happened", so every case below is one that actually rounds."""
+    import score
+    assert score._ago(30) == "just now"
+    assert score._ago(90) == "2 minutes ago"          # not "1 minutes ago"
+    assert score._ago(1080) == "18 minutes ago"
+    assert score._ago(3540) == "59 minutes ago"
+    assert score._ago(3600) == "an hour ago"
+    assert score._ago(8999) == "3 hours ago"          # 2h30m — never "2 hours"
+    assert score._ago(12600) == "4 hours ago"         # 3h30m — never "3 hours"
+    for s in range(60, 4 * 3600, 617):                # never claims fresher than the truth
+        spoken = score._ago(s)
+        if spoken.endswith("minutes ago"):
+            assert int(spoken.split()[0]) * 60 >= s
+        elif spoken.endswith("hours ago"):
+            assert int(spoken.split()[0]) * 3600 >= s
+
+
+def test_the_read_says_opened_exactly_once():
+    """`numbers` used to end with "opened 18 minutes ago" while both renderers prepend "opened" —
+    so the flagship sentence read "opened $12.4M SHORT opened 18 minutes ago". The old tests were
+    substring checks on "12.4M" and "18 minutes ago", which passed either way."""
+    import score
+    s = {"asset": "BTC", "detector": "whale_open", "direction": "short", "price_change_pct": None,
+         "numbers": ["$12.4M SHORT 18 minutes ago"], "concrete_entity": "0x0000…0001",
+         "entity_realized_pnl_usd": 5_000_000.0, "smart_source": "proven_cohort"}
+    for rendered in (score.trade_read(s), score.frame(s)):
+        assert rendered.lower().count("opened") == 1, rendered
+
+
+
+def test_a_reset_clock_is_caught_by_the_price_the_position_opened_at():
+    """`startTime` has been seen jumping forward on untouched positions, which makes an OLD position
+    read as newly opened — and the error only ever runs in that direction, straight onto this
+    detector's trigger. The entry price is a second witness from the same read: a position that
+    really opened minutes ago is still near the price it opened at. 160 x 77,500 = $12.4M, so an
+    entry of 71,000 means the position is ~9% away from where it says it just opened."""
+    stale = _whale(17)                              # the exact shape of an observed reset: ~seconds old
+    stale["entryPx"] = "71000"                      # …but nine percent from the mark
+    rep = sweep.run(_whale_tool(stale), now=NOW)
+    assert rep["current"]["asset_metrics"]["BTC"]["whale_opens"] == [], "a reset clock was believed"
+
+
+def test_the_drift_allowance_grows_with_the_age_being_claimed():
+    """A four-hour-old position is allowed to have moved; a seventeen-second-old one is not. The
+    allowance has to scale, or the guard either rejects every real open or catches no resets."""
+    near = _whale(17)                               # 77,500 entry vs 77,500 mark — no drift
+    assert sweep.run(_whale_tool(near), now=NOW)["current"]["asset_metrics"]["BTC"]["whale_opens"]
+    old_but_moved = _whale(3 * 3600, entry="74000")  # 3h old, ~4.5% drift — plausible over 3 hours
+    assert sweep.run(_whale_tool(old_but_moved), now=NOW)["current"]["asset_metrics"]["BTC"]["whale_opens"]
+
+
+def test_a_position_with_no_entry_price_is_not_claimed():
+    """No second witness ⇒ no claim. The same rule as an undated position."""
+    no_entry = {k: v for k, v in _whale(1080).items() if k != "entryPx"}
+    rep = sweep.run(_whale_tool(no_entry), now=NOW)
+    assert rep["current"]["asset_metrics"]["BTC"]["whale_opens"] == []
