@@ -2,7 +2,9 @@
 
 Enter only from `create-prepare.md` with the latest bound Service payload.
 `decision=ready` does not authorize creation. Subscription Services route to
-`subscription-create.md` instead.
+`subscription-create.md` instead, before this file's input-collection rules
+are applied. In particular, never apply this file's 20–2000-character
+Description requirement to a subscription.
 
 ## Collect inputs
 

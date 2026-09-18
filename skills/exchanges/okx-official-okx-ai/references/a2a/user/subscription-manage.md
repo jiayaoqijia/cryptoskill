@@ -22,12 +22,17 @@ Immediately process the returned `[Watch]` block and enter the exact scoped
 runtime watch. Absence of the block ends the turn. The preference question must
 not delay the initial watch or `sub_open` event.
 
+For a `guide_direct` subscription, after the initial successful subscription
+confirmation and immediately before entering that watch, render the localized
+copy-trade status reminder in §Copy-trade status reminder. This is a
+user-visible reminder, not part of the offline-delivery preference question.
+
 ## Management actions
 
 | Intent | Command/boundary |
 |---|---|
 | Enable auto-renew | `onchainos agent start-autorenew <jobId>`; use the CLI confirmation/signing flow. |
-| Cancel a trial subscription or formal auto-renew | `onchainos agent subscribe-cancel <jobId>`; cancelling a trial revokes it immediately, while cancelling a formal subscription only stops future auto-renew. It is not a refund. |
+| Cancel a subscription | See [Cancel subscription](#cancel-subscription) below. |
 | Active subscription cost | `onchainos agent subscribe-cost` |
 | Replay offline deliverables | Fresh-read; when changed, `subscribe-offline-update --job-id <jobId> --flag 0`, then reread. |
 | Discard offline deliverables | Fresh-read; when changed, use flag 1, then reread and report support state. |
@@ -38,6 +43,24 @@ not delay the initial watch or `sub_open` event.
 Do not write when the fresh value already matches. A preference-write failure
 does not roll back creation and does not authorize a retry.
 
+## Cancel subscription
+
+Intent: cancel a subscription. Confirm `trialType` and `autoRenew` from the
+fresh list/detail in hand.
+
+- When trial, or formal with `autoRenew=1`: run
+  `onchainos agent subscribe-cancel <jobId>` — revokes a trial immediately, or
+  stops a formal subscription's future auto-renew. A renewal change, not a
+  refund.
+- When formal with `autoRenew=0`, render:
+
+  `{jobName} ({jobId}) already has auto-renew off. The service stays usable
+  through {periodEnd}, then ends on its own with no further charge. Ending it
+  sooner may require the refund/close flow.`
+
+  `{periodEnd}`: locale date from `subEndTime` (fallback `subBufferEndTime`).
+  Immediate termination → [`refund-prepare.md`](refund-prepare.md).
+
 ## Scoped receipt flow
 
 1. Resolve exactly one Active buyer subscription from an explicit Job ID/title
@@ -47,11 +70,29 @@ does not roll back creation and does not authorize a retry.
    collapse `deviceList:null` and `[]`, and never drop other device IDs.
 4. Immediately before watch, fresh detail must show
    `thisDeviceReceives=true`.
-5. Enter `../../runtime/watch.md` with sticky `--job-id <jobId>`. Never substitute
+5. For a `guide_direct` subscription, render the localized copy-trade status
+   reminder in §Copy-trade status reminder after receipt is restored and before
+   watch.
+6. Enter `../../runtime/watch.md` with sticky `--job-id <jobId>`. Never substitute
    a global watch or claim that starting watch proves a new signal exists.
 
 Restoring receipt does not recreate or modify Guide Consent. A missing Guide
-or Consent keeps signals visible but disables local automatic execution.
+or Consent keeps signals visible but disables local automatic execution. When
+the User explicitly asks to resume automatic copy-trading on this device, use
+`restore-copytrade.md`; it rebuilds the missing local Consent and execution
+configuration from the runtime-recovered Guide.
+
+## Copy-trade status reminder
+
+When the fresh local execution configuration is `guide_direct`, render this as
+a standalone user-visible message, localized to the conversation language:
+
+> Automatic copy-trading is enabled. You can ask me about the copy-trading status at any time.
+
+Show this reminder once after the initial successful subscription confirmation,
+and once after a successful listening/receipt restoration. Do not show it for a
+`signal_only` subscription, before the receipt gate succeeds, or on watch-loop
+re-entry.
 
 ## Device and execution safety
 

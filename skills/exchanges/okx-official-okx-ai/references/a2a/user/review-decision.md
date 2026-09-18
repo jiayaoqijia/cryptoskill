@@ -15,13 +15,27 @@ for this route.
 
 ## Reject
 
-For any unambiguous rejection, call the `reject_review` next action. A submitted
-zero-price one-time task requires a non-blank User-authored rejection reason. If
-it is missing, execute the returned `request_rejection_reason` action and wait;
-no reject endpoint is called. Preserve the supplied reason verbatim, then call
-`reject_review` again so the existing `/pre-reject` + `/reject` lifecycle runs.
-The backend transitions that case directly to Failed(9), with no refund request.
-For every other task, preserve the User-authored wording verbatim, enter
+For a submitted zero-price one-time task, resolve the reply into one of two
+pre-positioned branches before any endpoint call:
+
+- Valid `B` + non-blank reason (supplied on the first review card): the reply is
+  already claimed in the current user session, so call the bound `reject_review`
+  next action directly here, once — do not create a `request_rejection_reason`
+  supplement card and do not relay the decision back to the job/task session.
+  Preserve the supplied reason verbatim; never rewrite, complete, or translate
+  it. The existing `/pre-reject` + `/reject` lifecycle runs and the backend
+  transitions directly to Failed(9), with no refund request.
+- Bare or blank `B` (no non-blank reason, whitespace-only included): execute the
+  returned `request_rejection_reason` action and wait; no reject endpoint is
+  called. On the later non-blank reply, preserve that reason verbatim and call
+  `reject_review`.
+
+The decision is claimed first and `reject_review` runs at most once per
+decision: on `alreadyHandled` do not execute, and when a claimed execution fails
+notify the User with the failure and retry guidance without returning the item
+to pending or auto-replaying — never double-submit.
+
+For every non-zero-price task, preserve the User-authored wording verbatim, enter
 [`refund-prepare.md`](refund-prepare.md), and render the complete fresh Template
 6.1 Refund V2 confirmation. Continue with the intent-and-reason response matrix
 in [`refund-confirm.md`](refund-confirm.md).

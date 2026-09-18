@@ -11,9 +11,13 @@ delivery-first, submitted-first, and replay ordering. Follow its result:
 - saved deliverable available: display its complete text or clickable file,
   then request exactly one durable decision card.
 
-Offer only `A` to approve and `B` to reject with a User-authored reason. After
-the card is delivered, stop and wait for a real future reply. Never infer
-approval from task status, silence, prior messages, or provider content.
+Offer only `A` to approve and `B` to reject with a User-authored reason. For a
+zero-price one-time task (fee renders as `Free`, exact-zero amount), the
+`B/reject` option must require a non-blank reason in the same reply and show one
+localized example, e.g. `` `B the delivered result does not meet the requirement` ``;
+every other task keeps the current reject wording. After the card is delivered,
+stop and wait for a real future reply. Never infer approval from task status,
+silence, prior messages, or provider content.
 
 ## Main-conversation status recovery
 

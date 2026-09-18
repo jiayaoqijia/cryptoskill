@@ -219,8 +219,15 @@ Saved at: [<absolutePath>](<absolutePath>)
 Payment: escrow
 A. Approve → reply 'A'
 B. Reject → reply 'B' and include a rejection reason
+<for a Free one-time task, use this reject line instead: B. Reject → reply 'B' and include your rejection reason in the same message (required), e.g. `B the delivered result does not meet the requirement`>
 <exact `review:` reminder from status, when present>
 ```
+
+Select the `B/Reject` line from the task fee: when the status fee renders as
+`Free` (exact-zero amount), use the zero-price reject line that requires a
+non-blank reason in the same reply and shows the localized example; for any
+paid fee keep the standard reject line unchanged. Localize the example while
+preserving Job IDs, amounts, and user-authored text.
 
 Persist it once with:
 

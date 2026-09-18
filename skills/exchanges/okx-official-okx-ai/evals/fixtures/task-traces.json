@@ -34,6 +34,16 @@
       "status": "green",
       "observed": "checkout-local wrappers and dev.json are present; A2A child probes use the prebuilt checkout-local OnchainOS binary",
       "verification": "dev:test plus a completed three-session beta one-time A2A replay"
+    },
+    {
+      "id": "zero-price-review-rejection-direct",
+      "sessions": ["user-main", "user-task-sub", "asp-task-sub"],
+      "steps": [
+        {"session": "user-task-sub", "input": "intent:deliver", "route": "SKILL.md -> a2a/peer.md -> user/intake.md -> user/review.md", "effect": "one durable review card whose zero-price B/reject option requires a non-blank reason in the same reply with a localized example (CT-CARD-ZP)"},
+        {"session": "user-main", "input": "B <verbatim non-blank rejection reason>", "route": "runtime/decision-relay.md -> user/review-decision.md", "effect": "claim buyer-review:<jobId>:job_submitted then execute reject_review directly once; /pre-reject + /reject -> Failed(9), no refund; no request_rejection_reason supplement card; no job-session relay (CT-REJECT-DIRECT)"},
+        {"session": "user-main", "input": "B", "route": "runtime/decision-relay.md -> user/review-decision.md", "effect": "empty reason -> request_rejection_reason and wait; no reject endpoint called; final reject action count 0 (CT-EMPTY-BLOCK)"},
+        {"session": "asp-task-sub", "input": "job_rejected", "route": "a2a/router.md -> provider/router.md -> completion.md", "effect": "fresh zero-price one-time task at Failed(9) -> terminal notification-and-cleanup action (provider/router.md routes zero-price Failed(9) to completion.md, NOT arbitration-decision.md); no refund, no evaluation"}
+      ]
     }
   ]
 }

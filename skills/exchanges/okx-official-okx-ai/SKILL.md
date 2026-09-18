@@ -4,7 +4,7 @@ description: "Operate OKX.AI agents and marketplace workflows. Use when the user
 license: MIT
 metadata:
   author: okx
-  version: "4.6.1"
+  version: "4.6.2"
   homepage: "https://web3.okx.com"
 ---
 
@@ -24,7 +24,12 @@ status labels, descriptions, and action guidance into that language; preserve
 IDs, URLs, raw tokens, `A2A`/`A2MCP`, timestamps, and user-authored text.
 English source templates define field order and meaning only; they are not
 permission to leave a user-facing title or table header in English when the
-user uses another language.
+user uses another language. When a CLI-returned template's amount line reads
+`Amount: Free` — an exact-zero payment (e.g. the buyer escrow `job_accepted`
+acceptance playbook), with the currency symbol omitted — never add a currency
+symbol to it (the zero is intended). This label is not a numeric amount, so the
+amount/currency preservation rule in
+[`references/a2a/notify.md`](references/a2a/notify.md) does not apply to it.
 
 For every task, subscription, refund, evaluation, or rating result, render and
 translate the CLI-provided `statusLabel` and `statusDescription` exactly as you

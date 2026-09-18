@@ -67,7 +67,6 @@ Send `Authorization: <authorization_header>` to the original URL — the value a
 | `--challenge` | Yes | - | Full `WWW-Authenticate: Payment ...` header value from the 402 response |
 | `--tx-hash` | Hash mode only | - | 66-char `0x...` tx hash of the user-broadcast `transferWithAuthorization` |
 | `--from` | No | selected account | Payer address |
-| `--base-url` | No | production | Override backend URL (must be `https://`; `http://` triggers a 301 POST→GET redirect that drops the body and surfaces as `30001 incorrect params`) |
 
 ## Reading seller errors
 

@@ -19,6 +19,7 @@
  * range far below that, so the log route needs ~150 chunked requests and cannot
  * run in a browser; these are a handful of plain `eth_call`s that can.
  */
+import { BaseError, ContractFunctionRevertedError, ContractFunctionZeroDataError } from "viem";
 import { VOTER_ADDRESS } from "./constants.js";
 import { VOTER_ABI, POOL_ABI } from "./abi.js";
 import { client } from "./chain.js";
@@ -33,6 +34,24 @@ export interface CastVote {
   pool: string;
   /** Raw weight as the Voter recorded it. Shares are ratios, so the unit never has to be named. */
   weight: bigint;
+}
+
+/**
+ * Whether a thrown `poolVote` error is the expected out-of-range revert that
+ * means "this is the end of the token's vote list" — as opposed to a
+ * transient RPC failure (rate limit, timeout, dropped connection) that also
+ * throws from inside `readContract` but says nothing about list length.
+ *
+ * Only a genuine EVM revert (or the zero-data response some nodes return for
+ * one) is safe to read as "no more pools"; anything else must not be treated
+ * as an answer, or `fetchVotesFor` would silently under-report a holder's
+ * real vote list — exactly the number this module exists to make checkable.
+ */
+export function isEndOfVoteList(err: unknown): boolean {
+  return (
+    err instanceof BaseError &&
+    err.walk((e) => e instanceof ContractFunctionRevertedError || e instanceof ContractFunctionZeroDataError) !== null
+  );
 }
 
 /**
@@ -54,9 +73,12 @@ export async function fetchVotesFor(tokenId: bigint, maxPools = 60): Promise<Cas
         functionName: "poolVote",
         args: [tokenId, i],
       })) as `0x${string}`;
-    } catch {
-      // Past the end of this token's list. Not an error: it is how the list ends.
-      break;
+    } catch (err) {
+      // Past the end of this token's list, the call genuinely reverts — that is
+      // how the list ends. Anything else (a rate limit, a timeout) is a real
+      // failure and must not be read as "no more pools".
+      if (isEndOfVoteList(err)) break;
+      throw err;
     }
     const weight = (await client.readContract({
       address: VOTER_ADDRESS,

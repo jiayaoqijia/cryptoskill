@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { scoreVotes, type CastVote } from "../src/voted.js";
+import { BaseError, ContractFunctionRevertedError, ContractFunctionZeroDataError } from "viem";
+import { scoreVotes, isEndOfVoteList, type CastVote } from "../src/voted.js";
 import type { EpochData } from "../src/pools.js";
 
 const EPOCH = 1788393600;
@@ -123,4 +124,27 @@ test("scoreVotes sums several locks on the same pool into one holder's share", (
   const r = scoreVotes(votes, EPOCH, history([["0xp", "P", [epoch(EPOCH, 1000n * WEI, 100n * WEI)]]]), prices);
   assert.equal(r.budget, 100);
   assert.equal(r.earnedUsd, 20);
+});
+
+test("isEndOfVoteList reads a genuine EVM revert as the end of the list", () => {
+  const err = new ContractFunctionRevertedError({ abi: [], functionName: "poolVote" });
+  assert.equal(isEndOfVoteList(err), true);
+});
+
+test("isEndOfVoteList reads a zero-data response the same way as a revert", () => {
+  const err = new ContractFunctionZeroDataError({ functionName: "poolVote" });
+  assert.equal(isEndOfVoteList(err), true);
+});
+
+test("isEndOfVoteList still recognises a revert buried under viem's own wrapping errors", () => {
+  const reverted = new ContractFunctionRevertedError({ abi: [], functionName: "poolVote" });
+  const wrapped = new BaseError("execution reverted", { cause: reverted });
+  assert.equal(isEndOfVoteList(wrapped), true);
+});
+
+test("isEndOfVoteList refuses to treat a transient RPC failure as the end of the list", () => {
+  assert.equal(isEndOfVoteList(new Error("fetch failed")), false);
+  assert.equal(isEndOfVoteList(new BaseError("HTTP request failed")), false);
+  assert.equal(isEndOfVoteList("nope"), false);
+  assert.equal(isEndOfVoteList(undefined), false);
 });

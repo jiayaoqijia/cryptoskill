@@ -32,8 +32,8 @@ The social endpoints share the OKX standard error envelope. Common codes the age
 | `50011` | 429 | Rate limit exceeded | Back off 1–2s then retry once; on second failure, surface "the service is rate-limiting, please try again in a minute" |
 | `50014` | 400 | Required parameter is empty | Re-check the call — typically a blank `tokenSymbols` / `articleId` / `chainIndex` / `tokenAddress` |
 | `50026` | 500 | Upstream system error | Retry once; if still failing, surface "the service is temporarily unavailable" |
-| `50103`–`50107` | 401 | Auth header missing (key / passphrase / sign / timestamp) | API credentials are not configured — ask the user to set `OKX_API_KEY` / `OKX_SECRET_KEY` / `OKX_PASSPHRASE` in their env or `~/.onchainos/.env` |
-| `50111`–`50113` | 401 | Invalid API key / timestamp / signature | Credentials are present but rejected — suggest the user verify the keys in the OKX developer portal or check system clock skew |
+| `50103`–`50107` | 401 | Authentication headers are missing | Ask the user to run `onchainos wallet login` and retry |
+| `50111`–`50113` | 401 | Authentication was rejected | Ask the user to run `onchainos wallet login` again |
 | `50125` / `80001` | — | Region blocked (see section above) | Show the region message |
 | `51000` | 400 | Parameter is invalid | Re-check enum codes — likely an out-of-range `importance` / `sentiment` / `sortBy` / `timeFrame` |
 

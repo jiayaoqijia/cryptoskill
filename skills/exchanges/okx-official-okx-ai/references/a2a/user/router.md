@@ -12,6 +12,7 @@ User/Buyer. Select exactly one final leaf and stop routing.
 | Create a subscription | [`subscription-create.md`](subscription-create.md) |
 | Direct reply to the Runtime Watch creation-start note using `Check subscription task status` or its localized rendering; or query local follow-trade results for a subscription Signal by `jobId` or `deliveryId` | [`subscription-trade-records.md`](subscription-trade-records.md) |
 | List, inspect, or manage a subscription | [`subscription.md`](subscription.md) or [`subscription-manage.md`](subscription-manage.md) |
+| Explicitly resume or restore **automatic copy-trading** for one existing subscription, including after signing in on a new device | [`restore-copytrade.md`](restore-copytrade.md) |
 | Ask about a task's progress, status, lifecycle, timeline, current stage, current responsible party, or next step | [`../task-query.md`](../task-query.md) §One-time lifecycle timeline; its lifecycle result type-gates one-time versus subscription rendering |
 | Explicitly ask for task details, basic information, attributes, type, fee, provider, description, or delivery content; list or inspect tasks, saved deliverables, pending evaluations, or tasks the User rejected | [`../task-query.md`](../task-query.md); use its detail or list branch |
 | Change task visibility | [`visibility.md`](visibility.md) |

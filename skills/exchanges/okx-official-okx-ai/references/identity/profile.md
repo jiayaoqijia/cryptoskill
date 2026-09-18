@@ -46,16 +46,19 @@ Keep `--role` only when used in the initial request.
 
 ## Detail for explicit Agent IDs
 
-Run:
+Own Agent — the user says "my Agent"/"mine", or the ID matches one already returned by
+`get-my-agents` in this conversation → `get-my-agents`. Any other ID (named or pasted with no
+such match) → `get-agents`:
 
 ```bash
-onchainos agent get-agents --agent-ids <id[,id...]>
+onchainos agent get-my-agents --agent-ids <id[,id...]>   # own Agent
+onchainos agent get-agents --agent-ids <id[,id...]>      # otherwise
 ```
 
 ### Agent detail
 
-**MUST** use the template below to render each Agent's display-ready `card[]`
-in order.
+**MUST** render each Agent from its `card[]` — a top-level array entry for `get-agents`, or the
+matching agent's own `card[]` nested at `list[*].agentList[*]` for `get-my-agents`:
 
 ```markdown
 | Field | Value |
@@ -73,7 +76,8 @@ in order.
 
 #### Rules
 
-- User/Evaluator: omit `Status`, `Approval status`, and `Rating`.
+- Render exactly the rows present in `card[]`, in order.
+- User/Evaluator: **NEVER** show `Status` or `Approval status`.
 
 ## Services for an explicit Agent ID
 

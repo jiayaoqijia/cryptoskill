@@ -172,6 +172,15 @@
       "targetLeaf": "references/a2a/completion.md",
       "sideEffectOwner": "feedback then notify then session-cleanup",
       "sourceSymbols": ["task/user/v2/job_completed.rs", "task/asp/v2/job_completed.rs"]
+    },
+    {
+      "id": "A31",
+      "input": "reject_review (zero-price one-time, non-blank verbatim reason)",
+      "role": "user",
+      "stateGate": "real claimed reply bound to current buyer-review card; zero-price one-time submitted; non-blank user-authored reason present",
+      "targetLeaf": "references/a2a/user/review-decision.md",
+      "sideEffectOwner": "reject_review /pre-reject + /reject -> Failed(9); no refund; no request_rejection_reason supplement card; no job-session relay",
+      "sourceSymbols": ["task/user/v2/reject.rs", "task/common/pending_v2.rs"]
     }
   ]
 }

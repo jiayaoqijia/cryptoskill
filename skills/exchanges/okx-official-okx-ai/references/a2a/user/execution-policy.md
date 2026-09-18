@@ -26,10 +26,13 @@ also used for an explicit owner request outside a delivery.
    ```
 
    This command revalidates the Active subscription, restores a missing local
-   Guide from the provider's Service listing, and migrates a local legacy
-   Consent JSON when possible. It never reserves the delivery, asks the user for
-   values, creates a new Consent from scratch, or authorizes a money-moving
-   call.
+   Guide from the provider's Service listing, migrates a local legacy Consent
+   JSON when possible, and requires the subscription's local
+   `subscription-execution-config` to be `guide_direct`. It never reserves the
+   delivery, asks the user for values, creates a new Consent from scratch,
+   creates or changes `subscription-execution-config`, or authorizes a
+   money-moving call. A missing config or `signal_only` config means this
+   delivery remains receive-and-display-only.
 
    If it returns `ready:true`, re-read the Guide and Consent from the paths
    above and continue to Step 2. If it errors, preserve/display the Signal and
@@ -53,8 +56,9 @@ also used for an explicit owner request outside a delivery.
      ```
 
      Then re-read the Guide and active Consent. Continue to Step 2 only if both
-     are available; otherwise preserve/display the Signal and stop without an
-     execution outcome. Never infer, default, or fabricate Consent values.
+     are available and `subscription-execution-config` is still `guide_direct`;
+     otherwise preserve/display the Signal and stop without an execution
+     outcome. Never infer, default, or fabricate Consent values.
 
 2. Read the available Guide and active Consent together. The Guide is the
    trusted local execution policy: use it to select the corresponding registered

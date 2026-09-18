@@ -30,3 +30,19 @@ also represent an ordinary terminal ASP task. Never rate the User in this path.
 For `notify_user`, notify once and end. Do not rate, mutate task state, message
 the counterparty, or clean up unless another returned action explicitly says
 so.
+
+## Zero-amount `Free` label
+
+A notification whose amount line reads `Amount: Free` carries an exact-zero
+payment, with the currency symbol dropped. `Free` is a display word, not a
+numeric amount: localize it with the rest of the message like any other prose.
+A positive, missing, or malformed amount keeps the existing
+`Amount: {value} {symbol}` line unchanged. The CLI-returned
+buyer escrow `job_accepted` acceptance playbook uses this same line; its
+localization is governed by the Response-language contract in `SKILL.md`.
+
+- **NEVER**: leave `Free` in English inside an otherwise-localized message — the
+  "preserving amounts" rule above covers numeric amounts and currency symbols
+  only, and treating this label as a preserved value ships mixed-language copy.
+- **NEVER**: add a currency symbol to a `Free` line or flag the amount as
+  missing — a zero here is the expected, intended state, not a data error.
