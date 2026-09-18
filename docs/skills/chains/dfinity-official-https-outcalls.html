@@ -14,18 +14,18 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Dfinity Official Https Outcalls - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="Make HTTPS requests from canisters to external web APIs. Covers transform functions for consensus, cycle cost management, response size limits, and idempotency ">
+  <meta name="description" content="Make HTTPS requests from canisters to external web APIs. Covers replicated, non-replicated and flexible outcalls, transform functions for consensus, both cycle ">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/chains/dfinity-official-https-outcalls.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Dfinity Official Https Outcalls - CryptoSkill">
-  <meta property="og:description" content="Make HTTPS requests from canisters to external web APIs. Covers transform functions for consensus, cycle cost management, response size limits, and idempotency ">
+  <meta property="og:description" content="Make HTTPS requests from canisters to external web APIs. Covers replicated, non-replicated and flexible outcalls, transform functions for consensus, both cycle ">
   <meta property="og:url" content="https://cryptoskill.org/skills/chains/dfinity-official-https-outcalls.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Dfinity Official Https Outcalls - CryptoSkill">
-  <meta name="twitter:description" content="Make HTTPS requests from canisters to external web APIs. Covers transform functions for consensus, cycle cost management, response size limits, and idempotency ">
+  <meta name="twitter:description" content="Make HTTPS requests from canisters to external web APIs. Covers replicated, non-replicated and flexible outcalls, transform functions for consensus, both cycle ">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Dfinity Official Https Outcalls", "description": "Make HTTPS requests from canisters to external web APIs. Covers transform functions for consensus, cycle cost management, response size limits, and idempotency patterns. Use when a canister needs to call an external API, fetch data from the web, or make HTTP requests. Do NOT use for EVM/Ethereum calls — use evm-rpc instead.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/dfinity-official-https-outcalls.html", "author": {"@type": "Organization", "name": "dfinity"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Dfinity Official Https Outcalls", "description": "Make HTTPS requests from canisters to external web APIs. Covers replicated, non-replicated and flexible outcalls, transform functions for consensus, both cycle pricing versions (legacy and pay-as-you-go via ic0.cost_http_request_v2), response size limits, and idempotency patterns. Use when a canister needs to call an external API, fetch data from the web, make HTTP requests, choose a pricing_version, or use flexible_http_request. Do NOT use for EVM/Ethereum calls — use evm-rpc instead.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/dfinity-official-https-outcalls.html", "author": {"@type": "Organization", "name": "dfinity"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -69,7 +69,7 @@
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-some" title="1 true, 1 unknown of 11 capability flags">1 flag</span>
     </div>
-    <p class="skill-page-desc">Make HTTPS requests from canisters to external web APIs. Covers transform functions for consensus, cycle cost management, response size limits, and idempotency patterns. Use when a canister needs to call an external API, fetch data from the web, or make HTTP requests. Do NOT use for EVM/Ethereum calls — use evm-rpc instead.</p>
+    <p class="skill-page-desc">Make HTTPS requests from canisters to external web APIs. Covers replicated, non-replicated and flexible outcalls, transform functions for consensus, both cycle pricing versions (legacy and pay-as-you-go via ic0.cost_http_request_v2), response size limits, and idempotency patterns. Use when a canister needs to call an external API, fetch data from the web, make HTTP requests, choose a pricing_version, or use flexible_http_request. Do NOT use for EVM/Ethereum calls — use evm-rpc instead.</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/chains/dfinity-official-https-outcalls .claude/skills/</code></div>
@@ -84,7 +84,7 @@
 
     <h2>Quality Score</h2>
     <div class="skill-meta" style="margin-top:8px">
-      <span>Score: <strong>72/100</strong></span>
+      <span>Score: <strong>78/100</strong></span>
       <span>Grade: <strong>B</strong></span>
       <span>Risk Gate: <strong>PASS</strong></span>
     </div>
