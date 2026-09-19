@@ -15,6 +15,13 @@
       "official": false
     },
     {
+      "org": "openclawby",
+      "repo": "openclawby-skills",
+      "category": "ai-crypto",
+      "prefix": "openclawby-",
+      "official": false
+    },
+    {
       "org": "Senpi-ai",
       "repo": "senpi-skills",
       "category": "exchanges",
@@ -43,13 +50,6 @@
       "official": false
     },
     {
-      "org": "ianalloway",
-      "repo": "openclaw-skills",
-      "category": "ai-crypto",
-      "prefix": "ianalloway-",
-      "official": false
-    },
-    {
       "org": "araxis33",
       "repo": "aero-vote-radar",
       "category": "mcp-servers",
@@ -57,24 +57,31 @@
       "official": false
     },
     {
+      "org": "caiovicentino",
+      "repo": "polymarket-mcp-server",
+      "category": "mcp-servers",
+      "prefix": "caiovicentino-",
+      "official": false
+    },
+    {
+      "org": "scutuatua-crypto",
+      "repo": "whaletrucker-ecosystem",
+      "category": "mcp-servers",
+      "prefix": "scutuatua-crypto-",
+      "official": false
+    },
+    {
+      "org": "api-evangelist",
+      "repo": "farmdash",
+      "category": "mcp-servers",
+      "prefix": "api-evangelist-",
+      "official": false
+    },
+    {
       "org": "MangroveTechnologies",
       "repo": "mangrove-agent",
       "category": "mcp-servers",
       "prefix": "mangrovetechnologies-",
-      "official": false
-    },
-    {
-      "org": "mmxrealQQ",
-      "repo": "bobai-buyburn",
-      "category": "mcp-servers",
-      "prefix": "mmxrealqq-",
-      "official": false
-    },
-    {
-      "org": "Eschatological-cpi959",
-      "repo": "Finance-mcp",
-      "category": "mcp-servers",
-      "prefix": "eschatological-cpi959-",
       "official": false
     },
     {
@@ -185,19 +192,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-11",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-12",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-11",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-12",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-09-11",
+      "query": "crypto agent skills language:Python pushed:>2026-09-12",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-09-11",
+      "query": "DeFi MCP server pushed:>2026-09-12",
       "status": "checked"
     },
     {
