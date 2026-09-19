@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "9789964238c81dbf384141b5cd9011df02d56ee5",
+      "revision": "f583fb183a41440c160d45070a9d83861f1136e2",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -23334,7 +23334,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "42eb1a65bbace47da18392e634b9461b1835b686",
+      "revision": "512228727aff51c0e5de3dbd5a5b3eac1b9df491",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "8f38e7b7566e8d3956459e15458cfad54aa92827a608a616dcad2c43cb62b3ca",
@@ -23345,7 +23345,7 @@
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "8180e6337cda5ee319d7a170bfc1766f5a9d61aaf35f14d75ef279c99cf086dd",
-        "docs/data/snapshot.json": "bf6542f271ad98b8e6186279abe07bd7584691b3f617f400c85be4aa6f8f1da6",
+        "docs/data/snapshot.json": "faf6e6140497fb01ce0cb4b6739155d4d9d19c89788585caf6aecec4e8dfb374",
         "docs/data/timing.json": "f3a938d82781e7268f38ea41377b0c9577794438b00a3db7de09ab1ccc9c0cf8",
         "docs/index.html": "fb499b9bea59370940228e65198415e27d248a2193d5772bf10fbf5d3131f712",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
@@ -23376,6 +23376,7 @@
         "src/util.ts": "4597dcde3d2577fbcfa3549792dd76415fe8bb383dd8d750f2d7bb3784f41f53",
         "src/veAero.ts": "172e2dd217f83c49b1df1474799a2cab5476389ce45d9187fe300369ff7c30e4",
         "src/voted.ts": "4edd8900dcb965e5837860fbaac97fd98081ac441ce6dc8e295824e4ecff2614",
+        "test/accrual-cli.test.ts": "529818d2d6c8ad3ea0f2bf42dfe6e306809d615c63650d068224065de812ca70",
         "test/accrual.test.ts": "31dd3afa21dde4e5ff57feb0fe56867d444ec192c28aa80a0114a65512cba3be",
         "test/allocator.test.ts": "234e002ce12d0c3014507e19731ac46c56c65a9ecb3b9926ba3fe37539a58070",
         "test/backtest.test.ts": "120ee659417fedde8594e2759caf6d93b0c3fbf148aa49a762ae184809ff4aaf",
@@ -23441,6 +23442,7 @@
         "src/util.ts": 420,
         "src/veAero.ts": 420,
         "src/voted.ts": 420,
+        "test/accrual-cli.test.ts": 420,
         "test/accrual.test.ts": 420,
         "test/allocator.test.ts": 420,
         "test/backtest.test.ts": 420,
@@ -23849,6 +23851,213 @@
         "SKILL.md": 420,
         "LICENSE": 420
       }
+    },
+    "mcp-servers/barkermoney-agent-payment-stats": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/agent-payment-stats/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "aa662d626d2978cb266bb3e7a06d2f0ff6759d380b4245eec2e1eaa8b7efd74e",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "1fee73f98b387e1317f785de3b706cc46a3f49fe8a3f906aab3e32a83334f64c",
+        "SUMMARY.md": "0a0e5730eff6d98f97358e0eee2f832589291921a5d81edefb28bc8413e7a63e",
+        "plugin.yaml": "663f8e80ce3755ba1d62934f283a25fca7adbdf83e2c8c6274915b35633e3bf4"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-boost-lifecycle": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/boost-lifecycle/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "deea98f4f01a3d4a8e63403270a2790d19135f964a4b5ac302ee1c7b78451ceb",
+        "SKILL.md": "5eece7631402a7827cfc0def6e4f31aaed99de70f11c9c689528b8c878336903",
+        "SUMMARY.md": "b99eab5ea3a2d94a342423a55bf0db5d7e38cf4f2f6a6edf853e0434bc42f010",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-chain-explorer": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-chain-explorer/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "2375aa0812a2781c7a39f0e6bccd2be1f360e2167285c06e2c178a32203da30d",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "31a410dbf384d5fc02981b37ea3114d8c84a22003d77ccba897cc99650783e5a",
+        "SUMMARY.md": "ed81eb7b9591da05046262e2fe367368680c78d8a10b1bf631d9e664a97abc82",
+        "plugin.yaml": "ce121808a0bcaf7bb5efb18ac79b4e38deefeeaebcd7476a90d978afa79eb83f"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-depeg-monitor": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-depeg-monitor/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "5e8a8ac3c61c538aa44f2dbb85687facf6c7ae29f6c9d14f3ab024c20dfe3193",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "bf9493ac015bf5a24e332b74dd41af3617e0ea625389dce593fa368eea179176",
+        "SUMMARY.md": "99b50d6a6cf67fd54f85184a2a9cec89c2d4bea6de47261e7e0cf23879ffc4bf",
+        "plugin.yaml": "d27b3999fc7de07c46afb5c1c80da25a9e4be830d7dfd3cd7e4d16d240bc536b"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-market-brief": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-market-brief/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "e81e6caf5c29594305f2daf4095d2c0d35e9f22fc21d7110f1bd07316cf815b0",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "4308adfb7f638d8da5f2bc6c2d5197ab73b97582b7f662f6d9e73e4db07d5260",
+        "SUMMARY.md": "2a5b552f3cd8fc9865b9e6506e0a573ad9818a0102909c89fefc18c05e19e088",
+        "plugin.yaml": "fe88a4b8b9196d34a8baf0190b55e482d9a253bb4da312145de9f0f0715b1498"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-risk-check": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-risk-check/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "9f1b38e43947bdacb02f8303a2e3eba18dc880fe9701a81d5cb4d013ecffb00f",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "3914a92d52ea79bc4b2adf8788e07dc14a5e556375ec3290ab326bb86249736f",
+        "SUMMARY.md": "3c406c92c1bb795eb78a3d6d276afc1fcd83e5d647341dc8185ba05c9e9f4f20",
+        "plugin.yaml": "a7977b6c61e65469fcedd642d8f631988e558de70c7a1b58902d6d4fa7506969"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-treasury-yield": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-treasury-yield/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "a524c733d3e4a230ab74b466fe759fe52962ef6e7e8adf20fb130e9a1c8d6ae9",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "17f390fe56cf3a1a89e22f39dd2494311354187cc73b4e9a50f52d14007f2041",
+        "SUMMARY.md": "921149370e4eea1f2585a2c5abcf0f11fdd3bd51de94e7d8f96c6ff0eedf7da3",
+        "plugin.yaml": "e3a63bd183bc2b79f0564d628f2ef17617663398152097762b9389ffabfcd9d8"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-tvl-boost": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-tvl-boost/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "1d7670fe45850be7d88b2824c461d8dda44703ba1196c0c4c02c219d68d70e66",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "59c8db483169fbfbaa475d41df22a9d89bd24ccc5b81c222fc8f79516e05ea8e",
+        "SUMMARY.md": "a86430664e57032dc94a737d7c185c3020ffa710db8c2d7d292c96eea2160c48",
+        "plugin.yaml": "fd7c87fe26b1ab611852f975ace7f5759bd86ca791bd25412c7d01d1e84a5c15"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-yield-radar": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-yield-radar/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "7364937d67ef45ef60167d549080b8beec857d97ebe310d989db45180a8fa5dc",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "b915177b88776b6c88aab7a368aa356fe4064addf66874b6edb75e5b65ba7cbb",
+        "SUMMARY.md": "9ac5b87766c6a76126d1717af00091eae15d288467d6e062f911f27a037fc0ef",
+        "plugin.yaml": "b32b68e2c28a0f1255f7b09f272e475edd0405127e52dfc08a2f4f7630a2650d"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-stablecoin-yield-vs-tradfi": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/stablecoin-yield-vs-tradfi/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "cc06236fb4bca86212d696876162be6370fc0ef41de419eb12b24f30e14b2aae",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "2326e3fdcba81f515863aebebc0670b57d901b9b3961b135c4fd99e2bb6eae3c",
+        "SUMMARY.md": "7c09f929c8b74b761accfa3883088406b144fa619a411788b2f0928d617e4a2b",
+        "plugin.yaml": "807914268229b504449d89ccb78c93ea9659e1876de1f5d34977214be983de9a"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
+    },
+    "mcp-servers/barkermoney-yield-strategy-advisor": {
+      "repo": "barkermoney/barker-mcp",
+      "path": "skills/yield-strategy-advisor/SKILL.md",
+      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b",
+      "files": {
+        ".claude-plugin/plugin.json": "d8632dcfddc7a29f3ac2d47ab4c32ab3cc8fbb0a17081e956a75c6f60a2e45b8",
+        "LICENSE": "673f6941734506f6f43e4afc831462e0f56b88f5acb9a9be2b21f31653d3474d",
+        "SKILL.md": "daee6339732c31bdfc562bf12bc0734adc89a1af43243f3c1b71877f5614ef69",
+        "SUMMARY.md": "df3804343fb934dd0cc2e0e619f6f503f1e943c1127e907a2b4a764a227ed53a",
+        "plugin.yaml": "596bfff6f96d65a339564b4f28b6a42448f1669da6ba22a88b7e4ab2a32f48c7"
+      },
+      "modes": {
+        ".claude-plugin/plugin.json": 420,
+        "LICENSE": 420,
+        "SKILL.md": 420,
+        "SUMMARY.md": 420,
+        "plugin.yaml": 420
+      }
     }
   },
   "repositories": {
@@ -23882,7 +24091,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "32c5b3c27f2d523df12686ae3e1e9e3446b91fc3",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "9789964238c81dbf384141b5cd9011df02d56ee5",
+    "jiayaoqijia/cryptoskill": "f583fb183a41440c160d45070a9d83861f1136e2",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
@@ -23965,9 +24174,10 @@
     "udotcash/mcp-ucash": "62d47205f69040c2ab195b53fec48a542c799b37",
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "faef244b55dd8841a281f966ec74fbcf0b8e72f1",
-    "caiovicentino/polymarket-mcp-server": "c7338f46ada2cf38f67fe8fdb5ac9c6c28474380",
-    "araxis33/aero-vote-radar": "42eb1a65bbace47da18392e634b9461b1835b686",
+    "caiovicentino/polymarket-mcp-server": "b690f68a77321ced5d58c16e1aa82876abec9747",
+    "araxis33/aero-vote-radar": "512228727aff51c0e5de3dbd5a5b3eac1b9df491",
     "paulf280-ui/cabal-hunter-mcp": "91cc47a6a8247da6c4bc53ddc819ae1c7c5d6153",
-    "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413"
+    "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
+    "barkermoney/barker-mcp": "f3ce6c488e57807d8b8e470d05f52038c526021b"
   }
 }

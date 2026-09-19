@@ -1,0 +1,12 @@
+schema_version: 1
+name: stablecoin-chain-explorer
+version: 0.1.0
+description: Explore stablecoin TVL and yield opportunities by blockchain. Compare cross-chain yields on Ethereum, BSC, Arbitrum, Base, Polygon, Optimism, Solana, and more.
+author:
+  name: Barker
+  github: barkermoney
+  email: partner@barker.money
+license: MIT
+category: analytics
+api_calls:
+  - api.barker.money

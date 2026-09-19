@@ -1,0 +1,12 @@
+schema_version: 1
+name: stablecoin-depeg-monitor
+version: 0.1.0
+description: Stablecoin peg stability monitoring and historical depeg database. Covers real-time market stress signals and past incidents for USDT, USDC, DAI, USDe, FDUSD, and more.
+author:
+  name: Barker
+  github: barkermoney
+  email: partner@barker.money
+license: MIT
+category: analytics
+api_calls:
+  - api.barker.money

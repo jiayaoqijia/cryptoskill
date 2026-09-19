@@ -1,0 +1,12 @@
+schema_version: 1
+name: stablecoin-market-brief
+version: 0.1.0
+description: Real-time stablecoin market overview - total market cap, yield-bearing cap, asset and chain distribution, plus market-wide APY versus US Treasury benchmark.
+author:
+  name: Barker
+  github: barkermoney
+  email: partner@barker.money
+license: MIT
+category: analytics
+api_calls:
+  - api.barker.money

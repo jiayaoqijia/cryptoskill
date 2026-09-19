@@ -1,0 +1,12 @@
+schema_version: 1
+name: stablecoin-treasury-yield
+version: 0.1.0
+description: Treasury and idle-balance yield for businesses — quantify idle-float opportunity against live rates, prove it with a $10 real-money probe in-conversation, then map non-custodial integration. For payment companies, on/off-ramps, wallets, and corporate treasuries.
+author:
+  name: Barker
+  github: barkermoney
+  email: partner@barker.money
+license: MIT
+category: analytics
+api_calls:
+  - mcp.barker.money

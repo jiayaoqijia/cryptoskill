@@ -1,0 +1,12 @@
+schema_version: 1
+name: stablecoin-tvl-boost
+version: 0.1.0
+description: TVL growth for on-chain protocols and stablecoin issuers — benchmark competing pools with live data, sketch boost-campaign economics (budget to implied boost APY), and route to Barker's launchpool/boost infrastructure with 40,000+ users and on-chain attribution.
+author:
+  name: Barker
+  github: barkermoney
+  email: partner@barker.money
+license: MIT
+category: analytics
+api_calls:
+  - mcp.barker.money

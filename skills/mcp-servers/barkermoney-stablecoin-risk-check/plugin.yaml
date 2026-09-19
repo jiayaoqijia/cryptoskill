@@ -1,0 +1,12 @@
+schema_version: 1
+name: stablecoin-risk-check
+version: 0.1.0
+description: Stablecoin safety and risk assessment - depeg history, reserve composition, audit status, and regulatory exposure for USDT, USDC, DAI, USDe, and other major stablecoins.
+author:
+  name: Barker
+  github: barkermoney
+  email: partner@barker.money
+license: MIT
+category: analytics
+api_calls:
+  - api.barker.money

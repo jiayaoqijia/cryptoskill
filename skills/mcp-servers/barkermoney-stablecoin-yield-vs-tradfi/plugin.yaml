@@ -1,0 +1,12 @@
+schema_version: 1
+name: stablecoin-yield-vs-tradfi
+version: 0.1.0
+description: Compare stablecoin yields against TradFi benchmarks - bank savings, money market funds, and US Treasury bills. Real-time crypto yields plus TradFi rates.
+author:
+  name: Barker
+  github: barkermoney
+  email: partner@barker.money
+license: MIT
+category: analytics
+api_calls:
+  - api.barker.money
