@@ -2318,7 +2318,7 @@
       "emoji": "🐜",
       "tagline": "Finds the most heavily-traded perps where longs are paying shorts a rich funding rate, and — only when that crowd of longs looks tired (overbought and rolling over, not still charging) — shorts them to collect the funding, hour after hour. Low leverage, a tight stop in case of a squeeze, and it rotates daily, dropping names once the funding dries up.",
       "belief_plain": "When too many traders pile long into a perp, the funding rate turns positive — longs literally pay shorts every hour to hold. Ant gets on the receiving side of that payment by shorting those names, but it's careful: it only shorts when the long crowd is already exhausted, so it's fading a tired move rather than standing in front of a freight train. It keeps size and leverage modest because the money is in the funding, not in calling the direction, and a tight trailing stop caps the damage if a name squeezes.",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "thesis": "Perpetual funding is a harvestable yield: sustained positive funding pays shorts. True cash-and-carry hedges the short with long spot for delta-neutral carry, but Senpi is perps-only (no HyperEVM spot execution), so ant runs the DIRECTIONAL half — short the funding-payer — and manages the price risk with an exhaustion entry gate (RSI/structure), low leverage, a tight DSL squeeze-stop, and a 24h rotation. It ranks the top-OI names, requires annualized funding >= targetApr with multi-hour persistence, and never shorts a name still in a fresh uptrend. Not delta-neutral — the missing spot leg is the residual risk (NOTES.md).",
       "tags": [
         "funding",
@@ -2367,7 +2367,7 @@
       "emoji": "🛡️",
       "tagline": "A sleep-at-night strategy that trades only the biggest, most liquid coins, at low leverage (1-2x), with small position sizes and a high bar for entering — so it makes few, careful trades and protects your money first. Tight stops cut losers fast and lock in gains early, and a hard drawdown halt is the backstop. Built to NOT lose money, not to swing for the fences.",
       "belief_plain": "This is the conservative, capital-preservation option. It sticks to the majors (the deepest, most liquid markets), uses low leverage and small sizes, and only opens a position when a real, strong trend lines up — so most of the time it's patient and does nothing. When it is in a trade, a tight trailing stop protects it: it cuts losers quickly and starts locking in profit early instead of giving gains back. A hard 10% drawdown halt stops everything if things go wrong. It won't shoot the lights out — that's the point.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "thesis": "Most users who ask for 'low risk' don't want the highest return — they want to not lose money and to sleep at night. Armadillo is built for exactly that: restricting to the most liquid majors removes the thin-coin blow-up risk, low leverage (1-2x) and small margin cap the downside on any single trade, and a demanding score floor means it only acts on the strongest setups (few, high-quality entries, low turnover so fees don't bleed it). The momentum entry is Bison's validated multi-factor scorer, ported verbatim; the conservatism is entirely in the configuration — a high entry bar and low sizing — not in new, unproven math. The DSL owns every exit with a tight floor and an early profit-lock ladder, and the runtime drawdown_halt is the equity backstop.",
       "tags": [
         "conservative",
@@ -2863,7 +2863,7 @@
       "emoji": "🐦‍⬛",
       "tagline": "Runs a momentum book across the most liquid names and gets smarter about ITSELF: twice a day it reads its own closed trades, and if it's been losing it becomes more selective and trades smaller, while if it's been winning it loosens up and presses. You don't tune it — it tunes itself, inside guardrails, and a trailing stop does all the exiting.",
       "belief_plain": "A momentum strategy's edge drifts with the regime — what worked last week can bleed this week. Raven opens positions on the same proven momentum signal every time, but it watches its OWN results: after a cold streak it raises the bar for what it'll trade and cuts its size; after a hot streak it leans back in. It never manually closes — a ratchet stop protects and exits every position — and a hard drawdown halt is the backstop if the self-tuning isn't enough.",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "thesis": "Momentum entry quality is regime-dependent, and a fixed score threshold is right only some of the time. Raven treats its realized track record (win-rate, profit-factor, losing streak over the last N closed trades) as a live control signal: it ratchets the entry floor up/down and scales conviction sizing between bounded rails on a slow clock. The momentum thesis itself is Bison's validated weighted scorer, ported verbatim; the novelty is the closed-loop self-calibration on top. DSL owns exits; the runtime drawdown_halt is the equity backstop.",
       "tags": [
         "momentum",
@@ -2959,7 +2959,7 @@
       "emoji": "🐟",
       "tagline": "Buys the bounce, not the falling knife. It watches the RSI on liquid majors and only steps in when an oversold coin has actually turned back up — a real cross off the lows with the candle confirming — going long the recovery (or short an overbought coin rolling over). It bets price snaps back to its average, sizes moderately because these turns fail fast, and lets a tight trailing stop do all the exiting.",
       "belief_plain": "Trades the big liquid coins by their RSI. When one gets oversold it waits for it to actually turn back up before buying — not while it's still dropping — and when one gets overbought and starts rolling over it shorts the fade. It's betting the price springs back toward its average, keeps size moderate because these bounces can fail quickly, and never closes by hand: a tight stop protects and exits every trade.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "thesis": "Stretched moves revert. When a liquid major gets pushed to an oversold extreme and then genuinely turns — RSI crossing back up through the line while the last candle confirms — the snap back toward the mean is the trade; the symmetric overbought roll-over is the short. The discipline is refusing to catch a falling knife: a low RSI alone is not a signal, only the confirmed cross-back is. Because reversions fail fast, leverage stays moderate and the DSL exit is tight — lock early, cut small.",
       "tags": [
         "mean-reversion",
@@ -3105,7 +3105,7 @@
       "emoji": "🐍",
       "tagline": "Reads a chart the way a smart-money trader does. It marks the recent peaks and troughs, then waits for price to actually break structure — punch through a prior high (or low) — and only takes the trade when the break is backed by a stop-hunt wick that grabbed liquidity and snapped back, a price gap that shows one-sided pressure, and the bigger-picture 4h trend pointing the same way. A trailing stop does all the exiting; Viper never sells manually.",
       "belief_plain": "Markets move from one pool of resting stop orders to the next, and the honest tell is structure: a 'Break of Structure' is price closing past the last swing high or low in the trend's direction (it's continuing), and a 'Change of Character' is the first close through the OPPOSITE swing (the trend may be flipping). Viper enters on those breaks — but only the high-quality ones, where a liquidity sweep (a wick that runs the stops just past a prior swing then closes back inside) and a fair-value gap (a 3-candle imbalance where price left a gap it tends to revisit) agree with it, and the 4h structure confirms. It never manually closes — a ratchet stop protects and exits every position, and a hard drawdown halt is the backstop.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "thesis": "Price is delivered between liquidity pools, and market structure — not an oscillator — is the cleanest read on which pool is next. Viper maps confirmed swing pivots, classifies each close through the most-recent swing as a Break of Structure (continuation) or Change of Character (reversal), and requires SMC/ICT confluence before committing: a liquidity sweep of a prior swing that closes back inside (the stop-hunt / Wyckoff spring), a 3-candle Fair Value Gap in the break direction, and higher-timeframe (4h) structure agreement. Confluence is scored, conviction-banded, and gated to a minimum; sizing scales with conviction and leverage is clamped to the venue max. The edge is entry QUALITY on structure; the DSL owns exits and the runtime drawdown_halt is the equity backstop.",
       "tags": [
         "smc",
@@ -5428,7 +5428,7 @@
       "leverage_max": 5,
       "time_horizon": "swing",
       "cadence_seconds": 300,
-      "min_budget": 100.0,
+      "min_budget": 100,
       "wallet_count": 2,
       "min_budget_binding_wallet": "aegis",
       "instance_count": 2,
@@ -5473,7 +5473,7 @@
       "leverage_max": 10,
       "time_horizon": "swing",
       "cadence_seconds": 600,
-      "min_budget": 50.0,
+      "min_budget": 50,
       "wallet_count": 1,
       "min_budget_binding_wallet": "main",
       "instance_count": 1,
@@ -5672,6 +5672,56 @@
       "sort_order": 7
     },
     {
+      "id": "signals-hunter",
+      "name": "Signals Hunter — the Senpi Signals Feed, Traded",
+      "emoji": "📡",
+      "tagline": "Runs the Senpi Signals detector library on a clock and opens what clears the score floor. Same engine as the feed you read, byte-identical and drift-tested. Conviction-sized: 5x, 20-25% per slot, 5 slots — the whole wallet committed when full. It skips a tick outright when the smart-money lens goes dark rather than scoring without it.",
+      "belief_plain": "Senpi Signals already tells you where the proven cohort is positioned, where funding is dislocated, where open interest is surging and where a leader has left a laggard behind. Reading it and acting is two steps; this is the second one on a clock. Every hour it runs the same gather and the same detectors, takes the TRADE lens, and opens the names scoring 65 or better — 20% of the wallet each, 25% above 80. It is sized for conviction, not for a first strategy: five slots at 5x means a full book is most of the wallet committed. Know the fee drag before funding: at five entries a day this runs about 0.50% of the budget per day, roughly 15% a month, so direction has to beat that before the book makes anything — on a small budget that is the whole edge. It trades both directions, because the cohort is short about as often as it is long. When the cohort read fails it opens nothing and says so, rather than quietly scoring on price and funding alone and calling that a smart-money read.",
+      "version": "1.1.0",
+      "thesis": "The detector library is the edge, so it is vendored rather than reimplemented: sweep.py, score.py and smartmoney.py are byte-identical to the skill's and a drift test enforces it, which means a detector fixed in the feed is fixed in the strategy. Most of that library diffs the current reading against an earlier one — OI surges, conviction builds, funding flips, whale moves — so the scanner keeps a 24-deep hourly ring in its own state to give them a baseline; the first tick after a deploy can only fire the point-in-time detectors and says so rather than looking quiet. Two failures are treated as failures rather than as silence: a universe read that returns nothing, and a proven-cohort lens that went dark. Either skips the tick. A signal whose direction the engine could not name is skipped too, never defaulted long. One detector is deliberately not traded: `whale_open` rests on a third-party `startTime` we have caught resetting on an unchanged position, which is a discountable sentence in a feed and a 5x entry here; it returns when that check reports. Emits are also capped by what the wallet actually funds, so a tick that scores well does not fail its own lowest-ranked opens. Exits are a wide let-winners-run ladder with every ROE threshold scaled for 5x, so the stops sit where they would at 3x measured in price.",
+      "tags": [
+        "signals",
+        "senpi-signals",
+        "detector-library",
+        "proven-cohort",
+        "smart-money",
+        "funding",
+        "open-interest",
+        "cross-asset",
+        "long-short",
+        "conviction-sizing",
+        "always-on"
+      ],
+      "group": "smart-money",
+      "archetype": "copy_trading",
+      "archetype_label": "Copy-Trader",
+      "sub_style": "signal_feed",
+      "sub_style_label": "Trades a published signal feed's own detector library, engine vendored verbatim.",
+      "asset_classes": [
+        "universe_crypto",
+        "btc_eth",
+        "major_alts"
+      ],
+      "asset_scope": "universe",
+      "assets": [],
+      "direction": "long_short",
+      "risk_level": "aggressive",
+      "tier": "advanced",
+      "leverage_max": 5,
+      "time_horizon": "swing",
+      "cadence_seconds": 3600,
+      "min_budget": 100,
+      "wallet_count": 1,
+      "min_budget_binding_wallet": "main",
+      "instance_count": 1,
+      "funding_split": [
+        1.0
+      ],
+      "max_slots": 5,
+      "branch": "main",
+      "sort_order": 8
+    },
+    {
       "id": "whalehunter",
       "name": "WhaleHunter — Smart-Money Cohort Divergence",
       "emoji": "🐋",
@@ -5714,7 +5764,7 @@
       ],
       "max_slots": 6,
       "branch": "main",
-      "sort_order": 8
+      "sort_order": 9
     },
     {
       "id": "osprey",

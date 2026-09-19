@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "23f2dcc2bb082d064ad3828dbc1d8c6f9ed59c40",
+      "revision": "427b041bad4e02ba1653ff1bd821cab01c50ca32",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3845,7 +3845,7 @@
     "exchanges/senpi-ai-senpi-account-status": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-account-status/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "3e74da9ea08cc849442967dd8c623cc59c0e5ed520f053c545c0e0c4724b83d7",
         "references/presentation-notes.md": "8d2b874195f95d991f27d779b20dcc1094776640e987fad1fa5f29c6ae77958f",
@@ -3870,7 +3870,7 @@
     "exchanges/senpi-ai-senpi-deposit-withdraw-transfer": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-deposit-withdraw-transfer/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "17d402c90840a69974a493bf9745c74b8a607b793f2eee5e6e39f2b0a6afb6d1",
         "tests/test_money_rails_skill.py": "8387ab4b9c0e49db8bd1117ee9db06d7826c4319fbf769d9f611770261161909",
@@ -3885,7 +3885,7 @@
     "exchanges/senpi-ai-senpi-market-pulse": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-market-pulse/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "cc861832f1dcafd8e4586f589bdbffe10633acf5f939fc03d490e11007365c11",
         "references/analysis-framework.md": "f28318e3cff4ded3a3c58369a6b7157d7d0e88b1f16f15ee4609fdd05813d634",
@@ -3912,7 +3912,7 @@
     "exchanges/senpi-ai-senpi-trader-research": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trader-research/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "138e09f18d9ba33785054457da073958fad7c312ec47fe8030d1ad76059bab4a",
         "references/analysis-framework.md": "251247922522a5a2c546fd5f44b8c5f865f34ebabd7f52c9ba140231f328d379",
@@ -3935,7 +3935,7 @@
     "exchanges/senpi-ai-senpi-trading-runtime": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trading-runtime/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "4bba8a960438ff0d5c305bbab0df29ec54da3ff6e18a153b447b483f55d9620b",
         "references/dsl-protection-check.md": "2b004cd3b65834e9adf9964087fa97e9e65e81feb3d4d7a8a70e494ed138dd96",
@@ -3944,8 +3944,8 @@
         "references/runtime-yaml.md": "bf93224b2083aa58488f6b8bdec0976681601e69b643cf6a6fa9696927b68d08",
         "references/scan-contract.md": "056a3a736f9ebcdf872948c0ff1fd5c555e6992b6cd123ae77cddd6cdf7f54ce",
         "scripts/gen_catalog.py": "7fdff3995a77144cef09ab61676d401e3c26fe393fcc115c2ef6e97a880af3b1",
-        "scripts/min_budget.py": "0b6044c095942e061e27f2156cf57c9715e1ec28f79991764905128d7f19ccde",
-        "tests/fixtures/min_budget_golden.json": "6fadb27f8c3676ddc02cc1475facaf80dc09b2f9c8bb9bc0267498614c719d28",
+        "scripts/min_budget.py": "fd2ec85e00b591847218b42c10c8f616163a1f3661a62414bb3699c71940dc7b",
+        "tests/fixtures/min_budget_golden.json": "5940d435f3d1ce52d7e8ecc6637edd15efed4f9a7f40db2b7b0767851425e130",
         "tests/test_edit_is_live_only_after_apply.py": "f0c00afbbfbcb13302418836015a2781c9436120e395cf4052a7aca7886c11ec",
         "tests/test_min_budget_golden.py": "70df3ee13bb696ec87755c33a4cbad11ea15a7585c7a93a9e4d8b87f9ee3c7e1",
         "tests/test_reference_candle_time_units.py": "9468b89dcaafc054f32d76f6af79b388a1eafb07efc684abc910dbd2dfac5b45",
@@ -3972,7 +3972,7 @@
     "exchanges/senpi-ai-senpi-why": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-why/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "3701dfa99c719752ae6f6a95c0585b3b4ab4575c3effe155b6622541df1165f2",
         "references/overview-positioning.md": "4174702e1a53b0f145c1460fd0de59934254825e523762c7631269f9a4e049a7",
@@ -4311,7 +4311,7 @@
     "mcp-servers/dexter-mcp": {
       "repo": "dexter-dao/dexter-mcp",
       "path": "skills/dexter-mcp/SKILL.md",
-      "revision": "b54207532710fb0771d73eaa8f014fc16512d574",
+      "revision": "c7c6aa3359ea704b388d72dcff81cef891c691d0",
       "files": {
         "SKILL.md": "be782604f6204a7e4ebf4d6e5ba2265a0225a89a9689cc97ec3ecea6203302e4"
       },
@@ -6082,7 +6082,7 @@
     "mcp-servers/coinrithm-coinrithm-trader": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/coinrithm-trader/SKILL.md",
-      "revision": "4c851bf818b4ed23bd6b74161f4c35ab28075248",
+      "revision": "1748b2d2850e16fffceb64a44d85318166c6b0b6",
       "files": {
         "SKILL.md": "301e627d9b12c6942089fc97b6ba0085c29f6527765312a598f0b51bdd704fb6",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -6095,7 +6095,7 @@
     "mcp-servers/coinrithm-momentum-futures": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/momentum-futures/SKILL.md",
-      "revision": "4c851bf818b4ed23bd6b74161f4c35ab28075248",
+      "revision": "1748b2d2850e16fffceb64a44d85318166c6b0b6",
       "files": {
         "SKILL.md": "0c251da5f3c4f6bcef5cc04b9e4391872775c67243e64fc7a5f6f8387e7560fe",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -17692,7 +17692,7 @@
     "exchanges/senpi-ai-senpi-improve-trades": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-improve-trades/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "abf16d08456b96764e474057db38e6ac7b9f31982bfd6f8ae749d3a274a1e730",
         "references/event-log.md": "d7482c6647e679b4c69db7f5b74f8522462a90ef9ec7341b3491899bdcbae0ef",
@@ -17727,7 +17727,7 @@
     "exchanges/senpi-ai-senpi-portfolio": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-portfolio/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "e24d169c78d44422853f3eb46544553cd9d05c793da67d9fc1384cb56d28e370",
         "references/analysis-framework.md": "4ed518f59b9ddb2c7c54f0ae0c4dce947ba048feee7320360d8ce8e3d80a23f9",
@@ -17760,7 +17760,7 @@
     "exchanges/senpi-ai-senpi-smart-money": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-smart-money/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "3fe7ee20be92a770b0704e6cabe95c30f43d4d94da19790885c85a62909d2864",
         "references/analysis-framework.md": "0b0487582583aa9c9ac17daa49ec2eb140a164cb7cd65af514b66786b6cc4ba7",
@@ -17783,7 +17783,7 @@
     "exchanges/senpi-ai-senpi-strategy-author": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-author/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "92f1affb0dc14d360b32e794ec1a1c243597899409237e4e37abf2797c11b373",
         "references/creating-a-strategy.md": "f9c80d895431bfef50a105f434ce8025650f25adfb3871cbf7e5cf047c72c0ca",
@@ -17795,10 +17795,11 @@
         "references/shadow-testing.md": "dc5401bd936a2f009e2048e30f8ba15386e0ba511447dc0c4b562aa48f3c258b",
         "references/strategy-yaml-schema.md": "57205bce92b49758c5cd2d7e08d05de2324998af6cc5e05d4ce161f9ed5a1331",
         "scripts/_yaml.py": "e9153c92832cb60c4010cd68521f4851ef2ee1a4ecabbafa24ee2757e8bef365",
-        "scripts/validate_strategy.py": "e47e19d968eb88385d5f902ebecaa0970bf8084fd7c7b9720a2b573e3292dc69",
+        "scripts/validate_strategy.py": "38a1d41cd800471c1cbd182178a2e8232cf1a7559b687e8d0d8833b2e9d3758a",
         "tests/test_exit_preview_matches_presets.py": "aa9b18d67a186af9a1704fb55dcd59c82e6cbe0b858aa57cde06d67300c01c11",
         "tests/test_reference_time_units.py": "b33f919e203c12a537fba92bb7ab4a5d914fa55ed782f200d3d84aa2014006a4",
         "tests/test_scaffold_margin.py": "2529f12d414458717f7e86c67f917ddd329ababffd533d1d7a4174187547006b",
+        "tests/test_scoring_py_is_optional.py": "1e4d369799cebeaac5b4e00ad724ad0b7d08c4e160fb023f865a4c052e9d0908",
         "tests/test_validate_close_wiring.py": "8809c93310d768e5ea59b0daa826c91146f941adaaf01fedd88da2c272edaf17",
         "tests/test_validate_fees.py": "3a7677c01e4ac4adf7715fb3ffb0e6bef1b43ee32f4da7558362956739d0aa85",
         "tests/test_validate_momentum_not_smart_money.py": "74e1260ca0bb7b9e6f563a0b69643a59d023d0878b8d77daf2fafdde626beb2c",
@@ -17823,6 +17824,7 @@
         "tests/test_exit_preview_matches_presets.py": 420,
         "tests/test_reference_time_units.py": 420,
         "tests/test_scaffold_margin.py": 420,
+        "tests/test_scoring_py_is_optional.py": 420,
         "tests/test_validate_close_wiring.py": 420,
         "tests/test_validate_fees.py": 420,
         "tests/test_validate_momentum_not_smart_money.py": 420,
@@ -17836,11 +17838,11 @@
     "exchanges/senpi-ai-senpi-strategy-discover": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-discover/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
-        "SKILL.md": "8b5d59af376832930c9ca5f4e3dac85bd3d629e6fcfa619b19bc1c2cc44b1584",
-        "catalog.json": "51b5793e0b1e6fd9c5f41cac6f630c90c396a63886e2777ef28509fef99bb4d7",
-        "references/glossary.yaml": "9a3cdcc00555a50a9d674a667ac99fd02e654de56f7d74870d4efdfe12fbc8f9",
+        "SKILL.md": "80753eb835903688f2074328891c07f9460d4438957098c80993ed139655557f",
+        "catalog.json": "e8b1f113be9b244dc1d5bd5693d82804dd4b968a27e3eb664809617a9c14260a",
+        "references/glossary.yaml": "9bdb786d49073cb64914a7501c4750ee92fc8fa1ed3d6434b43ae1235279ae10",
         "scripts/discover.py": "ec89e2489839232cba29fbc3db5bf0928b6915db14cf4a3b2a7d9c1fee9827de",
         "scripts/mcp_client.py": "2eaa9a1d241751caf0a07584f66ea6c7c04fc8af6d00278da91cc376ad162228",
         "tests/conversation/actor-brief.md": "d438f03f86e81e90ff214df3f9a9636b22d3da5c9f4f2729c0ca6d63a97637ed",
@@ -17885,7 +17887,7 @@
     "exchanges/senpi-ai-senpi-strategy-ops": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-ops/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "713b1bd85e6d76503a3b4dafa68c9e36c1bba4e8dab8d67b4ae1b7eb3a702092",
         "references/editing-a-live-strategy.md": "56f5a9f4a0946208d8b1d920d85ac591ca46b75f55a0e87b27ab656150dc00bd",
@@ -17902,7 +17904,7 @@
         "scripts/close.py": "3b50150471b83e8547897b781e2947e0e77bc0de3c84218407d5b0a91001c9fa",
         "scripts/deploy.py": "913fd0be1a521a0848df0cdd03571f3b2a89a8e611176dd8a2a4eca9cbd9810d",
         "scripts/mcp_client.py": "1a4c3202890cf54e6938a9e347038c5181b6dcaa331fcc20a1781e5a89ccb0ec",
-        "scripts/min_budget.py": "0b6044c095942e061e27f2156cf57c9715e1ec28f79991764905128d7f19ccde",
+        "scripts/min_budget.py": "fd2ec85e00b591847218b42c10c8f616163a1f3661a62414bb3699c71940dc7b",
         "scripts/run.sh": "f9cad631a6a9bb666c08b19417b72bb61b44147341c425dada0adb99cfd15e05",
         "scripts/status.py": "48b2b44ffa62885e0223dcd55e36d01d5d1ccb4617eb3e60b8d658c4aca08f3e",
         "scripts/validate_universe.py": "786931a76ecf3aa076ad10f0ca509553ba30e11351951a4a5059850fc345e5f1",
@@ -17912,7 +17914,7 @@
         "tests/test_deploy_where.py": "b2f3e4c7f2b7250f4150a78401f81b942c19ab4d895a0f17f74cf426a266ba57",
         "tests/test_deploy_wrapper.py": "456699db53ce7291a3e886023b0638920bb8a5f13b4eeac4faf3e48e573bb524",
         "tests/test_dex_awareness.py": "5255c33e28226fef46856f8316e416e4fe45900d12141676eda75fc5672ef175",
-        "tests/test_entry_gate_reachability.py": "3b9b3176cf3514fce56f31d75b1b605668e40d136c999ccdd53eb3b905c10b2a",
+        "tests/test_entry_gate_reachability.py": "237b3666300c43ea044eed38c0d39b6a69a9beeb33c2e063d13c1566d7bdd342",
         "tests/test_error_tail.py": "4dc8d5abf485fc8e6eac9318cd41980bbaa24ccc05b3671c15e056588e7e00a0",
         "tests/test_fetch_fork_prefix.py": "c8cfa20558dca060188fa5a62fc077096fa3d26bf2ef8625d29b61e898d0c082",
         "tests/test_fetch_through_callers.py": "1d98e478e7c93d65872cdceb2573bce5be4fc0a88f1180d82c5f45036b86075c",
@@ -17974,7 +17976,7 @@
     "exchanges/senpi-ai-senpi-trade": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trade/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "16fea707a929076420dcef0ec26a459855ad4c2fb601ac234d276d8ebc12d56a",
         "references/mirror-monitoring.md": "cdccc8739732d67d95a369a94229194a1af0b6a7c4edddb6b4de9e7d8ebaf542",
@@ -23338,7 +23340,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "f57a4f812cc6195cff196b6688d8e17ca2ff56b6",
+      "revision": "6002cf76a79b309efdb161866b45c7558495609c",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "8f38e7b7566e8d3956459e15458cfad54aa92827a608a616dcad2c43cb62b3ca",
@@ -23349,7 +23351,7 @@
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "8180e6337cda5ee319d7a170bfc1766f5a9d61aaf35f14d75ef279c99cf086dd",
-        "docs/data/snapshot.json": "502716f69cdf94f61034a1e1a9aaec3cb5cc8e8bab704a6f124f5a474c113401",
+        "docs/data/snapshot.json": "eef7b3da62503b0e035749f84113d071ce1d399f0e06df264b2a73d06b9027ef",
         "docs/data/timing.json": "f3a938d82781e7268f38ea41377b0c9577794438b00a3db7de09ab1ccc9c0cf8",
         "docs/index.html": "fb499b9bea59370940228e65198415e27d248a2193d5772bf10fbf5d3131f712",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
@@ -23530,7 +23532,7 @@
     "exchanges/senpi-ai-quant-desk": {
       "repo": "senpi-ai/senpi-skills",
       "path": "quant-desk/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "52f65457bd9fd56295bfd8f5fea3213a593aa4dd3c79a0a633eb3571c85db520",
         "references/methodology.md": "14bb36f943357baa7bb940923df9f59a6ba892c19d2cac9d75345b57b0b07c7e",
@@ -23585,7 +23587,7 @@
     "exchanges/senpi-ai-senpi-signals": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-signals/SKILL.md",
-      "revision": "0fc2a79f3cb18a211339c8df8394a4ceeaf4c89a",
+      "revision": "c7b91f9c05496921d7d63d5dfa835ebc8122443a",
       "files": {
         "SKILL.md": "eac8556f863e40945ba46b302d0f2cea2fdc19b3e378194305f24fc78c83d6fd",
         "references/detectors.md": "307f4d416697b3a0d52c9c16c09601e9841ff4d46a00f103ec4df3e8145ab54f",
@@ -24062,6 +24064,240 @@
         "SUMMARY.md": 420,
         "plugin.yaml": 420
       }
+    },
+    "mcp-servers/danthamanvoiss-client-onboarding-plan": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/client-success/client-onboarding-plan/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "462cfdf7b3cf5dc92f9f6e7bd56897f547a3ce30991a8c2bba5c5113fd239d12",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-monthly-client-review": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/client-success/monthly-client-review/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "ec553ad8c87977f89d48f7770bbfc0b2589e67ba180ad1c5b6663cbbca1c2d36",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-retention-and-upsell-review": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/client-success/retention-and-upsell-review/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "16ce28799dd0d4c8d4bd0b8ac7aab6d7eaa0bac828e65a7ef1ef3b100d7c3f87",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-agency-router": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/core/agency-router/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "aed12c7f2f93eba4b87e5fea79ab16ea2809046231abf1417904c0c5635e59c6",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-campaign-plan": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/marketing/campaign-plan/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "01c2ce842959e615d8700a810c3ca6a91b79f07bb0b1ee0f13c45a17f0dd342a",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-content-calendar": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/marketing/content-calendar/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "409c15245210b54ca699fbf017e8366a6bdfda46fa6440b327421471494cff69",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-landing-page-cro-review": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/marketing/landing-page-cro-review/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "6858d2854d2c7928165d7334be4935248356048fcf76c2df57e9aa3e331ab28d",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-offer-positioning": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/marketing/offer-positioning/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "98dac4089aa5bc8e94033edf19bce755a5216b152144d827ccb13183719863e0",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-website-marketing-audit": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/marketing/website-marketing-audit/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "3156ed0d72ac69710467517b372cbee68bbd056e99623085cd203cb228d5b1e2",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-affiliate-enablement": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/partners/affiliate-enablement/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "71afa7564f3bd41eac2b58569149aa293792a39bcc290b04bed0faa4d8be74b0",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-discovery-call-prep": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/sales/discovery-call-prep/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "ccc0b0dc7e5e74734ae5ea743ea68e6e3c999ee48a6741fd00ed9fb6a54dc00c",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-lead-qualification": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/sales/lead-qualification/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "faa37b3ddbd0b126edcc4545f0e19ed4cbc244be196d14ff1235a8e68b9b836e",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-outreach-sequence-draft": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/sales/outreach-sequence-draft/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "965b7952923ee4b5078688fac82174a3f3cad230289604ce46d7ea7bd3d274a4",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-proposal-scope-draft": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/sales/proposal-scope-draft/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "40ea29b51535f985aa971fc692605603b1e89eaa6d7ce4101f8d52306bbda4da",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-salesportl-account-handoff": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/sales/salesportl-account-handoff/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "9180338d5e3b6a3182cfef0a9a72ed0f45141354df1df3c93c096f8ba5af79db",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-ai-citability-content-review": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/seo-geo/ai-citability-content-review/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "2539d9d595df25478ed1c9e78e81a3501e4db491708546620aa2c5ddf08ce4cc",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-local-visibility-review": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/seo-geo/local-visibility-review/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "dd97abf7918b61eb38f871c884da0268f4e0f7b52dc018b2a88dd33d67407b30",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/danthamanvoiss-seo-geo-opportunity-audit": {
+      "repo": "danthamanvoiss/salesportl-agency-skills-suite-v01",
+      "path": "skills/seo-geo/seo-geo-opportunity-audit/SKILL.md",
+      "revision": "edd2f35b4bb6a738014c4692c936a39112a2b1d9",
+      "files": {
+        "SKILL.md": "0c26e185f6deadc20f0ac8b7a3dd9ff568dd8e89e83ded8d244a452021399118",
+        "LICENSE": "dc1b8878e343d350a37ebfa05bb81e6ddc6b9f2cecdeb4b03bf53ef61c9c31d1"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
     }
   },
   "repositories": {
@@ -24095,7 +24331,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "32c5b3c27f2d523df12686ae3e1e9e3446b91fc3",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "23f2dcc2bb082d064ad3828dbc1d8c6f9ed59c40",
+    "jiayaoqijia/cryptoskill": "427b041bad4e02ba1653ff1bd821cab01c50ca32",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
@@ -24106,8 +24342,8 @@
     "chainstacklabs/rpc-nodes-mcp": "8920ed796409e2efc32953f787cdcdfff2e6c335",
     "celo-org/celo-mcp": "f6287609980b847d13011bd146014d30d7e57734",
     "alexchenai/chenswap-mcp": "df99e1a7861004abfb0f2b0c77bdacd50d44f361",
-    "coinrithm/coinrithm-agent-trading": "4c851bf818b4ed23bd6b74161f4c35ab28075248",
-    "dexter-dao/dexter-mcp": "b54207532710fb0771d73eaa8f014fc16512d574",
+    "coinrithm/coinrithm-agent-trading": "1748b2d2850e16fffceb64a44d85318166c6b0b6",
+    "dexter-dao/dexter-mcp": "c7c6aa3359ea704b388d72dcff81cef891c691d0",
     "onflow/flow-mcp": "2afc462130e957e3f311f27cd0d0201698cad8ce",
     "injectivelabs/mcp-server": "daa98388cdf6c472c93211b1e9059725d72bc42e",
     "kukapay/crypto-feargreed-mcp": "b1f22947d81be0e34a502dfed0b866024db46e6a",
@@ -24155,7 +24391,7 @@
     "wisdomnova/multipu-docs": "5b6b3c9a3dbb27487667a1cb842e859b2996ad17",
     "svpchain/svpchain-defi-mcp": "8b2b71a05d165f33f4582be67199e6e893689894",
     "nirholas/cryptocurrency.cv": "888fb300fc305f1cfad83166dd174d56cdde3ee6",
-    "holistis/bug-bounty-intelligence-mcp": "51ca47149e15623e4ea1b1c4096861077e16f66a",
+    "holistis/bug-bounty-intelligence-mcp": "ed870eb7e37db376fff4d3abba9aaba08486759e",
     "mrnetwork0001/deltr": "ed34a61aa0a5c97a25394605cd5dcaf4e4f261ca",
     "dziuba0x/flario": "16f8bb4d75dd167bb56a81a19548a6158c954fd7",
     "mrpkk/crypto-mcp-server": "8a7098b257cb86ae134f4d7d155a852e67bd4899",
@@ -24178,11 +24414,12 @@
     "udotcash/mcp-ucash": "62d47205f69040c2ab195b53fec48a542c799b37",
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "faef244b55dd8841a281f966ec74fbcf0b8e72f1",
-    "caiovicentino/polymarket-mcp-server": "d4248ed63c763642feca39c09a34eddc5b8863b1",
-    "araxis33/aero-vote-radar": "f57a4f812cc6195cff196b6688d8e17ca2ff56b6",
+    "caiovicentino/polymarket-mcp-server": "5955d64c2dc07894922c9a6098c0e4cee52dd2f7",
+    "araxis33/aero-vote-radar": "6002cf76a79b309efdb161866b45c7558495609c",
     "paulf280-ui/cabal-hunter-mcp": "91cc47a6a8247da6c4bc53ddc819ae1c7c5d6153",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "f3ce6c488e57807d8b8e470d05f52038c526021b",
-    "ardey26/cardano-defi-mcp": "6b299d4d988bbb32694c38dbd8664b3489479751"
+    "ardey26/cardano-defi-mcp": "7e3f97ce434d42d75e04f7052b73419b24dd0771",
+    "danthamanvoiss/salesportl-agency-skills-suite-v01": "edd2f35b4bb6a738014c4692c936a39112a2b1d9"
   }
 }
