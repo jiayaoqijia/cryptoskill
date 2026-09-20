@@ -185,33 +185,29 @@ export async function fetchActivePools(): Promise<PoolInfo[]> {
 
   const { alivePools, aliveGauges } = filterAlivePools(poolAddresses, gauges, aliveFlags);
 
-  // Read symbol/token0/token1 straight off each pool contract (every Aerodrome
-  // pool is itself an ERC20-like LP token) rather than via LpSugar.byAddress,
-  // which internally linear-scans up to 30,000 pools per call and reliably runs
-  // out of gas on a public RPC's default eth_call allowance.
-  const [symbols, token0s, token1s] = await Promise.all([
+  // Read symbol/token0/token1/factory straight off each pool contract (every
+  // Aerodrome pool is itself an ERC20-like LP token) rather than via
+  // LpSugar.byAddress, which internally linear-scans up to 30,000 pools per call
+  // and reliably runs out of gas on a public RPC's default eth_call allowance.
+  //
+  // One round at a time, never concurrently. Overlapping these over ~860 pools
+  // does not just slow the shared public RPC down, it makes it drop the whole
+  // burst: on 2026-09-16 a four-at-once batch came back with every token0/token1
+  // call failed, and on 2026-09-20 the three-at-once batch left here failed the
+  // same way for a full day — measured at 0/866 successes on all three rounds
+  // ("HTTP request failed"), against 360/865/865 when the identical rounds run
+  // one after another. Moving one call out of the batch treated the symptom;
+  // the rule is that this scan issues exactly one multicall at a time.
+  const perPoolCall = (functionName: "symbol" | "token0" | "token1" | "factory") =>
     client.multicall({
-      contracts: alivePools.map((pool) => ({ address: pool, abi: POOL_ABI, functionName: "symbol" }) as const),
+      contracts: alivePools.map((pool) => ({ address: pool, abi: POOL_ABI, functionName }) as const),
       allowFailure: true,
-    }),
-    client.multicall({
-      contracts: alivePools.map((pool) => ({ address: pool, abi: POOL_ABI, functionName: "token0" }) as const),
-      allowFailure: true,
-    }),
-    client.multicall({
-      contracts: alivePools.map((pool) => ({ address: pool, abi: POOL_ABI, functionName: "token1" }) as const),
-      allowFailure: true,
-    }),
-  ]);
+    });
 
-  // Its own round, not a fourth in the parallel batch above. With four at once
-  // over ~860 pools, the first scan on 2026-09-16 came back with every
-  // token0/token1 call failed and no pools at all; run separately, the same scan
-  // succeeded. A shared public RPC is the likely limit.
-  const factories = await client.multicall({
-    contracts: alivePools.map((pool) => ({ address: pool, abi: POOL_ABI, functionName: "factory" }) as const),
-    allowFailure: true,
-  });
+  const symbols = await perPoolCall("symbol");
+  const token0s = await perPoolCall("token0");
+  const token1s = await perPoolCall("token1");
+  const factories = await perPoolCall("factory");
 
   // The tokens of every pool whose own `symbol()` failed — which is every
   // Slipstream pool. One extra multicall over the distinct tokens is what buys

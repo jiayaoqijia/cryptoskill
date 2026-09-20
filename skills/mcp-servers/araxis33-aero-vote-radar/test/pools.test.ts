@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { filterAlivePools, isMigratingFactory, resolvePoolInfo, withoutMigrating } from "../src/pools.js";
 
 test("filterAlivePools drops pools (and their paired gauge) whose gauge is not alive", () => {
@@ -179,4 +180,32 @@ test("resolvePoolInfo pairs each resolved pool with its gauge by matching index,
   );
   assert.equal(pools[0].gauge, "0xgaugeA");
   assert.equal(pools[1].gauge, "0xgaugeB");
+});
+
+/**
+ * `fetchActivePools` talks to a shared public RPC, so it has no unit test of its
+ * own — and that is exactly where the scan has now broken twice. Overlapping the
+ * per-pool multicalls over ~860 pools does not degrade gracefully: the RPC drops
+ * the entire burst and every call comes back failed, which reaches the snapshot
+ * as "0 pools" and stops the site updating. Measured on 2026-09-20 against the
+ * live chain: 0/866 successes on all three rounds run concurrently, 360/865/865
+ * on the same three run one after another.
+ *
+ * On 2026-09-16 the answer was to pull one call out of the concurrent batch; the
+ * three that stayed behind failed the same way four days later. So the invariant
+ * is not "fewer at once", it is "one at a time", and this test reads the source
+ * to hold it — there is no seam to assert it through at runtime.
+ */
+test("fetchActivePools issues its per-pool multicalls one at a time, never concurrently", () => {
+  const source = readFileSync(new URL("../src/pools.ts", import.meta.url), "utf8");
+  const start = source.indexOf("export async function fetchActivePools");
+  assert.notEqual(start, -1, "fetchActivePools not found in src/pools.ts");
+  const end = source.indexOf("\nexport ", start + 1);
+  const body = source.slice(start, end === -1 ? undefined : end);
+
+  assert.equal(
+    /Promise\.all/.test(body),
+    false,
+    "fetchActivePools must not run multicalls concurrently — a shared public RPC drops the whole burst",
+  );
 });
