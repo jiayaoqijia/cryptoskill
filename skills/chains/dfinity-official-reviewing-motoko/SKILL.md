@@ -2,7 +2,7 @@
 name: reviewing-motoko
 description: "Design review for existing Motoko backends — judging whether code is well designed, not how to write it. Covers invariants encoded in types (variants over Text, correlated fields, case _ smells), stable vs transient state discipline under enhanced migration, file structure (types.mo/lib/mixins/main.mo), and severity-ranked findings (Blocker/Warning/Note). Use when reviewing, auditing, critiquing, or refactoring existing .mo files, or when asked for code-review feedback on a Motoko canister. Do NOT use for writing new Motoko code or fixing compiler errors (writing-motoko), authoring migration files (migrating-motoko-actors), or deployment."
 license: Apache-2.0
-compatibility: "moc >= 1.11.2, core >= 2.6.0, mops >= 3.0.0"
+compatibility: "moc >= 1.12.0, core >= 2.6.0, mops >= 3.0.0"
 metadata:
   title: Reviewing Motoko
   category: Motoko

@@ -2,7 +2,7 @@
 name: troubleshooting-motoko-migrations
 description: "Deep reference for when the Motoko migration chain misbehaves — upgrade compatibility errors you cannot explain, migration files you cannot write, a first migration whose OldActor is non-empty, a project converted from legacy persistence, or a request to delete/remove the migrations directory or revert to inline (with migration = ...). Load only when the rules in migrating-motoko-actors do not explain what you are seeing."
 license: Apache-2.0
-compatibility: "moc >= 1.11.2, core >= 2.5.0"
+compatibility: "moc >= 1.15.0, core >= 2.5.0"
 metadata:
   title: Troubleshooting Motoko Migrations
   category: Motoko
@@ -49,6 +49,7 @@ Two consequences drive most of the rules in this skill:
 | `M0170` compatibility error                               | The new actor is not stable-compatible with the deployed signature                                           | Add (or extend) the pending migration so the transformation is explicit                                     |
 | `M0255` stable signature downgrade                        | The build would move the canister from an enhanced chain back to an older persistence model — usually because the chain or the mops migrations config was removed | Restore what was removed; there is no supported downgrade                                                   |
 | Chain start does not match the baseline                   | The first migration's `OldActor` does not describe the state the canister actually holds — the classic case is a converted project where the chain starts from the legacy shape, not `{}` | See [Converted projects](#converted-legacy--enhanced-projects); do not rewrite `OldActor` to `{}`           |
+| `M0268` migration directory disagrees with deployed history | An already-applied migration was edited, deleted, or reordered, so the chain no longer matches the history recorded by the stable baseline. Surfaces at `mops build` (which folds the deployed baseline via `--stable-baseline`) and can pass `mops check` when `check-limit` trims that migration out | Restore the applied migration to exactly what was deployed and express further changes as a new migration. Only the oldest migrations may be trimmed; an applied migration in the middle cannot be removed |
 | `M0014` effectful actor body (older toolchains)           | Initialization work sitting in the actor body                                                                | Keep the actor body static — see [Static actor body](#static-actor-body)                                    |
 | `IC0503` missing migration var (runtime, after deploy)    | A stable field never received a value — typically an edited or renamed applied migration, or a field added without a migration | Add a new migration that supplies the field; never repair by editing the old file                          |
 | `IC0505` invalid custom section (install only, build and check pass) | The chain's stable-type history has outgrown the platform's custom-section limit | Nothing local fixes it — stop adding migrations and report it; see [Why chains must stay short](#why-chains-must-stay-short) |

@@ -35,7 +35,7 @@ Stable actor fields have no initializers in the actor body. The chain in `src/ba
 - **At most one pending migration per build** (`check-limit = 1` in `mops.toml`). If this build already added a migration file, **edit that file** to fold in further changes instead of adding another. `mops check` compares the deployed `.most` baseline and names the latest pending file to fold into when the limit is exceeded. Where a hosting platform owns the migrations section and `check-limit`, never edit them to clear an error.
 - **Name new files with just the UTC timestamp**, no suffix: `YYYYMMDD_HHMMSS.mo`. The timestamp must sort after every existing file. Do NOT encode the change in the name (no `AddPriority`, `AddTags`, `Init`, …) — any feature-ish name tempts you to add another file for the next change instead of editing the one file you already have this build.
 - **Never modify, delete, or rename migration files that existed before this build started.** Applied migrations are tracked by module name, so a rename makes the runtime treat the file as never applied, and an edit to an already-applied file never executes. Some platforms enforce this by making deployed migrations read-only, in which case writes to them simply fail. A migration created earlier in the same build is not applied yet: **edit** it rather than add a second migration for the same change.
-- **Migrations must be self-contained.** Inline BOTH old types AND new types in the migration file. Only `mo:core/...` imports are allowed — never `../types` or any project module. The chain replays forever; a frozen migration that imported `Types.Note` becomes wrong the moment `Note` changes in an incompatible way.
+- **Migrations must be self-contained.** Inline BOTH old types AND new types in the migration file. Only `mo:core/...` and mops package imports are allowed — never `../types` or any project module. The chain replays forever; a frozen migration that imported `Types.Note` becomes wrong the moment `Note` changes in an incompatible way. Component-owned opaque state is the reason package imports are allowed: `AccessControl.initState()` from `mo:caffeineai-authorization/access-control` can only be constructed by importing the package.
 - `mops check --fix` automatically verifies upgrade compatibility.
 
 ## Two Kinds of Migration
@@ -77,7 +77,7 @@ Add a NEW timestamped file to `src/backend/migrations/`; the chain replays autom
 - **Codomain** `NewActor`: record of new stable fields; each field must exist in the new actor with the same name and a supertype of the codomain type. Use `var x = ...` or `x = ...` in the output to match the actor's `var` vs `let`.
 - On fresh install, the entire chain replays in order starting from an empty actor (`OldActor = {}` for the first migration); on upgrade, only entries newer than the deployed tail run. Exception: in a project converted from legacy persistence the first file's `OldActor` is the pre-conversion stable shape, not `{}` — leave it alone (see `troubleshooting-motoko-migrations`).
 - Each `NewActor` field's value comes from the migration body. The actor body has no initializers in enhanced mode.
-- List every stable field in both `OldActor` and `NewActor` (including unchanged ones). A field in `OldActor` but not in `NewActor` is treated as an explicit discard (possible data loss).
+- List every stable field in both `OldActor` and `NewActor` (including unchanged ones) is the canonical form for clarity. A partial `OldActor`/`NewActor` that lists only the fields being changed (subset form) is also supported: unchanged fields carry through automatically. Either way, a field in `OldActor` but not in `NewActor` is an explicit discard (possible data loss).
 - If the migration function traps, the upgrade is aborted and the canister remains on the old version. Keep the migration pure and free of operations that can trap unexpectedly.
 
 Multi-step upgrades (e.g. v1 to v2 to v3): Each upgrade step has one migration from the previously deployed version. The next version can use a new migration (or none if the change is stable-compatible).
@@ -105,6 +105,8 @@ module {
 
 Stable vars are declared with types, no initial values. Transient let/var fields use initializers as usual.
 
+> This no-initializer rule applies to enhanced-migration projects (this skill's subject), where the migration chain owns initial values. In a plain project without the enhanced-migration chain, stable fields are initialized with inline values in the actor body as usual (e.g. `persistent actor { let m = Map.empty<Nat, Text>(); }`).
+
 ```motoko
 actor {
   let tasks : Map.Map<Text, Task>;
@@ -117,7 +119,7 @@ actor {
 
 Initial values come from the migration chain. When you introduce stable state for the first time, write a migration whose `OldActor = {}` and `NewActor` enumerates **every** stable field declared in `main.mo`. The migration body must produce a value for each. Missing fields surface as compatibility warnings and break subsequent upgrades.
 
-> **Examples from component / extension skills may show inline initializers** like `let accessControlState = AccessControl.initState();` or `let users = Map.empty<Principal, User>();` directly in the actor body. That pattern is for projects WITHOUT enhanced migration. Under enhanced migration it is a compile error (M0014, M0250). Treat such examples as state-shape hints only: copy the field name and type into your actor (without initializer), and **move the initializer expression into the migration function's `NewActor` output**.
+> If an example anywhere shows inline initializers like `let accessControlState = AccessControl.initState();` or `let users = Map.empty<Principal, User>();` directly in the actor body, it predates enhanced migration. Under enhanced migration that is a compile error (M0014, M0250). Treat such examples as state-shape hints only: copy the field name and type into your actor (without initializer), and **move the initializer expression into the migration function's `NewActor` output**.
 
 ## Stable-Compatible (definition)
 

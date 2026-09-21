@@ -31,6 +31,7 @@ import metrics  # noqa: E402
 import opportunities  # noqa: E402
 import render  # noqa: E402
 import score  # noqa: E402
+import addresses as addr_book
 import senpi_history  # noqa: E402
 import smart_money  # noqa: E402
 import strategy_read  # noqa: E402
@@ -40,6 +41,12 @@ from roundtrips import episodes_from_fills  # noqa: E402
 
 ADDR_RE = re.compile(r"^0x[0-9a-fA-F]{40}$")
 BENCH_PATH = os.path.join(HERE, "..", "references", "benchmark.json")
+# desk.py does the work and carried no version of its own, so an install with a fresh SKILL.md and
+# render.py but a stale desk.py passed every gate — which is exactly what happened on 2026-09-21: the
+# step-4 progress line still read "senpi-smart-money" where the shipped source says "senpi-market-pulse".
+# Pinned to render.VERSION by a test, and printed by --version so a stale copy is one command away.
+VERSION = "1.12.1"
+
 DEFAULT_STATE_DIR = os.path.join(tempfile.gettempdir(), "quant-desk")
 FRESH_S = 600
 PUBLIC_COHORT_N = 80          # live books read for the public smart-money cohort (parallel, cached 2 min)
@@ -47,6 +54,21 @@ PUBLIC_COHORT_N = 80          # live books read for the public smart-money cohor
 
 def log(msg):
     print(msg, file=sys.stderr, flush=True)
+
+
+# OpenClaw renders a RUNNING exec's stderr to the chat as it is produced, so these lines are the
+# user's only company during a 40s sweep. They were nine gerund clauses with no number and no
+# position — "scanning …, auditing …, running …" — which a host concatenates into one run-on
+# sentence, and which is exactly what a reader saw. A step marker, the elapsed clock and a number
+# the run has just learned make each line a beat that has to stand on its own.
+_STEPS = 8
+
+
+def step(n, msg, t0=None, found=None):
+    where = f"[{n}/{_STEPS}]"
+    when = f" {time.time() - t0:.0f}s" if t0 else ""
+    what = f" — {found}" if found else ""
+    print(f"[quant-desk] {where}{when} {msg}{what}", file=sys.stderr, flush=True)
 
 
 def _mcp_client(meta):
@@ -83,11 +105,19 @@ class _MCPFixture:
         raise RuntimeError(f"fixture has no {tool}")
 
 
+def _ratio_or_none(num, base, cap=10.0):
+    """None when the base is too small for the ratio to mean anything (|ratio| > cap)."""
+    if not base:
+        return None
+    r = num / base
+    return None if abs(r) > cap else r
+
+
 def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench=None, meta=None, whose="mine"):
     meta = meta if meta is not None else {}
     meta.setdefault("warnings", []); meta["timings"] = {}; meta["sources"] = {}
     t0 = time.time()
-    log("[quant-desk] scanning every fill, funding payment, transfer and resting order …")
+    step(1, "scanning every fill, funding payment, transfer and resting order …")
     tr_raw = hl.trader(addr, days=days)
     meta["timings"]["trader"] = round(time.time() - t0, 1)
     fills, cs, oo = tr_raw["fills"], tr_raw["clearinghouseState"], tr_raw["frontendOpenOrders"]
@@ -112,13 +142,26 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
             meta["warnings"].append(f"own position ages unavailable: {e}")
     source = "public fills"
     cov = metrics.coverage(closed, opened, fills, tr_raw["userFees"])
+    indexed = None
     if mcp is not None:
+        public_closed = len(closed)
         t_h = time.time()
         rows = senpi_history.fetch(mcp, addr, win_start, meta)
         meta["timings"]["senpi_history"] = round(time.time() - t_h, 1)
         if rows:
             closed, source = rows, f"senpi discovery ({len(rows)} closed position{'s' if len(rows) != 1 else ''})"
+            indexed = True
+        elif public_closed and not meta.get("senpi_history_failed"):
+            # The public endpoints show closed round trips in this window and senpi's index returned
+            # none for the same window. That is a CONTRADICTION between two sources, not a quiet
+            # wallet: this address is not in the index yet. Without the distinction the desk drops
+            # silently to public fills — which miss TWAP slices — and a whale gets a confident desk
+            # built on a fraction of their volume, with nothing in the output saying so.
+            indexed = False
+    # A read senpi could not ANSWER is not a wallet senpi does not HAVE. Leaving `indexed` at None
+    # on a failed read is the difference between "we don't know" and a confident wrong claim.
     meta["sources"]["trades"] = source
+    meta["indexed"] = indexed
     track = metrics.track_record(closed, opened, tr_raw["userFunding"], tr_raw["userFees"], win_start)
     track["coverage"] = cov
     track["ledger_net"] = metrics.ledger_pnl(tr_raw["portfolio"], win_start)
@@ -128,7 +171,8 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
         fb_closed, fb_open = episodes_from_fills(fills)
         fb = metrics.track_record(fb_closed, fb_open, tr_raw["userFunding"], tr_raw["userFees"], win_start)
         track["taker_share"], track["fee_recoverable"], track["volume"] = fb["taker_share"], fb["fee_recoverable"], fb["volume"]
-    log("[quant-desk] auditing the live book: every position's stop, liquidation distance and funding …")
+    step(2, "auditing the live book — every position's stop, liquidation distance and funding …", t0,
+         f"{len(fills):,} fills across {len({e.get('coin') for e in fills})} coins")
     book = metrics.open_book(cs, oo, ctxs, ages, tr_raw.get("clearinghouseState_xyz"), tr_raw.get("frontendOpenOrders_xyz"), ctx_xyz,
                              metrics.whole_account_value(tr_raw.get("portfolio"), tr_raw.get("spotClearinghouseState")),
                              metrics.spot_free_usdc(tr_raw.get("spotClearinghouseState")))
@@ -140,7 +184,10 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
     funded = [v for _, v in eq if v > 0]
     avg_eq = (sum(funded) / len(funded)) if funded else None
     equity = dict(points=len(eq), start=eq[0][1] if eq else None, end=eq[-1][1] if eq else None, avg=avg_eq,
-                  return_on_avg_equity=((track["ledger_net"] if track.get("ledger_net") is not None else track["net"]) / avg_eq) if avg_eq else None,
+                  # a return is only a return against an equity base that means something. On a book
+                  # that decayed to $0 the average equity is a rounding error and this read -3191.5%,
+                  # which tells a reader nothing except that the denominator collapsed.
+                  return_on_avg_equity=_ratio_or_none((track["ledger_net"] if track.get("ledger_net") is not None else track["net"]), avg_eq),
                   net_flows=sum(a for _, a in fl))
     act = metrics.activity(fills, win_start)
     majors, large = taxonomy.crypto_tiers(ctxs)
@@ -161,7 +208,8 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
             meta["warnings"].append("address is not on Hyperliquid's leaderboard this week (no rank)")
     if want_cohort:
         t3 = time.time()
-        log("[quant-desk] running senpi-smart-money: the proven cohort and the hot 30-day cohort against this book …")
+        step(3, "running senpi-smart-money — the proven cohort and the hot 30-day cohort against this book …", t0,
+             f"{len(book['positions'])} open position(s), {len(book['naked'])} unprotected")
         if mcp is not None:
             for name, fetch in (("proven", smart_money.proven_cohort), ("hot", smart_money.hot_cohort)):
                 try:
@@ -185,7 +233,7 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
         meta["timings"]["cohort"] = round(time.time() - t3, 1)
         meta["sources"]["cohort"] = [c["source"] for c in cohorts]
     if mcp is not None:
-        log("[quant-desk] running senpi-market-pulse: funding regime, where the top traders' gains sit, momentum …")
+        step(4, "running senpi-market-pulse — funding regime, where the top traders' gains sit, momentum …", t0)
         try:
             fregime = market_mod.funding_regime(mcp.mcp_call("market_get_funding_regime", timeout=10))
         except Exception as e:  # noqa: BLE001
@@ -212,7 +260,7 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
             meta["warnings"].append(f"senpi labels unavailable: {e}")
     # ---- candles: every coin the trader touched or holds, BTC, and what the cohorts and top traders are in
     t1 = time.time()
-    log("[quant-desk] reading the tape: 90 days of candles for every coin touched, regime by regime …")
+    step(5, "reading the tape — 90 days of candles for every coin touched, regime by regime …", t0)
     coins = {e["coin"] for e in closed + opened if metrics.in_window(e, win_start)} | {p["coin"] for p in book["positions"]} | {"BTC"}
     for cv in cohorts:
         coins |= {h["coin"] for h in cv.get("they_hold") or []}
@@ -239,37 +287,70 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
     if ctx_xyz:
         ctx_by.update({u["name"]: c for u, c in zip(ctx_xyz[0]["universe"], ctx_xyz[1])})
     coin_regimes = {c: market_mod.coin_regime(c, candles, ctx_by.get(c)) for c in coins}
-    log("[quant-desk] finding the leaks, pricing the fixes, running senpi-signals for live matches …")
-    lk = score.leaks(track, book, tm, tr_raw["userFunding"], in_win, win_start, days)
+    step(6, "finding the leaks, pricing the fixes, running senpi-signals for live matches …", t0,
+         f"{len(coins)} coins of tape")
+    lv = score.levers(tm_rows, closed, tm)          # one lever table, read by both
+    lk = score.leaks(track, book, tm, tr_raw["userFunding"], in_win, win_start, days, lv)
+    # the ONE quotable number: a union over trades, never the sum of the leaks above
+    rec = score.recoverable(tm_rows, closed, track, tm, lv)
     setups = score.best_setups(in_win, tm_rows)
-    log("[quant-desk] reading the playbook: what the book actually does, by class, side and size — decoding the setups that actually pay …")
+    step(7, "reading the playbook — what the book actually does, by class, side and size …", t0,
+         f"{len(lk)} leak(s) priced")
     fp = strategy_read.fingerprint(in_win, opened, book, track, act, tm, candles, ctxs, pnl_curve, win_start, now)
     strategy = dict(fingerprint=fp, statements=strategy_read.statements(fp, track, book), critique=strategy_read.critique(fp, track, book, mf, sm, cohorts))
     context = dict(breadth=breadth, funding_regime=fregime, attention=attention, regime_days=regimes_days, regime_performance=rperf)
     opps = opportunities.scout(in_win, setups, book, breadth, coin_regimes, cohorts, attention, majors, large)
-    log("[quant-desk] running quant: scoring the book on six dimensions, comparing it to the top traders, scouting today's matches, developing the recommendations …")
+    step(8, "scoring the book on six dimensions, comparing to the top traders, scouting today's matches …", t0)
     dims, quant = score.dimensions(track, book, dd, tm, mf, sm, closed, pnl_curve)
     r = dict(address=addr, days=days, now_ms=now, window_start_ms=win_start, activity=act, track=track, book=book, equity=equity, drawdown=dd,
              pnl_curve=pnl_curve[-120:], timing=tm, market=mf, rank=rank, smart=sm, cohorts=cohorts, labels=labels, dimensions=dims, quant_score=quant,
-             archetype=score.archetype(track, book, tm, act, opened), flags=score.flags(track, book, dd, tm, mf, labels), leaks=lk,
+             archetype=score.archetype(track, book, tm, act, opened), flags=score.flags(track, book, dd, tm, mf, labels), leaks=lk, recoverable=rec,
              setups=setups, families=score.families(closed, tm, track), strategy=strategy, context=context, opportunities=opps,
              benchmark=bench, benchmark_table=smart_money.benchmark_table(track, bench) if bench else None,
              episodes=[{k: v for k, v in e.items()} for e in in_win][-300:], meta=meta)
     r["whose"] = whose
+    r["indexed"] = indexed
     r["verdict"] = score.verdict(track, book, dims, lk)
     r["followups"] = followups.offer(r, whose=whose)
     meta["timings"]["total"] = round(time.time() - t0, 1); meta["hl_calls"] = hl.calls
     return r
 
 
+def resolve_whose(book, addr, other=False, mine=False, claim=False):
+    """Whose book this is. **An address is the reader's own book unless we know otherwise.**
+
+    The flagship path is a Hyperliquid trader pasting their own address to see their own desk, so
+    that is the default: asking them to claim it first would put a question in front of the one
+    moment the product exists for.
+
+    What the address book adds is memory, not suspicion. An address already read as someone else's
+    stays someone else's — the reader looked at a whale last week, and a bare re-run should not
+    start giving them the whale's leaks to fix. Anything the book has not seen is theirs.
+
+    Order: an explicit flag on this run, then what the book already knows, then the default.
+    """
+    if other:
+        return "other"
+    if mine or claim:
+        return "mine"
+    if addr_book.relationship(book, addr) == addr_book.ANALYZED:
+        return "other"                 # we have already established this one is not theirs
+    return "mine"
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="quant-desk: the desk for any Hyperliquid address")
     ap.add_argument("address", nargs="?", help="the wallet; omit with --compare")
     g = ap.add_mutually_exclusive_group()
-    g.add_argument("--mine", action="store_true", help="the reader's own book (second person) — the default")
+    g.add_argument("--mine", action="store_true", help="the reader's own book (second person)")
+    g.add_argument("--claim", action="store_true",
+                   help="the reader says this address is theirs: read it as their book AND remember it "
+                        "(a claim, not proof — we cannot verify ownership of an address from a message)")
     g.add_argument("--other", "--analyst", dest="other", action="store_true", help="someone else's book (analyst mode): third person, learn-from-them follow-ups")
     ap.add_argument("--compare", nargs="+", metavar="0x", help="two or more addresses side by side (cached runs are reused)")
     ap.add_argument("--days", type=int, default=90)
+    ap.add_argument("--version", action="version", version=f"quant-desk desk.py {VERSION}",
+                    help="print this script's version — the one gate that catches a stale desk.py")
     ap.add_argument("--json", action="store_true", help="print the analysis document instead of Markdown")
     ap.add_argument("--section", choices=render.SECTIONS, action="append", help="render only these sections (repeatable)")
     ap.add_argument("--deep", choices=sorted(deep_mod.MODES), help="a follow-up deep dive from the cached run (protect, smart, scout, replay, funding, regime, compare, rules, strategy, watch)")
@@ -279,9 +360,14 @@ def main(argv=None):
     ap.add_argument("--cache", default=hl_api.DEFAULT_CACHE, help="HTTP cache dir ('' to disable)")
     ap.add_argument("--state-dir", default=DEFAULT_STATE_DIR)
     ap.add_argument("--fresh", action="store_true", help="ignore a cached analysis")
+    ap.add_argument("--addresses", action="store_true",
+                    help="print this box's address book as JSON and exit — which wallets are the reader's, "
+                         "which they have read, and which are not in senpi's index yet")
     a = ap.parse_args(argv)
-    whose = "other" if a.other else "mine"
     os.makedirs(a.state_dir, exist_ok=True)
+    book = addr_book.load(a.state_dir)
+    if a.addresses:
+        print(json.dumps(book, indent=2, sort_keys=True)); return 0
     if a.compare:
         rs = []
         for x in a.compare:
@@ -305,6 +391,11 @@ def main(argv=None):
     if not ADDR_RE.match(addr):
         print(json.dumps({"error": "not a Hyperliquid address — expected 0x followed by 40 hex characters"})); return 2
     addr = addr.lower()
+    # Whose book this is comes from the address book, not from how the request was phrased. An
+    # UNKNOWN address is someone else's: the desk gives advice in the second person, and delivering
+    # that about a stranger's trading is the failure worth defaulting against. Owner voice needs a
+    # wallet senpi issued, a claim the reader already made, or an explicit flag on this run.
+    whose = resolve_whose(book, addr, other=a.other, mine=a.mine, claim=a.claim)
     state_path = os.path.join(a.state_dir, f"desk-{addr}.json")
     meta = {}
     bench = None
@@ -330,7 +421,15 @@ def main(argv=None):
         except hl_api.HLError as e:
             print(json.dumps({"error": f"Hyperliquid read failed: {e}", "address": addr})); return 1
         if not r["activity"]["fills"] and not r["book"]["positions"]:
-            print(json.dumps({"error": "no perp activity in the window and no open positions — nothing to read", "address": addr, "days": a.days})); return 3
+            # Carry `indexed` out even here. Without it a caller cannot tell "senpi has never seen this
+            # wallet" from "senpi has it and there is simply nothing in the window" — and those two need
+            # opposite things said to the reader. Spot fills do not count as perp activity, so a wallet
+            # the owner knows is busy can land here; say which it is rather than "nothing to read".
+            print(json.dumps({
+                "error": f"no PERP activity in the last {a.days} days and no open perp positions. "
+                         f"Spot trades and transfers are not perp activity and are not read here.",
+                "address": addr, "days": a.days, "indexed": r.get("indexed"),
+                "perp_fills_in_window": 0, "open_perp_positions": 0})); return 3
         log(f"[quant-desk] done in {meta['timings']['total']}s ({meta.get('hl_calls')} reads)")
         with open(state_path, "w") as fh:
             json.dump(r, fh, default=float)
@@ -360,8 +459,14 @@ def main(argv=None):
                 md = voice.third_person(md, f"{addr[:6]}…{addr[-4:]}")
             print(md)
         return 0
-    if (a.other or a.mine) and r.get("whose") != whose:
+    if (a.other or a.mine or a.claim) and r.get("whose") != whose:
         r["whose"] = whose; r["followups"] = followups.offer(r, whose=whose)     # a cached run re-voiced
+    rel = addr_book.CLAIMED if a.claim else (addr_book.ANALYZED if whose == "other" else None)
+    tr = r.get("track") or {}
+    addr_book.record(book, addr, relationship=rel, indexed=r.get("indexed"),
+                     digest={"at": r.get("generated") or None, "score": (r.get("score") or {}).get("total"),
+                             "verdict": r.get("verdict"), "net": tr.get("ledger_net")})
+    addr_book.save(a.state_dir, book)
     if a.json:
         print(json.dumps({k: v for k, v in r.items() if k != "episodes"}, default=float))
     else:

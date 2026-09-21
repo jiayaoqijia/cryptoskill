@@ -2,7 +2,7 @@
 name: writing-motoko
 description: "Motoko language pitfalls, modern syntax, and architecture patterns for the Internet Computer. Covers persistent actors, stable types, mo:core standard library, dot notation, mixins, and common compilation errors. Use when writing Motoko canister code, fixing Motoko compiler errors, or generating Motoko actors. Do NOT use for deployment, icp.yaml, or CLI commands; for design review or audit of existing Motoko code, load reviewing-motoko instead."
 license: Apache-2.0
-compatibility: "moc >= 1.11.2, core >= 2.6.0, mops >= 3.0.0"
+compatibility: "moc >= 1.12.0, core >= 2.6.0, mops >= 3.0.0"
 metadata:
   title: Writing Motoko
   category: Motoko
@@ -18,6 +18,7 @@ Motoko is an under-represented language for the Internet Computer Protocol, so y
 
 - `stable` keyword -- Not needed in enhanced orthogonal persistence mode
 - `mo:base` library -- Deprecated. Use `mo:core` instead
+- `.vals()` -- The deprecated `mo:base` iterator name. Always `.values()`. On arrays `.vals()` still compiles, so nothing flags it; on core collections it fails with M0072
 - `system func preupgrade/postupgrade` -- Not needed with enhanced orthogonal persistence
 - `(with migration = ...)` actor-attached migration syntax -- Use the mops-managed migration chain in `migrations/`
 - Inline initializers on stable actor fields -- Initial values come from the migration chain (see `migrating-motoko-actors`)
@@ -32,6 +33,7 @@ Motoko is an under-represented language for the Internet Computer Protocol, so y
 
 - `mo:core` library version 2.6.0+ (compiler `moc` 1.11.2+)
 - Contextual dot notation -- `list.add(item)`, `map.get(key)`
+- An import of the key type's module in every file that operates on a `Map`/`Set` -- the implicit `compare` is resolved from the imported module (`import Nat "mo:core/Nat"` for a `Map.Map<Nat, _>`), never from the type alone. A missing key-module import is the usual cause of M0230; a record or variant key needs its own module with a `compare` (see Implicit Parameters)
 - Null coalesce `??` for unwrap-or-default and unwrap-or-trap (`opt ?? default`, `opt ?? Runtime.trap(...)`) -- prefer over a two-arm `switch` on `?T` (requires `moc >= 1.7.0`)
 - Plain `break` / `continue` to exit or skip a loop iteration -- they work inside `for`, `while`, and `loop` just like in other languages
 - Enhanced orthogonal persistence (state persists without `stable` keyword)
@@ -75,6 +77,12 @@ module actually defines — verify against [api-reference.md](references/api-ref
 rather than inferring JavaScript-style helpers. `.some(...)` and `.every(...)`
 do not exist in Motoko; the `mo:core` names are `.any(...)` and `.all(...)`.
 
+The module a dot call resolves against is the module that **defines** the
+function — usually the receiver's type's module (`map.get`, `list.add`), but
+sometimes a different one: `arr.values().toList()` resolves against `List` (the
+target), not the array's module. The import needed (if any) is the defining
+module's, not the receiver's.
+
 ```motoko
 map.get(key);
 list.add(item);
@@ -82,17 +90,31 @@ array.filter(func x = x > 0); // CORRECT
 Map.get(map, key);
 List.add(list, item); // WRONG (M0236)
 
-// Applies to conversions too
-caller.toText() myNat.toText() "hello".concat(" world") // CORRECT
-Principal.toText(caller) Nat.toText(myNat) // WRONG (M0236)
-
 // Chaining
 let doubled = numbers.map(func x = x * 2).filter(func x = x > 10);
 
-// Equality: Principal declares `equal` with a self parameter, so it is dot notation too
-a.equal(b) // PREFERRED
-Principal.equal(a, b) // OK
+```
 
+Conversions are receiver calls too, but the `toX` functions are split across
+modules: some are defined on the **source** module (`Nat8.toNat`), others on the
+**target** (`"42".toNat()` and `"-5".toInt()` are defined by `Nat` and `Int`,
+not `Text`). So `Text`-receiver conversions need the target imported (`import
+Nat "mo:core/Nat"`, `import Int "mo:core/Int"`); without it, moc reports
+M0070/M0072 and the call does not compile:
+
+```motoko project=dot-notation filepath=src/backend/main.mo
+import Principal "mo:core/Principal";
+import Nat "mo:core/Nat";
+import Text "mo:core/Text";
+
+func conversions(caller : Principal, myNat : Nat) {
+  ignore caller.toText();            // CORRECT
+  ignore myNat.toText();             // CORRECT
+  ignore "42".toNat();               // CORRECT (defined by Nat, imported above)
+  ignore "hello".concat(" world");   // CORRECT
+  ignore Principal.toText(caller);   // WRONG (M0236)
+  ignore Nat.toText(myNat);          // WRONG (M0236)
+};
 ```
 
 **`equal` / `compare` vs `==`.** Collections take `equal` and `compare` as implicit arguments, so those are the functions to write for your own records and variants. `==` is compiler-generated structural equality and exists only for **shared** types — one `var` field takes a record out of shared and `==` stops compiling (M0060) — so do not build record comparisons on it. Comparing primitives and shared fields directly with `==` is fine, and on `Nat`, `Int`, `Float`, and the sized int types it is the only form: those declare `equal(x, y)` without a `self` parameter, so `myNat.equal(other)` fails with M0070. Other receiver methods on those types (`myNat.toText()`) are fine.
@@ -304,6 +326,42 @@ Imports and `type`/`let` declarations may precede the actor. Nothing may follow 
 ### Import Hygiene
 
 Add an import only to the file that uses the imported identifier. `Time.now()` usually belongs in a domain `lib/*.mo` implementation file, so `import Time "mo:core/Time";` belongs in that file, not `main.mo`, unless `main.mo` itself calls `Time.now()`. Every capitalized namespace call must have a matching import in the same file: if a mixin calls `TodosLib.listTodos(...)`, the file must import `TodosLib "../lib/todos"` (or use the alias it actually imported). Treat unused-import warnings as failures: remove stale `Debug`, `Time`, or helper-module imports before finishing.
+
+## Query Functions
+
+`query` marks a public function as a read-only call: it executes fast and unreplicated, and **every state change it makes is silently discarded when the call completes** — a write inside a query compiles, runs, and vanishes with no error or warning. Declare pure reads as `query func`; any function that must persist a change is a plain update func (no `query`). `public query func` is shorthand for `public shared query func`; both forms take `({ caller })` the same way.
+
+```motoko
+public query func getPosts() : async [Types.PostView] { ... };          // read: query
+public shared ({ caller }) func addPost(t : Text) : async Nat { ... };  // persists: update
+public query func resetAll() : async () { posts.clear() };              // WRONG: compiles, but the clear is discarded
+```
+
+### When await is allowed
+
+A plain `query func` cannot call any other canister function, whether that callee is a query or an update. Writing `await someCall()` inside one fails with a paired `M0038` (misplaced await) + `M0188` (send capability required: "cannot call a `shared` function from a `query` function"), always on the same statement. Pick the function kind by what the body must call:
+
+| Body must call                          | Declare                                 | Can `await`                              |
+| --------------------------------------- | --------------------------------------- | ---------------------------------------- |
+| another canister's `query`/`composite query` | `public shared composite query func` | those query callees                     |
+| an update (`shared` func) or oneway     | a normal `public shared func`           | that update                              |
+| nothing across canisters                | `public shared query func`              | nothing                                  |
+
+A `composite query` is a read-only function that can `await` other canisters' queries. Loop over callees and `await` each:
+
+```motoko
+public shared composite query func sum(counters : [Counter]) : async Nat {
+  var total = 0;
+  for (counter in counters.values()) {
+    total += await counter.peek();
+  };
+  total
+};
+```
+
+A `composite query` can call `query` and `composite query` callees but not updates or other `shared` functions; awaiting an update there is `M0187` ("send capability required ... only calls to `query` and `composite query` functions are allowed"). If the body must `await` an update, no flavor of query works — make it an update func.
+
+A composite query can only be initiated as an ingress call, e.g. from a frontend — calling one from an update or oneway func is `M0186`, from a plain `query func` `M0188`. Within the call tree it composes: it may call other canisters' `query`/`composite query` functions.
 
 ## Shared Types
 
@@ -623,7 +681,7 @@ switch (todos.find(func todo = todo.id == targetId)) {
 
 ## Error Handling: `Result`
 
-Use `mo:core/Result` to return a failure a caller can act on. `Result<Ok, Err>` is `{ #ok : Ok; #err : Err }`, so it is a shared type and crosses the API boundary as Candid — no wrapper needed.
+Use `mo:core/Result` to return a failure a caller can act on. `Result<Ok, Err>` is `{ #ok : Ok; #err : Err }`, so it crosses the API boundary as Candid whenever `Ok` and `Err` are themselves shared, which for `Ok` usually means the view type, not the internal record.
 
 **Pick the return type by what the failure means:**
 
@@ -668,7 +726,7 @@ actor {
   func toView(room : Room) : RoomView = { name = room.name };
   func reserve(room : Room) : Result.Result<Room, BookingError> = #ok(room);
 
-  public query func book(roomId : Nat) : async Result.Result<RoomView, BookingError> {
+  public shared ({ caller }) func book(roomId : Nat) : async Result.Result<RoomView, BookingError> {
     Result.fromOption(rooms.get(roomId), #unknownRoom(roomId))
       .chain(func room = reserve(room))
       .mapOk(toView);
@@ -808,7 +866,10 @@ Attaching cycles to an inter-canister call (`await (with cycles = ...) <call>`) 
 | `M0254` / `M0267` initial actor requires field         | Stable field no migration supplies | Add it to the pending migration's `NewActor` |
 | `M0255` stable signature downgrade                     | Chain or migrations config removed | Restore it — enhanced migration is one-way; load `troubleshooting-motoko-migrations` |
 | `shared function has non-shared parameter/return type` | Mutable type in API          | Return `[T]` not `List<T>`, no `var` fields |
-| `send capability required`                             | Async in non-async           | Add `<system>` capability                   |
+| `send capability required`                             | Async in non-async (`async*`/local non-shared target) | Add `<system>` capability                   |
+| M0038 misplaced await + M0188 send capability (paired) | `await <call>` inside a plain `query func` | Make it a `composite query func` (queries) or a plain update func (updates) |
+| `M0187` send capability in a composite query           | calling/awaiting an update from a `composite query func` | Make it a plain update func                |
+| `M0186` composite send capability required             | calling a `composite query func` from a non-composite func | Only ingress calls initiate composite queries; call it from the frontend, or make the callee a plain `query` |
 | `unexpected token '<name>'` at an identifier declaration | Reserved word used as an identifier | Rename it consistently across its contract and callers; see [references/reserved-keywords.md](references/reserved-keywords.md) |
 | `unexpected token 'public'` after a function           | Missing declaration `;`      | End function declarations with `};`         |
 | `M0219` implicitly transient                           | Actor not persistent         | Write `persistent actor`; see [references/project-setup.md](references/project-setup.md) |
@@ -818,7 +879,7 @@ Attaching cycles to an inter-canister call (`await (with cycles = ...) <call>`) 
 | `M0145` `does not cover value`                         | Non-exhaustive switch        | Add the missing cases or a `case _`         |
 | `M0060` operator not defined for `{#tag : T}`          | Unparenthesized variant tag  | `#tag(x)`, never `#tag x`                   |
 | `M0060` operator not defined, on `==`                  | `==` on a record with a `var` field (not shared) | Use an `equal` function instead |
-| `M0230` cannot determine implicit argument `compare`   | Record/variant key with no findable `compare` | Add `compare` to the type's module; or `import` the module for a primitive key |
+| `M0230` cannot determine implicit argument `compare`   | Key type's module not in scope | Usually a missing import: `import` the key type's module (`Nat`, `Text`, …) in that file. For a record/variant key, add `compare` to the type's own module |
 | `M0070` expected object type, produces `Nat`           | Receiver `.equal`/`.compare` on a number | Use `==` or `Nat.equal(a, b)`   |
 | `M0096` actor cannot produce expected type `()`        | Declaration after the actor  | The actor must be the last declaration in the file |
 | `field compare does not exist` on Time                 | No Time.compare              | Use `Int.compare`                           |
@@ -865,6 +926,7 @@ Attaching cycles to an inter-canister call (`await (with cycles = ...) <call>`) 
 - **Equality & comparison**: [references/equality.md](references/equality.md) — which types support receiver `.equal`, and when `==` differs from `equal`
 - **Type conversions**: [references/type-conversions.md](references/type-conversions.md) — Nat/Int size conversions
 - **Project setup**: [references/project-setup.md](references/project-setup.md) — one-time `[moc] args` flags. Skip this if your platform manages `mops.toml`
+- **Design review**: Load `reviewing-motoko` when reviewing, auditing, or refactoring existing `.mo` files — type-encoded invariants, state/persistence discipline, and file structure
 - **Actor migrations**: Load `migrating-motoko-actors` when upgrading canisters or changing actor state shape
 - **Migration failures**: Load `troubleshooting-motoko-migrations` for unexplained compatibility diagnostics, frozen migration files, or converted legacy projects
 - **API signatures**: [api-reference.md](references/api-reference.md) — complete function signatures

@@ -2,25 +2,18 @@
 name: swaps-cpu-profile-audit
 description: >-
   Parse an already-recorded Hermes / React Native Release Profiler
-  `.cpuprofile` (ideally symbolicated with source maps) and audit it for slow
-  frames on the swaps/bridge screen and the modals or subpages it opens —
-  quote select screen, post-trade modal, batch sell, asset picker/token
-  selector. Use when a user hands you a `.cpuprofile` file (e.g. a
-  `sampling-profiler-trace*.cpuprofile`, or its already-converted
-  `*-converted.json`) recorded per `docs/readme/release-build-profiler.md` and
-  asks to audit, analyze, explain, or find why the swaps/bridge flow is slow
-  based on that trace. This is an offline, file-based analysis — no simulator,
-  device, Metro, or `mm` session is required, unlike `swaps-perf-audit` (which
-  measures live render counts on a running simulator). The audit accounts for
-  ALL time in the capture, not just swaps-owned code: non-swaps frames that
-  ran while the user sat on a swaps screen (navigation, redux, design system,
-  polling controllers, React internals) are reported too, each labelled with
-  whether the swaps team owns it and how it relates to the swaps call stacks.
-  The report always leads with a timing table (capture metrics + by-area self
-  time with an ownership column) and a short outcome line, and only adds a
-  probable-cause/fix table when there is an actual issue — deep fixes are
-  proposed for swaps-owned rows, while non-owned rows are named and routed.
-  MetaMask Mobile only.
+  `.cpuprofile` and audit it for slow frames on the swaps/bridge screen and
+  its modals (quote select, post-trade, batch sell, asset picker). Use when a
+  user hands you a `.cpuprofile` (e.g. `sampling-profiler-trace*.cpuprofile`)
+  and asks to audit, analyze, or explain why the swaps/bridge flow is slow.
+  Offline, file-based analysis — no simulator, device, Metro, or `mm` session
+  required, unlike `swaps-perf-audit` (live render counts on a running
+  simulator). Accounts for ALL time in the capture, not just swaps-owned code:
+  non-swaps frames (navigation, redux, design system, polling controllers,
+  React internals) are reported with swaps ownership and relation to the swaps
+  call stacks. The report leads with a timing table and a short outcome line;
+  a probable-cause/fix table appears only for actual issues. MetaMask Mobile
+  only.
 maturity: stable
 ---
 

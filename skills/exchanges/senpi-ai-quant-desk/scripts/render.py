@@ -7,7 +7,7 @@ import datetime
 import metrics
 
 SECTIONS = ("overview", "strategy", "context", "protection", "performance", "leaks", "smart", "market", "edge", "scout", "next", "followups")
-VERSION = "1.3.0"     # shown in the header line, so a stale install is visible at a glance
+VERSION = "1.12.1"     # shown in the header line, so a stale install is visible at a glance
 
 
 def pct_cost(x):
@@ -79,9 +79,15 @@ def pct(x, d=0, signed=False):
 
 
 def hrs(x):
+    """Scalpers hold for seconds. At 1 decimal place every hold on a 1,117-trade book rendered
+    "0.0h", including the median-hold column and the winners/losers line."""
     if x is None:
         return "—"
-    return f"{x / 24:.1f}d" if x >= 48 else f"{x:.1f}h"
+    if x >= 48:
+        return f"{x / 24:.1f}d"
+    if x >= 1:
+        return f"{x:.1f}h"
+    return f"{x * 60:.0f}m" if x * 60 >= 1 else "<1m"
 
 
 def num(x, unit):
@@ -108,7 +114,10 @@ def header(r):
     lab = r.get("labels") or {}
     if any(lab.get(k) for k in ("consistency", "risk", "activity")):
         lines.append("senpi's read: " + " · ".join(str(lab[k]).upper() for k in ("consistency", "risk", "activity") if lab.get(k))
-                     + (f" · consistency score {lab['tcs']}" if lab.get("tcs") is not None else ""))
+                     # senpi's trader-score consistency, NOT the desk's own Consistency dimension —
+                     # unlabelled they collided on one page as "consistency score 33" beside
+                     # "Consistency 100"
+                     + (f" · senpi trader-score consistency {lab['tcs']}" if lab.get("tcs") is not None else ""))
     lines.append(f"> **{r['verdict']}**")
     if r["flags"]:
         lines.append(" ".join(f"`{f}`" for f in r["flags"]))
@@ -120,14 +129,22 @@ def overview(r):
     out = [f"## Quant score **{r['quant_score']}**/100", "", "| Dimension | Score | What it means |", "|---|---:|---|"]
     names = {"timing": "Timing / edge", "risk": "Risk management", "cost": "Cost efficiency", "sizing": "Sizing / conviction", "consistency": "Consistency", "market_fit": "Market fit"}
     for k in ("timing", "risk", "cost", "sizing", "consistency", "market_fit"):
-        out.append(f"| {names[k]} | {d[k]['score']} | {d[k]['line']} |")
+        # An unmeasured dimension shows a dash, not a number. A number here is a claim.
+        sc = d[k]["score"]
+        out.append(f"| {names[k]} | {'—' if sc is None else sc} | {d[k]['line']} |")
+    if any(d[k]["score"] is None for k in names):
+        out += ["", "_A dimension marked — could not be measured this window; the score is the weighted "
+                    "average of the ones that could._"]
     eq = r["equity"]
     ledger = tr.get("ledger_net")
     out += ["", f"## Track record ({r['days']} days)", "", "| Net P&L (ledger, incl. unrealized) | Return on avg equity | Realized (trades + funding − fees) | Win rate | Max drawdown | Profit factor | Trades | Active days |", "|---:|---:|---:|---:|---:|---:|---:|---:|",
             f"| {usd(ledger, signed=True)} | {pct(eq.get('return_on_avg_equity'), 1, signed=True)} | {usd(tr['net'], signed=True)} | {pct(tr['win_rate'])} | {pct(-r['drawdown']['dd_pct'], 0, signed=True) if r['drawdown'].get('dd_pct') else '—'} | {num(tr['profit_factor'], 'x')} | {tr['trades']} | {r['activity']['active_days']} |"]
     note = coverage_note(tr, r.get("meta"))
     if note:
-        out.append(note)
+        # The blank line is load-bearing. A line placed straight after a table row is parsed as
+        # ANOTHER ROW, so this caption rendered as a row with its text in column 1 and seven empty
+        # cells trailing it — which is what a reader sees as "the table has an empty row".
+        out += ["", note]
     cr = tr.get("cost_ratio"); wb = (r.get("benchmark") or {}).get("cost_ratio")
     n_tr = tr.get("trades") or 0
     out += ["", "## Where your P&L went", ""]
@@ -144,8 +161,11 @@ def overview(r):
         else:
             out.append(f"Fees + funding took **{pct_cost(cr)}** of your gross" + (f" — the whale median is {pct(wb)}." if wb is not None else "."))
     if r["leaks"]:
-        out += ["", "## Top 3 things your agents found", ""]
-        for i, l in enumerate(r["leaks"][:3], 1):
+        # The heading counts what is actually below it. "Top 3" over two items is a small lie the
+        # reader checks in one glance, and it makes them wonder what else was rounded.
+        top = r["leaks"][:3]
+        out += ["", f"## Top {len(top)} thing{'s' if len(top) != 1 else ''} your agents found", ""]
+        for i, l in enumerate(top, 1):
             out.append(f"{i}. **{l['agent']} · ~{usd(l['usd'])} / {l['window']}** — **{l['title']}.** {l['evidence']} _{l['counterfactual']}_ → {l['cta']}")
     return "\n".join(out)
 
@@ -203,8 +223,66 @@ def performance(r):
     return "\n".join(out)
 
 
+def recoverable_line(r):
+    """The one quotable number, with its shape. The leaks below are alternative fixes for the same
+    trades, so a reader who adds them up gets a figure larger than the money ever at stake.
+
+    The headline states the TOTAL and then attributes it. It used to read "<rule> would have kept
+    ~$27,996" on a book where $18,898 of that was taker fees and the rule's own share was $9,098 —
+    crediting a trailing stop with money that came from not crossing the spread."""
+    rec = r.get("recoverable") or {}
+    total = rec.get("usd") or 0
+    if total <= 0 or not r.get("leaks"):
+        return []
+    fees, rule = rec.get("fees") or 0, rec.get("rule")
+    lever = total - fees
+    # "N% of what your losing trades gave up" only frames a book that LOST money. On a 93%-win-rate
+    # book it read "116% of what your losing trades gave up" — true arithmetic (fees are spread over
+    # the winners too) and a meaningless sentence to put in front of a profitable trader.
+    share, net = rec.get("share_of_losses"), (r.get("track") or {}).get("net")
+    head = f"**Your quant would have kept ~{usd(total)} of this**"
+    # a denominator that means something: on a book with almost no losses the share is a division
+    # by noise (the fixture reads 20924%), and a number like that discredits the rest
+    if share and 0 < share <= 2.0 and (net is None or net < 0):
+        head += f" — {pct(share, 0)} of what your losing trades gave up"
+    # when one trade IS the number, say so in the headline. The disclosure below is the first thing
+    # a reader drops when they quote the figure, and on 0xb699…392e that figure was $1,072,010 of
+    # which 97% came from a single position on an 8-trade book.
+    top1 = ((rec.get("concentration") or {}).get("top1")) or 0
+    if top1 >= 0.8:
+        head += f" — though {pct(top1, 0)} of that is one trade, not a pattern"
+    out = [head + ".", ""]
+
+    fee_part = f"{usd(fees)} of it is taker fees you can stop paying on the same fills"
+    rule_part = (f"one rule — {rule} — applied to all {rec['n_trades']} complete trades and charged "
+                 f"on the ones it would have cost you")
+    if rule and fees > 0:
+        big, small = (fee_part, f"the other {usd(lever)} comes from {rule_part}") if fees >= lever \
+            else (f"{usd(lever)} of it comes from {rule_part}", f"the other {usd(fees)} is taker fees on the same fills")
+        out += [f"{big[0].upper() + big[1:]}, and {small}.", ""]
+    elif rule:
+        out += [f"All of it comes from {rule_part}.", ""]
+    else:
+        out += [f"{fee_part[0].upper() + fee_part[1:]}.", ""]
+
+    c = rec.get("concentration") or {}
+    if c.get("top1", 0) >= 0.4:
+        out += [f"**That total is not spread across your book — it is {'one trade' if c['top1'] >= 0.6 else 'a few trades'}.** "
+                f"The largest is {pct(c['top1'], 0)} of it on its own, and the top three are {pct(min(c['top3'], 1.0), 0)}. "
+                f"A handful of positions drove it; the rest of the book is not the problem.", ""]
+    elif c.get("n_positive"):
+        out += [f"No single trade dominates it — the largest is {pct(c['top1'], 0)}, spread over "
+                f"{c['n_positive']} of your trades. This one is a habit, not an accident.", ""]
+
+    out += ["_The leaks below price each fix on its own. They land on the same trades — one oversized, "
+            "chased, held-too-long position shows up in several — so **they do not add up**. The number "
+            "above is the single best change, and it is the one to quote._", ""]
+    return out
+
+
 def leaks(r):
     out = ["## Leaks — ranked by $ impact · counterfactual, not history", ""]
+    out += recoverable_line(r)
     if not r["leaks"]:
         out.append("Not enough closed trades to price a leak yet — the desk needs a handful of round trips before a counterfactual means anything." if (r["track"].get("trades") or 0) < 5
                    else "No leak clears the bar on this window: every counterfactual the desk tests came out flat or negative, which means the process is not where the money is going.")
@@ -289,12 +367,27 @@ def next_steps(r):
     i = 1
     at_risk = [p for p in b["positions"] if (p["liq_distance_pct"] is not None and p["liq_distance_pct"] < 5 and p["stop_covered_share"] < 0.9) or p["stop_covered_share"] == 0]
     if at_risk:
-        out.append(f"{i}. **Protect first.** {', '.join(p['coin'] for p in at_risk)}: a stop ladder under each — a hard floor now, a trailing lock as it runs. This is a signature on positions you already hold, not a deposit."); i += 1
+        # "a hard floor now, a trailing lock as it runs … a signature on positions you already hold"
+        # promised something that does not exist for this reader. The integrated two-phase DSL is a
+        # RUNTIME feature; on a raw position you get a FIXED stop plus an uncoordinated profit ladder,
+        # and `ratchet_stop_add` is keyed to a senpi strategy wallet — so for a desk reader whose book
+        # sits on their own wallet, senpi cannot attach anything today. Say what they can do now, and
+        # what is coming, without claiming a signature there is nothing to sign.
+        out.append(f"{i}. **Protect first.** {', '.join(p['coin'] for p in at_risk)}: every one of these "
+                   f"is naked. Let me know if you want my help."); i += 1
     if r["leaks"]:
         l = r["leaks"][0]
         out.append(f"{i}. **Fix the biggest leak.** {l['title']} — ~{usd(l['usd'])}/{l['window']}. {l['cta']}"); i += 1
     fam = r.get("families") or []
-    out.append(f"{i}. **Keep the agents on.** Say *hire my quant* and senpi runs this desk on your book — risk guard, smart money, market regime, leak finder — and can code your best setup ({fam[0].replace('_', ' ') if fam else 'your pattern'}) into a strategy you approve, deployed as **your** strategy.")
+    setup = fam[0].replace("_", " ") if fam else "your pattern"
+    out.append(f"{i}. **Keep the agents on.** Reply *hire my quant* and I'll run this desk on your book "
+               f"continuously — risk guard, smart money, market regime, leak finder — and turn your best "
+               f"setup ({setup}) into a strategy you approve, deployed as **your** strategy."); i += 1
+    # The reader who does not want their own history mechanised still has somewhere to go. It is also
+    # the cheapest next step on the page: a sentence from them, no wallet, no deposit.
+    out.append(f"{i}. **Or build something new.** Tell me your thesis — what you think is about to "
+               f"happen and why — and I'll write the strategy for it: the rules, the risk, the sizing, "
+               f"yours to approve before anything runs.")
     return "\n".join(out)
 
 
@@ -426,7 +519,16 @@ def render_deep(mode, d, r):
         for x in d["rows"]:
             atr = "—" if x["atr_pct"] is None else "{:.1f}%".format(x["atr_pct"])
             out.append("| {} | {} | {:,.4g} | {:,.4g} | {:.1f}% | {} | {:,.4g} | {} | {} |".format(x["coin"], x["side"], x["mark"], x["hard_stop"], x["hard_stop_pct"], atr, x["lock_arms_at"], pct(x["covered_now"]), x["note"]))
-        out += ["", "The hard stop sits beyond one and a half days of normal range and above the liquidation price; the lock trails at half the peak gain once the trade is two ranges in the money. One signature on positions you already hold — no deposit."]
+        # Same overclaim as the next-steps block: there is no signature to give for a book on the
+        # reader's own wallet. These levels are still the most actionable thing on the page — they are
+        # a worksheet, so say that plainly.
+        out += ["", "The hard stop sits beyond one and a half days of normal range and above the "
+                    "liquidation price; the lock trails at half the peak gain once the trade is two "
+                    "ranges in the money.",
+                "", "**These are yours to place.** The *Hard stop* column is the number to set on each "
+                    "position onchain on Hyperliquid; the *Lock arms at* column is where a trailing "
+                    "stop should begin once the trade is in the money. Tell me if you want help with "
+                    "any of them."]
         return "\n".join(out)
     if mode == "replay":
         if not d or d.get("empty"):

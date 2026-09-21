@@ -244,6 +244,7 @@ mixin (users : List.List<Types.User>) {
 ```motoko project=architecture filepath=src/backend/mixins/Blog.mo
 import Types "../types";
 import PostLib "../lib/Post";
+import Iter "mo:core/Iter";
 import List "mo:core/List";
 import Runtime "mo:core/Runtime";
 

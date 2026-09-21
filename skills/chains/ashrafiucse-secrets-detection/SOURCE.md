@@ -1,0 +1,7 @@
+# Source Attribution
+
+- **Original Author**: ashrafiucse
+- **Source**: https://github.com/ashrafiucse/security-audit-skills
+- **Source URL**: https://github.com/ashrafiucse/security-audit-skills/blob/fab651b5de0534b74cdfebfa33982fb8d4798806/skills/secrets-detection/SKILL.md
+- **License**: See bundled upstream license; otherwise NOASSERTION
+- **Classification**: COMMUNITY

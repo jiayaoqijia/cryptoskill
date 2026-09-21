@@ -1,0 +1,43 @@
+# Secret detection patterns
+# One POSIX ERE regex per line. Lines starting with # are comments.
+# Rules for new patterns: high precision first — noisy patterns get ignored by
+# tired humans. Every new pattern must come with an evals/ fixture (see CONTRIBUTING.md).
+
+# --- Cloud / SaaS provider keys ---
+AKIA[0-9A-Z]{16}
+ASIA[0-9A-Z]{16}
+gh[pousr]_[A-Za-z0-9]{36,255}
+github_pat_[A-Za-z0-9_]{82,}
+AIza[0-9A-Za-z_\-]{35}
+sk_live_[0-9a-zA-Z]{24,}
+rk_live_[0-9a-zA-Z]{24,}
+pk_live_[0-9a-zA-Z]{24,}
+xox[baprs]-[0-9A-Za-z-]{10,}
+SK[0-9a-fA-F]{32}
+AC[0-9a-fA-F]{32}
+SG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43}
+nvapi-[A-Za-z0-9_\-]{40,}
+sk-[A-Za-z0-9_\-]{20,}T3BlbkFJ[A-Za-z0-9_\-]{20,}
+dop_v1_[a-f0-9]{64}
+glpat-[0-9a-zA-Z_\-]{20,}
+squ-[0-9a-zA-Z_\-]{36}
+hydra-[0-9a-zA-Z_\-]{30,}
+
+# --- Private keys / certs ---
+-----BEGIN (RSA |EC |DSA |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY-----
+
+# --- Tokens in situ ---
+eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}
+hooks\.slack\.com/services/[A-Za-z0-9/]+
+-----BEGIN CERTIFICATE-----
+APP_KEY\s*=\s*base64:[A-Za-z0-9+/=]{10,}
+
+# --- Connection strings with embedded credentials ---
+(postgres|postgresql|mysql|mongodb(\+srv)?|redis|amqp|ftp)://[^:@/[:space:]]+:[^@/[:space:]]+@
+jdbc:(mysql|postgres(ql)?|oracle|sqlserver)://[^[:space:]]*[Pp]assword=[^[:space:];&]+
+mongodb(\+srv)?://[^:@/[:space:]]+:[^@/[:space:]]+@
+
+# --- Generic assignments (noisy — always triage these) ---
+(password|passwd|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|auth[_-]?token|client[_-]?secret)["']?\s*[:=]\s*["'][^"'$\{<][^"']{7,}["']
+(TOKEN|PASSWORD|PASSWD|SECRET|API[_-]?KEY|ACCESS[_-]?KEY|AUTH[_-]?TOKEN)["']?\s*[:=]\s*["'][^"'$\{<][^"']{7,}["']
+(BASIC_AUTH|ADMIN_PASS\w*|DB_PASS\w*)\s*=\s*[^\s$]{8,}

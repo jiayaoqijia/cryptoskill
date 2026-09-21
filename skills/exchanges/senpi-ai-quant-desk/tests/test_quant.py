@@ -1,6 +1,8 @@
 """quant-desk — offline tests: synthetic fills for the engine's rules, the recorded public fixture for the
 whole pipeline. No network."""
 import json
+import re
+from pathlib import Path as _P
 import os
 import subprocess
 import sys
@@ -214,7 +216,13 @@ def test_dimensions_are_bounded_and_explained():
               coins={"ETH": {"volume_share": 0.6, "funding": -50}}, coverage=None, fee_recoverable=100, volume=100000, fee_rate_taker=0.0004, fee_rate_maker=0.0001, long_share=0.7)
     dd = {"dd_pct": 0.1, "in_drawdown": False}
     dims, q = score.dimensions(tr, book, dd, None, market.book_fit(book, {}, ctxs), None, [], [])
-    assert set(dims) == set(score.WEIGHTS) and all(0 <= d["score"] <= 100 and d["line"] for d in dims.values()) and 0 <= q <= 100
+    # a dimension either scores inside the band or abstains — but it always explains itself, and an
+    # abstention must never leave the headline out of range
+    assert set(dims) == set(score.WEIGHTS)
+    for k, d in dims.items():
+        assert d["line"], f"{k} scored without explaining itself"
+        assert d["score"] is None or 0 <= d["score"] <= 100, f"{k} out of band: {d['score']}"
+    assert 0 <= q <= 100
     assert "3.0× longer" in dims["risk"]["line"]
     fl = score.flags(tr, book, dd, None, None, {"consistency": "CHOPPY"})
     assert "PARTIAL STOPS (1/2)" in fl and "HIGH MARGIN 70%" in fl and "CHOPPY" in fl
@@ -395,7 +403,15 @@ def test_followups_offer_protect_first_when_naked():
     r = {"book": {"naked": ["ETH"], "partial": [], "positions": [{"liq_distance_pct": 3.0}], "account_value": 1000, "funding_per_day": -5}, "track": {"trades": 40, "largest_loss": -100},
          "timing": {}, "leaks": [{"title": "You hold losers 3× longer"}], "cohorts": [{"against": ["ETH"], "they_hold": [1]}], "opportunities": [1], "setups": {"best": [1]}, "context": {}, "strategy": {"critique": ["x"]}}
     fu = followups.offer(r, n=4)
+    # Unprotected AND near liquidation: protection outranks even the plain-English offer. A follow-up
+    # list opening with "want this explained?" over a book near liquidation contradicts the desk's own
+    # "Protect first" recommendation.
     assert fu[0]["mode"] == "protect" and len(fu) == 4 and all(f["prompt"].endswith("?") for f in fu)
+    assert "eli5" in [f["mode"] or "eli5" for f in fu][:3], "the ELI5 still has to be near the top"
+
+    # and with no urgency, the ELI5 leads
+    calm = {**r, "book": {**r["book"], "naked": [], "positions": [{"liq_distance_pct": 80.0}]}}
+    assert followups.offer(calm, n=4)[0]["prompt"].startswith("Want the ELI5")
 
 
 def test_deep_modes_run_on_a_cached_analysis():
@@ -431,8 +447,11 @@ def test_other_book_follow_ups_and_compare_render():
         rec = json.load(fh)
     import desk
     r = desk.analyze(rec["address"], hl_api.HLFixture(rec), days=90, mcp=None, bench=None, whose="other")
-    assert r["whose"] == "other" and r["followups"] and all(f["mode"] in followups.BANK_OTHER for f in r["followups"])
-    assert r["followups"][0]["mode"] == "rules"                                            # the playbook comes first for someone else's book
+    assert r["whose"] == "other" and r["followups"]
+    # mode None = answered from what is already on screen, no second run
+    assert all(f["mode"] is None or f["mode"] in followups.BANK_OTHER for f in r["followups"])
+    assert r["followups"][0]["prompt"].startswith("Want the ELI5")             # a stranger's book, explained first
+    assert "rules" in [f["mode"] for f in r["followups"]]                                   # the playbook is still offered
     md = __import__("render").render(r)
     assert md.startswith("# The desk for") and "What to take from this trader" in md and "you hold" not in md.lower().replace("you hold", "")
     assert "Your quant is ready to go deeper" in md
@@ -706,3 +725,880 @@ def test_the_desk_carries_no_per_response_disclaimer():
     src = (_pl.Path(__file__).resolve().parents[1] / "scripts" / "render.py").read_text(encoding="utf-8")
     assert "financial advice" not in src.lower()
     assert "FOOTER" not in src
+
+
+def test_indexed_is_a_contradiction_between_two_sources_not_a_guess():
+    """`indexed=False` means the public endpoints showed closed round trips in the window and senpi's
+    index returned none for the SAME window. A quiet wallet — nothing closed either way — is `None`,
+    because it says nothing about whether senpi has the address."""
+    import desk, hl_api as _hl
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+
+    class FakeMCP:                                  # senpi's history answers with nothing
+        def mcp_call(self, *a, **kw):
+            return {"success": True, "data": {"closedPositions": []}}
+
+    hl = _hl.HLFixture(rec)
+    r = desk.analyze(rec["address"], hl, days=90, mcp=FakeMCP(), want_cohort=False, want_rank=False)
+    assert r["track"]["trades"] > 30                # the public side really does have closed trades
+    assert r["indexed"] is False, "senpi returned nothing against a wallet with closed round trips"
+    assert r["meta"]["sources"]["trades"] == "public fills"
+
+    hl2 = _hl.HLFixture(rec)
+    r2 = desk.analyze(rec["address"], hl2, days=90, mcp=None, want_cohort=False, want_rank=False)
+    assert r2["indexed"] is None, "with no senpi client there is nothing to contradict"
+
+
+def test_the_skill_defaults_to_the_readers_own_book_and_remembers_the_rest():
+    skill = (_P(__file__).resolve().parents[1] / "SKILL.md").read_text(encoding="utf-8")
+    assert "An address is the reader's own book unless we know otherwise" in skill
+    assert "already recorded as *analyzed* stays\n   someone else's on a bare re-run" in skill
+    for needle in ("**verified**", "**claimed**", "**analyzed**", "--claim", "--addresses",
+                   "a claim, not proof", "whenever the request is about someone else"):
+        assert needle in skill, needle
+
+
+def test_the_skill_answers_a_not_indexed_wallet_and_keeps_the_promise_honest():
+    skill = (_P(__file__).resolve().parents[1] / "SKILL.md").read_text(encoding="utf-8")
+    cov = json.loads((_P(__file__).resolve().parents[1] / "references" / "coverage.json").read_text())
+    assert f"**{cov['indexed_wallets']:,}**" in skill, "the quoted figure and coverage.json disagree"
+    for needle in ("references/coverage.json", "never from memory", "stale_after_days",
+                   "Never promise a date", "in waves"):
+        assert needle in skill, needle
+    # the desk still runs — a thin desk beats no desk, as long as it says it is thin
+    assert "A desk still runs on the public reads" in skill
+
+
+def test_the_skill_offers_the_lateral_move_in_both_directions():
+    """The follow-up banks only go deeper on the same book, so nothing tells a reader the desk works
+    on any wallet — or, after an analyst run, that it works on theirs."""
+    skill = (_P(__file__).resolve().parents[1] / "SKILL.md").read_text(encoding="utf-8")
+    assert "Your quant reads any book on Hyperliquid, not just yours" in skill
+    assert "Your quant works the\n   same way on yours" in skill
+    assert "**Never invent an address.**" in skill
+
+
+def test_a_discovery_failure_is_never_reported_as_not_indexed():
+    """`fetch` returns [] for three different things: an unindexed wallet, a read that threw, and a
+    `success: false` envelope. Only the first is "not indexed". The other two are "we could not
+    look" — and the desk offers to flag a not-indexed wallet to the team, so getting this wrong
+    promises something about a wallet that is already in the index."""
+    import desk, hl_api as _hl
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+
+    class Throws:
+        def mcp_call(self, *a, **kw):
+            raise RuntimeError("discovery_get_trader_history HTTP 503")
+
+    class Refuses:                                  # the shape a degraded discovery returns
+        def mcp_call(self, *a, **kw):
+            return {"success": False, "error": {"code": "INVALID_TOKEN"}}
+
+    for client in (Throws(), Refuses()):
+        r = desk.analyze(rec["address"], _hl.HLFixture(rec), days=90, mcp=client,
+                         want_cohort=False, want_rank=False)
+        assert r["indexed"] is None, f"{type(client).__name__}: a failed read read as 'not indexed'"
+        assert r["meta"].get("senpi_history_failed") is True
+        assert any("senpi history" in w for w in r["meta"]["warnings"]), "the failure left no trace"
+
+
+# ── two contradictions caught on the 2026-09-21 launch-eve run of 0x880a…311c ──
+
+def test_the_funding_headline_is_weighted_by_size_not_by_coin_count():
+    """A plain median over coins counts a $19 dust position and a $20M one equally.
+
+    On the real book: sixteen xyz names at +0 bp/8h, and the actual size in ZEC ($20.0M, +1),
+    XMR ($4.8M, +9) and HYPE ($0.5M, +10). The median said FUNDING NEAR FLAT while the same desk
+    reported the book collecting $20,629/day two lines below — funding was most of what the window
+    earned, called flat.
+    """
+    import market
+    pos = ([dict(coin=f"xyz:D{i}", side="SHORT", leverage=3, notional=20.0, funding_per_day=0.0)
+            for i in range(16)]
+           + [dict(coin="ZEC", side="SHORT", leverage=10, notional=19_951_503.0, funding_per_day=5985.0),
+              dict(coin="XMR", side="SHORT", leverage=5, notional=4_822_496.0, funding_per_day=13049.0),
+              dict(coin="HYPE", side="SHORT", leverage=8, notional=492_263.0, funding_per_day=1417.0)])
+    book = dict(positions=pos, net_exposure=-1.0, funding_per_day=20629.0)
+    universe = [dict(name=p["coin"]) for p in pos] + [dict(name="BTC")]
+    fund = {"ZEC": 1.25e-5, "XMR": 1.125e-4, "HYPE": 1.25e-4}          # bp/8h = fr * 8 * 1e4
+    ctxs = [dict(universe=universe),
+            [dict(funding=fund.get(u["name"], 0.0), markPx="1", openInterest="0", dayNtlVlm="0")
+             for u in universe]]
+    # coin_regime returns None without >=48 candle rows, and a None regime carries no funding —
+    # so every coin needs a series or the weighting has nothing to weigh.
+    candles = {p["coin"]: (None, [[0, 1.0, 1.0, 1.0, 1.0, 1.0] for _ in range(50)]) for p in pos}
+    candles["BTC"] = (None, [[0, 1.0, 1.0, 1.0, 1.0, 1.0] for _ in range(50)])
+    out = market.book_fit(book, candles, ctxs)
+    w = out["median_funding_bp_8h"]
+    assert 2.5 < w < 3.0, (
+        f"notional-weighted funding came out at {w:.2f} bp/8h; a plain median over these 19 coins "
+        "reads 0.00 because sixteen of them are dust")
+    # 2.70 bp/8h is 29.6%/yr — the desk's own dollar figure for this book was $20,629/day, 25.8%/yr
+    # of account value. The label has to agree with the money.
+    assert "NEAR FLAT" not in out["headline"], out["headline"]
+    assert "%/yr on the book you hold" in out["headline"], out["headline"]
+
+
+def test_the_leg_correlation_never_claims_a_leg_the_live_book_lacks():
+    """It measures the 90-day window, but it printed in the present tense directly under
+    'the book right now is directional — net 100% of gross', telling a reader about a long leg that
+    does not exist. Past tense, and say so when the live book is one-sided."""
+    import pathlib, re
+    src = (pathlib.Path(__file__).resolve().parents[1] / "scripts" / "strategy_read.py").read_text()
+    m = re.search(r'f"([^"]*long leg[^"]*)"', src)
+    assert m, "the leg-correlation sentence moved — update this test"
+    line = m.group(1)
+    assert "over the window" in line and "moved together" in line, line
+    assert "move together" not in line, f"present tense restored: {line}"
+    assert "the book you hold now is" in src
+
+
+def test_no_caption_is_swallowed_into_a_table():
+    """A line placed straight after a table row is parsed as ANOTHER ROW.
+
+    Caught on the 2026-09-21 run: `_Trade history: senpi discovery (38 closed positions)._` sat
+    directly under the track-record row, so it rendered as a row carrying that text in column 1 and
+    seven empty cells after it. To a reader the table simply has an empty row in it, and the caption
+    is gone. The blank line before a caption is load-bearing, and nothing in Markdown warns you.
+
+    Asserted over EVERY rendered surface, because the mistake is one line of code away anywhere a
+    table is followed by prose.
+    """
+    import desk, render
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+    r = desk.analyze(rec["address"], hl_api.HLFixture(rec), days=90, mcp=None, bench=None)
+
+    surfaces = {"render": render.render(r), "protection": render.protection(r)}
+    for mode in ("smartmoney", "market", "leaks"):
+        try:
+            surfaces[f"deep:{mode}"] = render.render_deep(mode, {}, r)
+        except Exception:
+            pass
+
+    bad = []
+    for name, md in surfaces.items():
+        lines = md.splitlines()
+        for i, ln in enumerate(lines[:-1]):
+            if not ln.lstrip().startswith("|"):
+                continue
+            nxt = lines[i + 1]
+            if nxt.strip() and not nxt.lstrip().startswith("|"):
+                bad.append(f"{name}:{i + 2} — {nxt.strip()[:80]!r} follows a table row")
+    assert not bad, "prose absorbed into a table (needs a blank line first):\n  " + "\n  ".join(bad)
+
+
+def test_a_book_that_paid_to_lose_is_scored_on_cost_not_left_blank():
+    """Cost efficiency used to abstain whenever gross P&L was not positive — there was "no base to
+    take a share of". But a book that lost money AND paid to do it is the worst cost case on the
+    desk, not an unmeasurable one. On 0x8b79…85d7 that printed "—" against $7,068 of fees on $89.5M
+    of volume, and the abstention let the other five dimensions re-normalise the headline UP.
+
+    The base is |net| — the money actually lost. Against |gross| the same book scores 94/100, which
+    measures the size of the loss, not the cost of it."""
+    import score
+    bleeding = dict(cost_ratio=None, taker_share=0.70, fees=7068.0, funding=193.0,
+                    gross_realized=-10094.0, net=-16969.0)
+    s_bleed, line = score.dim_cost(bleeding)
+    assert s_bleed is not None and s_bleed < 40, f"a book paying 42% of its loss in fees scored {s_bleed}"
+    assert "of what you lost was cost" in line and "$7,068" in line, line
+
+    # a loss that was NOT about costs must not be punished for being a big loss
+    trades_were_the_problem = dict(cost_ratio=None, taker_share=0.23, fees=7143.0, funding=103130.0,
+                                   gross_realized=-180996.0, net=-85010.0)
+    s_ok, _ = score.dim_cost(trades_were_the_problem)
+    assert s_ok > 70, f"8% of the loss in fees should read as fine, scored {s_ok}"
+    assert s_ok > s_bleed
+
+    # pin the BASE, not just the direction. net = gross - fees, so |net| is always the larger
+    # denominator and the two choices genuinely disagree here: costs are a third of the trading
+    # loss but only a quarter of the damage that actually landed. The second is the honest one —
+    # the fees are part of why net is -$40,000, so charging them against gross double-counts them.
+    disagrees = dict(cost_ratio=None, taker_share=0.0, fees=10_000.0, funding=0.0,
+                     gross_realized=-30_000.0, net=-40_000.0)
+    s_base, _ = score.dim_cost(disagrees)
+    assert round(s_base, 1) == 62.5, f"|net| base gives 62.5, |gross| base gives 50.0 — got {s_base}"
+
+    # and a book with no result and no costs still has nothing to measure
+    s_none, line_none = score.dim_cost(dict(cost_ratio=None, taker_share=0.0, fees=0.0,
+                                            funding=0.0, gross_realized=0.0, net=0.0))
+    assert s_none is None and "Not measurable" in line_none
+
+
+def test_a_dimension_that_abstains_does_not_vote_in_the_headline():
+    """Asserted through score.dimensions(), not by redoing the arithmetic — a test that recomputes
+    the formula passes even when the code stops using it."""
+    import score
+    FN = {"timing": "dim_timing", "risk": "dim_risk", "cost": "dim_cost", "sizing": "dim_sizing",
+          "consistency": "dim_consistency", "market_fit": "dim_market"}
+    real = {k: getattr(score, fn) for k, fn in FN.items()}
+    fixed = {"timing": 31, "risk": 28, "sizing": 45, "consistency": 42, "market_fit": 20}
+    try:
+        for k, v in fixed.items():
+            setattr(score, FN[k], (lambda val: (lambda *a, **kw: (val, "")))(v))
+        setattr(score, FN["cost"], lambda *a, **kw: (None, ""))
+        d_abstain, q_abstain = score.dimensions({}, {}, {}, {}, {}, {}, {}, {})
+        setattr(score, FN["cost"], lambda *a, **kw: (90, ""))
+        _, q_with_90 = score.dimensions({}, {}, {}, {}, {}, {}, {}, {})
+    finally:
+        for k, fn in FN.items():
+            setattr(score, fn, real[k])
+    assert d_abstain["cost"]["score"] is None
+    assert q_abstain < q_with_90, "an abstaining dimension still lifted the headline"
+
+
+def test_the_dimension_table_never_prints_a_number_it_did_not_measure():
+    """Driven off the real fixture, not a stub — a skipped test guards nothing."""
+    import desk, render
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+    r = desk.analyze(rec["address"], hl_api.HLFixture(rec), days=90, mcp=None, bench=None)
+    r["dimensions"]["cost"] = dict(score=None, line="Not measurable this window: no positive gross.")
+    md = render.overview(r)
+    body = "\n".join(md) if isinstance(md, list) else md
+    row = next(l for l in body.splitlines() if l.startswith("| Cost efficiency"))
+    assert "| — |" in row, row
+    assert "could not be measured this window" in body
+    assert "| None |" not in body
+
+
+def test_a_none_score_survives_the_whole_pipeline_not_just_the_unit():
+    """1.4.3 made dim_cost return None, fixed the aggregate and the table, and missed verdict().
+
+        ranked = [k for k in sorted(dims, key=lambda k: dims[k]["score"]) if material(k)]
+        TypeError: '<' not supported between instances of 'NoneType' and 'int'
+
+    sorted() runs BEFORE the filter, so the None reached the key function and took the desk down
+    after every read had completed — 10,366 fills scanned, nothing rendered.
+
+    The unit tests all passed. They exercised dim_cost in isolation and the fixture's own trader has
+    positive gross, so no None ever travelled the full path. This test forces one through
+    analyze -> verdict -> render, which is the only shape that catches it.
+    """
+    import desk, render, score
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+    real = score.dim_cost
+    try:
+        score.dim_cost = lambda *a, **kw: (None, "Not measurable this window: no positive gross.")
+        r = desk.analyze(rec["address"], hl_api.HLFixture(rec), days=90, mcp=None, bench=None)
+        md = render.render(r)                       # must not raise
+    finally:
+        score.dim_cost = real
+    assert r["dimensions"]["cost"]["score"] is None
+    assert isinstance(r["quant_score"], int)
+    assert "| — |" in md and "| None |" not in md
+    # the verdict still has to say something — an unmeasured dimension must not silence it
+    assert r.get("verdict") or r.get("flags") or r["quant_score"] >= 0
+
+
+def test_a_heading_never_promises_more_items_than_it_lists():
+    """`## Top 3 things your agents found` was hardcoded over `r["leaks"][:3]`.
+
+    On the 2026-09-21 run of 0xd475…1a91 the desk found two leaks and still announced three. It is a
+    small lie the reader checks in one glance, and it makes them wonder what else was rounded.
+    """
+    import re, render
+    for n, want in ((3, "Top 3 things"), (2, "Top 2 things"), (1, "Top 1 thing")):
+        leaks = [dict(agent="Leak finder", usd=1000.0, window="90d", title=f"t{i}",
+                      evidence="e", counterfactual="c", cta="x") for i in range(n)]
+        r = dict(leaks=leaks, track={}, dimensions={}, book=dict(positions=[]), quant_score=50,
+                 days=90, equity={}, activity=dict(active_days=1))
+        body = render.leaks_summary(r) if hasattr(render, "leaks_summary") else None
+        if body is None:
+            src = __import__("pathlib").Path(render.__file__).read_text()
+            assert "f\"## Top {len(top)} thing" in src, "heading is hardcoded again"
+            break
+        assert want in body, (n, body[:120])
+    # and the heading must never out-count the list in the shipped source
+    src = __import__("pathlib").Path(render.__file__).read_text()
+    assert not re.search(r'"## Top [0-9]+ thing', src), "a literal count crept back into the heading"
+
+
+def test_the_skill_tells_the_agent_to_stage_the_relay():
+    """The desk is 30-60s of analysis and thousands of words. Delivered as one block after a silent
+    wait it is the worst possible shape — the reader waits with nothing, then gets more than they can
+    read. The first run caches for 10 minutes, so every later --section is instant and the staging
+    costs nothing but instruction.
+
+    Rule 1 used to read "One command, then relay", and prescribed a 90-word lead-in sentence listing
+    every phase. That sentence is what a reader actually saw while waiting.
+    """
+    import pathlib, re
+    # SKILL.md is hard-wrapped, so any phrase can straddle a newline. Collapse whitespace first or
+    # every assertion in here is one re-wrap away from a false failure.
+    skill = re.sub(r"\s+", " ", (pathlib.Path(__file__).resolve().parents[1] / "SKILL.md").read_text())
+    assert "Relay it in STAGES — never as one block." in skill
+    assert "One command, then relay." not in skill
+    for stage in ("--section overview", "--section protection", "--section leaks"):
+        assert stage in skill, stage
+    assert "the staging IS the feature" in skill
+    # the lead-in must be short: the old one narrated all eight phases before anything ran
+    assert "scanning every fill, funding payment and resting order, auditing the live book" not in skill
+    assert "reading every fill, the live book, the cohorts and the tape" in skill
+
+
+def test_the_eli5_is_called_eli5():
+    """Traders know the term, and it signals "ask me anything" better than "plain English" does."""
+    import followups
+    for bank in (followups.BANK, followups.BANK_OTHER):
+        assert bank["eli5"].startswith("Want the ELI5"), bank["eli5"]
+
+
+def test_every_script_that_matters_carries_the_same_version():
+    """A stale install passed every gate we had.
+
+    2026-09-21: an agent updated quant-desk, SKILL.md and render.py both read 1.6.0, all three gates
+    passed — and desk.py was still old. It showed up as a progress line reading "senpi-smart-money"
+    at step 4 where the shipped source says "senpi-market-pulse". desk.py does all the work and was
+    the one file with no version of its own, so nothing could catch it.
+    """
+    import desk, render
+    assert desk.VERSION == render.VERSION, (desk.VERSION, render.VERSION)
+    import pathlib
+    skill = (pathlib.Path(__file__).resolve().parents[1] / "SKILL.md").read_text()
+    assert f'version: "{render.VERSION}"' in skill
+
+
+def test_the_progress_lines_name_the_right_engine():
+    """Step 3 is smart-money, step 4 is market-pulse. They were briefly the same word, which is how
+    the stale install above was spotted — so pin them."""
+    import pathlib, re
+    src = (pathlib.Path(__file__).resolve().parents[1] / "scripts" / "desk.py").read_text()
+    steps = dict(re.findall(r'step\((\d), "([^"]{0,60})', src))
+    assert "senpi-smart-money" in steps.get("3", ""), steps.get("3")
+    assert "senpi-market-pulse" in steps.get("4", ""), steps.get("4")
+
+
+def test_an_empty_window_still_reports_whether_senpi_has_the_wallet():
+    """The empty-window exit printed `{"error": …, "address": …, "days": …}` and dropped `indexed`.
+
+    A caller then cannot tell "senpi has never seen this wallet" from "senpi has it and there is
+    simply nothing in the window" — and those two need opposite things said to the reader. A wallet
+    whose 90 days are all SPOT lands here too, so "nothing to read" was wrong as well as incomplete.
+    """
+    import pathlib
+    src = (pathlib.Path(__file__).resolve().parents[1] / "scripts" / "desk.py").read_text()
+    # isolate the json.dumps({...}) that this exit prints — a byte window around it would also pick
+    # up the comment explaining the fix, which quotes the old wording
+    i = src.index("no PERP activity in the last")
+    start = src.rindex("print(json.dumps({", 0, i)
+    payload = src[start:src.index("return 3", i)]
+    assert '"indexed": r.get("indexed")' in payload, "the empty-window exit still drops `indexed`"
+    assert "Spot trades and transfers are not perp activity" in payload
+    assert "nothing to read" not in payload
+
+
+def test_the_desk_never_promises_a_signature_it_cannot_take():
+    """"a hard floor now, a trailing lock as it runs … a signature on positions you already hold."
+
+    Three things were wrong with that. The integrated two-phase DSL is a RUNTIME feature; a raw
+    position gets a FIXED stop plus an uncoordinated profit ladder. `ratchet_stop_add` is keyed to a
+    senpi strategy wallet, so for a desk reader whose book is on their OWN wallet senpi cannot attach
+    anything at all today. And the reader is told to do nothing while four naked positions sit there.
+
+    The desk names the naked positions and offers help. It must never imply senpi can place the stop
+    for them, in any tense — the copy is now short ("Let me know if you want my help"), and short copy
+    is exactly where an overclaim slips back in unnoticed.
+    """
+    import pathlib
+    root = pathlib.Path(__file__).resolve().parents[1]
+    src = (root / "scripts" / "render.py").read_text()
+    # drop comment lines — the explanation of this fix quotes the phrases it forbids
+    code = "\n".join(l for l in src.splitlines() if not l.lstrip().startswith("#"))
+    for banned in ("signature on positions you already hold", "Senpi will soon do this for you",
+                   "senpi will place", "I'll place the stop", "we'll set the stop"):
+        assert banned not in code, f"overclaim is back: {banned!r}"
+    assert "Let me know if you want my help" in code, "the offer of help was dropped"
+
+    # SKILL.md is the copy the AGENT reads, and it is where this overclaim actually survived: the
+    # phrase was cut from render.py while rule 5 still told the agent that protection on existing
+    # positions "is a signature the user gives on positions they already hold". An agent reproduced
+    # it verbatim on 0x2e2e…1c50, on a book with 15 naked positions. Guarding only the renderer
+    # guards the half the agent is allowed to rewrite.
+    skill = " ".join((root / "SKILL.md").read_text().split())
+    # match the CLAIM, not one phrasing of it. The first version of this test pinned the exact
+    # sentence from rule 5 and missed a second instance eleven lines from the next-steps template —
+    # "a stop ladder is a signature on positions they already hold, not a deposit" — which is the
+    # one an agent actually reproduced to a reader with 15 naked positions.
+    for m in re.finditer(r"signature", skill):
+        window = skill[m.start():m.start() + 120]
+        assert "positions they already hold" not in window and "positions you already hold" not in window, window
+        assert "stop ladder is a signature" not in skill
+    assert "senpi cannot put a stop on a position held in the reader's own wallet today" in skill
+    # the reader is offered help, not handed homework
+    assert "name the naked positions and ask how you can help" in skill
+    assert "is the fact, not the offer" in skill
+    # and the restriction carries its own expiry, so it gets revisited instead of going stale
+    assert "Dated, revisit this" in skill and "2026-09-21" in skill
+
+
+def test_next_steps_offers_a_route_for_someone_who_does_not_want_their_own_history_mechanised():
+    """"hire my quant" turns THEIR past into the strategy. A reader who wants something else had
+    nowhere to go, and it is the cheapest step on the page — a sentence, no wallet, no deposit."""
+    import json, desk, render
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+    r = desk.analyze(rec["address"], hl_api.HLFixture(rec), days=90, mcp=None, bench=None)
+    md = render.next_steps(r)
+    assert "Or build something new." in md and "Tell me your thesis" in md
+    assert "Reply *hire my quant*" in md
+    # and the protect step names the naked coins and offers help, without promising a signature
+    if "Protect first" in md:
+        assert "Let me know if you want my help" in md and "signature" not in md
+
+
+
+# -------------------------------------------------- recoverable: one number a user can actually quote
+def _tm_row(**kw):
+    """A per_trade()-shaped row. Defaults are a clean, unremarkable winner."""
+    row = dict(coin="ETH", direction="long", realized=100.0, hold_h=10.0, win=True, pre24=0.0,
+               chased=False, mfe=0.05, mae=-0.01, realized_pct=0.02, give_back=0.0,
+               notional=5_000.0, lock_cf={}, cut_cf={}, open_time=0)
+    row.update(kw)
+    return row
+
+
+def _closed_winners(n=3, notional=5_000.0):
+    # entry-marked (peak_size x entry_vwap) is what the size lever measures against; peak_notional
+    # is kept so any caller still reading it sees the same number
+    return [dict(win=True, truncated=False, peak_notional=notional,
+                 peak_size=1.0, entry_vwap=notional) for _ in range(n)]
+
+
+CHASE_ON = dict(chased_n=5, chased_realized=-10_000.0, calm_pf=1.8, chased_pf=0.4)
+
+
+def test_recoverable_is_the_best_single_lever_never_the_sum_of_them():
+    """The bug this exists to fix: a trade that was oversized, chased, held too long AND gave back
+    its peak is priced in four leaks. Added up it reads as four losses; there was only ever one."""
+    bad = _tm_row(realized=-4_000.0, win=False, chased=True, notional=50_000.0, hold_h=100.0,
+                  lock_cf={"0.03/0.5": 1_000.0}, cut_cf={"24": 1_500.0})
+    tm = dict(CHASE_ON, lock={"settings": {"0.03/0.5": dict(n=5, total=1_000.0)}},
+              cut={"settings": {"24": dict(n=5, total=1_500.0)}})
+    rec = score.recoverable([bad], _closed_winners(), {}, tm)
+
+    sizing = 4_000.0 * (1 - 5_000.0 / 50_000.0)          # 3,600
+    assert rec["usd"] == max(1_000.0, 1_500.0, sizing, 10_000.0) == 10_000.0, "the best lever wins"
+    assert rec["usd"] < 1_000.0 + 1_500.0 + sizing + 10_000.0, "and it is strictly under the sum"
+    assert rec["rule"] == "skipping entries after a >=3% move"
+
+
+def test_recoverable_will_not_pick_a_rule_that_costs_money_on_the_trades_it_hurts():
+    """An exit rule is scored on its whole-book total, so the trades where it cut a winner short are
+    charged against it. A rule that only looks good on the trades it helped must not be quotable."""
+    tm = dict(lock={"settings": {"0.03/0.5": dict(n=9, total=-500.0)}},
+              cut={"settings": {"24": dict(n=9, total=-200.0)}})
+    rec = score.recoverable([_tm_row()], [], {}, tm)
+    assert rec["usd"] == 0.0 and rec["rule"] is None, "no lever beat what the trader actually did"
+
+
+def test_recoverable_prefers_the_setting_with_the_best_book_total_not_the_best_trade():
+    tm = dict(lock={"settings": {"0.03/0.5": dict(n=9, total=9_000.0),
+                                 "0.05/0.5": dict(n=5, total=1_000.0)}})
+    rec = score.recoverable([_tm_row()], [], {}, tm)
+    assert rec["usd"] == 9_000.0
+    # the lever's label is the finished sentence, so nothing has to parse "0.03/0.5" back out
+    assert rec["rule"] == "a trailing stop that arms at +3% and keeps 50% of the peak"
+
+
+def test_recoverable_chase_term_is_unavailable_when_chasing_is_not_this_book_s_problem():
+    """"Chased" is only a >=3% 24h move — on a trending book nearly every entry clears it. Crediting
+    every chased loser its whole loss is what made the retail number several times the real one. The
+    credit needs this book's chased entries to have really done worse than its calm ones."""
+    loser = _tm_row(realized=-4_000.0, win=False, chased=True, notional=5_000.0)
+    not_worse = dict(chased_n=5, chased_realized=-10_000.0, calm_pf=0.4, chased_pf=1.8)
+
+    assert score.recoverable([loser], [], {}, not_worse)["usd"] == 0.0
+    assert score.recoverable([loser], [], {}, None)["usd"] == 0.0, "no timing view = no claim"
+    assert score.recoverable([loser], [], {}, CHASE_ON)["usd"] == 10_000.0, "gate open, credit applies"
+
+
+def test_recoverable_chase_credit_is_what_the_chase_leak_claims_winners_netted_off():
+    """The leak's figure nets the chased WINNERS off. Summing the losers alone claims more than the
+    leak it is derived from."""
+    losers = [_tm_row(realized=-4_000.0, win=False, chased=True, notional=5_000.0) for _ in range(5)]
+    tm = dict(chased_n=8, chased_realized=-6_000.0, calm_pf=1.8, chased_pf=0.4)
+    assert sum(-t["realized"] for t in losers) == 20_000.0
+    assert score.recoverable(losers, [], {}, tm)["usd"] == 6_000.0
+
+
+def test_recoverable_size_cap_gives_up_the_winners_upside_too():
+    """A cap shrinks every oversized trade, not just the ones that lost. Shrinking only the losers is
+    the same survivorship bias as charging a time-cut only on losers."""
+    losers = [_tm_row(realized=-800.0, win=False, notional=50_000.0) for _ in range(5)]
+    winner = _tm_row(realized=+3_000.0, win=True, notional=50_000.0)
+    closed = _closed_winners()
+
+    only_losers = score.recoverable(losers, closed, {}, None)["usd"]
+    with_winner = score.recoverable(losers + [winner], closed, {}, None)["usd"]
+    assert round(only_losers, 6) == round(5 * 800.0 * 0.9, 6)
+    assert round(with_winner, 6) == round((5 * 800.0 - 3_000.0) * 0.9, 6), \
+        "the winner's forgone upside is charged against the cap"
+
+
+def test_recoverable_adds_fees_but_only_for_a_taker_and_never_funding():
+    """Fees are the one genuinely independent fix — resting instead of crossing saves the same money
+    whatever the exit rule — so they sit on top. Funding is excluded on purpose: capping a
+    funding-paying hold is the same action as the time-cut, and counting both reopens the overlap."""
+    tr = dict(fee_recoverable=900.0, taker_share=0.8)
+    assert score.recoverable([], [], tr, None)["usd"] == 900.0
+    assert score.recoverable([], [], dict(tr, taker_share=0.05), None)["usd"] == 0.0
+    assert score.recoverable([], [], dict(fee_recoverable=-50.0, taker_share=0.8), None)["usd"] == 0.0
+
+
+def test_recoverable_reports_how_concentrated_the_number_is():
+    """"You leak $46k across your book" was true arithmetic and a false picture — on the book that
+    drove this work, one trade was 62% of it. The shape has to travel with the number."""
+    rows = [_tm_row(lock_cf={"0.03/0.5": v}) for v in (10_000.0, 500.0, 500.0, 250.0, 250.0)]
+    tm = dict(lock={"settings": {"0.03/0.5": dict(n=5, total=11_000.0)}})
+    c = score.recoverable(rows, [], {}, tm)["concentration"]
+    # denominator is what CONTRIBUTED (10,000 + 500 + 500 + 250 + 250), not the lever's net total
+    assert round(c["top1"], 4) == round(10_000.0 / 11_500.0, 4) and c["n_positive"] == 5
+
+
+def test_recoverable_is_measured_against_losses_not_against_the_account():
+    """The account is a snapshot and can be zero; the counterfactual runs over the whole window's
+    turnover. Losses are the only denominator that makes the number checkable."""
+    rows = [_tm_row(realized=-1_000.0, win=False), _tm_row(realized=+400.0, win=True)]
+    rows += [_tm_row(lock_cf={"0.03/0.5": v}) for v in (100.0, 100.0, 100.0, 100.0, 100.0)]
+    tm = dict(lock={"settings": {"0.03/0.5": dict(n=5, total=500.0)}})
+    rec = score.recoverable(rows, [], {}, tm)
+    assert round(rec["share_of_losses"], 6) == 0.5, "500 recovered against 1,000 of losses"
+
+
+def test_time_cut_is_charged_on_the_winners_it_would_have_chopped():
+    """At hour h you do not know which trades will win. Pricing a time-cut only on the losers is
+    survivorship bias, and it made the cut look like it beat every other lever."""
+    src = _P(HERE, "..", "scripts", "timing.py").read_text()
+    body = src[src.index("cuts[f\"{h:.0f}\"]"):]
+    assert 'not e["win"]' not in body.split("\n")[0], "the winners-excluded gate is back"
+
+
+def test_recoverable_stays_under_the_sum_of_the_listed_leaks_on_the_real_fixture():
+    """End to end: the quotable number must never exceed what a reader gets by adding the printed
+    leaks — that arithmetic is the whole failure mode."""
+    import desk
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+    r = desk.analyze(rec["address"], hl_api.HLFixture(rec), days=90, mcp=None, bench=None)
+    naive = sum(l["usd"] for l in r["leaks"])
+    assert r["recoverable"]["usd"] <= naive + 1e-6, f"union {r['recoverable']['usd']} > sum {naive}"
+
+
+def test_leaks_section_leads_with_the_number_and_tells_the_reader_not_to_add():
+    import desk, render
+    with open(FIXTURE) as fh:
+        rec = json.load(fh)
+    r = desk.analyze(rec["address"], hl_api.HLFixture(rec), days=90, mcp=None, bench=None)
+    md = render.leaks(r)
+    if (r.get("recoverable") or {}).get("usd", 0) > 0 and r["leaks"]:
+        assert "would have kept" in md and "do not add up" in md
+        assert md.index("do not add up") < md.index("**01 ·"), "the number leads; the leaks follow"
+        # a share of losses is only printed when the denominator means something
+        share = r["recoverable"].get("share_of_losses")
+        if share and share > 2.0:
+            assert "of what your losing trades gave up" not in md, "division by noise reached the page"
+
+
+def test_the_rule_is_stated_in_english_not_in_grid_keys():
+    """"0.03/0.5" is the grid key. Nobody can act on that, so score.py emits the sentence."""
+    tm = dict(cut={"settings": {"24": dict(n=5, total=800.0)}})
+    assert score.recoverable([_tm_row()], [], {}, tm)["rule"] == "closing anything still open after 24h"
+
+
+def test_the_fee_leak_offers_senpi_execution_with_the_dollar_amount():
+    """The fee leak is the one a user can act on without changing a single trading decision — same
+    fills, resting instead of crossing. It should say so, name senpi as the way to do it, and carry
+    the money, rather than describing a config line the reader cannot apply themselves."""
+    tr = dict(fee_recoverable=1_503.0, taker_share=0.77, fees=2_396.0, volume=6_500_000.0,
+              fee_rate_taker=0.00045, fee_rate_maker=0.00015)
+    out = score.leaks(tr, {}, {}, [], [], 0, 90)
+    fee = next((l for l in out if "taker" in l["title"]), None)
+    assert fee, "the fee leak did not fire"
+    assert "senpi" in fee["cta"] and "$1,503" in fee["cta"], fee["cta"]
+    assert "same fills" in fee["cta"], "the point is that no trading decision has to change"
+
+
+def test_the_do_not_add_rule_binds_outside_the_leaks_section_too():
+    """The first agent to break this did it in a deep dive, not in the leaks relay: it added
+    maker-first + time-cut + sizing into "~$12k/yr". Fees are the one fix that may be added to
+    another, because they are independent of the exit rule."""
+    src = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    for phrase in ("binds everywhere, not just in the leaks section",
+                   "Fees are the single exception",
+                   "may never be added to each other"):
+        assert phrase in src, phrase
+
+
+def test_the_header_line_must_be_relayed_verbatim_so_a_stale_engine_is_visible():
+    """The header carries the version and the timestamp, and it is the only staleness gate a reader
+    has. An agent that paraphrases it into its own summary makes a months-old engine look current —
+    which is exactly how a desk missing the recoverable total got reviewed as if it had it."""
+    src = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    assert "Print the desk's header line exactly as the engine emits it" in src
+    assert "only staleness gate the reader has" in src
+    # and the renderer must actually emit what the rule promises
+    import render
+    line = _P(HERE, "..", "scripts", "render.py").read_text()
+    assert "v{VERSION}" in line and "READ-ONLY" in line, "the header no longer carries the version"
+    assert render.VERSION, "no version to stamp"
+
+
+def test_fees_dilute_concentration_because_fees_are_the_least_concentrated_thing_there_is():
+    """Concentration was a share of the exit lever alone while the quoted total included fees. On
+    0x8b79…85d7 that called a $27,996 total "one trade" when $18,898 of it was taker fees spread
+    across $89.5M of volume and 1,073 trades — the most diffuse item on the desk."""
+    rows = [_tm_row(lock_cf={"0.03/0.5": v}) for v in (6_000.0, 1_500.0, 1_500.0, 0.0, 0.0)]
+    tm = dict(lock={"settings": {"0.03/0.5": dict(n=5, total=9_000.0)}})
+
+    no_fees = score.recoverable(rows, [], {}, tm)["concentration"]
+    with_fees = score.recoverable(rows, [], dict(fee_recoverable=19_000.0, taker_share=0.7), tm)["concentration"]
+
+    assert round(no_fees["top1"], 4) == round(6_000 / 9_000, 4) == 0.6667
+    assert round(with_fees["top1"], 4) == round(6_000 / 28_000, 4) == 0.2143
+    assert with_fees["top1"] < 0.4 < no_fees["top1"], "fees must move it off the 'it is one trade' branch"
+
+
+def test_the_headline_does_not_credit_the_exit_rule_with_the_fee_saving():
+    """On 0x8b79…85d7 the line read "a trailing stop ... would have kept ~$27,996" when $18,898 of
+    that was taker fees and the stop's own share was $9,098. The total leads; the split follows."""
+    import render
+    r = dict(leaks=[{"usd": 1}], track={}, timing={},
+             recoverable=dict(usd=27_996.0, fees=18_898.0, n_trades=1073, share_of_losses=0.42,
+                              rule="a trailing stop that arms at +3% and keeps 50% of the peak",
+                              concentration=dict(top1=0.21, top3=0.28, n_positive=10)))
+    md = "\n".join(render.recoverable_line(r))
+    assert "Your quant would have kept ~$27,996" in md
+    assert "$18,898 of it is taker fees" in md and "the other $9,098 comes from one rule" in md
+    assert not md.startswith("**A trailing stop"), "the rule is credited with the fee saving again"
+
+
+def test_concentration_can_never_exceed_the_thing_it_is_a_share_of():
+    """Reported by @shnoodles on #718. The numerator was gross per-trade savings while the
+    denominator was the lever total, which is NET of the trades the rule cost money on — and, for
+    the chased lever, net of the chased winners. A single trade could be reported as 111% of the
+    number. The "top three were 102%" cited as a finding about a real book was this artifact."""
+    charged = [_tm_row(lock_cf={"0.03/0.5": v}) for v in (10_000.0, 2_000.0, 1_000.0, -4_000.0, 0.0)]
+    tm = dict(lock={"settings": {"0.03/0.5": dict(n=5, total=9_000.0)}})
+    c = score.recoverable(charged, [], {}, tm)["concentration"]
+    assert c["top1"] <= 1.0 and c["top3"] <= 1.0, c
+    assert round(c["top1"], 4) == round(10_000 / 13_000, 4), "share of what contributed, not of the net"
+
+    # the chased lever nets its winners off the total; the per-trade list is losers only
+    chased = [_tm_row(realized=r, win=r > 0, chased=True) for r in (-8_000.0, -3_000.0, -1_000.0, 1_000.0, 1_000.0)]
+    c2 = score.recoverable(chased, [], {}, CHASE_ON)["concentration"]
+    assert c2["top1"] <= 1.0 and c2["top3"] <= 1.0, c2
+
+
+def test_the_size_lever_marks_both_sides_the_same_way():
+    """Also from #718. The median winner was peak-marked (price when peak size was on) while the
+    threshold it gates is entry-marked (peak size x entry VWAP). Winners are by definition the
+    trades that moved favourably, so the median was biased high. ~0.0% on the books tested, but it
+    is a comparison across two populations."""
+    closed = [dict(win=True, truncated=False, peak_size=2.0, entry_vwap=5_000.0,
+                   peak_notional=50_000.0) for _ in range(3)]          # peak-marked 5x the entry mark
+    # 1.3x the peak-marked median, 2x the entry-marked one — only the entry mark catches these
+    losers = [_tm_row(realized=-4_000.0, win=False, notional=20_000.0) for _ in range(5)]
+    rec = score.recoverable(losers, closed, {}, None)
+    assert rec["usd"] > 0, "entry-marked median is 10,000, so a 20,000 loser is oversized and must count"
+
+
+def test_a_wiped_out_account_is_not_the_same_risk_score_as_a_third_drawdown():
+    """The penalty was min(20, dd_pct * 60), which saturates at 33%: a book that gave back a third
+    and a book that went to ZERO scored identically, and a wiped-out account read 65/100 on "Risk
+    management". Drawdown here is built from cumulative P&L and is transfer-immune, so dd_pct = 1.0
+    really does mean the equity at risk was lost — the one outcome this dimension exists to catch."""
+    flat = dict(positions=[], naked=[], margin_utilization=None)
+    tr = dict(hold_ratio=None, liquidations=0)
+    s_third, _ = score.dim_risk(tr, flat, dict(dd_pct=0.33))
+    s_half, _ = score.dim_risk(tr, flat, dict(dd_pct=0.50))
+    s_zero, line = score.dim_risk(tr, flat, dict(dd_pct=1.00))
+
+    assert s_third > s_half > s_zero, f"not monotonic: {s_third} / {s_half} / {s_zero}"
+    assert s_zero <= 15, f"a total loss of the equity at risk scored {s_zero}"
+    assert "went to zero" in line, line
+
+
+def test_a_dimension_with_nothing_to_measure_abstains_rather_than_scoring_mid():
+    """On 0x6910…feda — 0 closed trades, $1.27M underwater, one naked $6.5M position at 96% margin —
+    timing scored 60 ("not enough trades to judge timing"), consistency 50 ("no closed trades") and
+    sizing 85 ("sizes are consistent and exposure is proportionate"). Three dimensions that measured
+    nothing carried 0.55 of the weighted headline and lifted it to 56/100.
+
+    Same rule as dim_cost: measure it or abstain, and let the aggregate re-normalise."""
+    assert score.dim_timing({}, None)[0] is None
+    assert score.dim_timing(dict(n=2), None)[0] is None, "under the 5-trade floor"
+    assert score.dim_consistency(dict(trades=0, win_rate=None, profit_factor=None), None)[0] is None
+
+    quiet_book = dict(positions=[], exposure_over_equity=None, largest_share=None)
+    assert score.dim_sizing(dict(), quiet_book, [])[0] is None, "no trades and a quiet book"
+
+    # but a live book that IS unusual still gets judged with no closed trades
+    loud = dict(positions=[{}], exposure_over_equity=9.0, largest_share=None)
+    s_loud, line = score.dim_sizing(dict(), loud, [])
+    assert s_loud is not None and "exposure" in line.lower()
+
+
+def test_the_concentration_sentence_does_not_assume_the_lever_is_a_stop():
+    """On 0xfd32…612c the picked lever was a SIZE CAP, and the page still said "a handful of
+    positions ran with no stop on them". The sentence has to hold whichever lever wins."""
+    import render
+    r = dict(leaks=[{"usd": 1}], track={}, timing={},
+             recoverable=dict(usd=5_012.0, fees=2_759.0, n_trades=52, share_of_losses=0.23,
+                              rule="capping size at your median winner",
+                              concentration=dict(top1=0.53, top3=0.69, n_positive=6)))
+    md = "\n".join(render.recoverable_line(r))
+    assert "no stop on them" not in md, "stop-specific copy on a sizing lever"
+    assert "capping size at your median winner" in md
+
+
+def test_market_fit_abstains_on_a_flat_book():
+    """A book with no open positions has no fit to score. Returning 60 gave a flat book a
+    measured-looking sixth of the headline on a dimension with no input at all."""
+    s, line = score.dim_market(dict(positions=[], account_value=0), None)
+    assert s is None and "No open positions" in line
+
+
+def test_the_losses_frame_is_dropped_on_a_book_that_made_money():
+    """On 0x2e2e…1c50 (93% win rate, +$310,760 net) the headline read "116% of what your losing
+    trades gave up" — arithmetically true, because fees are spread over the winners too, and a
+    meaningless sentence to put in front of a profitable trader."""
+    import render
+    rec = dict(usd=27_724.0, fees=27_724.0, n_trades=400, share_of_losses=1.16, rule=None,
+               concentration=None)
+    win = dict(leaks=[{"usd": 1}], timing={}, recoverable=rec, track=dict(net=310_760.0))
+    lose = dict(leaks=[{"usd": 1}], timing={}, recoverable=dict(rec, share_of_losses=0.42),
+                track=dict(net=-16_969.0))
+    assert "losing trades gave up" not in "\n".join(render.recoverable_line(win))
+    assert "42% of what your losing trades gave up" in "\n".join(render.recoverable_line(lose))
+
+
+def test_senpis_trader_score_consistency_is_not_confused_with_the_desks_own():
+    """The header carried "consistency score 33" (senpi's trader score) while the dimension table
+    said "Consistency 100" (the desk's own 90-day read). Same word, two numbers, one page."""
+    src = _P(HERE, "..", "scripts", "render.py").read_text()
+    assert "senpi trader-score consistency" in src
+    assert "· consistency score {lab['tcs']}" not in src
+
+
+def test_the_hire_my_quant_handoff_leads_with_both_routes_and_the_leaks():
+    """Arriving from the desk is not the same as opening discover cold: the reader has just been
+    shown their edge AND their leaks. Opening on templates alone reads as the only option, and
+    drops the half that makes the handoff worth anything — what the strategy has to FIX."""
+    skill = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    assert "Handing off on *hire my quant*" in skill
+    for phrase in ("maps to your trading style, while improving some of your leaks",
+                   "fork a template to build quickly, or code something from scratch",
+                   "Name the leak the template closes"):
+        assert phrase in skill, phrase
+
+
+def test_the_desk_never_promises_protection_it_cannot_deliver_yet_in_any_tense():
+    """Rule 5 forbids the future tense too — a promise that lands a week early is the one remembered
+    as a lie. `--deep protect` carried "senpi will soon keep that moving for you" long after the
+    present-tense version was cut from next-steps.
+
+    When senpi CAN attach a stop to a Hyperliquid position the reader custodies, this test and rule 5
+    are the two places that change."""
+    src = _P(HERE, "..", "scripts", "render.py").read_text()
+    code = "\n".join(l for l in src.splitlines() if not l.lstrip().startswith("#"))
+    for banned in ("senpi will soon", "we'll soon", "will soon keep that moving",
+                   "senpi will do this for you"):
+        assert banned not in code, f"future-tense promise: {banned!r}"
+    # the sentence is split across adjacent string literals, so collapse whitespace FIRST and then
+    # close the `" "` seam between them before matching
+    flat = " ".join(code.split()).replace('" "', "")
+    assert "Tell me if you want help with any of them" in flat
+
+
+def test_a_lever_needs_the_same_sample_the_leaks_require():
+    """The quotable headline was built from whatever setting scored highest, however few trades it
+    engaged on. On 0xb699…392e the winner was "closing anything still open after 48h" with **n=2**,
+    and it put $1.87M in front of a reader who lost $230,596 on a $1.27M account.
+
+    The leaks have gated on MIN_PATTERN_TRADES since 1.0; the number quoted above them did not."""
+    rows = [_tm_row(cut_cf={"48": 900_000.0}), _tm_row(cut_cf={"48": 900_000.0})]
+    thin = dict(cut={"settings": {"48": dict(n=2, total=1_800_000.0)}})
+    assert score.recoverable(rows, [], {}, thin)["usd"] == 0.0, "a 2-trade lever is not quotable"
+
+    rows5 = [_tm_row(cut_cf={"48": 200.0}) for _ in range(5)]
+    ok = dict(cut={"settings": {"48": dict(n=5, total=1_000.0)}})
+    assert score.recoverable(rows5, [], {}, ok)["usd"] == 1_000.0, "at the sample floor it is"
+
+
+def test_the_funding_leak_never_claims_to_save_more_than_was_paid():
+    """`_funding_after` sums funding PAID; tr["funding"] is NET of funding collected elsewhere. Left
+    uncapped the leak read "You paid $123,764 in funding … would have kept ~$164,499" — a saving
+    larger than the cost quoted in the same sentence."""
+    tr = dict(funding=-123_764.0, coins={"xyz:SKHX": dict(funding=-128_515.0)}, trades=9)
+    # the payment has to land more than 24h (86.4e6 ms) after the episode opened to count as "late"
+    rows = [dict(time=200_000_000, delta=dict(usdc="-200000", coin="xyz:SKHX"))]
+    closed = [dict(coin="xyz:SKHX", open_time=0, close_time=4e12)]
+    out = score.leaks(tr, dict(funding_per_day=-1.0), {}, rows, closed, 0, 90)
+    fund = next((l for l in out if "funding" in l["title"]), None)
+    assert fund and fund["usd"] <= 123_764.0, f"claimed {fund and fund['usd']} against a 123,764 bill"
+
+
+def test_when_one_trade_is_the_whole_number_the_headline_says_so():
+    """The concentration line sits below the figure, and it is the first thing dropped when someone
+    quotes the number. On 0xb699…392e the headline was $1,072,010 and 97% of it was a single
+    position out of 8 trades — a one-off, not a leak to go and fix."""
+    import render
+    one_trade = dict(leaks=[{"usd": 1}], timing={}, track=dict(net=-230_596.0),
+                     recoverable=dict(usd=1_072_010.0, fees=13_979.0, n_trades=8, share_of_losses=None,
+                                      rule="a trailing stop that arms at +5% and keeps 50% of the peak",
+                                      concentration=dict(top1=0.97, top3=0.99, n_positive=5)))
+    md = "\n".join(render.recoverable_line(one_trade))
+    assert "97% of that is one trade, not a pattern" in md
+    assert md.index("one trade, not a pattern") < md.index("_The leaks below"), "caveat rides with the figure"
+
+    spread = dict(one_trade, recoverable=dict(one_trade["recoverable"],
+                  concentration=dict(top1=0.21, top3=0.40, n_positive=12)))
+    assert "not a pattern" not in "\n".join(render.recoverable_line(spread))
+
+
+def test_a_dimension_reports_its_most_severe_finding_not_its_alphabetically_last():
+    """`max(lines)` compared (priority, message) TUPLES, so a priority tie fell through to comparing
+    the message text. On 0x8da1…ea5e that put "You hold losers 2.7x longer than winners" in front of
+    a reader whose real problem was 2 of 3 positions naked at 82% margin — "Y" sorts above "2"."""
+    pos = lambda **kw: {**dict(coin="X", side="LONG", leverage=5, liq_distance_pct=None), **kw}
+    book = dict(positions=[pos(), pos(), pos()], naked=["SOL", "LIT"], margin_utilization=0.82,
+                account_value=127_622.0)
+    tr = dict(hold_ratio=2.7, hold_losers_h=2.3, hold_winners_h=0.8, liquidations=0)
+    s, line = score.dim_risk(tr, book, dict(dd_pct=0.73))
+    assert "no stop at all" in line, f"reported the lesser finding: {line}"
+    assert s == 0
+
+    # a position near liquidation outranks even the naked count
+    near = dict(book, positions=[pos(coin="SOL", leverage=20, liq_distance_pct=2.1)])
+    _, line2 = score.dim_risk(tr, near, dict(dd_pct=0.1))
+    assert "from liquidation" in line2, line2
+
+
+def test_the_funding_penalty_does_not_saturate_at_40_percent_a_year():
+    """Capped at 20 points the penalty maxed out at 40%/yr, so a book paying 40% of equity a year in
+    funding and one paying 240% scored the same. 0x8da1…ea5e pays 240% and scored 70/100 on market
+    fit. Same shape as the drawdown cap fixed in 1.9.1."""
+    book = dict(positions=[{}], net_exposure=1.0, account_value=100_000.0)
+    mk = lambda per_day: dict(stance="net long", with_market=0, against=0, rows=[],
+                              funding_per_day=-per_day)
+    s_40, _ = score.dim_market(book, mk(100_000.0 * 0.40 / 365))
+    s_240, line = score.dim_market(book, mk(100_000.0 * 2.40 / 365))
+    assert s_240 < s_40, f"240%/yr ({s_240}) must score worse than 40%/yr ({s_40})"
+    assert "of equity a year" in line
+
+
+def test_equal_severity_falls_back_to_order_not_to_the_alphabet():
+    """Naked positions and past liquidations are both severity 4. With `max(lines)` on the raw
+    tuples the winner was whichever message sorted higher as TEXT — so "2 liquidation(s)…" beat
+    "1 of 3 open positions has no stop…" purely because "2" > "1". Live risk should not lose a
+    coin-flip to a past event because of how the sentence happens to start."""
+    pos = lambda: dict(coin="X", side="LONG", leverage=5, liq_distance_pct=None)
+    book = dict(positions=[pos(), pos(), pos()], naked=["SOL"], margin_utilization=None,
+                account_value=100_000.0)
+    tr = dict(hold_ratio=None, liquidations=2, liquidation_loss=-5_000.0)
+    _, line = score.dim_risk(tr, book, None)
+    assert "no stop at all" in line, f"a past liquidation outranked live naked risk: {line}"

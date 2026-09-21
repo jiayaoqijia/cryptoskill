@@ -22,7 +22,7 @@ description: >-
 license: Apache-2.0
 metadata:
   author: Senpi
-  version: "1.3.0"
+  version: "1.12.1"
   platform: senpi
   exchange: hyperliquid
 ---
@@ -40,22 +40,44 @@ compare). Run it plain (`--mine`) unless the user asks for the analyst read; the
 
 **HARD RULES — obey these even if you skim the rest.**
 
-1. **One command, then relay.** `python3 /data/.openclaw/skills/quant-desk/scripts/desk.py <0xaddress>` prints the desk as
-   Markdown. Relay it; do not recompute, reorder or "improve" its numbers. A follow-up question renders
-   one section from the cached run: `--section protection|leaks|smart|market|edge|performance|overview|next`.
-   **The lead-in, before you run it, is this sentence and only this sentence** (short address in place):
-   *"Running senpi quant desk on `0x5b5d…c060` — scanning every fill, funding payment and resting order,
-   auditing the live book's protection, running senpi-smart-money against the proven cohort and the hot
-   30-day cohort, running senpi-market-pulse, reading the tape regime by regime, finding the leaks and
-   pricing the fixes, running senpi-signals, reading the playbook and decoding the setups that actually
-   pay, running quant — scoring the book on six dimensions, comparing to the top traders, scouting
-   today's matches, developing the recommendations…"* — the same sentence for someone else's wallet.
-   The engine then streams one progress line per stage (and sub-steps inside the long ones) while it
-   works — relay them as they arrive. Never "this pulls public data" or "this may take a moment": the
-   desk is senpi's proprietary analysis. Never mention the public API, data sources or coverage in your
+1. **Relay it in STAGES — never as one block.** The analysis takes 30-60s on a busy book and the
+   whole desk is thousands of words. Delivering it as a single wall after a silent wait is the worst
+   possible shape: the reader waits with nothing, then gets more than they can read. The first run
+   caches for 10 minutes, so every section after it returns instantly.
+
+   **Stage 1 — the hook.** `desk.py <0xaddress> --section overview` does the full analysis (this is
+   the slow call) and prints only the score, the rank and the verdict. Relay it the moment it lands.
+   That is the number they came for.
+   **Stage 2 — what is urgent.** `--section protection`. Instant, from cache. Relay.
+   **Stage 3 — the money.** `--section leaks`. Instant. Relay.
+   **Stage 4 — the rest**, in one call: `--section strategy --section context --section performance
+   --section smart --section market --section edge --section scout --section next --section followups`.
+
+   Each stage is its own message. The reader is reading stage 1 while stage 2 renders, so the wait
+   disappears without anything being rushed. Do not batch stages 1-3 together to save calls — the
+   staging IS the feature. `--json` or a plain `desk.py <0xaddress>` still returns everything at once
+   when you need the whole document in one piece.
+
+   Relay it; do not recompute, reorder or "improve" its numbers.
+
+   **The lead-in, before stage 1, is one short line** (short address in place): *"Running the desk on
+   `0x5b5d…c060` — reading every fill, the live book, the cohorts and the tape."* Nothing longer. The
+   engine then streams a numbered progress line per stage while it works — relay those as they arrive;
+   they are what fills the wait, and each one carries a number it has just learned.
+
+   **Print the desk's header line exactly as the engine emits it — the `N days · N fills · N coins ·
+   updated <UTC> · YOUR QUANT — LIVE · READ-ONLY · vX.Y.Z` line — as the first line of every desk you
+   relay.** It is the only staleness gate the reader has. An agent that rewrites the header into its
+   own summary strips the version and the timestamp, and a desk running a months-old engine then
+   looks identical to a current one. This has already happened: a run was reviewed as if it were
+   current when its install predated the fix being tested.
+
+   Never "this pulls public data" or "this may take a moment": the desk
+   is senpi's proprietary analysis. Never mention the public API, data sources or coverage in your
    own words — the desk says what it needs to. Run the installed copy
    (`/data/.openclaw/skills/quant-desk/scripts/desk.py`), never a backup folder: the header line carries the
-   version. Relay tables as they are — never widen them or add columns; the desk is chat-shaped. Write
+   version — and `desk.py --version` prints the ENGINE's, which is the one that catches a half-synced
+   install where SKILL.md looks current and the script is not. Relay tables as they are — never widen them or add columns; the desk is chat-shaped. Write
    **onchain**, never "on-chain", everywhere.
 2. **Never invent a number.** Every figure on the desk is computed from public onchain data (or Senpi
    discovery when a token is present). If the script says a layer was unavailable (`Notes:` line), say so
@@ -64,16 +86,63 @@ compare). Run it plain (`--mine`) unless the user asks for the analyst read; the
    ~$2,536 over 90 days" — a process change and what it would have kept. Never "you lost $X" as a leak,
    never a leak the script rejected (it prints which rules it tested and rejected: say those too — the
    user's edge may be exactly the thing a naive fix would break).
+3b. **Never add the leaks up — quote the one number the desk gives you.** The leaks are alternative
+   fixes priced over the *same* trades: one oversized, chased, held-too-long position appears in
+   several of them. Summing them produced $68k on a book that lost $65k. The `leaks` section opens
+   with the single line to quote — "a trailing stop that arms at +3% and keeps 50% of the peak would
+   have kept ~$46,314 — 71% of what your losing trades gave up" — and it is the best *single* change,
+   already charged on the trades it would have cost. Relay that line first, then the leaks below it
+   as the individual fixes they are. If the desk says the total is concentrated ("one trade is 62% of
+   it"), say that too: the shape is the actionable part, and a user told they leak $46k "across their
+   book" will fix the wrong thing.
+   **This binds everywhere, not just in the leaks section** — deep dives, "how do I save on fees",
+   ELI5, and any answer that totals more than one fix. Fees are the single exception: resting instead
+   of crossing saves the same money whatever the exit rule, so fees may be added to one other fix.
+   Two *exit or sizing* fixes may never be added to each other — they are alternatives over
+   overlapping trades. "Maker-first ($1,503) plus a time-cut ($610) plus sizing ($845) is ~$12k/yr"
+   is the error: the honest combined figure is the best single lever plus fees, ~$9.5k/yr.
+   Annualising a 90-day counterfactual by 4x is fine; adding two of them first is not.
 4. **Process only.** Recommendations are rules, risk and timing — a stop ladder, a time-cut, a
    maker-first entry, a funding-aware hold, a sizing rule. **Never a call to buy or sell a coin.**
-5. **Custody language.** The desk is read-only. Protection on existing positions is a signature the
-   user gives on positions they already hold; funding a quant is only for autonomous trading. Never
-   imply senpi holds or moves their funds.
+5. **Custody language.** The desk is read-only, and **senpi cannot put a stop on a position held in
+   the reader's own wallet today.** `ratchet_stop_add` is keyed to a senpi strategy wallet, so there
+   is nothing to sign and nothing to attach on a book the reader custodies themselves.
+
+   So: **name the naked positions and ask how you can help.** Do not describe protection on their
+   own positions as "a signature", "one click", or something senpi will do for them — not in the
+   future tense either, however close it is. Equally, do not send them away with homework: "set it
+   yourself on Hyperliquid" is the fact, not the offer. Offer the help and let them ask.
+
+   Senpi's protection applies to strategies senpi runs, where the runtime owns the exits. Funding a
+   quant is only for autonomous trading. Never imply senpi holds or moves their funds.
+
+   > **Dated, revisit this.** As of 2026-09-21 the ability to attach a DSL or a stop to any position
+   > already on Hyperliquid is about a week out. When it ships this rule changes and the protect step
+   > becomes a real offer — until then the restriction above holds exactly as written, because a
+   > promise that lands a week early is the one that gets remembered as a lie.
 6. **Say "quant", "desk", "agents", "leak", "protect".** Never "report", "analyst", "bot", "AI assistant".
    Lowercase `senpi`. No outcome guarantees. The desk carries no per-response disclaimer — senpi is disclaimered at the product level, so repeating it on every run is noise.
 7. **Address hygiene and whose book it is.** Show the address shortened (`0x2999…65de`). Never post
-   the desk of a wallet the user did not name. A bare address is the user's own book: "run quant desk on
-   0x…" means the user is 0x… — run it plain and speak to them. "Run quant desk analyst on 0x…" (or
+   the desk of a wallet the user did not name.
+
+   **An address is the reader's own book unless we know otherwise.** "Run quant desk on 0x…" means the
+   user is 0x… — run it plain and speak to them. That is the path the product exists for: a Hyperliquid
+   trader pastes their address and gets their desk, with no question in front of it.
+
+   **The desk remembers.** It keeps an address book per box (`scripts/desk.py --addresses`) with three
+   relationships: **verified** (a wallet senpi issued — we know), **claimed** (the user said it is
+   theirs — a claim, not proof; nobody can verify ownership of an address from a chat message) and
+   **analyzed** (someone else's book they read). An address already recorded as *analyzed* stays
+   someone else's on a bare re-run — they looked at a whale last week, and asking about it again must
+   not start handing them the whale's leaks to fix. Use `--claim` when a reader says an address that
+   the book has as someone else's is in fact theirs.
+
+   **Use `--other` whenever the request is about someone else** — "this trader", "their wallet", a
+   leaderboard pick, a whale you surfaced, anything you picked rather than they typed. The default
+   covers the address a reader hands you; it is not a licence to read a wallet they never claimed as
+   their own.
+
+   "Run quant desk analyst on 0x…" (or
    "this trader", "their wallet", a leaderboard pick) means the user is analyzing 0x…: run with
    `--other` (alias `--analyst`): the desk speaks in the third
    person, the closing becomes *what to take from this trader*, and the follow-ups are the learning
@@ -82,10 +151,53 @@ compare). Run it plain (`--mine`) unless the user asks for the analyst read; the
    data, never advice to copy a position. Two or more traders: `--compare 0x… 0x…` prints the
    side-by-side (cached runs are reused) — use it whenever the user has looked at more than one wallet
    and asks how they stack up; never improvise the comparison yourself.
+7b. **An address senpi has not indexed yet.** `--json` carries `indexed`: `true` when senpi's own
+   history answered, `false` when the public endpoints show closed round trips in the window and
+   senpi's index returned none for the same window — a contradiction between two sources, which means
+   the wallet is not in the index yet — and `null` when nothing closed either way, which is a quiet
+   wallet and says nothing about indexing.
+
+   On `false`, say so instead of presenting the desk as complete, in the reader's own words. Read the
+   figure from `references/coverage.json`, never from memory; if `as_of` is more than `stale_after_days`
+   old, say "over 25,000" rather than a precise number that has moved:
+
+   > senpi is rolling out the AI Quant Desk to every trader on Hyperliquid in waves. We're at
+   > **26,188** wallets so far and yours isn't in that set yet. I've flagged it to the team as high
+   > priority and they'll let you know as soon as it's ready.
+
+   The flag is real: the address is recorded in the book and `--addresses` lists it under the
+   not-yet-indexed set. Never promise a date. A desk still runs on the public reads, so offer it —
+   but say plainly that trade-level detail will be thinner until the wallet is indexed.
+
+7c. **The desk reads any book on Hyperliquid, not just theirs.** Readers do not know this, and the
+   follow-ups all go *deeper on the same book*, so nothing tells them. After a run on their own book,
+   offer the lateral move once:
+
+   > **Your quant reads any book on Hyperliquid, not just yours.** Paste an address and I'll run the
+   > desk on them — what they trade, how they size, where they leak — or tell me what you're curious
+   > about and I'll go find traders worth reading.
+
+   After an analyst run, offer the mirror of it: *"That was someone else's book. Your quant works the
+   same way on yours — paste your address and I'll run it."* "Find me traders worth reading" is a real
+   route, not an invitation to improvise: resolve candidates from the proven cohort, the leaderboard or
+   `senpi-trader-research`, then run the pick with `--other`. **Never invent an address.**
+
 8. **Hold three to five things back — on purpose.** The desk ends with the follow-ups it earned (the
-   script picks them from a bank of ten). Offer them as questions, in the script's words; answer each
+   script picks them from a bank of twelve). Offer them as questions, in the script's words; answer each
    with its `--deep <mode>` and then offer the next ones. The more the trader asks, the more of their own
    book they see — never dump every deep dive unasked.
+
+   **Two of them carry no `--deep` mode and must not be run as one.** In `--json` their `mode` is
+   `null`: the answer is already on the screen, so you write it, immediately, with no second call.
+   - *the ELI5* — leads for almost every reader, and is the whole point for someone who has never
+     used senpi: restate the desk without the vocabulary. No profit factor, no ρ, no basis, no regime.
+     A number, what it means, what to do. This is the cheapest possible next step and the one most
+     likely to earn a second question.
+   - *the biggest one* — the top finding named in the prompt: expand its evidence and its fix in
+     your own words from what the desk already printed.
+
+   Protection outranks both when a position is unprotected **and** near liquidation — the desk says
+   "Protect first" and the follow-ups must not disagree with it.
 9. **The strategy read is theirs to argue with.** Relay the receipts (the bullets) and the critique as
    written, then invite the correction: "is that deliberate?" A trader who says "yes, that's the plan" has
    just told you what to watch; one who says "no" has just found the leak.
@@ -187,13 +299,30 @@ to restate numbers differently). `--fresh` ignores the 10-minute cache. `--days 
 
 ## Mandatory closing (verbatim structure, after any full desk or `--section edge/next`)
 
-1. **Protect first** — name the AT RISK / UNPROTECTED positions; a stop ladder is a signature on
-   positions they already hold, not a deposit.
+1. **Protect first** — name the AT RISK / UNPROTECTED positions and offer to help. Per rule 5, senpi
+   cannot place a stop on a book the reader custodies: they set it on Hyperliquid themselves.
 2. **Fix the biggest leak** — the top leak's title and its counterfactual $; the one-line fix.
 3. **Keep the agents on** — "say *hire my quant* and senpi runs this desk on your book — risk guard,
    smart money, market regime, leak finder — and can code your best setup into a strategy you approve,
    deployed as **your** strategy" → `senpi-strategy-discover` (the template that matches the edge) or
    `senpi-strategy-author` (from scratch), then `senpi-strategy-ops`.
+
+### Handing off on *hire my quant*
+
+The reader has just been shown their edge AND their leaks. Open on both, and put the two routes up
+front so a template never reads as the only option:
+
+> Good — let's code a strategy that maps to your trading style, while improving some of your leaks.
+> First, let me check if there are any strategy templates that match how you actually win. We can
+> fork a template to build quickly, or code something from scratch.
+>
+> Your edge is <the edge, in the desk's own words, with the numbers>. Let me see what fits.
+
+Then hand to `senpi-strategy-discover` with the edge as `--theme`. Two things carry across and are
+the reason this handoff is worth more than opening discover cold: **the edge** (what to search for)
+and **the leaks** (what the strategy has to fix — the exits, the sizing rule, the maker-first entry).
+Name the leak the template closes; a reader who was just told they hold losers 29.7x longer than
+winners should hear which candidate takes that decision away from them.
 
 ## Resilience
 
