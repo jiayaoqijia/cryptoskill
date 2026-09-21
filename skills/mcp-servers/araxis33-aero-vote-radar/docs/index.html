@@ -591,6 +591,15 @@ const hexOf = (n) => word(BigInt(n).toString(16));
 
 let rpcIndex = 0;
 
+// A JSON-RPC error whose message names a revert/panic, as opposed to one about
+// the request itself (rate limit, malformed input, node trouble). Only the
+// former is a fact about the contract call; marking it lets a caller that
+// walks an index until "the end" (see fetchCastVotes below) tell that genuine
+// signal apart from `ethCall` simply having failed to get an answer — mirrors
+// `isEndOfVoteList` in src/voted.ts, which draws the same line via viem's
+// ContractFunctionRevertedError/ContractFunctionZeroDataError.
+const isRevertMessage = (message) => /revert|invalid opcode|out-of-bounds|panic/i.test(message || "");
+
 async function ethCall(data, to = VE_ADDRESS) {
   let lastErr;
   for (let attempt = 0; attempt < RPCS.length; attempt++) {
@@ -604,10 +613,22 @@ async function ethCall(data, to = VE_ADDRESS) {
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
       const json = await res.json();
-      if (json.error) throw new Error(json.error.message || "rpc error");
+      if (json.error) {
+        const err = new Error(json.error.message || "rpc error");
+        err.isRevert = isRevertMessage(json.error.message);
+        throw err;
+      }
       rpcIndex = (rpcIndex + attempt) % RPCS.length; // stick with whatever worked
       return json.result;
-    } catch (err) { lastErr = err; }
+    } catch (err) {
+      lastErr = err;
+      // A genuine revert is a fact about the call, not the endpoint — every
+      // node reverts the same call the same way, so trying the next RPC
+      // cannot turn it into an answer. Stop here rather than let two more
+      // round trips risk losing the signal to an unrelated failure on a
+      // later endpoint.
+      if (err.isRevert) throw err;
+    }
   }
   throw lastErr || new Error("all RPC endpoints failed");
 }
@@ -662,9 +683,18 @@ async function fetchCastVotes(ids, maxPoolsPerLock = 20) {
       let pool;
       try {
         pool = await ethCall(SEL_POOL_VOTE + hexOf(id) + hexOf(i), VOTER_ADDRESS);
-      } catch {
-        break; // past the end of this lock's list
+      } catch (err) {
+        // Only a genuine on-chain revert means "no more pools" (see
+        // isRevertMessage above). A transient RPC failure — rate limit,
+        // timeout, dropped connection, all three endpoints down — throws from
+        // here too, and must not be read as an answer: it would silently
+        // under-report this lock's real vote list, understating the "you
+        // earned" total this whole panel exists to make checkable. Same
+        // reasoning as isEndOfVoteList in src/voted.ts.
+        if (err.isRevert) break;
+        throw err;
       }
+      if (!pool || pool === "0x") break; // some nodes answer an out-of-range index with empty data instead of reverting
       const address = "0x" + pool.replace(/^0x/, "").slice(-40).toLowerCase();
       const weight = Number(BigInt(await ethCall(SEL_VOTES + hexOf(id) + word(address), VOTER_ADDRESS))) / 1e18;
       // A pool can stay in the list with zero weight after a re-vote; keeping it

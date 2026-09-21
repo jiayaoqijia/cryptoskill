@@ -507,3 +507,68 @@ test("docs/index.html's accuracyClass/accuracyText render a zero-observation bas
   assert.equal(siteAccuracy.accuracyClass({ observations: 5, medianAbsError: 0.3 }), "bad");
   assert.equal(siteAccuracy.accuracyText({ observations: 5, medianAbsError: 0.173 }), "17% out");
 });
+
+/**
+ * `fetchCastVotes` walks `Voter.poolVote(id, i)` upward until the call fails,
+ * using the failure as "no length getter, so the end of the list is however
+ * it fails" — the same trick `fetchVotesFor` in src/voted.ts uses on-chain,
+ * and the same trap: not every failure means the list ended. `ethCall`
+ * already retries a real network problem across all three RPCs in `RPCS`
+ * before giving up, so a `catch { break; }` here would read a wallet's vote
+ * list as shorter than it is whenever that retry is exhausted — silently
+ * under-reporting the "you earned" total this panel exists to make
+ * checkable, exactly the bug `isEndOfVoteList` was added to src/voted.ts to
+ * fix (see "Stop treating an RPC failure as the end of a wallet's vote
+ * list"). This pins the page's port of that fix: `isRevertMessage` must mark
+ * a genuine on-chain revert, and `fetchCastVotes` must stop on that but
+ * propagate anything else.
+ */
+test("docs/index.html's fetchCastVotes stops a lock's walk on a genuine revert but propagates a real RPC failure", async () => {
+  const buildFetchCastVotes = (ethCallImpl: (data: string, to?: string) => Promise<string>) =>
+    new Function(
+      "ethCall",
+      `
+        ${extractConst(siteSource, "word")}
+        ${extractConst(siteSource, "hexOf")}
+        ${extractConst(siteSource, "VOTER_ADDRESS")}
+        ${extractConst(siteSource, "SEL_POOL_VOTE")}
+        ${extractConst(siteSource, "SEL_VOTES")}
+        async ${extractFunction(siteSource, "fetchCastVotes")}
+        return fetchCastVotes;
+      `,
+    )(ethCallImpl) as (ids: bigint[]) => Promise<{ pool: string; veAero: number }[]>;
+
+  const POOL = "0x" + "1".repeat(40);
+  const poolWord = "0x" + "0".repeat(24) + "1".repeat(40); // poolVote's answer, address right-aligned in a 32-byte word
+  const oneVeAero = "0x" + (10n ** 18n).toString(16).padStart(64, "0");
+
+  // One real pool at index 0, then the on-chain revert that genuinely marks
+  // the end of this lock's list.
+  let poolVoteCalls = 0;
+  const genuineEnd = async (data: string) => {
+    if (data.startsWith("0xa86a366d")) {
+      poolVoteCalls++;
+      if (poolVoteCalls === 1) return poolWord;
+      const err = new Error("execution reverted") as Error & { isRevert: boolean };
+      err.isRevert = true;
+      throw err;
+    }
+    return oneVeAero;
+  };
+  assert.deepEqual(await buildFetchCastVotes(genuineEnd)([1n]), [{ pool: POOL, veAero: 1 }]);
+
+  // Same one real pool at index 0, but the index-1 call fails the way
+  // `ethCall` fails when every RPC in `RPCS` is unreachable — a fact about
+  // the request, not the list. `isRevert` is left unset, exactly as `ethCall`
+  // leaves it for an HTTP error, a timeout, or any other non-revert failure.
+  let poolVoteCallsAgain = 0;
+  const realFailure = async (data: string) => {
+    if (data.startsWith("0xa86a366d")) {
+      poolVoteCallsAgain++;
+      if (poolVoteCallsAgain === 1) return poolWord;
+      throw new Error("all RPC endpoints failed");
+    }
+    return oneVeAero;
+  };
+  await assert.rejects(() => buildFetchCastVotes(realFailure)([1n]));
+});
