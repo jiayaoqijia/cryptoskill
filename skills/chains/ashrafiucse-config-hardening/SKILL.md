@@ -26,7 +26,7 @@ rg -n -i "content-security-policy|script-src|default-src" -g '*.conf' -g '*.yml'
   - **Cookie prefixes** absent on auth/session cookies (`__Host-`/`__Secure-` prefixed names pin Secure + no subdomain shadowing) → MEDIUM: `__Host-session` not `session`
   - **SRI**: third-party `<script src="https://...">` without `integrity=` → MEDIUM (script supply-chain injection); same-origin scripts exempt
 ```bash
-rg -n "script[^>]+src=["']https?://" -g '*.html' -g '*.ejs' -g '*.php' | rg -v integrity | head
+rg -n "script[^>]+src=["']https?://" -g '*.html' -g '*.ejs' -g '*.php' | rg -v integrity   # census: every SRI-less script dispositioned
 ```
   - `Referrer-Policy`, `Permissions-Policy` → LOW
 - **TLS**: `ssl_protocols` still includes TLSv1/TLSv1.1 → HIGH; self-signed or expired certs referenced → HIGH; HTTP→HTTPS redirect missing → MEDIUM
@@ -51,6 +51,9 @@ rg -n -i "traceback|stack.?trace|display_errors\s*=\s*on|show_exceptions"
 - Django `DEBUG=True` / Flask `debug=True` / Laravel `APP_DEBUG=true` in prod-looking config → HIGH (stack traces, env leaks, Werkzeug debugger = RCE)
 - Verbose error responses leaking SQL, paths, versions → MEDIUM
 - **Web cache deception**: authenticated responses without `Cache-Control: private`/`no-store` behind a cache keyed on path extension (`/api/me` vs `/api/me/x.css` served from cache) → session data cached and readable. Check auth'd endpoints' cache headers + cache rules that vary on file extension.
+- **Web cache poisoning** (GHSL/Academy class): unkeyed inputs (headers the cache ignores but the app reflects — `X-Forwarded-Host`, `X-Original-URL`, some query params) flowing into cacheable responses → one poisoned entry serves every victim. Repo-detectable subset: response headers/redirect URLs built from request headers WITHOUT keying them (`Vary`) + any cache layer in front (CDN config, `Cache-Control: public` on dynamic responses) → High; full exploitation is runtime-verify.
+- **HTTP request smuggling**: mostly proxy/runtime-level, but repo signals exist — front+back frameworks disagreeing on header parsing is undetectable statically; flag adjacent risks: `Content-Length` + `Transfer-Encoding` handling in custom proxies/middleware code, and unvalidated `X-Forwarded-*`/absolute-URI handling in reverse-proxy configs (nginx/apache files in repo) → Medium (runtime-verify note).
+- **World-writable file permissions**: `chmod 0o777`/`0o666`, `os.open(..., 0o666)`, `fopen` + umask games on files that later execute or hold secrets (keys, configs, socket dirs) → High in prod context; also `chmod -R 777` in Dockerfiles/scripts
 - Default creds in configs (`admin/admin`, `postgres/postgres` in docker-compose) → HIGH in prod context, LOW in clearly-local compose
 - Exposed sensitive files: `.git/` served, `.env` in webroot, `*.bak`, `.DS_Store`, `dump.sql`, `phpinfo()` pages → HIGH
 - Admin/health/debug endpoints (`/actuator/*` with env/heapdump, `/debug`, `/admin`) without auth → CRITICAL (Spring env/heapdump leaks credentials)

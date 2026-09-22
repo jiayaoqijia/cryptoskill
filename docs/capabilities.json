@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T17:04:37.978708+00:00",
+  "generated_at": "2026-09-22T21:26:02.309206+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -26131,6 +26131,68 @@
         },
         "mutable_remote_runtime": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/ashrafiucse-design-threat-review": {
+      "name": "design-threat-review",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -136636,11 +136698,11 @@
     }
   },
   "summary": {
-    "discovered": 2192,
-    "processed": 2192,
+    "discovered": 2193,
+    "processed": 2193,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1388,
+      "read_only": 1389,
       "router_orchestrator": 131,
       "unknown": 248,
       "analysis_only": 199,

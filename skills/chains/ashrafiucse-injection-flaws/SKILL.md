@@ -57,6 +57,18 @@ rg -n -i "<%=.*request|res\.send\(.*req\.(body|query|params)"
 ```
 Flag reflected user input into any of these sinks. Framework auto-escaping (Jinja2, React JSX text nodes) is a valid defense — but `dangerouslySetInnerHTML`/`v-html`/`|safe` bypass it.
 
+**Census + privilege direction — the rules every framework XSS check below points to.** Disposition every sink hit (finding / verified-safe / not-assessed); severity is set by WHO writes the value vs WHO renders it, not by the sink alone:
+
+| Author of the raw content | Viewer | Severity |
+|---|---|---|
+| Unprivileged (student/customer/guest: reviews, tickets, messages, quiz answers, display names, uploaded filenames) | Privileged (admin/moderator/staff view, support desk, HTML email render) | **Critical** — fires in the staff origin → session riding → account takeover; approval/moderation queues GUARANTEE a privileged viewer opens it |
+| Privileged-authored (admin/instructor: descriptions, embeds, templates) | Unprivileged/everyone | High (public) / Medium (authenticated) |
+| Same privilege both sides | same | Medium |
+
+Moderation/approval workflows are delivery mechanisms, not mitigations (see `../course-platform-security/SKILL.md` §6.5 and `../laravel-security/SKILL.md` Step 4).
+
+**Sanitizer/encoder ≠ safe by default.** When an escape/purify layer sits between source and sink, do not close the cell as verified-safe on its presence alone — verify bypass resistance (GHSL-2026-072: a CMS's HTML *encoding* function itself had an encoding-bypass bug → XSS). Presence of `DOMPurify`/`e()`/encoder helpers earns `🟡 needs-verification`, not `🟢`; check the encoder is applied on the read path, with the right context (HTML vs attribute vs URL), and against known bypass shapes for that library's version.
+
 ### Path traversal
 ```bash
 rg -n "open\(|readFile|writeFile|sendFile|send_file|File\(|Path\.Combine|require\(.*\+|include\(.*\$|fopen\("
@@ -160,7 +172,7 @@ For every upload handler check:
 3. **Filename** — user filename used verbatim (`../../` traversal, collisions) instead of CSPRNG-generated names
 4. **Caps** — no size limit / no per-entry decompression cap → zip bomb (`zipfile.extractall` unchecked) → High
 5. **Extraction attacks** (distinct from bombs): entry names containing `../` (zip-slip: `adm-zip`/`extractAllTo`, `zipfile.extractall`, `tarfile.extractall` write outside the target dir) and **symlink members** (a tar symlink `link -> /etc/passwd` followed by a later member that overwrites it — `tarfile` pre-3.12 style). Safe extraction: validate EVERY entry's resolved path stays inside the target (`path.resolve(dest, name).startsWith(dest + sep)`), reject absolute/symlink members, prefer libraries that refuse by default (`zipfile` with custom member filter, `libarchive` hardened flags) → High/Critical
-5. **Serving** — uploads served `inline` without `X-Content-Type-Options: nosniff` / `Content-Disposition: attachment`; SVG uploads rendered (embed `<script>`, XXE via `<externalEntity>`)
+5. **Serving** — uploads served `inline` without `X-Content-Type-Options: nosniff` / `Content-Disposition: attachment`; SVG uploads rendered (embed `<script>`, XXE via `<externalEntity>`). **MIME-spoofing stored XSS** (GHSL-2026-052, Docmost): a client-declared `Content-Type` is attacker data — an upload that passes extension allowlists but is served inline sniffed/rendered as `text/html` executes. Verify: served type is forced from a server-side mapping (never from the request), magic-byte check for ambiguous types, and `nosniff` on every user-content response.
 
 ## Reporting
 

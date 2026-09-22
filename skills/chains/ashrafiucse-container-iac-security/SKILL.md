@@ -41,7 +41,11 @@ rg --files -g '*.yaml' -g '*.yml' | xargs grep -ln "kind: Deployment\|kind: Pod\
 - `privileged: true` in containers → CRITICAL
 - `hostPath` volumes, especially writable → HIGH/CRITICAL
 - `automountServiceAccountToken: true` (default) on pods that don't talk to the K8s API → MEDIUM (default creds for lateral movement)
-- Wildcard RBAC (`verbs: ["*"]`, `resources: ["*"]`), cluster-admin bindings to services → HIGH
+- Wildcard RBAC (`verbs: ["*"]`, `resources: ["*"]`), cluster-admin bindings to services → HIGH. **RBAC escalation verbs**: any Role/ClusterRole granting `escalate` (self-boost any role), `bind` (bind higher-priv roles to self), or `impersonate` (become any user/SA) → **Critical** even scoped; `verbs: ["get","list"]` on `secrets` at cluster scope → Critical (reads every credential)
+```bash
+rg -n "escalate|impersonate" -g '*.yaml' -g '*.yml' | rg "verbs|resources"   # census: every verb row dispositioned
+rg -n "resources:.*secrets" -g '*.yaml' -g '*.yml' | rg -v "namespace"   # census: every secret-reading role dispositioned
+```
 - `imagePullPolicy: Always` with `:latest` tags / images from unknown registries → MEDIUM
 - Resource limits absent (DoS surface) → LOW
 - Exposed `type: LoadBalancer` on admin/debug services → HIGH
@@ -79,6 +83,19 @@ rg -n -i "metadata_options|http_tokens|hop_limit|imdsv2" -g '*.tf' -g '*.yaml'
 - No `hop_limit = 1` on containers/instances fetching user URLs → MEDIUM
 - Disabled logging (no `aws_flow_log`, `enable_audit` variants) → MEDIUM
 - Snapshot/backup configs absent → LOW
+
+## Serverless / FaaS (Lambda & friends)
+
+```bash
+rg --files -g 'serverless.yml' -g 'template.yaml' -g '*.tf' | head
+rg -n -i "handler|runtime|iam|role" -g 'serverless.yml' -g 'template.yaml' | head -10
+```
+- **Wildcard IAM on functions** (`Resource: "*"` + `Action: "*"`/s3:*/dynamodb:* in the execution role) → HIGH; pair with `aws-iam-escalation.md` paths for chains
+- **Trusted event payloads**: SQS/Kinesis/SNS handlers treating message bodies as trusted (second-order pattern — producers are not trust boundaries; validate + scope per tenant) → Medium/High
+- **API Gateway without authorizer** (or `NONE`/open access on non-public routes; `authorizationType: NONE` on state-changing routes) → Critical
+- Function URLs / public invokes without auth → Critical
+- Secrets in env vars of function defs (`environment:` blocks in serverless.yml/template.yaml) → Critical (same rules as `secrets-detection`)
+- Layers/containers pulled from public registries unpinned → Medium
 
 ## Reporting
 

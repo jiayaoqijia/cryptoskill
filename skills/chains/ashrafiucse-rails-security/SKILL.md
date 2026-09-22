@@ -37,10 +37,12 @@ rg -n "permit!|params\[:user\]$|\.update_attributes" app/
 ## Step 3 — XSS
 
 ```bash
-rg -n "<%= raw |\.html_safe|<%==" app/ app/views/
+rg -n "<%=\s*raw\b|\.html_safe|<%==" app/ app/views/
 ```
 
-- `raw`/`html_safe`/`<%==` on user-derived values → High (ERB `<%= %>` escapes by default)
+- `raw`/`.html_safe`/`<%==` on user-derived values → direction-triaged (ERB `<%= %>` escapes by default)
+
+Census, don't sample: disposition every hit. Severity by privilege direction per `../injection-flaws/SKILL.md` (XSS table) — `raw @user.bio` where the bio is student-authored and the view is staff-facing = Critical.
 
 ## Step 4 — CSRF & authz
 

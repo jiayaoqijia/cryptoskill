@@ -6,7 +6,7 @@ and UTxO queries are all TypeScript code. It orchestrates Docker containers for
 cardano-node and (optionally) Kupo and Ogmios.
 
 Sourced from the bundled docs under
-`${CLAUDE_SKILL_DIR}/../../docs/sources/evolution-sdk/devnet/`.
+`../../docs/sources/evolution-sdk/devnet/`.
 
 ## When to choose it over Yaci DevKit
 
@@ -220,7 +220,7 @@ Always clean up in `afterAll` to avoid leaking containers.
 
 ## References
 
-- `${CLAUDE_SKILL_DIR}/../../docs/sources/evolution-sdk/devnet/index.mdx` — overview, Yaci comparison
-- `${CLAUDE_SKILL_DIR}/../../docs/sources/evolution-sdk/devnet/getting-started.mdx` — cluster lifecycle
-- `${CLAUDE_SKILL_DIR}/../../docs/sources/evolution-sdk/devnet/configuration.mdx` — genesis & protocol params
-- `${CLAUDE_SKILL_DIR}/../../docs/sources/evolution-sdk/devnet/integration.mdx` — end-to-end client workflow
+- `../../docs/sources/evolution-sdk/devnet/index.mdx` — overview, Yaci comparison
+- `../../docs/sources/evolution-sdk/devnet/getting-started.mdx` — cluster lifecycle
+- `../../docs/sources/evolution-sdk/devnet/configuration.mdx` — genesis & protocol params
+- `../../docs/sources/evolution-sdk/devnet/integration.mdx` — end-to-end client workflow

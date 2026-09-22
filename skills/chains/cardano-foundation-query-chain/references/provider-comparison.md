@@ -149,7 +149,7 @@ completeness for modularity and a much lighter footprint.
 
 It is the indexer embedded in Yaci DevKit, so a project can develop locally and run
 the same component in production. See
-`${CLAUDE_SKILL_DIR}/../../docs/sources/yaci-store/` — `stores/`, `plugins/`,
+`../../docs/sources/yaci-store/` — `stores/`, `plugins/`,
 `usage/as-library/`, `blockfrost/endpoints/`.
 
 ## Common Pairings

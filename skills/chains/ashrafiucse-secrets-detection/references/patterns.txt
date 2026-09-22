@@ -9,7 +9,7 @@ ASIA[0-9A-Z]{16}
 gh[pousr]_[A-Za-z0-9]{36,255}
 github_pat_[A-Za-z0-9_]{82,}
 AIza[0-9A-Za-z_\-]{35}
-sk_live_[0-9a-zA-Z]{24,}
+sk_(live|test)_[0-9a-zA-Z]{24,}
 rk_live_[0-9a-zA-Z]{24,}
 pk_live_[0-9a-zA-Z]{24,}
 xox[baprs]-[0-9A-Za-z-]{10,}

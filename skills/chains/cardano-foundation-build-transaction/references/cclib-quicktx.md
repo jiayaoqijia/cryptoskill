@@ -53,7 +53,7 @@ selection by name — read `validators[].title` rather than trusting position.
 
 For parameterized validators, apply parameters before deriving the address:
 `AikenScriptUtil.applyParamToScript(params, compiledCode)`, then load the result.
-See `${CLAUDE_SKILL_DIR}/../../docs/sources/cardano-client-lib/integrations/aiken-integration-api.mdx`.
+See `../../docs/sources/cardano-client-lib/integrations/aiken-integration-api.mdx`.
 
 ## Simple payment
 
@@ -167,7 +167,7 @@ hand-rolled route — fine for small datums, error-prone for nested types.
 For anything larger, generate Java types from the CIP-57 blueprint with the
 annotation processor (`cardano-client-annotation-processor`), which gives you
 POJO ↔ PlutusData conversion checked at compile time. See
-`${CLAUDE_SKILL_DIR}/../../docs/sources/cardano-client-lib/annotations/plutus-blueprint-code-generation.mdx`
+`../../docs/sources/cardano-client-lib/annotations/plutus-blueprint-code-generation.mdx`
 and `.../annotations/plutus-data-annotations.mdx`.
 
 Whichever route, **ground the encoding against a real on-chain datum** before
@@ -186,7 +186,7 @@ maintained separately from this repo, keyed by symptom.
 
 ## Where to look next
 
-Vendored upstream docs — `${CLAUDE_SKILL_DIR}/../../docs/sources/cardano-client-lib/`:
+Vendored upstream docs — `../../docs/sources/cardano-client-lib/`:
 
 - `apis/transaction/quicktx-api.mdx` — the QuickTx reference
 - `apis/providers/backend-services-api.mdx` — Blockfrost, Koios, Ogmios, Kupmios, Yaci
@@ -194,7 +194,7 @@ Vendored upstream docs — `${CLAUDE_SKILL_DIR}/../../docs/sources/cardano-clien
 - `integrations/aiken-integration-api.mdx` — parameter application, off-chain evaluation
 - `apis/core/plutus-api.mdx` — PlutusData primitives
 
-**Working end-to-end programs** — `${CLAUDE_SKILL_DIR}/../../docs/sources/cardano-use-case-templates/<use-case>/offchain/ccl-java/`.
+**Working end-to-end programs** — `../../docs/sources/cardano-use-case-templates/<use-case>/offchain/ccl-java/`.
 Roughly twenty complete, runnable use cases (vesting, escrow, auction, HTLC,
 crowdfund, payment-splitter, and more), each pairing an Aiken validator with a CCL
 off-chain program. These are the best available reference for a full lock-and-spend

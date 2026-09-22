@@ -44,6 +44,21 @@ Report:
 4. **Placeholder secrets in prod-looking config** → MEDIUM (someone will "temporarily" deploy them).
 5. **Secrets handling patterns** — note whether the project uses env vars / secret manager properly, and whether secrets can leak into logs (see also `../data-exposure/SKILL.md`).
 
+## Step 4 — Dev-artifact leak surface (developer tools commit secrets too)
+
+```bash
+rg --files --hidden -g '.vscode/**' -g '.idea/**' -g '*.postman_collection.json' -g '*.postman_environment.json' -g '*.http' -g '*.rest' -g 'devcontainer.json' -g '*.insomnia*' | head
+rg -n -i "token|secret|password|api[_-]?key|authorization" .vscode/ .idea/ *.postman* *.http devcontainer.json 2>/dev/null | head
+```
+
+- **Postman/Insomnia collections & environments**: live `Authorization: Bearer …` headers, saved logins — these files are SHARED and committed by design → CRITICAL (rotate on sight)
+- **`.vscode/launch.json` / `.idea/workspace.xml`**: `env`/`ENV` blocks with tokens and DB URLs → HIGH; also debug `console`/`attach` configs revealing internal hosts
+- **`.http`/`.rest` request files**: same class — request headers with real credentials → HIGH/Critical
+- **`devcontainer.json` / `codespaces`**: secrets in `containerEnv`/`remoteEnv`, PATs in feature options → HIGH
+- **Swagger/OpenAPI `examples:`** that are real payloads (real users, real tokens) → Medium/High
+
+Same triage rules apply (fakes/fixtures dropped); these surfaces pair with the generic patterns from Step 1 — the difference is WHERE to look, not WHAT to match.
+
 ## Notes
 
 - Scan binary-free (`-I`) and exclude vendored dirs — the script does this already.

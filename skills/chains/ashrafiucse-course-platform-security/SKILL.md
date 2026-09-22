@@ -24,7 +24,7 @@ enrollment sources (order/webhook/admin-grant/subscription), cohort model
 
 The public catalog must only expose what is published AND public.
 ```bash
-rg -n "courses?\.(find|where|all|select)" -g '*.js' -g '*.ts' -g '*.py' -g '*.rb' | head
+rg -n "courses?\.(find|where|all|select)" -g '*.js' -g '*.ts' -g '*.py' -g '*.rb'   # census: disposition every read path
 ```
 - List/search endpoints returning draft/unpublished/private courses → **High**
   (hidden product roadmap + private catalog leaks; PR-sensitive)
@@ -63,7 +63,7 @@ rg -n -i "enrollment.*(create|insert|save)|grant.*access" -g '*.js' -g '*.py' | 
 ## 5 — Cohort / multi-cohort access (student persona)
 
 ```bash
-rg -n -i "cohort|batch|class_?id|group_?id" -g '*.js' -g '*.py' -g '*.rb' | head
+rg -n -i "cohort|batch|class_?id|group_?id" -g '*.js' -g '*.py' -g '*.rb'   # census: disposition every cohort-touching read
 ```
 - Materials/lessons/live-sessions fetched by courseId WITHOUT the student's
   cohort scope → **High/Critical** (cross-cohort read; per-object authz is not
@@ -81,6 +81,26 @@ Route-census every admin route: course create/update/publish, price change,
 coupon mint, refund, user management. Any reachable without role middleware →
 **Critical** (price tamper + free-publish chains). Coupon minting and price
 changes are money operations — same state-machine rules as flow-security.
+
+### 6.5 — Student-authored content inside admin viewports (moderation-queue XSS)
+
+Admin surfaces don't only authorize actions — they RENDER artifacts that
+unprivileged users created. For every artifact a student/customer can submit
+that staff must open (reviews, support tickets, messages, quiz answers,
+assignment text, display names, uploaded file names):
+
+1. Trace the write path: what validation/sanitization runs before storage?
+   (`required|string` alone stores raw HTML.)
+2. Trace the render path in the STAFF surface (moderation list AND detail
+   view — the detail view is the one staff clicks). Raw echo (`{!! !!}`),
+   `dangerouslySetInnerHTML`, or an iframe/email HTML render of it → **Critical**:
+   payload fires in the staff origin, rides the session, escalates to admin
+   account takeover.
+3. Pending/approval workflows make it worse, not better — they GUARANTEE a
+   privileged viewer opens the attacker's content.
+
+Tag these `student→admin: XSS` and cross-reference the framework skill's
+raw-output scan (e.g. `../laravel-security/SKILL.md` Step 4).
 
 ## 7 — Reporting
 

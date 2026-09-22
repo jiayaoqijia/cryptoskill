@@ -53,9 +53,11 @@ rg -n "\\\$\{" -g '*.xml' src/   # MyBatis mappers
 rg -n "th:utext|<%=|escapeXml=\"false\"|c:out" src/main/resources/templates/ src/ 2>/dev/null
 ```
 
-- `th:utext="${user...}"` → High (th:text escapes)
-- JSP scriplets `<%= user %>` → High
-- `escapeXml="false"` on c:out → High
+Census, don't sample: disposition every hit. Severity by privilege direction per `../injection-flaws/SKILL.md` (XSS table) — unprivileged-authored content rendered unescaped in a staff view = Critical.
+
+- `th:utext="${user...}"` → direction-triaged (`th:text` escapes)
+- JSP scriplets `<%= user %>` → direction-triaged
+- `escapeXml="false"` on c:out → direction-triaged
 
 ## Step 5 — Deserialization & SpEL
 

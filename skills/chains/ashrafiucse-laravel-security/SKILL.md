@@ -52,10 +52,21 @@ rg -n "DB::raw|whereRaw|orderByRaw|selectRaw|havingRaw|DB::select\(|DB::statemen
 ## Step 4 — Blade XSS
 
 ```bash
-rg -n '\{!!' resources/views/
+rg -n '\{!!' -g '*.blade.php' .
+rg -n '\{!!' -g '*.blade.php' . | wc -l   # census FIRST: know the full inventory size
 ```
 
-Every `{!! !!}` with a variable that traces to user input → High (Blade's `{{ }}` escapes; `{!! !!}` exists only to bypass). Check `{{ $x }}` + `|raw`? (Blade has no `|raw`; Twig confusion = false positive).
+**Census, don't sample.** Glob to `*.blade.php` — the bare pattern also matches React/TSX `aria-invalid={!!…}` noise that crowds out real hits. Run `wc -l` before reading: every raw echo in the inventory gets an explicit disposition (verified-safe / finding / not-assessed). `head`-truncating this list is how review-moderation XSS ships to production. For repos >50 hits, triage by author privilege first (below), but never leave the tail unexamined.
+
+Every `{!! !!}` with a variable that traces to user input is a finding — then triage by **privilege direction**, which sets the severity:
+
+| Author of the raw content | Viewer of the page | Severity |
+|---|---|---|
+| Unprivileged (student/customer/guest form: reviews, tickets, messages, submission text, uploaded filenames) | Privileged (admin/moderator/staff) | **Critical** — fires in the staff origin → session-riding requests → account takeover. Moderation queues guarantee a privileged viewer opens it. |
+| Privileged (admin/instructor-authored: descriptions, embeds, templates) | Unprivileged/everyone | High (public) / Medium (authenticated) |
+| Same privilege | same | Medium |
+
+Blade's `{{ }}` escapes; `{!! !!}` exists only to bypass. `nl2br()` is NOT an escape — `{!! nl2br($x) !!}` is a raw echo. Check `{{ $x }}` + `|raw`? (Blade has no `|raw`; Twig confusion = false positive).
 
 ## Step 5 — CSRF
 

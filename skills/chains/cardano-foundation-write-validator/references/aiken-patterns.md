@@ -264,6 +264,7 @@ Use a staking validator as a shared checker for batch operations.
 use aiken/collection/pairs
 use aiken/crypto.{ScriptHash}
 use cardano/address.{Credential, Script}
+use cardano/certificate.{Certificate, RegisterCredential}
 use cardano/transaction.{OutputReference, Transaction}
 
 pub type BatchRedeemer {
@@ -283,6 +284,21 @@ validator shared_logic {
     // Shared validation runs once per transaction
     // instead of once per input -- saves execution cost
     validate_batch(redeemer, tx)
+  }
+
+  // A stake credential must be REGISTERED before it can withdraw, and
+  // registering a script credential with the Conway `reg_cert` runs the
+  // script under the `publish` purpose. Without this handler the implicit
+  // `else` fails, and the credential can only be registered through the
+  // legacy no-witness `stake_registration` certificate -- which the era
+  // after Conway withdraws. Allow registration; refuse everything else
+  // (deregistering a co-validator's credential disables every spend that
+  // depends on it).
+  publish(_redeemer: Data, certificate: Certificate, _tx: Transaction) {
+    when certificate is {
+      RegisterCredential { .. } -> True
+      _ -> False
+    }
   }
 }
 
@@ -308,6 +324,14 @@ Key points:
 - The staking validator runs once per transaction, reducing total cost for batch operations
 - The spending validator MUST verify the withdrawal exists in `tx.withdrawals`
 - The staking validator MUST perform real validation (never just return True)
+- The staking validator MUST carry a `publish` handler that accepts `RegisterCredential`.
+  A validator with no `publish` arm (or an `else` that fails) is registrable in Conway only
+  through the legacy `stake_registration` certificate, which needs no script witness; the
+  Plutus documentation states that certificate is withdrawn in the era after Conway, after
+  which every registration requires the script to run. A withdraw-zero validator that
+  cannot be registered cannot withdraw, and every spend that requires its withdrawal is
+  dead. Deploy-time registration hides this until the first *new* instance after the era
+  change -- typically a rotation or an upgrade. (`docs/sources/plutus/docusaurus/docs/working-with-scripts/script-purposes.md`)
 - Use this pattern for DEX order matching, batch settlements, and similar operations
 
 ## State Machine

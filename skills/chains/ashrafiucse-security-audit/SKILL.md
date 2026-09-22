@@ -29,6 +29,20 @@ Use when the user asks to "verify the fixes", "re-audit", "check what's fixed", 
 4. **Rewrite `SECURITY-AUDIT.md`**: per-finding status line (`FIXED` / `STILL PRESENT`, with the re-checked citation), a summary table (fixed n / open n / new n), and new findings appended with fresh SEC-NNN ids. Keep ids stable across runs — SEC-004 stays SEC-004 whether open or fixed.
 5. Verbal summary: fixed count, still-open worst issue, anything the fix broke.
 
+## Mode: incremental (PR / diff) audit — catch gaps when they land
+
+Use when the user says "audit this PR / branch / these commits" or hands you a diff — no prior `SECURITY-AUDIT.md` needed. Early-stage math: a gap caught in the PR costs an hour; caught at ship time it costs a chain.
+
+1. Scope the delta (read-only):
+   ```bash
+   bash ../security-audit/scripts/pr_diff_scope.sh <base-ref>   # default origin/main
+   ```
+   It prints BASE, changed files, and which sibling skills apply — verify the BASE line resolved to the ref you expected.
+2. Run ONLY the dispatched skills, plus ALWAYS: `../secrets-detection/SKILL.md` over the ADDED lines, and `../dependency-vulns/SKILL.md` when any manifest/lockfile changed.
+3. Audit the chain, not the line: a changed route pulls in its controller → model → view; a changed model pulls in every writer. Read the neighborhood of each change.
+4. Delta matrix: disposition every actor×surface cell the delta touches (Completeness gate v2 rules unchanged — a one-file PR still gets its surfaces dispositioned).
+5. Report to `SECURITY-AUDIT-PR.md` in the project root: findings cited in delta code, the delta matrix, census receipts, and a CI verdict line — `VERDICT: BLOCK` if any High+ finding is reachable from unauthenticated input, else `VERDICT: PASS`.
+
 ## Phase 0 — Recon: build the security map
 
 Do NOT read every file. Probe cheaply first:
@@ -50,6 +64,17 @@ Record in the report's "Stack" section:
 - Auth mechanism, database(s), external services
 - Repo size class (if huge, sample smartly — prioritize first-party code over vendored/generated code)
 
+Then census the coverage targets — they seed the Phase 2 matrix:
+
+```bash
+rg -n "role|is_admin|isAdmin|middleware\(|policy|Gate::|->can\(" app/ src/ routes/ config/ 2>/dev/null | head -25
+rg -n -i "webhook|queue|job|listener|command|upload|admin" app/ src/ routes/ 2>/dev/null | head -15
+```
+
+- **ACTORS** — every identity the code distinguishes: anonymous/public, authenticated user, staff/instructor/moderator, admin/tenant-admin, service/webhook caller, third-party integration. Record all, even "boring" ones.
+- **SURFACES** — every place code meets an actor: public pages/catalog, auth endpoints, authenticated app, admin panel, moderation queues, uploads/downloads, webhooks, background jobs, emails, external APIs.
+- If the project root has a `THREAT-MODEL.md` (from `../design-threat-review/SKILL.md`), load it: its actor×surface matrix is your seed and its threat rows are checks to disposition — design and audit share one artifact.
+
 ## Phase 1 — Deep scans
 
 For each applicable domain, **read the sibling skill and follow it** (paths are relative to this skill's directory):
@@ -69,6 +94,7 @@ For each applicable domain, **read the sibling skill and follow it** (paths are 
 | Login, sessions, tokens, permissions | `../auth-review/SKILL.md` |
 | Stateful business flows (order/payment/invoice, checkout, submit/approve/publish, signup/verify, refunds, provisioning) | `../flow-security/SKILL.md` — load it BEFORE route-level grepping for transactional apps |
 | Course/e-learning platform (courses, lessons, enrollments, cohorts, previews, subscriptions) | `../course-platform-security/SKILL.md` — persona-driven (public/student/admin) |
+| Spec/PRD/design doc shared BEFORE implementation (no or early code) | `../design-threat-review/SKILL.md` — produces THREAT-MODEL.md; at audit time, load it as the Phase 0 matrix seed |
 | Crypto, hashing, tokens, certs | `../crypto-review/SKILL.md` |
 | HTTP servers, CORS, headers, cookies, CI configs | `../config-hardening/SKILL.md` |
 | Dockerfile / compose / K8s / Terraform | `../container-iac-security/SKILL.md` |
@@ -80,6 +106,8 @@ Scan hygiene:
 - Always exclude `node_modules/ vendor/ dist/ build/ target/ .git/ __pycache__/ .venv/ venv/ coverage/` and minified `*.min.js`
 - Prioritize: auth code > input handlers > data access > config > everything else
 - For repos > ~2k files, scan by category (auth files first, then routes/controllers, then DB layers) rather than exhaustively
+- **Enumeration discipline:** sampling is for prioritizing WHICH skill runs next — inside a skill's check, its grep output is a census. Count the hits (`wc -l`), disposition every line (finding / verified-safe / not-assessed), never `head`-truncate an inventory. A pattern that mixes frameworks' noise (React `!!` vs Blade `{!!`) must be globbed to the framework's file type first. An unexamined tail is an unaudited tail.
+- **Census receipts:** for every census scan, record `hits=N, dispositioned=N` (a hit is dispositioned when you have read it and assigned finding / verified-safe / not-assessed). Receipts ship in the report's Census receipts table; any census with dispositioned < hits means the audit is INCOMPLETE and the report must say so in its first line.
 
 ## Phase 1.5 — Optional tool bridges (skip silently if absent)
 
@@ -111,7 +139,16 @@ Rate each finding:
 
 Also tag **Likelihood** (reachable from unauthenticated input? internal only?) and **Effort to fix** (S/M/L).
 
-**Completeness gate:** walk `references/owasp-top10.md` top to bottom. For any category with project surface but no recorded findings, either scan it now or mark it "not assessed" in the report — never skip silently.
+**Completeness gate v2 — disposition everything, skip nothing.** Build the coverage matrix from the Phase 0 census: every ACTOR × every SURFACE cell gets exactly one disposition:
+
+- ✅ **FINDING** — a finding covers this cell (cite SEC-NNN)
+- 🟢 **VERIFIED-SAFE** — you checked it and a control holds (name the control)
+- ⬜ **NOT-ASSESSED** — you didn't get to it; the report lists these cells by name
+
+Gate rules:
+1. Walk `references/owasp-top10.md` top to bottom — each category maps to matrix cells or carries its own disposition. Never skip silently.
+2. **Moderation/queue rule**: any artifact an unprivileged actor creates that a privileged actor opens (reviews, tickets, messages, submissions, uploaded filenames) gets its own cell — that is where student→admin XSS lives (see `../course-platform-security/SKILL.md` §6.5 and laravel-security Step 4's privilege-direction table).
+3. A cell with no disposition means the audit is INCOMPLETE — not small. Ship the full matrix in the report; untested surface is unreported risk.
 
 ## Phase 2.5 — Chain analysis (compound impact)
 
@@ -121,6 +158,7 @@ Individual severities understate real risk — pentest-grade reports show how fi
 |---|---|---|
 | SSRF → metadata → creds | SSRF + IMDSv1/no hop limit + instance role | Cloud account takeover |
 | XSS → session theft | any XSS + token in localStorage/sessionStorage | Account takeover |
+| Moderation-queue XSS | unprivileged-submitted content + raw render in a staff detail view | Staff/admin account takeover (the approval workflow itself is the delivery mechanism) |
 | Redirect → code theft | open redirect + OAuth/SSO callback carrying code/token in URL | Account takeover |
 | Upload → RCE | upload-to-webroot + parse gadget (image/php) | Server RCE |
 | Pollution → RCE | prototype pollution + gadget (child_process/template env) | Server RCE |
@@ -167,6 +205,22 @@ Knowledge base: <N> vuln-db entries (newest YYYY-MM-DD) | Live checks: OSV.dev +
 
 ## What looks good
 <controls that are done right — honest positives>
+
+## Coverage matrix (actor × surface — from the Phase 0 census)
+| Surface ↓ · Actor → | anonymous | user | staff/mod | admin |
+|---|---|---|---|---|
+| Public catalog | 🟢 status+visibility filter | n/a | n/a | n/a |
+| Review moderation queue | n/a | ✅ SEC-011 | 🟢 list view escaped | 🟢 role middleware |
+
+<every cell: ✅ SEC-NNN / 🟢 verified-safe + the control / ⬜ not-assessed / n-a>
+
+## Not assessed
+- <actor × surface cell> — why, and the scan that would close it
+
+## Census receipts
+| Census | hits | dispositioned |
+|---|---|---|
+| Blade raw echoes (glob *.blade.php) | 206 | 206 |
 
 ## Recommended fix order
 1. SEC-001 (critical, small effort) → ...

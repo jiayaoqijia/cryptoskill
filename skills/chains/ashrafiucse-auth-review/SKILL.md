@@ -29,6 +29,7 @@ Build a table `route → auth middleware → ownership check` and fill it by rea
 - the one handler missing `@login_required` / `authorize` / `auth:sanctum` in an otherwise-guarded file
 - non-HTTP surfaces that are routes in disguise: queue consumers, cron/background job handlers, webhook receivers, GraphQL resolvers (see `../graphql-security/SKILL.md`), event subscribers, RPC/message handlers — census them with the same table
 - dispatch-style apps (`?action=` → switch) — enumerate the switch arms, not the single URL
+- **case-sensitive middleware paths**: on case-insensitive hosts/routers, `app.use('/admin', guard)` can be bypassed by `/ADMIN` or `/Admin/` — check the router's case-sensitivity setting (Express: default sensitive only with regex; some frameworks/filesystems are not) and whether any guarded prefix can be cased around → authz bypass
 - **gRPC / protobuf services**: `service X { rpc Y (...) }` in `.proto` files — every `rpc` is a route; check per-method auth interceptors and validate request fields like any handler. Same for **message-queue consumers** (Kafka/Rabbit/SQS handlers), **scheduled job entry points**, and **Netty/WebSocket frame handlers** — add them all to the census table
 ```bash
 rg -n "rpc \w+\(" -g '*.proto'; rg -n "@GrpcClient|StreamObserver" -g '*.java' -g '*.kt'
@@ -81,6 +82,7 @@ rg -n "req\.params\.id|findById\(|get\(|\.filter\(.*userId|user\.id|currentUser|
 - Admin routes: how are they guarded? Missing middleware → CRITICAL. Note *function-level* checks too (regular user hitting `/admin/*` handlers).
 - Horizontal vs vertical: test reasoning for both — same-role users touching each other's data, and low-role → admin.
 - Trusting client-side hints: `is_admin` from request body/cookie-in-JWT-without-verify, hidden-but-served admin UI → HIGH
+- **authz on derived/divergent state** (ToB, Provenance 2026): when a permission decision reads a DERIVED value (cached role, denormalized count/balance, materialized flag) instead of the live source-of-truth record, two failure modes: (a) stale/replicated state authorizes what live state would deny, and (b) missing/zero/default derived state must FAIL CLOSED — a check like `if derived_supply > 0: grant admin` grants when the derived value is empty. Trace every authz read to its source-of-truth write; verify the default branch denies.
 
 ### Mass assignment (generic)
 
@@ -96,12 +98,14 @@ rg -n -i "req\.headers\[\s*['\"]x-|request\.headers\.get\(|getHeader\(\s*\"X-|he
 ```
 Using `X-User-Id` / `X-Email` / `X-Admin` / `X-Forwarded-For` as the **identity or authz input** means anyone who can reach the service directly is any user → **CRITICAL**. Valid only when BOTH hold: (1) an edge proxy/gateway strips these headers from inbound traffic, and (2) the app is not directly reachable (check NodePort/LoadBalancer services, ingress annotations, port exposure in compose). Microservice meshes are the classic miss: service B trusts `X-User-Id` "because only service A calls us" — but anything on the cluster network can. Headers used only for logging (`X-Request-Id`) are fine — trace the value into an authz decision before flagging.
 
+**SSO/OIDC callback host verification (CWE-943).** Rocket.Chat GHSL-2026-004/005: an account/SSO service accepted callbacks whose host did not match the configured/allowed one → authentication bypass. Wherever an OIDC/OAuth/SAML/OmniAuth callback or JWKS/discovery URL is resolved from configuration, verify the code checks the **exact** host/origin (allowlist, not substring/`endsWith`) and rejects mismatches before trusting the identity assertion → Critical (direct auth bypass).
+
 ### Multi-tenant scoping census (SaaS)
 
 Per-object IDOR checks miss the systematic version: in a multi-tenant app, EVERY data access must carry the tenant filter — one query without it leaks a whole tenant's data to another tenant's users (often via list/export/report endpoints that feel "shared").
 ```bash
-rg -n "tenant|org_?id|account_?id|customer_?id|workspace" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*.rb' -g '*.php' | head -15   # is there a tenant model at all?
-rg -n "\.(find|where|filter|all|select|query|get)(All)?\(" -g '*.js' -g '*.py' | rg -v "tenant|org_|account_|customer_|user" | head -15   # unscoped reads
+rg -n "tenant|org_?id|account_?id|customer_?id|workspace" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*.rb' -g '*.php'   # tenant model census — size it (wc -l), then read
+rg -n "\.(find|where|filter|all|select|query|get)(All)?\(" -g '*.js' -g '*.py' | rg -v "tenant|org_|account_|customer_|user"   # unscoped reads — census: disposition EVERY line
 ```
 Method: list every model access, mark each SCOPED (tenant filter present) / UNSCOPED / GLOBAL-BY-DESIGN (shared catalog). Every UNSCOPED access to tenant-owned data → **Critical**. Stronger defenses to note when present: DB-level row-level security (RLS), ORM global scopes (Laravel global scope, Django manager), middleware-injected tenant context that queries MUST use. Also check: tenant taken from request body/header instead of session (`req.body.tenantId` — attacker-controlled scope switch → cross-tenant, Critical), and cache keys missing the tenant prefix (cross-tenant cache bleed).
 ### Check-then-act races (TOCTOU)
@@ -141,7 +145,24 @@ rg -n -i "x-api-key|api[_-]?key" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*
 - Token in URL fragment vs query (query leaks via logs/referrers) → MEDIUM
 - `id_token` validated: signature, `nonce`, `aud` → skipping any = CRITICAL
 
-## 6 — Realtime channels (WebSocket / SSE)
+### Host-header poisoning in outbound auth/email flows
+
+Password-reset/verification links and OAuth redirect URIs built from `Host` / `X-Forwarded-Host` (request-derived) let an attacker poison the victim's link domain (CodeQL class; Django's `ALLOWED_HOSTS=['*']` is the classic enabler — see `../django-security/SKILL.md` Step 1). Grep link/URL construction in mailers and auth controllers for request-header inputs → HIGH (account takeover via poisoned reset links).
+## 6 — SAML (if present)
+
+```bash
+rg -n -i "saml|assertion|NameID|acs[ _-]?url|AudienceRecipient|samlp" -g '*.py' -g '*.java' -g '*.rb' -g '*.php' -g '*.js' -g '*.xml' | head -15
+```
+
+The four classic SAML bugs, in observed frequency order:
+- **Signature wrapping (SWA/XSW)**: the response's Signature element covers one assertion but the app reads a DIFFERENT one (attacker-injected). Defense: validate the signature over the exact node you consume (`response.get_assertion().validate_signature? no — one_assertion_only + signature-verified read`). Grep for `one_assertion_only` / `want_assertions_signed` settings — absent → HIGH/Critical.
+- **Comment injection in NameID**: `admin@corp.com<!--atk-->@evil.com` parses as admin@corp.com to the IdP-signed value but the SP extracts differently — mitigated by library versions and `NameID` format checks; flag any custom NameID string handling → HIGH.
+- **Unvalidated recipients**: `Destination`/`AudienceRestriction`/ACS URL not enforced (or ACS taken from the assertion!) → assertion replay across SPs. Config keys: `expected_audience`, `acs_url` pinned server-side → absent → Critical.
+- **Loose validation knobs**: `want_response_signed=False` + `want_assertions_signed=False`, clock skew ±24h (`not_before`/`not_on_or_after` neutered), `allow_unsolicited` in prod → each HIGH.
+
+Safe shapes: pinned ACS + audience, both signed flags true, one-assertion-only, tight skew (≤5m), library current (python3-saml / OneLogin / passport-saml families each had historic CVEs — version-check via vuln-db/OSV).
+
+## 7 — Realtime channels (WebSocket / SSE)
 
 ```bash
 rg -n "io\.on\(|socket\.on\(|new WebSocket|WebSocketServer|@MessageMapping|@SubscribeMapping|STOMP|EventSource|ActionCable|cable\.|channel\.subscribe"

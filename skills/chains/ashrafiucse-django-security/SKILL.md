@@ -44,12 +44,15 @@ rg -n "\.raw\(|\.extra\(|cursor\.execute" --type py
 ## Step 3 — XSS / template injection
 
 ```bash
-rg -n "mark_safe|\|safe\b" --type py -g '*.html'
+rg -n "mark_safe\s*\(" --type py
+rg -n "\|safe\b" -g '*.html' -g '*.htm'
 rg -n "Template\(|Engine\(\)\.from_string" --type py
 ```
 
-- `mark_safe(user_data)` → High
-- `{{ var|safe }}` in templates on user-derived vars → High
+Census, don't sample: count and disposition EVERY hit. (Do not combine these into one command — `--type py` and a `-g '*.html'` glob in the same invocation silently drop the `.py` hits, i.e. every `mark_safe` in views.) Severity by privilege direction per `../injection-flaws/SKILL.md` (XSS table): unprivileged author → privileged viewer = Critical.
+
+- `mark_safe(user_data)` → reflected High; stored unprivileged→staff (moderation/support/grading) Critical
+- `{{ var|safe }}` in templates on user-derived vars → same triage
 - `autoescape=False` in `Template()`/loader options → High
 - `Template(user_string)` (string built from input) → SSTI, Critical
 
