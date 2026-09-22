@@ -45,10 +45,20 @@ rg -n -i "log(level|_level)?\s*[:=]\s*[\"']?(debug|trace)" -g '*.yml' -g '*.yaml
 debug/trace in prod-looking config → Medium (noise hides real attacks; may leak
 data — cross-check `../SKILL.md` Step 2).
 
-## 4 — Monitoring hooks (report-level; grep can't prove absence)
+## 4 — Monitoring & alerting config (A09 deep checks)
 
-Unless evidence exists in-repo, mark as **"not assessed"** rather than guessing:
-- Error-rate / auth-failure-spike alerting (Sentry, CloudWatch alarms, PagerDuty config present?)
+Alerting is where "logs exist" becomes "attacks noticed". In-repo evidence CAN prove presence — look for it before writing "not assessed":
+
+```bash
+rg --files -g '*alert*' -g 'prometheus*.yml' -g 'rules*.yml' -g '*monitoring*' -g 'alarms*' -g '*.tf' | head
+rg -n -i "alertmanager|pagerduty|cloudwatch.*alarm|aws_sns|azmonitor|google_monitoring|datadog_monitor|sentry" -g '*.yml' -g '*.yaml' -g '*.tf' -g '*.json' | head
+```
+
+- **No alert-routing config anywhere** + auth/payment surfaces exist → MEDIUM finding: "no detection signals for credential attacks" (name the 2-3 rules that should exist: auth-failure spike per account/IP, admin-action anomaly, error-rate spike)
+- Alert rules present but none keyed on security events (only CPU/latency) → same finding, gentler
+- Positive signals to note: `ratelimit` alerts, login-failure dashboards, WAF/log-based rules (`cloudwatch_log_metric_filter` on auth events)
+- Still unverifiable (SaaS-only config) → **"not assessed"** with what to check on the vendor side
+
 - Log retention + immutability (append-only sink, WORM storage)
 - Request correlation IDs in logs (absent → LOW; investigation friction)
 

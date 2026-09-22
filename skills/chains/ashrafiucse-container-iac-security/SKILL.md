@@ -69,7 +69,7 @@ rg -n -i "hardcoded|access_key|secret_key|aws_secret" -g '*.tf'
 - Security groups / firewall rules: `0.0.0.0/0` ingress on ports 22/3389/5432/6379/27017/etc. → CRITICAL/HIGH (port 80/443 on load balancers is fine — judge by port)
 - Databases/storage unencrypted at rest (`encrypt_at_rest`, `storage_encrypted` false/omitted) → HIGH
 - Public S3/GCS buckets (`public_access_block` absent, `acl: public-read`) → HIGH if data is non-static
-- IAM: `Action: "*"` / `resources: ["*"]` policies attached to broad principals → HIGH; wildcard trust policies → CRITICAL
+- IAM: `Action: "*"` / `resources: ["*"]` policies attached to broad principals → HIGH; wildcard trust policies → CRITICAL. **Full escalation-path analysis (PassRole+compute, self-modification, broken trust, ExternalId)**: `references/aws-iam-escalation.md` — load it whenever IAM policies or trust relationships exist in the repo.
 - Hardcoded cloud keys in state files/code → CRITICAL (also check `.tfstate` committed to git)
 - Cloud: metadata with v1 tokens allowed → raises SSRF severity
 ```bash

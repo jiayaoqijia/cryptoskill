@@ -165,6 +165,26 @@ when the stack matches. Format: dangerous → safe → grep.
 | commons-text `StringSubstitutor.createDefault().replace(userText)` (1.0–1.9) | explicit map/string lookups only | Text4Shell CVE-2022-42889 — `${script:}` executes |
 | Shiro rememberMe with default/known `setCipherKey` (`kPH+bIxk5D2deZiIxcaaaA==`) | unique random key from env/secret | Shiro550 deserialization RCE — the key string is the finding |
 
+## Rust (axum / actix-web / sqlx)
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `sqlx::query(&format!("... {u}"))` / `query(&s)` with built string | `query("... $1").bind(u)` | same raw-boundary rule as every ORM |
+| `Command::new("sh").arg("-c").arg(user)` | `Command::new(bin).args([...])` | sh -c reintroduces shell |
+| `format!` into `Html(user)` (actix `HttpResponse` with text/html) | templates (askama/tera auto-escape) | reflected XSS |
+| `unwrap()` on parsed user input → 500 | typed extractors with validators | DoS-ish hygiene, note |
+| `serde_json::from_str` on unbounded user JSON | depth-capped readers | nesting DoS (same class as jackson CVE-2020-36518) |
+
+## Elixir / Phoenix
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `Repo.query!` / `Ecto.Adapters.SQL.query` with string interpolation | `Ecto.Query` bindings / fragment with `^pin` | `fragment("... #{u}")` = SQLi; `fragment("... ^u")` safe |
+| `raw(user)` in `.heex` templates | automatic HEEx escaping | Phoenix escapes by default; `raw` opts out |
+| `System.cmd("sh", ["-c", user])` | `System.cmd(bin, [args])` | shell reintroduction |
+| `Plug.Conn.send_resp` with user-built content-type/html | render views | reflected XSS |
+| `:crypto` direct use for passwords (`:crypto.hash(:md5, pw)`) | `Argon2`/`Bcrypt` (comeonin) | password hashing vs raw crypto |
+
 ## Adding a framework
 
 Same rules as `patterns.md`: one row = one fixture line (true positive + a

@@ -19,6 +19,15 @@ rg --files -g '*.conf' -g '*.cfg' -g '*.ini' -g '*.toml' -g '*.yaml' -g '*.yml' 
 - **Headers** on the main response path (app middleware, nginx `add_header`, helmet config):
   - `Strict-Transport-Security` missing → MEDIUM (HIGH for login sessions; recommend `max-age=31536000; includeSubDomains`)
   - `X-Content-Type-Options: nosniff`, `X-Frame-Options`/`frame-ancestors` (clickjacking), `Content-Security-Policy` missing → MEDIUM each; CSP absent on an app with rich user input → HIGH
+  - **Weak CSP is not a CSP**: a policy containing `script-src 'unsafe-inline'`/`'unsafe-eval'` (or `default-src *`, `http:` schemes) neutralizes most XSS protection → report as MEDIUM/HIGH with the exact directive to fix (nonces/hashes instead of unsafe-inline; remove unsafe-eval unless the app compiles code)
+```bash
+rg -n -i "content-security-policy|script-src|default-src" -g '*.conf' -g '*.yml' -g '*.js' -g '*.html' -g '*.py' | head -10
+```
+  - **Cookie prefixes** absent on auth/session cookies (`__Host-`/`__Secure-` prefixed names pin Secure + no subdomain shadowing) → MEDIUM: `__Host-session` not `session`
+  - **SRI**: third-party `<script src="https://...">` without `integrity=` → MEDIUM (script supply-chain injection); same-origin scripts exempt
+```bash
+rg -n "script[^>]+src=["']https?://" -g '*.html' -g '*.ejs' -g '*.php' | rg -v integrity | head
+```
   - `Referrer-Policy`, `Permissions-Policy` → LOW
 - **TLS**: `ssl_protocols` still includes TLSv1/TLSv1.1 → HIGH; self-signed or expired certs referenced → HIGH; HTTP→HTTPS redirect missing → MEDIUM
 - **Cookies**: flags `HttpOnly`, `Secure`, `SameSite` on auth/session cookies (details in `../auth-review/SKILL.md`)
@@ -80,6 +89,17 @@ SPA/extension/embed code that listens for messages:
 - Safe form: `if (e.origin !== 'https://app.example.com') return;` + escaped sinks + explicit target origin
 
 Also: `window.open` handles with `opener` access across origins, and service-worker `message` handlers — same rules.
+
+## API resource & consumption (OWASP API4/API10)
+
+**Outbound (API10 — unsafe consumption):** the app calling a third-party API is a client handling untrusted input:
+```bash
+rg -n "(axios|fetch|requests|http\.get|RestTemplate|WebClient)\(" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' | rg -v timeout | head
+```
+- Upstream responses rendered/executed without validation (`innerHTML = upstream.data`, `eval(body)`, template injection) → HIGH (compromised/malicious API = XSS/RCE in your app)
+- Upstream fields trusted for authorization (`if (upstream.role === 'admin')`) → HIGH — the third party (or DNS/MITM on plain http) becomes your authz
+- **No timeout** on outbound calls → HIGH availability note (API4: one slow dependency stalls workers); recommend connect+read timeouts
+- **Inbound (API4 — resource consumption):** list endpoints without page/limit caps (unbounded `Model.all()`, `find()` no limit) → MEDIUM; batch/mutation endpoints without max-batch-size → MEDIUM; file-processing endpoints without count caps → note with upload checks
 
 ## Reporting
 

@@ -1056,7 +1056,7 @@ def test_the_eli5_is_called_eli5():
 def test_every_script_that_matters_carries_the_same_version():
     """A stale install passed every gate we had.
 
-    2026-09-21: an agent updated quant-desk, SKILL.md and render.py both read 1.6.0, all three gates
+    2026-09-21: an agent updated the skill, SKILL.md and render.py both read 1.6.0, all three gates
     passed — and desk.py was still old. It showed up as a progress line reading "senpi-smart-money"
     at step 4 where the shipped source says "senpi-market-pulse". desk.py does all the work and was
     the one file with no version of its own, so nothing could catch it.
@@ -2146,3 +2146,238 @@ def test_a_recovered_drawdown_is_not_reported_as_a_blown_account():
     s_dn, line_dn = score.dim_risk(dict(base, ledger_net=-16_969.0), flat, dict(dd_pct=0.93))
     assert "went to zero" in line_dn, line_dn
     assert s_up == s_dn, "the penalty should not depend on how the window happened to end"
+
+
+def test_the_skill_answers_to_ai_quant_as_well_as_quant_desk():
+    """Jason: "AI Quant" is the name users are prompted with; "quant desk" must keep working. The
+    `description` frontmatter is what the agent matches at SELECTION time, so the trigger phrases
+    have to live there — not in the body, which is only read once the skill is already chosen."""
+    skill = _P(HERE, "..", "SKILL.md").read_text()
+    desc = " ".join(skill[:skill.index("license: Apache-2.0")].split())
+
+    # Quant Desk is the product name (the roadmap's own item 7); AI Quant is the umbrella brand and
+    # the persona that produces it. BOTH have to select the skill — users hear either.
+    assert "**Quant Desk**" in desc and "**AI Quant**" in desc, "the naming hierarchy is not stated"
+    # spaced AND hyphenated — Jason: "User can say run ai-quant run quant or run quant-desk"
+    for phrase in ("run AI quant", "run ai-quant", "run quant", "run quant desk", "run quant-desk",
+                   "score my trading", "find leaks on my Hyperliquid wallet",
+                   "what did I miss", "master my week",
+                   "run AI quant on my Hyperliquid wallet",
+                   "run AI quant on any Hyperliquid wallet"):
+        assert phrase in desc, f"{phrase!r} will not select this skill"
+
+    # the ambiguous two are scoped so they do not hijack unrelated requests
+    assert '"what did I miss" (about a book, a week or a trade)' in desc
+
+
+def test_a_bare_run_ai_quant_offers_candidates_instead_of_guessing():
+    """Jason: "Run AI quant on any Hyperliquid wallet" and "find traders for me to analyze with AI
+    quant" must both work with no address. The failure to avoid is inventing one, or answering from
+    memory — both produce a confident desk about a wallet nobody asked for."""
+    skill = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    desc = " ".join(skill[:skill.index("license: Apache-2.0")].split())
+
+    assert "find traders for me to analyze with AI quant" in desc
+    assert "run AI quant on any Hyperliquid wallet" in desc
+    assert "never guess an address and never answer from memory" in desc
+
+    assert "No address given — find them some" in skill
+    # prose uses en-dashes; the CLI flags use hyphens — both must be present and must agree
+    import hl_api
+    for band in ("$5k\u201310k", "$10k\u201325k", "$25k\u2013100k", "$100k\u20131M", "whales ($1M+)"):
+        assert band in skill, f"{band} is not offered to the reader"
+    for flag in hl_api.FIND_BANDS:
+        assert f"--find {flag}" in skill or flag in skill, f"--find {flag} is not documented"
+    assert "this week's worst" in skill, "a losing book is the instructive read"
+    assert "Vetting a trader to mirror is `senpi-trader-research`" in skill
+
+
+def test_the_finder_screens_by_band_and_can_look_for_losers():
+    """A $9k book and a $9M book teach different lessons, so size is the first question. Vault and
+    yield accounts hold equity and never trade — they render as an empty desk and must not appear."""
+    import hl_api
+    lb = {"leaderboardRows": [
+        {"ethAddress": "0x" + "a" * 40, "accountValue": "9000",
+         "windowPerformances": [["week", {"pnl": "5000", "roi": "0.5", "vlm": "900000"}]]},
+        {"ethAddress": "0x" + "b" * 40, "accountValue": "9000",
+         "windowPerformances": [["week", {"pnl": "-4000", "roi": "-0.4", "vlm": "900000"}]]},
+        {"ethAddress": "0x" + "c" * 40, "accountValue": "9000",          # a vault: equity, no fills
+         "windowPerformances": [["week", {"pnl": "8000", "roi": "0.9", "vlm": "0"}]]},
+        {"ethAddress": "0x" + "d" * 40, "accountValue": "5000000",
+         "windowPerformances": [["week", {"pnl": "50000", "roi": "0.01", "vlm": "9000000"}]]},
+    ]}
+    best = hl_api.find_traders(lb, band="5k-10k", window="week")
+    assert [r["address"][:4] for r in best] == ["0xaa"], "band, volume floor or sign filter is wrong"
+
+    worst = hl_api.find_traders(lb, band="5k-10k", window="week", losers=True)
+    assert [r["address"][:4] for r in worst] == ["0xbb"]
+
+    assert [r["address"][:4] for r in hl_api.find_traders(lb, band="whales", window="week")] == ["0xdd"]
+    assert best[0]["turnover"] == 100.0 and best[0]["account_value"] == 9_000.0
+
+
+def test_the_two_trader_skills_point_at_each_other_on_the_verb():
+    """Both skills now answer "find me traders". The split is the VERB — COPY is trader-research,
+    ANALYSE is this one — and each has to name the other, or selection is a coin flip."""
+    mine = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    theirs = " ".join((_P(HERE, "..", "..", "senpi-trader-research", "SKILL.md")).read_text().split())
+
+    assert "senpi-trader-research" in mine, "this skill does not hand off for copy vetting"
+    assert "quant-desk" in theirs, "trader-research does not point back for analysis"
+    assert "COPY comes here, ANALYSE goes there" in theirs
+    assert "find traders for me to analyze" in theirs, "the ambiguous phrase is not disambiguated"
+
+
+def test_a_position_that_was_cycled_is_not_priced_as_one_that_was_held():
+    """The root cause behind every outsized counterfactual this build found.
+
+    Each exit counterfactual multiplies a RETURN by `peak_size × entry_vwap`, which assumes the peak
+    size was held from entry to the exit. On a scaled position that is false, and the error scales
+    with notional: xyz:SKHX on 0xb699…392e ran 507 fills over 29 days with $16,310,330 entered
+    against a $7,123,550 peak — rebuilt 2.3× — and its lock counterfactual came out at $1,240,071 on
+    a book that lost $233,845. The quoted total was 8.7× the book's own P&L.
+
+    There is no per-moment exposure in this data, so the desk declines rather than guessing a
+    correction. The trade still counts in every TOTAL; only the exit grid skips it."""
+    import timing
+    ep = lambda **kw: {**dict(coin="X", direction="LONG", entry_vwap=100.0, peak_size=100.0,
+                              open_time=0, close_time=10 * 3_600_000, realized=-1_000.0, win=False,
+                              complete=True, hold_h=10.0, entry_val=10_000.0), **kw}
+    candles = {"X": ([0, 3_600_000, 10 * 3_600_000],
+                     [(0, 100.0, 130.0, 95.0, 100.0), (3_600_000, 100.0, 130.0, 95.0, 128.0),
+                      (10 * 3_600_000, 128.0, 130.0, 90.0, 90.0)])}
+
+    held = timing.per_trade([ep(entry_val=10_000.0)], candles)          # entered once, held
+    cycled = timing.per_trade([ep(entry_val=25_000.0)], candles)        # rebuilt 2.5x over its life
+
+    assert any(v is not None for v in held[0]["lock_cf"].values()), "a held position must still price"
+    assert all(v is None for v in cycled[0]["lock_cf"].values()), "a cycled position was priced as held"
+    assert all(v is None for v in cycled[0]["cut_cf"].values())
+    # and it is only the exit grid that skips it — the row itself is still there for the totals
+    assert cycled[0]["realized"] == -1_000.0 and cycled[0]["notional"] == 10_000.0
+
+
+def test_the_worst_funding_coin_can_exceed_the_net_and_says_why():
+    """"xyz:SKHX alone cost $125,867" printed under "Paid $122,257 in funding" reads as an
+    arithmetic error. It is the net across coins; others collected."""
+    tr = dict(funding=-122_257.0, coins={"xyz:SKHX": dict(funding=-125_867.0)}, trades=9,
+              fee_recoverable=0.0, taker_share=0.0, liquidations=0)
+    rows = [dict(time=200_000_000, delta=dict(usdc="-125867", coin="xyz:SKHX"))]
+    closed = [dict(coin="xyz:SKHX", open_time=0, close_time=4e12)]
+    out = score.leaks(tr, dict(funding_per_day=-271.0), {}, rows, closed, 0, 90)
+    ev = next(l for l in out if "funding" in l["title"])["evidence"]
+    assert "more than the $122,257 net" in ev and "other coins collected" in ev, ev
+
+
+def test_a_lever_that_wins_the_headline_always_has_a_visible_leak():
+    """On 0x696d…8e28 the headline read "~$180,892 recoverable — closing anything still open after
+    24h" and that leak was nowhere on the page: the LEAK was gated on hold_ratio > 1.2 ("you hold
+    losers longer than winners") while the LEVER had no such gate, and this trader cuts losers 2.6x
+    FASTER. The hold-ratio framing is the EVIDENCE for a time cut, not a precondition for one.
+
+    Asserted as a property: whatever lever wins, the reader can see where the number came from."""
+    rows = [_tm_row(cut_cf={"24": 30_000.0}, realized=-500.0, win=False, hold_h=48.0) for _ in range(6)]
+    tm = dict(cut={"settings": {"24": dict(n=6, total=150_000.0)}})
+    lv = score.levers(rows, [], tm)
+    tr = dict(trades=6, complete_trades=6, fee_recoverable=0.0, taker_share=0.0, funding=0.0,
+              liquidations=0, coins={}, hold_ratio=0.38,      # cuts losers FASTER — no hold evidence
+              hold_losers_h=2.0, hold_winners_h=5.2)
+
+    rec = score.recoverable(rows, [], tr, tm, lv)
+    out = score.leaks(tr, dict(funding_per_day=0.0), tm, [], [], 0, 90, lv)
+    assert rec["rule"], "no lever won, the fixture is wrong"
+    assert out, "the winning lever produced no leak at all"
+    assert any(abs(l["usd"] - (rec["usd"] - rec["fees"])) < 1 for l in out), \
+        f"headline cites {rec['rule']} at {rec['usd'] - rec['fees']:,.0f} but no leak matches: " \
+        f"{[(l['title'][:40], round(l['usd'])) for l in out]}"
+
+    # and when the hold-ratio evidence DOES apply, it is still the framing used
+    tr_slow = dict(tr, hold_ratio=2.6, hold_losers_h=52.0, hold_winners_h=20.0)
+    out2 = score.leaks(tr_slow, dict(funding_per_day=0.0), tm, [], [], 0, 90, lv)
+    assert any("hold losers 2.6× longer" in l["title"] for l in out2), [l["title"] for l in out2]
+
+
+def test_a_book_with_no_winning_trade_still_renders(_=None):
+    """@danielmbirochi (#718), critical 1. `give_back_median` and `mfe_median_winners` are taken over
+    WINNERS only, so a book where every trade closed red has both as None — while the lock lever
+    still fires, because losers that armed and retraced produce one. `_pct(None)` raised TypeError,
+    which is not an HLError, so desk.py printed a traceback and no desk.
+
+    That is exactly the book `--find --find-losers` sends a reader to, which I added in 1.18.0."""
+    tm = dict(n=6, lock={"settings": {"0.03/0.5": dict(n=6, total=9_000.0)}}, cut={"settings": {}},
+              give_back_median=None, mfe_median_winners=None, losers_that_were_green=1.0,
+              chased_n=0, chased_realized=0.0, calm_pf=None, chased_pf=None)
+    tr = dict(trades=6, complete_trades=6, fee_recoverable=0.0, taker_share=0.0, funding=0.0,
+              liquidations=0, coins={}, hold_ratio=None)
+    rows = [_tm_row(realized=-500.0, win=False, mfe=0.08, lock_cf={"0.03/0.5": 1_500.0}) for _ in range(6)]
+
+    out = score.leaks(tr, dict(funding_per_day=0.0), tm, [], [], 0, 90, score.levers(rows, [], tm))
+    lock = next(l for l in out if "peak" in l["title"])
+    assert lock["usd"] == 9_000.0
+    assert "No complete trade closed green" in lock["evidence"], lock["evidence"]
+
+    # and the winners-present path still uses the median framing
+    tm2 = dict(tm, give_back_median=0.54, mfe_median_winners=0.058)
+    out2 = score.leaks(tr, dict(funding_per_day=0.0), tm2, [], [], 0, 90, score.levers(rows, [], tm2))
+    assert any("give back a median 54%" in l["title"] for l in out2), [l["title"] for l in out2]
+
+
+def test_a_maker_rebate_is_not_recoverable_money():
+    """@danielmbirochi (#718), critical 3. dim_cost was fixed for this in #733 and `fee_recoverable`
+    was missed — `abs(fees)` turned a net rebate into recoverable dollars, which recoverable() then
+    added on top of the lever."""
+    import metrics
+    ep = lambda fee: dict(coin="BTC", volume=1_000_000.0, taker_volume=900_000.0, direction="LONG",
+                          realized=0.0, fees=fee, win=False, truncated=True, complete=False,
+                          peak_notional=0.0, liquidated=False, hold_h=1.0, open_time=0, close_time=1)
+    sched = dict(userCrossRate=0.00035, userAddRate=0.00008)
+    assert metrics.track_record([ep(-4_000.0)], [], [], sched, 0)["fee_recoverable"] == 0.0, \
+        "a rebate was reported as recoverable"
+    assert metrics.track_record([ep(4_000.0)], [], [], sched, 0)["fee_recoverable"] > 0
+
+
+def test_drawdown_reads_raw_equity_not_the_transfer_adjusted_curve():
+    """@danielmbirochi (#718), critical 2 — a regression from my own B3 fix in #733.
+
+    drawdown's numerator (cumulative P&L) is already transfer-immune; its denominator is "the equity
+    the fall came out of". Feeding it the transfer-ADJUSTED curve made `av_at` go negative on an
+    account funded mid-window, base collapsed toward zero and dd_pct read 0% — no risk penalty, no
+    IN DRAWDOWN flag on a book that really did draw down."""
+    src = _P(HERE, "..", "scripts", "desk.py").read_text()
+    assert "metrics.drawdown(pnl_pts, eq_raw)" in src, "drawdown is back on the adjusted curve"
+    assert 'eq_raw = metrics.equity_curve(tr_raw["portfolio"], [], win_start)' in src
+    # and the adjusted curve is still what everything else uses
+    assert 'eq = metrics.equity_curve(tr_raw["portfolio"], fl, win_start)' in src
+
+
+def test_hitting_the_page_ceiling_declares_a_partial_history():
+    """@danielmbirochi (#718), critical 5. #733 set the PARTIAL flag only in the except branch.
+    Exhausting MAX_PAGES exits the loop NORMALLY, so a wallet with more closed positions than the
+    ceiling covers shipped a prefix as a complete record, indexed=True and no suffix."""
+    import senpi_history
+
+    class _Client:
+        def mcp_call(self, *a, **kw):
+            return {"success": True, "data": {"closed_positions": [
+                dict(coin="BTC", szi="1", entryPx="100", exitPx="110", openTime=1, closeTime=4_000_000_000,
+                     realizedPnl="10", totalFees="1", leverage={"value": 1}, totalFills="2")
+                for _ in range(senpi_history.PAGE)]}}
+
+    meta = {}
+    rows = senpi_history.fetch(_Client(), "0x" + "a" * 40, 0, meta)
+    assert len(rows) == senpi_history.PAGE * senpi_history.MAX_PAGES
+    assert meta.get("senpi_history_partial") is True, "the ceiling shipped a prefix as complete"
+    assert meta.get("senpi_history_failed") is not True, "nothing actually failed"
+
+
+def test_every_figure_is_computed_on_the_window_the_desk_claims():
+    """@danielmbirochi (#718), critical 4. `hl.trader()` fetches days+60 so an episode opening before
+    the window can still be completed — but the raw set was handed to `levers()` and `dim_sizing()`,
+    so the size lever's median-winner threshold and the sizing dimension's abstention gate ran on up
+    to 150 days inside a desk whose every other number says 90."""
+    src = _P(HERE, "..", "scripts", "desk.py").read_text()
+    assert "score.levers(tm_rows, in_win, tm" in src, "levers are back on the unfiltered set"
+    assert "score.dimensions(track, book, dd, tm, mf, sm, in_win, pnl_curve)" in src, \
+        "dim_sizing is back on the unfiltered set"
+    # the wider fetch itself is deliberate and must stay
+    assert "days + 60" in src or "days+60" in src or "FETCH_PAD" in src or "win_start" in src

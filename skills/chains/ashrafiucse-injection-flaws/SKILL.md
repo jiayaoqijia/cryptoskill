@@ -69,6 +69,13 @@ rg -n "requests\.get\(|axios\.(get|post)|fetch\(|urllib\.request|HttpClient|curl
 ```
 Flag only when the URL (host or full) derives from user input — e.g. "fetch this webhook URL", URL preview features, image import by URL. Check for allowlist/redirect limits/private-IP blocking.
 
+**Deferred/stored SSRF (registered callbacks)** — the sneakiest form: the URL is captured at REGISTRATION time (webhook/callback/integration settings, OAuth `redirect_uri` stored per-app) and fetched later by a delivery/retry job. At fetch time no request validator applies — the stored value IS the attack.
+```bash
+rg -n "(webhook|callback|notify|hook)[_a-z]*(url|uri|endpoint)" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*.rb' -g '*.php'
+rg -n "(fetch|axios|requests\.get|http\.Get|RestTemplate|curl)\(\s*\w*[Hh]ook\w*\.?(url|uri|endpoint)" | head
+```
+Checks: registration validates scheme+host (public DNS, no private ranges, no wildcard subdomain tricks) AND blocks internal/metadata ranges at FETCH time (DNS rebinding defeats registration-time-only checks — revalidate after resolve). Event payloads delivered to attacker-registered URLs must not contain secrets/tokens (exfil channel). Missing any → **High** (Critical on cloud where metadata is reachable).
+
 **Egress controls (defense verification, A10):** when the app fetches user-influenced URLs, also check the environment makes SSRF expensive:
 - Kubernetes: any `NetworkPolicy` restricting egress for the fetcher pods? (absence → note; pair with the SSRF finding — see `../container-iac-security/SKILL.md`)
 - Cloud: metadata service reachable with v1 tokens (AWS `metadata_options http_tokens = "optional"`, no hop limit) → cloud-metadata SSRF = credential theft, raise SSRF severity
@@ -83,6 +90,25 @@ rg --files -g '*networkpolicy*' -g '*NetworkPolicy*' ; rg -n "kind: NetworkPolic
 rg -n "pickle\.loads?|yaml\.load\((?!.*Loader=)|marshal\.loads|ObjectInputStream|readObject|unserialize\(|eval\(|exec\(|new Function\(|Function\("
 ```
 `yaml.load` without `SafeLoader`, `pickle.loads` on user-controlled bytes, PHP `unserialize` on user input, `eval` on anything remote = CRITICAL.
+
+### CRLF / header injection
+```bash
+rg -n "setHeader\(|addHeader\(|res\.set\(|header\(\s*['\"]Location|redirect\(.*\+\s*req|Location.*\+ *request"
+```
+User-controlled data (query params, URL paths, filenames, webhook fields) written into response headers → `\r\n` in it splits/adds headers: `?next=/%0d%0aSet-Cookie: admin=1`, response splitting on proxies, poisoned caches, injected email headers when the same data feeds mail APIs. Report MEDIUM (HIGH when the header is `Location`/`Set-Cookie` or feeds an email/sms gateway). Fix: strip `\r\n` (and `\0`) from values before any header/mail use, URL-encode redirect components.
+
+### Identifier & allowlist comparison hygiene (unicode)
+
+String equality is not identity: NFC/NFD forms collide visually but compare unequal (or the reverse — stored NFD, compared NFC), and IDN homoglyphs defeat eyeball-validated allowlists.
+```bash
+rg -n "(normalize|NFC|NFD|NFKC)" -g '*.js' -g '*.py' | head    # absent = check comparisons manually
+rg -n "(=== req\.|== req\.|\.includes\(.*(host|origin|domain|name))" -g '*.js' -g '*.ts' | head
+```
+- Username/account lookups by exact match without unicode normalization → account spoofing and admin-lookalike registrations (`admın`, soft-hyphen suffixes) → Medium/High (the Django CVE-2019-19844 class — see vuln-db)
+- Host/origin allowlists compared as raw strings: verify they anchor exactly (`.endsWith('example.com')` matches `evilexample.com`) AND reject mixed-script/punycode hosts unless explicitly allowed (`URL.host` keeps punycode — compare against the punycode form, not the human form)
+- Path allowlists: `path.normalize` does NOT unicode-normalize — fullwidth slashes/dots (`\uFF0F`, `\uFF0E`) can slip past naive prefix checks before the OS layer interprets them → flag prefix checks that don't canonicalize aggressively
+
+Fixes: normalize identifiers to NFKC at write AND query time; compare origins via parsed `URL` with exact-host equality; canonicalize paths with resolved-containment checks (above).
 
 ### Template injection (SSTI)
 ```bash
@@ -123,6 +149,8 @@ rg -n -i "\?(next|continue|returnTo|returnUrl|redirect|redirect_uri|url|goto)=" 
 Flag when the redirect target comes from user input with no exact-host allowlist. Login/logout/reset flows carrying `?next=` params are the classic; **High** when the URL carries tokens/codes (OAuth `code`, reset token) or silences origin checks, otherwise **Medium**. Safe: exact allowlist of destinations, or relative-only after `new URL(next, base)` origin check — prefix/suffix matching on the host is bypassable (`evil.com` vs `evil-example.com`).
 
 ### Unsafe file upload
+
+**C/C++ native components**: memory-safety and native injection sinks (`strcpy`/`sprintf`, format strings, `system()`, integer-overflow allocs, TOCTOU) live in `references/patterns.md` "C/C++ native code" — load it when the repo carries `.c/.cc/.cpp` service/extension code.
 ```bash
 rg -n "multer|multipart|form\.File|FormFile|MultipartFormDataEntry|\.originalname|file\.filename|Storage\(|upload"
 ```
@@ -131,6 +159,7 @@ For every upload handler check:
 2. **Storage location** — files written under webroot/static/public → served/parsed by the web server = **Critical** (parse-to-RCE chains); non-served storage → High
 3. **Filename** — user filename used verbatim (`../../` traversal, collisions) instead of CSPRNG-generated names
 4. **Caps** — no size limit / no per-entry decompression cap → zip bomb (`zipfile.extractall` unchecked) → High
+5. **Extraction attacks** (distinct from bombs): entry names containing `../` (zip-slip: `adm-zip`/`extractAllTo`, `zipfile.extractall`, `tarfile.extractall` write outside the target dir) and **symlink members** (a tar symlink `link -> /etc/passwd` followed by a later member that overwrites it — `tarfile` pre-3.12 style). Safe extraction: validate EVERY entry's resolved path stays inside the target (`path.resolve(dest, name).startsWith(dest + sep)`), reject absolute/symlink members, prefer libraries that refuse by default (`zipfile` with custom member filter, `libarchive` hardened flags) → High/Critical
 5. **Serving** — uploads served `inline` without `X-Content-Type-Options: nosniff` / `Content-Disposition: attachment`; SVG uploads rendered (embed `<script>`, XXE via `<externalEntity>`)
 
 ## Reporting

@@ -10,7 +10,7 @@ improvement targets (see repo `COVERAGE.md`).
 | A01 | Broken Access Control | auth-review | IDOR, missing authz middleware, horizontal/vertical escalation, trusted-header spoofing, realtime (WebSocket/SSE) authz, TOCTOU races, mass assignment | strong |
 | A02 | Cryptographic Failures | crypto-review, secrets-detection | weak hashes/ciphers, static IVs, hardcoded keys, TLS verify off | strong |
 | A03 | Injection | injection-flaws | SQLi, XSS, command, path traversal, SSTI, deserialization, LDAP/XPath, XXE, prototype pollution, open redirect, ReDoS | strong (Node/Python/Java); see `../injection-flaws/references/frameworks.md` |
-| A04 | Insecure Design | security-audit (design pass) | missing rate limits, business-logic abuse, trust boundaries, replay/idempotency, negative values, step-skipping | good — grep-anchored checklist below (judgment still required) |
+| A04 | Insecure Design | security-audit (design pass), flow-security | missing rate limits, business-logic abuse, trust boundaries, replay/idempotency, negative values, step-skipping, flow-wise analysis (F1–F8) | good — flow-security skill covers cross-endpoint invariants |
 | A05 | Security Misconfiguration | config-hardening, container-iac-security | headers, CORS, debug, CI/CD, Docker/K8s/Terraform | strong |
 | A06 | Vulnerable & Outdated Components | dependency-vulns, cve-research | live OSV scan, lockfile hygiene, KEV | strong (live data) |
 | A07 | Identification & Auth Failures | auth-review | password storage, sessions, JWT, OAuth, MFA, enumeration | strong |

@@ -19,6 +19,13 @@ Interpretation rules:
 - Unreachable-but-present → **HIGH** (upgrades are cheap insurance).
 - No fixed version available → note "no fix released yet; mitigation required" and check for vendor workarounds.
 
+**Reachability (turn "present" into "used" or "dormant")** — the severity multiplier for every finding above:
+```bash
+rg -n "require\(['\"]<pkg>|from ['\"]<pkg>|import <pkg>" -g '!*.lock'          # who imports it
+rg -ln "require\(['\"]<pkg>" | rg "(routes|controllers|api|handlers|server|app)"  # do ROUTES reach it?
+```
+A vulnerable dep imported only by a build script is DORMANT (note + upgrade); imported from a request path is LIVE (severity stands). When `node_modules/` is present, confirm the RESOLVED version matches the lockfile (`cat node_modules/<pkg>/package.json | grep version`) — vendored drift is common.
+
 ## Step 2 — Manifest hygiene (no network needed)
 
 Check and report:
@@ -44,6 +51,16 @@ npm view <name> versions --json 2>/dev/null || echo "not on public registry (goo
 With network: a `npm view` that SUCCEEDS for an internal name = **CRITICAL** (register a namespace/proxy instead). Without network: list internal-looking names for manual verification. Same check for pip (`pip index versions`) and Go private modules (`GOPRIVATE` vs proxy.golang.org reachable names).
 - **Typosquat heuristics**: dependency names at edit-distance 1 from popular packages (`reqeusts`, `lodash2`, `expresss`, `colors-2`, `-js` suffixed clones of core names) → HIGH until verified legitimate. Notable real-world families: `event-stream`, `ua-parser-js`, `node-ipc`, `coa`, `rc` hijacks — names matter less than the SHAPE: unpopular package, recently published, exact-near-famous-name.
 - **Provenance**: registry-signed provenance / lockfile integrity hashes present? (`package-lock.json` `integrity` fields; pip hashes in requirements; `--locked` usage) — absence → MEDIUM note.
+
+## Step 2.7 — Beyond CVEs: dead, dangerous, and vendored packages
+
+Advisory databases are silent on four classes that hit "clean main code, compromised system" — run the full pack in `references/dangerous-packages.md`:
+1. **Discontinued/unfixable** (vm2, request, …): flagged by PRESENCE, not advisory — any version is a finding when usage is security-relevant
+2. **Compromised-release history** (event-stream 3.3.6, ua-parser-js 0.7.29/0.8.1/1.0.12, eslint-scope 3.7.2, coa/rc 2021, node-ipc 11.x, cross-env 7.0.x): exact-version greps, zero network needed; a match means postinstall RAN — rotate credentials
+3. **Dangerous usage of safe packages** (lodash.merge(req.body), qs allowPrototypes, compile(userInput)): call-site risk, version is irrelevant
+4. **Vendored/bundled copies** (old jQuery/moment/AngularJS committed under public//vendor/dist): invisible to every manifest scanner — read the version banners
+
+Reachability verdicts from Step 1 apply here too: `vm2` present AND `new VM()` reachable from a route is a different finding than `vm2` in devDependencies.
 
 ## Step 3 — Runtime EOL check (live, free — endoflife.date)
 

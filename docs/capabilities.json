@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T11:45:40.259521+00:00",
+  "generated_at": "2026-09-22T17:04:37.978708+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -25827,6 +25827,68 @@
       },
       "hosted_operators": []
     },
+    "chains/ashrafiucse-course-platform-security": {
+      "name": "course-platform-security",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "chains/ashrafiucse-crypto-review": {
       "name": "crypto-review",
       "execution_model": "read_only",
@@ -25891,7 +25953,7 @@
     },
     "chains/ashrafiucse-cve-research": {
       "name": "cve-research",
-      "execution_model": "unknown",
+      "execution_model": "unsigned_tx_builder",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -25924,7 +25986,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -26116,6 +26178,68 @@
         },
         "requires_private_key": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/ashrafiucse-flow-security": {
+      "name": "flow-security",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -26573,6 +26697,68 @@
     },
     "chains/ashrafiucse-security-audit": {
       "name": "security-audit",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/ashrafiucse-skill-forge": {
+      "name": "skill-forge",
       "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
@@ -131045,6 +131231,68 @@
       },
       "hosted_operators": []
     },
+    "wallets/metamask-official-check-nesting": {
+      "name": "check-nesting",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/metamask-official-codex": {
       "name": "codex",
       "execution_model": "read_only",
@@ -132798,7 +133046,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -132838,7 +133086,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -136388,31 +136636,31 @@
     }
   },
   "summary": {
-    "discovered": 2188,
-    "processed": 2188,
+    "discovered": 2192,
+    "processed": 2192,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1385,
+      "read_only": 1388,
       "router_orchestrator": 131,
       "unknown": 248,
       "analysis_only": 199,
-      "unsigned_tx_builder": 80,
+      "unsigned_tx_builder": 81,
       "local_executor": 88,
       "installer_bootstrap": 38,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 959,
-      "can_install_code": 477,
-      "can_write_files": 127,
+      "can_execute_shell": 962,
+      "can_install_code": 478,
+      "can_write_files": 128,
       "can_browse_web": 201,
       "can_spawn_subagents": 231,
-      "can_move_funds": 242,
+      "can_move_funds": 243,
       "requires_private_key": 400,
       "requires_hosted_operator": 324,
       "uses_remote_install_script": 40,
-      "mutable_remote_runtime": 477
+      "mutable_remote_runtime": 478
     }
   }
 }

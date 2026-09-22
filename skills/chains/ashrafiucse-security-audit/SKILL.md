@@ -67,6 +67,8 @@ For each applicable domain, **read the sibling skill and follow it** (paths are 
 | Rails project (`Gemfile` with rails, `app/controllers`) | `../rails-security/SKILL.md` |
 | Spring/Java project (`pom.xml`/`build.gradle` with spring dependencies) | `../spring-security/SKILL.md` |
 | Login, sessions, tokens, permissions | `../auth-review/SKILL.md` |
+| Stateful business flows (order/payment/invoice, checkout, submit/approve/publish, signup/verify, refunds, provisioning) | `../flow-security/SKILL.md` — load it BEFORE route-level grepping for transactional apps |
+| Course/e-learning platform (courses, lessons, enrollments, cohorts, previews, subscriptions) | `../course-platform-security/SKILL.md` — persona-driven (public/student/admin) |
 | Crypto, hashing, tokens, certs | `../crypto-review/SKILL.md` |
 | HTTP servers, CORS, headers, cookies, CI configs | `../config-hardening/SKILL.md` |
 | Dockerfile / compose / K8s / Terraform | `../container-iac-security/SKILL.md` |
@@ -111,13 +113,34 @@ Also tag **Likelihood** (reachable from unauthenticated input? internal only?) a
 
 **Completeness gate:** walk `references/owasp-top10.md` top to bottom. For any category with project surface but no recorded findings, either scan it now or mark it "not assessed" in the report — never skip silently.
 
+## Phase 2.5 — Chain analysis (compound impact)
+
+Individual severities understate real risk — pentest-grade reports show how findings COMBINE. Before writing the report, walk the finding list and try to complete known chains:
+
+| Chain | Components | Compound impact |
+|---|---|---|
+| SSRF → metadata → creds | SSRF + IMDSv1/no hop limit + instance role | Cloud account takeover |
+| XSS → session theft | any XSS + token in localStorage/sessionStorage | Account takeover |
+| Redirect → code theft | open redirect + OAuth/SSO callback carrying code/token in URL | Account takeover |
+| Upload → RCE | upload-to-webroot + parse gadget (image/php) | Server RCE |
+| Pollution → RCE | prototype pollution + gadget (child_process/template env) | Server RCE |
+| Enumeration → stuffing | user enumeration + no rate limit + weak policy | Mass compromise |
+| CI → supply chain | PR-title injection / pull_request_target + secrets | Repo/package takeover |
+| IDOR → privesc | IDOR + mass assignment (role/isAdmin) | Admin access |
+| Flow-state confusion | unguarded transition (F1/F5) + terminal artifact (invoice/refund/credit) | Money theft, cross-user invoicing |
+| Webhook spoof → paid | unverified callback (F8) + status write | Free goods/services |
+| TLS-off + spoof | verify=False + trusted-header authz on internal hop | Auth bypass |
+| Log forging → cover | CWE-117 + audit-gap findings | Undetectable attacks |
+
+Rules: a Medium that COMPLETES a Critical chain gets tagged `chain-critical` (its standalone severity stays, the report shows both). List completed chains in the Summary section as one-liners — "SSRF + IMDSv1 → role creds → account takeover". Chains you can ALMOST complete (one component missing) go under "What would make this worse" — that's prioritized hardening advice, not a finding.
+
 ## Phase 3 — Report
 
 Write `SECURITY-AUDIT.md` in the project root (this is the only file you create). Compute the knowledge-base header line with `ls ../cve-research/vuln-db/entries/ | wc -l` and the newest filename's date prefix — it shows the user how fresh their checkout is:
 
 ```markdown
 # Security Audit — <project>
-Date: YYYY-MM-DD | Scope: <commit hash / "working tree"> | Auditor: security-skills v<version>
+Date: YYYY-MM-DD | Scope: <commit hash / "working tree"> | Auditor: security-skills v$(git describe --tags --always 2>/dev/null || echo dev)
 Knowledge base: <N> vuln-db entries (newest YYYY-MM-DD) | Live checks: OSV.dev + CISA KEV
 
 ## Stack

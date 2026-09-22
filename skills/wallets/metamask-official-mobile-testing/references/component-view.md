@@ -113,7 +113,7 @@ For run-by-name, watch mode, or other options, see `component-view/reference.md`
 
 7. **No render scenarios** — every test must have at least one of: `fireEvent`, `waitFor`/`findBy`, `store.dispatch`/`act`, or an Engine spy. Static visibility checks are not tests. See [`component-view/writing-tests.md`](component-view/writing-tests.md) for examples.
 
-8. **Use selector ID constants, never raw strings** — every `getByTestId` / `findByTestId` / `queryByTestId` must reference a constant from `ComponentName.testIds.ts`. Create the file if it does not exist.
+8. **Use constants and i18n helpers, never raw strings** — every `getByTestId` / `findByTestId` / `queryByTestId` must reference a constant from `ComponentName.testIds.ts`. Every `getByText` / `findByText` / `getAllByText` that targets a localised label must use `strings('key')` from `locales/i18n`, not a hardcoded string literal. Dynamic testIds (e.g. `trader-row-${trader.id}`) must be derived from fixture data, not embedded as `'trader-row-trader-1'`. Create the testIds file if it does not exist.
 
 9. **Every view with async data needs one data-completeness test** — wait for the load and validate all significant fields of all items in the base mock using `within()` per row. One per independent async data flow.
 
@@ -126,6 +126,12 @@ For run-by-name, watch mode, or other options, see `component-view/reference.md`
 13. **Await the content, not just its container** — a container arriving on screen says nothing about values inside it that have their own async source (a child query, a debounce, a skeleton). Await the gated value with `findBy*`, then re-query the container and scope the remaining synchronous assertions with `within()`.
 
 14. **Do not nest `find*` inside `waitFor`** — `findBy*` already *is* `waitFor` + `getBy` (default timeout 1000 ms). Nesting them shares that budget, so CI can fail with a bare `Timed out in waitFor.` and no assertion detail. Use `await findBy*` **or** `waitFor(() => { getBy*; expect(...) })` with an explicit `{ timeout }` when you need extra time. Never `waitFor(async () => { await findBy*(...) })`.
+
+15. **Reset mock call history between tests** — add `beforeEach(() => jest.clearAllMocks())` to every `describe` block that asserts on `Engine.controllerMessenger.call` call counts or arguments. The CV mocks define `Engine.controllerMessenger.call` as a single shared `jest.fn()`; without a reset, accumulated calls from prior tests corrupt `toHaveBeenCalledTimes(N)` and `toHaveBeenCalledWith(...)` assertions.
+
+16. **Run the tests before declaring done** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and confirm all tests are green. A test file that has never been run is not done.
+
+17. **Run format:check before declaring done** — run `npx prettier --check <file>` (or `yarn format:check`) on the new test file and every new supporting file (renderer, preset, api-mock). Auto-fix with `npx prettier --write <file>` if needed, then re-check.
 
 
 ## Reference files (when to use)

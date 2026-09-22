@@ -123,6 +123,31 @@ rg -nU "execute\(\s*[frb]?['\"]{3}[\s\S]{0,300}(SELECT|INSERT|UPDATE|DELETE)[\s\
 rg -nU "query\(\s*`[\s\S]{0,300}(WHERE|ORDER BY)[\s\S]{0,300}\$\{" app/ db/    # JS template literals across lines
 ```
 
+## C/C++ native code
+
+Memory-safety + injection sinks for repos with native components (services, extensions, embedded). These bugs are RCE by default — severity starts High.
+
+| Class | Dangerous | Safe / check |
+|---|---|---|
+| Buffer copy | `strcpy`, `strcat`, `sprintf`, `gets`, `scanf("%s")` | `strncpy`+explicit NUL, `snprintf`, `fgets(buf, sizeof buf, ...)` — verify SIZE matches destination |
+| Format string | `printf(user)`, `syslog(user)`, `fprintf(f, user)` — user data as the FORMAT arg (`%n` = write primitive) | `printf("%s", user)` — format is always a literal |
+| Command exec | `system(user)`, `popen(user, ...)`, `execl("sh", "-c", user)` | `execv(file, argv[])` with validated args — no shell |
+| Integer overflow → alloc | `malloc(len + 1)` with attacker `len` (wraps at 2^32), `memcpy` with computed size | `if (len > SIZE_MAX - 1) fail;` before alloc/copy |
+| Off-by-N | loops `<=`, `buf[N]` writes at `buf[N]` | review each loop bound against the declared size |
+| TOCTOU | `access(path)` … then `open(path)` (syslog/temp races) | `open(path, O_NOFOLLOW)` fstat-after-open, or operate on the fd |
+| Use-after-free / double-free | freeing in error paths then continuing | ownership discipline; `-fsanitize=address` in CI as a positive control |
+| Path from user | `open(user)` without canonicalization | allowlist + `realpath` containment |
+
+```bash
+rg -n "\b(strcpy|strcat|sprintf|gets)\s*\(" -g '*.c' -g '*.cc' -g '*.cpp' -g '*.h'
+rg -n "printf\s*\(\s*[a-z_]" -g '*.c' -g '*.cpp'        # non-literal first arg
+rg -n "\b(system|popen)\s*\(" -g '*.c' -g '*.cpp'
+rg -n "scanf\s*\(\s*\"%s\"" -g '*.c' -g '*.cpp'
+rg -n "malloc\s*\(.*\+|memcpy\s*\(" -g '*.c' -g '*.cpp' | head
+```
+
+Triage: user-influenceable argument (argv, network input, file content) reaching the sink = High/Critical; constant strings = drop with a count. Modern-C positives worth noting in reports: `std::string`, `std::vector`, smart pointers, `std::format` — memory-safe idioms present = `What looks good` material.
+
 ## SSRF hardening checklist (for recommendations)
 
 1. Allowlist destination hosts; deny by default

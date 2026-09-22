@@ -19,9 +19,13 @@ SG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43}
 nvapi-[A-Za-z0-9_\-]{40,}
 sk-[A-Za-z0-9_\-]{20,}T3BlbkFJ[A-Za-z0-9_\-]{20,}
 # --- LLM provider keys ---
-sk-ant-api03-[A-Za-z0-9_\-]{20,}
+sk-ant-api03-[A-Za-z0-9_-]{20,}
 hf_[A-Za-z0-9]{20,}
 gsk_[A-Za-z0-9]{30,}
+# --- modern SaaS/CI tokens ---
+sntrys_[A-Za-z0-9_-]{30,}
+nfp_[A-Za-z0-9]{20,}
+sk-or-v1-[A-Za-z0-9-]{30,}
 dop_v1_[a-f0-9]{64}
 glpat-[0-9a-zA-Z_\-]{20,}
 squ-[0-9a-zA-Z_\-]{36}
@@ -45,3 +49,5 @@ mongodb(\+srv)?://[^:@/[:space:]]+:[^@/[:space:]]+@
 (password|passwd|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|auth[_-]?token|client[_-]?secret)["']?\s*[:=]\s*["'][^"'$\{<][^"']{7,}["']
 (TOKEN|PASSWORD|PASSWD|SECRET|API[_-]?KEY|ACCESS[_-]?KEY|AUTH[_-]?TOKEN)["']?\s*[:=]\s*["'][^"'$\{<][^"']{7,}["']
 (BASIC_AUTH|ADMIN_PASS\w*|DB_PASS\w*)\s*=\s*[^\s$]{8,}
+# unquoted key=value in .properties/.conf/.env-style lines (keyword anywhere in the key, anchored to EOL)
+^[[:space:]]*[[:alnum:]_.-]*(password|passwd|secret|token|api[_-]?key|access[_-]?key)[[:alnum:]_.-]*[[:space:]]*=[[:space:]]*[^[:space:]\"'${<}]{7,}[[:space:]]*$

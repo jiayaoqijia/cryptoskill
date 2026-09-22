@@ -18,6 +18,14 @@ rg --files -g 'AndroidManifest.xml' -g 'Info.plist' -g '*.kt' -g '*.java' -g '*.
 rg -n "android:exported|allowBackup|debuggable|usesCleartextTraffic|networkSecurityConfig|protectionLevel|grantUriPermissions" -g 'AndroidManifest.xml' -g '*.xml'
 ```
 
+**Component census (don't eyeball):** enumerate exported components BY TYPE — agents reliably spot activities and providers while services/receivers get skipped. Four separate passes, one table row each:
+```bash
+rg -n "<activity[^>]*android:exported=\"true\"" -g 'AndroidManifest.xml'
+rg -n "<service[^>]*android:exported=\"true\"" -g 'AndroidManifest.xml'
+rg -n "<receiver[^>]*android:exported=\"true\"" -g 'AndroidManifest.xml'
+rg -n "<provider[^>]*android:exported=\"true\"" -g 'AndroidManifest.xml'
+```
+
 | Flag | Finding | Severity |
 |---|---|---|
 | `android:allowBackup="true"` (or omitted — it's the default) | data extractable via `adb backup` | Medium |

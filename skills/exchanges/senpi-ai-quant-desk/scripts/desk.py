@@ -45,7 +45,7 @@ BENCH_PATH = os.path.join(HERE, "..", "references", "benchmark.json")
 # render.py but a stale desk.py passed every gate — which is exactly what happened on 2026-09-21: the
 # step-4 progress line still read "senpi-smart-money" where the shipped source says "senpi-market-pulse".
 # Pinned to render.VERSION by a test, and printed by --version so a stale copy is one command away.
-VERSION = "1.16.2"
+VERSION = "1.21.0"
 
 DEFAULT_STATE_DIR = os.path.join(tempfile.gettempdir(), "quant-desk")
 FRESH_S = 600
@@ -185,8 +185,15 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
     # a blown account — identical trades, +$55k, scored dd 90%/risk 18 withdrawn vs dd 4%/risk 82 left
     # on the exchange.
     eq = metrics.equity_curve(tr_raw["portfolio"], fl, win_start)
+    # drawdown needs the RAW curve, not this one. Its numerator (cumulative P&L) is already
+    # transfer-immune; its denominator is "the equity the fall came out of", and feeding it the
+    # transfer-ADJUSTED curve made `av_at` go negative on an account funded mid-window — base
+    # collapsed to ~0, dd_pct read 0%, and a real drawdown lost its risk penalty. The mirror case
+    # saturated to 100% and printed "the account went to zero" on a live funded book. My B3 fix in
+    # #733 introduced this. (@danielmbirochi, #718.)
+    eq_raw = metrics.equity_curve(tr_raw["portfolio"], [], win_start)
     pnl_pts = pnl_curve            # same call, same args — computed once
-    dd = metrics.drawdown(pnl_pts, eq)
+    dd = metrics.drawdown(pnl_pts, eq_raw)
     funded = [v for _, v in eq if v > 0]
     avg_eq = (sum(funded) / len(funded)) if funded else None
     equity = dict(points=len(eq), start=eq[0][1] if eq else None, end=eq[-1][1] if eq else None, avg=avg_eq,
@@ -298,7 +305,10 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
     # funding is a lever too, so it is priced once here and read by both
     _fl = min(score._funding_after(tr_raw["userFunding"], in_win, win_start, 24.0),
               -float(track.get("funding") or 0.0))
-    lv = score.levers(tm_rows, closed, tm, funding_late=max(0.0, _fl))
+    # `closed` runs days+60 so episodes opening before the window can still be completed; every
+    # figure the reader sees is 90-day. Handing the raw set to the levers put the size lever's
+    # median-winner threshold on up to 150 days inside a 90-day desk. (@danielmbirochi, #718.)
+    lv = score.levers(tm_rows, in_win, tm, funding_late=max(0.0, _fl))
     lk = score.leaks(track, book, tm, tr_raw["userFunding"], in_win, win_start, days, lv)
     # the ONE quotable number: a union over trades, never the sum of the leaks above
     rec = score.recoverable(tm_rows, closed, track, tm, lv)
@@ -310,7 +320,7 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
     context = dict(breadth=breadth, funding_regime=fregime, attention=attention, regime_days=regimes_days, regime_performance=rperf)
     opps = opportunities.scout(in_win, setups, book, breadth, coin_regimes, cohorts, attention, majors, large)
     step(8, "scoring the book on six dimensions, comparing to the top traders, scouting today's matches …", t0)
-    dims, quant = score.dimensions(track, book, dd, tm, mf, sm, closed, pnl_curve)
+    dims, quant = score.dimensions(track, book, dd, tm, mf, sm, in_win, pnl_curve)   # 90-day window, as everything else
     r = dict(address=addr, days=days, now_ms=now, window_start_ms=win_start, activity=act, track=track, book=book, equity=equity, drawdown=dd,
              pnl_curve=pnl_curve[-120:], timing=tm, market=mf, rank=rank, smart=sm, cohorts=cohorts, labels=labels, dimensions=dims, quant_score=quant,
              archetype=score.archetype(track, book, tm, act, opened), flags=score.flags(track, book, dd, tm, mf, labels), leaks=lk, recoverable=rec,
@@ -348,7 +358,7 @@ def resolve_whose(book, addr, other=False, mine=False, claim=False):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="quant-desk: the desk for any Hyperliquid address")
+    ap = argparse.ArgumentParser(description="Senpi Quant Desk: the desk for any Hyperliquid address")
     ap.add_argument("address", nargs="?", help="the wallet; omit with --compare")
     g = ap.add_mutually_exclusive_group()
     g.add_argument("--mine", action="store_true", help="the reader's own book (second person)")
@@ -369,12 +379,26 @@ def main(argv=None):
     ap.add_argument("--cache", default=hl_api.DEFAULT_CACHE, help="HTTP cache dir ('' to disable)")
     ap.add_argument("--state-dir", default=DEFAULT_STATE_DIR)
     ap.add_argument("--fresh", action="store_true", help="ignore a cached analysis")
+    ap.add_argument("--find", metavar="BAND", choices=sorted(hl_api.FIND_BANDS),
+                    help="candidate wallets to run the desk on, by account size: "
+                         + ", ".join(sorted(hl_api.FIND_BANDS)))
+    ap.add_argument("--find-window", default="week", choices=("week", "month", "allTime"),
+                    help="who is hot right now (week) or who has held up (month/allTime)")
+    ap.add_argument("--find-losers", action="store_true",
+                    help="the worst in the band instead of the best — the desk reads a losing book just as well")
     ap.add_argument("--addresses", action="store_true",
                     help="print this box's address book as JSON and exit — which wallets are the reader's, "
                          "which they have read, and which are not in senpi's index yet")
     a = ap.parse_args(argv)
     os.makedirs(a.state_dir, exist_ok=True)
     book = addr_book.load(a.state_dir)
+    if a.find:
+        hl = hl_api.HL(cache_dir=a.cache or None)
+        rows = hl_api.find_traders(hl.leaderboard(), band=a.find, window=a.find_window,
+                                   losers=a.find_losers)
+        print(json.dumps({"band": a.find, "window": a.find_window,
+                          "worst_first": bool(a.find_losers), "candidates": rows}, indent=2))
+        return 0
     if a.addresses:
         print(json.dumps(book, indent=2, sort_keys=True)); return 0
     if a.compare:

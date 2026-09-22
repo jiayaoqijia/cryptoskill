@@ -29,6 +29,11 @@ Build a table `route → auth middleware → ownership check` and fill it by rea
 - the one handler missing `@login_required` / `authorize` / `auth:sanctum` in an otherwise-guarded file
 - non-HTTP surfaces that are routes in disguise: queue consumers, cron/background job handlers, webhook receivers, GraphQL resolvers (see `../graphql-security/SKILL.md`), event subscribers, RPC/message handlers — census them with the same table
 - dispatch-style apps (`?action=` → switch) — enumerate the switch arms, not the single URL
+- **gRPC / protobuf services**: `service X { rpc Y (...) }` in `.proto` files — every `rpc` is a route; check per-method auth interceptors and validate request fields like any handler. Same for **message-queue consumers** (Kafka/Rabbit/SQS handlers), **scheduled job entry points**, and **Netty/WebSocket frame handlers** — add them all to the census table
+```bash
+rg -n "rpc \w+\(" -g '*.proto'; rg -n "@GrpcClient|StreamObserver" -g '*.java' -g '*.kt'
+rg -n "@(KafkaListener|RabbitListener)|consumer\.|@Scheduled|@CloudFunction|functions\." -g '*.java' -g '*.kt' -g '*.py' -g '*.js' | head
+```
 
 ## 2 — Authentication checks
 
@@ -72,6 +77,7 @@ Find object access points, then check each for an ownership/scope test:
 rg -n "req\.params\.id|findById\(|get\(|\.filter\(.*userId|user\.id|currentUser|req\.user"
 ```
 - `Model.findById(req.params.id)` returned directly with no `where userId` / post-fetch ownership check → **IDOR**, HIGH (CRITICAL for sensitive objects: invoices, messages, PII)
+- **Association (chained) IDOR** — downstream handlers fetch by a related id (`?order_id=`, `payment_id`) without verifying ownership THROUGH the join: each endpoint guards its own object, the chain leaks. Systematic method in `../flow-security/SKILL.md` (class F3) — audit flows, not just routes |
 - Admin routes: how are they guarded? Missing middleware → CRITICAL. Note *function-level* checks too (regular user hitting `/admin/*` handlers).
 - Horizontal vs vertical: test reasoning for both — same-role users touching each other's data, and low-role → admin.
 - Trusting client-side hints: `is_admin` from request body/cookie-in-JWT-without-verify, hidden-but-served admin UI → HIGH
@@ -90,7 +96,16 @@ rg -n -i "req\.headers\[\s*['\"]x-|request\.headers\.get\(|getHeader\(\s*\"X-|he
 ```
 Using `X-User-Id` / `X-Email` / `X-Admin` / `X-Forwarded-For` as the **identity or authz input** means anyone who can reach the service directly is any user → **CRITICAL**. Valid only when BOTH hold: (1) an edge proxy/gateway strips these headers from inbound traffic, and (2) the app is not directly reachable (check NodePort/LoadBalancer services, ingress annotations, port exposure in compose). Microservice meshes are the classic miss: service B trusts `X-User-Id` "because only service A calls us" — but anything on the cluster network can. Headers used only for logging (`X-Request-Id`) are fine — trace the value into an authz decision before flagging.
 
+### Multi-tenant scoping census (SaaS)
+
+Per-object IDOR checks miss the systematic version: in a multi-tenant app, EVERY data access must carry the tenant filter — one query without it leaks a whole tenant's data to another tenant's users (often via list/export/report endpoints that feel "shared").
+```bash
+rg -n "tenant|org_?id|account_?id|customer_?id|workspace" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*.rb' -g '*.php' | head -15   # is there a tenant model at all?
+rg -n "\.(find|where|filter|all|select|query|get)(All)?\(" -g '*.js' -g '*.py' | rg -v "tenant|org_|account_|customer_|user" | head -15   # unscoped reads
+```
+Method: list every model access, mark each SCOPED (tenant filter present) / UNSCOPED / GLOBAL-BY-DESIGN (shared catalog). Every UNSCOPED access to tenant-owned data → **Critical**. Stronger defenses to note when present: DB-level row-level security (RLS), ORM global scopes (Laravel global scope, Django manager), middleware-injected tenant context that queries MUST use. Also check: tenant taken from request body/header instead of session (`req.body.tenantId` — attacker-controlled scope switch → cross-tenant, Critical), and cache keys missing the tenant prefix (cross-tenant cache bleed).
 ### Check-then-act races (TOCTOU)
+
 Look for state checks followed by a **separate** write:
 ```bash
 rg -n "if\s*\(.*\b(used|redeemed|approved|active|enabled|stock|balance|remaining)\b|\.findOne\(.*\)\.then|SELECT.*\b(balance|stock|used)\b.*FROM|\.save\(\)"
@@ -98,6 +113,19 @@ rg -n "if\s*\(.*\b(used|redeemed|approved|active|enabled|stock|balance|remaining
 - Single-use coupons/tokens/reset links: `if (t.used) reject; ... t.used = true` → parallel replay wins every time → **High** (Critical for payments/refunds/webhooks). Fix: atomic conditional write — `findOneAndUpdate({code, used:false}, {$set:{used:true}})`, `UPDATE ... SET used=1 WHERE code=? AND used=0` checking rows affected.
 - Balance/stock read-modify-write: `user.balance -= amt; user.save()` → double-spend under concurrency. Fix: `UPDATE accounts SET balance = balance - ? WHERE id = ? AND balance >= ?`.
 - Webhooks/event handlers without idempotency keys or event-id dedup → replayable. Report as one grouped finding with every affected flow listed.
+
+### API keys as authentication (service-to-service)
+
+Machine auth has its own failure modes — check every API-key/gateway-token scheme:
+```bash
+rg -n -i "x-api-key|api[_-]?key" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*.go' -g '*.rb' | head
+```
+- **Key in URL/query** (`?api_key=`) — hits logs, referrers, browser history → HIGH (same class as tokens in URLs)
+- **Unscoped keys** — one god-key instead of per-service/per-permission keys: lateral movement on any leak → MEDIUM/HIGH
+- **No rotation story** — no expiry, no revocation endpoint, keys older than the repo's history → MEDIUM (operational)
+- **Constant-time comparison absent** (`==` on the key) → timing oracle → LOW/MEDIUM (pairs with `crypto-review` comparison rules)
+- **Weak key generation** — `uuid()`, `random.random()`, timestamp-derived → predictable keys → HIGH (see crypto-review randomness table)
+- **Key = password reuse** — same key validates AND encrypts/signs → separation of duties violation → MEDIUM
 
 ## 4 — Session & CSRF
 

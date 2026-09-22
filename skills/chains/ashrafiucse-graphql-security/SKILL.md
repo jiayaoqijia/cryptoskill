@@ -29,6 +29,7 @@ severities (adjust with context):
 | `formatError` returns `originalError`/stacktrace; Apollo `includeStacktraceInErrorResponses`/`debug` on | internal error leakage | Medium |
 | Field suggestions not masked in prod ("Did you mean..." hints) | schema oracle for attackers | Low/Medium |
 | Query batching enabled unbounded (`shouldBatch`, array bodies) | auth-brute-force in one request | Medium |
+| **Aliasing amplification** — no cost/depth limit while the schema allows repeated aliases (`{a: user(id:1) b: user(id:2) ...}` x N in one query) | batching DoS + brute-force vector bypassing rate limits | Medium/High |
 | Cookie-session auth + no CSRF protection (Apollo v4 `csrfPrevention: false`/absent) | cross-site mutation execution | High |
 | Mutations accepted over GET (express-graphql) | CSRF + logging of creds in URLs | High |
 | No persisted operations / allowlist for public clients | arbitrary query crafting | Low (note) |

@@ -73,6 +73,9 @@ Before declaring the task done, go through this checklist for every test written
 | 13  | **Unit→CV migrations keep assert specificity** — deleted unit payload fields (`tabId`, formatted dates, full analytics) still appear in the CV replacement                                                                                                   | Restore dropped fields in CV or KEEP a focused unit; see unit-cv-overlap |
 | 14  | **Awaits cover the asserted content, not just its container** — after `await findByTestId(CONTAINER)`, no synchronous `getBy*` asserts a value that has its own async source (child query, debounce, skeleton)                                                | Await the gated value with `findBy*` first, then re-query the container and scope the sync asserts |
 | 15  | **No nested `find*` inside `waitFor`** — no `waitFor(async () => { await findBy*(...) })`. `findBy*` already polls with the same 1s default timeout                                                                                                         | Use `await findBy*` **or** `waitFor(() => { getBy*; expect(...) })` with `{ timeout }` |
+| 16  | **Mock state is reset between tests** — any `describe` block that asserts on `Engine.controllerMessenger.call` call counts or arguments includes `beforeEach(() => jest.clearAllMocks())`. Without this, a shared `jest.fn()` accumulates calls across tests and makes `toHaveBeenCalledTimes(N)` assertions silently wrong. | Add `beforeEach(() => jest.clearAllMocks())` at the top of the `describe` block |
+| 17  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and all tests are green. | Fix the failing test before marking the task done |
+| 18  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
 
 ---
 
@@ -93,6 +96,8 @@ Before declaring the task done, go through this checklist for every test written
 | Test passes locally, fails in CI                                       | Time-sensitive assertions, stale press under CI load, or a sync assert on content that is still loading | Use `waitFor` / `findBy`; re-query before press when the UI re-renders on a timer; await each async-gated value    |
 | `Timed out in waitFor.` with no assertion detail                       | Nested `find*` inside `waitFor` — both share the 1s default; the outer waiter expires first             | Use `await findBy*` **or** `waitFor(() => getBy*)` with `{ timeout }`; never `waitFor(async () => findBy*)`      |
 | Pull-to-refresh never refetches                                        | `fireEvent(scrollView, 'refresh')` did not hit the handler                                           | `await act(async () => { await scrollView.props.refreshControl.props.onRefresh(); })`                             |
+| `toHaveBeenCalledTimes(N)` passes locally but is wrong in a full suite run | `Engine.controllerMessenger.call` is a shared `jest.fn()` — prior tests left calls on it | Add `beforeEach(() => jest.clearAllMocks())` to the `describe` block |
+| Call-count assertion is flaky: passes without the action under test    | Background prefetches (idle tab queries, cache refreshes) inflate the count in the same window       | `spy.mockClear()` immediately before the action; assert the exact call signature with `toHaveBeenCalledWith(...)` instead of comparing before/after counts |
 | Sheet / branch `testID` missing                                        | Remote feature flag off in Redux; UI routes elsewhere                                                | Override `RemoteFeatureFlagController` / preset so the gated UI mounts                                            |
 
 ### Inspect what's rendered
@@ -186,6 +191,38 @@ it('renders input areas and hides confirm button without tokens or amount', () =
 });
 // More assertions does NOT make it a better test if they're all static.
 // ✅ Instead: drive the test through a user interaction, Redux action, or Engine spy
+
+// ❌ Feature-flag gate test — render-only, even though it checks Redux-driven visibility:
+// it hides the section when the master flag is disabled
+it('hides the section when the master flag is disabled', () => {
+  renderMySection({ presetOptions: { featureEnabled: false } });
+  expect(screen.queryByTestId(MySelectorsIDs.SECTION)).not.toBeOnTheScreen();
+});
+// Gate tests belong in unit tests. In CV, every test must exercise the interaction→Engine pipeline.
+// ✅ If you need to verify the gate, pair it with an interaction in an existing test:
+it('calls Engine when the toggle is pressed (only renders when flag is on)', async () => {
+  const { store } = renderMySection({ presetOptions: { featureEnabled: true } });
+  await act(async () => { fireEvent(screen.getByTestId(TOGGLE_ID), 'valueChange', false); });
+  expect(Engine.controllerMessenger.call).toHaveBeenCalledWith('MyController:optOut');
+});
+
+// ❌ Call-count assertion that is contaminated by background prefetches
+const before = spy.mock.calls.filter(([a]) => a === 'SocialService:fetchLeaderboard').length;
+await triggerPullToRefresh();
+const after = spy.mock.calls.filter(([a]) => a === 'SocialService:fetchLeaderboard').length;
+expect(after).toBeGreaterThan(before); // passes even if onRefresh is a no-op
+// ✅ Clear the spy immediately before the action, then assert the exact call:
+spy.mockClear();
+await triggerPullToRefresh();
+expect(spy).toHaveBeenCalledWith('SocialService:fetchLeaderboard',
+  expect.objectContaining({ chains: SPOT_CHAINS }));
+
+// ❌ Hardcoded i18n text in getByText / getAllByText
+fireEvent.press(screen.getAllByText('Follow')[0]);
+fireEvent.press(screen.getByText('Following'));
+// ✅ Use strings() so tests survive locale-key renames:
+fireEvent.press(screen.getAllByText(strings('social_leaderboard.follow'))[0]);
+fireEvent.press(screen.getByText(strings('social_leaderboard.following')));
 
 // ❌ Arbitrary mock — blocked by ESLint and runtime guard
 jest.mock('../../some/hook', () => ({ useMyHook: jest.fn() }));

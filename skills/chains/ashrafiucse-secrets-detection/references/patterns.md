@@ -17,7 +17,11 @@ Each pattern in `patterns.txt`, what it catches, and its false-positive profile.
 | `sk-ant-api03-...` | Anthropic API keys | Notebooks, Colab exports | Billing abuse; check org spend logs after rotation |
 | `hf_...` | Hugging Face tokens (fine-grained, org-scoped) | ML scripts, demo notebooks | `write` scope = model-repo poisoning, not just quota |
 | `gsk_...` | Groq API keys | Config blobs | Quota theft |
+| `sntrys_...` | Sentry auth tokens | CI/CD env blobs | Sentry API access (org data, releases) |
+| `nfp_...` | Netlify personal access tokens | Static-site CI | Site takeover-grade |
+| `sk-or-v1-...` | OpenRouter API keys | AI app configs | Spend abuse + model access |
 | Generic assignment | `password = "..."` style | Very noisy | Always triage; require plausible entropy + non-placeholder |
+| Unquoted key=value | `spring.datasource.password=prod-pass` in `.properties`/`.conf`/`.env` lines | Anchored (key=value at EOL), still triage | Catches properties-style creds the quoted patterns structurally cannot |
 
 ## Adding a new pattern
 
