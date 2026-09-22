@@ -14,6 +14,9 @@ Each pattern in `patterns.txt`, what it catches, and its false-positive profile.
 | `-----BEGIN ... PRIVATE KEY-----` | Private keys | Test fixtures | CRITICAL if committed for real |
 | `(db|proto)://user:pass@` | Creds in connection strings | docker-compose dev defaults | `postgres://postgres:postgres@` in compose = LOW; real host = HIGH |
 | `APP_KEY=base64:...` | Laravel application keys | Old tutorials/tutorials-committed .env | Not a provider cred, but exposure = cookie forgery → RCE chain; Critical |
+| `sk-ant-api03-...` | Anthropic API keys | Notebooks, Colab exports | Billing abuse; check org spend logs after rotation |
+| `hf_...` | Hugging Face tokens (fine-grained, org-scoped) | ML scripts, demo notebooks | `write` scope = model-repo poisoning, not just quota |
+| `gsk_...` | Groq API keys | Config blobs | Quota theft |
 | Generic assignment | `password = "..."` style | Very noisy | Always triage; require plausible entropy + non-placeholder |
 
 ## Adding a new pattern

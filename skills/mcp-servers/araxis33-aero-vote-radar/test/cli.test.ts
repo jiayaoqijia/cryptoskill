@@ -10,6 +10,7 @@ import {
   parseVoteBasisFlag,
   poolEfficiencyToJson,
   resolveBudget,
+  resolveReviewTarget,
   veAeroPositionsToJson,
 } from "../src/cli.js";
 import { EPOCH_SECONDS } from "../src/trend.js";
@@ -223,6 +224,54 @@ test("resolveBudget rejects zero and negative --veaero amounts", async () => {
 test("resolveBudget accepts a valid --veaero amount and logs nothing", async () => {
   const { result, logged } = await captureStderr(() => resolveBudget(["--veaero", "25000"], "USAGE"));
   assert.deepEqual(result, { veaero: 25000, positions: [] });
+  assert.deepEqual(logged, []);
+});
+
+// resolveReviewTarget backs `review`'s --address/--nft resolution. It used to
+// let --nft silently win when both were passed, with no word to the user that
+// --address was ignored — unlike resolveBudget's --veaero/--address, which has
+// rejected "both" outright since it was written. These cover every branch
+// (the --address branch only validates the flag's format here; turning it
+// into token ids needs a live fetchVeAeroPositions call, exercised via the
+// CLI instead, same as resolveBudget's --address branch above).
+
+test("resolveReviewTarget rejects passing both --address and --nft", async () => {
+  const { result, logged } = await captureStderr(async () =>
+    resolveReviewTarget(["--address", "0x1234567890123456789012345678901234567890", "--nft", "42"]),
+  );
+  assert.equal(result, null);
+  assert.ok(logged.some((l) => l.includes("not both")), `expected a "not both" message, got: ${logged.join(" | ")}`);
+});
+
+test("resolveReviewTarget rejects a missing --address/--nft entirely", async () => {
+  const { result, logged } = await captureStderr(async () => resolveReviewTarget([]));
+  assert.equal(result, null);
+  assert.ok(logged.some((l) => l.includes("Usage:")), `expected a usage message, got: ${logged.join(" | ")}`);
+});
+
+test("resolveReviewTarget rejects a malformed --address", async () => {
+  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--address", "not-an-address"]));
+  assert.equal(result, null);
+  assert.ok(logged.some((l) => l.includes("40-character hex address")), `expected an address-format message, got: ${logged.join(" | ")}`);
+});
+
+test("resolveReviewTarget rejects a non-numeric --nft", async () => {
+  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--nft", "abc"]));
+  assert.equal(result, null);
+  assert.ok(logged.some((l) => l.includes("whole veNFT id")), `expected a veNFT-id message, got: ${logged.join(" | ")}`);
+});
+
+test("resolveReviewTarget accepts a valid --nft and logs nothing", async () => {
+  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--nft", "42"]));
+  assert.deepEqual(result, { kind: "nft", tokenIds: [42n] });
+  assert.deepEqual(logged, []);
+});
+
+test("resolveReviewTarget accepts a valid --address and logs nothing", async () => {
+  const { result, logged } = await captureStderr(async () =>
+    resolveReviewTarget(["--address", "0x1234567890123456789012345678901234567890"]),
+  );
+  assert.deepEqual(result, { kind: "address", address: "0x1234567890123456789012345678901234567890" });
   assert.deepEqual(logged, []);
 });
 

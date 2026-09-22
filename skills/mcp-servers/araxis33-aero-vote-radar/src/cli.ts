@@ -589,6 +589,48 @@ async function cmdBacktest(args: string[]) {
   console.log("assumes your votes wouldn't have moved anyone else's, and only sees pools whose gauge is still alive.\n");
 }
 
+export type ReviewTarget = { kind: "nft"; tokenIds: bigint[] } | { kind: "address"; address: string };
+
+/**
+ * Validates `review`'s `--address`/`--nft` flags, including rejecting both at
+ * once — the same rule `resolveBudget` already enforces for
+ * `--veaero`/`--address`, which this command had silently skipped: passing
+ * both here let `--nft` win with no word to the user that `--address` was
+ * ignored. Split out from `cmdReview` so the validation is testable without a
+ * chain, the way the rest of this file's flag parsers are. Only the `--nft`
+ * branch is immediately usable; `--address` still needs
+ * `fetchVeAeroPositions` to turn into token ids, which stays in `cmdReview`
+ * alongside its other live RPC calls. Returns null after printing its own
+ * error, so the caller just bails.
+ */
+export function resolveReviewTarget(args: string[]): ReviewTarget | null {
+  const address = getFlag(args, "address");
+  const nftFlag = getFlag(args, "nft");
+  const usage = "Usage: aero-vote-radar review (--address 0x... | --nft <id>) [--json]";
+
+  if (!address && !nftFlag) {
+    console.error(usage);
+    return null;
+  }
+  if (address !== undefined && nftFlag !== undefined) {
+    console.error(`${usage}\nPass either --address or --nft, not both.`);
+    return null;
+  }
+  if (nftFlag !== undefined) {
+    if (!/^[0-9]+$/.test(nftFlag)) {
+      console.error("--nft must be a whole veNFT id.");
+      return null;
+    }
+    return { kind: "nft", tokenIds: [BigInt(nftFlag)] };
+  }
+
+  if (!isValidAddress(address as string)) {
+    console.error("--address must be a 0x-prefixed 40-character hex address.");
+    return null;
+  }
+  return { kind: "address", address: address as string };
+}
+
 /**
  * `review` — scores the vote already cast, for the epoch that has most recently
  * closed.
@@ -602,31 +644,19 @@ async function cmdBacktest(args: string[]) {
  * so it is a handful of calls rather than a full scan.
  */
 async function cmdReview(args: string[]) {
-  const address = getFlag(args, "address");
-  const nftFlag = getFlag(args, "nft");
-  if (!address && !nftFlag) {
-    console.error("Usage: aero-vote-radar review (--address 0x... | --nft <id>) [--json]");
-    process.exitCode = 1;
-    return;
-  }
-  if (address && !isValidAddress(address)) {
-    console.error("--address must be a 0x-prefixed 40-character hex address.");
+  const target = resolveReviewTarget(args);
+  if (!target) {
     process.exitCode = 1;
     return;
   }
 
   let tokenIds: bigint[];
-  if (nftFlag) {
-    if (!/^[0-9]+$/.test(nftFlag)) {
-      console.error("--nft must be a whole veNFT id.");
-      process.exitCode = 1;
-      return;
-    }
-    tokenIds = [BigInt(nftFlag)];
+  if (target.kind === "nft") {
+    tokenIds = target.tokenIds;
   } else {
-    const positions = await fetchVeAeroPositions(address as string);
+    const positions = await fetchVeAeroPositions(target.address);
     if (positions.length === 0) {
-      console.log(`No veAERO locks found for ${address}.`);
+      console.log(`No veAERO locks found for ${target.address}.`);
       return;
     }
     tokenIds = positions.map((p) => BigInt(p.id));

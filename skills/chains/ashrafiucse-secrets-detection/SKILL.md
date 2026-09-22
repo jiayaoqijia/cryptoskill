@@ -49,3 +49,4 @@ Report:
 - Scan binary-free (`-I`) and exclude vendored dirs — the script does this already.
 - Encoded secrets (base64, hex blobs near words like `key`, `token`, `secret`) deserve a look: decode and judge.
 - `references/patterns.md` documents each pattern, its false-positive profile, and how to add new ones.
+- **Optional bridge:** if `gitleaks`/`trufflehog` is installed (probe: `../security-audit/scripts/probe_tools.sh`), run it too — it scans **full git history**, where worktree regex cannot see deleted-then-rotated keys. Merge hits into Step 2 triage; same false-positive rules apply.

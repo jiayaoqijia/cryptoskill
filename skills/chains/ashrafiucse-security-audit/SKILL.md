@@ -15,6 +15,20 @@ Full-project, read-only security review that ends in a written report. Works for
 - **Verify before reporting.** Read surrounding context to kill false positives (test files, examples, fixtures, obviously-fake values).
 - **No network required**, but if network is available, the `dependency-vulns` and `cve-research` skills use live databases.
 
+## Mode: fix verification (re-audit)
+
+Use when the user asks to "verify the fixes", "re-audit", "check what's fixed", or an existing `SECURITY-AUDIT.md` is present from a prior run. Never silently re-scan from zero when prior findings exist — verification comes first.
+
+1. **Load the prior report** (`SECURITY-AUDIT.md` in project root). If missing, run the normal flow.
+2. **Verify each prior finding** by reading the cited `file:line` (and its function/route context):
+   - **FIXED** — the offending code is gone or the defense is present (parameterized, allowlisted, guarded, rotated secret + scrubbed history)
+   - **STILL PRESENT** — evidence unchanged
+   - **MOVED / REGRESSED** — code moved: re-cite the new `file:line`; if the "fix" introduced a new flaw, that's a new finding
+   - Secrets: FIXED only after rotation evidence — removing the string from HEAD is not a fix (history + old deployments keep it)
+3. **Then scan for NEW findings** in changed code since the prior report (`git diff <prior-commit>..HEAD` if the report records a commit) — full re-scan only if the user asks.
+4. **Rewrite `SECURITY-AUDIT.md`**: per-finding status line (`FIXED` / `STILL PRESENT`, with the re-checked citation), a summary table (fixed n / open n / new n), and new findings appended with fresh SEC-NNN ids. Keep ids stable across runs — SEC-004 stays SEC-004 whether open or fixed.
+5. Verbal summary: fixed count, still-open worst issue, anything the fix broke.
+
 ## Phase 0 — Recon: build the security map
 
 Do NOT read every file. Probe cheaply first:
@@ -46,6 +60,7 @@ For each applicable domain, **read the sibling skill and follow it** (paths are 
 | Any dependency manifest | `../dependency-vulns/SKILL.md` |
 | Input handling / queries / templates / subprocesses | `../injection-flaws/SKILL.md` |
 | GraphQL server / `.graphql` schema files | `../graphql-security/SKILL.md` |
+| LLM/AI stack (langchain/llamaindex/autogen, openai/anthropic SDKs, model files `.pkl/.pt/.gguf/.safetensors`) | `../llm-security/SKILL.md` |
 | Android/iOS files (`AndroidManifest.xml`, `Info.plist`, mobile code) | `../mobile-security/SKILL.md` |
 | Laravel/PHP project (`composer.json` with laravel/framework, `artisan`, Blade views) | `../laravel-security/SKILL.md` |
 | Django/Python project (`manage.py`, `settings.py`, Django in requirements) | `../django-security/SKILL.md` |
@@ -63,6 +78,23 @@ Scan hygiene:
 - Always exclude `node_modules/ vendor/ dist/ build/ target/ .git/ __pycache__/ .venv/ venv/ coverage/` and minified `*.min.js`
 - Prioritize: auth code > input handlers > data access > config > everything else
 - For repos > ~2k files, scan by category (auth files first, then routes/controllers, then DB layers) rather than exhaustively
+
+## Phase 1.5 — Optional tool bridges (skip silently if absent)
+
+```bash
+bash ../security-audit/scripts/probe_tools.sh .
+```
+
+If a scanner is installed, run its probe line (all read-only) and ingest the results alongside manual scans:
+
+| Tool | Catches that greps miss | Ingestion rule |
+|---|---|---|
+| gitleaks / trufflehog | secrets in **full git history** (deleted-then-rotated keys are invisible to worktree regex) | report as `../secrets-detection/SKILL.md` findings; verify before CRITICAL |
+| semgrep | cross-file taint flows, language-semantic sinks | treat hits as leads — re-verify `file:line` and source→sink yourself; drop tool-only findings that fail context triage |
+| osv-scanner / npm audit / pip-audit | offline dep CVEs | merge + dedupe with the OSV API results from `../dependency-vulns/SKILL.md` |
+| checkov / kube-linter / tfsec | IaC misconfigs beyond the grep set | map to `../container-iac-security/SKILL.md` categories |
+
+Rules: tools are leads, not verdicts — every reported finding still needs evidence you read yourself. Never install tools on the user's machine; never run a tool in a mode that writes/modifies. No tools found → proceed with the manual phases exactly as below.
 
 ## Phase 2 — Triage
 

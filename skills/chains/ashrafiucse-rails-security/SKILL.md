@@ -64,6 +64,8 @@ rg -n "\bsend\(|public_send\(" app/ | rg "params" | head
 ```
 
 - `send_file(params[:path])` → traversal, High
+- `render file: params[:path]` → arbitrary file read (CVE-2019-5418 pattern — Action View reads and returns the file); fixed rails versions still make this a design bug → High
+- `render file:` with a first-party literal (`Rails.root.join(...)`) is fine
 - `redirect_to(params[:return_to])` → open redirect (phishing/SSRF in OAuth flows), Medium/High
 - `send(params[:method])` → arbitrary method dispatch, High
 

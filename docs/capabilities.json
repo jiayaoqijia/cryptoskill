@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T05:02:53.438598+00:00",
+  "generated_at": "2026-09-22T11:45:40.259521+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -25891,7 +25891,7 @@
     },
     "chains/ashrafiucse-cve-research": {
       "name": "cve-research",
-      "execution_model": "read_only",
+      "execution_model": "unknown",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -25904,7 +25904,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -25944,7 +25944,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -26201,6 +26201,68 @@
     },
     "chains/ashrafiucse-injection-flaws": {
       "name": "injection-flaws",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/ashrafiucse-laravel-security": {
+      "name": "laravel-security",
       "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
@@ -26261,8 +26323,8 @@
       },
       "hosted_operators": []
     },
-    "chains/ashrafiucse-laravel-security": {
-      "name": "laravel-security",
+    "chains/ashrafiucse-llm-security": {
+      "name": "llm-security",
       "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
@@ -123384,7 +123446,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -136326,13 +136388,13 @@
     }
   },
   "summary": {
-    "discovered": 2187,
-    "processed": 2187,
+    "discovered": 2188,
+    "processed": 2188,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1386,
+      "read_only": 1385,
       "router_orchestrator": 131,
-      "unknown": 246,
+      "unknown": 248,
       "analysis_only": 199,
       "unsigned_tx_builder": 80,
       "local_executor": 88,
@@ -136341,16 +136403,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 958,
-      "can_install_code": 476,
-      "can_write_files": 125,
+      "can_execute_shell": 959,
+      "can_install_code": 477,
+      "can_write_files": 127,
       "can_browse_web": 201,
       "can_spawn_subagents": 231,
       "can_move_funds": 242,
       "requires_private_key": 400,
       "requires_hosted_operator": 324,
       "uses_remote_install_script": 40,
-      "mutable_remote_runtime": 476
+      "mutable_remote_runtime": 477
     }
   }
 }

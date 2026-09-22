@@ -47,6 +47,82 @@ Safe forms to whitelist while eyeballing: `$1`/`?` placeholders, named params (`
 - Ruby: `Marshal.load`, `Oj.load` with `mode: :object`
 - JS: `eval`, `new Function`, `node:vm` `runInNewContext` on remote strings
 
+## Prototype pollution (Node/JS)
+
+| Pattern | Dangerous | Safe |
+|---|---|---|
+| Merge target | `deepMerge(cfg, req.body)`, `_.set(obj, userPath, v)`, `Object.assign(cfg, req.body)` | allowlist-picked fields into a fresh object; `Object.create(null)` target |
+| Body parsing | `urlencoded({extended:true})` / `qs.parse` (nested objects from attacker) | `app.set('query parser', 'simple')`, flat bodies |
+| Keys | `__proto__`, `constructor`, `prototype` accepted as keys | sanitizer strips these three keys recursively |
+
+Chains to check for (raise severity): merged config → `child_process.spawn` (NODE_OPTIONS gadget), template engine options (EJS `outputFunctionName`), cached objects. Report merge-of-user-keys into existing objects even without an obvious gadget.
+
+## XXE
+
+| Stack | Dangerous | Safe |
+|---|---|---|
+| Java | `DocumentBuilderFactory`/`SAXParserFactory`/`XMLInputFactory` defaults on request XML | `factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)` (or both entity features off + no DTD) |
+| Python | `xml.etree`, `minidom`, `pulldom`, `sax`, expat on user XML; `lxml.etree` default parser | `defusedxml.*`; `lxml` `XMLParser(resolve_entities=False)` |
+| PHP | `simplexml`/`DOMDocument` with old libxml or loader enabled | libxml ≥2.9 defaults, `LIBXML_NOENT` absent |
+| Ruby | `Nokogiri` defaults resolve entities? — no (safe since 1.x); flag `REXML` only with DTD + external entity patches absent | modern Nokogiri |
+| Node | `libxmljs`/`sax` with entities enabled | `xml2js` (no entity resolution), `fast-xml-parser` |
+
+## ReDoS
+
+- Shape to look for: nested quantifiers `(a+)+`, `(a|a)*`, `([a-z]+)*`, overlapping alternations `(a|aa)+`, unbounded `.{n,}` on long inputs
+- Sink: `.test/.match/.replace/.search/.split` (JS), `re.match/search/sub/fullmatch` (Py), `Pattern.matches` (Java), `regexp.MustCompile` (Go — linear, safe)
+- Report only when: input is user-controlled AND unbounded. Cap input length → drop to Medium or dismiss.
+
+## Open redirect sinks
+
+| Stack | Grep |
+|---|---|
+| Express | `rg -n "res\.redirect\("` then trace the arg |
+| Flask/Django | `rg -n "redirect\("` — flag `redirect(request.args\[|request.GET\[` |
+| Rails | `rg -n "redirect_to "` — flag `redirect_to params\[" |
+| Spring | `rg -n "sendRedirect\(\" + "response.sendRedirect"` (concat = bug) |
+| PHP | `rg -n "header\(\s*['\"]Location:\\s*\.\s*\$_(GET|REQUEST)"` |
+| SPA | `rg -n "location\.(href|replace|assign)\\s*=\\s*"` on router/query params |
+
+Safe form: exact allowlist (`ALLOWED = new Set(['/dashboard','/'])`) or `new URL(next, ORIGIN).origin === ORIGIN && !next.startsWith('//')` (protocol-relative `//evil.com` bypasses naive relative checks).
+
+## File upload checklist
+
+1. Extension + MIME + magic-bytes allowlist? (one of three is not enough)
+2. Stored under webroot/static/public? (`express.static`, `MEDIA_ROOT` served, `/static/*`)
+3. Filename from user (`originalname`, `file.filename`) instead of `crypto.randomBytes`?
+4. Size limit middleware + per-entry decompression cap (zip bombs: `zipfile.extractall`, `yauzl`, `adm-zip`)?
+5. Served inline as original type? (`Content-Disposition: attachment` + `nosniff` for user files; SVG never rendered inline)
+6. Parser exposure: ImageMagick/`sharp`/Ghostscript on uploads — flag as hardening note
+
+## Query-builder raw sinks (ORM ≠ safe at the raw boundary)
+
+| Builder | Dangerous | Safe |
+|---|---|---|
+| knex | `knex.raw('...' + req.query.sort)` | `knex.raw('... order by ??', [col])` (?? = identifier binding) |
+| Sequelize | `sequelize.literal(` with interpolation | plain where-objects, `sequelize.literal` on constants only |
+| TypeORM | `repo.query(... + x)` | `.setParameter()` / QueryBuilder params |
+| SQLAlchemy | `text(f"SELECT ... {x}")`, `text('... %s' % x)` | `text('... :name')` + params |
+| Django | `raw()`, `extra(where=)` with interpolation | ORM lookups, params in `raw(sql, [params])` |
+| MyBatis / JPA | `${param}` in XML, `createNativeQuery(... + x)` | `#{param}`, named params |
+| jOOQ | `.where("name = '" + x + "'")` plain-SQL fragments | type-safe DSL / `param(...)` |
+
+## Second-order read-path sinks (stored XSS & friends)
+
+Run the XSS greps against the READ path, with model/DB fields as the source:
+- EJS `<%- %>`, Blade `{!! !!}`, Twig `|raw`, Jinja `|safe`/autoescape off, `v-html`, `dangerouslySetInnerHTML`, `ng-bind-html` on **model attributes** (`user.bio`, `post.body`, `comment.text` — not just `req.*`)
+- CSV/HTML export paths: formula injection unless leading `= + - @` is stripped/prefixed
+- Worker sinks fed by queue/webhook/cron payloads: `exec(payload.cmd)`, `query(task.sql)`, `fetch(payload.url)` — treat the producer's validation as irrelevant
+
+## Multi-line query construction
+
+Single-line greps miss queries assembled across lines. Scope to DB-layer dirs (multiline is slow repo-wide):
+
+```bash
+rg -nU "execute\(\s*[frb]?['\"]{3}[\s\S]{0,300}(SELECT|INSERT|UPDATE|DELETE)[\s\S]{0,300}(\$\{|%s|\+|f['\"]|#\{)" app/ db/ models/
+rg -nU "query\(\s*`[\s\S]{0,300}(WHERE|ORDER BY)[\s\S]{0,300}\$\{" app/ db/    # JS template literals across lines
+```
+
 ## SSRF hardening checklist (for recommendations)
 
 1. Allowlist destination hosts; deny by default

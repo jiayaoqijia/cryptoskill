@@ -18,6 +18,10 @@ AC[0-9a-fA-F]{32}
 SG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43}
 nvapi-[A-Za-z0-9_\-]{40,}
 sk-[A-Za-z0-9_\-]{20,}T3BlbkFJ[A-Za-z0-9_\-]{20,}
+# --- LLM provider keys ---
+sk-ant-api03-[A-Za-z0-9_\-]{20,}
+hf_[A-Za-z0-9]{20,}
+gsk_[A-Za-z0-9]{30,}
 dop_v1_[a-f0-9]{64}
 glpat-[0-9a-zA-Z_\-]{20,}
 squ-[0-9a-zA-Z_\-]{36}

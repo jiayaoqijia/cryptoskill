@@ -122,6 +122,49 @@ when the stack matches. Format: dangerous → safe → grep.
 | `FromSqlRaw($"... {user}")` (EF Core) | `FromSqlInterpolated` or parameters | |
 | `Process.Start("cmd", "/c " + user)` | `ProcessStartInfo.ArgumentList` | |
 
+## NestJS (Node/TypeScript)
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `query(`... ${user}`)` on the TypeORM repo | `.setParameter()` / QueryBuilder params | raw boundary again |
+| `class-validator` without `forbidNonWhitelisted: true` | whitelist + forbid | mass assignment via unknown keys |
+| `res.send(userHtml)` / `{{...}}`-style inline templates | DTO responses (`@ResponseBody`) | reflected XSS |
+| `@Public()` on a controller that mutates | explicit guards per handler | route-census target |
+
+## Ktor (Kotlin)
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `exec { it.write("sh -c $userInput".toByteArray()) }` | `ProcessBuilder(listOf(bin, arg))` | shell string vs arg list |
+| `"SELECT ... WHERE x = $user"` passed to `transaction` | `Users.select { Users.name eq user }` (Exposed) / JDBC `?` | string templates are Kotlin concat |
+| `call.respondText(userHtml, ContentType.Text.Html)` | `call.respond(user)` (JSON) | reflected XSS |
+| FreeMarker `${user}` in user-chosen template name | fixed template map | SSTI |
+
+## Django REST Framework
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `fields = '__all__'` on user-facing serializers | explicit field list | mass assignment (role/is_superuser writable) |
+| `serializer.save(**request.data)`-style extras | `read_only_fields` for role/id | |
+| `@api_view(['POST'])` + `permission_classes=[]` default | explicit `IsAuthenticated` | default is AllowAll — census every view |
+| `django-filter` with user-controlled field list | allowlisted filterset fields | data-model enumeration |
+
+## Rails — API-only mode
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `render json: user` (full model) | explicit `as_json(methods:, only:)` / serializer | password_hash/token leakage |
+| `skip_before_action :verify_authenticity_token` on cookie-auth API | token auth (Bearer) or CSRF tokens | API mode makes CSRF *more* subtle, not gone |
+| `params.permit!` / `params.to_unsafe_h` into model update | `permit(:name, :email)` | mass assignment |
+
+## Java — libraries that are sinks by themselves
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| fastjson `JSON.parseObject(userJson)` with autoType (`setAutoTypeSupport(true)`, ≤1.2.80) | typed `parseObject(json, DTO.class)`; fastjson2 | CVE-2022-25845 RCE family — version + sink |
+| commons-text `StringSubstitutor.createDefault().replace(userText)` (1.0–1.9) | explicit map/string lookups only | Text4Shell CVE-2022-42889 — `${script:}` executes |
+| Shiro rememberMe with default/known `setCipherKey` (`kPH+bIxk5D2deZiIxcaaaA==`) | unique random key from env/secret | Shiro550 deserialization RCE — the key string is the finding |
+
 ## Adding a framework
 
 Same rules as `patterns.md`: one row = one fixture line (true positive + a

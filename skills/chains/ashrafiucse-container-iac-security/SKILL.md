@@ -46,6 +46,17 @@ rg --files -g '*.yaml' -g '*.yml' | xargs grep -ln "kind: Deployment\|kind: Pod\
 - Resource limits absent (DoS surface) → LOW
 - Exposed `type: LoadBalancer` on admin/debug services → HIGH
 - Secrets as plain `ConfigMap`/env instead of Secret objects/external secrets → MEDIUM
+- **Ingress (nginx-ingress) annotations**:
+```bash
+rg -n "nginx\.ingress\.kubernetes\.io/(configuration-snippet|server-snippet|auth-url|rewrite-target|proxy-ssl)" -g '*.yaml' -g '*.yml'
+```
+  - `configuration-snippet`/`server-snippet` in user-editable Ingress objects → config injection by anyone who can create Ingresses (CVE-2021-25742 family); controller must have snippets disabled → HIGH if reachable
+  - `rewrite-target` with attacker-influenced capture groups → open redirect/proxy (CVE-2021-25741 family — check controller version)
+  - `auth-url` with broad skip/bypass paths (`*-snippets` overriding auth) → HIGH
+- **Egress**: no `NetworkPolicy` with `Egress` policyType for pods that fetch URLs / call external APIs → MEDIUM alone, raise the paired SSRF finding (see `../injection-flaws/SKILL.md`) — the fetcher can reach cloud metadata (169.254.169.254) and internal services
+```bash
+rg -n "policyTypes:" -g '*.yaml' -g '*.yml'     # any Egress policy at all?
+```
 
 ## Terraform / CloudFormation / Pulumi
 
@@ -60,9 +71,17 @@ rg -n -i "hardcoded|access_key|secret_key|aws_secret" -g '*.tf'
 - Public S3/GCS buckets (`public_access_block` absent, `acl: public-read`) → HIGH if data is non-static
 - IAM: `Action: "*"` / `resources: ["*"]` policies attached to broad principals → HIGH; wildcard trust policies → CRITICAL
 - Hardcoded cloud keys in state files/code → CRITICAL (also check `.tfstate` committed to git)
+- Cloud: metadata with v1 tokens allowed → raises SSRF severity
+```bash
+rg -n -i "metadata_options|http_tokens|hop_limit|imdsv2" -g '*.tf' -g '*.yaml'
+```
+- `http_tokens = "optional"` / IMDSv1 allowed on internet-facing workloads → HIGH (metadata credential theft pairs with any SSRF)
+- No `hop_limit = 1` on containers/instances fetching user URLs → MEDIUM
 - Disabled logging (no `aws_flow_log`, `enable_audit` variants) → MEDIUM
 - Snapshot/backup configs absent → LOW
 
 ## Reporting
+
+**Optional bridge:** if `checkov`/`kube-linter`/`tfsec` is installed (probe: `../security-audit/scripts/probe_tools.sh`), run it and map its findings onto the categories above — tools catch rule-library items greps miss (e.g. new CIS checks); you add the context triage they can't.
 
 Group by layer (image → runtime → cluster → cloud). For each finding: the exact resource + file:line, blast radius sentence, and the hardened config snippet (e.g. the corrected `securityContext` block). Cross-reference CRITICAL secrets findings with `../secrets-detection/SKILL.md`.
