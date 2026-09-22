@@ -69,41 +69,43 @@ try {
 | `robinhood_get_account` | `getAccountProfile(accountNumber?)` |
 | `robinhood_get_accounts` | `getAccounts(opts?)` |
 | `robinhood_get_portfolio` | `buildHoldings(opts?)` |
-| `robinhood_get_crypto` (positions) | `getCryptoPositions()` |
-| `robinhood_get_crypto` (quote) | `getCryptoQuote(symbol)` |
-| `robinhood_get_crypto` (historicals) | `getCryptoHistoricals(symbol, opts?)` |
+| `robinhood_get_crypto_positions` | `getCryptoPositions()` |
+| `robinhood_get_crypto_quotes` | `getCurrencyPairs()` + `getCryptoQuote(symbol)` |
+| `robinhood_get_currency_pairs` | `getCurrencyPairs()` |
+| `robinhood_get_crypto_historicals` | `getCryptoHistoricals(symbol, opts?)` |
 | `robinhood_get_equity_positions` | `getPositions(opts?)` |
-| `robinhood_get_stock_quote` | `getQuotes(symbols)` + `getFundamentals(symbols)` |
-| `robinhood_get_fundamentals` | `getFundamentals(symbols)` |
+| `robinhood_get_equity_quotes` | `getQuotes(symbols)` + `getFundamentals(symbols)` (`getIndexValue(symbol)` for an index) |
+| `robinhood_get_equity_fundamentals` | `getFundamentals(symbols)` |
 | `robinhood_get_equity_price_book` | `getPriceBook(symbol)` |
 | `robinhood_get_equity_tradability` | `getTradability(symbols)` |
 | `robinhood_get_earnings_results` | `getEarnings(symbol)` |
-| `robinhood_get_earnings_calendar` | `getEarningsCalendar(rangeDays?)` |
+| `robinhood_get_earnings_calendar` | `getEarningsCalendar(rangeDays?)` (+ `getFundamentals` for `high_market_cap`) |
 | `robinhood_get_short_interest` | `getShortInterest(symbol, opts?)` |
-| `robinhood_get_news` | `getNews(symbol)` + `getRatings(symbol)` + `getEarnings(symbol)` |
-| `robinhood_get_historicals` | `getStockHistoricals(symbols, opts?)` |
-| `robinhood_search` | `findInstruments(query)` |
-| `robinhood_get_options` (chain) | `getChains(symbol, opts?)` |
-| `robinhood_get_options` (instruments) | `findTradableOptions(symbol, opts?)` |
-| `robinhood_get_options` (greeks) | `getOptionMarketData(symbol, expDate, strike, type)` |
-| `robinhood_get_options` (index value) | `getIndexValue(symbol)` |
-| `robinhood_get_option_positions` | `getOptionPositions(opts?)` / `getOptionAggregatePositions(opts?)` |
-| `robinhood_get_option_orders` | `getAllOptionOrders(opts?)` / `getOpenOptionOrders(opts?)` |
-| `robinhood_get_option_historicals` | `getOptionHistoricals(symbol, expDate, strike, type, opts?)` |
+| `robinhood_get_equity_news` | `getNews(symbol)` + `getRatings(symbol)` |
+| `robinhood_get_equity_historicals` | `getStockHistoricals(symbols, opts?)` |
+| `robinhood_get_equity_technical_indicators` | `getStockHistoricals(symbol, opts?)` + `compute()` in `src/compute/indicators.ts` |
+| `robinhood_search` | `findInstruments(query)` / `getCurrencyPairs()` / `getIndexInstruments()` |
+| `robinhood_get_option_chains` | `getOptionChains({ ids?, underlyingSymbol? })` |
+| `robinhood_get_option_instruments` | `getOptionInstruments({ chainId, ... })` / `getOptionInstrumentById(id)` |
+| `robinhood_get_option_quotes` | `getOptionQuotes(ids)` |
+| `robinhood_get_option_positions` | `getOptionPositions(opts?)` |
+| `robinhood_get_option_orders` | `getAllOptionOrders(opts?)` / `getOptionOrder(id)` |
+| `robinhood_get_option_historicals` | `getOptionHistoricalsById(id, { span, interval })` |
 | `robinhood_get_movers` | `getTopMovers()` / `getTopMoversSp500(direction)` / `getTop100()` |
 | `robinhood_get_market_hours` | `getMarketHours(opts?)` |
 | `robinhood_get_indexes` | `getIndexInstruments()` |
-| `robinhood_get_index_quotes` | `getIndexQuotes(symbols)` |
+| `robinhood_get_index_quotes` | `getIndexValues(ids)` |
 | `robinhood_review_equity_order` | `reviewEquityOrder(opts)` |
 | `robinhood_review_option_order` | `reviewOptionOrder(opts)` |
-| `robinhood_place_stock_order` | `orderStock(symbol, side, quantity, opts?)` |
-| `robinhood_place_option_order` | `orderOption(symbol, legs, price, quantity, direction, opts?)` |
+| `robinhood_preview_crypto_order` | `getCurrencyPairs()` + `getCryptoQuote(symbol)` |
+| `robinhood_place_equity_order` | `orderStock(symbol, side, quantity, opts)` |
+| `robinhood_place_option_order` | `orderOption("", legs, price, quantity, direction, opts)` with `optionId` legs |
 | `robinhood_place_crypto_order` | `orderCrypto(symbol, side, amount, opts?)` |
-| `robinhood_get_orders` (stock) | `getAllStockOrders()` / `getOpenStockOrders()` |
-| `robinhood_get_orders` (option) | `getAllOptionOrders()` / `getOpenOptionOrders()` |
-| `robinhood_get_orders` (crypto) | `getAllCryptoOrders()` / `getOpenCryptoOrders()` |
-| `robinhood_cancel_order` | `cancelStockOrder(id)` / `cancelOptionOrder(id)` / `cancelCryptoOrder(id)` |
-| `robinhood_get_order_status` | `getStockOrder(id)` / `getOptionOrder(id)` / `getCryptoOrder(id)` |
+| `robinhood_get_equity_orders` | `getAllStockOrders()` / `getStockOrder(id)` |
+| `robinhood_get_crypto_orders` | `getAllCryptoOrders()` / `getCryptoOrder(id)` |
+| `robinhood_cancel_equity_order` | `getStockOrder(id)` + `cancelStockOrder(id)` |
+| `robinhood_cancel_option_order` | `getOptionOrder(id)` + `cancelOptionOrder(id)` |
+| `robinhood_cancel_crypto_order` | `cancelCryptoOrder(id)` |
 | `robinhood_get_watchlists` | `getWatchlists()` |
 | `robinhood_get_watchlist_items` | `getWatchlistItems(listId)` |
 | `robinhood_get_popular_watchlists` | `getPopularWatchlists()` |
@@ -234,6 +236,20 @@ const spx = await rh.getIndexValue("SPX");
 // => { value: "5700.00", symbol: "SPX" } or null for non-index
 ```
 
+### `getOptionChains({ ids?, underlyingSymbol? }): Promise<OptionChain[]>`
+By chain ids, or by underlying: an index returns all its tradable chains (SPX and SPXW), an equity its active chains.
+
+### `getOptionInstruments({ chainId, expirationDates?, strikePrice?, type?, state? }): Promise<OptionInstrument[]>`
+```typescript
+const calls = await rh.getOptionInstruments({ chainId, expirationDates: ["2026-10-16"], type: "call" });
+```
+`strikePrice` is a string (`"150"` matches `"150.0000"`); `state` filters client-side.
+
+### `getOptionQuotes(ids): Promise<OptionMarketData[]>`
+Market data (mark/bid/ask, greeks, open interest) per option instrument id, one request per id.
+
+### `getOptionHistoricalsById(optionId, { span, interval, bounds? }): Promise<OptionHistorical>`
+
 ### `getOptionPositions(opts?): Promise<OptionPosition[]>`
 ```typescript
 const legs = await rh.getOptionPositions({ nonzero: true }); // open positions, per-leg
@@ -277,6 +293,7 @@ const review = await rh.reviewOptionOrder({
 });
 // review.legs[].market_data (mark/bid/ask/greeks) + review.collateral (account ids scrubbed)
 ```
+Legs may also name `optionId` (see `orderOption`); then `symbol` is optional and read off the first leg's chain.
 The option check set is intentionally thin (see `not_evaluated_checks`) — options have no simple last-trade collar.
 
 ### `orderStock(symbol, side, quantity, opts)`
@@ -289,7 +306,7 @@ await rh.orderStock("AAPL", "sell_short", 10, { limitPrice: 150.0, timeInForce: 
 await rh.orderStock("AAPL", "buy", 10, { limitPrice: 150.0, timeInForce: "gfd", marketHours: "regular_hours" }); // cover a short
 await rh.orderStock("AAPL", "buy", 10, { limitPrice: 150.0, timeInForce: "gfd", marketHours: "all_day_hours" }); // 24 Hour Market
 ```
-Options: `{ limitPrice, stopPrice, trailAmount, trailType, accountNumber, timeInForce (required), marketHours, extendedHours }`
+Options: `{ limitPrice, stopPrice, trailAmount, trailType, accountNumber, timeInForce (required), marketHours, extendedHours, refId }`. `refId` is the idempotency key sent as `ref_id` (a fresh UUID when omitted); re-send the same one on a retry. Trailing stops are client-only — the MCP tool does not offer them.
 
 **Side** — `"buy" | "sell" | "sell_short"`:
 
@@ -319,7 +336,7 @@ An accepted short returns `state: "locate_completed"` (Robinhood located shares 
 
 **Session** — `marketHours` is `"regular_hours" | "extended_hours" | "all_day_hours"` (the last is Robinhood's 24 Hour Market). It supersedes the legacy `extendedHours` boolean (`extended_hours` on the wire is just `market_hours !== "regular_hours"`); passing both with contradictory values throws. Only limit orders execute outside regular hours — a market, stop, or trailing order tagged to another session is rejected client-side. A short sell placed outside regular hours is rejected unless the session is named.
 
-**Pass `marketHours` explicitly.** It is optional here only for backwards compatibility: omitted, the order goes out as regular hours, which after the close means it queues for the next open instead of executing. The MCP tool makes `market_hours` **required** for exactly that reason. Use `getMarketHours()` to find out which session is live rather than inferring it from the local clock.
+**Pass `marketHours` explicitly.** Omitted, the order goes out as regular hours (the MCP tool defaults the same way, as the official MCP does), which after the close means it queues for the next open instead of executing. Use `getMarketHours()` to find out which session is live rather than inferring it from the local clock.
 
 ### `getMarketHours(opts?)`
 ```typescript
@@ -341,7 +358,13 @@ await rh.orderOption("AAPL", [
   { expirationDate: "2026-04-17", strike: 200, optionType: "call", side: "buy", positionEffect: "open" },
   { expirationDate: "2026-04-17", strike: 210, optionType: "call", side: "sell", positionEffect: "open" },
 ], 2.50, 1, "debit");
+
+// Legs by option instrument id (what the MCP tool sends; the symbol is unused)
+await rh.orderOption("", [
+  { optionId: "<option-uuid>", side: "buy", positionEffect: "open" },
+], 3.50, 1, "debit", { timeInForce: "gfd", refId: "<uuid>" });
 ```
+A leg is `{ side, positionEffect, ratioQuantity? }` plus either `optionId` or `{ expirationDate, strike, optionType }` (`OptionLegInput`). Options: `{ stopPrice?, timeInForce?, accountNumber?, refId? }`.
 
 ### `orderCrypto(symbol, side, quantityOrPrice, opts?)`
 ```typescript
@@ -349,7 +372,7 @@ await rh.orderCrypto("BTC", "buy", 0.5);                           // buy 0.5 BT
 await rh.orderCrypto("BTC", "buy", 100, { amountIn: "price" });    // buy $100 of BTC
 await rh.orderCrypto("BTC", "buy", 0.5, { limitPrice: 60000 });    // limit buy
 ```
-Options: `{ amountIn?: "quantity" | "price"; orderType?: "market" | "limit"; limitPrice?: number }` — setting `limitPrice` implies a limit order.
+Options: `{ amountIn?: "quantity" | "price"; orderType?: "market" | "limit"; limitPrice?: number; refId?: string }` — setting `limitPrice` implies a limit order.
 
 ### Order Queries
 ```typescript
@@ -384,7 +407,9 @@ All tradable index instruments (SPX, NDX, VIX, RUT, …).
 ```typescript
 const values = await rh.getIndexQuotes(["SPX", "VIX"]); // current values; unknown symbols are skipped
 ```
-See also `getIndexValue(symbol)` above (Options Methods) for a single-symbol lookup.
+
+### `getIndexValues(ids): Promise<IndexValue[]>`
+Current values by index instrument id (from `getIndexInstruments()`), one request per id; ids with no value are skipped. See also `getIndexValue(symbol)` above (Options Methods) for a single-symbol lookup.
 
 ## Watchlist Methods
 
@@ -471,7 +496,7 @@ The client returns **raw** scan objects. The MCP tool (`robinhood_get_scans`) ad
 
 ## Realized P&L Methods
 
-Read-only, **computed** — Robinhood has no realized-P&L REST endpoint for a standard token. `getRealizedPnl` returns the full computed dataset (all realized trades, not windowed); apply your own span/bucketing, or use the two MCP tools which window and bucket for you.
+Read-only, **computed** — Robinhood has no realized-P&L REST endpoint for a web-session token. `getRealizedPnl` returns the full computed dataset (all realized trades, not windowed); apply your own span/bucketing, or use the two MCP tools which window and bucket for you.
 
 ```typescript
 // Equity: independent economic FIFO incl. fees (NOT Robinhood's booked/tax number).

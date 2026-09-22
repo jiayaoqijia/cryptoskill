@@ -31,6 +31,15 @@ def _pct_cost(x):
 
 
 # ---------------------------------------------------------------- six dimensions
+def _n(d, key, default=0.0):
+    """`dict.get(k, default)` only defaults when the key is ABSENT. Several timing and market fields
+    are present-and-NULL — a median of nothing, a share with no sample, a funding rate with no book —
+    so `tm.get("chased_share", 0) >= 0.5` raised TypeError on a real wallet (0x767a…0ace, one closed
+    trade, no entry had a 24h prior). This defaults for missing AND null."""
+    v = (d or {}).get(key)
+    return default if v is None else v
+
+
 def dim_timing(tm, sm, cov=None):
     s, lines = 70.0, []
     if not tm or (tm.get("n") or 0) < 5:
@@ -42,7 +51,7 @@ def dim_timing(tm, sm, cov=None):
         cs = tm.get("chased_share") or 0.0
         s -= cs * 40
         cpf, kpf = tm.get("chased_pf"), tm.get("calm_pf")
-        if tm.get("chased_n", 0) >= 3 and cpf is not None and kpf is not None and cpf < 1.0 < kpf:
+        if _n(tm, "chased_n") >= 3 and cpf is not None and kpf is not None and cpf < 1.0 < kpf:
             s -= 15
             lines.append((3, f"{_pct(cs)} of your entries come after a ≥3% move — those run a {cpf:.1f} profit factor vs {min(kpf, 9.9):.1f} when you enter before it."))
         elif cs >= 0.5:
@@ -90,10 +99,24 @@ def dim_risk(tr, book, dd):
         # outcome the dimension exists to catch.
         s -= min(75, dd["dd_pct"] * 75)
         if dd["dd_pct"] >= 0.9:
-            lines.append((6, "The account went to zero inside the window — a full loss of the equity at risk."))
+            # dd_pct is scale-relative: giving back $5k of a $5.4k account is 93%. Saying "the
+            # account went to zero — a full loss of the equity at risk" about a book that ENDED the
+            # window up $25,008 and holds $28,420 is false, and 1.16.1 promoted this sentence into
+            # the headline, so it sat directly beside "Net $25,008 on the ledger".
+            # The penalty stands either way — they really did nearly lose it — but a drawdown that
+            # was recovered is a different sentence from one that was not.
+            if (tr.get("ledger_net") or 0) > 0:
+                lines.append((4, f"A {_pct(dd['dd_pct'])} drawdown inside the window — nearly the whole "
+                                 f"book at the trough — though it ended up {_usd(tr['ledger_net'])}."))
+            else:
+                lines.append((6, "The account went to zero inside the window — a full loss of the equity at risk."))
         elif dd["dd_pct"] >= 0.25:
             lines.append((2, f"Max drawdown {_pct(dd['dd_pct'])} of equity over the window."))
     if not lines:
+        # "Stops in place, losers cut faster than winners" asserts three findings. On a book with no
+        # open positions and one closed trade there is nothing to have found — and it scored 76.
+        if not n and (tr.get("trades") or 0) < MIN_PATTERN_TRADES:
+            return None, "No open positions and too few closed trades to judge risk."
         lines.append((0, "Stops in place, losers cut faster than winners, no liquidations."))
     return clamp(s), max(lines, key=lambda x: x[0])[1]
 
@@ -120,13 +143,22 @@ def dim_cost(tr):
         # lost $180,996 on $7,143 of fees scores 94/100, which is not cost efficiency, just a large
         # loss. Against |net| the question is the one that matters: how much of what you lost went
         # to cost rather than to bad trades.
-        net = float(tr.get("net") or 0.0)
-        costs = abs(tr.get("fees") or 0) + max(0.0, -(tr.get("funding") or 0))
+        # The ledger is what the user lost, so it is the denominator they would use. Realized-only
+        # net puts a book whose result lives in unrealized P&L against the wrong base (#718 Q2);
+        # with B1 fixed, ledger_net is finally a 90-day number and safe to prefer.
+        net = float(tr.get("ledger_net") if tr.get("ledger_net") is not None else (tr.get("net") or 0.0))
+        # NOT abs(): a maker REBATE is negative fees, and abs() turned money earned into an
+        # equal-sized cost. 0.51% of books with 5+ trades run a net rebate, and they are exactly the
+        # sophisticated books worth reading correctly.
+        costs = max(0.0, float(tr.get("fees") or 0)) + max(0.0, -(tr.get("funding") or 0))
         if abs(net) < 1 and costs < 1:
             return None, "Not measurable this window: no trading result, and no costs to price against it."
         drag = costs / max(abs(net), 1.0)
         s = 100 - min(70, drag * 150)
-        line = (f"{_pct_cost(drag)} of what you lost was cost, not bad trades: {_usd(abs(tr.get('fees') or 0))} of fees"
+        # a rebate is money EARNED — say so, rather than printing it as a bill
+        _fee = float(tr.get("fees") or 0)
+        _fee_txt = f"{_usd(-_fee)} EARNED in maker rebates" if _fee < 0 else f"{_usd(_fee)} of fees"
+        line = (f"{_pct_cost(drag)} of what you lost was cost, not bad trades: {_fee_txt}"
                 + (f" and {_usd(-tr['funding'])} of funding" if (tr.get("funding") or 0) < 0 else "")
                 + f" against a {_usd(net)} net result"
                 + (f" — funding paid you {_usd(tr['funding'])}" if (tr.get("funding") or 0) > 0 else "") + ".")
@@ -162,11 +194,13 @@ def dim_sizing(tr, book, closed):
     if book.get("largest_share") and book["largest_share"] > 0.6 and len(book["positions"]) > 1:
         s -= 10; lines.append((1, f"One position is {_pct(book['largest_share'])} of the book."))
     if not lines:
-        if not comp:
-            # no closed trades and nothing unusual in the live book: there is no sizing BEHAVIOUR to
-            # read. Claiming "sizes are consistent and exposure is proportionate" asserts the thing
-            # that was not measured.
-            return None, "No closed trades to judge sizing on, and the open book shows nothing unusual."
+        if len(comp) < MIN_PATTERN_TRADES:
+            # too few closed trades and nothing unusual in the live book: there is no sizing
+            # BEHAVIOUR to read. Claiming "sizes are consistent and exposure is proportionate"
+            # asserts the thing that was not measured — it scored 85 off a single trade.
+            return None, ("No closed trades to judge sizing on, and the open book shows nothing unusual."
+                          if not comp else
+                          f"Only {len(comp)} closed trade{'s' if len(comp) > 1 else ''} — too few to read sizing from.")
         lines.append((0, "Sizes are consistent and exposure is proportionate."))
     return clamp(s), max(lines, key=lambda x: x[0])[1]
 
@@ -206,7 +240,7 @@ def dim_market(book, mf):
         # capped at 20 this saturated at 40%/yr: a book paying 40% of equity a year in funding and
         # one paying 240% scored identically. Same shape as the drawdown cap fixed in 1.9.1.
         s -= min(45, yr * 50)
-        lines.append((2, f"{mf['stance'].capitalize()} into {'positive' if book['net_exposure'] > 0 else 'negative'} funding — paying ~{_usd(-fpd)}/day to hold ({_pct(yr)} of equity a year)."))
+        lines.append((2, f"{mf['stance'].capitalize()} into {'positive' if book['net_exposure'] > 0 else 'negative'} funding — paying ~{_usd(-fpd)}/day to hold ({_pct(yr)} of your EQUITY a year — leverage makes this bigger than the headline rate on notional)."))
     elif fpd > 0:
         lines.append((1, f"Your book collects ~{_usd(fpd)}/day in funding at today's rates."))
     if not lines:
@@ -224,6 +258,12 @@ def dimensions(tr, book, dd, tm, mf, sm, closed, pnl_curve):
     # rather than scoring an unmeasured dimension and letting its default move the headline.
     live = {k: w for k, w in WEIGHTS.items() if d[k]["score"] is not None}
     tot = sum(live.values())
+    # Below half the dimensions there is no book to score. 0x31a7…7549 — one trade, net -$91 — had
+    # four of six abstain and still printed 66/100, re-normalised onto cost (90, off $0 of fees) and
+    # consistency (48, off that single trade). A confident headline from two noisy inputs is the
+    # same failure as a confident dimension from no input.
+    if len(live) < MIN_DIMENSIONS:
+        return d, None
     quant = (sum(live[k] * d[k]["score"] for k in live) / tot) if tot > 0 else 0
     return d, round(quant)
 
@@ -248,7 +288,7 @@ def archetype(tr, book, tm, act, opened=None):
         noun = "position trader"
     elif hold and hold > 24:
         noun = "swing trader"
-    elif pre is not None and pre > 0 and (tm or {}).get("give_back_median", 1) < 0.45:
+    elif pre is not None and pre > 0 and _n(tm, "give_back_median", 1) < 0.45:
         noun = "trend rider"
     else:
         noun = "opportunist"
@@ -284,9 +324,9 @@ def flags(tr, book, dd, tm, mf, labels):
         out.append("IN DRAWDOWN")
     if tr.get("liquidations"):
         out.append(f"LIQUIDATED ×{tr['liquidations']}")
-    if (tm or {}).get("chased_share", 0) >= 0.5:
+    if _n(tm, "chased_share") >= 0.5:
         out.append("CHASING")
-    if mf and mf.get("funding_per_day", 0) < 0 and book.get("account_value") and -mf["funding_per_day"] * 365 / book["account_value"] > 0.1:
+    if mf and _n(mf, "funding_per_day") < 0 and book.get("account_value") and -mf["funding_per_day"] * 365 / book["account_value"] > 0.1:
         out.append(f"PAYING FUNDING {_usd(-mf['funding_per_day'])}/DAY")
     for k in ("consistency", "risk", "activity"):
         v = (labels or {}).get(k)
@@ -296,6 +336,8 @@ def flags(tr, book, dd, tm, mf, labels):
 
 
 MIN_VERDICT_TRADES = 5   # below this, cost / timing / consistency cannot carry the headline
+MIN_DIMENSIONS = 3       # fewer measurable dimensions than this and there is no book to score
+NOISE_SHARE = 0.15       # a lever keeping less than this share of what it saves is a coin flip
 MIN_PATTERN_TRADES = 5   # a hold-time or give-back leak is a pattern claim: it needs a sample
 
 
@@ -338,12 +380,18 @@ def verdict(tr, book, dims, leaks):
     weakest = ranked[0] if ranked else None
     weak_line = imperative = None
     if weakest is not None and dims[weakest]["score"] < 60:
-        weak_line = {
+        # Use the dimension's OWN sentence. Keying a fixed phrase off the dimension NAME asserted a
+        # reason the dimension had just denied: "your entries are late or chased" printed directly
+        # above "Entries are not systematically late or chased over this window." Timing scores low
+        # for give-back too, and the headline was naming the wrong half of it.
+        _own = (dims[weakest].get("line") or "").strip().rstrip(".")
+        weak_line = (_own[0].lower() + _own[1:]) if _own else {
             "risk": "you're carrying unprotected risk" if book["naked"] else "the risk side is where it leaks",
             "cost": "execution and funding are eating the gains" if (tr.get("funding") or 0) < 0 else "execution is eating the gains",
-            "timing": "your entries are late or chased", "sizing": "sizing is working against you", "consistency": "the results are not repeatable yet",
+            "timing": "the timing side is where it leaks", "sizing": "sizing is working against you",
+            "consistency": "the results are not repeatable yet",
             "market_fit": "the book is fighting the market it sits in"}[weakest]
-        imperative = {"risk": "Fix the risk first.", "cost": "Cut the costs first.", "timing": "Fix the entries first.", "sizing": "Fix the sizing first.",
+        imperative = {"risk": "Fix the risk first.", "cost": "Cut the costs first.", "timing": "Fix the timing first.", "sizing": "Fix the sizing first.",
                       "consistency": "Build the sample before scaling.", "market_fit": "Get on the right side of the regime first."}[weakest]
     near = [p for p in book["positions"] if p["liq_distance_pct"] is not None and p["liq_distance_pct"] < 5]
     if near:
@@ -357,12 +405,17 @@ def verdict(tr, book, dims, leaks):
     if weak_line:
         return f"{strength} — {'and' if negative else 'but'} {weak_line}. {imperative}"
     if n < MIN_VERDICT_TRADES:
-        return f"{strength} — only {n} closed trade{'s' if n != 1 else ''} in the window, so the record is too thin to grade; the live book is where the desk earns its keep today."
+        # "the live book is where the desk earns its keep" only holds if there IS a live book. On
+        # 0x31a7…7549 it sat above a risk line reading "No open positions".
+        tail = ("the live book is where the desk earns its keep today."
+                if (book or {}).get("positions") else
+                "and with nothing open, there is nothing for the desk to protect right now.")
+        return f"{strength} — only {n} closed trade{'s' if n != 1 else ''} in the window, so the record is too thin to grade; {tail}"
     return f"{strength} — nothing in the record is leaking badly; the gains are in the details below."
 
 
 # ---------------------------------------------------------------- leaks
-def levers(rows, closed, tm=None):
+def levers(rows, closed, tm=None, funding_late=0.0):
     """Every process fix the desk can price, each as a book-wide total that NETS its own costs.
 
     This is the single source both `leaks()` and `recoverable()` read. They used to compute the same
@@ -389,8 +442,13 @@ def levers(rows, closed, tm=None):
         if (st.get("n") or 0) < MIN_PATTERN_TRADES:
             continue
         vals = [float(v) for v in ((t.get(f"{grp}_cf") or {}).get(k) for t in rows) if v is not None]
-        out.append(dict(kind=grp, key=k, label=label, total=float(st.get("total") or 0.0),
-                        gross=sum(v for v in vals if v > 0), vals=vals, n=int(st["n"])))
+        total, gross = float(st.get("total") or 0.0), sum(v for v in vals if v > 0)
+        # a rule that hands back almost everything it saves is a coin flip, not an edge. On
+        # 0xccd2…c8a3 a time-cut netted $165 out of $5,701 saved — 3% — and was listed as a fix.
+        if gross > 0 and total < NOISE_SHARE * gross:
+            continue
+        out.append(dict(kind=grp, key=k, label=label, total=total, gross=gross,
+                        vals=vals, n=int(st["n"])))
 
     m = None
     winners = [e["peak_size"] * e["entry_vwap"] for e in (closed or [])
@@ -407,6 +465,33 @@ def levers(rows, closed, tm=None):
                             n=len(over), median_winner=m,
                             losers=len([t for t in over if not t.get("win")])))
 
+    # Funding belongs here, competing with the exits rather than sitting outside them. It was left
+    # out because capping a funding-paying hold IS the time-cut — but the union only ever credits
+    # ONE lever, so there was never a double-count to prevent, and leaving it out made the headline
+    # SMALLER than a leak listed under it: 0x767a…0ace quoted $99,228 above a $114,566 funding leak.
+    # No sample gate: funding paid is a measured cost, like fees, not a pattern estimated from a
+    # handful of trades.
+    if funding_late > 50:
+        # A 24h cap does not only stop the funding bill — it CLOSES the position, and the P&L
+        # consequence of closing at 24h is exactly the 24h time-cut. Crediting the funding saved and
+        # charging nothing for the exits it forces was the fourth survivorship bug (@0xsarvesh #718);
+        # the first three were fixed in #712.
+        _cut24 = (((tm.get("cut") or {}).get("settings")) or {}).get("24") or {}
+        # CHARGE only, never credit. A 24h cap forces exits, and if those exits cost money the
+        # funding saving has to carry it — that was the survivorship gap. But when they GAIN, that
+        # gain is the time-cut lever's, and adding it here summed two levers, which is the exact
+        # double-count the union exists to prevent. It made a $122,440 funding bill read as a
+        # $4,083,959 saving.
+        _charge = min(0.0, float(_cut24.get("total") or 0.0)) if _cut24.get("n") else 0.0
+        # The lever is legitimately worth funding + the P&L of the exits it forces. The LEAK beside
+        # it is titled "you paid $X in funding", so quoting the combined figure there read as saving
+        # 6x the bill ($502,094 against $80,256). Carry the two parts separately and let the leak
+        # say which is which.
+        out.append(dict(kind="funding", key="24h", label="capping holds that pay funding at 24h",
+                        total=float(funding_late) + _charge, gross=float(funding_late),
+                        funding_saved=float(funding_late), exit_effect=_charge, vals=[],
+                        n=len(rows)))
+
     if (tm.get("chased_n") or 0) >= 3 and (tm.get("chased_realized") or 0) < -50 \
             and (tm.get("calm_pf") or 0) > (tm.get("chased_pf") or 0):
         vals = [-float(t["realized"]) for t in rows if t.get("chased") and (t.get("realized") or 0) < 0]
@@ -417,10 +502,27 @@ def levers(rows, closed, tm=None):
 
 
 def best_lever(lv, kind=None):
-    """The highest-scoring lever, optionally of one kind. None when nothing beats doing nothing."""
+    """The lever to quote. MEDIAN within a family, max across families.
+
+    Taking the max over all of them was a grid search reported as a finding: 3 lock settings and 3
+    cut settings are six in-sample estimates of the same underlying thing — exit discipline — and
+    the largest of six is biased high by construction. Charging each setting fixed the per-trade
+    asymmetry (#712); the SELECTION step was still optimistic and nothing measured it (@0xsarvesh,
+    #718). methodology.md has described the median-of-robust figure since 1.0.
+
+    Across families the max is right: a size cap, a funding cap and an exit rule are different
+    fixes, not six readings of one.
+    """
     c = [x for x in (lv or []) if kind is None or x["kind"] == kind]
-    b = max(c, key=lambda x: x["total"], default=None)
-    return b if b and b["total"] > 0 else None
+    if not c:
+        return None
+    best = None
+    for k in {x["kind"] for x in c}:
+        fam = sorted((x for x in c if x["kind"] == k), key=lambda x: x["total"])
+        rep = fam[(len(fam) - 1) // 2]              # lower median: ties go to the more conservative
+        if best is None or rep["total"] > best["total"]:
+            best = rep
+    return best if best and best["total"] > 0 else None
 
 
 def recoverable(rows, closed, tr, tm=None, lv=None):
@@ -488,7 +590,7 @@ def leaks(tr, book, tm, funding_rows, closed, window_start, days, lv=None):
     # the ranking is by the same accounting as the headline (#718)
     ch = {x["kind"]: x for x in (lv or [])}
     # 1. costs — resting instead of crossing the spread
-    if tr.get("fee_recoverable", 0) >= 50 and (tr.get("taker_share") or 0) >= 0.25:
+    if _n(tr, "fee_recoverable") >= 50 and (tr.get("taker_share") or 0) >= 0.25:
         out.append(dict(agent="Leak finder", title=f"{_pct(tr['taker_share'])} of your volume crossed the spread as a taker",
                         evidence=f"{_usd(tr['fees'])} in fees on {_usd(tr['volume'])} of volume at {tr['fee_rate_taker'] * 1e4:.1f} bp taker / {tr['fee_rate_maker'] * 1e4:.1f} bp maker.",
                         counterfactual=f"Resting maker orders for the same fills would have kept ~{_usd(tr['fee_recoverable'])} over {days} days (≈{_usd(tr['fee_recoverable'] * yr)}/yr).",
@@ -499,13 +601,18 @@ def leaks(tr, book, tm, funding_rows, closed, window_start, days, lv=None):
     # _funding_after sums funding PAID; tr["funding"] is NET of funding collected elsewhere. Left
     # uncapped the leak read "You paid $123,764 in funding … would have kept ~$164,499" — a saving
     # larger than the cost in the same sentence.
-    paid_late = min(_funding_after(funding_rows, closed, window_start, 24.0),
-                    -float(tr.get("funding") or 0.0))
-    if tr.get("funding", 0) < -100 and paid_late > 50:
+    paid_late = ch["funding"]["total"] if "funding" in ch else \
+        min(_funding_after(funding_rows, closed, window_start, 24.0), -float(tr.get("funding") or 0.0))
+    if _n(tr, "funding") < -100 and paid_late > 50:
         worst = min(tr["coins"].items(), key=lambda kv: kv[1]["funding"])
         out.append(dict(agent="Market regime", title=f"You paid {_usd(-tr['funding'])} in funding over {days} days",
-                        evidence=f"{worst[0]} alone cost {_usd(-worst[1]['funding'])}; the book pays {_usd(-book['funding_per_day'])}/day at today's rates." if book.get("funding_per_day", 0) < 0 else f"{worst[0]} alone cost {_usd(-worst[1]['funding'])}.",
-                        counterfactual=f"A 24h cap on holds that pay funding would have kept ~{_usd(paid_late)} over {days} days.",
+                        evidence=f"{worst[0]} alone cost {_usd(-worst[1]['funding'])}; the book pays {_usd(-book['funding_per_day'])}/day at today's rates." if _n(book, "funding_per_day") < 0 else f"{worst[0]} alone cost {_usd(-worst[1]['funding'])}.",
+                        counterfactual=(
+                            f"A 24h cap on those holds would have kept ~{_usd(_fl['total'])} over {days} days — "
+                            f"{_usd(_fl['funding_saved'])} of funding, and {_usd(_fl['exit_effect'])} from closing "
+                            f"the positions that much earlier."
+                            if (_fl := ch.get("funding")) and abs(_fl.get("exit_effect") or 0) > 50 else
+                            f"A 24h cap on holds that pay funding would have kept ~{_usd(paid_late)} over {days} days."),
                         usd=paid_late, window=f"{days}d", cta="A funding-aware hold rule caps the cost without changing the thesis."))
     # 3. losers held too long — only when the time cut is robust
     cut_l = best_lever(lv, "cut")
@@ -526,18 +633,22 @@ def leaks(tr, book, tm, funding_rows, closed, window_start, days, lv=None):
                                         f"A trailing lock on peak gains would have kept roughly ~{_usd(lock)} over {days} days (approximate: peak size × price move)."),
                         usd=lock, window=f"{days}d", cta="A ratcheting stop locks the peak without capping the run."))
     # 5. chasing
-    if tm and tm.get("chased_n", 0) >= 3 and tm.get("chased_realized", 0) < -50 and (tm.get("calm_pf") or 0) > (tm.get("chased_pf") or 0):
+    if tm and _n(tm, "chased_n") >= 3 and _n(tm, "chased_realized") < -50 and (tm.get("calm_pf") or 0) > (tm.get("chased_pf") or 0):
         out.append(dict(agent="Smart money", title=f"Entries after a ≥3% move lose money — {tm['chased_n']} of {tm['n']} trades",
                         evidence=f"Those trades realized {_usd(tm['chased_realized'])} (profit factor {tm['chased_pf']:.1f}) vs {min(tm['calm_pf'], 9.9):.1f} when you entered before the move.",
                         counterfactual=f"Skipping entries that had already run ≥3% would have kept ~{_usd(-tm['chased_realized'])} over {days} days.",
                         usd=-tm["chased_realized"], window=f"{days}d", cta="Enter with the flow, not after it — a signal-driven entry does this."))
     # 6. liquidations
     if tr.get("liquidations"):
-        half = -tr["liquidation_loss"] / 2
+        # "a stop halfway to liquidation would have kept half" was a GUESS, not a counterfactual: it
+        # charges nothing for the positions that stop would have cut early and which then recovered,
+        # and we do not know where the trader would have put it. Priced at $0 it states the fact and
+        # stops topping a ranking it was never measured for — on one book it led the page at
+        # $169,425 and next_steps sent the reader at it. (@0xsarvesh, #718.)
         out.append(dict(agent="Risk guard", title=f"{tr['liquidations']} liquidation(s) cost {_usd(-tr['liquidation_loss'])}",
                         evidence="A liquidation surrenders the whole margin plus the liquidation fee.",
-                        counterfactual=f"A stop halfway to liquidation would have kept roughly ~{_usd(half)} of it.",
-                        usd=half, window=f"{days}d", cta="A hard stop is the cheapest insurance there is."))
+                        counterfactual="How much a stop would have saved depends where you put it, so the desk does not price this one — but the cost above is what it actually took.",
+                        usd=0.0, unpriced=True, window=f"{days}d", cta="A hard stop is the cheapest insurance there is."))
     # 7. sizing — oversized losers
     size_l = ch.get("size")
     if size_l and size_l["total"] > 50 and size_l.get("losers", 0) >= 2:

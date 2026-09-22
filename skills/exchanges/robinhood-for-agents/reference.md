@@ -1,5 +1,15 @@
 # MCP Tools Reference
 
+## Modes
+
+The server runs in one mode per process. **Standard** (entry `robinhood-for-agents`, the default): every official tool relayed unchanged to Robinhood's hosted MCP under the credential from `robinhood_official_login`; orders reach the Agentic account only. In standard mode the official server answers, so the response shapes below (which describe web mode) do not apply. **Web** (entry `robinhood-web`, `--mode web`): Robinhood's web API under the Chrome session from `robinhood_browser_login`.
+
+| Mode | Tools |
+|---|---|
+| both | every tool in this file not listed below |
+| web only | `robinhood_browser_login`, `robinhood_check_session`, `robinhood_get_account`, `robinhood_get_short_interest`, `robinhood_get_movers`, `robinhood_get_market_hours`, `robinhood_get_crypto_historicals` |
+| standard only | `robinhood_official_login` and the 29 under [Standard mode only](#standard-mode-only) |
+
 ## Auth
 
 ### robinhood_check_session
@@ -63,8 +73,7 @@ Get all brokerage accounts (multi-account support).
 Get complete portfolio: positions with P&L, equity, buying power, cash.
 
 **Parameters:**
-- `account_number` (string, optional) — specific account
-- `with_dividends` (boolean, default: false) — include dividend info
+- `account_number` (string, required) — from `robinhood_get_accounts`
 
 **Response:**
 ```json
@@ -91,13 +100,13 @@ The `summary` now includes bonfire `unified` + `live` parity fields; the full `u
 **Multi-account caveat:** when `account_number` is a non-default account (from `robinhood_get_accounts`), `unified` comes back `null` and the six `unified`-sourced summary fields (`total_equity`, `total_market_value`, `portfolio_equity`, `options_buying_power`, `uninvested_cash`, `withdrawable_cash`) are omitted — bonfire's unified-portfolio endpoint only recognizes the account Robinhood treats as default, and 404s for every other real account_number. `holdings`, the original `equity`/`cash`/`buying_power` fields, and `live` are unaffected and always populated. This is a live Robinhood API quirk, not a bug in this server — don't retry or treat a `null` `unified` as an error.
 
 ### robinhood_get_equity_positions
-Get raw equity positions (shares, average buy price) without holding enrichment.
+Raw non-zero equity positions (shares, average buy price) for one account, without holding enrichment.
 
 **Parameters:**
-- `account_number` (string, optional) — omit for all accounts
-- `nonzero` (boolean, default: true) — only non-zero quantities
+- `account_number` (string, required)
+- `cursor` (string, optional) — results are complete
 
-**Response:** `{ "positions": [{ "instrument": "...", "quantity": "10", "average_buy_price": "120.00" }] }`
+**Response:** `{ "positions": [{ "instrument": "...", "quantity": "10", "average_buy_price": "120.00" }], "next_cursor": null }`
 
 ### robinhood_get_equity_tax_lots
 Open tax lots for one equity holding (one symbol per call). A real endpoint passthrough (not computed): `GET /tax_lots/open/{account}/{instrument}/`. Symbol is resolved by exact match. Each lot reports `quantity`, `quantity_available`, `book_cost_basis`, `tax_cost_basis`, `book_proceeds`, `open_date`, `term` (long/short-term), `is_selectable`, `open_lot_id`, `order_id`, and `cost_per_share`. Per-lot account numbers are scrubbed — only the caller-supplied `account_number` is echoed back. Results are complete (`next_cursor` always null: a tax-lots page URL embeds the account number, so no cursor is surfaced).
@@ -111,22 +120,37 @@ Open tax lots for one equity holding (one symbol per call). A real endpoint pass
 
 ## Crypto
 
-### robinhood_get_crypto
-Get a crypto quote, price history, or positions.
+Symbols may be `BTC`, `BTC-USD`, or `BTCUSD`. Crypto is user-scoped: `rhs_account_number` is accepted for parity but does not route.
 
-**Parameters:**
-- `info_type` (enum: "quote", "historicals", "positions", default: "quote")
-- `symbol` (string, required for "quote" and "historicals", e.g. "BTC")
-- `interval` (enum: "15second", "5minute", "10minute", "hour", "day", "week", default: "day") — for historicals
-- `span` (enum: "hour", "day", "week", "month", "3month", "year", "5year", default: "month") — for historicals
+### robinhood_get_crypto_quotes
+**Parameters:** `symbols` (array of string, required), `rhs_account_number` (optional), `timezone` (optional; timestamps are UTC)
+
+**Response:** `{ "quotes": [{ "symbol": "BTC-USD", "mark_price": "...", "bid_price": "...", "ask_price": "...", ... }] }` — an unknown symbol is an error entry.
+
+### robinhood_get_crypto_positions
+**Parameters:** `rhs_account_number` (required), `cursor` (optional)
+
+**Response:** `{ "positions": [{ "currency": {...}, "quantity": "...", "cost_bases": [...] }], "next_cursor": null }`
+
+### robinhood_get_currency_pairs
+**Parameters:** `limit` (integer, 1–700), `cursor` (optional) — pass `next_cursor` back to page.
+
+**Response:** `{ "pairs": [{ "id": "<uuid>", "symbol": "BTC-USD", "asset_currency": {...}, "tradability": "tradable" }], "next_cursor": "..." | null }`
+
+### robinhood_get_crypto_historicals
+Fork-only (no official counterpart).
+
+**Parameters:** `symbol` (required), `interval` ("15second"/"5minute"/"10minute"/"hour"/"day"/"week", default "day"), `span` ("hour"/"day"/"week"/"month"/"3month"/"year"/"5year", default "month")
 
 ## Research
 
-### robinhood_get_stock_quote
-Get quote and fundamentals. Also works for index symbols (SPX, NDX, VIX, RUT, XSP).
+Time ranges (`start_time`, `end_time`) are RFC 3339 UTC. Historicals come from Robinhood's REST chart endpoint, which is anchored at now: the tool fetches the smallest span that reaches `start_time` for the interval and trims to the range. `minute` and `5minute` bars reach back one day, `10minute` a week, `hour` a month, `day` a year; a range the interval cannot reach is an error, never a shorter series.
+
+### robinhood_get_equity_quotes
+Quote and fundamentals. Also works for index symbols (SPX, NDX, VIX, RUT, XSP).
 
 **Parameters:**
-- `symbols` (string, required) — comma-separated, e.g. "AAPL" or "AAPL,MSFT"
+- `symbols` (array of string, required) — e.g. `["AAPL", "MSFT"]`
 
 **Response:**
 ```json
@@ -138,11 +162,12 @@ Get quote and fundamentals. Also works for index symbols (SPX, NDX, VIX, RUT, XS
 }
 ```
 
-### robinhood_get_fundamentals
-Get company fundamentals (no live quote). Use `robinhood_get_stock_quote` if you also need the current price.
+### robinhood_get_equity_fundamentals
+Company fundamentals (no live quote). Use `robinhood_get_equity_quotes` if you also need the current price.
 
 **Parameters:**
-- `symbols` (string, required) — comma-separated, e.g. "AAPL" or "AAPL,MSFT"
+- `symbols` (array of string, required, up to 10)
+- `bounds` (optional) — `"regular"` only
 
 **Response:** keyed by symbol; each value is the fundamentals object (`float`, `shares_outstanding`, `market_cap`, `pe_ratio`, `pb_ratio`, dividend schedule, `high_52_weeks`/`low_52_weeks`, `sector`, `industry`, `ceo`, `description`).
 
@@ -169,20 +194,21 @@ Robinhood's **modeled daily** short-interest series — NOT the official biweekl
 `pc_freefloat` is a percent (e.g. `0.9628` = 0.9628% of free float).
 
 ### robinhood_get_equity_price_book
-Level-2 price book (aggregated bid/ask depth) for a stock. Depth is populated during market hours; `asks`/`bids` are empty when the market is closed.
+Level-2 price book (aggregated bid/ask depth). Depth is populated during market hours; `asks`/`bids` are empty when the market is closed.
 
 **Parameters:**
-- `symbol` (string, required)
+- `symbols` (array of string, required, up to 4)
 
-**Response:** `{ "price_book": { "instrument_id": "...", "updated_at": "...", "asks": [{ "price": {...}, "quantity": "..." }], "bids": [...] } }`
+**Response:** `{ "price_books": [{ "symbol": "AAPL", "price_book": { "instrument_id": "...", "updated_at": "...", "asks": [{ "price": {...}, "quantity": "..." }], "bids": [...] } }] }`
 
 ### robinhood_get_equity_tradability
-Tradability flags for one or more symbols.
+Tradability flags for up to 10 symbols. The flags are instrument-level; `account_number` is echoed, not used to filter.
 
 **Parameters:**
+- `account_number` (string, required)
 - `symbols` (array of string, required) — e.g. `["AAPL", "MSFT"]`
 
-**Response:** `{ "tradability": [{ "symbol": "AAPL", "tradeable": true, "tradability": "tradable", "fractional_tradability": "...", "short_selling_tradability": "...", "account_type_tradabilities": [...] }] }`
+**Response:** `{ "account_number": "...", "tradability": [{ "symbol": "AAPL", "tradeable": true, "tradability": "tradable", "fractional_tradability": "...", "short_selling_tradability": "...", "account_type_tradabilities": [...] }] }`
 
 ### robinhood_get_earnings_results
 Historical and upcoming earnings for one symbol (EPS estimate vs. actual, report date/timing).
@@ -196,112 +222,112 @@ Historical and upcoming earnings for one symbol (EPS estimate vs. actual, report
 Market-wide earnings calendar for a window of days (all reporting companies, not one symbol).
 
 **Parameters:**
-- `range_days` (number, default: 7) — positive = upcoming (e.g. 7 = next 7 days), negative = look-back; must be non-zero
+- `days` (integer, -31..31, non-zero, default 7) — positive = forward from `start_date`, negative = the days ending at it
+- `start_date` (string, optional, YYYY-MM-DD) — defaults to today (US/Eastern)
+- `filter` (optional) — `"high_market_cap"` keeps names over $1B
 
-**Response:** `{ "range_days": 7, "count": 79, "calendar": [{ "symbol": "...", "year": 2026, "quarter": 2, "eps": {...}, "report": {...} }] }`
+**Response:** `{ "start_date": "...", "end_date": "...", "count": 79, "calendar": [{ "symbol": "...", "year": 2026, "quarter": 2, "eps": {...}, "report": {...} }] }`
 
-### robinhood_get_news
-Get news, analyst ratings, and earnings.
+### robinhood_get_equity_news
+News plus the analyst ratings summary. Earnings are `robinhood_get_earnings_results`.
 
 **Parameters:**
-- `symbol` (string, required)
+- `symbol` (string, required), `limit` (integer, optional), `cursor` (optional; results are complete up to `limit`)
 
 **Response:**
 ```json
 {
   "news": [{ "title": "...", "source": "...", "published_at": "...", "url": "..." }],
   "ratings": { "summary": { "num_buy_ratings": 20, "num_hold_ratings": 5, "num_sell_ratings": 2 } },
-  "earnings": [{ "year": 2025, "quarter": 1, "eps": { "estimate": "1.50", "actual": "1.55" } }]
+  "next_cursor": null
 }
 ```
 
-### robinhood_get_historicals
-Get OHLCV price history.
+### robinhood_get_equity_historicals
+OHLCV bars for up to 10 tickers over `[start_time, end_time]`.
 
 **Parameters:**
-- `symbols` (string, required) — comma-separated
-- `interval` (enum: "5minute", "10minute", "hour", "day", "week", default: "day")
-- `span` (enum: "day", "week", "month", "3month", "year", "5year", default: "month")
-- `bounds` (enum: "regular", "extended", "trading", default: "regular")
+- `symbols` (array of string, required), `start_time` (required), `end_time` (optional, default now)
+- `interval` ("minute"/"5minute"/"10minute"/"hour"/"day"/"week"; omit for the finest the range allows)
+- `bounds` ("regular" default/"extended"/"trading"/"24_7"), `adjustment_type` (`"split"` only)
+
+**Response:** `{ "span": "week", "interval": "hour", "bounds": "regular", "historicals": [{ "symbol": "AAPL", "historicals": [{ "begins_at": "...", "open_price": "...", "close_price": "...", "high_price": "...", "low_price": "...", "volume": 0 }] }] }`
+
+### robinhood_get_equity_technical_indicators
+One indicator over one stock's bars in `[start_time, end_time]`, computed by this server from the same REST bars.
+
+**Parameters:**
+- `symbol`, `type`, `interval`, `start_time` (required); `end_time`, `bounds`, `adjustment_type` (optional)
+- `type`: sma, ema, rsi, momentum, roc, cci, williams_r, atr, mfi, adx, donchian_channels, bollinger_bands, macd, keltner_channels, supertrend, vwap, obv, pivot_points
+- Tuning, each only where the type takes it: `period`, `num_std`, `multiplier`, `fast_period`, `slow_period`, `signal_period`, `method` (`"classic"` pivots only)
+- `output` — `"series"` (default), `"latest"`, or `"last:N"`
+
+**Response:** `{ "symbol": "AAPL", "type": "rsi", "interval": "day", "bounds": "regular", "params": {...}, "series": [{ "begins_at": "...", "rsi": 55.2 }] }` — warm-up bars read `null`.
 
 ### robinhood_search
-Search stocks by keyword or browse by market category.
+Search by name or ticker.
 
 **Parameters:**
-- `query` (string, required) — search keyword (ignored if tag provided)
-- `tag` (string, optional) — e.g., "technology", "most-popular-under-25"
+- `query` (string, required)
+- `asset_type` (optional) — `"instrument"` (default, stocks/ETFs), `"currency_pair"`, or `"market_index"`
+- `limit` (integer, default 10, max 20)
+
+**Response:** `{ "query": "...", "asset_type": "instrument", "results": [...] }`
 
 ## Options
 
-### robinhood_get_options
-Get options chain with greeks for a stock or index symbol.
+Contracts are addressed by **option instrument id**. The read path is chains → instruments → quotes: `robinhood_get_option_chains` (by underlying) gives chain ids, `robinhood_get_option_instruments` lists a chain's contracts, `robinhood_get_option_quotes` prices them.
 
-**Parameters:**
-- `symbol` (string, required) — stock or index ticker
-- `expiration_date` (string, optional) — "YYYY-MM-DD"
-- `strike_price` (number, optional) — filter by strike
-- `option_type` (enum: "call", "put", optional)
-- `max_strikes` (number, optional) — limit to N strikes nearest ATM
+### robinhood_get_option_chains
+**Parameters:** `underlying_symbol` (stock or index ticker) or `ids` (comma-separated chain ids)
 
-**Response (equity):**
-```json
-{
-  "chain_info": { "id": "chain-uuid", "symbol": "AAPL", "expiration_dates": ["2025-01-17", "2025-02-21"] },
-  "options": [{ "id": "option-uuid", "type": "call", "strike_price": "150.0000", "expiration_date": "2025-01-17" }],
-  "market_data": [{ "adjusted_mark_price": "3.50", "delta": "0.5500", "gamma": "0.0300", "theta": "-0.0500", "vega": "0.2000", "implied_volatility": "0.3000", "open_interest": 15000, "volume": 5000 }]
-}
-```
+**Response:** `{ "chains": [{ "id": "<uuid>", "symbol": "AAPL", "expiration_dates": ["2026-10-16", ...], "min_ticks": {...}, ... }] }` — an index can have several chains (SPX monthlies, AM-settled; SPXW weeklies, PM-settled).
 
-**Response (index — additional field):**
-```json
-{ "index_value": { "value": "5700.00", "symbol": "SPX" }, "chain_info": { "symbol": "SPXW" }, "options": [...] }
-```
+### robinhood_get_option_instruments
+**Parameters:** one of `chain_id`, `chain_symbol`, or `ids` (comma-separated); filters `expiration_dates` (comma-separated YYYY-MM-DD), `strike_price` (e.g. `"150.0000"`), `type` ("call"/"put"), `state` ("active" default/"expired"/"inactive"), `tradability` (`"tradable"` only); `cursor` (results are complete)
 
-**Notes:**
-- `market_data` only included when all three filters (`expiration_date`, `strike_price`, `option_type`) are set.
-- `index_value` only for index symbols.
-- Chain auto-selected by `expiration_date`. SPXW (daily, PM-settled) is default; SPX monthly (AM-settled) for monthly-only dates.
+**Response:** `{ "instruments": [{ "id": "<uuid>", "type": "call", "strike_price": "150.0000", "expiration_date": "2026-10-16", "state": "active", "tradability": "tradable" }], "next_cursor": null }`
+
+### robinhood_get_option_quotes
+**Parameters:** `instrument_ids` (array of string, required)
+
+**Response:** `{ "quotes": [{ "instrument_id": "<uuid>", "adjusted_mark_price": "3.50", "bid_price": "...", "ask_price": "...", "delta": "0.5500", "gamma": "...", "theta": "...", "vega": "...", "implied_volatility": "0.3000", "open_interest": 15000, "volume": 5000 }] }`
 
 ### robinhood_get_option_positions
-Open option positions — per-leg by default, or grouped by strategy (spreads, condors).
+Per-leg option positions for one account.
 
 **Parameters:**
-- `account_number` (string, optional) — omit for all accounts
-- `aggregate` (boolean, default: false) — group by strategy instead of individual legs
-- `nonzero` (boolean, default: true) — only non-zero quantities
+- `account_number` (string, required), `nonzero` (boolean)
+- Filters: `chain_ids`, `option_ids` (comma-separated), `expiration_date`, `expiration_date_gte`, `expiration_date_lte`, `option_type` ("call"/"put"), `type` ("long"/"short"); `cursor`
 
-**Response:** `{ "positions": [...], "aggregate": false }`
+**Response:** `{ "positions": [...], "next_cursor": null }`
 
 ### robinhood_get_option_orders
-Option order history (filled, cancelled, and open multi-leg orders).
+Option order history for one account (filled, cancelled, and open multi-leg orders).
 
 **Parameters:**
-- `open_only` (boolean, default: false) — only open/unfilled orders
+- `account_number` (string, required)
+- Filters: `order_id`, `chain_ids`, `state`, `placed_agent`, `underlying_type` ("equity"/"index"), `created_at_gte`; `cursor`
 
-**Response:** `{ "orders": [{ "id": "...", "state": "filled", "legs": [...] }] }`
+**Response:** `{ "orders": [{ "id": "...", "state": "filled", "legs": [...] }], "next_cursor": null }`
 
 ### robinhood_get_option_historicals
-Historical OHLC price series for a specific option contract.
+OHLC bars for up to 10 option contracts over `[start_time, end_time]`.
 
 **Parameters:**
-- `symbol` (string, required) — underlying ticker
-- `expiration_date` (string, required) — "YYYY-MM-DD"
-- `strike_price` (number, required)
-- `option_type` (enum: "call", "put", required)
-- `span` (enum: "day", "week", "month", "3month", "year", "5year", default: "day")
-- `interval` (enum: "5minute", "10minute", "hour", "day", "week", default: "hour")
+- `instrument_ids` (array of string, required), `start_time` (required), `end_time` (optional)
+- `interval` ("5minute"/"10minute"/"hour"/"day"/"week"), `bounds` (`"regular"` only)
 
-**Response:** `{ "historicals": [{ "symbol": "...", "occ_symbol": "...", "data_points": [{ "begins_at": "...", "open_price": "...", "close_price": "...", "high_price": "...", "low_price": "...", "volume": 0 }] }] }`
+**Response:** `{ "span": "week", "interval": "hour", "historicals": [{ "data_points": [{ "begins_at": "...", "open_price": "...", "close_price": "...", "high_price": "...", "low_price": "...", "volume": 0 }], ... }] }`
 
 ## Orders
 
-### robinhood_review_equity_order (read-only simulation)
-Pre-trade simulation — places **nothing**. The **required review step** before `robinhood_place_stock_order`: call it, then **show the result to the user** before placing.
+Prices and quantities are **strings** (`"150.25"`, `"0.5"`), as in the official MCP. `type` is required on equity and crypto orders. `time_in_force` defaults to `"gfd"` (crypto takes only `"gtc"`) and `market_hours` to `"regular_hours"`. `ref_id` (optional, place only) is an idempotency key: re-send the same value on a retry.
 
-**Parameters:**
-- `symbol` (string, required), `side` ("buy"/"sell"/"sell_short"), `quantity` (number, fractional except `sell_short`)
-- `limit_price` (number, optional), `stop_price` (number, optional)
-- `account_number` (string, required)
+### robinhood_review_equity_order (read-only simulation)
+Pre-trade simulation — places **nothing**. The **required review step** before `robinhood_place_equity_order`: call it, then **show the result to the user** before placing.
+
+**Parameters:** as `robinhood_place_equity_order`, without `ref_id`.
 
 **Returns:** the order echoed back, live `quote_data` (so the user sees the cost), and `order_checks` — a reproduction of Robinhood's price collar. `order_checks` is `{}` **only** when the collar ran and found no problem; read `evaluated_checks` / `not_evaluated_checks` to know what was and wasn't checked (an empty `order_checks` is **not** a blanket "all clear"). If `order_checks` has an `alert_type` (e.g. `EQUITY_EXTREMELY_MARKETABLE_LIMIT_PRICE`), surface it prominently and re-confirm the price. `market_data_disclosure` is null (not reproducible). TOCTOU: if `quote_timestamp` is stale by the time you place, re-review first.
 
@@ -310,22 +336,21 @@ A clean review does **not** mean the order will be accepted: short eligibility, 
 ### robinhood_review_option_order (read-only simulation)
 Pre-trade simulation for single/multi-leg option orders — places **nothing**. The **required review step** before `robinhood_place_option_order`.
 
-**Parameters:**
-- `symbol` (string, required), `legs` (array of `{ expiration_date, strike, option_type, side, position_effect, ratio_quantity }`)
-- `price` (number, required), `quantity` (number), `direction` ("debit"/"credit")
-- `account_number` (string, required)
+**Parameters:** as `robinhood_place_option_order`, without `ref_id`, plus optional `chain_symbol` and `underlying_type` (accepted; the chain is read off the first leg).
 
 **Returns:** the order echoed back with per-leg `market_data` (mark/bid/ask/greeks) and the `collateral` the order would require. The reproduced check set is intentionally thin for options (see `not_evaluated_checks`). Options carry a ×100 contract multiplier — double-check the net debit/credit and quantity with the user.
 
-### robinhood_place_stock_order
+### robinhood_place_equity_order
 **Always** run `robinhood_review_equity_order` first and **show its result to the user** — this is the review→place gate, not an internal step.
 
 **Parameters:**
-- `symbol` (string, required), `side` ("buy"/"sell"/"sell_short"), `quantity` (number, fractional except `sell_short`)
-- `limit_price` (number, optional), `stop_price` (number, optional)
-- `trail_amount` (number, optional), `trail_type` ("percentage"/"amount", default: "percentage")
-- `account_number` (string, required), `time_in_force` ("gtc"/"gfd", **required**)
-- `market_hours` ("regular_hours"/"extended_hours"/"all_day_hours", **required** — no default; an order tagged to the wrong session silently queues instead of executing). `all_day_hours` is the 24 Hour Market. Only limit orders execute outside regular hours — a market, stop, or trailing order tagged to another session is rejected. Use `robinhood_get_market_hours` to check which session is live instead of guessing. (Replaces the former `extended_hours` boolean.)
+- `account_number`, `symbol`, `side` ("buy"/"sell"/"sell_short"), `type` ("market"/"limit"/"stop_market"/"stop_limit") — all required
+- `quantity` (string; fractional only for market + regular_hours, never for `sell_short`)
+- `limit_price` (required for limit and stop_limit), `stop_price` (required for stop_market and stop_limit); a price the type does not take is rejected
+- `time_in_force` ("gfd" default/"gtc"), `market_hours` ("regular_hours" default/"extended_hours"/"all_day_hours"), `ref_id`
+- `dollar_amount` and `tax_lots` are rejected (not supported over this API); trailing stops are not offered
+
+`all_day_hours` is the 24 Hour Market. Only limit orders execute outside regular hours — a market or stop order tagged to another session is rejected. An order tagged to the wrong session queues instead of executing: outside regular hours, check `robinhood_get_market_hours` and set `market_hours` rather than relying on the default.
 
 **Short selling:** `sell` only closes an existing long — selling stock you do not own is rejected with `Not enough shares to sell.` Open a short with `side: "sell_short"` (margin-enabled account, whole shares only; a cash account is rejected with `You need to have margin investing enabled to short.`). Outside regular hours set `market_hours` to `extended_hours`, or the order is rejected with `It's after market close. To place this short sell order, change your trading session to extended hours.` Shorts are **not** available in the 24 Hour Market (`all_day_hours` → `Short selling isn't available during the 24 Hour Market.`) and must be `gfd` (`gtc` → `Short sell orders must be good for day only.`). There is no separate cover side — close a short with an ordinary `buy`.
 
@@ -335,30 +360,38 @@ An accepted short returns `state: "locate_completed"` (Robinhood located shares 
 **Always** run `robinhood_review_option_order` first and **show its result to the user**.
 
 **Parameters:**
-- `symbol` (string, required), `legs` (array of `{ expiration_date, strike, option_type, side, position_effect, ratio_quantity }`)
-- `price` (number, required), `quantity` (number), `direction` ("debit"/"credit")
-- `stop_price` (number, optional), `time_in_force` ("gtc"/"gfd"/"ioc"/"opg", **required**)
-- `account_number` (string, required)
+- `account_number`, `legs`, `quantity` (string, positive integer) — required
+- `legs`: 1–4 of `{ option_id, side ("buy"/"sell"), position_effect ("open"/"close"), ratio_quantity (default 1) }`, each a different contract (ids from `robinhood_get_option_instruments`)
+- `price` (string, required; net premium per unit for multi-leg), `direction` ("debit"/"credit"; required with 2+ legs, derived from the side for one leg)
+- `type` ("limit" default/"stop_limit"), `stop_price` (stop_limit only), `time_in_force` ("gfd" default/"gtc"), `market_hours` (`"regular_hours"` only), `ref_id`
 
 ### robinhood_place_crypto_order
-**Parameters:**
-- `symbol` (string, required), `side` ("buy"/"sell")
-- `amount_or_quantity` (number), `amount_in` ("quantity"/"price", default: "quantity")
-- `order_type` ("market"/"limit", **required**), `limit_price` (number, optional)
+**Always** run `robinhood_preview_crypto_order` first and **show its result to the user**.
 
-### robinhood_get_orders
 **Parameters:**
-- `order_type` ("stock"/"option"/"crypto", default: "stock")
-- `status` ("open"/"all", default: "all")
-- `account_number` (string, optional), `limit` (number, default: 50)
+- `rhs_account_number`, `symbol`, `side` ("buy"/"sell"), `type` ("market"/"limit") — required
+- exactly one of `quantity` (asset units) or `dollar_amount` (USD), as strings
+- `limit_price` (required for limit), `time_in_force` (`"gtc"` only), `ref_id`; stop types and `tax_lots` are rejected
 
-### robinhood_cancel_order
-**Parameters:**
-- `order_id` (string, required), `order_type` ("stock"/"option"/"crypto", default: "stock")
+### robinhood_preview_crypto_order (read-only)
+Validates as place would and returns the live quote with `estimated_price`, `estimated_quantity`, `estimated_notional` (a buy is priced at the ask, a sell at the bid, a limit at its limit). Places **nothing**. Parameters as place, without `ref_id`.
 
-### robinhood_get_order_status
-**Parameters:**
-- `order_id` (string, required), `order_type` ("stock"/"option"/"crypto", default: "stock")
+### robinhood_get_equity_orders
+**Parameters:** `account_number` (required); filters `order_id`, `symbol`, `state`, `placed_agent` (e.g. "user", "agentic"), `created_at_gte`; `cursor`
+
+**Response:** `{ "orders": [...], "next_cursor": null }`
+
+### robinhood_get_crypto_orders
+**Parameters:** `rhs_account_number` (required); filters `order_id`, `symbol`, `side`, `state` or `state_group` ("open"/"closed", mutually exclusive), `created_at_gte`, `updated_at_gte`; `cursor`
+
+Option orders are `robinhood_get_option_orders`. To check one order's status, pass its `order_id` to the matching get-orders tool.
+
+### robinhood_cancel_equity_order / robinhood_cancel_option_order / robinhood_cancel_crypto_order
+Cancel one pending order. **Confirm with the user first.**
+
+**Parameters:** `order_id` and `account_number` (crypto: `rhs_account_number`). An equity or option order that does not belong to `account_number` is refused.
+
+**Response:** `{ "status": "cancelled", "order_id": "..." }` — the cancel request was accepted; read the order back to confirm its final state.
 
 **Reading `state`** — do not report an order as failed just because it is not `filled`:
 
@@ -390,20 +423,21 @@ Market hours for a date: whether it is a trading day, and when the regular and e
 
 **Response:** `{ "is_open": true, "date": "...", "opens_at": "...", "closes_at": "...", "extended_opens_at": "...", "extended_closes_at": "...", "note": "..." }` (ISO-8601 UTC; session times are null when `is_open` is false)
 
-Call this before placing an order when you are unsure which session is live — `robinhood_place_stock_order` requires an explicit `market_hours`, and inferring it from the local clock is wrong across time zones, weekends, and holidays.
+Call this before placing an order when you are unsure which session is live — `robinhood_place_equity_order` defaults `market_hours` to `regular_hours`, and inferring the session from the local clock is wrong across time zones, weekends, and holidays.
 
 ### robinhood_get_indexes
-Get all tradable market indexes (SPX, NDX, VIX, RUT, XSP, …).
+Market indexes (SPX, NDX, VIX, RUT, XSP, …) with their instrument ids and tradable chain ids.
 
-**Parameters:** none
+**Parameters:**
+- `symbols` (string, optional) — comma-separated; omit for all
 
 **Response:** `{ "indexes": [{ "id": "...", "symbol": "SPX", "simple_name": "...", "tradable_chain_ids": [...] }] }`
 
 ### robinhood_get_index_quotes
-Get current values for one or more index symbols.
+Current values for index instrument ids (from `robinhood_get_indexes`). Unknown ids are skipped.
 
 **Parameters:**
-- `symbols` (array of string, required) — e.g. `["SPX", "VIX"]`
+- `instrument_ids` (array of string, required)
 
 **Response:** `{ "quotes": [{ "symbol": "SPX", "value": "5700.00", "updated_at": "..." }] }`
 
@@ -419,7 +453,7 @@ List your own (custom) watchlists — metadata only, including each list's `id`.
 **Response:** `{ "count": 3, "watchlists": [{ "id": "<uuid>", "display_name": "...", "owner_type": "custom", "item_count": 5, "allowed_object_types": ["instrument", ...] }] }`
 
 ### robinhood_get_watchlist_items
-List a watchlist's items, enriched with `symbol`/`name`. Does not return live prices — call `robinhood_get_stock_quote`. For the options watchlist use `robinhood_get_option_watchlist`. Unknown `list_id` → error.
+List a watchlist's items, enriched with `symbol`/`name`. Does not return live prices — call `robinhood_get_equity_quotes`. For the options watchlist use `robinhood_get_option_watchlist`. Unknown `list_id` → error.
 
 **Parameters:**
 - `list_id` (string uuid, required)
@@ -534,18 +568,34 @@ List your saved scanners. Empty when you have none.
 
 ## Realized P&L (computed)
 
-Read-only. Robinhood has **no realized-P&L REST endpoint** for a standard token, so these tools **compute** it: equity by independent **economic FIFO including fees** (matched from your order history — *not* Robinhood's booked/tax-adjusted number), crypto from Robinhood's native `gain_loss`. **Options are not included** (expirations/assignments aren't in the order history). Both tools require `account_number` (from `robinhood_get_accounts`) and fetch full order history, so they can be slow on large accounts. Always relay the result `note` — it carries the honesty caveats.
+Read-only. Robinhood has **no realized-P&L REST endpoint** for a web-session token, so these tools **compute** it: equity by independent **economic FIFO including fees** (matched from your order history — *not* Robinhood's booked/tax-adjusted number), crypto from Robinhood's native `gain_loss`. **Options are not included** (expirations/assignments aren't in the order history). Both tools require `account_number` (from `robinhood_get_accounts`) and fetch full order history, so they can be slow on large accounts. Always relay the result `note` — it carries the honesty caveats.
 
 ### robinhood_get_realized_pnl
-Bucketed realized gain over a window, plus totals. Params: `account_number` (required); `span` (`day`/`week`/`month`/`3month`/`year`/`all`, default `3month`) **or** `start_date`+`end_date` (YYYY-MM-DD); `asset_classes` (subset of `equity`/`crypto`; `option` accepted but not computed).
+Bucketed realized gain over a window, plus totals. Params: `account_number` (required); `span` (`day`/`week`/`month`/`3month`/`year`/`all`, default `3month`) **or** `start_date`+`end_date` (YYYY-MM-DD); `asset_classes` (subset of `equity`/`crypto`; `option` accepted but not computed); `display_currency` (USD only); `timezone` (accepted; buckets use UTC day boundaries).
 
 **Response:** `{ "account_number": "...", "window": "3month", "display_currency": "USD", "data_points": [{ "start_time": "...", "end_time": "...", "realized_gain": 0, "rate_of_realized_gain": null, "number_of_trades": 0 }], "total_returns": 0, "total_rate_of_return": null, "note": "..." }`
 
 `rate_of_realized_gain` and `total_rate_of_return` are **null** — the rate denominator Robinhood uses isn't reproducible; do not invent a percentage. `data_points` buckets are our own; they tile the window and sum to `total_returns`.
 
 ### robinhood_get_pnl_trade_history
-Per-trade realized P&L. Params: `account_number` (required); `span` (`week`/`month`/`3month`/`ytd`/`all`, default `week`); `symbol` (optional single-symbol filter).
+Per-trade realized P&L. Params: `account_number` (required); `span` (`week`/`month`/`3month`/`ytd`/`all`, default `week`); `symbol` (optional single-symbol filter); `cursor` (accepted; results are complete).
 
 **Response:** `{ "account_number": "...", "span": "week", "trades": [{ "symbol": "AAPL", "side": "sell", "quantity": 10, "price": 150, "realized_gain": 123.45 }], "next_cursor": null, "note": "..." }`
 
 Results are complete (`next_cursor` always null). For exact reconciliation against Robinhood's own figures, run `bun run pnl:harness` locally (keeps your account number off any transcript).
+
+## Standard mode only
+
+These tools have no web endpoint, so they exist only in standard mode, where each call is relayed to `agent.robinhood.com/mcp/trading` and answered with the official server's result. Parameters, descriptions and annotations are Robinhood's own (`docs/official-mcp-tools.json`). Until `robinhood_official_login` has run once, every standard-mode tool answers an error naming it. Orders reach the Agentic account only; other accounts are read-only there. A throttle answers `RATE_LIMITED`; wait about 5 s before retrying.
+
+### robinhood_official_login
+Opens the default browser to Robinhood's sign-in for the hosted MCP; the user approves there. Needed once. **Parameters:** none. **Response:** `{ "status": "signed_in" }`. Waits up to 5 minutes for the browser; see the timeout note under `robinhood_browser_login`.
+
+| Group | Tools (all `robinhood_`-prefixed) |
+|---|---|
+| Advanced (OCO) orders | `get_advanced_orders`, `review_advanced_order`, `place_advanced_order`, `cancel_advanced_order` |
+| Option exercise | `exercise_option`, `cancel_option_exercise` |
+| Alerts | `get_alerts`, `get_alert_log`, `create_alert`, `update_alert`, `delete_alert`, `mark_alerts_read` |
+| Scanners | `get_scanner_datapoints`, `preview_scan`, `run_scan`, `create_scan`, `update_scan_config`, `update_scan_filters` |
+| Research | `get_financials`, `get_equity_analyst_ratings`, `get_politician_trades`, `get_index_historicals`, `get_sec_filing`, `get_sec_filing_facts`, `get_sec_filing_facts_catalog`, `get_sec_filing_index` |
+| Account info | `get_option_level_upgrade_info`, `get_limited_margin_upgrade_info`, `get_crypto_account_onboarding_info` |

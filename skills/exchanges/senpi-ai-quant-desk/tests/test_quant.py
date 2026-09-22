@@ -110,7 +110,10 @@ def test_track_record_and_costs():
     tr = metrics.track_record(closed, opened, funding, {"userCrossRate": "0.0004", "userAddRate": "0.0001"}, 0)
     assert tr["trades"] == 2 and tr["win_rate"] == 0.5 and tr["profit_factor"] == 2 and tr["gross_realized"] == 10 and tr["fees"] == 4 and tr["funding"] == -2
     assert tr["net"] == 4 and abs(tr["cost_ratio"] - 0.6) < 1e-9 and tr["hold_winners_h"] is None      # below MIN_HOLD_N on purpose
-    assert abs(tr["taker_share"] - 310 / 410) < 1e-9 and abs(tr["fee_recoverable"] - 310 * 0.0003) < 1e-9
+    assert abs(tr["taker_share"] - 310 / 410) < 1e-9
+    # the saving is anchored on fees PAID, not rebuilt from volume x schedule (B2, #718), so the
+    # property is what holds: some of the bill is recoverable, never more than the bill
+    assert 0 < tr["fee_recoverable"] < abs(tr["fees"])
     assert tr["coins"]["ETH"]["trades"] == 2 and tr["long"]["trades"] == 2 and tr["short"]["trades"] == 0
 
 
@@ -838,7 +841,10 @@ def test_the_funding_headline_is_weighted_by_size_not_by_coin_count():
     # 2.70 bp/8h is 29.6%/yr — the desk's own dollar figure for this book was $20,629/day, 25.8%/yr
     # of account value. The label has to agree with the money.
     assert "NEAR FLAT" not in out["headline"], out["headline"]
-    assert "%/yr on the book you hold" in out["headline"], out["headline"]
+    # the label names its denominator: this is the RATE on notional. The risk dimension quotes the
+    # same funding against EQUITY, which leverage makes a different number — on 0xccd2…c8a3 the two
+    # read "+49%/yr on the book you hold" and "186% of equity a year", 4x apart and indistinguishable.
+    assert "%/yr on notional at today's rates" in out["headline"], out["headline"]
 
 
 def test_the_leg_correlation_never_claims_a_leg_the_live_book_lacks():
@@ -1195,13 +1201,17 @@ def test_recoverable_will_not_pick_a_rule_that_costs_money_on_the_trades_it_hurt
     assert rec["usd"] == 0.0 and rec["rule"] is None, "no lever beat what the trader actually did"
 
 
-def test_recoverable_prefers_the_setting_with_the_best_book_total_not_the_best_trade():
+def test_recoverable_ranks_on_book_totals_and_quotes_the_family_median():
+    """Two things at once. The ranking is on each setting's whole-book total, never on its best
+    trade — and within the lock family the MEDIAN setting is quoted, not the best of the grid
+    (#718 Q1). The 0.05/0.5 setting is the middle of the three here."""
     tm = dict(lock={"settings": {"0.03/0.5": dict(n=9, total=9_000.0),
-                                 "0.05/0.5": dict(n=5, total=1_000.0)}})
+                                 "0.05/0.5": dict(n=5, total=4_000.0),
+                                 "0.05/0.3": dict(n=5, total=1_000.0)}})
     rec = score.recoverable([_tm_row()], [], {}, tm)
-    assert rec["usd"] == 9_000.0
-    # the lever's label is the finished sentence, so nothing has to parse "0.03/0.5" back out
-    assert rec["rule"] == "a trailing stop that arms at +3% and keeps 50% of the peak"
+    assert rec["usd"] == 4_000.0, "quoted the best of the grid rather than its median"
+    # the lever's label is the finished sentence, so nothing has to parse "0.05/0.5" back out
+    assert rec["rule"] == "a trailing stop that arms at +5% and keeps 50% of the peak"
 
 
 def test_recoverable_chase_term_is_unavailable_when_chasing_is_not_this_book_s_problem():
@@ -1588,7 +1598,7 @@ def test_the_funding_penalty_does_not_saturate_at_40_percent_a_year():
     s_40, _ = score.dim_market(book, mk(100_000.0 * 0.40 / 365))
     s_240, line = score.dim_market(book, mk(100_000.0 * 2.40 / 365))
     assert s_240 < s_40, f"240%/yr ({s_240}) must score worse than 40%/yr ({s_40})"
-    assert "of equity a year" in line
+    assert "of your EQUITY a year" in line, "the denominator must be named — see the notional label"
 
 
 def test_equal_severity_falls_back_to_order_not_to_the_alphabet():
@@ -1602,3 +1612,537 @@ def test_equal_severity_falls_back_to_order_not_to_the_alphabet():
     tr = dict(hold_ratio=None, liquidations=2, liquidation_loss=-5_000.0)
     _, line = score.dim_risk(tr, book, None)
     assert "no stop at all" in line, f"a past liquidation outranked live naked risk: {line}"
+
+
+def test_a_lever_that_gives_back_what_it_saves_is_not_a_fix():
+    """On 0xccd2…c8a3 a time-cut was listed as a leak worth $165 — out of $5,701 it saved on the
+    trades it helped. A rule that hands back 97% of its own saving is a coin flip, not an edge, and
+    printing it invites "why is this on my list?"."""
+    noise = [_tm_row(cut_cf={"48": v}) for v in (5_701.0, -1_500.0, -1_500.0, -1_268.0, -1_268.0)]
+    tm = dict(cut={"settings": {"48": dict(n=5, total=165.0)}})
+    assert score.levers(noise, [], tm) == [], "a 3% keep-rate lever is noise"
+
+    real = [_tm_row(cut_cf={"48": v}) for v in (5_701.0, -300.0, -300.0, -200.0, -200.0)]
+    tm2 = dict(cut={"settings": {"48": dict(n=5, total=4_701.0)}})
+    assert len(score.levers(real, [], tm2)) == 1, "an 82% keep-rate lever is a real fix"
+
+
+def test_the_headline_is_never_smaller_than_a_leak_listed_under_it():
+    """0x767a…0ace quoted "would have kept ~$99,228" directly above a $114,566 funding leak. Funding
+    was excluded from the levers because capping a funding-paying hold IS the time-cut — but the
+    union only ever credits ONE lever, so there was no double-count to prevent, and the exclusion
+    made the headline understate whenever funding was the biggest fix."""
+    lv = score.levers([_tm_row()], [], {}, funding_late=114_566.0)
+    assert [x["kind"] for x in lv] == ["funding"], lv
+    assert score.best_lever(lv)["total"] == 114_566.0
+    # …and it competes with the exits rather than adding to them
+    tm = dict(lock={"settings": {"0.03/0.5": dict(n=5, total=200_000.0)}})
+    rows = [_tm_row(lock_cf={"0.03/0.5": 40_000.0}) for _ in range(5)]
+    both = score.recoverable(rows, [], {}, tm, score.levers(rows, [], tm, funding_late=114_566.0))
+    assert both["usd"] == 200_000.0, "the bigger lever wins; they are never summed"
+
+
+def test_every_desk_section_survives_a_book_with_one_closed_trade():
+    """0x767a…0ace crashed the engine outright: `tm.get("chased_share", 0) >= 0.5` — and `.get`'s
+    default only fires when the key is ABSENT, not when it is present-and-None. One closed trade
+    with no 24h prior makes that field null.
+
+    The agent's response to the crash was to edit its own copy of the engine, so this is also the
+    test that keeps a whole class of null-defaults from reaching a box that will do that again."""
+    tm_null = dict(chased_share=None, give_back_median=None, chased_n=0, chased_realized=None,
+                   calm_pf=None, chased_pf=None, n=1)
+    book = dict(positions=[], naked=[], funding_per_day=None, account_value=1_630_084.0,
+                net_exposure=0.0, margin_utilization=None)
+    tr = dict(fee_recoverable=None, funding=None, taker_share=0.79, trades=1, liquidations=0,
+              hold_ratio=None, coins={})
+    # each of these read a present-and-null field through a .get default before the fix
+    assert score.flags(tr, book, dict(dd_pct=0.2), tm_null, None, {}) is not None
+    assert score.leaks(tr, book, tm_null, [], [], 0, 90) == []
+    assert score.dim_market(book, None)[0] is None
+
+
+def test_a_one_trade_book_does_not_get_a_confident_headline():
+    """0x31a7…7549 — ONE closed trade, 2 fills, net -$91, no open positions — scored 72/100, with
+    risk claiming "Stops in place, losers cut faster than winners, no liquidations" (three findings,
+    on a book with nothing to find) and sizing claiming "Sizes are consistent and exposure is
+    proportionate" off a single trade.
+
+    1.10.0 abstained at ZERO closed trades. One trade is the same noise; the floor is the sample."""
+    flat = dict(positions=[], naked=[], margin_utilization=None, account_value=1_000.0,
+                exposure_over_equity=None, largest_share=None)
+    thin = dict(hold_ratio=None, liquidations=0, trades=1)
+    s_risk, line_risk = score.dim_risk(thin, flat, None)
+    assert s_risk is None, f"risk scored {s_risk} on a book with nothing to assess"
+    assert "too few closed trades" in line_risk
+
+    one = [dict(win=False, truncated=False, peak_notional=5_000.0, realized=-91.0)]
+    s_size, line_size = score.dim_sizing(thin, flat, one)
+    assert s_size is None, f"sizing scored {s_size} off one trade"
+    assert "too few to read sizing from" in line_size
+
+    # a book with real history and no positions is still assessed — this must not blind the desk
+    deep = dict(hold_ratio=2.7, hold_losers_h=2.3, hold_winners_h=0.8, liquidations=0, trades=463)
+    assert score.dim_risk(deep, flat, dict(dd_pct=0.4))[0] is not None
+
+
+def test_no_headline_score_when_most_of_the_book_is_unmeasurable():
+    """With four of six dimensions abstaining, 0x31a7…7549 still printed 66/100 — re-normalised onto
+    cost (90, off $0 of fees) and consistency (48, off one trade). A confident headline from two
+    noisy inputs is the same failure as a confident dimension from no input."""
+    import render
+    FN = {"timing": "dim_timing", "risk": "dim_risk", "cost": "dim_cost", "sizing": "dim_sizing",
+          "consistency": "dim_consistency", "market_fit": "dim_market"}
+    real = {k: getattr(score, fn) for k, fn in FN.items()}
+    try:
+        for k, fn in FN.items():
+            setattr(score, fn, lambda *a, **kw: (None, "nothing to measure"))
+        for k in ("cost", "consistency"):
+            setattr(score, FN[k], (lambda v: (lambda *a, **kw: (v, "measured")))(70))
+        d, q = score.dimensions({}, {}, {}, {}, {}, {}, {}, [])
+        assert q is None, f"two measurable dimensions produced {q}"
+        setattr(score, FN["risk"], lambda *a, **kw: (50, "measured"))
+        _, q3 = score.dimensions({}, {}, {}, {}, {}, {}, {}, [])
+        assert q3 is not None, "three is the floor, not four"
+    finally:
+        for k, fn in FN.items():
+            setattr(score, fn, real[k])
+    md = render.score_block(dict(quant_score=None, dimensions=d)) if hasattr(render, "score_block") else None
+
+
+def test_the_thin_record_verdict_does_not_point_at_a_live_book_that_is_not_there():
+    """"the live book is where the desk earns its keep today" sat directly above a risk line reading
+    "No open positions" on 0x31a7…7549."""
+    flat = dict(positions=[], naked=[], gross=0.0, net_exposure=0.0)
+    held = dict(positions=[dict(coin="BTC", side="LONG", leverage=5, liq_distance_pct=None,
+                                notional=1.0, unrealized=0.0)], naked=[], gross=1.0, net_exposure=1.0)
+    tr = dict(trades=1, net=-91.0, win_rate=0.0, profit_factor=0.0, ledger_net=26_044.0)
+    v_flat = score.verdict(tr, flat, {}, [])
+    v_held = score.verdict(tr, held, {}, [])
+    assert "nothing for the desk to protect" in v_flat, v_flat
+    assert "live book is where the desk earns its keep" in v_held, v_held
+
+
+def test_the_portfolio_series_is_chosen_by_span_not_by_point_count():
+    """B1 (@0xsarvesh, #718). HL samples `month` far more densely than `allTime`, so
+    `len(pts) > len(best)` picked a 31-day series and every caller labelled it 90 days. On a live
+    wallet the ledger P&L flipped sign: -$48,360 by point count, +$38,636 by span.
+
+    methodology.md has documented the span rule since 1.0; the code did not implement it."""
+    import metrics
+    day = 86_400_000
+    dense_month = [(i * day // 4, float(i)) for i in range(0, 120)]       # 30d, 120 points
+    sparse_all = [(i * day, float(i) * 10) for i in range(0, 90)]         # 89d, 90 points
+    pf = [("month", dict(pnlHistory=dense_month)), ("allTime", dict(pnlHistory=sparse_all))]
+
+    got = metrics.pnl_series(pf, 0)
+    assert (got[-1][0] - got[0][0]) // day == 89, "took the denser, shorter series"
+    assert got[-1][1] == 890.0, "the 90-day P&L, not the 30-day one"
+
+
+def test_the_perps_only_series_wins_an_equal_span_tie():
+    """Every other number on the desk is perps-only, so a whole-account P&L must not sit beside it."""
+    import metrics
+    day = 86_400_000
+    pts = lambda m: [(i * day, float(i) * m) for i in range(0, 90)]
+    pf = [("allTime", dict(pnlHistory=pts(10))), ("perpAllTime", dict(pnlHistory=pts(3)))]
+    assert metrics.pnl_series(pf, 0)[-1][1] == 267.0, "took the whole-account series on a tie"
+
+
+def test_the_equity_curve_is_actually_transfer_adjusted():
+    """B3 (@0xsarvesh). equity_curve's docstring, methodology.md and SKILL rule 3 all promise the
+    curve is transfer-adjusted. desk.py computed the flow list and then passed `[]` on the next
+    line, so a trader who withdrew their profit read as a blown account."""
+    import pathlib, re
+    src = pathlib.Path(__file__).resolve().parents[1].joinpath("scripts", "desk.py").read_text()
+    call = re.search(r"metrics\.equity_curve\(([^)]*)\)", src)
+    assert call and "[]" not in call.group(1), f"flow list dropped again: {call and call.group(0)}"
+    assert "fl" in call.group(1)
+
+    # and the adjustment actually moves the curve
+    day = 86_400_000
+    series = [("allTime", dict(accountValueHistory=[(i * day, 1_000.0) for i in range(5)]))]
+    flat = metrics.equity_curve(series, [], 0)
+    withdrew = metrics.equity_curve(series, [(2 * day, -400.0)], 0)
+    assert [v for _, v in flat] == [1_000.0] * 5
+    assert [v for _, v in withdrew][-1] == 1_400.0, "a withdrawal must not read as a loss"
+
+
+def test_the_fee_leak_is_anchored_on_fees_actually_paid():
+    """B2 (@0xsarvesh, #718). The saving was rebuilt from volume x schedule. `userFees` returns the
+    MAIN-dex schedule and HIP-3 volume does not bill at it — on a book with $91M of xyz: taker volume
+    that implied $49,434 against $12,863 really paid (3.84x), and the fee leak inherited all of it.
+
+    Anchoring on the fees summed from fills makes the claim un-inflatable: you cannot save more than
+    you spent. Rates are still used, but only to apportion real fees between taker and maker fills."""
+    import metrics
+    ep = lambda coin, tv, fee: dict(coin=coin, volume=tv, taker_volume=tv, direction="LONG",
+                                    realized=0.0, fees=fee, win=False, truncated=True, complete=False,
+                                    peak_notional=0.0, liquidated=False, hold_h=1.0, open_time=0, close_time=1)
+    sched = dict(userCrossRate=0.00035, userAddRate=0.00008)
+
+    tr = metrics.track_record([ep("xyz:SKHX", 100_000_000.0, 12_863.0)], [], [], sched, 0)
+    assert tr["fee_recoverable"] < abs(tr["fees"]), "cannot save more than was paid"
+    assert round(tr["fee_recoverable"]) == round(12_863.0 * (1 - 0.00008 / 0.00035))
+    assert tr["fee_recoverable"] < 100_000_000.0 * (0.00035 - 0.00008), "volume x schedule is gone"
+
+
+def test_the_volume_diagnostic_compares_like_with_like():
+    """`dailyUserVlm` is the MAIN-dex figure, so counting xyz: fills in the numerator made the
+    coverage diagnostic read 2.26x — "we saw 226% of the volume"."""
+    import pathlib
+    src = pathlib.Path(__file__).resolve().parents[1].joinpath("scripts", "metrics.py").read_text()
+    i = src.index("def _daily_ratio")
+    assert 'startswith("xyz:")' in src[i:i + 700], "xyz: fills are back in the main-dex comparison"
+
+
+def test_a_maker_rebate_is_not_counted_as_a_cost():
+    """#718 Q2 (@0xsarvesh). `abs(fees)` turned negative fees — a rebate, money EARNED — into an
+    equal-sized cost. 0.51% of books with 5+ trades run a net rebate, and they are exactly the
+    sophisticated books worth reading correctly."""
+    rebate = dict(cost_ratio=None, taker_share=0.1, fees=-5_000.0, funding=0.0,
+                  gross_realized=-10_000.0, ledger_net=-10_000.0, net=-10_000.0)
+    paid = dict(rebate, fees=5_000.0)
+    s_rebate, line = score.dim_cost(rebate)
+    s_paid, _ = score.dim_cost(paid)
+    assert s_rebate > s_paid, f"a rebate ({s_rebate}) scored no better than paying ({s_paid})"
+    assert s_rebate == 100, "no costs at all is a clean 100"
+    assert "EARNED in maker rebates" in line and "$5,000" in line, line
+
+
+def test_cost_is_measured_against_the_ledger_the_user_would_use():
+    """Realized-only net puts a book whose result lives in unrealized P&L against the wrong base."""
+    tr = dict(cost_ratio=None, taker_share=0.1, fees=10_000.0, funding=0.0,
+              gross_realized=-20_000.0, net=-30_000.0, ledger_net=-100_000.0)
+    s_ledger, line = score.dim_cost(tr)
+    s_realized, _ = score.dim_cost({k: v for k, v in tr.items() if k != "ledger_net"})
+    assert s_ledger > s_realized, "ignored the ledger"
+    assert "$100,000" in line, line
+
+
+def test_the_quoted_lever_is_the_median_of_its_family_not_the_best_of_a_grid():
+    """#718 Q1 (@0xsarvesh). 3 lock settings x 3 cut settings are six in-sample estimates of one
+    thing — exit discipline — and taking the largest is a grid search reported as a finding. Charging
+    each setting fixed the per-trade asymmetry; the SELECTION step was still biased upward."""
+    lv = [dict(kind="lock", key=k, label=f"lock {k}", total=t, gross=t, vals=[t], n=5)
+          for k, t in (("a", 10_000.0), ("b", 6_000.0), ("c", 2_000.0))]
+    assert score.best_lever(lv)["total"] == 6_000.0, "took the best of the grid"
+
+    # across FAMILIES the max is right — different fixes, not readings of one
+    lv += [dict(kind="size", key="1.5x", label="size cap", total=8_000.0, gross=8_000.0,
+                vals=[8_000.0], n=5, losers=3, median_winner=1.0)]
+    assert score.best_lever(lv)["kind"] == "size"
+    assert score.best_lever(lv, "lock")["total"] == 6_000.0
+
+    # an even-sized family takes the LOWER median: a tie goes to the more conservative reading
+    ev = [dict(kind="cut", key=k, label=f"cut {k}", total=t, gross=t, vals=[t], n=5)
+          for k, t in (("12", 100.0), ("24", 300.0))]
+    assert score.best_lever(ev)["total"] == 100.0
+
+
+def test_the_liquidation_leak_states_the_cost_and_does_not_invent_a_saving():
+    """#718 Q1 (@0xsarvesh). "A stop halfway to liquidation would have kept roughly half" is a guess:
+    it charges nothing for the positions that stop would have cut early which then recovered, and we
+    do not know where the trader would have put it. On one book it led the page at $169,425 and
+    next_steps pointed the reader straight at it."""
+    tr = dict(liquidations=2, liquidation_loss=-338_850.0, fee_recoverable=0.0, taker_share=0.0,
+              funding=0.0, trades=40, coins={})
+    out = score.leaks(tr, dict(funding_per_day=0.0), {}, [], [], 0, 90)
+    liq = next(l for l in out if "liquidation" in l["title"])
+    assert liq["usd"] == 0.0 and liq.get("unpriced") is True
+    assert "$338,850" in liq["title"], "the real cost still gets stated"
+    assert "does not price this one" in liq["counterfactual"]
+
+    # and it must not be offered as the fix to make
+    import render
+    r = dict(leaks=out, track=tr, book=dict(naked=[], positions=[]), timing={}, families=[],
+             recoverable=dict(usd=0.0, fees=0.0, n_trades=0, rule=None, concentration=None,
+                              share_of_losses=None))
+    assert "Fix the biggest leak" not in "\n".join(render.next_steps(r))
+
+
+def test_the_funding_cap_is_charged_for_the_exits_it_forces():
+    """A 24h cap does not only stop the bill — it CLOSES the position, and the P&L consequence of
+    closing at 24h is exactly the 24h time-cut. Crediting the funding saved and charging nothing for
+    those exits was the fourth survivorship bug; the first three were fixed in #712."""
+    tm = dict(cut={"settings": {"24": dict(n=6, total=-30_000.0)}})    # cutting at 24h COSTS money
+    lv = score.levers([_tm_row() for _ in range(6)], [], tm, funding_late=50_000.0)
+    fund = next(x for x in lv if x["kind"] == "funding")
+    assert fund["total"] == 20_000.0, "the forced exits were not charged"
+    assert fund["gross"] == 50_000.0, "the gross saving is still reported"
+
+
+def test_transport_faults_and_5xx_are_retried_not_just_429():
+    """#718 (@0xsarvesh). A 90-day desk makes 100-200 single-attempt requests; one 503 or one reset
+    socket aborted the whole run with exit 1. SKILL.md's "fails open" was only ever true of the
+    OPTIONAL layers."""
+    import hl_api
+    assert 429 in hl_api.RETRY_CODES and 503 in hl_api.RETRY_CODES and 500 in hl_api.RETRY_CODES
+    src = _P(HERE, "..", "scripts", "hl_api.py").read_text()
+    i = src.index("for attempt in range(")
+    body = src[i:i + 1600]
+    for exc in ("URLError", "TimeoutError", "ConnectionError"):
+        assert exc in body, f"{exc} still fails on the first attempt"
+
+
+def test_a_rate_limit_is_given_a_refill_window_not_a_fault_budget():
+    """H3 (@0xsarvesh, #718). 429 is not a fault — it is the venue's per-IP weight bucket, and the
+    bucket refills on a ~minute. Four tries and 10.5s of backoff killed 3 of 7 desks run in parallel,
+    which is exactly the shape of a 15-wallet round."""
+    import hl_api
+    budget = sum(min(hl_api.RATE_LIMIT_MAX_SLEEP_S, hl_api.BACKOFF_S * (2 ** a))
+                 for a in range(hl_api.RATE_LIMIT_RETRIES - 1))
+    assert budget >= 40, f"only {budget:.1f}s of backoff — a refill window is ~60s"
+    assert hl_api.RATE_LIMIT_RETRIES > hl_api.RETRIES, "429 must outlast a transport fault"
+
+    src = _P(HERE, "..", "scripts", "hl_api.py").read_text()
+    assert "Retry-After" in src, "the venue tells us when the bucket refills; listen to it"
+    assert "min(wait, RATE_LIMIT_MAX_SLEEP_S)" in src, "an unbounded Retry-After can hang a run"
+
+
+def test_cache_and_relay_files_are_written_atomically():
+    """A half-written JSON file reads as JSONDecodeError — which is NOT an HLError, so desk.py's
+    handler misses it and the poisoned file stays hot for its whole TTL. Two desks in parallel was
+    enough to hit it."""
+    import hl_api, json as _json, tempfile as _tf, os as _os
+    d = _tf.mkdtemp()
+    target = _os.path.join(d, "x.json")
+    hl_api._atomic_json(target, {"a": 1})
+    assert _json.load(open(target)) == {"a": 1}
+    assert [f for f in _os.listdir(d) if f.startswith(".hl.")] == [], "temp file left behind"
+
+    for f, site in ((_P(HERE, "..", "scripts", "hl_api.py"), "hl_api"),
+                    (_P(HERE, "..", "scripts", "desk.py"), "desk")):
+        src = f.read_text()
+        assert 'open(path, "w")' not in src and 'open(state_path, "w")' not in src, \
+            f"{site} writes JSON non-atomically again"
+
+
+def test_a_truncated_history_is_not_reported_as_a_complete_one():
+    """#718 (@0xsarvesh). `fetch` breaks on the first failed page. If pages 0-3 land and page 4
+    fails, `rows` is truthy — so the source line read "senpi discovery (800 closed positions)" with
+    `indexed: True` and totals quietly short. The pages read are a PREFIX, not the history."""
+    import senpi_history
+
+    class _Client:
+        def __init__(self): self.n = 0
+        def mcp_call(self, *a, **kw):
+            self.n += 1
+            if self.n > 2:
+                raise RuntimeError("page 3 timed out")
+            return {"success": True, "data": {"closed_positions": [
+                dict(coin="BTC", szi="1", entryPx="100", exitPx="110", openTime=1, closeTime=2,
+                     realizedPnl="10", totalFees="1", leverage={"value": 1}, totalFills="2")
+                for _ in range(senpi_history.PAGE)]}}
+
+    meta = {}
+    rows = senpi_history.fetch(_Client(), "0x" + "a" * 40, 0, meta)
+    assert rows, "the successful pages are still returned"
+    assert meta.get("senpi_history_failed") is True
+    assert meta.get("senpi_history_partial") is True, "a truncated read was not declared"
+
+    src = _P(HERE, "..", "scripts", "desk.py").read_text()
+    assert "senpi_history_partial" in src, "desk.py does not surface the truncation"
+
+
+def test_the_address_book_digest_reads_keys_that_exist():
+    """#718 (@0xsarvesh). `digest["score"]` read `r["score"]` where the key is `quant_score`, and
+    `digest["at"]` read a `generated` key nothing ever sets — so both were always None."""
+    src = _P(HERE, "..", "scripts", "desk.py").read_text()
+    i = src.index("digest={")
+    block = src[i:i + 200]
+    assert 'r.get("quant_score")' in block, "digest still reads a key that does not exist"
+    assert '"generated"' not in block
+
+
+def test_the_public_fill_episodes_are_built_once():
+    """`episodes_from_fills(fills)` ran twice on every token-path run — the second a full recompute
+    over the whole fill stream to rebuild what stage 1 already had."""
+    src = _P(HERE, "..", "scripts", "desk.py").read_text()
+    body = src[src.index("def analyze("):src.index("def main(")]
+    assert body.count("episodes_from_fills(fills)") == 1, "the fill stream is walked twice again"
+
+
+def test_the_unreachable_whale_table_copy_is_gone():
+    """`render.smart` was unreferenced — RENDERERS["smart"] points at smart_v2 — and held a second,
+    diverged copy of the whale-median table, so a fix there had even odds of landing in the copy
+    nobody renders."""
+    import render
+    assert not hasattr(render, "smart"), "the dead renderer is back"
+    assert render.RENDERERS["smart"] is render.smart_v2
+
+
+def test_skill_states_the_real_follow_up_count_and_module_list():
+    """#718 (@0xsarvesh). The `description` frontmatter — what the agent reads at SELECTION time —
+    said a bank of ten; followups.BANK holds twelve. The install list named 9 of the 17 local
+    modules desk.py imports, and a partial copy fails at import, not at runtime."""
+    import followups
+    skill = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    assert f"a bank of twelve follow-ups" in skill and len(followups.BANK) == 12
+    src = _P(HERE, "..", "scripts", "desk.py").read_text()
+    local = {m for m in re.findall(r"^(?:import|from) ([a-z_]+)", src, re.M)}
+    stdlib = {"argparse", "json", "os", "re", "sys", "tempfile", "time", "collections", "statistics",
+              "datetime", "math", "bisect", "urllib", "socket"}
+    for mod in local - stdlib:
+        assert f"`{mod}.py`" in skill, f"{mod}.py is imported but not in the install list"
+
+
+def test_methodology_names_the_engine_version_it_describes():
+    """#718 (@0xsarvesh). methodology.md documented the pre-1.9.0 engine while SKILL.md sent the
+    agent there for the formulas — so an agent asked "how is my cost score computed?" answered with
+    the old rule, confidently. Nine formulas were stale. Pinning the version makes drift fail here
+    rather than in front of a user."""
+    import render
+    doc = _P(HERE, "..", "references", "methodology.md").read_text()
+    assert f"as of quant-desk {render.VERSION}" in doc, (
+        f"methodology.md does not describe {render.VERSION} — update it in the same commit as the formula")
+    for rule in ("Median within a family", "Abstention", "Charged", "spans"):
+        assert rule in doc, rule
+
+
+# ---------------------------------------------------------------- 1.12.0: the rows discovery could not rebuild
+# Live shapes, copied from `discovery_get_trader_history` on 0xdc93a8fd…d9ab and 0xe642e050…a603 —
+# not invented. A cross-liquidation arrives with szi, entryPx and openTime all "0".
+LIQ_NO_OPEN = {"closedOrderId": "0", "coin": "xyz:SKHX", "coinDisplayName": "SKHX", "entryPx": "0",
+               "exitPx": "937.975", "leverage": {"type": "cross", "value": 0}, "maxLeverage": "0",
+               "openTime": 0, "closeTime": 1785000000, "szi": "0", "realizedPnl": "-773802",
+               "marginUsed": "0", "type": "Liquidated Cross Long", "totalFills": "1", "totalFees": "0"}
+LIQ_WITH_OPEN = {"closedOrderId": "1", "coin": "xyz:UNITREE", "coinDisplayName": "UNITREE", "entryPx": "120.0",
+                 "exitPx": "100.0", "leverage": {"type": "isolated", "value": 10}, "maxLeverage": "10",
+                 "openTime": 1784900000, "closeTime": 1785000000, "szi": "5", "realizedPnl": "-119",
+                 "marginUsed": "60", "type": "Liquidated Isolated Short", "totalFills": "2", "totalFees": "1.5"}
+
+
+def test_a_position_discovery_could_not_rebuild_is_kept_not_dropped():
+    """Requiring szi and openTime threw the row away — and with it the largest loss on the book.
+
+    On 0xdc93a8fd… seven such rows carried $1,137,374 of a $1,496,623 loss, a $773,802 cross-liquidation
+    among them, so the desk reported `-$359,249`. Venue-wide these rows are 1.7% of closed positions and
+    14% of realized P&L by magnitude. The row has a coin, a close and a P&L: that is enough to count."""
+    e = senpi_history.episode(LIQ_NO_OPEN)
+    assert e is not None, "the row was dropped and its P&L with it"
+    assert e["realized"] == -773802.0 and e["coin"] == "xyz:SKHX"
+    assert e["liquidated"] is True
+    # it has no observed open, so it must not pose as a fully measured trade
+    assert e["complete"] is False and e["truncated"] is True
+    assert e["peak_notional"] == 0.0 and e["entry_vwap"] is None
+    assert e["direction"] == "LONG"                    # from `type`; szi is 0 so the sign cannot decide
+    # open_time must be a real instant, never 0 — see _funding_after
+    assert e["open_time"] == e["close_time"] and e["hold_h"] == 0.0
+
+
+def test_a_liquidation_is_flagged_as_one_on_the_discovery_path():
+    """`liquidated` was hardcoded False, so a token made every liquidation invisible: no Risk penalty,
+    no LIQUIDATED chip, no liquidation leak — on the path that is supposed to be the BETTER data.
+    The fill-built path has always read this from `dir` (roundtrips.py)."""
+    e = senpi_history.episode(LIQ_WITH_OPEN)
+    assert e["liquidated"] is True and e["complete"] is True    # a rebuildable open stays complete
+    assert senpi_history.episode(dict(LIQ_WITH_OPEN, type="Close Short"))["liquidated"] is False
+    # ADL is the venue unwinding a winner, not a stop the trader failed to place
+    assert senpi_history.episode(dict(LIQ_WITH_OPEN, type="Auto-Deleveraging"))["liquidated"] is False
+
+
+def test_the_kept_rows_reach_the_totals_but_not_the_sample_statistics():
+    win = 1_700_000_000_000
+    good = {"coin": "BTC", "entryPx": "100", "exitPx": "110", "leverage": {"value": 3},
+            "openTime": 1785000000 - 7200, "closeTime": 1785000000, "szi": "10",
+            "realizedPnl": "100", "totalFees": "1", "totalFills": "2", "type": "Close Long"}
+    eps = [senpi_history.episode(r) for r in (good, LIQ_NO_OPEN)]
+    tr = metrics.track_record(eps, [], [], {}, win)
+    assert tr["trades"] == 2
+    assert tr["gross_realized"] == -773702.0, "the unrebuildable row must count in the P&L total"
+    assert tr["liquidations"] == 1 and tr["liquidation_loss"] == -773802.0
+    # ...but it is not a measured trade: hold time and sizing read only the complete/untruncated ones
+    assert tr["complete_trades"] == 1 and tr["truncated_trades"] == 1
+    assert tr["size_median"] == 1000.0, "peak_notional of the zero-size row must not enter the sizing stats"
+
+
+def test_an_unrebuildable_open_cannot_inflate_the_funding_leak():
+    """`_funding_after` reads `open_time + 24h` as a real instant. Left at 0 the row would claim every
+    funding payment made before its close — which is why the epoch open has to be closed off."""
+    e = senpi_history.episode(LIQ_NO_OPEN)
+    close_ms = e["close_time"]
+    rows = [{"time": close_ms - 10 * 3_600_000, "delta": {"coin": "xyz:SKHX", "usdc": "-500"}}]
+    assert score._funding_after(rows, [e], 0, 24.0) == 0.0
+
+
+def test_a_normal_history_row_is_unchanged_by_the_rescue():
+    """The fix must not move a single number on a row discovery CAN rebuild."""
+    row = {"closedOrderId": "0x1", "coin": "BTC", "coinDisplayName": "BTC", "entryPx": "42150.50", "exitPx": "43200.00",
+           "leverage": {"type": "cross", "value": 5}, "openTime": 1699564800000, "closeTime": 1699651200000,
+           "szi": "-0.5", "realizedPnl": "-524.75", "marginUsed": "4215.05", "totalFills": "3", "totalFees": "8.43"}
+    e = senpi_history.episode(row)
+    assert e["complete"] is True and e["truncated"] is False and e["liquidated"] is False
+    assert e["direction"] == "SHORT" and e["hold_h"] == 24 and e["realized"] == -524.75
+    assert e["entry_vwap"] == 42150.5 and e["peak_notional"] == 0.5 * 42150.5
+
+
+def test_a_row_with_no_coin_or_no_close_is_still_dropped():
+    """The rescue widens what is kept; it does not keep everything. Without a close the row cannot be
+    placed in the window at all, and `fetch` pages on exactly that field."""
+    assert senpi_history.episode(dict(LIQ_NO_OPEN, closeTime=0)) is None
+    assert senpi_history.episode(dict(LIQ_NO_OPEN, coin=None, coinDisplayName=None)) is None
+
+
+def test_the_funding_leak_separates_the_bill_from_the_exits_it_forces():
+    """A regression I introduced. 1.12.0 capped the funding claim at the bill; 1.15.0 added the
+    time-cut charge for the exits a 24h cap forces — correct for the LEVER — without re-capping the
+    LEAK. When cutting at 24h SAVES money the charge is positive, so on 0x7e23…5a5a the leak titled
+    "You paid $80,256 in funding" claimed a saving of $502,094. Six times the bill.
+
+    The combined figure is real; the leak just has to say which half is which."""
+    # a PROFITABLE 24h cut belongs to the time-cut lever, not to funding — summing them is the
+    # double-count the union exists to prevent, and it made a $122,440 bill read as $4,083,959
+    gain = dict(cut={"settings": {"24": dict(n=6, total=421_838.0)}})
+    f = next(x for x in score.levers([_tm_row() for _ in range(6)], [], gain, funding_late=80_256.0)
+             if x["kind"] == "funding")
+    assert f["total"] == 80_256.0, "a profitable cut was credited to funding"
+
+    # a COSTLY one is charged — that was the survivorship gap
+    tm = dict(cut={"settings": {"24": dict(n=6, total=-30_000.0)}})
+    lv = score.levers([_tm_row() for _ in range(6)], [], tm, funding_late=80_256.0)
+    f = next(x for x in lv if x["kind"] == "funding")
+    assert f["total"] == 50_256.0 and f["funding_saved"] == 80_256.0 and f["exit_effect"] == -30_000.0
+
+    tr = dict(funding=-80_256.0, coins={"xyz:SKHX": dict(funding=-28_457.0)}, trades=22,
+              fee_recoverable=0.0, taker_share=0.0, liquidations=0)
+    rows = [dict(time=200_000_000, delta=dict(usdc="-80256", coin="xyz:SKHX"))]
+    closed = [dict(coin="xyz:SKHX", open_time=0, close_time=4e12)]
+    out = score.leaks(tr, dict(funding_per_day=-1256.0), tm, rows, closed, 0, 90, lv)
+    leak = next(l for l in out if "funding" in l["title"])
+    assert "$80,256 of funding" in leak["counterfactual"], leak["counterfactual"]
+    assert "from closing the positions that much earlier" in leak["counterfactual"]
+
+
+def test_the_verdict_does_not_assert_a_reason_the_dimension_denies():
+    """On 0x7e23…5a5a the headline read "your entries are late or chased. Fix the entries first."
+    directly above a timing line reading "Entries are not systematically late or chased over this
+    window." Timing scores low for give-back too, and the fixed phrase keyed off the dimension NAME
+    named the wrong half of it."""
+    dims = {"timing": dict(score=51, line="You give back a median 37% of a winner's peak gain before you exit."),
+            "risk": dict(score=88, line="ok"), "cost": dict(score=90, line="ok"),
+            "sizing": dict(score=90, line="ok"), "consistency": dict(score=90, line="ok"),
+            "market_fit": dict(score=90, line="ok")}
+    tr = dict(trades=12, net=661_373.0, win_rate=0.92, profit_factor=36.6, ledger_net=852_881.0,
+              funding=-80_256.0)
+    v = score.verdict(tr, dict(positions=[], naked=[], gross=0.0, net_exposure=0.0), dims, [])
+    assert "entries are late or chased" not in v, v
+    assert "give back a median 37%" in v, v
+
+
+def test_a_recovered_drawdown_is_not_reported_as_a_blown_account():
+    """`dd_pct` is scale-relative: giving back $5k of a $5.4k account is 93%. On 0x2257…a360 that
+    printed "the account went to zero inside the window — a full loss of the equity at risk" about a
+    book holding $28,420 and UP $25,008 — and 1.16.1 promoted the risk line into the headline, so it
+    sat directly beside "Net $25,008 on the ledger".
+
+    The penalty stands either way. The sentence has to match what happened."""
+    flat = dict(positions=[], naked=[], margin_utilization=None, account_value=28_420.0)
+    base = dict(hold_ratio=None, liquidations=0, trades=5)
+
+    s_up, line_up = score.dim_risk(dict(base, ledger_net=25_008.0), flat, dict(dd_pct=0.93))
+    assert "went to zero" not in line_up, line_up
+    assert "ended up $25,008" in line_up and "93%" in line_up
+
+    s_dn, line_dn = score.dim_risk(dict(base, ledger_net=-16_969.0), flat, dict(dd_pct=0.93))
+    assert "went to zero" in line_dn, line_dn
+    assert s_up == s_dn, "the penalty should not depend on how the window happened to end"

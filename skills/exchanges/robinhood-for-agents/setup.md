@@ -1,5 +1,9 @@
 # Setup — Authentication Workflow
 
+**Which mode, which login.** The MCP server runs in one of two modes, each with its own sign-in:
+- **Standard** (entry `robinhood-for-agents`, the default): Robinhood's official credential for its hosted MCP; orders reach the Agentic account only. Call `robinhood_official_login` once: it opens the default browser to Robinhood's sign-in and the user approves there. Until then every standard-mode tool answers an error naming it. The server needs `ROBINHOOD_TOKEN_KEY` (base64, 32 bytes) in its environment to encrypt the credential file (`official-mcp.enc`; never the keychain); without it every tool answers an error saying so. Steps 1–3 do not apply.
+- **Web** (entry `robinhood-web`, `--mode web`): the Chrome session on Robinhood's web API, every account. Steps 1–3 below; MCP login tool `robinhood_browser_login`.
+
 ### Step 1: Check Session
 `restoreSession()` only loads tokens from the store — it succeeds even for tokens the server has already killed. Probe the API to know the truth:
 ```bash

@@ -75,13 +75,13 @@ console.log(JSON.stringify(order, null, 2));
 '
 ```
 
-Options: `{ limitPrice, stopPrice, trailAmount, trailType, accountNumber, timeInForce, marketHours, extendedHours }`
+Options: `{ limitPrice, stopPrice, trailAmount, trailType, accountNumber, timeInForce, marketHours, extendedHours, refId }` — `refId` is the idempotency key (a fresh UUID when omitted).
 
 - Market order: omit `limitPrice` and `stopPrice`
 - Limit order: set `limitPrice`
 - Stop-limit: set both `stopPrice` and `limitPrice`
 - Trailing stop: set `trailAmount` + `trailType` (`"percentage"` or `"amount"` — `"amount"` is a dollar trail; anything else is treated as a percentage)
-- Trading session: `marketHours` is `"regular_hours"`, `"extended_hours"`, or `"all_day_hours"` (the 24 Hour Market). **Always pass it explicitly** — the MCP tool requires it, and the client library falls back to regular hours when it is omitted, which after the close means the order queues for the next open instead of executing. Only **limit** orders execute outside regular hours; a market, stop, or trailing order tagged to another session is rejected.
+- Trading session: `marketHours` is `"regular_hours"`, `"extended_hours"`, or `"all_day_hours"` (the 24 Hour Market). **Always pass it explicitly** — the client library and the MCP tool both fall back to regular hours when it is omitted, which after the close means the order queues for the next open instead of executing. Only **limit** orders execute outside regular hours; a market, stop, or trailing order tagged to another session is rejected.
 
 ### Short selling
 
