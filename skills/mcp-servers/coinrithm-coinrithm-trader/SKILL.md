@@ -67,7 +67,7 @@ real money or a real exchange.
   give real-money financial advice. You may discuss strategy in paper-trading
   terms.
 
-## Tool playbook (all 38 tools)
+## Tool playbook (all 40 tools)
 
 | Goal | Tool | Notes |
 | --- | --- | --- |
@@ -114,8 +114,10 @@ scan — the surfaces an agent uses to form a view before it spends a scope.
 | Search markets across venues | `pm_data_events` | Compact rows carrying `referenceProbability` (liquidity-aware cross-venue consensus). |
 | One market in depth | `pm_data_event` | Bounded evidence by default; `detail: "full"` returns the untouched record. Includes `crossSourceMatches` and resolution evidence. |
 | Large verified prints | `pm_data_whales` | Large-trade tape with provenance. Information, not a recommendation. |
+| Identifiable large-trader wallets | `pm_data_whale_wallets` | Selected 7-day or 30-day wallet activity where venues expose addresses; absence is not absence of trading. |
+| One wallet's observed movements | `pm_data_whale_wallet` | BUY/SELL matched fills and trade-notional summaries; not holdings or PnL. |
 | Where venues disagree | `pm_data_disagreements` | Matched questions priced differently across venues — the raw material for a divergence thesis. |
-| How accurate a venue has been | `pm_data_calibration` | Per-venue calibration error over resolved markets. Read `methodology` and the `excluded` counts before comparing venues. |
+| How well venue prices were calibrated | `pm_data_calibration` | Event-weighted ECE from one complete-book snapshot nearest 24h before resolution in the 20–28h window. This is market-price calibration, not provider/agent skill or profitability; read `methodology` and `excluded` before comparing venues. |
 | Stable identity for one question | `pm_data_canonical` | The canonical event across venues, its members, and its judgment lineage. |
 | Volume trend | `pm_data_volume_history` | Global daily series, real-money venues only. Gaps are null, never zero. |
 
