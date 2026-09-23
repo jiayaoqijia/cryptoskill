@@ -60,7 +60,7 @@ createActor(canisterEnv?.["PUBLIC_CANISTER_ID:backend"], {
 
 Steps:
 1. `npm uninstall @dfinity/agent @dfinity/candid @dfinity/principal vite-plugin-environment`
-2. `npm install @icp-sdk/core@^5.0.0 @icp-sdk/bindgen@^0.3.0`
+2. `npm install @icp-sdk/core@^6` then `npm install -D @icp-sdk/bindgen@^0.4.0` — bindgen is a build-time tool, so it belongs in `devDependencies`. Pin core explicitly; the rest of the SDK peers `^6` (see `references/binding-generation.md`)
 3. Delete `src/declarations/` (dfx-generated bindings)
 4. Add `**/src/bindings/` to `.gitignore`
 5. Commit the `.did` file(s) used by bindgen

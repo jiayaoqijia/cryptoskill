@@ -16,7 +16,7 @@ Internet Identity (II) is the Internet Computer's native authentication system. 
 
 ## Prerequisites
 
-- `@icp-sdk/auth` (>= 9.0.0), `@icp-sdk/core` (>= 5.3.0) (`AttributesIdentity` was added in core v5.3.0)
+- `@icp-sdk/auth@^10` with `@icp-sdk/core@^6` — **pin both majors together.** auth 10 peers `@icp-sdk/core@^6` and auth 9 peers `^5`, so an open-ended floor such as "auth >= 9" resolves to 10 and then fails with `ERESOLVE` against a core 5 install.
 - For the Motoko backend example: `mo:identity-attributes` >= 0.4.0 (mops) — the mixin that injects the two sign-in methods and verifies the bundle for you. It pulls in `mo:core` >= 2.5.0 and requires `moc` >= 1.6.0 for the `include` mixin.
 
 ## Canister IDs
@@ -30,9 +30,9 @@ Internet Identity (II) is the Internet Computer's native authentication system. 
 
 1. **Using the wrong II URL for the environment.** `authorizeUrl` must point to the **frontend** canister (`uqzsh-gqaaa-aaaaq-qaada-cai`), not the backend. Mainnet uses `https://id.ai/authorize`. Local-only II (when `ii: true` is set in `icp.yaml`) uses `http://id.ai.localhost:8000/authorize`. Both canister IDs are well-known and identical on mainnet and local replicas — hardcode them rather than doing a dynamic lookup.
 
-2. **Passing `identityProvider` as a URL string, or naming only half of it.** In 9.x it is an object — `{ authorizeUrl, canisterId }` — and both fields are required together: the page a ceremony renders at and the canister that mints delegations are separate facts, and neither is derived from the other. A string or a `URL` throws a `TypeError`. Omit the option entirely to get mainnet Internet Identity, which is what most apps want. The URL is used verbatim, so include the `/authorize` path: `https://id.ai` opens the II home page and never returns a delegation.
+2. **Passing `identityProvider` as a URL string, or naming only half of it.** In 9.x and later it is an object — `{ authorizeUrl, canisterId }` — and both fields are required together: the page a ceremony renders at and the canister that mints delegations are separate facts, and neither is derived from the other. A string or a `URL` throws a `TypeError`. Omit the option entirely to get mainnet Internet Identity, which is what most apps want. The URL is used verbatim, so include the `/authorize` path: `https://id.ai` opens the II home page and never returns a delegation.
 
-3. **Treating `maxTimeToLive` as the lifetime of the key the frontend signs with.** In 9.x it bounds the **session** at Internet Identity, and `maxTimeToIdle` ends a session nobody has used; the delegation your calls are signed with is short-lived and replaced for you. Leave both unset unless the app has a policy of its own — the provider applies seven days of idleness and thirty days in total. Bound them where the data is sensitive, not to keep key material fresh.
+3. **Treating `maxTimeToLive` as the lifetime of the key the frontend signs with.** In 9.x and later it bounds the **session** at Internet Identity, and `maxTimeToIdle` ends a session nobody has used; the delegation your calls are signed with is short-lived and replaced for you. Leave both unset unless the app has a policy of its own — the provider applies seven days of idleness and thirty days in total. Bound them where the data is sensitive, not to keep key material fresh.
 
 4. **Not awaiting `signIn()` or skipping the `try`/`catch`.** `authClient.signIn()` returns a promise that rejects when the user closes the popup or authentication fails. Without `await` and a `catch`, those failures are silently swallowed.
 
@@ -64,6 +64,16 @@ Internet Identity (II) is the Internet Computer's native authentication system. 
 15. **Serving `/.well-known/ii-app-metadata` on the wrong origin, or without CORS.** II reads app metadata from the origin identities are derived for — your validated `derivationOrigin` when the request sets one, the request's own origin otherwise. A document published only on the alternative origin the user visits is never fetched. The document *and* the logo it points at are both read cross-origin, and they fail differently: without `Access-Control-Allow-Origin` on the document none of your metadata is used (II falls back to its curated entry if it ships one for your app, and to your origin alone otherwise), while an unreadable logo costs you the logo alone — the name and description still render. See "Showing your app's name, description, and logo on the sign-in screen".
 
 16. **Assuming a bad field in `ii-app-metadata` is just dropped, or confusing a rejected logo with a rejected document.** One field that fails validation invalidates the **whole document**: none of your metadata is applied, not just the offending field (II then falls back to its curated entry if it ships one for your app, and to your origin alone otherwise). `name` is capped at 40 Unicode code points and `description` at 120, counted on the value as served. `logo` straddles the two failure modes — a URL that is not on the **same origin** as the document fails document validation and takes the whole document down with it, and that includes your own canister on a sibling gateway domain, since II may fetch the document from any of `ic0.app`, `icp0.io`, or `icp.net` (write the URL relative) — while an SVG (`image/svg+xml` is not accepted; serve a raster copy), an oversized image, or one that cannot be fetched or decoded costs you the logo alone.
+
+17. **Installing `@icp-sdk/auth` and `@icp-sdk/core` at majors that do not pair.** auth 10 peers `@icp-sdk/core@^6`; auth 9 peers `^5`. Pinning core to `^5` out of habit while `@icp-sdk/auth` resolves to `latest` gives you auth 10 on core 5, which does not install:
+
+    ```text
+    npm error ERESOLVE unable to resolve dependency tree
+    npm error Found: @icp-sdk/core@5.4.0
+    npm error peer @icp-sdk/core@"^6" from @icp-sdk/auth@10.0.0
+    ```
+
+    Do not clear it with `--legacy-peer-deps` — that skips the peer check and installs the mismatched pair anyway. Pin `@icp-sdk/auth@^10` with `@icp-sdk/core@^6`, or stay on `@icp-sdk/auth@^9` if something else holds you on core 5.
 
 ## Using II during local development
 
@@ -713,7 +723,9 @@ Backend access control (anonymous principal rejection, role guards, caller bindi
 
 ## Older API notes
 
-Everything above targets `@icp-sdk/auth` 9.x. On an older major the same flow differs:
+Everything above targets `@icp-sdk/auth` 10.x. On an older major the same flow differs:
+
+**9.x** — the same API. 10.x changed only its peer, from `@icp-sdk/core@^5` to `^6`, so 9.x is what you use if you are held on core 5. One behavioural gain comes with it: core 6 carries delegation permissions, so a read-only session signs in instead of throwing *"this session is read-only, which `@icp-sdk/auth` cannot act for yet"*. Nothing in your code changes.
 
 **8.x** — what 9.x changed:
 
@@ -735,4 +747,4 @@ Everything above targets `@icp-sdk/auth` 9.x. On an older major the same flow di
 - 5.x auto-appends `/authorize` to the `identityProvider` URL, so you can pass just `https://id.ai`.
 - No `requestAttributes` / `AttributesIdentity` support — the identity-attributes flow above requires 7.x or later.
 
-Upgrade when you can: the promise-based API is harder to misuse, the callback variant has been removed, and 9.x re-mints the delegation your calls are signed with instead of leaving one key alive for the whole session.
+Upgrade when you can: the promise-based API is harder to misuse, the callback variant has been removed, and 9.x and later re-mint the delegation your calls are signed with instead of leaving one key alive for the whole session.

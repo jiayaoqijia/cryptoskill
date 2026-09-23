@@ -16,13 +16,15 @@ Build on the maintained libraries — do not hand-roll the cryptography or the C
 
 | Layer | Rust | Motoko | Frontend |
 |-------|------|--------|----------|
-| Package | `ic-vetkeys` **0.9** ([crates.io](https://crates.io/crates/ic-vetkeys)) | `ic-vetkeys` **0.6** ([mops](https://mops.one/ic-vetkeys)) | `@icp-sdk/vetkeys` **0.5** ([npm](https://www.npmjs.com/package/@icp-sdk/vetkeys)) |
+| Package | `ic-vetkeys` **0.9** ([crates.io](https://crates.io/crates/ic-vetkeys)) | `ic-vetkeys` **0.6** ([mops](https://mops.one/ic-vetkeys)) | `@icp-sdk/vetkeys` **0.7** ([npm](https://www.npmjs.com/package/@icp-sdk/vetkeys)) |
 | Management API | `ic-cdk-management-canister`, `ic_vetkeys::management_canister` | `mo:ic-vetkeys/ManagementCanister` | — |
 | Low-level primitives | crate root (`ic_vetkeys::…`) | — (**not available**, see below) | package root (`@icp-sdk/vetkeys`) |
 
 > **`@dfinity/vetkeys` is legacy** (frozen at 0.4.0). The package was renamed to `@icp-sdk/vetkeys` at 0.5.0. Frontend agent/identity types come from `@icp-sdk/core` (`@icp-sdk/core/agent`, `@icp-sdk/core/principal`), **not** `@dfinity/agent`/`@dfinity/principal`.
+>
+> Use **0.7 or later**. 0.5 and 0.6 declared `@icp-sdk/core` as a plain dependency, so they could nest a second copy of core beside the one the app installs instead of failing; 0.7 peers it as `^5 || ^6`. The API is identical across all three.
 
-Also required: Rust `ic-cdk = "0.20"` + `ic-cdk-management-canister = "0.1"` (and `ic-dummy-getrandom-for-wasm` for IBE); Motoko `ic-vetkeys` 0.6 needs `moc ≥ 1.13.0` / `core ≥ 2.6.1`; frontend also `@icp-sdk/core ^5.4`.
+Also required: Rust `ic-cdk = "0.20"` + `ic-cdk-management-canister = "0.1"` (and `ic-dummy-getrandom-for-wasm` for IBE); Motoko `ic-vetkeys` 0.6 needs `moc ≥ 1.13.0` / `core ≥ 2.6.1`; frontend `@icp-sdk/core@^6` — vetKeys itself accepts `^5 || ^6`, but the rest of the SDK peers `^6`.
 
 ## Which skill / which feature
 
@@ -198,7 +200,7 @@ A vetKey can be turned into **verifiable randomness**: a Rust canister calls `ic
 
 ## Pitfalls
 
-1. **Wrong package / imports.** Use `@icp-sdk/vetkeys` (≥0.5), not `@dfinity/vetkeys` (frozen at 0.4). Import agent/identity from `@icp-sdk/core` (`@icp-sdk/core/agent`, `@icp-sdk/core/principal`), and build the agent with `await HttpAgent.create({ identity, host, rootKey })` — the client classes take a ready `HttpAgent`, not options. Get `rootKey` from `safeGetCanisterEnv()` (`@icp-sdk/core/agent/canister-env`); never call `fetchRootKey()` in shipped code (see the `icp-cli` skill).
+1. **Wrong package / imports.** Use `@icp-sdk/vetkeys` (≥0.7), not `@dfinity/vetkeys` (frozen at 0.4). Import agent/identity from `@icp-sdk/core` (`@icp-sdk/core/agent`, `@icp-sdk/core/principal`), and build the agent with `await HttpAgent.create({ identity, host, rootKey })` — the client classes take a ready `HttpAgent`, not options. Get `rootKey` from `safeGetCanisterEnv()` (`@icp-sdk/core/agent/canister-env`); never call `fetchRootKey()` in shipped code (see the `icp-cli` skill).
 
 2. **`toDerivedKeyMaterial()` does not exist.** For symmetric encryption: `const dkm = await vetKey.asDerivedKeyMaterial()`, then `await dkm.encryptMessage(msg, domainSep, associatedData)` / `await dkm.decryptMessage(ct, domainSep, associatedData)` (all async). Never use the raw decrypted vetKey bytes directly as an AES key.
 

@@ -2203,7 +2203,17 @@ def test_a_bare_run_ai_quant_offers_candidates_instead_of_guessing():
     assert "run AI quant on any Hyperliquid wallet" in desc
     assert "never guess an address and never answer from memory" in desc
 
-    assert "No address given — find them some" in skill
+    assert "find them some" in skill, "the find-candidates flow must stay documented"
+    # …and it is now the SECOND branch: a bare "run quant desk" may mean the reader's OWN book, and
+    # for a senpi user that means their STRATEGY wallets. Two of four users on launch night were
+    # offered their embedded (funding) wallet instead and got "no PERP activity" on a book that
+    # trades daily, because this section only ever contemplated reading someone else.
+    assert "WHOSE book, before which book" in skill, "the whose-book question is not asked first"
+    assert "strategy wallets, not their embedded wallet" in skill
+    assert "strategy_list" in skill, "the skill never says how to resolve the reader's own wallets"
+    assert "FUNDING wallet" in skill, "the embedded wallet is not labelled for what it is"
+    assert "Never guess an address" in skill or "never guess an address" in skill.lower(), \
+        "the no-guessing rule must survive the change"
     # prose uses en-dashes; the CLI flags use hyphens — both must be present and must agree
     import hl_api
     for band in ("$5k\u201310k", "$10k\u201325k", "$25k\u2013100k", "$100k\u20131M", "whales ($1M+)"):
@@ -2984,3 +2994,116 @@ def test_the_page_never_shows_two_different_totals_for_fees():
     src = _P(HERE, "..", "scripts", "score.py").read_text()
     assert "in fees across every fill in the window" in src, \
         "the execution sentence must name the population it counts"
+
+
+def test_the_headline_never_lowercases_a_ticker():
+    """Live 1.25.1 run, on a senpi strategy wallet. The verdict read:
+
+        Down $149 on the ledger over the window — and eTH, AVAX, TAO, xyz:MU — short into an
+        up-trend. Get on the right side of the regime first.
+
+    `_own[0].lower() + _own[1:]` lowers the first letter so the dimension's own sentence reads on
+    after "and …". That is right for "You give back…" and wrong for a market-fit line that starts
+    with a ticker — on the most-read sentence on the page."""
+    assert score._lower_first("ETH, AVAX, TAO, xyz:MU — short into an up-trend").startswith("ETH")
+    assert score._lower_first("BTC — short into an up-trend").startswith("BTC")
+    # ordinary sentences still join cleanly
+    assert score._lower_first("You give back a median 23% of a winner's peak").startswith("you give")
+    assert score._lower_first("Win rate 78%, profit factor 0.8").startswith("win rate")
+    # already-lowercase and numeric openings are untouched either way
+    assert score._lower_first("xyz:SPCX, xyz:SKHY — short").startswith("xyz:")
+    assert score._lower_first("2 of 2 open positions have no stop").startswith("2 of 2")
+    assert score._lower_first("") == "" and score._lower_first("A") == "A"
+
+    # end to end through the verdict, on the shape that produced it
+    dims = {"market_fit": dict(score=35, line="ETH, AVAX, TAO, xyz:MU — short into an up-trend."),
+            "risk": dict(score=85, line="Every position carries a full stop."),
+            "cost": dict(score=90, line="Costs are light."),
+            "timing": dict(score=88, line="Entries are fine."),
+            "sizing": dict(score=80, line="Sizing is steady."),
+            "consistency": dict(score=75, line="Results repeat.")}
+    tr = dict(trades=7, profit_factor=0.9, payoff_ratio=1.0, win_rate=0.4, net=-149.0,
+              ledger_net=-149.0, fees=3.0, funding=0.0, gross_realized=-146.0, liquidations=0)
+    book = dict(naked=[], positions=[], account_value=432.0)
+    v = score.verdict(tr, book, dims, [])
+    assert "eTH" not in str(v), v
+    assert "ETH, AVAX" in str(v), v
+
+    src = _P(HERE, "..", "scripts", "followups.py").read_text()
+    assert "top[1:2].islower()" in src, "the same idiom in followups can lowercase a ticker too"
+def test_portfolio_hands_a_scoring_request_to_quant_desk():
+    """Three users on 2026-09-22 typed a quant-desk chip and landed elsewhere, on boxes that
+    already carried the manifest:
+
+        "Score my trading"  20:45, runtime 3.0.120 since 19:57  -> portfolio.py
+        "Score my trading"  19:47, runtime 3.0.120 since 19:30  -> senpi-portfolio
+        "Run quant desk"    19:49, runtime 3.0.120 since 19:45  -> strategy-author
+
+    quant-desk lists "score my trading" verbatim, so the words were not the problem.
+    senpi-portfolio claims "Use this skill FIRST for ANY portfolio / strategies / positions /
+    balances / PnL / trade-history question" — a categorical directive that reads wider than it
+    means, and a scoring request is trade-history-shaped.
+
+    The fix is a CROSS-REFERENCE, not a carve-out: portfolio keeps its whole remit and hands off
+    the one verb it does not own. Anything that negates a category on portfolio's side risks
+    pulling it off questions it should answer — judging a strategy against its mandate IS its job.
+    """
+    mine = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    theirs = " ".join(_P(HERE, "..", "..", "senpi-portfolio", "SKILL.md").read_text().split())
+
+    # portfolio routes the scoring verb here, and names the wallets it just resolved
+    assert "run **quant-desk** on the wallets" in theirs, \
+        "portfolio does not hand a scoring request to quant-desk"
+    assert "score my trading" in theirs.lower() and "rate my trading" in theirs.lower()
+
+    # …and keeps everything else, stated positively rather than as a negation
+    assert "stays here" in theirs, "the handoff must not read as a carve-out of portfolio's remit"
+    assert "NOT for JUDGING" not in theirs, \
+        "a blanket negation pulls portfolio off strategy-vs-mandate questions it should answer"
+
+    # quant-desk names the relationship from its side
+    assert "senpi-portfolio resolves the reader's wallets" in mine
+
+
+def test_the_empty_window_exit_points_a_senpi_user_at_their_strategy_wallets():
+    """Launch night: two of four organic users asked for their own book, their agents offered the
+    EMBEDDED wallet — reasoning correctly that the skill forbids guessing an address — and both got
+    exit 3, "no PERP activity", on books that trade daily. A third user pointed the desk at three
+    STRATEGY wallets the same hour and got three full desks, a priced leak and a DSL fix.
+
+    An embedded wallet is a FUNDING wallet: deposits land there and move out to the strategy
+    subwallets that trade. The engine was right — there was no perp activity — but the reader was
+    left at a dead end. The guidance is fixed in SKILL.md; the exit says it too, so a wrong wallet
+    corrects itself rather than reading as "you have nothing"."""
+    src = _P(HERE, "..", "scripts", "desk.py").read_text()
+    blk = src.split('if not r["activity"]["fills"] and not r["book"]["positions"]:', 1)[1][:2000]
+    assert '"if_this_is_your_own_wallet"' in blk, "the empty exit gives a senpi user no way forward"
+    assert "STRATEGY wallets" in blk and "funding wallet" in blk
+    assert "strategy_list" in blk, "it does not say how to resolve them"
+    # the existing guarantees still hold — this exit must stay machine-readable and keep `indexed`
+    assert '"indexed": r.get("indexed")' in blk and "return 3" in blk
+    # the banned phrase is guarded against the PAYLOAD in
+    # test_an_empty_window_still_reports_whether_senpi_has_the_wallet — not against the source,
+    # where it appears in the comment explaining why the payload must not say it
+
+
+def test_an_address_the_reader_already_claimed_is_not_forgotten():
+    """@betashop on 1.26.0: a reader who previously gave an address and said it was their book
+    should still have it remembered — the senpi strategy wallets are a FALLBACK, not a replacement.
+
+    A trader who arrives from Hyperliquid with their own external wallet does not stop owning it the
+    moment they have senpi strategies, and the address book already records exactly this: `claimed`
+    for an address they typed and called theirs, `verified` for a Senpi-issued one. 1.26.0 went
+    straight to `strategy_list` and never consulted it."""
+    skill = " ".join(_P(HERE, "..", "SKILL.md").read_text().split())
+    own = skill[skill.index("If they mean their OWN book"):skill.index("If they want someone ELSE")]
+
+    assert "--addresses" in own, "the own-book branch never reads the address book"
+    assert "claimed" in own and "verified" in own, "the two tiers of 'theirs' are not distinguished"
+    assert own.index("address book") < own.index("strategy_list"), \
+        "the address book must be consulted BEFORE falling back to senpi wallets"
+    assert "do not forget an address they already claimed" in own.lower() or \
+           "do not forget an address they already claimed" in own, "the rule is not stated"
+    # and when both exist the reader decides — not us
+    assert "Both?" in own and "ask" in own.lower(), "ambiguity must go back to the reader"
+    assert "Never guess" in own or "never guess" in own, "the no-guessing rule must survive"

@@ -82,7 +82,7 @@ If the standard security policy blocks the app, override the default security he
 
 ## Programmatic Uploads with `@icp-sdk/canisters` (legacy only)
 
-`AssetManager` works **only** against the legacy asset canister — it uses the `store`/`create_batch`/`commit_batch` API. It does **not** work against the certified-assets (static-site) canister. Requires `@icp-sdk/canisters` (>= 3.5.0) and `@icp-sdk/core` (>= 5.0.0).
+`AssetManager` works **only** against the legacy asset canister — it uses the `store`/`create_batch`/`commit_batch` API. It does **not** work against the certified-assets (static-site) canister. Requires `@icp-sdk/canisters@^4` with `@icp-sdk/core@^6` (npm pulls in canisters' `@dfinity/utils` peer automatically). A project still held on `@icp-sdk/core@^5` needs `@icp-sdk/canisters@^3.6` instead — canisters 4 peers core `^6` and will not install against 5.
 
 ```javascript
 import { AssetManager } from "@icp-sdk/canisters/assets";

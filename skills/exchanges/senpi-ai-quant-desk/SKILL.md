@@ -34,11 +34,12 @@ description: >-
   means the user is analyzing someone else.
   Hidden engine: scripts/desk.py. NOT for choosing or deploying a strategy (senpi-strategy-discover /
   -ops), reviewing a Senpi strategy's own trades (senpi-improve-trades), or vetting a trader to copy
-  (senpi-trader-research).
+  (senpi-trader-research). senpi-portfolio resolves the reader's wallets and answers what they
+  hold; a request to SCORE or RATE that trading comes here, on those wallets.
 license: Apache-2.0
 metadata:
   author: Senpi
-  version: "1.25.1"
+  version: "1.26.1"
   platform: senpi
   exchange: hyperliquid
 ---
@@ -350,11 +351,57 @@ new-trader path (`senpi-strategy-discover`). A malformed address returns exit 2 
 Public-API rate limits (HTTP 429) are retried with backoff; a second run inside 10 minutes is served from
 the cache (`--fresh` to refetch).
 
-## No address given — find them some
+## No address given — WHOSE book, before which book
 
-"Run AI quant on any Hyperliquid wallet", "find traders for me to analyze with AI quant", or a bare
-"run AI quant" with no `0x…`. **Do not guess an address and do not answer from memory.** Ask the one
-question that narrows it, then hand them a short list.
+A bare "run quant desk" with no `0x…` is ambiguous in one way that matters: they may mean **their own
+book** or **someone else's**. Settle that first — it is one question and it decides everything after.
+
+> Your own book, or do you want me to find you someone to read?
+
+### If they mean their OWN book — read the address book FIRST, then the strategy wallets
+
+**Check `desk.py --addresses` before anything else.** A reader who has already told this box an
+address is theirs is recorded there as `claimed`, and a Senpi-issued wallet as `verified`. A trader
+who came from Hyperliquid with their own external wallet and said "this is my book" does not stop
+owning it the moment they have senpi strategies — **do not forget an address they already claimed**,
+and do not silently swap it for a senpi wallet.
+
+So the precedence is:
+
+1. **Claimed or verified in the address book** — offer it by name, it is the one they told you about.
+2. **Their senpi strategy wallets** (`strategy_list`) — where their senpi perp history actually is.
+3. **Both?** Then ask, because only they know which they mean today: *"Your external wallet
+   `0x5a10…2c37`, or your senpi strategies — Aegis, Phalanx?"* Offer to run both and compare; that
+   is often the more interesting read, and the desk prices them the same way.
+4. **Neither?** Ask for an address. Never guess one.
+
+**A senpi user's perp history lives in their strategy wallets, not their embedded wallet.** The
+embedded wallet is a FUNDING wallet: deposits land there and move out to the strategy subwallets that
+actually trade. Running the desk on it returns "no PERP activity" and the reader is told they have
+nothing to read, on a book that may be trading every day.
+
+This is not hypothetical. On launch night two of four users asked for their own book, their agents
+offered the embedded wallets — reasoning correctly that "the skill says never guess an address" — and
+both got a dead end. A third user pointed the desk at three strategy wallets the same night and got
+three full desks, a priced leak, and a DSL fix off the back of it. Same product, same hour; the only
+difference was which wallet.
+
+So, where the address book has nothing claimed: resolve their wallets with `strategy_list` and
+**offer the strategy wallets first**, named by their strategy. Offer the embedded wallet second and label it — "your funding wallet, usually no
+trades of its own". If they have several strategies, offer to run the desk on each and compare.
+
+> You trade through three strategies — **Aegis**, **Phalanx**, **Signals Hunter**. Want the desk on
+> one of them, or all three side by side? (Your embedded wallet is the funding one — it usually has
+> no trades of its own.)
+
+**"Never guess an address" still holds.** This is about which wallets to OFFER once you have resolved
+them, never about inventing one or answering from memory.
+
+### If they want someone ELSE to read — find them some
+
+"Run AI quant on any Hyperliquid wallet", "find traders for me to analyze with AI quant". **Do not
+guess an address and do not answer from memory.** Ask the one question that narrows it, then hand
+them a short list.
 
 The question is size first — a $9k book and a $9M book teach different lessons — then style:
 

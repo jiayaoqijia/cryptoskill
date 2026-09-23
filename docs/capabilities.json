@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T21:26:02.309206+00:00",
+  "generated_at": "2026-09-23T01:06:31.486623+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -30905,7 +30905,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -31810,7 +31810,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -31850,7 +31850,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -136714,15 +136714,15 @@
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 962,
-      "can_install_code": 478,
+      "can_install_code": 479,
       "can_write_files": 128,
       "can_browse_web": 201,
       "can_spawn_subagents": 231,
       "can_move_funds": 243,
-      "requires_private_key": 400,
+      "requires_private_key": 401,
       "requires_hosted_operator": 324,
       "uses_remote_install_script": 40,
-      "mutable_remote_runtime": 478
+      "mutable_remote_runtime": 479
     }
   }
 }

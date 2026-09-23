@@ -16,10 +16,10 @@ Use the **`vetkeys` skill** instead when you need lower-level primitives: identi
 
 | Layer | Rust | Motoko | Frontend |
 |-------|------|--------|----------|
-| Package | `ic-vetkeys` **0.9** | `ic-vetkeys` **0.6** (moc ≥ 1.13.0, core ≥ 2.6.1) | `@icp-sdk/vetkeys` **0.5** |
+| Package | `ic-vetkeys` **0.9** | `ic-vetkeys` **0.6** (moc ≥ 1.13.0, core ≥ 2.6.1) | `@icp-sdk/vetkeys` **0.7** |
 | Backend | `export_encrypted_maps_canister!` macro | `EncryptedMapsCanister` mixin | `@icp-sdk/vetkeys/encrypted_maps` |
 
-> Use `@icp-sdk/vetkeys` (≥0.5), not the legacy `@dfinity/vetkeys` (frozen at 0.4). Frontend agent/identity come from `@icp-sdk/core`, not `@dfinity/agent`.
+> Use `@icp-sdk/vetkeys` (≥0.7), not the legacy `@dfinity/vetkeys` (frozen at 0.4). 0.5 and 0.6 carried `@icp-sdk/core` as a plain dependency and could nest a second copy of it; 0.7 peers it as `^5 || ^6`, with an identical API. Frontend agent/identity come from `@icp-sdk/core`, not `@dfinity/agent`.
 
 ## Concepts
 
