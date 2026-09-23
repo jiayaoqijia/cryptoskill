@@ -4,7 +4,7 @@ description: Manage Grid bots (spot/contract/coin-margined) and DCA Martingale b
 license: MIT
 metadata:
   author: okx
-  version: "1.4.7"
+  version: "1.4.8"
   homepage: "https://www.okx.com"
   agent:
     emoji: "🤖"
@@ -13,7 +13,7 @@ metadata:
     install:
       - id: npm
         kind: node
-        package: "@okx_ai/okx-trade-cli@1.4.7"
+        package: "@okx_ai/okx-trade-cli@1.4.8"
         bins: ["okx"]
         label: "Install okx CLI (npm)"
 ---
@@ -406,7 +406,7 @@ Returns: `avgPx`, `upl`, `liqPx`, `sz`, `tpPx`, `slPx`, `initPx`, `fundingFee`, 
 ### DCA Bot — Sub-Orders
 
 ```bash
-okx bot dca sub-orders --algoOrdType <spot_dca|contract_dca> --algoId <id> [--cycleId <id>] [--json]
+okx bot dca sub-orders --algoOrdType <spot_dca|contract_dca> --algoId <id> [--cycleId <id>] [--after <id>] [--before <id>] [--limit <n>] [--json]
 ```
 
 | Flag / Param | Effect |

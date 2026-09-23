@@ -1,0 +1,25 @@
+---
+repo: metamask-extension
+parent: perps-review-pr
+---
+## Extension criteria
+
+Required for Extension changes, in addition to the Perps families above.
+
+- [ ] Extension Must Consume the Published Controller Contract: A controller bump or a `perps-events.ts` merge is proven against the shipped `@metamask/perps-controller` bundle and its `.d.cts`, not against manifests or Mobile assumptions. See references/criteria/extension/extension-must-consume-the-published-controller-contract.md
+- [ ] Controller Mock Must Be Kept Current: Every new contract value that product code reads is added to the hand-maintained `test/mocks/metamask-perps-controller.js` in the same PR, otherwise tests silently see `undefined`. See references/criteria/extension/controller-mock-must-be-kept-current.md
+- [ ] Analytics Wiring Patterns: Screen views are emitted once, from the screen or modal that renders them, and attribution for controller-owned events is merged in `createPerpsInfrastructure`, not in UI code. See references/criteria/extension/analytics-wiring-patterns.md
+- [ ] Hook Import Boundaries: Shared perps hooks are imported from their module file, not the `hooks/perps` barrel, stream-module mocks list every hook a component uses, and no hook mutates a caller's ref. See references/criteria/extension/hook-import-boundaries.md
+- [ ] Market Data Source and Provider Behavior Must Be Consistent Across Paths: A preferred market data source or provider applies to every fetch path (stream, market detail, order form, charts, fallback) through a typed, visible selection with tested fallback. See references/criteria/extension/market-data-source-and-provider-behavior-must-be-consistent-across-paths.md
+- [ ] Backend Routing and Controller Preload Caches: A backend route or provider endpoint change updates the preload and cache-prime paths (`cachedMarketDataByProvider`, `PerpsStreamBridge`'s `startMarketDataPreload`) and the reconnect fallback, not… See references/criteria/extension/backend-routing-and-controller-preload-caches.md
+- [ ] Order Forms Must Preserve User Input Across Toggles: A TP/SL sign or percent toggle transforms the existing value, and the submitted order params equal what the form displays. See references/criteria/extension/order-forms-must-preserve-user-input-across-toggles.md
+- [ ] Charts and CTAs Need Feature-Parity Evidence: Loading and loaded section order differ: Reserve space for every conditional section above stable controls, including a populated watchlist. See references/criteria/extension/charts-and-ctas-need-feature-parity-evidence.md
+- [ ] Batch-Action and Analytics Error-Path Parity: Sibling batch-action handlers (`handleCloseAllPositions`, `handleCancelAllOrders`) share one error contract: the same catch and soft-failure analytics in every sibling, each new branch covered by a… See references/criteria/extension/batch-action-and-analytics-error-path-parity.md
+- [ ] CDP / E2E Proof Surfaces: A Perps tab screenshot proves market data only when a non-zero price or position value is visible or a CDP state assertion confirms live data; a navigated route over a loading skeleton is not proof. See references/criteria/extension/cdp-e2e-proof-surfaces.md
+- [ ] Evidence Expected Before Extension Perps Review: The PR carries a controller package version and contract compatibility note, a state-flow matrix for the selectors and hooks touched, a market data source matrix across stream, detail, order, chart… See references/criteria/extension/evidence-expected-before-extension-perps-review.md
+
+## Verdict and handoff
+
+- [ ] Write artifacts/review.md with Summary, Criteria outcomes, Findings, Evidence, Limitations and Recommended Action. Include the frozen head and rule revision. Findings need severity, file:line, impact and the smallest correction. Preserve prior findings and their re-review disposition. Required NOT_CHECKED items prevent APPROVE; use COMMENT for missing evidence in standalone reports and REQUEST_CHANGES for actionable findings. If the host only accepts pass/issues, missing required evidence must block the task instead of fabricating an issue or passing it. Follow the host's required verdict/header fields. Distinguish runtime QA requests from static conclusions.
+- [ ] Write artifacts/line-comments.json using the host contract, or {"pr_number": <number>, "recommendation": "APPROVE|REQUEST_CHANGES|COMMENT", "summary": "...", "comments": [{"path": "...", "line": 1, "body": "...", "severity": "must_fix|suggestion|nitpick"}]} for a PR task. Only attach changed-line findings; retain other findings in review.md. Write artifacts/learnings.md. For a branch-only review, use an empty comments array without inventing a PR number when the terminal contract requires that file.
+- [ ] Confirm every applicable criterion has an outcome and evidence. For a materialized task, satisfy inputs/worker-terminal-contract.json and run the task-local mark complete --mark-last. A blocked review uses mark blocked with its reason. Without a task runtime, return the report and criteria ledger. The caller owns publication, retained sessions and cleanup; stop after handing back the result.

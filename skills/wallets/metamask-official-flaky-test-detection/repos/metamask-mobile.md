@@ -3,6 +3,8 @@ repo: metamask-mobile
 parent: flaky-test-detection
 ---
 
+`*.view.test.ts(x)`: do **not** apply J2 / J8 (fake timers). Follow `mms-mobile-testing` component-view instead — sibling-skeleton waits, empty-state load, list hydration, stale press, nested `findBy*`, Engine `mockReset`.
+
 ## Pattern table
 
 | ID | Pattern | Severity |

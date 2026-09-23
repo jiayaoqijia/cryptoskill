@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-23T12:47:24.886142+00:00",
+  "generated_at": "2026-09-23T18:41:46.367542+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -69591,6 +69591,68 @@
       },
       "hosted_operators": []
     },
+    "exchanges/fere-ai-fere": {
+      "name": "fere",
+      "execution_model": "local_executor",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "exchanges/gate-assets": {
       "name": "gate-exchange-assets",
       "execution_model": "analysis_only",
@@ -130921,6 +130983,68 @@
       },
       "hosted_operators": []
     },
+    "wallets/metamask-official-activity-mappers": {
+      "name": "activity-mappers",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/metamask-official-add-evm-network": {
       "name": "add-evm-network",
       "execution_model": "read_only",
@@ -133879,7 +134003,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -136760,31 +136884,31 @@
     }
   },
   "summary": {
-    "discovered": 2194,
-    "processed": 2194,
+    "discovered": 2196,
+    "processed": 2196,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1390,
+      "read_only": 1391,
       "router_orchestrator": 131,
       "unknown": 248,
       "analysis_only": 199,
       "unsigned_tx_builder": 81,
-      "local_executor": 88,
+      "local_executor": 89,
       "installer_bootstrap": 38,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 962,
-      "can_install_code": 479,
-      "can_write_files": 128,
+      "can_execute_shell": 963,
+      "can_install_code": 480,
+      "can_write_files": 129,
       "can_browse_web": 201,
       "can_spawn_subagents": 231,
-      "can_move_funds": 243,
-      "requires_private_key": 401,
+      "can_move_funds": 244,
+      "requires_private_key": 403,
       "requires_hosted_operator": 324,
       "uses_remote_install_script": 40,
-      "mutable_remote_runtime": 479
+      "mutable_remote_runtime": 480
     }
   }
 }

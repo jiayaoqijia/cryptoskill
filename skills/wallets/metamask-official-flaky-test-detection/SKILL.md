@@ -19,7 +19,12 @@ Task → Which mode?
 
 ## Constraints
 
-All proposed fixes must comply with `mms-mobile-testing` (unit path) and `mms-coding-guidelines`. Key rules:
+If the file is `*.view.test.ts(x)`, follow `mms-mobile-testing` component-view
+rules instead of this skill's fake-timer patterns (J2 / J8). CV forbids fake
+timers. Use the CV diagnosing table for sibling-skeleton waits, empty-state
+load, list hydration, stale press, nested `findBy*`, and Engine `mockReset`.
+
+All proposed **unit** fixes must comply with `mms-mobile-testing` (unit path) and `mms-coding-guidelines`. Key rules:
 - Use `jest.mocked(fn)` — never `fn as jest.Mock`
 - Use `toBeOnTheScreen()` — never `toBeTruthy()` / `toBeDefined()` for element presence
 - Use `yarn` commands — never npm or npx

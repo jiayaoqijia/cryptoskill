@@ -34,6 +34,7 @@ Task → What do you need?
 ├─ Fix failing test
 │  → Run: yarn jest -c jest.config.view.js <path> --runInBand --silent --coverage=false
 │  → Identify error type → Open component-view/reference.md (Diagnosing Failures)
+│     including sibling-skeleton, empty-state load, list hydration, mockReset
 │
 └─ Run tests or self-review after tests pass
    → Open component-view/reference.md (Run the Tests, Self-Review Checklist)
@@ -127,11 +128,17 @@ For run-by-name, watch mode, or other options, see `component-view/reference.md`
 
 14. **Do not nest `find*` inside `waitFor`** — `findBy*` already *is* `waitFor` + `getBy` (default timeout 1000 ms). Nesting them shares that budget, so CI can fail with a bare `Timed out in waitFor.` and no assertion detail. Use `await findBy*` **or** `waitFor(() => { getBy*; expect(...) })` with an explicit `{ timeout }` when you need extra time. Never `waitFor(async () => { await findBy*(...) })`.
 
-15. **Reset mock call history between tests** — add `beforeEach(() => jest.clearAllMocks())` to every `describe` block that asserts on `Engine.controllerMessenger.call` call counts or arguments. The CV mocks define `Engine.controllerMessenger.call` as a single shared `jest.fn()`; without a reset, accumulated calls from prior tests corrupt `toHaveBeenCalledTimes(N)` and `toHaveBeenCalledWith(...)` assertions.
+15. **Reset mock implementations between tests** — `jest.clearAllMocks()` clears call history but keeps the last `mockResolvedValue` / `mockImplementation`. If a case changes an Engine or `controllerMessenger.call` implementation, `mockReset()` (or restore/recreate) in `beforeEach`. Otherwise later cases in the same file or shard can flake.
 
-16. **Run the tests before declaring done** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and confirm all tests are green. A test file that has never been run is not done.
+16. **Do not wait on a sibling loading proxy** — header, list, and action rows can load independently. Await the control or value under test, or the loading UI that *owns* it. A details skeleton clearing is not proof that a share button or buy CTA is mounted.
 
-17. **Run format:check before declaring done** — run `npx prettier --check <file>` (or `yarn format:check`) on the new test file and every new supporting file (renderer, preset, api-mock). Auto-fix with `npx prettier --write <file>` if needed, then re-check.
+17. **Empty-state and list completeness** — wait until list loading is gone, then assert copy unique to the selected filter (shared empty `testID`s can detach). For lists, wait until every expected row test ID is present before asserting per-row fields. The first row is not hydration complete.
+
+18. **Negative assertions after the positive path could have rendered** — wait for the owning load phase or skeleton to finish, then assert absence. Immediate `queryBy*` after render is a false green.
+
+19. **Run the tests before declaring done** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and confirm all tests are green. A test file that has never been run is not done.
+
+20. **Run format:check before declaring done** — run `npx prettier --check <file>` (or `yarn format:check`) on the new test file and every new supporting file (renderer, preset, api-mock). Auto-fix with `npx prettier --write <file>` if needed, then re-check.
 
 
 ## Reference files (when to use)

@@ -73,9 +73,12 @@ Before declaring the task done, go through this checklist for every test written
 | 13  | **Unit→CV migrations keep assert specificity** — deleted unit payload fields (`tabId`, formatted dates, full analytics) still appear in the CV replacement                                                                                                   | Restore dropped fields in CV or KEEP a focused unit; see unit-cv-overlap |
 | 14  | **Awaits cover the asserted content, not just its container** — after `await findByTestId(CONTAINER)`, no synchronous `getBy*` asserts a value that has its own async source (child query, debounce, skeleton)                                                | Await the gated value with `findBy*` first, then re-query the container and scope the sync asserts |
 | 15  | **No nested `find*` inside `waitFor`** — no `waitFor(async () => { await findBy*(...) })`. `findBy*` already polls with the same 1s default timeout                                                                                                         | Use `await findBy*` **or** `waitFor(() => { getBy*; expect(...) })` with `{ timeout }` |
-| 16  | **Mock state is reset between tests** — any `describe` block that asserts on `Engine.controllerMessenger.call` call counts or arguments includes `beforeEach(() => jest.clearAllMocks())`. Without this, a shared `jest.fn()` accumulates calls across tests and makes `toHaveBeenCalledTimes(N)` assertions silently wrong. | Add `beforeEach(() => jest.clearAllMocks())` at the top of the `describe` block |
-| 17  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and all tests are green. | Fix the failing test before marking the task done |
-| 18  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
+| 16  | **Mock implementations are reset between tests** — `clearAllMocks()` is not enough when a case changes `mockImplementation` / `mockResolvedValue` on Engine or `controllerMessenger.call`. Use `mockReset()` or restore in `beforeEach`. | Add `mockReset` / restore for the spies this file mutates |
+| 17  | **Awaits target the assertion subject, not a sibling skeleton** — independently loaded header/actions/list regions are not proven ready by another region's loading UI                                                                                                                                | Await the control/value under test or the loading UI that owns it |
+| 18  | **Empty-state / list completeness** — loading indicator gone, then filter-specific copy; every expected row test ID present before field asserts                                                                                                                                                      | Wait for load-clear and the full row-ID set |
+| 19  | **Negative asserts wait until the positive path could have rendered** — do not `queryBy*` absence immediately after mount                                                                                                                                                                            | Await owning skeleton/load, then assert absence |
+| 20  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and all tests are green. | Fix the failing test before marking the task done |
+| 21  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
 
 ---
 
@@ -86,7 +89,11 @@ Before declaring the task done, go through this checklist for every test written
 | Error pattern                                                          | Likely cause                                                                                         | Fix                                                                                                                 |
 | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `jest.mock is not allowed in *.view.test.*`                            | Arbitrary `jest.mock` added to test                                                                  | Remove it; drive via state instead                                                                                  |
-| `Unable to find an element with testID: xxx`                           | State not providing needed data, or element hidden                                                   | Add the relevant state via overrides or check rendering condition                                                   |
+| `Unable to find an element with testID: xxx`                           | State not providing needed data, element hidden, or a sibling loading UI was treated as ready | Await the asserted control/value or the loading indicator that owns it; do not treat another region's skeleton as proof |
+| Shared empty-state `testID` missing after a filter change              | List still loading, or the empty container detached while filter copy settled                 | Wait for list loading to leave, then assert copy unique to that filter |
+| First list row present, later rows or fields missing                   | Partial hydration / virtualized list                                                          | `waitFor` every expected row test ID, then `within(row)` field asserts |
+| Case passes alone, fails after another test in the file/shard          | `clearAllMocks()` left a mutated Engine/messenger implementation in place                     | `mockReset()` or restore implementations in `beforeEach` |
+| Absence assertion passes too early                                     | Feature/data had no time to render                                                            | Await owning load/skeleton, then assert `not.toBeOnTheScreen()` |
 | `Unable to find … route-X` after press; dump still on the source screen | Held element went stale (live clock / polling re-render); `fireEvent.press` was a no-op             | Re-query immediately before press: `fireEvent.press(getByTestId(...))` — never press a node captured across `await`s |
 | `Unable to find an element with text: X`, but the dump shows the container and empty `pointerEvents="none"` views where the value belongs | The value is still behind a `Skeleton` — a child query / debounce has not settled, while the container rendered on the first tick | `await findByText('X')` before the sync `within(...)` asserts; the container appearing does not mean its values have loaded |
 | `Cannot read property 'X' of undefined`                                | Preset missing a required state slice                                                                | Add `.withMinimalXController()` or override in preset                                                               |
@@ -96,7 +103,7 @@ Before declaring the task done, go through this checklist for every test written
 | Test passes locally, fails in CI                                       | Time-sensitive assertions, stale press under CI load, or a sync assert on content that is still loading | Use `waitFor` / `findBy`; re-query before press when the UI re-renders on a timer; await each async-gated value    |
 | `Timed out in waitFor.` with no assertion detail                       | Nested `find*` inside `waitFor` — both share the 1s default; the outer waiter expires first             | Use `await findBy*` **or** `waitFor(() => getBy*)` with `{ timeout }`; never `waitFor(async () => findBy*)`      |
 | Pull-to-refresh never refetches                                        | `fireEvent(scrollView, 'refresh')` did not hit the handler                                           | `await act(async () => { await scrollView.props.refreshControl.props.onRefresh(); })`                             |
-| `toHaveBeenCalledTimes(N)` passes locally but is wrong in a full suite run | `Engine.controllerMessenger.call` is a shared `jest.fn()` — prior tests left calls on it | Add `beforeEach(() => jest.clearAllMocks())` to the `describe` block |
+| `toHaveBeenCalledTimes(N)` passes locally but is wrong in a full suite run | Shared `Engine.controllerMessenger.call` `jest.fn()` — leftover call history or leftover `mockImplementation` | `clearAllMocks()` for call history; `mockReset()` / restore if a case changed implementations |
 | Call-count assertion is flaky: passes without the action under test    | Background prefetches (idle tab queries, cache refreshes) inflate the count in the same window       | `spy.mockClear()` immediately before the action; assert the exact call signature with `toHaveBeenCalledWith(...)` instead of comparing before/after counts |
 | Sheet / branch `testID` missing                                        | Remote feature flag off in Redux; UI routes elsewhere                                                | Override `RemoteFeatureFlagController` / preset so the gated UI mounts                                            |
 
@@ -262,6 +269,15 @@ const settledRow = getByTestId(MyViewSelectorsIDs.ROW_CONTAINER);
 expect(within(settledRow).getByText('$60')).toBeOnTheScreen();
 // Static props in the same row render immediately, so a neighbouring assert
 // passing proves nothing about the gated one.
+
+// ❌ Treat a sibling region's skeleton as proof this control is mounted
+await waitFor(() => {
+  expect(queryByTestId(MyViewSelectorsIDs.DETAILS_SKELETON)).toBeNull();
+});
+fireEvent.press(getByTestId(MyViewSelectorsIDs.SHARE_BUTTON)); // still unmounted — independent load phase
+// ✅ Await the subject (or the loading UI that owns that subject)
+expect(await findByTestId(MyViewSelectorsIDs.SHARE_BUTTON)).toBeOnTheScreen();
+fireEvent.press(getByTestId(MyViewSelectorsIDs.SHARE_BUTTON));
 
 // ❌ Nest find* inside waitFor — double polling, both default to 1s
 await waitFor(async () => {

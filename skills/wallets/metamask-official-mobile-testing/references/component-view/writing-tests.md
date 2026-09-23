@@ -73,7 +73,11 @@ expect(within(positionsTab).getByText('$50 on Yes to win $50')).toBeOnTheScreen(
 expect(within(positionsTab).getByText('$60')).toBeOnTheScreen();
 ```
 
-When a test like this fails, the render dump shows the container present with empty `pointerEvents="none"` views where the value belongs — those are the skeleton placeholders.
+**Independent loading phases** — header, list, and action rows often have separate loading flags. Waiting for a details-content skeleton to leave does not mean the share control or buy buttons are mounted. Await the assertion subject (or the skeleton that owns that subject). The first list row mounting is not proof that every row has hydrated.
+
+**Empty-state filters** — wait for the list loading indicator to clear, then assert description/CTA copy for the selected filter. A shared empty-state `testID` can unmount across filter re-renders.
+
+**`clearAllMocks` vs `mockReset`** — `clearAllMocks()` drops call history and keeps implementations. If a test sets `mockResolvedValue` / `mockImplementation` on Engine or `controllerMessenger.call`, reset those implementations in `beforeEach` or later tests in the shard will flake.
 
 **Do not nest `find*` inside `waitFor`** — `findBy*` already polls (`waitFor` + `getBy`, default 1000 ms). An outer `waitFor` uses the same budget, so under CI load the outer timeout fires first with a useless `Timed out in waitFor.` Pick one waiter:
 
