@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-23T06:50:45.959263+00:00",
+  "generated_at": "2026-09-23T12:47:24.886142+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -134583,6 +134583,68 @@
       },
       "hosted_operators": []
     },
+    "wallets/metamask-official-profiling-regression-proposal": {
+      "name": "profiling-regression-proposal",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/metamask-official-react-compiler-migration": {
       "name": "react-compiler-migration",
       "execution_model": "unknown",
@@ -136698,11 +136760,11 @@
     }
   },
   "summary": {
-    "discovered": 2193,
-    "processed": 2193,
+    "discovered": 2194,
+    "processed": 2194,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1389,
+      "read_only": 1390,
       "router_orchestrator": 131,
       "unknown": 248,
       "analysis_only": 199,

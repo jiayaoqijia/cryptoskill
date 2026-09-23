@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildEpochYields, buildRewardTokens, buildSnapshot, toSnapshotPool } from "../src/snapshot.js";
+import { buildEpochYields, buildRewardTokens, buildSnapshot, isSnapshotSuspiciouslySmall, toSnapshotPool } from "../src/snapshot.js";
 import type { PoolEfficiency } from "../src/efficiency.js";
 
 function ranked(overrides: Partial<PoolEfficiency> & { symbol?: string }): PoolEfficiency {
@@ -106,6 +106,28 @@ test("buildSnapshot takes the newest epoch across pools, not the top-ranked pool
     new Date(),
   );
   assert.equal(snap.latestEpochTs, 9_000);
+});
+
+test("isSnapshotSuspiciouslySmall flags a scan that comes back far short of what was previously published", () => {
+  // A rate-limited scan can lose most of the pool list to caught-and-logged
+  // per-pool failures without ever hitting the "zero pools" case.
+  assert.equal(isSnapshotSuspiciouslySmall(50, 367), true);
+});
+
+test("isSnapshotSuspiciouslySmall allows ordinary week-to-week drift", () => {
+  assert.equal(isSnapshotSuspiciouslySmall(360, 367), false);
+});
+
+test("isSnapshotSuspiciouslySmall allows growth past the previous count", () => {
+  assert.equal(isSnapshotSuspiciouslySmall(400, 367), false);
+});
+
+test("isSnapshotSuspiciouslySmall has nothing to compare against on a first run", () => {
+  assert.equal(isSnapshotSuspiciouslySmall(5, null), false);
+});
+
+test("isSnapshotSuspiciouslySmall treats exactly the ratio floor as still acceptable", () => {
+  assert.equal(isSnapshotSuspiciouslySmall(50, 100), false);
 });
 
 test("buildSnapshot on an empty ranking yields no pools and a zero epoch", () => {

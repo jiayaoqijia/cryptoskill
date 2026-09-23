@@ -166,3 +166,15 @@ export const MIGRATING_POOL_FACTORIES: ReadonlySet<string> = new Set([
   "0x5e7bb104d84c7cb9b682aac2f3d509f5f406809a",
   "0xade65c38cd4849adba595a4323a8c7ddfe89716a",
 ]);
+
+// Floor, as a fraction of the previously published snapshot's pool count,
+// below which `writeSnapshot` refuses to publish a new one. Per-pool epoch
+// fetch failures are caught individually in `rankPoolsByEfficiency` (a public
+// RPC dropping part of a burst under load is a recurring, observed failure
+// mode here) so a degraded scan returns fewer pools rather than throwing —
+// only an empty scan was ever refused. That let a scan hobbled by rate
+// limiting silently overwrite a good, git-committed snapshot with a fraction
+// of the real pool list, with nothing louder than a console.error to say so.
+// The committed history has held 360-370 pools for months, so a drop below
+// half that is a scan problem, not a sudden and genuine drop in live gauges.
+export const SNAPSHOT_MIN_POOL_RATIO = 0.5;

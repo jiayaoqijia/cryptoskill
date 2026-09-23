@@ -115,7 +115,7 @@ Canister IDs differ per network (local, staging, mainnet), so **never commit har
 ```yaml
 name: frontend
 recipe:
-  type: "@dfinity/static-site@v0.3.3"
+  type: "@dfinity/static-site@v0.4.0"
   configuration:
     build:
       # Runs BEFORE the canister exists — no canister IDs available here.
@@ -131,7 +131,7 @@ recipe:
 - The static-site recipe exports each project canister's ID into `presync` as `ICP_CLI_CID_<NAME>` (name upper-cased, non-alphanumerics → `_`; e.g. `backend` → `ICP_CLI_CID_BACKEND`). Other vars: `ICP_CLI_CID` (this canister), `ICP_CLI_NETWORK`.
 - `$ICP_CLI_ENVIRONMENT` is the environment being deployed (e.g. `local`, `ic`), exported into the `presync` shell. It selects the matching template, so the same hook serves every network.
 - **`presync` runs with the canister directory as its working directory.** The relative `ic-architecture/...` path therefore resolves *inside the frontend canister directory* — put the templates at `frontend/ic-architecture/`, alongside `canister.yaml` (as the example project does). A path resolved from the repo root instead would make `envsubst` read nothing and silently write an empty manifest (Pitfall 7).
-- Pin the recipe to the current release (`@dfinity/static-site@v0.3.3` here); check the static-site recipe releases and the `static-site` skill for the latest.
+- Pin the recipe to the current release (`@dfinity/static-site@v0.4.0` here); check the static-site recipe releases and the `static-site` skill for the latest.
 
 Keep one template per environment under `frontend/ic-architecture/`, with `envsubst` placeholders for the IDs.
 

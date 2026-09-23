@@ -1,8 +1,9 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { rankPoolsByEfficiency } from "./efficiency.js";
 import { computeTrend, epochEndOf, isEpochInProgress, WEEKLY_EPOCH } from "./trend.js";
 import { computeVoteStability, previousSettledVotes } from "./dilution.js";
+import { SNAPSHOT_MIN_POOL_RATIO } from "./constants.js";
 import type { PoolEfficiency, RewardAmount } from "./efficiency.js";
 
 /**
@@ -302,6 +303,32 @@ export function buildSnapshot(ranked: PoolEfficiency[], generatedAt: Date): Snap
 }
 
 /**
+ * Whether a freshly scanned pool count is too far below the previously
+ * published one to trust. Pure and separately exported so it's testable
+ * without touching the filesystem or a chain.
+ *
+ * `previousCount` is null when there is nothing to compare against (first
+ * run, or an existing file that couldn't be read/parsed) — nothing is
+ * refused in that case, the same as before this guard existed.
+ */
+export function isSnapshotSuspiciouslySmall(newCount: number, previousCount: number | null): boolean {
+  return previousCount !== null && newCount < previousCount * SNAPSHOT_MIN_POOL_RATIO;
+}
+
+/**
+ * The `poolCount` the file at `outPath` last published, or null if there is
+ * none to read (first run) or it doesn't parse as a snapshot.
+ */
+async function previousPoolCount(outPath: string): Promise<number | null> {
+  try {
+    const parsed = JSON.parse(await readFile(resolve(outPath), "utf8")) as { poolCount?: unknown };
+    return typeof parsed.poolCount === "number" ? parsed.poolCount : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Runs the live scan and writes the snapshot the static site reads. The heavy
  * part (one epoch-history call per live-gauge pool, hundreds of them) is far too
  * slow and rate-limited to run from a visitor's browser on a public RPC, so it
@@ -315,6 +342,21 @@ export async function writeSnapshot(outPath: string): Promise<Snapshot> {
     // otherwise overwrite a perfectly good file with zero pools, and the site
     // would show "no pools" rather than yesterday's still-useful data.
     throw new Error("scan produced no pools — refusing to overwrite the existing snapshot");
+  }
+
+  // A scan can also come back merely diminished rather than empty:
+  // `rankPoolsByEfficiency` catches per-pool epoch-fetch failures individually
+  // (a public RPC dropping part of a burst under load) and just logs them, so
+  // a rate-limited run can return a fraction of the real pool list without
+  // throwing. That's the right call for a live `pools`/`recommend` query, but
+  // publishing it here would silently overwrite a good, git-committed
+  // snapshot — and everything downstream (the site, `timing`, `predict-check`,
+  // `accrual`) reads that file as ground truth.
+  const previousCount = await previousPoolCount(outPath);
+  if (isSnapshotSuspiciouslySmall(ranked.length, previousCount)) {
+    throw new Error(
+      `scan produced only ${ranked.length} pool(s), down from ${previousCount} in the existing snapshot — refusing to overwrite it with what looks like a degraded scan`,
+    );
   }
 
   const snapshot = buildSnapshot(ranked, new Date());

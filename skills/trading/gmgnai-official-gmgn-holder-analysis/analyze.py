@@ -72,7 +72,21 @@ with ThreadPoolExecutor(max_workers=4) as ex:
         except Exception:
             NATIVE_PRICE = None
 
-normal = [h for h in holders if h.get('addr_type', 0) == 0]
+# ── 代币自身的合约地址不是持仓钱包 ──────────────────────────────────────
+# 上游把它当普通钱包返回（实测 musebook / robinhood：addr_type=0、0 买 0 卖、
+# 占总供应 15.01%、$5.06M，还带着 fresh_wallet 标签），于是它一个地址同时污染
+# biggest / top10 / top20 / airdrop / fresh / risk_all / top5，并单独把评级顶到
+# 🔴「最大单钱包持仓 16.30%，筹码极度集中」。剔掉它之后该币最大的真实普通钱包是
+# 4.10% 总供应，离 10% 闸门很远 —— 那个 16.30% 是把合约储备读成了大户。
+# 同批对照：JOLLY(robinhood) / SI(sol) / ARGUS(arc) 的持仓表里都没有自身地址，
+# 所以这不是某条链的固定约定，而是按币出现的上游分类缺陷。
+# 剔除不等于不判：合约自持的供应是可以被释放出来砸盘的，所以它在下方 §自持
+# 有独立的展示行和独立的告警闸门，见 self_pct。
+SELF_ADDR = TOKEN_ADDR.lower()
+selfheld  = [h for h in holders if (h.get('address') or '').lower() == SELF_ADDR]
+
+normal = [h for h in holders
+          if h.get('addr_type', 0) == 0 and (h.get('address') or '').lower() != SELF_ADDR]
 burn   = [h for h in holders if h.get('addr_type', 0) == 1]
 dex    = [h for h in holders if h.get('addr_type', 0) == 2]
 
@@ -126,6 +140,12 @@ dex_pct  = sum(h['amount_percentage'] for h in dex)
 float_raw   = 1.0 - burn_pct - dex_pct
 float_share = max(float_raw, 1e-9)
 
+# 合约自持份额，按总供应基准 —— 和 burn_pct / dex_pct 同一口径。
+# 故意不从 float 分母里扣掉：销毁是永久消失、DEX 池就是市场本身，两者砸不动；
+# 合约自持只要一笔释放交易就能进入流通，性质不同。把它扣出分母会抬高报告里
+# 其余每一个钱包的占比，在所有带这一行的币上制造出新的误报。
+self_pct = sum(h.get('amount_percentage') or 0 for h in selfheld)
+
 # ── 流通盘退化保护 ──────────────────────────────────────────────────────
 # DEX 池（或销毁地址）吃掉几乎全部供应时 float_share 趋零，于是每个 `/ float_share`
 # 都把尘埃钱包放大成两位数甚至 100%：实测过一个未迁移的盘，LP 占 99.9%，一个只握着
@@ -164,7 +184,29 @@ def f1(v):  return v / float_share                                        # 单�
 top10    = fs(normal[:10])
 top20    = fs(normal[:20])
 
-airdrop  = [h for h in normal if h.get('buy_tx_count_cur', 0)==0 and h.get('balance', 0)>0]
+# ── 「零成本」必须有证据，不能由 buy_tx_count_cur 缺失推出 ────────────────────
+# buy_tx_count_cur == 0 曾被直接当成"这批筹码是转账/空投来的、持有人一分钱没花"。
+# 实测否掉了这个推断：robinhood 的 musebook 有 38 个 buy_tx_count_cur==0 的钱包，
+# 其中 34 个带着 unrealized_pnl 比值（+2.7% / +76.5% / +546% 这种有限值），而没有成本
+# 的筹码算不出有限盈亏比；32/38 还带着 fomo、2 个带着 gmgn 前端标签 —— 那是主动交易
+# 的痕迹，和"收到空投"正好相反。真实情况是这条链上买入笔数没被索引，而盈亏由另一路
+# 计算照常返回。
+#
+# 后果是按链系统性误报：同一批实测里 never-bought 占供应 robinhood 27.0% / 41.2%、
+# arc 26.3%、sol 4.8% —— 20% 的告警闸门在 robinhood / arc 上几乎必然触发，在 sol 上
+# 几乎不可能触发，而这个差异来自索引覆盖率，不是代币的筹码结构。把字段缺失当成风险
+# 结论上报，是这个技能明令不做的事。
+#
+# 所以改判：有成本证据的一律不算零成本，它们改走 unindexed 单独一行照常展示 ——
+# "买入笔数没被索引"本身是真事实，只是不该驱动零成本闸门。
+# 已知局限：若某个真空投钱包的 unrealized_pnl 是对着尘埃级成本算出来的巨大比值，
+# 这里会漏判。不为此再设一道比值阈值 —— 目前没有能定档的实测样本。
+def has_cost_basis(h):
+    return (h.get('avg_cost') or 0) > 0 or h.get('unrealized_pnl') is not None
+
+_nobuy   = [h for h in normal if (h.get('buy_tx_count_cur') or 0)==0 and (h.get('balance') or 0)>0]
+airdrop  = [h for h in _nobuy if not has_cost_basis(h)]
+unindexed= [h for h in _nobuy if     has_cost_basis(h)]
 bundlers = [h for h in normal if 'bundler'      in (h.get('maker_token_tags') or [])]
 rats     = [h for h in normal if 'rat_trader'   in (h.get('maker_token_tags') or [])]
 snipers  = [h for h in normal if 'sniper'       in (h.get('maker_token_tags') or [])]
@@ -300,10 +342,13 @@ heavy_sell = [h for h in normal if (h.get('sell_amount_percentage') or 0)>=0.5]
 # 结论还相反。"钻石手"的含义是扛住了浮亏没卖 —— 没花钱买入的地址无所谓扛，
 # 它不卖可能只是私钥在分发方手里。所以要求 buy_tx>0。
 # 空降且未动的那批不丢弃，单独列成 idle_airdrop：它们仍是随时可能出货的零成本筹码。
-diamond      = [h for h in normal if (h.get('buy_tx_count_cur') or 0)>0
+# 判据照上面的 has_cost_basis 走，不再看 buy_tx_count_cur：本节的理由原文是"没花钱
+# 买入的地址无所谓扛"，那么有成本证据的钱包按这条理由本身就该算钻石手，买入笔数有没有
+# 被索引与它无关。idle_airdrop 那行写着"零成本"，对有成本依据的钱包是一句假话，同改。
+diamond      = [h for h in normal if has_cost_basis(h)
                                  and (h.get('sell_tx_count_cur') or 0)==0
                                  and (h.get('balance') or 0)>0]
-idle_airdrop = [h for h in normal if (h.get('buy_tx_count_cur') or 0)==0
+idle_airdrop = [h for h in normal if not has_cost_basis(h)
                                  and (h.get('sell_tx_count_cur') or 0)==0
                                  and (h.get('balance') or 0)>0]
 
@@ -321,7 +366,10 @@ kol_holding   = [h for h in kol   if (h.get('sell_tx_count_cur') or 0) == 0 and 
 smart_selling = [h for h in smart if (h.get('sell_tx_count_cur') or 0) > 0]
 smart_holding = [h for h in smart if (h.get('sell_tx_count_cur') or 0) == 0 and (h.get('balance') or 0) >= 1]
 
-top100_map   = {h['address']: h for h in holders}
+# 自身合约地址排除在外：dev 把筹码转回代币合约、或给合约打 gas，都不是"转给内部马甲"。
+# 同一个分类缺陷的另一个出口，一并关掉。
+top100_map   = {h['address']: h for h in holders
+                if (h.get('address') or '').lower() != SELF_ADDR}
 creator      = next((d for d in devs if 'creator' in (d.get('maker_token_tags') or [])), None)
 sub_devs     = [d for d in devs if 'creator' not in (d.get('maker_token_tags') or [])]
 dev_realized = sum(d.get('realized_profit') or 0 for d in devs)
@@ -484,6 +532,13 @@ else:
         if hold_pct_val > 0.01:
             warns.append(_( f"Dev 仍持仓 {pct(hold_pct_val):.2f}%",
                             f"Dev still holds {pct(hold_pct_val):.2f}%"))
+    if self_pct > 0.10:
+        # 合约自持走 warn 而不是 danger：这笔筹码要砸盘必须先有一笔链上释放交易，
+        # 是可观察的前置动作，和"一个大户随时可以卖"不是同一种风险；判成 danger
+        # 只是把同一个 🔴 换个名字再发一遍。也不设更高的 danger 档 —— 目前只有
+        # 一个实测样本，凭一个样本定第二道阈值就是猜。
+        warns.append(_( f"合约自持 {pct(self_pct):.1f}% 供应，释放后即为抛压",
+                        f"Contract self-holds {pct(self_pct):.1f}% of supply — sell pressure once released"))
     if airdrop_pct > 0.2:
         warns.append(_( f"空降筹码 {pct(airdrop_pct):.1f}%，来源不透明",
                         f"Airdrop supply {pct(airdrop_pct):.1f}% — opaque origin"))
@@ -626,6 +681,17 @@ airf  = pf("🔴" if airdrop_pct>0.25 else ("🟡" if airdrop_pct>0.1 else "🟢
 riskf = pf("🔴" if risk_pct>0.35 else ("🟡" if risk_pct>0.15 else "🟢"))
 print(f"  {_('转入筹码', 'Airdrop')} {len(airdrop)}{_('个', '')}({fpct(airdrop_pct)}) {airf} · {_('风险钱包', 'Risk')} {len(risk_all)}{_('个', '')}({fpct(risk_pct)}) {riskf}")
 
+if unindexed:
+    # 中性信息行：这批钱包有成本依据，不是零成本筹码，所以不挂风险色
+    print(f"  {_('买入未记录', 'Buy count unindexed')} {len(unindexed)}{_('个', '')}({fpct(fs(unindexed))})"
+          f"  {_('有成本依据，不计入转入筹码', 'has a cost basis — not counted as airdrop')}")
+
+if selfheld:
+    # 总供应基准，不经过 float_share，所以退化盘也照常打印真实数字
+    selff = "🔴" if self_pct > 0.30 else ("🟡" if self_pct > 0.10 else "🟢")
+    print(f"  {_('合约自持', 'Contract self-held')} {pct(self_pct):.2f}%"
+          f"{_('（总供应基准，已排除在钱包统计外）', ' (of supply, excluded from wallet stats)')} {selff}")
+
 any_risk = any(g for _lb, g, _fl in RISK_GROUPS)
 if any_risk:
     for label, group, flag in RISK_GROUPS:
@@ -637,11 +703,13 @@ elif not no_holders:
 print()
 
 # Top5 出货风险
-top5_airdrop_n = sum(1 for h in top5_holders if h.get('buy_tx_count_cur', 0) == 0)
+# 三项都改看 has_cost_basis：原先靠 buy_tx_count_cur 分流，在买入笔数未索引的链上
+# 会把有成本的大户写成"零成本转入，可随时出货"，同时把它从套牢/浮盈两类里漏掉。
+top5_airdrop_n = sum(1 for h in top5_holders if not has_cost_basis(h))
 top5_trapped_n = sum(1 for h in top5_holders
-                     if (h.get('unrealized_pnl') or 0) < -0.1 and (h.get('buy_tx_count_cur') or 0) > 0)
+                     if (h.get('unrealized_pnl') or 0) < -0.1 and has_cost_basis(h))
 top5_profit_n  = sum(1 for h in top5_holders
-                     if (h.get('unrealized_pnl') or 0) > 0.1 and (h.get('buy_tx_count_cur') or 0) > 0)
+                     if (h.get('unrealized_pnl') or 0) > 0.1 and has_cost_basis(h))
 top5_selling_n = sum(1 for h in top5_holders if is_selling(h))
 
 top5_parts = []
@@ -656,13 +724,13 @@ print(f"  {top5_label}  {top5_summary}")
 # 单个最危险钱包（优先级：零成本最大 > 高浮盈最大 > 出货最大）
 danger_wallet  = None
 danger_reason  = ""
-zero_cost_top5 = [h for h in top5_holders if h.get('buy_tx_count_cur', 0) == 0]
+zero_cost_top5 = [h for h in top5_holders if not has_cost_basis(h)]
 if zero_cost_top5:
     danger_wallet = max(zero_cost_top5, key=lambda h: h['amount_percentage'])
     danger_reason = _("零成本转入，可随时出货", "Zero-cost airdrop — can dump anytime")
 if not danger_wallet:
     high_profit_top5 = [h for h in top5_holders
-                        if (h.get('unrealized_pnl') or 0) > 1.0 and (h.get('buy_tx_count_cur') or 0) > 0]
+                        if (h.get('unrealized_pnl') or 0) > 1.0 and has_cost_basis(h)]
     if high_profit_top5:
         danger_wallet = max(high_profit_top5, key=lambda h: h['amount_percentage'])
         mult          = (danger_wallet.get('unrealized_pnl') or 0) + 1
@@ -843,17 +911,20 @@ print()
 print(f"  {rating_em} {rating_text}")
 print()
 
+# ⚠️ 谨慎参与按定义需要 ≥2 条 warn，而这里原先只打 warns[0]，所以拿到 ⚠️ 的读者
+# 永远看不到第二条理由 —— 评级说"有两个问题"，正文只给一个。全部列出。
 if dangers:
-    core = _("⚠️ 高风险：", "⚠️ High risk: ") + dangers[0]
+    reasons = [_("⚠️ 高风险：", "⚠️ High risk: ") + d for d in dangers]
 elif warns:
-    core = warns[0]
+    reasons = list(warns)
 elif goods:
-    core = goods[0]
+    reasons = [goods[0]]
 elif unassessable:
-    core = _("当前无法判断筹码质量，建议稍后重试", "Cannot assess chip quality right now — retry later")
+    reasons = [_("当前无法判断筹码质量，建议稍后重试", "Cannot assess chip quality right now — retry later")]
 else:
-    core = _("筹码结构正常，未发现明显风险信号", "Chip structure normal — no obvious risk signals")
-print(f"  {core}")
+    reasons = [_("筹码结构正常，未发现明显风险信号", "Chip structure normal — no obvious risk signals")]
+for r in reasons:
+    print(f"  {r}")
 print()
 
 print(f"  💡 {_('离场信号：', 'Exit signals: ')}{' / '.join(exit_signals)}")

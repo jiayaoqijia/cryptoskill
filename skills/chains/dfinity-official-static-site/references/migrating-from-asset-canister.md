@@ -28,7 +28,7 @@ The two are **unrelated canisters with unrelated Candid interfaces**, so a plain
    - name: frontend
      recipe:
 -      type: "@dfinity/asset-canister@v2.2.1"
-+      type: "@dfinity/static-site@v0.3.3"
++      type: "@dfinity/static-site@v0.4.0"
        configuration:
          dir: dist
          build:

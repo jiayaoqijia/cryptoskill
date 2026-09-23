@@ -97,7 +97,7 @@ Steps:
 |----------|----------|
 | `"type": "rust"` | `recipe.type: "@dfinity/rust@v3.3.0"` |
 | `"type": "motoko"` | `recipe.type: "@dfinity/motoko@v5.0.0"` |
-| `"type": "assets"` | `recipe.type: "@dfinity/static-site@v0.3.3"` (recommended) or `@dfinity/asset-canister@v2.2.1` (legacy). Not a drop-in: static-site is a different canister using `_headers`/`_redirects` (not `.ic-assets.json5`), and switching a deployed canister needs a reinstall — see the `static-site` skill's migration guide. |
+| `"type": "assets"` | `recipe.type: "@dfinity/static-site@v0.4.0"` (recommended) or `@dfinity/asset-canister@v2.2.1` (legacy). Not a drop-in: static-site is a different canister using `_headers`/`_redirects` (not `.ic-assets.json5`), and switching a deployed canister needs a reinstall — see the `static-site` skill's migration guide. |
 | `"package": "X"` | `recipe.configuration.package: X` — optional as of `@dfinity/rust@v3.3.0`, which defaults it to the canister `name`. Drop it when the Cargo `[package] name` already matches. |
 | `"candid": "X"` | `recipe.configuration.candid: X` |
 | `"main": "X"` | **Not** `recipe.configuration.main`. The `@dfinity/motoko@v5+` recipe compiles via `mops build`, so `main` moves to `mops.toml` as `[canisters.<canister-name>] main = "X"`. The `[canisters.<name>]` key must exactly match the canister `name` in `icp.yaml`. |
