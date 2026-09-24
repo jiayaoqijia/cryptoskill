@@ -1,0 +1,4 @@
+interface:
+  display_name: "CEX Monthly Orchestrator"
+  short_description: "支持单模块刷新与全量生成的严格自然月二级市场分析报告"
+  default_prompt: "Use $cex-monthly-secondary-orchestrator to run the full strict-calendar-month report or only the requested data module."

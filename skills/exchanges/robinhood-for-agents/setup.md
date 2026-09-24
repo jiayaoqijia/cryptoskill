@@ -33,9 +33,9 @@ try {
 
 ### Step 2: Browser Login
 ```bash
-bunx robinhood-for-agents onboard
+bunx robinhood-for-agents login
 ```
-This runs the interactive setup — it will open Google Chrome (via Playwright's `channel: "chrome"`; Chrome must be installed — no Brave/Chromium fallback or `BROWSER_PATH` override exist yet) to the real Robinhood website for login:
+This opens Google Chrome (via Playwright's `channel: "chrome"`; Chrome must be installed — no Brave/Chromium fallback or `BROWSER_PATH` override exist yet) to the real Robinhood website for login:
 1. Browser opens to robinhood.com/login
 2. User enters email and password
 3. Robinhood handles MFA natively (push notification, SMS, etc.)
@@ -65,12 +65,12 @@ Confirm to the user that authentication is complete.
 | Direct `accessToken` | Serverless, testing, short-lived scripts | Pass `accessToken` to constructor — **no refresh at all** (neither proactive nor on 401); the first 401 raises `TokenExpiredError` |
 
 ## Troubleshooting
-- **`not_authenticated`**: no tokens in the store — run `bunx robinhood-for-agents onboard`
-- **`expired` / `TokenExpiredError`**: tokens exist but are dead and automatic refresh could not recover them. Re-run `onboard` (MCP: `robinhood_browser_login`) — there is no other remedy
+- **`not_authenticated`**: no tokens in the store — run `bunx robinhood-for-agents login`
+- **`expired` / `TokenExpiredError`**: tokens exist but are dead and automatic refresh could not recover them. Re-run `login` (MCP: `robinhood_browser_login`) — there is no other remedy
 - **`unknown`**: the probe failed for a transient/network reason. The session is probably fine — retry before re-authenticating; never re-login on `unknown` alone
-- **Worked a minute ago, now 401s**: refresh tokens are **single-use** — each renewal issues a new one and instantly kills the old (and revokes the previous access token). Two clients sharing one session (MCP server + a CLI script, or two Claude Code sessions) will poison each other. The client self-heals by re-reading the token store and adopting whatever the other process persisted, but there is no cross-process lock — close the second process, then re-run `onboard` if it stays broken
+- **Worked a minute ago, now 401s**: refresh tokens are **single-use** — each renewal issues a new one and instantly kills the old (and revokes the previous access token). Two clients sharing one session (MCP server + a CLI script, or two Claude Code sessions) will poison each other. The client self-heals by re-reading the token store and adopting whatever the other process persisted, but there is no cross-process lock — close the second process, then re-run `login` if it stays broken
 - **Back after days away**: renewal only runs while the client is in use. Idle longer than the refresh-token lifetime and the chain lapses — a **new browser login** is required
-- **`CRITICAL: refreshed tokens could not be persisted`** in stderr: the rotated refresh token exists only in memory and dies with the process. Fix keychain/`ROBINHOOD_TOKENS_FILE` access, then re-run `onboard`
+- **`CRITICAL: refreshed tokens could not be persisted`** in stderr: the rotated refresh token exists only in memory and dies with the process. Fix keychain/`ROBINHOOD_TOKENS_FILE` access, then re-run `login`
 - **Docker/headless**: Set `ROBINHOOD_TOKENS_FILE` and `ROBINHOOD_TOKEN_KEY` env vars
 
 ## Notes

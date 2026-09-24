@@ -42,7 +42,7 @@ try {
 } catch (e) {
   if (e instanceof TokenExpiredError) {
     // refresh already tried and failed — only a browser login fixes this
-    // (`bunx robinhood-for-agents onboard`, or the robinhood_browser_login MCP tool)
+    // (`bunx robinhood-for-agents login`, or the robinhood_browser_login MCP tool)
   } else if (e instanceof AuthenticationError) {
     // no tokens in the store at all — same remedy
   } else if (e instanceof APIError) {

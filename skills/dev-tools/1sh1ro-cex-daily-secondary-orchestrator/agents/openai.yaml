@@ -1,0 +1,4 @@
+interface:
+  display_name: "二级市场日报总控"
+  short_description: "支持单模块刷新与全量生成的中文二级市场日报及数据底稿"
+  default_prompt: "使用 $cex-daily-secondary-orchestrator，按显式日期运行完整日报，或只调用 market、derivatives、yields、rwa、sentiment 中的指定模块。"
