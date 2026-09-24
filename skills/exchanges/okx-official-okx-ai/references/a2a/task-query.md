@@ -8,23 +8,26 @@ Choose the branch from the user's requested information:
 
 | Intent | Branch |
 |---|---|
-| Progress, status, lifecycle, timeline, current stage, responsible party, or next step | Complete lifecycle timeline |
+| Progress, status, lifecycle, timeline, current stage, responsible party, or next step | Task-type gate, then the type-appropriate lifecycle timeline |
 | Task details, basic information, attributes, type, fee, provider, or description | Task details |
 | Delivery content | Task details plus the saved User deliverable manifest |
 
 Examples such as `Check the current task progress` and `View task status`, or
 equivalent progress/status wording in the conversation language, use the
-complete lifecycle timeline. Generic verbs such as `check`, `view`, or `query`
-inherit their branch from the requested information. When both progress and
-details are mentioned, render the lifecycle timeline; render both outputs when
-the user explicitly requests both.
+lifecycle query and task-type gate below. Generic verbs such as `check`, `view`,
+or `query` inherit their branch from the requested information. When both
+progress and details are mentioned, render both requested outputs from their
+type-appropriate read-only queries; reuse the lifecycle result as the type gate
+and never rerun it.
 
 Use an explicit Job ID when supplied; otherwise use the single unambiguous Job
 ID bound to the current conversation's task context. If no Job ID can be
 identified unambiguously, run `active-tasks`, show numbered candidates with
-title, role, status, and counterparty, then wait for a selection.
+title, task type, role, status, and counterparty, then wait for a selection.
+The command combines non-terminal one-time tasks and subscriptions. Do not
+substitute either type-specific list or silently omit one task type.
 
-### One-time lifecycle timeline
+### Lifecycle query and task-type gate
 
 For any progress-like intent defined above, run exactly one read-only lifecycle
 query:
@@ -33,18 +36,20 @@ query:
 onchainos agent lifecycle <jobId>
 ```
 
-This command owns XMTP-history aggregation, duplicate and out-of-order event
-handling, current-wallet User identity resolution, and current-status
-reconciliation.
+This command owns task-type detection, authoritative-detail fallback,
+XMTP-history aggregation, duplicate and out-of-order event handling,
+current-wallet User identity resolution, and current-status reconciliation.
+Route the returned `taskType` without rerunning the command:
 
-Route the returned task type:
-
-- `one_time`: render the timeline below.
-- `subscription`: stop the one-time branch before rendering its timeline and
-  enter [`user/subscription.md`](user/subscription.md) §Status-query handoff
-  with the returned current-status facts.
+- `subscription`: enter [`user/subscription.md`](user/subscription.md)
+  §Subscription lifecycle query with the same lifecycle result.
+- `one_time`: render §One-time lifecycle timeline below from the same result.
 - Unknown or missing: stop and report that the task type could not be
   established. Never assume an untyped task is one-time.
+
+### One-time lifecycle timeline
+
+Use this rendering only when the lifecycle result's `taskType` is `one_time`.
 
 Render the complete five-stage timeline from `display.timeline`, in the exact
 order returned by the CLI and in the user's language:
@@ -143,8 +148,8 @@ conversation context. Attributes and task type use the status result directly.
 
 - `one_time`: continue below and render the one-time task card.
 - `subscription`: stop the one-time branch before rendering its card and enter
-  [`user/subscription.md`](user/subscription.md) §Status-query handoff with the
-  same status result.
+  [`user/subscription.md`](user/subscription.md) §Subscription detail query
+  with the same Job ID.
 - `unknown`: stop and report that the task type could not be established. Never
   assume an untyped task is one-time.
 
@@ -191,7 +196,7 @@ display rules:
 ### Submitted one-time review recovery
 
 After rendering the normal card above, enter this recovery when the same status
-result says `Task type: one_time`, `Task status: submitted`, and
+result says `Task type: one_time`, `Task status: Awaiting buyer review`, and
 `payment: escrow`. That result is the authoritative delivered-but-not-yet-reviewed
 state. Read the User-side local deliverable manifest:
 

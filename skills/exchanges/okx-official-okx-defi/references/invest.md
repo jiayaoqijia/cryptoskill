@@ -177,6 +177,8 @@ onchainos wallet contract-call \
 
 `contract-call` handles TEE signing and broadcasting internally — no separate broadcast step needed.
 
+> **CRITICAL — Prepared transaction data is opaque.** For each `dataList[N]` entry, use `to`, `serializedData`, and any applicable value field directly from that same entry. Never recreate, edit, truncate, pad, concatenate, re-encode, or annotate a returned transaction field. Pass the complete `serializedData` through the chain-specific argument shown above.
+
 **`--amt` value**: pass `dataList[N].valueNormalized` directly — it is already a minimal-unit integer string computed by the CLI (hex→decimal, empty/`"0x0"`→`"0"`). No conversion. If a step carries `valueNormalizeError`, do NOT execute that step — relay the error and stop.
 
 **`--chain` mapping**: `contract-call` and `gateway broadcast` require `realChainIndex` (e.g. `1`=Ethereum, `137`=Polygon, `56`=BSC, `501`=Solana, `196`=XLayer).

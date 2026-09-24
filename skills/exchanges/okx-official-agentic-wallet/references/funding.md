@@ -143,6 +143,9 @@ infer success, reuse an old address, or resume the interrupted business.
 3. Render the QR for that address immediately after the address.
 4. Render the network notices from `sameNetworkRequired` and `gasFree`.
 
+`gasFree: true` means on-chain gas is free after the funds arrive; it does not
+cover exchange withdrawal fees — the exchange may charge one.
+
 ## Output templates
 
 ### Choose a network

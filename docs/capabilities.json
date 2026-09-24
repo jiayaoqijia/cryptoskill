@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T06:50:47.287500+00:00",
+  "generated_at": "2026-09-24T12:47:56.145645+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -82832,6 +82832,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/assetfare-assetfare-route": {
+      "name": "assetfare-route",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/asterdex-mcp-server": {
       "name": "asterdex-mcp-server",
       "execution_model": "read_only",
@@ -146308,11 +146370,11 @@
     }
   },
   "summary": {
-    "discovered": 2348,
-    "processed": 2348,
+    "discovered": 2349,
+    "processed": 2349,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1542,
+      "read_only": 1543,
       "router_orchestrator": 132,
       "unknown": 248,
       "analysis_only": 199,
@@ -146329,7 +146391,7 @@
       "can_browse_web": 201,
       "can_spawn_subagents": 232,
       "can_move_funds": 244,
-      "requires_private_key": 404,
+      "requires_private_key": 405,
       "requires_hosted_operator": 324,
       "uses_remote_install_script": 40,
       "mutable_remote_runtime": 481

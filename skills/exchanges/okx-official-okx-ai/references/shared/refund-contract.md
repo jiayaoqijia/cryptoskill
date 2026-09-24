@@ -10,14 +10,17 @@ Only fresh authoritative combinations below may offer a write:
 | Target and state | Required facts | Action ID | Operation |
 |---|---|---|---|
 | Trial subscription, Active | `trialType=1`, `autoRenew=1` | `cancel_trial_conversion` | `cancel-trial-conversion` (legacy operation ID; revokes the trial) |
+| Subscription, Created before ASP acceptance | exact-zero or positive original payment | `close_created_subscription` | `close-created-subscription` |
 | One-time, Created | original amount is zero | `close_zero_price` | `close-zero` |
 | One-time, Created | positive amount, `paymentMode=1` | `execute_direct_refund` | `direct-refund` |
 | One-time, Submitted | positive amount, `paymentMode=1`, valid reason | `submit_refund_request` | `request-refund` |
 | Formal subscription, Active | positive current-period payment, complete period boundary, valid reason | `submit_refund_request` | `request-refund` |
 
-All writes require explicit confirmation. Accepted one-time tasks and Created
-formal subscriptions are read-only contract gaps. Expired tasks never offer a
-Buyer claim/finalize write.
+All writes require explicit confirmation. Accepted one-time tasks remain a
+read-only contract gap. Expired tasks never offer a Buyer claim/finalize write.
+`close-created-subscription` is available only while the fresh subscription
+status is Created(0); it closes the task before ASP acceptance and returns the
+exact original payment when one exists. It never calculates a partial refund.
 
 ## Finality matrix
 
@@ -31,6 +34,7 @@ Always use a fresh read. History or caller events cannot prove settlement.
 | One-time at Failed(9), matching Buyer and exact-zero original payment | `zero_amount_task_failed`; terminal failure with `settlement.state=not_required`. |
 | One-time at Failed(9), matching Buyer and exact positive original payment | `refund_confirmed`. |
 | Formal subscription at Failed(9), matching fresh Buyer/type and exact positive original payment | `refund_confirmed`; render `Refund completed`. |
+| Created subscription close reaches Closed(7) or Expired(8), with matching durable `close-created-subscription` receipt and successful wallet order | Positive original payment: `refund_confirmed`; exact-zero payment: settlement is `not_required`. |
 | Subscription at Closed(7) | `task_closed_no_new_refund_action`; Closed alone proves no refund. |
 
 Both Expired(8) outcomes require `job.refundState=resolved` and
@@ -52,7 +56,10 @@ a mismatch vetoes it.
 ## Safety invariants
 
 - Never substitute legacy writes `close`, `reject`, `subscribe-reject`, or
-  `claim-auto-refund`. `subscribe-cancel` is cancellation-only.
+  `claim-auto-refund`. Standalone `subscribe-cancel` remains cancellation-only;
+  Created-state closure must use the freshly bound `close-created-subscription`
+  Refund operation even though the CLI maps it to the same existing lifecycle
+  endpoint.
 - Use exact authoritative decimal amounts, never service pricing, floats, fiat
   estimates, or conversation memory.
 - Return the full eligible original token amount only. Never convert, prorate,

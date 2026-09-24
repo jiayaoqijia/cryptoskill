@@ -207,6 +207,10 @@ Guide the user to enable the corresponding permission in App settings.
 
 ## Endpoint Notes
 
+### Account Instruments Info (`/v5/account/instruments-info`)
+
+- For `category=linear` or `inverse`, each instrument in `result.list` includes `tags`: `["ST"]` when the symbol has the ST tag, otherwise `[]`. This is a response field, not a request filter; do not assume it is available for spot or option instruments.
+
 ### Asset Overview (`/v5/asset/asset-overview`)
 - Parameters updated: `category` and `coin` replaced by `accountType`, `memberId`, and `valuationCurrency`.
 - **⚠️ `accountType` values are NOT the wallet-balance account types.** This endpoint uses its own naming — do NOT pass `UNIFIED` / `FUND` / `SPOT` / `CONTRACT` here (returns `3401405`). Comma-separated; if omitted, returns all account types.

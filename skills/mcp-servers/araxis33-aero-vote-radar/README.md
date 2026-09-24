@@ -612,7 +612,7 @@ Vote-ready weights for 11,491,442 veAERO — whole percentages, summing to exact
 Enter these directly on aerodrome.finance. Expected next epoch: $11,013.66.
 ```
 
-(Captured before `recommend` grew its epoch-deadline line — see "A recommendation expires" above — so current output adds the deadline line here, `This tool never touches your wallet or keys.`, and — under 1,000,000 veAERO — the vote-basis caveat described in "[Where the default basis is not the one the evidence favours](#where-the-default-basis-is-not-the-one-the-evidence-favours)".)
+(Captured before `recommend` grew its epoch-deadline line — see "A recommendation expires" above — so current output adds the deadline line here, `This tool never touches your wallet or keys.`, and, only when run with `--vote-basis typical` at or above 20,000 veAERO, the vote-basis caveat described in "[Where the default basis is not the one the evidence favours](#where-the-default-basis-is-not-the-one-the-evidence-favours)" — this example used the default `previous` basis, which never gets one, at any size.)
 
 ```
 $ npx tsx src/cli.ts backtest --veaero 25000 --epochs 5

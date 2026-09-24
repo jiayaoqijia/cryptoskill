@@ -4,7 +4,7 @@ description: "Handle agent payments and paid endpoints via x402, MPP, payment li
 license: MIT
 metadata:
   author: okx
-  version: "4.6.2"
+  version: "4.6.3"
   homepage: "https://web3.okx.com"
 ---
 
@@ -149,8 +149,10 @@ If the selected candidate is `insufficient`, use one funding-first card:
 
 1. Run `onchainos agent funding-notice --chain <chainName> --currency <tokenSymbol> --available <availableAmount> --required <requiredAmount> --shortfall <shortfall> --deposit-address <depositAddress> --deposit-chain <chainName> --reason payment-402 --format json`.
 2. Localize `contentCanonical`, preserving balance, address, four funding
-   options, and one gas line only: X Layer = **platform-paid gas; no OKB or other
-   native token required**; other chains = generic gas warning.
+   options, and one gas line only: X Layer = **on-chain gas is free after the
+   funds arrive**; other chains = generic gas warning. Keep the
+   "Withdraw from OKX" fee note — **the exchange may charge a withdrawal
+   fee** — and never claim exchange withdrawals are free.
 3. Follow `displayMode`: `image-notify` → call `user-notify --image-path` once;
    `terminal-unicode` → include `terminalQr`. QR failure → full text + address.
 

@@ -47,6 +47,14 @@ For `zero_amount_close_confirmation_required` or
 [Output Templates](#output-templates) and execute only the action selected from
 that result.
 
+For `created_subscription_close_confirmation_required`, render the complete
+[Confirm Subscription Closure](#confirm-subscription-closure) template from
+the latest `payload.display`. Explain that the subscription has not been
+accepted by the ASP. If `refundAmount` is `No refund required`, state that the
+task will only close; otherwise state that the exact displayed original
+payment will be returned after on-chain confirmation. Execute only when the
+User explicitly confirms the bound `close_created_subscription` action.
+
 Bind each write to an explicit action selected from the latest preparation
 result. Render the returned recovery guidance for a blocked, stale, or malformed
 result.
@@ -82,3 +90,23 @@ Display rules:
 3. Show `Reason for Refund` only when the CLI returns a non-empty value.
 4. Preserve the original reason verbatim.
 5. Use the CLI-provided service-name fallback, task type, amount, and formatted timestamps directly.
+
+### Confirm Subscription Closure
+
+Use `payload.display` from the latest `refund-prepare` result and render one
+field per bullet line; do not use a horizontal table.
+
+```markdown
+### Confirm Subscription Closure
+
+- Service Name: {serviceName}
+- Job ID: {jobId}
+- Service Provider: {serviceProviderName} (Agent ID: {agentId})
+- Task Type: {taskType}
+- Refund Amount: {refundAmount}
+
+The ASP has not accepted this subscription. Reply “Confirm close” to close it now. Any displayed paid amount will be returned automatically after on-chain confirmation; when no refund is required, only the task will be closed.
+```
+
+Preserve the full Job ID, amount, and token symbol exactly. Do not request a
+refund reason for this operation.

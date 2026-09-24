@@ -1,0 +1,4 @@
+interface:
+  display_name: "AssetFare Route"
+  short_description: "Bridge quotes with a validated ordered provider path."
+  default_prompt: "Use $assetfare-route to compare an AssetFare route's total cost across six chains. Require direct_route_summary and show its ordered provider/from/to steps, amount bounds, exact AssetFare fee step, and direct_protocol_only versus Across external_intent classification. route_aggregator_used=false applies only to AssetFare's engine. Solana native USDC to Base native USDC is the canonical example. USD 1 is smoke-only; native-USDC evaluation starts at USD 50 based on dated 2026-09-23 evidence. Use USD 1,000 as representative, not a cheapest guarantee, and always compare at the intended amount. Stop before preparation, signing, or submission unless the caller explicitly approves."

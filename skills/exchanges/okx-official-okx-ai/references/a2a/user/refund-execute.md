@@ -32,6 +32,13 @@ Instead, give this friendly later-query guidance:
 If the User later asks for the result, route through `task-query.md` and run
 the required status query internally.
 
+For `created_subscription_close_broadcast_submitted`, say that the close was
+submitted and remains pending until both the subscription lifecycle and wallet
+order are reconciled. If the original payment is zero, say no refund is
+required. Otherwise, do not claim that the refund completed merely because the
+subscription reached Closed(7); report completion only from a later
+`refund_confirmed` result.
+
 Then end the current turn. Do not execute or resume `watch_task` automatically.
 For other broadcast-submitted outcomes, state that the operation is pending and
 follow only returned read/watch actions.

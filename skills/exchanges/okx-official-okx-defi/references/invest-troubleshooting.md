@@ -19,6 +19,7 @@ Error codes and failure handling for deposit / withdraw / claim flows. Load the 
 
 ## Common Failure Patterns
 
+- **CLI-generated payload rejected before submission**: if `wallet contract-call` returns `-32602 Invalid params` or a calldata/payload validation error without a txHash, stop and discard the unexecuted `dataList`. Never inspect, edit, re-encode, or resubmit the old `serializedData`. Rerun the documented DeFi preparation flow that produced `dataList` and use only the newly returned transaction fields. If a txHash was returned, this recovery rule does not apply; use the wallet transaction-status flow instead.
 - **Calldata generated but broadcast fails on-chain**: the position changed between `position-detail` and the write call (another withdraw/claim landed first). Re-run `defi position-detail` and regenerate — never reuse stale calldata.
 - **Solana calldata expired**: base58 VersionedTransaction blockhash expires in ~60 s. If signing took too long, regenerate the calldata; do not retry the expired payload.
 - **`--amount` rejected**: amount must be an integer in minimal units (userAmount × 10^tokenPrecision). A decimal or UI-unit value triggers parameter errors (84400).

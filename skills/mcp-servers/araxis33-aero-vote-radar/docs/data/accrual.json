@@ -1,126 +1,144 @@
 {
-  "generatedAt": "2026-09-17T07:57:07.653Z",
-  "scans": 78,
+  "generatedAt": "2026-09-24T07:46:34.051Z",
+  "scans": 103,
   "from": "2026-08-27T22:14:40.000Z",
-  "to": "2026-09-17T04:50:21.000Z",
+  "to": "2026-09-24T04:47:06.000Z",
   "windows": [
     {
       "hours": 48,
-      "observations": 5411,
-      "negativeNaive": 0.5483274810571059,
+      "observations": 11554,
+      "negativeNaive": 0.37311753505279555,
       "negativeAccrual": 0,
-      "withAccrual": 0.051376824986139345,
-      "medianNaiveUsd": -0.028919849488191485,
+      "withAccrual": 0.03938030119439155,
+      "medianNaiveUsd": 0.4767485062806056,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 502.7453446173324,
+      "medianAccrualWhenMoved": 536.8065749561595,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 53
+      "withUnpriced": 81
     },
     {
       "hours": 72,
-      "observations": 4457,
-      "negativeNaive": 0.5465559793583128,
+      "observations": 9508,
+      "negativeNaive": 0.33403449726546064,
       "negativeAccrual": 0,
-      "withAccrual": 0.07695759479470496,
-      "medianNaiveUsd": -0.03361986718691412,
+      "withAccrual": 0.057951198990323936,
+      "medianNaiveUsd": 1.0189600811815467,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 526.9651499064214,
+      "medianAccrualWhenMoved": 558.2213273263765,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 44
+      "withUnpriced": 69
     },
     {
       "hours": 96,
-      "observations": 3183,
-      "negativeNaive": 0.5168080427269871,
+      "observations": 7507,
+      "negativeNaive": 0.30105235113893697,
       "negativeAccrual": 0,
-      "withAccrual": 0.09927741124725102,
-      "medianNaiveUsd": -0.0033359809161481735,
+      "withAccrual": 0.07393099773544691,
+      "medianNaiveUsd": 2.0776440529195987,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 530.7074557830485,
+      "medianAccrualWhenMoved": 616.7275412437909,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 32
+      "withUnpriced": 56
     },
     {
       "hours": 120,
-      "observations": 2018,
-      "negativeNaive": 0.5619425173439049,
+      "observations": 4892,
+      "negativeNaive": 0.3011038430089943,
       "negativeAccrual": 0,
-      "withAccrual": 0.1278493557978196,
-      "medianNaiveUsd": -0.08069811963263107,
+      "withAccrual": 0.09382665576451349,
+      "medianNaiveUsd": 3.1464905282132776,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 572.0518291749906,
+      "medianAccrualWhenMoved": 669.2171782258597,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 20
+      "withUnpriced": 40
     }
   ],
   "pureRepricing": [
+    {
+      "symbol": "CL-WETH/cbBTC",
+      "pool": "0x42d4a22cad0f5a49681a5715ce994af73a43b76b",
+      "repricingUsd": 15396.155742169678
+    },
+    {
+      "symbol": "CL-WETH/DRV",
+      "pool": "0xef7e596aef9e4c6301b4d1f1e88f8ffe8c306222",
+      "repricingUsd": 14033.223067595834
+    },
+    {
+      "symbol": "CL-WETH/VVV",
+      "pool": "0xa135b59fe221c0c8d441294f97f96fbc37bc9fbe",
+      "repricingUsd": 13866.48048039696
+    },
+    {
+      "symbol": "CL-WETH/USDC",
+      "pool": "0x3fe04a59ebd38cf06080a6f60a98d124eb59392a",
+      "repricingUsd": 8603.403180593974
+    },
+    {
+      "symbol": "CL-USDC/LAPTOP",
+      "pool": "0x99cf3e8bfb02c300312c53aac5d0b082e3d5975c",
+      "repricingUsd": -8324.802906502096
+    },
     {
       "symbol": "vAMM-USDC/AERO",
       "pool": "0x6cdcb1c4a4d1c3c6d054b27ac5b77e89eafb971d",
       "repricingUsd": 7259.271804834207
     },
     {
-      "symbol": "vAMM-WETH/VVV",
-      "pool": "0x01784ef301d79e4b2df3a21ad9a536d4cf09a5ce",
-      "repricingUsd": 1324.9966727103201
+      "symbol": "CL-USDC/BLUECHIP",
+      "pool": "0x3dfdecc334a8f2618321c78a9de0e9428438f871",
+      "repricingUsd": -6315.175892481428
     },
     {
-      "symbol": "vAMM-VIRTUAL/WETH",
-      "pool": "0x21594b992f68495dd28d605834b58889d0a727c7",
-      "repricingUsd": -1153.395635427707
+      "symbol": "CL-WETH/AERO",
+      "pool": "0x4e506648d493c8870f55e870480f92f2f33ece51",
+      "repricingUsd": 6146.998235447012
     },
     {
-      "symbol": "vAMM-fBOMB/AERO",
-      "pool": "0xbbf71aad6e1f8d180d3b1d898528654c1d18b2ff",
-      "repricingUsd": 898.7893111702128
+      "symbol": "CL-WETH/USDC",
+      "pool": "0xb2cc224c1c9fee385f8ad6a55b4d94e92359dc59",
+      "repricingUsd": 5836.348671849701
     },
     {
-      "symbol": "vAMM-WETH/AERO",
-      "pool": "0x7f670f78b17dec44d5ef68a48740b6f8849cc2e6",
-      "repricingUsd": -341.91374497670404
-    },
-    {
-      "symbol": "vAMM-WETH/fBOMB",
-      "pool": "0x4f9dc2229f2357b27c22db56cb39582c854ad6d5",
-      "repricingUsd": -320.1006121483756
-    },
-    {
-      "symbol": "sAMM-msUSD/USDC",
-      "pool": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
-      "repricingUsd": 281.2397729883521
-    },
-    {
-      "symbol": "vAMM-WETH/EDEL",
-      "pool": "0x566bee7ef7b39f29d150ab3be6b6242c17cc5a31",
-      "repricingUsd": 280.5358714735557
-    },
-    {
-      "symbol": "sAMM-WETH/msETH",
-      "pool": "0xde4fb30ccc2f1210fce2c8ad66410c586c8d1f9a",
-      "repricingUsd": 258.4005636887223
-    },
-    {
-      "symbol": "vAMM-WETH/USDC",
-      "pool": "0xcdac0d6c6c59727a65f871236188350531885c43",
-      "repricingUsd": -252.50863941555508
+      "symbol": "CL-WETH/cbBTC",
+      "pool": "0x70acdf2ad0bf2402c957154f944c19ef4e1cbae1",
+      "repricingUsd": 5500.354666209503
     }
   ],
   "didAccrue": [
     {
       "symbol": "vAMM-fBOMB/AERO",
       "pool": "0xbbf71aad6e1f8d180d3b1d898528654c1d18b2ff",
-      "accrualUsd": 67490.02018049879,
-      "repricingUsd": -181.72623585192196
+      "accrualUsd": 70661.80638317112,
+      "repricingUsd": 118.32890924264211
     },
     {
       "symbol": "vAMM-fBOMB/USDbC",
       "pool": "0xc395664b295ed5bf1d249ae8be9740655aa174ef",
-      "accrualUsd": 30370.509081224463,
-      "repricingUsd": -13.237089231592108
+      "accrualUsd": 36340.357568488005,
+      "repricingUsd": 50.77095914688107
+    },
+    {
+      "symbol": "CL-msUSD/USDC",
+      "pool": "0x7501bc8bb51616f79bfa524e464fb7b41f0b10fb",
+      "accrualUsd": 14998.80996735995,
+      "repricingUsd": -49.83282270631753
+    },
+    {
+      "symbol": "CL-USDC/LAPTOP",
+      "pool": "0x99cf3e8bfb02c300312c53aac5d0b082e3d5975c",
+      "accrualUsd": 14053.046045598836,
+      "repricingUsd": -4880.849858221285
+    },
+    {
+      "symbol": "CL-WETH/msETH",
+      "pool": "0x74f72788f4814d7ff3c49b44684aa98eee140c0e",
+      "accrualUsd": 8749.305814293304,
+      "repricingUsd": 111.72730440040323
     },
     {
       "symbol": "vAMM-WETH/VVV",
@@ -131,8 +149,8 @@
     {
       "symbol": "vAMM-WETH/VEIL",
       "pool": "0xf207d02becd4417aaa3383804b6b87b17602c86d",
-      "accrualUsd": 4778.729504523771,
-      "repricingUsd": -46.42001623220676
+      "accrualUsd": 6921.055010888545,
+      "repricingUsd": 407.7977484371395
     },
     {
       "symbol": "sAMM-msUSD/USDC",
@@ -151,24 +169,6 @@
       "pool": "0xc3b22240657fa67b77d0f1b7a1c1012db60d46fb",
       "accrualUsd": 2863.3374138113395,
       "repricingUsd": -11.054622585145808
-    },
-    {
-      "symbol": "vAMM-SOL/fBOMB",
-      "pool": "0xb8fa852a85af20284906a898595f59bdd8c66cbe",
-      "accrualUsd": 2530.8757567687053,
-      "repricingUsd": -4.1920535865624515
-    },
-    {
-      "symbol": "vAMM-BOTTO/WETH",
-      "pool": "0x55f618171d851d57906431ce9feee96dc6f3877e",
-      "accrualUsd": 2416.4153949435376,
-      "repricingUsd": 5.922245201635633
-    },
-    {
-      "symbol": "vAMM-WETH/LRDS",
-      "pool": "0x14f7ce67e16c435c876aff4092eb547584121312",
-      "accrualUsd": 2291.347764477906,
-      "repricingUsd": -25.322642637070203
     }
   ]
 }

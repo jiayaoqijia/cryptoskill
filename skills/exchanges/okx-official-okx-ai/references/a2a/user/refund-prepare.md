@@ -14,6 +14,11 @@ The CLI owns eligibility, ownership, task type, service-name fallback, payment
 facts, billing period, deadlines, and available actions. Route only by the
 returned `nextAction[].id`.
 
+A subscription at Created(0), before ASP acceptance, may return the bound
+`close_created_subscription` action. Treat it as immediate task closure, not
+as an auto-renew setting change, and continue through the same fresh
+confirmation and execution contract below.
+
 - Use [`refund-confirm.md`](refund-confirm.md) for confirmation and reason collection.
 - Use [`refund-execute.md`](refund-execute.md) only after the required intent and reason are complete.
 - Use [`../refund-reconcile.md`](../refund-reconcile.md) for pending or terminal results.

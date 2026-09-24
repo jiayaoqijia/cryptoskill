@@ -48,6 +48,12 @@ does not roll back creation and does not authorize a retry.
 Intent: cancel a subscription. Confirm `trialType` and `autoRenew` from the
 fresh list/detail in hand.
 
+- When the fresh status is Created(0), before ASP acceptance, do not run the
+  standalone cancellation flow. Route to [`refund-prepare.md`](refund-prepare.md)
+  and use only its bound `close_created_subscription` action. This closes the
+  task; an exact-zero payment needs no refund, while a paid original amount is
+  returned only after lifecycle and wallet-order reconciliation.
+
 - When trial, or formal with `autoRenew=1`: run
   `onchainos agent subscribe-cancel <jobId>` — revokes a trial immediately, or
   stops a formal subscription's future auto-renew. A renewal change, not a
