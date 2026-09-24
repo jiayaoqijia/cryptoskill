@@ -102,6 +102,34 @@ rg -n "eval\(|unserialize\(|assert\(" app/
 - debugbar/telescope in require (not require-dev) → Medium
 - `unserialize` on user data → Critical (with APP_KEY leak = full RCE chain, cross-reference Step 1)
 
+## Step 8 — Feature flags & outbound-email amplification
+
+Plan-constrained tenants are authenticated ADMINS whose capability should be plan-gated — menu-level hiding is cosmetic. (Incident class, 2026-09-23 user report: one trial tenant blasted 1200+ emails in ~2 minutes via an ungated compose route + global-default import flag.) The attacker persona is an admin the PLAN should stop, not one auth should stop.
+
+```bash
+# flag census: every define + its default, then every use site
+rg -n "Feature::(define|active|for)" app/ modules/ config/
+# which routes actually carry the feature middleware
+rg -n "feature:" routes/ modules/ routes/ app/ 2>/dev/null
+# email-triggering endpoints and their throttles
+rg -n "Route::(get|post)" routes/ modules/ routes/ | rg -i "send-|verif|subscribe|reset"
+rg -n "throttle:" routes/ modules/ routes/
+# blast fan-out: jobs that load unbounded sets and send per row
+rg -n "::query\(\)->get\(\)|::all\(\)" app/ modules/
+rg -n "Mail::to\(|Mail::send\(" app/ modules/
+# pennant store + whether deploys purge stored values
+rg -n "'store'" config/pennant.php
+rg -n "pennant:purge" deploy/ scripts/
+```
+
+- **Flag gated in UI only** — flag checked in Blade/menu or inside the JOB, but its routes lack `->middleware('feature:...')` → **Critical**: the route is the enforcement point; the in-job check is defense-in-depth, not the gate
+- `Feature::define('<capability>', true)` for import/email/SMS flags defaulting true globally → High (plan gating absent; per-plan closures are the safe shape)
+- **Pennant staleness** — database store + no `pennant:purge` in any deploy script → Medium: reverting a default does NOT clear stored per-scope values; any scope resolved during a true-default window keeps true until purged
+- **Blast amplification** — one request → N outbound emails: a dispatched job loads `Model::query()->get()` unbounded and sends per row, no cap, no route `throttle:` → **Critical** (one request = whole mailing list; attacker-controlled subject/body = phishing from your own domain). Flow class F9, `../flow-security/SKILL.md`
+- **Public email-triggering endpoints** — `send-verification-link`-style GET (side effect on a GET!) or `subscribe` POST, public, unthrottled, no captcha → **Critical** (enumerating IDs over a public sender = mail bomb with zero auth)
+- `$request->all()` into a compose DTO (free-text subject/body) → High (mass assignment + platform-domain phishing)
+- Safe shapes: `feature:` middleware on the route AND `Feature::active` re-checked in the job; `->limit()` recipient cap + per-tenant daily quota consumed ATOMICALLY inside the job (queued jobs outlive flag flips — the quota check must not be check-then-act on the HTTP side); POST + signed URL + `throttle:` for verification links; FormRequest for compose; verified-recipients-only targeting
+
 ## Reporting
 
 Severity table above. Fixes are usually short — give exact code (`protected $fillable = ['name','email'];`, `whereRaw('name = ?', [$name])`). Cross-reference dependency CVEs via `../dependency-vulns/SKILL.md` (composer.lock).

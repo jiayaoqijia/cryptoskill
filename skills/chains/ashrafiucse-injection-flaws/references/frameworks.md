@@ -105,6 +105,8 @@ when the stack matches. Format: dangerous → safe → grep.
 | `fmt.Sprintf` into `db.Query/Exec` | placeholders | |
 | `c.HTML(200, userTemplatePath, data)` | fixed template names | template injection |
 | `template.HTML(user)` cast | omit cast | bypasses html/template escaping (which is otherwise automatic ✓) |
+| sqlx `db.Queryx(fmt.Sprintf("... %s", c.Param("id")))` | `db.Get(&row, "... WHERE id = $1", id)` | sqlx binds like database/sql — only the interpolated string form is the sink |
+| sqlx `NamedExec("... " + c.Query("sort"), m)` | fixed sort allowlist map | ORDER BY can't bind — allowlist the column |
 
 ## Symfony / Twig (PHP)
 
@@ -184,6 +186,24 @@ when the stack matches. Format: dangerous → safe → grep.
 | `System.cmd("sh", ["-c", user])` | `System.cmd(bin, [args])` | shell reintroduction |
 | `Plug.Conn.send_resp` with user-built content-type/html | render views | reflected XSS |
 | `:crypto` direct use for passwords (`:crypto.hash(:md5, pw)`) | `Argon2`/`Bcrypt` (comeonin) | password hashing vs raw crypto |
+
+## Flask-RESTful (Python)
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `marshal(model, fields)` exposing the whole ORM object / `fields = {'*': ...}` | explicit field dict without secrets | over-returning (pairs with `../data-exposure/`) — one `passwordHash` field = Critical leak |
+| `reqparse.RequestParser()` with no `type=`/`choices=` and store-all | typed args + explicit model assignment | unknown keys → mass assignment shape |
+| `return jsonify(model.__dict__)` | explicit serializer per view | `__dict__` leaks every column incl. internals |
+| `abort(500, message=str(e))` | generic message + server-side log | raw exception text to clients |
+
+## ASP.NET Web Forms (.NET Framework)
+
+| Dangerous | Safe | Notes |
+|---|---|---|
+| `<%= user %>` in `.aspx`/`.ascx` | `<%: user %>` | `<%:` HTML-encodes (4.0+); `<%=` is raw |
+| `<asp:Literal Mode="PassThrough">` | `Mode="Encode"` or default | unencoded literal |
+| `Eval("col")` inside raw-rendering markup | bound controls with encoding | data-binding doesn't escape by itself |
+| `Request["x"]` into `Process.Start(... + arg)` | `ArgumentList` | command injection |
 
 ## Adding a framework
 

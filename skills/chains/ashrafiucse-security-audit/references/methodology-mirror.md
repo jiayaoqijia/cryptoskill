@@ -64,11 +64,13 @@ injection). Converted after this diff:
 - **host-header poisoning in email generation** → auth-review §5 (generic;
   django Step 1 had the ALLOWED_HOSTS instance)
 - **world-writable file permissions** → config-hardening
+- **untrusted WASM compilation/loading** (CodeQL `polymorphic-wasm`-adjacent) → config-hardening §8
 
-Documented gaps: **LDAP authentication/injection** (java/python enterprise
-stacks) — COVERAGE help-wanted; niche notes (loop-bound injection,
-deep-traversal exhaustion, relative-path command execution) recorded here as
-known-minor.
+Converted after this diff (2026-09-23 knowledge-gap-closure round):
+**LDAP authentication/injection** → auth-review pack (anonymous binds, DN/filter
+injection, py + JNDI) + surface-vuln-app plants (ldap_route.py, LdapAuth.java
++ safe counterparts). Niche notes (loop-bound injection,
+deep-traversal exhaustion, relative-path command execution) remain known-minor.
 
 **Semgrep registry** (shape verified: language dirs at repo ROOT —
 javascript/express/react/vue/jsonwebtoken/vm2, python/django/flask/fastapi,

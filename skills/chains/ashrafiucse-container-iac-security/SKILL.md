@@ -44,6 +44,7 @@ rg --files -g '*.yaml' -g '*.yml' | xargs grep -ln "kind: Deployment\|kind: Pod\
 - Wildcard RBAC (`verbs: ["*"]`, `resources: ["*"]`), cluster-admin bindings to services → HIGH. **RBAC escalation verbs**: any Role/ClusterRole granting `escalate` (self-boost any role), `bind` (bind higher-priv roles to self), or `impersonate` (become any user/SA) → **Critical** even scoped; `verbs: ["get","list"]` on `secrets` at cluster scope → Critical (reads every credential)
 ```bash
 rg -n "escalate|impersonate" -g '*.yaml' -g '*.yml' | rg "verbs|resources"   # census: every verb row dispositioned
+rg -n 'resources:\s*\[\s*"\*"\s*\]|apiGroups:\s*\[\s*"\*"\s*\]|verbs:\s*\[\s*"\*"\s*\]' -g '*.yaml' -g '*.yml'   # census: every wildcard row dispositioned
 rg -n "resources:.*secrets" -g '*.yaml' -g '*.yml' | rg -v "namespace"   # census: every secret-reading role dispositioned
 ```
 - `imagePullPolicy: Always` with `:latest` tags / images from unknown registries → MEDIUM

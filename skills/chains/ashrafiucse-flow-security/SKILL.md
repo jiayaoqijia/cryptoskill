@@ -53,7 +53,7 @@ preconditions are findings — the table makes them visible:
 |---|---|---|
 | create invoice | order.status == paid AND order.user == caller AND payment not already invoiced AND total from order row | invoice row |
 
-## 3 — The 8 flow vulnerability classes
+## 3 — The 9 flow vulnerability classes
 
 ### F1 — Unguarded state transitions (skip / replay / disorder)
 ```bash
@@ -126,6 +126,24 @@ Check each step's auth against the census table; internal callbacks must
 carry signed/verified flow context (payment id they act on), not trust
 "only our gateway calls this". Pairs with trusted-header rules in
 `../auth-review/SKILL.md`. **Critical** when a hop is spoofable.
+
+### F9 — Outbound-message amplification (one request → N messages)
+A single request fans out one outbound message (email/SMS/webhook/push) per
+row — loading `all()`/`get()` unbounded, no recipient cap, no per-tenant
+quota, no route throttle. The unit of abuse is the RECIPIENT COUNT, not the
+request: HTTP-layer throttles alone don't bound a 1→N sink. Generic sink
+shapes (any stack): a loop/map/each over an unbounded fetch (`findAll()`,
+`.get()`, `::all`, `SELECT *` without LIMIT) whose body calls an outbound
+sender — `sendMail`/`Mailer`, `twilio.messages`, `sns.publish`,
+SendGrid/Resend, `fetch(hook.url)` — with attacker-influenced subject/body.
+Laravel shape (from the 2026-09-23 trial-tenant blast): compose controller
+dispatches a blast job (`Lead::query()->get()` → per-row `Mail::to()`) with
+the only gate inside the job or the menu. **Critical** when the sender
+endpoint is public (verification/subscribe loops need no auth — ID
+enumeration is the whole attack) or when flag/plan gating lives anywhere but
+the route. Fixes: recipient cap + atomic quota inside the job, feature/plan
+middleware on the route, throttle on public senders, verified-recipient
+targeting.
 
 ## 4 — Audit mode: flow-first
 

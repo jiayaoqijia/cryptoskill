@@ -93,6 +93,20 @@ SPA/extension/embed code that listens for messages:
 
 Also: `window.open` handles with `opener` access across origins, and service-worker `message` handlers — same rules.
 
+## 8 — WebAssembly (WSTG 4.13)
+
+```bash
+rg --files -g '*.wasm' -g '*.wat'
+rg -n "WebAssembly\.(instantiate|instantiateStreaming|compile|Module)\(" -g '*.js' -g '*.ts' -g '*.html'
+rg -n "fetch\(" -g '*.js' -g '*.ts' | rg -i "engine|wasm|url|param" | head -20
+```
+
+- wasm module fetched from a **client-controlled URL** (query param → `fetch(url)` → `WebAssembly.instantiateStreaming`) → HIGH — attacker-chosen code executes in the page origin; supply-chain rules apply to the artifact (`../dependency-vulns/SKILL.md`)
+- bytes from untrusted input compiled directly (`new WebAssembly.Module(userBytes)`) → HIGH
+- `.wasm`/`.wat` blobs tracked in repo: check provenance — what compiled them, is the build tracked/reproducible in CI; unexplained third-party blobs → supply-chain finding, severity by reachability
+- Safe shape: fixed-path same-origin fetch (triage discriminator for the instantiate grep — it hits both forms)
+- Wasm sandbox escapes / memory bugs in compiled sources (Rust `unsafe`, C pointers) → runtime-verify + source review via the C pack in `../injection-flaws/SKILL.md`
+
 ## API resource & consumption (OWASP API4/API10)
 
 **Outbound (API10 — unsafe consumption):** the app calling a third-party API is a client handling untrusted input:

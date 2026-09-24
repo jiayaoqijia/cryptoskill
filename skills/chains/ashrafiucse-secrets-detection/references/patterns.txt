@@ -44,6 +44,8 @@ APP_KEY\s*=\s*base64:[A-Za-z0-9+/=]{10,}
 (postgres|postgresql|mysql|mongodb(\+srv)?|redis|amqp|ftp)://[^:@/[:space:]]+:[^@/[:space:]]+@
 jdbc:(mysql|postgres(ql)?|oracle|sqlserver)://[^[:space:]]*[Pp]assword=[^[:space:];&]+
 mongodb(\+srv)?://[^:@/[:space:]]+:[^@/[:space:]]+@
+# ADO.NET / SQL Server style: Server=...;<segments>;Password=... (value-embedded, key-value patterns miss it)
+(Server|Data Source|SERVER|DATA SOURCE)=[^;]{2,};[^"]*[Pp]assword=[^;"[:space:]]{4,}
 
 # --- Generic assignments (noisy — always triage these) ---
 (password|passwd|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|auth[_-]?token|client[_-]?secret)["']?\s*[:=]\s*["'][^"'$\{<][^"']{7,}["']

@@ -52,6 +52,21 @@ rg -n -i "bcrypt|argon2|scrypt|pbkdf2|md5|sha1|sha256.*password|hashpw|crypt\("
 - Password reset: predictable token (timestamp, userid, `random.random()`), token reused or non-expiring, reset response leaks the token → HIGH/CRITICAL
 - MFA present? Missing MFA on admin accounts → HIGH if roles exist
 
+### LDAP authentication (enterprise directories)
+
+```bash
+rg -n "SECURITY_AUTHENTICATION|ANONYMOUS" -g '*.py' -g '*.java'
+rg -n 'uid="\s*\+\s*\w+|SECURITY_PRINCIPAL.*\+' -g '*.py' -g '*.java'
+rg -n '\(sAMAccountName=|\(uid=' -g '*.py' -g '*.java'
+rg -n "escape_dn_chars|escape_filter_chars|LdapEncoder" -g '*.py' -g '*.java'
+```
+
+- Anonymous bind offered as an auth path (`authentication=ANONYMOUS`, `SECURITY_AUTHENTICATION` set to `none`) → **CRITICAL** — everyone "authenticates"; binding ≠ verifying the intended identity
+- **DN injection** (CWE-90): bind DN built by concatenation — `"uid=" + user + ",ou=people,..."` (Python) or `Context.SECURITY_PRINCIPAL` concatenation (Java) → **CRITICAL**: a uid containing `,...` or `+` rebinds as a different principal
+- **Filter injection**: search filters composed by f-string/format with user terms (`f"(sAMAccountName={name})"`) → HIGH — `*` and `)(` characters forge wildcard/boolean filters (auth bypass + data mining)
+- Safe shape: escape before composing (`escape_dn_chars()` / `escape_filter_chars()` in ldap3, `LdapEncoder.filterEncode/nameEscape` in Java) — or constant service DN + post-bind attribute comparison
+- The DN/filter greps hit BOTH vulnerable and escaped forms — the escape-call context is the triage discriminator (same census discipline as XSS sinks)
+
 ### JWT / tokens
 ```bash
 rg -n "jwt\.(sign|decode|verify)|verify\(|algorithms|algorithm|none|HS256|RS256"
@@ -117,6 +132,22 @@ rg -n "if\s*\(.*\b(used|redeemed|approved|active|enabled|stock|balance|remaining
 - Single-use coupons/tokens/reset links: `if (t.used) reject; ... t.used = true` → parallel replay wins every time → **High** (Critical for payments/refunds/webhooks). Fix: atomic conditional write — `findOneAndUpdate({code, used:false}, {$set:{used:true}})`, `UPDATE ... SET used=1 WHERE code=? AND used=0` checking rows affected.
 - Balance/stock read-modify-write: `user.balance -= amt; user.save()` → double-spend under concurrency. Fix: `UPDATE accounts SET balance = balance - ? WHERE id = ? AND balance >= ?`.
 - Webhooks/event handlers without idempotency keys or event-id dedup → replayable. Report as one grouped finding with every affected flow listed.
+
+### Feature-flag & plan-capability gating
+
+Flags constrain CAPABILITY (what a plan/tenant/role may do), not identity — an authenticated admin can still be the attacker the plan must stop. UI/menu gating is cosmetic; the handler/route is the enforcement point. Incident class (2026-09-23): a trial tenant blasted 1200+ emails through a compose route whose flag was enforced only in the menu and the queued job.
+
+```bash
+rg -n "Feature::(define|active)|isFeatureEnabled|featureFlags|feature_flags|isEnabled\(|isEnabledFor|\.variation\(" src/ app/ modules/
+rg -n "pennant:purge|flushCache|flag.*purge" deploy/ scripts/ .github/
+```
+
+Stack-agnostic census (framework skills carry the concrete greps — e.g. `../laravel-security/SKILL.md` Step 8):
+
+- For every flag whose name implies a dangerous capability (import, email, send, sms, export, invite, admin, billing): WHERE is it enforced? Checks only in UI/menu code or only inside async jobs = **gated-in-the-wrong-layer** → High; Critical when the ungated surface fans out outbound messages (F9, `../flow-security/SKILL.md`)
+- Default-true definitions for dangerous capabilities (`'import': true`, `"send_email": true` in flag config) → High — the capability exists for everyone including trials; per-plan closures/lookups are the safe shape
+- **Flag-store staleness**: persisted flag stores (Pennant database, DB-backed Unleash/OpenFeature, a `features` table) keep stored per-scope values when defaults change — reverting a default changes nothing for already-stored scopes. Deploy scripts must purge/sync; absence → Medium
+- Public endpoints that TRIGGER OUTBOUND messages (send-verification, subscribe, reset, notify, magic-link, webhook-register): census them with §1's route table; each needs auth-or-signed + throttle (+ captcha where public) → **Critical when public AND unthrottled**: ID enumeration = mail/SMS bomb needing zero auth and zero flags
 
 ### API keys as authentication (service-to-service)
 
