@@ -39,9 +39,9 @@ preparation, signature, or submission authority.
 ## Economic evaluation amounts
 
 - USD 1 is reachability/schema smoke only. It is not an economic comparison.
-- For native-USDC routes, start economic comparison at USD 50. That is the
-  lowest observed competitive bucket in dated 2026-09-23 evidence, not a
-  guarantee that AssetFare is cheapest.
+- USD 50 was an observed competitive bucket only for the dated 2026-09-23
+  Solana USDC → Base USDC evidence. Do not generalize it to another corridor,
+  and do not treat it as a guarantee that AssetFare is cheapest.
 - Use USD 1,000 as the primary representative comparison amount. SOL-input
   routes include a swap, so use USD 1,000 for their representative evaluation
   too rather than treating a USD 1 smoke quote as economic evidence.
