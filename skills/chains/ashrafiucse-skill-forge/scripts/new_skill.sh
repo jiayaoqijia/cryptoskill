@@ -32,7 +32,7 @@ rg -n "TODO-SINK" -g '*.js' -g '*.py'
 4. Severity defaults + fix patterns
 
 ## Reporting
-Per finding: file:line, evidence excerpt, abuse story, fix. Tag with this skill's class names.
+Per finding: file:line, evidence excerpt, abuse story, fix, and the falsifier (the near-miss condition ruled out and how). Tag with this skill's class names.
 EOF
 
 cat > "$SK/references/patterns.md" <<'PATTERNS_EOF'

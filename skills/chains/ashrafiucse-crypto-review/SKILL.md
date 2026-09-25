@@ -9,8 +9,8 @@ license: MIT
 ## 1 — Quick sweep
 
 ```bash
-rg -n -i "md5|sha1|des\b|rc4|ecb|cbc\(|blowfish|math\.random\(\)|random\.random\(\)|srand\(|new date\(\)\.gettime\(\)|nanoid\(|uuid\.v1\("
-rg -n -i "rejectunauthorized\s*:\s*false|insecureskipverify\s*:\s*true|verify\s*=\s*false|ssl_verify|checkhostname|node_tls_reject_unauthorized"
+rg -n -i "md5|sha1|des\b|rc4|ecb|cbc\(|blowfish|math\.random\(\)|random\.random\(\)|srand\(|new date\(\)\.gettime\(\)|nanoid\(|uuid\.v1\(" -g '!*.md' -g '!*.lock' -g '!*-lock.yaml' -g '!*.sum' -g '!*.snap'
+rg -n -i "rejectunauthorized\s*:\s*false|insecureskipverify\s*:\s*true|verify\s*=\s*false|ssl_verify|checkhostname|node_tls_reject_unauthorized" -g '!*.md' -g '!*.lock' -g '!*.sum'
 rg -n -i "aes\.|createcipheriv|crypto\.randombytes|secrets\.|urandom|crypto/rand|rand\.read"
 rg -n -i "(key|iv|salt|secret|passphrase)\s*[:=]\s*[\"'][a-z0-9]{8,}[\"']"
 ```

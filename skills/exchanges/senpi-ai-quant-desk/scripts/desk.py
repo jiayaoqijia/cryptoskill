@@ -13,6 +13,7 @@ the weekly rank, and — when a Senpi token is present — the smart-money cohor
 """
 # Copyright 2026 Senpi (https://senpi.ai) — Apache-2.0
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -32,6 +33,8 @@ import opportunities  # noqa: E402
 import render  # noqa: E402
 import score  # noqa: E402
 import addresses as addr_book
+import dsl as dsl_mod  # noqa: E402
+import book as book_mod  # noqa: E402
 import senpi_history  # noqa: E402
 import smart_money  # noqa: E402
 import strategy_read  # noqa: E402
@@ -45,7 +48,7 @@ BENCH_PATH = os.path.join(HERE, "..", "references", "benchmark.json")
 # render.py but a stale desk.py passed every gate — which is exactly what happened on 2026-09-21: the
 # step-4 progress line still read "senpi-smart-money" where the shipped source says "senpi-market-pulse".
 # Pinned to render.VERSION by a test, and printed by --version so a stale copy is one command away.
-VERSION = "1.32.0"
+VERSION = "1.38.0"
 
 DEFAULT_STATE_DIR = os.path.join(tempfile.gettempdir(), "quant-desk")
 FRESH_S = 600
@@ -105,6 +108,127 @@ class _MCPFixture:
         raise RuntimeError(f"fixture has no {tool}")
 
 
+# Hourly candles over 91 days, one request per coin, six at a time. It is the single most expensive
+# step in the desk and it scales with how many names a book touches — which is unbounded. A wallet
+# trading 174 coins asked for 187 candle pulls and the run was SIGTERM'd by the agent's exec timeout
+# at "reading the tape: 120 of 187", having done all the work and produced nothing. Breadth is not a
+# defect (a systematic book legitimately runs 80 names), so this caps the READ rather than refusing
+# the book, and says in `meta` what it covered. (a live desk, 2026-09-23.)
+MAX_TAPE_COINS = 60
+
+# A market maker's desk is wrong in every line and expensive to produce. `userRole` catches the ones
+# that are VAULTS; it returns `user` for a market maker quoting from a plain address, and those exist
+# on the leaderboard today (`0x956a…`, 99% resting at 0.34 bp across 24 coins, role `user`).
+#
+# What separates them is not how much they rest. Measured over 7 days on 13 real wallets: HLP
+# Strategy B — the one that actually burned a user session — is 41% maker, BELOW several ordinary
+# traders, while a perfectly normal whale is 91% maker. Maker share would have missed the real one
+# and refused a real reader.
+#
+# The fee rate was tried as that line and does NOT hold. (@im-vignesh, #763.) Hyperliquid PUBLISHES
+# the schedule that produces a low rate: `userFees.feeSchedule.tiers.vip` sets the maker fee to
+# 0.0 above $500M of 14-day volume, so effective = taker_share x 2.8bp and any patient limit trader
+# at scale crosses 0.5 bp at ~18% taker share, on fees anyone can get. Re-sampled over the top 30 of
+# the leaderboard by weekly volume, 25 wallets with >=200 perp fills:
+#     -0.30 -0.25 -0.21 -0.10 -0.04 -0.02 0.05 0.11 0.15 0.21 0.24
+#      0.42  0.50  0.57  0.78  0.79  1.04 1.23 1.24 1.36 1.54 1.89 2.37 2.47 2.82
+# Nine sit inside the "structural gap" the earlier comment claimed; the distribution is continuous
+# and 13 of 25 would have been refused, including VIP traders at 0.42 and 0.50 bp. The gap was an
+# artefact of a 13-wallet sample.
+#
+# So the gate is no longer a CLASSIFIER of who someone is — a claim that can be false and insulting
+# when it is. It is a statement about what this tool can do: the desk pulls hourly candles per coin
+# and caps that read at MAX_TAPE_COINS. Past the cap it is scoring a SAMPLE of the book while
+# printing a verdict about the book. That is the actual harm, it is measured rather than inferred,
+# and it is true of a systematic trader on 200 names exactly as it is of a quoting engine — both
+# deserve the same honest answer instead of an accusation.
+#
+# Measured on the same 29 wallets: the breadth line refuses 1 (115 coins, 5,514 fills/h) where the
+# fee line refused 13. It still refuses the book that prompted this work (172 coins, 177 positions,
+# 13,722 fills), and it serves every VIP trader the fee line wrongly turned away.
+MM_MIN_FILLS = 200            # below this the fee rate is noise, not a schedule
+
+
+def market_maker_rate(fills):
+    """Effective fee in basis points across every fill, or None when there is too little to judge.
+
+    NOT abs(): a maker rebate is negative fees, money earned, and the most market-maker-ish signal
+    there is — taking the absolute value would hide the clearest case.
+    """
+    perp = [f for f in fills if metrics.is_perp(f.get("coin", ""))]
+    if len(perp) < MM_MIN_FILLS:
+        return None
+    vol = sum(float(f["sz"]) * float(f["px"]) for f in perp)
+    if vol <= 0:
+        return None
+    return sum(float(f["fee"]) for f in perp) / vol * 1e4
+
+
+class NotATraderError(Exception):
+    """Raised before the expensive work when the subject is not a trader's book."""
+
+    def __init__(self, payload):
+        super().__init__(payload.get("error") or "not a trader")
+        self.payload = payload
+
+
+def _tape(coins, book, track, meta):
+    """The coins to pull hourly candles for, in priority order, capped at MAX_TAPE_COINS.
+
+    Priority is where the reader's money is, not alphabetical: every OPEN position first (the
+    stop ladder and the regime read are about those), then BTC (every beta and correlation figure is
+    against it), then traded coins by volume. Cohort and attention coins fill whatever is left — they
+    colour the read, they are not the read.
+
+    The cap binds on held coins only when the held set alone outruns it. That happens — the book
+    this was written for had 177 open positions — and when it does `meta["tape"]` says so rather
+    than reporting "every open position" over a silent truncation.
+    """
+    held = {p["coin"] for p in book["positions"]}
+    # metrics.py emits `volume_share` per coin — `volume` lives only on the internal accumulator
+    # and was never in this dict, so every key read 0. The order looked right only because metrics
+    # already sorts by volume and Python's sort is stable: a real no-op wearing a correct result.
+    by_vol = sorted((track.get("coins") or {}).items(), key=lambda kv: -(kv[1].get("volume_share") or 0))
+    order, seen = [], set()
+    for c in list(held) + ["BTC"] + [c for c, _ in by_vol] + sorted(coins):
+        if c in coins and c not in seen:
+            seen.add(c); order.append(c)
+    if len(order) <= MAX_TAPE_COINS:
+        return set(order)
+    kept, dropped = order[:MAX_TAPE_COINS], order[MAX_TAPE_COINS:]
+    if "BTC" in order and "BTC" not in kept:
+        # Held coins lead the order, so a book with more open positions than the cap pushed BTC out
+        # entirely — and every beta and correlation figure in the desk is measured against it. One
+        # reserved slot is cheaper than a beta that is quietly wrong.
+        displaced = kept[-1]
+        kept[-1] = "BTC"
+        dropped = [c for c in dropped if c != "BTC"] + [displaced]
+    # Held coins lead `order`, so they are dropped only when the held set ALONE outruns the cap —
+    # the 177-position book this PR was written for. Lifting the cap to cover it would mean ~178
+    # candle requests, which is the timeout this function exists to prevent. The tape drives the
+    # regime/timing read, not the protection audit (that reads resting orders), so a dropped held
+    # coin loses its regime colour and keeps its stop check. What must not happen is claiming
+    # otherwise: state the shortfall instead of printing "every open position" over a truncation.
+    held_dropped = [c for c in dropped if c in held]
+    if held_dropped:
+        meta["tape"] = {"coins_touched": len(order), "coins_read": len(kept), "dropped": len(dropped),
+                        "held_dropped": len(held_dropped),
+                        "rule": f"the {MAX_TAPE_COINS} largest of {len(held)} open positions, by volume — "
+                                f"{len(held_dropped)} held coins are past the cap and have no tape"}
+        meta.setdefault("warnings", []).append(
+            f"wide book: {len(held)} open positions exceed the {MAX_TAPE_COINS}-coin tape cap, so "
+            f"{len(held_dropped)} of them are read without candles — their stops are still audited, "
+            f"their regime is not")
+    else:
+        meta["tape"] = {"coins_touched": len(order), "coins_read": len(kept), "dropped": len(dropped),
+                        "held_dropped": 0,
+                        "rule": f"every open position and BTC, then the largest by volume up to {MAX_TAPE_COINS}"}
+        meta.setdefault("warnings", []).append(
+            f"wide book: {len(order)} coins touched, hourly tape read for the {len(kept)} that carry the "
+            f"position risk and the volume")
+    return set(kept)
+
+
 def _ratio_or_none(num, base, cap=10.0):
     """None when the base is too small for the ratio to mean anything (|ratio| > cap)."""
     if not base:
@@ -113,22 +237,61 @@ def _ratio_or_none(num, base, cap=10.0):
     return None if abs(r) > cap else r
 
 
-def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench=None, meta=None, whose="mine"):
+def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench=None, meta=None, whose="mine",
+            wallets=None, force=False):
+    """One desk. `wallets`, when given, is every wallet of a senpi user's book: each is read on its
+    own and the reads are unioned into a single `tr_raw` (see book.py). `addr` stays the label."""
     meta = meta if meta is not None else {}
     meta.setdefault("warnings", []); meta["timings"] = {}; meta["sources"] = {}
     t0 = time.time()
-    step(1, "scanning every fill, funding payment, transfer and resting order …")
-    tr_raw = hl.trader(addr, days=days)
+    pre_closed = pre_opened = None
+    if wallets:
+        step(1, f"scanning every fill across {len(wallets)} wallets …")
+        tr_raw, pre_closed, pre_opened, per_wallet = book_mod.read(hl, wallets, days=days, progress=log)
+        meta["wallets"] = per_wallet
+    else:
+        step(1, "scanning every fill, funding payment, transfer and resting order …")
+        tr_raw = hl.trader(addr, days=days)
     meta["timings"]["trader"] = round(time.time() - t0, 1)
     fills, cs, oo = tr_raw["fills"], tr_raw["clearinghouseState"], tr_raw["frontendOpenOrders"]
     win_start, now = tr_raw["window_start_ms"], tr_raw["now_ms"]
+    # Stop here, not later. Everything past this point is the expensive half — hourly candles for
+    # every coin touched and two 100-wallet cohort reads, ~60-90s of a ~120s run. Bailing now costs
+    # the reader ~30s instead of an exec timeout, and costs us one trader read instead of a sweep.
+    _bp = market_maker_rate(fills)
+    _coins = sorted({f["coin"] for f in fills if metrics.is_perp(f.get("coin", ""))})
+    if len(_coins) > MAX_TAPE_COINS and not force:
+        _read_pct = MAX_TAPE_COINS / len(_coins)
+        raise NotATraderError({
+            "not_a_trader": "book_wider_than_the_desk_reads",
+            "coins": len(_coins), "tape_cap": MAX_TAPE_COINS,
+            "readable_share": round(_read_pct, 3),
+            "effective_fee_bp": None if _bp is None else round(_bp, 3),
+            "fills_read": len(fills), "address": addr,
+            "error": f"this book touches {len(_coins)} coins and the desk reads the tape for at most "
+                     f"{MAX_TAPE_COINS}. Every score past that point describes {_read_pct:.0%} of the "
+                     f"book while claiming to describe the book.",
+            "say_to_the_reader": (
+                f"That book is across **{len(_coins)} coins**. I read the tape for {MAX_TAPE_COINS} "
+                f"at a time, so anything I scored would cover about {_read_pct:.0%} of it and still "
+                f"read like a verdict on the whole thing — I would rather say that than hand you a "
+                f"number I cannot stand behind. If there are particular names you care about, give "
+                f"me those and I will read them properly."),
+            "if_you_meant_it": "re-run with --force to score the readable slice anyway"})
+    if _bp is not None and _bp < 0:
+        meta.setdefault("warnings", []).append(
+            f"this book EARNS {abs(_bp):.2f} bp on its fills rather than paying — a rebate the "
+            f"published schedule does not offer (it floors the maker fee at 0.0). Read the edge "
+            f"figures below as a quoting book's, not a directional trader's")
     ctxs = hl.meta()
     ctx_xyz = None
     try:
         ctx_xyz = hl.meta("xyz")
     except Exception as e:  # noqa: BLE001
         meta["warnings"].append(f"xyz contexts unavailable: {e}")
-    pub_closed, pub_opened = episodes_from_fills(fills)
+    # Episodes for a book are built PER WALLET upstream: `episodes_from_fills` follows position per
+    # coin through `startPosition`, and two wallets both trading BTC interleave into one broken track.
+    pub_closed, pub_opened = (pre_closed, pre_opened) if pre_closed is not None else episodes_from_fills(fills)
     closed, opened = pub_closed, pub_opened
     ages = {}
     if mcp is not None:
@@ -147,11 +310,37 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
     if mcp is not None:
         public_closed = len(closed)
         t_h = time.time()
-        rows = senpi_history.fetch(mcp, addr, win_start, meta)
+        rows = []
+        for _w in (wallets or [addr]):
+            _r = senpi_history.fetch(mcp, _w, win_start, meta)
+            for _e in _r:
+                _e["wallet"] = _w
+            rows.extend(_r)
+        rows.sort(key=lambda e: e.get("close_time") or e.get("open_time") or 0)
         meta["timings"]["senpi_history"] = round(time.time() - t_h, 1)
         if rows:
             _partial = " — PARTIAL, a page failed to read and the totals below are short" if meta.get("senpi_history_partial") else ""
-            closed, source = rows, f"senpi discovery ({len(rows)} closed position{'s' if len(rows) != 1 else ''}){_partial}"
+            _n = f"{len(rows)} closed position{'s' if len(rows) != 1 else ''}"
+            if wallets:
+                # PER WALLET, not per book. `closed = rows` replaced the whole book's public
+                # episodes with whatever senpi returned, so a wallet senpi has no rows for
+                # contributed ZERO and one indexed wallet erased the others. Measured: B held 48
+                # public closed trades and no senpi rows; the book reported 3 trades and
+                # by_wallet B = 0, sourced "senpi discovery (3 closed positions)", indexed True.
+                # A failed read on B did the same — senpi_history_partial is set only when a LATER
+                # page fails, so the only trace was a footnote. (@shnoodles, #755/#773.)
+                _idx = {e.get("wallet") for e in rows if e.get("wallet")}
+                _fb = [w for w in wallets if w not in _idx]
+                _pub = [e for e in closed if e.get("wallet") in set(_fb)] if _fb else []
+                closed = sorted(rows + _pub,
+                                key=lambda e: e.get("close_time") or e.get("open_time") or 0)
+                meta["indexed_wallets"] = sorted(_idx)
+                meta["public_fallback_wallets"] = _fb
+                source = (f"senpi discovery ({_n}){_partial}" + (
+                    f" + public fills for {len(_fb)} wallet{'s' if len(_fb) != 1 else ''} senpi has "
+                    f"not indexed ({', '.join(w[:6] + '…' + w[-4:] for w in _fb)})" if _fb else ""))
+            else:
+                closed, source = rows, f"senpi discovery ({_n}){_partial}"
             indexed = True
         elif public_closed and not meta.get("senpi_history_failed"):
             # The public endpoints show closed round trips in this window and senpi's index returned
@@ -203,7 +392,22 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
         cov["ledger_gap"] = _gap
         cov["effective"] = min(cov["overall"] if cov["overall"] is not None else 1.0,
                                max(0.0, 1.0 - _gap / abs(track["ledger_net"])))
+    # What senpi's own runtime is doing to these positions. The desk already reads the resting stop
+    # off the exchange, so a DSL position is correctly PROTECTED today — but a price with no context
+    # reads as a static stop when it is a floor that ratchets. Only ever annotates a position whose
+    # backend row the exchange corroborates (see dsl.corroborated). Silent no-op without a token, on
+    # an external wallet, or on any failure.
+    _t_dsl = time.time()
+    try:
+        _n_dsl = dsl_mod.attach(mcp, addr, book, meta)
+        if _n_dsl:
+            # was measured from `t1`, an earlier mark, so this read as the cumulative time to here
+            # rather than what the DSL calls cost. (@0xsarvesh, #753.)
+            meta["timings"]["dsl"] = round(time.time() - _t_dsl, 1)
+    except Exception as e:  # noqa: BLE001
+        meta["warnings"].append(f"runtime DSL state unavailable: {e}")
     fl = metrics.flows(tr_raw["ledger"], addr)
+    fl = metrics.flows(tr_raw["ledger"], wallets or addr)
     pnl_curve = metrics.pnl_series(tr_raw["portfolio"], win_start)
     # transfer-adjusted, as equity_curve's docstring, methodology.md and SKILL rule 3 all promise.
     # `fl` is computed on the line above; passing [] meant a trader who withdrew their profit read as
@@ -233,14 +437,14 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
     # ---- cohorts + attention first (they name coins the candle pull must cover)
     rank, labels, lb = None, None, None
     cohorts, attention, fregime = [], None, None
-    if want_rank or (want_cohort and mcp is None):
+    if (want_rank and not wallets) or (want_cohort and mcp is None):
         t2 = time.time()
         try:
             lb = hl.leaderboard()
         except Exception as e:  # noqa: BLE001
             meta["warnings"].append(f"leaderboard unavailable: {e}")
         meta["timings"]["leaderboard"] = round(time.time() - t2, 1)
-    if want_rank and lb:
+    if want_rank and lb and not wallets:
         rank = hl_api.weekly_rank(lb, addr)
         if rank is None:
             meta["warnings"].append("address is not on Hyperliquid's leaderboard this week (no rank)")
@@ -308,6 +512,7 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
         coins |= {h["coin"] for h in cv.get("they_hold") or []}
     if attention:
         coins |= {m["coin"] for m in attention["markets"] if m.get("coin")}
+    coins = _tape(coins, book, track, meta)
     try:
         candles = timing_mod.load_candles(hl.candles(sorted(coins), days=days + 1))
     except Exception as e:  # noqa: BLE001
@@ -374,10 +579,103 @@ def analyze(addr, hl, days=90, mcp=None, want_rank=True, want_cohort=True, bench
              episodes=[{k: v for k, v in e.items() if k != "size_path"} for e in in_win][-300:], meta=meta)
     r["whose"] = whose
     r["indexed"] = indexed
+    if wallets:
+        r["wallets"] = list(wallets)
+        # Which wallet did what. A book answers "how am I trading"; this answers "and which of my
+        # strategies is carrying it" — the question a reader asks next, and the only one the union
+        # destroys by construction.
+        _bw = {w: dict(wallet=w, trades=0, wins=0, realized=0.0, fees=0.0, volume=0.0, unrealized=0.0, open=0) for w in wallets}
+        for e in in_win:
+            row = _bw.get(e.get("wallet"))
+            if row is None:
+                continue
+            row["trades"] += 1; row["wins"] += 1 if e["win"] else 0
+            row["realized"] += e["realized"]; row["fees"] += e["fees"]; row["volume"] += e["volume"]
+        # track_record charges fees on STILL-OPEN episodes to the window too (the entry was paid for
+        # inside it). Leaving them out here made the per-wallet nets sum to $71,221 under a headline
+        # net of $67,207 — a table that does not add up to the number above it.
+        for e in opened:
+            row = _bw.get(e.get("wallet"))
+            if row is not None:
+                row["fees"] += e["fees"]
+        for pos in book["positions"]:
+            row = _bw.get(pos.get("wallet"))
+            if row is not None:
+                row["unrealized"] += pos["unrealized"]; row["open"] += 1
+        for x in (tr_raw["userFunding"] or []):
+            row = _bw.get(x.get("wallet"))
+            if row is not None and x["time"] >= win_start:
+                row["funding"] = row.get("funding", 0.0) + float(x["delta"]["usdc"])
+        # `realized` on an episode is GROSS. The desk's own headline number is net of fees and
+        # funding, and a column headed "Realized" sitting under it had better mean the same thing —
+        # the two wallets here summed to +$123,624 gross beside a net of +$67,207 on the same page.
+        for row in _bw.values():
+            row["funding"] = row.get("funding", 0.0)
+            row["net"] = row["realized"] - row["fees"] + row["funding"]
+        r["by_wallet"] = sorted(_bw.values(), key=lambda x: -(x["net"] + x["unrealized"]))
     r["verdict"] = score.verdict(track, book, dims, lk)
     r["followups"] = followups.offer(r, whose=whose)
     meta["timings"]["total"] = round(time.time() - t0, 1); meta["hl_calls"] = hl.calls
     return r
+
+
+class _Flight:
+    """One desk per address per box, via a PID file in the state dir.
+
+    Deliberately not a hard mutex: the only job is to stop an agent that cannot see a result from
+    launching a second, third and fifth sweep of the same wallet into the same rate bucket. A stale
+    file (the process died, or was SIGTERM'd by an exec timeout — which is exactly how this starts)
+    must never wedge the address, so a lock whose PID is gone, or which is older than STALE_S, is
+    taken over rather than respected.
+    """
+    STALE_S = 15 * 60
+
+    def __init__(self, state_dir, addr, force=False):
+        self.path = os.path.join(state_dir, f"flight-{addr}.pid")
+        self.force = force
+        self.held = False
+        self._age = 0
+
+    def _alive(self, pid):
+        try:
+            os.kill(pid, 0)
+            return True
+        except (ProcessLookupError, ValueError, TypeError):
+            return False
+        except PermissionError:
+            return True          # someone else's process, but it exists
+
+    def age_s(self):
+        return self._age
+
+    def acquire(self):
+        try:
+            os.makedirs(os.path.dirname(self.path), exist_ok=True)
+            if os.path.exists(self.path) and not self.force:
+                age = int(time.time() - os.path.getmtime(self.path))
+                try:
+                    with open(self.path) as fh:
+                        pid = int((fh.read() or "0").strip() or 0)
+                except (OSError, ValueError):
+                    pid = 0
+                if pid and pid != os.getpid() and self._alive(pid) and age < self.STALE_S:
+                    self._age = age
+                    return False
+            with open(self.path, "w") as fh:
+                fh.write(str(os.getpid()))
+            self.held = True
+        except OSError:
+            self.held = False    # a state dir we cannot write is not a reason to refuse the desk
+        return True
+
+    def release(self):
+        if not self.held:
+            return
+        self.held = False
+        try:
+            os.remove(self.path)
+        except OSError:
+            pass
 
 
 def resolve_whose(book, addr, other=False, mine=False, claim=False):
@@ -412,6 +710,11 @@ def main(argv=None):
                         "(a claim, not proof — we cannot verify ownership of an address from a message)")
     g.add_argument("--other", "--analyst", dest="other", action="store_true", help="someone else's book (analyst mode): third person, learn-from-them follow-ups")
     ap.add_argument("--compare", nargs="+", metavar="0x", help="two or more addresses side by side (cached runs are reused)")
+    ap.add_argument("--book", nargs="+", metavar="0x",
+                    help="ONE desk over several wallets — a senpi user's whole book. Every wallet is read "
+                         "and the reads are unioned: one score, one set of leaks, one P&L. Use this for a "
+                         "senpi user (every strategy wallet, closed ones included), not --compare, which "
+                         "scores each wallet separately and answers a different question.")
     ap.add_argument("--days", type=int, default=90)
     ap.add_argument("--version", action="version", version=f"quant-desk desk.py {VERSION}",
                     help="print this script's version — the one gate that catches a stale desk.py")
@@ -423,6 +726,9 @@ def main(argv=None):
     ap.add_argument("--no-rank", action="store_true"); ap.add_argument("--no-cohort", action="store_true")
     ap.add_argument("--cache", default=hl_api.DEFAULT_CACHE, help="HTTP cache dir ('' to disable)")
     ap.add_argument("--state-dir", default=DEFAULT_STATE_DIR)
+    ap.add_argument("--force", action="store_true",
+                    help="read a vault as if it were a trader's wallet, and ignore a desk already in "
+                         "flight on this address (both are refusals that are usually right)")
     ap.add_argument("--fresh", action="store_true", help="ignore a cached analysis")
     ap.add_argument("--find", metavar="BAND", choices=sorted(hl_api.FIND_BANDS),
                     help="candidate wallets to run the desk on, by account size: "
@@ -472,18 +778,48 @@ def main(argv=None):
             with open(sp) as fh:
                 rs.append(json.load(fh))
         print(render.render_compare(rs)); return 0
-    if not a.address:
-        print(json.dumps({"error": "an address is required (or --compare 0x… 0x…)"})); return 2
-    addr = a.address.strip()
-    if not ADDR_RE.match(addr):
-        print(json.dumps({"error": "not a Hyperliquid address — expected 0x followed by 40 hex characters"})); return 2
-    addr = addr.lower()
+    # A book runs the SAME path as one address — analyze, the empty check, the state file, --deep,
+    # --section, the render all work unchanged on a merged read. The only things that differ are
+    # which wallets get read, what an empty result means, and that a book is not an address to
+    # remember. Everything else is shared, deliberately: a parallel branch here drifts.
+    wallets = None
+    if a.book:
+        wallets = []
+        for x in a.book:
+            x = x.strip().lower()
+            if not ADDR_RE.match(x):
+                print(json.dumps({"error": f"not a Hyperliquid address: {x}"})); return 2
+            if x not in wallets:
+                wallets.append(x)
+        # The label is the first wallet: the state file and the header key on it, and a book is not
+        # itself an address. `wallets` carries the truth, and the header reads "across N wallets".
+        addr = wallets[0]
+    elif not a.address:
+        print(json.dumps({"error": "an address is required (or --book 0x… 0x… for a whole senpi book, "
+                                   "or --compare 0x… 0x… to score wallets separately)"})); return 2
+    else:
+        addr = a.address.strip()
+        if not ADDR_RE.match(addr):
+            print(json.dumps({"error": "not a Hyperliquid address — expected 0x followed by 40 hex characters"})); return 2
+        addr = addr.lower()
     # Whose book this is comes from the address book, not from how the request was phrased. An
     # UNKNOWN address is someone else's: the desk gives advice in the second person, and delivering
     # that about a stranger's trading is the failure worth defaulting against. Owner voice needs a
     # wallet senpi issued, a claim the reader already made, or an explicit flag on this run.
-    whose = resolve_whose(book, addr, other=a.other, mine=a.mine, claim=a.claim)
-    state_path = os.path.join(a.state_dir, f"desk-{addr}.json")
+    # A BOOK is the reader's own by construction — they resolved these wallets from their own
+    # `strategy_list`. Running it through the address book let one stale `analyzed` mark on one of N
+    # wallets flip the voice of the whole book to the third person: "Their desk — across 2 wallets",
+    # to the person who owns them. Only an explicit --other overrides that.
+    whose = ("other" if a.other else "mine") if wallets else \
+        resolve_whose(book, addr, other=a.other, mine=a.mine, claim=a.claim)
+    # A BOOK is keyed on its whole SET, not on its first wallet. Keying on wallets[0] made
+    # `desk.py A` and `desk.py --book A B` share desk-A.json for the 10-minute freshness window, so
+    # whichever ran first was served as the other: a single wallet returned as "across 2 wallets"
+    # (11,594 fills), or a two-wallet book returned as A alone (5,797). `--compare` reads the same
+    # file for an hour, so a book also surfaced as its first wallet's column. (@shnoodles, #773.)
+    _state_key = ("book-" + hashlib.sha1("|".join(sorted(wallets)).encode()).hexdigest()[:16]
+                  if wallets else addr)
+    state_path = os.path.join(a.state_dir, f"desk-{_state_key}.json")
     meta = {}
     bench = None
     if os.path.exists(BENCH_PATH):
@@ -502,11 +838,78 @@ def main(argv=None):
             if a.dry:
                 print(json.dumps({"error": "--dry needs --fixture"})); return 2
             hl = hl_api.HL(cache_dir=a.cache or None); hl.progress = log; mcp = _mcp_client(meta)
+        # ---- is this even a trader? One call, before ~200. See hl_api.subject().
+        subj = hl.subject(addr) if not a.fixture else {"role": "user"}
+        if subj.get("role") == "vault" and not a.force:
+            nm = subj.get("name") or "a vault"
+            desc = (subj.get("description") or "").strip()
+            print(json.dumps({
+                "not_a_trader": "vault",
+                "name": subj.get("name"), "description": desc or None, "address": addr,
+                "error": f"{nm} is a Hyperliquid VAULT, not a trader's wallet — the desk reads how "
+                         f"someone trades, and a vault is a pooled book run by its leader.",
+                "say_to_the_reader": (
+                    f"That address is **{nm}**"
+                    + (f" — {desc[0].lower() + desc[1:]}" if desc else "")
+                    + " A trader scorecard does not describe it: there is no entry thesis to time, "
+                      "no stop to place, and the P&L belongs to its depositors rather than to one "
+                      "trader. Want me to run the desk on your own wallet instead?"),
+                "if_you_meant_it": "re-run with --force to read it as a trader anyway",
+                "leader": subj.get("leader")}, indent=2))
+            return 4
+        # ---- one desk per address per box. The desk takes 20-60s (longer on a wide book), so an
+        # agent that does not see a result re-runs it — and on 2026-09-23 one agent had FIVE
+        # concurrent runs on the same wallet, each making ~200 requests into the same per-IP rate
+        # bucket. The 429s that killed three of them were entirely self-inflicted: siblings
+        # competing for a bucket that refills on a minute. A second run adds nothing a first is not
+        # already computing, so refuse it and say where the real one is.
+        lock = _Flight(a.state_dir, addr, force=a.force)
+        if not lock.acquire():
+            print(json.dumps({
+                "already_running": True, "address": addr, "since_s": lock.age_s(),
+                "error": f"a desk on {addr[:6]}…{addr[-4:]} has been running on this box for "
+                         f"{lock.age_s()}s. Starting a second one does not make the first finish — "
+                         f"they compete for the same rate limit, which is how runs die.",
+                "what_to_do": "wait for the run in flight; its result lands in the same state file. "
+                              "Poll the exec session you already started rather than launching another."},
+                indent=2))
+            return 5
         log(f"[quant-desk] running senpi quant desk on {addr[:6]}…{addr[-4:]}")
         try:
-            r = analyze(addr, hl, days=a.days, mcp=mcp, want_rank=not a.no_rank, want_cohort=not a.no_cohort, bench=bench, meta=meta, whose=whose)
+            r = analyze(addr, hl, days=a.days, mcp=mcp, want_rank=not a.no_rank and not wallets,
+                        want_cohort=not a.no_cohort, bench=bench, meta=meta, whose=whose,
+                        wallets=wallets, force=a.force)
+        except NotATraderError as e:
+            # same exit code as the vault gate: both mean "this address is not a trader's book",
+            # and an agent should treat them identically.
+            print(json.dumps(e.payload, indent=2)); return 4
         except hl_api.HLError as e:
-            print(json.dumps({"error": f"Hyperliquid read failed: {e}", "address": addr})); return 1
+            # A 429 here is the venue's rate bucket, not a broken wallet, and it is the one failure
+            # a reader can act on — so say which it was rather than printing the raw exception.
+            rate = "429" in str(e)
+            print(json.dumps({
+                "error": f"Hyperliquid read failed: {e}",
+                **({"wallets": wallets} if wallets else {"address": addr}),
+                "rate_limited": rate,
+                "what_to_do": ("Hyperliquid rate-limited this box. Wait about a minute and run it "
+                               "ONCE more — do not launch a second run while one is in flight, that "
+                               "is what exhausts the budget.") if rate else
+                              "a transient read failure — one retry is worth it"})); return 1
+        finally:
+            lock.release()
+        if not r["activity"]["fills"] and not r["book"]["positions"] and wallets:
+            # A book that reads empty is a different dead end: this reader already resolved their
+            # wallets, so pointing them back at strategy_list is noise.
+            print(json.dumps({
+                "error": f"no PERP activity in the last {a.days} days across any of these "
+                         f"{len(wallets)} wallets, and no open perp positions. "
+                         f"Spot trades and transfers are not perp activity and are not read here.",
+                "what_this_usually_means": "a strategy that was funded but never filled has no history "
+                                           "to read, and a wallet that only ever held spot or moved "
+                                           "funds has none either. If some of these were closed "
+                                           "strategies, they may simply predate the window.",
+                "wallets": wallets, "days": a.days, "indexed": r.get("indexed"),
+                "perp_fills_in_window": 0, "open_perp_positions": 0})); return 3
         if not r["activity"]["fills"] and not r["book"]["positions"]:
             # Carry `indexed` out even here. Without it a caller cannot tell "senpi has never seen this
             # wallet" from "senpi has it and there is simply nothing in the window" — and those two need
@@ -560,6 +963,15 @@ def main(argv=None):
         r["whose"] = whose; r["followups"] = followups.offer(r, whose=whose)     # a cached run re-voiced
     rel = addr_book.CLAIMED if a.claim else (addr_book.ANALYZED if whose == "other" else None)
     tr = r.get("track") or {}
+    if wallets:
+        # Recording a book under its first wallet would file the whole book's verdict against one
+        # subwallet, and a later single-wallet run on that address would read back the wrong digest.
+        addr_book.save(a.state_dir, book)
+        if a.json:
+            print(json.dumps({k: v for k, v in r.items() if k != "episodes"}, default=float))
+        else:
+            print(render.render(r, a.section))
+        return 0
     addr_book.record(book, addr, relationship=rel, indexed=r.get("indexed"),
                      # `score` and `generated` are not keys on the record — both were silently None
                      digest={"at": r.get("now_ms"), "score": r.get("quant_score"),

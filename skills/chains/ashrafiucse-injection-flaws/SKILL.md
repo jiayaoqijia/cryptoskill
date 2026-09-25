@@ -38,6 +38,11 @@ rg -n "\\\$where|\\\$expr|MongoClient.*eval|mapReduce"            # NoSQL: JS-in
 ```
 Confirm the value is bound (`?`, `$1`, `:param`, `.execute(sql, params)`) vs concatenated/interpolated. String-built queries that only touch constants are noise.
 
+**Split construction defeats the single-line grep** (drill finding, gaps4): the SELECT literal on one line, the taint on another (`const base = 'SELECT ...'; pool.query(base + req.params.ref)`). Run the CALL-SITE grep too:
+```bash
+rg -n "(query|execute)\(\s*\w+\s*\+" -g '*.js' -g '*.ts'
+```
+
 **NoSQL operator injection:** in document stores the query object IS the API — passing request data straight through lets attackers inject operators. `User.find({ password: req.body.password })` accepts `{"password": {"$ne": ""}}` → auth bypass; `$where`/`$function` = JS execution in the DB.
 ```bash
 rg -n "(find|findOne|findOneAndUpdate|updateOne|deleteOne|aggregate)\(\s*\{\s*\.\.\.(req|ctx|event)\.|\{\s*\.\.\.(body|query|params)|find(One)?\(\s*\{[^}]*req\.(body|query)"
@@ -46,16 +51,18 @@ Report when a request object/field reaches a Mongo-style query without operator 
 
 ### OS command injection
 ```bash
-rg -n "os\.system|subprocess\.(call|run|Popen)\(.*shell\s*=\s*True|child_process\.(exec|execSync)|Runtime\.getRuntime\(\)\.exec|system\(|popen\(|exec\.Command\(.*\+"
+rg -n "os\.system|subprocess\.(call|run|Popen)\(.*shell\s*=\s*True|child_process\.(exec|execSync)|spawn\([^)]*shell:\s*true|Runtime\.getRuntime\(\)\.exec|system\(|popen\(|exec\.Command\(.*\+"
 ```
-`exec("ls " + filename)` = classic. Safe: `execFile(cmd, [args])`, `subprocess.run([cmd, arg])` without `shell=True`.
+`exec("ls " + filename)` = classic. Safe: `execFile(cmd, [args])`, `subprocess.run([cmd, arg])` without `shell=True`. **`spawn(cmd, [args], { shell: true })` is NOT the safe shape** — the shell re-parses the array (drill finding, gaps4).
 
 ### XSS
 ```bash
-rg -n "innerHTML|document\.write|v-html|dangerouslySetInnerHTML|\.html\(|render_template_string|autoescape\s*=\s*False|\|safe\b|markupsafe\.Markup"
+rg -n "innerHTML|insertAdjacentHTML|outerHTML\s*=|createContextualFragment|document\.write|v-html|dangerouslySetInnerHTML|\.html\(|render_template_string|autoescape\s*=\s*False|\|safe\b|markupsafe\.Markup"
 rg -n -i "<%=.*request|res\.send\(.*req\.(body|query|params)"
 ```
 Flag reflected user input into any of these sinks. Framework auto-escaping (Jinja2, React JSX text nodes) is a valid defense — but `dangerouslySetInnerHTML`/`v-html`/`|safe` bypass it.
+
+**Fires-but-safe forms need a falsifier, not a pass.** `innerHTML` hits that are DOMPurify-sanitized (`el.innerHTML = DOMPurify.sanitize(x)`), clearing (`= ''`), or code-owned constants are SAFE — each report of a real finding must state which of these it ruled out and how. Comment-text mentions of sink names are documentation noise: disposition them, don't report them.
 
 **Census + privilege direction — the rules every framework XSS check below points to.** Disposition every sink hit (finding / verified-safe / not-assessed); severity is set by WHO writes the value vs WHO renders it, not by the sink alone:
 

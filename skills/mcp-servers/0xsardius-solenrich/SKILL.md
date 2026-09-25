@@ -65,7 +65,7 @@ so a briefing costs the same as JSON and never hallucinates.
 | Which StonkFun coins look early, real, and paying | `stonk-gems` | $0.03 |
 | Is this StonkFun coin paying holders, what does the tax cost | `stonk-reward-risk` | $0.005 |
 | What do these StonkFun coins yield (up to 25 in one call) | `stonk-yield-batch` | $0.05 |
-| Did my StonkFun coins pay today, did any go stale (watchlist, poll hourly) | `stonk-alerts` | $0.005 |
+| Did my StonkFun coins pay today, did any go stale (watchlist, poll hourly) | `stonk-alerts` | $0.02 |
 | What does a StonkFun trade cost at my size, and does the coin pay it back | `stonk-quote` | $0.005 |
 | What to launch on StonkFun and against which quote | `stonk-launch-intel` | $0.02 |
 | A plain-English question, unsure which endpoint | `query` | $0.003 |

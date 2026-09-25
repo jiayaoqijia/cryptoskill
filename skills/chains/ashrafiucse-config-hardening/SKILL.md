@@ -35,7 +35,7 @@ rg -n "script[^>]+src=["']https?://" -g '*.html' -g '*.ejs' -g '*.php' | rg -v i
 ## 3 — CORS
 
 ```bash
-rg -n -i "access-control-allow-origin|cors\(|allow_origins|origin.*\*"
+rg -n -i "access-control-allow-origin|cors\(|allow_origins|origin.*\*" -g '!*.md' -g '!docs/**'
 ```
 - `Access-Control-Allow-Origin: *` **combined with** `Allow-Credentials: true` → impossible per spec; if framework silently reflects origin instead → **CRITICAL** (any site reads authenticated data)
 - Origin reflection/echo of `Origin` header or regex like `https?://.*\.example.com` (matches `evilexample.com` — missing anchored dot) → HIGH
@@ -45,8 +45,8 @@ rg -n -i "access-control-allow-origin|cors\(|allow_origins|origin.*\*"
 ## 4 — Debug & exposure
 
 ```bash
-rg -n -i "debug\s*=\s*true|debug\s*:\s*true|app\.debug|debug_mode"
-rg -n -i "traceback|stack.?trace|display_errors\s*=\s*on|show_exceptions"
+rg -n -i "debug\s*=\s*true|debug\s*:\s*true|app\.debug|debug_mode" -g '!*.md' -g '!docs/**'
+rg -n -i "traceback|stack.?trace|display_errors\s*=\s*on|show_exceptions" -g '!*.md' -g '!docs/**'
 ```
 - Django `DEBUG=True` / Flask `debug=True` / Laravel `APP_DEBUG=true` in prod-looking config → HIGH (stack traces, env leaks, Werkzeug debugger = RCE)
 - Verbose error responses leaking SQL, paths, versions → MEDIUM
