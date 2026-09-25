@@ -41,8 +41,10 @@ jobs:
           # for a file git isn't tracking yet, so on a fresh checkout where the
           # snapshot has never been committed this would report "unchanged"
           # forever and never publish anything.
-          git add docs/data/snapshot.json
-          if git diff --cached --quiet -- docs/data/snapshot.json; then
+          # llms.txt is the same scan as plain text for AI assistants; it only
+          # changes when the snapshot does, so it rides along in the same commit.
+          git add docs/data/snapshot.json docs/llms.txt
+          if git diff --cached --quiet -- docs/data/snapshot.json docs/llms.txt; then
             echo "snapshot unchanged — nothing to commit"
             exit 0
           fi
@@ -50,6 +52,6 @@ jobs:
           # The daily improvement routine pushes to the same branch, so a scan
           # that started before its commit would be rejected as non-fast-forward.
           # Rebasing the single snapshot commit on top is always safe here: this
-          # job only ever touches one file that nothing else writes.
+          # job only ever touches two generated files that nothing else writes.
           git pull --rebase
           git push

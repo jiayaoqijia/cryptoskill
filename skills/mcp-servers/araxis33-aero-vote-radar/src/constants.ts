@@ -115,6 +115,22 @@ export const DEFILLAMA_PRICE_URL = "https://coins.llama.fi/prices/current";
 // that wedges every future call too, not just the one that hit it.
 export const DEFILLAMA_TIMEOUT_MS = 8000;
 
+// How many extra attempts a DefiLlama batch gets after an initial failure
+// (network error, non-ok response, or timeout) before falling back to $0 —
+// mirrors chain.ts's retry around the Base RPC client, which exists for the
+// same reason: a public, unauthenticated endpoint drops occasional requests
+// under load, and that shouldn't cost a whole batch its pricing. Kept lower
+// than the RPC's retryCount (6) since a batch request is comma-joined and
+// costs real latency to redo, and this runs inside mcp-server.ts's per-call
+// budget rather than a single eth_call.
+export const DEFILLAMA_RETRY_COUNT = 2;
+
+// Delay between DefiLlama retry attempts. Short relative to DEFILLAMA_TIMEOUT_MS
+// since most failures worth retrying (a dropped connection, a transient 5xx)
+// clear within a second, not the RPC client's 1500ms (that backs off against
+// rate-limiting; this backs off against a blip).
+export const DEFILLAMA_RETRY_DELAY_MS = 400;
+
 // Max token addresses per DefiLlama price request. A run can touch bribe/fee
 // tokens across hundreds of live-gauge pools, and one comma-joined URL covering
 // all of them at once risks tripping URL-length limits on DefiLlama's edge/CDN —

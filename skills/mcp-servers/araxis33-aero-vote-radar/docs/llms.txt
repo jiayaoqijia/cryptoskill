@@ -1,0 +1,35 @@
+# Aero Vote Radar
+
+> Where to vote veAERO on Aerodrome (Base) this week to earn the most. Enter how much veAERO you hold and get whole percentages to paste into Aerodrome's voting page, ranked by what each pool pays per vote after your own vote dilutes it. Free, open source (MIT), read-only: no wallet connection, no signatures.
+
+Scanned from Base mainnet: 2026-09-25T11:48:33.619Z. The scan re-runs every 6 hours.
+Current epoch closes: 2026-10-01 00:00 UTC. A vote only counts for the epoch it is cast in, so the suggestion below expires then.
+
+## This week's suggestion for 10,000 veAERO
+
+- 57% CL-wtDRAM/USDC (pool 0x98c83E7B5348373E5866F4fdb3ae1682353b8574)
+- 25% CL-QUID/USDC (pool 0x8b289ED9bb4fCf49e358a2EbC5bA2cC60A296c96)
+- 6% CL-tGBP/frxUSD (pool 0x1bf888751d06BF6530ba1c64b9C89DaC8EcB55b8)
+- 6% vAMM-AERO/WELL (pool 0xCd401DE1cBAa0d770eE5FB70ff622c752C92B8c5)
+- 5% vAMM-AERO/MORPHO (pool 0xd433B339c5C801228E1343C678Dc26213A7B8Aac)
+- 1% CL-VIRTUAL/USDC (pool 0x86c21942420B5648bb813637dcD33b97cC57EdE9)
+
+Expected reward for that vote: about $49.40 for the epoch, estimated from each pool's recent epochs and the vote weight it usually settles at. Pools whose rewards swing too much week to week (consistency below 0.5) are left out, as on the page. An estimate, not a promise: other voters move during the week.
+
+Pools scanned: 372. Left out: 172 pool(s) Aerodrome marks "Migrating" to new gauges; its vote page hides them by default.
+Different amounts split differently because your own vote dilutes each pool. For your balance, use the page.
+
+## How to use it
+
+- Web: https://aero.deftools.xyz — type your veAERO balance, copy the percentages, paste them into Aerodrome's vote page.
+- CLI: `npx aero-vote-radar recommend --veaero 10000 --vote-ready`
+- MCP server for AI agents: `npx aero-vote-radar-mcp` (tools: recommend_allocation, list_pool_efficiency, backtest_strategy, get_my_veaero, prepare_vote_calldata)
+
+## Links
+
+- [Live page](https://aero.deftools.xyz)
+- [Source and method](https://github.com/araxis33/aero-vote-radar)
+- [Raw pool data, JSON](https://aero.deftools.xyz/data/snapshot.json)
+- [npm package](https://www.npmjs.com/package/aero-vote-radar)
+
+Not financial advice. The tool prints numbers; the user casts the vote.

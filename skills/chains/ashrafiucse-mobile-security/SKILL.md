@@ -67,6 +67,7 @@ rg -n "UserDefaults|kSecAttrAccessible|Keychain" -g '*.swift' -g '*.m' | head -2
 
 - React Native: tokens in `AsyncStorage` (unencrypted) → Medium; dev deps (`flipper`, `react-devtools-core`) reachable in release builds → Medium
 - Flutter: tokens outside `flutter_secure_storage` → Medium; disabling certificate validation (`badCertificateCallback => true`) → High. Full Dart-side shapes (storage census, dio/adapter cert bypass, WebView channels, platform channels, deep-link routes, `--dart-define` secrets, Random()/md5): `../flutter-security/SKILL.md` — this skill keeps the platform/manifest half
+- Kotlin/Java app-code shapes (EncryptedSharedPreferences, execSQL/rawQuery, TrustManager/HostnameVerifier bypass, `@JavascriptInterface` bodies, PendingIntent immutability, Keystore/ECB, logcat tokens, google-services.json): `../android-code-security/SKILL.md` — this skill keeps the manifest half; the WebView-bridge greps above stop at existence, that skill opens the method bodies
 
 ## Reporting
 

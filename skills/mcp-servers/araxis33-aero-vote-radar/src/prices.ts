@@ -1,4 +1,4 @@
-import { DEFILLAMA_PRICE_URL, DEFILLAMA_TIMEOUT_MS, PRICE_BATCH_SIZE, PRICE_BATCH_CONCURRENCY, PRICE_CACHE_TTL_MS, PRICE_FAILURE_CACHE_TTL_MS } from "./constants.js";
+import { DEFILLAMA_PRICE_URL, DEFILLAMA_TIMEOUT_MS, DEFILLAMA_RETRY_COUNT, DEFILLAMA_RETRY_DELAY_MS, PRICE_BATCH_SIZE, PRICE_BATCH_CONCURRENCY, PRICE_CACHE_TTL_MS, PRICE_FAILURE_CACHE_TTL_MS } from "./constants.js";
 import { mapWithConcurrency } from "./util.js";
 
 type DefiLlamaResponse = {
@@ -36,6 +36,10 @@ function isFresh(entry: CachedPrice | undefined): entry is CachedPrice {
  * token doesn't blow up a whole pool's calculation — it just contributes $0.
  * That $0 is cached far more briefly than a real price, so a token that failed
  * to price once isn't stuck at zero for the rest of a long-lived process.
+ * Unlike mcp-server.ts's long-lived process, the CLI is a fresh process per
+ * invocation and never gets that later retry within a single run — so a
+ * batch retries a few times (DEFILLAMA_RETRY_COUNT) before falling back to
+ * $0, the same way the Base RPC client retries a dropped request.
  *
  * Requests are chunked into batches of `PRICE_BATCH_SIZE` tokens rather than one
  * request for the whole (potentially hundreds-long) token list, so a single
@@ -59,20 +63,25 @@ export async function getTokenPrices(
 
   await mapWithConcurrency(batches, PRICE_BATCH_CONCURRENCY, async (batch) => {
     const keys = batch.map((a) => `base:${a}`).join(",");
-    try {
-      const res = await fetch(`${DEFILLAMA_PRICE_URL}/${keys}`, { signal: AbortSignal.timeout(DEFILLAMA_TIMEOUT_MS) });
-      if (res.ok) {
-        const data = (await res.json()) as DefiLlamaResponse;
-        for (const [key, coin] of Object.entries(data.coins)) {
-          const address = key.split(":")[1]?.toLowerCase();
-          if (address) cache.set(address, { price: coin.price, decimals: coin.decimals, cachedAt: Date.now(), isFallback: false });
+    for (let attempt = 0; attempt <= DEFILLAMA_RETRY_COUNT; attempt++) {
+      try {
+        const res = await fetch(`${DEFILLAMA_PRICE_URL}/${keys}`, { signal: AbortSignal.timeout(DEFILLAMA_TIMEOUT_MS) });
+        if (res.ok) {
+          const data = (await res.json()) as DefiLlamaResponse;
+          for (const [key, coin] of Object.entries(data.coins)) {
+            const address = key.split(":")[1]?.toLowerCase();
+            if (address) cache.set(address, { price: coin.price, decimals: coin.decimals, cachedAt: Date.now(), isFallback: false });
+          }
+          break;
         }
+      } catch {
+        // Network-level failure (DNS, timeout, connection refused) — retried the
+        // same as a non-ok response below, then falls through to the same $0
+        // fallback once retries are exhausted, per this function's contract: one
+        // pricing outage shouldn't blow up a whole pool's calculation (and, since
+        // this is per-batch, doesn't take down other batches' pricing).
       }
-    } catch {
-      // Network-level failure (DNS, timeout, connection refused) — fall through to
-      // the same $0 fallback used for an HTTP error response, per this function's
-      // contract: one pricing outage shouldn't blow up a whole pool's calculation
-      // (and, since this is per-batch, doesn't take down other batches' pricing).
+      if (attempt < DEFILLAMA_RETRY_COUNT) await new Promise((resolve) => setTimeout(resolve, DEFILLAMA_RETRY_DELAY_MS));
     }
     for (const a of batch) {
       if (!isFresh(cache.get(a))) cache.set(a, { price: 0, decimals: 18, cachedAt: Date.now(), isFallback: true });

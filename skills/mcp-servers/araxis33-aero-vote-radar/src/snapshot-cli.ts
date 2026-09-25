@@ -9,8 +9,9 @@ import { formatError } from "./util.js";
  */
 async function main() {
   const outPath = process.argv[2] ?? "docs/data/snapshot.json";
-  const snapshot = await writeSnapshot(outPath);
-  console.error(`wrote ${snapshot.poolCount} pools to ${outPath}`);
+  const llmsPath = process.argv[3] ?? "docs/llms.txt";
+  const snapshot = await writeSnapshot(outPath, llmsPath);
+  console.error(`wrote ${snapshot.poolCount} pools to ${outPath} and the plain-text summary to ${llmsPath}`);
 }
 
 main().catch((err) => {

@@ -4,6 +4,7 @@ import { rankPoolsByEfficiency } from "./efficiency.js";
 import { computeTrend, epochEndOf, isEpochInProgress, WEEKLY_EPOCH } from "./trend.js";
 import { computeVoteStability, previousSettledVotes } from "./dilution.js";
 import { SNAPSHOT_MIN_POOL_RATIO } from "./constants.js";
+import { renderLlmsTxt } from "./llms.js";
 import type { PoolEfficiency, RewardAmount } from "./efficiency.js";
 
 /**
@@ -335,7 +336,7 @@ async function previousPoolCount(outPath: string): Promise<number | null> {
  * runs on a schedule in CI and the result is committed as a plain JSON file. The
  * page then does only the cheap part — the personalised allocation — client-side.
  */
-export async function writeSnapshot(outPath: string): Promise<Snapshot> {
+export async function writeSnapshot(outPath: string, llmsPath?: string): Promise<Snapshot> {
   const ranked = await rankPoolsByEfficiency();
   if (ranked.length === 0) {
     // Refuse to publish an empty snapshot. A failed or rate-limited scan would
@@ -359,10 +360,18 @@ export async function writeSnapshot(outPath: string): Promise<Snapshot> {
     );
   }
 
-  const snapshot = buildSnapshot(ranked, new Date());
+  const generatedAt = new Date();
+  const snapshot = buildSnapshot(ranked, generatedAt);
 
   await mkdir(dirname(resolve(outPath)), { recursive: true });
   await writeFile(resolve(outPath), `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
+
+  // The same scan, as plain text for assistants that read the page without
+  // running it — written only after the guards above passed, so it can never
+  // describe a scan the JSON refused.
+  if (llmsPath) {
+    await writeFile(resolve(llmsPath), renderLlmsTxt(ranked, generatedAt, snapshot.epochEndsAt), "utf8");
+  }
 
   return snapshot;
 }

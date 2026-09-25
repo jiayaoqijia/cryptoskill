@@ -1,0 +1,12 @@
+# Deny-list for anon_check.py — one term per line; lines starting with 're:' are regexes.
+# Copy to your private project (do NOT commit a filled-in list to a public repo).
+# Author names (all spellings, with and without diacritics, pinyin variants)
+Alice Example
+A. Example
+# Code-host / e-mail account names
+aexample
+# Affiliations, labs, grant numbers, city if unusual
+Example University
+re:example\s+lab(oratory)?
+# Machine names / usernames that appear in paths or logs
+re:/home/aexample

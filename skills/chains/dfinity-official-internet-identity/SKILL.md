@@ -75,6 +75,10 @@ Internet Identity (II) is the Internet Computer's native authentication system. 
 
     Do not clear it with `--legacy-peer-deps` — that skips the peer check and installs the mismatched pair anyway. Pin `@icp-sdk/auth@^10` with `@icp-sdk/core@^6`, or stay on `@icp-sdk/auth@^9` if something else holds you on core 5.
 
+18. **Signing in against a local II without `agentOptions`.** The client mints its delegations by calling the II canister, through an agent that verifies responses against the mainnet root key by default. With a local II (`ii: true`), the popup opens at `http://id.ai.localhost:8000/authorize` and the ceremony completes, but the mint then fails with `TrustError: Certificate verification error` (`"Invalid signature"`). Pass `agentOptions: { rootKey }` with the root key from the `ic_env` cookie, and leave `host` unset. With mainnet II (the default), leave `agentOptions` unset. A local II from an older network launcher lacks the minting methods entirely: run `icp network update` and restart the network. See "Fallback: deploy II locally".
+
+19. **Scheduling a logout from the delegation's expiration.** In 9.x and later the delegation `getIdentity()` signs with is short-lived and replaced by the client as it ages, so a timer set from `identity.getDelegation()`'s expiration signs the user out after minutes, not at the end of the session. The session's end arrives as an `expired` status: subscribe, and leave the signed-in view when `isAuthenticated()` turns false.
+
 ## Using II during local development
 
 **Default: use mainnet II from your local network.** Starting with `icp-cli >= 0.2.4`, the local network (pocket-ic, launched by `icp-cli-network-launcher`) is configured to trust the mainnet subnet's BLS signatures. Delegations signed by `https://id.ai` are accepted by your local replica, so both the sign-in flow *and* authenticated calls to a locally-deployed backend just work — no extra config in `icp.yaml`, no local II canister to manage, and the UI is the real one your users will see.
@@ -93,6 +97,20 @@ networks:
 ```
 
 This deploys the II canisters automatically when the local network is started. The II frontend will be available at `http://id.ai.localhost:8000`, so the client is constructed with `identityProvider: { authorizeUrl: 'http://id.ai.localhost:8000/authorize', canisterId: 'rdmx6-jaaaa-aaaaa-aaadq-cai' }` — the canister id is the same locally, since system canisters keep their mainnet ids on the local network. No canister entry is needed in your project — II is not part of your project's canisters. For the full `icp.yaml` canister configuration, see the **icp-cli** and **static-site** skills.
+
+The client mints its delegations by calling that canister itself, through an agent that verifies responses against the mainnet root key unless told otherwise. Pass the local root key from the `ic_env` cookie via `agentOptions`, or the ceremony completes and the mint then fails with `TrustError: Certificate verification error` (`"Invalid signature"`). Do not set `host`: the agent's default already resolves to the page origin on `localhost` (see the **icp-cli** skill's binding-generation reference).
+
+```javascript
+const authClient = new AuthClient({
+  identityProvider: {
+    authorizeUrl: "http://id.ai.localhost:8000/authorize",
+    canisterId: "rdmx6-jaaaa-aaaaa-aaadq-cai",
+  },
+  agentOptions: { rootKey: canisterEnv?.IC_ROOT_KEY },
+});
+```
+
+The local II must also be recent enough to mint: `@icp-sdk/auth` 9.x and later call its `app_prepare_delegation` / `app_get_delegation` methods, which the II bundled with older network launchers does not have. Run `icp network update` to fetch the latest launcher, then restart the local network.
 
 ### Frontend: Vanilla JavaScript/TypeScript Sign-In Flow
 
@@ -144,10 +162,10 @@ async function signOut() {
 
 // Create an authenticated agent and actor.
 // Uses rootKey from the ic_env cookie — no shouldFetchRootKey or environment branching needed.
+// No host: the default resolves correctly locally, on mainnet and on custom domains.
 async function createAuthenticatedActor(identity, canisterId, idlFactory) {
   const agent = await HttpAgent.create({
     identity,
-    host: window.location.origin,
     rootKey: canisterEnv?.IC_ROOT_KEY,
   });
 

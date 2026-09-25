@@ -1,17 +1,35 @@
 import { test, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { getTokenPrices, toUsd, countUnpricedTokens } from "../src/prices.js";
-import { DEFILLAMA_TIMEOUT_MS, PRICE_CACHE_TTL_MS, PRICE_FAILURE_CACHE_TTL_MS } from "../src/constants.js";
+import { DEFILLAMA_TIMEOUT_MS, DEFILLAMA_RETRY_COUNT, PRICE_CACHE_TTL_MS, PRICE_FAILURE_CACHE_TTL_MS } from "../src/constants.js";
+
+const DEFILLAMA_ATTEMPTS = DEFILLAMA_RETRY_COUNT + 1;
 
 const originalFetch = global.fetch;
 const originalNow = Date.now;
 const originalAbortTimeout = AbortSignal.timeout;
+const originalSetTimeout = global.setTimeout;
 
 afterEach(() => {
   global.fetch = originalFetch;
   Date.now = originalNow;
   AbortSignal.timeout = originalAbortTimeout;
+  global.setTimeout = originalSetTimeout;
 });
+
+/**
+ * Fires a `setTimeout` callback on the next microtask instead of waiting out
+ * its real delay. Used by tests that drive `getTokenPrices` through its
+ * retry-delay wait, so a run touching every retry doesn't burn real wall
+ * clock time — and, incidentally, so it doesn't leave real timers around
+ * that a later test's `AbortSignal.timeout` stub could collide with.
+ */
+function stubSetTimeoutToFireImmediately() {
+  global.setTimeout = ((fn: (...args: unknown[]) => void, _delay?: number, ...args: unknown[]) => {
+    queueMicrotask(() => fn(...args));
+    return 0 as unknown as ReturnType<typeof setTimeout>;
+  }) as typeof setTimeout;
+}
 
 test("getTokenPrices returns looked-up price/decimals on a successful response", async () => {
   global.fetch = (async () =>
@@ -26,20 +44,47 @@ test("getTokenPrices returns looked-up price/decimals on a successful response",
   assert.deepEqual(prices.get("0xaaa"), { price: 2.5, decimals: 6 });
 });
 
-test("getTokenPrices falls back to price 0 on a non-ok HTTP response", async () => {
-  global.fetch = (async () => ({ ok: false })) as unknown as typeof fetch;
+test("getTokenPrices falls back to price 0 on a non-ok HTTP response, after retrying", async () => {
+  stubSetTimeoutToFireImmediately();
+  let calls = 0;
+  global.fetch = (async () => {
+    calls++;
+    return { ok: false };
+  }) as unknown as typeof fetch;
 
   const prices = await getTokenPrices(["0xBBB1"]);
   assert.deepEqual(prices.get("0xbbb1"), { price: 0, decimals: 18 });
+  assert.equal(calls, DEFILLAMA_ATTEMPTS, "an unrecoverable failure should be retried before falling back to $0");
 });
 
-test("getTokenPrices falls back to price 0 rather than throwing when fetch itself rejects (DNS/timeout/connection failure)", async () => {
+test("getTokenPrices falls back to price 0 rather than throwing when fetch itself rejects (DNS/timeout/connection failure), after retrying", async () => {
+  stubSetTimeoutToFireImmediately();
+  let calls = 0;
   global.fetch = (async () => {
+    calls++;
     throw new Error("network failure");
   }) as typeof fetch;
 
   const prices = await getTokenPrices(["0xCCC1"]);
   assert.deepEqual(prices.get("0xccc1"), { price: 0, decimals: 18 });
+  assert.equal(calls, DEFILLAMA_ATTEMPTS, "a network failure should be retried before falling back to $0");
+});
+
+test("getTokenPrices recovers within a batch if a retry succeeds after an initial failure", async () => {
+  stubSetTimeoutToFireImmediately();
+  let calls = 0;
+  global.fetch = (async () => {
+    calls++;
+    if (calls === 1) throw new Error("transient network blip");
+    return {
+      ok: true,
+      json: async () => ({ coins: { "base:0xrecover1": { price: 4, decimals: 18, symbol: "REC" } } }),
+    };
+  }) as unknown as typeof fetch;
+
+  const prices = await getTokenPrices(["0xRECOVER1"]);
+  assert.deepEqual(prices.get("0xrecover1"), { price: 4, decimals: 18 });
+  assert.equal(calls, 2, "should have retried once and succeeded, not fallen back to $0");
 });
 
 test("getTokenPrices passes an abort signal so a stalled request can't hang the batch forever", async () => {
@@ -57,13 +102,24 @@ test("getTokenPrices passes an abort signal so a stalled request can't hang the 
 test("getTokenPrices falls back to price 0 rather than hanging when the request stalls past the timeout", async () => {
   // Stub AbortSignal.timeout to fire immediately instead of waiting out the real
   // DEFILLAMA_TIMEOUT_MS, so this test verifies the stall-handling wiring without
-  // actually taking that long to run.
+  // actually taking that long to run. Also stub setTimeout so the retry-delay
+  // wait between attempts doesn't itself burn real wall clock time.
   AbortSignal.timeout = () => originalAbortTimeout.call(AbortSignal, 0);
+  stubSetTimeoutToFireImmediately();
 
+  let calls = 0;
   global.fetch = (async (_url: string, init?: RequestInit) => {
-    return new Promise((_resolve, reject) => {
-      init?.signal?.addEventListener("abort", () => reject(new DOMException("The operation was aborted", "AbortError")));
-    });
+    calls++;
+    // Only the first attempt exercises the stall itself; retries after it resolve
+    // immediately with a plain HTTP error rather than another synthetic abort, so
+    // this test isn't relying on the timing-sensitive abort stub firing more than
+    // once per run.
+    if (calls === 1) {
+      return new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () => reject(new DOMException("The operation was aborted", "AbortError")));
+      });
+    }
+    return { ok: false };
   }) as typeof fetch;
 
   const prices = await getTokenPrices(["0xstalled1"]);
@@ -182,9 +238,10 @@ test("getTokenPrices fetches batches concurrently rather than one after another"
 });
 
 test("getTokenPrices: a failed batch only zeroes out that batch's tokens, not other batches'", async () => {
+  stubSetTimeoutToFireImmediately();
   global.fetch = (async (url: string) => {
     const keys = url.toString().split("/prices/current/")[1].split(",");
-    if (keys[0].includes("failbatch")) throw new Error("network failure");
+    if (keys[0].includes("failbatch")) throw new Error("network failure"); // exhausts retries every attempt
     return {
       ok: true,
       json: async () => ({
@@ -209,12 +266,14 @@ test("a $0 fallback expires much sooner than a real price, so one failed batch i
   // floor and quietly reorder a ranking.
   let now = 1_000_000;
   Date.now = () => now;
+  stubSetTimeoutToFireImmediately();
 
   let calls = 0;
   global.fetch = (async () => {
     calls++;
-    // Fail once, then start answering.
-    if (calls === 1) throw new Error("network failure");
+    // Fail every attempt of the first outer call (exhausting its retries), then
+    // start answering once the caller comes back for a second outer call.
+    if (calls <= DEFILLAMA_ATTEMPTS) throw new Error("network failure");
     return {
       ok: true,
       json: async () => ({ coins: { "base:0xttl1": { price: 7, decimals: 18, symbol: "TTL" } } }),
@@ -222,18 +281,18 @@ test("a $0 fallback expires much sooner than a real price, so one failed batch i
   }) as unknown as typeof fetch;
 
   assert.deepEqual(await getTokenPrices(["0xTTL1"]), new Map([["0xttl1", { price: 0, decimals: 18 }]]));
-  assert.equal(calls, 1);
+  assert.equal(calls, DEFILLAMA_ATTEMPTS);
 
   // Still inside the failure TTL: served from cache, no refetch.
   now += PRICE_FAILURE_CACHE_TTL_MS - 1;
   assert.deepEqual(await getTokenPrices(["0xTTL1"]), new Map([["0xttl1", { price: 0, decimals: 18 }]]));
-  assert.equal(calls, 1);
+  assert.equal(calls, DEFILLAMA_ATTEMPTS);
 
   // Past it — and well short of the full price TTL, which is what the bug was.
   now += 2;
   assert.ok(PRICE_FAILURE_CACHE_TTL_MS < PRICE_CACHE_TTL_MS);
   assert.deepEqual(await getTokenPrices(["0xTTL1"]), new Map([["0xttl1", { price: 7, decimals: 18 }]]));
-  assert.equal(calls, 2);
+  assert.equal(calls, DEFILLAMA_ATTEMPTS + 1);
 });
 
 test("a successfully looked-up price keeps the full cache TTL", async () => {
