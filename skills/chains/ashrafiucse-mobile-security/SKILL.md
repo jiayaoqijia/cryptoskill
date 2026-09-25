@@ -66,7 +66,7 @@ rg -n "UserDefaults|kSecAttrAccessible|Keychain" -g '*.swift' -g '*.m' | head -2
 ## Step 4 — Cross-platform
 
 - React Native: tokens in `AsyncStorage` (unencrypted) → Medium; dev deps (`flipper`, `react-devtools-core`) reachable in release builds → Medium
-- Flutter: tokens outside `flutter_secure_storage` → Medium; disabling certificate validation (`badCertificateCallback => true`) → High
+- Flutter: tokens outside `flutter_secure_storage` → Medium; disabling certificate validation (`badCertificateCallback => true`) → High. Full Dart-side shapes (storage census, dio/adapter cert bypass, WebView channels, platform channels, deep-link routes, `--dart-define` secrets, Random()/md5): `../flutter-security/SKILL.md` — this skill keeps the platform/manifest half
 
 ## Reporting
 

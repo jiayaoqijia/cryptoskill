@@ -87,6 +87,7 @@ For each applicable domain, **read the sibling skill and follow it** (paths are 
 | GraphQL server / `.graphql` schema files | `../graphql-security/SKILL.md` |
 | LLM/AI stack (langchain/llamaindex/autogen, openai/anthropic SDKs, model files `.pkl/.pt/.gguf/.safetensors`) | `../llm-security/SKILL.md` |
 | Android/iOS files (`AndroidManifest.xml`, `Info.plist`, mobile code) | `../mobile-security/SKILL.md` |
+| Flutter/Dart project (`pubspec.yaml` with a flutter SDK entry, `lib/*.dart`) | `../flutter-security/SKILL.md` — load WITH mobile-security (it owns the manifest half) |
 | Laravel/PHP project (`composer.json` with laravel/framework, `artisan`, Blade views) | `../laravel-security/SKILL.md` |
 | Django/Python project (`manage.py`, `settings.py`, Django in requirements) | `../django-security/SKILL.md` |
 | Rails project (`Gemfile` with rails, `app/controllers`) | `../rails-security/SKILL.md` |
