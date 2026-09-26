@@ -15,17 +15,17 @@
       "official": false
     },
     {
-      "org": "ashrafiucse",
-      "repo": "security-audit-skills",
-      "category": "chains",
-      "prefix": "ashrafiucse-",
-      "official": false
-    },
-    {
       "org": "Senpi-ai",
       "repo": "senpi-skills",
       "category": "exchanges",
       "prefix": "senpi-ai-",
+      "official": false
+    },
+    {
+      "org": "ashrafiucse",
+      "repo": "security-audit-skills",
+      "category": "chains",
+      "prefix": "ashrafiucse-",
       "official": false
     },
     {
@@ -43,24 +43,17 @@
       "official": false
     },
     {
-      "org": "Bazinga640",
-      "repo": "evm-chains-mcp-server",
+      "org": "0xsl1m",
+      "repo": "cerebrus-pulse-mcp",
       "category": "mcp-servers",
-      "prefix": "bazinga640-",
+      "prefix": "0xsl1m-",
       "official": false
     },
     {
-      "org": "araxis33",
-      "repo": "aero-vote-radar",
+      "org": "nichsedge",
+      "repo": "portfolio-integration",
       "category": "mcp-servers",
-      "prefix": "araxis33-",
-      "official": false
-    },
-    {
-      "org": "assetfare",
-      "repo": "assetfare-mcp",
-      "category": "mcp-servers",
-      "prefix": "assetfare-",
+      "prefix": "nichsedge-",
       "official": false
     },
     {
@@ -71,10 +64,17 @@
       "official": false
     },
     {
-      "org": "Desperate10",
-      "repo": "profunding-mcp",
+      "org": "Bazinga640",
+      "repo": "evm-chains-mcp-server",
       "category": "mcp-servers",
-      "prefix": "desperate10-",
+      "prefix": "bazinga640-",
+      "official": false
+    },
+    {
+      "org": "0xfreak0",
+      "repo": "sui-mcp",
+      "category": "mcp-servers",
+      "prefix": "0xfreak0-",
       "official": false
     },
     {
@@ -185,19 +185,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-18",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-19",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-18",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-19",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-09-18",
+      "query": "crypto agent skills language:Python pushed:>2026-09-19",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-09-18",
+      "query": "DeFi MCP server pushed:>2026-09-19",
       "status": "checked"
     },
     {

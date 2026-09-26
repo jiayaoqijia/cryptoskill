@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { LLMS_EXAMPLE_VEAERO, LLMS_MIN_CONSISTENCY, LLMS_VOTE_BASIS, renderLlmsTxt } from "../src/llms.js";
 import type { PoolEfficiency } from "../src/efficiency.js";
+import { DEFAULT_MIN_CONSISTENCY } from "../src/constants.js";
 
 function ranked(address: string, symbol: string, overrides: Partial<PoolEfficiency> = {}): PoolEfficiency {
   return {
@@ -76,6 +77,12 @@ test("llms.txt uses the same defaults the hosted page opens on", async () => {
   const selected = (id: string) =>
     html.match(new RegExp(`<select id="${id}">[\\s\\S]*?<option value="([^"]+)" selected>`))?.[1];
   assert.equal(Number(selected("mincons")), LLMS_MIN_CONSISTENCY);
+  // The CLI's and MCP's recommend default is the page's too (2026-09-25).
+  assert.equal(DEFAULT_MIN_CONSISTENCY, LLMS_MIN_CONSISTENCY);
+  const cli = await readFile(new URL("../src/cli.ts", import.meta.url), "utf8");
+  assert.equal((cli.match(/"min-consistency", DEFAULT_MIN_CONSISTENCY\)/g) ?? []).length, 2, "recommend and backtest");
+  const mcp = await readFile(new URL("../src/mcp-server.ts", import.meta.url), "utf8");
+  assert.equal((mcp.match(/minConsistency = DEFAULT_MIN_CONSISTENCY/g) ?? []).length, 2, "recommend_allocation and backtest_strategy");
   assert.equal(selected("votebasis"), LLMS_VOTE_BASIS);
   assert.equal(Number(html.match(/<input id="veaero"[^>]*value="(\d+)"/)?.[1]), LLMS_EXAMPLE_VEAERO);
 });

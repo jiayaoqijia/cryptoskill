@@ -23,6 +23,10 @@ export const LLMS_MIN_CONSISTENCY = 0.5;
 export const LLMS_VOTE_BASIS = "typical" as const;
 
 const SITE = "https://aero.deftools.xyz";
+
+/** Announced by Aero on 2026-09-25; the page carries the same notice (#aeroLaunchNote). */
+const AERO_LAUNCH_UTC = "2026-10-22 00:00 UTC";
+const AERO_LAUNCH_URL = "https://aero.xyz/articles/aero-launch-update-all-systems-go/";
 const REPO = "https://github.com/araxis33/aero-vote-radar";
 
 function usd(n: number): string {
@@ -65,6 +69,8 @@ export function renderLlmsTxt(
     "",
     `Scanned from Base mainnet: ${generatedAt.toISOString()}. The scan re-runs every 6 hours.`,
     `Current epoch closes: ${utc(epochEndsAt)}. A vote only counts for the epoch it is cast in, so the suggestion below expires then.`,
+    "",
+    `Coming change: Aerodrome becomes Aero on ${AERO_LAUNCH_UTC}, with a new rewards system (sAERO and Predictive Allocation). How veAERO carries over has not been published yet; this file covers the current weekly veAERO vote. Source: ${AERO_LAUNCH_URL}`,
     "",
     `## This week's suggestion for ${LLMS_EXAMPLE_VEAERO.toLocaleString("en-US")} veAERO`,
     "",

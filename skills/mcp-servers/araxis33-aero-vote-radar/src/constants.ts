@@ -194,3 +194,18 @@ export const MIGRATING_POOL_FACTORIES: ReadonlySet<string> = new Set([
 // The committed history has held 360-370 pools for months, so a drop below
 // half that is a scan problem, not a sudden and genuine drop in live gauges.
 export const SNAPSHOT_MIN_POOL_RATIO = 0.5;
+
+// Default consistency floor for anything that *recommends* a vote (CLI
+// `recommend`, MCP `recommend_allocation`) and for the backtests that score
+// it, so they test the strategy they recommend. The hosted page has opened on
+// 0.5 since it shipped; the CLI and MCP defaulted to no filter, and on the
+// 2026-09-25 scan that put 100% of 10,000 veAERO into one pool whose weight had
+// dropped to a twentieth of its usual for a week (consistency 0.49).
+//
+// Measured before changing it (backtest, 8 epochs, 2026-09-25), total USD:
+//   10,000 veAERO:  no filter $208.73 -> 0.5 $299.27 (+43%)
+//   25,000 veAERO:  no filter $662.50 -> 0.5 $790.99 (+19%)
+//   100,000 veAERO: no filter $2,221.18 -> 0.5 $2,560.74 (+15%)
+// Leaving out the newest epoch the gain is still +11% / +15% / +22%.
+// `pools` keeps no filter: it lists, it does not recommend.
+export const DEFAULT_MIN_CONSISTENCY = 0.5;

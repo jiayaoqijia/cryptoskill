@@ -16,7 +16,7 @@ import {
 import { backtestLive } from "./backtest.js";
 import { buildVoteCalldata } from "./calldata.js";
 import { fetchVeAeroPositions } from "./veAero.js";
-import { BACKTEST_EPOCHS, MAX_BACKTEST_EPOCHS } from "./constants.js";
+import { BACKTEST_EPOCHS, DEFAULT_MIN_CONSISTENCY, MAX_BACKTEST_EPOCHS } from "./constants.js";
 import { formatError, isValidAddress } from "./util.js";
 import { computeTrend, isEpochInProgress } from "./trend.js";
 
@@ -141,7 +141,7 @@ server.registerTool(
         .min(0)
         .max(1)
         .optional()
-        .describe("Only allocate to pools whose consistency score is at least this (0..1), filtering out pools whose apparent value is one one-off bribe."),
+        .describe(`Only allocate to pools whose consistency score is at least this (0..1), filtering out pools whose apparent value is one one-off bribe. Default ${DEFAULT_MIN_CONSISTENCY}, the same as the hosted page; pass 0 to consider every pool.`),
       maxWeight: z
         .number()
         .gt(0)
@@ -158,7 +158,7 @@ server.registerTool(
         ),
     },
   },
-  withErrorHandling(async ({ veAero, address, topCandidates = 15, minConsistency = 0, maxWeight = 1, voteBasis = "previous" }) => {
+  withErrorHandling(async ({ veAero, address, topCandidates = 15, minConsistency = DEFAULT_MIN_CONSISTENCY, maxWeight = 1, voteBasis = "previous" }) => {
     const budget = await resolveVeAeroBudget(veAero, address);
     // Same rule as the CLI: pools Aerodrome is migrating are never recommended.
     const ranked = withoutMigrating(await rankPoolsByEfficiency()).filter((p) => p.consistency >= minConsistency);
@@ -238,11 +238,11 @@ server.registerTool(
         .max(1)
         .optional()
         .describe(
-          "Only allocate to pools whose consistency — measured over the trailing window as it stood before each tested epoch, never today's — was at least this (0..1). Use it to backtest the same filtered strategy you would pass to the allocation tool; without it the report describes the unfiltered strategy instead. The naive baseline stays unfiltered either way, so uplift figures remain comparable.",
+          `Only allocate to pools whose consistency — measured over the trailing window as it stood before each tested epoch, never today's — was at least this (0..1). Default ${DEFAULT_MIN_CONSISTENCY}, the same as the allocation tool's, so the backtest scores the strategy it recommends; pass 0 to score the unfiltered strategy. The naive baseline stays unfiltered either way, so uplift figures remain comparable.`,
         ),
     },
   },
-  withErrorHandling(async ({ veAero, address, epochs = BACKTEST_EPOCHS, minConsistency = 0 }) => {
+  withErrorHandling(async ({ veAero, address, epochs = BACKTEST_EPOCHS, minConsistency = DEFAULT_MIN_CONSISTENCY }) => {
     const budget = await resolveVeAeroBudget(veAero, address);
     const report = await backtestLive(budget, epochs, undefined, minConsistency);
 

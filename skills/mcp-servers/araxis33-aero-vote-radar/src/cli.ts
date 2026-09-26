@@ -16,7 +16,7 @@ import { fetchPoolEpochs, withoutMigrating, type EpochData } from "./pools.js";
 import { getTokenPrices } from "./prices.js";
 import { mapWithConcurrency } from "./util.js";
 import { periodStartOf, WEEKLY_EPOCH } from "./trend.js";
-import { BACKTEST_EPOCHS, MAX_BACKTEST_EPOCHS } from "./constants.js";
+import { BACKTEST_EPOCHS, DEFAULT_MIN_CONSISTENCY, MAX_BACKTEST_EPOCHS } from "./constants.js";
 import { formatError, isValidAddress, padCol, wrapText } from "./util.js";
 import { computeTrend, epochEndOf, formatDuration, isEpochInProgress } from "./trend.js";
 
@@ -374,7 +374,7 @@ function printVoteCalldata(
 
 async function cmdRecommend(args: string[]) {
   const topK = parsePositiveIntFlag(args, "top", 15);
-  const minConsistency = parseUnitIntervalFlag(args, "min-consistency", 0);
+  const minConsistency = parseUnitIntervalFlag(args, "min-consistency", DEFAULT_MIN_CONSISTENCY);
   const maxWeight = parseUnitIntervalFlag(args, "max-weight", 1);
   const voteBasis = parseVoteBasisFlag(args);
   if (topK === undefined || minConsistency === undefined || maxWeight === undefined || maxWeight === 0 || voteBasis === undefined) {
@@ -399,6 +399,10 @@ async function cmdRecommend(args: string[]) {
   const migratingLeftOut = allRanked.length - withoutMigrating(allRanked).length;
   if (migratingLeftOut > 0) {
     console.error(`(left out ${migratingLeftOut} pool(s) Aerodrome is migrating to new gauges; they are hidden from its default vote list)`);
+  }
+  const spikyLeftOut = withoutMigrating(allRanked).length - ranked.length;
+  if (spikyLeftOut > 0) {
+    console.error(`(left out ${spikyLeftOut} pool(s) with consistency below ${minConsistency}; pass --min-consistency 0 to include them)`);
   }
   const allocation = recommendAllocation(ranked, veaero, topK, undefined, maxWeight, voteBasis);
 
@@ -506,7 +510,7 @@ async function cmdRecommend(args: string[]) {
 
 async function cmdBacktest(args: string[]) {
   const epochs = parsePositiveIntFlag(args, "epochs", BACKTEST_EPOCHS, MAX_BACKTEST_EPOCHS);
-  const minConsistency = parseUnitIntervalFlag(args, "min-consistency", 0);
+  const minConsistency = parseUnitIntervalFlag(args, "min-consistency", DEFAULT_MIN_CONSISTENCY);
   if (epochs === undefined || minConsistency === undefined) {
     console.error(BACKTEST_USAGE);
     process.exitCode = 1;
