@@ -2,6 +2,7 @@ import { fetchActivePools, fetchPoolEpochs, type PoolInfo, type EpochData } from
 import { getTokenPrices, toUsd, countUnpricedTokens } from "./prices.js";
 import { TREND_EPOCHS, MIN_TRAILING_USD } from "./constants.js";
 import { mapWithConcurrency } from "./util.js";
+import { forecastEpochUsd, isEpochInProgress } from "./trend.js";
 
 const VE_DECIMALS = 18;
 
@@ -44,6 +45,12 @@ export interface PoolEfficiency {
   latestEpochUsd: number;
   /** Simple trailing average of the last few epochs' USD value — a naive forecast, not an ML prediction. */
   trailingAvgUsd: number;
+  /**
+   * What the pool is expected to pay next epoch: `trailingAvgUsd` capped at the
+   * last completed epoch (see `forecastEpochUsd`). This, not the average, is
+   * what `predictedValuePerVote` and every allocation divide.
+   */
+  forecastUsd: number;
   epochsObserved: number;
   currentValuePerVote: number;
   predictedValuePerVote: number;
@@ -162,6 +169,7 @@ export function computePoolEfficiency(
   pool: PoolInfo,
   epochs: EpochData[],
   prices: Map<string, { price: number; decimals: number }>,
+  asOfUnixSeconds: number = Math.floor(Date.now() / 1000),
 ): PoolEfficiency | null {
   if (!epochs || epochs.length === 0) return null;
 
@@ -175,7 +183,8 @@ export function computePoolEfficiency(
   if (trailingAvgUsd < MIN_TRAILING_USD) return null; // too thin to be a meaningful signal
 
   const currentValuePerVote = latestEpochUsd / currentVotesVeAero;
-  const predictedValuePerVote = trailingAvgUsd / currentVotesVeAero;
+  const forecastUsd = forecastEpochUsd(usdValues, isEpochInProgress(latest.ts, asOfUnixSeconds));
+  const predictedValuePerVote = forecastUsd / currentVotesVeAero;
   const predictiveEdge =
     currentValuePerVote > 0 ? predictedValuePerVote / currentValuePerVote - 1 : 0;
   const { volatility, consistency } = computeConsistency(usdValues);
@@ -186,6 +195,7 @@ export function computePoolEfficiency(
     currentVotesVeAero,
     latestEpochUsd,
     trailingAvgUsd,
+    forecastUsd,
     epochsObserved: epochs.length,
     epochUsdSeries: usdValues,
     epochVotesSeries: epochs.map((e) => Number(e.votes) / 10 ** VE_DECIMALS),

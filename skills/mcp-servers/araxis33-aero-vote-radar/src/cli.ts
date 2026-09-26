@@ -501,7 +501,7 @@ async function cmdRecommend(args: string[]) {
       ].join(""),
     );
   }
-  console.log(`\nTotal expected value next epoch (heuristic, trailing-average based): ${fmtUsd(totalExpectedUsd)}`);
+  console.log(`\nTotal expected value next epoch (heuristic: trailing average capped at the last completed epoch): ${fmtUsd(totalExpectedUsd)}`);
   console.log(epochDeadlineLine());
   printVoteBasisCaveat(veaero, voteBasis);
   console.log("\nPass --vote-ready for whole percentages you can type straight into Aerodrome's voting UI.");

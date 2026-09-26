@@ -72,9 +72,11 @@ const siteModule = new Function(`
   ${extractFunction(siteSource, "votesToExpect")}
   ${extractFunction(siteSource, "typicalVotes")}
   ${extractFunction(siteSource, "votesForBasis")}
+  ${extractFunction(siteSource, "forecastUsd")}
+  ${extractFunction(siteSource, "rateForBasis")}
   ${extractConst(siteSource, "VOTE_BASIS_CROSSOVER_VEAERO")}
   ${extractFunction(siteSource, "voteBasisCaveat")}
-  return { allocateAcrossCandidates, toWholePercentWeights, expectedUsdForWholePercentVote, votesToExpect, typicalVotes, votesForBasis, voteBasisCaveat, VOTE_BASIS_CROSSOVER_VEAERO };
+  return { allocateAcrossCandidates, toWholePercentWeights, expectedUsdForWholePercentVote, votesToExpect, typicalVotes, votesForBasis, forecastUsd, rateForBasis, voteBasisCaveat, VOTE_BASIS_CROSSOVER_VEAERO };
 `)() as {
   allocateAcrossCandidates: SiteAllocate;
   toWholePercentWeights: SitePercents;
@@ -86,6 +88,8 @@ const siteModule = new Function(`
     basis: string,
   ) => number;
   voteBasisCaveat: (veAeroBudget: number, voteBasis: string) => string | null;
+  forecastUsd: (pool: { forecastUsd?: number; trailingAvgUsd: number }) => number;
+  rateForBasis: (pool: Record<string, unknown>, basis: string) => number;
   VOTE_BASIS_CROSSOVER_VEAERO: number;
 };
 
@@ -571,4 +575,17 @@ test("docs/index.html's fetchCastVotes stops a lock's walk on a genuine revert b
     return oneVeAero;
   };
   await assert.rejects(() => buildFetchCastVotes(realFailure)([1n]));
+});
+
+test("docs/index.html prices the typical basis on the snapshot's forecast, not the trailing average", () => {
+  // CL-wtDRAM/USDC on 2026-09-26: six epochs averaged $207, the last one paid $9.
+  const pool = { trailingAvgUsd: 207, forecastUsd: 9, votesVeAero: 5_534, expectedVotes: 34_029 };
+  const votes = expectedDilutedVotes(pool.votesVeAero, pool.expectedVotes);
+
+  assert.equal(siteModule.forecastUsd(pool), 9);
+  assert.equal(siteModule.rateForBasis(pool, "typical"), 9 / votes);
+});
+
+test("docs/index.html falls back to the trailing average for a snapshot written before forecastUsd existed", () => {
+  assert.equal(siteModule.forecastUsd({ trailingAvgUsd: 207 }), 207);
 });

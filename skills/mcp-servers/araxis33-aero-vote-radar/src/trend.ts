@@ -200,3 +200,31 @@ export function computeTrend(
 
   return { momentum: recentAvg / olderAvg - 1, completedEpochs: completed.length };
 }
+
+/**
+ * The per-epoch USD a pool is expected to pay next: its trailing average, but
+ * never more than the last *completed* epoch actually paid.
+ *
+ * The plain average was the forecast until 2026-09-26, and it is badly wrong
+ * on exactly the pools it ranks highest. A pool that paid $480 a week and is
+ * now paying $9 still averages ~$200 over six epochs, so it looks twenty times
+ * better than it is — the old weeks outvote the new ones. Replayed over 19
+ * weeks of live history (every non-migrating pool, consistency ≥ 0.5, top 15),
+ * capping at the last completed epoch earned 59–86% more than the average at
+ * 10k–1M veAERO and beat it in 18–19 of 19 weeks, while its promised total came
+ * within 1.4× of what was realised instead of 4–11×.
+ *
+ * A min rather than the last epoch alone: last-epoch-only earned a few percent
+ * more in that replay, but it would hand a one-week bribe spike its full value;
+ * the min trusts a fall immediately and a rise only once the average agrees.
+ *
+ * `currentEpochPartial` decides which entry is the last completed one — the
+ * running epoch has only accrued part of its week and would read as a collapse.
+ * With no completed epoch yet there is nothing to cap by, so the average stands.
+ */
+export function forecastEpochUsd(epochUsd: number[], currentEpochPartial: boolean): number {
+  if (epochUsd.length === 0) return 0;
+  const trailing = average(epochUsd);
+  const lastCompleted = currentEpochPartial ? epochUsd[1] : epochUsd[0];
+  return lastCompleted === undefined ? trailing : Math.min(trailing, lastCompleted);
+}

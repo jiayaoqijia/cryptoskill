@@ -11,6 +11,7 @@ function ranked(address: string, symbol: string, overrides: Partial<PoolEfficien
     currentVotesVeAero: 50_000,
     latestEpochUsd: 100,
     trailingAvgUsd: 120,
+    forecastUsd: overrides.trailingAvgUsd ?? 120,
     epochsObserved: 6,
     epochUsdSeries: [100, 110, 120, 130, 120, 140],
     epochVotesSeries: [50_000, 50_000, 50_000, 50_000, 50_000, 50_000],

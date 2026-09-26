@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   computeTrend,
+  forecastEpochUsd,
   epochEndOf,
   epochStartOf,
   formatDuration,
@@ -186,4 +187,27 @@ test("formatDuration shows the two coarsest units, and never a negative one", ()
   assert.equal(formatDuration(0), "0m");
   assert.equal(formatDuration(-500), "0m");
   assert.equal(formatDuration(NaN), "0m");
+});
+
+test("forecastEpochUsd caps a decaying pool at what its last completed epoch paid", () => {
+  // CL-wtDRAM/USDC's series on 2026-09-26, running epoch first: the average is
+  // ~$207, but the last finished week paid $9 — the forecast has to say $9.
+  const series = [6, 9, 56, 249, 444, 482];
+  assert.equal(forecastEpochUsd(series, true), 9);
+});
+
+test("forecastEpochUsd keeps the average when the last completed epoch paid more", () => {
+  // A one-week spike is not trusted on its own: a rise waits for the average.
+  assert.equal(forecastEpochUsd([400, 100, 100, 100], false), 175);
+});
+
+test("forecastEpochUsd skips the running epoch rather than reading a partial week as a collapse", () => {
+  // Entry 0 has only accrued two days; the last *completed* epoch is entry 1.
+  assert.equal(forecastEpochUsd([10, 100, 100], true), 70);
+  assert.equal(forecastEpochUsd([10, 100, 100], false), 10);
+});
+
+test("forecastEpochUsd falls back to the average when no epoch has completed yet", () => {
+  assert.equal(forecastEpochUsd([50], true), 50);
+  assert.equal(forecastEpochUsd([], false), 0);
 });

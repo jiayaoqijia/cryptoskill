@@ -21,8 +21,10 @@ export interface SnapshotPool {
   symbol: string;
   pool: string;
   votesVeAero: number;
-  /** Trailing-average USD per epoch — the allocator's `expectedUsd` input. */
+  /** Trailing-average USD per epoch. Shown for context; the allocator uses `forecastUsd`. */
   trailingAvgUsd: number;
+  /** `trailingAvgUsd` capped at the last completed epoch — the allocator's `expectedUsd` input. See `forecastEpochUsd`. */
+  forecastUsd: number;
   latestEpochUsd: number;
   currentValuePerVote: number;
   predictedValuePerVote: number;
@@ -55,7 +57,7 @@ export interface SnapshotPool {
   /** 1 / (1 + coefficient of variation) of the completed epochs' vote weights. Low = a denominator that jumps around. */
   voteStability: number;
   /**
-   * `trailingAvgUsd` divided by the weight the pool settled at last epoch — the
+   * `forecastUsd` divided by the weight the pool settled at last epoch — the
    * most accurate available prediction of the weight this epoch will settle at,
    * and what the allocator divides by. Published alongside
    * `predictedValuePerVote` (which divides by the live mid-week tally) rather
@@ -176,6 +178,7 @@ export function toSnapshotPool(p: PoolEfficiency, generatedAt: Date): SnapshotPo
     pool: p.pool.address,
     votesVeAero: p.currentVotesVeAero,
     trailingAvgUsd: p.trailingAvgUsd,
+    forecastUsd: p.forecastUsd,
     latestEpochUsd: p.latestEpochUsd,
     currentValuePerVote: p.currentValuePerVote,
     predictedValuePerVote: p.predictedValuePerVote,
@@ -191,7 +194,7 @@ export function toSnapshotPool(p: PoolEfficiency, generatedAt: Date): SnapshotPo
     expectedVotes,
     refillRatio,
     voteStability,
-    dilutionAdjustedValuePerVote: dilutedVotes > 0 ? p.trailingAvgUsd / dilutedVotes : 0,
+    dilutionAdjustedValuePerVote: dilutedVotes > 0 ? p.forecastUsd / dilutedVotes : 0,
     latestEpochBribes: toAmountPairs(p.latestEpochBribes),
     latestEpochFees: toAmountPairs(p.latestEpochFees),
     migrating: !!p.pool.migrating,

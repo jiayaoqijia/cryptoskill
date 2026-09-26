@@ -18,6 +18,7 @@ function ranked(overrides: Partial<PoolEfficiency> & { symbol?: string }): PoolE
     currentVotesVeAero: 500,
     latestEpochUsd: 100,
     trailingAvgUsd: 120,
+    forecastUsd: rest.trailingAvgUsd ?? 120,
     epochsObserved: 6,
     epochUsdSeries: [100, 110, 120, 130, 120, 140],
     epochVotesSeries: [500, 500, 500, 500, 500, 500],

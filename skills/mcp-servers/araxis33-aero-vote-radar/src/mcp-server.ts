@@ -78,7 +78,7 @@ server.registerTool(
   {
     title: "List Aerodrome pool vote efficiency",
     description:
-      "Ranks all live-gauge Aerodrome (Base) pools by current and trend-predicted USD value per veAERO vote, using live on-chain data from Aerodrome's Sugar contracts plus DefiLlama USD pricing. 'Predicted' is a simple trailing average of recent epochs, not a machine-learning forecast. Each pool also reports `momentum`: the recent completed epochs' average over the older ones', minus 1 (null without enough history) — direction that the trailing average and consistency alone can't show.",
+      "Ranks all live-gauge Aerodrome (Base) pools by current and trend-predicted USD value per veAERO vote, using live on-chain data from Aerodrome's Sugar contracts plus DefiLlama USD pricing. 'Predicted' is the trailing average of recent epochs capped at what the last completed epoch paid, not a machine-learning forecast. Each pool also reports `momentum`: the recent completed epochs' average over the older ones', minus 1 (null without enough history) — direction that the trailing average and consistency alone can't show.",
     inputSchema: {
       top: z.number().int().positive().max(100).optional().describe("How many top pools to return (default 20)"),
       minConsistency: z

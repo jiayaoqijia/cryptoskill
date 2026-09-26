@@ -1,227 +1,130 @@
-# Spot — swap, bridge, and exits that fire while you sleep
+# Spot
 
-One endpoint (`POST /v1/swap`, MCP `fere_swap`) does same-chain swaps, cross-chain
-bridges and EVM↔Solana in the same body, and takes a stop-loss and take-profit inline.
-None of the wallet vendors or aggregators we compared (Privy, Turnkey, CDP, Crossmint,
-Dynamic, Jupiter, 0x, 1inch) puts `stop_loss` in the swap body — it is the reason to be here.
+`POST /v1/swap` (MCP `fere_swap`) does same-chain swaps, cross-chain bridges, and EVM↔Solana in one body, and takes a stop-loss and take-profit inline.
 
 ## Chains, sentinels, units
 
-| Chain | Fere `chain_id` | Native | Quote asset | Notes |
-|---|---|---|---|---|
-| Solana | **7565164** | SOL (9) | USDC `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v` (6) | Fere's own id, **not** Codex's `1399811149` |
-| Base | 8453 | ETH (18) | USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` (6) | `cdp_network_name: base` |
-| Robinhood Chain | 4663 | ETH (18) | **USDG** `0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168` (6) | not a CDP network |
-| Ethereum / Arbitrum / Polygon | 1 / 42161 / 137 | ETH / ETH / POL | native USDC (`0xA0b8…eB48`, `0xaf88…5831`, `0x3c49…3359`, all 6 dp) | swap + bridge |
-| BNB | 56 | BNB | **none we have verified** — pass the token address | swap + bridge |
-| Hyperliquid | 999 | HYPE | USDC | **perp + HL spot only**, no `swap` |
+| Chain | `chain_id` | Native | Quote asset |
+|---|---|---|---|
+| Solana | 7565164 | SOL (9) | USDC `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v` (6) |
+| Base | 8453 | ETH (18) | USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` (6) |
+| Robinhood Chain | 4663 | ETH (18) | USDG `0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168` (6) |
+| Ethereum | 1 | ETH (18) | USDC `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (6) |
+| Arbitrum | 42161 | ETH (18) | USDC `0xaf88d065e77c8cC2239327C5EDb3A432268e5831` (6) |
+| Polygon | 137 | POL (18) | USDC `0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359` (6) |
+| BNB | 56 | BNB (18) | pass the token address |
+| Hyperliquid | 999 | HYPE | USDC. Perp and HL spot only. No `swap`. |
 
-Quote-asset addresses are checked against Circle's contract-address page (and Base +
-Solana USDC against live holdings rows); RH USDG comes from our own live trades. The
-CLI's chain table carries exactly these and nothing unverified.
-
-`GET /v1/chains` (no auth) is the truth and returns 8 with `explorer_url` for building
-tx links. `/capabilities` still says 5 — schema drift, ignore it.
+Solana's id is Fere's `7565164`, not `1399811149`. `GET /v1/chains` (no auth) is the live list, including `explorer_url`. `/capabilities` still says five chains. Ignore it.
 
 ```
-EVM native sentinel:  0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE   ← 0x + exactly 40 e/E
+EVM native sentinel:  0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
 Solana native:        So11111111111111111111111111111111111111112
 ```
 
-**The most expensive typo we ever made was a 41-character, one-`e`-short sentinel.**
-(On an unfunded wallet a dryrun with that sentinel, or the zero address, or a $1
-notional, all fail identically on balance — the balance check runs first, so none of
-those rules are testable without funds. The $5 floor is from live runs, not the sweep.)
-Every order failed with a contradictory body until Fere's own dev read the task ids.
-Assert it at module load (`fere.py` does, and `test_fere.py` pins it) so a shortened
-string fails the build instead of a live order. The zero address `0x000…0` **passes
-dryrun and fails live** — dryrun validates balance, never the route. `"native"` is
-accepted as a chain-agnostic fallback; never send it first.
+The sentinel is `0x` plus exactly 40 `e`/`E` characters. Assert that length before sending. `fere.py` does. The zero address passes dryrun and fails live, because dryrun checks balance and not the route. Do not send `"native"` first.
 
-`amount` is always a **string in smallest units**. Compute it in integer/Decimal math,
-never floats. Solana mints are base58 and **case-sensitive** — lowercasing an address
-(a habit from EVM) corrupts every Solana order. Key your own ledger by a lowercased id
-if you like, but keep the wire address's case.
+`amount` is a string of smallest units. Use integer or `Decimal` math. Solana mints are case-sensitive. Keep the wire address's case.
+
+Budget 60–100 bps per same-chain leg. `platform_fee_amount` can be `"0"` while the route still tolls.
 
 ## The swap body
 
 ```jsonc
 POST /v1/swap?wait=true&timeout=90
 {
-  "chain_id_in": 8453, "chain_id_out": 8453,          // differ => bridge, in one call
+  "chain_id_in": 8453, "chain_id_out": 8453,
   "token_in":  "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
   "token_out": "0x<token>",
-  "amount": "10000000",                                // $10 USDC, 6 dp
-  "slippage_bps": 300,                                 // default 50 is too tight for memecoins
-  "take_profit": {"price_percentage": 1.0, "sell_percentage": 0.5},   // +100%, sell half
-  "stop_loss":   {"price_percentage": 0.3, "sell_percentage": 1.0},   // -30%, sell all
+  "amount": "10000000",
+  "slippage_bps": 300,                               // the API default (50) is too tight; use 300
+  "take_profit": {"price_percentage": 1.0, "sell_percentage": 0.5},
+  "stop_loss":   {"price_percentage": 0.3, "sell_percentage": 1.0},
   "cancel_conditional_orders": false,
-  "idempotency_key": "<uuid>",                         // accepted, NOT deduped: 1 key = 3 fills
+  "idempotency_key": "<uuid>",
   "dryrun": false
 }
-→ {task_id, status:"success"|"failure", message:"Swap task queued successfully", poll_url, notification_stream}
 ```
 
-`message` is the hardcoded default and appears next to failures. `poll_url` comes back
-**null** on a rejected task. `wait=true&timeout=90` is the cap (`120` → 422, the edge
-cuts ~100 s), so always wait *then* poll — never block a user request on it.
+`message` is a constant and sits next to failures. `poll_url` is null on a rejected task. `timeout` above 90 returns 422. Wait, then poll. Do not block the user on the wait.
 
-`GET /v1/tasks/{id}` → `status` in `PENDING|STARTED|SUCCESS|FAILURE|REVOKED`
-(**UPPERCASE**, while the swap response is lowercase — compare case-insensitively).
-Success carries `result.tx_hash`; failure carries `result.error`, e.g.
-`"Balance validation failed: No holdings found for wallet 0x… on Base."`.
+`GET /v1/tasks/{id}` uses uppercase `PENDING|STARTED|SUCCESS|FAILURE|REVOKED`. The swap response is lowercase. Compare case-insensitively. An id that was never issued returns `200 {"status":"PENDING"}` forever. Cap the poll. A timeout is unknown, not failed.
 
-**Poll with a deadline.** An id that was never issued — a typo, a truncated copy, the
-all-zero uuid — returns `200 {"status": "PENDING", "result": null}` **forever**, never a
-404. "Poll until terminal" does not terminate on a bad id; `fere.py` caps at 120 s and
-reports `TIMEOUT`. Note that some tasks legitimately take longer than 90 s (HL setup
-did), so a timeout is "unknown", not "failed".
+`idempotency_key` is accepted and not enforced. One key can fill more than once. A timed-out write is unknown: read, do not re-send.
 
-## Confirming a fill (the only correct way)
+`cancel_conditional_orders: true` on a sell clears every hook on that token, not the matching pair. Re-arm afterwards if some should remain.
+
+## Confirming a fill
 
 ```
-snapshot = GET /v1/holdings
+snapshot = GET /v1/holdings?event=wallet-refresh
 POST /v1/swap?wait=true&timeout=90
-poll GET /v1/tasks/{id} to terminal
-re-read holdings 3× over ~15 s, diff token_in and token_out in units
+poll GET /v1/tasks/{id} until terminal or deadline
+re-read holdings 3× over ~15 s and diff token_in and token_out
 ```
 
-- delta > 0 → **filled**, whatever the status said.
-- `"Balance validation failed"` or a 4xx → **definitively failed**, nothing ran.
-- Anything else with delta == 0 → **unconfirmed**: show pending, re-check next poll,
-  **never auto-retry**. A sell once returned `failure` twice plus a silent no-op and
-  the position cleared anyway.
+- Delta > 0 means filled, whatever `status` said.
+- `"Balance validation failed"` or a 4xx means nothing ran.
+- Anything else with delta 0 is unconfirmed. Show pending. Do not auto-retry.
 
-`fere.py buy/sell/swap` implements exactly this, takes a per-wallet lock (one action in
-flight, 3 s gap after terminal — parallel sends cause mempool nonce errors), and exits
-non-zero unless it saw the delta.
+`fere.py` takes a per-wallet lock and waits 3 seconds after a terminal task. Parallel sends cause nonce errors. A notification `amount_out` can disagree with the holdings delta. Trade on the delta.
 
-## Holdings — the portfolio, all venues
+## Holdings
 
-`GET /v1/holdings` (MCP `fere_holdings` takes no arguments; REST takes
-`?chain_type=0|1`, an **integer**: 0 = EVM, 1 = Solana — `"evm"` gives 422). Rows now
-span on-chain tokens **and** Hyperliquid **and** the Polymarket safe.
+`GET /v1/holdings`. MCP `fere_holdings` takes no arguments. REST `?chain_type=` is an integer: `0` EVM, `1` Solana. `"evm"` is a 422.
 
-**It is a cached read unless you ask for a fresh one** (Fere's RCA, 2026-09-23):
-
-| Call | What you get |
+| Call | Result |
 |---|---|
-| `GET /v1/holdings` | Fere's **saved answer** when it has one. An **empty** wallet's answer is kept up to **45 min** and not re-checked, so a deposit that lands just after one empty read stays invisible for that long. Measured: ~0.18 s once saved. |
-| `GET /v1/holdings?event=wallet-refresh` | Drops the saved answer and **reads the wallet again** — the same action as the app's Refresh button. ~0.45 s on an empty agent. |
-| `?event=<anything else>` | Silently ignored: 200, saved answer. Spell it exactly. |
+| `GET /v1/holdings` | Saved answer. An empty wallet's answer is kept up to 45 minutes. |
+| `GET /v1/holdings?event=wallet-refresh` | Drops the saved answer and reads the wallet. |
+| `?event=<anything else>` | Ignored. You get the saved answer. |
 
-Fere's own app refreshes only on the Refresh button and right after a fund or
-withdraw; leaving a page open never does. So: **refresh** on a user's Refresh, while
-waiting for a deposit, and on **every read of a fill diff** (rule 1); a background
-display poll can stay plain. Funding and swaps are **not** affected — they validate
-against the chain, not this list (on 2026-09-23 `perp/fund` moved $100 first try while
-~100 plain polls still said `[]`). The `_status` key in the envelope is our CLI's, not
-Fere's. Row shape:
+Refresh on a user refresh, while waiting for a deposit, and on every fill diff. A display poll can stay plain. Funding and swaps validate against the chain, not this list. (`_status` in `fere.py` output is the CLI's HTTP envelope, not a Fere field.)
 
 ```jsonc
-{ "chain": "robinhood", "chain_id": 4663, "token_name": "FATCOIN",   // no `symbol` field
-  "base_address": "0x12d5…",            // "native" for the gas token; EVM rows come back lowercased
+{ "chain": "robinhood", "chain_id": 4663, "token_name": "FATCOIN",
+  "base_address": "0x12d5…",
   "decimals": 18,
-  "tokens_bought": "2246.0004677",      // decimal string — CAN be "2.065E-15", parse as Decimal
-  "amount_in_wei_or_lamports": "2246000467727542208998",  // **null** on Hyperliquid rows
+  "tokens_bought": "2246.0004677",
+  "amount_in_wei_or_lamports": "2246000467727542208998",
   "curr_price_usd": 0.0162, "value_usd": 36.43, "verified": true,
-  "buying_price_usd": 0, "profit_abs_usd": 0,   // 0 on chain rows; populated on HL rows
-  "protocol": null,                     // "Hyperliquid" | "Polymarket" on venue rows
-  "redeemable": null, "condition_id": null, "negative_risk": null,   // Polymarket only
-  "leverage": null, "collateral_usd": null, "liquidation_price_usd": null,  // perp only
-  "outstanding_orders": [ { "id":"…", "priceUsd":{"gte":0.00031}, "networkId":8453,
-      "tokenAddress":"0x…", "webhookType":"PRICE_EVENT", "status":"ACTIVE",
-      "bucketSortKey":"tp-0.5" } ] }
+  "protocol": null,
+  "outstanding_orders": [ { "id":"…", "webhookType":"PRICE_EVENT", "status":"ACTIVE" } ] }
 ```
 
-Traps, all seen live:
-- **P&L is yours to compute.** `buying_price_usd` and every `profit_*` field are `0` on
-  chain rows. Keep your own ledger keyed by entry.
-- **Never parse `amount_in_wei_or_lamports` blind.** It comes back **null** on
-  Hyperliquid rows (seen live 2026-09-09), and it is a *risk* for large balances in JS:
-  if Fere ever sends it as a number ≥ 1e21 it stringifies as `"1e+21"`, `BigInt()`
-  throws, and the bag renders empty. Fere sends strings today — that one is unresolved,
-  not fixed. Prefer `tokens_bought` through a `Decimal`, which handles both (and the
-  sci-notation values Fere already sends, e.g. `"2.065E-15"`).
-- 0.35–0.45 s empty, ~2 s funded. A **502 from one upstream** (`zerion_solana`,
-  `hyperliquid`) blanks the entire response: retry 3× (2/4/6 s), keep the last-good
-  snapshot for **display only**, never trade on a stale one.
-- Unsolicited airdrops show up. Render only rows that are `verified:true` or in your own
-  ledger, and never auto-act on an unknown token.
+- There is no `symbol` field. `buying_price_usd` and `profit_*` are 0 on chain rows. Compute P&L yourself.
+- `amount_in_wei_or_lamports` is null on Hyperliquid rows. Parse `tokens_bought` with `Decimal`. Values can be scientific notation (`"2.065E-15"`).
+- A 502 from one upstream blanks the whole body. Retry 3 times. Keep the last good snapshot for display only.
+- Render rows that are `verified: true` or already in your ledger. Do not auto-act on an unknown token.
 
-## Exits: hooks vs limit orders
+## Exits
 
-| | **Hooks** (`take_profit`/`stop_loss` inline, or `POST /v1/hooks`) | **Limit orders** (`POST /v1/limit-orders`) |
+| | Hooks (`take_profit` / `stop_loss`, or `POST /v1/hooks`) | Limit orders (`POST /v1/limit-orders`) |
 |---|---|---|
-| Trigger | **percentage** off Fere's price **at registration** | **absolute USD** you choose |
-| CRUD | none under `/v1` — list/cancel only via `GET\|DELETE /wallet/outstanding-orders` | full CRUD: `GET[?status=]`, `GET /{id}`, `DELETE /{id}` (all verified; unknown id → `404 not_found`) |
-| Good for | fire-and-forget at buy time | anything you may need to cancel or replace |
+| Trigger | Percentage off Fere's price at registration | Absolute USD |
+| List / cancel | `GET` / `DELETE /wallet/outstanding-orders` | `GET /v1/limit-orders[?status=]` / `DELETE /v1/limit-orders/{id}` |
+| Use | Arm at buy time | Anything you may replace |
 
-Both are server-side Codex `PRICE_EVENT` webhooks and both fire while you are offline
-(verified live on Solana and Robinhood Chain).
+Hooks re-base on Fere's mark, not your entry. Arm them inline, then re-arm with limit orders priced off your own entry. Hooks can disappear. Reconcile `holdings[].outstanding_orders` on every poll and re-arm what is missing.
 
-- **Hooks re-base on Fere's price at registration, not your entry.** +50 %/−30 % on a
-  `0.02371` mark became `gte 0.03556` / `lte 0.01659` regardless of what you paid. Arm
-  hooks inline at buy for speed, then **re-arm with absolute limit orders priced off
-  your own entry**.
-- **Hooks decay.** Two positions' TP+SL vanished overnight while another chain fired a
-  hook correctly the same day — order loss, not a chain limitation. Reconcile
-  `holdings[].outstanding_orders` against your expected-exits table on every poll and
-  re-arm what's missing.
-- `POST /v1/hooks` registers **even with a zero balance** (the task result says so:
-  `token_balance: "0"`, `hooks_registered: 2`), so a successful call is not evidence
-  you hold anything. **So does `POST /v1/limit-orders`** — `SUCCESS`,
-  `webhook_registered: true`, on an empty wallet.
-- Limit-order `status` values seen live: **`active`** on creation, `cancelled` after
-  `DELETE`. Not `pending` — `?status=pending` returns `[]` while the order exists;
-  `?status=active` finds it. The executed/failed spellings are unobserved.
-- **A failed read is not "no orders".** Gate auto re-arm on "the last read succeeded",
-  or one 502 stacks a duplicate sell every cooldown.
-- Cancelling: `DELETE /wallet/outstanding-orders` with body
-  `{"outstanding_order_ids":[…]}` → `{count:n}`. An empty body is a 422.
+`POST /v1/hooks` and `POST /v1/limit-orders` succeed on a zero balance. A successful call is not evidence you hold the token.
+
+Limit-order status on creation is `active`. `?status=pending` returns `[]` while the order exists. Unknown id on delete is `404 not_found`. A failed read is not "no orders". Do not re-arm unless the last read succeeded.
+
+Cancel hooks with `DELETE /wallet/outstanding-orders` and body `{"outstanding_order_ids":[…]}`. An empty body is a 422.
 
 ## Security check
 
-`POST /v1/security/check {tokens:[{chain_id, token_address}]}`, ≤50 per request.
-Honeypot.is for EVM (~0.4 s), RugCheck for Solana (~1.7 s).
+`POST /v1/security/check {tokens:[{chain_id, token_address}]}`, at most 50 tokens.
 
-**Gate on `status`, never on `allowed` alone.** Robinhood Chain returns
-`status:"unsupported_chain"` *with* `allowed:true` — an uncovered chain looks like a
-pass. Treat `passed` as pass, `unsupported_chain`/`api_unavailable`/`skipped` as
-"not checked, decide anyway", and everything else as a block.
+Gate on `status`, not on `allowed` alone. Robinhood Chain returns `status:"unsupported_chain"` with `allowed:true`. Treat `passed` as pass. Treat `unsupported_chain`, `api_unavailable`, and `skipped` as not checked. Block everything else.
 
 ## Bridging
 
-Same call, different `chain_id_out`. But **don't bridge on the buy path**: Base→RH
-tolled 2.3 %, 5.8 % and once failed silently on a route that had worked an hour
-earlier. Deposit per chain, and if you must bridge, make it an explicit labelled step
-with the toll shown. Measured all-in cost same-chain is ~80–100 bps (a Base exit
-measured 82 bps; a cross-chain entry 97 bps — so the bridge itself was only ~15 bps
-that time, and 2–8 % other times).
+Different `chain_id_out` on the same call. Do not bridge on the buy path. Cross-chain tolls vary from well under 1% to several percent and are not quoted in advance. Deposit on the destination chain. If you bridge, make it its own step and show the toll after it lands.
 
 ## Notifications
 
-`GET /v1/notifications` → `{events:[{id,type,data,created_at,task_id,agent_id}],
-total_count, limit:10, offset}`. `GET /v1/notifications/stream` is SSE: it replays
-recent events on connect, then `event:`/`data:` frames with a `: ping` every 15 s.
-`EventSource` can't set an Authorization header, so read it with a streaming fetch.
-Types confirmed: `events.onchain.swap.failure`, `events.hooks.pt.setup.success`.
-**Hook-fire and swap-success event types are unverified — do not build an exit
-notification on them without checking.**
+`GET /v1/notifications` returns `{events, total_count, limit, offset}`. `GET /v1/notifications/stream` is SSE: it replays recent events on connect, then `event:`/`data:` frames with a `: ping` every 15 seconds. `EventSource` cannot set `Authorization`. Use a streaming fetch.
 
-## Verified live, 2026-09-12
-
-- **Cost, measured:** Base USDC↔WETH ran **57–70 bps per leg**, 120 bps round trip, with
-  `platform_fee_amount "0"`. Budget 60–100 bps a leg same-chain, not the 80–100 we used to quote.
-- **`cancel_conditional_orders: true` on a sell clears EVERY hook on that token**, not just
-  the matching pair — 6 → 0, with `events.hooks.pt.delete.success "Cancelled 6"`. Use it
-  deliberately; re-arm afterwards if you meant to keep some.
-- **Notification types now confirmed:** `events.onchain.swap.success` (carries `txn_hash`,
-  `amount_out`, `volume_usd`, `explorer_url`), `events.hooks.pt.setup.success`,
-  `events.hooks.pt.delete.success`, `events.onchain.limit_order.setup.success` and
-  `.cancel.success`, `events.hyperliquid.{fund,setup,withdraw}.success`,
-  `events.onchain.perp.{open,close}.success`, `events.onchain.spot.buy.failure`,
-  `events.polymarket.{setup,fund,order}.success`. **Hook-*fire* is still unverified** — we
-  never had a hook trigger.
-- **The success event's `amount_out` is not the truth either.** It came back 0.000966 USDC
-  *under* the holdings delta. Holdings remain the only number to trade on.
+Known types: `events.onchain.swap.success`, `events.onchain.swap.failure`, `events.hooks.pt.setup.success`, `events.hooks.pt.delete.success`, `events.onchain.limit_order.setup.success`, `events.onchain.limit_order.cancel.success`, `events.hyperliquid.{fund,setup,withdraw}.success`, `events.onchain.perp.{open,close}.success`, `events.onchain.spot.buy.failure`, `events.polymarket.{setup,fund,order}.success`. Swap success carries `txn_hash`, `amount_out`, `volume_usd`, `explorer_url`. Do not drive an exit off a hook-fire event. That type is not part of this list.

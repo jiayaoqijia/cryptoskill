@@ -5,6 +5,7 @@ import { fetchActivePools, fetchPoolEpochs } from "./pools.js";
 import { getTokenPrices, countUnpricedTokens } from "./prices.js";
 import { BACKTEST_EPOCHS, MIN_TRAILING_USD, TREND_EPOCHS } from "./constants.js";
 import { mapWithConcurrency } from "./util.js";
+import { forecastEpochUsd } from "./trend.js";
 
 const VE_DECIMALS = 18;
 
@@ -217,11 +218,15 @@ export function runBacktest(
         continue;
       }
 
+      // The same forecast the live ranking uses: the window is all completed
+      // epochs, so its entry 0 is the last one that finished.
+      const forecastUsd = forecastEpochUsd(window, false);
+
       candidates.push({
         address: h.address,
         symbol: h.symbol,
         existingVotes: knownVotes,
-        expectedUsd: trailingAvgUsd,
+        expectedUsd: forecastUsd,
       });
 
       // The same candidate, judged against the weight this pool has typically
@@ -244,7 +249,7 @@ export function runBacktest(
         address: h.address,
         symbol: h.symbol,
         existingVotes: expectedDilutedVotes(knownVotes, expectedVotes),
-        expectedUsd: trailingAvgUsd,
+        expectedUsd: forecastUsd,
       });
     }
 
@@ -312,7 +317,13 @@ export async function backtestLive(
   trendEpochs = TREND_EPOCHS,
   minConsistency = 0,
 ): Promise<BacktestReport> {
-  const pools = await fetchActivePools();
+  // Pools Aerodrome is migrating are left out here too, the same as `recommend`
+  // (see `withoutMigrating`'s use in cli.ts/mcp-server.ts): its vote page hides
+  // them from the default list a real voter picks from, whether that voter is
+  // running this tool's allocation or just chasing the highest current $/vote.
+  // Without this, the backtest could credit either strategy with a pool nobody
+  // running it live could actually have found and voted for.
+  const pools = (await fetchActivePools()).filter((p) => !p.migrating);
   const depth = testEpochs + trendEpochs + 1;
 
   let epochFetchFailures = 0;

@@ -446,7 +446,7 @@
 
 <details>
   <summary>How this works, and what it does not know</summary>
-  <p><strong>Value per vote.</strong> Each pool pays out bribes plus fees to whoever voted for it, split by vote weight. Divide that by the votes already sitting there and you get dollars per veAERO. The <em>predicted</em> figure uses a trailing average across recent epochs rather than just last week's number.</p>
+  <p><strong>Value per vote.</strong> Each pool pays out bribes plus fees to whoever voted for it, split by vote weight. Divide that by the votes already sitting there and you get dollars per veAERO. The <em>predicted</em> figure uses a trailing average across recent epochs, but never more than the last finished week actually paid — so a pool whose incentives have dried up is not priced on weeks that are gone.</p>
   <p><strong>Self-dilution.</strong> Voting into a pool adds your votes to the denominator, so the last vote you cast into a pool is worth less than the first. The allocation hands out your veAERO in small slices, each time to whichever pool currently offers the most for the next slice. That is why it spreads across several pools instead of dumping everything into the top-ranked one.</p>
   <p><strong>Consistency.</strong> A pool that paid $600 once and nothing for five weeks averages the same as one paying $100 every week, and the average alone cannot tell them apart. Consistency scores how steady the payouts have been: 1 is perfectly even, lower is spikier. A pool with only one epoch of history scores 0 — one data point cannot prove steadiness.</p>
   <p><strong>History and trend.</strong> The bars are the pool's last six epochs, oldest on the left, and the trend figure next to them is the recent finished epochs' average against the older ones'. It answers something the average and consistency both hide: a pool climbing from $50 to $500 an epoch and one sliding from $500 to $50 score identically on those two. Two deliberate choices: the epoch still running is drawn as a dashed outline and left out of the trend, because a scan taken mid-week has only counted part of that week; and a pool whose older epochs paid only loose change reports no trend at all rather than a huge percentage, since dividing by pennies produces headline numbers that mean nothing. Bar heights are square-rooted so one enormous week doesn't flatten the rest into invisible stubs — taller always means a bigger epoch, but the height is not proportional to the dollars. Hover any chart for the exact figures.</p>
@@ -889,12 +889,21 @@ function votesForBasis(p, basis) {
   return votesToExpect(p);
 }
 
+/**
+ * What the pool is expected to pay next epoch: the trailing average capped at
+ * the last completed epoch. Same as `forecastEpochUsd` in src/trend.ts; a
+ * snapshot written before that field existed falls back to the plain average.
+ */
+function forecastUsd(p) {
+  return p.forecastUsd ?? p.trailingAvgUsd;
+}
+
 /** Dollars per vote under that same basis, so the table and the suggestion agree. */
 function rateForBasis(p, basis) {
   if (basis === "current") return p.predictedValuePerVote;
   if (basis === "previous") return p.dilutionAdjustedValuePerVote ?? p.predictedValuePerVote;
   const votes = votesForBasis(p, basis);
-  return votes > 0 ? p.trailingAvgUsd / votes : 0;
+  return votes > 0 ? forecastUsd(p) / votes : 0;
 }
 
 /**
@@ -1517,7 +1526,7 @@ function renderAllocation() {
     eligible.slice(0, topK).map((p) => ({
       address: p.pool, symbol: p.symbol, consistency: p.consistency,
       existingVotes: votesForBasis(p, basis),
-      expectedUsd: p.trailingAvgUsd,
+      expectedUsd: forecastUsd(p),
     })),
     budget,
     undefined,

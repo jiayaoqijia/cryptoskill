@@ -221,8 +221,8 @@ export function recommendAllocation(
   // view that V = 0 is the best case and not the worst — but only when it has
   // something to pay, so a dead pool cannot consume a topK slot.
   const rate = (x: (typeof withVotes)[number]): number => {
-    if (x.pool.trailingAvgUsd <= 0) return 0;
-    return x.votes > 0 ? x.pool.trailingAvgUsd / x.votes : Number.POSITIVE_INFINITY;
+    if (x.pool.forecastUsd <= 0) return 0;
+    return x.votes > 0 ? x.pool.forecastUsd / x.votes : Number.POSITIVE_INFINITY;
   };
   withVotes.sort((a, b) => rate(b) - rate(a));
 
@@ -231,7 +231,7 @@ export function recommendAllocation(
       address: pool.pool.address,
       symbol: pool.pool.symbol,
       existingVotes: votes,
-      expectedUsd: pool.trailingAvgUsd,
+      expectedUsd: pool.forecastUsd,
     })),
     veAeroBudget,
     steps,

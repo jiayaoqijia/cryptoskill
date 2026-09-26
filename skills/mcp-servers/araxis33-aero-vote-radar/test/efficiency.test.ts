@@ -145,3 +145,31 @@ test("computePoolEfficiency: predictiveEdge falls back to 0 (not Infinity/NaN) w
   assert.equal(result.currentValuePerVote, 0);
   assert.equal(result.predictiveEdge, 0);
 });
+
+test("computePoolEfficiency predicts from the forecast, so a decaying pool is not ranked on its old weeks", () => {
+  const votes = 100n * 10n ** 18n;
+  const epochs = [
+    epoch({ ts: 300, votes, fees: [{ token: "0xfee", amount: 10_000_000n }] }), // $10 latest
+    epoch({ ts: 200, votes, fees: [{ token: "0xfee", amount: 400_000_000n }] }), // $400
+    epoch({ ts: 100, votes, fees: [{ token: "0xfee", amount: 400_000_000n }] }), // $400
+  ];
+  const result = computePoolEfficiency(pool, epochs, prices, 10 ** 9); // long after, so ts 300 has completed
+
+  assert.ok(result);
+  assert.equal(result.trailingAvgUsd, 270);
+  assert.equal(result.forecastUsd, 10);
+  assert.equal(result.predictedValuePerVote, 0.1); // 10 / 100, not 270 / 100
+});
+
+test("computePoolEfficiency does not cap by the epoch still running", () => {
+  const votes = 100n * 10n ** 18n;
+  const epochs = [
+    epoch({ ts: 1_209_600, votes, fees: [{ token: "0xfee", amount: 10_000_000n }] }), // $10 so far, week still open
+    epoch({ ts: 604_800, votes, fees: [{ token: "0xfee", amount: 400_000_000n }] }), // $400
+    epoch({ ts: 0, votes, fees: [{ token: "0xfee", amount: 400_000_000n }] }), // $400
+  ];
+  const result = computePoolEfficiency(pool, epochs, prices, 1_209_600 + 3600);
+
+  assert.ok(result);
+  assert.equal(result.forecastUsd, 270); // min(270, 400): the running $10 is not a completed week
+});
