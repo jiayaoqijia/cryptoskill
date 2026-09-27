@@ -1,6 +1,6 @@
 ---
 name: assetfare-route
-description: Use for agent-native, non-custodial native-USDC bridge and cross-chain routes across six chains and 76 directed routes, including read-only funding quotes when an agent or x402 payment wallet has spendable funds on another supported chain. The 1bp service fee is additional to Circle/provider/network fees. Returns unranked quotes and caller-approved unsigned plans; never checks balances, signs, or submits.
+description: Use for agent-native, non-custodial native-USDC bridge and cross-chain routes across eight chains and 80 directed routes, including amount-conditioned Ethereum/HyperEVM sources and read-only funding quotes when an agent or x402 payment wallet has spendable funds on another supported chain. The 1bp service fee is additional to Circle/provider/network fees. Returns unranked quotes and caller-approved unsigned plans; never checks balances, signs, or submits.
 ---
 
 # AssetFare Route
@@ -57,7 +57,7 @@ preparation, signature, or submission authority.
   fingerprint claim, exact wallet/signer requirements, path, bounds, TTL, and
   allowed modes. It remains `unranked_candidate` until a separate explicit
   offline `assetfare-select` operation writes `approval_v3` mode 0600.
-- MCP caller-approved v2 execution tools for all 76 routes: `assetfare_v2_prepare` (one-shot first unsigned bundle) and the `assetfare_v2_session_create`/`_get`/`_observe_source`/`_observe_output`/`_refresh_action` lifecycle. Remote clients generate the session capability locally from 32 CSPRNG bytes encoded as base64url; the remote adapter never generates that secret. The optional self-hosted stdio adapter additionally exposes `assetfare_v2_new_session_capability` as an offline helper. Each execution tool requires explicit caller approval and the caller's public wallet addresses, is never auto-called from a quote, and rejects private key/seed/signed transaction material. Never mix these with the legacy v1 session tools.
+- MCP caller-approved v2 execution tools for all 80 routes: `assetfare_v2_prepare` (one-shot first unsigned bundle) and the `assetfare_v2_session_create`/`_get`/`_observe_source`/`_observe_output`/`_refresh_action` lifecycle. Remote clients generate the session capability locally from 32 CSPRNG bytes encoded as base64url; the remote adapter never generates that secret. The optional self-hosted stdio adapter additionally exposes `assetfare_v2_new_session_capability` as an offline helper. Each execution tool requires explicit caller approval and the caller's public wallet addresses, is never auto-called from a quote, and rejects private key/seed/signed transaction material. Never mix these with the legacy v1 session tools.
 - Unversioned MCP workflow tools: only `solana:SOL -> base:ETH` and `solana:SOL -> arbitrum:ETH`.
 
 ## Safety boundary
