@@ -249,7 +249,7 @@
 </header>
 
 <p class="meta" id="meta"><span class="dot"></span> Loading the latest scan…</p>
-<div class="note" id="aeroLaunchNote">Aerodrome becomes <b>Aero</b> on <b>October 22, 00:00 UTC</b>, with a new rewards system (sAERO and Predictive Allocation). How veAERO carries over has not been published yet. This page covers the current weekly veAERO vote. <a href="https://aero.xyz/articles/aero-launch-update-all-systems-go/" target="_blank" rel="noreferrer">Aero's announcement</a></div>
+<div class="note" id="aeroLaunchNote">Aerodrome becomes <b>Aero</b> on <b>October 22, 00:00 UTC</b>, with a new rewards system (sAERO and Predictive Allocation). Official migration steps have not been published yet; look up your wallet below to preview what each veAERO lock becomes, read from Aerodrome's published migration contract. This page covers the current weekly veAERO vote. <a href="https://aero.xyz/articles/aero-launch-update-all-systems-go/" target="_blank" rel="noreferrer">Aero's announcement</a></div>
 
 <section class="panel">
   <div class="field" style="margin-bottom:14px">
@@ -333,6 +333,31 @@
       </thead>
     <tbody id="reviewBody"></tbody>
   </table>
+</section>
+
+<section id="migrationPanel" hidden>
+  <div class="rowhead">
+    <div>
+      <h2>What happens to your locks on October 22</h2>
+      <p class="h2note">A preview read from Aerodrome's published migration contract. Official instructions and the date the migration opens have not been announced yet.</p>
+    </div>
+  </div>
+  <div class="lookup-msg" id="migrationMsg"></div>
+  <p class="h2note" id="migrationSummary"></p>
+  <div class="scroll cards">
+  <table>
+      <thead>
+        <tr>
+          <th>Lock</th>
+          <th class="num">AERO locked</th>
+          <th>Lock ends</th>
+          <th>Becomes</th>
+          <th>Before you move it</th>
+        </tr>
+      </thead>
+    <tbody id="migrationBody"></tbody>
+  </table>
+  </div>
 </section>
 
 <div class="rowhead">
@@ -830,6 +855,124 @@ async function renderVoteReview(address) {
   el.reviewMsg.textContent = "";
 }
 
+// --- what each lock becomes when Aerodrome turns into Aero -------------------
+// Mirrors dromos-labs/metadex-public V3/src/migration/Migration.sol as published
+// on 2026-08-30: depositVeNFT converts a lock's locked AERO 1:1 (not its decayed
+// voting power) and `_resolveStake` decides the shape — a permanent lock stays
+// permanent, an expired one comes out as plain AERO, anything else becomes a
+// stake for the remaining time rounded UP to whole weeks and capped at the new
+// escrow's maximum. It also refuses a lock that still has a vote on it
+// (AlreadyVoted) and anything that is not a NORMAL veNFT (NotNormalVeNFT) — a
+// lock deposited into a Relay reads as amount 0 until it is withdrawn.
+// No migration contract is deployed yet and the opening date is unannounced, so
+// the page prices it at launch; every week of waiting shortens the stake by one.
+
+const SEL_LOCKED = "0xb45a3c0e";           // locked(uint256) -> (int128 amount, uint256 end, bool isPermanent)
+const SEL_VOTED = "0x8fbb38ff";            // voted(uint256) -> bool
+const SEL_ESCROW_TYPE = "0x7c728000";      // escrowType(uint256) -> 0 NORMAL, 1 LOCKED (in a Relay), 2 MANAGED
+
+const AERO_LAUNCH_TS = Date.UTC(2026, 9, 22) / 1000; // 2026-10-22 00:00 UTC
+const NEW_MAXTIME = 4 * 365 * 86400;                  // V3 ProtocolConstants MAXTIME
+
+/** The contract's `_resolveStake`, for a lock read at `atTs`. */
+function migrationOutcome(lock, atTs) {
+  if (lock.escrowType !== 0) return { kind: "relay" };
+  if (lock.amount <= 0) return { kind: "empty" };
+  if (lock.isPermanent) return { kind: "permanent" };
+  if (lock.end <= atTs) return { kind: "liquid" };
+  const weeks = Math.ceil((lock.end - atTs) / WEEK_SECONDS);
+  const maxWeeks = Math.floor((NEW_MAXTIME + (atTs % WEEK_SECONDS)) / WEEK_SECONDS);
+  return { kind: "stake", weeks: Math.min(weeks, maxWeeks) };
+}
+
+async function fetchLockDetails(id) {
+  const [lockedHex, votedHex, typeHex] = await Promise.all([
+    ethCall(SEL_LOCKED + hexOf(id)),
+    ethCall(SEL_VOTED + hexOf(id)),
+    ethCall(SEL_ESCROW_TYPE + hexOf(id)),
+  ]);
+  const raw = lockedHex.replace(/^0x/, "");
+  let amount = BigInt("0x" + raw.slice(0, 64));
+  if (amount >= 2n ** 255n) amount -= 2n ** 256n; // int128, sign-extended in its word
+  return {
+    id,
+    amount: Number(amount) / 1e18,
+    end: Number(BigInt("0x" + raw.slice(64, 128))),
+    isPermanent: BigInt("0x" + raw.slice(128, 192)) !== 0n,
+    voted: BigInt(votedHex) !== 0n,
+    escrowType: Number(BigInt(typeHex)),
+  };
+}
+
+async function renderMigration(ids, truncated) {
+  el.migrationPanel.hidden = false;
+  el.migrationBody.replaceChildren();
+  el.migrationSummary.textContent = "";
+  el.migrationMsg.textContent = "Reading each lock…";
+
+  let locks;
+  try {
+    locks = await Promise.all(ids.map(fetchLockDetails));
+  } catch {
+    el.migrationMsg.textContent = "Could not read these locks from Base. Try again in a moment.";
+    return;
+  }
+
+  const day = (ts) => new Date(ts * 1000).toISOString().slice(0, 10);
+  const totals = { stake: 0, permanent: 0, liquid: 0 };
+  let relays = 0;
+  let voting = 0;
+  const frag = document.createDocumentFragment();
+  for (const lock of locks) {
+    const out = migrationOutcome(lock, AERO_LAUNCH_TS);
+    if (out.kind === "empty") continue; // withdrawn or merged away: nothing left to carry over
+
+    let becomes;
+    const todo = [];
+    if (out.kind === "relay") {
+      relays++;
+      becomes = "Can't be moved while it sits in a Relay";
+      todo.push("Withdraw it from the Relay first");
+    } else {
+      totals[out.kind] += lock.amount;
+      becomes =
+        out.kind === "permanent" ? "Permanent sAERO stake"
+        : out.kind === "liquid" ? "Plain AERO (the lock has ended)"
+        : "sAERO stake for " + out.weeks + " week" + (out.weeks === 1 ? "" : "s");
+      if (lock.voted) {
+        voting++;
+        todo.push("Claim its rewards, then reset its vote");
+      }
+    }
+
+    const tr = document.createElement("tr");
+    tr.appendChild(cell("#" + lock.id, "", "Lock"));
+    tr.appendChild(cell(out.kind === "relay" ? "—" : num(lock.amount, 2), "num", "AERO locked"));
+    tr.appendChild(cell(
+      out.kind === "relay" ? "—" : lock.isPermanent ? "Never (permanent)" : day(lock.end), "", "Lock ends"));
+    tr.appendChild(cell(becomes, "", "Becomes"));
+    tr.appendChild(cell(todo.length ? todo.join("; ") : "Nothing", "", "Before you move it"));
+    frag.appendChild(tr);
+  }
+  el.migrationBody.replaceChildren(frag);
+
+  if (!el.migrationBody.childNodes.length) {
+    el.migrationMsg.textContent = "These locks are empty — they were withdrawn or merged, so nothing carries over.";
+    return;
+  }
+
+  const parts = [];
+  const staked = totals.stake + totals.permanent;
+  if (staked > 0) parts.push(num(staked, 2) + " AERO would become sAERO, one for one.");
+  if (totals.liquid > 0) parts.push(num(totals.liquid, 2) + " AERO would come back as plain AERO, because those locks have ended by October 22.");
+  if (totals.stake > 0) parts.push("Stake lengths assume you move on launch day: each week you wait takes a week off.");
+  if (voting > 0) parts.push("The contract refuses a lock that still has a vote on it, and the old lock is merged away when it moves — so claim first, then reset.");
+  if (relays > 0) parts.push(relays + " lock" + (relays === 1 ? " is" : "s are") + " inside a Relay, which the contract only accepts once withdrawn.");
+  if (truncated) parts.push("Only the first 60 locks are shown.");
+  el.migrationSummary.textContent = parts.join(" ");
+  el.migrationMsg.textContent = "";
+}
+
 // --- formatting -------------------------------------------------------------
 
 const usd = (n) =>
@@ -1189,6 +1332,10 @@ const el = {
   reviewMsg: document.getElementById("reviewMsg"),
   reviewSummary: document.getElementById("reviewSummary"),
   reviewBody: document.getElementById("reviewBody"),
+  migrationPanel: document.getElementById("migrationPanel"),
+  migrationMsg: document.getElementById("migrationMsg"),
+  migrationSummary: document.getElementById("migrationSummary"),
+  migrationBody: document.getElementById("migrationBody"),
   statKeptBox: document.getElementById("statKeptBox"),
   statKept: document.getElementById("statKept"),
   statKeptNote: document.getElementById("statKeptNote"),
@@ -1803,7 +1950,12 @@ async function doLookup() {
   el.lookupMsg.textContent = "Reading your locks from Base…";
 
   try {
-    const { total, locks, truncated } = await fetchVotingPower(raw.toLowerCase());
+    const { total, locks, truncated, ids } = await fetchVotingPower(raw.toLowerCase());
+    // Before the zero-power exit on purpose: an expired or Relay-held lock has
+    // no voting power, yet it is exactly the one whose owner needs to know what
+    // October 22 does to it. Not awaited, same as the vote review below.
+    el.migrationPanel.hidden = true;
+    if (ids && ids.length) renderMigration(ids, truncated);
     if (total <= 0) {
       el.lookupMsg.className = "lookup-msg err";
       el.lookupMsg.textContent = locks === 0

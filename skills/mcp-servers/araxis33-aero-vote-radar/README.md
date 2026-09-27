@@ -2,7 +2,7 @@
 
 ### You hold veAERO. Where does this week's vote go?
 
-> **Coming change:** Aerodrome becomes Aero on **October 22, 2026, 00:00 UTC**, with a new rewards system (sAERO and Predictive Allocation). See [Aero's announcement](https://aero.xyz/articles/aero-launch-update-all-systems-go/). How veAERO carries over has not been published yet; this tool covers the current weekly veAERO vote.
+> **Coming change:** Aerodrome becomes Aero on **October 22, 2026, 00:00 UTC**, with a new rewards system (sAERO and Predictive Allocation). See [Aero's announcement](https://aero.xyz/articles/aero-launch-update-all-systems-go/). Official migration steps have not been published yet; the site's wallet lookup previews what each veAERO lock becomes, read from Aerodrome's published migration contract (1:1 by locked AERO; permanent stays permanent, ended locks come back as plain AERO, the rest become sAERO stakes for their remaining weeks; a lock with an active vote or inside a Relay has to be reset or withdrawn first). This tool covers the current weekly veAERO vote.
 
 Type your balance into **[aero.deftools.xyz](https://aero.deftools.xyz)** and get back whole percentages you can paste straight into Aerodrome's voting UI — ranked by what each pool really pays per vote, and priced *after* your own vote dilutes it.
 
@@ -91,7 +91,7 @@ Two things worth calling out honestly, so the tool isn't oversold:
 
   **Two limits worth stating.** Only two settled epochs have snapshot coverage (the history starts 2026-08-07), and the observations within a pool are not independent, so call it a few hundred independent points rather than five thousand — the effect size is large and consistent across every pool-size bucket, which is why it is trusted, but it is not a long record. And `backtest` **cannot** settle this question: replaying a closed epoch has no mid-week tally to work from, so the previous settled weight stands in for both bases and they become the same number there. Separating them needs a mid-week vantage point, which only the snapshot history provides.
 
-  **This table has already moved, and moved enough to flip the ranking.** The table above is the measurement from when this section was written; the same measurement, refreshed weekly against a growing history, is committed to [`docs/data/timing.json`](docs/data/timing.json)'s `accuracy` field. As of the copy committed there on 2026-09-10 (13,048 observations over 5 settled epochs), `current` has the lower median error, not `previous` — see "Checking the vote basis yourself" below for the numbers and what they do and don't mean.
+  **This table has already moved, and moved enough to flip the ranking.** The table above is the measurement from when this section was written; the same measurement, refreshed weekly against a growing history, is committed to [`docs/data/timing.json`](docs/data/timing.json)'s `accuracy` field. As of the copy committed there on 2026-09-24 (25,982 observations over 7 settled epochs), `current` has the lower median error, not `previous` — see "Checking the vote basis yourself" below for the numbers and what they do and don't mean.
 
 - **`consistency` is a description of the past, not a promise about the future.** It's `1 / (1 + coefficient of variation)` over the observed epochs: 1.00 means the pool paid the same every epoch, lower means spikier. A pool with only one observed epoch scores 0 rather than 1 — a single data point can't demonstrate steadiness, and scoring it as perfect would flatter brand-new pools exactly where the tool should be most cautious. Use `epochsObserved` to tell "unproven" apart from "genuinely erratic".
 - **`momentum` compares halves of the history, and ignores the epoch in progress.** It's the recent finished epochs' average over the older ones', minus 1 — enough to separate a pool ramping from $50 to $500 from one decaying $500 to $50, which `trailingAvgUsd` and `consistency` both score identically. Two details keep it honest: `RewardsSugar` returns the *current* epoch at index 0, so a mid-week scan sees a part-week that would make every pool look like it was fading — that entry is charted but excluded from the comparison (`currentEpochPartial` says which snapshots have one). And the older half has to clear the same `MIN_TRAILING_USD` floor the rankings use, because a ratio explodes when its denominator is loose change: on live data, an unguarded version topped the "ramping up" list with a pool going from $0.02 to $5.75 an epoch (+29,286%), ahead of one genuinely going from $54 to $417. Only the *older* half is floored — a pool collapsing from $200 an epoch to $12 has a small recent half, and that is the finding. Four finished epochs are the minimum; below that it's `null`.
@@ -187,13 +187,13 @@ just drift — it can reorder.** The same scoring code runs weekly in CI
 (`timing-cli.ts`) against the growing snapshot history and is committed to
 [`docs/data/timing.json`](docs/data/timing.json)'s `accuracy` field — no RPC of
 your own required to read it. As of the measurement committed there on
-2026-09-10 (13,048 observations, 5 settled epochs), `current` has overtaken
-`previous` on median error — `current` 26.5% against `previous` 28.5% — and the
-same flip shows up in three of the four pool-size buckets, including the "under
-10k votes" one this section singles out above: `current` 22% against `previous`
-26%, versus `previous` 29% against `current` 35% when this table was written.
+2026-09-24 (25,982 observations, 7 settled epochs), `current` still leads
+`previous` on median error — `current` 40.8% against `previous` 43.8% — and the
+flip now shows up in all four pool-size buckets, including the "under
+10k votes" one this section singles out above: `current` 49% against `previous`
+54%, versus `previous` 29% against `current` 35% when this table was written.
 `previous` still wins `closestOn` — the count of observations where it was the
-single closest guess — by 6,069 to 5,323, so the two measures of "better" have
+single closest guess — by 11,015 to 10,203, so the two measures of "better" have
 themselves come apart. None of this is a reason to distrust the method; it is
 the method working as designed and exactly why it's a command and not a
 hardcoded default: read `docs/data/timing.json` or re-run `predict-check`

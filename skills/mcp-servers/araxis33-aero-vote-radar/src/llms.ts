@@ -70,7 +70,7 @@ export function renderLlmsTxt(
     `Scanned from Base mainnet: ${generatedAt.toISOString()}. The scan re-runs every 6 hours.`,
     `Current epoch closes: ${utc(epochEndsAt)}. A vote only counts for the epoch it is cast in, so the suggestion below expires then.`,
     "",
-    `Coming change: Aerodrome becomes Aero on ${AERO_LAUNCH_UTC}, with a new rewards system (sAERO and Predictive Allocation). How veAERO carries over has not been published yet; this file covers the current weekly veAERO vote. Source: ${AERO_LAUNCH_URL}`,
+    `Coming change: Aerodrome becomes Aero on ${AERO_LAUNCH_UTC}, with a new rewards system (sAERO and Predictive Allocation). The official migration steps have not been published yet, but Aerodrome's published migration contract already fixes the rules: each veAERO lock converts 1:1 by locked AERO; a permanent lock becomes a permanent sAERO stake, an ended lock comes back as plain AERO, any other lock becomes an sAERO stake for its remaining time rounded up to whole weeks; a lock that still has a vote, or sits in a Relay, is refused until the vote is reset or it is withdrawn. The site previews this per lock for any wallet; this file covers the current weekly veAERO vote. Source: ${AERO_LAUNCH_URL}`,
     "",
     `## This week's suggestion for ${LLMS_EXAMPLE_VEAERO.toLocaleString("en-US")} veAERO`,
     "",

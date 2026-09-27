@@ -1,6 +1,6 @@
 ---
 name: assetfare-route
-description: Use for agent-native, non-custodial native-USDC bridge and cross-chain routes across eight chains and 80 directed routes, including amount-conditioned Ethereum/HyperEVM sources and read-only funding quotes when an agent or x402 payment wallet has spendable funds on another supported chain. The 1bp service fee is additional to Circle/provider/network fees. Returns unranked quotes and caller-approved unsigned plans; never checks balances, signs, or submits.
+description: Use for agent-native, non-custodial native-USDC bridge and cross-chain routes across eight chains and 80 directed routes, including Ethereum/HyperEVM sources and read-only funding quotes when an agent or x402 payment wallet has spendable funds on another supported chain. Route economics are dated, non-enforcing guidance. The 1bp service fee is additional to Circle/provider/network fees. Returns unranked quotes and caller-approved unsigned plans; never checks balances, signs, or submits.
 ---
 
 # AssetFare Route
@@ -36,22 +36,20 @@ payment rail. A quote
 is only a candidate-comparison input: it grants no wallet access, action
 preparation, signature, or submission authority.
 
-## Economic evaluation amounts
+## Economic evaluation guidance
 
-- USD 1 is reachability/schema smoke only. It is not an economic comparison.
-- USD 50 was an observed competitive bucket only for the dated 2026-09-23
-  Solana USDC → Base USDC evidence. Do not generalize it to another corridor,
-  and do not treat it as a guarantee that AssetFare is cheapest.
-- Use USD 1,000 as the primary representative comparison amount. SOL-input
-  routes include a swap, so use USD 1,000 for their representative evaluation
-  too rather than treating a USD 1 smoke quote as economic evidence.
+- USD 1 is the shared technical quote minimum, not an economic recommendation.
+- Read `economic_guidance` on the quote and the dated 80-route catalog at
+  `https://assetfare.dev/route-economics.json`. Some routes are measured;
+  others are explicitly structural estimates or retest starts.
+- Guidance never rejects an amount and is not a market-ranking guarantee.
 - Always compare fresh executable candidates at the caller's actual intended
   amount. AssetFare is one candidate, never a market-wide comparison or an
   automatically preferred route.
 
 ## Interface scope
 
-- REST/OpenAPI v2: eleven source endpoints and 76 directed routes (live availability per capabilities/quote) across Solana, Base, Arbitrum, Robinhood Chain, and Polygon/Optimism native-USDC source-only corridors.
+- REST/OpenAPI v2: thirteen source endpoints and 80 directed routes (live availability per capabilities/quote) across Solana, Base, Arbitrum, Robinhood Chain, Polygon, Optimism, Ethereum and HyperEVM source-only corridors.
 - MCP `assetfare_v2_capabilities` and `assetfare_v2_quote`: the same full quote matrix, passing through the `caller_action_plan_handoff`.
 - Every quote also carries strict `continuation_v3`: full-quote and route hashes,
   fingerprint claim, exact wallet/signer requirements, path, bounds, TTL, and
@@ -88,8 +86,8 @@ quote-only evaluation. With no comparable external candidates, it must remain
 1. Read `/v2/capabilities` and `/v2/status`.
 2. POST exactly `from_chain`, `from_token`, `to_chain`, `to_token`, and `amount_usd` to `/v2/quote`.
 3. Require a finite amount of at least $1; there is no adapter-enforced maximum.
-   Treat exactly $1 as reachability/schema smoke only; use $1,000 as the primary
-   representative economic evaluation and always requote the intended amount.
+   Read route-specific `economic_guidance` as an advisory evaluation start,
+   never a limit, and always requote the intended amount.
 4. Compare expected output, minimum output, time, costs, and non-atomic risk
    against other fresh executable candidates at the same intended amount.
 5. If explicitly selected, create strict `approval_v3` from the exact unexpired
