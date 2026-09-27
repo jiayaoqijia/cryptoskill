@@ -1,6 +1,6 @@
 import { encodeFunctionData } from "viem";
 import { VOTER_ABI } from "./abi.js";
-import { BASE_CHAIN_ID, VOTER_ADDRESS } from "./constants.js";
+import { BASE_CHAIN_ID, BUILDER_CODE_SUFFIX, VOTER_ADDRESS } from "./constants.js";
 import { isValidAddress, normalizeAddress } from "./util.js";
 import type { WholePercentWeight } from "./allocator.js";
 
@@ -98,7 +98,9 @@ export function buildVoteCalldata(tokenId: string, weights: WholePercentWeight[]
     chainId: BASE_CHAIN_ID,
     to: VOTER_ADDRESS,
     value: "0x0",
-    data: encodeFunctionData({ abi: VOTER_ABI, functionName: "vote", args: [BigInt(tokenId), pools, percents] }),
+    // The vote, then the builder-code tag (BUILDER_CODE_SUFFIX): the contract
+    // ignores it, Base's indexers read it.
+    data: `${encodeFunctionData({ abi: VOTER_ABI, functionName: "vote", args: [BigInt(tokenId), pools, percents] })}${BUILDER_CODE_SUFFIX}`,
     tokenId,
     pools,
     weights: weights.map((w) => w.percent),

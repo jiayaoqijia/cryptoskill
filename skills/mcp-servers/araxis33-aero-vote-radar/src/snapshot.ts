@@ -5,6 +5,7 @@ import { computeTrend, epochEndOf, isEpochInProgress, WEEKLY_EPOCH } from "./tre
 import { computeVoteStability, previousSettledVotes } from "./dilution.js";
 import { SNAPSHOT_MIN_POOL_RATIO } from "./constants.js";
 import { renderLlmsTxt } from "./llms.js";
+import { readFeeCounters } from "./feeStream.js";
 import type { PoolEfficiency, RewardAmount } from "./efficiency.js";
 
 /**
@@ -374,6 +375,20 @@ export async function writeSnapshot(outPath: string, llmsPath?: string): Promise
   // describe a scan the JSON refused.
   if (llmsPath) {
     await writeFile(resolve(llmsPath), renderLlmsTxt(ranked, generatedAt, snapshot.epochEndsAt), "utf8");
+  }
+
+  // Continuous fee counters for the pools just ranked (see feeStream.ts). A
+  // separate file so the page never downloads it, and best-effort: a failed
+  // read here must not cost the site its snapshot, which is already written.
+  try {
+    const pools = await readFeeCounters(ranked.map((r) => r.pool));
+    await writeFile(
+      resolve(dirname(resolve(outPath)), "fee-stream.json"),
+      `${JSON.stringify({ generatedAt: generatedAt.toISOString(), pools })}\n`,
+      "utf8",
+    );
+  } catch (err) {
+    console.error(`(fee counters not written: ${err instanceof Error ? err.message : String(err)})`);
   }
 
   return snapshot;

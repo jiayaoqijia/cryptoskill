@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { decodeFunctionData, toFunctionSelector } from "viem";
 import { buildVoteCalldata } from "../src/calldata.js";
 import { VOTER_ABI } from "../src/abi.js";
-import { BASE_CHAIN_ID, VOTER_ADDRESS } from "../src/constants.js";
+import { BASE_CHAIN_ID, BUILDER_CODE_SUFFIX, VOTER_ADDRESS } from "../src/constants.js";
 import type { WholePercentWeight } from "../src/allocator.js";
 
 const POOL_A = "0x0b3e751fc0e2b0d0c5e28d5b9c4a4d8e0d3f2a11";
@@ -43,6 +43,15 @@ test("the transaction targets the Voter on Base and moves no value", () => {
   assert.equal(tx.chainId, BASE_CHAIN_ID);
   assert.equal(tx.value, "0x0");
   assert.equal(tx.data.slice(0, 10), toFunctionSelector("vote(uint256,address[],uint256[])"));
+});
+
+test("the calldata ends with the builder-code tag, after a vote that is complete without it", () => {
+  const tx = buildVoteCalldata("17324", weights([POOL_A, 60], [POOL_B, 40]));
+  assert.ok(tx.data.endsWith(BUILDER_CODE_SUFFIX));
+  // ERC-8021's fixed marker closes the tag, so indexers can find it from the end.
+  assert.ok(tx.data.endsWith("80218021802180218021802180218021"));
+  const vote = tx.data.slice(0, -BUILDER_CODE_SUFFIX.length) as `0x${string}`;
+  assert.equal(decodeFunctionData({ abi: VOTER_ABI, data: vote }).functionName, "vote");
 });
 
 test("the echoed pools and weights stay aligned with the encoded ones", () => {

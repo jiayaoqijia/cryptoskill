@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "b388600da2d26a0c199124e991aab26021a4b7c8",
+      "revision": "aee05cc3431a0285efb16bda1fe0a8f5c6c54c4b",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3845,7 +3845,7 @@
     "exchanges/senpi-ai-senpi-account-status": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-account-status/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "3e74da9ea08cc849442967dd8c623cc59c0e5ed520f053c545c0e0c4724b83d7",
         "references/presentation-notes.md": "8d2b874195f95d991f27d779b20dcc1094776640e987fad1fa5f29c6ae77958f",
@@ -3870,7 +3870,7 @@
     "exchanges/senpi-ai-senpi-deposit-withdraw-transfer": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-deposit-withdraw-transfer/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "54d654284dd4d667d99c4528f50724aadfcd2f03f4239ba2b3bbd0f6b8e1aced",
         "tests/test_money_rails_skill.py": "3a3d5691fa649dc3534d038838042653d5710dc77928c6d8a3b4f8b090184fe0",
@@ -3885,16 +3885,16 @@
     "exchanges/senpi-ai-senpi-market-pulse": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-market-pulse/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
-        "SKILL.md": "cc861832f1dcafd8e4586f589bdbffe10633acf5f939fc03d490e11007365c11",
+        "SKILL.md": "55b34de95cb4c9d75d2994d310fb1e3afa1454588e65cf169ed2a266cd153543",
         "references/analysis-framework.md": "f28318e3cff4ded3a3c58369a6b7157d7d0e88b1f16f15ee4609fdd05813d634",
         "references/scope.md": "5fcfab3deea82abbca335617cff71cff38bf041b68ecb06bcc4f3b45a78c3d03",
         "scripts/mcp_client.py": "b9c72ab1aac6f1ee906a389171ec3c968048fb76c9b3e18bff2e5b6d0762e23b",
         "scripts/pulse.py": "3b7d48b15b5e74c5d301b7881f191510a08d906eaefae00858cd29500af66a51",
         "tests/fixtures/pulse_fixture.json": "d15ecdd606ea46a17f31cf3f6c3d132b964b7ecadf604b03e68d6693894e5b63",
         "tests/test_pulse.py": "b686a98897e4ccdb6c6b9c8005d573a77d7a151f3368e027d192bfd32ec87841",
-        "tests/test_signals_closing.py": "a68d7343d5ae6743798135a69636c7c3609f984301e751194259675a9d7d49be",
+        "tests/test_signals_closing.py": "b8a6903f5589fd3ad914bbd0c622ada47b2c75f7358bea69ac0a56af4e841bb3",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
       "modes": {
@@ -3912,9 +3912,9 @@
     "exchanges/senpi-ai-senpi-trader-research": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trader-research/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
-        "SKILL.md": "c4a6f21e043c03ba1cd6ac532195ff5f0896568e12e05db457656950917edf77",
+        "SKILL.md": "a8f111288897c8f9b4ae5d2519a9db8a1643eac2863357084acf7be4fef18a2a",
         "references/analysis-framework.md": "251247922522a5a2c546fd5f44b8c5f865f34ebabd7f52c9ba140231f328d379",
         "scripts/mcp_client.py": "a01f56926d62d7838d9542e8e702d095b2a21ccc0caae99a94577eda234d4541",
         "scripts/research.py": "dad5841b42767227b4c7109ce105226585d2395a0f576ffc11eae58afa90ef49",
@@ -3935,7 +3935,7 @@
     "exchanges/senpi-ai-senpi-trading-runtime": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trading-runtime/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "db7cab889ede8e350d007e74245b9925f627ab6a2bbe80fedbb51b88347e5ec3",
         "references/dsl-protection-check.md": "2b004cd3b65834e9adf9964087fa97e9e65e81feb3d4d7a8a70e494ed138dd96",
@@ -3972,7 +3972,7 @@
     "exchanges/senpi-ai-senpi-why": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-why/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "558901a82e0b278f4322b9e128c2019ff20127ed91a564014633cec7f1d19757",
         "references/overview-positioning.md": "4174702e1a53b0f145c1460fd0de59934254825e523762c7631269f9a4e049a7",
@@ -3987,10 +3987,10 @@
     "mcp-servers/aibtc-official-mcp-server": {
       "repo": "aibtcdev/aibtc-mcp-server",
       "path": "skill/SKILL.md",
-      "revision": "b4b57f5ab9740bd57c328162ec5cb05b4e1e354b",
+      "revision": "4f1d376bcd8541574c993411806171c82086cfee",
       "files": {
         "README.md": "898727136452f53003dec5666831ae01aff707c94a35c01036a31d3367dd11a5",
-        "SKILL.md": "eadc7cf3a6ace8d4d0087636de9824e08297bd6646442a1a35e6ac891f5e54db",
+        "SKILL.md": "c375ca2558b71b4f496cec7173169aec7c40cb39d2eb72b8d1f60b84c988347b",
         "references/at-stake.md": "9eddb5527500794d522125eb59e4d693ae3e55bc5ecdba04e0a9a84ea7604532",
         "references/genesis-lifecycle.md": "8df8b90bc2450937e3a4e573c7c6c48e3f3bf2e1a434693383dee4fadb1781f8",
         "references/inscription-workflow.md": "5914a8fd80fa4d944bdcbb15e5d4b847a544d6eec435e4333fe0a67e9a949b44",
@@ -4014,10 +4014,10 @@
     "payments/aibtc-mcp-server": {
       "repo": "aibtcdev/aibtc-mcp-server",
       "path": "skill/SKILL.md",
-      "revision": "b4b57f5ab9740bd57c328162ec5cb05b4e1e354b",
+      "revision": "4f1d376bcd8541574c993411806171c82086cfee",
       "files": {
         "README.md": "898727136452f53003dec5666831ae01aff707c94a35c01036a31d3367dd11a5",
-        "SKILL.md": "eadc7cf3a6ace8d4d0087636de9824e08297bd6646442a1a35e6ac891f5e54db",
+        "SKILL.md": "c375ca2558b71b4f496cec7173169aec7c40cb39d2eb72b8d1f60b84c988347b",
         "references/at-stake.md": "9eddb5527500794d522125eb59e4d693ae3e55bc5ecdba04e0a9a84ea7604532",
         "references/genesis-lifecycle.md": "8df8b90bc2450937e3a4e573c7c6c48e3f3bf2e1a434693383dee4fadb1781f8",
         "references/inscription-workflow.md": "5914a8fd80fa4d944bdcbb15e5d4b847a544d6eec435e4333fe0a67e9a949b44",
@@ -17774,9 +17774,9 @@
     "exchanges/senpi-ai-senpi-improve-trades": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-improve-trades/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
-        "SKILL.md": "abf16d08456b96764e474057db38e6ac7b9f31982bfd6f8ae749d3a274a1e730",
+        "SKILL.md": "a5703e4556c8b497a365446b274c1614002ef317f0a5743d7a0e0eea110b12ca",
         "references/event-log.md": "d7482c6647e679b4c69db7f5b74f8522462a90ef9ec7341b3491899bdcbae0ef",
         "references/output-shape.md": "c62d920be613b586498f0ab86064fc8fbe0607a1642b4ba04ff673ec0a6a580b",
         "scripts/_yaml.py": "41487a1db5854b892e3a15caf48c5068b47c4407008fea2fedb0025ccf8c8df4",
@@ -17809,9 +17809,9 @@
     "exchanges/senpi-ai-senpi-portfolio": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-portfolio/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
-        "SKILL.md": "57538a4cd4fd09a9841b83fe78d13339bfdb691e11b8240cd84b63e1e3edb11d",
+        "SKILL.md": "28b8cf812b5028ad2c9259ef4ce41864220d7c790e86532751b28cb59d1988e5",
         "references/analysis-framework.md": "4ed518f59b9ddb2c7c54f0ae0c4dce947ba048feee7320360d8ce8e3d80a23f9",
         "scripts/mcp_client.py": "1bb95ac39e0cdc2219efd19b6397c58b6ea0749071504a90f16c7f587a890ca2",
         "scripts/portfolio.py": "2a9127f3c2c27b220f336f5f51120239f69ec66edaa6618358bed49d6c9ab5c8",
@@ -17844,9 +17844,9 @@
     "exchanges/senpi-ai-senpi-smart-money": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-smart-money/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
-        "SKILL.md": "3fe7ee20be92a770b0704e6cabe95c30f43d4d94da19790885c85a62909d2864",
+        "SKILL.md": "047b99270244997abac7f028aa3a9ae4220278a6864484c63ef264495f55132d",
         "references/analysis-framework.md": "0b0487582583aa9c9ac17daa49ec2eb140a164cb7cd65af514b66786b6cc4ba7",
         "scripts/mcp_client.py": "86c29aaacc692d09655d3687e6b3068f46fa0fe3985773e596e065f6d226f1c2",
         "scripts/smartmoney.py": "556e40ea43bf56771d84a5f91113a160afc1f1fa5cd82145e4d3ff0b3d5a2e9a",
@@ -17867,7 +17867,7 @@
     "exchanges/senpi-ai-senpi-strategy-author": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-author/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "e6335fd89cd3a1cd79ecda5b18edf0fc411355c22a2d64aa40e1075c690fff57",
         "references/creating-a-strategy.md": "f9c80d895431bfef50a105f434ce8025650f25adfb3871cbf7e5cf047c72c0ca",
@@ -17924,10 +17924,10 @@
     "exchanges/senpi-ai-senpi-strategy-discover": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-discover/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
-        "SKILL.md": "2773393300737df37069abe644a3363fcb29556cc7554c9a6a02d8100e68aef1",
-        "catalog.json": "6d06a7bd5656f74d6cae5f185c260a81a7c891c1ffc8689d36c5a3ae05fcef13",
+        "SKILL.md": "3dfe41c493f20272c4d2e8ad141c38e24ed6b4fad753ba9fa952d8f9b97f373c",
+        "catalog.json": "d65ac8da9356f8f9afd29dc576a49275d5324ada0acaa41fbba119ebdf5886c4",
         "references/glossary.yaml": "9bdb786d49073cb64914a7501c4750ee92fc8fa1ed3d6434b43ae1235279ae10",
         "scripts/discover.py": "ec89e2489839232cba29fbc3db5bf0928b6915db14cf4a3b2a7d9c1fee9827de",
         "scripts/mcp_client.py": "2eaa9a1d241751caf0a07584f66ea6c7c04fc8af6d00278da91cc376ad162228",
@@ -17973,7 +17973,7 @@
     "exchanges/senpi-ai-senpi-strategy-ops": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-ops/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "0cc958b9af6a09e1054468f7d2a73f61284277dcd8469275de722237df6a8c44",
         "references/editing-a-live-strategy.md": "56f5a9f4a0946208d8b1d920d85ac591ca46b75f55a0e87b27ab656150dc00bd",
@@ -18062,7 +18062,7 @@
     "exchanges/senpi-ai-senpi-trade": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trade/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "bbf4b5185ebbd0ee3ff1c6559d58a3553f8326908d4db3f8b2215f60550bb682",
         "references/mirror-monitoring.md": "cdccc8739732d67d95a369a94229194a1af0b6a7c4edddb6b4de9e7d8ebaf542",
@@ -23426,21 +23426,22 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "c3a68108e9a4e89316d7cdf85b238801e6545e95",
+      "revision": "c12bdeeb17c81d16187e068931ff8632bfea0883",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
-        ".github/workflows/snapshot.yml": "4a573960f8b2bfffff360d279af0fa330af6ed07b5b9ff8dbb0cf34e51525750",
+        ".github/workflows/snapshot.yml": "edce26b577b9cb4bd4b763255a5b9938319f1f810614d4543a1abd9c80b83c6e",
         ".github/workflows/timing.yml": "7b6994ed6cac63925494be7168f20b3f80848353d62651db3a7cef92c9c6c019",
         ".gitignore": "e8bc935ce727f1809c792f4c5d26c5fc75ba2b7df7fc9390c56c8892f6a6007f",
         "LICENSE": "e5ba2460ca7e2700521766699fb4cca155b012f20758f0039d3e861542430493",
-        "README.md": "cf26b55487c128962aa0b2ae243af9515aefff176bc96813bdc1d9155e5b8998",
+        "README.md": "838487934772276e3203f2faa8db2fd4e098fd124a946593402ae298118a6870",
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "53994da156f09ea6d5fa81858c80085db428f68ca68ea2165dda7eb565ab91e1",
-        "docs/data/snapshot.json": "4ae7d67790d1de12ba35012c83b1fbe42bba485db8968bddd35d317f5e512870",
+        "docs/data/fee-stream.json": "adeb1466e9ea0b6796905f29c6d3f8599de41a245af747765d25ce84d73f3915",
+        "docs/data/snapshot.json": "e9e1a3b61f644a9ab7e3e95beb83487fc06366c59d902bcbfc2337e455bae1f1",
         "docs/data/timing.json": "e96d817967b82003deb44185fde84ab6b377877a922466d99524947539ffce78",
-        "docs/index.html": "18c7f4a1f1519ff17184645d24ca19261d34a0946d477b07078f60325def5fa9",
-        "docs/llms.txt": "4b5a2df83697dfc590cdeb7a278d8a432d368b8d3d6919e92d7f8026c492211e",
+        "docs/index.html": "787d4b814fcd7d8b41b70a2f5b8aaf8a46c5b0d379b46d23154bce36012f7649",
+        "docs/llms.txt": "bb0ec1258a3840a230d5bc746cbdbdc1cb93e7b4a37e2e2fc72cbf749fc16266",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -23451,12 +23452,13 @@
         "src/accrual.ts": "e16de279c4f28ab36457d777d630400a8a4a700ead383f81d08cc05988e5726f",
         "src/allocator.ts": "01f1a2f710a484c7e4db9572ac354d749bbfcbec52e89a008be8aff90878a8c8",
         "src/backtest.ts": "e34602bb26df09a0180a3d36b1fa603061584dc79638fa74f5474c55ea4b98a0",
-        "src/calldata.ts": "477a8445e692cee478a8725cdfafb5fa16bf42a8982f4022a0afc481cbede70e",
+        "src/calldata.ts": "0dfd28e8cdcb4aadd40acc89253be9b3d6b9d93b5478e2f8fa6fec4512d0c40a",
         "src/chain.ts": "b4d98335cc82759ae146e2065887bf5fb3369ffd94b28b13d775a9546ee1a8eb",
         "src/cli.ts": "2baf74bd5fa6dd64447731595c034b6006afa32a9873f105c8f400685b19c585",
-        "src/constants.ts": "7e30f5de0ad3be505bc5f77bf1ab67179538e8b6abf85797b739a221943dbc10",
+        "src/constants.ts": "80a4a3a11b927771689a866b1601854e94d6d9b2f4765bac976cbee5fe4cc9fc",
         "src/dilution.ts": "919b321ae69af27964fdee04abb84d7b52de85b00c3a5059e0f8002adfdc74fc",
         "src/efficiency.ts": "6147196af1d7d6321abd685691f5f487d87b8c5ac1e9c0ad40527ea464f65ed3",
+        "src/feeStream.ts": "62a6f28590723aa2a059713b3bdba00dece8cec08b796bc4fa7c2b49c8d2294f",
         "src/llms.ts": "80a54460ede575d316d84a5e9c81fe49bcc8776cf997089aa932096d54b365ff",
         "src/mcp-server.ts": "af9da1c1f7f1827d043391ca10a4935bb5ec4cf3aa42eaacb7e626eb8113f482",
         "src/pools.ts": "d1ab873ff96644c57faa4a94becea60b48ee12db8fd9f3c464fab9257f36f0d9",
@@ -23465,7 +23467,7 @@
         "src/prices.ts": "c7c7777055b1d43407a36cc5b217b2afac2c18bc79003ad9c4ee8a06da518ad2",
         "src/settled.ts": "f92fb4c6523de108f9544c02f51b00a40095eee91ac52402d2892b1dba2cd03e",
         "src/snapshot-cli.ts": "e1f4853745eb0c6c6609920b27c1adc6959376417ac8a07a551c1a2cb049a559",
-        "src/snapshot.ts": "a53cb0433a43c2a3ab275e21c72c2aaa0c9c5b91227a88f9c28f9030c026d081",
+        "src/snapshot.ts": "0ef7367228cdea65426d70eb6158398dd33a8c2f535ca87cb0dbd018cd53bdae",
         "src/timing-cli.ts": "9775a2c802cdddf25fb0ac6b2de1ca2763cd07274224be49b2ad2b03c2ecb527",
         "src/timing.ts": "f913c2632cb67f7c57c5541e2fd692e657e9a33cec1f58a652c6e27522071273",
         "src/trend.ts": "1f53017e93ccafbae58c5d1253a8f225ed4183bfea0fc571e664777c003c3cb4",
@@ -23476,10 +23478,11 @@
         "test/accrual.test.ts": "31dd3afa21dde4e5ff57feb0fe56867d444ec192c28aa80a0114a65512cba3be",
         "test/allocator.test.ts": "a99b56a08a9e32fc6e2cba1348e3d6766336754dd0404b02f57066da1b810f56",
         "test/backtest.test.ts": "120ee659417fedde8594e2759caf6d93b0c3fbf148aa49a762ae184809ff4aaf",
-        "test/calldata.test.ts": "58357a0f48b22c0c0f973332dddb364749cd9e9cc51789371b5c607c5e088271",
+        "test/calldata.test.ts": "bef7d32cb89e2c246d74f5ab212e85a4d9f64dcf990d8c68d4d1290a2a782744",
         "test/cli.test.ts": "d69756e067b70eb3c15940484c0a93737688a2a508a3ce27c84f63fef3a1f717",
         "test/dilution.test.ts": "7bd11890458e09946f6efab533fa2c6f1f575adff4fe97fe6a1ca528dcfb1847",
         "test/efficiency.test.ts": "0eb2d67843c194caf931031149213f400bebdd27ead5dd67509ea1b0d853d815",
+        "test/feeStream.test.ts": "66700c2db8435d4f41d0ea44e368a1bb2537e8996eb096fa2578f5c7c93a26e8",
         "test/llms.test.ts": "f5214080980855100db12e320715c9c243476355666e1520f18f7d7ce5c31c7f",
         "test/mcp-server.test.ts": "dd9b19abf0d5069426d8ba3d4461117b7040ec1774fe84a87d2ff574d28a9623",
         "test/migration-site.test.ts": "b33e57d8aa683328acbbbe5de7a1ed85e5d98092eca5af5ad447dd95211b3432",
@@ -23488,7 +23491,7 @@
         "test/predict.test.ts": "1ea87b5c6bda3308457c0cbe24dc25686bd36dea0e2007e376493f72f69c407c",
         "test/prices.test.ts": "78592e89d06c9fee098088b25032c6085ccac3869c7f3ba8d61affe28128e95d",
         "test/settled.test.ts": "3d3a5a8a0dcd998931e5ab002560e41d811e1fdf7341cc302a9572f4fe4766f4",
-        "test/site-parity.test.ts": "13f8f8c7da4a21a3eb68799bd0b14ed9b3a9d00c6405552cb014ccc1409c674c",
+        "test/site-parity.test.ts": "4cc76f99635e9ecc3f130960da746f7dd6662e3acc5027eee448d53c875f56b4",
         "test/snapshot.test.ts": "42f8fee8fc1bf79763fdb84858ad6eb47f8e4021ea8ca670790ae6eca39f7e73",
         "test/timing-cli.test.ts": "c509ded072bf350ec1a407e07f295109c0892b12195c23774c84aa6846da8069",
         "test/timing.test.ts": "741917d1dc5c36a342aab27e12f9efcb15f2402227de1e559a6526c0435901a0",
@@ -23509,6 +23512,7 @@
         "SKILL.md": 420,
         "docs/CNAME": 420,
         "docs/data/accrual.json": 420,
+        "docs/data/fee-stream.json": 420,
         "docs/data/snapshot.json": 420,
         "docs/data/timing.json": 420,
         "docs/index.html": 420,
@@ -23529,6 +23533,7 @@
         "src/constants.ts": 420,
         "src/dilution.ts": 420,
         "src/efficiency.ts": 420,
+        "src/feeStream.ts": 420,
         "src/llms.ts": 420,
         "src/mcp-server.ts": 420,
         "src/pools.ts": 420,
@@ -23552,6 +23557,7 @@
         "test/cli.test.ts": 420,
         "test/dilution.test.ts": 420,
         "test/efficiency.test.ts": 420,
+        "test/feeStream.test.ts": 420,
         "test/llms.test.ts": 420,
         "test/mcp-server.test.ts": 420,
         "test/migration-site.test.ts": 420,
@@ -23630,7 +23636,7 @@
     "exchanges/senpi-ai-quant-desk": {
       "repo": "senpi-ai/senpi-skills",
       "path": "quant-desk/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
         "SKILL.md": "65c9ea756ce6afd74be72176de1a1ec3f1fe1fd7a99be823e6af2804f2fa4396",
         "references/coverage.json": "9f328f8ac194a5647608ac407cd161fa14dd0b6148d747ffeed719611904b09a",
@@ -23703,9 +23709,9 @@
     "exchanges/senpi-ai-senpi-signals": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-signals/SKILL.md",
-      "revision": "b477831e7a005f4790456ee3f1c222c7ade3c426",
+      "revision": "0603398041dfd81ccd08bb4b22fad05aa4fa4142",
       "files": {
-        "SKILL.md": "1c230bba753b99031eb78eb55ac802e1f60252fb2e6f4ca94343dc8ad49b0719",
+        "SKILL.md": "3e744d865e2a564d6d4f38c3304634ee0475e8b03316a49dce077827df685049",
         "references/detectors.md": "307f4d416697b3a0d52c9c16c09601e9841ff4d46a00f103ec4df3e8145ab54f",
         "references/worked-examples.md": "14b6de3570a383f300a9a3eff1362dbc3e72741a1c0da215d82e04c8db490491",
         "scripts/check_position_age.py": "e81840aa9bb58128e9bc0b9d0657f3b0a4326091b62df097c985c86e5123e368",
@@ -29120,13 +29126,13 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "ae4ed631874007e131f875691c3bcd72e3904bff",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "b388600da2d26a0c199124e991aab26021a4b7c8",
+    "jiayaoqijia/cryptoskill": "aee05cc3431a0285efb16bda1fe0a8f5c6c54c4b",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
     "okx/agent-skills": "9c180cc1e9911a1ca44c0df5cc7509dba5bb7697",
     "hypurrquant/perp-cli": "ed94cfd46259ff9186bf4f2489252a4f8f773e31",
-    "aibtcdev/aibtc-mcp-server": "b4b57f5ab9740bd57c328162ec5cb05b4e1e354b",
+    "aibtcdev/aibtc-mcp-server": "4f1d376bcd8541574c993411806171c82086cfee",
     "cumpsd/broker-as-a-service": "36afc59034857075811c44a234dcb88a59a6c9c3",
     "chainstacklabs/rpc-nodes-mcp": "8920ed796409e2efc32953f787cdcdfff2e6c335",
     "celo-org/celo-mcp": "f6287609980b847d13011bd146014d30d7e57734",
@@ -29176,7 +29182,7 @@
     "clubytech/cluby-sdk": "f7db754e14929aeb321049de92a27f61fd33fbd5",
     "nirholas/robinhood-mcp": "b732fbdd14bc6b8db971fe2a45f325a083ebeac2",
     "alekskram/dydx-agent-gateway": "eec5527895a0b796a792eea4c3ecb826341297ab",
-    "0xfreak0/sui-mcp": "2bff96df95dfd156bd3d5c0e85b18f73bebc4bd2",
+    "0xfreak0/sui-mcp": "97c26e3b4fd96ef975c3d3e60b48411ced71c552",
     "wisdomnova/multipu-docs": "5b6b3c9a3dbb27487667a1cb842e859b2996ad17",
     "svpchain/svpchain-defi-mcp": "8b2b71a05d165f33f4582be67199e6e893689894",
     "nirholas/cryptocurrency.cv": "888fb300fc305f1cfad83166dd174d56cdde3ee6",
@@ -29204,7 +29210,7 @@
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "faef244b55dd8841a281f966ec74fbcf0b8e72f1",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "c3a68108e9a4e89316d7cdf85b238801e6545e95",
+    "araxis33/aero-vote-radar": "c12bdeeb17c81d16187e068931ff8632bfea0883",
     "paulf280-ui/cabal-hunter-mcp": "1c059944b62b0df52d0bede5d03d3ef75cfaa625",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "f3ce6c488e57807d8b8e470d05f52038c526021b",

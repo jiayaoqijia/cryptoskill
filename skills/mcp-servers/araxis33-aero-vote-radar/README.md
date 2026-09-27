@@ -357,6 +357,12 @@ say before signing. The MCP server exposes the same thing as
 
 A few details that are deliberate rather than incidental:
 
+- **The data ends with a builder-code tag.** After the encoded vote come 29 bytes
+  of [ERC-8021](https://docs.base.org/specifications/builder-codes/overview)
+  attribution for Base builder code `bc_mrkwu2m0`, so Base can credit the vote to
+  this tool. Contracts ignore trailing calldata; `Voter.vote` was simulated on Base
+  with and without it and behaved the same. Strip the last 29 bytes if you would
+  rather sign the bare vote — it casts exactly the same weights.
 - **The function signature was verified, not transcribed.** The selector for
   `vote(uint256,address[],uint256[])` — `0x7ac09bf7` — is present in the
   deployed Voter's runtime bytecode on Base, checked alongside a control: a

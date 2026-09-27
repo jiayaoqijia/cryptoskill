@@ -1960,7 +1960,10 @@ async function doLookup() {
       el.lookupMsg.className = "lookup-msg err";
       el.lookupMsg.textContent = locks === 0
         ? "No veAERO locks on this address."
-        : locks + " lock" + (locks > 1 ? "s" : "") + " found, but their voting power has decayed to zero — expired locks cannot vote.";
+        // Zero power has two causes the lookup can't tell apart here: the lock
+        // ended, or it sits in a Relay (balanceOfNFT reads 0 for both). The
+        // migration panel below reads each lock and says which.
+        : locks + " lock" + (locks > 1 ? "s" : "") + " found, but none can vote right now — each has either ended or sits in a Relay. See below for which.";
       return;
     }
     el.veaero.value = total.toFixed(4).replace(/\.?0+$/, "");
@@ -2008,6 +2011,9 @@ async function copyWeights() {
  */
 const VOTER_ADDRESS = "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5";
 const VOTE_SELECTOR = "0x7ac09bf7"; // vote(uint256,address[],uint256[])
+// ERC-8021 builder-code tag (bc_mrkwu2m0) appended after the vote; the contract
+// ignores it. Pinned to BUILDER_CODE_SUFFIX in src/constants.ts by site-parity.test.ts.
+const BUILDER_SUFFIX = "62635f6d726b7775326d300b0080218021802180218021802180218021";
 
 /**
  * Hand-port of src/calldata.ts for a page with no build step, held to the real
@@ -2047,7 +2053,7 @@ function voteCalldata(tokenId, rows) {
   const head = word(tokenId) + word(96) + word(96 + 32 * (1 + n));
   const pools = word(n) + rows.map((r) => addressWord(r.pool)).join("");
   const weights = word(n) + rows.map((r) => word(r.percent)).join("");
-  return VOTE_SELECTOR + head + pools + weights;
+  return VOTE_SELECTOR + head + pools + weights + BUILDER_SUFFIX;
 }
 
 /**
@@ -2071,7 +2077,8 @@ const CALLDATA_SELF_TEST = {
     "0000000000000000000000000000000000000000000000000000000000000002" +
     "0000000000000000000000000000000000000000000000000000000000000002" +
     "000000000000000000000000000000000000000000000000000000000000003c" +
-    "0000000000000000000000000000000000000000000000000000000000000028",
+    "0000000000000000000000000000000000000000000000000000000000000028" +
+    "62635f6d726b7775326d300b0080218021802180218021802180218021",
 };
 
 function calldataEncoderIsSound() {
@@ -2121,7 +2128,8 @@ function buildCalldata() {
   el.calldataMsg.className = "lookup-msg ok";
   el.calldataMsg.textContent =
     "Unsigned. " + lastPercents.length + " pools, " +
-    lastPercents.map((r) => r.percent + "% " + r.symbol).join(", ") + ".";
+    lastPercents.map((r) => r.percent + "% " + r.symbol).join(", ") + ". " +
+    "The data ends with a 29-byte Base builder-code tag (ERC-8021) that credits the vote to this site; the contract ignores it.";
 }
 
 async function copyCalldata() {

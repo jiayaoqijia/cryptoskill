@@ -2,6 +2,15 @@
 // and cross-checked on Basescan (contract names LpSugar / RewardsSugar match).
 export const BASE_CHAIN_ID = 8453;
 
+/**
+ * ERC-8021 attribution suffix for Base builder code `bc_mrkwu2m0` (deftools.xyz),
+ * appended to the vote calldata this project builds. Contracts ignore trailing
+ * calldata — `Voter.vote` was simulated on Base with and without it and behaved
+ * the same — while Base's indexers read it to credit the transaction to the app.
+ * Byte for byte the string the Base dashboard publishes for the code.
+ */
+export const BUILDER_CODE_SUFFIX = "62635f6d726b7775326d300b0080218021802180218021802180218021";
+
 // Overridable via env var so users with their own Base RPC (Alchemy, Infura, etc.)
 // get a much higher rate-limit ceiling than the shared public endpoints.
 export const BASE_RPC_URL = process.env.BASE_RPC_URL ?? "https://base-rpc.publicnode.com";

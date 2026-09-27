@@ -13,7 +13,7 @@ import {
 } from "../src/allocator.js";
 import { epochEndOf, formatDuration } from "../src/trend.js";
 import { expectedDilutedVotes, previousSettledVotes } from "../src/dilution.js";
-import { VOTE_BASIS_CROSSOVER_VEAERO, VOTER_ADDRESS } from "../src/constants.js";
+import { BUILDER_CODE_SUFFIX, VOTE_BASIS_CROSSOVER_VEAERO, VOTER_ADDRESS } from "../src/constants.js";
 import { buildVoteCalldata } from "../src/calldata.js";
 import type { WholePercentWeight } from "../src/allocator.js";
 
@@ -339,11 +339,13 @@ test("docs/index.html's voteBasisCaveat matches src/allocator.ts word for word",
 const siteCalldata = new Function(`
   ${extractConst(siteSource, "VOTER_ADDRESS")}
   ${extractConst(siteSource, "VOTE_SELECTOR")}
+  ${extractConst(siteSource, "BUILDER_SUFFIX")}
   ${extractFunction(siteSource, "voteCalldata")}
   ${extractConst(siteSource, "CALLDATA_SELF_TEST")}
   ${extractFunction(siteSource, "calldataEncoderIsSound")}
-  return { voteCalldata, calldataEncoderIsSound, VOTER_ADDRESS, VOTE_SELECTOR, CALLDATA_SELF_TEST };
+  return { voteCalldata, calldataEncoderIsSound, VOTER_ADDRESS, VOTE_SELECTOR, BUILDER_SUFFIX, CALLDATA_SELF_TEST };
 `)() as {
+  BUILDER_SUFFIX: string;
   voteCalldata: (tokenId: string, rows: WholePercentWeight[]) => string;
   calldataEncoderIsSound: () => boolean;
   VOTER_ADDRESS: string;
@@ -381,6 +383,7 @@ test("docs/index.html encodes the same vote bytes as src/calldata.ts", () => {
 test("docs/index.html points the vote at the same contract, with the same selector", () => {
   assert.equal(siteCalldata.VOTER_ADDRESS, VOTER_ADDRESS);
   assert.equal(siteCalldata.VOTE_SELECTOR, buildVoteCalldata("1", [weight(1, 100)]).data.slice(0, 10));
+  assert.equal(siteCalldata.BUILDER_SUFFIX, BUILDER_CODE_SUFFIX);
 });
 
 test("docs/index.html's calldata self-test vector is the one viem produces", () => {
