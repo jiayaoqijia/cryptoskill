@@ -2,8 +2,8 @@
 
 Yaci DevKit provides a local Cardano devnet using Docker for fast smart contract
 development and testing. Commands and ports below match the current DevKit —
-always cross-check `docs/sources/yaci-devkit/getting-started/docker.mdx` and
-`docs/sources/yaci-devkit/services.mdx`, as the CLI evolves.
+always cross-check `../../docs/sources/yaci-devkit/getting-started/docker.mdx` and
+`../../docs/sources/yaci-devkit/services.mdx`, as the CLI evolves.
 
 ## Prerequisites
 
@@ -187,6 +187,6 @@ done
 echo "DevKit ready"
 ```
 
-See `docs/sources/yaci-devkit/` for the current recommended CI setup (the
+See `../../docs/sources/yaci-devkit/` for the current recommended CI setup (the
 distribution is compose-based; a single-image `docker run` is no longer the
 documented path).

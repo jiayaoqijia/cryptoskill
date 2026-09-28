@@ -9,12 +9,12 @@ Every Cardano smart contract compiles to Untyped Plutus Core (UPLC). When a tran
 - **CPU (ExCPU)**: Measured in abstract picoseconds. Represents computational steps.
 - **Memory (ExMem)**: Measured in abstract bytes. Represents peak working memory during evaluation.
 
-Each transaction has a budget for both:
+Each transaction has a budget for both. The limits are protocol parameters (`maxTxExecutionUnits`); these are mainnet's current values, and the query further down reads them live:
 
 | Resource | Per-Transaction Limit |
 |----------|----------------------|
 | CPU      | 10,000,000,000 units |
-| Memory   | 14,000,000 units     |
+| Memory   | 16,500,000 units     |
 
 When multiple scripts execute in one transaction, they share the budget. If either limit is exceeded, the transaction fails Phase-2 validation and the submitter loses collateral.
 
@@ -88,7 +88,7 @@ Trace strings are embedded as bytestring literals in the compiled script. Each t
 - Increases script size (string literal stored in UPLC)
 - Costs CPU even when the trace path is not executed (the literal exists in the script structure)
 
-Building with `--trace-level silent` removes traces and typically reduces script size by 10-30%.
+`aiken build` defaults to `--trace-level silent`, which removes traces and typically reduces script size by 10-30%. Pass `--trace-level verbose` to keep them while debugging.
 
 ## Script Size Impact on Fees
 
@@ -137,7 +137,7 @@ All scripts in a transaction share the budget. A single validator using 80% of t
 **What is the bottleneck?**
 
 Script size too large (over ~12 KB inline):
-1. Remove traces (`--trace-level silent`)
+1. Build without traces (`aiken build`, silent by default)
 2. Extract common code into shared functions
 3. Simplify types (fewer constructor fields)
 4. Use reference scripts

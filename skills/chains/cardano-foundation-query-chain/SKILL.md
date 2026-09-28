@@ -23,9 +23,9 @@ Help the developer choose and use the right data provider for querying the Carda
 
 ## When NOT to use
 
-- Building or submitting transactions (use transaction-building skills instead)
+- Building or submitting transactions (use `build-transaction`)
 - Setting up a local devnet (use `setup-devnet` skill)
-- Writing smart contracts (use Aiken/Plutus skills)
+- Writing smart contracts (use `write-validator`)
 - Wallet integration in a frontend (use `connect-wallet` skill)
 
 ## Key principles

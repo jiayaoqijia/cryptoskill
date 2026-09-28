@@ -173,7 +173,7 @@ kupo_enabled=true
 Ogmios serves `ws://localhost:1337`, Kupo `http://localhost:1442`. Since DevKit
 v0.12.0-beta5, Yaci Store evaluates scripts with `scalus` when Ogmios is not
 running — Ogmios is optional for transaction evaluation. For standalone (non-DevKit)
-setups, see `docs/sources/ogmios/` and `docs/sources/kupo/`.
+setups, see `../../docs/sources/ogmios/` and `../../docs/sources/kupo/`.
 
 ### Step 5: Smart contract workflow
 

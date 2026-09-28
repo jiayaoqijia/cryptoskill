@@ -238,7 +238,7 @@ Key points:
 - For fungible tokens with ongoing minting, gate on an admin signature or a
   supply cap instead of UTxO consumption (which only ever permits one mint).
 
-**Canonical reference:** `docs/sources/aiken-examples/gift_card/validators/oneshot.ak`
+**Canonical reference:** `../../docs/sources/aiken-examples/gift_card/validators/oneshot.ak`
 (Aiken's own example) is the compile-tested version of this pattern; read it verbatim.
 
 **Minting many unique NFTs at once (derive the name).** For a *batch* of unique
@@ -247,7 +247,7 @@ parameterizing it: hash the (unique) spent `output_reference`, e.g.
 `blake2b_256(builtin.serialise_data(output_reference))`, or the first input's
 reference concatenated with a counter. Because the seed reference is itself unique,
 the derived names are unforgeable and collision-free — no `expected_name` parameter
-needed. See `docs/sources/aiken-examples/gift_card/validators/multi.ak`.
+needed. See `../../docs/sources/aiken-examples/gift_card/validators/multi.ak`.
 
 **Burn-to-unlock (multi-purpose validators).** A common idiom pairs this `mint`
 handler with a `spend` handler in the *same* validator, so a UTxO locked at the
@@ -331,7 +331,7 @@ Key points:
   which every registration requires the script to run. A withdraw-zero validator that
   cannot be registered cannot withdraw, and every spend that requires its withdrawal is
   dead. Deploy-time registration hides this until the first *new* instance after the era
-  change -- typically a rotation or an upgrade. (`docs/sources/plutus/docusaurus/docs/working-with-scripts/script-purposes.md`)
+  change -- typically a rotation or an upgrade. (`../../docs/sources/plinth/docs/working-with-scripts/script-purposes.md`)
 - Use this pattern for DEX order matching, batch settlements, and similar operations
 
 ## State Machine
@@ -430,9 +430,9 @@ The patterns above show *how* to write specific validators. This section is abou
 *what to reach for when* — the design decisions that recur across real Aiken code.
 Every claim here is distilled from validators you can read in the bundle: the
 Cardano Foundation use-case templates under
-`docs/sources/cardano-use-case-templates/` (cited by use-case directory; each
+`../../docs/sources/cardano-use-case-templates/` (cited by use-case directory; each
 validator lives at `<use-case>/onchain/aiken/validators/`) and Aiken's own examples
-under `docs/sources/aiken-examples/`.
+under `../../docs/sources/aiken-examples/`.
 
 The mechanical security checks (double-satisfaction, datum hijacking, value
 preservation, staking-credential theft…) live in the review-contract skill's
@@ -496,7 +496,7 @@ singleton state machines. Derive the token's asset name from a **hash of the see
 (or of caller data) to make names unforgeable and self-describing:
 `sha2_256(snapshot_id)` (storage), `sha3_256(tx_id ‖ output_index)` (upgradable-proxy
 state token), `blake2b_256(pkh ‖ nonce)` (anonymous-data). See the "Token Minting
-Policy" pattern above and `docs/sources/aiken-examples/gift_card/`.
+Policy" pattern above and `../../docs/sources/aiken-examples/gift_card/`.
 
 ## Locate outputs by criteria, never by index
 

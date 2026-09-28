@@ -30,7 +30,7 @@ affect development, and how to implement them.
 - The developer needs to **write a validator** or **build a transaction** — redirect to
   the relevant skill
 - The developer asks about eUTxO concepts — use `explain-eutxo`
-- The question is about Cardano governance participation — use the governance skill
+- The question is about Cardano governance participation — use `governance-guide`
 
 ## Key Principles
 
@@ -245,7 +245,7 @@ governance actions.
 **Status:** Proposed per the draft's own header — but the CIP is an **unmerged PR**
 ([cardano-foundation/CIPs#444](https://github.com/cardano-foundation/CIPs/pull/444)),
 so it is not yet in the official CIPs repo or the bundled `cips/` mirror — though an
-adapted reference implementation is bundled under `docs/sources/cip-113-programmable-tokens/`.
+adapted reference implementation is bundled under `../../docs/sources/cip-113-programmable-tokens/`.
 
 **Summary:** Defines a standard for tokens with programmable validation logic — rules
 enforced on every transfer, mint, and burn. Tokens are held at a shared script address
@@ -261,7 +261,7 @@ framework.
 **Note:** The specification may still change, and the Cardano Foundation reference
 implementation is not professionally audited, has only been briefly tested on the
 Preview testnet, and is not production-ready. Check the PR and
-`docs/sources/cip-113-programmable-tokens/` for current state.
+`../../docs/sources/cip-113-programmable-tokens/` for current state.
 
 ### CIP-1694: Conway Era Governance (Voltaire)
 

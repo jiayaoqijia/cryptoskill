@@ -197,7 +197,7 @@ if err != nil { return err }
 
 - **Language:** Java / Kotlin (JVM)
 - **Repository:** github.com/bloxbean/cardano-client-lib
-- **Documentation:** cardano-client.dev (mirrored under `docs/sources/cardano-client-lib/`) + javadoc
+- **Documentation:** cardano-client.dev (mirrored under `../../docs/sources/cardano-client-lib/`) + javadoc
 
 **Strengths:**
 - QuickTx gives a declarative builder comparable to Mesh, with the composable-functions
@@ -353,7 +353,7 @@ const status = await client
 
 - **Language:** Haskell
 - **Repository:** github.com/IntersectMBO/cardano-ledger
-- **Documentation:** bundled `docs/sources/cardano-ledger/`, CHaP README, haskell.nix tutorials
+- **Documentation:** bundled `../../docs/sources/cardano-ledger/`, CHaP README, haskell.nix tutorials
 - **Build:** haskell.nix + CHaP + iohk-nix. See `references/haskell-ledger.md`.
 
 **Strengths:**

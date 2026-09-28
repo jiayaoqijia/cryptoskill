@@ -26,8 +26,8 @@ Guide optimization of Aiken validators for lower execution costs (CPU/memory) an
 
 ## When NOT to use
 
-- User needs to write a new validator (use write-validator)
-- User needs a security review (use review-contract)
+- User needs to write a new validator (use `write-validator`)
+- User needs a security review (use `review-contract`)
 - The validator has not been tested yet (correctness comes before performance)
 - The optimization would remove a security check
 
@@ -136,13 +136,14 @@ list.all(tx.outputs, fn(o) { o.address != own_addr || check_value(o) })
 let has_script_output = list.any(tx.outputs, fn(o) { o.address == script_addr })
 let has_payment = list.any(tx.outputs, fn(o) { o.address == seller })
 
-// GOOD: Single pass with combined check
-let (has_script, has_pay) =
-  list.foldl(tx.outputs, (False, False), fn(o, acc) {
-    let (s, p) = acc
-    (s || o.address == script_addr, p || o.address == seller)
+// GOOD: Single pass that carries both results without building a tuple each step
+let has_script, has_pay <-
+  list.foldl2(tx.outputs, False, False, fn(o, s, p, return) {
+    return(s || o.address == script_addr, p || o.address == seller)
   })
 ```
+
+A tuple accumulator also makes one pass, but it constructs and destructures a tuple on every element. `list.foldl2` threads the two values through a continuation instead, and is the stdlib's answer to this pattern.
 
 **Use `expect` instead of `when` for single-variant destructuring:**
 ```aiken
@@ -161,12 +162,14 @@ use(owner, amount)
 
 **Remove traces for production builds:**
 ```bash
-# Development (with traces for debugging)
-aiken build
+# Development: keep traces to see why a validator fails
+aiken build --trace-level verbose
 
-# Production (traces removed, 10-30% smaller)
-aiken build --trace-level silent
+# Production: `aiken build` already defaults to silent (traces removed, 10-30% smaller)
+aiken build
 ```
+
+`aiken check` defaults to verbose, so tests show traces either way.
 
 **Extract shared helper functions:**
 ```aiken
@@ -194,7 +197,7 @@ Search for functions, types, and imports that are not referenced. Unused code st
 
 #### Data structure optimizations
 
-- Use `Pair<a, b>` instead of 2-element tuples when possible (smaller UPLC representation)
+- To return two values, prefer backpassing (or `foldl2` / `foldr2` in folds). Where that hurts readability, `Pair<a, b>` is slightly preferable to a 2-tuple and composes with pairs-based stdlib APIs; it is not a large saving
 - For small fixed collections, explicit fields are cheaper than lists
 - For lookups, sorted lists with early-exit beat unsorted lists
 - Smaller datums mean less deserialization cost -- remove fields that can be computed from other fields
@@ -238,5 +241,5 @@ If any optimization involves a trade-off (e.g., increased size for lower CPU), d
 - `references/uplc-cost-model.md` -- UPLC cost model basics, operation costs, and budget limits
 - Search `../../docs/sources/` for benchmark results and performance requirements
 - Aiken documentation on optimization: https://aiken-lang.org
-- Use `aiken build --trace-level silent` for production builds
+- `aiken build` is silent by default; pass `--trace-level verbose` only for debugging builds
 - Use `aiken bench` for execution unit measurements

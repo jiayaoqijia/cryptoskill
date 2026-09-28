@@ -60,13 +60,13 @@ fn tx_with(signers, range) -> Transaction {
 The cost shows at scale: building inputs/outputs with specific values and datums this
 way is ~30 lines of nested `Input { output: Output { … } }` records, and it gets
 copy-pasted across every test (see the manual style in
-`docs/sources/cardano-use-case-templates/vault/onchain/aiken/validators/vault-test.ak`).
+`../../docs/sources/cardano-use-case-templates/vault/onchain/aiken/validators/vault-test.ak`).
 
 **2. Mocktail — a fluent builder + deterministic mock primitives.** `mocktail` is a
 module of the sidan-lab **vodka** library (an external Aiken dependency,
 `github.com/sidan-lab/vodka`; add it to `aiken.toml`). It is the de-facto testing
 library across the Foundation's reference templates and is documented in the bundle at
-`docs/sources/mesh-sdk/resources/cardano-course/04-contract-testing.mdx`. It replaces
+`../../docs/sources/mesh-sdk/resources/cardano-course/04-contract-testing.mdx`. It replaces
 the verbose record construction with a pipeline that fills sensible defaults:
 
 ```aiken
@@ -106,7 +106,7 @@ fn get_tx(is_signed: Bool, is_before_expiry: Bool) -> Transaction {
 ```
 
 Real, readable examples in the bundle:
-`docs/sources/cardano-use-case-templates/anonymous-data/onchain/aiken/validators/tests/anonymous-data-test.ak`,
+`../../docs/sources/cardano-use-case-templates/anonymous-data/onchain/aiken/validators/tests/anonymous-data-test.ak`,
 `.../simple-wallet/onchain/aiken/validators/tests/funds-test.ak`,
 `.../escrow/onchain/aiken/tests/escrow.ak`.
 

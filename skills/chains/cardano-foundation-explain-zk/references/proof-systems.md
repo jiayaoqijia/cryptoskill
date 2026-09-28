@@ -50,7 +50,7 @@ points whether the circuit has five constraints or five million. What grows the 
 of public inputs**, so keep them few and commit bulky data with a single hash.
 
 Read a real implementation rather than reconstructing one. One is bundled:
-`docs/sources/aiken-zkp-verifiers/` carries Groth16, PLONK, and Bulletproofs verifiers in Aiken with
+`../../docs/sources/aiken-zkp-verifiers/` carries Groth16, PLONK, and Bulletproofs verifiers in Aiken with
 protocol walkthroughs under `zkp/docs/`; its README says the PLONK verifier is still being optimised to
 fit resource limits and marks Bulletproofs early-stage. Others are listed in the ZK/BLS section of the
 ecosystem map.
@@ -116,10 +116,10 @@ publish their own benchmarks.
 
 ## Where to go deeper
 
-- Bundled: `docs/sources/developer-portal/developers/curriculum/smart-contracts/advanced/zero-knowledge.md`
+- Bundled: `../../docs/sources/developer-portal/developers/curriculum/smart-contracts/advanced/zero-knowledge.md`
   — the full catalog of verifiers, toolkits, and shipped applications.
-- Bundled: `docs/sources/aiken-zkp-verifiers/` — Groth16, PLONK, and Bulletproofs verifiers in Aiken,
+- Bundled: `../../docs/sources/aiken-zkp-verifiers/` — Groth16, PLONK, and Bulletproofs verifiers in Aiken,
   with the protocol math worked step by step in `zkp/docs/step-by-step.md`.
 - Toolchains and libraries: see the ZK/BLS section of `suggest-tooling/references/ecosystem-map.md`.
 - The CIPs: CIP-0381 (pairing builtins), CIP-0133 (multi-scalar multiplication), CIP-0109 (modular
-  exponentiation) under `docs/sources/cips/`.
+  exponentiation) under `../../docs/sources/cips/`.

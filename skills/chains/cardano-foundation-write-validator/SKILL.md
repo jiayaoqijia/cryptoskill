@@ -24,8 +24,8 @@ Guide the development of a Cardano smart contract from specification to implemen
 
 ## When NOT to use
 
-- User wants to review an existing contract (use review-contract)
-- User wants to optimize an existing contract (use optimize-validator)
+- User wants to review an existing contract (use `review-contract`)
+- User wants to optimize an existing contract (use `optimize-validator`)
 - User wants to build off-chain/transaction building code only
 - User wants infrastructure or node setup help
 
@@ -186,7 +186,7 @@ test claim_before_deadline_fails() fail {
 - New Haskell *off-chain* work uses Aiken on-chain + cardano-ledger
   off-chain (see `build-transaction`). Do not start new validators in
   Plinth unless the team already writes Plinth.
-- Existing Plinth code: search `docs/sources/plinth/`. Testing:
+- Existing Plinth code: search `../../docs/sources/plinth/`. Testing:
   `plutus-simple-model` or `cardano-testnet`.
 
 **OpShin notes:**

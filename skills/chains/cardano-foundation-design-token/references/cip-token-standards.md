@@ -173,9 +173,9 @@ compliance rules an issuer must enforce after issuance.
 and explorers need stake-credential-aware integration to support these tokens.
 If control at mint/burn is enough, a plain minting policy is the right tool.
 
-**Source of truth:** search `docs/sources/cip-113-programmable-tokens/` (core
-framework), `docs/sources/cip-113-programmable-tokens-platform/` (substandards),
-and `docs/sources/cip-113-sdk-typescript/` (off-chain SDK) — do not rely on
+**Source of truth:** search `../../docs/sources/cip-113-programmable-tokens/` (core
+framework), `../../docs/sources/cip-113-programmable-tokens-platform/` (substandards),
+and `../../docs/sources/cip-113-sdk-typescript/` (off-chain SDK) — do not rely on
 memory for this standard; it is still evolving.
 
 ---

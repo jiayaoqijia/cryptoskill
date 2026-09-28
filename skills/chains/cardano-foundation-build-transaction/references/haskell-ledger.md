@@ -19,7 +19,7 @@ team is not Haskell.
 
 ## Cabal: CHaP
 
-From `docs/sources/chap/README.md`. Add the repository, then pin **both**
+From `../../docs/sources/chap/README.md`. Add the repository, then pin **both**
 indexes (a second `index-state` stanza overrides the first entirely):
 
 ```cabal
@@ -45,7 +45,7 @@ release you align to — do not ship the 2022 example dates. Run
 
 `source-repository-package` always wins over CHaP and Hackage (CHaP README).
 haskell.nix needs a `--sha256` comment on each such stanza
-(`docs/sources/haskell-nix/tutorials/source-repository-hashes.md`).
+(`../../docs/sources/haskell-nix/tutorials/source-repository-hashes.md`).
 Prefer nix32 hashes (`nix flake prefetch` then
 `nix hash convert --to nix32`).
 
@@ -55,7 +55,7 @@ from memory): `cardano-ledger-api`, `cardano-ledger-conway`,
 
 ## Nix: haskell.nix + CHaP + iohk-nix
 
-From `docs/sources/chap/README.md` ("… with haskell.nix"):
+From `../../docs/sources/chap/README.md` ("… with haskell.nix"):
 
 1. Keep the CHaP stanza in `cabal.project`.
 2. Flake input on the **`index-only`** branch (plan resolution only;
@@ -79,7 +79,7 @@ cabalProject {
 
 4. Apply the iohk-nix overlays the CHaP README names so C libraries
    exist (`plutus-core` needs `libblst`): `crypto` and
-   `haskell-nix-crypto`. Search `docs/sources/iohk-nix/`.
+   `haskell-nix-crypto`. Search `../../docs/sources/iohk-nix/`.
 
 5. Update CHaP with `nix flake lock --update-input CHaP`.
 
@@ -99,14 +99,14 @@ nixConfig.extra-trusted-public-keys = [
 ## Aiken blueprint → ledger types
 
 1. `aiken build` produces `plutus.json` (CIP-57). Search
-   `docs/sources/aiken/` and `docs/sources/cips/` (CIP-57).
+   `../../docs/sources/aiken/` and `../../docs/sources/cips/` (CIP-57).
 2. Read the validator's `compiledCode` (hex, single-wrapped CBOR of
    flat UPLC — the blueprint form, not the double-wrapped on-chain
    witness).
 3. Attach it as a Conway script witness on the ledger `Tx`. Datums
    and redeemers are `plutus-tx` `ToData` values, not JSON.
 4. Phase-1 checks (fees, min-UTxO, collateral, value conservation)
-   live in `cardano-ledger`. Search `docs/sources/cardano-ledger/`.
+   live in `cardano-ledger`. Search `../../docs/sources/cardano-ledger/`.
 5. Any Plutus spend still needs a pure-ADA collateral input.
 
 Do not reconstruct the script hash by hand if the blueprint already

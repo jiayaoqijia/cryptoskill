@@ -8,7 +8,7 @@ modules under `aiken/crypto/bls12_381/`, with the raw builtins under `aiken/buil
 This reference describes what each primitive does and how to choose between them. It deliberately
 carries no cryptographic code: these APIs change between library versions, and a subtly wrong snippet
 here becomes a vulnerability in a real contract. For the current API read
-`docs/sources/aiken-stdlib/aiken/crypto/bls12_381/`; for implementations see the ZK/BLS section of
+`../../docs/sources/aiken-stdlib/aiken/crypto/bls12_381/`; for implementations see the ZK/BLS section of
 the ecosystem map via `suggest-tooling`.
 
 ## The shared primitives
@@ -146,21 +146,21 @@ primitives and confirm the current landscape before depending on it.
 
 Everything below is bundled, so check the source rather than relying on any summary, including this one.
 
-- **The normative spec**: `docs/sources/bls12-381-examples-and-standards/standards/draft-irtf-cfrg-bls-signature-06.txt`
+- **The normative spec**: `../../docs/sources/bls12-381-examples-and-standards/standards/draft-irtf-cfrg-bls-signature-06.txt`
   — the definitive statement of the three modes, of aggregate verification, and of `FastAggregateVerify`.
   Read this before relying on any claim about which mode fits which aggregation pattern.
   Alongside it: RFC 5869 (HKDF), RFC 8018 (PBKDF2), RFC 9381 (the VRF construction; no BLS12-381
   ciphersuite).
-- **A real implementation**: `docs/sources/aiken-bls-signatures/lib/bls/` — `g1/basic.ak`, `g1/aug.ak`,
+- **A real implementation**: `../../docs/sources/aiken-bls-signatures/lib/bls/` — `g1/basic.ak`, `g1/aug.ak`,
   and `g1/pop.ak` are the three modes in Aiken.
-- **Worked examples**: `docs/sources/bls12-381-examples-and-standards/aiken/` — Groth16, KDF, VRF, a Nova
+- **Worked examples**: `../../docs/sources/bls12-381-examples-and-standards/aiken/` — Groth16, KDF, VRF, a Nova
   folding verifier, and both aggregation cases. Alongside them, `tutorials/zkp-from-first-principles.md`
   builds a proof system up from scratch, and `tutorials/proving-cardano-address-ownership-via-zkp.md`
   works one end to end. (`tutorials/bls12-381-basics.md` is upstream a stub pointing at a blog post —
   the primitives it covered are the subject of this reference.)
-- **The stdlib API**: `docs/sources/aiken-stdlib/aiken/crypto/bls12_381/` for the current `g1` / `g2` /
+- **The stdlib API**: `../../docs/sources/aiken-stdlib/aiken/crypto/bls12_381/` for the current `g1` / `g2` /
   `scalar` / `pairing` functions.
 - **The walkthrough this reference condenses**:
-  `docs/sources/developer-portal/developers/curriculum/smart-contracts/advanced/bls-primitives.md`,
+  `../../docs/sources/developer-portal/developers/curriculum/smart-contracts/advanced/bls-primitives.md`,
   signatures, VRF, KDF, and BBS+ with code.
 - Named verifier and BLS libraries: the ZK/BLS section of `suggest-tooling/references/ecosystem-map.md`.

@@ -26,8 +26,8 @@ Help the developer choose the right tools, SDKs, and libraries for their Cardano
 
 ## When NOT to use
 
-- Already chosen tools and needs help using them (use specific tool skills)
 - Building a transaction once the stack is chosen (use `build-transaction`)
+- Setting up a new project once the stack is chosen (use `scaffold-project`)
 - Setting up a devnet (use `setup-devnet` skill)
 - Querying chain data with a specific provider (use `query-chain` skill)
 - Detailed wallet integration steps (use `connect-wallet` skill)
@@ -123,7 +123,7 @@ File: skills/suggest-tooling/references/ecosystem-map.md
 - Python: **PyCardano**
 - Rust: **Pallas**
 - Java/Kotlin: **Cardano Java Client Lib**
-- Haskell: **cardano-ledger** via **haskell.nix** + **CHaP**. On-chain default stays **Aiken** (CIP-57 `plutus.json`); do not switch to Plinth unless the team is writing validators in Haskell. Search `docs/sources/chap/README.md` for the repository stanza and `inputMap`.
+- Haskell: **cardano-ledger** via **haskell.nix** + **CHaP**. On-chain default stays **Aiken** (CIP-57 `plutus.json`); do not switch to Plinth unless the team is writing validators in Haskell. Search `../../docs/sources/chap/README.md` for the repository stanza and `inputMap`.
 - Go: **Apollo** for transaction building, **gOuroboros** for protocol and ledger primitives
 
 Go adoption is lower than TypeScript or Python, so expect fewer tutorials and smaller communities. Weigh that against an existing Go backend: rewriting a service in TypeScript to gain SDK maturity is rarely the cheaper trade.

@@ -11,7 +11,7 @@ Sourced from the bundled docs under
 ## When to choose it over Yaci DevKit
 
 Both run standard `cardano-node` instances, so on-chain behaviour is identical. The
-choice is about workflow (per `docs/sources/evolution-sdk/devnet/index.mdx`):
+choice is about workflow (per `../../docs/sources/evolution-sdk/devnet/index.mdx`):
 
 | | Yaci DevKit | Evolution SDK devnet |
 |---|---|---|
@@ -113,7 +113,7 @@ const cluster = await Cluster.make({
 
 Protocol parameters (fees, size limits, Plutus cost models) are customised via
 `Config.ShelleyGenesis.protocolParams`, `Config.DEFAULT_ALONZO_GENESIS`, and
-`Config.ConwayGenesis` — see `docs/sources/evolution-sdk/devnet/configuration.mdx`.
+`Config.ConwayGenesis` — see `../../docs/sources/evolution-sdk/devnet/configuration.mdx`.
 
 ## Genesis UTxOs do NOT appear in Kupo
 
