@@ -4,7 +4,7 @@ description: Bitcoin L1 wallet for agents - check balances, send BTC, manage UTX
 license: MIT
 metadata:
   author: aibtcdev
-  version: 1.72.1 # x-release-please-version
+  version: 1.73.0 # x-release-please-version
   npm: "@aibtc/mcp-server"
   github: https://github.com/aibtcdev/aibtc-mcp-server
 ---
@@ -121,7 +121,7 @@ Wallets are stored encrypted at `~/.aibtc/`.
 | `btc_sign_message` | Sign plain text with Bitcoin key (BIP-137/BIP-322) | `message`, `addressType` (optional) |
 | `btc_verify_message` | Verify Bitcoin message signature (auto-detects BIP-137/BIP-322) | `message`, `signature`, `address` (optional) |
 | `nostr_sign_event` | Sign a Nostr event (NIP-01) with BIP-340 Schnorr using NIP-06 derived key by default (m/44'/1237'/0'/0/0) | `kind`, `content`, `tags` (optional), `created_at` (optional), `keySource` (`"nostr"` default via NIP-06 path, `"taproot"` for P2TR key, `"segwit"` for P2WPKH key) |
-| `schnorr_sign_digest` | Sign a raw 32-byte digest with Schnorr/BIP-340 | `digest`, `confirmBlindSign`, `auxRand` (optional) |
+| `schnorr_sign_digest` | Sign a raw 32-byte digest with Schnorr/BIP-340 (off unless the user sets `AIBTC_ALLOW_BLIND_SIGN=true`) | `digest`, `confirmBlindSign`, `auxRand` (optional) |
 | `schnorr_verify_digest` | Verify a BIP-340 Schnorr signature over a digest | `digest`, `signature`, `publicKey` |
 
 ## Units and Addresses
