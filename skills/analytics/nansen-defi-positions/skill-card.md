@@ -1,6 +1,6 @@
 ## Description:
 
-What DeFi positions does a wallet hold? Protocol-by-protocol breakdown of assets, debts, and rewards across chains.
+Shows a wallet's DeFi positions by protocol and chain, including assets, debts, and rewards.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Developers, analysts, and external users use this skill to inspect a wallet's DeFi positions across protocols and chains, including assets, debts, rewards, and related spot balances.
+Wallet researchers and analysts use this skill to review DeFi positions alongside spot balances across supported chains.
 
 ### Deployment Geography for Use:
 
@@ -22,35 +22,31 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The skill requires installing and running the nansen-cli package.
+Risk: Nansen account access may use an API key or browser session, and commands outside the shown read-only queries may have different effects.
 
-Mitigation: Confirm the package source is trusted before installation and pin the CLI version for reproducible deployments.
+Mitigation: Use only the Nansen permissions needed and review any additional command before running it.
 
-Risk: The skill requires a NANSEN_API_KEY.
+Risk: An empty DeFi portfolio result may reflect no tracked positions rather than a complete view of wallet exposure.
 
-Mitigation: Use an API key with the least access needed and manage it as a secret.
-
-Risk: A wallet may have no tracked DeFi positions or incomplete DeFi coverage.
-
-Mitigation: Treat empty DeFi responses as no tracked positions for that query and combine DeFi results with spot balance checks as the skill instructs.
+Mitigation: Check spot balances and account for the tool's position coverage when interpreting results.
 
 ## Reference(s):
 
-- [ClawHub skill page](https://clawhub.ai/nansen-devops/skills/nansen-defi-positions)
+- [Nansen DeFi Positions on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-defi-positions)
 
 ## Skill Output:
 
-**Output Type(s):** [text, markdown, shell commands, guidance]
+**Output Type(s):** [Text, Shell commands, Guidance]
 
-**Output Format:** [Markdown with Nansen CLI shell commands and tabular result descriptions]
+**Output Format:** [Markdown with bash examples]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Requires NANSEN_API_KEY and the nansen CLI; DeFi position queries may return empty results for wallets with no tracked positions.]
+**Other Properties Related to Output:** [Portfolio queries may be empty when no tracked DeFi positions are found.]
 
 ## Skill Version(s):
 
-0.1.0 (source: server release metadata)
+0.1.1 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

@@ -1,6 +1,6 @@
 ## Description:
 
-Manage smart alerts for token flows, smart money activity, transfer events, contract calls, and notification rules.
+Manage Nansen smart alerts for token flows, smart money activity, transfers, and contract interactions.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Developers and internal Nansen users use this skill to list, create, update, toggle, and delete smart alerts for token flows, smart money activity, transfer events, contract calls, and notification routing.
+Nansen users and developers use this skill to list, create, update, enable, disable, and delete account smart alerts and configure their notification channels.
 
 ### Deployment Geography for Use:
 
@@ -22,35 +22,31 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The skill installs and relies on an unpinned nansen-cli package that uses an internal Nansen API key.
+Risk: Updating, toggling, or deleting the wrong alert changes account notification rules.
 
-Mitigation: Install only from a trusted package source, pin or review the dependency before deployment, and use a narrowly scoped API key.
+Mitigation: Review the target alert and double-check its ID before changing it.
 
-Risk: Alert delete operations can permanently remove configured smart alerts.
+Risk: Webhooks send alert payloads to the configured endpoint.
 
-Mitigation: Inspect target alerts before deletion and prefer disabling alerts when permanent removal is not required.
-
-Risk: Webhook notifications can forward alert payloads to external endpoints.
-
-Mitigation: Send webhooks only to endpoints the user controls and trusts, and protect webhook secrets.
+Mitigation: Use trusted HTTPS endpoints and a webhook secret when available.
 
 ## Reference(s):
 
-- [ClawHub skill page](https://clawhub.ai/nansen-devops/skills/nansen-smart-alerts)
+- [Nansen Smart Alerts on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-smart-alerts)
 
 ## Skill Output:
 
-**Output Type(s):** [Shell commands, Configuration, Guidance]
+**Output Type(s):** [Shell commands, Configuration guidance]
 
-**Output Format:** [Markdown with inline bash commands and option tables]
+**Output Format:** [Markdown with bash commands]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Requires the nansen CLI and NANSEN_API_KEY environment variable.]
+**Other Properties Related to Output:** [Commands manage alerts through the Nansen CLI and may configure Telegram, Slack, Discord, or webhook notifications.]
 
 ## Skill Version(s):
 
-0.1.1 (source: server release metadata)
+0.1.2 (source: ClawHub release)
 
 ## Ethical Considerations:
 

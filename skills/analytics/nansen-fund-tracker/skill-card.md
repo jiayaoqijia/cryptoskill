@@ -1,6 +1,6 @@
 ## Description:
 
-What are crypto funds and VCs holding right now? Cross-chain fund portfolios and net accumulation signals.
+Helps track crypto fund holdings and net accumulation across Ethereum and Solana using Nansen research commands.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-External users and developers use this skill to query Nansen smart-money holdings and netflow data for crypto fund and VC portfolio research across Ethereum and Solana.
+Analysts and developers use this skill to compare crypto fund holdings with recent inflows and outflows across Ethereum and Solana.
 
 ### Deployment Geography for Use:
 
@@ -22,31 +22,31 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The Nansen CLI can access NANSEN_API_KEY when the skill runs.
+Risk: Research calls may consume credits or trigger authorized wallet payments, especially in loops.
 
-Mitigation: Use a scoped Nansen API key where possible and expose only the minimum environment needed for research queries.
+Mitigation: Confirm the selected authentication method, wallet payment policy, and spending limits before running commands or loops.
 
-Risk: The release depends on an unpinned nansen-cli package.
+Risk: An anonymous or failed authentication state can lead to unintended access or payment behavior.
 
-Mitigation: Prefer a pinned and reviewed nansen-cli version before deployment.
+Mitigation: Check authentication status before research; stop on anonymous selection, uncertain renewal, or authentication failure rather than retrying anonymously.
 
 ## Reference(s):
 
-- [ClawHub skill page](https://clawhub.ai/nansen-devops/skills/nansen-fund-tracker)
+- [Nansen Fund Tracker on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-fund-tracker)
 
 ## Skill Output:
 
-**Output Type(s):** [Shell commands, Guidance, Configuration]
+**Output Type(s):** [Text, Shell commands, Guidance]
 
-**Output Format:** [Markdown with bash command examples and concise guidance]
+**Output Format:** [Markdown with bash command examples]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Requires NANSEN_API_KEY and the nansen CLI.]
+**Other Properties Related to Output:** [Fund holdings and netflow comparisons depend on the selected chain and current Nansen data.]
 
 ## Skill Version(s):
 
-0.1.0 (source: server release evidence)
+0.1.1 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

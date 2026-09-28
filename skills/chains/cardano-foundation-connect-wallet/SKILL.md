@@ -54,6 +54,7 @@ Search the bundled documentation for relevant content:
 - `../../docs/sources/mesh-sdk/` - Mesh SDK docs
 - `../../docs/sources/evolution-sdk/` - Evolution SDK docs
 - `../../docs/sources/cips/` - CIP specifications (CIP-30, CIP-95)
+- `../../docs/sources/developer-portal-templates/` - working CIP-30 starters: `mesh-nextjs`, `evolution-vite-react`, and the `x402-next` paywall
 
 ### Step 3: CIP-30 basics
 

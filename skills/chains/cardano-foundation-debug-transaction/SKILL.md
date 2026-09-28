@@ -81,13 +81,13 @@ Classify the error into one of these categories:
 
 | Category | Common Errors | Likely Cause |
 |----------|---------------|--------------|
-| Value errors | `ValueNotConservedUTxO`, `OutputTooSmallUTxO` | Math error in inputs/outputs, min-UTxO not met |
+| Value errors | `ValueNotConservedUTxO`, `BabbageOutputTooSmallUTxO` | Math error in inputs/outputs, min-UTxO not met |
 | Input errors | `BadInputsUTxO` | UTxO already spent or does not exist |
 | Fee errors | `FeeTooSmallUTxO` | Fee calculation incorrect or overridden |
 | Collateral errors | `InsufficientCollateral`, `CollateralContainsNonADA` | Missing or wrong collateral for Plutus tx |
-| Script errors | `ScriptFailure`, `ExUnitsTooBigUTxO` | Plutus script fails or exceeds budget |
-| Datum errors | `NonOutputSupplimentaryDatums` | Datum provided but not referenced |
-| Signer errors | `MissingRequiredSigners` | Required signature not included |
+| Script errors | `ValidationTagMismatch` (with `PlutusFailure`), `ExUnitsTooBigUTxO` | Plutus script fails or exceeds budget |
+| Datum errors | `NotAllowedSupplementalDatums` | Datum provided but not referenced |
+| Signer errors | `MissingVKeyWitnessesUTXOW` | Required signature not included |
 | Validity errors | `OutsideValidityIntervalUTxO` | Transaction time range does not match current slot |
 
 Search `../../docs/sources/` or see `references/common-errors.md` for
@@ -218,7 +218,7 @@ Look up transaction hashes, UTxOs, and script addresses.
 
 For inspecting raw transaction bytes:
 - https://cbor.me
-- `cardano-cli transaction view --tx-file tx.signed`
+- `cardano-cli debug transaction view --tx-file tx.signed`
 
 ### Script Budget Analysis
 

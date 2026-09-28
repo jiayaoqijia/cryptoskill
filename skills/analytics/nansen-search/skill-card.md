@@ -1,6 +1,6 @@
 ## Description:
 
-Search for tokens or entities by name. Use when you have a token name and need the full address, or want to find an entity.
+Search for tokens or entities by name to find token addresses or matching entities.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-External users and developers use this skill to search Nansen for token or entity records by name, optionally filtering by type, chain, result limit, or output fields.
+Agents and their users search Nansen for tokens and entities by name, including finding a token's full address or narrowing results by chain.
 
 ### Deployment Geography for Use:
 
@@ -22,27 +22,27 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The skill installs an unpinned npm CLI package and uses a Nansen API key at runtime.
+Risk: Search calls can consume credits or trigger configured wallet payments, particularly when repeated in loops.
 
-Mitigation: Pin and verify the nansen-cli package before installation, and use a least-privilege or revocable Nansen API key.
+Mitigation: Confirm the selected API key or session, wallet authorization, payment policy, and spending limits before searching or running loops.
 
 ## Reference(s):
 
-- [ClawHub skill page](https://clawhub.ai/nansen-devops/skills/nansen-general-search)
+- [Nansen General Search on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-general-search)
 
 ## Skill Output:
 
-**Output Type(s):** [text, shell commands, configuration, guidance]
+**Output Type(s):** [Text, Shell commands, Guidance]
 
-**Output Format:** [Markdown with inline bash commands and concise search-result summaries]
+**Output Format:** [Text and Markdown with shell commands]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Requires the nansen CLI and NANSEN_API_KEY at runtime.]
+**Other Properties Related to Output:** [Token and entity name searches support optional chain, result limit, and selected fields.]
 
 ## Skill Version(s):
 
-0.1.1 (source: server release evidence)
+0.1.2 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

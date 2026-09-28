@@ -694,6 +694,8 @@ src/
   calldata.ts      unsigned Voter.vote transaction built from a vote-ready allocation
   veAero.ts        VotingEscrow wrapper for a user's voting power
   util.ts          address/concurrency helpers + shared error-message formatting
+  feeStream.ts     raw, continuously-growing per-pool fee counters (see "What a snapshot cannot currently tell you")
+  llms.ts          renders docs/llms.txt, the site's answer as plain text for AI assistants
   snapshot.ts      builds the JSON snapshot the web app reads
   mcp-server.ts    MCP stdio server entrypoint
   cli.ts           CLI entrypoint
@@ -708,10 +710,12 @@ src/
   accrual-cli.ts   entrypoint for `npm run accrual`, writes docs/data/accrual.json
 docs/              the web app, served by GitHub Pages
   index.html       static page: reads the snapshot, runs the allocator client-side
+  llms.txt         plain-text summary for AI assistants/crawlers, refreshed every 6 hours by CI (src/llms.ts)
   data/
-    snapshot.json  latest scan, refreshed every 6 hours by CI
-    timing.json    survival + accuracy measurement, refreshed weekly by CI
-    accrual.json   accrual-vs-repricing measurement, refreshed weekly by CI
+    snapshot.json    latest scan, refreshed every 6 hours by CI
+    fee-stream.json  raw per-pool fee counters, refreshed every 6 hours by CI, best-effort (src/feeStream.ts)
+    timing.json      survival + accuracy measurement, refreshed weekly by CI
+    accrual.json     accrual-vs-repricing measurement, refreshed weekly by CI
 test/
   allocator.test.ts    unit tests for the greedy marginal-allocation algorithm and percentage rounding
   backtest.test.ts     unit tests for the backtester, including that it never peeks at the epoch under test
@@ -732,7 +736,10 @@ test/
   timing-cli.test.ts   unit tests for buildAccuracyReport, including that an empty pool-size bucket is dropped rather than published as NaN
   voted.test.ts        unit tests for scoring a cast vote against settled weight, including the unscorable-pool and zero-weight cases
   accrual.test.ts      unit tests for revaluing at one price vector, the epoch-boundary skip, and the pools-that-only-repriced split
+  feeStream.test.ts    unit tests for accruedBetween: CL gauge-fee growth/reset, v2 index growth, and the changed-kind refusal
+  llms.test.ts         unit tests for renderLlmsTxt's rendering of docs/llms.txt
   site-parity.test.ts  runs docs/index.html's hand-ported allocator/countdown/vote-basis logic against src/ on the same inputs
+  migration-site.test.ts  pins docs/index.html's ported migrationOutcome() against Aerodrome's migration-contract rules
 ```
 
 ## Testing

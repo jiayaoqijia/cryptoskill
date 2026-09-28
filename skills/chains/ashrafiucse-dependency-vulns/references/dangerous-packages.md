@@ -10,7 +10,7 @@ This pack covers the four classes. Load it with Step 2.7 of `../SKILL.md`.
 
 | Package | Why it's a finding | Detection | Fix |
 |---|---|---|---|
-| `vm2` (npm) | DISCONTINUED (Jul 2023). Multiple sandbox escapes (CVE-2023-30547/29199/37903 family); later escapes shipped AFTER the last release — any version is unpatched-by-design | `rg -n '"vm2"' package*.json; rg -n "require\(['\"]vm2['\"]\)|new VM\(" ` | migrate to `isolated-vm`, or OS process/containers with dropped privileges. Running untrusted code "in vm2" = HIGH now |
+| `vm2` (npm) | Discontinued Jul 2023, RESUMED 2026-09 with 3.12.2 (fixes CVE-2026-100721 external-resolver prefix escape — vuln-db entry). <3.12.2 carries the discontinued-era escape family (CVE-2023-30547/29199/37903) UNPATCHED | `rg -n '"vm2"' package*.json; rg -n "require\(['\"]vm2['\"]\)|new VM\(" ` | 3.12.2+ if NodeVM `require.external` used; otherwise migrate to `isolated-vm`/dropped-privilege process — sandbox as sole boundary is still HIGH |
 | `request` (npm) | Deprecated (2020), unmaintained; known issues will never be fixed (e.g. CVE-2023-28155 SSRF via redirect) | `rg -n '"request"' package*.json; rg -n "require\(['\"]request['\"]\)"` | `undici`/native fetch/`got`; short-term: disable redirect-following on user URLs |
 | `node-uuid` | Renamed `uuid`; frozen old name | manifest grep | `uuid@8+` |
 | `querystring` (npm) | Legacy API, unexpected prototype behavior | manifest grep | `URLSearchParams` / `qs` current |

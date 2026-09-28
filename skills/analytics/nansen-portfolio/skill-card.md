@@ -1,6 +1,6 @@
 ## Description:
 
-How has a wallet's portfolio changed over time? Historical balances, current snapshot, and per-token PnL.
+Helps track a wallet's portfolio over time using historical balances, current holdings, and per-token profit and loss.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Developers and analysts use this skill to inspect how a blockchain wallet portfolio changed over time, compare historical balances with the current snapshot, and review per-token realized PnL.
+Wallet holders and analysts use this skill to compare historical and current token balances and review per-token trading performance through Nansen.
 
 ### Deployment Geography for Use:
 
@@ -22,31 +22,31 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The skill requires a Nansen API key in the runtime environment.
+Risk: Research calls may consume API credits or trigger x402 payments, particularly in loops.
 
-Mitigation: Keep NANSEN_API_KEY out of logs and shared shells, and run the skill in an isolated or least-privileged environment when stronger containment is needed.
+Mitigation: Confirm account entitlements and existing wallet authorization, payment policy, and spending limits before running calls.
 
-Risk: The skill depends on the npm-distributed Nansen CLI.
+Risk: Research requires access to a Nansen API key or browser session.
 
-Mitigation: Install and run it only when you trust the Nansen CLI package and its supply chain.
+Mitigation: Check authentication status, use an explicitly selected credential, and stop on authentication failure rather than retrying anonymously.
 
 ## Reference(s):
 
-- [Nansen Portfolio Tracker Skill Page](https://clawhub.ai/nansen-devops/skills/nansen-portfolio-tracker)
+- [Nansen Portfolio Tracker on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-portfolio-tracker)
 
 ## Skill Output:
 
-**Output Type(s):** [text, markdown, shell commands, guidance]
+**Output Type(s):** [Text, Shell commands, Guidance]
 
-**Output Format:** [Markdown with inline bash code blocks]
+**Output Format:** [Markdown with shell commands and portfolio analysis]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Uses the Nansen CLI and requires NANSEN_API_KEY in the runtime environment.]
+**Other Properties Related to Output:** [Results depend on the selected wallet, chain, time window, and account access.]
 
 ## Skill Version(s):
 
-0.1.0 (source: server release evidence)
+0.1.1 (source: ClawHub release)
 
 ## Ethical Considerations:
 

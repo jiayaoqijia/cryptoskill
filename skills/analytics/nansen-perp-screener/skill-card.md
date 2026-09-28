@@ -1,6 +1,6 @@
 ## Description:
 
-What is the state of the Hyperliquid perp market? Top contracts by volume/OI, trader leaderboard, and SM perp activity.
+Helps agents assess Hyperliquid perpetual markets using contract volume and open interest, trader leaderboards, and smart-money trades.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-External users and market analysts use this skill to query Nansen's CLI for Hyperliquid perpetual market activity, including contract volume/open interest, trader leaderboard performance, and smart money perp trades.
+Analysts and developers use this skill to request Hyperliquid perpetual-market snapshots, compare contracts by volume or open interest, and inspect trader and smart-money activity through the Nansen CLI.
 
 ### Deployment Geography for Use:
 
@@ -22,31 +22,31 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The skill requires a NANSEN_API_KEY and invokes the Nansen CLI.
+Risk: Research calls, especially in loops, may consume credits or trigger automatic x402 wallet payments.
 
-Mitigation: Run it in an isolated environment with only the required key available.
+Mitigation: Confirm intended usage and wallet authorization and spending limits before running calls; avoid unbounded loops.
 
-Risk: The installed nansen-cli package controls the executed market-query behavior.
+Risk: Research requires a selected, working API key or browser session.
 
-Mitigation: Install only from a trusted package source and consider pinning or reviewing the nansen-cli version before use.
+Mitigation: Check authentication status before research and stop on failed or uncertain authentication rather than retrying anonymously.
 
 ## Reference(s):
 
-- [ClawHub skill page](https://clawhub.ai/nansen-devops/skills/nansen-perp-screener)
+- [Nansen Perp Screener on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-perp-screener)
 
 ## Skill Output:
 
-**Output Type(s):** [text, markdown, shell commands, guidance]
+**Output Type(s):** [Text, Markdown, Shell commands, Guidance]
 
-**Output Format:** [Markdown with inline shell commands and tabular market-query outputs from the Nansen CLI]
+**Output Format:** [Markdown with Nansen CLI command examples and market-research summaries]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Requires the nansen CLI and NANSEN_API_KEY.]
+**Other Properties Related to Output:** [Results depend on authenticated Nansen research calls and the selected market filters.]
 
 ## Skill Version(s):
 
-0.1.1 (source: server release evidence)
+0.1.2 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

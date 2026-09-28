@@ -44,7 +44,7 @@ provide enough collateral, or provides no collateral at all.
 
 ---
 
-## NonOutputSupplimentaryDatums
+## NotAllowedSupplementalDatums
 
 **What it means:** The transaction includes a datum in its witness set that
 is not referenced by any output or script.
@@ -83,10 +83,14 @@ exceed the per-transaction protocol limits.
 
 ---
 
-## ScriptFailure
+## Script failure (`ValidationTagMismatch`)
 
 **What it means:** A Plutus script evaluated to `False` or threw an error
-during execution.
+during execution. It usually shows up before submission, when the SDK evaluates
+the transaction (Ogmios and Yaci report "Some scripts of the transactions
+terminated with error(s)", code 3010). A transaction submitted with its own
+execution budget reaches the ledger instead, which rejects it with
+`ValidationTagMismatch` carrying a `PlutusFailure` and the script's trace.
 
 **Common causes:**
 - Wrong redeemer value for the action being performed
@@ -105,11 +109,12 @@ during execution.
 
 ---
 
-## MissingRequiredSigners
+## MissingVKeyWitnessesUTXOW
 
-**What it means:** The transaction specifies `required_signers` (used by
-Plutus scripts to check `extra_signatories`) but the corresponding
-signatures are not present.
+**What it means:** A signature the ledger requires is missing. That covers the
+keys behind spent inputs, certificates and withdrawals, and every key hash in
+`required_signers` (which Plutus scripts read as `extra_signatories`). The error
+lists the missing key hashes.
 
 **Common causes:**
 - Forgot to sign the transaction with all required keys
@@ -122,10 +127,13 @@ required signing keys to the sign step.
 
 ---
 
-## OutputTooSmallUTxO
+## BabbageOutputTooSmallUTxO
 
 **What it means:** One or more transaction outputs contain less ADA than
-the minimum UTxO value required by protocol parameters.
+the minimum UTxO value required by protocol parameters. The error lists each
+offending output with the minimum it needed. (The older `OutputTooSmallUTxO`
+constructor still exists, but a Conway node reports min-UTxO failures with this
+one.)
 
 **How min-UTxO is calculated:**
 The minimum ADA depends on the output's size:

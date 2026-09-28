@@ -65,9 +65,9 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 
 | Grade | Score | Skills | Meaning |
 |-------|-------|--------|---------|
-| **A** | 80-100 | 36 | Production-ready, well-documented, secure |
-| **B** | 60-79 | 869 | Good quality, minor gaps |
-| **C** | 40-59 | 1495 | Usable but significant gaps |
+| **A** | 80-100 | 35 | Production-ready, well-documented, secure |
+| **B** | 60-79 | 871 | Good quality, minor gaps |
+| **C** | 40-59 | 1494 | Usable but significant gaps |
 | **D** | 20-39 | 5 | Minimal quality, use with caution |
 
 **Risk Gate**: 99% pass (2378/2405). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.

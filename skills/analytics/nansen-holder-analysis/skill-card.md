@@ -1,6 +1,6 @@
 ## Description:
 
-Is this token held by quality wallets or retail noise? SM holder ratio, flow breakdown by label, and recent buyer quality.
+Analyzes token holder quality through smart-money holdings, labeled wallet flows, and recent buyer and seller activity.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-External users, developers, and crypto analysts use this skill to inspect token holder quality with Nansen CLI data, including smart-money holders, wallet-label flow breakdowns, and recent buyer or seller quality signals.
+Token researchers and analysts use this skill to assess holder quality, compare labeled wallet flows, and review recent buyers and sellers for a token contract.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,31 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The skill depends on an npm-distributed nansen-cli package and requires a Nansen API key.
+Risk: Research calls may consume credits or trigger authorized wallet payments, especially in loops.
 
-Mitigation: Install only a trusted or reviewed CLI version, prefer pinning where possible, and scope and rotate the NANSEN_API_KEY according to normal credential practices.
+Mitigation: Confirm account credentials and wallet spending limits before running research commands or loops.
 
-Risk: Holder analysis excludes native and wrapped tokens when using the holders endpoint.
+Risk: Anonymous access or failed authentication may interrupt the intended research workflow.
 
-Mitigation: Use a specific token contract address and avoid applying holder endpoint output to unsupported native or wrapped token cases.
+Mitigation: Check authentication status first and stop on invalid or failed authentication rather than retrying anonymously.
 
 ## Reference(s):
 
-- [ClawHub skill page](https://clawhub.ai/nansen-devops/skills/nansen-holder-analysis)
-- [Nansen DevOps publisher profile](https://clawhub.ai/user/nansen-devops)
+- [Nansen Holder Analysis on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-holder-analysis)
 
 ## Skill Output:
 
-**Output Type(s):** [text, markdown, shell commands, guidance]
+**Output Type(s):** [Analysis, Shell commands, Guidance]
 
-**Output Format:** [Markdown with inline bash code blocks and concise analysis guidance]
+**Output Format:** [Markdown with inline shell commands]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Requires NANSEN_API_KEY and the nansen CLI; holder analysis must use a specific token contract address.]
+**Other Properties Related to Output:** [Uses a token contract address and chain; the holders endpoint excludes native and wrapped tokens.]
 
 ## Skill Version(s):
 
-0.1.0 (source: server release metadata)
+0.1.1 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

@@ -1,6 +1,6 @@
 ## Description:
 
-Tracks Nansen smart-money netflow, DEX trades, holdings, and perpetual trades to help agents investigate what labeled wallets are buying or selling.
+Tracks smart-money wallet netflows, trades, holdings, and perpetual futures activity through the Nansen CLI.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-External analysts, developers, and agent operators use this skill to prepare Nansen CLI smart-money research commands for wallet netflow, spot DEX trades, holdings, and Hyperliquid perpetual trades.
+Analysts and developers use this skill to inspect smart-money wallet netflows, DEX and perpetual trades, and holdings for crypto market research.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,31 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The skill depends on a third-party Nansen CLI that receives a NANSEN_API_KEY.
+Risk: The Nansen CLI can access account-level API data using a selected API key or saved browser session.
 
-Mitigation: Verify the nansen-cli package source, prefer a pinned reviewed version, and use a narrowly scoped API key that can be rotated.
+Mitigation: Check the selected credential and its account permissions before running research commands.
 
-Risk: Generated smart-money research commands can produce incomplete, stale, or misinterpreted market information.
+Risk: Research calls, including repeated calls in loops, may consume credits or trigger authorized x402 payments.
 
-Mitigation: Review commands and Nansen results before using them for trading, research, or operational decisions.
+Mitigation: Review wallet authorization, payment policy, and spending limits before running commands or loops.
 
 ## Reference(s):
 
-- [Nansen Smart Money Tracker ClawHub release](https://clawhub.ai/nansen-devops/skills/nansen-smart-money-tracker)
-- [Nansen publisher profile](https://clawhub.ai/user/nansen-devops)
+- [Nansen Smart Money Tracker on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-smart-money-tracker)
 
 ## Skill Output:
 
-**Output Type(s):** [Text, Markdown, Shell commands, Configuration, Guidance]
+**Output Type(s):** [Shell commands, Guidance]
 
-**Output Format:** [Markdown with inline bash command examples]
+**Output Format:** [Markdown with CLI examples]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [May include Nansen CLI subcommands, chain and label filters, field selection, table or CSV output options, and NANSEN_API_KEY setup guidance.]
+**Other Properties Related to Output:** [CLI results can be viewed as a table or exported as CSV.]
 
 ## Skill Version(s):
 
-0.1.0 (source: server release evidence)
+0.1.1 (source: ClawHub release)
 
 ## Ethical Considerations:
 

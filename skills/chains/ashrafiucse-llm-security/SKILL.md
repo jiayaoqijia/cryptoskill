@@ -85,6 +85,22 @@ human-in-the-loop for writes/spends/sends.
 - Vector DBs: PII embedded and shipped to third-party stores without
   classification → Medium/High by data class
 
+## 7 — MCP servers (Model Context Protocol)
+
+MCP servers put model-callable tools in front of filesystems, shells, and private APIs — the tool IS the attack surface when clients (or the documents they process) are untrusted. Detect via `@modelcontextprotocol/sdk` / `mcp` / `fastmcp` in dependencies, then census EVERY registered tool.
+
+```bash
+rg -n "modelcontextprotocol|fastmcp|from mcp|import mcp" package.json requirements.txt pyproject.toml src/ app/
+rg -n "@mcp\.tool|server\.tool\(|@Tool|add_tool|list_tools" src/ app/
+rg -n "transport" src/ app/ | rg -i "sse|http|streamable"
+```
+
+- Filesystem tools (`read_file(path)`, `write_file`, `list_dir`) with raw `open()`/`fs.readFile` on the tool argument → **Critical**: any client prompt reads any file the process can (secret exfil: `.env`, keys, `/etc`). Safe shape: root-scoped resolve + containment (`resolved.is_relative_to(ROOT)` / realpath prefix check)
+- Shell/exec tools (`run_command`, `execute`) as MCP tools → **Critical** (RCE by design); if unavoidable: allowlisted commands + argument lists, never `shell=True`/string form
+- HTTP/SSE/streamable transport started with no auth layer (`server.run(transport="sse")`, `/mcp` route without middleware) → High — unauthenticated callers invoke every tool
+- Tool results that fetch and echo remote/user-controlled content into the model context (web-fetch returning raw HTML/markdown) → High — indirect prompt injection rides the tool result; safe shape: truncate + mark `[UNTRUSTED EXTERNAL CONTENT]` + never auto-execute instructions found in it
+- Tool descriptions/parameters built from stored user data → Medium (description injection — models obey descriptions)
+
 ## Reporting
 
 Map to OWASP LLM Top 10 in the finding (LLM01 prompt injection, LLM02

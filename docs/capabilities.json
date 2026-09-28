@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T07:07:06.110214+00:00",
+  "generated_at": "2026-09-28T12:52:28.977238+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -127203,12 +127203,12 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
         "can_browse_web": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -127228,7 +127228,7 @@
           "source": "extracted"
         },
         "requires_hosted_operator": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -127243,9 +127243,7 @@
           "source": "extracted"
         }
       },
-      "hosted_operators": [
-        "anthropic.com"
-      ]
+      "hosted_operators": []
     },
     "trading/bankr-official-bankr-signals": {
       "name": "signals",
@@ -149873,12 +149871,12 @@
       "auto_invocable": 3,
       "can_execute_shell": 1002,
       "can_install_code": 481,
-      "can_write_files": 138,
-      "can_browse_web": 223,
+      "can_write_files": 137,
+      "can_browse_web": 222,
       "can_spawn_subagents": 233,
       "can_move_funds": 245,
       "requires_private_key": 407,
-      "requires_hosted_operator": 328,
+      "requires_hosted_operator": 327,
       "uses_remote_install_script": 40,
       "mutable_remote_runtime": 481
     }
