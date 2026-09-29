@@ -1,6 +1,6 @@
 ## Description:
 
-Guides in-depth token research across prices, holders, flows, trades, PnL, and perpetual markets using Nansen commands.
+Helps agents research tokens through Nansen data on prices, holders, flows, trades, PnL, and perpetual positions.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Analysts and developers use this skill to investigate a specific token's market activity, holders, flows, trades, and PnL through the Nansen CLI.
+Developers and analysts use this skill to investigate a specific token's market activity, holders, wallet flows, trades, and profit and loss using Nansen research commands.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,32 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Research calls, especially loops or large queries, can consume credits or trigger configured wallet payments.
+Risk: Installing the Nansen CLI package introduces third-party executable code.
 
-Mitigation: Review the payment policy and spending limits before running calls or loops.
+Mitigation: Confirm you trust the Nansen CLI package before installation.
 
-Risk: Research requires an authorized API key or browser session, and the installed CLI handles account access.
+Risk: Authenticated research calls, especially in loops, can consume credits or trigger x402 wallet payments.
 
-Mitigation: Check authentication before research and review the nansen-cli package source before installation.
+Mitigation: Check wallet authorization, payment policy, spending limits, and expected call volume before running research.
 
 ## Reference(s):
 
 - [Nansen Token Research on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-token-research)
-- [nansen-cli package](https://www.npmjs.com/package/nansen-cli)
+- [Nansen CLI browser-login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Guidance, Shell commands, Markdown]
+**Output Type(s):** [Text, Markdown, Shell commands]
 
-**Output Format:** [Markdown with Nansen CLI commands]
+**Output Format:** [Text or Markdown research findings with Nansen CLI commands]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [CLI results can be displayed as tables or exported as CSV.]
+**Other Properties Related to Output:** [Research calls require selected authentication and may consume credits or trigger wallet payments.]
 
 ## Skill Version(s):
 
-0.1.1 (source: ClawHub release metadata)
+0.1.2 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

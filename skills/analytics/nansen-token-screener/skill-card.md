@@ -1,6 +1,6 @@
 ## Description:
 
-Helps agents discover trending tokens and examine smart-money holdings, Nansen indicators, and token flows for further research.
+Discover trending tokens through screening, smart-money holdings, Nansen indicators, and flow intelligence for deeper research.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Analysts and agents use this skill to screen tokens, review smart-money holdings and indicator signals, and investigate flows before making their own investment decisions.
+Token researchers use Nansen CLI queries to shortlist trending tokens, review smart-money holdings and indicator signals, and check flows for promising candidates.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,32 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Authenticated research calls can consume credits or trigger wallet-authorized x402 payments, including on every iteration of a loop.
+Risk: Authenticated research grants the CLI account-level API access.
 
-Mitigation: Confirm the CLI package is trusted, set spending limits, and obtain approval before running costly or repeated queries.
+Mitigation: Use only an explicitly selected key or approved browser session; check authentication before research and stop if it fails.
 
-Risk: Screener searches may omit lower-ranked tokens, and indicator coverage can be incomplete.
+Risk: Repeated, paginated, or flow-intelligence queries may consume credits or trigger wallet payments.
 
-Mitigation: Check result-completeness metadata, widen or narrow the search when needed, and verify individual indicators before drawing conclusions.
+Mitigation: Review payment limits before use, restrict batch sizes, and reserve flow-intelligence calls for shortlisted tokens.
 
 ## Reference(s):
 
 - [Nansen Token Screener on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-token-screener)
-- [Publisher profile](https://clawhub.ai/user/nansen-devops)
+- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Text, Shell commands, Guidance]
+**Output Type(s):** [Guidance, Shell commands, Analysis]
 
-**Output Format:** [Markdown with CLI examples and token-research results]
+**Output Format:** [Markdown with bash commands and token-research summaries]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Research results depend on account entitlements, token coverage, and query limits.]
+**Other Properties Related to Output:** [Results depend on selected chain, timeframe, available entitlements, and queried tokens.]
 
 ## Skill Version(s):
 
-0.1.3 (source: server-resolved release metadata)
+0.1.4 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

@@ -1,6 +1,6 @@
 ## Description:
 
-Tracks smart-money wallet netflows, trades, holdings, and perpetual futures activity through the Nansen CLI.
+Helps agents research smart-money token flows, trades, holdings, and perpetual trades with the Nansen CLI.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Analysts and developers use this skill to inspect smart-money wallet netflows, DEX and perpetual trades, and holdings for crypto market research.
+Analysts and developers use this skill to inspect smart-money wallet activity, including netflows, spot trades, portfolio holdings, and Hyperliquid perpetual trades.
 
 ### Deployment Geography for Use:
 
@@ -22,31 +22,32 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: The Nansen CLI can access account-level API data using a selected API key or saved browser session.
+Risk: Repeated research calls may consume paid API credits or trigger wallet payments.
 
-Mitigation: Check the selected credential and its account permissions before running research commands.
+Mitigation: Confirm the selected credentials and payment limits before research; avoid broad loops without explicit cost approval.
 
-Risk: Research calls, including repeated calls in loops, may consume credits or trigger authorized x402 payments.
+Risk: An expired or invalid login could lead to unintended anonymous paid access if authentication is bypassed.
 
-Mitigation: Review wallet authorization, payment policy, and spending limits before running commands or loops.
+Mitigation: Check authentication status and stop on failures; do not switch to anonymous access to retry.
 
 ## Reference(s):
 
 - [Nansen Smart Money Tracker on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-smart-money-tracker)
+- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
 **Output Type(s):** [Shell commands, Guidance]
 
-**Output Format:** [Markdown with CLI examples]
+**Output Format:** [Markdown with bash examples]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [CLI results can be viewed as a table or exported as CSV.]
+**Other Properties Related to Output:** [Provides filters for chain, trader label, result limit, sorting, and CSV or table output.]
 
 ## Skill Version(s):
 
-0.1.1 (source: ClawHub release)
+0.1.2 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

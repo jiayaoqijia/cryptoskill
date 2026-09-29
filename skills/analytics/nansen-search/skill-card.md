@@ -1,6 +1,6 @@
 ## Description:
 
-Search for tokens or entities by name to find token addresses or matching entities.
+Search for tokens or entities by name to find token addresses or identify entities.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Agents and their users search Nansen for tokens and entities by name, including finding a token's full address or narrowing results by chain.
+Developers and analysts use this skill to find tokens by name and retrieve addresses, or to search for named entities through the Nansen CLI.
 
 ### Deployment Geography for Use:
 
@@ -22,27 +22,28 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Search calls can consume credits or trigger configured wallet payments, particularly when repeated in loops.
+Risk: Authenticated searches may consume account credits or trigger authorized wallet payments, especially when repeated in loops.
 
-Mitigation: Confirm the selected API key or session, wallet authorization, payment policy, and spending limits before searching or running loops.
+Mitigation: Confirm authentication before research, keep Nansen spending limits configured, and avoid repeated or anonymous paid searches without explicit intent.
 
 ## Reference(s):
 
-- [Nansen General Search on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-general-search)
+- [ClawHub skill listing](https://clawhub.ai/nansen-devops/skills/nansen-general-search)
+- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Text, Shell commands, Guidance]
+**Output Type(s):** [Shell commands, Guidance]
 
-**Output Format:** [Text and Markdown with shell commands]
+**Output Format:** [Markdown with Bash examples]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Token and entity name searches support optional chain, result limit, and selected fields.]
+**Other Properties Related to Output:** [Supports token or entity searches with optional chain, result-limit, and field filters.]
 
 ## Skill Version(s):
 
-0.1.2 (source: ClawHub release metadata)
+0.1.3 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 

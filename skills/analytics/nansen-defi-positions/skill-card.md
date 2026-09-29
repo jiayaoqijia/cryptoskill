@@ -1,6 +1,6 @@
 ## Description:
 
-Shows a wallet's DeFi positions by protocol and chain, including assets, debts, and rewards.
+Helps an agent summarize a wallet's DeFi positions, assets, debts, rewards, and token balances across supported chains.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Wallet researchers and analysts use this skill to review DeFi positions alongside spot balances across supported chains.
+Wallet analysts and developers use this skill to inspect DeFi exposure by protocol and chain alongside spot token balances.
 
 ### Deployment Geography for Use:
 
@@ -22,31 +22,32 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Nansen account access may use an API key or browser session, and commands outside the shown read-only queries may have different effects.
+Risk: Wallet portfolio queries use the agent's Nansen CLI account or API key.
 
-Mitigation: Use only the Nansen permissions needed and review any additional command before running it.
+Mitigation: Review the nansen-cli package source and grant only the account or API-key access you are comfortable sharing.
 
-Risk: An empty DeFi portfolio result may reflect no tracked positions rather than a complete view of wallet exposure.
+Risk: An empty DeFi response may not reflect all wallet holdings.
 
-Mitigation: Check spot balances and account for the tool's position coverage when interpreting results.
+Mitigation: Check spot balances alongside DeFi positions and explain when no tracked positions are returned.
 
 ## Reference(s):
 
-- [Nansen DeFi Positions on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-defi-positions)
+- [Nansen DeFi Positions skill listing](https://clawhub.ai/nansen-devops/skills/nansen-defi-positions)
+- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Text, Shell commands, Guidance]
+**Output Type(s):** [Markdown, Shell commands, Guidance]
 
-**Output Format:** [Markdown with bash examples]
+**Output Format:** [Markdown with bash commands and wallet exposure summaries]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Portfolio queries may be empty when no tracked DeFi positions are found.]
+**Other Properties Related to Output:** [Reports protocol, chain, asset, debt, and reward values where available; untracked wallets may have no DeFi positions.]
 
 ## Skill Version(s):
 
-0.1.1 (source: ClawHub release metadata)
+0.1.2 (source: ClawHub release metadata)
 
 ## Ethical Considerations:
 
