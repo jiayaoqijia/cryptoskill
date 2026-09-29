@@ -126,7 +126,7 @@ For each error category, follow these diagnostic steps:
 #### Collateral Errors
 
 1. Verify a collateral input is included in the transaction
-2. Ensure the collateral UTxO contains only ADA (no native tokens)
+2. Ensure the collateral holds only ADA, or that the collateral return output sends back every token it holds
 3. Check collateral amount is at least 150% of the transaction fee
 4. Verify the collateral UTxO has not been consumed
 

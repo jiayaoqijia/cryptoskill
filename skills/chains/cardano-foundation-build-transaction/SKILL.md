@@ -61,7 +61,7 @@ construction, signing, submission, and verification on a testnet.
    produce the same transaction. This enables dry-run testing before submission.
 
 6. **Collateral is required for Plutus interactions.** Any transaction that
-   executes a Plutus script must include collateral UTxOs containing only ADA.
+   executes a Plutus script needs collateral: ADA-only, or with a collateral return that sends its tokens back.
 
 ## Workflow
 

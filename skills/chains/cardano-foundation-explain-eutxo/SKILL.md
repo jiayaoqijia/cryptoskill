@@ -190,7 +190,7 @@ Off-chain pattern (conceptual):
 | **Validator** | A predicate script that authorizes spending, minting, or withdrawing. |
 | **Reference Input** | A UTxO included in the transaction for reading only (not consumed). CIP-31. |
 | **Reference Script** | A script attached to a UTxO that other transactions can reference instead of including. CIP-33. |
-| **Collateral** | A pure-ADA UTxO pledged to cover fees if script execution fails during phase-2 validation. |
+| **Collateral** | A UTxO pledged to cover fees if script execution fails during phase-2 validation. It holds only ADA, or a collateral return output sends its tokens back. |
 | **UTxO Selection** | The off-chain process of choosing which UTxOs to use as transaction inputs. |
 | **Script Address** | An address derived from a validator hash. UTxOs here are governed by the validator. |
 | **Stake Credential** | A credential for staking/delegation, which can also be a script (enabling withdraw-zero). |

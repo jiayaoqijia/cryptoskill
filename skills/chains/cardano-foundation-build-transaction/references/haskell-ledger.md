@@ -107,7 +107,7 @@ nixConfig.extra-trusted-public-keys = [
    and redeemers are `plutus-tx` `ToData` values, not JSON.
 4. Phase-1 checks (fees, min-UTxO, collateral, value conservation)
    live in `cardano-ledger`. Search `../../docs/sources/cardano-ledger/`.
-5. Any Plutus spend still needs a pure-ADA collateral input.
+5. Any Plutus spend still needs collateral: ADA-only, or with a collateral return that sends its tokens back.
 
 Do not reconstruct the script hash by hand if the blueprint already
 has it — compare, do not invent.

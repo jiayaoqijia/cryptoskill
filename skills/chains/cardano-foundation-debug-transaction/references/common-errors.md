@@ -191,16 +191,20 @@ not exist in the current ledger state.
 
 (Ledger constructor name; Ogmios reports it as `NonAdaCollateral`, code 3133.)
 
-**What it means:** The collateral input contains native tokens in addition
-to ADA. Collateral must be pure ADA.
+**What it means:** The collateral inputs hold native tokens that the
+collateral return output does not send back. Since Babbage (CIP-40), collateral
+may include tokens only when the collateral return takes all of them back; what
+the ledger can collect must be ADA.
 
 **Common causes:**
-- Selected a UTxO with native tokens as collateral
-- Wallet automatically selected an inappropriate UTxO
+- A UTxO with native tokens was selected as collateral and no collateral return
+  was set
+- The collateral return omits some of the tokens
 
-**Fix:** Use a UTxO that contains only ADA as collateral. Create a
-dedicated collateral UTxO by sending 5 ADA to yourself in a simple
-transaction, then use that UTxO exclusively for collateral.
+**Fix:** Use an ADA-only UTxO as collateral, or set a collateral return output
+that carries every token from the collateral inputs (most SDKs build it when they
+select collateral). A dedicated collateral UTxO, made by sending 5 ADA to
+yourself, avoids the question.
 
 ---
 

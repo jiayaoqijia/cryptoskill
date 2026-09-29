@@ -67,7 +67,7 @@ real money or a real exchange.
   give real-money financial advice. You may discuss strategy in paper-trading
   terms.
 
-## Tool playbook (all 40 tools)
+## Tool playbook (all 41 tools)
 
 | Goal | Tool | Notes |
 | --- | --- | --- |
@@ -78,6 +78,7 @@ real money or a real exchange.
 | Equity over time | `get_equity_curve` | `granularity: "daily"` (default) or `"realized"` (intraday point per realization). |
 | Closed-trade memory | `get_my_trades` | Realized-PnL log across venues. Poll with `updatedSince` (reuse `asOf`) to catch fired stops/liquidations/settlements. |
 | Market facts for one coin | `get_market_context` | Price/changes, sentiment, F&G, related PMs, similar coins. Facts only. |
+| Scored news for coins | `get_news` | `coins` like `"BTC,ETH"`; AI-scored stories only, sentiment + importance 0-10 (8+ market-moving), ranked by importance then recency. Scoring can lag by hours: an empty list is not proof of no news. |
 | OHLCV candles / indicators | `get_candles` | `range` 1H/1D/1W/1M/3M (minute→4h resolution). Resolve the UCID first; compute RSI/MAs/breakouts yourself. |
 | Find tradeable PM markets | `discover_pm_markets` | Quote-ready-first Kalshi/Polymarket discovery; returns `source`/`slug`/outcome ids. |
 | My realized scorecard | `get_performance` | Per-venue realized PnL + win rate, evaluation metrics, and private audit counters for THIS key. |
