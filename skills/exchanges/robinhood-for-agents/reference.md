@@ -7,8 +7,8 @@ The server runs in one mode per process. **Standard** (entry `robinhood-for-agen
 | Mode | Tools |
 |---|---|
 | both | every tool in this file not listed below |
-| web only | `robinhood_browser_login`, `robinhood_check_session`, `robinhood_get_account`, `robinhood_get_short_interest`, `robinhood_get_movers`, `robinhood_get_market_hours`, `robinhood_get_crypto_historicals` |
-| standard only | `robinhood_official_login` and the 29 under [Standard mode only](#standard-mode-only) |
+| web only | `robinhood_browser_login`, `robinhood_check_session`, `robinhood_get_account`, `robinhood_get_short_interest`, `robinhood_get_equity_news`, `robinhood_get_movers`, `robinhood_get_market_hours`, `robinhood_get_crypto_historicals` |
+| standard only | `robinhood_official_login` and the 25 under [Standard mode only](#standard-mode-only) |
 
 ## Auth
 
@@ -593,7 +593,6 @@ Opens the default browser to Robinhood's sign-in for the hosted MCP; the user ap
 
 | Group | Tools (all `robinhood_`-prefixed) |
 |---|---|
-| Advanced (OCO) orders | `get_advanced_orders`, `review_advanced_order`, `place_advanced_order`, `cancel_advanced_order` |
 | Option exercise | `exercise_option`, `cancel_option_exercise` |
 | Alerts | `get_alerts`, `get_alert_log`, `create_alert`, `update_alert`, `delete_alert`, `mark_alerts_read` |
 | Scanners | `get_scanner_datapoints`, `preview_scan`, `run_scan`, `create_scan`, `update_scan_config`, `update_scan_filters` |

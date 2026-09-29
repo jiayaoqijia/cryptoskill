@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "4ac2d5f4f405055b86f103f0ed3115fcd6e872ba",
+      "revision": "ed1541148819c2c97294b558160c894e18c95ef4",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -16464,13 +16464,13 @@
     "exchanges/robinhood-for-agents": {
       "repo": "kevin1chun/robinhood-for-agents",
       "path": "skills/robinhood-for-agents/SKILL.md",
-      "revision": "14da9d1f89be6f315fc38e8079845abb483dfc68",
+      "revision": "3cdb50455629e982ac41b02163a7ee14d712850d",
       "files": {
         "SKILL.md": "380e9136821132729f05b133a9c7225b387c173bd393fa882c01167c2e00a41f",
         "client-api.md": "11837e75fde6bf2c753d731cd4b425c2b2311e413644c242240c9964ce2e3491",
         "options.md": "5cd9e4631761e600f61bdf128946df679c2d20da2862ad55ed04ac86003ad05c",
         "portfolio.md": "0280c2f5fa70c99d305082fa1b087e0d43ba187f33954e711a0e971ca3ce42ab",
-        "reference.md": "94d8297b6afc90f6de8acd8c513941562df8042c7ca7633f2e5023c72c47fa18",
+        "reference.md": "ac52098444dec65f099ac707beb4d8ce57edb6c7292a063ba99a3341e3bb533f",
         "research.md": "01747ec5dec73f97db1be97db5368be8e607fc24d49076d4f318152223d97d9d",
         "setup.md": "09486146f4838dc18081185fea78f27a3d8975345e911afb7db9c957cb8adc3c",
         "trade.md": "4ae6d8411899cbd62225769156b6e5b2677cd20852454f0a661966b229765074",
@@ -23428,7 +23428,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "e59e195b01fc35bd41053d9de6056cc1eb64171d",
+      "revision": "f7546bd3ae47a896aa2bffa866e94324a2ea2e17",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "edce26b577b9cb4bd4b763255a5b9938319f1f810614d4543a1abd9c80b83c6e",
@@ -23439,11 +23439,11 @@
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "53994da156f09ea6d5fa81858c80085db428f68ca68ea2165dda7eb565ab91e1",
-        "docs/data/fee-stream.json": "8745bc136396ecad1f1154da0ec44c37ea0a733146bc1a854883ce44433cad29",
-        "docs/data/snapshot.json": "e5aafad9048a321b5a1a6b3622034ac3491a8c8e0ca7f192e5ef1c312ab42470",
+        "docs/data/fee-stream.json": "cfa8e1cbdf5ca5b1b817678f5d2a8ee38bbab3990ace562e5ffdbc16540be5a3",
+        "docs/data/snapshot.json": "31210bcc79fb533bc896b2039a353cc977f62dcd364ffda8914838d20580cb7a",
         "docs/data/timing.json": "e96d817967b82003deb44185fde84ab6b377877a922466d99524947539ffce78",
         "docs/index.html": "787d4b814fcd7d8b41b70a2f5b8aaf8a46c5b0d379b46d23154bce36012f7649",
-        "docs/llms.txt": "c5b22c34659e0975aa97503117bf300258ae1ae4516afaa5417f91e018fd8cc6",
+        "docs/llms.txt": "c6c467bc08619380805ea6eb4e46c73aad13a7695a67b9c36461c19feb38578e",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -29141,12 +29141,31 @@
         "SKILL.md": 420,
         "LICENSE": 420
       }
+    },
+    "mcp-servers/pnllabs-pnllabs-gate": {
+      "repo": "pnllabs/pnllabs-mcp",
+      "path": "SKILL.md",
+      "revision": "b33d4eaa23a5e126bd3775ed99693bfb95766ef4",
+      "files": {
+        "LICENSE": "6c5d4b8d737970c704588536765668d889dad84b64185be3a80b2004289a6376",
+        "README.md": "0f0eb43edebcd841cf7694f4cc573e76ebfc43ab8a679f54fa1afdbd7838b3cc",
+        "SKILL.md": "c0aa4299e01a2a9312a55ba4782d86eae55b12d1739e5d93d7095c805e6e4f0e",
+        "docs/VERDICTS.md": "20cbbc42890510eb256c43326de5796bba2cd1b7a66a2cf13de5563f07d63ded",
+        "pnllabs_mcp.py": "f449f637f1b1d9daa35a64a8639f8f874025452655d571ec91ab485f7a5b58a0"
+      },
+      "modes": {
+        "LICENSE": 420,
+        "README.md": 420,
+        "SKILL.md": 420,
+        "docs/VERDICTS.md": 420,
+        "pnllabs_mcp.py": 420
+      }
     }
   },
   "repositories": {
     "pooowell/fomo-research-skill": "3471ee3b943e94db08c25f0ec55e0de88e08cb24",
     "pump-fun/pump-fun-skills": "c8aaa6a8fb766b2765d2663744515bbf88d04380",
-    "kevin1chun/robinhood-for-agents": "14da9d1f89be6f315fc38e8079845abb483dfc68",
+    "kevin1chun/robinhood-for-agents": "3cdb50455629e982ac41b02163a7ee14d712850d",
     "uzairansaruzi/robinhood-agent-skill": "627f2383e2c9bceb604c65b189e7d0d3dbd9820b",
     "robinscan/robinscan-skill": "7a61b760271a61876bdd5c91013c57008c5668dd",
     "coinpilot-labs/skills": "3ae8933579c10a80d90ae7999cfc248871cf0a87",
@@ -29174,7 +29193,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "ae4ed631874007e131f875691c3bcd72e3904bff",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "4ac2d5f4f405055b86f103f0ed3115fcd6e872ba",
+    "jiayaoqijia/cryptoskill": "ed1541148819c2c97294b558160c894e18c95ef4",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
@@ -29230,7 +29249,7 @@
     "clubytech/cluby-sdk": "f7db754e14929aeb321049de92a27f61fd33fbd5",
     "nirholas/robinhood-mcp": "b732fbdd14bc6b8db971fe2a45f325a083ebeac2",
     "alekskram/dydx-agent-gateway": "eec5527895a0b796a792eea4c3ecb826341297ab",
-    "0xfreak0/sui-mcp": "eeab307d1a9326336286ca88e9d90ca5db1b156c",
+    "0xfreak0/sui-mcp": "426b0088ec5ebc165824dfd8d29baa8ec3d7863f",
     "wisdomnova/multipu-docs": "5b6b3c9a3dbb27487667a1cb842e859b2996ad17",
     "svpchain/svpchain-defi-mcp": "8b2b71a05d165f33f4582be67199e6e893689894",
     "nirholas/cryptocurrency.cv": "888fb300fc305f1cfad83166dd174d56cdde3ee6",
@@ -29258,7 +29277,7 @@
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "faef244b55dd8841a281f966ec74fbcf0b8e72f1",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "e59e195b01fc35bd41053d9de6056cc1eb64171d",
+    "araxis33/aero-vote-radar": "f7546bd3ae47a896aa2bffa866e94324a2ea2e17",
     "paulf280-ui/cabal-hunter-mcp": "1c059944b62b0df52d0bede5d03d3ef75cfaa625",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "f3ce6c488e57807d8b8e470d05f52038c526021b",
@@ -29281,6 +29300,7 @@
     "1sh1ro/crypto-market-skills": "48aa4e23cac7579c68baceed5be611dc33acffe6",
     "acprk/crypto-research-agents": "bfe2303ab9d93c2ff0403386681a91cf02e76b89",
     "stevevstd-oss/eterna-mcp-agent-starter": "4df2f24e304b1eba4cee5cadd8ce1e5018d5a303",
-    "cessio-cc/cessio-agent-mcp-server": "ec2d8bd10a8305fed79c7bc8dc7786ca0579b489"
+    "cessio-cc/cessio-agent-mcp-server": "ec2d8bd10a8305fed79c7bc8dc7786ca0579b489",
+    "pnllabs/pnllabs-mcp": "b33d4eaa23a5e126bd3775ed99693bfb95766ef4"
   }
 }

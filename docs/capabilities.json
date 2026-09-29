@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T18:44:00.462599+00:00",
+  "generated_at": "2026-09-29T01:15:06.626061+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -110767,6 +110767,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/pnllabs-pnllabs-gate": {
+      "name": "pnllabs-gate",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/profunding-mcp": {
       "name": "profunding-mcp",
       "execution_model": "read_only",
@@ -149978,12 +150040,12 @@
     }
   },
   "summary": {
-    "discovered": 2407,
-    "processed": 2407,
+    "discovered": 2408,
+    "processed": 2408,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1587,
-      "router_orchestrator": 132,
+      "router_orchestrator": 133,
       "unknown": 257,
       "analysis_only": 203,
       "unsigned_tx_builder": 81,
@@ -149993,11 +150055,11 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1003,
+      "can_execute_shell": 1004,
       "can_install_code": 483,
-      "can_write_files": 137,
-      "can_browse_web": 224,
-      "can_spawn_subagents": 233,
+      "can_write_files": 138,
+      "can_browse_web": 225,
+      "can_spawn_subagents": 234,
       "can_move_funds": 245,
       "requires_private_key": 408,
       "requires_hosted_operator": 327,
