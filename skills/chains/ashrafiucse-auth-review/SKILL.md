@@ -184,11 +184,13 @@ Webhook endpoints are authenticated by the SENDER's signature, not by your sessi
 ```bash
 rg -n "webhook|callback" src/ app/ routes/ | rg -i "post|route" | head -20
 rg -n "timingSafeEqual|compare_digest|verify_sig|verifySignature|signature" src/ app/
+rg -n "!process\.env\.[A-Z_]*SECRET|WEBHOOK_SECRET" src/ app/ .env.example 2>/dev/null
 ```
 
 - Handler parses `req.body`/event and ACTS (fulfill, enroll, activate, refund) without verifying the sender's HMAC signature → **Critical** (forged events = free entitlements; pairs with F4 replay in `../flow-security/SKILL.md`)
 - Signature compared with `==`/`===` instead of constant-time (`timingSafeEqual`, `hmac.compare_digest`) → Medium (timing oracle)
 - Signature computed over re-parsed JSON instead of the RAW request bytes → verification fails → commonly "fixed" by deleting the check (drift toward Critical)
+- **Verification gated on the secret being SET** (`if (!WEBHOOK_SECRET) next()` / empty-secret guard that skips the check) → **fail-open on missing config** → Critical — the Dockhand CVE-2026-53988 shape: null webhook secret guard → unauthenticated stack redeploy, and the redeploy pulls an attacker-controlled docker-compose.yml (privileged bind mounts) = container escape. A missing/empty secret must REJECT (fail closed), never skip verification.
 - No replay window (timestamp/event-id dedup) → High
 - Safe shape: raw-body HMAC + constant-time compare + event-id dedup, all before any side effect
 

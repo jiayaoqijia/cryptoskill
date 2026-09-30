@@ -30,6 +30,7 @@ code = Critical, quota theft and billing abuse).
 
 ```bash
 rg -n "pickle\.loads?\(|torch\.load\(|joblib\.load\(|tf\.saved_model\.load|from_pretrained\(" 
+rg -n "allow_pickle|ThreadedServer|rpyc" src/ serving/ 
 rg -n "unsafe_deserialization\s*=\s*True|allow_dangerous_deserialization\s*=\s*True"
 ```
 
@@ -38,6 +39,7 @@ rg -n "unsafe_deserialization\s*=\s*True|allow_dangerous_deserialization\s*=\s*T
   (pickled payloads execute on load)
 - LangChain/LlamaIndex loaders with `unsafe_deserialization=True` /
   `allow_dangerous_deserialization=True` on shared vector stores → **Critical**
+- **Network-exposed RPC with pickle in LLM serving stacks** (RPyC `ThreadedServer(..., hostname="0.0.0.0", protocol_config={"allow_pickle": True})`, Dask/distributed, Ray object stores) → **Critical** — unauthenticated network deserialization IS the RCE (LightLLM CVE-2026-103040/103041: router profiler behind `--enable_profiling` and the multimodal embed-cache both shipped unauthenticated RPyC + pickle on all interfaces). Safe shape: localhost bind + authenticator + `allow_pickle: False`, and the port never published in compose/k8s
 - Safe: `.safetensors`, `onnx`, `torch.load(..., weights_only=True)`,
   deserialization only from first-party trusted artifacts
 
