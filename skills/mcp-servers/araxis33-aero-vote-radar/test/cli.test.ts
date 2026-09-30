@@ -259,7 +259,16 @@ test("resolveReviewTarget rejects a malformed --address", async () => {
 test("resolveReviewTarget rejects a non-numeric --nft", async () => {
   const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--nft", "abc"]));
   assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("whole veNFT id")), `expected a veNFT-id message, got: ${logged.join(" | ")}`);
+  assert.ok(logged.some((l) => l.includes("positive whole veNFT id")), `expected a veNFT-id message, got: ${logged.join(" | ")}`);
+});
+
+// veNFT ids start at 1, the same as chooseVoteTokenId (used by --calldata)
+// already enforces — this used to accept "0" as a token id, which can never
+// exist on-chain, and would go on to make live RPC calls for it.
+test("resolveReviewTarget rejects a zero --nft", async () => {
+  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--nft", "0"]));
+  assert.equal(result, null);
+  assert.ok(logged.some((l) => l.includes("positive whole veNFT id")), `expected a veNFT-id message, got: ${logged.join(" | ")}`);
 });
 
 test("resolveReviewTarget accepts a valid --nft and logs nothing", async () => {

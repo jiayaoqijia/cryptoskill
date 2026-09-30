@@ -139,7 +139,7 @@ Every bare `let`/`var` at the top of a `mixin` is implicitly stable and traps at
 ### S5. Migration hygiene — **Blocker**
 
 - A migration file importing anything other than `mo:core/...` — the chain replays forever, so a project import makes it wrong the moment that type changes. (`caffeineai-lints` catches this.)
-- More than one pending migration in a build, or an edit to a migration that predates this build.
+- More than one pending migration in a build, or an edit to a migration that was already applied.
 - A stable field in `main.mo` that no migration in the chain supplies (M0254 / M0267).
 
 An identity migration body is a **Warning** — the change was stable-compatible, so delete the file. [Full table](references/state-and-persistence.md#migration-hygiene).

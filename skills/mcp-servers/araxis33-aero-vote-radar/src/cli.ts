@@ -621,8 +621,8 @@ export function resolveReviewTarget(args: string[]): ReviewTarget | null {
     return null;
   }
   if (nftFlag !== undefined) {
-    if (!/^[0-9]+$/.test(nftFlag)) {
-      console.error("--nft must be a whole veNFT id.");
+    if (!/^[0-9]+$/.test(nftFlag) || BigInt(nftFlag) <= 0n) {
+      console.error("--nft must be a positive whole veNFT id.");
       return null;
     }
     return { kind: "nft", tokenIds: [BigInt(nftFlag)] };

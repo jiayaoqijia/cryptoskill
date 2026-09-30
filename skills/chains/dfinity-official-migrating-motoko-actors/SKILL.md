@@ -27,14 +27,14 @@ Stable actor fields have no initializers in the actor body. The chain in `src/ba
 - Planning or implementing a canister upgrade that changes actor state
 - Deciding between implicit vs explicit migration
 - Writing or refactoring a migration function
-- Introducing stable state for the first time (use a NEW migration file with `OldActor = {}`)
+- Introducing stable state for the first time (a migration with `OldActor = {}`, or fold it into the first one if that is still pending)
 
 ## Migration Folder Rules
 
 - **All migrations live in `src/backend/migrations/`.** The full chain replays in lexicographic filename order on fresh install; on upgrade, only entries newer than the deployed tail run. (The directory is declared as `chain = ...` under `[canisters.<name>.migrations]` in `mops.toml`; an imported project using a non-default canister name may place it elsewhere — read `mops.toml` rather than assuming.)
-- **At most one pending migration per build** (`check-limit = 1` in `mops.toml`). If this build already added a migration file, **edit that file** to fold in further changes instead of adding another. `mops check` compares the deployed `.most` baseline and names the latest pending file to fold into when the limit is exceeded. Where a hosting platform owns the migrations section and `check-limit`, never edit them to clear an error.
-- **Name new files with just the UTC timestamp**, no suffix: `YYYYMMDD_HHMMSS.mo`. The timestamp must sort after every existing file. Do NOT encode the change in the name (no `AddPriority`, `AddTags`, `Init`, …) — any feature-ish name tempts you to add another file for the next change instead of editing the one file you already have this build.
-- **Never modify, delete, or rename migration files that existed before this build started.** Applied migrations are tracked by module name, so a rename makes the runtime treat the file as never applied, and an edit to an already-applied file never executes. Some platforms enforce this by making deployed migrations read-only, in which case writes to them simply fail. A migration created earlier in the same build is not applied yet: **edit** it rather than add a second migration for the same change.
+- **At most one pending migration per build** (`check-limit = 1` in `mops.toml`). If a migration is already pending (not yet applied), **edit that file** to fold in further changes instead of adding another. `mops check` compares the deployed `.most` baseline and names the latest pending file to fold into when the limit is exceeded. Where a hosting platform owns the migrations section and `check-limit`, never edit them to clear an error.
+- **Name new files with just the UTC timestamp**, no suffix: `YYYYMMDD_HHMMSS.mo`. The timestamp must sort after every existing file. Do NOT encode the change in the name (no `AddPriority`, `AddTags`, `Init`, …) — any feature-ish name tempts you to add another file for the next change instead of editing the one pending file.
+- **Never modify, delete, or rename a migration that was already applied.** Applied migrations are tracked by module name, so a rename makes the runtime treat the file as never applied, and an edit to an already-applied file never executes. Some platforms enforce this by making applied migrations read-only, in which case writes to them simply fail. A migration that was not applied yet is pending: **edit** it rather than add a second migration for the same change.
 - **Migrations must be self-contained.** Inline BOTH old types AND new types in the migration file. Only `mo:core/...` and mops package imports are allowed — never `../types` or any project module. The chain replays forever; a frozen migration that imported `Types.Note` becomes wrong the moment `Note` changes in an incompatible way. Component-owned opaque state is the reason package imports are allowed: `AccessControl.initState()` from `mo:caffeineai-authorization/access-control` can only be constructed by importing the package.
 - `mops check --fix` automatically verifies upgrade compatibility.
 
@@ -252,13 +252,13 @@ To derive `OldActor` deterministically: your `OldActor` equals the `NewActor` of
 ## Checklist for Upgrades
 
 - [ ] Decide: implicit (compatible change) vs explicit (new migration file)
-- [ ] **At most ONE new migration file per build.** Before creating a file, check `src/backend/migrations/` — if a migration was already added in an earlier phase of this build, edit it instead of adding a second
+- [ ] **At most ONE pending migration file per build.** Before creating a file, check `src/backend/migrations/` — if a migration is already pending, edit it instead of adding a second
 - [ ] If explicit: pick a bare UTC-timestamp filename (`YYYYMMDD_HHMMSS.mo`, no suffix) that sorts after every existing file; do not encode the change in the name
 - [ ] Set `OldActor` to the `NewActor` of the file that precedes yours in `src/backend/migrations/` (lex-order), or `{}` if yours is the first file in a project that started out with a chain. Never from current `main.mo`. Never the file's own `NewActor`.
 - [ ] When the directory is empty (init migration), `NewActor` must list every stable field declared in `main.mo`, with a value for each
 - [ ] Inline both `OldActor` (with old types) and `NewActor` (with new types) — no project imports
 - [ ] Implement `public func migration(old : OldActor) : NewActor`
-- [ ] Never modify or delete migration files that existed before this build started; edit (don't duplicate) any migration this build already created
+- [ ] Never modify or delete a migration that was already applied; edit (don't duplicate) a pending one
 - [ ] Do not use preupgrade/postupgrade or `(with migration = ...)` for data migration
 - [ ] Iterate on `mops check --fix` (fast) until it passes — it verifies compilation and upgrade safety
 - [ ] Run `mops build` ONCE at the end (slow) to compile the backend and produce the updated IDL bindings

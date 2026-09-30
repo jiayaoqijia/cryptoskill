@@ -37,11 +37,14 @@ pip install yfinance            # add --break-system-packages on claude.ai
 python scripts/fetch_data.py BBCA.JK --date 2026-09-29 --outdir <run_dir>
 ```
 Exit 0 → read `fetch_report.json`, then `technical.md`, `fundamentals.json`,
-`news.json`. Exit 2 → network blocked (claude.ai's sandbox blocks Yahoo by
-default; the error names the blocked host, typically
-`query1.finance.yahoo.com` / `query2.finance.yahoo.com`, and yfinance also
-uses `fc.yahoo.com`). The user can add those hosts in their network settings;
-otherwise continue with B to D. Exit 3 → wrong ticker; fix the suffix.
+`news.json`. Exit 2 → network blocked (claude.ai's sandbox and Claude Code
+cloud sessions on the default **Trusted** network level block Yahoo). The
+JSON lists `hosts_to_allow`: `query1/query2.finance.yahoo.com`,
+`fc.yahoo.com`, `finance.yahoo.com`, `guce.yahoo.com`, `consent.yahoo.com`
+(`*.yahoo.com` covers all). The user adds them in their network settings
+(cloud sessions: environment → Network access **Custom** → Allowed domains,
+then a new session); otherwise continue with B to D. Exit 3 → wrong ticker;
+fix the suffix.
 
 Yahoo often lacks depth for IDX fundamentals and returns few headlines for
 small caps; supplement with web search regardless.

@@ -61,7 +61,7 @@ Write failures on a migration file are not a tooling bug — see the next sectio
 On platforms that freeze deployed migrations, each one is made read-only after a successful deploy and write tools reject it by its mode bits.
 
 - **Do not** `chmod` it, delete it, rename it, or route around the write failure. The freeze encodes a runtime invariant, not a policy preference.
-- A migration created **earlier in the current build** is not frozen: edit that one rather than adding a second file for the same change.
+- A migration that is still **pending** (not yet applied) is not frozen: edit that one rather than adding a second file for the same change.
 - If the change you need belongs conceptually in a frozen migration, express it as a new migration that transforms the current state into the shape you want. History is append-only.
 
 ## Converted (legacy → enhanced) projects
@@ -79,7 +79,7 @@ A project can also inherit such a chain without having been converted itself —
 
 Where a hosting platform owns the mops migrations config — the `[canisters.<name>.migrations]` section, its `chain` path, and `check-limit` — you cannot add, remove, or alter it, and the tooling will reject attempts.
 
-- **Never raise or drop `check-limit` to clear a "too many pending migrations" error.** The fix is always to fold the extra changes into the single pending migration this build already created.
+- **Never raise or drop `check-limit` to clear a "too many pending migrations" error.** The fix is always to fold the extra changes into a single pending migration. Every file the error lists has not been applied yet, so any of them can be edited.
 - **The chain directory is whatever `chain = ...` says.** It is normally `src/backend/migrations`, but a project imported under a non-default canister name can differ. Read the mops config rather than assuming the path.
 - If the migrations section appears to be missing from a project that has a chain, do not re-add it yourself; report the inconsistency.
 

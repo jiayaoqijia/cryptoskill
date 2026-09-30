@@ -57,8 +57,17 @@ STATEMENT_ROWS = {
 }
 
 
+# Hosts yfinance contacts: chart/quote APIs, cookie + crumb, and the consent flow it
+# falls back to when the cookie fetch fails.
+YAHOO_HOSTS = ["query1.finance.yahoo.com", "query2.finance.yahoo.com", "fc.yahoo.com",
+               "finance.yahoo.com", "guce.yahoo.com", "consent.yahoo.com"]
+
+
 def blocked(msg: str):
     print(json.dumps({"status": "network_blocked", "detail": msg,
+                      "hosts_to_allow": YAHOO_HOSTS,
+                      "how_to_allow": "Add these hosts (or *.yahoo.com) to the network allowlist of the "
+                                      "sandbox or cloud environment, then start a new session.",
                       "next_step": "Use the fallback path in references/data-sources.md "
                                    "(web search and/or user-uploaded CSV + indicators.py)."}, indent=2))
     sys.exit(2)

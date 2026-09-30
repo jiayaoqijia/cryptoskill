@@ -51,7 +51,7 @@ A bare `let`/`var` at the top of a `mixin` is implicitly stable and traps at run
 | -------------------------------------------------------------- | ------- | ----------------------------------------------------------------------- |
 | An import other than `mo:core/...`                             | Blocker | The chain replays forever; a project type that later changes breaks it. Caught by `caffeineai-lints`. |
 | Two pending migrations in one build                            | Blocker | `check-limit = 1`. Fold the second into the first.                       |
-| An edit to a migration that predates this build                | Blocker | Applied migrations are tracked by module name; the edit never runs.      |
+| An edit to a migration that was already applied                | Blocker | Applied migrations are tracked by module name; the edit never runs.      |
 | A stable field in `main.mo` no migration supplies              | Blocker | Surfaces as M0254 / M0267 and breaks later upgrades.                     |
 | A feature-shaped filename (`AddPriority.mo`)                   | Warning | Invites a second file per change instead of editing the pending one. Use `YYYYMMDD_HHMMSS.mo`. |
 | An identity migration body                                     | Warning | The change was stable-compatible; delete the file.                      |

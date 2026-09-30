@@ -291,7 +291,7 @@ backend/
 ├── mixins/          # Service layer (stateless, state injected via parameters)
 ├── types/           # Type definitions for mixins and lib modules
 ├── migrations/      # Mops-managed migration chain. See migrating-motoko-actors.
-│                    #   Each file is YYYYMMDD_HHMMSS.mo (a UTC timestamp, not a feature name); files predating this build are FROZEN.
+│                    #   Each file is YYYYMMDD_HHMMSS.mo (a UTC timestamp, not a feature name); applied files are FROZEN.
 └── main.mo          # Composition root (state owner, NO public methods)
 ```
 

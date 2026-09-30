@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T06:58:40.339526+00:00",
+  "generated_at": "2026-09-30T12:52:30.157349+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -25991,7 +25991,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -26015,7 +26015,7 @@
     },
     "chains/ashrafiucse-cve-research": {
       "name": "cve-research",
-      "execution_model": "unsigned_tx_builder",
+      "execution_model": "local_executor",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -26053,7 +26053,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -150358,8 +150358,8 @@
       "router_orchestrator": 134,
       "unknown": 258,
       "analysis_only": 203,
-      "unsigned_tx_builder": 81,
-      "local_executor": 90,
+      "unsigned_tx_builder": 80,
+      "local_executor": 91,
       "installer_bootstrap": 38,
       "custodial_executor": 19
     },
@@ -150371,7 +150371,7 @@
       "can_browse_web": 226,
       "can_spawn_subagents": 235,
       "can_move_funds": 246,
-      "requires_private_key": 409,
+      "requires_private_key": 411,
       "requires_hosted_operator": 327,
       "uses_remote_install_script": 40,
       "mutable_remote_runtime": 485

@@ -30,6 +30,11 @@ Check each Dockerfile:
 - `cap_add: SYS_ADMIN|NET_ADMIN|...` → flag each with justification check
 - Host paths mounted writable (`/:/host`) → CRITICAL
 - Default/weak service passwords (`POSTGRES_PASSWORD: postgres`) with published ports (`ports:` mapping to host) → HIGH
+- **Auth disabled by config on a service with published ports** (`AUTH_ENABLED=false`-style flags: `OBOT_AUTH_ENABLED=false`, `DISABLE_AUTH`, `AUTH_REQUIRED=false`, `--no-auth`) → **Critical**: port + flag = unauthenticated network callers hold the service's full plane — the obot Docker-quickstart pattern (CVE-2026-101065) mapped every request to a synthetic "nobody" user with Owner+Admin roles. Chain-check: with `/var/run/docker.sock` mounted in the same service, the now-unauthenticated MCP/agent runtime reaches host Docker → host-root takeover. Either signal alone is a near-miss (published port on an authed service is normal; auth-off on an unpublished dev service is a config smell) — the COMBINATION is the finding.
+```bash
+rg -n "ports:" docker-compose.y*ml compose.y*ml
+rg -n -i "auth[_-]?(enabled|required)\s*[:=]\s*(false|no|off)|disable[_-]?auth|no[_-]?auth" docker-compose.y*ml compose.y*ml .env
+```
 
 ## Kubernetes
 

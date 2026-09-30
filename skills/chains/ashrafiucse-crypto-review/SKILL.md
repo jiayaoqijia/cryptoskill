@@ -36,6 +36,7 @@ Context decides severity. The same MD5 is noise in a cache key and CRITICAL in a
 - **Comparisons**: token/password hash compared with `==` instead of constant-time (`timingSafeEqual`, `hmac.compare_digest`) → LOW/MEDIUM (timing oracle)
 - **Length**: RSA < 2048, ECC < 256, HMAC-SHA1 legacy — MEDIUM hygiene
 - **Custom crypto**: any hand-rolled cipher/XOR/"custom encoding" protecting real data → HIGH by default (rate as if broken)
+- **MPC / threshold-crypto inside TEEs**: single-use secrets (nonces, pre-signatures) must be consumed with rollback protection — delete-after-use alone fails because the untrusted TEE host can roll back the filesystem, forcing nonce-share reuse → private-key-share disclosure (ToB, 2026-09-25). Safe shape: monotonic counter / freshness bound in trusted storage before use. Attestation verification must cover quote signature + certificate chain to the vendor root + measurements vs known-good values (reproducible builds / binary transparency) — a "valid" quote over incomplete measurements (runtime-fetched code, unmeasured configs, `LD_PRELOAD`-injectable libs) is false assurance. Constant-time discipline still applies inside the enclave — the host controls timing
 
 ## 4 — Reporting
 
