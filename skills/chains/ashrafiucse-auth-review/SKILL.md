@@ -30,6 +30,14 @@ Build a table `route → auth middleware → ownership check` and fill it by rea
 - non-HTTP surfaces that are routes in disguise: queue consumers, cron/background job handlers, webhook receivers, GraphQL resolvers (see `../graphql-security/SKILL.md`), event subscribers, RPC/message handlers — census them with the same table
 - dispatch-style apps (`?action=` → switch) — enumerate the switch arms, not the single URL
 - **case-sensitive middleware paths**: on case-insensitive hosts/routers, `app.use('/admin', guard)` can be bypassed by `/ADMIN` or `/Admin/` — check the router's case-sensitivity setting (Express: default sensitive only with regex; some frameworks/filesystems are not) and whether any guarded prefix can be cased around → authz bypass
+- **encoding-sensitive middleware paths** (CWE-177): authz guards comparing the RAW, still-encoded request URI (`req.url` / `req.originalUrl`, Java `getRequestURI()`, `RAW_URI`) while the router dispatches on the DECODED path — `GET /%61dmin/users` fails `startsWith('/admin')` yet still reaches the admin route → unauthenticated admin access (class incident: Cisco Catalyst SD-WAN Manager CVE-2026-76504, KEV). Safe shape: compare the decoded path the router actually dispatches on (`req.path`, Java `getServletPath()`), or mount the guard on the route itself (`app.use('/admin', guard)`), so percent-encoding can't split the check from the dispatch:
+```bash
+rg -n "req\.(url|originalUrl)\.(startsWith|endsWith|includes|match)|getRequestURI\(\)\.(startsWith|contains|equals)|RAW_URI" -g '*.js' -g '*.ts' -g '*.java' -g '*.py'
+```
+- **setup/install/first-run wizard routes**: `app.post('/setup/restore')`, `/install`, `/api/setup/*` are unauthenticated BY DESIGN during first boot — one that stays reachable after initialization is an auth-bypass front door (class incident: ground-station CVE-2026-103244 — `setup.restore` invoked over Socket.IO during setup mode planted admin users and forged session tokens; full takeover). Census them with the route table; every setup route must verify installation state server-side and refuse once installed:
+```bash
+rg -n -i "['\"]/(setup|install|installer)[^'\"]*['\"]" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*.rb' -g '*.php' | head -15
+```
 - **gRPC / protobuf services**: `service X { rpc Y (...) }` in `.proto` files — every `rpc` is a route; check per-method auth interceptors and validate request fields like any handler. Same for **message-queue consumers** (Kafka/Rabbit/SQS handlers), **scheduled job entry points**, and **Netty/WebSocket frame handlers** — add them all to the census table
 ```bash
 rg -n "rpc \w+\(" -g '*.proto'; rg -n "@GrpcClient|StreamObserver" -g '*.java' -g '*.kt'
@@ -206,6 +214,10 @@ rg -n -i "x-api-key|api[_-]?key" -g '*.js' -g '*.ts' -g '*.py' -g '*.java' -g '*
 - **Constant-time comparison absent** (`==` on the key) → timing oracle → LOW/MEDIUM (pairs with `crypto-review` comparison rules)
 - **Weak key generation** — `uuid()`, `random.random()`, timestamp-derived → predictable keys → HIGH (see crypto-review randomness table)
 - **Key = password reuse** — same key validates AND encrypts/signs → separation of duties violation → MEDIUM
+- **Non-secret identifiers as credentials** — authenticating a device/user by a value that is public or enumerable (hostname, hardware serial, username, email, machine-id) is authentication theater: anyone who knows the identifier IS the identity (class incident: Fleet CVE-2026-103264 — device API accepted hostnames and hardware serials as tokens alongside UUIDs; unauthenticated actors became any iOS/iPadOS host, MDM migration included). Identifiers are for LOOKUP, never for proof — enroll with a one-time secret or client cert, then authenticate on that:
+```bash
+rg -n -i "findby(hostname|serial|hardware)|by_(hostname|serial)|token\s*={2,3}[^=]*(hostname|serial|machine.?id)" -g '*.js' -g '*.ts' -g '*.py' -g '*.go' -g '*.java'
+```
 
 ## 4 — Session & CSRF
 

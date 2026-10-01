@@ -131,9 +131,9 @@ Fixes: normalize identifiers to NFKC at write AND query time; compare origins vi
 
 ### Template injection (SSTI)
 ```bash
-rg -n "render_template_string|Template\(.*\+|Jinja2\(.*from_string|erb\.new\(.*\+|Mustache\.render\(.*\+|StringTemplate"
+rg -n "render_template_string|Template\(.*\+|Jinja2\(.*from_string|erb\.new\(.*\+|Mustache\.render\(.*\+|StringTemplate|do_shortcode\s*\("
 ```
-User input inside the template *string* (not the data context) = SSTI.
+User input inside the template *string* (not the data context) = SSTI. WordPress shortcodes are the PHP flavor: `do_shortcode($_POST[...])` executes any shortcode the site's plugins register — unauthenticated arbitrary shortcode execution (class incident: LatePoint CVE-2026-92966; entry: `../cve-research/vuln-db/entries/2026-10-01-cve-2026-92966.md`).
 
 ### Prototype pollution (Node/JS)
 ```bash
