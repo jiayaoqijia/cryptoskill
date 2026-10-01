@@ -1,21 +1,48 @@
-# Copy-trade addresses vs. realized PnL — 2026-09-28
+# Copy-trade addresses vs. realized PnL — corrected 2026-09-30
 
-**1 of 8 published copy-trade addresses came back TRUSTED.**
+**Correction:** 3 of the 8 verdicts we published on 2026-09-28 were wrong — our bug, not the
+wallets. Solana now has version-1 transactions; our data fetcher requested version 0 and
+silently lost them, so three wallets looked "unverifiable" (rows marked ¹ below). Fixed on
+2026-09-30 and re-run.
+
+**Re-run 2026-09-30 (evening, UTC): 0 of 8 TRUSTED, 4 of 8 UNTRUSTED.**
+
+| listed as | address | verdict | realized SOL | coins | published 2026-09-28 |
+|---|---|---|---|---|---|
+| LJC | `6HJetMbdHBuk3mLUainxAPpBpWzDgYbHGTS2TqDAUSX2` | INSUFFICIENT | 0.0 | 1 | INSUFFICIENT |
+| Ansem-label | `AVAZvHLR2PcWpDf8BXY4rVxNHYRBytycHkcB5z5QNXYm` | **UNTRUSTED** | −2.4 | 7 | INSUFFICIENT (window moved) |
+| OGAntD | `215nhcAHjQQGgwpQSJQ7zR26etbjjtVdW74NLzwEgQjP` | INSUFFICIENT | −82.7 | 3 | INSUFFICIENT |
+| SKX | `C4eZg1rJX6v1u7LzqermPrA1pDNNxQe6g3vyY5cHHoWq` | **UNTRUSTED** | −3.4 | 11 | UNVERIFIABLE ¹ |
+| Cooker | `8deJ9xeUvXSJwicYptA9mHsU2rN2pDx37KWzkDkEXhU6` | **UNTRUSTED** | −28.0 | 31 | TRUSTED +6.2 — lost since, not a bug |
+| ozark | `DZAa55HwXgv5hStwaTEJGXZz1DhHejvpb7Yr762urXam` | NEUTRAL | +0.1 | 8 | UNKNOWN ¹ |
+| rayan | `BNahnx13rLru9zxuWNGBD7vVv1pGQXB11Q7qeTyupdWf` | **UNTRUSTED** | −115.0 | 7 | UNVERIFIABLE ¹ |
+| trunoest | `ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT` | UNKNOWN (no DEX trades in window) | — | — | UNKNOWN |
+
+¹ **Our bug, not the wallet:** on 2026-09-28 the old and the fixed code disagreed exactly on
+these rows when both were run at the same moment on 2026-09-30. Where they agreed (e.g.
+Cooker), the change is real trading since 09-28.
+
+Verdicts cover a **recent window** of trades, not a lifetime. Active wallets can flip within
+hours — ozark and SKX changed between our morning and evening re-runs on 2026-09-30. Re-check
+before every copy: https://pnllabs.com/GATE.md
+
+"listed as" = the label a public copy-trade list attaches to the address. It is **not** a
+claim about who controls the wallet. This is a test of the leaderboard metric, not of any person.
+
+## Original table 2026-09-28 (superseded)
+
+Rows marked ¹ were wrong because of our bug (see footnote above).
 
 | listed as | address | verdict | realized SOL | coins | recheck 2026-09-28 (evening) |
 |---|---|---|---|---|---|
 | LJC | `6HJetMbdHBuk3mLUainxAPpBpWzDgYbHGTS2TqDAUSX2` | INSUFFICIENT | 0.0 | 2 | same |
 | Ansem-label | `AVAZvHLR2PcWpDf8BXY4rVxNHYRBytycHkcB5z5QNXYm` | INSUFFICIENT | −42.5 | 3 | same |
 | OGAntD | `215nhcAHjQQGgwpQSJQ7zR26etbjjtVdW74NLzwEgQjP` | INSUFFICIENT | 15.1 | 3 | same |
-| SKX | `C4eZg1rJX6v1u7LzqermPrA1pDNNxQe6g3vyY5cHHoWq` | UNVERIFIABLE | 0.0 | 1 | same |
+| ¹ SKX | `C4eZg1rJX6v1u7LzqermPrA1pDNNxQe6g3vyY5cHHoWq` | UNVERIFIABLE | 0.0 | 1 | same |
 | Cooker | `8deJ9xeUvXSJwicYptA9mHsU2rN2pDx37KWzkDkEXhU6` | **TRUSTED** | 6.2 | 10 | same — only pass |
-| ozark | `DZAa55HwXgv5hStwaTEJGXZz1DhHejvpb7Yr762urXam` | UNKNOWN (RPC timeout) | — | — | UNVERIFIABLE, 1 coin |
-| rayan | `BNahnx13rLru9zxuWNGBD7vVv1pGQXB11Q7qeTyupdWf` | UNVERIFIABLE | 0.0 | 1 | same |
+| ¹ ozark | `DZAa55HwXgv5hStwaTEJGXZz1DhHejvpb7Yr762urXam` | UNKNOWN (RPC timeout) | — | — | UNVERIFIABLE, 1 coin |
+| ¹ rayan | `BNahnx13rLru9zxuWNGBD7vVv1pGQXB11Q7qeTyupdWf` | UNVERIFIABLE | 0.0 | 1 | same |
 | trunoest | `ardinRsN1mNYVeoJWTBsWeYeXvuR9UUDGMsCDKpb6AT` | UNKNOWN (RPC timeout) | — | — | UNKNOWN (COMPUTE_TIMEOUT) |
-
-"listed as" = the label a public copy-trade list attaches to the address. It is
-**not** a claim about who controls the wallet. This is a test of the leaderboard
-metric, not of any person.
 
 ## What the verdicts mean
 

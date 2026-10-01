@@ -1,8 +1,8 @@
 # PnL Labs — MCP server & x402 API
 
 > **PnL Labs gate — no verdict, no trade.** MCP: `https://api.pnllabs.com/mcp`
-> Hard stops: `UNTRUSTED`/`INSUFFICIENT` → do not copy · `HIGH_RISK`/`CRITICAL` → do not buy ·
-> `UNTRADEABLE`/`HIGH_COST` → not at that size · `UNVERIFIABLE`/`UNKNOWN` → say so, do not invent edge.
+> Hard stops: wallet `UNTRUSTED`/`INSUFFICIENT`/`UNVERIFIABLE`/`UNKNOWN` → do not copy · token `HIGH_RISK`/`CRITICAL`/`UNKNOWN` → do not buy ·
+> trade `HIGH_COST`/`UNTRADEABLE`/`NO_POOL`/`UNKNOWN` → not at that size · 402/errors are not verdicts. Table: [GATE.md](https://pnllabs.com/GATE.md)
 > Rule file: [SKILL.md](SKILL.md) · Measured examples: [docs/VERDICTS.md](docs/VERDICTS.md)
 
 **Trust & risk verdicts for AI trading agents on Solana.** Proof of *real* PnL,
