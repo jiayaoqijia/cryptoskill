@@ -4,7 +4,7 @@ description: Bitcoin L1 wallet for agents - check balances, send BTC, manage UTX
 license: MIT
 metadata:
   author: aibtcdev
-  version: 1.73.1 # x-release-please-version
+  version: 1.74.0 # x-release-please-version
   npm: "@aibtc/mcp-server"
   github: https://github.com/aibtcdev/aibtc-mcp-server
 ---
@@ -206,8 +206,9 @@ Always probe before executing paid endpoints. Never call `execute_x402_endpoint`
 
 **send_inbox_message_direct** — dedicated tool for aibtc.com inbox messages:
 - Parameters: `recipientBtcAddress` (bc1...), `recipientStxAddress` (SP...), `content` (max 500 chars)
-- Direct (non-sponsored) payment: signs a standard sBTC transfer and settles through the x402 facilitator — no relay in the middle
-- Sender pays BOTH the sBTC message cost AND its own STX gas; requires an unlocked wallet holding sBTC and STX (mainnet only)
+- Gasless: the inbox advertises a fee payer, so the tool signs a sponsored sBTC transfer (fee 0) and the relay pays the STX gas
+- Requires an unlocked wallet holding the sBTC message cost (100 sats) — no STX needed (mainnet only)
+- One pending payment per sender: wait for the previous message's payment to confirm before sending the next
 - Implements the full x402 v2 payment flow with a balance pre-check
 - Note: the older sponsored `send_inbox_message` tool is deprecated and no longer sends — use this tool instead
 

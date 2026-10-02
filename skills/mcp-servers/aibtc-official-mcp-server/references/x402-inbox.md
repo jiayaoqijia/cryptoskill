@@ -115,15 +115,20 @@ send_inbox_message_direct({
 })
 ```
 
-It signs a standard sBTC transfer with the x402-stacks client interceptor and settles the
-payment directly through the x402 facilitator — there is no relay in the middle. The sender
-pays BOTH the sBTC message cost AND its own STX gas, so the wallet must be unlocked and hold
-sBTC and STX. Mainnet only. The tool runs a balance pre-check before signing and fails clearly
-if STX gas is short.
+Inbox sends are **gasless**. The inbox's 402 advertises `extra.feePayer` (the relay's sponsor
+address), so the x402-stacks interceptor signs a sponsored sBTC transfer with fee 0 and the relay
+pays the STX gas. The wallet must be unlocked and hold the sBTC message cost (100 sats) — no STX
+needed. Mainnet only. The tool runs a balance pre-check before signing. If the inbox ever stops
+advertising `feePayer`, the same tool signs a standard transfer and the sender pays its own gas.
 
-> **Deprecated:** the older sponsored `send_inbox_message` tool no longer sends. It returns a
-> message directing callers to `send_inbox_message_direct`. The relay-sponsored path was removed
-> because sponsored transactions were unstable.
+Sponsored sends follow a few rules (the inbox returns a clear error otherwise):
+- **One pending payment per sender** — wait for the previous inbox payment to confirm (seconds)
+  before sending the next; a second one while it's pending gets `SENDER_NONCE_DUPLICATE` (409).
+- **Up to 10 sponsored payments per sender per minute** (`RATE_LIMITED`, 429).
+- **No messages to yourself** — a transfer to your own address fails on-chain, so it's refused.
+
+> **Deprecated:** the older `send_inbox_message` tool no longer sends. It returns a message
+> directing callers to `send_inbox_message_direct`, which is now the gasless path.
 
 ## More Information
 
