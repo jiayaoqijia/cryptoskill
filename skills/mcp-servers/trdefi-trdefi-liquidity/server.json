@@ -1,0 +1,13 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.TRDEFI/liquidity",
+  "title": "TRDEFI Liquidity",
+  "description": "Live non-custodial stablecoin liquidity: open positions, volume, and an on-chain swap quote.",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://yield.trdefi.com/mcp"
+    }
+  ]
+}
