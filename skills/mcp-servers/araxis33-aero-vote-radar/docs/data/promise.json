@@ -1,0 +1,85 @@
+{
+  "perVeAero": 10000,
+  "topPools": 10,
+  "epochs": [
+    {
+      "epochStart": "2026-09-24",
+      "scannedAt": "2026-09-29T22:13:37.394Z",
+      "rows": [
+        {
+          "symbol": "vAMM-AERO/TAROT",
+          "pool": "0x7810f8f3253ced11e8c56c6c8497f3134055d44c",
+          "forecastUsd": 24.40012369739226,
+          "paidUsd": 32.11737964218373,
+          "ratio": 1.3162793779449669
+        },
+        {
+          "symbol": "vAMM-WETH/LRDS",
+          "pool": "0x14f7ce67e16c435c876aff4092eb547584121312",
+          "forecastUsd": 24.14583132253673,
+          "paidUsd": 29.009923881993927,
+          "ratio": 1.2014464730778291
+        },
+        {
+          "symbol": "CL-WETH/TIBBIR",
+          "pool": "0x0e4409f7a8eba3213f336daf608985302e79328c",
+          "forecastUsd": 23.788483957478597,
+          "paidUsd": 30.525201590806027,
+          "ratio": 1.2831923902914186
+        },
+        {
+          "symbol": "vAMM-WETH/TAROT",
+          "pool": "0x2d25e0514f23c6367687de89bd5167dc754d4934",
+          "forecastUsd": 23.63570324175715,
+          "paidUsd": 32.90228857613054,
+          "ratio": 1.3920587951029157
+        },
+        {
+          "symbol": "vAMM-WETH/AERO",
+          "pool": "0x7f670f78b17dec44d5ef68a48740b6f8849cc2e6",
+          "forecastUsd": 22.81314946200148,
+          "paidUsd": 28.99639755302301,
+          "ratio": 1.2710387753045935
+        },
+        {
+          "symbol": "CL-WETH/REI",
+          "pool": "0xf8f33db251d41942f3b6518e3925df03c8c35f2c",
+          "forecastUsd": 22.467962839817126,
+          "paidUsd": 32.705469305041554,
+          "ratio": 1.455649074115513
+        },
+        {
+          "symbol": "vAMM-WETH/PDT",
+          "pool": "0x04e5a1c883dafd1eae6b11bd6d3eb784d90ce515",
+          "forecastUsd": 21.797060248955397,
+          "paidUsd": 33.01903112231397,
+          "ratio": 1.5148387326174582
+        },
+        {
+          "symbol": "vAMM-AERO/USDbC",
+          "pool": "0x2223f9fe624f69da4d8256a7bcc9104fba7f8f75",
+          "forecastUsd": 21.44342303763369,
+          "paidUsd": 31.127619441291365,
+          "ratio": 1.451616161592377
+        },
+        {
+          "symbol": "vAMM-VIRTUAL/WETH",
+          "pool": "0x21594b992f68495dd28d605834b58889d0a727c7",
+          "forecastUsd": 21.338644014704407,
+          "paidUsd": 30.98873947655978,
+          "ratio": 1.4522356460516195
+        },
+        {
+          "symbol": "vAMM-cbBTC/TAROT",
+          "pool": "0x2e26a29f782e51296d9d31f78d4883462a2d339d",
+          "forecastUsd": 21.31330956189161,
+          "paidUsd": 32.68438074706945,
+          "ratio": 1.533519731046811
+        }
+      ],
+      "medianRatio": 1.4218374783476464,
+      "paidAtLeastForecast": 1,
+      "paidUnderHalf": 0
+    }
+  ]
+}

@@ -40,16 +40,19 @@ jobs:
       - name: Separate real accrual from reward-token repricing
         run: npm run accrual
 
+      - name: Set what the radar quoted beside what the pools paid
+        run: npm run promise-check
+
       - name: Commit the measurement if it changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/timing.json docs/data/accrual.json
-          if git diff --cached --quiet -- docs/data/timing.json docs/data/accrual.json; then
+          git add docs/data/timing.json docs/data/accrual.json docs/data/promise.json
+          if git diff --cached --quiet -- docs/data/timing.json docs/data/accrual.json docs/data/promise.json; then
             echo "measurement unchanged — nothing to commit"
             exit 0
           fi
-          git commit -m "Refresh the survival, accuracy and accrual measurements"
+          git commit -m "Refresh the survival, accuracy, accrual and promise measurements"
           # The snapshot job and the daily improvement routine push to this same
           # branch, so rebasing the single commit on top is the safe way in: this
           # job only ever writes the files that nothing else writes.

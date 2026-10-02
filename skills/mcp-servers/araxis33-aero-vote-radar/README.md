@@ -529,6 +529,20 @@ touches (52 of 5,094 at 48 hours) so the figure is never quietly better than its
 inputs.
 
 
+## What the radar quoted against what the pool paid
+
+`predict-check` scores the vote *weight* a pool settles at. The number a reader acts on is dollars, so there is a second check on that:
+
+```
+npm run promise-check                 # walks the committed snapshot history, writes docs/data/promise.json
+npm run promise-check some/dir out.json
+```
+
+For each settled epoch it takes the last scan that ran at least a day before the vote closed, keeps the ten pools the radar quoted highest, and sets what it quoted beside what each paid. Both sides are the same thing: what 10,000 veAERO placed **alone in that pool** earns, the voter's own weight included. The quote is not the per-vote rate: a pool with almost no votes shows an enormous one that dilutes to nothing as soon as a real vote lands. A first version of this check quoted $3.3M for a pool that paid $20, which is why the own vote is in both numbers.
+
+First result, the epoch of 2026-09-24 (scan 2026-09-29 22:13 UTC): the ten highest quotes were $21-24 for 10,000 veAERO, and every one of those pools paid more, $29-33 (median 1.42 times the quote). The radar was conservative that week.
+
+Limits worth stating: this is **one** epoch, because snapshots only carry the capped forecast (`forecastUsd`) from 2026-09-26, and scoring earlier epochs against a different algorithm would not be the same claim; the file gains one epoch a week. Each row is 10,000 veAERO in one pool, not the radar's spread across several, so a larger or split vote earns differently. Payouts are valued at today's reward-token prices. One epoch says the quote was not inflated that week; it is not a track record.
 ## Install
 
 Requires Node.js 18.18 or newer (the test suite's `node --import tsx` invocation depends on the `--import` flag, added in 18.18).
@@ -702,6 +716,8 @@ src/
   snapshot-cli.ts  entrypoint for the scheduled snapshot job
   predict.ts       pure scoring for which vote-basis predictor is actually most accurate
   predict-cli.ts   entrypoint for `npm run predict-check`
+  promise.ts       pure scoring of what the radar quoted per 10,000 veAERO against what the pool paid
+  promise-cli.ts   entrypoint for `npm run promise-check`
   settled.ts       the committed scan history + the settled on-chain answer, shared by both measurements
   timing.ts        pure scoring for how much of a ranking survives to the epoch's close
   timing-cli.ts    entrypoint for `npm run timing`, writes docs/data/timing.json
@@ -732,6 +748,7 @@ test/
   mcp-server.test.ts   unit tests for the MCP tools' veAero/address budget resolution
   predict.test.ts      unit tests for predictor scoring (log-scale error, bias, closest-of, pool-size buckets)
   predict-cli.test.ts  unit tests for snapshotsFromDir, including that a malformed file is skipped rather than crashing the run
+  promise.test.ts      unit tests for quote against payout: own vote included on both sides, tiny pools not inflated, migrating and erratic pools excluded, which scan is used
   settled.test.ts      unit tests for snapshotsFromGit: newest-first ordering, skipping a commit whose file doesn't parse as JSON, and reporting (rather than throwing) when run outside a git repo or on a path with no history
   timing.test.ts       unit tests for top-ten survival, the window a scan falls in, and the late-mover threshold
   timing-cli.test.ts   unit tests for buildAccuracyReport, including that an empty pool-size bucket is dropped rather than published as NaN
