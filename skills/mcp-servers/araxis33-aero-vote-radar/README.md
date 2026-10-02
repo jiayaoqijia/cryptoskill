@@ -732,6 +732,7 @@ test/
   mcp-server.test.ts   unit tests for the MCP tools' veAero/address budget resolution
   predict.test.ts      unit tests for predictor scoring (log-scale error, bias, closest-of, pool-size buckets)
   predict-cli.test.ts  unit tests for snapshotsFromDir, including that a malformed file is skipped rather than crashing the run
+  settled.test.ts      unit tests for snapshotsFromGit: newest-first ordering, skipping a commit whose file doesn't parse as JSON, and reporting (rather than throwing) when run outside a git repo or on a path with no history
   timing.test.ts       unit tests for top-ten survival, the window a scan falls in, and the late-mover threshold
   timing-cli.test.ts   unit tests for buildAccuracyReport, including that an empty pool-size bucket is dropped rather than published as NaN
   voted.test.ts        unit tests for scoring a cast vote against settled weight, including the unscorable-pool and zero-weight cases
