@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-03T01:08:58.006715+00:00",
+  "generated_at": "2026-10-03T06:56:11.722201+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -82646,7 +82646,7 @@
     },
     "exchanges/senpi-ai-senpi-strategy-author": {
       "name": "senpi-strategy-author",
-      "execution_model": "read_only",
+      "execution_model": "local_executor",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -82679,7 +82679,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -153084,12 +153084,12 @@
     "processed": 2457,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 1616,
+      "read_only": 1615,
       "router_orchestrator": 135,
       "unknown": 267,
       "analysis_only": 204,
       "unsigned_tx_builder": 84,
-      "local_executor": 91,
+      "local_executor": 92,
       "installer_bootstrap": 41,
       "custodial_executor": 19
     },
@@ -153100,7 +153100,7 @@
       "can_write_files": 147,
       "can_browse_web": 230,
       "can_spawn_subagents": 238,
-      "can_move_funds": 252,
+      "can_move_funds": 253,
       "requires_private_key": 419,
       "requires_hosted_operator": 328,
       "uses_remote_install_script": 40,
