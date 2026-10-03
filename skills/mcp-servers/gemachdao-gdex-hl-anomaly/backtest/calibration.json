@@ -1,0 +1,55 @@
+{
+ "target_events_per_market_day": 0.02,
+ "controls": [
+  "BTC",
+  "ETH",
+  "SOL",
+  "XRP",
+  "DOGE",
+  "AVAX",
+  "LINK",
+  "ARB",
+  "OP",
+  "SUI",
+  "APT",
+  "INJ",
+  "TIA",
+  "WIF",
+  "kPEPE",
+  "BNB",
+  "LTC",
+  "HYPE",
+  "TRUMP",
+  "ADA"
+ ],
+ "windows": [
+  [
+   "2025-05-01",
+   "2025-05-31"
+  ],
+  [
+   "2025-08-01",
+   "2025-08-31"
+  ]
+ ],
+ "windows_1h": [
+  [
+   "2026-08-01",
+   "2026-08-31"
+  ]
+ ],
+ "market_days": 1200.0,
+ "market_days_1h": 600.0,
+ "thresholds": {
+  "oracle_divergence": 10.24,
+  "funding_extremity": 10.17,
+  "liquidity_shock/4h": 6.0,
+  "liquidity_shock/1h": 6.18
+ },
+ "rate_at_6": {
+  "oracle_divergence": 0.2742,
+  "funding_extremity": 0.165,
+  "liquidity_shock/4h": 0.0017,
+  "liquidity_shock/1h": 0.0217
+ }
+}

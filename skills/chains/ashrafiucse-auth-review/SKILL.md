@@ -136,6 +136,11 @@ Using `X-User-Id` / `X-Email` / `X-Admin` / `X-Forwarded-For` as the **identity 
 
 **SSO/OIDC callback host verification (CWE-943).** Rocket.Chat GHSL-2026-004/005: an account/SSO service accepted callbacks whose host did not match the configured/allowed one → authentication bypass. Wherever an OIDC/OAuth/SAML/OmniAuth callback or JWKS/discovery URL is resolved from configuration, verify the code checks the **exact** host/origin (allowlist, not substring/`endsWith`) and rejects mismatches before trusting the identity assertion → Critical (direct auth bypass).
 
+**Authorization predicate on a request-derived principal** (sibling of header spoofing — the write side). The capability/role check itself is evaluated against a user object CONSTRUCTED FROM REQUEST DATA instead of the authenticated session principal: `user_can(get_user_by('id', $_COOKIE['original_user_id']))`, `findById(req.cookies.user_id).can(...)`, `hasRole(req.body.role)`. The check "passes" for whoever the REQUEST names — forging the cookie/param IS the privilege. DevKit Pro CVE-2026-14378 shape: user-switching revert checked `manage_options` on the cookie-named user instead of `current_user_can()` → admin takeover. → **Critical**. The principal for any authz decision must come from the session/token verification path; request data may name a TARGET, never the ACTOR.
+```bash
+rg -n "findById\(\s*req\.(cookies|body|query)|get_user_by\([^)]*\$_(COOKIE|GET|POST|REQUEST)|user_can\s*\(\s*\$" src/ app/ -g '*.js' -g '*.php'
+```
+
 ### Multi-tenant scoping census (SaaS)
 
 Per-object IDOR checks miss the systematic version: in a multi-tenant app, EVERY data access must carry the tenant filter — one query without it leaks a whole tenant's data to another tenant's users (often via list/export/report endpoints that feel "shared").
@@ -200,7 +205,11 @@ rg -n "!process\.env\.[A-Z_]*SECRET|WEBHOOK_SECRET" src/ app/ .env.example 2>/de
 - Signature computed over re-parsed JSON instead of the RAW request bytes → verification fails → commonly "fixed" by deleting the check (drift toward Critical)
 - **Verification gated on the secret being SET** (`if (!WEBHOOK_SECRET) next()` / empty-secret guard that skips the check) → **fail-open on missing config** → Critical — the Dockhand CVE-2026-53988 shape: null webhook secret guard → unauthenticated stack redeploy, and the redeploy pulls an attacker-controlled docker-compose.yml (privileged bind mounts) = container escape. A missing/empty secret must REJECT (fail closed), never skip verification.
 - No replay window (timestamp/event-id dedup) → High
-- Safe shape: raw-body HMAC + constant-time compare + event-id dedup, all before any side effect
+- **Callback that ESTABLISHES a session** (not merely acts): the handler authenticates the CALLER from the payload — `wp_set_auth_cookie()`/`wp_set_current_user()` on a request-supplied user id, `req.login(user)` where `user` came from a GET/POST param (base64 blob, JSON field). There is no signature to fall back on: identity itself arrives from the attacker, so a forged callback = logged in as anyone → **Critical**. Divi Membership CVE-2026-19660 shape: `process_paypal_callback` on `init`, base64 `paypal_param` GET param, no IPN/signature/ownership/nonce → `wp_set_auth_cookie()`. Census every session-establishment call and trace where its user comes from:
+```bash
+rg -n "wp_set_auth_cookie\s*\(|wp_set_current_user\s*\(|req\.login\s*\(|\.logIn\s*\(" src/ app/ -g '*.js' -g '*.ts' -g '*.php'
+```
+- Safe shape: the callback verifies the sender FIRST and resolves the member/user from the VERIFIED event's stored record (order → user), never from a request parameter; raw-body HMAC + constant-time compare + event-id dedup, all before any side effect
 
 ### API keys as authentication (service-to-service)
 

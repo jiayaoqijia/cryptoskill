@@ -40,6 +40,10 @@ rg -n "unsafe_deserialization\s*=\s*True|allow_dangerous_deserialization\s*=\s*T
 - LangChain/LlamaIndex loaders with `unsafe_deserialization=True` /
   `allow_dangerous_deserialization=True` on shared vector stores → **Critical**
 - **Network-exposed RPC with pickle in LLM serving stacks** (RPyC `ThreadedServer(..., hostname="0.0.0.0", protocol_config={"allow_pickle": True})`, Dask/distributed, Ray object stores) → **Critical** — unauthenticated network deserialization IS the RCE (LightLLM CVE-2026-103040/103041: router profiler behind `--enable_profiling` and the multimodal embed-cache both shipped unauthenticated RPyC + pickle on all interfaces). Safe shape: localhost bind + authenticator + `allow_pickle: False`, and the port never published in compose/k8s
+- **Unauthenticated control-plane/metadata HTTP services in LLM serving stacks** (Mooncake `http_metadata_server` `/metadata` — CVE-2026-103765, no auth on read/overwrite/delete of KV-transfer metadata keys → transfers redirected to attacker listeners; also Ray/dask dashboards, profiler endpoints, model-artifact caches with admin verbs) → **Critical** even without RCE: the control plane reconfigures the inference path. Any HTTP service in the serving path whose routes lack an auth check and whose bind/published port is off-host qualifies. Safe shape: loopback bind + API-key/auth on every route, port never published in compose/k8s, and write/delete verbs restricted to the engine's own hosts
+```bash
+rg -n -i "metadata_server|route\(\s*[\"']/metadata|app\.run\(\s*host=[\"']0\.0\.0\.0|uvicorn\.run\([^)]*0\.0\.0\.0" src/ serving/ deploy/ -g '*.py'
+```
 - Safe: `.safetensors`, `onnx`, `torch.load(..., weights_only=True)`,
   deserialization only from first-party trusted artifacts
 
