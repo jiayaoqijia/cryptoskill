@@ -26,6 +26,7 @@ Test fixtures used throughout SolEnrich's own tests:
 | `due-diligence` | $0.02 | `mint` | Token + whales + holder concentration in one SAFE / CAUTION / RISKY verdict with risk factors |
 | `whale-watch` | $0.008 | `mint` | Top holders with accumulation / distribution flow and supply share |
 | `wallet-graph` | $0.01 | `address` (`depth` 1 or 2) | Connected wallets and suspicious clusters |
+| `wallet-link-check` | $0.03 | `wallet_a`, `wallet_b` (`context`) | Same owner? LIKELY_SAME_OWNER / UNCERTAIN / SUSPICIOUS with confidence and evidence (payout-wallet rotation vs hijack) |
 | `copy-trade-signals` | $0.01 | `address` | PnL, win rate, Sharpe, Sortino, max drawdown, profit factor |
 | `batch-enrich` | $0.015 | `addresses[]` (1–25), `type` | Parallel wallet or token enrichment |
 | `compare-tokens` | $0.006 | `mints[]` (2–3) | Side-by-side with rankings and summary picks |
