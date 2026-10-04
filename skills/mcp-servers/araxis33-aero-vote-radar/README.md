@@ -755,6 +755,7 @@ test/
   timing-cli.test.ts   unit tests for buildAccuracyReport, including that an empty pool-size bucket is dropped rather than published as NaN
   voted.test.ts        unit tests for scoring a cast vote against settled weight, including the unscorable-pool and zero-weight cases
   accrual.test.ts      unit tests for revaluing at one price vector, the epoch-boundary skip, and the pools-that-only-repriced split
+  accrual-cli.test.ts  unit tests for formatReport's rendering of the accrual report, including NaN-as-"n/a" and the data-notes/pool-list sections
   feeStream.test.ts    unit tests for accruedBetween: CL gauge-fee growth/reset, v2 index growth, and the changed-kind refusal
   llms.test.ts         unit tests for renderLlmsTxt's rendering of docs/llms.txt
   site-parity.test.ts  runs docs/index.html's hand-ported allocator/countdown/vote-basis logic against src/ on the same inputs

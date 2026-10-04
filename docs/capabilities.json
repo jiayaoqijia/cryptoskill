@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T01:42:47.235155+00:00",
+  "generated_at": "2026-10-04T08:29:24.800675+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -113619,6 +113619,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/priors-agents-priors": {
+      "name": "priors",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/profunding-mcp": {
       "name": "profunding-mcp",
       "execution_model": "read_only",
@@ -153080,13 +153142,13 @@
     }
   },
   "summary": {
-    "discovered": 2457,
-    "processed": 2457,
+    "discovered": 2458,
+    "processed": 2458,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1615,
       "router_orchestrator": 135,
-      "unknown": 267,
+      "unknown": 268,
       "analysis_only": 204,
       "unsigned_tx_builder": 84,
       "local_executor": 92,
@@ -153095,16 +153157,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1018,
-      "can_install_code": 490,
+      "can_execute_shell": 1019,
+      "can_install_code": 491,
       "can_write_files": 147,
       "can_browse_web": 230,
       "can_spawn_subagents": 238,
       "can_move_funds": 253,
-      "requires_private_key": 419,
+      "requires_private_key": 420,
       "requires_hosted_operator": 328,
       "uses_remote_install_script": 40,
-      "mutable_remote_runtime": 490
+      "mutable_remote_runtime": 491
     }
   }
 }

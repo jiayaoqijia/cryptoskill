@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "d5fe8ca22bd6f0b9da527d43eec63a4afca27078",
+      "revision": "cd106fa1e9fe4471f079ae6388afb63411624e08",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -23382,23 +23382,23 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "e804e4567fd3dddbd8acb6bc3cdf3faab111775a",
+      "revision": "986c921563217e8b08d207882b302dd6ff86237c",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "edce26b577b9cb4bd4b763255a5b9938319f1f810614d4543a1abd9c80b83c6e",
         ".github/workflows/timing.yml": "4d915e749ec70c204a773690f4a0a98ed9365d760c75db2701591eb53dcf2ac4",
         ".gitignore": "e8bc935ce727f1809c792f4c5d26c5fc75ba2b7df7fc9390c56c8892f6a6007f",
         "LICENSE": "e5ba2460ca7e2700521766699fb4cca155b012f20758f0039d3e861542430493",
-        "README.md": "244f09d217b02a6ce48fc9e8822e6f649c88a011e2d113465af02b953614e50f",
+        "README.md": "6afa0b592edf421b153386a7200d79aa2f9b993dc553a075d74d36bbcf1ea22c",
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "70470832851af35c8205662bcc0d8953cd6249f3fae162d90c1eb64c4c74c729",
-        "docs/data/fee-stream.json": "fede81d73ec40ba959c6b584bc73c5319316f49c5129cff13c01b25d8e6a6e78",
+        "docs/data/fee-stream.json": "1962987bd58d96cbb2d11a6644828abd3e4b03df1aa323c31cb05f6bcdbe80fe",
         "docs/data/promise.json": "00d885d28aa6b17fa2b3507f8945fd7d9224cd46cde55cd353291532afcfbda9",
-        "docs/data/snapshot.json": "d2bf4e60f19571c9d352c3a575f891f7380f6bc39b588242a3b10cfad5c67585",
+        "docs/data/snapshot.json": "1c1ff3244cabb667acee2e3b5d0f55eca91c0d1a79303819f50d9e1795490c07",
         "docs/data/timing.json": "07e2eed4971cf8a321ef703cdf0f0faf68428f0e14941555b246886c08207b62",
         "docs/index.html": "787d4b814fcd7d8b41b70a2f5b8aaf8a46c5b0d379b46d23154bce36012f7649",
-        "docs/llms.txt": "914567b01da88299e03fe14dd451c627b821e15f917248bb72534388c4915dda",
+        "docs/llms.txt": "d3937f3655d6f609bb5b6afda20020e73ca022e6102b50d865a020a0c94e6177",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -29935,6 +29935,19 @@
         "scripts/gvault.py": 420,
         "LICENSE": 420
       }
+    },
+    "mcp-servers/priors-agents-priors": {
+      "repo": "priors-agents/priors",
+      "path": "skills/priors/SKILL.md",
+      "revision": "9b0674e55294e8b6b01c06d8f6112196fcfe0ad3",
+      "files": {
+        "SKILL.md": "19d328cf5ac227741b051105a1a23bffba64a834042a72b5913172f42110f6d3",
+        "LICENSE": "8c3d1e9e897b0fd0890bc7d1f05a73f822934c6439368b2e57d6f1707e9d1981"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
     }
   },
   "repositories": {
@@ -29968,7 +29981,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "a08a773db03685ddd7bc755f2ebc26d08853b0a4",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "d5fe8ca22bd6f0b9da527d43eec63a4afca27078",
+    "jiayaoqijia/cryptoskill": "cd106fa1e9fe4471f079ae6388afb63411624e08",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
@@ -30003,7 +30016,7 @@
     "portkey-wallet/ca-agent-skills": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74",
     "bitget-ai/agent-mcp": "486a7c5b2769e452bc7d3b39337cb6d3f9b1a0d3",
     "bnmbnmai/mcp-proxy": "e3d9f2d65d07b9a4f9ceb76195ff98f97a2aa027",
-    "scutuatua-crypto/whaletrucker-ecosystem": "82404cd9ff082f09447cb51d264ae42e753ae8d0",
+    "scutuatua-crypto/whaletrucker-ecosystem": "b5734cfac8656c020753df1845f691d182a3c92f",
     "eschatological-cpi959/finance-mcp": "b672ab7b292014d2241f373ae7170829e3896ee8",
     "fibrous-finance/fibx": "a742b16f54dffabb0afe622fb4ab7e1a5baa1a93",
     "danny-397/rl-for-crypto-and-stocks-": "59803998a30fe0b670a43e01c2f71577b9fbd4ae",
@@ -30048,11 +30061,11 @@
     "mangrovetechnologies/mangrove-agent": "aacbce72622e820ea3c21e890ce512fdb5a49ce5",
     "pugarhuda/utuh": "becec5beb49242694d0d26a37a3019e407d60626",
     "lakesky/bridge-watch": "6594b03aa6bd17372031fd0018df00097950641d",
-    "udotcash/mcp-ucash": "62d47205f69040c2ab195b53fec48a542c799b37",
+    "udotcash/mcp-ucash": "d476364a813fd9313d6b887e4b62614c71a9f580",
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "faef244b55dd8841a281f966ec74fbcf0b8e72f1",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "e804e4567fd3dddbd8acb6bc3cdf3faab111775a",
+    "araxis33/aero-vote-radar": "986c921563217e8b08d207882b302dd6ff86237c",
     "paulf280-ui/cabal-hunter-mcp": "1c059944b62b0df52d0bede5d03d3ef75cfaa625",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "f3ce6c488e57807d8b8e470d05f52038c526021b",
@@ -30092,6 +30105,7 @@
     "truhojunbot-tech/crypto-market-data-mcp": "bfdd9116125c277ac27e49926775aae54066c4db",
     "gemachdao/gdex-skill": "8353055226af1aedf91f91e335550e064eeb7f1f",
     "blockchains/blockchainlab-mcp": "ee6df89fc75fced6ac030ef5a52b77372e8c440c",
-    "kant19801201behax5/silicon-dna-release": "95060b6a33bda27deb5c80c0244d74f9ab65aebe"
+    "kant19801201behax5/silicon-dna-release": "95060b6a33bda27deb5c80c0244d74f9ab65aebe",
+    "priors-agents/priors": "9b0674e55294e8b6b01c06d8f6112196fcfe0ad3"
   }
 }
