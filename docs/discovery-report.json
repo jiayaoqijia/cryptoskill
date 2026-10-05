@@ -15,13 +15,6 @@
       "official": false
     },
     {
-      "org": "bnmbnmai",
-      "repo": "mcp-proxy",
-      "category": "mcp-servers",
-      "prefix": "bnmbnmai-",
-      "official": false
-    },
-    {
       "org": "openclawby",
       "repo": "openclawby-skills",
       "category": "ai-crypto",
@@ -57,10 +50,17 @@
       "official": false
     },
     {
-      "org": "Blockchains",
-      "repo": "blockchainlab-mcp",
+      "org": "Bazinga640",
+      "repo": "evm-chains-mcp-server",
       "category": "mcp-servers",
-      "prefix": "blockchains-",
+      "prefix": "bazinga640-",
+      "official": false
+    },
+    {
+      "org": "araxis33",
+      "repo": "aero-vote-radar",
+      "category": "mcp-servers",
+      "prefix": "araxis33-",
       "official": false
     },
     {
@@ -71,13 +71,6 @@
       "official": false
     },
     {
-      "org": "Bazinga640",
-      "repo": "evm-chains-mcp-server",
-      "category": "mcp-servers",
-      "prefix": "bazinga640-",
-      "official": false
-    },
-    {
       "org": "priors-agents",
       "repo": "priors",
       "category": "mcp-servers",
@@ -85,10 +78,10 @@
       "official": false
     },
     {
-      "org": "api-evangelist",
-      "repo": "farmdash",
+      "org": "Blockchains",
+      "repo": "blockchainlab-mcp",
       "category": "mcp-servers",
-      "prefix": "api-evangelist-",
+      "prefix": "blockchains-",
       "official": false
     },
     {
@@ -199,19 +192,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-27",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-09-28",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-27",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-09-28",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-09-27",
+      "query": "crypto agent skills language:Python pushed:>2026-09-28",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-09-27",
+      "query": "DeFi MCP server pushed:>2026-09-28",
       "status": "checked"
     },
     {
