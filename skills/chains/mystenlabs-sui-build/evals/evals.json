@@ -3,7 +3,7 @@
   "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io and move-book.com.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-build-test-write-and-run-tests",
       "prompt": "How do I write and run tests for a Sui Move module? What testing tools are available?",
       "expected_output": "An explanation of the test framework, test_scenario, running tests, and coverage.",
       "expectations": [
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "sui-build-test-move-analyzer-setup",
       "prompt": "How do I install and set up Move Analyzer for VS Code?",
       "expected_output": "Installation via suiup plus VS Code extension setup.",
       "expectations": [
@@ -29,7 +29,9 @@
         "The response mentions the features: code completion, go-to-definition, diagnostics, hover documentation",
         "The response mentions that it activates automatically for .move files"
       ],
-      "sources": ["https://docs.sui.io/getting-started/tooling"]
+      "sources": [
+        "https://docs.sui.io/getting-started/tooling"
+      ]
     }
   ]
 }

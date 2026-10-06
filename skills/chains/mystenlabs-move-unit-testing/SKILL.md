@@ -286,4 +286,4 @@ destroy(app);
 | Test attributes | `#[test, expected_failure(...)]` | Separate `#[test]` and `#[expected_failure]` |
 | Expected failure cleanup | Let it abort, no cleanup | Calling `.end()` after abort |
 | Simple test context | `tx_context::dummy()` | Full `test_scenario` for simple tests |
-| Object cleanup | `test_utils::destroy(obj)` | `obj.destroy_for_testing()` |
+| Object cleanup | `std::unit_test::destroy(obj)` | `sui::test_utils::destroy(obj)` (deprecated), `obj.destroy_for_testing()` |

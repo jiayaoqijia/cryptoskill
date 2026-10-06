@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/onchain-finance/deepbook/deepbookv3, the deepbook-sandbox examples (github.com/MystenLabs/deepbook-sandbox), or the deepbookv3 repository. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "deepbook-sdk-client-and-balance-manager",
       "prompt": "How do I set up a DeepBook V3 client in TypeScript and create a BalanceManager?",
       "expected_output": "A step-by-step guide covering SDK installation, SuiGrpcClient initialization, DeepBookClient construction, and BalanceManager creation with object ID extraction.",
       "expectations": [
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "deepbook-sdk-limit-order-types",
       "prompt": "How do I place a limit order on DeepBook using the TypeScript SDK? What are the different order types?",
       "expected_output": "Code showing placeLimitOrder with all parameters, plus a table of order types (NO_RESTRICTION, POST_ONLY, IMMEDIATE_OR_CANCEL, FILL_OR_KILL).",
       "expectations": [
@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "deepbook-sdk-swap-without-balance-manager",
       "prompt": "How do I swap tokens on DeepBook without a BalanceManager?",
       "expected_output": "Code showing swapExactQuoteForBase or swapExactBaseForQuote without a BalanceManager, explaining that swaps operate directly on wallet Coin objects.",
       "expectations": [
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "deepbook-sdk-query-and-cancel-orders",
       "prompt": "How do I query open orders and cancel them using the DeepBook SDK?",
       "expected_output": "Code showing accountOpenOrders to list orders, getAccountOrderDetails for detailed info, and cancelOrder/cancelAllOrders to cancel.",
       "expectations": [
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "deepbook-sdk-silent-order-failures",
       "prompt": "What are the common mistakes when using the DeepBook SDK? My order keeps failing silently.",
       "expected_output": "A troubleshooting guide covering POST_ONLY silent rejection, missing DEEP deposits, non-numeric clientOrderId, creating new BalanceManagers per run, and self-matching issues.",
       "expectations": [

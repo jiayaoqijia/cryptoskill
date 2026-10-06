@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against docs.sui.io or move-book.com. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-move-abilities",
       "prompt": "Can you explain what the key, store, copy, and drop abilities do in Sui Move? When should I use each one?",
       "expected_output": "A complete explanation of all four Move abilities with practical guidance on common combinations and when to use them.",
       "expectations": [
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "sui-move-package-upgrade-and-upgradecap",
       "prompt": "How do I upgrade a published Move package on Sui? What is the UpgradeCap?",
       "expected_output": "An explanation of the package upgrade process, the UpgradeCap object, upgrade policies (compatible, additive, dependency-only), and how to restrict upgrade capabilities.",
       "expectations": [
@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "sui-move-init-and-one-time-witness",
       "prompt": "What is the init function in Sui Move? Why would I use a One-Time Witness for currency creation?",
       "expected_output": "An explanation of the init function running once at publish time, and the OTW pattern proving module authority for operations like coin::create_currency.",
       "expectations": [
@@ -56,7 +56,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "sui-move-epoch-from-txcontext",
       "prompt": "How to get the current epoch in Sui Move using TxContext? What does ctx.epoch() return? What's the difference between ctx.epoch_timestamp_ms() and the Clock object?",
       "expected_output": "An explanation of TxContext methods for time and epoch access, plus how the Clock object differs in precision.",
       "expectations": [
@@ -73,7 +73,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "sui-move-events",
       "prompt": "What are Sui Move events and how do I emit events in smart contracts? How do I subscribe to them offchain?",
       "expected_output": "An explanation of Move events including how to define event structs, emit them, and subscribe to them using the TypeScript SDK or GraphQL.",
       "expectations": [
@@ -90,7 +90,7 @@
       ]
     },
     {
-      "id": 6,
+      "id": "sui-move-create-currency",
       "prompt": "How do I create a new fungible token (currency) on Sui? What are the key coin operations like mint, burn, split, and merge?",
       "expected_output": "An explanation of the coin::create_currency flow using OTW, the role of TreasuryCap and CoinMetadata, and the standard coin operations.",
       "expectations": [
@@ -108,7 +108,7 @@
       ]
     },
     {
-      "id": 7,
+      "id": "sui-move-destroy-without-drop",
       "prompt": "How do I destroy an object in Sui Move that doesn't have the drop ability?",
       "expected_output": "An explanation of how to explicitly unpack and handle each field of a struct that lacks the drop ability, including the object::delete(id) call for the UID.",
       "expectations": [

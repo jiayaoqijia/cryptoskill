@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/getting-started/sui-for-ethereum. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-for-ethereum-access-control-vs-ownable",
       "prompt": "I'm an Ethereum developer. How does access control work on Sui compared to Solidity's Ownable and AccessControl patterns?",
       "expected_output": "An explanation that Sui uses capability-based access control through owned objects instead of identity/role-based access control, with the AdminCap pattern as an example.",
       "expectations": [
@@ -14,11 +14,11 @@
         "The response explains that possession of the capability object grants permission, rather than checking an address against a role mapping"
       ],
       "sources": [
-        "https://docs.sui.io/getting-started/sui-for-ethereum"
+        "https://docs.sui.io/getting-started/sui-for-ethereum#access-control"
       ]
     },
     {
-      "id": 2,
+      "id": "sui-for-ethereum-token-standards-mapping",
       "prompt": "How do Ethereum token standards (ERC-20, ERC-721, ERC-1155) map to Sui? What are the equivalents?",
       "expected_output": "A mapping of Ethereum token standards to Sui equivalents: Currency Standard and Closed-Loop Token, plus differences in token accessibility and royalty enforcement.",
       "expectations": [
@@ -28,11 +28,11 @@
         "The response does not invent additional Sui token standards beyond Currency Standard and Closed-Loop Token"
       ],
       "sources": [
-        "https://docs.sui.io/getting-started/sui-for-ethereum"
+        "https://docs.sui.io/getting-started/sui-for-ethereum#more-comparison"
       ]
     },
     {
-      "id": 3,
+      "id": "sui-for-ethereum-inheritance-and-generics",
       "prompt": "I'm used to Solidity's inheritance and polymorphism. How does Move handle code reuse and type abstraction without interfaces or dynamic dispatch?",
       "expected_output": "An explanation that Move has no interfaces, no polymorphism, and no dynamic dispatch, and uses generics (Type<T>) instead of inheritance hierarchies.",
       "expectations": [
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "sui-for-ethereum-composability",
       "prompt": "How does transaction composability on Sui compare to Ethereum? On Ethereum I need multiple transactions for a multi-step workflow. What does Sui offer?",
       "expected_output": "An explanation of PTBs as atomic multi-call transactions that replace Ethereum's pattern of separate, non-atomic transactions.",
       "expectations": [
@@ -57,7 +57,7 @@
         "The response does not conflate PTBs with Ethereum's internal contract calls or multicall patterns"
       ],
       "sources": [
-        "https://docs.sui.io/getting-started/sui-for-ethereum"
+        "https://docs.sui.io/getting-started/sui-for-ethereum#programmable-transaction-blocks"
       ]
     }
   ]

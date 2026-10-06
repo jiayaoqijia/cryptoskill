@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against docs.sui.io. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-networks-gas-cost-and-storage-rebate",
       "prompt": "How is gas cost calculated on Sui? What is the storage rebate?",
       "expected_output": "An explanation of Sui's gas cost formula (computation cost + storage cost - storage rebate) with details on each component and how gas budgets work.",
       "expectations": [
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "sui-networks-gas-epoch-length-and-boundary",
       "prompt": "What is a Sui epoch? How long is one epoch on Mainnet? What happens at the epoch boundary?",
       "expected_output": "An explanation of epochs as fixed time periods with details on duration, boundary events, and how to access epoch info in Move.",
       "expectations": [

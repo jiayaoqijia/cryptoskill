@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against docs.sui.io. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "onchain-randomness-basic-random-number",
       "prompt": "How do I generate a random number in a Sui Move smart contract? Show me a basic example of rolling a dice.",
       "expected_output": "An explanation of the Random object, RandomGenerator, and a complete dice roll example using private entry function visibility.",
       "expectations": [
@@ -15,11 +15,11 @@
         "The response mentions passing Random by reference (&Random)"
       ],
       "sources": [
-        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain#instantiating-randomgenerator"
       ]
     },
     {
-      "id": 2,
+      "id": "onchain-randomness-public-function-rejected",
       "prompt": "I wrote a public Move function that takes Random as a parameter for my lottery game. Why won't it compile, and how do I fix it?",
       "expected_output": "An explanation of why public functions with Random parameters are rejected by the compiler, the composition attack they prevent, and how to fix it by using a private entry function.",
       "expectations": [
@@ -31,11 +31,11 @@
         "The response mentions that the compiler also rejects public functions accepting RandomGenerator parameters"
       ],
       "sources": [
-        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain#use-non-public-entry-functions"
       ]
     },
     {
-      "id": 3,
+      "id": "onchain-randomness-random-rarity-airdrop",
       "prompt": "I need to implement a secure NFT airdrop where users receive a random rarity tier (gold, silver, or bronze). How should I structure this to prevent manipulation?",
       "expected_output": "A two-step commit-reveal implementation with step 1 as a private entry function that generates and stores the random value, and step 2 as a public function that reads the committed value and assigns the rarity tier.",
       "expectations": [
@@ -47,11 +47,12 @@
         "The response mentions balanced gas usage so attackers cannot infer outcomes from gas consumption"
       ],
       "sources": [
-        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain#divide-logic",
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain#best-practices"
       ]
     },
     {
-      "id": 4,
+      "id": "onchain-randomness-attack-vectors",
       "prompt": "What are the different attack vectors against onchain randomness on Sui, and how does Sui mitigate each one?",
       "expected_output": "A comprehensive explanation of composition attacks, PTB attacks, and RandomGenerator state leakage, along with Sui's mitigations for each.",
       "expectations": [
@@ -63,7 +64,8 @@
         "The response mentions balanced gas usage to prevent gas-based inference attacks"
       ],
       "sources": [
-        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain"
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain#limited-resources-and-random-dependent-flows",
+        "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain#programmable-transaction-block-ptb-restrictions"
       ]
     }
   ]

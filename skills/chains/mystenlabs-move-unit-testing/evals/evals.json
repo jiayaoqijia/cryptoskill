@@ -2,7 +2,9 @@
   {
     "id": "amm-unit-tests",
     "prompt": "I have an AMM smart contract (see provided files). Write comprehensive unit tests for it. Cover pool creation, adding/removing liquidity, swaps, edge cases, and error conditions.",
-    "files": ["sui-smart-contracts/evals/fixtures/amm/"],
+    "files": [
+      "sui-smart-contracts/evals/fixtures/amm/"
+    ],
     "expected_output": "A test module with comprehensive tests following Sui Move testing best practices.",
     "expectations": [
       "Test functions do NOT use test_ prefix (e.g. create_pool_succeeds, not test_create_pool)",
@@ -11,6 +13,50 @@
       "Merges #[test] and #[expected_failure] on a single line: #[test, expected_failure(...)]",
       "Does not have unreachable cleanup code after an expected abort point in expected_failure tests",
       "Uses standard cleanup patterns (test_utils::destroy, return_shared, return_to_sender) not custom destroy_for_testing functions"
-    ]
+    ],
+    "graders": {
+      "Test functions do NOT use test_ prefix (e.g. create_pool_succeeds, not test_create_pool)": {
+        "type": "absent",
+        "pattern": "fun\\s+test_"
+      },
+      "Uses assert_eq! for equality comparisons instead of assert!(x == y) or assert!(x == y, 0)": {
+        "type": "regex",
+        "pattern": "assert_eq!\\s*\\("
+      },
+      "Does not pass numeric abort codes to assert! in tests (no assert!(x, 0))": {
+        "type": "absent",
+        "pattern": "assert!\\([^)\\n]*,\\s*\\d+\\s*\\)"
+      },
+      "Merges #[test] and #[expected_failure] on a single line: #[test, expected_failure(...)]": {
+        "type": "regex",
+        "pattern": "#\\[\\s*test\\s*,\\s*expected_failure"
+      },
+      "Uses standard cleanup patterns (test_utils::destroy, return_shared, return_to_sender) not custom destroy_for_testing functions": {
+        "type": "all_of",
+        "options": [
+          {
+            "type": "any_of",
+            "options": [
+              {
+                "type": "regex",
+                "pattern": "test_utils::destroy|unit_test::destroy"
+              },
+              {
+                "type": "regex",
+                "pattern": "return_shared"
+              },
+              {
+                "type": "regex",
+                "pattern": "return_to_sender"
+              }
+            ]
+          },
+          {
+            "type": "absent",
+            "pattern": "destroy_for_testing"
+          }
+        ]
+      }
+    }
   }
 ]

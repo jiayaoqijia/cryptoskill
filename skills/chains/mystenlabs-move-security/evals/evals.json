@@ -2,6 +2,10 @@
   {
     "id": "security-review-shared-object",
     "prompt": "Review this Move module for security issues:\n\n```move\nmodule example::vault {\n    use sui::coin::{Self, Coin};\n    use sui::sui::SUI;\n    use sui::balance::{Self, Balance};\n\n    public struct Vault has key {\n        id: UID,\n        balance: Balance<SUI>,\n        admin: address,\n    }\n\n    fun init(ctx: &mut TxContext) {\n        let vault = Vault {\n            id: object::new(ctx),\n            balance: balance::zero(),\n            admin: ctx.sender(),\n        };\n        transfer::share_object(vault);\n    }\n\n    public fun deposit(vault: &mut Vault, coin: Coin<SUI>) {\n        coin::put(&mut vault.balance, coin);\n    }\n\n    public fun withdraw(vault: &mut Vault, amount: u64, ctx: &mut TxContext): Coin<SUI> {\n        assert!(ctx.sender() == vault.admin, 0);\n        coin::take(&mut vault.balance, amount, ctx)\n    }\n\n    public fun change_admin(vault: &mut Vault, new_admin: address, ctx: &mut TxContext) {\n        assert!(ctx.sender() == vault.admin, 0);\n        vault.admin = new_admin;\n    }\n}\n```",
+    "sources": [
+      "https://docs.sui.io/develop/security/best-practices"
+    ],
+    "expected_output": "A security review of the shared vault that names the specific defects: authorization resting on tx_context::sender() alone, a shared object every address can reference in a transaction so authorization must be checked internally, no events on privileged actions, an admin address where an AdminCap belongs, and no revocation path designed before publishing.",
     "expectations": [
       "Identifies that using tx_context::sender() alone for authorization breaks composability and that capability objects should be preferred",
       "Notes that the vault is a shared object and anyone can submit transactions referencing it, so internal authorization checks are essential",
@@ -13,6 +17,11 @@
   {
     "id": "access-control-pattern-choice",
     "prompt": "I'm building a Move module on Sui where certain users should be authorized to perform minting operations. I'm considering two approaches: (1) storing a list of authorized addresses in a shared object and checking tx_context::sender() against it, or (2) creating a MinterCap capability object. Which approach should I use and why?",
+    "sources": [
+      "https://docs.sui.io/develop/security/best-practices",
+      "https://docs.sui.io/develop/write-move/move-best-practices"
+    ],
+    "expected_output": "A recommendation of capability objects over an address allowlist, with the reasoning: capabilities compose because another protocol can hold one on a user's behalf while tx_context::sender() ties a function to a single signer. Should place the capability as the second parameter to keep method associativity, say what an allowlist needs if used anyway, and call for a revocation mechanism designed before publishing.",
     "expectations": [
       "Recommends capability objects (option 2) as the preferred default mechanism over address allowlists",
       "Explains that capability objects compose well because other protocols can hold them on behalf of users",
@@ -25,6 +34,10 @@
   {
     "id": "capability-safety-and-revocation",
     "prompt": "I have an AdminCap in my Move module that controls treasury operations. Right now it's held by a single address. What security improvements should I make? Also, what happens if the AdminCap is leaked or stolen?",
+    "sources": [
+      "https://docs.sui.io/develop/security/best-practices"
+    ],
+    "expected_output": "Guidance on holding and revoking an AdminCap: multisig or dedicated custody rather than a hot wallet, each transfer handing over the full privilege so it is never routine, no revocation meaning a leaked capability stays valid for the life of the package, the revocation options available and which need the holder's cooperation, and a rotation path planned before publishing.",
     "expectations": [
       "Recommends holding the AdminCap in a multisig address or dedicated custody rather than a single hot wallet",
       "Warns that each transfer grants full privileges and should not be done casually",
@@ -37,6 +50,11 @@
   {
     "id": "randomness-security-review",
     "prompt": "I'm writing a lottery contract on Sui that uses onchain randomness. Here's my function signature:\n\n```move\npublic fun draw_winner(lottery: &mut Lottery, rng: &mut RandomGenerator, ctx: &mut TxContext) { ... }\n```\n\nIs this safe?",
+    "sources": [
+      "https://docs.sui.io/sui-stack/on-chain-primitives/randomness-onchain",
+      "https://docs.sui.io/develop/security/best-practices"
+    ],
+    "expected_output": "A review identifying that a randomness-consuming function must be private `entry` and never `public` -- which the Move compiler enforces -- that RandomGenerator must be created inside the function rather than accepted as a parameter, why private entry stops another module composing the call into an attack, that gas must be balanced across outcomes, and commit-reveal as the option for high-stakes flows.",
     "expectations": [
       "Identifies that the function must not be public -- randomness-consuming functions must be private entry only",
       "Explains that the Move compiler rejects public functions that take Random or RandomGenerator",

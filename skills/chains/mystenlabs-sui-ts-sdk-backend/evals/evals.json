@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against sdk.mystenlabs.com. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-ts-sdk-backend-client-setup",
       "prompt": "I'm building a backend service that needs to interact with Sui. I can't use the CLI. How do I create a keypair, get testnet SUI, and connect to the network — all from TypeScript?",
       "expected_output": "A complete bootstrap sequence: create an Ed25519Keypair, request SUI from the faucet using requestSuiFromFaucetV2, and create a SuiGrpcClient connected to testnet.",
       "expectations": [
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "sui-ts-sdk-backend-send-sign-and-execute",
       "prompt": "How do I build a transaction that sends 1 SUI to another address, sign it with a keypair, and execute it from a backend? Show me the proper way to access coins and check the result.",
       "expected_output": "A transaction using tx.coin() for coin access, keypair.signAndExecuteTransaction() for signing, result.$kind check for error handling, and waitForTransaction before dependent reads.",
       "expectations": [
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "sui-ts-sdk-backend-sponsored-transactions",
       "prompt": "I need to sponsor transactions for my users so they don't need SUI for gas. What's the recommended flow and what SDK should I use?",
       "expected_output": "An explanation of the @mysten-incubation/sponsor package and createSponsor, the client-builds flow where the client builds transaction bytes and the backend validates and co-signs, and the three possible result types (Rejected, FailedTransaction, Transaction).",
       "expectations": [
@@ -52,7 +52,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "sui-ts-sdk-backend-high-throughput-airdrop",
       "prompt": "I need to run hundreds of transactions from one address as fast as possible for an airdrop. How do I avoid gas management issues?",
       "expected_output": "An explanation of ParallelTransactionExecutor for concurrent execution with automatic gas pool management and conflict detection, or SerialTransactionExecutor for ordered execution with automatic gas merging.",
       "expectations": [
@@ -67,7 +67,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "sui-ts-sdk-backend-key-custody",
       "prompt": "For our production backend, we don't want to store raw private keys. What are our options for signing Sui transactions securely, and how do we set up a 2-of-3 multisig?",
       "expected_output": "An explanation of AWS KMS and GCP KMS signers that implement the same Signer interface as keypairs, plus MultiSigPublicKey setup with threshold and weights.",
       "expectations": [

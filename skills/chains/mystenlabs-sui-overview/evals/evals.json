@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against docs.sui.io, docs.wal.app, or move-book.com. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-overview-object-model",
       "prompt": "What is the Sui Object Model and how do objects work on Sui?",
       "expected_output": "A clear explanation of Sui's object-centric data model, how objects have unique IDs and versions, the five ownership types (address-owned, shared, immutable, wrapped, consensus-address-owned / party objects), and how ownership affects transaction processing and parallel execution.",
       "expectations": [
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "sui-overview-parallel-execution-mysticeti",
       "prompt": "Explain how Sui achieves parallel execution. What is Mysticeti and why do owned objects not need consensus?",
       "expected_output": "An explanation of Sui's parallel execution model, the role of Mysticeti consensus, and why owned-object transactions bypass consensus.",
       "expectations": [
@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "sui-overview-vs-ethereum-accounts",
       "prompt": "I'm coming from Ethereum. Explain how Sui's object model is different from Ethereum's account model. What do I need to unlearn?",
       "expected_output": "A comparison between Sui's object-centric model and Ethereum's account model, highlighting key conceptual shifts for Ethereum developers.",
       "expectations": [
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "sui-overview-sui-stack-components",
       "prompt": "What are the main components of the Sui Stack and how do they work together for building a complete app?",
       "expected_output": "An overview of Sui Stack components (randomness, zkLogin, Walrus, Nautilus, DeepBook, Kiosk, Seal, Clock) and a concrete example of how they compose for a real use case.",
       "expectations": [
@@ -72,7 +72,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "sui-overview-hidden-artwork-nft",
       "prompt": "I want to build an NFT collection where the artwork is hidden until purchase. Buyers should only be able to see the art after they own the NFT. Which Sui Stack components do I need?",
       "expected_output": "An explanation that combines Seal for access-controlled encryption, Walrus for storing the encrypted artwork, Kiosk for the marketplace with transfer policies, and Object Display for rendering metadata.",
       "expectations": [

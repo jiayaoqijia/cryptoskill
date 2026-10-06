@@ -29,7 +29,7 @@
       "Imports SuiGrpcClient from '@mysten/sui/grpc' (not SuiClient from '@mysten/sui/client')",
       "Passes BOTH network: 'mainnet' AND baseUrl to the constructor",
       "Uses the correct mainnet gRPC URL: https://fullnode.mainnet.sui.io:443",
-      "Explicitly labels SuiJsonRpcClient as legacy / JSON-RPC deprecated with mainnet shutdown date",
+      "Explicitly labels SuiJsonRpcClient as legacy / JSON-RPC deprecated",
       "Does NOT use getFullnodeUrl (v1 helper) — that's for v1 SuiClient which was removed",
       "Does NOT recommend @mysten/sui.js (deprecated package)"
     ]
@@ -48,12 +48,19 @@
       "Recommends reading llms-index.md first, then targeted page",
       "Suggests adding guidance to AGENTS.md / CLAUDE.md / .cursorrules",
       "Does NOT invent a non-existent CLI command or separate npm package for docs"
-    ]
+    ],
+    "graders": {
+      "Mentions the 'docs/llms-index.md' file convention": {
+        "type": "regex",
+        "pattern": "llms-index\\.md"
+      }
+    }
   },
   {
     "id": "sui-sdks-rust-ptb-minimal",
     "prompt": "Show me a minimal Rust example that builds a PTB transferring 1 SUI from the gas coin to a recipient address, using the new sui-rust-sdk crates (not the legacy monorepo sui-sdk crate). Just the build — no execution.",
     "sources": [
+      "https://docs.sui.io/references/rust-sdk",
       "https://github.com/MystenLabs/sui-rust-sdk",
       "https://docs.rs/sui-transaction-builder"
     ],
@@ -68,7 +75,42 @@
       "Uses ObjectInput::owned for the gas coin object ref",
       "Calls tx.try_build() at the end (offline build)",
       "Does NOT use sui_sdk::SuiClientBuilder or similar legacy SDK types"
-    ]
+    ],
+    "graders": {
+      "Imports from sui_sdk_types and sui_transaction_builder — NOT from the legacy sui-sdk crate": {
+        "type": "regex_all",
+        "patterns": [
+          "sui_sdk_types",
+          "sui_transaction_builder"
+        ]
+      },
+      "Uses tx.split_coins(gas, vec![amount]) — snake_case, not camelCase": {
+        "type": "all_of",
+        "options": [
+          {
+            "type": "regex",
+            "pattern": "split_coins"
+          },
+          {
+            "type": "absent",
+            "pattern": "splitCoins"
+          }
+        ]
+      },
+      "Calls tx.set_sender, tx.set_gas_budget, tx.set_gas_price, tx.add_gas_objects": {
+        "type": "regex_all",
+        "patterns": [
+          "set_sender",
+          "set_gas_budget",
+          "set_gas_price",
+          "add_gas_objects"
+        ]
+      },
+      "Calls tx.try_build() at the end (offline build)": {
+        "type": "regex",
+        "pattern": "try_build\\s*\\("
+      }
+    }
   },
   {
     "id": "sui-sdks-v1-to-v2-migration",
@@ -97,6 +139,7 @@
     "id": "sui-sdks-cross-sdk-port",
     "prompt": "I have this TypeScript code that splits a coin and transfers it. Port it to Rust using the new sui-rust-sdk crates.\n\n```ts\nconst tx = new Transaction();\nconst [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000n)]);\ntx.transferObjects([coin], tx.pure.address('0xabc'));\n```",
     "sources": [
+      "https://docs.sui.io/references/rust-sdk",
       "https://docs.rs/sui-transaction-builder",
       "https://github.com/MystenLabs/sui-rust-sdk"
     ],
@@ -127,7 +170,13 @@
       "Mentions pysui supports PTBs and execution",
       "Flags the community-maintained status as a risk factor",
       "Does NOT claim pysui is official or maintained by Mysten Labs"
-    ]
+    ],
+    "graders": {
+      "Gives the correct install command: pip install pysui": {
+        "type": "regex",
+        "pattern": "pip\\s+install\\s+pysui"
+      }
+    }
   },
   {
     "id": "sui-sdks-frontend-boundary",

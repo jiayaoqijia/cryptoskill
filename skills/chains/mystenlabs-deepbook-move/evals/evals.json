@@ -3,7 +3,7 @@
   "source_constraint": "All facts in these evals must be verifiable against docs.sui.io/onchain-finance/deepbook/deepbookv3 or github.com/MystenLabs/deepbookv3/tree/main/packages/deepbook/sources. No third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "deepbook-move-dependency-and-limit-order",
       "prompt": "How do I add DeepBook V3 as a dependency in my Move project and place a limit order from my smart contract?",
       "expected_output": "The Move.toml dependency line, the import statement, and the place_limit_order function signature with parameter explanations.",
       "expectations": [
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "deepbook-move-flash-loans",
       "prompt": "How do flash loans work in DeepBook V3? Can I borrow and trade in the same pool?",
       "expected_output": "An explanation of the hot potato pattern, borrow/return function signatures, and the constraint against same-pool trading.",
       "expectations": [
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "deepbook-move-balance-manager-and-tradecap",
       "prompt": "What is a BalanceManager in DeepBook V3 and how does the TradeCap delegation model work?",
       "expected_output": "An explanation of BalanceManager as a shared object, the owner vs TradeCap authorization model, capability minting, and the 1,000 cap limit.",
       "expectations": [
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "deepbook-move-swap-without-balance-manager",
       "prompt": "How do I execute a swap in DeepBook V3 from Move code without a BalanceManager?",
       "expected_output": "The swap_exact_base_for_quote and swap_exact_quote_for_base function signatures with return types, plus the deep_in fee requirement.",
       "expectations": [
@@ -69,7 +69,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "deepbook-move-integration-mistakes",
       "prompt": "What are the common mistakes when integrating DeepBook V3 from Move code?",
       "expected_output": "A list of pitfalls including wrong type parameter order, forgetting to return flash loan hot potatoes, same-pool borrow+trade, and using wrong proof generation.",
       "expectations": [

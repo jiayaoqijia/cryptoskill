@@ -14,7 +14,13 @@
       "Does NOT call tx.setGasBudget / tx.setGasPrice / tx.setGasPayment for a wallet-signed flow",
       "Does NOT call tx.build() before handing to the wallet (uses tx.serialize() or passes the Transaction instance directly)",
       "Mentions checking the execution result status (e.g., effects.status) or warns that transactions can fail at the Move level even if accepted"
-    ]
+    ],
+    "graders": {
+      "Imports from '@mysten/sui/transactions'": {
+        "type": "regex",
+        "pattern": "@mysten/sui/transactions"
+      }
+    }
   },
   {
     "id": "ptbs-batch-airdrop",
@@ -31,7 +37,13 @@
       "Example code uses tx.splitCoins(tx.gas, …) — not fetching a separate Coin<SUI>",
       "Example iterates over recipients using an index into the splitCoins result (e.g., coins[i])",
       "Does NOT suggest using transfer::transfer — uses tx.transferObjects"
-    ]
+    ],
+    "graders": {
+      "Mentions the 1024-command PTB limit (not 400 or some other incorrect number)": {
+        "type": "numeric",
+        "value": 1024
+      }
+    }
   },
   {
     "id": "ptbs-chained-move-calls",

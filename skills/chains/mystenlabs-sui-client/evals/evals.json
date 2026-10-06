@@ -3,7 +3,7 @@
   "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-client-faucet",
       "prompt": "How do I get SUI tokens for testing? Where is the faucet?",
       "expected_output": "Multiple faucet methods including web, CLI (Devnet/Localnet only), Discord, and SDK, with the official URL.",
       "expectations": [
@@ -14,10 +14,12 @@
         "The response states that Devnet and Testnet tokens are free and have no monetary value",
         "The response mentions rate limiting and suggests trying alternative faucets if the limit is hit"
       ],
-      "sources": ["https://docs.sui.io/getting-started/onboarding/get-coins"]
+      "sources": [
+        "https://docs.sui.io/getting-started/onboarding/get-coins"
+      ]
     },
     {
-      "id": 2,
+      "id": "sui-client-create-and-fund-wallet",
       "prompt": "How do I create a wallet and fund it with the devnet faucet using only the CLI?",
       "expected_output": "Step-by-step CLI commands from first-time setup through funded address.",
       "expectations": [
@@ -34,7 +36,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "sui-client-no-gas-coin-error",
       "prompt": "I get 'Cannot find gas coin for signer address' when trying to execute a transaction. What's wrong?",
       "expected_output": "An explanation of gas coin issues and how to check and fix them.",
       "expectations": [
@@ -44,10 +46,12 @@
         "The response mentions that if the user has many small coin objects, they may need to merge them using sui client ptb",
         "The response does not suggest unrelated fixes like changing code or redeploying"
       ],
-      "sources": ["https://docs.sui.io/getting-started/onboarding/get-coins"]
+      "sources": [
+        "https://docs.sui.io/getting-started/onboarding/get-coins"
+      ]
     },
     {
-      "id": 4,
+      "id": "sui-client-merge-coins-and-transfer",
       "prompt": "How do I merge coins and transfer SUI from the CLI?",
       "expected_output": "Examples using sui client ptb for coin merging and transfers, not legacy helpers.",
       "expectations": [
@@ -56,7 +60,9 @@
         "The response explains that sui client ptb is the preferred CLI method for all transaction operations",
         "The response mentions that legacy single-purpose commands may be deprecated"
       ],
-      "sources": ["https://docs.sui.io/references/cli/client"]
+      "sources": [
+        "https://docs.sui.io/references/cli/client"
+      ]
     }
   ]
 }

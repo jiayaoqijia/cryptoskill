@@ -3,7 +3,7 @@
   "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io and move-book.com. Graders should flag any claims sourced from third-party blogs, tutorials, or unofficial documentation.",
   "evals": [
     {
-      "id": 1,
+      "id": "object-model-basics",
       "prompt": "What is the Sui Object Model and how do objects work on Sui?",
       "expected_output": "A comprehensive explanation of Sui's object-centric storage model covering object structure (ID, version, owner, digest), how objects differ from account-based blockchains, and how transactions interact with objects.",
       "expectations": [
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "object-model-ownership-types",
       "prompt": "What are the different types of object ownership on Sui? When should I use a shared object vs an owned object?",
       "expected_output": "An explanation of all ownership types with practical guidance on when to choose each, including consensus implications.",
       "expectations": [
@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "object-model-share-object-and-frontend-access",
       "prompt": "How do I share an object on Sui? Can I access a shared object from the frontend just by knowing its object ID?",
       "expected_output": "An explanation of how to create shared objects and how frontends interact with them using the object ID.",
       "expectations": [
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "object-model-abilities",
       "prompt": "What do the key, store, copy, and drop abilities do in Sui Move? What happens if my object has key but not store?",
       "expected_output": "A complete explanation of all four abilities with specific focus on how store affects transfer permissions.",
       "expectations": [
@@ -72,7 +72,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "object-model-dynamic-fields-vs-object-fields",
       "prompt": "What is the difference between dynamic fields and dynamic object fields? When should I use each?",
       "expected_output": "A clear comparison of both dynamic field types with practical guidance on visibility, querying, and use cases.",
       "expectations": [
@@ -90,7 +90,7 @@
       ]
     },
     {
-      "id": 6,
+      "id": "object-model-heterogeneous-inventory",
       "prompt": "My player NFT needs an inventory that can hold any arbitrary Sui object — Swords, Shields, Potions, anything. How should I model this?",
       "expected_output": "A recommendation to use ObjectBag for heterogeneous object storage, with a code pattern for add/remove operations.",
       "expectations": [
@@ -107,7 +107,7 @@
       ]
     },
     {
-      "id": 7,
+      "id": "object-model-table-vs-vecmap-vs-bag",
       "prompt": "When should I use Table vs VecMap vs Bag in Sui Move? What are the performance tradeoffs?",
       "expected_output": "A comparison of collection types with clear guidance on size limits, lookup cost, and type constraints.",
       "expectations": [
@@ -123,7 +123,7 @@
       ]
     },
     {
-      "id": 8,
+      "id": "object-model-destroy-object",
       "prompt": "How do I destroy an object in Sui Move? What if it doesn't have the drop ability?",
       "expected_output": "An explanation of the unpacking pattern for destroying objects without drop, including UID deletion.",
       "expectations": [
@@ -140,7 +140,7 @@
       ]
     },
     {
-      "id": 9,
+      "id": "object-model-hot-potato",
       "prompt": "Explain the hot potato pattern in Sui Move. Why would I use it?",
       "expected_output": "An explanation of the hot potato pattern as a struct with no abilities that enforces multi-step transaction workflows.",
       "expectations": [
@@ -157,7 +157,7 @@
       ]
     },
     {
-      "id": 10,
+      "id": "object-model-transfer-vs-public-transfer",
       "prompt": "How does transfer work on Sui? What is the difference between transfer::transfer and transfer::public_transfer?",
       "expected_output": "An explanation of the two transfer tiers: module-restricted (no store required) and public (store required).",
       "expectations": [
@@ -173,7 +173,7 @@
       ]
     },
     {
-      "id": 11,
+      "id": "object-model-transfer-to-object",
       "prompt": "How do I transfer an object to another object on Sui? What is Receiving<T>?",
       "expected_output": "An explanation of transfer-to-object mechanics including the Receiving type and receive/public_receive functions.",
       "expectations": [
@@ -189,7 +189,7 @@
       ]
     },
     {
-      "id": 12,
+      "id": "object-model-soulbound",
       "prompt": "I want to make an NFT that cannot be transferred by the holder. How do I make a soulbound object on Sui?",
       "expected_output": "An explanation of how to create non-transferable objects by omitting store and not exposing transfer functions.",
       "expectations": [
@@ -205,7 +205,7 @@
       ]
     },
     {
-      "id": 13,
+      "id": "object-model-capability-pattern",
       "prompt": "What is the capability pattern in Sui Move? How do AdminCap and TreasuryCap work?",
       "expected_output": "An explanation of capability objects as permission tokens, typically created in init and guarding privileged functions.",
       "expectations": [
@@ -221,7 +221,7 @@
       ]
     },
     {
-      "id": 14,
+      "id": "object-model-lend-cap-temporarily",
       "prompt": "I have a cap stored inside an object. How can I temporarily give it to a caller to use in a PTB and make sure they return it?",
       "expected_output": "An explanation of the borrow pattern using sui::borrow module or a hot potato receipt to enforce return.",
       "expectations": [
@@ -237,7 +237,7 @@
       ]
     },
     {
-      "id": 15,
+      "id": "object-model-versioning",
       "prompt": "How does object versioning work on Sui? What happens to the version when I modify a shared object?",
       "expected_output": "An explanation of Lamport timestamp versioning and how version numbers are computed across transaction inputs.",
       "expectations": [
@@ -252,7 +252,7 @@
       ]
     },
     {
-      "id": 16,
+      "id": "object-model-wrapped-objects",
       "prompt": "What are wrapped objects on Sui? If I wrap an object that has a UID, can I still access it directly by its ID?",
       "expected_output": "An explanation of wrapping behavior and the accessibility constraints while an object is wrapped.",
       "expectations": [
@@ -269,7 +269,7 @@
       ]
     },
     {
-      "id": 17,
+      "id": "object-model-parallel-execution",
       "prompt": "How does parallel execution work on Sui? Why do owned objects skip consensus but shared objects don't?",
       "expected_output": "An explanation of Sui's dual execution paths: fastpath for owned objects and consensus for shared objects.",
       "expectations": [
@@ -285,7 +285,7 @@
       ]
     },
     {
-      "id": 18,
+      "id": "object-model-derived-objects",
       "prompt": "What are derived objects in Sui? How are they different from dynamic fields?",
       "expected_output": "An explanation of derived objects with deterministic IDs, and a comparison to dynamic fields covering parallelism and ownership.",
       "expectations": [
@@ -301,7 +301,7 @@
       ]
     },
     {
-      "id": 19,
+      "id": "object-model-display",
       "prompt": "What is Object Display in Sui? How do I set up display templates so wallets and explorers show my NFT correctly?",
       "expected_output": "An explanation of the Display standard with template syntax, Publisher requirement, and common properties.",
       "expectations": [
@@ -317,7 +317,7 @@
       ]
     },
     {
-      "id": 20,
+      "id": "object-model-vote-registry-collection",
       "prompt": "I'm building a governance system where users can vote. The registry of votes needs to support up to 100,000 voters. Should I use Table, VecMap, or something else? What are the scalability limits?",
       "expected_output": "A recommendation to use Table for large-scale storage with guidance on scalability and why VecMap would fail at this scale.",
       "expectations": [

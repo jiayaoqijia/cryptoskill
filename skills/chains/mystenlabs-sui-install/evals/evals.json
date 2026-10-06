@@ -3,7 +3,7 @@
   "source_constraint": "All expected outputs and expectations are grounded exclusively in docs.sui.io.",
   "evals": [
     {
-      "id": 1,
+      "id": "sui-install-install",
       "prompt": "How can I install Sui?",
       "expected_output": "Step-by-step installation instructions starting with suiup as the recommended method, plus alternatives for different platforms.",
       "expectations": [
@@ -16,10 +16,12 @@
         "The response includes sui --version for verifying installation",
         "The response notes the Windows caveat: the curl | sh command requires a Unix shell; Windows users should use Chocolatey or WSL"
       ],
-      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+      "sources": [
+        "https://docs.sui.io/getting-started/onboarding/sui-install"
+      ]
     },
     {
-      "id": 2,
+      "id": "sui-install-version-behind-after-suiup",
       "prompt": "My sui --version shows 1.67.3 but the latest is 1.69. I installed via suiup. How do I update?",
       "expected_output": "Instructions for updating AND switching Sui via suiup, explaining the two-step process.",
       "expectations": [
@@ -31,10 +33,12 @@
         "The response does not use nonexistent commands like 'suiup use' or 'suiup default'",
         "The response does not suggest reinstalling from scratch when suiup update + switch is sufficient"
       ],
-      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+      "sources": [
+        "https://docs.sui.io/getting-started/onboarding/sui-install"
+      ]
     },
     {
-      "id": 3,
+      "id": "sui-install-update-not-taking-effect",
       "prompt": "I ran suiup update sui@testnet and it says it downloaded v1.70.2, but sui --version still shows v1.62.0. What's going on?",
       "expected_output": "An explanation that suiup update downloads but doesn't switch, and the correct command to activate the new version.",
       "expectations": [
@@ -44,10 +48,12 @@
         "The response suggests suiup show to verify the current default and installed versions",
         "The response does not suggest nonexistent commands like 'suiup use', 'suiup default', or 'suiup set'"
       ],
-      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+      "sources": [
+        "https://docs.sui.io/getting-started/onboarding/sui-install"
+      ]
     },
     {
-      "id": 4,
+      "id": "sui-install-api-version-mismatch",
       "prompt": "I get a 'client/server api version mismatch' warning when running sui client commands. Client is 1.62.0 and server is 1.70.2. How do I fix this?",
       "expected_output": "An explanation that the CLI version is behind the network and needs to be updated and switched.",
       "expectations": [
@@ -56,10 +62,12 @@
         "The response mentions verifying with sui --version after switching",
         "The response does not suggest ignoring the warning — version mismatches can cause build failures and unexpected behavior"
       ],
-      "sources": ["https://docs.sui.io/getting-started/onboarding/sui-install"]
+      "sources": [
+        "https://docs.sui.io/getting-started/onboarding/sui-install"
+      ]
     },
     {
-      "id": 5,
+      "id": "sui-install-move-analyzer-not-found",
       "prompt": "I installed move-analyzer with suiup but the 'move-analyzer' command isn't found. What do I need to do?",
       "expected_output": "An explanation that suiup install downloads but may not set the default, and suiup switch is needed.",
       "expectations": [
@@ -68,7 +76,9 @@
         "The response suggests suiup show to verify installation and default status",
         "The response does not suggest manual PATH manipulation or reinstalling"
       ],
-      "sources": ["https://docs.sui.io/getting-started/tooling"]
+      "sources": [
+        "https://docs.sui.io/getting-started/tooling"
+      ]
     }
   ]
 }
