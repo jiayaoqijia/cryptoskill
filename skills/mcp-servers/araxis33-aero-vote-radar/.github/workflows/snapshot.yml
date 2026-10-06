@@ -48,6 +48,9 @@ jobs:
           # snapshot step writes it best-effort, hence the guarded add.
           git add docs/data/snapshot.json docs/llms.txt
           if [ -f docs/data/fee-stream.json ]; then git add docs/data/fee-stream.json; fi
+          # fee-rate.json is the trailing per-day fee figure built from those
+          # counters (src/feeRate.ts), written in the same best-effort step.
+          if [ -f docs/data/fee-rate.json ]; then git add docs/data/fee-rate.json; fi
           if git diff --cached --quiet; then
             echo "snapshot unchanged — nothing to commit"
             exit 0

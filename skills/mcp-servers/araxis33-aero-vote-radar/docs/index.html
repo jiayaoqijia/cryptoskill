@@ -360,6 +360,37 @@
   </div>
 </section>
 
+<!-- What a pool has been paying per day, from the continuous fee counters
+     (src/feeRate.ts). It does not depend on weekly epochs, which is why it is
+     the figure that carries over to Aero's Predictive Allocation. -->
+<section id="perDayPanel" hidden>
+  <div class="rowhead">
+    <div>
+      <h2>Ready for Aero: what pools pay per day</h2>
+      <p class="h2note">From October 22 there is no weekly vote: sAERO is allocated continuously and can move every 48 hours. This is the figure that ranking needs, already measured on today&rsquo;s pools.</p>
+    </div>
+  </div>
+  <div class="totals">
+    <div class="stat"><div class="n num" id="perDayTop">—</div><div class="l">Best pool, per day for 10,000 votes</div></div>
+    <div class="stat"><div class="n num" id="perDayAll">—</div><div class="l">All pools&rsquo; voter fees per day</div></div>
+    <div class="stat"><div class="n num">78%</div><div class="l">Of the best possible top 10, next 48 h</div></div>
+  </div>
+  <div class="scroll cards">
+  <table>
+      <thead>
+        <tr>
+          <th>Pool</th>
+          <th class="num">Per day for 10,000 votes</th>
+          <th class="num">Pool fees per day</th>
+          <th class="num">Votes</th>
+        </tr>
+      </thead>
+    <tbody id="perDayBody"></tbody>
+  </table>
+  </div>
+  <div class="note" id="perDayNote"></div>
+</section>
+
 <div class="rowhead">
   <div>
     <h2>Suggested allocation</h2>
@@ -2174,6 +2205,52 @@ if (calldataEncoderIsSound()) {
   el.calldataBox.hidden = true;
 }
 
+// Per-day fee figures (src/feeRate.ts). Pool names come from the snapshot, so
+// this draws only once both files are in, whichever arrives second.
+let feeRate = null;
+const PER_DAY_MIN_VOTES = 100000;
+const PER_DAY_ROWS = 10;
+
+function renderPerDay() {
+  if (!feeRate || !snapshot || !feeRate.pools) return;
+  const byAddr = new Map(snapshot.pools.map((p) => [p.pool.toLowerCase(), p]));
+  const rows = Object.entries(feeRate.pools)
+    .map(([addr, r]) => ({ addr, r, p: byAddr.get(addr) }))
+    .filter((x) => x.p && !x.p.migrating && x.r.usdPerDayPer10k !== null && x.p.votesVeAero >= PER_DAY_MIN_VOTES)
+    .sort((a, b) => b.r.usdPerDayPer10k - a.r.usdPerDayPer10k);
+  if (rows.length === 0) return;
+
+  const frag = document.createDocumentFragment();
+  for (const { r, p } of rows.slice(0, PER_DAY_ROWS)) {
+    const tr = document.createElement("tr");
+    tr.appendChild(poolCell(p.symbol, p.pool, p.migrating));
+    tr.appendChild(cell("≈ $" + r.usdPerDayPer10k.toFixed(2), "num", "Per day for 10,000 votes"));
+    tr.appendChild(cell(usd(r.usdPerDay), "num", "Pool fees per day"));
+    tr.appendChild(cell(num(p.votesVeAero), "num", "Votes"));
+    frag.appendChild(tr);
+  }
+  document.getElementById("perDayBody").replaceChildren(frag);
+
+  const total = Object.values(feeRate.pools).reduce((s, r) => s + r.usdPerDay, 0);
+  document.getElementById("perDayTop").textContent = "≈ $" + rows[0].r.usdPerDayPer10k.toFixed(2);
+  document.getElementById("perDayAll").textContent = usd(total);
+  document.getElementById("perDayNote").textContent =
+    "Swap fees that reached each pool's voters over the last " + feeRate.windowHours +
+    " hours, averaged per day, divided by the pool's current votes. Pools with at least " +
+    num(PER_DAY_MIN_VOTES) + " votes. Fees only: incentives join the figure once Aero's new contracts are live. " +
+    "Tested on this site's own history since September 27: the top 10 picked by the last 96 hours collected 78% " +
+    "of what the best possible top 10 earned over the next 48 hours. The dollar figure is an estimate, typically off by about half; " +
+    "trust the order more than the number. Updated " + new Date(feeRate.generatedAt).toISOString().slice(0, 16).replace("T", " ") + " UTC.";
+  document.getElementById("perDayPanel").hidden = false;
+}
+
+fetch("data/fee-rate.json", { cache: "no-cache" })
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((data) => { feeRate = data; renderPerDay(); })
+  .catch(() => {
+    // Without the file the panel simply stays hidden; the weekly page is unaffected.
+  });
+
 // The weekly measurement, fetched beside the snapshot. It is deliberately not
 // awaited together with it: if this file is missing or stale the page must still
 // render the allocation, minus the parts that say how much to believe it.
@@ -2204,6 +2281,7 @@ fetch("data/snapshot.json", { cache: "no-cache" })
     renderEpochYields();
     renderRanking();
     renderAllocation();
+    renderPerDay();
     // The survival tile compares the measurement's pool coverage against this
     // scan's, so it cannot be right until both files are in. Whichever fetch
     // resolves second has to redraw it — the same reason renderRanking is

@@ -5,7 +5,16 @@ import { computeTrend, epochEndOf, isEpochInProgress, WEEKLY_EPOCH } from "./tre
 import { computeVoteStability, previousSettledVotes } from "./dilution.js";
 import { SNAPSHOT_MIN_POOL_RATIO } from "./constants.js";
 import { renderLlmsTxt } from "./llms.js";
-import { readFeeCounters } from "./feeStream.js";
+import { readFeeCounters, type FeeCounter, type FeeStreamFile } from "./feeStream.js";
+import {
+  buildFeeInterval,
+  buildFeeRates,
+  packFeeIntervals,
+  pruneFeeIntervals,
+  unpackFeeIntervals,
+  FEE_RATE_WINDOW_HOURS,
+  type FeeRateFile,
+} from "./feeRate.js";
 import type { PoolEfficiency, RewardAmount } from "./efficiency.js";
 
 /**
@@ -381,15 +390,55 @@ export async function writeSnapshot(outPath: string, llmsPath?: string): Promise
   // separate file so the page never downloads it, and best-effort: a failed
   // read here must not cost the site its snapshot, which is already written.
   try {
+    const streamPath = resolve(dirname(resolve(outPath)), "fee-stream.json");
+    const previous = await readJson<FeeStreamFile>(streamPath);
     const pools = await readFeeCounters(ranked.map((r) => r.pool));
-    await writeFile(
-      resolve(dirname(resolve(outPath)), "fee-stream.json"),
-      `${JSON.stringify({ generatedAt: generatedAt.toISOString(), pools })}\n`,
-      "utf8",
-    );
+    await writeFile(streamPath, `${JSON.stringify({ generatedAt: generatedAt.toISOString(), pools })}\n`, "utf8");
+    await writeFeeRate(dirname(resolve(outPath)), previous, pools, snapshot, generatedAt);
   } catch (err) {
     console.error(`(fee counters not written: ${err instanceof Error ? err.message : String(err)})`);
   }
 
   return snapshot;
+}
+
+/**
+ * Appends the interval since the previous counter read to fee-rate.json and
+ * republishes the per-day figures (see feeRate.ts). The previous read is the
+ * fee-stream.json this run is about to replace, so nothing extra is fetched.
+ */
+async function writeFeeRate(
+  dir: string,
+  previous: FeeStreamFile | null,
+  pools: FeeCounter[],
+  snapshot: Snapshot,
+  generatedAt: Date,
+): Promise<void> {
+  const path = resolve(dir, "fee-rate.json");
+  const existing = await readJson<FeeRateFile>(path);
+  let intervals = unpackFeeIntervals(existing);
+  if (previous && Date.parse(previous.generatedAt) < generatedAt.getTime()) {
+    const prices = new Map(snapshot.rewardTokens.map((t) => [t.address.toLowerCase(), t]));
+    intervals = [
+      ...intervals,
+      buildFeeInterval(previous.pools, pools, previous.generatedAt, generatedAt.toISOString(), (t) => prices.get(t.toLowerCase())),
+    ];
+  }
+  intervals = pruneFeeIntervals(intervals, generatedAt);
+  const votes = new Map(snapshot.pools.map((p) => [p.pool.toLowerCase(), p.votesVeAero]));
+  const file: FeeRateFile = {
+    generatedAt: generatedAt.toISOString(),
+    windowHours: FEE_RATE_WINDOW_HOURS,
+    pools: buildFeeRates(intervals, votes, generatedAt),
+    ...packFeeIntervals(intervals),
+  };
+  await writeFile(path, `${JSON.stringify(file)}\n`, "utf8");
+}
+
+async function readJson<T>(path: string): Promise<T | null> {
+  try {
+    return JSON.parse(await readFile(path, "utf8")) as T;
+  } catch {
+    return null;
+  }
 }
