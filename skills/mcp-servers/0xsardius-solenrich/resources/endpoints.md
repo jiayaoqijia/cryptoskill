@@ -87,7 +87,7 @@ Test fixtures used throughout SolEnrich's own tests:
 | Key | Price | Required input | Returns |
 |---|---|---|---|
 | `stonk-pairs` | free | none (`category`, `launchable_only`) | Quote assets a launch can pair against, `is_agent_launchable` flag |
-| `stonk-gems` | $0.03 | none (`quote_mint`, `category`, `max_age_days`, `min_holders`, `max_market_cap_usd`, `limit`) | Every reward coin scored 0–100: GEM / WATCH / NOISE / DEAD with reasons, warnings, round-trip tax |
+| `stonk-gems` | $0.03 | none (`quote_mint`, `category`, `max_age_days`, `min_holders`, `max_market_cap_usd`, `limit`) | Every live reward coin scored 0–100: GEM / WATCH / NOISE / DEAD with reasons, warnings, round-trip tax. A liveness shortlist, not a price forecast |
 | `stonk-reward-risk` | $0.005 | `mint` | `payout_status` PAYING / STALE / NEVER / NOT_REWARD, `trading_cost`, on-chain fee config, health score |
 | `stonk-yield` | $0.005 | `mint` | Trailing 7d / 30d / lifetime holder yield, quote exposure |
 | `stonk-yield-batch` | $0.05 | none (`mints` up to 25, or the screener filters; `limit` ≤ 25) | `stonk-yield` for up to 25 coins in one call, from the index in milliseconds; `not_found` for mints outside it |
@@ -95,6 +95,7 @@ Test fixtures used throughout SolEnrich's own tests:
 | `stonk-screener` | $0.01 | none (`quote_mint`, `category`, `paying_only`, `live_only`, `sort`, `limit`, …) | Every reward coin with payout status, live flag, tax cost; sort by volume, last payout, holders, change, yield |
 | `stonk-launch-intel` | $0.02 | none (`category`, `min_coins`, `sort`, `limit`) | Per quote asset: launches, traded and paying shares, survival past day 3, tax mix, crowding, demand score, recommendations |
 | `stonk-quote` | $0.005 | `mint` (`size_usd` 100, `hold_days` 7) | Cost and payback of one trade at one size: entry/exit cost (tax + price impact), round-trip % and breakeven move, pro-rata payout share with dust warning, expected payout over the hold, PAYS / MARGINAL / COSTS / NOT_PAYING with breakeven hold days. No swap |
+| `stonk-creator` | $0.01 | `creator` or `mint` | Creator track record: ESTABLISHED / MIXED / SERIAL_LAUNCHER / NEW, launches per day, share of coins past day 3 still trading. Filter fresh coins by who launched them |
 | `stonk-launch-preflight` | $0.25 | `unsigned_transaction`, `quote_mint`, `mode` | Diffs a self-built LaunchLab launch against StonkFun's published shape; mismatches with fixes |
 
 ## Collectibles
