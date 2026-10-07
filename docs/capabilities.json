@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T12:50:46.085448+00:00",
+  "generated_at": "2026-10-07T18:46:46.089883+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -144045,6 +144045,68 @@
       },
       "hosted_operators": []
     },
+    "trading/roman-rr-trading-signals": {
+      "name": "trading-signals",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "trading/singularity-capital": {
       "name": "singularity-capital",
       "execution_model": "read_only",
@@ -153514,13 +153576,13 @@
     }
   },
   "summary": {
-    "discovered": 2464,
-    "processed": 2464,
+    "discovered": 2465,
+    "processed": 2465,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 1619,
       "router_orchestrator": 135,
-      "unknown": 270,
+      "unknown": 271,
       "analysis_only": 204,
       "unsigned_tx_builder": 84,
       "local_executor": 92,
@@ -153529,16 +153591,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1024,
-      "can_install_code": 493,
+      "can_execute_shell": 1025,
+      "can_install_code": 494,
       "can_write_files": 147,
       "can_browse_web": 231,
-      "can_spawn_subagents": 239,
+      "can_spawn_subagents": 240,
       "can_move_funds": 253,
       "requires_private_key": 420,
       "requires_hosted_operator": 328,
       "uses_remote_install_script": 40,
-      "mutable_remote_runtime": 493
+      "mutable_remote_runtime": 494
     }
   }
 }

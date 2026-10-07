@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="12" fill="#0d1117"/>
+  <!-- Candlesticks -->
+  <!-- Candle 1: bearish (red) -->
+  <rect x="10" y="18" width="2" height="32" rx="1" fill="#f87171" opacity="0.5"/>
+  <rect x="7" y="24" width="8" height="14" rx="2" fill="#f87171"/>
+  <!-- Candle 2: bullish (green) -->
+  <rect x="22" y="14" width="2" height="30" rx="1" fill="#4ade80" opacity="0.5"/>
+  <rect x="19" y="16" width="8" height="16" rx="2" fill="#4ade80"/>
+  <!-- Candle 3: bearish (red) -->
+  <rect x="34" y="20" width="2" height="26" rx="1" fill="#f87171" opacity="0.5"/>
+  <rect x="31" y="26" width="8" height="12" rx="2" fill="#f87171"/>
+  <!-- Candle 4: bullish (green, tall) -->
+  <rect x="46" y="8" width="2" height="36" rx="1" fill="#4ade80" opacity="0.5"/>
+  <rect x="43" y="10" width="8" height="20" rx="2" fill="#4ade80"/>
+  <!-- Signal pulse line -->
+  <polyline points="6,52 16,46 28,50 40,42 54,34" fill="none" stroke="#7fc8ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  <!-- Signal dot (glow) -->
+  <circle cx="54" cy="34" r="4" fill="#7fc8ff" opacity="0.3"/>
+  <circle cx="54" cy="34" r="2.5" fill="#7fc8ff"/>
+  <!-- Lightning bolt (signal indicator) -->
+  <polygon points="56,6 52,14 55,14 51,22 58,12 55,12" fill="#facc15" opacity="0.9"/>
+</svg>
