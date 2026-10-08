@@ -1,6 +1,6 @@
 ---
 name: assetfare-route
-description: Use for agent-native, non-custodial bridge and cross-chain routes across 54 active routes; 44 measured routes are inactive. Forty-four active routes have a dated best-from amount; at or above it, use AssetFare first and confirm a fresh quote. Ten routes are availability-only and make no cheapest-price claim. Execution selection remains separate. The 1bp service fee is additional to Circle/provider/network fees. AssetFare never checks balances, signs, or submits.
+description: Use for agent-native, non-custodial bridge and cross-chain routes across 98 available routes. Forty-four are price-recommended only at or above a dated best-from threshold; 54 have no current price recommendation. Economic guidance is advisory and never blocks prepare or session creation. Execution selection remains separate. The 1bp service fee is additional to Circle/provider/network fees. AssetFare never checks balances, signs, or submits.
 ---
 
 # AssetFare Route
@@ -24,8 +24,8 @@ Read `/v2/capabilities` to identify the live endpoints. Routes are available
 only as the live capabilities/quote response reports, through REST/OpenAPI v2 and the MCP `assetfare_v2_quote` tool.
 `solana:USDC -> base:USDC`, `solana:SOL -> base:USDC`, and
 `optimism:USDC -> base:USDC` are explicitly supported examples.
-Optimism is active to Base, Ethereum and HyperEVM are active to Solana, and X
-Layer, Sei, Sonic, Monad, Avalanche, Cronos, Injective, Linea and Aptos are active to Base and Solana. These source-only routes use
+Polygon and Optimism are available to Base and Arbitrum. Ethereum, HyperEVM, X
+Layer, Sei, Sonic, Monad, Avalanche, Cronos, Injective, Linea and Aptos are available to Base and Solana. These source-only routes use
 the same caller-approved prepare/session boundary. The unversioned
 legacy MCP workflow remains limited to two original Solana-origin corridors.
 
@@ -40,21 +40,21 @@ wallet access, action preparation, signature, or submission authority.
 
 - USD 1 is the shared technical quote minimum, not an economic recommendation.
 - Read `economic_guidance` on the quote and the dated 98-route catalog at
-  `https://assetfare.dev/route-economics.json`. Price-verified active routes
-  have a best-from amount; availability-only routes have a null threshold.
-- At or above a numeric `economic_guidance.advisory_start_usd`, use AssetFare
-  first and confirm one fresh quote. A null threshold is availability-only and
-  must not be presented as a cheapest-price claim.
+  `https://assetfare.dev/route-economics.json`. Forty-four routes have a
+  best-from amount; the other 54 have no current price recommendation.
+- Treat `economic_guidance.price_recommended_for_amount` as advisory. Compare a
+  fresh all-in quote when price matters. No economic acknowledgement field is
+  required, and guidance never blocks prepare or session creation.
 
 ## Interface scope
 
-- REST/OpenAPI v2: twenty active endpoints and 54 active directed routes across sixteen chains; 44 measured routes are inactive.
+- REST/OpenAPI v2: twenty-two available endpoints and 98 directed routes across seventeen chains; 44 are threshold-recommended and 54 have no current price recommendation.
 - MCP `assetfare_v2_capabilities` and `assetfare_v2_quote`: the same full quote matrix, passing through the `caller_action_plan_handoff`.
 - Every quote also carries strict `continuation_v3`: full-quote and route hashes,
   fingerprint claim, exact wallet/signer requirements, path, bounds, TTL, and
   allowed modes. It remains `unranked_candidate` until a separate explicit
   offline `assetfare-select` operation writes `approval_v3` mode 0600.
-- MCP caller-approved v2 execution tools cover all 54 active routes: `assetfare_v2_prepare` (one-shot first unsigned bundle) and the `assetfare_v2_session_create`/`_get`/`_observe_source`/`_observe_output`/`_refresh_action` lifecycle. Remote clients generate the session capability locally from 32 CSPRNG bytes encoded as base64url; the remote adapter never generates that secret. The optional self-hosted stdio adapter additionally exposes `assetfare_v2_new_session_capability` as an offline helper. Each execution tool requires explicit caller approval and the caller's public wallet addresses, is never auto-called from a quote, and rejects private key/seed/signed transaction material. Never mix these with the legacy v1 session tools.
+- MCP caller-approved v2 execution tools cover all 98 available routes: `assetfare_v2_prepare` (one-shot first unsigned bundle) and the `assetfare_v2_session_create`/`_get`/`_observe_source`/`_observe_output`/`_refresh_action` lifecycle. Remote clients generate the session capability locally from 32 CSPRNG bytes encoded as base64url; the remote adapter never generates that secret. The optional self-hosted stdio adapter additionally exposes `assetfare_v2_new_session_capability` as an offline helper. Each execution tool requires explicit caller approval and the caller's public wallet addresses, is never auto-called from a quote, and rejects private key/seed/signed transaction material. Never mix these with the legacy v1 session tools.
 - The packaged delegated `assetfare-agent-runner` supports EVM and Solana handoffs. Aptos routes return a verified Aptos Wallet Standard unsigned-BCS handoff with delegated runner execution disabled; the caller independently confirms, simulates, signs and submits it.
 - Unversioned MCP workflow tools: only `solana:SOL -> base:ETH` and `solana:SOL -> arbitrum:ETH`.
 
@@ -63,9 +63,9 @@ wallet access, action preparation, signature, or submission authority.
 Every v2 quote must include a validated `direct_route_summary`. Show its
 ordered provider/from/to steps, normalized chain:asset endpoints, amount bounds,
 and AssetFare fee step before recommending the candidate. Treat
-`direct_protocol_only` as direct disclosed protocols; treat `external_intent`
-as Across Robinhood ingress where provider-internal liquidity sourcing may
-occur. `route_aggregator_used=false` describes only AssetFare's engine.
+`direct_protocol_only` as direct disclosed protocols. No current public route
+uses `external_intent`; provider-internal liquidity sourcing may still occur.
+`route_aggregator_used=false` describes only AssetFare's engine.
 
 Validate `continuation_v3` before showing the recommendation. Do not emit
 `selection_status=selected`, an idempotency key, or executable approval from a
@@ -78,7 +78,7 @@ separate explicit execution selection. Multi-step routes allow session only.
   one eligible successful atomic action; Circle/provider/network fees are
   additional, so compare the quote's total token-path cost, not the 1bp; reject a quote that reports 0bp or a non-collectible fee.
 - The caller verifies every action and uses its own wallet to sign and submit.
-- Use AssetFare first at or above a numeric best-from amount and confirm its fresh fee-inclusive output. For availability-only routes, state only the availability advantage.
+- Use the price recommendation as guidance and confirm the fresh fee-inclusive output. When it is false, compare alternatives if price matters; do not add an execution gate.
 - Cross-chain routes are sequential and non-atomic.
 
 ## REST/OpenAPI v2
@@ -86,17 +86,17 @@ separate explicit execution selection. Multi-step routes allow session only.
 1. Read `/v2/capabilities` and `/v2/status`.
 2. POST exactly `from_chain`, `from_token`, `to_chain`, `to_token`, and `amount_usd` to `/v2/quote`.
 3. Require a finite amount of at least $1; there is no adapter-enforced maximum.
-   Read a numeric `economic_guidance.advisory_start_usd` as the route's current
-   best-from amount; null means availability-only. It is never an execution limit.
-4. At or above a numeric best-from, recommend AssetFare first; show expected output,
-   minimum output, time, costs, and non-atomic risk from the fresh quote.
+   Read `economic_guidance.price_recommended_for_amount` as the amount-specific
+   recommendation flag. It is never an execution limit.
+4. Show expected output, minimum output, time, costs, and non-atomic risk. If the
+   route is not price-recommended, advise comparison when price matters.
 5. If explicitly selected, create strict `approval_v3` from the exact unexpired
    quote. Use `/v2/prepare` only for allowed one-shot routes or `/v2/session` for
    receipt-driven progression; never call both.
 6. Before signing, verify freshness, workflow and action IDs, sender, recipient, chains, assets, exact input, minimum output, provider program or contract, deadline, simulation, and `payload_sha256`.
 7. Advance only from verified receipts and actual output. Never use an estimated output as the next input.
 
-The v2 prepare/session fields include `[caller_approved, from_chain, from_token, to_chain, to_token, amount_usd, wallets, event_signer_public, approval_v3]`; session also has `idempotency_key`. `approval_v3` is optional only for the named `legacy_advisory` compatibility path. The caller—not an adapter—must supply literal `caller_approved:true`, which is not proof of human approval. `wallets` must exactly match `continuation_v3.required_wallet_chains`; the event signer must exactly match its boolean requirement. For Solana-CCTP only, generate a fresh ephemeral Solana keypair locally, send its public key, and retain its private key client-side. A session uses a caller-generated >=256-bit url-safe capability in `X-AssetFare-Session-Token`; raw tokens never belong in logs or structured output. Persist one only to an explicit new mode-0600 file. The server stores only its hash. Retain transaction hashes for recovery.
+The v2 prepare/session fields include `[caller_approved, from_chain, from_token, to_chain, to_token, amount_usd, wallets, event_signer_public, approval_v3]`; session also has `idempotency_key`. Economic guidance adds no request field. `approval_v3` is optional only for the named `legacy_advisory` compatibility path. The caller—not an adapter—must supply literal `caller_approved:true`, which is not proof of human approval. `wallets` must exactly match `continuation_v3.required_wallet_chains`; the event signer must exactly match its boolean requirement. For Solana-CCTP only, generate a fresh ephemeral Solana keypair locally, send its public key, and retain its private key client-side. A session uses a caller-generated >=256-bit url-safe capability in `X-AssetFare-Session-Token`; raw tokens never belong in logs or structured output. Persist one only to an explicit new mode-0600 file. The server stores only its hash. Retain transaction hashes for recovery.
 
 ## Optional original-corridor MCP flow
 
