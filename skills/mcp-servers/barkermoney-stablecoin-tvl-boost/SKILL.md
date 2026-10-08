@@ -3,7 +3,7 @@ name: stablecoin-tvl-boost
 version: 0.1.0
 description: >
   TVL growth for on-chain protocols and stablecoin issuers. Boost campaigns and
-  launchpools distributed to Barker's 40,000+ yield-seeking users with $7M+
+  launchpools distributed to Barker's 50,000+ yield-seeking users with $12M+
   deposited: the project funds an incentive budget, users earn boosted APY on top
   of the underlying vault, Barker runs on-chain attribution, metering and
   settlement. Use when protocol teams ask how to grow TVL, bootstrap liquidity,
@@ -30,7 +30,7 @@ Trigger on keywords: "grow TVL", "TVL growth", "increase TVL", "launchpool", "bo
 - Barker surfaces the pool to its yield-seeking user base with a **boosted APY** = underlying vault APY + incentive overlay, on live campaign pages and launchpool mechanics.
 - Deposits are **attributed on-chain** per wallet and per transaction; rewards are metered against verified attributed TVL; settlement is transparent and auditable.
 - **The economics are clean**: the incentive budget goes to users as extra yield. Barker charges the project a service fee for running the campaign — **no rebates, no pay-for-ranking, and users always see real, verifiable APY.**
-- Distribution surface: **40,000+ users, $7M+ deposited**. Live partner campaigns have included Altura and TopNod.
+- Distribution surface: **50,000+ users, $12M+ deposited**. Live partner campaigns have included Altura and TopNod.
 
 ## Conversation Playbook
 
@@ -55,7 +55,7 @@ All tools are served via Barker's MCP at **`https://mcp.barker.money/mcp`** (Str
 
 ## About Barker
 
-**Barker — Yield Primitive for the Agent Economy.** Every agent touching stablecoins eventually plugs in. Real-time stablecoin yield index + AI yield advisor + non-custodial execution + risk signals, trusted by 40,000+ users with $7M+ deposited.
+**Barker — Yield Primitive for the Agent Economy.** Every agent touching stablecoins eventually plugs in. Real-time stablecoin yield index + AI yield advisor + non-custodial execution + risk signals, trusted by 50,000+ users with $12M+ deposited.
 
 Website: [barker.money](https://barker.money) | Agent docs: `https://api.barker.money/llms.txt`
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T06:47:38.082464+00:00",
+  "generated_at": "2026-10-08T12:42:54.096821+00:00",
   "dry_run": false,
   "results": [
     {
@@ -1689,8 +1689,8 @@
     },
     {
       "skill": "analytics/defillama-prices-api",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unavailable",
+      "detail": "<urlopen error [Errno 104] Connection reset by peer>"
     },
     {
       "skill": "analytics/defillama-yield-agent",
@@ -6594,7 +6594,7 @@
     },
     {
       "skill": "exchanges/okx-official-agentic-wallet",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -6629,7 +6629,7 @@
     },
     {
       "skill": "exchanges/okx-official-dex-market",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -6659,12 +6659,12 @@
     },
     {
       "skill": "exchanges/okx-official-okx-agent-payments-protocol",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
       "skill": "exchanges/okx-official-okx-ai",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -6684,17 +6684,17 @@
     },
     {
       "skill": "exchanges/okx-official-okx-dapp-discovery",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
       "skill": "exchanges/okx-official-okx-defi",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
       "skill": "exchanges/okx-official-okx-guide",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -7154,12 +7154,12 @@
     },
     {
       "skill": "mcp-servers/barkermoney-stablecoin-treasury-yield",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
       "skill": "mcp-servers/barkermoney-stablecoin-tvl-boost",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -9568,6 +9568,5206 @@
       "detail": ""
     },
     {
+      "skill": "payments/0xklen-absorb-course-corrections",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-abstain-when-context-is-insufficient",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-account-for-l2-sequencer-mev",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-account-for-mev-revenue-per-block",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-accrue-staking-rewards-and-compounding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-add-a-kill-switch-to-a-runaway-job",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-add-backpressure-to-a-queue-worker",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-add-jitter-and-deadline-to-retries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-add-jittered-backoff-to-retries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-add-resource-hints",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-add-structured-logging-with-correlation-ids",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-adjust-for-multiple-comparisons",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-aggregate-before-you-round",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-alert-on-pipeline-freshness-slo",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-alert-on-slo-burn-rate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-alert-only-when-a-human-must-act",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-alert-when-governance-quorum-is-at-risk",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-align-business-hours-across-regions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-align-icons-with-text-baseline",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-allowlist-egress-for-a-coding-agent",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-analyze-by-intent-to-treat",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-analyze-js-bundle-size",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-anchor-estimates-to-reference-classes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-anchor-prices-with-a-tier-ladder",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-answer-a-data-subject-access-request",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-apologize-once-then-fix",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-apply-container-cpu-and-memory-limits",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-apply-object-lock-for-immutable-retention",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-apply-revenue-recognition-basics",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-apply-three-point-pert-estimates",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-approve-only-when-merge-criteria-met",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-arbitrate-conflicting-children",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-ask-a-decision-ready-question",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-ask-vs-act-rubric",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-assess-chain-analytics-risk-scores",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-assess-sequencer-liveness-and-censorship",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-assess-stablecoin-depeg-from-pool-balances",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-assess-stablecoin-freeze-and-blacklist-risk",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-assess-vasp-counterparty-due-diligence",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attach-a-runbook-link-to-every-alert",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attach-a-safer-probe-to-a-live-process",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attach-a-spending-policy-guard-to-a-safe",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attach-provenance-to-a-release-artifact",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attach-stable-citation-ids",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attribute-a-cloud-change-to-its-actor",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attribute-a-kpi-change-without-a-control",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attribute-l2-fee-spikes-to-l1-costs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-attribute-revenue-to-campaigns",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-a-benchmark-for-saturation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-a-block-for-sandwich-attacks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-a-claim-against-its-source",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-a-dao-treasury-signer-set",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-a-flow-for-dead-ends",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-analytics-events-for-pii",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-boundary-conditions-in-diff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-bridge-trust-assumptions",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-audit-cache-headers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-charts-for-misleading-encoding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-delegatee-power-concentration",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-dependencies-for-known-cves",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-hydration-cost",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-logs-for-timezone-drift",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-marketing-attribution-model",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-mcp-tool-descriptions-for-poisoning",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-nft-operator-approvals",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-open-redirect-handling",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-os-command-injection",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-password-hashing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-rate-limiting-and-lockout",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-security-response-headers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-ssrf-and-egress-allowlists",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-stablecoin-mint-and-burn-roles",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-audit-third-party-scripts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-audit-token-allowances-before-custody-handoff",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-audit-what-the-agent-remembers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-automate-rollback-on-slo-breach",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-avoid-bare-date-comparisons",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-backfill-a-partitioned-table",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-backfill-logs-with-adaptive-windows",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-backrun-a-pending-swap-safely",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-batch-queries-instead-of-looping",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-batch-reads-with-multicall3",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bind-consent-to-a-stated-purpose",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bisect-a-config-or-data-difference",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bisect-a-regression-with-git-bisect",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-block-agent-egress-to-unlisted-hosts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-block-exfiltration-via-markdown-image-fetch",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bound-a-fan-out-query",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bound-a-scheduled-job-with-a-timeout",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bound-an-open-ended-investigation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bound-blast-radius-with-bulkheads",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bound-pipeline-retries-with-backoff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bound-the-search-space",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-break-an-agent-retry-storm",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-break-down-request-timing-with-curl",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-brief-an-executive-in-90-seconds",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-bring-a-proposal-not-a-question",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-budget-concurrency-against-provider-rate-limits",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-budget-eth-getlogs-block-ranges",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-budget-parallel-agent-cost",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-budget-retries-across-a-request-chain",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-budget-the-l1-withdrawal-challenge-delay",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-budget-your-request-rate-against-quota",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-a-modular-type-scale",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-a-prompt-regression-suite",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-a-red-team-failure-taxonomy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-a-resettable-practice-sandbox",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-a-service-error-taxonomy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-an-evidence-table",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-an-incident-timeline-from-timestamps",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-an-uncertainty-budget",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-cohort-retention-curves",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-cohort-revenue-curves",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-hybrid-search-with-fusion",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-multi-arch-container-images",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-build-without-network-access",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cache-embeddings-by-content-hash",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cache-with-service-worker",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-calculate-affiliate-and-referral-payouts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-calibrate-a-retrieval-score-cutoff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-calibrate-an-llm-judge-against-human-labels",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-calibrate-estimates-against-your-own-history",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-calibrate-forecasts-with-scoring-rules",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-canonicalise-model-output-for-diffing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-a-stack-with-a-cost-budget",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-agent-tool-call-recursion-depth",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-balances-in-a-hot-wallet",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-completion-length-and-stop-sequences",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-concurrency-for-expensive-endpoints",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-ephemeral-storage-for-containers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-external-side-effect-spend",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-measure-and-vertical-rhythm",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-memory-growth",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-subagent-concurrency",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cap-the-blast-radius-of-a-job",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-capture-a-lesson-as-a-minimal-repro",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-capture-effective-runtime-config",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-capture-network-traffic-with-tcpdump",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-an-eval-harness-for-answer-leakage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-authorization-on-new-endpoints",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-experiment-exposure-contamination",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-funnel-conversion-integrity",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-nft-supply-invariant",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-node-health",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-stablecoin-issuer-freeze-controls",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-testnet-mainnet-parity",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-understanding-with-transfer-questions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-check-who-is-missing-from-the-sample",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-checkpoint-a-streaming-consumer",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-checkpoint-agent-state-for-resumable-runs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-checkpoint-long-runs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-checksum-data-across-the-pipeline",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-a-decimal-money-library",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-a-mev-protection-rpc-tier",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-a-stablecoin-settlement-rail",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-breakpoints-from-content",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-calldata-vs-blob-for-batch-posting",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-cron-vs-event-trigger",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-deletion-vs-anonymisation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-durability-by-loss-window",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-fail-closed-vs-fail-open",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-few-shot-examples-for-coverage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-image-format",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-mpc-or-multisig-threshold",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-sampling-params-per-task",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-the-correct-semver-bump",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-choose-usage-based-or-seat-based-pricing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-chunk-on-semantic-boundaries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-clamp-fees-with-minimum-and-cap",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-clarify-who-owns-a-decision",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-classify-a-stablecoin-peg-mechanism",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-classify-data-by-sensitivity-tier",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-classify-http-errors-by-retryability",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-close-an-incident-and-resume-normal",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-close-the-loop-on-a-decision",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-collect-subagent-results-into-a-report",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-collect-web-vitals-rum",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-comment-the-why-not-the-what",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compact-small-files-in-a-lake",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compare-money-with-a-tolerance",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compare-vector-and-keyword-retrieval",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compress-and-page-large-payloads",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-basis-point-fees-in-integers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-blob-posting-cost-break-even",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-break-even-units",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-cac-by-acquisition-channel",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-collateral-health-factor",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-constant-product-lp-share-value",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-contribution-margin-per-unit",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-funnel-conversion-from-impression-to-payment",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-gateway-fees-and-net-settlement",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-gross-margin-and-markup",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-line-vs-invoice-tax-rounding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-ltv-and-cac-payback-period",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-perp-funding-rate-and-basis-trade",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-quorum-from-voting-supply",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-stablecoin-collateralization-ratio",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-compute-vote-escrow-decay-weight",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-confirm-verbal-agreement-in-writing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-constrain-decoding-to-a-json-schema",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-contain-a-bad-config-rollout",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-contain-a-compromised-credential",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-contain-a-compromised-signer-key",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-contain-a-partial-outage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-contain-a-self-propagating-prompt-worm",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-context-budgeting",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-continuous-profiling-in-production",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-contract-size-limit-shrink",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-control-eval-nondeterminism",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-control-for-llm-judge-bias",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-convert-a-vague-brief-into-a-scope",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-convert-effort-days-to-calendar-time",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-convert-percent-to-basis-points",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-convert-recurring-events-across-zones",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-convert-trial-to-paid-with-paywall-timing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-correct-for-survivorship-bias",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cost-a-product-from-its-inputs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cover-empty-loading-and-error-states",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-crawl-with-rate-limits-and-backoff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-curate-a-reading-path-for-a-new-domain",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cut-over-with-blue-green-deployment",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-cut-the-smallest-shippable-slice",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-debug-a-heisenbug-under-observation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-debug-a-timing-dependent-race",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-debug-cors-preflight-failures",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-debug-tls-handshake-with-openssl",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-debunk-exactly-once-delivery",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decide-l1-vs-l2-finality-wait",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decide-plan-ahead-vs-react-per-step",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decide-private-vs-public-orderflow-route",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decide-what-to-automate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decline-work-outside-your-mandate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decline-work-with-a-costed-tradeoff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decode-a-rollup-batch-from-l1-calldata",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decode-calldata-and-events",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-decode-proxy-and-upgrade-events",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-decode-third-party-errors-with-request-ids",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decompose-into-verifiable-units",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decompose-mrr-movement-from-ledger-events",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-decompose-trend-from-seasonality",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-dedupe-accumulated-notes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-dedupe-logs-across-rpc-providers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-dedupe-parallel-tool-calls-to-cut-cost",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-dedupe-rows-by-natural-key",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-deduplicate-near-identical-chunks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-deduplicate-records-before-analysis",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-deduplicate-repeated-alerts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-deduplicate-work-across-agents",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-default-deny-on-missing-config",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-defend-the-index-against-poisoning",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-define-done-for-a-feature",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-define-feature-flag-rollout-stages",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-define-motion-duration-and-easing-tokens",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-define-product-telemetry-events",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-delegate-investigation-tasks-under-command",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-delegate-voting-power-without-losing-it",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-denormalise-to-avoid-a-hot-join",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-deprecate-an-api-version",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-a-dead-letter-queue",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-a-degradation-ladder",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-a-first-week-onboarding-plan",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-a-graded-exercise-set",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-a-multi-layer-cache",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-a-note-taxonomy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-a-paymaster",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-an-eval-that-can-actually-fail",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-health-and-readiness-probes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-mint-phases-and-supply-cap",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-nft-airdrop-claim",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-perceived-speed",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-design-visible-focus-rings",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-a-breaking-api-change",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-a-degraded-model-endpoint",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-a-job-that-silently-stopped",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-a-runaway-child-loop",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-a-stale-knowledge-base",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-a-stalled-subagent",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-a-swallowed-error",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-abi-drift",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-detect-an-agent-tool-call-loop",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-and-quarantine-schema-drift",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-api-schema-drift",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-bit-rot-with-periodic-scrubbing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-blind-signing-in-a-wallet-flow",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-data-races-with-thread-sanitizer",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-doc-drift-against-code",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-eval-set-contamination",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-goodhart-metric-gaming",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-iac-drift-with-a-refresh-plan",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-indexer-stall-by-block-lag",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-indirect-injection-in-documents",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-injection-in-tool-output",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-just-in-time-liquidity-rental",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-mass-assignment",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-memory-poisoning",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-nft-wash-trading",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-nondeterminism-by-repeating-tests",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-orphaned-resources-outside-state",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-revenue-leakage-in-billing-events",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-sample-ratio-mismatch",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-sandwich-risk-before-swapping",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-silent-tool-failure-wrapped-in-success",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-simpsons-paradox-in-a-metric",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-spec-drift-against-the-build",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-sunk-cost-trap",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-tool-result-tampering",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-unicode-tag-smuggling-in-input",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-detect-vote-buying-in-bribe-markets",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-diagnose-mtu-blackhole",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-differential-test-old-against-new",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-disambiguate-a-vague-request",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-discount-annual-plans-correctly",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-discover-sensitive-columns-in-a-database",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-dispute-an-invalid-l2-output-root",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-distinguish-authn-from-authz",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-distinguish-blocked-from-slow",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-distinguish-duration-from-deadline",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-distinguish-observation-from-inference",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-distinguish-snapshot-from-backup",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-distribute-key-shares-across-jurisdictions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-do-a-gap-analysis",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-document-a-configuration-option",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-document-a-deprecated-feature",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-document-a-fix-with-its-evidence",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-document-a-rollback-plan",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-document-an-api-endpoint-with-a-runnable-example",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-document-why-an-automation-exists",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-draft-a-customer-facing-incident-message",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-draft-a-proposal-through-governance-stages",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-draft-a-suspicious-activity-escalation-policy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-drain-a-load-balancer-node",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-drain-in-flight-requests-on-prestop",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-drill-a-stablecoin-depeg-response",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-drill-the-governance-emergency-path",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-drill-the-kill-switch-and-safety-valves",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-drill-wallet-recovery-from-seed",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-drive-expansion-revenue-with-usage-tiers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-dry-run-an-automation-before-enabling",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-dry-run-before-apply",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-ecrecover-signature-malleability",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-edit-your-own-slop",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-eip712-domain-separation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-eliminate-n-plus-one-queries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-eliminate-render-blocking-scripts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enable-versioning-to-undo-deletes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-a-data-contract",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-a-tool-call-budget-ceiling",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-csrf-protection",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-environment-parity-across-stages",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-per-chunk-access-control",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-per-tenant-storage-quotas",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-performance-budget",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-retention-with-lifecycle-rules",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-tls-in-transit",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enforce-velocity-limits-on-withdrawals",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-enumerate-user-visible-states",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-erc20-nonstandard-return-and-fee-tokens",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-erc2612-permit-deadline-review",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-erc721-1155-callback-safety",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-escalate-an-incident-to-a-new-team",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-escalate-with-a-recommendation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-estimate-capacity-for-parallel-workstreams",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-estimate-cross-domain-message-latency",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-estimate-in-ranges-not-points",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-estimate-price-elasticity-from-sales-data",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-estimate-searcher-latency-budget",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-estimate-swap-slippage-and-price-impact",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-evaluate-sequencer-decentralisation-tradeoffs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-evict-cold-memory-entries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-evolve-a-schema-without-breaking-readers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-expand-contract-a-database-column",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-expire-things-with-absolute-timestamps",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-explain-an-error-to-a-beginner",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-expose-job-failures-in-one-place",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-express-elevation-with-consistent-shadows",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fail-over-to-a-second-model-provider",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-failover-across-rpc-providers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-failure-archaeology",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fan-out-and-fan-in-subagents",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fetch-archival-state",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-find-idor-in-api-handlers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-find-slow-queries-with-pg-stat-statements",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-find-the-critical-path-of-a-plan",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-first-depositor-vault-inflation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fix-cumulative-layout-shift",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fix-scope-before-estimating",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fix-sql-injection-with-parameterised-queries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fix-text-contrast-to-wcag-aa",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-flag-roadblocks-instead-of-improvising",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-flag-untestable-words-in-a-spec",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-flip-to-read-only-under-stress",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-force-include-a-transaction-through-l1-inbox",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-forecast-completion-from-throughput",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-forecast-revenue-from-weighted-pipeline",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-forecast-storage-exhaustion-and-alert",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-fork-test-wallet-policy-changes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-format-currency-after-rounding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-forward-client-ip-through-a-proxy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-foundry-fuzz-testing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-freeze-changes-during-an-incident",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-freeze-eval-splits-before-tuning",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-freeze-production-changes-during-a-launch",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-freeze-requirements-before-building",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-freeze-the-clock-in-tests",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-freeze-writes-to-contain-corruption",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-front-load-the-conclusion",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gas-estimation-and-fee-caps",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gas-optimize-batch-mint",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gate-a-fixed-date-on-a-scope-cut",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gate-ci-with-lighthouse",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gate-destructive-plans-behind-approval",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gate-features-to-shape-packaging",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gate-motion-behind-prefers-reduced-motion",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-gate-side-effecting-tools-with-human-approval",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-generate-a-changelog-from-commits",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-generate-an-sbom",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-geofence-access-by-jurisdiction",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-get-a-blocker-unblocked",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-give-a-teaching-code-review",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-give-feedback-that-lands",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-guard-a-mass-notification-send",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-guard-against-missing-and-null-fields",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-guard-against-scope-creep",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-hand-off-incident-command-at-shift-change",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-a-moving-target-request",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-a-payment-reorged-out",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-batch-endpoints-with-partial-failure",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-block-gaps-and-skipped-slots",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-clock-skew-between-hosts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-digital-sales-tax-thresholds",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-dst-fall-back-ambiguity",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-dst-spring-forward-gap",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-erc20-transfer-event-quirks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-late-arriving-data",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-law-enforcement-and-subpoena-requests",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-leap-seconds-in-unix-time",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-memo-and-destination-tag-payments",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-refunds-without-negative-drift",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-rpc-rate-limits",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-handle-sigterm-for-graceful-shutdown",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-harden-file-upload-handlers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-harden-instruction-hierarchy-in-a-system-prompt",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-harden-session-cookie-attributes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-hardware-wallet-signing-workflow",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-hot-warm-cold-wallet-tiering",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-hunt-a-memory-leak-with-heap-dumps",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-hunt-idle-cloud-spend-in-a-stack",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-idempotent-etl-writes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-idempotent-operations",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-identify-function-selectors",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-implement-commit-reveal-order-submission",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-implement-travel-rule-data-transfer",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-import-legacy-resources-into-state",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-incremental-load-with-watermarks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-index-for-the-predicate-not-the-column",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-index-internal-transactions-and-traces",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-index-logs-with-reorg-handling",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-index-notes-for-retrieval",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-initiate-a-canonical-l2-withdrawal",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-inline-critical-css",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-inspect-tcp-connection-states",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-instrument-a-service-with-otel-metrics",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-instrument-before-reading-the-code",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-interpret-benchmark-results-honestly",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-invalidate-a-cache-on-write",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-invariant-testing-foundry",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-inventory-personal-data-flows",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-invoice-and-dun-overdue-subscriptions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-invoice-in-crypto-with-a-quote-expiry",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-irreversible-action-gate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-isolate-a-noisy-tenant",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-isolate-by-changing-one-variable",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-isolate-experiments-from-the-shared-path",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-isolate-one-variable",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-isolate-subagent-workspaces",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-isolate-tenants-in-one-vector-store",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-isolate-test-order-dependence",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-iterate-a-prompt-against-golden-cases",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-join-events-to-offchain-orders",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-a-changelog-humans-read",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-a-claim-provenance-log",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-a-debugging-hypothesis-log",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-an-append-only-money-ledger",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-an-incident-decision-log",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-capacity-headroom-above-peak",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-container-filesystem-ephemeral",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-docs-close-to-code",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-embedding-model-consistency",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-pull-requests-reviewable",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-sandbox-and-production-credentials-apart",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-secrets-out-of-container-images",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-secrets-out-of-terraform-state",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-keep-tzdb-current",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-label-observations-vs-inferences",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-label-review-comments-blocking-vs-nit",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-layer-hints-in-an-exercise",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-lazy-load-offscreen-media",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-lead-docs-with-a-runnable-example",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-lead-with-bad-news",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-link-a-treasury-payout-to-a-passed-proposal",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-localize-a-fault-by-bisecting-layers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-lock-metadata-with-freeze-flag",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-lock-remote-state-before-a-write",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-log-a-scheduled-run-outcome",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-log-assumptions-before-acting",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-log-prompts-without-leaking-secrets",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-lower-dns-ttl-before-a-cutover",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-mainnet-fork-testing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-maintain-a-signed-address-registry",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-make-a-build-reproducible",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-make-a-scheduled-job-idempotent",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-make-a-schema-migration-reversible",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-make-analysis-reproducible-and-notebook-clean",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-make-api-writes-idempotent-with-a-key",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-make-hover-states-non-essential",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-map-acceptance-criteria-to-tests",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-map-licensing-exposure-by-jurisdiction",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-map-third-party-data-processors",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-match-deposits-to-invoices-at-fixed-cutoff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-match-logs-to-transactions-by-hash",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-match-reply-length-to-the-ask",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-match-underpaid-and-overpaid-invoices",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-and-hold-generation-determinism",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-churn-and-run-save-plays",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-core-web-vitals-field",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-elapsed-time-with-a-monotonic-clock",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-forced-inclusion-latency",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-frontrunning-exposure-from-fill-price",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-inter-annotator-agreement",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-land-and-expand-net-revenue-retention",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-mempool-to-inclusion-latency",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-novelty-and-primacy-effects",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-on-chain-svg-gas-cost",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-orderflow-auction-clearing-price",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-orderflow-toxicity-for-a-market-maker",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-reidentification-risk-in-a-release",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-the-value-of-an-automation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-time-to-first-contribution",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-measure-whether-a-memory-helped",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-mentor-by-socratic-questioning",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-merge-system-and-user-instruction-layers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-migrate-schema-with-expand-contract",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-mine-retrieval-evals-from-query-logs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-minimise-collected-personal-data",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-mitigate-before-root-cause",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-ad-and-sponsorship-economics",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-flash-loan-attacks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-freemium-to-paid-conversion",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-l2-fee-market-and-gas-token",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-liquidation-seizure-and-bonus",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-many-to-many-token-transfers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-marketplace-take-rate-and-net",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-model-peg-arbitrage-credibility",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-monitor-a-stablecoin-for-depeg",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-monitor-builder-block-share-concentration",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-monitor-p99-tail-latency",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-mount-a-read-only-root-filesystem",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-multiply-then-divide-with-widening",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-multisig-signing-ceremony",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-multisig-threshold-and-signer-rotation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-name-the-audience-before-writing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-navigate-a-monorepo-build-graph",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-never-encode-meaning-in-color-alone",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-never-mount-the-docker-socket",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-nonce-management-under-retries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-normalize-a-rate-correctly",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-onboard-into-an-unfamiliar-codebase",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-open-an-incident-and-assign-roles",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-optimize-web-font-loading",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-oracle-manipulation-spot-vs-twap",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-order-dockerfile-layers-for-cache",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-order-resource-changes-to-avoid-downtime",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-page-the-correct-on-call-rotation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-paginate-until-the-cursor-is-exhausted",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pair-dark-mode-tokens-by-role",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pair-program-as-the-teacher",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-parse-and-validate-model-json-output",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-parse-locale-money-input",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-parse-offset-bearing-timestamps",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-partition-a-table-for-pruning",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-partition-events-table-by-block-range",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-partition-work-to-avoid-file-conflicts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-permit2-allowance-safety-review",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pick-a-model-by-task-shape",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pick-a-store-by-access-pattern",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pick-a-tool-by-capability-not-novelty",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pick-payment-confirmations-by-value",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pick-the-right-escalation-path",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-an-api-contract-with-a-consumer-test",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-and-verify-a-toolchain",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-container-image-by-digest",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-metric-definitions-in-one-place",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-model-snapshots-and-canary-upgrades",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-nft-assets-with-content-hashes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-provider-and-module-versions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-the-api-client-and-record-its-version",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pin-transitive-dependencies-with-a-lockfile",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-place-buffer-on-the-critical-chain",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-plan-a-sequencer-outage-failover",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-plan-an-escape-hatch-exit-drill",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-plan-capacity-from-load-data",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-plan-in-vertical-slices",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-plan-treasury-runway-and-diversification",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-plant-canary-strings-to-catch-leakage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-plant-canary-tokens-to-catch-prompt-leakage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-poison-a-fixture-to-prove-a-detector",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-poll-an-async-job-to-completion",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-post-a-public-status-page-update",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pre-register-an-ab-test-analysis",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pre-register-eval-pass-criteria",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prefer-primary-sources-over-summaries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-preflight-a-safe-module-upgrade",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-preload-web-fonts-to-avoid-flash",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prevent-cache-stampede-with-single-flight",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prevent-deadlocks-with-lock-ordering",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prevent-mint-front-running",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prevent-subagent-starvation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prevent-theme-flash-on-first-paint",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-price-a-change-request",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-price-a-discount-by-its-margin-cost",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-price-a-priority-tip-for-inclusion",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-price-cost-to-manipulate-twap-oracle",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-price-dependency-risk-and-lead-time",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-price-redemption-versus-market-exit",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prioritize-by-cost-of-delay",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-probe-container-health-without-restart-storms",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-profile-before-optimising-with-pprof",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-profile-build-time-and-cost",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-promote-one-artifact-through-all-environments",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-promote-repeated-session-knowledge-to-a-skill",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-propagate-trace-context-across-services",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-property-based-test-with-hypothesis",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prorate-a-subscription-plan-change",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-protect-private-key-files-on-disk",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-protect-the-control-plane-from-data-plane",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prove-a-backup-is-readable",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prove-a-storage-failover-with-a-read",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prove-dead-code-is-dead",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-provide-a-manual-override-for-every-automation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-proxy-upgrade-storage-safety",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-prune-stale-facts-from-memory",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-pseudonymise-records-for-analysis",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-publish-a-governance-transparency-report",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-purge-cdn-cache-after-a-deploy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-purge-expired-records-with-a-receipt",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-push-back-on-an-unrealistic-constraint",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-quantify-claims-with-numbers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-quantify-estimate-error-bars",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-quantify-incident-customer-impact",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-quantify-priority-fee-overbidding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-quarantine-and-replay-poison-messages",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-quarantine-output-from-untrusted-tools",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-quarantine-poison-pipeline-records",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-raise-prices-on-existing-customers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-re-estimate-when-an-assumption-breaks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-re-review-only-the-new-commits",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-re-screen-customers-on-list-update",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-read-a-query-plan-with-explain-analyze",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-read-a-stack-trace-bottom-up",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-read-api-docs-before-implementing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-read-back-state-after-deploy",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-read-error-messages-literally",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-read-only-reentrancy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-read-proxy-implementation-slot",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-read-the-real-ask",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reap-zombie-processes-with-an-init",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rebuild-a-corrupted-index",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-a-data-migration-by-row-counts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-custody-balances-against-the-ledger",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-gateway-payout-to-orders",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-indexer-cursor-with-chain-tip",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-memory-against-source-of-truth",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-metric-across-two-systems",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-mev-pnl-across-blocks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-off-chain-and-on-chain-tally",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-onchain-payments-to-the-ledger",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-pipeline-row-counts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-processor-payout-to-booked-revenue",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-state-before-acting",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconcile-token-supply-from-transfers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconstruct-a-timeline-from-records",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reconstruct-state-from-event-logs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-record-an-architecture-decision",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-record-and-replay-a-failing-interaction",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-record-api-calls-for-replay",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-record-crypto-payment-tax-events",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-record-dataset-provenance",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-record-negative-and-null-results",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-record-what-the-requirement-left-out",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-recover-a-crashed-orchestrator",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-recover-failed-payments-with-retry-ladder",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-recover-from-a-stale-state-lock",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-recover-from-compaction",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-red-team-your-own-output",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-redact-secrets-from-model-context",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reduce-long-tasks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reduce-row-lock-contention",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-refactor-under-a-characterization-test",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-refresh-an-index-incrementally",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-refresh-oauth-tokens-without-a-race",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-refund-a-crypto-payment",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-refuse-jailbreak-framing-requests",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-refuse-unsafe-or-out-of-scope-work",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rehearse-a-restore-on-a-timer",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reject-currency-mismatch-before-arithmetic",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-renegotiate-a-deadline-extension-early",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-renegotiate-when-assumptions-break",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-renew-acme-certificates-before-expiry",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-replace-spinners-with-skeletons",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-replay-an-agent-run-from-its-action-log",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-replay-blocks-idempotently",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-replay-failed-records-from-dlq",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-replay-protection-across-forks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-replicate-a-vendors-benchmark-claim",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-absence-of-evidence",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-impermanent-loss-vs-holding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-partial-results-without-fabricating",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-progress-with-verifiable-evidence",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-spread-not-just-means",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-status-not-activity",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-uncertainty-ranges",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-report-uncertainty-with-confidence-levels",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reproduce-a-bug-before-fixing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-require-an-idempotency-key-for-write-tools",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-require-quorum-approval-above-a-threshold",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rerank-candidates-before-generation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-research-willingness-to-pay-with-van-westendorp",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-reset-to-a-known-good-baseline",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-resolve-conflicting-memories",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-resolve-entities-across-sources",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-resolve-merge-conflicts-from-parallel-agents",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-resolve-split-horizon-dns",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-restore-from-archive-with-a-staged-plan",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-restrict-agent-writes-to-an-allowlisted-path",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-resumable-handoff-capsule",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-retain-compliance-evidence-on-a-schedule",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-retire-an-automation-nobody-uses",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-retire-an-obsolete-skill",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-retry-5xx-with-capped-jittered-backoff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-retry-vs-switch",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-a-plan-before-committing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-a-signing-request-before-signing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-a-terraform-plan-for-destroy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-config-defaults-and-timeouts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-cors-policy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-database-migrations-in-pr",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-dependency-bumps-and-lockfiles",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-deserialization-sinks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-diff-against-stated-intent",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-logging-for-pii-and-volume",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-marketplace-listing-signature",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-null-and-empty-input-paths",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-path-traversal-in-file-apis",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-shared-state-and-locks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-sql-construction-in-the-diff",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-swallowed-exceptions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-the-rollback-path",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-review-xss-output-encoding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-revoke-token-approvals",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rewind-indexer-on-deep-reorg",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rewrite-jargon-into-plain-language",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-roll-back-a-partial-fan-out",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-roll-out-a-canary-release",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rollback-first-planning",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rotate-a-multisig-signer-in-place",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rotate-and-scope-api-keys",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-round-currency-with-the-correct-mode",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-rounding-direction-truncation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-route-a-fact-to-memory-session-or-skill",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-route-alerts-by-severity-and-owner",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-route-container-logs-to-a-collector",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-route-private-traffic-over-a-vpn",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-route-reads-to-a-replica-not-your-own-write",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-a-blameless-postmortem",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-a-comms-cadence-during-an-incident",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-a-jailbreak-probe-suite",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-a-mainnet-deploy-checklist",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-a-pricing-experiment-with-a-control",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-a-release-checklist",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-a-right-to-erasure-drill",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-adversarial-input-tests",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-an-airgapped-key-ceremony",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-an-incident-call-bridge",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-containers-as-a-non-root-user",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-run-untrusted-code-with-network-disabled",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sample-human-evals-with-strata",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sandbox-agent-shell-commands",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sanitise-exception-payloads-for-error-trackers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sanitize-untrusted-html-before-rendering",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sanity-check-tokenomics-emissions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scaffold-a-tutorial-with-checkpoints",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scale-amounts-between-token-decimals",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scan-container-images-for-vulnerabilities",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scan-for-license-compliance",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scan-git-history-for-secrets",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scan-the-diff-for-committed-secrets",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-schedule-and-execute-a-governance-timelock",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-schedule-cron-in-utc",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scope-a-spike-before-building",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scope-emergency-council-powers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scope-object-permissions-to-least-privilege",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scope-per-tool-permissions-least-privilege",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scope-tool-permissions-to-least-privilege",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-score-retrieval-by-ranking-metrics",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-score-retrieval-quality",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-score-tests-with-mutation-testing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scrape-legally-and-respect-robots-txt",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-screen-a-skill-or-plugin-before-installing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-screen-addresses-against-sanctions-lists",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-screen-airdrop-recipients-for-sybil-clusters",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-screen-counterparties-with-the-ofac-50-percent-rule",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-screen-defi-interactions-against-sanctioned-protocols",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-screen-dust-proposals-before-voting",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-scrub-pii-from-structured-logs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-seed-phrase-backup-safety",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-seed-phrase-entropy-verification",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-self-correct-in-thread",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-send-a-cross-domain-message-and-verify-it",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-correctness-from-style-in-review",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-correlation-from-causation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-deployer-and-treasury-keys",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-detection-from-remediation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-durable-facts-from-session-scratch",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-instructions-from-retrieved-data",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-milestone-from-deadline",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-must-have-from-nice-to-have",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-observations-from-theories-on-the-bridge",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-privacy-data-from-compliance-records",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-requirement-from-preference",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-significance-from-relevance",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-symptom-from-root-cause",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-separate-the-problem-from-the-solution",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sequence-dependent-subagents",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sequence-plan-around-risky-assumptions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-a-batch-window-across-zones",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-a-change-order-threshold",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-a-minimum-viable-price-floor",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-a-ship-threshold-with-a-margin",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-an-alert-noise-budget",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-client-timeouts-before-a-call-hangs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-data-retention-windows",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-incident-severity-levels",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-kill-criteria-before-launch",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-kyc-collection-boundaries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-query-and-lock-timeouts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-refund-and-chargeback-policy-thresholds",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-set-travel-rule-thresholds-by-jurisdiction",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-shed-load-before-saturation",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-shed-load-gracefully-under-overload",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-shrink-a-fuzz-crash-to-a-minimal-repro",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-shrink-a-repro-by-delta-debugging",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sign-message-phishing-review",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-sign-release-binaries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-silent-failure-detection",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-simulate-a-bundle-before-submission",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-simulate-a-transaction-before-broadcast",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-simulate-vote-outcome-before-committing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-size-a-connection-pool-to-the-database-limit",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-size-a-volume-from-growth-rate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-size-an-eval-for-a-meaningful-delta",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-size-concentrated-liquidity-range",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-size-the-context-window-to-the-job",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-size-touch-targets-to-44px",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-slither-triage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-snap-spacing-to-a-4pt-grid",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-snapshot-and-version-a-knowledge-base",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-snapshot-fx-rates-at-posting-time",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-snapshot-indexer-state-for-replay",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-snapshot-voting-power-at-a-past-block",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-specify-the-denominator-of-a-rate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-split-a-hot-partition-before-it-locks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-split-a-monolithic-state-file",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-split-amounts-with-largest-remainder",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-split-collaborator-royalties",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-split-costs-into-fixed-and-variable",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-spot-aml-red-flags-in-wallet-activity",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-spot-drainer-signature-phishing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-state-confidence-plainly",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-steer-a-running-child-agent",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-stop-a-child-agent-safely",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-stop-a-runaway-loop-amplifier",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-stop-work-when-conditions-become-unsafe",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-storage-slot-collision-detection",
+      "status": "blocked",
+      "detail": "security gate: Private key found in: SKILL.md"
+    },
+    {
+      "skill": "payments/0xklen-store-instants-as-utc",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-store-money-as-integer-minor-units",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-store-raw-logs-before-decoding",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-store-user-timezone-and-render-locally",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-stratify-eval-scores-by-slice",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-strip-sycophancy-from-replies",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-structure-a-prompt-in-labelled-blocks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-structured-pre-audit-pass",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-structured-reentrancy-review",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-submit-an-atomic-bundle-to-a-relay",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-submit-transaction-through-private-mempool",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-summarize-a-thread-faithfully",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-surface-hidden-assumptions-in-a-request",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tag-notes-for-precision-recall",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tag-resources-for-cost-and-ownership",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-teach-a-concept-by-worked-example",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-teach-a-tool-by-its-failure-modes",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tear-down-a-competitor-price-sheet",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-teardown-ephemeral-review-environments",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-template-prompts-with-safe-substitution",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-test-across-timezone-boundaries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-test-an-automation-against-a-fixture-run",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-test-an-eval-for-gaming-shortcuts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-test-code-blocks-in-docs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-test-mpc-share-backup-restoration",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-test-stablecoin-redemption-under-stress",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-throttle-mobile-performance",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tier-cold-data-to-cheaper-storage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tighten-firewall-rules-to-least-privilege",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-timebox-a-spike-for-the-top-unknown",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-timelock-design-and-exit-path",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-timeout-discipline",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tokenise-card-data-to-shrink-scope",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tokenise-values-into-semantic-names",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tool-selection-economics",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trace-a-failed-transaction",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trace-a-feature-request-to-its-need",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trace-a-network-path-with-mtr",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trace-a-transaction-to-its-searcher",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trace-column-level-lineage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trace-dns-resolution-with-dig",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trace-nft-provenance-lineage",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-track-and-report-task-budget",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-track-erc4337-userops",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-track-incident-followups-to-closure",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-track-l2-proving-and-challenge-windows",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-track-redelegation-and-delegate-exits",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-track-scd-type-2-history",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trade-scope-quality-time",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-treat-search-results-as-untrusted-content",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-triage-a-flaky-test-to-root-cause",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-triage-a-personal-data-breach",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-triage-dependency-cves",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-triage-sanctions-screening-false-positives",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-triangulate-independent-sources",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trim-context-with-a-sliding-window",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-truncate-tool-output-to-protect-context",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-trust-a-dashboard-with-a-sanity-pass",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tune-chunk-size-and-overlap",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tune-ci-cache-hit-rate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tune-http-keep-alive-and-connection-pools",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tune-load-balancer-health-checks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tune-postgres-for-event-queries",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-tx-origin-authorization",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-unchecked-low-level-calls",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-unwind-vesting-schedule-to-circulating-supply",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-use-async-io-without-blocking-the-event-loop",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-use-content-visibility",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-use-distroless-or-slim-base-images",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-use-explicit-entrypoint-and-command",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-use-paired-comparison-to-cut-judge-noise",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-use-zoneinfo-not-naive-datetime",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-validate-a-response-body-against-its-schema",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-validate-child-reported-metrics",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-validate-erc721-metadata-schema",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-validate-iac-in-ci-before-merge",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-validate-jwt-signature-and-claims",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-validate-tool-arguments-against-schema-before-exec",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-value-liquidity-mining-position-with-emission-decay",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-vendor-lockfile-dependencies",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-child-agents-output",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-codemod-preserves-behavior",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-fix-under-original-conditions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-payment-request-before-sending",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-reserve-attestation-report",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-supply-chain-artifact",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-third-partys-claim",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-webhook-is-delivered-at-least-once",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-a-write-actually-landed",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-address-on-hardware-wallet-screen",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-allowlist-merkle-proof",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-answer-claims-against-chunks",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-blob-data-availability-on-l1",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-builder-censorship-of-a-transaction",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-chain-id-before-signing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-commit-reveal-reveal-fairness",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-contract-address-matches-project",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-deletion-in-backups-and-snapshots",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-encryption-at-rest",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-erc2981-royalty-split",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-escape-hatch-exit-proof",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-image-signature-before-running",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-indexer-completeness-with-counts",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-l2-state-root-against-l1-batch",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-metadata-uri-permanence",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-mtls-client-certificate",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-on-chain-svg-render-parity",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-proposal-calldata-matches-intent",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-provenance-of-a-prompt-template",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-source-on-block-explorer",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-tests-cover-changed-lines",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-token-trait-rarity",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-wallet-derivation-paths",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-verify-webhook-signatures-before-processing",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-version-a-public-api",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-version-a-skill-safely",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-version-and-refresh-sanctions-lists",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-veto-a-malicious-proposal",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-walk-privileged-functions",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-warm-caches-before-cutover",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-watch-egress-for-exfiltration",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-watch-replication-lag-as-a-durability-gap",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-whitelist-and-cool-down-new-addresses",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-wrap-a-dangerous-operation-in-a-fuse",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-wrap-remote-calls-in-circuit-breakers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-child-agent-brief",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-decision-record",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-design-doc",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-failing-regression-test-first",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-failing-test-before-the-fix",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-first-week-runbook-for-oncall",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-lean-dockerignore",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-memory-entry-that-ages-well",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-migration-guide",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-one-page-problem-statement",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-quickstart-that-runs",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-readme-for-strangers",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-readme-people-finish",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-runbook-for-a-3am-incident",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-runnable-handoff-note",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-scope-agreement",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-stakeholder-status-update",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-sunset-plan-for-a-feature",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-a-troubleshooting-section",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-actionable-error-copy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-actionable-review-comments",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-adversarial-eval-cases",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-an-annotated-code-walkthrough",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-an-append-only-agent-action-log",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-an-on-call-runbook",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-commit-messages-that-explain-why",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-compliance-findings-for-counsel-review",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-exercises-from-the-real-backlog",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-falsifiable-acceptance-criteria",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-terse-action-oriented-copy",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-the-first-incident-notification",
+      "status": "added",
+      "detail": ""
+    },
+    {
+      "skill": "payments/0xklen-write-tool-schemas-a-model-wont-misuse",
+      "status": "added",
+      "detail": ""
+    },
+    {
       "skill": "payments/agenti",
       "status": "unresolved",
       "detail": "no upstream SKILL.md"
@@ -11829,7 +17029,7 @@
     },
     {
       "skill": "trading/roman-rr-trading-signals",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -12598,33 +17798,25 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "tooloracle/baseoracle": {
-      "status": "fetched",
-      "revision": "f76d05c524b7aa38c310d59b973eaff71ddd5ec3"
-    },
     "coinpilot-labs/skills": {
       "status": "unchanged",
       "revision": "3ae8933579c10a80d90ae7999cfc248871cf0a87"
-    },
-    "shibclaw/crypto-news-agent": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "chaingpt-org/chaingpt-claude-skill": {
       "status": "fetched",
       "revision": "ae19957d7665127f442b43951f372be19baa2489"
     },
+    "shibclaw/crypto-news-agent": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "tooloracle/baseoracle": {
+      "status": "fetched",
+      "revision": "f76d05c524b7aa38c310d59b973eaff71ddd5ec3"
+    },
     "cryptosi-dao/crypto-skills": {
       "status": "unchanged",
       "revision": "e9926d4e39406920e1b738f281df0ce1ded04f5f"
-    },
-    "vo1ganin/crypto-claude-skills": {
-      "status": "fetched",
-      "revision": "81006000fde54ccab76d5c111e8395a30f889cd9"
-    },
-    "duc041318/camscanner-ai-tools": {
-      "status": "fetched",
-      "revision": "85bf95209b386b7a97e7cf38f3ec85f84aa426e5"
     },
     "elizaos-plugins/eliza-plugin-defi": {
       "status": "unavailable",
@@ -12634,9 +17826,17 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "vo1ganin/crypto-claude-skills": {
+      "status": "fetched",
+      "revision": "81006000fde54ccab76d5c111e8395a30f889cd9"
+    },
     "alt-research/erc-8004": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "duc041318/camscanner-ai-tools": {
+      "status": "fetched",
+      "revision": "85bf95209b386b7a97e7cf38f3ec85f84aa426e5"
     },
     "emblemcompany/agent-skills": {
       "status": "fetched",
@@ -12666,13 +17866,13 @@
       "status": "fetched",
       "revision": "f2eedc2f041589322c0db39d59a67757014910a0"
     },
-    "ianalloway/openclaw-skills": {
-      "status": "unchanged",
-      "revision": "12360c98677fad8c4a78035be0227a2117ba0300"
-    },
     "lordbasilaiassistant-sudo/mcp-servers": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "ianalloway/openclaw-skills": {
+      "status": "unchanged",
+      "revision": "12360c98677fad8c4a78035be0227a2117ba0300"
     },
     "hive-intel/hive-sdk": {
       "status": "fetched",
@@ -12682,13 +17882,13 @@
       "status": "unchanged",
       "revision": "eb580db12a4fdf4afc78a6a2bae00159e3027dff"
     },
-    "jiayaoqijia/ottie": {
-      "status": "unchanged",
-      "revision": "435d7ccd814f7ae10c20160a19c500b8136f6c18"
-    },
     "hovsteder/powersun-tron-mcp": {
       "status": "fetched",
       "revision": "0b12b00c73af68e5275e5baef2e63e44c8d6bf77"
+    },
+    "jiayaoqijia/ottie": {
+      "status": "unchanged",
+      "revision": "435d7ccd814f7ae10c20160a19c500b8136f6c18"
     },
     "qbt-labs/openmm-mcp": {
       "status": "fetched",
@@ -12714,13 +17914,17 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "traderouter/trade-router-mcp": {
+      "status": "fetched",
+      "revision": "95d9ace3fa586bc626704e84054302048559b35a"
+    },
     "tonny00711/universal-crypto-skill-for-agents": {
       "status": "fetched",
       "revision": "ec144232760985ea9d3e67c938c1da5882fb2b07"
     },
-    "traderouter/trade-router-mcp": {
+    "sentien-labs/verdictswarm-mcp": {
       "status": "fetched",
-      "revision": "95d9ace3fa586bc626704e84054302048559b35a"
+      "revision": "b292a2f991189336dc606ec6f760f62b3295c79b"
     },
     "xspoonai/spoon-awesome-skill": {
       "status": "fetched",
@@ -12729,10 +17933,6 @@
     "ed1sonl1-byte/virtual_exchange": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "sentien-labs/verdictswarm-mcp": {
-      "status": "fetched",
-      "revision": "b292a2f991189336dc606ec6f760f62b3295c79b"
     },
     "aelfscanproject/aelfscan-skill": {
       "status": "unchanged",
@@ -12746,6 +17946,10 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "szhygulin/vaultpilot-mcp": {
+      "status": "fetched",
+      "revision": "088b8a9d40ce1978ce8c1086472c28659cc8adc3"
+    },
     "smartcontractkit/chainlink-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
@@ -12754,21 +17958,21 @@
       "status": "fetched",
       "revision": "2a22bd53d710be69f8533b3a4ab80e28945c9d7d"
     },
-    "coinpaprika/claude-marketplace": {
-      "status": "fetched",
-      "revision": "4f21d50c51d120a7a7af7e77f890e24ab6c6495f"
+    "alt-research/crypto-intel": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "uzairansaruzi/robinhood-agent-skill": {
       "status": "unchanged",
       "revision": "627f2383e2c9bceb604c65b189e7d0d3dbd9820b"
     },
-    "alt-research/crypto-intel": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "alt-labs/crypto-intel": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "coinpaprika/claude-marketplace": {
+      "status": "fetched",
+      "revision": "4f21d50c51d120a7a7af7e77f890e24ab6c6495f"
     },
     "defillama/defillama-skills": {
       "status": "unchanged",
@@ -12778,13 +17982,17 @@
       "status": "unchanged",
       "revision": "cf5c7fae42b03ed653bd49ae44d775f5c803ce72"
     },
+    "elfa-ai/elfa-ai-skill": {
+      "status": "unchanged",
+      "revision": "0633bac32ec61d61bcd5e57c3a4ab16f1dc898cd"
+    },
     "ethereum-ai-tools/tx-analyzer": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "elfa-ai/elfa-ai-skill": {
-      "status": "unchanged",
-      "revision": "0633bac32ec61d61bcd5e57c3a4ab16f1dc898cd"
+    "pyth-network/pyth-mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "pooowell/fomo-research-skill": {
       "status": "unchanged",
@@ -12793,14 +18001,6 @@
     "octav-labs/octav-api-skill": {
       "status": "unchanged",
       "revision": "0c1a8632543a31dc36f82df1d93f6b2bba640d21"
-    },
-    "pyth-network/pyth-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "szhygulin/vaultpilot-mcp": {
-      "status": "fetched",
-      "revision": "088b8a9d40ce1978ce8c1086472c28659cc8adc3"
     },
     "robinscan/robinscan-skill": {
       "status": "unchanged",
@@ -12814,25 +18014,25 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "aelfproject/aelf-skills": {
-      "status": "unchanged",
-      "revision": "ba15f2fb6ffeeabf5b3568df616659528bf6463c"
-    },
     "pyth-network/pyth-client": {
       "status": "fetched",
       "revision": "acba47ff1879ed1150b02bb502ec74eb766a934e"
+    },
+    "aelfproject/aelf-skills": {
+      "status": "unchanged",
+      "revision": "ba15f2fb6ffeeabf5b3568df616659528bf6463c"
     },
     "aptos-labs/aptos-agent": {
       "status": "fetched",
       "revision": "a1a050733a3a5207faf51ceb310e265b14898d0c"
     },
-    "ashrafiucse/security-audit-skills": {
-      "status": "unchanged",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3"
-    },
     "base-org/agent-starter": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "ashrafiucse/security-audit-skills": {
+      "status": "unchanged",
+      "revision": "ad51c94f092beb597459b45266405643f07424c3"
     },
     "bnb-chain/bnbchain-skills": {
       "status": "unchanged",
@@ -12854,25 +18054,25 @@
       "status": "fetched",
       "revision": "c414cbbda56d99e2a390e0371b77b70968f65b5d"
     },
+    "dfinity/icskills": {
+      "status": "fetched",
+      "revision": "8edff1f0ead093f44fc12a51bc635675964facfc"
+    },
     "hashgraph/hedera-agent-kit-js": {
       "status": "unchanged",
       "revision": "8869caaf84602dc359a05a00e595e40593c0ae5f"
-    },
-    "elizaos/eliza": {
-      "status": "unavailable",
-      "detail": "source exceeds download limit"
     },
     "mystenlabs/sui-dev-skills": {
       "status": "unchanged",
       "revision": "e3657857fbe47142dae1ac0ce99114c8a3ba4caa"
     },
-    "dfinity/icskills": {
-      "status": "fetched",
-      "revision": "8edff1f0ead093f44fc12a51bc635675964facfc"
-    },
     "mystenlabs/community-skills": {
       "status": "unchanged",
       "revision": "ca0a449b54c1970fcc9fbad729e904e85c7190c9"
+    },
+    "mystenlabs/skills": {
+      "status": "fetched",
+      "revision": "7b661f2b2b8b3083754ab117f5de935b3bb0c8dc"
     },
     "ton-blockchain/skills": {
       "status": "unchanged",
@@ -12882,23 +18082,15 @@
       "status": "unchanged",
       "revision": "7412797497c49ea9f38fdef7938d5abda6a70b4e"
     },
-    "mystenlabs/skills": {
-      "status": "fetched",
-      "revision": "7b661f2b2b8b3083754ab117f5de935b3bb0c8dc"
-    },
-    "aave/aave-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "sendaifun/skills": {
       "status": "fetched",
       "revision": "06b36b8b420e705ffd57b29e463f01093959d8d4"
     },
-    "aerodrome-finance/contracts": {
-      "status": "fetched",
-      "revision": "1ba30815bba620f7e9faa34769ffd00c214c9b82"
+    "elizaos/eliza": {
+      "status": "unavailable",
+      "detail": "source exceeds download limit"
     },
-    "alienbase/base": {
+    "aave/aave-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
@@ -12906,29 +18098,37 @@
       "status": "fetched",
       "revision": "2f82b76a769af96861ee55187bcc61c0930a6200"
     },
-    "aave/aave-v3-core": {
+    "alienbase/base": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "aerodrome-finance/contracts": {
       "status": "fetched",
-      "revision": "782f51917056a53a2c228701058a6c3fb233684a"
+      "revision": "1ba30815bba620f7e9faa34769ffd00c214c9b82"
     },
     "awaken-finance/awaken-agent-skills": {
       "status": "unchanged",
       "revision": "bd71d2e92c43e9f8138ddd99bbc998618ccd3fed"
     },
-    "smartcontractkit/chainlink": {
+    "aave/aave-v3-core": {
       "status": "fetched",
-      "revision": "ab6db572cac36e9abe5e270578df4f93ccb59756"
-    },
-    "error403agent/clawford": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+      "revision": "782f51917056a53a2c228701058a6c3fb233684a"
     },
     "curvefi/curve-contract": {
       "status": "fetched",
       "revision": "574f44027d089de0eac765f5a74ea5ae96aba968"
     },
+    "error403agent/clawford": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
     "compound-finance/compound-protocol": {
       "status": "fetched",
       "revision": "a3214f67b73310d547e00fc578e8355911c9d376"
+    },
+    "heyelsa/elsa-openclaw": {
+      "status": "fetched",
+      "revision": "d0696faa2c5b36c702fe8bca4fac6447822cc1c8"
     },
     "alt-research/staking-router": {
       "status": "unavailable",
@@ -12942,21 +18142,21 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "heyelsa/elsa-openclaw": {
-      "status": "fetched",
-      "revision": "d0696faa2c5b36c702fe8bca4fac6447822cc1c8"
-    },
     "etherfi-protocol/etherfi-contracts": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "jup-ag/agent-skills": {
-      "status": "unchanged",
-      "revision": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f"
+    "smartcontractkit/chainlink": {
+      "status": "fetched",
+      "revision": "9d3afcf3621e9d5717bc19d976db867e8e29961c"
     },
     "gmx-io/gmx-ai": {
       "status": "fetched",
       "revision": "125fce8163823febc01ee37b4c8974e29182b2e8"
+    },
+    "jup-ag/agent-skills": {
+      "status": "unchanged",
+      "revision": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f"
     },
     "jup-ag/mcp-server": {
       "status": "unavailable",
@@ -12970,6 +18170,10 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "kybernetwork/kyberswap-skills": {
+      "status": "fetched",
+      "revision": "d9de43163f4cf6ddea1a674a7ec705a5a5029beb"
+    },
     "marinade-finance/liquid-staking-program": {
       "status": "fetched",
       "revision": "d4e20237f08add67f030927fe12a097b62b837f5"
@@ -12978,9 +18182,9 @@
       "status": "fetched",
       "revision": "1440c830eb1d0916a436468a71cd73bc8b8deffb"
     },
-    "kybernetwork/kyberswap-skills": {
+    "morpho-org/morpho-blue": {
       "status": "fetched",
-      "revision": "d9de43163f4cf6ddea1a674a7ec705a5a5029beb"
+      "revision": "8e26ca6a8dbc5089edcd67fb576248810fd2870a"
     },
     "morpho-org/mcp-server": {
       "status": "unavailable",
@@ -12989,10 +18193,6 @@
     "openocean-finance/openocean-skills": {
       "status": "unchanged",
       "revision": "98b78a4b3c211be196b0e1239d5a67f95eabd18b"
-    },
-    "morpho-org/morpho-blue": {
-      "status": "fetched",
-      "revision": "8e26ca6a8dbc5089edcd67fb576248810fd2870a"
     },
     "nethermindeth/defi-skills": {
       "status": "fetched",
@@ -13026,13 +18226,13 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "rocket-pool/rocketpool": {
-      "status": "fetched",
-      "revision": "fef41a4f7cf99d7d66313c0ba04deb8ba2dabf88"
-    },
     "swellnetwork/swell-contracts": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "rocket-pool/rocketpool": {
+      "status": "fetched",
+      "revision": "fef41a4f7cf99d7d66313c0ba04deb8ba2dabf88"
     },
     "tomorrowdaoproject/tomorrowdao-skill": {
       "status": "unchanged",
@@ -13066,10 +18266,6 @@
       "status": "unchanged",
       "revision": "48aa4e23cac7579c68baceed5be611dc33acffe6"
     },
-    "convex-eth/platform": {
-      "status": "unavailable",
-      "detail": "source exceeds download limit"
-    },
     "uniswap/v4-periphery": {
       "status": "fetched",
       "revision": "9969eec44cfdf07e24b41de47f40276a58401976"
@@ -13078,17 +18274,25 @@
       "status": "unchanged",
       "revision": "bfe2303ab9d93c2ff0403386681a91cf02e76b89"
     },
-    "arraysdata/arrays-skills": {
-      "status": "fetched",
-      "revision": "5733fcb71d4c080e45d5a9251487e443deb36777"
-    },
     "alchemyplatform/skills": {
       "status": "fetched",
       "revision": "4caf3e555c3af8dbb9e5b540aed558aef986d885"
     },
+    "arraysdata/arrays-skills": {
+      "status": "fetched",
+      "revision": "5733fcb71d4c080e45d5a9251487e443deb36777"
+    },
     "austintgriffith/ethskills": {
       "status": "fetched",
       "revision": "06ea4efa08076ff04f6ca4945ef4a2ca881115b0"
+    },
+    "blockscout/agent-skills": {
+      "status": "fetched",
+      "revision": "3426687446d936ac492aa3f2e6b4b47baa33c21c"
+    },
+    "convex-eth/platform": {
+      "status": "unavailable",
+      "detail": "source exceeds download limit"
     },
     "yejiming/web3-awesome-skills": {
       "status": "fetched",
@@ -13102,9 +18306,9 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "blockscout/agent-skills": {
+    "smartcontractkit/chainlink-agent-skills": {
       "status": "fetched",
-      "revision": "3426687446d936ac492aa3f2e6b4b47baa33c21c"
+      "revision": "b20ccd99dca049fb4a216310e917eef53674a21d"
     },
     "zachppt/crypto_agent01": {
       "status": "unavailable",
@@ -13114,17 +18318,13 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "smartcontractkit/chainlink-agent-skills": {
-      "status": "fetched",
-      "revision": "b20ccd99dca049fb4a216310e917eef53674a21d"
-    },
     "nicholasgriffintn/cyfrin-solskill": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "coinbase/agentkit": {
+    "drpcorg/drpc-agent-skills": {
       "status": "fetched",
-      "revision": "2e6dbaf725b9ec5f3b53003278100b0e655c214d"
+      "revision": "e31ba876ab1a3e7fcd4f0faf933986b712a36631"
     },
     "ljagiello/ctf-skills": {
       "status": "fetched",
@@ -13134,33 +18334,25 @@
       "status": "unchanged",
       "revision": "d0868982514b9c3de9cbb235f8f48290d8ae3d55"
     },
-    "drpcorg/drpc-agent-skills": {
+    "coinbase/agentkit": {
       "status": "fetched",
-      "revision": "e31ba876ab1a3e7fcd4f0faf933986b712a36631"
-    },
-    "pokiehead/sic-crypto-kit": {
-      "status": "unchanged",
-      "revision": "40d0b993c1a9dd6f8e21c11214c6f420730705fa"
+      "revision": "2e6dbaf725b9ec5f3b53003278100b0e655c214d"
     },
     "helius-labs/core-ai": {
       "status": "fetched",
       "revision": "21347a28f7d8042d60b5c85c86a80b841daf42a7"
     },
-    "quiknode-labs/blockchain-skills": {
-      "status": "fetched",
-      "revision": "7d76454c89ed791b9a6d4479595ca0469483f616"
-    },
-    "openzeppelin/openzeppelin-contracts": {
-      "status": "fetched",
-      "revision": "6c2ab375a9c7db0fa8c21fba1ed3b2057f75dd75"
+    "pokiehead/sic-crypto-kit": {
+      "status": "unchanged",
+      "revision": "40d0b993c1a9dd6f8e21c11214c6f420730705fa"
     },
     "itrests/rehash-scout": {
       "status": "fetched",
       "revision": "7f0d2e6cd3d133bc92333372cddbd1977d9fb184"
     },
-    "alt-labs/security-tools": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "quiknode-labs/blockchain-skills": {
+      "status": "fetched",
+      "revision": "7d76454c89ed791b9a6d4479595ca0469483f616"
     },
     "sicomelure-design/agent-skills-pack": {
       "status": "unchanged",
@@ -13170,6 +18362,10 @@
       "status": "unchanged",
       "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245"
     },
+    "alt-labs/security-tools": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
     "alt-research/security-scanner": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
@@ -13177,6 +18373,10 @@
     "crytic/building-secure-contracts": {
       "status": "unchanged",
       "revision": "2de122e3a6b63bc450a1ec41215f0c44d72fb96b"
+    },
+    "openzeppelin/openzeppelin-contracts": {
+      "status": "fetched",
+      "revision": "6c2ab375a9c7db0fa8c21fba1ed3b2057f75dd75"
     },
     "chainstack/wazuh-agent-docker": {
       "status": "fetched",
@@ -13194,10 +18394,6 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "trailofbits/skills": {
-      "status": "fetched",
-      "revision": "82fe8226252622fa807643bdca1710901198553a"
-    },
     "binance/mcp-server": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
@@ -13206,21 +18402,25 @@
       "status": "unchanged",
       "revision": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1"
     },
-    "bitget-wallet-ai-lab/bitget-wallet-mcp": {
+    "trailofbits/skills": {
       "status": "fetched",
-      "revision": "7322eda6ab8fb30944fe52a1e89a860967ec86ea"
+      "revision": "82fe8226252622fa807643bdca1710901198553a"
     },
     "binance/binance-skills-hub": {
       "status": "fetched",
       "revision": "9960c675387bd27f8866645b83693c1fa87242f6"
     },
+    "bybit-web3/bybit-ai-skills": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
     "bitgetlimited/agent_hub": {
       "status": "fetched",
       "revision": "2551419578abff99baad19b018cab1a963c62306"
     },
-    "bybit-web3/bybit-ai-skills": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "bitget-wallet-ai-lab/bitget-wallet-mcp": {
+      "status": "fetched",
+      "revision": "7322eda6ab8fb30944fe52a1e89a860967ec86ea"
     },
     "bybit-exchange/skills": {
       "status": "unchanged",
@@ -13250,33 +18450,37 @@
       "status": "unchanged",
       "revision": "a9bda62ce7f6cbf1d848b48eb489781fe874f962"
     },
+    "krakenfx/kraken-cli": {
+      "status": "fetched",
+      "revision": "aa56e5976be5afa6d8267eb6741f3a8844678fe9"
+    },
     "mshehzadkhan93-web/trade-forensics-agent": {
       "status": "unchanged",
       "revision": "c0225990a99e4d0a02bc9e46a4356c201cbee790"
-    },
-    "iamgoatedaf/lighter-mcp": {
-      "status": "fetched",
-      "revision": "9231e90bbde78e9f53bf343c1f2970e55479d25f"
     },
     "okx/okx-dex-agent-sdk": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "krakenfx/kraken-cli": {
-      "status": "fetched",
-      "revision": "aa56e5976be5afa6d8267eb6741f3a8844678fe9"
-    },
     "okx/agent-skills": {
       "status": "unchanged",
       "revision": "9c180cc1e9911a1ca44c0df5cc7509dba5bb7697"
+    },
+    "iamgoatedaf/lighter-mcp": {
+      "status": "fetched",
+      "revision": "9231e90bbde78e9f53bf343c1f2970e55479d25f"
+    },
+    "hypurrquant/perp-cli": {
+      "status": "unchanged",
+      "revision": "ed94cfd46259ff9186bf4f2489252a4f8f773e31"
     },
     "kevin1chun/robinhood-for-agents": {
       "status": "unchanged",
       "revision": "3cdb50455629e982ac41b02163a7ee14d712850d"
     },
-    "hypurrquant/perp-cli": {
-      "status": "unchanged",
-      "revision": "ed94cfd46259ff9186bf4f2489252a4f8f773e31"
+    "okx/onchainos-skills": {
+      "status": "fetched",
+      "revision": "cfbb0bafa71898e50762cd9fa77f026b4a8caa1b"
     },
     "azex-ai/sdks": {
       "status": "fetched",
@@ -13285,10 +18489,6 @@
     "jhinresh/maiat-protocol": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "okx/onchainos-skills": {
-      "status": "fetched",
-      "revision": "9de8161d870fea8fad05c324f6c00a50cd88962d"
     },
     "0xsardius/solenrich": {
       "status": "unchanged",
@@ -13302,21 +18502,21 @@
       "status": "fetched",
       "revision": "1ec70f7d321bc8dedfe2b6ceb347a8e7d39846ce"
     },
+    "getalby/nwc-mcp-server": {
+      "status": "fetched",
+      "revision": "842f87ba199082b890eab4c6bf0bfcd1440713f6"
+    },
     "senpi-ai/senpi-skills": {
       "status": "fetched",
       "revision": "db7772b842c2466ffc617427ba80f03f4d554c64"
     },
     "aibtcdev/aibtc-mcp-server": {
-      "status": "unchanged",
-      "revision": "4e8503a0b55cfd8915d71264cca79d76c1d00dca"
+      "status": "fetched",
+      "revision": "e48e30da4939d54f397e24b599261c0a47eec779"
     },
     "alekskram/dydx-agent-gateway": {
       "status": "unchanged",
       "revision": "eec5527895a0b796a792eea4c3ecb826341297ab"
-    },
-    "getalby/nwc-mcp-server": {
-      "status": "fetched",
-      "revision": "842f87ba199082b890eab4c6bf0bfcd1440713f6"
     },
     "alchemyplatform/alchemy-mcp-server": {
       "status": "fetched",
@@ -13326,14 +18526,6 @@
       "status": "fetched",
       "revision": "9eee29c6081487f6b93753f7a3a4cd7982661314"
     },
-    "jiayaoqijia/cryptoskill": {
-      "status": "fetched",
-      "revision": "6f3eab0b3cefa49a2f611c5d9766f85fa6d21316"
-    },
-    "tooloracle/aptoracle": {
-      "status": "fetched",
-      "revision": "7dcbd99c1bd44d35a939eec758e60856fbd40927"
-    },
     "alpacahq/alpaca-mcp-server": {
       "status": "fetched",
       "revision": "a82ad1ccb740609abc99e10376e42d8e9c1037a1"
@@ -13342,33 +18534,37 @@
       "status": "fetched",
       "revision": "f8f02261a2a847a8f6a4e1e0a2f5ccf0cb719980"
     },
+    "tooloracle/aptoracle": {
+      "status": "fetched",
+      "revision": "7dcbd99c1bd44d35a939eec758e60856fbd40927"
+    },
     "goplausible/algorand-mcp": {
       "status": "fetched",
       "revision": "4f892db8cfa760fdd40a854dc06c99892383bd27"
-    },
-    "excaliber9271/asterdex-mcp-server": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "assetfare/assetfare-mcp": {
       "status": "unchanged",
       "revision": "c06223ab75a177331ecfed5007e2444e617c3e44"
     },
-    "araxis33/aero-vote-radar": {
-      "status": "fetched",
-      "revision": "beb26ab91ba10dfc269b800a0c01963bb28211b5"
-    },
     "armorwallet/armor-crypto-mcp": {
       "status": "fetched",
       "revision": "c026c00b2f3fd40594e31f642d68aa92e742e013"
+    },
+    "araxis33/aero-vote-radar": {
+      "status": "fetched",
+      "revision": "e665aa4cb6bbed0a1558119c099364e0a096e7ca"
+    },
+    "excaliber9271/asterdex-mcp-server": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "aveetechapp/avee-skills": {
       "status": "unchanged",
       "revision": "fe4b9338c4f341043b3115ab07bf72664f0005c0"
     },
     "barkermoney/barker-mcp": {
-      "status": "unchanged",
-      "revision": "f3ce6c488e57807d8b8e470d05f52038c526021b"
+      "status": "fetched",
+      "revision": "70fa841c708575878f7f657df4996ad3f67bf2be"
     },
     "bankless/onchain-mcp": {
       "status": "fetched",
@@ -13382,6 +18578,10 @@
       "status": "fetched",
       "revision": "0bedf2053d6ac9a3d6ec3860582736fcd3589658"
     },
+    "bnb-chain/bnbchain-mcp": {
+      "status": "fetched",
+      "revision": "a133675365d5d941d891b17a42f2ca587c33922a"
+    },
     "bnb-chain/mcp-server": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
@@ -13390,9 +18590,17 @@
       "status": "fetched",
       "revision": "095ef2c03f1aa3325da0baa41c8bf29aa1bbb6e6"
     },
-    "bnb-chain/bnbchain-mcp": {
+    "jiayaoqijia/cryptoskill": {
       "status": "fetched",
-      "revision": "a133675365d5d941d891b17a42f2ca587c33922a"
+      "revision": "4297b488baf064ff873df0445c52e5082f1d828d"
+    },
+    "base/base-mcp": {
+      "status": "fetched",
+      "revision": "979dde3e32dc63081a40a533be84e6e848be25c9"
+    },
+    "celo-org/celo-mcp": {
+      "status": "unchanged",
+      "revision": "f6287609980b847d13011bd146014d30d7e57734"
     },
     "tooloracle/bnboracle": {
       "status": "fetched",
@@ -13402,37 +18610,29 @@
       "status": "fetched",
       "revision": "f7ddee5eb4a335e42541e0c45c6785aa6c88591b"
     },
-    "base/base-mcp": {
-      "status": "fetched",
-      "revision": "979dde3e32dc63081a40a533be84e6e848be25c9"
-    },
     "cumpsd/broker-as-a-service": {
       "status": "unchanged",
       "revision": "890029c51731cfed899d9216f03ef9cfcee1f3be"
-    },
-    "celo-org/celo-mcp": {
-      "status": "unchanged",
-      "revision": "f6287609980b847d13011bd146014d30d7e57734"
     },
     "chainstacklabs/rpc-nodes-mcp": {
       "status": "unchanged",
       "revision": "8920ed796409e2efc32953f787cdcdfff2e6c335"
     },
-    "alexchenai/chenswap-mcp": {
-      "status": "unchanged",
-      "revision": "df99e1a7861004abfb0f2b0c77bdacd50d44f361"
-    },
     "kukapay/chainlink-feeds-mcp": {
       "status": "fetched",
       "revision": "625d2a16c33a71e0c32a766c7e12c1dc0e3f5f28"
     },
+    "alexchenai/chenswap-mcp": {
+      "status": "unchanged",
+      "revision": "df99e1a7861004abfb0f2b0c77bdacd50d44f361"
+    },
+    "coinrithm/coinrithm-agent-trading": {
+      "status": "unchanged",
+      "revision": "c5f7d03bff9f93e5d41dd24085bdf1b6da17e7e4"
+    },
     "coingecko/coingecko-typescript": {
       "status": "fetched",
       "revision": "1df8c8f95e402156f4d9940504ad4f19e9d4e935"
-    },
-    "coinpaprika/coinpaprika-mcp": {
-      "status": "fetched",
-      "revision": "5e3f8c4ae298db67e146557d9d28754576cd6057"
     },
     "menorhge3556/crypto_mcp_server": {
       "status": "unavailable",
@@ -13442,21 +18642,21 @@
       "status": "fetched",
       "revision": "c831d583038e9ae9ef5fc9296e284be0fc52243e"
     },
+    "coinpaprika/coinpaprika-mcp": {
+      "status": "fetched",
+      "revision": "5e3f8c4ae298db67e146557d9d28754576cd6057"
+    },
     "cryptolir/agentglob-trader": {
       "status": "unchanged",
       "revision": "25c310337b155c418f7638a96eb8a6dc7abd02dc"
     },
-    "coinrithm/coinrithm-agent-trading": {
-      "status": "fetched",
-      "revision": "c5f7d03bff9f93e5d41dd24085bdf1b6da17e7e4"
+    "cyanheads/coingecko-mcp-server": {
+      "status": "unchanged",
+      "revision": "7483a4b91ea51be08e8ab691b2331b4bd6254541"
     },
     "danthamanvoiss/salesportl-agency-skills-suite-v01": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "cyanheads/coingecko-mcp-server": {
-      "status": "unchanged",
-      "revision": "7483a4b91ea51be08e8ab691b2331b4bd6254541"
     },
     "tooloracle/cryptooracle2": {
       "status": "fetched",
@@ -13470,25 +18670,25 @@
       "status": "fetched",
       "revision": "44d2382c81dca9cfb71e0fc12fac30aab1fe5129"
     },
+    "dexter-dao/dexter-mcp": {
+      "status": "unchanged",
+      "revision": "af8fa8b76767850f9266d4b2637305b439190b14"
+    },
     "dcspark/mcp-server-defillama": {
       "status": "fetched",
       "revision": "fb8f82c21e7d4bc1a658f0e1efc1bd40ab9fb73c"
-    },
-    "coinpaprika/dexpaprika-mcp": {
-      "status": "fetched",
-      "revision": "6cea215d4eaaf001ac466a7b15b4f58194647794"
     },
     "opensvm/dexscreener-mcp-server": {
       "status": "fetched",
       "revision": "4d24cbf156ff015ccbf5ac6bba554a523ac6335b"
     },
-    "dexter-dao/dexter-mcp": {
-      "status": "unchanged",
-      "revision": "af8fa8b76767850f9266d4b2637305b439190b14"
-    },
     "edward-arinin-web-dev/dexe-mcp": {
       "status": "unchanged",
       "revision": "060b0f6b5eb633baf39d85d9fc2e1789b4b9dbef"
+    },
+    "coinpaprika/dexpaprika-mcp": {
+      "status": "fetched",
+      "revision": "6cea215d4eaaf001ac466a7b15b4f58194647794"
     },
     "kukapay/dune-analytics-mcp": {
       "status": "fetched",
@@ -13502,45 +18702,45 @@
       "status": "fetched",
       "revision": "5b4036340d31b53838042f8446df36015ca972a7"
     },
-    "layr-labs/eigenlayer-mcp-server": {
-      "status": "fetched",
-      "revision": "be104be06d3eaeb35a5d8b78e32a5b0ade46f108"
-    },
     "bazinga640/evm-chains-mcp-server": {
       "status": "fetched",
       "revision": "c50864ed120d96579d756454a94e1680eaffd8a6"
     },
-    "farseensh/earnforge": {
-      "status": "unchanged",
-      "revision": "30e153f309a09481b60ffb9e3dc5810f202b14da"
-    },
-    "onflow/flow-mcp": {
-      "status": "unchanged",
-      "revision": "2afc462130e957e3f311f27cd0d0201698cad8ce"
+    "layr-labs/eigenlayer-mcp-server": {
+      "status": "fetched",
+      "revision": "be104be06d3eaeb35a5d8b78e32a5b0ade46f108"
     },
     "mcpdotdirect/evm-mcp-server": {
       "status": "fetched",
       "revision": "128ac3d4b1ea96084d55a9578306d017006e709d"
     },
+    "farseensh/earnforge": {
+      "status": "unchanged",
+      "revision": "30e153f309a09481b60ffb9e3dc5810f202b14da"
+    },
     "menscheck/fourtrader-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "gemachdao/gdex-skill": {
+    "onflow/flow-mcp": {
       "status": "unchanged",
-      "revision": "8353055226af1aedf91f91e335550e064eeb7f1f"
+      "revision": "2afc462130e957e3f311f27cd0d0201698cad8ce"
     },
     "kukapay/funding-rates-mcp": {
       "status": "fetched",
       "revision": "c508f2e504cce6a7fe05462f2e0c268a2796fb19"
     },
-    "ghostswap1/ghostswap-agents": {
+    "gemachdao/gdex-skill": {
       "status": "unchanged",
-      "revision": "262f4b8690396387c50d4c1d58e3919cf654c172"
+      "revision": "8353055226af1aedf91f91e335550e064eeb7f1f"
     },
     "hashlock-tech/hashlock-mcp-server": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "ghostswap1/ghostswap-agents": {
+      "status": "unchanged",
+      "revision": "262f4b8690396387c50d4c1d58e3919cf654c172"
     },
     "hashgraph/hedera-mcp": {
       "status": "unavailable",
@@ -13554,53 +18754,53 @@
       "status": "fetched",
       "revision": "ceef556686f32eb52afe7f062cd11fbbf92db6f1"
     },
-    "nirholas/free-crypto-news": {
+    "hive-intel/hive-crypto-mcp": {
       "status": "fetched",
-      "revision": "5118a6a1b6c18f5fb754034b64c90a475e99ea15"
+      "revision": "234afda814ad906587823ac068768302a54c5ccf"
     },
     "injectivelabs/mcp-server": {
       "status": "unchanged",
       "revision": "daa98388cdf6c472c93211b1e9059725d72bc42e"
     },
-    "foundry-rs/foundry": {
+    "dcspark/mcp-server-jupiter": {
       "status": "fetched",
-      "revision": "845d99cd2be68732404c358b63aa9ce05324f22c"
-    },
-    "hive-intel/hive-crypto-mcp": {
-      "status": "fetched",
-      "revision": "234afda814ad906587823ac068768302a54c5ccf"
+      "revision": "c5488c2ce061088ee4794e45534a8b23bf76a706"
     },
     "kukapay/crypto-feargreed-mcp": {
       "status": "unchanged",
       "revision": "b1f22947d81be0e34a502dfed0b866024db46e6a"
     },
-    "kukapay/crypto-indicators-mcp": {
-      "status": "unchanged",
-      "revision": "2855e6692f3ebfc24774192e707ec3689183515b"
-    },
-    "dcspark/mcp-server-jupiter": {
+    "foundry-rs/foundry": {
       "status": "fetched",
-      "revision": "c5488c2ce061088ee4794e45534a8b23bf76a706"
-    },
-    "kukapay/cryptopanic-mcp-server": {
-      "status": "unchanged",
-      "revision": "922f2e07d83e2d009b4d20518d2acec2e9e2642a"
-    },
-    "kukapay/hyperliquid-info-mcp": {
-      "status": "unchanged",
-      "revision": "56bd18458f6f86ce14419ac8fffdfe329334a01a"
+      "revision": "c3a8a241bf04d2c8dbb669330c6da0a59b3f721c"
     },
     "jiggy-cadence/realized": {
       "status": "fetched",
       "revision": "29ce6736a1f117189dd1d54724fadfd68d66ebcb"
     },
-    "kukapay/uniswap-trader-mcp": {
+    "nirholas/free-crypto-news": {
+      "status": "fetched",
+      "revision": "5118a6a1b6c18f5fb754034b64c90a475e99ea15"
+    },
+    "kukapay/crypto-indicators-mcp": {
       "status": "unchanged",
-      "revision": "b743a9d009491ed1132836217505ddb401d1cd1e"
+      "revision": "2855e6692f3ebfc24774192e707ec3689183515b"
+    },
+    "kukapay/cryptopanic-mcp-server": {
+      "status": "unchanged",
+      "revision": "922f2e07d83e2d009b4d20518d2acec2e9e2642a"
     },
     "lidofinance/lido-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "kukapay/hyperliquid-info-mcp": {
+      "status": "unchanged",
+      "revision": "56bd18458f6f86ce14419ac8fffdfe329334a01a"
+    },
+    "kukapay/uniswap-trader-mcp": {
+      "status": "unchanged",
+      "revision": "b743a9d009491ed1132836217505ddb401d1cd1e"
     },
     "lifinance/lifi-mcp": {
       "status": "unavailable",
@@ -13610,37 +18810,37 @@
       "status": "fetched",
       "revision": "7adeb2be509a557e849984413ded0ccc79e5dc80"
     },
-    "xeift/meowblock": {
-      "status": "fetched",
-      "revision": "e31eb0b416500b2dfcccb08bb1e8e300c70fa3ab"
-    },
     "arcadia-finance/mcp-server": {
       "status": "fetched",
       "revision": "52218360653b3cb944510444776f4d4130d2d85f"
     },
-    "mangrovetechnologies/mangrove-agent": {
+    "xeift/meowblock": {
       "status": "fetched",
-      "revision": "9a795370529822578da0c16efd6ee0c55165493e"
-    },
-    "mrnetwork0001/deltr": {
-      "status": "unchanged",
-      "revision": "ed34a61aa0a5c97a25394605cd5dcaf4e4f261ca"
+      "revision": "e31eb0b416500b2dfcccb08bb1e8e300c70fa3ab"
     },
     "monad-developers/monad-mcp": {
       "status": "fetched",
       "revision": "8550c106d0825d4907ebe71d9f64bae8ac4f541e"
     },
-    "nookplot/mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "nirholas/cryptocurrency.cv": {
-      "status": "unchanged",
-      "revision": "5118a6a1b6c18f5fb754034b64c90a475e99ea15"
+    "mangrovetechnologies/mangrove-agent": {
+      "status": "fetched",
+      "revision": "9a795370529822578da0c16efd6ee0c55165493e"
     },
     "nearai/near-mcp": {
       "status": "fetched",
       "revision": "7d598bd9a9e46dac4bf6851f788f8e4e7a4e88a0"
+    },
+    "nookplot/mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "mrnetwork0001/deltr": {
+      "status": "unchanged",
+      "revision": "ed34a61aa0a5c97a25394605cd5dcaf4e4f261ca"
+    },
+    "nirholas/cryptocurrency.cv": {
+      "status": "unchanged",
+      "revision": "5118a6a1b6c18f5fb754034b64c90a475e99ea15"
     },
     "philidor-labs/philidor-mcp": {
       "status": "unchanged",
@@ -13658,17 +18858,13 @@
       "status": "fetched",
       "revision": "10e51d99b5317550fb70c715d016665485699679"
     },
-    "priors-agents/priors": {
+    "pythia-the-oracle/pythia-oracle-mcp": {
       "status": "fetched",
-      "revision": "66a0593fcf96030384146b6b092e1dd2e51a047b"
+      "revision": "e34cea7d68f4d46a598f22597450e04b62cb6090"
     },
     "desperate10/profunding-mcp": {
       "status": "fetched",
       "revision": "ebe76f363b794a063b32a77d174b299ad2d0dd89"
-    },
-    "pythia-the-oracle/pythia-oracle-mcp": {
-      "status": "fetched",
-      "revision": "e34cea7d68f4d46a598f22597450e04b62cb6090"
     },
     "solana-foundation/solana-dev-mcp": {
       "status": "unavailable",
@@ -13678,29 +18874,45 @@
       "status": "fetched",
       "revision": "364ca2f54cd0a184d1961b64ada400fa397a4724"
     },
-    "crisartgua-bot/sperax-mcp-toolkit": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "aiagentkarl/solana-mcp-server": {
+      "status": "fetched",
+      "revision": "197b732e4ef7e447678f7d5d48173a50a3d82836"
     },
     "solana-foundation/solana-mcp-official": {
       "status": "fetched",
       "revision": "04deb004c8576aab7bd25e3638cd1c439dec8513"
     },
-    "aiagentkarl/solana-mcp-server": {
+    "priors-agents/priors": {
       "status": "fetched",
-      "revision": "197b732e4ef7e447678f7d5d48173a50a3d82836"
+      "revision": "99ed86fa578824d649d0e6f25d9eacb9bea59f7f"
     },
-    "tooloracle/suioracle": {
-      "status": "fetched",
-      "revision": "8b9ca9d27163ee12bef2e29263a6672043d624fb"
+    "crisartgua-bot/sperax-mcp-toolkit": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "expertvagabond/sui-mcp-server": {
       "status": "fetched",
       "revision": "39d0d65edc6b4415da16edb9f55318ab9f6cea07"
     },
+    "tooloracle/suioracle": {
+      "status": "fetched",
+      "revision": "8b9ca9d27163ee12bef2e29263a6672043d624fb"
+    },
     "mcpdotdirect/starknet-mcp-server": {
       "status": "fetched",
       "revision": "8fdd1be36efb7fd0c899086e68d3b9603cf7ade4"
+    },
+    "tatumio/blockchain-mcp": {
+      "status": "fetched",
+      "revision": "07c1829b7708a77e8854710d55107c63c936691b"
+    },
+    "pinax-network/mcp-token-api": {
+      "status": "fetched",
+      "revision": "b5a34d2bb3146a7c55e1faf2fab3efc51cba97ae"
+    },
+    "tooloracle/tonoracle": {
+      "status": "fetched",
+      "revision": "2f2dab2ee04f2cdc648d38a24d5f139769f7b531"
     },
     "sendaifun/solana-agent-kit": {
       "status": "fetched",
@@ -13710,25 +18922,13 @@
       "status": "unchanged",
       "revision": "17755731bf7aba6e5ed4d72e116d9d394430b1e2"
     },
-    "pinax-network/mcp-token-api": {
+    "trdefi/mcp-server": {
       "status": "fetched",
-      "revision": "b5a34d2bb3146a7c55e1faf2fab3efc51cba97ae"
-    },
-    "tatumio/blockchain-mcp": {
-      "status": "fetched",
-      "revision": "07c1829b7708a77e8854710d55107c63c936691b"
+      "revision": "1f37c2c320cde187d78a6b963d268fd04e9771e1"
     },
     "udotcash/agents": {
       "status": "unchanged",
       "revision": "fd067dd1368f26bf5f3acdecb4c7b8369c6c810d"
-    },
-    "tooloracle/tonoracle": {
-      "status": "fetched",
-      "revision": "2f2dab2ee04f2cdc648d38a24d5f139769f7b531"
-    },
-    "trdefi/mcp-server": {
-      "status": "fetched",
-      "revision": "1f37c2c320cde187d78a6b963d268fd04e9771e1"
     },
     "strangelove-ventures/web3-mcp": {
       "status": "fetched",
@@ -13738,17 +18938,13 @@
       "status": "unchanged",
       "revision": "635c5c3232967545f6a3aaec212aaebd2f0a6e78"
     },
-    "yeick010/agentshield-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "kukapay/whale-tracker-mcp": {
       "status": "fetched",
       "revision": "96218364c99e6e40c2965744ef93f8ad54236ece"
     },
-    "nirholas/agenti": {
-      "status": "fetched",
-      "revision": "bd0605bd614db2839766913c1c758620dd48650e"
+    "yeick010/agentshield-mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "error403agent/deepblue-x402-examples": {
       "status": "unavailable",
@@ -13766,10 +18962,6 @@
       "status": "fetched",
       "revision": "63db0bc82ddc028941073be836707f5e422b0ca4"
     },
-    "magnetai/mcp-free-usdc-transfer": {
-      "status": "unchanged",
-      "revision": "56a773dad543cc65f81c453fc6ff39e05d187442"
-    },
     "circlefin/skills": {
       "status": "fetched",
       "revision": "58ab8648bb1ae9d037a3bf5197ad3bb01262f5b1"
@@ -13778,69 +18970,77 @@
       "status": "unchanged",
       "revision": "aa672ab120ce366c064b8facc4dc18bd465ac09d"
     },
+    "magnetai/mcp-free-usdc-transfer": {
+      "status": "unchanged",
+      "revision": "56a773dad543cc65f81c453fc6ff39e05d187442"
+    },
     "navsahu/x402-deploy": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "kalshi/kalshi-public-docs": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "qlwy-xyz/fortune-skill": {
-      "status": "unchanged",
-      "revision": "8217ddfd5521f69b151442e2d9ede8eac41e48a2"
     },
     "solobank-ai/package": {
       "status": "fetched",
       "revision": "71e03a4d6ede4c921cbfef6f988b1fee81b2e494"
     },
-    "dimes-fi/multiply-mcp": {
+    "qlwy-xyz/fortune-skill": {
+      "status": "unchanged",
+      "revision": "8217ddfd5521f69b151442e2d9ede8eac41e48a2"
+    },
+    "kalshi/kalshi-public-docs": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "nirholas/agenti": {
+      "status": "fetched",
+      "revision": "bd0605bd614db2839766913c1c758620dd48650e"
     },
     "printmoneylab/x402watch": {
       "status": "fetched",
       "revision": "ec9ac88248856ec8cff27374c49c0e363f0dec87"
     },
-    "polymarket/polymarket-agent-tools": {
+    "dimes-fi/multiply-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "toreva/kit": {
-      "status": "fetched",
-      "revision": "1cb88f4a4c33fc51567f27afe6c6ac6781c46bf9"
-    },
-    "myriadprotocol/myriad-cli": {
-      "status": "fetched",
-      "revision": "24cebc04f747a48779e2e3b66a93e84cfa502800"
+    "polymarket/polymarket-agent-tools": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "polymarket/polymarket-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "myriadprotocol/myriad-cli": {
+      "status": "fetched",
+      "revision": "24cebc04f747a48779e2e3b66a93e84cfa502800"
+    },
     "demwick/polymarket-agent-mcp": {
       "status": "fetched",
       "revision": "ebe901cf87e5388cb4d53f14254526d80e53397f"
-    },
-    "polymarket/polymarket-api-docs": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "polymarket/agent-skills": {
       "status": "unchanged",
       "revision": "91ee44ae113e958affd20cd505c6e9d9d6100e0b"
     },
+    "polymarket/polymarket-api-docs": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
     "towns-protocol/skills": {
       "status": "unchanged",
       "revision": "048acbbb39c5a3b465ec347c8658f469895f3080"
+    },
+    "xmtp/skills": {
+      "status": "fetched",
+      "revision": "6d5df9becbb6a4969ff099def5cb4a1afa740b73"
     },
     "abhi15724/quantforge-ai": {
       "status": "unchanged",
       "revision": "bcae9b2d00ece4449d5ccdf202300cb49ee92973"
     },
-    "xmtp/skills": {
+    "toreva/kit": {
       "status": "fetched",
-      "revision": "6d5df9becbb6a4969ff099def5cb4a1afa740b73"
+      "revision": "6550149bbc4a4b752a351cf149f6d38d42c2d39f"
     },
     "alt-research/futures-data": {
       "status": "unavailable",
@@ -13858,9 +19058,9 @@
       "status": "fetched",
       "revision": "c07a93e3596194c5e3cf331c755a3f9f0e4a17d8"
     },
-    "bankrbot/skills": {
+    "gmgnai/gmgn-skills": {
       "status": "fetched",
-      "revision": "dc47eed427ae79a7629b0ddb2f66c95df991b1d3"
+      "revision": "4575ef539e6a3115fa0481d41285cb79e77970bf"
     },
     "minara-ai/skills": {
       "status": "unchanged",
@@ -13870,61 +19070,61 @@
       "status": "fetched",
       "revision": "b7890f6dbb1e47cb5cb58861d7737da8f15a181f"
     },
+    "roman-rr/trading-skills": {
+      "status": "unchanged",
+      "revision": "409103cf75e0c0b73585dd595b8d380baccc6937"
+    },
     "rivaldotimoty/trading-agents-lite": {
       "status": "unchanged",
       "revision": "b3ce8b5910ac326ecc9d53c8668fbf1e3abe0c67"
-    },
-    "agentwallet/bundler": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "gmgnai/gmgn-skills": {
-      "status": "fetched",
-      "revision": "4575ef539e6a3115fa0481d41285cb79e77970bf"
-    },
-    "base-org/smart-wallet-agent": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "smukh/agentic-wallet": {
       "status": "unchanged",
       "revision": "3298ab03575634228b54170ec30bd40b78170ccc"
     },
-    "coinbase/coinbase-developer-platform-mcp": {
+    "agentwallet/bundler": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "roman-rr/trading-skills": {
-      "status": "fetched",
-      "revision": "409103cf75e0c0b73585dd595b8d380baccc6937"
+    "base-org/smart-wallet-agent": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "coinbase/coinbase-developer-platform-mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "justalab/agentkit": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "coinbase/agentic-wallet-skills": {
-      "status": "unchanged",
-      "revision": "70cb79c85f397fab3636ef07c8c99dc52a7c555f"
+    "bitget-wallet-ai-lab/bitget-wallet-skill": {
+      "status": "fetched",
+      "revision": "920044e8aad3235f0cf10655f906320b5734334e"
     },
     "metamask/openclaw-skills": {
       "status": "unchanged",
       "revision": "b17b17ccd06a0ccef2338701113786fc9c6ab5c7"
     },
+    "coinbase/agentic-wallet-skills": {
+      "status": "unchanged",
+      "revision": "70cb79c85f397fab3636ef07c8c99dc52a7c555f"
+    },
+    "bankrbot/skills": {
+      "status": "fetched",
+      "revision": "dc47eed427ae79a7629b0ddb2f66c95df991b1d3"
+    },
     "portkey-wallet/ca-agent-skills": {
       "status": "unchanged",
       "revision": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74"
     },
-    "bitget-wallet-ai-lab/bitget-wallet-skill": {
-      "status": "fetched",
-      "revision": "920044e8aad3235f0cf10655f906320b5734334e"
+    "safe-global/safe-mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "privy-io/privy-agentic-wallets-skill": {
       "status": "unchanged",
       "revision": "7f104aa118a891aca85cfebbd68bf9f4a2cd85e7"
-    },
-    "safe-global/safe-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "nicholasgriffintn/trust-wallet-skills": {
       "status": "unavailable",
@@ -13934,25 +19134,25 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "alt-research/portfolio": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "reown-com/skills": {
       "status": "fetched",
       "revision": "919ed9b0e14ec11732a7d4b5dccae06bbae083d8"
+    },
+    "alt-research/portfolio": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "walletconnect/walletconnect-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "scutuatua-crypto/whaletrucker-ecosystem": {
-      "status": "fetched",
-      "revision": "9417a9c058645cb1354f4bce8fe24c09c6c50ed0"
-    },
     "safe-global/safe-core-sdk": {
       "status": "fetched",
       "revision": "0cc12cbb18128c5e1c1067ac3917f08ab9b4fd21"
+    },
+    "eschatological-cpi959/finance-mcp": {
+      "status": "fetched",
+      "revision": "f792fa5e99c62d9354206600809e4edd1444e426"
     },
     "bybit-exchange/trading-mcp": {
       "status": "unchanged",
@@ -13962,29 +19162,34 @@
       "status": "unchanged",
       "revision": "41fd0d0b64d61d5ae39d5fe23e5c689179d2efa6"
     },
-    "ava-labs/avalanche-telemetry": {
-      "status": "unchanged",
-      "revision": "63879bfc243126fa3474170bf62c43e2fbbb483a"
-    },
     "hristovdimitri2-hub/kristo-intelligence-6": {
       "status": "fetched",
-      "revision": "70e3314614ecd700e64df5cdc12965af8ead965d"
+      "revision": "a165198e9b09ac5bdfedf84f9d7b915e86d5e68e"
     },
     "ethereum/beaconrunner": {
       "status": "unchanged",
       "revision": "04a607f072c5fbc461bc50529cdb94c21528d4e5"
     },
-    "mmxrealqq/bobai-buyburn": {
-      "status": "unavailable",
-      "detail": "source exceeds download limit"
+    "ava-labs/avalanche-telemetry": {
+      "status": "unchanged",
+      "revision": "63879bfc243126fa3474170bf62c43e2fbbb483a"
+    },
+    "0xklen/money-machine": {
+      "status": "fetched",
+      "revision": "e46bb9c2ec38fc50f3eb08c2b173d689dcf1f193"
+    },
+    "guibibeau/solos": {
+      "status": "fetched",
+      "revision": "cd9877d0c3754199d3379d22f2ca86638d84fbfe"
     }
   },
   "summary": {
     "listing_only": 560,
     "unresolved": 187,
-    "unchanged": 1334,
-    "unavailable": 350,
-    "blocked": 84,
-    "updated": 3
+    "unchanged": 1325,
+    "unavailable": 351,
+    "blocked": 96,
+    "updated": 11,
+    "added": 1028
   }
 }

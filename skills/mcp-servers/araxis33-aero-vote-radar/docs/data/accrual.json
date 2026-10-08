@@ -1,60 +1,60 @@
 {
-  "generatedAt": "2026-10-01T09:20:20.894Z",
-  "scans": 131,
+  "generatedAt": "2026-10-08T09:23:27.565Z",
+  "scans": 152,
   "from": "2026-08-27T22:14:40.000Z",
-  "to": "2026-10-01T05:48:51.000Z",
+  "to": "2026-10-08T06:00:10.000Z",
   "windows": [
     {
       "hours": 48,
-      "observations": 19700,
-      "negativeNaive": 0.43781725888324874,
+      "observations": 25732,
+      "negativeNaive": 0.4590004663454065,
       "negativeAccrual": 0,
-      "withAccrual": 0.03532994923857868,
-      "medianNaiveUsd": 0.12799913489049075,
+      "withAccrual": 0.03256645422042593,
+      "medianNaiveUsd": 0.06408456706748211,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 501.5551649992366,
+      "medianAccrualWhenMoved": 500.1650441831849,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 140
+      "withUnpriced": 186
     },
     {
       "hours": 72,
-      "observations": 16538,
-      "negativeNaive": 0.4457612770588947,
+      "observations": 21441,
+      "negativeNaive": 0.4517979571848328,
       "negativeAccrual": 0,
-      "withAccrual": 0.052727052847986455,
-      "medianNaiveUsd": 0.14886139328807002,
+      "withAccrual": 0.04883167762697636,
+      "medianNaiveUsd": 0.1099623756733692,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 526.9651499064214,
+      "medianAccrualWhenMoved": 502.0628595205743,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 121
+      "withUnpriced": 162
     },
     {
       "hours": 96,
-      "observations": 12673,
-      "negativeNaive": 0.41466109050737787,
+      "observations": 16441,
+      "negativeNaive": 0.44316039170366767,
       "negativeAccrual": 0,
-      "withAccrual": 0.06817643809674111,
-      "medianNaiveUsd": 0.3855668371591534,
+      "withAccrual": 0.06368225777020863,
+      "medianNaiveUsd": 0.17770925278495042,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 536.7732859357029,
+      "medianAccrualWhenMoved": 530.7074557830485,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 96
+      "withUnpriced": 131
     },
     {
       "hours": 120,
-      "observations": 8200,
-      "negativeNaive": 0.4010975609756098,
+      "observations": 10464,
+      "negativeNaive": 0.4381689602446483,
       "negativeAccrual": 0,
-      "withAccrual": 0.08560975609756098,
-      "medianNaiveUsd": 0.7904375060601296,
+      "withAccrual": 0.0797974006116208,
+      "medianNaiveUsd": 0.28201196533071204,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 572.0518291749906,
+      "medianAccrualWhenMoved": 559.6510459187302,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 65
+      "withUnpriced": 86
     }
   ],
   "pureRepricing": [
@@ -113,8 +113,14 @@
     {
       "symbol": "vAMM-fBOMB/AERO",
       "pool": "0xbbf71aad6e1f8d180d3b1d898528654c1d18b2ff",
-      "accrualUsd": 92725.9936771819,
-      "repricingUsd": -139.95263855106896
+      "accrualUsd": 94488.06080491154,
+      "repricingUsd": 138.6360055720288
+    },
+    {
+      "symbol": "CL-XDP/USDC",
+      "pool": "0x1ef035205f94c7734827961c438474d089a334a0",
+      "accrualUsd": 58890.91972653765,
+      "repricingUsd": 14.654189792439865
     },
     {
       "symbol": "vAMM-fBOMB/USDC",
@@ -147,6 +153,12 @@
       "repricingUsd": 111.72730440040323
     },
     {
+      "symbol": "sAMM-msUSD/USDC",
+      "pool": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
+      "accrualUsd": 7497.911469843437,
+      "repricingUsd": 0.1691229896423465
+    },
+    {
       "symbol": "vAMM-WETH/VVV",
       "pool": "0x01784ef301d79e4b2df3a21ad9a536d4cf09a5ce",
       "accrualUsd": 7197.513843214943,
@@ -157,18 +169,6 @@
       "pool": "0xf207d02becd4417aaa3383804b6b87b17602c86d",
       "accrualUsd": 6921.055010888545,
       "repricingUsd": 407.7977484371395
-    },
-    {
-      "symbol": "vAMM-WETH/MET",
-      "pool": "0xf91e0dfe1265b914182de54e08c9ca2068beddde",
-      "accrualUsd": 4885.346306873791,
-      "repricingUsd": -2.1690790924430985
-    },
-    {
-      "symbol": "sAMM-msUSD/USDC",
-      "pool": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
-      "accrualUsd": 4499.15972421432,
-      "repricingUsd": -0.31060172627530847
     }
   ]
 }

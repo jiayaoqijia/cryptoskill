@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import {
+  chooseRecommendOutputMode,
   chooseVoteTokenId,
   epochDeadlineLine,
   parsePositiveIntFlag,
@@ -353,6 +354,22 @@ test("parseVoteBasisFlag accepts every basis and rejects anything else", () => {
   assert.equal(parseVoteBasisFlag(["--vote-basis", "Current"]), undefined);
   assert.equal(parseVoteBasisFlag(["--vote-basis", "median"]), undefined);
   assert.equal(parseVoteBasisFlag(["--vote-basis"]), undefined);
+});
+
+test("chooseRecommendOutputMode picks --calldata over the generic --json branch", () => {
+  // Regression: --calldata has its own --json handling (the unsigned
+  // transaction), but recommend used to check the generic --json flag first
+  // and return before --calldata was ever read — so `recommend --calldata
+  // --json` silently printed the plain allocation JSON instead.
+  assert.equal(chooseRecommendOutputMode(["--calldata", "--json"]), "calldata");
+  assert.equal(chooseRecommendOutputMode(["--json", "--calldata"]), "calldata");
+});
+
+test("chooseRecommendOutputMode falls back through json, vote-ready, then table", () => {
+  assert.equal(chooseRecommendOutputMode(["--json"]), "json");
+  assert.equal(chooseRecommendOutputMode(["--vote-ready"]), "vote-ready");
+  assert.equal(chooseRecommendOutputMode([]), "table");
+  assert.equal(chooseRecommendOutputMode(["--json", "--vote-ready"]), "json");
 });
 
 /**

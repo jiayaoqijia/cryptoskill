@@ -10,76 +10,155 @@
           "symbol": "vAMM-AERO/TAROT",
           "pool": "0x7810f8f3253ced11e8c56c6c8497f3134055d44c",
           "forecastUsd": 24.40012369739226,
-          "paidUsd": 32.11737964218373,
-          "ratio": 1.3162793779449669
+          "paidUsd": 32.06628200545727,
+          "ratio": 1.3141852231218123
         },
         {
           "symbol": "vAMM-WETH/LRDS",
           "pool": "0x14f7ce67e16c435c876aff4092eb547584121312",
           "forecastUsd": 24.14583132253673,
-          "paidUsd": 29.009923881993927,
-          "ratio": 1.2014464730778291
+          "paidUsd": 27.302291461545952,
+          "ratio": 1.1307248483949737
         },
         {
           "symbol": "CL-WETH/TIBBIR",
           "pool": "0x0e4409f7a8eba3213f336daf608985302e79328c",
           "forecastUsd": 23.788483957478597,
-          "paidUsd": 30.525201590806027,
-          "ratio": 1.2831923902914186
+          "paidUsd": 27.719413285445054,
+          "ratio": 1.1652450544975002
         },
         {
           "symbol": "vAMM-WETH/TAROT",
           "pool": "0x2d25e0514f23c6367687de89bd5167dc754d4934",
           "forecastUsd": 23.63570324175715,
-          "paidUsd": 32.90228857613054,
-          "ratio": 1.3920587951029157
+          "paidUsd": 32.800781064833345,
+          "ratio": 1.3877641265559753
         },
         {
           "symbol": "vAMM-WETH/AERO",
           "pool": "0x7f670f78b17dec44d5ef68a48740b6f8849cc2e6",
           "forecastUsd": 22.81314946200148,
-          "paidUsd": 28.99639755302301,
-          "ratio": 1.2710387753045935
+          "paidUsd": 28.293383990835384,
+          "ratio": 1.240222619764185
         },
         {
           "symbol": "CL-WETH/REI",
           "pool": "0xf8f33db251d41942f3b6518e3925df03c8c35f2c",
           "forecastUsd": 22.467962839817126,
-          "paidUsd": 32.705469305041554,
-          "ratio": 1.455649074115513
+          "paidUsd": 31.50967565138511,
+          "ratio": 1.4024269078612013
         },
         {
           "symbol": "vAMM-WETH/PDT",
           "pool": "0x04e5a1c883dafd1eae6b11bd6d3eb784d90ce515",
           "forecastUsd": 21.797060248955397,
-          "paidUsd": 33.01903112231397,
-          "ratio": 1.5148387326174582
+          "paidUsd": 27.313790187853154,
+          "ratio": 1.253095136494938
         },
         {
           "symbol": "vAMM-AERO/USDbC",
           "pool": "0x2223f9fe624f69da4d8256a7bcc9104fba7f8f75",
           "forecastUsd": 21.44342303763369,
-          "paidUsd": 31.127619441291365,
-          "ratio": 1.451616161592377
+          "paidUsd": 31.107902283927736,
+          "ratio": 1.4506966648623527
         },
         {
           "symbol": "vAMM-VIRTUAL/WETH",
           "pool": "0x21594b992f68495dd28d605834b58889d0a727c7",
           "forecastUsd": 21.338644014704407,
-          "paidUsd": 30.98873947655978,
-          "ratio": 1.4522356460516195
+          "paidUsd": 29.73413505378068,
+          "ratio": 1.3934407000412472
         },
         {
           "symbol": "vAMM-cbBTC/TAROT",
           "pool": "0x2e26a29f782e51296d9d31f78d4883462a2d339d",
           "forecastUsd": 21.31330956189161,
-          "paidUsd": 32.68438074706945,
-          "ratio": 1.533519731046811
+          "paidUsd": 32.64701361753351,
+          "ratio": 1.531766501243273
         }
       ],
-      "medianRatio": 1.4218374783476464,
+      "medianRatio": 1.3509746748388938,
       "paidAtLeastForecast": 1,
       "paidUnderHalf": 0
+    },
+    {
+      "epochStart": "2026-10-01",
+      "scannedAt": "2026-10-06T18:20:15.454Z",
+      "rows": [
+        {
+          "symbol": "CL-LAPTOP/AAPLc",
+          "pool": "0xcb4bc943314405c01907ae910e57afc2d0549706",
+          "forecastUsd": 70.53783358049239,
+          "paidUsd": 21.23689620712879,
+          "ratio": 0.3010710016050446
+        },
+        {
+          "symbol": "CL-USDC/aeon",
+          "pool": "0x5ebdb19a6931431f959fd3835193cf7243961807",
+          "forecastUsd": 58.2765333397129,
+          "paidUsd": 31.23204334115196,
+          "ratio": 0.5359282982584123
+        },
+        {
+          "symbol": "CL-USDC/POD",
+          "pool": "0x48c5d4a6677ed59646a9c6465db2562be4a20aec",
+          "forecastUsd": 53.84226971201809,
+          "paidUsd": 4.041225291473012,
+          "ratio": 0.07505674097856564
+        },
+        {
+          "symbol": "vAMM-WETH/TLOS",
+          "pool": "0xc3b22240657fa67b77d0f1b7a1c1012db60d46fb",
+          "forecastUsd": 39.630481201831934,
+          "paidUsd": 18.80799766054387,
+          "ratio": 0.47458413549806866
+        },
+        {
+          "symbol": "vAMM-FLOCK/VVV",
+          "pool": "0xef724d142f283411f66bde8de4d863e7295b9972",
+          "forecastUsd": 38.7607800928256,
+          "paidUsd": 24.15154563543231,
+          "ratio": 0.6230923520526003
+        },
+        {
+          "symbol": "CL-WETH/RSC",
+          "pool": "0x6cda37ddb9e099bb49495a9ca7df9cd445a6965f",
+          "forecastUsd": 37.73407801764825,
+          "paidUsd": 22.81622820108282,
+          "ratio": 0.6046584254797919
+        },
+        {
+          "symbol": "vAMM-WETH/NPC",
+          "pool": "0x5e14319d52c9c18a04bfbbe12dd3a0fe3c1a816a",
+          "forecastUsd": 36.73477901817916,
+          "paidUsd": 22.668731264431152,
+          "ratio": 0.617091809731942
+        },
+        {
+          "symbol": "CL-WETH/USDC",
+          "pool": "0x4e392fbfe4d0557c82d2f97f02ec39daa31516dd",
+          "forecastUsd": 36.274160952982115,
+          "paidUsd": 22.485559614276553,
+          "ratio": 0.6198781453118078
+        },
+        {
+          "symbol": "CL-WETH/ZRO",
+          "pool": "0x717e174d5dae280802d1a2c15c1c0976561a3f61",
+          "forecastUsd": 35.88903398541403,
+          "paidUsd": 19.745052897463584,
+          "ratio": 0.5501695282600345
+        },
+        {
+          "symbol": "CL-TOWNS/WETH",
+          "pool": "0x48be08d21fccf3f793783c23c33555f5e0c2b7cd",
+          "forecastUsd": 35.648525661071524,
+          "paidUsd": 19.322142358561138,
+          "ratio": 0.5420179937388286
+        }
+      ],
+      "medianRatio": 0.5460937609994316,
+      "paidAtLeastForecast": 0,
+      "paidUnderHalf": 0.3
     }
   ]
 }

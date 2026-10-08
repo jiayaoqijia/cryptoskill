@@ -372,6 +372,27 @@ function printVoteCalldata(
   console.log();
 }
 
+export type RecommendOutputMode = "json" | "calldata" | "vote-ready" | "table";
+
+/**
+ * Decides which of `recommend`'s output modes `--json`/`--calldata`/
+ * `--vote-ready` select, pulled out of `cmdRecommend` so the precedence
+ * between flags is testable without a live chain call.
+ *
+ * `--calldata` wins over the generic `--json` branch: it has its own JSON
+ * handling in `printVoteCalldata` (the unsigned transaction, not the plain
+ * allocation). Checking `hasFlag(args, "json")` alone here would let the
+ * generic branch fire first and `return` — so `recommend --calldata --json`
+ * silently printed the allocation JSON, with no `to`/`data`/`tokenId` in it,
+ * and nothing to say --calldata was ignored.
+ */
+export function chooseRecommendOutputMode(args: string[]): RecommendOutputMode {
+  if (hasFlag(args, "calldata")) return "calldata";
+  if (hasFlag(args, "json")) return "json";
+  if (hasFlag(args, "vote-ready")) return "vote-ready";
+  return "table";
+}
+
 async function cmdRecommend(args: string[]) {
   const topK = parsePositiveIntFlag(args, "top", 15);
   const minConsistency = parseUnitIntervalFlag(args, "min-consistency", DEFAULT_MIN_CONSISTENCY);
@@ -432,7 +453,9 @@ async function cmdRecommend(args: string[]) {
   // `expectedUsdForWholePercentVote` for why the two differ in both directions.
   const votePercentsExpectedUsd = expectedUsdForWholePercentVote(allocation, veaero);
 
-  if (hasFlag(args, "json")) {
+  const outputMode = chooseRecommendOutputMode(args);
+
+  if (outputMode === "json") {
     console.log(
       JSON.stringify(
         {
@@ -465,12 +488,12 @@ async function cmdRecommend(args: string[]) {
     return;
   }
 
-  if (hasFlag(args, "calldata")) {
+  if (outputMode === "calldata") {
     printVoteCalldata(args, positions, votePercents, votePercentsExpectedUsd, veaero, voteBasis);
     return;
   }
 
-  if (hasFlag(args, "vote-ready")) {
+  if (outputMode === "vote-ready") {
     console.log(`\nVote-ready weights for ${veaero.toLocaleString("en-US", { maximumFractionDigits: 0 })} veAERO — whole percentages, summing to exactly 100:\n`);
     for (const v of votePercents) {
       console.log(`  ${v.percent.toString().padStart(3)}%  ${v.symbol}`);
