@@ -7,7 +7,7 @@ description: SolEnrich onchain intelligence API for Solana agents, pay-per-call 
 
 SolEnrich turns raw Solana data into verdicts an agent can act on: SAFE / CAUTION / RISKY for a token,
 EXIT / DERISK / HOLD for a position you hold, GEM / WATCH / NOISE for a StonkFun coin, best venue for a
-perp at your size. 49 paid endpoints plus one free, $0.001 to $0.25 per call, settled over x402. No
+perp at your size. 50 paid endpoints plus one free, $0.001 to $0.25 per call, settled over x402. No
 account, no API key: the agent pays USDC per request from its own wallet.
 
 Base URL: `https://api.solenrich.com`

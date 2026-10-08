@@ -95,6 +95,7 @@ Test fixtures used throughout SolEnrich's own tests:
 | `stonk-screener` | $0.01 | none (`quote_mint`, `category`, `paying_only`, `live_only`, `sort`, `limit`, …) | Every reward coin with payout status, live flag, tax cost; sort by volume, last payout, holders, change, yield |
 | `stonk-launch-intel` | $0.02 | none (`category`, `min_coins`, `sort`, `limit`) | Per quote asset: launches, traded and paying shares, survival past day 3, tax mix, crowding, demand score, recommendations |
 | `stonk-quote` | $0.005 | `mint` (`size_usd` 100, `hold_days` 7) | Cost and payback of one trade at one size: entry/exit cost (tax + price impact), round-trip % and breakeven move, pro-rata payout share with dust warning, expected payout over the hold, PAYS / MARGINAL / COSTS / NOT_PAYING with breakeven hold days. No swap |
+| `stonk-market-pulse` | $0.005 | none | Market regime: RISK_ON / NEUTRAL / RISK_OFF from breadth and the median 24h move, volume-weighted move, launches, holder revenue trend, strongest and weakest quote shelves. Check before entering |
 | `stonk-creator` | $0.01 | `creator` or `mint` | Creator track record: ESTABLISHED / MIXED / SERIAL_LAUNCHER / NEW, launches per day, share of coins past day 3 still trading. Filter fresh coins by who launched them |
 | `stonk-launch-preflight` | $0.25 | `unsigned_transaction`, `quote_mint`, `mode` | Diffs a self-built LaunchLab launch against StonkFun's published shape; mismatches with fixes |
 
