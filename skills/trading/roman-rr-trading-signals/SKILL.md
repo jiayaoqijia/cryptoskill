@@ -11,7 +11,7 @@ Access live, AI-generated crypto trading signals via API. Signals include full t
 - Live Dashboard: https://signals.x70.ai
 - Signal Format Reference: [references/SIGNAL-FORMAT.md](references/SIGNAL-FORMAT.md)
 
-**FREE during beta.** Paid plans coming soon.
+**Plans:** no key → 3-signal preview · free key → every signal (levels hidden) · **Pro $35/month** → entry, SL, TP, leverage. New accounts get a 14-day Pro trial, no card. See [Pricing](#pricing).
 
 ## When to Use This Skill
 
@@ -73,9 +73,9 @@ Follow this workflow when a user asks for trading signals:
 
 1. **Check performance first**: `get_stats` (or `GET /api/skill/stats?days=30`) to assess current reliability — works without a key
 2. **Fetch active signals**: `get_signals` (or `GET /api/skill/signals`) for live setups
-3. **If levels come back `null`**: that is the free tier, not an error — entry/SL/TP require Pro. Show the user https://signals.x70.ai/mcp-signup if they want them
-4. **Filter and rank**: Sort by confidence (highest first), filter by the user's preferred coins
-5. **Present to user**: Show as a table with coin, direction, confidence, entry, SL, TP, leverage, R/R
+3. **If levels come back `null`**: that is the free plan, not an error — entry/SL/TP require Pro. The response carries an `upgrade` object (REST) or `announcement` (MCP) with an `upgradeUrl`; show that link if the user wants the levels. No key yet? Point them to https://signals.x70.ai/mcp-signup
+4. **Filter**: by the user's preferred coins or direction. Don't present confidence as a ranking of expected profit — show it as one attribute among others
+5. **Present to user**: Show as a table with coin, direction, confidence, and — on Pro — entry, SL, TP, leverage, R/R
 6. **Monitor verification**: Re-fetch signals later to check if TP/SL was hit
 
 ### Decision Guide
@@ -120,7 +120,7 @@ too and return a 3-signal preview.
 ### GET /signals
 
 ```bash
-curl "https://signals.x70.ai/api/skill/signals?status=active&limit=10" \
+curl "https://signals.x70.ai/api/skill/signals?limit=10" \
   -H "X-Api-Key: ask_YOUR_KEY"
 ```
 
@@ -130,7 +130,7 @@ curl "https://signals.x70.ai/api/skill/signals?status=active&limit=10" \
 | days | 7 | Lookback window (1-30 days) |
 | coin | — | Filter by coin symbol (e.g. BTC, ETH) |
 
-Returns only live signals (unverified + pending) sorted by live PnL (most profitable first). Each signal includes `livePrice`, `livePnlPct`, and `transmissionChain`. Resolved signals are not included — use `/signals/history` or MCP `get_signal_history` for those.
+Returns only live signals (unverified + pending) sorted by live PnL (most profitable first). Each signal includes `livePrice`, `livePnlPct`, and `transmissionChain`. Resolved signals are not included — use MCP `get_signal_history`, or `GET /signals/:id` for one signal (live or resolved).
 
 ### GET /signals/:id
 
@@ -158,27 +158,30 @@ Returns: totalSignals, verifiedSignals, hitRate, avgConfidence, cumulativeROI, a
 
 | Endpoint | Limit |
 |----------|-------|
-| POST /register | 5 per 15 minutes (per IP) |
-| All other endpoints | 60 per minute (per API key) |
+| No API key | 30 calls per hour (per IP) |
+| Free key | 300 calls per hour (per key) |
+| Pro key | 10,000 calls per hour (per key) — effectively unlimited |
 
 ## Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
 | `401 Missing API key` | Include `X-Api-Key` header or `?apiKey=` query param |
-| `401 Invalid or deactivated API key` | Re-register with POST /register, or check for typos |
-| `429 Rate limit exceeded` | Wait 60 seconds, or reduce request frequency |
-| `400 Validation failed` | Check all required fields: name, email, githubUrl (must start with https://github.com/), purpose (min 10 chars) |
-| Empty signals array | No signals in the requested time window — try increasing `days` or using `status=all` |
+| `401 Invalid or deactivated API key` | Check for typos, or copy the key again from https://signals.x70.ai/dashboard/mcp-key |
+| `429 Rate limit exceeded` | Wait until the time in the `RateLimit-Reset` header; the response says how many calls your plan allows per hour |
+| Empty signals array | No live signals match right now. `GET /signals` returns only live (unverified/pending) signals and has no `status` parameter. A larger `days` (max 30) helps on Pro only — free keys always get the last 24 hours. For resolved signals use MCP `get_signal_history` |
 | `500 Internal server error` | Temporary issue — retry after a few seconds |
 
 ## Pricing
 
-**FREE during beta** — no charges, no credit card required.
+| | No key | Free key | Pro |
+|---|---|---|---|
+| Signals | 3-signal preview | every live signal — coin, direction, confidence, reasoning | + entry, stop-loss, take-profit, leverage |
+| History | — | 24 hours | 30 days |
+| Rate limit | 30 calls/hour per IP | 300 calls/hour | effectively unlimited |
+| Price | free | free | $35/month or $300/year |
 
-Future plans:
-- **Free tier**: 60 req/min, 7-day signal history
-- **Pro** ($29/mo): Higher limits, 90-day history, real-time websocket, priority support
+New accounts get a 14-day Pro trial, no card; nothing is charged unless the user subscribes. Upgrade links in API responses go to https://signals.x70.ai/dashboard/plan
 
 ## Related Skills
 
