@@ -1,0 +1,4 @@
+interface:
+  display_name: "X-Aggregate-Data"
+  short_description: "读 X (Twitter)：推文、回复、搜索、账号、关注列表、X 中文区统计，不用 API"
+  default_prompt: "用 $x-aggregate-data 查 X 上的内容，按脚本返回的数据回答，注明数据时间。"

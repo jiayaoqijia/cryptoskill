@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T01:17:27.867902+00:00",
+  "generated_at": "2026-10-09T07:00:26.364956+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -82142,6 +82142,68 @@
         },
         "mutable_remote_runtime": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "exchanges/qianyubtc-x-aggregate-data": {
+      "name": "x-aggregate-data",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -217388,13 +217450,13 @@
     }
   },
   "summary": {
-    "discovered": 3494,
-    "processed": 3494,
+    "discovered": 3495,
+    "processed": 3495,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2539,
       "router_orchestrator": 143,
-      "unknown": 326,
+      "unknown": 327,
       "analysis_only": 210,
       "unsigned_tx_builder": 114,
       "local_executor": 100,
@@ -217403,10 +217465,10 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1196,
+      "can_execute_shell": 1197,
       "can_install_code": 540,
-      "can_write_files": 159,
-      "can_browse_web": 235,
+      "can_write_files": 160,
+      "can_browse_web": 236,
       "can_spawn_subagents": 256,
       "can_move_funds": 291,
       "requires_private_key": 471,
