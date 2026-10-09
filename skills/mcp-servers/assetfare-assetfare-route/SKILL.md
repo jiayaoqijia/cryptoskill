@@ -1,6 +1,6 @@
 ---
 name: assetfare-route
-description: Use for agent-native, non-custodial bridge and cross-chain routes across 98 available routes. Forty-four are price-recommended only at or above a dated best-from threshold; 54 have no current price recommendation. Economic guidance is advisory and never blocks prepare or session creation. Execution selection remains separate. The 1bp service fee is additional to Circle/provider/network fees. AssetFare never checks balances, signs, or submits.
+description: Use for agent-native, non-custodial bridge and cross-chain routes across 100 available routes. Forty-four are price-recommended only at or above a dated best-from threshold; 56 have no current price recommendation. Economic guidance is advisory and never blocks prepare or session creation. Execution selection remains separate. The 1bp service fee is additional to Circle/provider/network fees. AssetFare never checks balances, signs, or submits.
 ---
 
 # AssetFare Route
@@ -39,22 +39,22 @@ wallet access, action preparation, signature, or submission authority.
 ## Economic evaluation guidance
 
 - USD 1 is the shared technical quote minimum, not an economic recommendation.
-- Read `economic_guidance` on the quote and the dated 98-route catalog at
+- Read `economic_guidance` on the quote and the dated 100-route catalog at
   `https://assetfare.dev/route-economics.json`. Forty-four routes have a
-  best-from amount; the other 54 have no current price recommendation.
+  best-from amount; the other 56 have no current price recommendation.
 - Treat `economic_guidance.price_recommended_for_amount` as advisory. Compare a
   fresh all-in quote when price matters. No economic acknowledgement field is
   required, and guidance never blocks prepare or session creation.
 
 ## Interface scope
 
-- REST/OpenAPI v2: twenty-two available endpoints and 98 directed routes across seventeen chains; 44 are threshold-recommended and 54 have no current price recommendation.
+- REST/OpenAPI v2: twenty-four available endpoints and 100 directed routes across nineteen chains; 44 are threshold-recommended and 56 have no current price recommendation.
 - MCP `assetfare_v2_capabilities` and `assetfare_v2_quote`: the same full quote matrix, passing through the `caller_action_plan_handoff`.
 - Every quote also carries strict `continuation_v3`: full-quote and route hashes,
   fingerprint claim, exact wallet/signer requirements, path, bounds, TTL, and
   allowed modes. It remains `unranked_candidate` until a separate explicit
   offline `assetfare-select` operation writes `approval_v3` mode 0600.
-- MCP caller-approved v2 execution tools cover all 98 available routes: `assetfare_v2_prepare` (one-shot first unsigned bundle) and the `assetfare_v2_session_create`/`_get`/`_observe_source`/`_observe_output`/`_refresh_action` lifecycle. Remote clients generate the session capability locally from 32 CSPRNG bytes encoded as base64url; the remote adapter never generates that secret. The optional self-hosted stdio adapter additionally exposes `assetfare_v2_new_session_capability` as an offline helper. Each execution tool requires explicit caller approval and the caller's public wallet addresses, is never auto-called from a quote, and rejects private key/seed/signed transaction material. Never mix these with the legacy v1 session tools.
+- MCP caller-approved v2 execution tools cover all 100 available routes: `assetfare_v2_prepare` (one-shot first unsigned bundle) and the `assetfare_v2_session_create`/`_get`/`_observe_source`/`_observe_output`/`_refresh_action` lifecycle. Remote clients generate the session capability locally from 32 CSPRNG bytes encoded as base64url; the remote adapter never generates that secret. The optional self-hosted stdio adapter additionally exposes `assetfare_v2_new_session_capability` as an offline helper. Each execution tool requires explicit caller approval and the caller's public wallet addresses, is never auto-called from a quote, and rejects private key/seed/signed transaction material. Never mix these with the legacy v1 session tools.
 - The packaged delegated `assetfare-agent-runner` supports EVM and Solana handoffs. Aptos routes return a verified Aptos Wallet Standard unsigned-BCS handoff with delegated runner execution disabled; the caller independently confirms, simulates, signs and submits it.
 - Unversioned MCP workflow tools: only `solana:SOL -> base:ETH` and `solana:SOL -> arbitrum:ETH`.
 

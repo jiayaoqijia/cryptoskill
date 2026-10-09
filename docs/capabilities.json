@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T12:49:57.251627+00:00",
+  "generated_at": "2026-10-09T18:45:17.578691+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -82374,7 +82374,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -82560,7 +82560,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -82684,7 +82684,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -182070,6 +182070,134 @@
         "circle.com"
       ]
     },
+    "payments/circlefin-official-bridge-tokens": {
+      "name": "bridge-tokens",
+      "execution_model": "local_executor",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": [
+        "circle.com"
+      ]
+    },
+    "payments/circlefin-official-buy-crypto": {
+      "name": "buy-crypto",
+      "execution_model": "analysis_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": [
+        "circle.com"
+      ]
+    },
     "payments/circlefin-official-fund-agent-wallet": {
       "name": "fund-agent-wallet",
       "execution_model": "local_executor",
@@ -182213,7 +182341,7 @@
           "source": "declared"
         },
         "can_install_code": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -182253,7 +182381,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -217576,31 +217704,31 @@
     }
   },
   "summary": {
-    "discovered": 3497,
-    "processed": 3497,
+    "discovered": 3499,
+    "processed": 3499,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2540,
       "router_orchestrator": 143,
       "unknown": 327,
-      "analysis_only": 211,
+      "analysis_only": 212,
       "unsigned_tx_builder": 114,
-      "local_executor": 100,
+      "local_executor": 101,
       "installer_bootstrap": 43,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1198,
-      "can_install_code": 541,
+      "can_execute_shell": 1200,
+      "can_install_code": 544,
       "can_write_files": 161,
       "can_browse_web": 236,
       "can_spawn_subagents": 256,
-      "can_move_funds": 291,
-      "requires_private_key": 471,
-      "requires_hosted_operator": 335,
+      "can_move_funds": 292,
+      "requires_private_key": 475,
+      "requires_hosted_operator": 337,
       "uses_remote_install_script": 42,
-      "mutable_remote_runtime": 541
+      "mutable_remote_runtime": 544
     }
   }
 }
