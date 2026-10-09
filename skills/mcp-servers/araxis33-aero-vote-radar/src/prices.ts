@@ -70,7 +70,19 @@ export async function getTokenPrices(
           const data = (await res.json()) as DefiLlamaResponse;
           for (const [key, coin] of Object.entries(data.coins)) {
             const address = key.split(":")[1]?.toLowerCase();
-            if (address) cache.set(address, { price: coin.price, decimals: coin.decimals, cachedAt: Date.now(), isFallback: false });
+            // DefiLlama occasionally returns a malformed entry (missing `decimals`,
+            // a null/non-numeric `price`) for a thin or newly-listed token — exactly
+            // the kind of obscure bribe token this module expects to meet. Caching
+            // that as-is would store NaN as a "real" price for the full
+            // PRICE_CACHE_TTL_MS, which is worse than the $0 fallback below: every
+            // downstream guard checks `price === 0`, and `NaN === 0` is false, so a
+            // NaN price slips past the MIN_TRAILING_USD filter instead of being
+            // excluded. Skipping it here lets the batch's own post-loop fallback
+            // (below) zero it out on the same short failure TTL as any other
+            // unpriced token.
+            if (address && Number.isFinite(coin.price) && coin.price >= 0 && Number.isFinite(coin.decimals)) {
+              cache.set(address, { price: coin.price, decimals: coin.decimals, cachedAt: Date.now(), isFallback: false });
+            }
           }
           break;
         }

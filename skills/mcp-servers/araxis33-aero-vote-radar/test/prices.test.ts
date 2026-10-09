@@ -126,6 +126,28 @@ test("getTokenPrices falls back to price 0 rather than hanging when the request 
   assert.deepEqual(prices.get("0xstalled1"), { price: 0, decimals: 18 });
 });
 
+test("getTokenPrices falls back to price 0 rather than caching NaN when DefiLlama returns a malformed entry", async () => {
+  // DefiLlama's free API occasionally omits `decimals` or returns a null/non-numeric
+  // `price` for a thin or newly-listed token. Caching that as-is would store NaN as a
+  // "real" price: every downstream guard checks `price === 0`, and `NaN === 0` is
+  // false, so a NaN price would bypass the MIN_TRAILING_USD filter instead of being
+  // excluded the way an explicitly unpriced token is.
+  global.fetch = (async () =>
+    ({
+      ok: true,
+      json: async () => ({
+        coins: {
+          "base:0xnullprice": { price: null, decimals: 6, symbol: "NP" },
+          "base:0xnodecimals": { price: 1.5, decimals: undefined, symbol: "ND" },
+        },
+      }),
+    })) as unknown as typeof fetch;
+
+  const prices = await getTokenPrices(["0xnullprice", "0xnodecimals"]);
+  assert.deepEqual(prices.get("0xnullprice"), { price: 0, decimals: 18 });
+  assert.deepEqual(prices.get("0xnodecimals"), { price: 0, decimals: 18 });
+});
+
 test("toUsd converts a raw token amount using the looked-up price/decimals", () => {
   const prices = new Map([["0xddd1", { price: 2, decimals: 6 }]]);
   assert.equal(toUsd(3_000_000n, "0xDDD1", prices), 6);
