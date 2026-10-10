@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "3995b206ff682a4ad2084f6a0ca20f61e98f8cea",
+      "revision": "2f4c196c1b2134f1be68ceee58a0a73cc8cce69b",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3839,7 +3839,7 @@
     "exchanges/senpi-ai-senpi-account-status": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-account-status/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "3e74da9ea08cc849442967dd8c623cc59c0e5ed520f053c545c0e0c4724b83d7",
         "references/presentation-notes.md": "8d2b874195f95d991f27d779b20dcc1094776640e987fad1fa5f29c6ae77958f",
@@ -3864,7 +3864,7 @@
     "exchanges/senpi-ai-senpi-deposit-withdraw-transfer": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-deposit-withdraw-transfer/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "7a16c0d777643e34a9a3a55dc33e02e1dd34219fdf964c1548990486b30e4af2",
         "tests/test_money_rails_skill.py": "175b1d50cfd450ba0fc866b54f361b5db8c9ad7f6500b5705d37a82c656bceda",
@@ -3879,15 +3879,15 @@
     "exchanges/senpi-ai-senpi-market-pulse": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-market-pulse/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
-        "SKILL.md": "e6ae18a7b92f1fe598b9d58eb17d4f95933f1ba98aaee868a5d3d3fe715a3ab5",
+        "SKILL.md": "74910005b56fe8f9fe340f00967866291a384067bf240a4b740c6d391f04f557",
         "references/analysis-framework.md": "f28318e3cff4ded3a3c58369a6b7157d7d0e88b1f16f15ee4609fdd05813d634",
         "references/scope.md": "5fcfab3deea82abbca335617cff71cff38bf041b68ecb06bcc4f3b45a78c3d03",
         "scripts/mcp_client.py": "b9c72ab1aac6f1ee906a389171ec3c968048fb76c9b3e18bff2e5b6d0762e23b",
-        "scripts/pulse.py": "3b7d48b15b5e74c5d301b7881f191510a08d906eaefae00858cd29500af66a51",
-        "tests/fixtures/pulse_fixture.json": "d15ecdd606ea46a17f31cf3f6c3d132b964b7ecadf604b03e68d6693894e5b63",
-        "tests/test_pulse.py": "b686a98897e4ccdb6c6b9c8005d573a77d7a151f3368e027d192bfd32ec87841",
+        "scripts/pulse.py": "a248e2cbf62d189de6700261f583df8ede28dc851cd27ea45febf20b4c455c1f",
+        "tests/fixtures/pulse_fixture.json": "c2f01ac27ae77f24729ef1b75c29e42939eb93d4dacc1bf675a2d1be671537d6",
+        "tests/test_pulse.py": "c1e0d3025f21afc8364fbff143d85f84604d9d8bcd797b9bc7e1e1dfe94a5f34",
         "tests/test_pulse_saved_wallets.py": "a6adbe7c9f8d93270ad376e94171f670100c082b771a2397bdf427e425f01f3f",
         "tests/test_signals_closing.py": "b8a6903f5589fd3ad914bbd0c622ada47b2c75f7358bea69ac0a56af4e841bb3",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
@@ -3908,7 +3908,7 @@
     "exchanges/senpi-ai-senpi-trader-research": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trader-research/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "3cb8d7b8d523bcffa2cfb8e96095e70e863443c5b4b8aae595ca24c7deb9c30c",
         "references/analysis-framework.md": "251247922522a5a2c546fd5f44b8c5f865f34ebabd7f52c9ba140231f328d379",
@@ -3933,7 +3933,7 @@
     "exchanges/senpi-ai-senpi-trading-runtime": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trading-runtime/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "d3f427250b3fde2b1df63cbc0310e1c128c3906dc7bfbba74014194679ec2cef",
         "references/dsl-protection-check.md": "2b004cd3b65834e9adf9964087fa97e9e65e81feb3d4d7a8a70e494ed138dd96",
@@ -3974,7 +3974,7 @@
     "exchanges/senpi-ai-senpi-why": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-why/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "558901a82e0b278f4322b9e128c2019ff20127ed91a564014633cec7f1d19757",
         "references/overview-positioning.md": "4174702e1a53b0f145c1460fd0de59934254825e523762c7631269f9a4e049a7",
@@ -17408,7 +17408,7 @@
     "dev-tools/eth2-quickstart": {
       "repo": "chimera-defi/eth2-quickstart",
       "path": "skills/eth2-quickstart/SKILL.md",
-      "revision": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
+      "revision": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
       "files": {
         "SKILL.md": "5b1b76c2c4ad5ecf5a77a456bc121bc310914bb529cfd9785d0f5bbc051a703c",
         "evals/evals.json": "24af89da13714e05dbeee8eb97198468ce5bdc7e9e686941aa8c54fe376f29ac",
@@ -17702,7 +17702,7 @@
     "exchanges/senpi-ai-senpi-improve-trades": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-improve-trades/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "7211cdac4d102dfb5321c8dd4dbc4ddaabd2adee0e9bdedf5b93575aea6539c5",
         "references/event-log.md": "d7482c6647e679b4c69db7f5b74f8522462a90ef9ec7341b3491899bdcbae0ef",
@@ -17743,7 +17743,7 @@
     "exchanges/senpi-ai-senpi-portfolio": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-portfolio/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "8dfd4df5e0c89df38c6fb49ade598e28bbce541f196ca36701ea840e44005d63",
         "references/analysis-framework.md": "4ed518f59b9ddb2c7c54f0ae0c4dce947ba048feee7320360d8ce8e3d80a23f9",
@@ -17784,14 +17784,14 @@
     "exchanges/senpi-ai-senpi-smart-money": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-smart-money/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
-        "SKILL.md": "5c85a57d46fb6954ff21e8d49e659bd7259fa6d1f6578dffaf56c44a194b9ee3",
+        "SKILL.md": "4d2e68504932c344599fe98860a0593ce8ef2767a5b10650ee0d4e88103e4c36",
         "references/analysis-framework.md": "0b0487582583aa9c9ac17daa49ec2eb140a164cb7cd65af514b66786b6cc4ba7",
         "scripts/mcp_client.py": "86c29aaacc692d09655d3687e6b3068f46fa0fe3985773e596e065f6d226f1c2",
-        "scripts/smartmoney.py": "556e40ea43bf56771d84a5f91113a160afc1f1fa5cd82145e4d3ff0b3d5a2e9a",
-        "tests/fixtures/smartmoney_fixture.json": "6562f02ba681b241e9eeaa584bdaddc67ef1c936329ead0f9520070da9afef75",
-        "tests/test_smartmoney.py": "b0f113d68baa5ebf5feb0d19de057065e175d132af0f4154f77cab756cfc9ca9",
+        "scripts/smartmoney.py": "bb22ab517d5cfc59f4dad16822bad6a06497727c0dff67b30140c84792f317b1",
+        "tests/fixtures/smartmoney_fixture.json": "cb589ab6c249c9494b15e7a4a2663b4bfc3b68c8a683ea93ea424d110fa4da9e",
+        "tests/test_smartmoney.py": "0912f9a8004d630d0be0956e3d5ab0256ebde7451f64d821e010c9a8c91d40cb",
         "tests/test_smartmoney_saved_wallets.py": "be5c3a6052d05ccf3dfa0ebfb9a2ba11665e103f5228de1f9b4d9d4ecf6dc6b6",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
@@ -17809,7 +17809,7 @@
     "exchanges/senpi-ai-senpi-strategy-author": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-author/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "a8cf7ae68ee9a2e371a2f47b2325b3435920bd5e5a8c090a3abeb0e2a1aa70c1",
         "references/creating-a-strategy.md": "f9c80d895431bfef50a105f434ce8025650f25adfb3871cbf7e5cf047c72c0ca",
@@ -17870,13 +17870,13 @@
     "exchanges/senpi-ai-senpi-strategy-discover": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-discover/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
-        "SKILL.md": "7c6f426d34dac47879681ba89eae8a7171bdceaeb914f5dfa16b2ff3b09ba1bc",
-        "catalog.json": "f548d96c9cfe12d90cdc923cdc09c68f4fa7358a2fae4574eac187f37f4d747f",
+        "SKILL.md": "4c0fbb7ae40d4e89bd3bdc0edb298cdd1b7a468b67214f13c177a7da79ad808c",
+        "catalog.json": "b417b6ce2084d3b4085a15be798ed2506345f029fcc058e1fe45f4d87ed8264e",
         "references/glossary.yaml": "9bdb786d49073cb64914a7501c4750ee92fc8fa1ed3d6434b43ae1235279ae10",
-        "references/variant-families.md": "ebfecd27a7babe42865cc9c4025549c9a3bc56a8dbbe8cc287489fd180cde291",
-        "scripts/discover.py": "93ced23e1857fa504c595109871df29eb507814de5cc7daf5da63c068d3cc861",
+        "references/variant-families.md": "e2e164602764fde59586dfb7628de90a5ffeb146dee2dee985b18170698083c9",
+        "scripts/discover.py": "99fc054da167d8c8dbc4782e515e31fc1a86b4e2caeb40c969d1670a9ec0a932",
         "scripts/mcp_client.py": "2eaa9a1d241751caf0a07584f66ea6c7c04fc8af6d00278da91cc376ad162228",
         "tests/conversation/actor-brief.md": "d438f03f86e81e90ff214df3f9a9636b22d3da5c9f4f2729c0ca6d63a97637ed",
         "tests/conversation/eval.workflow.js": "c2a8acde5d9cc326cd1212e23d2c8da73e561aa5ef679e415f7f393d800284ce",
@@ -17885,15 +17885,15 @@
         "tests/fixtures/catalog_fullfleet.json": "2d21af0b52159664185517a58fe367a57f3b7b5661c2ce17d87991f1d6da5c51",
         "tests/fixtures/gen_fullfleet.py": "e0c46c38b4d652329414e832913dd681b6e6e0b9224421493a5a25746389b432",
         "tests/test_accessible_usdc.py": "e09dc070ea7e510590525e82ef3eb02f5738d344dafeab641c4e885855ef7f99",
-        "tests/test_cli.py": "1ef4da1d41c58bc1d7b2f32a7a45325e123fa5f1382f70c221df1c12d4113293",
-        "tests/test_default_catalog.py": "65011db803291a7e038cafe4b0f9f8f928ef4bcdedbcf10269fd89eef7b631ab",
-        "tests/test_discover.py": "17de48165ab6387dd8ea98fdd080a2e7baa7af9ec14c809155153ce03b65ffbf",
+        "tests/test_cli.py": "e4e487da23ff3a6ce88b4555be3fbf8445421f9508bb2289f22e24078911fa3a",
+        "tests/test_default_catalog.py": "e2fa36ec48ce71f854f33c3317ceb7f05aff5ce4edc5509957fccc4748e6a911",
+        "tests/test_discover.py": "c755cf9b137dbffeeb1687b062154b942297577eb3f3cc874b73993f501b75e5",
         "tests/test_discover_saved_wallets.py": "60c66a28ac95625b9d189cd9e338765f0c730490dd3b6517d6103d12281197c1",
         "tests/test_fullfleet.py": "1c404771ac65ba5317ebbde7c51637d0aefd6c6f8a6463f06228c8fc9296f26e",
-        "tests/test_new_strategy_discoverability.py": "d7904b2057c1faea669b1de481a1cf83a69fe2209439766ffbc250c8ea2fd1f4",
-        "tests/test_scenarios.py": "1b1c100389c8da024433d11e2f240cf3e89ed23792e2d91e57db7fb7e40dc99e",
-        "tests/test_skill_surface_discover.py": "7077b529cbb2c52fba3671277b31916939be63703de499f307d5c8357bb81c7c",
-        "tests/test_theme.py": "8e51dbacc47fbefa6e056cd6ebc8ad5f794a349f91fe7739763162abb1db8d8d",
+        "tests/test_new_strategy_discoverability.py": "05a9859671727e55c0a9f0866f6e09b5ecb3f464d25837ffde76927e6f3ec11b",
+        "tests/test_scenarios.py": "86d92558049f1617d9b15cdf1420c007dd5a0d57eff0feac252a43ddceea1f66",
+        "tests/test_skill_surface_discover.py": "0edcdef759772fb10e4b7f7398895bc923d316635052cf7a22e03bc92432056b",
+        "tests/test_theme.py": "53acebfe2df1bf61e741ff00898d361b0bf25fe2744fdf56fd10a55f4df3b088",
         "LICENSE": "bccf5e17e1ae28b0f27115c72c880806c450126386a92f907e740749b5a9152e"
       },
       "modes": {
@@ -17925,7 +17925,7 @@
     "exchanges/senpi-ai-senpi-strategy-ops": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-ops/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "f828d79410415415f36b7b0ac291eef4cae2ec9c1d6df5b2f8a73d1f1070a453",
         "references/editing-a-live-strategy.md": "6138b327e47d31a3454083b440a026fbca6bf65013e98a05f24ec835702f3413",
@@ -18016,7 +18016,7 @@
     "exchanges/senpi-ai-senpi-trade": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trade/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "d1047ba630afcd771273ae0d57c76ebbdd43009eb74e2ced42676d7b4dca24f4",
         "references/mirror-monitoring.md": "cdccc8739732d67d95a369a94229194a1af0b6a7c4edddb6b4de9e7d8ebaf542",
@@ -23380,7 +23380,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "eb76d1d07f583526dc9ed3f77360fe2c225fecc3",
+      "revision": "0911e957a4df1f7106d4d24dce951bda485cd206",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "1af0d16b7517aa3730d78f83800f14ce03853264ca4c9f42b2ec7cb0903247f9",
@@ -23391,13 +23391,13 @@
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "59c84fc9dbb9ee533e6308219b22403ab910d4c8c8563e5ad5c918a8558900f4",
-        "docs/data/fee-rate.json": "44f2b3b05aa537a58c519ffb160704a98dffdd88779bf8aec768d1362768b621",
-        "docs/data/fee-stream.json": "053310ac00e421f9c8b91e61e8162fd053a40efa8c088d051399aa992148d4fa",
+        "docs/data/fee-rate.json": "08a3b93fda9e3bbe5b3fe4cc8bdf062494a60dda32cf79a18d2367e8c5a28d0c",
+        "docs/data/fee-stream.json": "01f3c5ea70ba7020d2dc1bc62b85d0f82446fb4d1d8c98bfcac4757186e0f4e2",
         "docs/data/promise.json": "7d415126c36a5f2d791f05a362cdb7cb16c3d5087714e3bfbe90a09e3e9c64d3",
-        "docs/data/snapshot.json": "4afe7cbbbc0b6a474b898f663263198dde35826215e0a863fc497488a6a486b4",
+        "docs/data/snapshot.json": "89594dbd5bdd0bfae31331275153f5897371bc2006d3df0a2e8af281caadfd17",
         "docs/data/timing.json": "ae8e2e077062dc522e854ed03f976e52322c28023bff1d04baac5eca8efe94dd",
         "docs/index.html": "2c069f8bb3c033bc9f2be4edebc6963995f08963930b25a6ee160a1f3582b0fa",
-        "docs/llms.txt": "3e21a98298ceea869576e4d1bed13cb25497a13c497d16c9957185115ac864c7",
+        "docs/llms.txt": "6c24a9a880156c860233cb650d95b5fb1fa21012b1b18b41b3c2c4ef27058113",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -23610,7 +23610,7 @@
     "exchanges/senpi-ai-quant-desk": {
       "repo": "senpi-ai/senpi-skills",
       "path": "quant-desk/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
         "SKILL.md": "95ca006726caaa7a713c25c16a3f0061e79e44c8834379ee858ea03f07c52abf",
         "references/coverage.json": "9f328f8ac194a5647608ac407cd161fa14dd0b6148d747ffeed719611904b09a",
@@ -23701,16 +23701,16 @@
     "exchanges/senpi-ai-senpi-signals": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-signals/SKILL.md",
-      "revision": "0fbe35a328eadb2331096126756b0206735772ad",
+      "revision": "4f0a5370a8cdc341ba848bcb339199604181633d",
       "files": {
-        "SKILL.md": "0f20ba06207c0380da64e38944bf4c3c55f20e3a7ba16354739b447003eed558",
-        "references/detectors.md": "307f4d416697b3a0d52c9c16c09601e9841ff4d46a00f103ec4df3e8145ab54f",
+        "SKILL.md": "06709620dedc241ddd068a417237ff3c47ccb6a5dbb712ec581b305eecbbe361",
+        "references/detectors.md": "fd4ce8657669af54577d35590563feb3bd7e8e748b8e740cdabb47898cc22538",
         "references/worked-examples.md": "14b6de3570a383f300a9a3eff1362dbc3e72741a1c0da215d82e04c8db490491",
         "scripts/check_position_age.py": "e81840aa9bb58128e9bc0b9d0657f3b0a4326091b62df097c985c86e5123e368",
         "scripts/hyperfeed.py": "f2bc20d51ca348e0a205013c1b6c04d9e9d037485e09d96c9659ee1dc6dfedad",
         "scripts/mcp_client.py": "86c29aaacc692d09655d3687e6b3068f46fa0fe3985773e596e065f6d226f1c2",
         "scripts/score.py": "2c8bbc8f842ff1ccbfa7758488f8a5607a66765ea38e032e43ecdc8e2eede42d",
-        "scripts/smartmoney.py": "556e40ea43bf56771d84a5f91113a160afc1f1fa5cd82145e4d3ff0b3d5a2e9a",
+        "scripts/smartmoney.py": "bb22ab517d5cfc59f4dad16822bad6a06497727c0dff67b30140c84792f317b1",
         "scripts/striker_scoring.py": "bd5fbb1c7894e2f9aaba6c737d0d07cf60924626ab267b4c01356c4535dd7ac7",
         "scripts/sweep.py": "2fdc690c6b907ec461bcf237ee1d45e004be7d882921cdc1892503125a7d7593",
         "tests/fixtures/leaderboard_markets.json": "68d0e284441216601fbed4b1b9716cd62cdd9cf08cd0239bcde11a2975c6036a",
@@ -25186,9 +25186,9 @@
     "chains/ashrafiucse-auth-review": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/auth-review/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
-        "SKILL.md": "81432ffbb5f2fa71eda34c9b1cd2348ea289be96a4bf11bf9f28d070be308249",
+        "SKILL.md": "29ec85b62d7bcc2e68c259f2518bd197f71e58e84c12fb467d72a87592406104",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
       },
       "modes": {
@@ -25199,7 +25199,7 @@
     "chains/ashrafiucse-config-hardening": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/config-hardening/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "09d1b5e82defa7147ff9c100aa97937a3603613d512cdbfe987bfea446924fd9",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -25212,7 +25212,7 @@
     "chains/ashrafiucse-container-iac-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/container-iac-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "fc8d5b452c21fa59219d1c67e0474247054c68f571aa4e63d56cd6851fb236c2",
         "references/aws-iam-escalation.md": "edcf1f0e713b13e44e935071c163084e8b66f4a5457939b80a4673b90484647a",
@@ -25227,9 +25227,9 @@
     "chains/ashrafiucse-crypto-review": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/crypto-review/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
-        "SKILL.md": "66603778d5a11f48aeb2d43a2189ecd7613fb8604dc5e2e783844fe7eab8e0e4",
+        "SKILL.md": "5f822f4f445554f46da46dcf0eae4cfcec2d9b75270b0acf3822aee457a233de",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
       },
       "modes": {
@@ -25240,14 +25240,14 @@
     "chains/ashrafiucse-cve-research": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/cve-research/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "116aa5043a87ce649d22b7f3696541e196d92dc4b81078b876b71bb424534220",
         "references/ghsl-lessons.md": "d9a122757f125e5a8b1448d0d1fd03e95125319ffc8cea8c4629856baa573342",
         "references/notable-incidents.md": "19b56f303e5ff3d1862eb88471adbac8a1bbfcd82768e777bbf0e63160832f6f",
         "references/real-world-sources.md": "b3065e89414bfb6b296e770e5d3105208d640dba76fabde5464437598dd2a789",
         "references/step-by-step-sources.md": "ceba56714c82550d0284d0e6ca03cbf72d14970b7bc41a344d6128fa6d32aa50",
-        "references/vendor-research-lessons.md": "67c2d06acd73fff81fa6636b9c34d7da62d9254c584896202bb8eba767366072",
+        "references/vendor-research-lessons.md": "e62430b81aab0b9e3002394a7becf7635ec334bca2be61bba520e35d3b95196a",
         "vuln-db/README.md": "76c89ca808e6d16235b6899e8dcc004924cbc24b51bd0b99d7c55529e78d4de4",
         "vuln-db/entries/2016-06-01-cve-2016-4437.md": "d7977c2920398d6139bea6bc596a8763908eb6660ef129dac681cb6e91229962",
         "vuln-db/entries/2017-03-01-cve-2017-5929.md": "9f9f1d96c6132c1cc7e6b4e8f700113153e61c1254843138f5445e766ca6739d",
@@ -25291,10 +25291,24 @@
         "vuln-db/entries/2024-09-10-cve-2024-43796.md": "501aec8d52840f3cf95bc8a5ac50eace6563d401e745931e41fbfcd22621bfc3",
         "vuln-db/entries/2024-09-10-cve-2024-45590.md": "71b35109b3bc9c1fcc9f102e03dafbbdbf00687e677ce4da21234919b56bf8e7",
         "vuln-db/entries/2025-03-21-cve-2025-29927.md": "b200d6e68333b36202846d893b2ed2e3cec8a25a8b218c7109a4ba8533d6e005",
+        "vuln-db/entries/2026-06-03-cve-2026-45247.md": "15ab5aa0a775f3e9b8feb3bad5b6249360e304c7276620517841aa69dae1f7a8",
+        "vuln-db/entries/2026-07-07-cve-2026-48908.md": "886d2d1d931b978628757c00b2fb67c04512263ca3a1e1b5eb685891072a8d6f",
+        "vuln-db/entries/2026-07-07-cve-2026-56290.md": "29321fab45610d8a2185de59e8a793ece97fe81e0e33d61a08215089548b69b6",
+        "vuln-db/entries/2026-07-10-cve-2026-48939.md": "d04da444bb46efa1fe7635e96343c8d9cc6172f400df26657f166923ac19a905",
+        "vuln-db/entries/2026-07-10-cve-2026-56291.md": "76cbe9641596863ebe0a724a48d9a65781290c0dcf93b139929b4744c976f7ae",
+        "vuln-db/entries/2026-07-21-cve-2026-48907.md": "209a0db793dc9864b2745d4b88616ff587ae05bb7bf65cb26613f9b1be43654e",
+        "vuln-db/entries/2026-07-21-cve-2026-60137.md": "c720639d1dad92df9dfbe51c396e7251e7d824c0286141a5a183959a3a866be9",
         "vuln-db/entries/2026-08-06-cve-2026-5430.md": "a162f0ecab94874672d9b312630221a58a4506b7309893b6a31479746e6d251b",
         "vuln-db/entries/2026-08-11-cve-2026-71362.md": "f50979d58b05e8679f5901172b730f89cd5a9c1d6244f848f0b0a949a9998f2a",
+        "vuln-db/entries/2026-08-11-cve-2026-72898.md": "2b5b8ba8e44e756c47c405f3c228b8776f81776c13ae4e3628b4137d8a903b0c",
+        "vuln-db/entries/2026-08-25-cve-2026-60004.md": "a21bb60e6b2ed96b02740e39782698129b5494ea403721b583b373e0a9b99700",
+        "vuln-db/entries/2026-08-26-cve-2021-23758.md": "81da8080d41f94d71282332c36d12132a3a22849d6d1ea97d95b8adf473ecc4c",
+        "vuln-db/entries/2026-08-27-cve-2023-49105.md": "f2f70ec3f18940cd0c12ea10520423bcd81dc3173b90a8012d19f4418b413d1c",
+        "vuln-db/entries/2026-08-27-cve-2026-66384.md": "5634bf000d5105cf87236ba814cc96d0585beb3951685a828365dfb2255059f0",
         "vuln-db/entries/2026-09-02-cve-2026-48710.md": "b9dd92669e897be5fa3b5e2d8c6f80010ab0225dd021d974752c05b68b7119f2",
+        "vuln-db/entries/2026-09-02-cve-2026-49869.md": "0954a7ca75fa6e179aaec7da4114425031c1f1412bb2f93cdda39c5014942347",
         "vuln-db/entries/2026-09-02-cve-2026-59822.md": "76d6c4ec53136ffe575861100ad07f67a5bec368e77ec39f7f8621c5dd614cf3",
+        "vuln-db/entries/2026-09-02-cve-2026-82329.md": "2eefd3ac5633cf6212f02a5a983556b44774e7469cc7db75138c6c570c898ccc",
         "vuln-db/entries/2026-09-08-cve-2026-75650.md": "d5d7b6353f79b6ac4a8c4676abf00496497fa76e2f300fbee42c600f4582d677",
         "vuln-db/entries/2026-09-11-cve-2026-42016.md": "492ddab346aa3f2b7b2dfbda531cb792d67e842ba7e59161e1c1d78ff4b8cca4",
         "vuln-db/entries/2026-09-11-cve-2026-42018.md": "f75ff453065f686c12150972260b4e0c602b1accaf815d3513976d3601a61821",
@@ -25320,15 +25334,30 @@
         "vuln-db/entries/2026-10-01-cve-2026-15989.md": "1d384bf97fbde2fff91c02385f901c86170fa64c10e4845681cf24842dc67284",
         "vuln-db/entries/2026-10-01-cve-2026-75957.md": "f661ae1f2236a8c76eb2bb780fe0bd24e50f395d3b5d2082e13b069bf2e48093",
         "vuln-db/entries/2026-10-01-cve-2026-92966.md": "85dc258dcd010b31c0d3d4cb75f36ed9a55ed1cac32080d25fae0f951a279419",
+        "vuln-db/entries/2026-10-02-cve-2026-102489.md": "54742b7bf36ffad4929f76d9434244bb7442a844b59e5d664f992cae20f3ba08",
+        "vuln-db/entries/2026-10-02-cve-2026-102490.md": "49b13a780002e1101c4303b3c5a830690f99b3e817497fc9a5f3a7ab9e77b73b",
         "vuln-db/entries/2026-10-02-cve-2026-103764.md": "b5f76f732c8a952433f4ef34a9fa763e4390d2ce9729ffef6c63d1308658fe0a",
         "vuln-db/entries/2026-10-02-cve-2026-103765.md": "d2db64fed6041c8e79c1aa112ee7b0c8877383ecd9a8a51ef75b1257ebe216c3",
         "vuln-db/entries/2026-10-02-cve-2026-14378.md": "e9a03d644e3fd183ba0b7954e3b09c0f1c6b796347fa7328ff503bab7791f020",
         "vuln-db/entries/2026-10-02-cve-2026-15896.md": "a59aee5986bf3241bbcaef1ed2f470aab1258a0cd334ca9227f892933cff4a61",
+        "vuln-db/entries/2026-10-02-cve-2026-19652.md": "b94d2d3df11ae3ff2abd04b1decc2c812b6b3dc8af77f6a33d25d453a883bd36",
         "vuln-db/entries/2026-10-02-cve-2026-19660.md": "dff26a2a9cd42076304434e023ffff8e3a4837155c4196649f84430ec8d0cc61",
+        "vuln-db/entries/2026-10-02-cve-2026-87115.md": "17a7e17529127983990458f2d4168710ed9cb83336ad8d3def3030e02c2f4443",
+        "vuln-db/entries/2026-10-02-cve-2026-92084.md": "f8c36af1a43b30feaea6a8ff913de950aa75f04a1624c14e4cceb9ae80554491",
         "vuln-db/entries/2026-10-02-cve-2026-94541.md": "f7d1a7cc2b1fbc97657bda956d75a0ed94f2d975fc1a5023a1befaaabc09363f",
         "vuln-db/entries/2026-10-02-cve-2026-97637.md": "decc5a840a10c8c7c566f6ecf3199e72dc9bbb9798b1c26409fd1dfc1e3ea742",
+        "vuln-db/entries/2026-10-04-cve-2026-105135.md": "5aac3fe0f815ec5fb1585cdd8eaf140a1b1150b95ed3a8320df7284a3393b423",
+        "vuln-db/entries/2026-10-05-cve-2026-0770.md": "2435785d96b5d780c50b8f9789057791ae9c575d3f825ca854ae710e2ef4e138",
+        "vuln-db/entries/2026-10-06-cve-2026-104070.md": "14785772326317e67620bad20b062f9ab754fb768e2a849b2fcc58bb5401113e",
+        "vuln-db/entries/2026-10-07-cve-2026-104334.md": "78a0ea0ec1ae3c6fb723c125e25aa94d8aaa0c6ca70d9e8f6df8d737999c5ce3",
+        "vuln-db/entries/2026-10-08-cve-2026-107699.md": "9208bfdfa1b72c903ae7d1e0357b884b85f9fff4d2d073095843b93f7e0c193d",
+        "vuln-db/entries/2026-10-08-cve-2026-107704.md": "3bec771bf401622b78d2ab418a2b123ec4b58223bc8594816a8919717cbeff0b",
+        "vuln-db/entries/2026-10-08-cve-2026-107779.md": "d938ff63b79ea7c855a2da00c68d6ef91352caa7e2458539a8283e15a031d5a8",
+        "vuln-db/entries/2026-10-08-cve-2026-107780.md": "4cdbc95808fc53f75130b1d109bbaaf4d6afc4196fababb4fe57543d33edcb41",
+        "vuln-db/entries/2026-10-08-cve-2026-17609.md": "17d540aa0cf0a04470daa8066a011cef28e24d9351df98cc58e4fb5ed0eadbbd",
+        "vuln-db/entries/2026-10-08-cve-2026-85097.md": "0a5151311ddb2010cf69f3257a5b04c95682c4bef0afea98835c2f91e3c6a513",
         "vuln-db/entry-template.md": "86127854ead4d35e52ccc05ed833a263bc36b45ddedb2680aabae819af61a4b8",
-        "vuln-db/kev-triage-log.md": "2fd03b8bd39dcb189652aac85ed33374d502e4e0a11a850e15055fec8ae9f08f",
+        "vuln-db/kev-triage-log.md": "e7116f89f861ce614d49cedeb72d028c3b866460dbe6a39785b51e5f7b46d706",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
       },
       "modes": {
@@ -25381,10 +25410,24 @@
         "vuln-db/entries/2024-09-10-cve-2024-43796.md": 420,
         "vuln-db/entries/2024-09-10-cve-2024-45590.md": 420,
         "vuln-db/entries/2025-03-21-cve-2025-29927.md": 420,
+        "vuln-db/entries/2026-06-03-cve-2026-45247.md": 420,
+        "vuln-db/entries/2026-07-07-cve-2026-48908.md": 420,
+        "vuln-db/entries/2026-07-07-cve-2026-56290.md": 420,
+        "vuln-db/entries/2026-07-10-cve-2026-48939.md": 420,
+        "vuln-db/entries/2026-07-10-cve-2026-56291.md": 420,
+        "vuln-db/entries/2026-07-21-cve-2026-48907.md": 420,
+        "vuln-db/entries/2026-07-21-cve-2026-60137.md": 420,
         "vuln-db/entries/2026-08-06-cve-2026-5430.md": 420,
         "vuln-db/entries/2026-08-11-cve-2026-71362.md": 420,
+        "vuln-db/entries/2026-08-11-cve-2026-72898.md": 420,
+        "vuln-db/entries/2026-08-25-cve-2026-60004.md": 420,
+        "vuln-db/entries/2026-08-26-cve-2021-23758.md": 420,
+        "vuln-db/entries/2026-08-27-cve-2023-49105.md": 420,
+        "vuln-db/entries/2026-08-27-cve-2026-66384.md": 420,
         "vuln-db/entries/2026-09-02-cve-2026-48710.md": 420,
+        "vuln-db/entries/2026-09-02-cve-2026-49869.md": 420,
         "vuln-db/entries/2026-09-02-cve-2026-59822.md": 420,
+        "vuln-db/entries/2026-09-02-cve-2026-82329.md": 420,
         "vuln-db/entries/2026-09-08-cve-2026-75650.md": 420,
         "vuln-db/entries/2026-09-11-cve-2026-42016.md": 420,
         "vuln-db/entries/2026-09-11-cve-2026-42018.md": 420,
@@ -25410,13 +25453,28 @@
         "vuln-db/entries/2026-10-01-cve-2026-15989.md": 420,
         "vuln-db/entries/2026-10-01-cve-2026-75957.md": 420,
         "vuln-db/entries/2026-10-01-cve-2026-92966.md": 420,
+        "vuln-db/entries/2026-10-02-cve-2026-102489.md": 420,
+        "vuln-db/entries/2026-10-02-cve-2026-102490.md": 420,
         "vuln-db/entries/2026-10-02-cve-2026-103764.md": 420,
         "vuln-db/entries/2026-10-02-cve-2026-103765.md": 420,
         "vuln-db/entries/2026-10-02-cve-2026-14378.md": 420,
         "vuln-db/entries/2026-10-02-cve-2026-15896.md": 420,
+        "vuln-db/entries/2026-10-02-cve-2026-19652.md": 420,
         "vuln-db/entries/2026-10-02-cve-2026-19660.md": 420,
+        "vuln-db/entries/2026-10-02-cve-2026-87115.md": 420,
+        "vuln-db/entries/2026-10-02-cve-2026-92084.md": 420,
         "vuln-db/entries/2026-10-02-cve-2026-94541.md": 420,
         "vuln-db/entries/2026-10-02-cve-2026-97637.md": 420,
+        "vuln-db/entries/2026-10-04-cve-2026-105135.md": 420,
+        "vuln-db/entries/2026-10-05-cve-2026-0770.md": 420,
+        "vuln-db/entries/2026-10-06-cve-2026-104070.md": 420,
+        "vuln-db/entries/2026-10-07-cve-2026-104334.md": 420,
+        "vuln-db/entries/2026-10-08-cve-2026-107699.md": 420,
+        "vuln-db/entries/2026-10-08-cve-2026-107704.md": 420,
+        "vuln-db/entries/2026-10-08-cve-2026-107779.md": 420,
+        "vuln-db/entries/2026-10-08-cve-2026-107780.md": 420,
+        "vuln-db/entries/2026-10-08-cve-2026-17609.md": 420,
+        "vuln-db/entries/2026-10-08-cve-2026-85097.md": 420,
         "vuln-db/entry-template.md": 420,
         "vuln-db/kev-triage-log.md": 420,
         "LICENSE": 420
@@ -25425,7 +25483,7 @@
     "chains/ashrafiucse-data-exposure": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/data-exposure/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "729a6466953bb71b58095fa00ae9928304b3b873f7477f32ae258f537c4ba0d9",
         "references/logging-a09.md": "5b5cdaac3a1528ed9feb7ea6566870457db8604683f18d0637fc3b118a70bafd",
@@ -25440,10 +25498,10 @@
     "chains/ashrafiucse-dependency-vulns": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/dependency-vulns/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "fe753963970197217d6c36f87f31aa8bf4a8054009bb17cb51166511e86b3fc7",
-        "references/dangerous-packages.md": "d5b3d9c54226b3d0c0b2193f588abaf913b61a42d1e441b908a8cb1336f2bc25",
+        "references/dangerous-packages.md": "c7fc52524bf9f146217ad0a6900371f881ddf5da794ae598492b366d0b88d1ca",
         "scripts/osv_scan.py": "69e30f0887778b347acaea82f8b9cc4f923dc8d975e6bd1bf6dc41373e287a0b",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
       },
@@ -25457,7 +25515,7 @@
     "chains/ashrafiucse-django-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/django-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "793d6fdd8b4c037cd02a34842c3bbd747a36c55af61134aa9cb4eba89ca26a6b",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -25470,7 +25528,7 @@
     "chains/ashrafiucse-graphql-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/graphql-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "d13b456547e9620b4665401400ecb9a77101ae80d79def57a72d6925f92d1445",
         "references/frameworks.md": "77bb520357c063865ccc06d79eac2e2c9955cbfca0dbfc39b708e49da568dfda",
@@ -25485,7 +25543,7 @@
     "chains/ashrafiucse-injection-flaws": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/injection-flaws/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "4b3ccc929c4e5f42a4707c86937ad4a36774d8548a0dd43de4d7d03c80fc74f8",
         "references/frameworks.md": "16ba415c04d24e449aecbf7d15d5ea6d772049c069a71963f6f49795efb34c38",
@@ -25502,7 +25560,7 @@
     "chains/ashrafiucse-laravel-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/laravel-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "bb17d598e88a1ed74f583dd69c9865c22e18a3385d5e737420871fc53f632852",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -25515,7 +25573,7 @@
     "chains/ashrafiucse-mobile-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/mobile-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "a495971fecd7adffd454638707b880788268ecf00b60f698eaa03720b975f163",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -25528,7 +25586,7 @@
     "chains/ashrafiucse-rails-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/rails-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "41697fa841f618e6f894f9025ebf16e7af8cd5be5bb85ef02f1d6ff67506aee4",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -25541,7 +25599,7 @@
     "chains/ashrafiucse-secrets-detection": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/secrets-detection/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "53fca216afbc2004834c60d7650ebbc202c70a71977e97e4d27970df2fe1bb8a",
         "references/patterns.md": "c6d559d6a77c019b11df8e2a5e452505b7211f9797d45b29b631b231fee5eab2",
@@ -25560,7 +25618,7 @@
     "chains/ashrafiucse-security-audit": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/security-audit/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "fd0912f897ce200de602d3faf8630e39dfe6791ab827fc896b56f907f2cd1cef",
         "references/external-sources.md": "1fff0cddb0bf727605ded6b40b28d172ea1b02a8c25e4e5709d1fab23845f114",
@@ -25583,7 +25641,7 @@
     "chains/ashrafiucse-spring-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/spring-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "3303e04c20a17fb7ce15fbc8e189adb01818cca171731685b728edbd87285fbd",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -26055,9 +26113,9 @@
     "chains/ashrafiucse-llm-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/llm-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
-        "SKILL.md": "10722724a597b6012afbf15c7d05602d1e571eca03b10279a3ca3f4af3c4fe62",
+        "SKILL.md": "97e0f859acc20265b7c5533f1b571c6c994fe9b0907de56df65a97af41c94982",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
       },
       "modes": {
@@ -26068,7 +26126,7 @@
     "chains/ashrafiucse-course-platform-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/course-platform-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "212a5f8923391a283fc75a056187286dc086f9662bd0a4fb6afbf108a1f00ab6",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -26081,7 +26139,7 @@
     "chains/ashrafiucse-flow-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/flow-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "3dc960152d6a29a3c837860388b0a0dac328cdb321c1eed7b3f52dbcaef6c1a6",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -26094,7 +26152,7 @@
     "chains/ashrafiucse-skill-forge": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/skill-forge/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "64f3c704ade353bae0a6f86a9c2f5fbf3d9af811c2fb3363866bb2e71a0e7529",
         "scripts/new_skill.sh": "5351584bf56ddc8caae9c68040740fb583e40e93a74f5280362ab1e91a7238d4",
@@ -26124,7 +26182,7 @@
     "chains/ashrafiucse-design-threat-review": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/design-threat-review/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "1210cc2d91364b07fc3ff7ce32db0325f6b4ce5a97dc12e6746b38cffa8f9a05",
         "references/patterns.md": "4f3cea7effd3720ff09808d7b14bfd82425d1a1ff502526ffd76ffc2da59208a",
@@ -26194,7 +26252,7 @@
     "chains/ashrafiucse-dotnet-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/dotnet-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "574097598d37477b1ffbf2e8a43d047eabd828f62ec164e2219d51d62a7a3218",
         "LICENSE": "ed3ff997fbd99955a057f7b9b59fcc95d071649fcb90f388fd3b23be474ef36a"
@@ -28687,7 +28745,7 @@
     "chains/ashrafiucse-flutter-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/flutter-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "1ca110816d35879442921e4cc272703fc6e8c7840800dc67263b89edfe2634f9",
         "references/patterns.md": "640405feb379c4f1901d7417da3fa1c693a974a7dd07dc7ddc70fb4c6d98e930",
@@ -28702,7 +28760,7 @@
     "chains/ashrafiucse-android-code-security": {
       "repo": "ashrafiucse/security-audit-skills",
       "path": "skills/android-code-security/SKILL.md",
-      "revision": "ad51c94f092beb597459b45266405643f07424c3",
+      "revision": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
       "files": {
         "SKILL.md": "b6d56c216f2b2f4a1501269fb5da2180f6d5805e7f7dd41a8b4b34506fc61ac4",
         "references/patterns.md": "cc5047dfc31b6b1730db437f82cdfbcf41a1abb18a3faab4578f78594d380f09",
@@ -29965,7 +30023,7 @@
     "mcp-servers/priors-agents-priors": {
       "repo": "priors-agents/priors",
       "path": "skills/priors/SKILL.md",
-      "revision": "11c1d285773a7ceb18a1a4d06529ad4bd855cd06",
+      "revision": "670c9bbcbe436ee81c3b32dfb926c05d588d939c",
       "files": {
         "SKILL.md": "19d328cf5ac227741b051105a1a23bffba64a834042a72b5913172f42110f6d3",
         "LICENSE": "8c3d1e9e897b0fd0890bc7d1f05a73f822934c6439368b2e57d6f1707e9d1981"
@@ -43597,6 +43655,17 @@
         "references/onramp-kit.md": 420,
         "LICENSE": 420
       }
+    },
+    "dev-tools/chimera-defi-official-blog-anti-patterns": {
+      "repo": "chimera-defi/eth2-quickstart",
+      "path": "skills/blog-anti-patterns/SKILL.md",
+      "revision": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
+      "files": {
+        "SKILL.md": "98c38ca00d576db56986b90ad68825d58063aa3d7e70499541faa211cb0d1e0d"
+      },
+      "modes": {
+        "SKILL.md": 420
+      }
     }
   },
   "repositories": {
@@ -43630,10 +43699,10 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "a08a773db03685ddd7bc755f2ebc26d08853b0a4",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "3995b206ff682a4ad2084f6a0ca20f61e98f8cea",
+    "jiayaoqijia/cryptoskill": "2f4c196c1b2134f1be68ceee58a0a73cc8cce69b",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
-    "chimera-defi/eth2-quickstart": "d0868982514b9c3de9cbb235f8f48290d8ae3d55",
+    "chimera-defi/eth2-quickstart": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
     "okx/agent-skills": "9c180cc1e9911a1ca44c0df5cc7509dba5bb7697",
     "hypurrquant/perp-cli": "ed94cfd46259ff9186bf4f2489252a4f8f773e31",
     "aibtcdev/aibtc-mcp-server": "ce6dd7c998063116716c45ab1b6cb331815d172d",
@@ -43714,7 +43783,7 @@
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "cff9201dd1078c06a5ea30b5779587aad9e1cab4",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "eb76d1d07f583526dc9ed3f77360fe2c225fecc3",
+    "araxis33/aero-vote-radar": "0911e957a4df1f7106d4d24dce951bda485cd206",
     "paulf280-ui/cabal-hunter-mcp": "1c059944b62b0df52d0bede5d03d3ef75cfaa625",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "70fa841c708575878f7f657df4996ad3f67bf2be",
@@ -43724,7 +43793,7 @@
     "eziee-ai/protocol-mcp-template": "0b3ea470144d525a33b0469d6fa0bf8acffd3a13",
     "edycutjong/forwarding": "b8eb2aedb34ef9a5839eb5c85c4f54a9b6c114ad",
     "santyvv1993/santyvv-data-mcp": "fb153a9ce46225f1156cb4561b9de99e72c78cc9",
-    "ashrafiucse/security-audit-skills": "ad51c94f092beb597459b45266405643f07424c3",
+    "ashrafiucse/security-audit-skills": "2327eda76f1869a8f95cb3ef98bcd55e0004813f",
     "ofirbaranesad-agent/contract-powers-mcp": "92e94cfd32faf9a33d4062fd98e3adb1db926f87",
     "gveshk/atlasyield-mcp": "3744d2a889307ae91dd43726948526997a0bc0fb",
     "cyanheads/coingecko-mcp-server": "7483a4b91ea51be08e8ab691b2331b4bd6254541",
@@ -43755,10 +43824,10 @@
     "gemachdao/gdex-skill": "8353055226af1aedf91f91e335550e064eeb7f1f",
     "blockchains/blockchainlab-mcp": "4d7ff1b1934c02cbca347d4e3d597d0c1c00668a",
     "kant19801201behax5/silicon-dna-release": "45df255ef922796ff7e20d572d24555df6c724f4",
-    "priors-agents/priors": "11c1d285773a7ceb18a1a4d06529ad4bd855cd06",
+    "priors-agents/priors": "670c9bbcbe436ee81c3b32dfb926c05d588d939c",
     "ox31461/gasless-anygas-robyn-relay": "b2ac270d6f7e55a685db3efa987684e2e2913f04",
     "pokiehead/sic-crypto-kit": "40d0b993c1a9dd6f8e21c11214c6f420730705fa",
-    "hristovdimitri2-hub/kristo-intelligence-6": "54a7ba381ea4dce68e809187419d565959864a98",
+    "hristovdimitri2-hub/kristo-intelligence-6": "ee4f48a700b956541f1960e582419ea7e600c616",
     "loomdesk-hq/agents": "02626417d3a4b34ea5d5d8061e148a1f37e60bde",
     "abhi15724/quantforge-ai": "bcae9b2d00ece4449d5ccdf202300cb49ee92973",
     "aveetechapp/avee-skills": "fe4b9338c4f341043b3115ab07bf72664f0005c0",

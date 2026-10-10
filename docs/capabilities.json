@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T18:45:17.578691+00:00",
+  "generated_at": "2026-10-10T01:17:02.347580+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -26120,7 +26120,7 @@
           "source": "extracted"
         },
         "requires_hosted_operator": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -26135,7 +26135,9 @@
           "source": "extracted"
         }
       },
-      "hosted_operators": []
+      "hosted_operators": [
+        "openai.com"
+      ]
     },
     "chains/ashrafiucse-data-exposure": {
       "name": "data-exposure",
@@ -62643,6 +62645,68 @@
         },
         "mutable_remote_runtime": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/chimera-defi-official-blog-anti-patterns": {
+      "name": "blog-anti-patterns",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -217704,11 +217768,11 @@
     }
   },
   "summary": {
-    "discovered": 3499,
-    "processed": 3499,
+    "discovered": 3500,
+    "processed": 3500,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2540,
+      "read_only": 2541,
       "router_orchestrator": 143,
       "unknown": 327,
       "analysis_only": 212,
@@ -217726,7 +217790,7 @@
       "can_spawn_subagents": 256,
       "can_move_funds": 292,
       "requires_private_key": 475,
-      "requires_hosted_operator": 337,
+      "requires_hosted_operator": 338,
       "uses_remote_install_script": 42,
       "mutable_remote_runtime": 544
     }

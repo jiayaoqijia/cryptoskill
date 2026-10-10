@@ -79,6 +79,26 @@ Agent with shell/REPL/filesystem tools reachable from untrusted chat →
 **Critical** by default ("prompt injection → shell" is one step). Verify:
 allowlisted tool set, sandboxed execution (containers, no host mounts),
 human-in-the-loop for writes/spends/sends.
+- **Model-emitted code executed verbatim by the agent loop** (beyond named
+  REPL tools): custom planner/agent frameworks extract a code block from
+  the MODEL's response — first markdown fence, an `<|action_start|>` /
+  interpreter marker, a "code interpreter" action — and pass it to
+  unsandboxed `exec()`/`eval()` with process `globals()` and full
+  `__builtins__`. Running model-written Python is often the *intended*
+  control flow; the defect is unsandboxed exec behind an endpoint with NO
+  authentication (class incident: MindSearch CVE-2026-105135 — unauth
+  `POST /solve`, default bind 0.0.0.0:8002, `extract_code()` →
+  `exec(command, globals(), {})`, root inside the official Docker image;
+  entry: `../cve-research/vuln-db/entries/2026-10-04-cve-2026-105135.md`).
+  Same verdict when the endpoint is authenticated but reachable from
+  untrusted users — model output is user output for exec sinks (§4). Safe
+  shape: sandboxed interpreter (container/no host mounts, AST allowlist,
+  restricted builtins, no network) + authenticated driving endpoint +
+  non-public bind:
+```bash
+rg -n "exec\(\s*(command|code|snippet|block)|extract_code" src/ agent/ --type py
+rg -n -i "action_start|<\|interpreter\|>" src/ agent/ --type py | head
+```
 
 ## 6 — Logging & telemetry
 
