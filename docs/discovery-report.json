@@ -50,6 +50,20 @@
       "official": false
     },
     {
+      "org": "GuiBibeau",
+      "repo": "solos",
+      "category": "mcp-servers",
+      "prefix": "guibibeau-",
+      "official": false
+    },
+    {
+      "org": "scutuatua-crypto",
+      "repo": "whaletrucker-ecosystem",
+      "category": "mcp-servers",
+      "prefix": "scutuatua-crypto-",
+      "official": false
+    },
+    {
       "org": "hristovdimitri2-hub",
       "repo": "kristo-intelligence-6",
       "category": "mcp-servers",
@@ -61,20 +75,6 @@
       "repo": "priors",
       "category": "mcp-servers",
       "prefix": "priors-agents-",
-      "official": false
-    },
-    {
-      "org": "MangroveTechnologies",
-      "repo": "mangrove-agent",
-      "category": "mcp-servers",
-      "prefix": "mangrovetechnologies-",
-      "official": false
-    },
-    {
-      "org": "mmxrealQQ",
-      "repo": "bobai-buyburn",
-      "category": "mcp-servers",
-      "prefix": "mmxrealqq-",
       "official": false
     },
     {
@@ -307,12 +307,13 @@
     },
     {
       "query": "org:tronprotocol (mcp OR skill OR agent)",
-      "status": "checked"
+      "status": "unavailable",
+      "detail": "HTTP Error 403: Forbidden"
     },
     {
       "query": "org:stellar (mcp OR skill OR agent)",
-      "status": "unavailable",
-      "detail": "HTTP Error 403: Forbidden"
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
     },
     {
       "query": "org:hashgraph (mcp OR skill OR agent)",
