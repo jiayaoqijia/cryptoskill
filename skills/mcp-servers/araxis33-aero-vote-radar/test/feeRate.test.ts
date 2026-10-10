@@ -5,9 +5,31 @@ import { buildFeeInterval, buildFeeRates, packFeeIntervals, poolFeeRate, pruneFe
 
 const tokens: [string, string] = ["0xa", "0xb"];
 const cl = (pool: string, a: string, b: string): FeeCounter => ({ pool, kind: "cl", tokens, gaugeFees: [a, b] });
+const v2 = (pool: string, idx0: string, idx1: string, gaugeLp: string): FeeCounter => ({ pool, kind: "v2", tokens, index: [idx0, idx1], gaugeLp });
 // token a: 18 decimals at $2; token b: 6 decimals at $1.
 const prices = (t: string) => (t === "0xa" ? { decimals: 18, priceUsd: 2 } : t === "0xb" ? { decimals: 6, priceUsd: 1 } : undefined);
 const e18 = 10n ** 18n;
+
+test("interval: v2 index growth times the gauge's LP balance, valued at the given prices", () => {
+  const i = buildFeeInterval(
+    [v2("0xp", "0", "0", "0")],
+    [v2("0xp", (2n * e18).toString(), "5000000", e18.toString())],
+    "t0",
+    "t1",
+    prices,
+  );
+  assert.equal(i.usd["0xp"], 2 * 2 + 5);
+});
+
+test("interval: a v2 index that has not grown contributes $0, not an unknown", () => {
+  const i = buildFeeInterval([v2("0xp", "1", "1", "0")], [v2("0xp", "1", "1", e18.toString())], "t0", "t1", prices);
+  assert.equal(i.usd["0xp"], 0);
+});
+
+test("interval: a pool that changed kind between reads is skipped rather than throwing", () => {
+  const i = buildFeeInterval([cl("0xp", "0", "0")], [v2("0xp", (2n * e18).toString(), "0", e18.toString())], "t0", "t1", prices);
+  assert.deepEqual(i.usd, {});
+});
 
 test("interval: counter growth valued at the given prices", () => {
   const i = buildFeeInterval([cl("0xp", "0", "0")], [cl("0xp", (3n * e18).toString(), "5000000")], "t0", "t1", prices);

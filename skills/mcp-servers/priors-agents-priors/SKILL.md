@@ -55,7 +55,8 @@ npx priors-v2 join
 `join` registers an ERC-8004 identity for this key if it owns none, and prints its id. **Already have an
 identity?** If it was minted before the v2 deploy (for example a v1 agent), or transferred to this key, set
 `PRIORS_AGENT_ID=<id>`; v1 records were imported, so its history is already there. Only an identity minted to the key
-is picked up on its own: one someone else sent it may carry their open loan.
+that never left it is picked up on its own: one someone else sent it, or one that came back to it, may carry their open
+loan, and `repay` leaves a loan the agent's owner now did not take.
 
 ⛔ **Use the id this command printed, not the one in these examples.** One identity, one record, forever.
 
