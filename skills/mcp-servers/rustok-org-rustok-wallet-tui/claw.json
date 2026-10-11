@@ -1,0 +1,22 @@
+{
+  "name": "rustok-wallet-tui",
+  "version": "0.12.0",
+  "description": "Self-custody Ethereum agent wallet. Installs from a verified release and runs entirely on your machine as a single container image (MCP over stdio); private keys never leave it. New connections are read-only. Read wallet context, balances and DeFi positions (Aave v3, ERC-4626); preview transactions. Sending funds on-chain is gated in a separate terminal console, never inside the agent chat: you approve each payment, or confirm autonomous mode once and the wallet sends on its own after that; message signing is refused outright, in every mode. You assume all risk for funds on the agent wallet \u2014 there are no hard-coded spending limits.",
+  "author": "rustok-org",
+  "license": "MIT-0",
+  "permissions": [
+    "network"
+  ],
+  "entry": "SKILL.md",
+  "tags": [
+    "crypto",
+    "ethereum",
+    "wallet",
+    "defi",
+    "agent-wallet",
+    "mcp",
+    "self-custody"
+  ],
+  "minOpenClawVersion": "0.8.0",
+  "homepage": "https://github.com/rustok-org/mcp"
+}

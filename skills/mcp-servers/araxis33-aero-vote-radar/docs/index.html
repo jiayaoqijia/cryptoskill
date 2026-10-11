@@ -113,6 +113,8 @@
   tbody td { border-bottom: 1px solid var(--line-soft); }
   tbody tr:last-child td { border-bottom: none; }
   th:first-child, td:first-child { text-align: left; }
+  #beforeAero th, #beforeAero td { text-align: left; }
+  #beforeAero td + td { white-space: normal; }
   tbody tr:hover { background: rgba(77, 141, 255, 0.05); }
   .num { font-variant-numeric: tabular-nums; }
   .pct { font-weight: 680; color: var(--accent); font-size: 15px; }
@@ -227,6 +229,7 @@
       border-bottom: 1px solid var(--line-soft); padding-bottom: 9px; margin-bottom: 5px;
     }
     .scroll.cards td:first-child::before { content: none; }
+    #beforeAero .scroll.cards td { justify-content: flex-start; text-align: left; }
   }
 </style>
 </head>
@@ -308,6 +311,35 @@
   <p class="hint">Read-only. The page never asks to connect a wallet, and nothing you type is sent anywhere except a public Base RPC call to read your voting power.</p>
 </section>
 
+<!-- Fixed dates from Aerodrome's own upgrade page (aero.xyz/aero-upgrade,
+     checked 2026-10-11). Static on purpose: these are announced, not measured. -->
+<section id="beforeAero">
+  <div class="rowhead">
+    <div>
+      <h2>Before Aero, Oct 22</h2>
+      <p class="h2note">What a veAERO holder has to do, in order. Dates from <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noopener">aero.xyz/aero-upgrade</a>.</p>
+    </div>
+  </div>
+  <div class="scroll cards">
+  <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>What to do</th>
+        </tr>
+      </thead>
+    <tbody>
+      <tr><td>By Oct 20</td><td>Withdraw your lock from Relay or any other vault</td></tr>
+      <tr><td>Oct 21, 22:59 UTC</td><td>Last vote closes</td></tr>
+      <tr><td>Before you upgrade</td><td>Claim rewards and rebase, then reset your vote: a lock with active votes cannot be upgraded</td></tr>
+      <tr><td>Oct 22, 00:00 UTC</td><td>Aero launches. Each veAERO becomes 1 AERO in sAERO with the same lock time left (rounded up to a full week). If you voted in the last week, you can upgrade from 01:00 UTC</td></tr>
+      <tr><td>Oct 22, 16:00 UTC</td><td>First Autopilot allocation. sAERO added after that waits for the next one</td></tr>
+      <tr><td>After that</td><td>You can move your allocation every 47 hours, across 7 chains</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
 <!-- The receipt, above the forecast. Everything below this section is a
      prediction a stranger has no reason to trust yet; this is the one part of
      the page they can check against their own wallet. Hidden until an address
@@ -339,7 +371,7 @@
   <div class="rowhead">
     <div>
       <h2>What happens to your locks on October 22</h2>
-      <p class="h2note">A preview read from Aerodrome's published migration contract. Official instructions and the date the migration opens have not been announced yet.</p>
+      <p class="h2note">A preview read from Aerodrome's published migration contract. The steps and dates are in &ldquo;Before Aero, Oct 22&rdquo; above.</p>
     </div>
   </div>
   <div class="lookup-msg" id="migrationMsg"></div>
@@ -367,7 +399,7 @@
   <div class="rowhead">
     <div>
       <h2>Ready for Aero: what pools pay per day</h2>
-      <p class="h2note">From October 22 there is no weekly vote: sAERO is allocated continuously and can move every 48 hours. This is the figure that ranking needs, already measured on today&rsquo;s pools.</p>
+      <p class="h2note">From October 22 there is no weekly vote: sAERO is allocated continuously and can move every 47 hours. This is the figure that ranking needs, already measured on today&rsquo;s pools.</p>
     </div>
   </div>
   <div class="totals">

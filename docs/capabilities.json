@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-11T12:48:53.056670+00:00",
+  "generated_at": "2026-10-11T18:44:46.646368+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -114617,6 +114617,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/rustok-org-rustok-wallet-tui": {
+      "name": "rustok-wallet-tui",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/shengwang-mcp": {
       "name": "shengwang-mcp",
       "execution_model": "read_only",
@@ -217954,12 +218016,12 @@
     }
   },
   "summary": {
-    "discovered": 3503,
-    "processed": 3503,
+    "discovered": 3504,
+    "processed": 3504,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2543,
-      "router_orchestrator": 143,
+      "router_orchestrator": 144,
       "unknown": 328,
       "analysis_only": 212,
       "unsigned_tx_builder": 114,
@@ -217969,13 +218031,13 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1201,
+      "can_execute_shell": 1202,
       "can_install_code": 544,
       "can_write_files": 162,
       "can_browse_web": 236,
-      "can_spawn_subagents": 256,
+      "can_spawn_subagents": 257,
       "can_move_funds": 292,
-      "requires_private_key": 475,
+      "requires_private_key": 476,
       "requires_hosted_operator": 338,
       "uses_remote_install_script": 42,
       "mutable_remote_runtime": 544
