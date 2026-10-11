@@ -1,0 +1,13 @@
+* text=auto
+*.md text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.svg text eol=lf
+*.png binary
+*.gif binary
+*.zip binary
+
+/temp/ export-ignore
+/runs/ export-ignore
+/dist/ export-ignore

@@ -4,6 +4,7 @@ import {
   gaugeWeightAt,
   incentiveRatesNow,
   readFeesCollected,
+  readGaugePoint,
   readIncentivePrograms,
   readV3Gauges,
   v3GaugeYield,
@@ -76,6 +77,17 @@ test("gauges: walked from the registry, empty before launch", async () => {
     "0xR|gaugeToTarget|0xG": "0xP",
   });
   assert.deepEqual(await readV3Gauges(after, "0xR"), { leafVoter: "0xV", gauges: [{ gauge: "0xG", pool: "0xP", rewards: "0xM" }] });
+});
+
+test("gauge point: pulled out of the Point struct at the end of gaugeStates' nine-field return", async () => {
+  const point = { bias: 500n * e18, slope: 2n * e18, ts: 42, permanentStakeBalance: 10n * e18 };
+  // gaugeStates returns (ceiling, claimed, lastSettlement, isRegistered, isActivated,
+  // surplus, lastIndex, lastTimeIndex, point) — point is the 9th field (index 8), and
+  // readGaugePoint has to pull it out from behind the eight it doesn't use.
+  const c = fake({
+    "0xV|gaugeStates|0xG": [0n, 0n, 0, true, true, 0n, 0n, 0n, point],
+  });
+  assert.deepEqual(await readGaugePoint(c, "0xV", "0xG"), point);
 });
 
 test("programs: ids start at 1, none means no call for the list", async () => {
