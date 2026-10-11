@@ -2,24 +2,26 @@
 
 > Where to vote veAERO on Aerodrome (Base) this week to earn the most. Enter how much veAERO you hold and get whole percentages to paste into Aerodrome's voting page, ranked by what each pool pays per vote after your own vote dilutes it. Free, open source (MIT), read-only: no wallet connection, no signatures.
 
-Scanned from Base mainnet: 2026-10-10T21:41:53.796Z. The scan re-runs every 6 hours.
+Scanned from Base mainnet: 2026-10-11T05:43:31.606Z. The scan re-runs every 6 hours.
 Current epoch closes: 2026-10-15 00:00 UTC. A vote only counts for the epoch it is cast in, so the suggestion below expires then.
 
 Coming change: Aerodrome becomes Aero on 2026-10-22 00:00 UTC, with a new rewards system (sAERO and Predictive Allocation). The official migration steps have not been published yet, but Aerodrome's published migration contract already fixes the rules: each veAERO lock converts 1:1 by locked AERO; a permanent lock becomes a permanent sAERO stake, an ended lock comes back as plain AERO, any other lock becomes an sAERO stake for its remaining time rounded up to whole weeks; a lock that still has a vote, or sits in a Relay, is refused until the vote is reset or it is withdrawn. The site previews this per lock for any wallet; this file covers the current weekly veAERO vote. Source: https://aero.xyz/articles/aero-launch-update-all-systems-go/
 
 ## This week's suggestion for 10,000 veAERO
 
-- 49% vAMM-WETH/DRV (pool 0xaC4e562d7C6108f971321F14238E24AE2cC398ac)
-- 13% vAMM-WETH/KTA (pool 0xd9eDC75a3a797Ec92Ca370F19051BAbebfb2edEe)
+- 35% vAMM-WETH/TAROT (pool 0x2d25E0514f23c6367687dE89Bd5167dc754D4934)
+- 12% vAMM-WETH/KTA (pool 0xd9eDC75a3a797Ec92Ca370F19051BAbebfb2edEe)
 - 11% CL-CTR/USDC (pool 0x0ab02e160f0df68dc049B012c514857306960Eae)
 - 10% vAMM-WETH/CXT (pool 0x923BeBD9FbCAf0F85251a3d5A11BF5BFAa19942F)
-- 7% vAMM-AERO/WELL (pool 0xCd401DE1cBAa0d770eE5FB70ff622c752C92B8c5)
-- 6% CL-IDRX/frxUSD (pool 0xe2a363898DCCFb6E509CDe97A77cF51AEa6813A0)
-- 4% vAMM-FLOCK/AERO (pool 0xdAA601bc9E5B00337f11fB17CD574D3f01633Fe6)
+- 8% CL-IDRX/frxUSD (pool 0xe2a363898DCCFb6E509CDe97A77cF51AEa6813A0)
+- 8% vAMM-cbBTC/TAROT (pool 0x2E26a29f782e51296d9D31f78D4883462a2d339d)
+- 6% vAMM-AERO/WELL (pool 0xCd401DE1cBAa0d770eE5FB70ff622c752C92B8c5)
+- 5% CL-ZARP/frxUSD (pool 0xEF641a0bf72189056CB75Ed494a38e1431289a88)
+- 5% vAMM-FLOCK/AERO (pool 0xdAA601bc9E5B00337f11fB17CD574D3f01633Fe6)
 
-Expected reward for that vote: about $28.00 for the epoch, estimated from each pool's recent epochs and the vote weight it usually settles at. Pools whose rewards swing too much week to week (consistency below 0.5) are left out, as on the page. An estimate, not a promise: other voters move during the week.
+Expected reward for that vote: about $28.38 for the epoch, estimated from each pool's recent epochs and the vote weight it usually settles at. Pools whose rewards swing too much week to week (consistency below 0.5) are left out, as on the page. An estimate, not a promise: other voters move during the week.
 
-Pools scanned: 435. Left out: 201 pool(s) Aerodrome marks "Migrating" to new gauges; its vote page hides them by default.
+Pools scanned: 436. Left out: 201 pool(s) Aerodrome marks "Migrating" to new gauges; its vote page hides them by default.
 Different amounts split differently because your own vote dilutes each pool. For your balance, use the page.
 
 ## How to use it
