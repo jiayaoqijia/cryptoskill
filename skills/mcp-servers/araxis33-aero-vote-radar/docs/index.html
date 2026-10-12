@@ -231,6 +231,15 @@
     .scroll.cards td:first-child::before { content: none; }
     #beforeAero .scroll.cards td { justify-content: flex-start; text-align: left; }
   }
+  .you { background: linear-gradient(90deg, rgba(4, 51, 255, 0.18), rgba(4, 51, 255, 0.05)); border: 1px solid rgba(77, 141, 255, 0.45);
+    border-radius: var(--radius); padding: 14px 16px; margin: 0 0 14px; }
+  .you b { font-size: 19px; }
+  .you .sub { color: var(--muted); font-size: 14px; margin-top: 4px; max-width: none; }
+  .pill { font-size: 12px; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+  .pill.ok { color: var(--good); background: rgba(53, 208, 127, 0.1); }
+  .pill.wa { color: var(--warn); background: rgba(255, 184, 77, 0.1); }
+  .chains { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+  .chains span { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 7px 11px; font-size: 13.5px; }
 </style>
 </head>
 <body>
@@ -395,6 +404,38 @@
 <!-- What a pool has been paying per day, from the continuous fee counters
      (src/feeRate.ts). It does not depend on weekly epochs, which is why it is
      the figure that carries over to Aero's Predictive Allocation. -->
+<section id="saeroPanel" hidden>
+  <div class="rowhead">
+    <div>
+      <h2>Where to point sAERO on Oct 22</h2>
+      <p class="h2note">Fees keep flowing to sAERO by themselves. Incentives don&rsquo;t: whoever pays them has to post them again in Aero. Last week they were <span id="saeroIncShareText">a share</span> of what voters earned, and most of what the top pools paid.</p>
+    </div>
+  </div>
+  <div class="totals">
+    <div class="stat"><div class="n num" id="saeroFees">&mdash;</div><div class="l">Voter fees per day right now</div></div>
+    <div class="stat"><div class="n num" id="saeroIncShare">&mdash;</div><div class="l">Of last week&rsquo;s rewards were incentives</div></div>
+    <div class="stat"><div class="n num">47 h</div><div class="l">Before you can move your sAERO again</div></div>
+  </div>
+  <div class="you" id="saeroYou" hidden></div>
+  <div class="scroll cards">
+  <table>
+      <thead>
+        <tr>
+          <th>Pool</th>
+          <th class="num">Fees per day for 10,000</th>
+          <th class="num">All rewards per day last week</th>
+          <th class="num">From incentives</th>
+          <th class="num">Steady fees</th>
+          <th class="num">Votes</th>
+        </tr>
+      </thead>
+    <tbody id="saeroBody"></tbody>
+  </table>
+  </div>
+  <div class="chains" id="saeroChains"></div>
+  <div class="note" id="saeroNote"></div>
+</section>
+
 <section id="perDayPanel" hidden>
   <div class="rowhead">
     <div>
@@ -1027,6 +1068,8 @@ async function renderMigration(ids, truncated) {
   const parts = [];
   const staked = totals.stake + totals.permanent;
   if (staked > 0) parts.push(num(staked, 2) + " AERO would become sAERO, one for one.");
+  if (staked > 0 && steadyFeeRate) parts.push("In today's steadiest fee pools that is about " +
+    usd(staked / 10000 * steadyFeeRate.per10k) + " a day from fees alone (see \u201cWhere to point sAERO\u201d below).");
   if (totals.liquid > 0) parts.push(num(totals.liquid, 2) + " AERO would come back as plain AERO, because those locks have ended by October 22.");
   if (totals.stake > 0) parts.push("Stake lengths assume you move on launch day: each week you wait takes a week off.");
   if (voting > 0) parts.push("The contract refuses a lock that still has a vote on it, and the old lock is merged away when it moves — so claim first, then reset.");
@@ -2237,6 +2280,134 @@ if (calldataEncoderIsSound()) {
   el.calldataBox.hidden = true;
 }
 
+// "Where to point sAERO on Oct 22". From both files already on the page: fees per day now (fee-rate.json, last
+// 96 h), everything a pool paid its voters in the last complete week (snapshot epochUsd: fees + incentives), and how
+// steady the fees were — the share of fee-rate's ~6-hour windows that paid at least half the pool's own average.
+// Fees move into Aero by themselves; incentives have to be posted again, so a pool that lived on them is marked.
+let steadyFeeRate = null;   // { per10k, pools } — read by the lock preview for its "about $X a day" line
+let aeroChains = null;      // data/aero-chains.json: which chains Aero has published contracts for
+const AERO_TOKEN = "0x940181a94a35a4569e4529a3cdfb74e38fd98631";
+const AERO_CHAINS = [["base", "Base"], ["ethereum", "Ethereum"], ["optimism", "OP Mainnet"], ["arc", "Arc"],
+  ["ink", "Ink"], ["robinhood", "Robinhood Chain"], ["arbitrum", "Arbitrum"]];
+
+function renderSaero() {
+  if (!feeRate || !snapshot || !feeRate.pools || !feeRate.intervals || !feeRate.poolIds) return;
+  const hours = feeRate.intervals.map((iv) => (Date.parse(iv.to) - Date.parse(iv.from)) / 3600000);
+  const col = new Map(feeRate.poolIds.map((a, i) => [a, i]));
+  const rows = [];
+  for (const p of snapshot.pools) {
+    const addr = p.pool.toLowerCase();
+    const r = feeRate.pools[addr];
+    if (p.migrating || p.votesVeAero < PER_DAY_MIN_VOTES || !r || r.usdPerDayPer10k === null) continue;
+    const k = p.currentEpochPartial ? p.epochUsd.length - 2 : p.epochUsd.length - 1;
+    const week = k >= 0 && p.epochVotes[k] > 0 ? p.epochUsd[k] / 7 / p.epochVotes[k] * 10000 : null;
+    let steady = null;
+    const j = col.get(addr);
+    if (j !== undefined) {
+      const rates = feeRate.intervals.map((iv, i) => (iv.usd[j] === null ? null : iv.usd[j] / hours[i] * 24)).filter((x) => x !== null);
+      const mean = rates.reduce((a, x) => a + x, 0) / (rates.length || 1);
+      if (rates.length && mean > 0) steady = { n: rates.filter((x) => x >= 0.5 * mean).length, of: rates.length };
+    }
+    const inc = week > 0 ? Math.min(1, Math.max(0, 1 - r.usdPerDayPer10k / week)) : null;
+    rows.push({ p, fee: r.usdPerDayPer10k, week, steady, inc });
+  }
+  if (!rows.length) return;
+
+  const isSteady = (x) => x.steady && x.steady.of >= 8 && x.steady.n >= 0.75 * x.steady.of;
+  const steadyTop = rows.filter(isSteady).sort((a, b) => b.fee - a.fee).slice(0, 3);
+  const byWeek = rows.filter((x) => x.week !== null).sort((a, b) => b.week - a.week).slice(0, 5);
+  const shown = [...new Set([...byWeek, ...steadyTop])]
+    .sort((a, b) => Math.max(b.fee, b.week || 0) - Math.max(a.fee, a.week || 0));
+
+  const frag = document.createDocumentFragment();
+  for (const x of shown) {
+    const tr = document.createElement("tr");
+    tr.appendChild(poolCell(x.p.symbol, x.p.pool, x.p.migrating));
+    tr.appendChild(cell("$" + x.fee.toFixed(2), "num", "Fees per day for 10,000"));
+    tr.appendChild(cell(x.week === null ? "—" : "$" + x.week.toFixed(2), "num", "All rewards per day last week"));
+    const inc = cell("", "num", "From incentives");
+    if (x.inc === null) inc.textContent = "—";
+    else if (x.inc >= 0.5) {
+      const s = document.createElement("span");
+      s.className = "pill wa";
+      s.textContent = Math.round(x.inc * 100) + "% · must return";
+      inc.appendChild(s);
+    } else inc.textContent = Math.round(x.inc * 100) + "%";
+    tr.appendChild(inc);
+    const st = cell("", "num", "Steady fees");
+    if (!x.steady) st.textContent = "—";
+    else {
+      const s = document.createElement("span");
+      s.className = "pill " + (isSteady(x) ? "ok" : "wa");
+      s.textContent = x.steady.n + " of " + x.steady.of + (isSteady(x) ? "" : " · spiky");
+      st.appendChild(s);
+    }
+    tr.appendChild(st);
+    tr.appendChild(cell(num(x.p.votesVeAero), "num", "Votes"));
+    frag.appendChild(tr);
+  }
+  document.getElementById("saeroBody").replaceChildren(frag);
+
+  const feesDay = Object.values(feeRate.pools).reduce((a, r) => a + (r.usdPerDay || 0), 0);
+  const lastWeek = (snapshot.epochYields || []).find((e) => !e.partial);
+  const share = lastWeek ? Math.max(0, 1 - feesDay / (lastWeek.totalUsd / 7)) : null;
+  document.getElementById("saeroFees").textContent = usd(feesDay);
+  document.getElementById("saeroIncShare").textContent = share === null ? "—" : Math.round(share * 100) + "%";
+  document.getElementById("saeroIncShareText").textContent = share === null ? "a share" : Math.round(share * 100) + "%";
+
+  const you = document.getElementById("saeroYou");
+  if (steadyTop.length) {
+    const per10k = steadyTop.reduce((a, x) => a + x.fee, 0) / steadyTop.length;
+    const top3 = byWeek.slice(0, 3);
+    const withInc = top3.length ? top3.reduce((a, x) => a + x.week, 0) / top3.length : 0;
+    steadyFeeRate = { per10k, pools: steadyTop.map((x) => x.p.symbol) };
+    const tok = (snapshot.rewardTokens || []).find((t) => t.address.toLowerCase() === AERO_TOKEN);
+    const yearly = tok && tok.priceUsd
+      ? " (~" + Math.round(per10k * 365 / (10000 * tok.priceUsd) * 100) + "% a year at AERO $" + tok.priceUsd.toFixed(2) + ")" : "";
+    const name = (sym) => sym.replace(/^(CL\d*|vAMM|sAMM)-/, "");
+    const b = document.createElement("b");
+    b.textContent = "10,000 sAERO → about " + usd(per10k) + " a day";
+    const sub = document.createElement("div");
+    sub.className = "sub";
+    sub.textContent = "From fees alone" + yearly + ", split across the " + steadyTop.length + " steadiest fee pools: " +
+      steadyTop.map((x) => name(x.p.symbol)).join(", ") + "." +
+      (withInc > per10k ? " Up to " + usd(withInc) + " a day if last week's incentives come back." : "") +
+      " Look up your wallet above for your own locks.";
+    you.replaceChildren(b, sub);
+    you.hidden = false;
+  } else you.hidden = true;
+
+  renderAeroChains();
+  document.getElementById("saeroNote").textContent =
+    "Fees: last " + feeRate.windowHours + " hours, divided by each pool's current votes. All rewards: the last complete week, " +
+    "fees plus incentives, per 10,000 votes. From incentives: how much of last week's figure today's fees don't cover. " +
+    "Steady: how many of the ~6-hour windows paid at least half the pool's own average. Pools with at least " +
+    num(PER_DAY_MIN_VOTES) + " votes. Estimates from today's Aerodrome, not promises: on Aero your own stake also dilutes the pool.";
+  document.getElementById("saeroPanel").hidden = false;
+}
+
+function renderAeroChains() {
+  const box = document.getElementById("saeroChains");
+  const c = (aeroChains && aeroChains.chains) || {};
+  box.replaceChildren(...AERO_CHAINS.map(([key, label]) => {
+    const s = document.createElement("span");
+    const x = c[key];
+    s.textContent = x && x.allocation ? "✅ " + label + " · contracts out"
+      : x && x.pools ? "🟡 " + label + " · pool contracts out, allocation not yet"
+      : "⏳ " + label + (aeroChains ? " · addresses not out" : "");
+    return s;
+  }));
+  if (aeroChains && aeroChains.checkedAt) {
+    box.title = "Aero's own deployment files (dromos-labs/metadex-public), checked " +
+      aeroChains.checkedAt.slice(0, 16).replace("T", " ") + " UTC";
+  }
+}
+
+fetch("data/aero-chains.json", { cache: "no-cache" })
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((data) => { aeroChains = data; renderAeroChains(); })
+  .catch(() => { /* the chips just stay "⏳" */ });
+
 // Per-day fee figures (src/feeRate.ts). Pool names come from the snapshot, so
 // this draws only once both files are in, whichever arrives second.
 let feeRate = null;
@@ -2278,7 +2449,7 @@ function renderPerDay() {
 
 fetch("data/fee-rate.json", { cache: "no-cache" })
   .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then((data) => { feeRate = data; renderPerDay(); })
+  .then((data) => { feeRate = data; renderPerDay(); renderSaero(); })
   .catch(() => {
     // Without the file the panel simply stays hidden; the weekly page is unaffected.
   });
@@ -2314,6 +2485,7 @@ fetch("data/snapshot.json", { cache: "no-cache" })
     renderRanking();
     renderAllocation();
     renderPerDay();
+    renderSaero();
     // The survival tile compares the measurement's pool coverage against this
     // scan's, so it cannot be right until both files are in. Whichever fetch
     // resolves second has to redraw it — the same reason renderRanking is

@@ -98,7 +98,7 @@ written out) are in `docs/REPORTING.md`.
   because newer members pushed it past `memberLimit`, not because it left.
   `membersCountDelta` is the authoritative sign; the report says so in `notes`.
 - **Read-only.** A scheduled report must never be the thing that signs. Do not
-  chain it into `dexe_proposal_vote_and_execute` without the user in the loop.
+  chain it into a voting or signing tool without the user in the loop.
 - **Custom questions** the report does not cut: `dexe_graph_query` (also
   default-visible) — but never guess entity or field names (`DaoPool` is queried
   as `daoPools`). Check the `dexe://graph-schema` resource, or call

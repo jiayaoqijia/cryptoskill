@@ -2,8 +2,8 @@
 name: dexe-otc
 description: |
   Run a DeXe OTC token sale end-to-end — open a multi-tier TokenSaleProposal,
-  vote+execute it, then buyers check status / buy / claim. Covers the five
-  dexe_otc_* composites plus the PRECISION-1e25 rate, native-BNB sentinel, and
+  vote+execute it, then buyers check status / buy / claim. Covers the three
+  dexe_otc_* composites and the two token-sale reads, plus the PRECISION-1e25 rate, native-BNB sentinel, and
   claim-timing gotchas. Use when the user mentions "OTC", "token sale", "sell DAO
   tokens", "buy from a tier", "claim vested tokens".
 ---
@@ -15,13 +15,16 @@ is one MCP call; calldata auto-broadcasts when `DEXE_PRIVATE_KEY` is set.
 Validate on **BSC testnet (chain 97)** first. Full recipe + runnable proof:
 `docs/OTC.md` and `scripts/lifecycle-otc.mjs`.
 
-## The five composites
+## The three composites and two reads
+
+The two reads were `dexe_otc_list_sales_for_dao` and `dexe_otc_buyer_status`
+before 0.36.0; the old names still answer as deprecated aliases.
 
 | Tool | Role |
 |---|---|
 | `dexe_otc_dao_open_sale` | multi-tier `createTiers` envelope + IPFS metadata + deposit + `createProposalAndVote`. `buildOnly:true` returns just the envelope. |
-| `dexe_otc_list_sales_for_dao` | list a DAO's tiers (prices, `totalSold`, `isOff`, UTC times). |
-| `dexe_otc_buyer_status` | render-ready buyer view: prices, claimable, vesting, auto-merkle proof. |
+| `dexe_read_token_sales` | list a DAO's tiers (prices, `totalSold`, `isOff`, UTC times). |
+| `dexe_read_token_sale_position` | render-ready buyer view: prices, claimable, vesting, auto-merkle proof. |
 | `dexe_otc_buyer_buy` | preflight balance/allowance + approve + `buy()`; native path uses the sentinel + `value`. |
 | `dexe_otc_buyer_claim_all` | claims tiers with `canClaim && !isClaimed`, withdraws vested; `noop` when nothing pending. |
 
@@ -36,7 +39,7 @@ Validate on **BSC testnet (chain 97)** first. Full recipe + runnable proof:
 
 ## Buyer flow
 
-`dexe_otc_buyer_status` → `dexe_otc_buyer_buy` → (after the sale window closes)
+`dexe_read_token_sale_position` → `dexe_otc_buyer_buy` → (after the sale window closes)
 `dexe_otc_buyer_claim_all`.
 
 ## Critical gotchas
@@ -95,7 +98,7 @@ Open a multi-tier token sale (proposal → vote → execute → live), then buye
 **Steps:**
 1. `dexe_otc_dao_open_sale` — Build + create the TokenSaleProposal tiers proposal (auto-uploads merkle whitelist JSON if given).
 2. `dexe_proposal_vote_and_execute` — Vote + execute the sale proposal — the tier goes live at execute.
-3. `dexe_otc_list_sales_for_dao` — Confirm the tier is live and show its parameters (times are UTC).
+3. `dexe_read_token_sales` — Confirm the tier is live and show its parameters (times are UTC).
 
 **Pitfalls (danger first):**
 - 🔴 TokenSaleProposal.vestingWithdraw is blocked ('SphereX error: disallowed tx pattern') in EVERY call shape on fresh pools — the VESTED portion of a purchase CANNOT be withdrawn (confirmed protocol bug, escalated upstream). Until fixed: open tiers with vestingPercentage:"0" on new DAOs. claim (the instant portion) works fine.

@@ -64,8 +64,9 @@ asking.
 
 ## Recipe — SIMPLE mode (recommended)
 
-0. **Orient:** `dexe_context` — shows signer, active chain, env readiness, and
-   DAOs you already deployed.
+0. **Orient:** `dexe_context` — shows the active chain, env readiness, and
+   DAOs you already deployed; `dexe_write_context` shows the signer and whether
+   Pinata is set.
 1. **Env:** ensure the target chain is 97 and `DEXE_PINATA_JWT` is set (metadata).
 2. **(Optional) avatar:** `dexe_dao_generate_avatar` / `dexe_ipfs_upload_avatar`
    → pass the `cid` as `avatarCID`. Since v0.20.0 both enforce real raster

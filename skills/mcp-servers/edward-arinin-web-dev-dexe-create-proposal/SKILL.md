@@ -17,7 +17,8 @@ changes}` shape, and calls `createProposalAndVote`. With `DEXE_PRIVATE_KEY` it
 signs+broadcasts; otherwise it returns ordered `TxPayload`s.
 
 If you don't already know the target `govPool`/chain, call **`dexe_context`** —
-it returns the signer, active chain, and the DAOs/proposals from prior sessions.
+it returns the active chain and the DAOs/proposals from prior sessions
+(`dexe_write_context` returns the signer).
 When the user already told you the DAO and what to do, go straight to
 `dexe_proposal_create`.
 

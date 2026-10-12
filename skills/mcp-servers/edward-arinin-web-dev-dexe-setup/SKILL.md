@@ -161,7 +161,8 @@ wins. Tell them to keep it in one place (prefer `.env`) and restart.
 ## Useful tools (reference)
 
 - `dexe_doctor` — diagnostic (read-only, safe to call repeatedly).
-- `dexe_context` — signer/mode + env readiness + `usingSharedDefaults` list.
+- `dexe_context` — env readiness + `usingSharedDefaults` list.
+- `dexe_write_context` — signer/mode, keyring, Pinata / WalletConnect / Safe posture.
 - `npx dexe-mcp doctor` — CLI form; useful when the MCP server failed to start.
   It exits **0** when nothing failed (warnings included), **2** on a real failure
   or an unknown flag; pass `--strict` (or set `DEXE_DOCTOR_STRICT=1`) to make

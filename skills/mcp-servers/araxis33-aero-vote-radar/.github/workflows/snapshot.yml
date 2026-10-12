@@ -33,6 +33,14 @@ jobs:
       - name: Scan Aerodrome and write the snapshot
         run: npm run snapshot
 
+      # Which of Aero's chains have published contracts (scripts/aero-chains.mjs) — best-effort:
+      # a failed read keeps yesterday's file rather than failing the scan.
+      - name: Check Aero's published chains
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/aero-chains.mjs
+
       - name: Commit the snapshot if it changed
         run: |
           git config user.name "github-actions[bot]"
@@ -51,6 +59,7 @@ jobs:
           # fee-rate.json is the trailing per-day fee figure built from those
           # counters (src/feeRate.ts), written in the same best-effort step.
           if [ -f docs/data/fee-rate.json ]; then git add docs/data/fee-rate.json; fi
+          if [ -f docs/data/aero-chains.json ]; then git add docs/data/aero-chains.json; fi
           if git diff --cached --quiet; then
             echo "snapshot unchanged — nothing to commit"
             exit 0
