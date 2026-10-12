@@ -2,7 +2,7 @@
 
 ### You hold veAERO. Where does this week's vote go?
 
-> **Coming change:** Aerodrome becomes Aero on **October 22, 2026, 00:00 UTC**, with a new rewards system (sAERO and Predictive Allocation). See [Aero's announcement](https://aero.xyz/articles/aero-launch-update-all-systems-go/). Official migration steps have not been published yet; the site's wallet lookup previews what each veAERO lock becomes, read from Aerodrome's published migration contract (1:1 by locked AERO; permanent stays permanent, ended locks come back as plain AERO, the rest become sAERO stakes for their remaining weeks; a lock with an active vote or inside a Relay has to be reset or withdrawn first). This tool covers the current weekly veAERO vote.
+> **Coming change:** Aerodrome becomes Aero on **October 22, 2026, 00:00 UTC**, with a new rewards system (sAERO and Predictive Allocation). See [Aero's announcement](https://aero.xyz/articles/aero-launch-update-all-systems-go/). Official upgrade steps and dates: [aero.xyz/aero-upgrade](https://aero.xyz/aero-upgrade) (last vote Oct 21, 22:59 UTC; withdraw from Relay by Oct 20; reset the vote before upgrading). The site's wallet lookup previews what each veAERO lock becomes, read from Aerodrome's published migration contract (1:1 by locked AERO; permanent stays permanent, ended locks come back as plain AERO, the rest become sAERO stakes for their remaining weeks; a lock with an active vote or inside a Relay has to be reset or withdrawn first). This tool covers the current weekly veAERO vote.
 
 Type your balance into **[aero.deftools.xyz](https://aero.deftools.xyz)** and get back whole percentages you can paste straight into Aerodrome's voting UI — ranked by what each pool really pays per vote, and priced *after* your own vote dilutes it.
 
@@ -759,7 +759,7 @@ test/
   voted.test.ts        unit tests for scoring a cast vote against settled weight, including the unscorable-pool and zero-weight cases
   accrual.test.ts      unit tests for revaluing at one price vector, the epoch-boundary skip, and the pools-that-only-repriced split
   accrual-cli.test.ts  unit tests for formatReport's rendering of the accrual report, including NaN-as-"n/a" and the data-notes/pool-list sections
-  feeStream.test.ts    unit tests for accruedBetween: CL gauge-fee growth/reset, v2 index growth, and the changed-kind refusal
+  feeStream.test.ts    unit tests for accruedBetween (CL gauge-fee growth/reset, v2 index growth, changed-kind refusal) and buildFeeCounters (CL/classic classification and index alignment across the filtered classic-only arrays, partial-failure drops)
   llms.test.ts         unit tests for renderLlmsTxt's rendering of docs/llms.txt
   site-parity.test.ts  runs docs/index.html's hand-ported allocator/countdown/vote-basis logic against src/ on the same inputs
   migration-site.test.ts  pins docs/index.html's ported migrationOutcome() against Aerodrome's migration-contract rules

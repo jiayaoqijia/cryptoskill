@@ -1,5 +1,5 @@
 import { client } from "./chain.js";
-import type { PoolInfo } from "./pools.js";
+import type { MulticallOutcome, PoolInfo } from "./pools.js";
 
 /**
  * Raw, continuously-growing fee counters for every ranked pool, written next to
@@ -49,6 +49,62 @@ const FEE_ABI = [
 ] as const;
 
 /**
+ * Which pools are classic (v2) rather than CL, given the `gaugeFees()`
+ * multicall results — a pool without `gaugeFees()` is classic. Preserved as
+ * its own step (rather than inlined into the filter below) because
+ * `buildFeeCounters` needs the same boolean-per-pool alignment twice: once to
+ * know which pools to re-query for `index0`/`index1`/`balanceOf`, and once to
+ * know which slot of those classic-only results belongs to which pool.
+ */
+function isClassic(cl: readonly MulticallOutcome[]): boolean[] {
+  return cl.map((r) => r.status !== "success");
+}
+
+/**
+ * Turns the raw `gaugeFees()` results plus the classic-only `index0`/
+ * `index1`/`balanceOf` results into resolved `FeeCounter`s, preserving
+ * alignment between `pools` and `cl` by index and between the classic-only
+ * arrays (`index0`, `index1`, `gaugeLp`) by their own index into the
+ * classic-only subset. Pure and chain-free, so it's unit-testable without
+ * mocking RPC calls — unlike `readFeeCounters`, which fetches live. Split out
+ * the same way `resolvePoolInfo` is split out of `fetchActivePools` in
+ * pools.ts, for the same reason: this is exactly the kind of index-juggling
+ * across a filtered sub-array that is easy to get subtly wrong and hard to
+ * notice wrong, since every failure mode here just drops a pool rather than
+ * throwing.
+ */
+export function buildFeeCounters(
+  pools: readonly PoolInfo[],
+  cl: readonly MulticallOutcome[],
+  index0: readonly MulticallOutcome[],
+  index1: readonly MulticallOutcome[],
+  gaugeLp: readonly MulticallOutcome[],
+): FeeCounter[] {
+  const classicFlags = isClassic(cl);
+  const classic = pools.filter((_, i) => classicFlags[i]);
+
+  const out: FeeCounter[] = [];
+  pools.forEach((p, i) => {
+    const r = cl[i];
+    if (r.status === "success") {
+      const [a, b] = r.result as readonly [bigint, bigint];
+      out.push({ pool: p.address.toLowerCase(), kind: "cl", tokens: [p.token0.toLowerCase(), p.token1.toLowerCase()], gaugeFees: [a.toString(), b.toString()] });
+    }
+  });
+  classic.forEach((p, j) => {
+    if (index0[j]?.status !== "success" || index1[j]?.status !== "success" || gaugeLp[j]?.status !== "success") return;
+    out.push({
+      pool: p.address.toLowerCase(),
+      kind: "v2",
+      tokens: [p.token0.toLowerCase(), p.token1.toLowerCase()],
+      index: [String(index0[j].result), String(index1[j].result)],
+      gaugeLp: String(gaugeLp[j].result),
+    });
+  });
+  return out;
+}
+
+/**
  * Reads every pool's counters. One multicall at a time, never concurrently —
  * the same rule `fetchActivePools` follows, because the shared public RPC drops
  * whole overlapping bursts. A pool whose reads fail is simply left out.
@@ -62,7 +118,7 @@ export async function readFeeCounters(pools: readonly PoolInfo[]): Promise<FeeCo
   });
 
   // A pool without gaugeFees() is a classic pool; read its fee index instead.
-  const classic = pools.filter((_, i) => cl[i].status !== "success");
+  const classic = pools.filter((_, i) => isClassic(cl)[i]);
   const call = (fn: "index0" | "index1") =>
     client.multicall({
       contracts: classic.map((p) => ({ address: addr(p), abi: FEE_ABI, functionName: fn }) as const),
@@ -77,25 +133,7 @@ export async function readFeeCounters(pools: readonly PoolInfo[]): Promise<FeeCo
     allowFailure: true,
   });
 
-  const out: FeeCounter[] = [];
-  pools.forEach((p, i) => {
-    const r = cl[i];
-    if (r.status === "success") {
-      const [a, b] = r.result as readonly [bigint, bigint];
-      out.push({ pool: p.address.toLowerCase(), kind: "cl", tokens: [p.token0.toLowerCase(), p.token1.toLowerCase()], gaugeFees: [a.toString(), b.toString()] });
-    }
-  });
-  classic.forEach((p, j) => {
-    if (index0[j].status !== "success" || index1[j].status !== "success" || gaugeLp[j].status !== "success") return;
-    out.push({
-      pool: p.address.toLowerCase(),
-      kind: "v2",
-      tokens: [p.token0.toLowerCase(), p.token1.toLowerCase()],
-      index: [String(index0[j].result), String(index1[j].result)],
-      gaugeLp: String(gaugeLp[j].result),
-    });
-  });
-  return out;
+  return buildFeeCounters(pools, cl, index0, index1, gaugeLp);
 }
 
 /**

@@ -24,16 +24,27 @@ Access live, AI-generated crypto trading signals via API. Signals include full t
 
 ## Access
 
-**No API key is needed to try it.** Call the MCP server anonymously and you get
-3 live signals (coin, direction, confidence) plus the verified hit rate, so you
-can check the data is real before signing up:
+**Sign in from the agent (recommended).** Add the MCP server with this URL —
+the client opens a browser page where the user signs in or creates a free
+account (14 days of Pro, no card) and clicks Allow. No key to copy:
+
+```bash
+claude mcp add --transport http trading-signals https://signals.x70.ai/mcp/connect
+```
+
+In Claude Code, then run `/mcp`, choose trading-signals and Authenticate.
+
+**No account needed to try it.** `https://signals.x70.ai/mcp` works
+anonymously: 3 live signals (coin, direction, confidence) plus the verified hit
+rate, so you can check the data is real before signing up. When the user asks
+for more, MCP clients that support sign-in offer it.
 
 ```bash
 claude mcp add --transport http trading-signals https://signals.x70.ai/mcp
 ```
 
-**For the full feed**, the operator creates a free account and copies their key
-from Dashboard → API Key:
+**API key** — for scripts, the REST API and clients that can't sign in. The
+user creates a free account and copies their key from Dashboard → API Key:
 
     https://signals.x70.ai/mcp-signup
 
@@ -41,31 +52,33 @@ A free account returns up to 100 signals with full reasoning and verified
 outcomes. Pro adds entry, stop-loss, take-profit and leverage plus 30-day
 history.
 
-Once you have a key, pass it as the `X-Api-Key` header:
+Pass the key as the `X-Api-Key` header:
 
 ```bash
 claude mcp add --transport http trading-signals https://signals.x70.ai/mcp \
   --header "X-Api-Key: YOUR_KEY"
 ```
 
-> Note for agents: account creation is a human action. Do not submit someone's
-> name, email or GitHub URL on their behalf — show them the signup link and let
-> them decide.
+> Note for agents: account creation and sign-in are human actions. Do not
+> submit someone's name, email or GitHub URL on their behalf, and don't click
+> Allow for them — show them the link or the sign-in page and let them decide.
 
 ## MCP Server (Native Tool Integration)
 
-For Claude, Cursor, Codex or VS Code — add as an MCP server for native tool access (no curl needed):
+For Claude, Cursor, VS Code or Codex — add as an MCP server for native tool access (no curl needed):
 
 ```
-MCP endpoint: https://signals.x70.ai/mcp
+MCP endpoint: https://signals.x70.ai/mcp/connect   (sign in from the agent)
+              https://signals.x70.ai/mcp           (no account, or API key)
 Transport: Streamable HTTP (POST)
 Tools: get_signals, get_signal, get_signal_history, get_stats
-Auth (optional): X-Api-Key header, Authorization: Bearer, or ?apiKey= in the URL
+Auth: /mcp/connect — OAuth sign-in, handled by the client
+      /mcp — optional: X-Api-Key header, Authorization: Bearer, or ?apiKey= in the URL
 ```
 
-- Claude Code: `claude mcp add --transport http trading-signals https://signals.x70.ai/mcp`
-- Claude app (Desktop & claude.ai): Customize → Connectors → Add custom connector with the endpoint URL (connectors have no header field — append `?apiKey=YOUR_KEY` for the full feed)
-- Cursor / VS Code / Codex: see the per-client setup on https://signals.x70.ai/dashboard/mcp-key
+- Claude Code: `claude mcp add --transport http trading-signals https://signals.x70.ai/mcp/connect`
+- Claude app (Desktop & claude.ai): Customize → Connectors → Add custom connector with `https://signals.x70.ai/mcp/connect` (with an API key instead: `https://signals.x70.ai/mcp?apiKey=YOUR_KEY`)
+- Cursor / VS Code: the same URL in the MCP config. Codex and others: see the per-client setup on https://signals.x70.ai/dashboard/mcp-key
 
 ## Recommended Workflow
 
@@ -73,7 +86,9 @@ Follow this workflow when a user asks for trading signals:
 
 1. **Check performance first**: `get_stats` (or `GET /api/skill/stats?days=30`) to assess current reliability — works without a key
 2. **Fetch active signals**: `get_signals` (or `GET /api/skill/signals`) for live setups
-3. **If levels come back `null`**: that is the free plan, not an error — entry/SL/TP require Pro. The response carries an `upgrade` object (REST) or `announcement` (MCP) with an `upgradeUrl`; show that link if the user wants the levels. No key yet? Point them to https://signals.x70.ai/mcp-signup
+3. **If levels come back `null`**: that is the free plan, not an error — entry/SL/TP require Pro. The response carries an `upgrade` object (REST) or `announcement` (MCP) with a `subscribeUrl` (straight to checkout, no sign-in) and an `upgradeUrl`; show it if the user wants the levels. Not signed in yet? See the next point, or point them to https://signals.x70.ai/mcp-signup
+   - **Sign-in requests**: if a call fails with "Sign in to Signals to continue", tell the user — their client opens a sign-in page (in Claude Code: `/mcp` → trading-signals → Authenticate). `get_signals` (3-signal preview) and `get_stats` keep working meanwhile.
+   - **Account notices**: if a response has a `notice` (REST) or an `announcement` with `type: "trial_ending"` (MCP), tell the user its `message` — their free Pro trial is about to end and the levels will go `null`.
 4. **Filter**: by the user's preferred coins or direction. Don't present confidence as a ranking of expected profit — show it as one attribute among others
 5. **Present to user**: Show as a table with coin, direction, confidence, and — on Pro — entry, SL, TP, leverage, R/R
 6. **Monitor verification**: Re-fetch signals later to check if TP/SL was hit

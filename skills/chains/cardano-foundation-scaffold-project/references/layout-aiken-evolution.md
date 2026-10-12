@@ -105,12 +105,12 @@ This produces `onchain/plutus.json` — the CIP-57 blueprint that off-chain code
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20.6"
+    "node": ">=22.9"
   },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "vesting": "tsx --env-file=../.env src/vesting.ts"
+    "vesting": "tsx --env-file-if-exists=../.env src/vesting.ts"
   },
   "dependencies": {
     "@evolution-sdk/evolution": "0.5.14"
@@ -149,7 +149,7 @@ The script reads `plutus.json` from disk rather than importing it, so it stays o
 
 ### Step 6. Write the scenario script
 
-`offchain/src/vesting.ts` runs the whole use case against the local devnet: it funds a beneficiary, locks 5 ADA twice, reclaims one lock as the owner (the clawback path, no time condition), then waits out the second lock and claims it as the beneficiary. Both parties come from `DEV_WALLET_MNEMONIC` (accounts 0 and 1), which `npm run vesting` reads from the project-root `.env` (Node's `--env-file`, hence Node 20.6 or newer).
+`offchain/src/vesting.ts` runs the whole use case against the local devnet: it funds a beneficiary, locks 5 ADA twice, reclaims one lock as the owner (the clawback path, no time condition), then waits out the second lock and claims it as the beneficiary. Both parties come from `DEV_WALLET_MNEMONIC` (accounts 0 and 1), which `npm run vesting` reads from the project-root `.env` (Node's `--env-file-if-exists`, hence Node 22.9 or newer). Without a `.env` the script stops at the missing mnemonic and says which variable to set.
 
 ```typescript
 // offchain/src/vesting.ts
