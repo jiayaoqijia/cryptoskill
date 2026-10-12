@@ -18,7 +18,7 @@ def package_files(root=ROOT):
     paths += [root / "agents/openai.yaml"]
     paths += sorted((root / "assets/prompts").glob("*.md"))
     paths += [root / "scripts/check.py", root / "scripts/package_release.py"]
-    demo = root / "assets/demo.gif"
+    demo = root / "media/market-brief-demo.gif"
     if demo.exists():
         paths.append(demo)
     return sorted(paths)

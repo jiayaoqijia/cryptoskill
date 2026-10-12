@@ -6,7 +6,9 @@ and Crypto**. A curated library of 11 complete research prompts, ready to use.
 [![ci](https://github.com/bitpunklabs/market-brief/actions/workflows/ci.yml/badge.svg)](https://github.com/bitpunklabs/market-brief/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<!-- DEMO: add your GIF here, using assets/demo.gif or a GitHub attachment URL. -->
+<a href="media/market-brief-demo.gif">
+  <img src="media/market-brief-demo.gif" width="880" alt="Using Market Brief to generate a researched market brief with an AI agent.">
+</a>
 
 Ask for a brief, then read what changed, why it matters, and what to watch next.
 
@@ -22,6 +24,9 @@ SKILL.md is at the repository root. Install the complete skill, including
 assets/prompts, in this agent's personal skills directory. Confirm the
 skill is discoverable.
 ```
+
+Prefer a download? Get the ZIP from [Releases](https://github.com/bitpunklabs/market-brief/releases/latest),
+unzip it, and ask your agent to install the complete `market-brief` folder.
 
 Start a new conversation after installation. If the skill does not appear, restart
 the agent. Fresh market research needs web search and source access; the skill
@@ -44,6 +49,10 @@ directory. See the [official Codex guide](https://learn.chatgpt.com/docs/build-s
 </details>
 
 ## Use
+
+> **For best results, use an advanced model with high reasoning effort.**
+> Output quality cannot be guaranteed with lightweight models or low-effort settings.
+> Select the model and effort in your assistant's settings before running the skill.
 
 ```text
 $market-brief Prepare a China A-share premarket brief.
