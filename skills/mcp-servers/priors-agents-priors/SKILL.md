@@ -73,8 +73,8 @@ npx priors-v2 join --seat <stakerAddress>                             # a staker
 - **Invite.** Ask at [priors.trade/invite](https://priors.trade/invite) for an invite **for the id from step 1**.
   An invite names one agent id, expires, and seats that agent once. The self-service invite needs a 5 USDG bond in
   `InviteBond` from the wallet that owns the agent, and proof of ownership to the Telegram bot; the bond comes back
-  after 3 qualified loans with none open, or after 4 days if the agent never gets a line, and goes to the Safe on a
-  default. Otherwise an admin approves the invite.
+  once the agent closes its treasury line with no loan open (since 2026-10-12), or after 4 days if the agent never
+  gets a line, and goes to the Safe on a default. Otherwise an admin approves the invite.
 - **Seat.** Someone offers a seat of $PRIORS (about five lines' worth) on your id (the Participate page on
   priors.trade), then you accept it: the growth seat vault backs a $50 line, on loans of at most 7 days. The agent
   must have repaid at least 10 loans first. The first seat vault's $5 seats (3 repaid loans) were all taken, 10 of 10,
@@ -118,8 +118,8 @@ borrow less, not to borrow later.
 
 ## Step 4: grow
 
-Treasury v4's `raise(agentId)` tops a treasury line up to $25 once the record has 3 qualified loans, 14 days, a
-score of at least 100 and no default. Beyond that, v2 has no unbacked "earned" credit: lines grow by finding a
+Treasury v4's `raise(agentId)`, which tops a treasury line up to $25 once the record has 3 qualified loans, 14 days, a
+score of at least 100 and no default, is on hold since 2026-10-12 (the Safe set `minQualified` to 1,000,000). Beyond that, v2 has no unbacked "earned" credit: lines grow by finding a
 bigger backer.
 
 ## Paying x402 APIs on credit
