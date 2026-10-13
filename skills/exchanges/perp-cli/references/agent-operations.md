@@ -4,22 +4,46 @@ Complete reference for non-interactive CLI operations. Every command here is saf
 
 ## Interactive vs Non-Interactive Commands
 
-### NEVER use these (interactive, will hang):
+### Avoid bare interactive forms (they prompt and will hang an agent):
 ```
 perp setup                       # interactive wizard — asks questions via stdin
 perp init                        # alias for setup
-perp wallet setup                # interactive wallet wizard
+perp wallet setup                # one-click setup — passphrase prompt
+```
+
+### Agent-safe non-interactive variants:
+```bash
+# Setup wizard with explicit args (no prompts):
+OWS_PASSPHRASE=<pp> perp --json [-n testnet] setup --non-interactive \
+  (--wallet <existing-ows-wallet> | --wallet-name <new-name>) \
+  [--venues <pacifica,hyperliquid,lighter,aster,lighter-rh,ondo,arcus,qfex>] \
+  [--default-venue <venue>] \
+  [--slippage-bps <n>] [--slippage <venue>=<bps> ...]
+# Writes settings only. Agent registration signs with the master wallet — only with
+# explicit user consent: add --approve-agents --yes (passphrase via OWS_PASSPHRASE;
+# Ondo key id + secret as 2 stdin lines with --ondo-secret-stdin). A failed venue
+# returns APPROVE_FAILED with per-venue results in error.details.result.agents.
+# No master wallet on this machine: the user creates keys on the exchange websites and
+# pipes them in — --import-agents <venues> --yes (one stdin line per venue in order; ondo
+# 2 lines: key id, secret; qfex 2 lines: public key, secret) [--master-address <venue>=<addr>]
+# (required for aster / pacifica / arcus) [--allow-unverified pacifica] (required for pacifica)
+# [--qfex-account-id <uuid>] (required for qfex) [--lighter-account-index <n> --lighter-api-key-index <n>];
+# omit --wallet. Imported keys trade only: deposit / withdraw / transfer / bridge / referral
+# set / agent approve then fail with NO_SIGNER_AVAILABLE → the user does them on the website.
+
+# wallet setup (one-click) only prompts for passphrase — set OWS_PASSPHRASE env to skip:
+OWS_PASSPHRASE=<pp> perp --json wallet setup --name <name> --max-tx-usd <usd> --max-daily-usd <usd>
 ```
 
 ### ALWAYS use these (non-interactive, agent-safe):
 ```bash
-perp --json wallet set <exchange> <key>     # set private key (or Aster API key)
+printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set <exchange>   # import key (stdin) into OWS vault → active wallet
 perp --json wallet generate evm             # generate EVM wallet
 perp --json wallet generate solana          # generate Solana wallet
 perp --json wallet show                     # check configured wallets
 perp --json wallet list                     # list named wallets
 perp --json wallet balance                  # on-chain USDC balances
-perp --json -e <EX> account balance         # exchange account balance
+perp --json portfolio -e <EX>               # per-exchange balance + positions (account balance was renamed in v0.12)
 perp --json -e <EX> account positions       # open positions
 perp --json -e <EX> market list             # available markets
 perp --json -e <EX> trade market ...        # execute trade
@@ -27,7 +51,7 @@ perp --json -e <EX> trade buy ...           # alias for market buy
 perp --json -e <EX> trade sell ...          # alias for market sell
 perp --json risk status                     # risk assessment
 perp --json risk liquidation-distance       # % from liquidation for all positions
-perp --json risk limits                     # view/set risk limits
+perp --json risk limits [--max-position <usd> ...]   # view (no flags) / set risk limits
 perp --json risk check --notional <$> --leverage <L>  # pre-trade risk check
 ```
 
@@ -41,15 +65,15 @@ perp --json risk check --notional <$> --leverage <L>  # pre-trade risk check
 npm install -g perp-cli@latest
 # or use npx -y perp-cli@latest as the prefix
 
-# 2. Register wallet (user provides key)
-perp --json wallet set hl 0xUSER_PRIVATE_KEY
+# 2. Register wallet (user provides key — on stdin, never argv)
+printf '%s' "$USER_PRIVATE_KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set hl
 
 # 3. Verify
 perp --json wallet show
 # → check "ok": true and address appears
 
 # 4. Check balance
-perp --json -e hl account balance
+perp --json portfolio -e hyperliquid
 # → if balance is 0, tell user to deposit USDC
 
 # 5. Ready to trade
@@ -58,24 +82,25 @@ perp --json -e hl market list
 
 ### Multi-Exchange Setup (for Funding Rate Arb)
 To run arb, you need wallets on AT LEAST 2 exchanges. Each exchange needs:
-- A configured wallet with a private key (or API key for Aster)
+- A wallet key in the OWS vault (EVM for HL / Lighter / Aster, Solana for Pacifica)
 - USDC balance deposited on-exchange
 
 ```bash
-# 1. Register wallets (any 2+ of: hl, pac, lt, aster)
-perp --json wallet set hl 0xEVM_KEY
-perp --json wallet set pac SOLANA_BASE58_KEY
-perp --json wallet set lt 0xEVM_KEY          # may be the same EVM key as HL
-perp --json wallet set aster <ASTER_API_KEY>
+# 1. Register wallets (any 2+ of: hl, pac, lt, aster). The active OWS wallet serves every
+#    venue, so EVM + Solana venues need one multi-chain wallet (perp wallet generate <name>)
+#    or two vault wallets selected per command with --ows <name>:
+printf '%s' "$EVM_KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set hl --name evm
+printf '%s' "$SOLANA_KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set pac --name sol   # now active; HL: --ows evm
+perp --json wallet agent approve lighter     # Lighter trading key
 
 # 2. Verify
 perp --json wallet show
 
 # 3. Check balances (each exchange holds its own balance)
-perp --json -e hl account balance
-perp --json -e pac account balance
-perp --json -e lt account balance
-perp --json -e aster account balance
+perp --json portfolio -e hyperliquid
+perp --json portfolio -e pacifica
+perp --json portfolio -e lighter
+perp --json portfolio -e aster
 
 # 4. If one side needs funding, bridge USDC via funds bridge
 perp --json funds bridge quote --from solana --to arbitrum --amount 500
@@ -90,42 +115,41 @@ perp --json arb scan --min 5
 ### Lighter API Key Setup
 Lighter uses a separate API key for trading. Two paths:
 
-1. **Auto-setup (default)**: When `LIGHTER_PRIVATE_KEY` is set (env or `wallet set lt`), the CLI auto-generates and saves the API key on first use. Default index is 4 (indexes 0–3 are reserved by Lighter's frontend). Override with `LIGHTER_API_KEY_INDEX` env var. Valid range: 4–254.
+1. **No implicit registration**: setting a key (`wallet set lt`, env) never registers a Lighter API key — adapter creation signs nothing. Register explicitly with `perp wallet agent approve lighter`.
 2. **Managed agent (recommended for long-running agents)**: `perp wallet agent approve lighter --master <wallet> --api-key-index <slot>` registers a per-agent slot with explicit expiry tracking + 3-tier signer routing.
 
-If auto-setup fails (e.g. transient network error), retry manually:
+Register / retry:
 ```bash
 perp --json wallet agent approve lighter --master <wallet>
 ```
 
 ### Using the Same EVM Key for Multiple Exchanges
-One EVM private key works for both Hyperliquid and Lighter:
+One EVM private key works for Hyperliquid, Lighter and Aster — `wallet set` imports it once as the active OWS wallet:
 ```bash
-perp --json wallet set hl 0xKEY
-perp --json wallet set lt 0xKEY        # same key, different exchange binding
+printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set hl
 ```
 
 ## Wallet Key Types
 
-| Exchange | Chain | Key Format | Example |
-|----------|-------|-----------|---------|
-| Pacifica | Solana | Base58 string | `5KQwrPbwdL6PhXu...` |
-| Hyperliquid | EVM (HyperEVM) | Hex with 0x prefix, 66 chars | `0x4c0883a69102937d...` |
-| Lighter | EVM (Ethereum) | Hex with 0x prefix, 66 chars | `0x4c0883a69102937d...` |
-| Aster | API key (BNB Chain) | Hex string | `3971f62b...` |
+| Venue (`-e` id \| aliases) | Settles on | Credentials |
+|----------|-------|-----------|
+| `pacifica` \| `pac` | Solana | Solana key (`wallet set pac`), or agent (`wallet agent approve/import pacifica`) |
+| `hyperliquid` \| `hl` | HyperCore (deposit from Arbitrum) | EVM key, or API wallet agent |
+| `lighter` \| `lt` | Ethereum (Lighter L2) | EVM master + API key (`wallet agent approve lighter` / `import`) |
+| `lighter-rh` \| `lrh` \| `rh` | Robinhood Chain (USDG) | API key (`wallet agent approve lighter-rh` / `import`) |
+| `aster` \| `ast` | BNB Chain / Arbitrum | EVM key, or API wallet agent |
+| `ondo` \| `ondo-perps` | off-chain (USDC deposits from Arbitrum / Ethereum) | API key id + secret (stdin) |
+| `arcus` | Robinhood Chain (USDG) | Ed25519 API key (`wallet agent approve arcus --master <w>` / `import`) |
+| `qfex` \| `qf` | custodial (USDC on Arbitrum One) | website key, imported by the user only (`wallet agent import qfex`) |
 
-Aliases for exchange names:
-- `pac` or `pacifica`
-- `hl` or `hyperliquid`
-- `lt` or `lighter`
-- `aster`
+Default `-e` = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
 
 ## Deposit & Withdraw Flows
 
 ### Check On-Chain vs Exchange Balance
 ```bash
 perp --json wallet balance               # on-chain USDC in your wallet
-perp --json -e hl account balance        # USDC deposited on exchange
+perp --json portfolio -e hyperliquid     # USDC deposited on exchange
 ```
 
 **On-chain balance ≠ exchange balance.** USDC in your wallet must be deposited to the exchange before trading.
@@ -146,15 +170,18 @@ perp --json funds deposit lighter cctp arbitrum 100   # via CCTP from Arbitrum (
 
 ### Withdraw from Exchange (`funds withdraw`)
 ```bash
-perp --json funds withdraw hyperliquid 100
-perp --json funds withdraw pacifica 100
-perp --json funds withdraw lighter 100
+perp --json --dry-run funds withdraw hyperliquid 100   # plan first (every withdraw supports --dry-run)
+perp --json funds withdraw hyperliquid 100 [--chain arbitrum|ethereum|base]   # CCTP to your own wallet
+perp --json funds withdraw pacifica 100                # to your own Solana wallet
+perp --json -e lighter funds withdraw lighter 100      # USDC → Ethereum (-e lighter-rh: USDG → Robinhood Chain)
 ```
 
 ### Internal Transfer (Hyperliquid)
 ```bash
-perp --json funds transfer 100 <ADDRESS>     # instant HL→HL spot transfer
+perp --json funds transfer 100 <ADDRESS>     # instant HL→HL transfer
 ```
+
+`funds transfer` and `funds withdraw hyperliquid --to <other address>` require the destination on the `settings withdraw.hyperliquid` allowlist (else `POLICY_DENIED`). That setting can be created / changed ONLY by the user in an interactive terminal (`--json` / piped → `POLICY_DENIED`, no `--yes`). Never try to set it; ask the user.
 
 ### Bridge Between Chains (`funds bridge`)
 When you need to move USDC between chains (different networks):
@@ -176,13 +203,15 @@ perp --json funds bridge status <orderId>
 perp --json funds deposit hyperliquid 500
 ```
 
-### Inter-Exchange Rebalance (one command, end-to-end)
+### Inter-Exchange Rebalance (withdraw → bridge; deposit is manual)
 ```bash
 perp --json funds rebalance check                        # current distribution
 perp --json funds rebalance plan                         # compute optimal moves
-perp --json funds rebalance execute --auto-bridge        # withdraw → bridge → deposit
+perp --json --dry-run funds rebalance execute --auto-bridge   # status "simulated" or "balanced"
+perp --json funds rebalance execute --auto-bridge        # withdraw → bridge only — NO deposit
 perp --json funds rebalance execute --withdraw-only      # only withdraw, manual rest
 ```
+The envelope is `ok:true` even when a move failed: check every `moves[].status` (`withdrawn`, `bridged`, `same_chain`, `needs_bridge`, `withdraw_failed`, `bridge_failed`). Deposit by hand (`funds deposit <venue> <amt>`) after `funds bridge status` confirms arrival.
 
 ## Order Types & Execution
 
@@ -194,6 +223,14 @@ perp --json -e hl trade buy BTC 0.01              # shorthand
 perp --json -e hl trade sell BTC 0.01             # shorthand
 perp --json -e hl trade buy BTC 0.01 --smart      # IOC limit at best ask (less slippage)
 ```
+
+> **Risk gate:** `trade market / buy / sell / limit / split / market --split / scale-in /
+> twap / multi / stop --no-reduce-only` enforce the local risk limits in `~/.perp/risk.json`
+> (`maxPositionUsd` / `maxTotalExposureUsd` / `maxPositions`, set with `perp risk limits
+> --max-position <usd> --max-exposure <usd> --max-positions <n>` or the `-pct` variants).
+> A breach fails with `RISK_VIOLATION`, also in dry-run. `--force` overrides the limits —
+> only with explicit user consent; it NEVER bypasses a quarantine (also `RISK_VIOLATION`).
+> Reduce-only orders are exempt. Defaults are loose (`maxPositionUsd` 100000).
 
 ### Split Orders (orderbook-aware, for large orders)
 ```bash
@@ -207,8 +244,8 @@ Status: `complete` (all filled), `partial` (some filled), `failed` (none filled)
 ### Limit / Stop / TPSL
 ```bash
 perp --json -e hl trade limit BTC buy 60000 0.01     # buy 0.01 BTC at $60k
-perp --json -e hl trade stop BTC sell 0.01 58000     # stop sell at $58k
-perp --json -e hl trade tpsl BTC long --tp 65000 --sl 58000
+perp --json -e hl trade stop BTC sell 0.01 58000     # stop sell at $58k (reduce-only by default)
+perp --json -e hl trade tpsl BTC long --tp 65000 --sl 58000   # long|short = the OPEN position's side
 ```
 
 ### Close / Reduce
@@ -225,7 +262,7 @@ perp --json -e hl account orders                  # list open orders
 perp --json -e hl trade cancel BTC                # cancel by symbol
 perp --json -e hl trade cancel <orderId>          # cancel specific order
 perp --json -e hl trade cancel-all                # cancel all orders
-perp --json -e hl trade cancel-stop BTC <stopId>  # cancel stop order
+perp --json -e pac trade cancel-stop BTC <stopId> # cancel stop order (pacifica / qfex; other venues: trade cancel)
 perp --json -e hl trade cancel-twap BTC <twapId>  # cancel TWAP order
 ```
 
@@ -261,13 +298,19 @@ Error case:
 }
 ```
 
-**Always check `ok` field first.** If `ok` is `false`, read `error.code` to decide next action. If `error.retryable` is `true`, wait 5 seconds and retry once.
+**Always check `ok` field first** (`ok:false` also exits 1). If `ok` is `false`, read `error.code` and follow `error.remediation`. If `error.retryable` is `true` AND the command is read-only, wait 5 seconds and retry once. Never retry a write — writes surface an unknown outcome as `ORDER_PENDING` (non-retryable).
+
+In scripts, capture exactly one JSON document and read `.ok` — do NOT append a fallback (`$(perp … || echo '{"ok":false}')` yields two documents on failure):
+```bash
+out=$(perp --json -e hl account positions 2>/dev/null; true)
+jq -e '.ok == true' >/dev/null <<<"$out" || echo "failed: $(jq -r '.error.code // "no output"' <<<"$out")"
+```
 
 ## Idempotency & Safety
 
 ### Safe to retry (idempotent):
 - `wallet show`, `wallet list`, `wallet balance` — read-only
-- `account balance`, `account positions`, `account orders`, `account margin` — read-only
+- `portfolio`, `portfolio -e <ex>`, `account positions`, `account orders`, `account margin` — read-only (note: `account balance` was renamed to `portfolio` in v0.12)
 - `market list`, `market mid`, `market book`, `market info`, `market funding` — read-only
 - `arb scan` (any mode), `arb status`, `arb history`, `arb config` — read-only
 - `portfolio`, `risk status`, `risk liquidation-distance` — read-only
@@ -280,12 +323,15 @@ Error case:
 - `funds bridge send` — will send duplicate transfers
 - `funds deposit *`, `funds withdraw *`, `funds transfer` — will move funds twice
 - `arb exec`, `arb close`, `arb auto` — open/close real positions
-- `funds rebalance execute` — orchestrated multi-leg movement
+- `funds rebalance execute` — sends withdrawals / bridges
 
 **For non-idempotent commands:** always verify the result before retrying. Check positions or balances to confirm whether the first attempt succeeded.
 
+### Unknown outcome (`ORDER_PENDING`) — every write
+Orders, cancels, edits, leverage, withdraw / deposit / bridge / transfer: `ORDER_PENDING` means the request was sent and its outcome is unknown. Do NOT resubmit. Check, in order: `perp --json -e <ex> trade status c:<id> --symbol <SYM>` (id from `remediation`), `account orders` / `account positions` / `portfolio`, the tx hash / request id in `error.details` (`funds bridge status <id>`). Unknown arb / bot / close / multi outcomes also quarantine the symbol (`perp --json strategy quarantine`); only the user clears it after verifying (`strategy quarantine-clear <SYM>`).
+
 ### Idempotency Key
-Use `--client-id <unique>` on `trade market` to prevent duplicate orders. The CLI tracks recent client IDs and rejects duplicates.
+`--client-id <id>` / `--auto-id` on `trade market/buy/sell/limit`. An id already recorded locally (`~/.perp/client-ids.jsonl`, not marked failed) returns `ok:true` with `data.duplicate: true` and sends nothing — this is local tracking, not a venue-side check and not an error. Formats: Pacifica a full UUID; Hyperliquid `0x` + 32 hex; Lighter / Lighter RH an integer; QFEX refuses `--client-id` (`CAPABILITY_UNSUPPORTED`; `--auto-id` works). `--client-id`/`--auto-id` with `--smart` → `CAPABILITY_UNSUPPORTED`.
 
 ## Symbol Naming Across Exchanges
 
@@ -303,20 +349,24 @@ Symbols are auto-resolved by the CLI. **Always use bare symbols** (e.g., `BTC`, 
 
 ## Exchange-Specific Constraints
 
-| Exchange | Min Order (notional) | Notes |
-|----------|---------------------|-------|
-| Pacifica | ~$1 (varies by symbol) | Lower minimums |
-| Hyperliquid | **$10** | Rejects orders below $10 notional |
-| Lighter | Varies by symbol | Check `market info` |
-| Aster | Varies by symbol | BNB Chain, API key based |
+| Venue | Notes |
+|-------|-------|
+| Pacifica | client ids = full UUID; `cancel-stop` / native TWAP (seconds) |
+| Hyperliquid | **$10** min order; prices ≤ 5 significant figures (off-grid → `INVALID_TICK`); native TWAP in minutes, min $100 |
+| Lighter / Lighter RH | min varies by symbol (`market info`); `trade status c:<id>` needs `--symbol` |
+| Aster | funding interval per symbol; `trade status c:<id>` needs `--symbol` |
+| Ondo / Arcus | `trade status` needs `--symbol`; restricted-region notice on stderr |
+| QFEX | `--client-id` refused; no resting reduce-only limits, opening stops or automation; funding unverified (display only) |
+
+`--smart` only on pacifica / hyperliquid / lighter / aster. Stops are reduce-only by default; `--no-reduce-only` is refused on ondo / qfex. Limit and trigger prices off the venue grid are refused with `INVALID_TICK`, never rounded.
 
 **`trade check` is advisory only** — it returns `valid: true/false` but does NOT block execution. The exchange itself enforces minimums and will reject with an error if the order is too small.
 
 ## Common Agent Mistakes
 
-1. **Using `perp setup` / `perp init` / `perp wallet setup`** — interactive, will hang forever. Use `wallet set` instead.
+1. **Using `perp setup` / `perp init` / `perp wallet setup`** — interactive, will hang forever. Use `wallet set` (key on stdin) or `setup --non-interactive` instead.
 2. **Forgetting `--json`** — output becomes unparseable human text.
-3. **Trading with zero balance** — check `account balance` first, tell user to deposit.
+3. **Trading with zero balance** — check `perp --json portfolio -e <ex>` first, tell user to deposit.
 4. **Retrying a trade without checking** — leads to double positions. Always check `account positions` after a trade, even if it seemed to fail.
 5. **Bridging without quoting** — always run `funds bridge quote` first to show the user fees and estimated time.
 6. **Assuming deposit is instant** — after `funds bridge send`, wait for `funds bridge status` to confirm completion before depositing to the destination exchange.
@@ -324,3 +374,7 @@ Symbols are auto-resolved by the CLI. **Always use bare symbols** (e.g., `BTC`, 
 8. **Order below exchange minimum** — Hyperliquid requires $10+ notional. Compute `size × price` before submitting.
 9. **Using legacy command names** — `arb rates`/`prices`/`dex`/`spot-exec`/`spot-close` are removed; use `arb scan --rates`/`--gaps`/`--hip3` and `arb exec spot:<exch>` / `arb close <SYM> --spot-exch <ex>` instead.
 10. **Calling `trade check` without `--leverage`** — the CLI does not read exchange-set leverage, so cost estimates will be wrong.
+11. **Resubmitting after `ORDER_PENDING`** — the first request may have executed. Check status / positions / tx first.
+12. **Working around `CAPABILITY_UNSUPPORTED`** (another order type, venue or emulation) — report it to the user instead.
+13. **`--dry-run` on a command without dry-run support** → `INVALID_PARAMS` (e.g. `trade twap`, `trade multi`, `strategy grid`, `wallet agent approve`). Simulate bots with `perp --json --dry-run strategy run <s>` or `perp --json --dry-run arb auto`.
+14. **Omitting `-e`** — the default venue is `settings.defaultExchange`, else `pacifica`.

@@ -81,9 +81,9 @@ npx priors-v2 join --seat <stakerAddress>                             # a staker
   as of 2026-09-29, so new seats go to the growth seat vault. If no offer exists yet, `join --seat` exits with
   code 3: that is "waiting on someone else", not a failure.
 - **Backer.** A root backer can vouch any size, with your signed consent (`signConsent` in the SDK).
-- **Stock line.** Deposit one of the 35 accepted Robinhood stock tokens and the stock vault vouches 25-50% of its
-  value by token (plus up to 15 points for a record of repaid treasury credit), at most $250. New loans follow the
-  collateral's value now, and a default seizes the whole deposit. There is no CLI subcommand: use the SDK
+- **Stock line.** Deposit one of the 35 accepted Robinhood stock tokens and the stock vault vouches 25-70% of its
+  value by token (plus up to 15 points for a record of repaid treasury credit), at most $500. New loans follow the
+  collateral's value now, and a default seizes what is owed plus a 20% buffer and gives the rest back. There is no CLI subcommand: use the SDK
   (`stockAssets()`, `openStockLine(agentId, token, amount)`, `closeStockLine(agentId)`); see the README's
   "Stock lines".
 

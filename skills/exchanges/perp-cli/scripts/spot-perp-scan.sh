@@ -12,6 +12,11 @@ else
   PERP="npx -y perp-cli@latest"
 fi
 
+# perp exits 1 on {"ok":false} and prints exactly one JSON document: capture it as-is
+# (never append a fallback document); empty output (crash / not installed) → {"ok":false}.
+pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false}'; fi; }
+isok() { jq -e '.ok == true' >/dev/null 2>&1 <<<"$1"; }
+
 JSON_MODE=false
 MODE="all"
 MIN_SPREAD=10
@@ -25,8 +30,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # 1. Portfolio check (ensure we have balances)
-PORTFOLIO=$($PERP --json portfolio 2>/dev/null || echo '{"ok":false}')
-if ! echo "$PORTFOLIO" | grep -q '"ok":true'; then
+PORTFOLIO=$(pj --json portfolio)
+if ! isok "$PORTFOLIO"; then
   if $JSON_MODE; then
     echo '{"ok":false,"error":"Cannot fetch portfolio — check wallet setup"}'
   else
@@ -36,10 +41,10 @@ if ! echo "$PORTFOLIO" | grep -q '"ok":true'; then
 fi
 
 # 2. Run appropriate scan
-SCAN_RESULT=$($PERP --json arb scan --mode "$MODE" --min "$MIN_SPREAD" 2>/dev/null || echo '{"ok":false}')
+SCAN_RESULT=$(pj --json arb scan --mode "$MODE" --min "$MIN_SPREAD")
 
 # 3. Get exchange health for context (proxy via market prices fetch)
-HEALTH=$($PERP --json market prices 2>/dev/null || echo '{"ok":false}')
+HEALTH=$(pj --json market prices)
 
 if $JSON_MODE; then
   cat <<EOF
@@ -55,14 +60,14 @@ if $JSON_MODE; then
 EOF
 else
   echo "=== Spot+Perp Arb Scanner ==="
-  echo "Mode: $MODE | Min spread: ${MIN_SPREAD} bps"
+  echo "Mode: $MODE | Min spread: ${MIN_SPREAD}% annual"
   echo ""
 
   # Show balances
   echo "--- Balances ---"
   echo "$PORTFOLIO" | jq -r '
     .data.exchanges // [] | .[] |
-    "  \(.exchange): $\(.balance // .equity // "N/A")"
+    "  \(.name): equity $\(.perp.equity // "N/A")"
   ' 2>/dev/null || echo "  (unable to parse)"
   echo ""
 
@@ -70,7 +75,7 @@ else
   echo "--- Opportunities ---"
   echo "$SCAN_RESULT" | jq -r '
     .data // [] | .[] |
-    "  \(.symbol) | \(.mode // "perp-perp") | spread: \(.netSpread // .spread)bps | \(.longExch // .longExchange)→\(.shortExch // .shortExchange)"
+    "  \(.symbol) | \(.mode // "perp-perp") | net: \(.netSpread // .netSpreadPct)%/yr | \(.longExch // ("spot:" + ((.spotExchanges // []) | join("/"))))→\(.shortExch // .perpExchange)"
   ' 2>/dev/null || echo "  (no opportunities or parse error)"
 
   # Show exchange health

@@ -6,10 +6,11 @@ You are not expected to follow rigid rules — use this as a decision framework 
 ## Core Concepts
 
 ### Funding Rate Mechanics
-- Funding rates settle **every 1 hour** on all supported exchanges
+- Funding settles **every 1 hour** on every venue except Aster, whose interval is **per symbol** (from its fundingInfo `fundingIntervalHours`)
+- QFEX funding rates are unverified: excluded from scans / arb; shown only with `arb scan --rates --include-unverified` (display only)
 - Positive rate = longs pay shorts, negative rate = shorts pay longs
-- Rates are annualized in display but applied hourly: `hourly = annual / 8760`
-- Scan opportunities: `perp --json arb scan --min 5` (shows spread, longExch, shortExch, netSpread)
+- Rates are displayed annualized: per hour ≈ `annual / 8760`
+- Scan opportunities: `perp --json arb scan --min 5` (shows grossSpread, netSpread, longExch, shortExch)
 
 ### Opportunity Cost Awareness
 
@@ -69,12 +70,14 @@ The `arb scan` output tells you EXACTLY what to do:
 ```
 longExch: "hyperliquid"   → open LONG on this exchange
 shortExch: "pacifica"     → open SHORT on this exchange
-netSpread: 12.87          → profit after fees (bps/hour)
+grossSpread: 15.2         → funding spread, annualized %
+netSpread: 12.87          → annualized % after round-trip trading costs amortized over --hold-days (default 7)
+                            (and --bridge-cost if given)
 ```
 
 **Rules:**
 1. **ALWAYS follow longExch/shortExch directions exactly.** DO NOT reverse them.
-2. **NEVER enter if netSpread ≤ 0.** Negative netSpread = loss after fees.
+2. **NEVER enter if netSpread ≤ 0.** Negative netSpread = loss after fees over the assumed hold. A shorter real hold makes costs weigh more — re-scan with your `--hold-days`.
 3. The direction logic: go LONG where funding is negative (longs receive), go SHORT where funding is positive (shorts receive).
 
 **Why these directions?**
@@ -94,7 +97,7 @@ When evaluating an arb opportunity:
 
 3. **How long will the spread persist?**
    - Historical funding tends to mean-revert
-   - Higher confidence in moderate, stable spreads (20-50 bps) than extreme spikes (>100 bps)
+   - Higher confidence in moderate, stable spreads (e.g. 10–50% annualized netSpread) than extreme spikes (hundreds of % annualized)
 
 4. **Can I execute both legs atomically?**
    - Both positions should open near-simultaneously to minimize directional exposure
@@ -105,19 +108,20 @@ When evaluating an arb opportunity:
 **Before entering any arb position, set a target hold duration.** This is critical for calculating whether the position is worth entering.
 
 ```
-Expected Profit = hourly_spread × target_hours
-Entry/Exit Cost = open_fees + close_fees + slippage (both legs)
-Net Profit = Expected Profit - Entry/Exit Cost
+Expected Funding = notional × (grossSpread% / 100) × target_hours / 8760
+Entry/Exit Cost  = open_fees + close_fees + slippage (both legs)
+Net Profit       = Expected Funding - Entry/Exit Cost
 ```
+(`netSpread` already does this amortization for `--hold-days`; pass `--hold-days` = your target to read it directly.)
 
 **Only enter if Net Profit > 0 with a comfortable margin.**
 
 Guidelines for hold duration:
-- **Stable spreads (20-50 bps):** target 8-24 hours. These are reliable but low-yield — you need time for the funding to accumulate past your entry/exit costs.
-- **Elevated spreads (50-100 bps):** target 4-8 hours. Higher yield, but likely to compress. Take profit earlier.
-- **Spike spreads (>100 bps):** target 1-4 hours. These revert quickly. Must cover entry/exit costs within a few funding cycles.
+- **Moderate, stable spreads (≈10–50% annualized):** target days, not hours — the funding must accumulate past entry/exit costs.
+- **Elevated spreads (≈50–100% annualized):** shorter targets; likely to compress. Take profit earlier.
+- **Spikes (well above 100% annualized):** revert quickly — enter only if the funding over a few settlements covers entry/exit costs.
 
-**Re-evaluate at each funding settlement (every hour):**
+**Re-evaluate at each funding settlement (hourly on most venues):**
 1. Is the spread still above breakeven for the remaining target hours?
 2. If spread compressed, should I exit early or extend the hold?
 3. Has a better opportunity appeared? (Remember: switching has its own cost)
@@ -126,12 +130,12 @@ Guidelines for hold duration:
 
 Example entry decision log:
 ```
-Entry: BTC HL↔PAC | Spread: 35 bps | Target hold: 12h
-Expected: 35 bps × 12h = 420 bps gross
-Entry/exit cost: ~80 bps (fees + slippage both legs)
-Net expected: ~340 bps → ENTER
-Hour 6 check: spread compressed to 15 bps → below breakeven for remaining 6h → EXIT
-Actual hold: 6h | Actual net: ~130 bps
+Entry: BTC HL↔PAC | $1000/leg | grossSpread 80% annual | Target hold: 7d
+Expected funding: 1000 × 0.80 × 168 / 8760 ≈ $15.3
+Entry/exit cost: ~$4 (fees + slippage, both legs, open + close)
+Net expected: ≈ $11 → ENTER (arb scan --hold-days 7 netSpread > 0 agrees)
+Day 3 check: grossSpread compressed to 10% → remaining 4d earn ≈ $1.1 → EXIT if it keeps falling / flips, or a better net opportunity exists
+Actual hold: 3d | log actual funding vs estimate
 ```
 
 ### Monitoring Active Positions
@@ -180,6 +184,8 @@ perp --json -e <EX> market info <SYM>    # check maxLeverage, volume, openIntere
 Round `ORDER_SIZE` to the coarser step size of the two exchanges. If the matched size falls below either exchange's minimum, the arb is NOT executable at this size — reduce target or skip.
 
 #### Step 2: Execute Legs Sequentially with Same Size
+
+Prefer `perp --json arb exec <SYM> <LONG_EX> <SHORT_EX> <USD>` — it does exactly this: long first, then the short sized to the verified long fill, reconcile always on, and an unconfirmed leg quarantines the symbol. Manual legs (below) only when `arb exec` cannot be used.
 
 Once you have a single `ORDER_SIZE`, execute both legs using THAT EXACT SIZE:
 
@@ -243,7 +249,7 @@ Leg B: perp --json -e <SHORT_EX> trade split <SYM> sell 5000
 #### Using Limit Orders for Better Execution
 For non-urgent entries, use limit orders at best bid/ask instead of market:
 ```bash
-perp --json -e <EX> trade buy <SYM> <ORDER_SIZE> -p <PRICE>    # limit order
+perp --json -e <EX> trade limit <SYM> buy <PRICE> <ORDER_SIZE>   # limit order (GTC default; --tif ALO = post-only)
 ```
 This avoids crossing the spread but risks not getting filled. Set a timeout and fall back to market if unfilled. **Both legs must still use the same `ORDER_SIZE`.**
 
@@ -311,7 +317,7 @@ perp --json -e <EX> trade leverage <SYM> <LEVERAGE>
 **For funding rate arb, use ISOLATED margin.** Each leg should be independent — if one side gets liquidated, the other side survives.
 
 ```bash
-perp --json manage margin <SYM> isolated     # set isolated margin
+perp --json -e <EX> wallet manage margin <SYM> isolated   # set isolated margin
 perp --json -e <EX> trade leverage <SYM> <LEV> --isolated   # set leverage + isolated at once
 ```
 
@@ -407,8 +413,8 @@ Rules of thumb:
 
 Each exchange holds its own separate balance. Before entering any arb:
 ```bash
-perp --json -e <EX_A> account balance           # check available balance on exchange A
-perp --json -e <EX_B> account balance           # check available balance on exchange B
+perp --json portfolio -e <EX_A>                 # check available balance on exchange A
+perp --json portfolio -e <EX_B>                 # check available balance on exchange B
 ```
 
 **Size each leg to fit the available balance on that exchange:**
@@ -428,15 +434,12 @@ Even "market-neutral" arb can lose money if:
 - Extreme funding spike in the wrong direction
 - Slippage on entry/exit far exceeds estimates
 
-**Always set stop losses on both legs:**
+**Always set stop losses on both legs** (`long|short` = the OPEN position's side; legs are reduce-only, sized to the live position):
 ```bash
-perp --json -e <EX_A> trade sl <SYM> <PRICE>    # stop loss on leg A
-perp --json -e <EX_B> trade sl <SYM> <PRICE>    # stop loss on leg B
-```
-
-Or use TP/SL together:
-```bash
-perp --json -e <EX> trade tp-sl <SYM> --tp <PRICE> --sl <PRICE>
+perp --json --dry-run -e <EX_A> trade tpsl <SYM> long  --sl <PRICE>              # leg A (long): SL below mark
+perp --json -e <EX_A> trade tpsl <SYM> long  --sl <PRICE>
+perp --json -e <EX_B> trade tpsl <SYM> short --sl <PRICE>                       # leg B (short): SL above mark
+perp --json -e <EX> trade tpsl <SYM> long --sl <PRICE> --tp <PRICE>             # TP + SL together
 ```
 
 ### What to Track Over Time

@@ -13,6 +13,11 @@ else
   PERP="npx -y perp-cli@latest"
 fi
 
+# perp exits 1 on {"ok":false} and prints exactly one JSON document: capture it as-is
+# (never append a fallback document); empty output (crash / not installed) → {"ok":false}.
+pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false}'; fi; }
+isok() { jq -e '.ok == true' >/dev/null 2>&1 <<<"$1"; }
+
 JSON_MODE=false
 MIN_SPREAD=5
 while [[ $# -gt 0 ]]; do
@@ -24,8 +29,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # 1. Get current arb status (already includes funding earned per period)
-ARB_STATUS=$($PERP --json arb status 2>/dev/null || echo '{"ok":false}')
-if ! echo "$ARB_STATUS" | grep -q '"ok":true'; then
+ARB_STATUS=$(pj --json arb status)
+if ! isok "$ARB_STATUS"; then
   if $JSON_MODE; then
     echo '{"ok":false,"error":"No arb positions or arb status unavailable"}'
   else
@@ -35,13 +40,13 @@ if ! echo "$ARB_STATUS" | grep -q '"ok":true'; then
 fi
 
 # 2. Get current spreads (all modes)
-ARB_SCAN=$($PERP --json arb scan --mode all --min 0 2>/dev/null || echo '{"ok":false,"data":{"opportunities":[]}}')
+ARB_SCAN=$(pj --json arb scan --mode all --min 0)
 
 # 3. Get liquidation distances
-LIQ_DIST=$($PERP --json risk liquidation-distance 2>/dev/null || echo '{"ok":false}')
+LIQ_DIST=$(pj --json risk liquidation-distance)
 
 # 4. Get risk overview
-RISK_STATUS=$($PERP --json risk status 2>/dev/null || echo '{"ok":false}')
+RISK_STATUS=$(pj --json risk status)
 
 # 5. Output combined analysis
 if $JSON_MODE; then

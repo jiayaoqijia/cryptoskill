@@ -12,6 +12,11 @@ else
   PERP="npx -y perp-cli@latest"
 fi
 
+# perp exits 1 on {"ok":false} and prints exactly one JSON document: capture it as-is
+# (never append a fallback document); empty output (crash / not installed) → {"ok":false}.
+pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false}'; fi; }
+isok() { jq -e '.ok == true' >/dev/null 2>&1 <<<"$1"; }
+
 JSON_MODE=false
 SYMBOL=""
 TOP=10
@@ -26,10 +31,10 @@ done
 
 if [[ -n "$SYMBOL" ]]; then
   # Single symbol detailed analysis
-  FUNDING=$($PERP --json arb scan --history "$SYMBOL" 2>/dev/null || echo '{"ok":false}')
-  COMPARE=$($PERP --json arb scan --compare "$SYMBOL" 2>/dev/null || echo '{"ok":false}')
-  SCAN=$($PERP --json arb scan --mode perp-perp --min 0 2>/dev/null || echo '{"ok":false}')
-  SPOT_SCAN=$($PERP --json arb scan --mode spot-perp --min 0 2>/dev/null || echo '{"ok":false}')
+  FUNDING=$(pj --json arb scan --history "$SYMBOL")
+  COMPARE=$(pj --json arb scan --compare "$SYMBOL")
+  SCAN=$(pj --json arb scan --mode perp-perp --min 0)
+  SPOT_SCAN=$(pj --json arb scan --mode spot-perp --min 0)
 
   if $JSON_MODE; then
     cat <<EOF
@@ -55,19 +60,19 @@ EOF
     echo "--- Perp-Perp Arb ---"
     echo "$SCAN" | jq -r '
       .data // [] | map(select(.symbol == "'"$SYMBOL"'")) | .[] |
-      "  \(.longExch // .longExchange)→\(.shortExch // .shortExchange): \(.netSpread // .spread)% annual"
+      "  \(.longExch // .longExchange)→\(.shortExch // .shortExchange): net \(.netSpread)% annual"
     ' 2>/dev/null || echo "  (no opportunity)"
     echo ""
     echo "--- Spot+Perp Arb ---"
     echo "$SPOT_SCAN" | jq -r '
       .data // [] | map(select(.symbol == "'"$SYMBOL"'")) | .[] |
-      "  \(.direction): \(.annualSpreadPct // .spread)% annual"
+      "  \(.direction) spot:\((.spotExchanges // []) | join("/"))→\(.perpExchange): net \(.netSpreadPct)% annual"
     ' 2>/dev/null || echo "  (no opportunity)"
   fi
 else
   # All symbols scan
-  SCAN=$($PERP --json arb scan --mode all --min 0 2>/dev/null || echo '{"ok":false}')
-  FUNDING_DETAIL=$($PERP --json arb scan --rates 2>/dev/null || echo '{"ok":false}')
+  SCAN=$(pj --json arb scan --mode all --min 0)
+  FUNDING_DETAIL=$(pj --json arb scan --rates)
 
   if $JSON_MODE; then
     cat <<EOF
@@ -84,7 +89,7 @@ EOF
     echo ""
     echo "$SCAN" | jq -r "
       .data // [] | .[0:$TOP] | .[] |
-      \"  \(.symbol) | \(.mode // \"perp\") | \(.netSpread // .spread)bps | \(.longExch // .longExchange)→\(.shortExch // .shortExchange)\"
+      \"  \(.symbol) | \(.mode // \"perp\") | net \(.netSpread // .netSpreadPct)%/yr | \(.longExch // (\"spot:\" + ((.spotExchanges // []) | join(\"/\"))))→\(.shortExch // .perpExchange)\"
     " 2>/dev/null || echo "(no data)"
   fi
 fi

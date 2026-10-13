@@ -4,7 +4,10 @@ All commands support `--json` for structured output. Always use `--json` when ca
 
 ## Global Flags
 
-`--json` (required for agents) | `-e <pac|hl|lt|aster>` (exchange) | `--dex <name>` (HIP-3) | `-w, --wallet <name>` | `--dry-run` | `--fields <f1,f2>` | `--ndjson`
+`--json` (required for agents) | `-e <venue>` | `-n mainnet|testnet` | `--dry-run` (only commands whose `--help` says "supports --dry-run"; others refuse with `INVALID_PARAMS`) | `--fields <f1,f2>` | `--ndjson` | `-w, --wallet <name>` | `--ows <name>` (OWS wallet) | `--no-agent` (skip agent-key routing) | `--no-builder` | `--dex <name>` (HIP-3, Hyperliquid)
+
+Venues (`-e`, id | aliases): `pacifica|pac`, `hyperliquid|hl`, `lighter|lt`, `lighter-rh|lrh|rh`, `aster|ast`, `ondo|ondo-perps`, `arcus`, `qfex|qf`. Default = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
+`-k <key>` is rejected (keys only via stdin / OWS vault). `--passphrase` is deprecated → `OWS_PASSPHRASE` env or stdin.
 
 ## Market Data (read-only, safe)
 ```bash
@@ -21,7 +24,7 @@ perp --json market hip3                        # list HIP-3 deployed perp dexes 
 
 ## Account (read-only, safe)
 ```bash
-perp --json -e <EX> account balance            # perp balance + spot holdings + 24h funding
+perp --json portfolio -e <VENUE_ID>            # perp balance + spot holdings + 24h funding; full venue id only (hl → INVALID_PARAMS)
 perp --json -e <EX> account positions          # open positions
 perp --json -e <EX> account orders             # open/pending orders
 perp --json -e <EX> account history            # order history
@@ -41,7 +44,10 @@ perp --json portfolio --arb                    # full dashboard with arb top 5
 perp --json -e <EX> trade market <SYMBOL> <buy|sell> <SIZE>
 perp --json -e <EX> trade buy <SYMBOL> <SIZE>           # shorthand market buy
 perp --json -e <EX> trade sell <SYMBOL> <SIZE>          # shorthand market sell
-perp --json -e <EX> trade buy <SYM> <SIZE> --smart      # IOC limit at best ask (less slippage)
+perp --json -e <EX> trade buy <SYM> <SIZE> --smart      # IOC limit at best ask + 1 tick — pacifica/hyperliquid/lighter/aster only; not with --tp/--sl or a client id
+perp --json -e <EX> trade buy <SYM> <SIZE> --client-id <id>   # reused id → ok:true, data.duplicate:true (local ~/.perp/client-ids.jsonl; nothing sent)
+#   id formats: pacifica full UUID; hyperliquid 0x+32 hex; lighter(-rh) integer; qfex refuses --client-id (use --auto-id)
+# Opening orders: --force bypasses the local risk limits (user consent only; never quarantine)
 
 # Split execution (orderbook-aware, for large orders)
 perp --json -e <EX> trade split <SYMBOL> <buy|sell> <USD>
@@ -49,17 +55,19 @@ perp --json -e <EX> trade split <SYM> buy 5000 --max-slippage 0.5 --max-slices 5
 perp --json -e <EX> trade market <SYM> buy <SIZE> --split   # split via flag
 
 # Limit / stop / TPSL
-perp --json -e <EX> trade limit <SYMBOL> <buy|sell> <PRICE> <SIZE>
-perp --json -e <EX> trade stop <SYMBOL> <SIDE> <SIZE> <STOP_PRICE>
-perp --json -e <EX> trade tpsl <SYMBOL> <SIDE> --tp <P> --sl <P>
+perp --json -e <EX> trade limit <SYMBOL> <buy|sell> <PRICE> <SIZE> [--tif GTC|IOC|FOK|ALO]   # default GTC on every venue; off-grid price → INVALID_TICK (never rounded)
+perp --json -e <EX> trade stop <SYMBOL> <SIDE> <SIZE> <STOP_PRICE>   # reduce-only by default; --no-reduce-only to open (refused on ondo / qfex)
+perp --json -e <EX> trade tpsl <SYMBOL> <long|short> --tp <P> --sl <P>   # positionSide = the open position's side
+perp --json -e <EX> trade buy <SYMBOL> <SIZE> --tp <P> --sl <P>         # entry protected by TP/SL (verified fill)
 
 # Order management
 perp --json -e <EX> trade edit <SYMBOL> <ORDER_ID> <PRICE> <SIZE>
 perp --json -e <EX> trade cancel <SYMBOL_OR_ORDER_ID> [orderId]
 perp --json -e <EX> trade cancel-all
-perp --json -e <EX> trade cancel-stop <SYMBOL> <STOP_ORDER_ID>
+perp --json -e <EX> trade cancel-stop <SYMBOL> <STOP_ORDER_ID>   # pacifica / qfex only; other venues: trade cancel
 perp --json -e <EX> trade cancel-twap <SYMBOL> <TWAP_ORDER_ID>
-perp --json -e <EX> trade status <ORDER_ID>             # check order state
+perp --json -e <EX> trade status <ORDER_ID|c:<CLIENT_ID>> [--symbol <SYM>]
+#   --symbol required on ondo / arcus / qfex, and for c:<id> on lighter / lighter-rh / aster
 perp --json -e <EX> trade fills [SYMBOL]                # recent fills
 
 # Pre-flight validation
@@ -76,22 +84,26 @@ perp --json -e <EX> trade leverage <SYMBOL> <N> [--isolated]
 
 # Advanced orders
 perp --json -e <EX> trade scale-tp <SYMBOL> --levels '<P1>:<PCT>,<P2>:<PCT>'
-perp --json -e <EX> trade scale-in <SYMBOL> <SIDE> --levels '<P1>:<SIZE>,<P2>:<SIZE>'
+perp --json -e <EX> trade scale-in <SYMBOL> <SIDE> --levels '<P1>:<PCT>,<P2>:<PCT>' (--size-usd <USD> | --size <BASE>)   # percents sum to 100
 perp --json -e <EX> trade pnl-track                     # real-time PnL tracker
-perp --json trade twap <SYMBOL> <SIDE> <SIZE> <DURATION>  # native TWAP order
+perp --json -e <EX> trade twap <SYMBOL> <SIDE> <SIZE> <DURATION>   # Pacifica: seconds (native), HL: minutes (native, min $100); others client-side: --background [--slices <n>]
 
-# Spot helpers (Hyperliquid / Lighter)
+# Spot helpers (any venue with spot)
 perp --json -e <EX> trade spot-buy <SYMBOL> <SIZE>
 perp --json -e <EX> trade spot-sell <SYMBOL> <SIZE>
+perp --json -e <EX> trade spot-limit <SYMBOL> <SIDE> <PRICE> <SIZE> [--tif <tif>]
+perp --json -e <EX> trade spot-cancel <SYMBOL> <ORDER_ID>
+perp --json -e <EX> trade spot-orders [SYMBOL]
+perp --json -e <EX> trade spot-transfer <to-spot|to-perp> <AMOUNT>
 perp --json -e <EX> trade spot-balance
 
-# Multi-leg atomic execution
+# Multi-leg execution (legs exchange:symbol:side:size; failed legs rolled back; unconfirmed leg → quarantined; no --dry-run)
 perp --json trade multi <legs...>
 ```
 
 ## Outcome Markets (Hyperliquid HIP-4)
 
-Fully-collateralized binary/range contracts on Hyperliquid. **Quote token: USDH (NOT USDC)**. No leverage / no liquidation. Min order $10 USDH (price × size ≥ 10). Currently 1 live market on mainnet (BTC binary daily settling at 06:00 UTC).
+Fully-collateralized binary/range contracts on Hyperliquid. Each outcome's quote token comes from `outcomeMeta.quoteToken` (`outcome list` shows it; USDC on every listed outcome as of 2026-10-12), held on Hyperliquid spot. No leverage / no liquidation. Minimum order value 10 quote tokens (price × shares ≥ 10). Sizes are whole shares.
 
 ```bash
 # List active outcome markets — parses the description string into
@@ -115,13 +127,13 @@ perp --json outcome book <outcome> <side> [--depth N=10]
 perp --json outcome positions
 perp --json outcome orders
 
-# Place orders. ALWAYS dry-run first.
-perp --json outcome buy  <outcome> <side> <usd> --dry-run
-perp --json outcome sell <outcome> <side> <usd> --dry-run
+# Place orders. ALWAYS dry-run first. [usd] = notional in the quote token, or --size <shares>; sell also --all.
+perp --json --dry-run outcome buy  <outcome> <side> <usd>
+perp --json --dry-run outcome sell <outcome> <side> --all
 
-# Live execution. --limit makes it GTC; without --limit it's IoC at top-of-book +/-5%.
-perp --json outcome buy  <outcome> <side> <usd> [--limit <px>] [--tif gtc|ioc|alo]
-perp --json outcome sell <outcome> <side> <usd> [--limit <px>] [--tif gtc|ioc|alo]
+# Live execution. --limit makes it GTC; without --limit it's IoC at best ask +5% (cap 1) / best bid -5%.
+perp --json outcome buy  <outcome> <side> [<usd> | --size <shares>] [--limit <px>] [--tif gtc|ioc|alo]
+perp --json outcome sell <outcome> <side> [<usd> | --size <shares> | --all] [--limit <px>] [--tif gtc|ioc|alo]
 
 # Cancel a resting order.
 perp --json outcome cancel <outcome> <side> <oid>
@@ -143,10 +155,10 @@ Encoding formula: `enc = 10 * outcome + side`; asset id = `100,000,000 + enc`.
 
 ### Foot-guns enforced (Rule #2)
 
-- **Min notional:** `price * size < 10 USDH` → `INVALID_PARAMS` with remediation. Enforced in dry-run too.
+- **Min notional:** `price * size < 10` quote tokens → `INVALID_PARAMS`. Enforced in dry-run too. A trade leaving a remainder worth < 10 warns (it cannot be sold alone — use `sell --all`); selling more than held → `SIZE_TOO_LARGE`.
 - **Encoded-side mismatch:** `outcome buy 2 #10` (where `#10` decodes to outcome=1) → `INVALID_PARAMS`, never silently routes to outcome 2.
-- **Insufficient USDH:** pre-checked before order send → `INSUFFICIENT_BALANCE` with "bridge USDC→USDH" remediation. Resolves the user address through the OWS-stored agent meta when no master pk is configured.
-- **Venue rejection:** HL returns HTTP 200 with `statuses[0].error` even when an order is rejected; the adapter throws `EXCHANGE_ERROR` so a "placed" success message never masks a failure.
+- **Insufficient quote token:** pre-checked before order send → `INSUFFICIENT_BALANCE` (hold the outcome's quote token on Hyperliquid spot).
+- **Venue rejection:** HL returns HTTP 200 with `statuses[0].error` even when an order is rejected; the CLI raises `ORDER_REJECTED` (or `INSUFFICIENT_BALANCE`) so a "placed" message never masks a failure.
 
 ### Agent workflow recommendation
 
@@ -155,7 +167,7 @@ Encoding formula: `enc = 10 * outcome + side`; asset id = `100,000,000 + enc`.
 2. perp --json outcome view <outcome>             # full snapshot: both books +
                                                   # underlying mark + gap vs target +
                                                   # implied probabilities + time to expiry
-3. perp --json outcome buy <outcome> <side> <usd> --dry-run
+3. perp --json --dry-run outcome buy <outcome> <side> <usd>
                                                   # validate notional, get user approval
 4. perp --json outcome buy <outcome> <side> <usd> [--limit <px>] [--tif ...]
                                                   # execute (only after explicit user OK)
@@ -164,7 +176,7 @@ Encoding formula: `enc = 10 * outcome + side`; asset id = `100,000,000 + enc`.
 
 `outcome view` replaces the old multi-call pattern (separate `book` + `market mid` lookups). One round-trip returns everything an agent needs to decide direction.
 
-Settlement at `expiryMs` is venue-side: winning side → 1 USDH per share, losing → 0. Decide before expiry whether to self-close or let the venue settle.
+Settlement at `expiryMs` is venue-side: winning side → 1 quote token per share, losing → 0. Decide before expiry whether to self-close or let the venue settle.
 
 ## Funds (deposit, withdraw, transfer, bridge, rebalance)
 
@@ -177,10 +189,24 @@ perp --json funds deposit hyperliquid <AMOUNT>
 perp --json funds deposit lighter ethereum <AMOUNT>         # L1 direct (min 1 USDC)
 perp --json funds deposit lighter cctp arbitrum <AMOUNT>    # CCTP (min 5 USDC)
 perp --json funds deposit lighter info                      # all Lighter deposit routes
-perp --json funds withdraw pacifica <AMOUNT>
-perp --json funds withdraw hyperliquid <AMOUNT>
-perp --json funds withdraw lighter <AMOUNT>
-perp --json funds transfer <AMOUNT> <ADDRESS>               # HL internal transfer (instant)
+perp --json funds withdraw pacifica <AMOUNT>              # to your own Solana wallet
+perp --json funds withdraw hyperliquid <AMOUNT> [--chain arbitrum|ethereum|base] [--to <allowlisted addr>]
+#   CCTP (native USDC) to your wallet (default arbitrum; 0.2 USDC forwarding fee on Arbitrum).
+#   --to another address only if it is on settings withdraw.hyperliquid (else POLICY_DENIED).
+perp --json funds withdraw lighter <AMOUNT>                 # -e lighter: USDC → Ethereum; -e lighter-rh: USDG → Robinhood Chain
+perp --json funds deposit lighter-rh <AMOUNT>               # USDG on Robinhood Chain (min 1, mainnet only)
+perp --json funds withdraw ondo <AMOUNT> --to <ADDRESS>     # USDC → Ethereum (address-book destination)
+perp --json funds withdraw arcus <AMOUNT>                   # USDG → the account owner (min 1)
+perp --json funds deposit qfex                              # prints the USDC / Arbitrum One deposit address (sends nothing)
+perp --json --dry-run funds withdraw qfex <AMOUNT> --to <0x>  # plan + local gate verdict (settings withdraw.qfex; user-only, terminal)
+perp --json -e qfex funds transfer <AMOUNT> primary --from <account-uuid>   # between your QFEX accounts
+perp --json funds deposit aster <AMOUNT> [--chain bsc|arbitrum] [--asset USDT|USDC]   # vault approve + deposit (mainnet; default BNB Chain USDT)
+perp --json funds withdraw aster <AMOUNT> [--chain bsc|arbitrum] [--asset USDT|USDC]   # → the account's own address (default USDT; mainnet; agent approved with --can-withdraw --ip-whitelist)
+perp --json funds deposit ondo <AMOUNT> [--chain arbitrum|ethereum] [--probe <AMT>]   # USDC transfer to the account's funding address (mainnet)
+perp --json funds address-book add ondo <MASTER_ADDRESS>    # SIWE challenge → Ondo withdrawal address book (own address only)
+perp --json funds transfer <AMOUNT> <ADDRESS>               # HL internal transfer (instant); destination must be on settings withdraw.hyperliquid
+# settings withdraw.<venue> (allowlist + limits) is set ONLY by the user in an interactive terminal
+# (--json / piped → POLICY_DENIED). Agents never set or change it.
 perp --json funds info                                      # combined routes & limits
 ```
 
@@ -189,18 +215,29 @@ perp --json funds info                                      # combined routes & 
 perp --json funds bridge chains                             # supported chains
 perp --json funds bridge quote --from <CHAIN> --to <CHAIN> --amount <AMT>
 perp --json funds bridge send --from <CHAIN> --to <CHAIN> --amount <AMT>
-perp --json funds bridge send --from <CHAIN> --to <CHAIN> --amount <AMT> --provider cctp
-perp --json funds bridge exchange --from <EX> --to <EX> --amount <AMT>   # between exchanges
+perp --json funds bridge send --from <CHAIN> --to <CHAIN> --amount <AMT> --provider cctp [--fast]
+#   exactly --amount leaves the wallet; deBridge nativeFee (ETH/SOL) is shown separately;
+#   Solana-origin deBridge → NO_BRIDGE_ROUTE (use --provider cctp)
+# Relay swaps (chains: robinhood, arbitrum, bsc, base, solana as destination; EVM origin; OWS master signs; recipient = your own address)
+perp --json --dry-run funds bridge send --from robinhood --to arbitrum --from-asset USDG --to-asset USDC --amount <AMT>   # verified quote only
+perp --json funds bridge send --from robinhood --to solana --from-asset USDG --to-asset SOL --amount <AMT> --min-out <SOL>  # stable → native needs --min-out
+perp --json funds bridge send --from arbitrum --to robinhood --from-asset ETH --to-asset ETH --amount <ETH>                # native gas to Robinhood Chain
+perp --json funds bridge exchange --from <EX> --to <EX> --amount <AMT>   # pacifica|hyperliquid|lighter
+#   wallet → wallet: bridges the master's OWN USDC between the venues' chains (pacifica → solana,
+#   lighter → arbitrum); no venue withdraw/deposit. hyperliquid: --from spends HyperCore spot USDC,
+#   --to credits HyperCore perps. HyperCore → Solana → NO_BRIDGE_ROUTE.
 perp --json funds bridge status <ORDER_ID>
 ```
 
-### Inter-exchange rebalance (orchestrated withdraw → bridge → deposit)
+### Inter-exchange rebalance (withdraw → bridge; deposit is manual)
 ```bash
 perp --json funds rebalance check                            # balances across exchanges
 perp --json funds rebalance plan                             # compute optimal moves
-perp --json funds rebalance execute --auto-bridge            # withdraw → bridge → deposit
+perp --json --dry-run funds rebalance execute --auto-bridge  # status "simulated" (moves[].status "dry_run") or "balanced"
+perp --json funds rebalance execute --auto-bridge            # withdraw → bridge only (NO deposit)
 perp --json funds rebalance execute --withdraw-only          # only withdraw, manual rest
 ```
+`ok:true` even if a move failed — check every `moves[].status`: `withdrawn` | `bridged` | `same_chain` | `needs_bridge` | `withdraw_failed` | `bridge_failed`. Then deposit by hand after arrival (`funds deposit <venue> <amt>`).
 
 ## Arbitrage
 
@@ -220,46 +257,51 @@ perp --json arb scan --compare <SYMBOL>                     # compare a symbol a
 perp --json arb scan --positions                            # position funding impact
 perp --json arb scan --live --interval 60                   # continuous monitoring
 perp --json arb scan --top 10 --hold-days 7 --bridge-cost 0 --size 100  # cost-aware filtering
+perp --json arb scan --rates --include-unverified           # also show QFEX (unverified funding; display only, never ranked)
+# netSpread / grossSpread = annualized % (netSpread = gross minus round-trip costs amortized over --hold-days)
+# spot-perp rows: netSpreadPct / grossSpreadPct, spotExchanges[], perpExchange, direction
 
-# Execute (perp-perp or spot+perp via spot:<exch> prefix)
+# Execute (perp-perp or spot+perp via spot:<venue>; spot venues: hl, lt, lrh, aster, ondo)
+# Sequential: long first, then the short sized to the verified long fill; reconcile always on;
+# an unconfirmed leg quarantines the symbol. Supports --dry-run.
 perp --json arb exec <SYM> <longEx> <shortEx> <USD>         # perp-perp dual-leg entry
 perp --json arb exec <SYM> spot:hl hl <USD>                 # spot+perp via HL spot
 perp --json arb exec <SYM> spot:lt pac <USD>                # spot+perp via LT spot
 perp --json arb exec <SYM> <longEx> <shortEx> <USD> \
-   --leverage 2 --isolated --smart --reconcile --max-slippage 0.5
+   --leverage 2 --isolated --smart --max-slippage 0.5
 
 # Close
 perp --json arb close <SYM>                                  # close perp-perp arb
 perp --json arb close <SYM> --pair <longEx>:<shortEx>       # disambiguate by pair
 perp --json arb close <SYM> --spot-exch hl --perp-exch hl   # close spot+perp legs
 perp --json arb close <SYM> --smart                         # IOC limits at best price
+perp --json arb close <SYM> --force                         # quarantined symbol — only after the user checked positions
+perp --json arb close <SYM> --state-only --yes              # drop a stale state entry (no order sent)
 
 # Status / history / config / rebalance
-perp --json arb status                                      # open arb positions + PnL + funding earned
+perp --json arb status                                      # open arb positions + PnL + funding; check unconfirmedPairs, staleStateEntries
 perp --json arb status --period 7 --symbol BTC              # filter funding lookback / symbol
 perp --json arb history                                     # alias: arb log
 perp --json arb history --period 30                         # past arb trade performance
 perp --json arb config                                      # show arb defaults
-perp --json arb rebalance --check                           # cross-exchange balance distribution
-perp --json arb rebalance --target 50:50 --amount 1000 --dry-run
+perp --json arb rebalance --check                           # cross-exchange balance distribution (read-only)
+perp --json arb rebalance --target 50:50 --amount 1000      # plan only; execute with funds rebalance execute
 
 # Auto-execute daemon
 perp --json arb auto --min-spread 30 --close-spread 5 --size 100 --max-positions 5
 perp --json arb auto --background                           # tmux session
 perp --json arb auto --hip3 --min-oi 50000 --min-grade C    # HIP-3 mode
-perp --json arb auto --dry-run                              # simulate
+perp --json --dry-run arb auto                              # simulate (--background inherits it)
 ```
 
 ## Wallet Management
 ```bash
 perp --json wallet generate evm                # generate EVM wallet
 perp --json wallet generate solana             # generate Solana wallet
-perp --json wallet import [privateKey]         # import an existing key
-perp --json wallet set hl <KEY>                # set Hyperliquid key
-perp --json wallet set pac <KEY>               # set Pacifica key
-perp --json wallet set lt <KEY>                # set Lighter key (auto-generates API key)
-perp --json wallet set aster <API_KEY>         # set Aster API key
-perp --json wallet set hl <KEY> --default      # set + make default exchange
+printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet import --name <n> [--chain evm|solana|dual] [--mnemonic]   # import a key (stdin / hidden prompt; argv key, --evm/--solana <key>, --legacy rejected)
+printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set hl   # import key (stdin / hidden prompt; argv key rejected) into OWS vault → active wallet
+perp --json wallet set pac --name pac          # Solana key, hidden prompt (TTY)
+perp --json wallet set hl --default            # also make hyperliquid the default exchange
 perp --json wallet show                        # public addresses for active wallet
 perp --json wallet list                        # all named wallets
 perp --json wallet use <name>                  # set active wallet
@@ -269,42 +311,85 @@ perp --json wallet balance                     # on-chain USDC balances
 perp --json wallet solana <address>            # check arbitrary Solana address
 perp --json wallet arbitrum <address>          # check arbitrary Arbitrum address
 perp --json wallet migrate                     # migrate legacy ~/.perp/.env config
-perp --json wallet rotate                      # rotate keys + transfer assets
+perp --json wallet rotate --from <name> --to <name> [--chain evm]   # MUTATING: new wallet + transfers assets; no --dry-run — only on explicit user request
 perp --json wallet backup                      # encrypted backup
 perp --json wallet restore <file>              # restore from backup
-perp --json wallet deposit <walletName>        # deposit prompt for a stored wallet
-perp --json wallet setup                       # **interactive — DO NOT use from agent**
+perp --json wallet deposit <walletName> [--for <ex>|-c <chain>]   # MoonPay multi-chain deposit (auto-converts to USDC)
+perp --json wallet setup --name <n> --max-tx-usd <usd> --max-daily-usd <usd> [--skip-key]
+                                               # one-click: wallet + policy + agent key.
+                                               # Passphrase prompt unless OWS_PASSPHRASE env is set.
 ```
 
 ### Agent wallet (DEX-side delegation)
 ```bash
-perp --json wallet agent approve <exchange> [--master <name>] [--api-key-index <n>]
-perp --json wallet agent list [exchange]
-perp --json wallet agent revoke <exchange> <agentName>
+# Register an agent (master-signed: user consent; passphrase via OWS_PASSPHRASE / stdin; no --dry-run).
+# Default expires-in is 90d — then AGENT_EXPIRED; pass --expires-in 1y / 180d / etc to extend.
+perp --json wallet agent approve <exchange> \
+  [--master <name>] \
+  [--agent-name <name>] \
+  [--expires-in 30d|90d|180d|1y|<ISO-8601>] \
+  [--can-perp|--no-perp] [--can-spot|--no-spot] [--can-withdraw|--no-withdraw] \
+  [--rotate] \
+  [--ip-whitelist <list>] \
+  [--account-index <0-9|255>]          # Arcus subaccount
+  [--api-key-index <n>]                # Lighter slot 4-254 (default: first slot free locally AND on-chain)
+  [--force]                            # Lighter: overwrite an --api-key-index slot that already holds an on-chain key
+
+# Import a key the USER created on the exchange WEBSITE (master wallet not needed here).
+# Key on stdin only (one line; ondo: key id + secret; qfex: public key + secret) — an argv key is rejected (INVALID_PARAMS).
+# Verified against the venue before storing (refused → nothing stored); pacifica → "unverified".
+printf '%s' "$AGENT_KEY" | perp --json wallet agent import <exchange> \
+  [--master-address <addr>]            # aster / pacifica / arcus: required; hyperliquid / lighter: cross-check
+  [--account-index <n>] [--api-key-index <n>]   # lighter / lighter-rh: required (arcus: optional cross-check)
+  [--account-id <uuid>]                # qfex: the account the key trades (default primary; required when piped — it confirms the binding)
+  [--agent-name <name>] [--expires-in <dur>] [--replace]
+# → data: { source: "imported", masterAddress, agentAddress|publicKey, accountIndex, apiKeyIndex,
+#           expiresAt|null, storage, verification: { status: "verified"|"unverified", method } }
+
+perp --json wallet agent list [exchange]          # rows carry source: "approved" | "imported"
+perp --json wallet agent revoke <exchange> <agentName> [--local-only]
+#   imported key: refused unless --local-only (deletes local key + record; still authorized on the
+#   exchange — revoke it on the website). --local-only on an approved agent = --force.
 perp --json wallet agent rotate <exchange> [oldAgentName]
-perp --json wallet agent verify [exchange] [agentName]
+#   imported key: refused — create a new key on the website, then import --agent-name <name> --replace
+# verify: --master (Aster/PAC; passphrase via OWS_PASSPHRASE) / --master-address (HL only) / --account-index (Lighter only).
+# Aster: NOT_IMPLEMENTED (no venue endpoint lists agents) — use wallet agent list aster.
+perp --json wallet agent verify [exchange] [agentName] \
+  [--master <name>] [--master-address <addr>] [--account-index <n>]
+```
+
+### Builder fees (`wallet builder`) — OFF by default
+```bash
+# Nothing is attached unless the user configures it explicitly (strict: format, cap, increment):
+perp --json settings set builder.<venue> <address|code>,<feeBps> --yes   # hyperliquid/aster: address; pacifica/ondo: code; --yes required non-interactively
+perp --json settings unset builder.<venue>
+perp --json wallet builder status [venue]           # support, config, venue approval, attaches?
+perp --json [--dry-run] wallet builder approve <venue> [--master <name>] [--yes]   # master-signed; y/N or --yes
+perp --json [--dry-run] wallet builder revoke <venue> [--master <name>] [--yes]    # pacifica / aster
+perp --json --no-builder -e <EX> trade market BTC buy 0.1   # never attach on this run
+# Caps: hyperliquid 10 bps (never HIP-3), pacifica 10 bps max (perp-cli cap; never spot), aster 10 bps (mainnet),
+# ondo 10 bps (no approval; also on position stops). lighter / lighter-rh / arcus → CAPABILITY_UNSUPPORTED.
+# Approval missing/unknown → order sent WITHOUT the fee; execution.notes says why. execution.builderFee records it.
+# No master on this computer → NO_SIGNER_AVAILABLE: approve on the venue website.
 ```
 
 ### Exchange settings (`wallet manage`)
 ```bash
-perp --json wallet manage margin <SYMBOL> <cross|isolated>
-perp --json wallet manage withdraw <amount> <address>          # generic on-exchange withdraw
-perp --json wallet manage account-mode [standard|big-blocks]   # Hyperliquid only
-perp --json wallet manage sub create <name>
+perp --json -e <EX> wallet manage margin <SYMBOL> <cross|isolated>
+perp --json wallet manage account-mode [unified|standard|portfolio]   # Hyperliquid only; no arg = show current
+perp --json wallet manage sub create <name>            # not supported (CAPABILITY_UNSUPPORTED): the subaccount wallet must co-sign — use the web app
 perp --json wallet manage sub list
-perp --json wallet manage sub transfer <from> <to> <amount>
-perp --json wallet manage lake create <symbol> <amount>
-perp --json wallet manage lake deposit <lakeId> <amount>
-perp --json wallet manage lake withdraw <lakeId> <amount>
-perp --json wallet manage builder approve <code> <maxFeeRate>
-perp --json wallet manage builder revoke <code>
-perp --json wallet manage builder list
-perp --json wallet manage builder overview
+perp --json wallet manage sub transfer <from> <to> <amount>   # <from> must be the signing account
+perp --json wallet manage lake create [--manager <address>] [--nickname <name>] [--initial-deposit <amount>]
+perp --json wallet manage lake deposit <lake> <amount>       # <lake> = vault address
+perp --json wallet manage lake withdraw <lake> <shares>      # shares to redeem, not USDC
+perp --json wallet manage builder overview                    # Pacifica builder-OWNER tools only (user approvals: wallet builder)
 perp --json wallet manage builder trades <code>
 perp --json wallet manage builder leaderboard <code>
 perp --json wallet manage builder update-fee <code> <feeRate>
 perp --json wallet manage referral claim <code>               # Pacifica
-perp --json wallet manage apikey create <name> <maxFeeRate>
+perp --json -e hyperliquid wallet manage referral set [code]  # HL / Lighter (-e lighter): signs + sends one referral action; supports --dry-run
+perp --json wallet manage apikey create
 perp --json wallet manage apikey list
 perp --json wallet manage apikey revoke <key>
 ```
@@ -323,20 +408,21 @@ perp --json wallet policy delete <id>
 ## Risk & Analytics
 ```bash
 perp --json risk status                        # portfolio risk overview (level, violations, canTrade)
-perp --json risk health                        # health-check summary
+perp --json health                             # adapter health: ping venue REST endpoints (connectivity + latency)
 perp --json risk liquidation-distance          # % distance from liquidation for ALL positions
 perp --json risk limits                        # view current risk limits
-perp --json risk limits --min-liq-distance 30 --max-leverage 5  # set risk limits
+perp --json risk limits --min-liq-distance 30 --max-leverage 5  # set risk limits (also --max-position[-pct], --max-exposure[-pct], --max-positions, --daily-loss[-pct], --max-drawdown[-pct], --max-margin, --reset)
+# The order gate (trade market/buy/sell/limit/split/scale-in/twap/multi, stop --no-reduce-only) enforces
+# max position / total exposure / max positions; reduce-only exempt; --force bypasses (user consent only).
 perp --json risk check --notional 1000 --leverage 3             # pre-trade risk check
 ```
 
 ## History (execution log + analytics)
 ```bash
 perp --json history list                       # execution audit trail
-perp --json history stats                      # aggregated execution stats
 perp --json history positions                  # position lifetime tracking
 perp --json history prune                      # purge old entries
-perp --json history summary                    # trading performance summary
+perp --json history summary                    # trading performance summary (replaces former 'stats')
 perp --json history pnl                        # P&L breakdown by exchange
 perp --json history funding                    # funding payment aggregation
 perp --json history report                     # full performance report (summary + pnl + funding)
@@ -351,27 +437,35 @@ perp --json history perf --period summary      # performance summary stats
 ## Strategies (`perp strategy` — 20 algorithms + nested scripted plans)
 ```bash
 perp --json strategy list-strategies                         # list all 20 strategies
-perp --json strategy run <STRATEGY> [SYMBOL]                 # run any registered strategy
+perp --json strategy run <STRATEGY> [SYMBOL] [--exchanges <list>]   # multi-venue strategies: --exchanges must include the -e venue
+perp --json --dry-run strategy run <STRATEGY> [SYMBOL]       # simulate (actions logged, never sent)
 perp --json strategy run funding-auto                        # multi-exchange funding arb
 perp --json strategy apex [SYMBOL]                           # APEX orchestrator
 perp --json strategy reflect                                 # performance analysis
 perp --json strategy preset-list
-perp --json strategy preset <NAME> [SYMBOL]
+perp --json strategy preset <NAME> [SYMBOL] [--size <n>]   # grid: total base; DCA: base per order; arb: $ per leg
 perp --json strategy start <CONFIG.yaml>                     # YAML/JSON config-driven
 perp --json strategy quick-grid <SYMBOL>
-perp --json strategy quick-dca <SYMBOL> <SIDE> <AMOUNT> <INTERVAL>
+perp --json strategy quick-dca <SYMBOL> <SIDE> <AMOUNT> <INTERVAL_SEC> [--orders <n>]   # 0 = unlimited
 perp --json strategy quick-arb
 perp --json strategy delta-neutral
 perp --json strategy twap <SYMBOL> <SIDE> <SIZE> <DURATION>
-perp --json strategy grid <SYMBOL> --range <PCT> --grids <N> --size <USD>
+perp --json strategy grid <SYMBOL> --upper <PRICE> --lower <PRICE> --grids <N> --size <BASE> [--close-on-stop]
+#   at stop: orders cancelled; the grid's inventory stays OPEN (warning) unless --close-on-stop
 perp --json strategy dca <SYMBOL> <SIDE> <AMOUNT> <INTERVAL>
 perp --json strategy trailing-stop <SYMBOL>
-perp --json strategy funding-arb                             # legacy alias for run funding-arb
+perp --json strategy funding-arb [--auto-execute]           # monitor only unless --auto-execute
+
+# Quarantine (unknown / unhedged outcome): global per symbol, network-scoped; blocks opening orders,
+# arb exec / arb auto and bots (reduce-only passes). Clear only after the USER verified positions.
+perp --json strategy quarantine
+perp --json strategy quarantine-clear <SYMBOL> [--strategy <source>]
 
 # Scripted execution plans (one-shot multi-step)
 perp --json strategy plan example
 perp --json strategy plan validate <FILE>
-perp --json strategy plan execute <FILE> --dry-run
+perp --json --dry-run strategy plan execute <FILE>
+# No --dry-run (refused with INVALID_PARAMS): strategy start / preset / quick-* / grid / dca / twap / funding-arb / apex
 ```
 
 ### Available Strategies (20)
@@ -384,7 +478,7 @@ perp --json strategy plan execute <FILE> --dry-run
 ## Background Process Supervisor (tmux)
 ```bash
 perp --json background list                   # list running jobs (default subcommand)
-perp --json background stop <ID>              # stop a job
+perp --json background stop <ID> [--timeout <sec>]   # graceful: SIGINT (job cancels its orders, saves state), waits (default 90s), then kills; reports what is left on the venue
 perp --json background logs <ID>              # view logs (use -f to follow)
 perp --json background remove <ID>            # remove a job entry
 perp --json background clean                  # purge all stopped/done jobs
@@ -400,10 +494,10 @@ perp --json backtest grid                     # backtest grid strategy
 ```bash
 perp alerts setup                             # interactive setup wizard
 perp --json alerts test                       # send test message
-perp --json alerts add <SYMBOL> <PCT>         # add alert rule
-perp --json alerts add --all <PCT>            # alert for any symbol > N%
+perp --json alerts add <SYMBOL> <PCT> [--exchange <venue>] [--below]   # annual funding % threshold (default: above)
+perp --json alerts add --all <PCT>            # alert for any symbol
 perp --json alerts list                       # list active rules
-perp --json alerts remove <ID>                # remove a rule
+perp --json alerts remove <SYMBOL|all>        # remove a rule
 perp alerts start [--background]              # run daemon (tmux for background)
 perp alerts stop                              # stop background daemon
 ```
@@ -412,19 +506,43 @@ perp alerts stop                              # stop background daemon
 ```bash
 perp --json settings show                     # show current CLI settings
 perp --json settings set <key> <value>        # set a CLI default
-perp --json settings referrals on|off         # toggle referral codes
+#   keys: default-exchange, defaultSlippageBps, slippageBps.<venue>, referralCodes.{hyperliquid,lighter},
+#         builder.<venue> "<address|code>,<feeBps>" (off unless set), bridge.debridgeAffiliate.{referralCode,fee}
+perp --json settings unset <key>              # slippageBps.<venue> | defaultSlippageBps | builder.<venue> | withdraw.<venue> | bridge.debridgeAffiliate
+# withdraw.<venue> (withdraw / HL transfer allowlist + limits): USER ONLY, interactive terminal; agents never set it (POLICY_DENIED)
 perp --json settings fees show                # cached exchange fee table
 perp --json settings fees sync                # refresh fee cache
 perp --json settings env show                 # show ~/.perp/.env values
-perp --json settings env set <name> <value>
+perp --json settings env set <name> <value>   # non-secret values only (keys / *_PRIVATE_KEY / secrets → INVALID_PARAMS; use wallet set)
 perp --json settings env remove <name>
 perp --json settings env path                 # config file path
 ```
 
 ## Init / Setup
 ```bash
-perp init                                     # interactive — DO NOT use from agent
-perp setup                                    # alias for init — DO NOT use from agent
+# Interactive default — DO NOT use from agent without flags (will hang on prompts).
+perp setup                                    # alias: perp init
+perp init
+
+# Agent-safe non-interactive variant (writes settings; signs nothing by default):
+OWS_PASSPHRASE=<pp> perp --json [-n testnet] setup --non-interactive \
+  (--wallet <existing-ows-wallet> | --wallet-name <new-name>) \
+  [--venues <list>] [--default-venue <venue>] \
+  [--slippage-bps <n>] [--slippage <venue>=<bps> ...]
+# Agent registration (signs with the master wallet — get user consent first):
+#   --approve-agents --yes [--aster-can-spot] [--lighter-api-key-index <n>]
+#   [--lighter-rh-api-key-index <n>] [--arcus-account-index <0-9|255>]
+#   [--ondo-secret-stdin]   # Ondo key id + secret as 2 stdin lines; passphrase then via OWS_PASSPHRASE
+# Keys created on the exchange WEBSITES (no master wallet needed when every venue is imported —
+# then omit --wallet / --wallet-name; owsActiveWallet is left unchanged):
+#   --import-agents <venues> --yes   # subset of --venues; keys on stdin, ONE LINE PER VENUE IN THIS ORDER
+#                                    # (ondo: 2 lines — key id, then secret; qfex: 2 lines — public key, then secret)
+#   [--master-address <venue>=<addr> ...]   # required for aster, pacifica, arcus
+#   [--allow-unverified pacifica]           # required for pacifica (no read-only check exists)
+#   [--qfex-account-id <uuid>]              # required for qfex (confirms the bound account)
+#   [--lighter-account-index <n>] [--lighter-api-key-index <n>]
+#   [--lighter-rh-account-index <n>] [--lighter-rh-api-key-index <n>] [--arcus-account-index <n>]
+#   agents[] entries: { venue, status: "imported", agentName, verification }
 ```
 
-Use `perp wallet set <ex> <key>` instead — non-interactive and agent-safe.
+For per-exchange key registration without the wizard, use `printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp wallet set <ex>` — also agent-safe (key on stdin, never argv).

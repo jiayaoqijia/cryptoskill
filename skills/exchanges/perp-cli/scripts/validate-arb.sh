@@ -14,6 +14,11 @@ else
   PERP="npx -y perp-cli@latest"
 fi
 
+# perp exits 1 on {"ok":false} and prints exactly one JSON document: capture it as-is
+# (never append a fallback document); empty output (crash / not installed) → {"ok":false}.
+pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false}'; fi; }
+isok() { jq -e '.ok == true' >/dev/null 2>&1 <<<"$1"; }
+
 SYM="${1:?Usage: validate-arb.sh <SYMBOL> <LONG_EX> <SHORT_EX> <SIZE_USD> [--leverage N]}"
 LONG_EX="${2:?Usage: validate-arb.sh <SYMBOL> <LONG_EX> <SHORT_EX> <SIZE_USD>}"
 SHORT_EX="${3:?Usage: validate-arb.sh <SYMBOL> <LONG_EX> <SHORT_EX> <SIZE_USD>}"
@@ -34,12 +39,22 @@ pass=true
 add_result() {
   local name="$1" ok="$2" detail="$3"
   checks+=("{\"check\":\"$name\",\"ok\":$ok,\"detail\":\"$detail\"}")
-  [[ "$ok" == "false" ]] && pass=false
+  if [[ "$ok" == "false" ]]; then pass=false; fi
+}
+
+# Venue of the long leg (spot:<venue> → <venue>) for the per-venue reads below
+LONG_VENUE="${LONG_EX#spot:}"
+# portfolio -e accepts only full venue ids (no aliases)
+venue_id() {
+  case "$1" in
+    pac) echo pacifica ;; hl) echo hyperliquid ;; lt) echo lighter ;; lrh|rh) echo lighter-rh ;;
+    ast) echo aster ;; ondo-perps) echo ondo ;; qf) echo qfex ;; *) echo "$1" ;;
+  esac
 }
 
 # 1. Price comparison — both exchanges must report similar prices
-LONG_PRICE=$($PERP --json -e "$LONG_EX" market mid "$SYM" 2>/dev/null | jq -r '.data.mid // "0"')
-SHORT_PRICE=$($PERP --json -e "$SHORT_EX" market mid "$SYM" 2>/dev/null | jq -r '.data.mid // "0"')
+LONG_PRICE=$(pj --json -e "$LONG_VENUE" market mid "$SYM" | jq -r '.data.mid // "0"' 2>/dev/null || echo 0)
+SHORT_PRICE=$(pj --json -e "$SHORT_EX" market mid "$SYM" | jq -r '.data.mid // "0"' 2>/dev/null || echo 0)
 
 if [[ "$LONG_PRICE" == "0" || "$SHORT_PRICE" == "0" ]]; then
   add_result "price" "false" "Cannot fetch price: long=$LONG_PRICE short=$SHORT_PRICE"
@@ -54,8 +69,8 @@ else
 fi
 
 # 2. Balance check on both exchanges
-LONG_BAL=$($PERP --json -e "$LONG_EX" account balance 2>/dev/null | jq -r '.data.available // .data.equity // "0"')
-SHORT_BAL=$($PERP --json -e "$SHORT_EX" account balance 2>/dev/null | jq -r '.data.available // .data.equity // "0"')
+LONG_BAL=$(pj --json portfolio -e "$(venue_id "$LONG_VENUE")" | jq -r '.data.exchanges[0].perp.available // .data.exchanges[0].perp.equity // "0"' 2>/dev/null || echo 0)
+SHORT_BAL=$(pj --json portfolio -e "$(venue_id "$SHORT_EX")" | jq -r '.data.exchanges[0].perp.available // .data.exchanges[0].perp.equity // "0"' 2>/dev/null || echo 0)
 
 NEEDED=$(echo "$SIZE" | awk '{print $1}')
 if (( $(echo "$LONG_BAL < $NEEDED" | bc -l 2>/dev/null || echo 1) )); then
@@ -70,31 +85,32 @@ else
 fi
 
 # 3. Market info (symbol availability)
-LONG_INFO=$($PERP --json -e "$LONG_EX" market info "$SYM" 2>/dev/null || echo '{"ok":false}')
-SHORT_INFO=$($PERP --json -e "$SHORT_EX" market info "$SYM" 2>/dev/null || echo '{"ok":false}')
+LONG_INFO=$(pj --json -e "$LONG_VENUE" market info "$SYM")
+SHORT_INFO=$(pj --json -e "$SHORT_EX" market info "$SYM")
 
-if echo "$LONG_INFO" | grep -q '"ok":true' && echo "$SHORT_INFO" | grep -q '"ok":true'; then
+if isok "$LONG_INFO" && isok "$SHORT_INFO"; then
   add_result "market_info" "true" "Both exchanges support $SYM"
 else
   add_result "market_info" "false" "Symbol $SYM not available on one or both exchanges"
 fi
 
-# 4. Risk pre-check
+# 4. Risk pre-check (risk check requires --leverage; default 1x when not given)
 LEV_FLAG=""
 [[ -n "$LEVERAGE" ]] && LEV_FLAG="--leverage $LEVERAGE"
-RISK_CHECK=$($PERP --json risk check --notional "$SIZE" $LEV_FLAG 2>/dev/null || echo '{"ok":false}')
-if echo "$RISK_CHECK" | grep -q '"ok":true'; then
+RISK_CHECK=$(pj --json risk check --notional "$SIZE" --leverage "${LEVERAGE:-1}")
+if isok "$RISK_CHECK" && [[ "$(jq -r '.data.allowed' <<<"$RISK_CHECK" 2>/dev/null || true)" == "true" ]]; then
   add_result "risk" "true" "Within risk limits"
 else
-  add_result "risk" "false" "Risk check failed — review risk limits"
+  RISK_WHY=$(jq -r '.data.reason // .error.code // "unknown"' <<<"$RISK_CHECK" 2>/dev/null || echo unknown)
+  add_result "risk" "false" "Risk check failed: $RISK_WHY"
 fi
 
 # 5. Dry-run
-DRY_RUN=$($PERP --json --dry-run arb exec "$SYM" "$LONG_EX" "$SHORT_EX" "$SIZE" $LEV_FLAG 2>/dev/null || echo '{"ok":false}')
-if echo "$DRY_RUN" | grep -q '"ok":true'; then
+DRY_RUN=$(pj --json --dry-run arb exec "$SYM" "$LONG_EX" "$SHORT_EX" "$SIZE" $LEV_FLAG)
+if isok "$DRY_RUN"; then
   add_result "dry_run" "true" "Dry-run succeeded"
 else
-  DRY_ERR=$(echo "$DRY_RUN" | jq -r '.error.message // .error // "unknown"' 2>/dev/null)
+  DRY_ERR=$(jq -r '.error.code // "unknown"' <<<"$DRY_RUN" 2>/dev/null || echo unknown)
   add_result "dry_run" "false" "Dry-run failed: $DRY_ERR"
 fi
 
