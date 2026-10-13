@@ -11,7 +11,8 @@ description: |
 # dexe-otc
 
 An OTC DAO sells its own token via on-chain `TokenSaleProposal` tiers. Each step
-is one MCP call; calldata auto-broadcasts when `DEXE_PRIVATE_KEY` is set.
+is one MCP call; calldata broadcasts when a signer is connected (WalletConnect,
+keystore, or `DEXE_SIGNER_MODE=unattended` + `DEXE_PRIVATE_KEY`).
 Validate on **BSC testnet (chain 97)** first. Full recipe + runnable proof:
 `docs/OTC.md` and `scripts/lifecycle-otc.mjs`.
 

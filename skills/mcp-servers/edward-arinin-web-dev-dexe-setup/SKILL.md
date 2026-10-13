@@ -162,8 +162,8 @@ If the user wants signing beyond phone-approval WalletConnect, walk this ladder
    > can drain that wallet. Are you sure you don't want WalletConnect (already
    > available) or the encrypted keystore instead?
 5. Refuse to proceed to a hot key without an explicit "yes" confirming the
-   trade-off, and always write `DEXE_SIGNER_MODE=unattended` with it (an unset
-   mode is a deprecated default).
+   trade-off, and always write `DEXE_SIGNER_MODE=unattended` with it (with the
+   mode unset, a hot key is ignored).
 
 ## .env precedence trap
 

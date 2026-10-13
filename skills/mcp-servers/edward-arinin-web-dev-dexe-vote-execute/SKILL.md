@@ -10,8 +10,9 @@ description: |
 # dexe-vote-execute
 
 `dexe_proposal_vote_and_execute` reads proposal state, optionally deposits,
-votes, and (when `autoExecute`) executes once the proposal succeeds. With
-`DEXE_PRIVATE_KEY` it broadcasts; otherwise it returns ordered `TxPayload`s.
+votes, and (when `autoExecute`) executes once the proposal succeeds. With a
+signer (WalletConnect, keystore, or an unattended hot key) it broadcasts;
+otherwise it returns ordered `TxPayload`s.
 
 ## Recipe
 

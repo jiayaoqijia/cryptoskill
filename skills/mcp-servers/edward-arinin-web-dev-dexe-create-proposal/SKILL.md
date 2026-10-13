@@ -13,8 +13,9 @@ description: |
 `dexe_proposal_create` builds a governance proposal in **one call**: it checks
 token balance, approves the **UserKeeper** (not GovPool), deposits, uploads IPFS
 metadata with the correct `{proposalName, proposalDescription, category, isMeta,
-changes}` shape, and calls `createProposalAndVote`. With `DEXE_PRIVATE_KEY` it
-signs+broadcasts; otherwise it returns ordered `TxPayload`s.
+changes}` shape, and calls `createProposalAndVote`. With a signer (WalletConnect,
+keystore, or an unattended hot key) it broadcasts; otherwise it returns ordered
+`TxPayload`s.
 
 If you don't already know the target `govPool`/chain, call **`dexe_context`** —
 it returns the active chain and the DAOs/proposals from prior sessions

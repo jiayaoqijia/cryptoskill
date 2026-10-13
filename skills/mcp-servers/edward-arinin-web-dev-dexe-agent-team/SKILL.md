@@ -52,6 +52,8 @@ budget is **not armed by default on a faucet testnet** (97): set
 ## 1. Configure (`.env`, then restart)
 
 ```bash
+DEXE_SIGNER_MODE=unattended      # the keyring loads in this mode only (since 1.0.0)
+DEXE_UNATTENDED_CHAINS=97        # where it may sign; add 56 deliberately
 DEXE_AGENT_PK_1=0x…        # → signerKey "agent1"   (alias AGENT_PK_1)
 DEXE_AGENT_PK_2=0x…
 DEXE_AGENT_FUNDER_PK=0x…   # → signerKey "funder"   (alias AGENT_FUNDER_PK)

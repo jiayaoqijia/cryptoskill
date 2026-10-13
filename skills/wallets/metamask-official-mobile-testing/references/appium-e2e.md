@@ -26,6 +26,9 @@ Live source of truth in the mobile repo (read these when details change):
 3. Prefer shared `Gestures` / `Assertions` / `Matchers` — avoid
    raw `device.*` calls.
 4. POM methods must **not** use `try/catch`.
+5. When a tap, list, toggle, or alert flakes, apply
+   [Stabilize interactions](#stabilize-interactions) in the shared page object
+   or flow.
 
 ## Layout
 
@@ -118,6 +121,46 @@ Only branch when the flow genuinely differs. See
 11. Fix lint/tsc before running.
 12. No `try/catch` in POM methods.
 
+## Stabilize interactions
+
+When the same failure hits more than one spec, change the shared page object or
+flow (golden rule 10). Apply the matching pattern there. Feature timeouts and
+selectors stay in the mobile repo; this section records only the reusable
+mechanism.
+
+1. **Prove the screen from a stable child.** A parent screen wrapper can exist
+   while Appium reports it not visible. Wait on a visible child that
+   neighboring specs already treat as ready, such as the wallet header.
+   Example: `waitForWalletHomePlaywright`.
+2. **Re-query after sync, then require the control to be interactive.** Wait
+   for account sync or navigation to finish, then tap a freshly queried node
+   with `waitForInteractive: true`. A reference taken before that wait is
+   stale. Example: `waitForAccountSyncToComplete`, then
+   `Gestures.waitAndTap(..., { waitForInteractive: true })`.
+3. **Retry inside the shared open helper.** When the first tap no-ops while
+   chrome is still settling, the flow probes, re-taps, and loops until its
+   deadline. Example: `ensureAccountListOpenPlaywright`. Leave that loop in
+   the flow.
+4. **Scroll to prove a virtualized row.** Wait until list loading is gone.
+   FlatList does not mount off-screen rows, so a bare existence check can fail
+   after the data is ready. Scroll to the row with a bounded `maxScrolls`, and
+   retry short passes while later rows are still merging. Example:
+   `NotificationMenuView.waitForListReady`, then `waitForNotificationItem`.
+5. **Read the native control value before leaving the screen.** After a Switch
+   tap, poll the toggle through `Assertions` before navigating away. A tap
+   that returns does not prove the value changed. Example:
+   `SnapSettingsView.setEnabled`.
+6. **Wait for the action's postcondition.** A confirm or dapp tap is complete
+   when the destination control exists, or when the sheet control is gone.
+   Retry the shared tap until that postcondition. Example:
+   `FooterActions.waitForConfirmButtonGone` after the confirm tap.
+7. **Assert a short-lived alert once.** Match the alert copy with one regex
+   visibility query. Separate substring checks race the alert off screen.
+   Example: `TestSnaps.expectDisabledSnapAlert`.
+
+Session death, WebView/CDP, WDA, or emulator bootstrap failures belong in the
+shared framework or CI helper used by the suite.
+
 ## Build and run
 
 **Source of truth:** `docs/testing/appium-smoke-testing.md` (download, prep,
@@ -146,6 +189,12 @@ yarn appium-smoke:ios --grep SmokeAccounts \
 - [ ] POM / flows only — no step helpers in the spec
 - [ ] No `TestHelpers.delay()` / no raw `device.*` APIs
 - [ ] Descriptions on gestures and assertions
+- [ ] Flaky taps, lists, toggles, and alerts are fixed in the shared POM or flow
+- [ ] Screen readiness uses a stable child when the parent wrapper is unreliable
+- [ ] Presses re-query after sync or navigation and wait until interactive
+- [ ] Virtualized rows are scrolled into view before they are asserted
+- [ ] Toggles and sheet actions assert native value or the postcondition
+- [ ] Short-lived alerts use one combined visibility assertion
 - [ ] Correct smoke/regression tag
 - [ ] Lint + tsc clean
 - [ ] Ran locally against main-e2e (or documented why not) with real output
