@@ -7,9 +7,9 @@ maturity: stable
 
 # Perps static review
 
-Generated from MetaMask/experimental-metamask-recipe-perps @ e06bb8d750acbbd90ce1af62063260e85f0a0995. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records every source digest.
+Generated from the canonical Perps review rules @ f9f8cb914c4c0fd1f7a592b9b4507b410a5d8651. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
 
-Run only on explicit invocation by name or an explicitly selected workflow. Review source and diff only: no harness, no app launch, no product change, no publish, no workspace cleanup. The criteria below are review criteria, not instructions to perform the fixes, releases or migrations they describe.
+Run only on explicit invocation by name or an explicitly selected workflow. Review source and diff only: no app launch, no product change, no publish, no workspace cleanup. The criteria below are review criteria, not instructions to perform the fixes, releases or migrations they describe.
 
 Each criterion row names a reference file. Read that file only when the diff touches that family; otherwise record NOT_APPLICABLE with the reason. Reference paths are relative to the installed skill directory (`.agents/skills/mms-perps-review-pr/`, and the same path under `.claude/skills/` and `.cursor/rules/`).
 
@@ -35,13 +35,14 @@ For maintaining or adapting this skill to another team, see references/maintaini
 Check applicability against the frozen diff and its affected callers. Open each applicable family and examine every rule in it; a family checkbox is complete only when its individual outcomes are recorded.
 
 - [ ] Controller Portability (Core): `PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; mobile and extension both consume the package. See references/shared.md#controller-portability-core
+- [ ] Missing numeric data stays undefined: Missing Perps numeric data must remain `undefined` through provider adapters, controller state, selectors, hooks and calculations. See references/shared.md#missing-numeric-data-stays-undefined
 - [ ] Magic Strings, Magic Numbers & Placeholder Values: Constants live in the controller package (`core/packages/perps-controller/src/constants/perpsConfig.ts`, exported by `@metamask/perps-controller`) and in the reviewed client's UI constants module. See references/shared.md#magic-strings-magic-numbers-placeholder-values
 - [ ] Protocol Abstraction: Execution identity inferred from display fields: Preserve the venue's documented identity at the provider boundary and expose a stable opaque ID shared by REST and WebSocket paths. See references/shared.md#protocol-abstraction
 - [ ] Pro Mode UI Gating: Pro market UI renders only when the remote flag (`selectPerpsProModeEnabledFlag`) and the controller mode (`PerpsMode.Pro`) are both active; a PR that checks one gate ships a silent no-op that looks… See references/shared.md#pro-mode-ui-gating
 - [ ] MetaMetrics Events: Every perps event uses one of the eight consolidated events and their typed property constants; no new event names or untyped properties. See references/shared.md#metametrics-events
 - [ ] Sentry Tracing: Unbounded background trace volume: For unlock, polling, reconnect or fan-out instrumentation, estimate added spans at normal and retry load. See references/shared.md#sentry-tracing
 - [ ] Connection & WebSocket Architecture: Cleanup has no owner for in-flight setup: Register the owner before asynchronous initialization starts. See references/shared.md#connection-websocket-architecture
-- [ ] Data Flow & State: A changed classification leaves old priority rules: When a validation becomes advisory, audit message ranking and CTA gating together. See references/shared.md#data-flow-state
+- [ ] Data Flow & State: Delayed balance tracker loses its initiating context: Bind the initiating account, provider and network. See references/shared.md#data-flow-state
 - [ ] Trade Flow & Order Execution: Signed bounds collapsed into magnitudes: A gain-side and loss-side RoE are different inputs. See references/shared.md#trade-flow-order-execution
 - [ ] Locale Coverage & Orphaned Keys: Duplicate JSON keys shadow new copy: Verify the containing locale object has one definition and search rendered copy across every test layer. See references/shared.md#locale-coverage-orphaned-keys
 - [ ] Test Layer Coverage: Degenerate fixtures hide formula errors: Choose values where competing calculations differ, such as a deeper order-book row with size unequal to cumulative total. See references/shared.md#test-layer-coverage
@@ -49,5 +50,5 @@ Check applicability against the frozen diff and its affected callers. Open each 
 
 ## Cross-repository conformity
 
-- [ ] When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map in references/parity.md. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Record applicable missing references as NOT_CHECKED.
+- [ ] When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map in references/parity.md. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Read consumers from the Mobile, Extension and Core reference checkouts supplied with the task and cite the revision you read; an unavailable checkout is NOT_CHECKED, not verified by this review.
 - [ ] When controller state, methods, events, exports or package versions change, inspect Core and both consumers at recorded revisions, using references/shared-packages.md for the shared surface and references/owned-paths.json for the paths this review covers. Check public imports, compatibility and migrations. Report evidence gaps; do not claim that clients compile from source inspection.

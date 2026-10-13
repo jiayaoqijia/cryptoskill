@@ -214,7 +214,7 @@ Three Go paths, ordered by how much infrastructure you run:
 - **UTxORPC Go SDK** — the role Evolution SDK plays for TypeScript: the provider becomes a config choice rather than a code rewrite, against any UTxORPC-compatible backend. Paging query helpers (`GetUtxosByAddressPages`, `GetUtxosByAssetPages`, tuned with `WithSearchMaxItems` / `WithSearchStartToken`); submit and mempool operations on `UtxorpcClient` (`SubmitTx`, `EvalTx`, `WaitForTx`, `ReadMempool`, `WatchMempool`). Best when you may switch providers later.
 - **gOuroboros** — speaks the node's mini-protocols directly, with no intermediary. `NewConnection(...)`, then `LocalStateQuery().Client` for point-in-time state (`GetUTxOByAddress`, `GetUTxOByTxIn`, `GetCurrentProtocolParams`, `GetStakeDistribution`, `GetDRepState`, `GetProposals`) or `ChainSync().Client` to follow the chain (`GetCurrentTip`, `GetAvailableBlockRange`, `Sync`). Lowest latency and no third party, but you run the node and manage the protocol lifecycle yourself.
 
-Runnable examples ship in the mirror: `../../docs/sources/gouroboros/examples/state-query/main.go` and `.../examples/chain-sync/main.go`. Because Go sources mirror `.go` files, search for a method name to get its signature and doc comment.
+The mirror documents each client, with Go snippets, in `../../docs/sources/gouroboros/protocol/localstatequery/README.md` and `../../docs/sources/gouroboros/protocol/chainsync/README.md`; `../../docs/sources/gouroboros/connection.go` holds `NewConnection` and its options. Because Go sources mirror `.go` files, search for a method name to get its signature and doc comment.
 
 ### Step 6: Provide working code
 

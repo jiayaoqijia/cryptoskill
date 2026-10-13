@@ -6,7 +6,7 @@ description: >
   addresses, market events, AI market chat (JSON and SSE streaming), integration examples,
   curl/code snippets, automated alerts,
   EQL queries, trigger pipelines, and agent workflows that react to market conditions.
-  Auto can trigger on X/Twitter posts, Telegram channels, news events, SEC filings,
+  Auto can trigger on X/Twitter posts, Telegram channels, events (news), SEC filings,
   Kalshi and Polymarket prediction markets,
   funding rates, liquidation cascades, the Fear & Greed index, and X follow-graph
   moves (a new follower on a watched account, an account it starts following, or
@@ -610,7 +610,7 @@ Pick the condition source by user intent **before** writing condition args:
 |---|---|---|
 | Account-anchored post intent (`@user posts ...`) | `source: "tweet"` | `args.username` (no `@`), `args.text`, `args.minConfidence` (use `80` if user gives no threshold) |
 | Telegram-channel intent (`when this channel posts ...`) | `source: "telegram"` | one of `args.chatUsername` or `args.chatId`, plus `args.text`, `args.minConfidence` (use `80` if user gives no threshold) |
-| World event intent (ETF approval, exploit, sanctions, etc.) | `source: "news"` | `args.text`, `args.minConfidence` (use `80` if user gives no threshold) |
+| News or world-event intent (ETF approval, exploit, listing, bearish news on an asset) | `source: "events"` | at least one filter (`args.entity`, `args.eventType`, `args.implication`, …) or `args.text` + `args.minConfidence` — see **Events** below |
 | Official SEC filing intent (new 8-K, late 10-Q/10-K notice, offering, ownership filing, 8-K item) | `source: "sec"` | `method` (e.g. `base_form_type`, `form_category`, `has_item_1_05`), `args.ticker` as the issuer CIK, `operator`/`value` per the per-method allowlists |
 | Prediction-market move/lifecycle on a named open Kalshi market | `source: "kalshi"` | `method` (e.g. `yes_price`, `status`, `result`), `args.ticker` (a currently-open Kalshi market), `operator`/`value` per the per-method allowlists |
 | Prediction-market price/trade on a Polymarket outcome token | `source: "polymarket"` | `method` (`price`, `bid`, `ask`, `size`, `side`), `args.ticker` (outcome-token `asset_id`), `operator`/`value` per the per-method allowlists |
@@ -618,10 +618,10 @@ Pick the condition source by user intent **before** writing condition args:
 | Liquidation-flow intent (cascade, long/short flush) | `source: "liquidation"` | `method` (e.g. `total_usd_5m`, `total_pct_oi_1h`), `args.ticker` as `SYMBOL:EXCHANGE` |
 | Market-wide sentiment (fear/greed regime) | `source: "fear_greed"` | `method` (`value` or `classification`), empty `args: {}` |
 | Follow-graph intent (who followed a watched account, who it followed, or a tracked set converging on one account) | `source: "x_follow_received"` / `"x_follow_made"` / `"x_follow_overlap"` | `method` per source, `args.account` (or `args.accounts` for overlap), `operator` `>` or `>=` |
-| Real-world catalyst moving an equity/index/commodity (rate decision, CPI, earnings) | the catalyst's own source (`kalshi` / `polymarket` / `news` / `price`), optionally with a HIP-3 `price` / `ta` confirmation | Pick the catalyst source, then bridge to the asset class it moves — see [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers) |
+| Real-world catalyst moving an equity/index/commodity (rate decision, CPI, earnings) | the catalyst's own source (`kalshi` / `polymarket` / `events` / `price`), optionally with a HIP-3 `price` / `ta` confirmation | Pick the catalyst source, then bridge to the asset class it moves — see [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers) |
 | Fuzzy world-state predicate not naturally expressible as a post or event | `source: "llm"` | `method: "athena_condition"`, `args.query`, `args.period` (`>= 1h`) |
 
-When the prompt is account-anchored, **start with `tweet`** — do not route to `news` or `llm` first. When it is Telegram-channel-anchored, start with `telegram`. When the prompt is event-anchored without a specific account, start with `news` — unless it is an official SEC filing for an issuer, which routes to `sec`. When the trigger maps to a concrete prediction market you can name (a Kalshi ticker or a Polymarket outcome-token id), use `kalshi` / `polymarket` (prefer them over `llm` for supported methods). Use `llm` (`athena_condition`) only when the predicate cannot reasonably be matched against a post, event, or named prediction market.
+When the prompt is account-anchored, **start with `tweet`** — do not route to `events` or `llm` first. When it is Telegram-channel-anchored, start with `telegram`. When the prompt is news about a subject without a specific account, start with `events` — unless it is an official SEC filing for an issuer, which routes to `sec`. When the trigger maps to a concrete prediction market you can name (a Kalshi ticker or a Polymarket outcome-token id), use `kalshi` / `polymarket` (prefer them over `llm` for supported methods). Use `llm` (`athena_condition`) only when the predicate cannot reasonably be matched against a post, event, or named prediction market.
 
 #### When to suggest Auto
 
@@ -635,7 +635,7 @@ When the prompt is account-anchored, **start with `tweet`** — do not route to 
 - User wants **LLM analysis on trigger** ("when it triggers, run a full analysis")
 - User wants **account-anchored social triggers** ("notify me when @cz_binance posts that Binance Alpha is listing a new token") — use **Signal: X/Twitter Post** (`source: "tweet"`)
 - User wants **Telegram-channel triggers** ("alert me when this channel posts a new Binance listing rumor") — use **Signal: Telegram Channel** (`source: "telegram"`)
-- User wants **event-driven triggers** ("alert me when SEC approves a spot ETH ETF") — use **Signal: Event** (`source: "news"`)
+- User wants **news triggers** ("alert me when SEC approves a spot ETH ETF", "bearish news on ETH", "any exchange hack") — use **Events** (`source: "events"`)
 - User wants **official SEC filing triggers** ("tell me when Alphabet files a new 8-K", "alert on any late 10-Q notice") — use `source: "sec"` with the issuer CIK
 - User wants **prediction-market triggers** ("alert when this Kalshi market's YES probability crosses 60%", "notify when the market settles YES", "alert when this Polymarket outcome trades above 60c") — use **Prediction Markets** (`source: "kalshi"` or `source: "polymarket"`)
 - User wants **funding / liquidation / sentiment triggers** ("alert when BTC funding flips negative", "notify on an ETH liquidation cascade", "alert when Fear & Greed drops below 20") — use `source: "funding"` / `"liquidation"` / `"fear_greed"`
@@ -914,9 +914,10 @@ _8) Signal — event-first catalyst watcher:_
 ```
 Build an Auto query:
 - title + description: catalyst name and why it matters now
-- use Signal category:
-  - condition source: news
-  - match description: "SEC approves a spot ETH ETF"
+- use an events condition:
+  - condition source: events
+  - filters: entity ETH, eventType regulatory
+  - claim: "the SEC approves a spot ETH ETF"
   - minConfidence: 80
 - action: webhook to https://your-runner.example/auto/events
 - include queryId, eventId, and short trigger reason in payload
@@ -992,7 +993,7 @@ Both fields are **mandatory** when `repeat` is present:
 
 - **`cooldown` allowed values** (its own set — sub-hour is permitted, unlike the cron/llm 1h minimum): `1m`, `5m`, `15m`, `30m`, `1h`, `2h`, `4h`, `8h`, `12h`, `24h`, `1d`, `7d`, plus `"0"`. Use `"0"` for "fire on every distinct event" (e.g. every matching tweet or Telegram message).
 - **`maxTriggers`** counts how many times the plan **fires** over its lifetime (distinct from the number of action steps). Sanity-check `cooldown × maxTriggers` against `expiresIn` — if there isn't enough runway, the plan expires before reaching the cap. A longer `expiresIn` buys patience through quiet periods; it does **not** raise the fire cap.
-- **Single reset rule.** A `repeat` plan re-fires only once its triggering signal has cleared. **Level** conditions (`price` / `ta` / `llm`-boolean) disarm on fire and re-arm when the whole condition tree next evaluates false; **event** conditions (`tweet.semantic` / `telegram.semantic` / `news.semantic` / `sec`) consume the matched event and re-fire on the **next distinct** event.
+- **Single reset rule.** A `repeat` plan re-fires only once its triggering signal has cleared. **Level** conditions (`price` / `ta` / `llm`-boolean) disarm on fire and re-arm when the whole condition tree next evaluates false; **event** conditions (`tweet.semantic` / `telegram.semantic` / `events.match` / `sec`) consume the matched event and re-fire on the **next distinct** event.
 
 > **Still rejected:** `repeat` combined with a recurring cron condition (`cron.every` /
 > `cron.schedule`) — both provide recurrence, so combining them fails validation as
@@ -1014,7 +1015,7 @@ Recommended starting points:
 | Price / TA level (`price`, `ta`) | `1h`–`4h` (≥ your timeframe) | `3`–`10` | Prefer `crosses_*` operators; avoid `"0"` here. |
 | LLM predicate (`llm.athena_condition`) | `≥ period` (min `1h`) | `3`–`5` | The LLM already re-checks on `period` — don't re-alert faster than it re-evaluates. |
 | Event — single / quiet account or channel (`tweet`, `telegram`) | `0`–`15m` | `10`–`20` | Each distinct post/message is a discrete event; `"0"` is fine unless the source is chatty. |
-| Event — noisy account/channel or broad `news` | `15m`–`1h` | `10`–`20` | A small cooldown collapses a burst of mentions into one alert. |
+| Event — noisy account/channel or broad `events` filters | `15m`–`1h` | `10`–`20` | A small cooldown collapses a burst of mentions, or follow-up events on one story, into one alert. |
 | SEC filing event (`sec`) | `0`–`1h` | `10`–`20` | Use `"0"` when you want every matching filing; add cooldown for noisy form categories. |
 | Liquidation cascade (`liquidation`) | `1h`+ | `5`–`10` | Windows decay to zero, so the plan re-arms per cascade; the cooldown stops one long cascade re-alerting. |
 
@@ -1167,26 +1168,34 @@ Rules:
 }
 ```
 
-**Signal source — Event (`news`):**
+**Events (`events`):**
 
-In the Builder Chat catalog this is the `Signal` category, **Event**.
+In the Builder Chat catalog this is the `Signal` category, **Events**.
 
-| Method | Required args | Returns | Description |
-|---|---|---|---|
-| `semantic` | `text`, `minConfidence` | boolean | Matches event-style mentions from news-tagged sources when semantic confidence meets threshold |
+Triggers on events: news about an asset, project, company, person, or macro — listings, hacks, regulatory decisions, macro releases, company news, large flows, bullish or bearish news. These are the events `GET /v3/events` (API v3) serves, each written up from many posts, and the condition takes that endpoint's filter values, matched the same way. Use it for news **about** a subject; use `tweet` for posts **from** an account. Not yet in the app's visual builder catalog; Builder Chat and the API both author it. Full reference: https://docs.elfa.ai/auto/events — the events themselves: https://docs.elfa.ai/v3/events
 
-Rules:
-- `minConfidence` must be a JSON integer between `0` and `100`; use `80` when the user gives no threshold.
-- `method`, `operator`, and `value` are auto-filled defaults — do **not** include them.
-- Use `news` for world events not anchored to a specific account; use `tweet` when the trigger is anchored to a specific handle, `telegram` when it is anchored to a channel, and `sec` when it is an official SEC filing for an issuer.
+| Method | Args (all optional; at least one filter or `text`) | Returns |
+|---|---|---|
+| `match` | `entity`, `entityType`, `eventClass`, `eventType`, `implication`, `alertAction`, `assetClass`, `novelty`, `text` + `minConfidence` | boolean |
+
+- `entity`: one id from `GET /v3/entities` (exact: the same id `/v3/events` takes in `entityIds`), or one ticker or name (`"ETH"`, `"Hyperliquid"`). A ticker or name resolves **ticker first**: `"Elon Musk"` resolves to a token named MUSK and `"Fed"` to a stock with the ticker FED, so set `entityType` (`token`, `equity`, `project`, `person`, `organisation`) for anything that is not a token or a stock. Central banks, regulators, and macro themes are not entities — use `eventType` + `text`.
+- `eventClass`: `market` (news, including about one asset) or `call` (trader positioning). For one asset use `entity`, not `asset`.
+- `eventType`: `security`, `listing`, `regulatory`, `macro`, `protocol`, `company`, `marketFlow`, `price`, `social`, `other`.
+- `implication`: `bullish`, `bearish`, `mixed`, `unclear` — the likely direction for the assets named. Put stance here, never in `text`.
+- `alertAction`: `alert` (judged impactful) or `monitor` (worth watching). `assetClass`: `crypto` or `equity` (events that name no asset pass). `novelty`: `new` or `update` — does **not** reliably filter repeats: most later readings of a story still say `new`.
+- `text` + `minConfidence` (both or neither, start at `80`): one specific claim, checked against the event's title and summary. Filter-only conditions consume no credits.
+- One value per argument; several assets or types → several `events` conditions under `OR`. An array is rejected with `EQL_INVALID_JSON`.
+- Shorthand only in practice: the full form takes just `operator: "=="`, `value: true`. No dynamic values.
+- Runtime: events arrive minutes to hours after the first post (to be first, watch the account with `tweet`); only events less than an hour old are matched; each event fires a plan at most once; about 1 in 9 events continues a story already reported that day. To act once per story, skip an event whose `storylineId` you already hold (fetch it by `eventId`, below); `storylineId` is null on call events and the few not threaded.
+- Preview before creating: `GET /v3/events` with the same filters and `from=<now - 1d>` (`entityIds=<id>` for `entity`) returns what the condition would have fired on. `q` has no counterpart: `text` checks a claim per event instead. One value per argument, no time range. Mapping: https://docs.elfa.ai/auto/events#from-v3-events
+- `match` in the trigger payload: `eventId`, `title` (the event's `alertTitle`), `eventClass`, `eventType`, `implication`, `alertAction`, `novelty`, `timeSensitivity`, `citedSourceCount`, `analyzedAt` (ISO 8601), `entities[]` (`symbol`, `name`, `entityType`; up to 10), and `confidence` when `text` was checked. No link, no summary.
+- `match.eventId` is the event's `id` in `/v3/events` — **not** the webhook delivery id (`X-Auto-Event-Id`, the one to dedupe deliveries on). `GET /v3/events?eventIds=<match.eventId>` returns the summary, cited posts with links, price impacts and `storylineId`.
+- The `/v3` endpoints need a Pay-as-you-go, Grow or Enterprise key. Without one, name the entity by ticker or name and read the Validate response for what it resolved to.
 
 ```json
 {
-  "source": "news",
-  "args": {
-    "text": "SEC approves a spot ETH ETF",
-    "minConfidence": 80
-  }
+  "source": "events",
+  "args": { "entity": "ETH", "implication": "bearish" }
 }
 ```
 
@@ -1194,9 +1203,9 @@ Rules:
 
 - Account-anchored intent (handle in the prompt) → `tweet`.
 - Channel-anchored intent (a public Telegram channel in the prompt) → `telegram`.
-- World-event intent (no specific account) → `news`.
+- News about a subject (no specific account) → `events`.
 - Official SEC filing intent (issuer CIK, form type, 8-K item) → `sec`.
-- Prefer `tweet`/`telegram`/`news` over `llm` when the trigger is plausibly expressed as a post or event.
+- Prefer `tweet`/`telegram`/`events` over `llm` when the trigger is plausibly expressed as a post or event.
 - Fall back to `llm` (`athena_condition`) only for predicates that are not naturally a post/event match.
 
 **Signal `args.text` authoring rubric** — match quality is dominated by `text` quality. Write a short factual claim, not a monitoring command.
@@ -1208,16 +1217,16 @@ Rules:
 | `Bullish on a coin` | `Posts that they're bullish on $HYPE and $SOL` |
 | `Alpha group update` | `new Binance listing rumor` |
 | `Team news` | `team confirms mainnet launch` |
-| `Market crash` | `Major DeFi protocol suffers a $200M exploit` |
-| `War conflict` | `US imposes new sanctions on Russia` |
-| `Big news` | `SEC approves a spot ETH ETF` |
+| `Market crash` (events `text`) | `Major DeFi protocol suffers a $200M exploit` |
+| `War conflict` (events `text`) | `US imposes new sanctions on Russia` |
+| `Bearish ETH news` (events `text`) | no `text` — `{ "entity": "ETH", "implication": "bearish" }` |
 
 Additional constraints:
 - Keep `text` atomic — one event/theme per condition.
 - For `tweet`, do not restate account identity in `text` — `username` already scopes that.
 - For `telegram`, do not restate channel identity in `text` — `chatUsername` or `chatId` already scopes that.
 - Split `A or B` intents into multiple Signal conditions joined by `OR`; split `A and B` into multiple conditions joined by `AND`.
-- Prefer separate queries for event-driven Signal intents (`tweet`/`telegram`/`news`) and recurring schedule intents (`cron.every`) for clearer runtime semantics.
+- Prefer separate queries for event-driven intents (`tweet`/`telegram`/`events`) and recurring schedule intents (`cron.every`) for clearer runtime semantics.
 
 **`minConfidence` tuning:** default `80`; raise to `85`–`90` for fewer false positives; lower to `70`–`75` if you need higher recall.
 
@@ -1680,23 +1689,25 @@ using these sources.
 }
 ```
 
-**9) Signal — Event (news-driven catalyst):**
+**9) Events (news-driven catalyst):**
 
 ```json
 {
   "title": "ETH ETF approval event watcher",
-  "description": "Fire when event feeds indicate a spot ETH ETF approval so I can kick off a post-event playbook.",
+  "description": "Fire when an event reports a spot ETH ETF approval so I can kick off a post-event playbook.",
   "conditions": {
     "AND": [{
-      "source": "news",
+      "source": "events",
       "args": {
-        "text": "SEC approves a spot ETH ETF",
+        "entity": "ETH",
+        "eventType": "regulatory",
+        "text": "the SEC approves a spot ETH ETF",
         "minConfidence": 80
       }
     }]
   },
-  "actions": [{ "stepId": "step_1", "type": "notify", "params": { "message": "Event trigger fired: spot ETH ETF approval signal" } }],
-  "expiresIn": "24h"
+  "actions": [{ "stepId": "step_1", "type": "notify", "params": { "message": "Event fired: spot ETH ETF approval" } }],
+  "expiresIn": "168h"
 }
 ```
 
@@ -1900,10 +1911,13 @@ part of the public API, so do not depend on them.
 - `trigger.matchedConditions[].condition.value` is the **threshold**;
   `.match.observedValue` is the **value seen at trigger time**. Report both when explaining a
   fire to a user.
-- For Signal sources (`tweet` / `news`), `match` also carries provenance — `url`,
+- For Signal sources (`tweet` / `telegram`), `match` also carries provenance — `url`,
   `mentionedAt`, `confidence`, `accountHandle`, and for Telegram `chatUsername`, `chatTitle`,
   `messageId` / `messageIds`, `groupId`. Use `url` to link the user straight to the post that
   fired the plan.
+- For `events`, `match` carries the event instead — `eventId` (its `/v3/events` id, not the
+  delivery id), `title`, its classification, `entities`, `analyzedAt`, and `confidence` when
+  `text` was checked; there is no `url`. Fetch the rest with `GET /v3/events?eventIds=<eventId>`.
 - `details` is keyed by action kind (`trade`, `notification`, `llm`, `auto`, `script`).
 - Failed executions carry `error` `{ code, message }`, e.g.
   `LLM_ACTION_UPSTREAM_ERROR`.
@@ -2296,7 +2310,9 @@ issue, not a capability gap. Iterate on Validate instead of abandoning the query
 | Depth / leaf-count exceeded | More than depth 3 or 10 leaves | Split into two queries joined by your runner |
 | `cron` / `llm` period too short | Below 1h minimum | Raise to `1h` or higher |
 | Unmonitored `tweet` username | `tweet.semantic` `args.username` not in monitored active accounts | Replace with a monitored active handle (without `@`) and re-validate |
-| Invalid `minConfidence` (`tweet` / `telegram` / `news`) | Non-integer or outside `0..100` | Use a JSON integer between `0` and `100` (start with `80`) |
+| Invalid `minConfidence` (`tweet` / `telegram` / `events`) | Non-integer or outside `0..100` | Use a JSON integer between `0` and `100` (start with `80`) |
+| `events` unknown / ambiguous `entity` | No entity matches, or several match equally (`details.candidates`) | Set `entityType`, pass a candidate's `publishedId` as `entity`, or drop `entity` and use `eventType` + `text` |
+| `events` with no filter and no `text`, or `text`/`minConfidence`/`entityType` unpaired | At least one filter or `text`; `text` and `minConfidence` together; `entityType` only with `entity` | Add a filter, or pair the args |
 | Unresolved `telegram` channel | `chatUsername` / `chatId` does not resolve to a monitored public channel, or shorthand carried both identifiers | Use one identifier on shorthand, drop `@` and `t.me/`, and pick a monitored public channel |
 | Invalid `sec` CIK | `args.ticker` is not 1–10 digits, or the CIK is absent from SEC submissions metadata | Pass the issuer CIK (not the stock ticker) and re-validate |
 | `EQL_INVALID_ACTION` | The query or draft uses `market_order` / `limit_order`, at top level or in an `llm` callback | Replace with `webhook`, `notify`, `telegram_bot` or `llm`, and run execution from your own runner |

@@ -50,22 +50,7 @@ Extension adds: `usePerpsLiveMarketData`, `usePerpsStreamManager`, `usePerpsView
 
 ## Formatting Divergence
 
-See `formatting-rules` knowledge file for full rules.
-
-| Platform | Formatter | Behavior |
-|---|---|---|
-| Mobile | `formatPerpsFiat` | Adaptive sig-dig by price range |
-| Extension | `formatCurrencyWithMinThreshold` | Generic, no sig-dig |
-| Extension | `formatNumber({min:2,max:2})` | Always 2 decimals |
-| Extension | `.toFixed(2)` | Hardcoded 2 decimals |
-
-**Files with hardcoded formatting (extension):**
-- `ui/components/app/perps/utils/transactionTransforms.ts` -- `.toFixed(2)` x7
-- `ui/components/app/perps/order-entry/components/auto-close-section/` -- `{min:2, max:2}`
-- `ui/components/app/perps/order-entry/components/limit-price-input/` -- `{min:2, max:2}`
-- `ui/components/app/perps/edit-margin/edit-margin-modal-content.tsx` -- `.toFixed(2)`
-- `ui/components/app/perps/reverse-position/reverse-position-modal.tsx` -- `.toFixed(2)`
-- `ui/hooks/perps/usePerpsOrderForm.ts` -- `formatCurrencyWithMinThreshold` x6
+Use `formatPerpsFiat` on both platforms (Extension: `shared/lib/perps-formatters.ts`). Do not add `.toFixed(2)`, `formatNumber({min:2,max:2})` or `formatCurrencyWithMinThreshold` for displayed perps fiat values on Extension; migrate a legacy call site the PR touches.
 
 ## TestID Mapping
 

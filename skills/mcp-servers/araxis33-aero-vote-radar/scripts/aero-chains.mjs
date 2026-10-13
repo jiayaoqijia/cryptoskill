@@ -4,29 +4,52 @@
 // "pools" when its file names a pool factory or the factory registry, and "allocation" when it names a voter
 // (the contract sAERO is allocated through). Run by the snapshot workflow; on any error the old file stays.
 import { writeFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 
 const API = "https://api.github.com/repos/dromos-labs/metadex-public/contents/deployment-addresses";
-const headers = { accept: "application/vnd.github+json", "user-agent": "aero-vote-radar" };
-if (process.env.GITHUB_TOKEN) headers.authorization = "Bearer " + process.env.GITHUB_TOKEN;
 
 // File names are not announced yet (only arc.json exists on 12.10.2026), so match loosely.
-const CHAINS = {
+export const CHAINS = {
   base: /^base/, ethereum: /^(ethereum|eth|mainnet)\b/, optimism: /^(optimism|op)\b/, arc: /^arc/,
   ink: /^ink/, robinhood: /^robinhood/, arbitrum: /^(arbitrum|arb)/,
 };
 
-const list = await fetch(API, { headers }).then((r) => { if (!r.ok) throw new Error("list " + r.status); return r.json(); });
-const chains = {};
-for (const f of list.filter((x) => x.name.endsWith(".json"))) {
-  const key = Object.keys(CHAINS).find((k) => CHAINS[k].test(f.name.toLowerCase()));
-  if (!key) continue;
-  const body = await fetch(f.download_url, { headers }).then((r) => { if (!r.ok) throw new Error(f.name + " " + r.status); return r.json(); });
-  const names = Object.keys(body).map((k) => k.toLowerCase());
-  chains[key] = {
-    file: f.name,
+/** Which of `CHAINS` a deployment-addresses file name belongs to, or undefined if none match. */
+export function matchChainKey(filename) {
+  return Object.keys(CHAINS).find((k) => CHAINS[k].test(filename.toLowerCase()));
+}
+
+/**
+ * Whether a deployment file's contract names show pools/allocation are live on
+ * that chain, given the (lower-cased) keys of its deployment JSON.
+ */
+export function classifyChainFile(names) {
+  return {
     pools: names.some((k) => k.includes("poolfactory") || k === "factoryregistry"),
     allocation: names.some((k) => k.includes("voter")),
   };
 }
-writeFileSync("docs/data/aero-chains.json", JSON.stringify({ checkedAt: new Date().toISOString(), chains }, null, 1) + "\n");
-console.log("aero-chains:", JSON.stringify(chains));
+
+async function main() {
+  const headers = { accept: "application/vnd.github+json", "user-agent": "aero-vote-radar" };
+  if (process.env.GITHUB_TOKEN) headers.authorization = "Bearer " + process.env.GITHUB_TOKEN;
+
+  const list = await fetch(API, { headers }).then((r) => { if (!r.ok) throw new Error("list " + r.status); return r.json(); });
+  const chains = {};
+  for (const f of list.filter((x) => x.name.endsWith(".json"))) {
+    const key = matchChainKey(f.name);
+    if (!key) continue;
+    const body = await fetch(f.download_url, { headers }).then((r) => { if (!r.ok) throw new Error(f.name + " " + r.status); return r.json(); });
+    const names = Object.keys(body).map((k) => k.toLowerCase());
+    chains[key] = { file: f.name, ...classifyChainFile(names) };
+  }
+  writeFileSync("docs/data/aero-chains.json", JSON.stringify({ checkedAt: new Date().toISOString(), chains }, null, 1) + "\n");
+  console.log("aero-chains:", JSON.stringify(chains));
+}
+
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error(err instanceof Error ? err.message : String(err));
+    process.exitCode = 1;
+  });
+}

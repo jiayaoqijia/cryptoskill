@@ -42,7 +42,7 @@ perp --json wallet generate evm             # generate EVM wallet
 perp --json wallet generate solana          # generate Solana wallet
 perp --json wallet show                     # check configured wallets
 perp --json wallet list                     # list named wallets
-perp --json wallet balance                  # on-chain USDC balances
+perp --json wallet balance   # gas token + USDC/USDT per chain (Arbitrum, Ethereum, Base, BNB, Robinhood USDG, Solana); failed reads → balance null + error
 perp --json portfolio -e <EX>               # per-exchange balance + positions (account balance was renamed in v0.12)
 perp --json -e <EX> account positions       # open positions
 perp --json -e <EX> market list             # available markets
@@ -148,7 +148,7 @@ Default `-e` = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
 
 ### Check On-Chain vs Exchange Balance
 ```bash
-perp --json wallet balance               # on-chain USDC in your wallet
+perp --json wallet balance   # gas token + USDC/USDT per chain (Arbitrum, Ethereum, Base, BNB, Robinhood USDG, Solana); failed reads → balance null + error
 perp --json portfolio -e hyperliquid     # USDC deposited on exchange
 ```
 

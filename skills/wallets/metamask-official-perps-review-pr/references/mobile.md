@@ -49,6 +49,7 @@ Use `docs/perps/perps-sentry-reference.md` for Mobile trace names and lifecycle.
 
 Mobile UI constants live in `app/components/UI/Perps/constants/perpsConfig.ts`.
 Use `docs/perps/perps-metametrics-reference.md` for Mobile event definitions; controller constants remain the shared contract.
+A change to a pattern documented in `docs/perps/` updates that document in the same PR.
 
 <a id="mobile-test-layers"></a>
 

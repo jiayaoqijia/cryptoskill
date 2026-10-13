@@ -5,9 +5,7 @@ Companion to `parity.md`. Tracks what's shared, what should be, and what can't b
 
 ## Already Shared via @metamask/perps-controller
 
-**Utils (20)**: `significantFigures`, `orderValidation`, `orderCalculations`, `marketDataTransform`, `sortMarkets`, `marketUtils`, `accountUtils`, `errorUtils`, `hyperLiquidAdapter`, `hyperLiquidOrderBookProcessor`, `hyperLiquidValidation`, `myxAdapter`, `standaloneInfoClient`, `stringParseUtils`, `idUtils`, `rewardsUtils`, `transferData`, `wait`
-
-**Services (14)**: `AccountService`, `TradingService`, `MarketDataService`, `DepositService`, `EligibilityService`, `HyperLiquidClientService`, `HyperLiquidSubscriptionService`, `HyperLiquidWalletService`, `MYXClientService`, `MYXWalletService`, `RewardsIntegrationService`, `TradingReadinessCache`, `DataLakeService`, `FeatureFlagConfigurationService`
+**Utils** (`src/utils/`) and **Services** (`src/services/`) of `@metamask/perps-controller`: check them on core `main` before adding a client-side copy.
 
 ## Priority 1 -- Move to Controller (pure TS, no React deps)
 
@@ -34,22 +32,6 @@ Once in controller, extension imports directly instead of reimplementing.
 | `filterMarketsByQuery` | `UI/Perps/utils/filterAndSortMarkets.ts` | `ui/components/app/perps/utils.ts` | YES |
 | `isHip3Market`/`isCryptoMarket` | `UI/Perps/utils/` | `ui/components/app/perps/utils.ts` | YES |
 | `groupTransactionsByDate` | `UI/Perps/utils/transactionTransforms.ts` | `ui/components/app/perps/utils/transactionTransforms.ts` | Near-identical |
-
-## Priority 3 -- Formatting Abstraction
-
-Extract pure formatting logic into controller:
-
-```
-Controller exports:
-  PRICE_RANGES_CONFIG (range thresholds + sig dig rules)
-  calculateDisplayDecimals(value, config) -> { decimals, sigDigs }
-  roundToDisplayPrecision(value, config) -> number
-
-Platform layer:
-  formatPerpsFiat(value, opts) -> calls calculateDisplayDecimals + locale formatter
-```
-
-Extension currently uses `.toFixed(2)` and `formatNumber({min:2, max:2})` everywhere -- both wrong for low-value and high-precision assets.
 
 ## Can't Share (platform-bound)
 

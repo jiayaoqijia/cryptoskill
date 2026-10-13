@@ -9,7 +9,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "rootDir": "."
+    "rootDir": ".",
+    // scripts/aero-chains.mjs has no .d.ts of its own; allowJs lets the
+    // typecheck pass follow the import from test/aero-chains.test.ts into it
+    // instead of erroring on a missing declaration file.
+    "allowJs": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "scripts/**/*.mjs"]
 }

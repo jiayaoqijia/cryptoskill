@@ -6,7 +6,7 @@ allowed-tools: "Bash(perp:*), Bash(npx -y perp-cli:*), Bash(bash scripts/preflig
 compatibility: "Requires Node.js 20 or newer and the perp-cli npm package (global install or npx). Network access required for exchange APIs and bridge providers. Mutating commands need a wallet key imported into the OWS vault via 'perp wallet set EXCHANGE' (key on stdin or hidden prompt — never argv). Skill is portable across Claude Code, Claude.ai, Cursor, Codex, and Gemini CLI — no platform-specific features."
 metadata:
   author: hypurrquant
-  version: "0.14.0"
+  version: "0.14.2"
 ---
 
 # perp-cli
@@ -46,7 +46,7 @@ Also bundled under `scripts/`: `preflight.sh`, `arb-monitor.sh`, `funding-analys
 ### Step 1: Verify install + version
 
 ```bash
-perp --version 2>/dev/null || npx -y perp-cli@latest --version   # must be >= 0.14.0
+perp --version 2>/dev/null || npx -y perp-cli@latest --version   # must be >= 0.14.2
 ```
 
 If it is missing or older, ask the user before installing/upgrading (`npm install -g perp-cli@latest`) — never install on your own. If `perp` is not on PATH, prefix every command with `npx -y perp-cli@latest`.
@@ -94,7 +94,7 @@ Imported keys trade; `funds deposit|withdraw|transfer|bridge`, `wallet manage re
 - Limit GTC / ALO returns `status: accepted, finality: pending` after the ACK; `open` only via `perp --json trade status c:<id> --symbol <S> -e qfex`.
 - `ORDER_PENDING` = outcome unknown: NEVER resubmit; check with the `c:<id>` in the remediation.
 - Funding rates on QFEX are unverified: excluded everywhere unless `perp --json arb scan --rates --include-unverified` (display only).
-- Withdrawals need `settings.withdraw.qfex` (allowlist + limits), which only the user can set in an interactive terminal — an agent cannot set or change it. `perp --json --dry-run funds withdraw qfex <amt> --to <addr>` shows the gate verdict.
+- Withdrawals are disabled in perp-cli for now: `funds withdraw qfex` → `CAPABILITY_UNSUPPORTED` (also under `--dry-run`). Withdraw in the QFEX web app. Ondo Perps has no API withdrawals either.
 
 Venue rules for these: `trade limit` defaults to `--tif GTC` on every venue (arcus maps it to GTT; ondo offers GTC|IOC|ALO; FOK is never emulated → `CAPABILITY_UNSUPPORTED` where not offered); market orders on every venue are bounded by `--slippage-bps <n>` → `settings.slippageBps.<venue>` → `settings.defaultSlippageBps` (shipped default 50). Ondo (US, PA) and Arcus (US, CA, GB) print a one-time restricted-region notice on stderr when used with credentials (warn only, never blocks).
 
@@ -115,6 +115,23 @@ perp --json arb scan --live --interval 60         # continuous monitoring
 ```
 
 Common knobs: `--min <pct>`, `--top <n>`, `--hold-days <n>`, `--bridge-cost <usd>`, `--size <usd>`.
+
+#### HIP-3 dexes (part of Hyperliquid, not a separate venue)
+
+HIP-3 dexes are selected on the Hyperliquid venue with the root `--dex <name>` flag; every market / account / trade command works the same way. Same account and wallet as native Hyperliquid perps.
+
+```bash
+perp --json -e hyperliquid market hip3                               # list deployed dexes (name, markets)
+perp --json -e hyperliquid --dex xyz market list                     # markets on dex "xyz"
+perp --json -e hyperliquid --dex xyz market info GOLD                # symbols WITHOUT the "xyz:" prefix
+perp --json -e hyperliquid --dex xyz account positions               # positions on that dex only
+perp --json -e hyperliquid --dex xyz --dry-run trade market GOLD buy 0.01
+```
+
+- `--dex` with any other `-e` venue → `INVALID_PARAMS` (never ignored).
+- A dex symbol without `--dex` (e.g. `-e hyperliquid market mid xyz:GOLD`) → `SYMBOL_NOT_FOUND` with remediation `--dex xyz`; it is never read from the native dex.
+- `portfolio --dexes xyz,…` adds HIP-3 dex balances; builder fees are never attached on HIP-3.
+- MCP tools cover native Hyperliquid perps only — use the CLI for HIP-3.
 
 ### Step 4: Validate before mutating
 
