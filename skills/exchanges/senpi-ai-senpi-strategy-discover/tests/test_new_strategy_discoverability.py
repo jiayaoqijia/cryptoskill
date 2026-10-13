@@ -64,6 +64,14 @@ _CASES = [
     # ── the xyz-inclusive striker (2026-09-25): penguin with the xyz ban lifted ──
     ("pelican", _intent(), "rank jump striker stocks and crypto"),
     ("pelican", _intent(), "all markets striker tradfi and perps"),
+    # ── the textbook crossover (2026-10-12): the setup users most often rebuild by hand ──
+    ("moose",   _intent(), "ema crossover moving average trend following"),
+    ("moose",   _intent(), "golden cross death cross"),
+    ("moose",   _intent(), "simple trend following for a beginner"),
+    # ── the gold breakout (2026-10-12): the market users most often build on by hand ──
+    ("ibex",    _intent(), "gold breakout"),
+    ("ibex",    _intent(), "donchian breakout gold"),
+    ("ibex",    _intent(assets=[("class", "commodities")]), "gold xauusd metals"),
 ]
 
 

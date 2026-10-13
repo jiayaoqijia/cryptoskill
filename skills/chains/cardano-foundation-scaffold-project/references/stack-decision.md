@@ -68,7 +68,7 @@ These languages and SDKs exist and are used in production by specific teams. The
 - **Plutus (original Haskell)** — the historical on-chain language. Functional and production-proven, but Aiken has surpassed it in developer experience for new projects. Pick Plutus only if maintaining an existing Plutus codebase.
 - **Helios** — DSL with browser-side compilation. Niche; smaller ecosystem than Aiken.
 - **Marlowe** — domain-specific language for financial contracts. Use only if you are building a structured financial contract that fits Marlowe's model.
-- **Blaze** — TypeScript transaction builder. Lightweight alternative to Mesh and Evolution; smaller community. Sometimes paired with storage-style use cases where many small UTxOs need indexing.
+- **Blaze** — TypeScript transaction builder. Lightweight alternative to Mesh and Evolution; smaller community.
 - **Atlas** — Haskell PAB. Mature within the Haskell ecosystem; outside scope for a multi-language v1.
 
 If a developer insists on a deferred stack, hand off to `suggest-tooling` for a deeper conversation rather than improvising a layout here. This skill's scope is the four confirmed-active v1 stacks.

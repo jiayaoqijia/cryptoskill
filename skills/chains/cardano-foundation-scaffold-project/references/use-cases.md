@@ -37,7 +37,7 @@ For each: source code at `../../docs/sources/cardano-use-case-templates/<name>/`
 | 7 | auction | English auction; highest bidder wins after a deadline. | aiken, scalus | Read the Aiken validator first; CF has partial off-chain coverage. |
 | 8 | crowdfund | Goal-based fundraising; refund or release on deadline. | aiken | Refund logic is the subtle bit; read the validator carefully. |
 | 9 | vault | Holds funds under a single beneficiary key with an optional admin override. | aiken | Read the validator. |
-| 10 | storage | On-chain key-value storage with simple ownership rules. | aiken | Blaze is the recommended off-chain extra for storage-style flows where many small UTxOs need indexing; otherwise use any of the four stacks. |
+| 10 | storage | Verifiable audit snapshots: a one-shot NFT locks the canonical SHA-256 hash of off-chain data at an append-only validator; anyone can re-hash and compare, and an off-chain Merkle tree pinpoints which item changed. | aiken | Spend always fails, so every check lives in the minting policy: the datum must be right at mint because it can never be corrected. |
 | 11 | simple-wallet | Multi-signature wallet pattern under a single script. | aiken | Datum encodes the signer set. |
 | 12 | pricebet | Bet against an oracle-reported price. | aiken | Requires an oracle UTxO; combine with `query-chain` skill for the oracle read path. |
 | 13 | payment-splitter | Distributes incoming payments across multiple recipients by share. | aiken, scalus | Useful pattern when one address receives funds destined for several parties. |

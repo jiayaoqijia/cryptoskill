@@ -254,15 +254,15 @@ OHLCV bars for up to 10 tickers over `[start_time, end_time]`.
 **Response:** `{ "span": "week", "interval": "hour", "bounds": "regular", "historicals": [{ "symbol": "AAPL", "historicals": [{ "begins_at": "...", "open_price": "...", "close_price": "...", "high_price": "...", "low_price": "...", "volume": 0 }] }] }`
 
 ### robinhood_get_equity_technical_indicators
-One indicator over one stock's bars in `[start_time, end_time]`, computed by this server from the same REST bars.
+One indicator over the bars of up to 10 stocks in `[start_time, end_time]`, computed by this server from the same REST bars.
 
 **Parameters:**
-- `symbol`, `type`, `interval`, `start_time` (required); `end_time`, `bounds`, `adjustment_type` (optional)
+- exactly one of `symbols` (array, max 10) or `symbol` (deprecated); `type`, `interval`, `start_time` (required); `end_time`, `bounds`, `adjustment_type` (optional)
 - `type`: sma, ema, rsi, momentum, roc, cci, williams_r, atr, mfi, adx, donchian_channels, bollinger_bands, macd, keltner_channels, supertrend, vwap, obv, pivot_points
 - Tuning, each only where the type takes it: `period`, `num_std`, `multiplier`, `fast_period`, `slow_period`, `signal_period`, `method` (`"classic"` pivots only)
 - `output` — `"series"` (default), `"latest"`, or `"last:N"`
 
-**Response:** `{ "symbol": "AAPL", "type": "rsi", "interval": "day", "bounds": "regular", "params": {...}, "series": [{ "begins_at": "...", "rsi": 55.2 }] }` — warm-up bars read `null`.
+**Response:** `{ "results": [{ "symbol": "AAPL", "interval": "day", "bounds": "regular", "indicators": [{ "type": "rsi", "params": {...}, "series": [{ "begins_at": "...", "value": 55.2 }] }] }], "not_found": ["ZZZZ"] }` — one result per symbol in request order; warm-up bars read `null`; `not_found` (symbols with no bars) is omitted when empty.
 
 ### robinhood_search
 Search by name or ticker.
@@ -307,7 +307,7 @@ Option order history for one account (filled, cancelled, and open multi-leg orde
 
 **Parameters:**
 - `account_number` (string, required)
-- Filters: `order_id`, `chain_ids`, `state`, `placed_agent`, `underlying_type` ("equity"/"index"), `created_at_gte`; `cursor`
+- Filters: `order_id`, `chain_ids`, `state`, `placed_agent`, `agent_initiated` (see robinhood_get_equity_orders), `underlying_type` ("equity"/"index"), `created_at_gte`; `cursor`
 
 **Response:** `{ "orders": [{ "id": "...", "state": "filled", "legs": [...] }], "next_cursor": null }`
 
@@ -377,7 +377,7 @@ An accepted short returns `state: "locate_completed"` (Robinhood located shares 
 Validates as place would and returns the live quote with `estimated_price`, `estimated_quantity`, `estimated_notional` (a buy is priced at the ask, a sell at the bid, a limit at its limit). Places **nothing**. Parameters as place, without `ref_id`.
 
 ### robinhood_get_equity_orders
-**Parameters:** `account_number` (required); filters `order_id`, `symbol`, `state`, `placed_agent` (e.g. "user", "agentic"), `created_at_gte`; `cursor`
+**Parameters:** `account_number` (required); filters `order_id`, `symbol`, `state`, `placed_agent` (e.g. "user", "agentic"; an agent order the customer approved in the app reads "user"), `agent_initiated` (true: only orders with an `agent_id` or `placed_agent` "agentic"; false: only orders with neither; omit for all), `created_at_gte`; `cursor`
 
 **Response:** `{ "orders": [...], "next_cursor": null }`
 

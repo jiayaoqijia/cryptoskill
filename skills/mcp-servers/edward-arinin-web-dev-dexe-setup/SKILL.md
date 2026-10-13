@@ -141,16 +141,29 @@ If the user wants signing beyond phone-approval WalletConnect, walk this ladder
 (top = safest):
 
 1. **WalletConnect (default).** `dexe_wc_connect` → approve on phone. No key on
-   disk. This is already available; prefer it.
-2. **Safe multisig (`DEXE_SAFE_TX_SERVICE_URL`).** Proposes tx to a Safe; owners
+   disk. This is already available; prefer it — and it is the only right
+   answer when this agent can run shell commands or drive a browser.
+2. **Encrypted keystore (`DEXE_SIGNER_MODE=keystore`).** The USER runs
+   `npx dexe-mcp key create` (or `key import`, or `key import --from-env` to
+   move an existing `DEXE_PRIVATE_KEY`) in their own terminal — it needs a TTY
+   and will refuse your shell. Then `.env` gets `DEXE_SIGNER_MODE=keystore`.
+   Each write opens a local approval page; the user types the password THERE.
+   **Never ask for, accept, or relay the keystore password.** On
+   `awaiting_approval`, tell the user to approve, then re-run the same call.
+   See docs/SIGNING.md.
+3. **Safe multisig (`DEXE_SAFE_TX_SERVICE_URL`).** Proposes tx to a Safe; owners
    co-sign separately.
-3. **Hot key (`DEXE_PRIVATE_KEY`).** Plaintext on disk. Convenient for CI bots,
-   dangerous for humans. Show this before writing:
-   > Setting `DEXE_PRIVATE_KEY` stores your key in plaintext at `.env`. Anyone
-   > who reads the file can drain that wallet. Are you sure you don't want
-   > WalletConnect (already available) or a Safe multisig instead?
-4. Refuse to proceed to a hot key without an explicit "yes" confirming the
-   trade-off.
+4. **Unattended hot key (`DEXE_SIGNER_MODE=unattended` + `DEXE_PRIVATE_KEY`).**
+   Plaintext on disk, no confirmation, testnet only unless
+   `DEXE_UNATTENDED_CHAINS` lists more. For CI bots, dangerous for humans. Show
+   this before writing:
+   > Setting `DEXE_PRIVATE_KEY` stores your key in plaintext at `.env`, and in
+   > unattended mode it signs with no confirmation. Anyone who reads the file
+   > can drain that wallet. Are you sure you don't want WalletConnect (already
+   > available) or the encrypted keystore instead?
+5. Refuse to proceed to a hot key without an explicit "yes" confirming the
+   trade-off, and always write `DEXE_SIGNER_MODE=unattended` with it (an unset
+   mode is a deprecated default).
 
 ## .env precedence trap
 

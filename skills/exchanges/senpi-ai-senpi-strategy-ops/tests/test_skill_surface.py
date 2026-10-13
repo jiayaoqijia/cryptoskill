@@ -65,7 +65,26 @@ TAXONOMY = REPO / "docs" / "error-code-taxonomy.md"
 # resident context with the count hiding it (2026-09-23).
 # ops: 344 → 345 for the one-line flat-book rule beside the two-targets rule it completes; the depth is in
 # references/editing-a-live-strategy.md §4.
-BODY_BUDGET = {"senpi-strategy-ops": 345, "senpi-strategy-author": 430}
+# ops 345 -> 351 (2026-10-12): say how often it will trade, before funding. Jason's standing
+# instruction the day moose was catalogued. Resident because it fires on EVERY create and it gates
+# a money move: a user who is not told how often a strategy acts supplies their own number and
+# reads normal silence as breakage — shadow took 10 installs to 0 fills with all 10 wallets
+# withdrawn, which is a frequency mismatch, not a returns one. A rule delivered after the wallet is
+# funded is worthless. Taken in LINES rather than absorbed into one long line; the method, the
+# three evidence tiers and the worked numbers live in
+# senpi-strategy-discover/references/trade-frequency.md.
+# ops 345 → 351 (2026-10-12): offer the concentration sibling before funding. Standing instruction from
+# Jason the day hornet-concentrated was added, after his own agent was found running a 45%/10x hornet fork
+# that the catalog did not hold. Resident because it fires on EVERY create of a strategy whose family has
+# such a member, and it gates spending the user's money on the more aggressive of two options — a rule
+# that arrives after the wallet is funded is worthless. Taken in LINES rather than absorbed: the first
+# draft held 345 by pushing the detail into one long line, which is the same resident context with the
+# count hiding it. The axis fields, the exact wording and the tag warning live in
+# senpi-strategy-discover/references/variant-families.md.
+# Both raises above landed the same day and are additive: 345 -> 351 (frequency) -> 357
+# (concentration). Each rule is one paragraph in the body, each gates a money move, and each
+# keeps its depth in a reference rather than here.
+BODY_BUDGET = {"senpi-strategy-ops": 357, "senpi-strategy-author": 430}
 
 
 def _skill_body(path):

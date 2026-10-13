@@ -548,7 +548,7 @@ The templates predominantly use a **flat sentinel** — an empty `""` pubkey/nam
 zero — with an explicit rationale: "keep the datum flat and cheap to compare
 on-chain" (auction's `highest_bidder == ""`, bet's `player2 == ""`, lottery's
 unrevealed `n1/n2 == ""`). Use a **lifecycle enum** for genuine stages (escrow's
-`Initiation | ActiveEscrow`, storage's `SnapshotType`). Use `Option` when you want the
+`Initiation | ActiveEscrow`). Use `Option` when you want the
 type system to force you to handle the absent case (pricebet's
 `player: Option<VerificationKeyHash>`) — cleaner, marginally costlier. There is no
 single right answer; match the cost/clarity trade-off to how hot the field is.
@@ -559,7 +559,7 @@ Treat "what happens to a mis-sent or stranded UTxO" as a first-class design ques
 not an afterthought. Common deliberate hatches: `None -> True` so datum-less dust
 sent to the script is freely recoverable (crowdfund, token-transfer); an
 unconditional owner path (vesting clawback, simple-wallet `Withdraw`). The *inverse*
-is also a deliberate design: storage makes its spend `fail @"immutable"` so nothing
+is also a deliberate design: storage's spend always `fail`s, so nothing
 can ever be spent — the absence of an exit *is* the feature. Decide which you want on
 purpose.
 
