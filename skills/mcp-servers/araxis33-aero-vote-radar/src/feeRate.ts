@@ -115,9 +115,24 @@ export function pruneFeeIntervals(intervals: readonly FeeInterval[], now: Date, 
 }
 
 /**
- * One pool's average USD per day over the intervals that end inside the window,
+ * One pool's average USD per day over the intervals that overlap the window,
  * skipping the unreadable ones. `null` when the readable part covers less than
  * `FEE_RATE_MIN_COVERAGE` of the window.
+ *
+ * Consecutive intervals chain end-to-end from real run timestamps (each one's
+ * `from` is the previous run's `generatedAt`), which drift against the window
+ * boundary rather than landing on it — `now` moves with every run while
+ * `windowHours` ago does not line up with any interval's edge in general. That
+ * makes the oldest interval touching the window straddle its start on almost
+ * every call, not as a rare edge case. An earlier version dropped an interval
+ * like that entirely rather than counting the part of it inside the window, so
+ * the window silently lost up to one interval's width (and its coverage figure
+ * undercounted by the same amount) on nearly every run. Clipping to the window
+ * and prorating the straddling interval's USD by the overlapping share of its
+ * span (the only assumption available at this granularity, and the one already
+ * implicit whenever intervals of differing lengths are averaged together)
+ * fixes that without changing anything for the common case where every
+ * interval already falls cleanly inside the window.
  */
 export function poolFeeRate(
   intervals: readonly FeeInterval[],
@@ -131,11 +146,15 @@ export function poolFeeRate(
   for (const i of intervals) {
     const from = Date.parse(i.from);
     const to = Date.parse(i.to);
-    if (from < start || to > now.getTime()) continue;
+    const clippedFrom = Math.max(from, start);
+    const clippedTo = Math.min(to, now.getTime());
+    const duration = clippedTo - clippedFrom;
+    if (duration <= 0) continue;
     const v = i.usd[pool];
     if (v === null || v === undefined) continue;
-    usd += v;
-    ms += to - from;
+    const fullDuration = to - from;
+    usd += fullDuration > 0 ? v * (duration / fullDuration) : 0;
+    ms += duration;
   }
   if (ms < windowHours * 3_600_000 * FEE_RATE_MIN_COVERAGE) return null;
   return { usdPerDay: usd / (ms / 86_400_000), hours: ms / 3_600_000 };

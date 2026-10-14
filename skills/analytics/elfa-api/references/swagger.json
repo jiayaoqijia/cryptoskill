@@ -4397,7 +4397,7 @@
 					"standing": {
 						"type": "number",
 						"format": "double",
-						"description": "0 to 1, against every account we score: what the ranking is by."
+						"description": "0 to 1, against every account we score. What `metric=standing` ranks by."
 					},
 					"track": {
 						"allOf": [
@@ -4446,10 +4446,12 @@
 			"AccountMetricV3": {
 				"type": "string",
 				"enum": [
-					"standing"
+					"standing",
+					"alphaScore",
+					"hitRate",
+					"avgReturn"
 				],
-				"nullable": false,
-				"description": "Which axis an account is ranked on."
+				"description": "Which axis an account is ranked on. `standing` is influence; `alphaScore`, `hitRate`\nand `avgReturn` are its record as a caller, the same numbers as its `track`."
 			},
 			"AccountScoresV3": {
 				"properties": {
@@ -4699,7 +4701,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "2.10.0",
+		"version": "2.11.0",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -9596,7 +9598,7 @@
 						}
 					},
 					{
-						"description": "Market-wide events with no asset come through either way.",
+						"description": "Events naming an asset in this market, plus events that name nothing we hold a\nfamily for (macro news), which match either value. As more names are linked to\nassets, an event can later drop out of one market.",
 						"in": "query",
 						"name": "assetClass",
 						"required": false,
@@ -11534,7 +11536,7 @@
 						}
 					}
 				},
-				"description": "Who to watch, ranked by standing: how much other accounts reply to, quote and repost\nan account, newer engagement counting more. Standing refreshes daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (the 0 to 1 percentile it is ranked by), its\ndisplay name, follower count and verified flag, and `track`, its record as a caller\n(null when it has never opened a position).\n\nCost: `1` credit.",
+				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: `1` credit.",
 				"summary": "Top accounts",
 				"tags": [
 					"v3 People"

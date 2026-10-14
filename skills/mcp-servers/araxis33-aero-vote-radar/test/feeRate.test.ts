@@ -76,6 +76,19 @@ test("rate: intervals outside the window do not count", () => {
   assert.deepEqual(poolFeeRate([old, ...steady(() => 60)], "0xp", now), { usdPerDay: 240, hours: 96 });
 });
 
+test("rate: an interval straddling the window start is clipped and prorated, not dropped whole", () => {
+  // Consecutive intervals chain end-to-end from real run timestamps, so the
+  // oldest one touching the window will generally straddle its start rather
+  // than land on it exactly. from h(102) to h(90) (12h) straddles the 96h
+  // window boundary: only its last 6h (h(96) to h(90)) are inside the window.
+  const straddling: FeeInterval = { from: h(102), to: h(90), usd: { "0xp": 100 } };
+  // Entirely inside the window: the remaining 90h up to now.
+  const rest: FeeInterval = { from: h(90), to: h(0), usd: { "0xp": 900 } };
+  // Half of the straddling interval's span (6 of its 12 hours) counts, so half
+  // its $100 does too: $50 + the full $900 = $950 over the full 96h window.
+  assert.deepEqual(poolFeeRate([straddling, rest], "0xp", now), { usdPerDay: 950 / 4, hours: 96 });
+});
+
 test("per 10k votes uses the pool's current weight; no votes means no per-vote figure", () => {
   const rates = buildFeeRates(steady(() => 60), new Map([["0xp", 1_000_000]]), now);
   assert.deepEqual(rates["0xp"], { usdPerDay: 240, usdPerDayPer10k: 2.4, hours: 96 });

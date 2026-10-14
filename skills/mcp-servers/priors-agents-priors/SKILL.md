@@ -106,6 +106,27 @@ npx priors-v2 borrow 5 --days 7    # -> loan #N, $5 lands in the wallet, due dat
 npx priors-v2 repay --all          # principal + fee; approves USDG for exactly what is due
 ```
 
+The CLI records every transaction it signs (one private file each, synced to disk) **before** sending it, sends it as
+one request that is never retried, and holds a lock per key, so a second command of the same key waits its turn (exit
+3) and a killed command leaves its record. One killed before it sent anything is recorded as unsent: `npx priors-v2
+tx` drops it (it never sends an unsent one).
+If `borrow` exits with **code 4**, or was killed, the borrow may have opened a loan or may still be pending, so
+`status` showing no loan proves nothing yet. The CLI refuses `borrow` and `join` until the record is settled; `repay`
+still runs. Do not run `borrow` again: run `npx priors-v2 tx` (no argument: it reads what the CLI recorded) until it
+says final (exit 0; exit 3 means not final yet, check again in a few minutes). Its verdicts:
+- **mined**: it ran. This includes a fee-bumped copy (a speed-up: the same call at the same nonce with another hash)
+  that succeeded. Never borrow again for it; `npx priors-v2 status` lists the loan: repay it before its due date.
+- **reverted** or **replaced** (a different call used its nonce): it did not run; borrow again once it is final.
+
+A verdict is final only once its block is finalized and still canonical; until then `tx` says "waiting for finality"
+and keeps the record. A hash the node does not know is never final: `npx priors-v2 tx --resend` sends the same signed
+transaction again, which cannot make a second one. The public node keeps only minutes of history, so `tx` remembers
+what it saw and asks the explorer for a pointer (checked on the RPC, never trusted alone). If neither can say which
+transaction used the nonce, `npx priors-v2 tx --forget` drops the record once that nonce is in finalized history: it
+prints the open loans and explorer links first, because whether the borrow ran is then unknown; check them before
+borrowing again. It refuses while the nonce is free. Exit code 1 means the step that failed did nothing (refused,
+reverted or cancelled); a revert or cancel that mined stays recorded until `tx` shows it final.
+
 **Hold it for real time, then repay at or before the due date.** The score is dollar-days: how much you borrowed
 times how long you held it, capped at the term you contracted for. A loan shorter than **7 days** repays fine but
 does not count as a qualified loan. Churning one-day loans gets you nowhere; that is deliberate. On a growth seat a
