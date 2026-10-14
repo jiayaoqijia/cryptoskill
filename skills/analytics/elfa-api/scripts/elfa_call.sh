@@ -58,6 +58,10 @@ Examples:
   ./elfa_call.sh /v2/aggregations/trending-tokens -q 'timeWindow=24h&pageSize=10'
   ./elfa_call.sh /v2/chat -d '{"message":"What is trending?","analysisType":"chat"}'
 
+  # API v3 (API key only): resolve an entity, then read its events (from in unix seconds)
+  ./elfa_call.sh /v3/entities -q 'q=btc&entityType=token&limit=1'
+  ./elfa_call.sh /v3/events -q "entityIds=<id>&from=$(( $(date +%s) - 86400 ))&limit=10"
+
   # x402 mode (pay-per-request with USDC on Base)
   ./elfa_call.sh /v2/aggregations/trending-tokens --x402 --payment '<base64-payload>'
 
@@ -140,11 +144,12 @@ METHOD=$(printf '%s' "$METHOD" | tr '[:lower:]' '[:upper:]')
 [[ "$ENDPOINT" == /* ]] || die "endpoint must start with / (e.g. /v2/ping)"
 
 if [[ "$X402" == true ]]; then
+  [[ "${ENDPOINT#/x402}" == /v3/* ]] && die "API v3 takes an API key only; x402 is not available on /v3. Set ELFA_API_KEY instead."
   # Rewrite /v2/ → /x402/v2/ if not already prefixed
   [[ "$ENDPOINT" == /v2/* ]] && ENDPOINT="/x402${ENDPOINT}"
   [[ -n "$PAYMENT" ]] || die "--x402 requires --payment <payload>. See https://docs.elfa.ai/x402-payments"
 else
-  [[ -z "${ELFA_API_KEY:-}" ]] && die "ELFA_API_KEY is not set. Get a free key at https://go.elfa.ai/claude-skills"
+  [[ -z "${ELFA_API_KEY:-}" ]] && die "ELFA_API_KEY is not set. Get a key at https://go.elfa.ai/claude-skills"
 fi
 
 # Detect Auto endpoints. We check the *original* endpoint (before x402 rewrite).

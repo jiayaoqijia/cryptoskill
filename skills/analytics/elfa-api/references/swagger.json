@@ -936,6 +936,27 @@
 				],
 				"type": "object"
 			},
+			"ChatSourceV2": {
+				"description": "A page the answer's research read. Links only: the page's content is not included.",
+				"properties": {
+					"url": {
+						"type": "string"
+					},
+					"kind": {
+						"type": "string",
+						"description": "What the link points at, read from its URL. Current values:\n- `x_post` — a post on X\n- `x_account` — an X profile\n- `telegram` — a Telegram channel or message\n- `dex` — a DEX pair or token page\n- `explorer` — a block-explorer page (address, token, transaction)\n- `prediction_market` — a Polymarket or Kalshi market\n- `web` — any other page, such as a news article\n\nA string rather than an enum so new kinds can ship without breaking\ngenerated clients; treat a value you do not recognise as `web`."
+					},
+					"title": {
+						"type": "string",
+						"description": "What the research step did to reach this link, e.g. \"Searched X\"."
+					}
+				},
+				"required": [
+					"url",
+					"kind"
+				],
+				"type": "object"
+			},
 			"ChatResponseV2": {
 				"properties": {
 					"success": {
@@ -943,6 +964,13 @@
 					},
 					"data": {
 						"properties": {
+							"sources": {
+								"items": {
+									"$ref": "#/components/schemas/ChatSourceV2"
+								},
+								"type": "array",
+								"description": "Present only when the request set `includeSources: true`. Links the\nresearch behind this answer read, in the order it read them, without\nduplicates (at most 50). Empty when the answer used no linkable source.\nA source was read, not necessarily cited in `message`."
+							},
 							"creditsConsumed": {
 								"type": "number",
 								"format": "double"
@@ -1026,6 +1054,11 @@
 					"assetMetadata": {
 						"$ref": "#/components/schemas/ChatAssetMetadataV2",
 						"description": "Required for tokenIntro, tokenAnalysis, and accountAnalysis. See endpoint description for required fields per analysis type."
+					},
+					"includeSources": {
+						"type": "boolean",
+						"description": "Set `true` to receive `data.sources`: the links the research behind the\nanswer read. Omitted or `false` leaves the response unchanged.",
+						"default": false
 					}
 				},
 				"type": "object",
@@ -1734,7 +1767,7 @@
 					},
 					"url": {
 						"type": "string",
-						"description": "Public source URL for semantic tweet/news/Telegram matches, when available"
+						"description": "Public source URL for semantic tweet and Telegram matches, when available; market-event matches have none"
 					},
 					"mentionedAt": {
 						"type": "string",
@@ -1747,7 +1780,7 @@
 					},
 					"accountHandle": {
 						"type": "string",
-						"description": "Public account handle for news/tweet matches, when available"
+						"description": "Public account handle of the matched post's author, when available"
 					},
 					"chatUsername": {
 						"type": "string",
@@ -2190,6 +2223,11 @@
 					"assetMetadata": {
 						"$ref": "#/components/schemas/ChatAssetMetadataV2",
 						"description": "Required for tokenIntro, tokenAnalysis, and accountAnalysis. See endpoint description for required fields per analysis type."
+					},
+					"includeSources": {
+						"type": "boolean",
+						"description": "Set `true` to receive `data.sources`: the links the research behind the\nanswer read. Omitted or `false` leaves the response unchanged.",
+						"default": false
 					}
 				},
 				"type": "object",
@@ -2791,6 +2829,1864 @@
 					"messages"
 				],
 				"type": "object"
+			},
+			"EventClassV3": {
+				"type": "string",
+				"enum": [
+					"market",
+					"asset",
+					"call"
+				],
+				"description": "What the event is about: the market at large, one asset, or somebody's call."
+			},
+			"ImplicationV3": {
+				"type": "string",
+				"enum": [
+					"bullish",
+					"bearish",
+					"mixed",
+					"unclear"
+				],
+				"description": "Which way the event cuts. On a call, derived from the side taken."
+			},
+			"EventTypeV3": {
+				"type": "string",
+				"enum": [
+					"security",
+					"listing",
+					"regulatory",
+					"macro",
+					"protocol",
+					"company",
+					"marketFlow",
+					"price",
+					"social",
+					"spam",
+					"other"
+				],
+				"description": "What kind of development it is. Anything the model cannot place becomes `other`."
+			},
+			"EntityTypeV3": {
+				"type": "string",
+				"enum": [
+					"token",
+					"equity",
+					"project",
+					"person",
+					"organisation"
+				],
+				"description": "What an entity is. The same values `/v3/entities` takes and returns."
+			},
+			"EventEntityV3": {
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "Family UUID for tokens/equities; entity UUID for every other type."
+					},
+					"symbol": {
+						"type": "string",
+						"nullable": true,
+						"description": "Ticker on a token or an equity, null on anything else."
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"entityType": {
+						"$ref": "#/components/schemas/EntityTypeV3"
+					}
+				},
+				"required": [
+					"id",
+					"symbol",
+					"name",
+					"entityType"
+				],
+				"type": "object"
+			},
+			"AlertActionV3": {
+				"type": "string",
+				"enum": [
+					"alert",
+					"monitor"
+				],
+				"description": "Whether the analyzer flagged the event, or is only watching it."
+			},
+			"EventImpactV3": {
+				"description": "A measured price reaction, on one of the event's entities.",
+				"properties": {
+					"entityId": {
+						"type": "string",
+						"description": "Asset family whose measured member moved."
+					},
+					"symbol": {
+						"type": "string",
+						"description": "The symbol the price was read under."
+					},
+					"priceChange1d": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Signed return over the day after the event, as a proportion."
+					},
+					"movedFirst": {
+						"type": "boolean",
+						"nullable": true,
+						"description": "The price moved before the event was published."
+					},
+					"marketWide": {
+						"type": "boolean",
+						"nullable": true,
+						"description": "BTC moved at the same time, so the asset's move may not be about this event."
+					},
+					"final": {
+						"type": "boolean",
+						"description": "The measurement window has closed and the numbers will not change again."
+					}
+				},
+				"required": [
+					"entityId",
+					"symbol",
+					"priceChange1d",
+					"movedFirst",
+					"marketWide",
+					"final"
+				],
+				"type": "object"
+			},
+			"NoveltyV3": {
+				"type": "string",
+				"enum": [
+					"new",
+					"update"
+				]
+			},
+			"EventCitedSourceV3": {
+				"properties": {
+					"source": {
+						"type": "string",
+						"description": "`twitter` or `telegram`."
+					},
+					"sourceRecordId": {
+						"type": "string"
+					},
+					"handle": {
+						"type": "string",
+						"nullable": true
+					},
+					"link": {
+						"type": "string",
+						"nullable": true,
+						"description": "Permalink where one exists: the X post, or the first message of a Telegram\ngroup in a public chat. Null for a private Telegram chat."
+					}
+				},
+				"required": [
+					"source",
+					"sourceRecordId",
+					"handle",
+					"link"
+				],
+				"type": "object"
+			},
+			"EventPositionsV3": {
+				"description": "Present on a call only. Counts the lifecycle rows behind it.",
+				"properties": {
+					"long": {
+						"type": "number",
+						"format": "double"
+					},
+					"short": {
+						"type": "number",
+						"format": "double"
+					},
+					"side": {
+						"type": "string",
+						"enum": [
+							"long",
+							"short",
+							"mixed",
+							null
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"long",
+					"short",
+					"side"
+				],
+				"type": "object"
+			},
+			"EventV3": {
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "The event id. The `id` a caller filters on is an entity id; this is the row."
+					},
+					"eventClass": {
+						"$ref": "#/components/schemas/EventClassV3"
+					},
+					"alertTitle": {
+						"type": "string",
+						"nullable": true
+					},
+					"summary": {
+						"type": "string",
+						"nullable": true
+					},
+					"implication": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/ImplicationV3"
+							}
+						],
+						"nullable": true
+					},
+					"eventType": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/EventTypeV3"
+							}
+						],
+						"nullable": true
+					},
+					"primaryEntities": {
+						"items": {
+							"$ref": "#/components/schemas/EventEntityV3"
+						},
+						"type": "array",
+						"description": "What the event is about. Named and typed from the registry at read."
+					},
+					"relatedEntities": {
+						"items": {
+							"$ref": "#/components/schemas/EventEntityV3"
+						},
+						"type": "array",
+						"description": "Named alongside, but not what the event is about."
+					},
+					"alertAction": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/AlertActionV3"
+							}
+						],
+						"nullable": true
+					},
+					"originCount": {
+						"type": "number",
+						"format": "double",
+						"description": "Distinct accounts behind the event: the cited posts' accounts, plus, for\na market event, every account whose post joined the cluster and passed\nthe source gate. A market event's count is read live, so it grows after\n`analyzedAt`; a call or asset event's stays at its cited accounts."
+					},
+					"impacts": {
+						"items": {
+							"$ref": "#/components/schemas/EventImpactV3"
+						},
+						"type": "array",
+						"description": "One per entity measured, the event's own subjects first. Empty on most events. Measured after the event and can change while `final` is false."
+					},
+					"analyzedAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds."
+					},
+					"novelty": {
+						"$ref": "#/components/schemas/NoveltyV3"
+					},
+					"firstSeenAt": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Unix seconds. First post in the cluster, not when the news broke.\nOn long-lived call clusters this can predate the event by hours."
+					},
+					"storylineId": {
+						"type": "string",
+						"nullable": true,
+						"description": "The thread this event belongs to. Null on a call."
+					},
+					"citedSources": {
+						"items": {
+							"$ref": "#/components/schemas/EventCitedSourceV3"
+						},
+						"type": "array",
+						"description": "The posts the analysis cited, first and in its order, then, for a market\nevent, later posts from other accounts that passed the source gate, one\nper account, up to the cap. Never the post text."
+					},
+					"positions": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/EventPositionsV3"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"id",
+					"eventClass",
+					"alertTitle",
+					"summary",
+					"implication",
+					"eventType",
+					"primaryEntities",
+					"relatedEntities",
+					"alertAction",
+					"originCount",
+					"impacts",
+					"analyzedAt",
+					"novelty",
+					"firstSeenAt",
+					"storylineId",
+					"citedSources",
+					"positions"
+				],
+				"type": "object"
+			},
+			"EventsResponseV3": {
+				"properties": {
+					"events": {
+						"items": {
+							"$ref": "#/components/schemas/EventV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true,
+						"description": "Pass back as `cursor` for the next page. Null on the last page."
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"events",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"ServedV3_EventsResponseV3_": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/EventsResponseV3"
+					},
+					{
+						"properties": {
+							"servedFrom": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"servedFrom"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"ErrorResponseV3": {
+				"properties": {
+					"code": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"details": {},
+					"errorId": {
+						"type": "string"
+					},
+					"requestId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"code",
+					"message",
+					"errorId",
+					"requestId"
+				],
+				"type": "object"
+			},
+			"StorylineStatusV3": {
+				"type": "string",
+				"enum": [
+					"open",
+					"dormant"
+				]
+			},
+			"StorylineRelationV3": {
+				"type": "string",
+				"enum": [
+					"origin",
+					"update",
+					"confirmation",
+					"contradiction",
+					"mitigation",
+					"consequence",
+					"reaction",
+					"context"
+				],
+				"description": "How an event relates to the thread it sits in."
+			},
+			"StorylineEventV3": {
+				"properties": {
+					"eventId": {
+						"type": "string"
+					},
+					"relation": {
+						"$ref": "#/components/schemas/StorylineRelationV3"
+					},
+					"material": {
+						"type": "boolean",
+						"description": "The event added something substantive, rather than restating the thread."
+					},
+					"occurredAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds."
+					}
+				},
+				"required": [
+					"eventId",
+					"relation",
+					"material",
+					"occurredAt"
+				],
+				"type": "object"
+			},
+			"StorylineV3": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"summary": {
+						"type": "string"
+					},
+					"status": {
+						"$ref": "#/components/schemas/StorylineStatusV3"
+					},
+					"entities": {
+						"items": {
+							"$ref": "#/components/schemas/EventEntityV3"
+						},
+						"type": "array",
+						"description": "Everything the thread is about. Empty on roughly a quarter of threads."
+					},
+					"startedAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds."
+					},
+					"lastEventAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. Moves with every event, including ones that only restate the thread."
+					},
+					"lastMaterialAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds: the latest material event the thread shows. The prices and levels the\ntitle and summary state are as of this moment or shortly after, so plot them against\nthe price then, not now."
+					},
+					"arcId": {
+						"type": "string",
+						"nullable": true,
+						"description": "Null unless the thread has been grouped into an arc."
+					},
+					"events": {
+						"items": {
+							"$ref": "#/components/schemas/StorylineEventV3"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"title",
+					"summary",
+					"status",
+					"entities",
+					"startedAt",
+					"lastEventAt",
+					"lastMaterialAt",
+					"arcId",
+					"events"
+				],
+				"type": "object"
+			},
+			"StorylinesResponseV3": {
+				"properties": {
+					"storylines": {
+						"items": {
+							"$ref": "#/components/schemas/StorylineV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"storylines",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"ServedV3_StorylinesResponseV3_": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/StorylinesResponseV3"
+					},
+					{
+						"properties": {
+							"servedFrom": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"servedFrom"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"ArcStatusV3": {
+				"type": "string",
+				"enum": [
+					"active",
+					"retired"
+				]
+			},
+			"ArcV3": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"summary": {
+						"type": "string",
+						"nullable": true
+					},
+					"status": {
+						"$ref": "#/components/schemas/ArcStatusV3"
+					},
+					"storylineIds": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"updatedAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds."
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"summary",
+					"status",
+					"storylineIds",
+					"updatedAt"
+				],
+				"type": "object"
+			},
+			"ArcsResponseV3": {
+				"properties": {
+					"arcs": {
+						"items": {
+							"$ref": "#/components/schemas/ArcV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"arcs",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"MatchedOnV3": {
+				"type": "string",
+				"enum": [
+					"symbol",
+					"cashtag",
+					"name",
+					"alias",
+					"tickerRoot",
+					"exchangeSymbol",
+					"handle",
+					"contractAddress",
+					"externalId"
+				],
+				"description": "What the string hit. An id lane scores 1, a symbol 0.9, a loose alias 0.5."
+			},
+			"ExternalIdsV3": {
+				"description": "Ids the same thing carries elsewhere. Null on anything the registry does not hold.",
+				"properties": {
+					"coingeckoId": {
+						"type": "string",
+						"nullable": true
+					},
+					"figi": {
+						"type": "string",
+						"nullable": true,
+						"description": "Composite FIGI where we hold one, otherwise the share class FIGI."
+					},
+					"cik": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"coingeckoId",
+					"figi",
+					"cik"
+				],
+				"type": "object"
+			},
+			"EntityMatchV3": {
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "Family UUID for tokens/equities; entity UUID for every other type."
+					},
+					"entityType": {
+						"$ref": "#/components/schemas/EntityTypeV3"
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"symbol": {
+						"type": "string",
+						"nullable": true
+					},
+					"handle": {
+						"type": "string",
+						"nullable": true,
+						"description": "The X account linked to this entity, if one is. Handles change; the id does not."
+					},
+					"matchedOn": {
+						"$ref": "#/components/schemas/MatchedOnV3"
+					},
+					"score": {
+						"type": "number",
+						"format": "double"
+					},
+					"externalIds": {
+						"$ref": "#/components/schemas/ExternalIdsV3"
+					}
+				},
+				"required": [
+					"id",
+					"entityType",
+					"name",
+					"symbol",
+					"handle",
+					"matchedOn",
+					"score",
+					"externalIds"
+				],
+				"type": "object"
+			},
+			"EntitiesResponseV3": {
+				"properties": {
+					"entities": {
+						"items": {
+							"$ref": "#/components/schemas/EntityMatchV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"entities",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"CallBookBarV3": {
+				"properties": {
+					"barAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. Sealed hours, except the newest row, which is a live tick."
+					},
+					"live": {
+						"type": "boolean"
+					},
+					"longShare": {
+						"type": "number",
+						"format": "double",
+						"description": "0 to 100. How many of the counted accounts are long."
+					},
+					"shortShare": {
+						"type": "number",
+						"format": "double",
+						"description": "0 to 100. The two add up, because an evenly split account does not vote."
+					},
+					"crowdingPercentile": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "0 to 100. Where the lean sits among this book's last 28 days, so 50 is typical."
+					},
+					"accountCount": {
+						"type": "number",
+						"format": "double"
+					},
+					"pulse24": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "0 to 100. How unusual the last day's new calls are against this book's history."
+					},
+					"pulse24LongShare": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "0 to 100. How many of those new calls were long."
+					},
+					"pulse6": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"pulse6LongShare": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"formulaVersion": {
+						"type": "string"
+					},
+					"computedAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. When this bar (or live tick) was last written."
+					}
+				},
+				"required": [
+					"barAt",
+					"live",
+					"longShare",
+					"shortShare",
+					"crowdingPercentile",
+					"accountCount",
+					"pulse24",
+					"pulse24LongShare",
+					"pulse6",
+					"pulse6LongShare",
+					"formulaVersion",
+					"computedAt"
+				],
+				"type": "object"
+			},
+			"CallBookResponseV3": {
+				"properties": {
+					"bars": {
+						"items": {
+							"$ref": "#/components/schemas/CallBookBarV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"bars",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"ServedV3_CallBookResponseV3_": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/CallBookResponseV3"
+					},
+					{
+						"properties": {
+							"servedFrom": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"servedFrom"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"MindshareAssetV3": {
+				"properties": {
+					"rank": {
+						"type": "number",
+						"format": "double"
+					},
+					"id": {
+						"type": "string"
+					},
+					"symbol": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"share": {
+						"type": "number",
+						"format": "double"
+					},
+					"changePct": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"hot": {
+						"type": "boolean",
+						"nullable": true
+					},
+					"share1h": {
+						"type": "number",
+						"format": "double"
+					},
+					"share4h": {
+						"type": "number",
+						"format": "double"
+					},
+					"ratio1h4h": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"capped1h": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"rank",
+					"id",
+					"symbol",
+					"name",
+					"share",
+					"changePct",
+					"hot",
+					"share1h",
+					"share4h",
+					"ratio1h4h",
+					"capped1h"
+				],
+				"type": "object"
+			},
+			"MindshareResponseV3": {
+				"properties": {
+					"assets": {
+						"items": {
+							"$ref": "#/components/schemas/MindshareAssetV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"assets",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"MindsharePeriodV3": {
+				"type": "string",
+				"enum": [
+					"1h",
+					"4h",
+					"24h",
+					"7d"
+				]
+			},
+			"Pick_CallAssetV3.Exclude_keyofCallAssetV3.entityType__": {
+				"properties": {
+					"symbol": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string",
+						"description": "Asset family UUID."
+					}
+				},
+				"required": [
+					"symbol",
+					"name",
+					"id"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"TrendingContractAssetV3": {
+				"properties": {
+					"symbol": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string",
+						"description": "Asset family UUID."
+					},
+					"chains": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"symbol",
+					"name",
+					"id",
+					"chains"
+				],
+				"type": "object"
+			},
+			"TrendingContractV3": {
+				"properties": {
+					"rank": {
+						"type": "number",
+						"format": "double"
+					},
+					"contractAddress": {
+						"type": "string"
+					},
+					"mentionCount": {
+						"type": "number",
+						"format": "double"
+					},
+					"asset": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/TrendingContractAssetV3"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"rank",
+					"contractAddress",
+					"mentionCount",
+					"asset"
+				],
+				"type": "object"
+			},
+			"TrendingContractsResponseV3": {
+				"properties": {
+					"contracts": {
+						"items": {
+							"$ref": "#/components/schemas/TrendingContractV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"contracts",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"ServedV3_TrendingContractsResponseV3_": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TrendingContractsResponseV3"
+					},
+					{
+						"properties": {
+							"servedFrom": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"servedFrom"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"CallAssetV3": {
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "Asset family UUID."
+					},
+					"symbol": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"entityType": {
+						"$ref": "#/components/schemas/EntityTypeV3"
+					}
+				},
+				"required": [
+					"id",
+					"symbol",
+					"name",
+					"entityType"
+				],
+				"type": "object"
+			},
+			"CallActionV3": {
+				"type": "string",
+				"enum": [
+					"open",
+					"reaffirm",
+					"add",
+					"trim",
+					"reverse",
+					"close",
+					"stopOut"
+				],
+				"description": "What the author did to the position."
+			},
+			"CallSetupV3": {
+				"type": "string",
+				"enum": [
+					"technical",
+					"momentum",
+					"fade",
+					"accumulation"
+				],
+				"description": "What the call was read off. Null when the author did not say."
+			},
+			"CallThesisV3": {
+				"type": "string",
+				"enum": [
+					"macro",
+					"narrative",
+					"event"
+				],
+				"description": "What the author expected to drive it. Null when they did not say."
+			},
+			"CallSourceKindV3": {
+				"type": "string",
+				"enum": [
+					"twitter",
+					"telegram"
+				]
+			},
+			"CallV3": {
+				"properties": {
+					"handle": {
+						"type": "string",
+						"nullable": true
+					},
+					"source": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallSourceKindV3"
+							}
+						],
+						"nullable": true
+					},
+					"channel": {
+						"type": "string",
+						"nullable": true,
+						"description": "A Telegram channel's title. Null for a post in a group chat we cannot name."
+					},
+					"id": {
+						"type": "string"
+					},
+					"episodeId": {
+						"type": "string"
+					},
+					"asset": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallAssetV3"
+							}
+						],
+						"nullable": true
+					},
+					"callAction": {
+						"$ref": "#/components/schemas/CallActionV3"
+					},
+					"setup": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallSetupV3"
+							}
+						],
+						"nullable": true
+					},
+					"thesis": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallThesisV3"
+							}
+						],
+						"nullable": true
+					},
+					"sourceRecordId": {
+						"type": "string"
+					},
+					"occurredAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds."
+					}
+				},
+				"required": [
+					"handle",
+					"source",
+					"channel",
+					"id",
+					"episodeId",
+					"asset",
+					"callAction",
+					"setup",
+					"thesis",
+					"sourceRecordId",
+					"occurredAt"
+				],
+				"type": "object"
+			},
+			"CallsResponseV3": {
+				"properties": {
+					"calls": {
+						"items": {
+							"$ref": "#/components/schemas/CallV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"calls",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"ServedV3_CallsResponseV3_": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/CallsResponseV3"
+					},
+					{
+						"properties": {
+							"servedFrom": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"servedFrom"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"CallDirectionV3": {
+				"type": "string",
+				"enum": [
+					"long",
+					"short"
+				],
+				"description": "Which way an account is positioned."
+			},
+			"CallHorizonV3": {
+				"type": "string",
+				"enum": [
+					"scalp",
+					"swing",
+					"position",
+					"unspecified"
+				],
+				"description": "How long the author meant to hold it. Sets when the call expires."
+			},
+			"CallStatusV3": {
+				"type": "string",
+				"enum": [
+					"open",
+					"closed"
+				]
+			},
+			"CloseReasonV3": {
+				"type": "string",
+				"enum": [
+					"close",
+					"reverse",
+					"stopOut",
+					"expiry"
+				],
+				"description": "Why a call ended. `expiry` is us closing it, the rest are the author."
+			},
+			"CallerTrackV3": {
+				"description": "An account's record over every position it has opened, in every market and since\nscoring began, not cut to the plan's history. Scored once a day from closed\npositions; the scores are null until an account has a scored one.",
+				"properties": {
+					"alphaScore": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "-1 to 1. How well the scored positions did, blending their return against the\nmarket (BTC for crypto, SPY for equities), their realized return, how much of the\nmove they kept and how they exited; averaged, then pulled toward 0 while there are\nfew, so a handful of lucky calls cannot outrank many solid ones."
+					},
+					"hitRate": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "0 to 1. The share of scored positions that made money."
+					},
+					"avgReturn": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "The mean realized return of scored positions, direction-adjusted, as a fraction (0.05 is 5%)."
+					},
+					"scoredEpisodes": {
+						"type": "number",
+						"format": "double",
+						"description": "Closed positions with a score."
+					},
+					"totalEpisodes": {
+						"type": "number",
+						"format": "double",
+						"description": "Every position the account has opened."
+					}
+				},
+				"required": [
+					"alphaScore",
+					"hitRate",
+					"avgReturn",
+					"scoredEpisodes",
+					"totalEpisodes"
+				],
+				"type": "object"
+			},
+			"EpisodeCallV3": {
+				"properties": {
+					"callId": {
+						"type": "string"
+					},
+					"callAction": {
+						"$ref": "#/components/schemas/CallActionV3"
+					},
+					"occurredAt": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"callId",
+					"callAction",
+					"occurredAt"
+				],
+				"type": "object"
+			},
+			"CallEpisodeV3": {
+				"properties": {
+					"handle": {
+						"type": "string",
+						"nullable": true
+					},
+					"source": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallSourceKindV3"
+							}
+						],
+						"nullable": true
+					},
+					"channel": {
+						"type": "string",
+						"nullable": true,
+						"description": "A Telegram channel's title. Null for a post in a group chat we cannot name."
+					},
+					"id": {
+						"type": "string"
+					},
+					"asset": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallAssetV3"
+							}
+						],
+						"nullable": true
+					},
+					"direction": {
+						"$ref": "#/components/schemas/CallDirectionV3"
+					},
+					"horizon": {
+						"$ref": "#/components/schemas/CallHorizonV3"
+					},
+					"status": {
+						"$ref": "#/components/schemas/CallStatusV3"
+					},
+					"openedAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. When the author posted."
+					},
+					"closedAt": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"observedAt": {
+						"type": "number",
+						"format": "double"
+					},
+					"entryPrice": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"exitPrice": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"closeReason": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CloseReasonV3"
+							}
+						],
+						"nullable": true
+					},
+					"setup": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallSetupV3"
+							}
+						],
+						"nullable": true,
+						"description": "From the opening call; null when it gave none, the position opened another way, or\nthe opening call is older than the plan's history."
+					},
+					"thesis": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallThesisV3"
+							}
+						],
+						"nullable": true
+					},
+					"statedTarget": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Prices the author named when opening, if any; null as for `setup`."
+					},
+					"statedStop": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"track": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallerTrackV3"
+							}
+						],
+						"nullable": true,
+						"description": "The author's record across all their positions."
+					},
+					"calls": {
+						"items": {
+							"$ref": "#/components/schemas/EpisodeCallV3"
+						},
+						"type": "array",
+						"description": "The calls inside the plan's history, oldest first. Empty when every call on a\nposition still open in range is older than that."
+					}
+				},
+				"required": [
+					"handle",
+					"source",
+					"channel",
+					"id",
+					"asset",
+					"direction",
+					"horizon",
+					"status",
+					"openedAt",
+					"closedAt",
+					"observedAt",
+					"entryPrice",
+					"exitPrice",
+					"closeReason",
+					"setup",
+					"thesis",
+					"statedTarget",
+					"statedStop",
+					"track",
+					"calls"
+				],
+				"type": "object"
+			},
+			"CallEpisodesResponseV3": {
+				"properties": {
+					"episodes": {
+						"items": {
+							"$ref": "#/components/schemas/CallEpisodeV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"episodes",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"ServedV3_CallEpisodesResponseV3_": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/CallEpisodesResponseV3"
+					},
+					{
+						"properties": {
+							"servedFrom": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"servedFrom"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"PositioningResponseV3": {
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "Asset family UUID."
+					},
+					"symbol": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"openLong": {
+						"type": "number",
+						"format": "double"
+					},
+					"openShort": {
+						"type": "number",
+						"format": "double"
+					},
+					"asOf": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds."
+					}
+				},
+				"required": [
+					"id",
+					"symbol",
+					"name",
+					"openLong",
+					"openShort",
+					"asOf"
+				],
+				"type": "object"
+			},
+			"TopAccountV3": {
+				"properties": {
+					"rank": {
+						"type": "number",
+						"format": "double"
+					},
+					"handle": {
+						"type": "string",
+						"description": "On X."
+					},
+					"name": {
+						"type": "string",
+						"nullable": true,
+						"description": "The display name on X."
+					},
+					"followerCount": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"verified": {
+						"type": "boolean"
+					},
+					"standing": {
+						"type": "number",
+						"format": "double",
+						"description": "0 to 1, against every account we score: what the ranking is by."
+					},
+					"track": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CallerTrackV3"
+							}
+						],
+						"nullable": true,
+						"description": "Null when the account has never opened a position."
+					}
+				},
+				"required": [
+					"rank",
+					"handle",
+					"name",
+					"followerCount",
+					"verified",
+					"standing",
+					"track"
+				],
+				"type": "object"
+			},
+			"TopAccountsResponseV3": {
+				"properties": {
+					"accounts": {
+						"items": {
+							"$ref": "#/components/schemas/TopAccountV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"accounts",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"AccountMetricV3": {
+				"type": "string",
+				"enum": [
+					"standing"
+				],
+				"nullable": false,
+				"description": "Which axis an account is ranked on."
+			},
+			"AccountScoresV3": {
+				"properties": {
+					"standing": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "0 to 1, against every account we score."
+					},
+					"standingRaw": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Decayed inbound engagement, unbounded. What the percentile is computed from."
+					}
+				},
+				"required": [
+					"standing",
+					"standingRaw"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountAssociationKindV3": {
+				"type": "string",
+				"enum": [
+					"employment",
+					"operatedBy",
+					"operates",
+					"builtOn",
+					"backedBy",
+					"investedIn",
+					"partnerOf",
+					"sponsoredBy",
+					"featuredIn",
+					"covers",
+					"supersededBy",
+					"acquiredBy",
+					"fanOf",
+					"uses",
+					"memberOf",
+					"credential",
+					"holds",
+					"contact",
+					"person",
+					"selfDescription",
+					"creatorOf",
+					"advisory"
+				]
+			},
+			"AccountAssociationV3": {
+				"description": "What a bio states, not what we verified.",
+				"properties": {
+					"handle": {
+						"type": "string",
+						"nullable": true,
+						"description": "The account at the other end. Which way the claim runs is the array it sits in."
+					},
+					"kind": {
+						"$ref": "#/components/schemas/AccountAssociationKindV3"
+					},
+					"statedAs": {
+						"type": "string",
+						"nullable": true,
+						"description": "The words the bio used, where it said more than the handle."
+					},
+					"rawEntity": {
+						"type": "string"
+					},
+					"bioStatus": {
+						"type": "string",
+						"enum": [
+							"current",
+							"former"
+						]
+					},
+					"claimedAt": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Unix seconds."
+					}
+				},
+				"required": [
+					"handle",
+					"kind",
+					"statedAs",
+					"rawEntity",
+					"bioStatus",
+					"claimedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountAssociationsV3": {
+				"properties": {
+					"outboundCount": {
+						"type": "number",
+						"format": "double",
+						"description": "What this account's own bio claims. Counted before `edgeLimit`."
+					},
+					"outbound": {
+						"items": {
+							"$ref": "#/components/schemas/AccountAssociationV3"
+						},
+						"type": "array"
+					},
+					"inboundCount": {
+						"type": "number",
+						"format": "double",
+						"description": "What other bios claim about it."
+					},
+					"inbound": {
+						"items": {
+							"$ref": "#/components/schemas/AccountAssociationV3"
+						},
+						"type": "array"
+					},
+					"refreshedAt": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Unix seconds. When the bios behind these claims were last read."
+					}
+				},
+				"required": [
+					"outboundCount",
+					"outbound",
+					"inboundCount",
+					"inbound",
+					"refreshedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountDetailResponseV3": {
+				"properties": {
+					"handle": {
+						"type": "string",
+						"description": "On X."
+					},
+					"scores": {
+						"$ref": "#/components/schemas/AccountScoresV3"
+					},
+					"associations": {
+						"$ref": "#/components/schemas/AccountAssociationsV3"
+					}
+				},
+				"required": [
+					"handle",
+					"scores",
+					"associations"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PlanV3": {
+				"type": "string",
+				"enum": [
+					"payg",
+					"grow",
+					"enterprise"
+				]
+			},
+			"KeyStatusV3": {
+				"properties": {
+					"plan": {
+						"$ref": "#/components/schemas/PlanV3"
+					},
+					"billingMode": {
+						"type": "string",
+						"enum": [
+							"deposit",
+							"arrears"
+						]
+					},
+					"owner": {
+						"type": "string",
+						"enum": [
+							"user",
+							"org"
+						]
+					},
+					"scopes": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"credits": {
+						"properties": {
+							"requestsPerMinute": {
+								"type": "number",
+								"format": "double"
+							},
+							"resetsAt": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							},
+							"remaining": {
+								"type": "number",
+								"format": "double"
+							},
+							"used": {
+								"type": "number",
+								"format": "double"
+							},
+							"limit": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"requestsPerMinute",
+							"resetsAt",
+							"remaining",
+							"used",
+							"limit"
+						],
+						"type": "object"
+					},
+					"historyFrom": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"plan",
+					"billingMode",
+					"owner",
+					"scopes",
+					"credits",
+					"historyFrom"
+				],
+				"type": "object"
 			}
 		},
 		"securitySchemes": {
@@ -2803,7 +4699,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "2.7.4",
+		"version": "2.10.0",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -3419,7 +5315,7 @@
 						"description": "Unauthorized"
 					},
 					"503": {
-						"description": "The upstream model declined to process the matched posts. Retryable — not an empty result. The 4 fixed credits are not charged; the 1 base per-request credit still applies."
+						"description": "The matched posts could not be processed into summaries. Retryable — not an empty result; narrowing the keywords or the time window usually succeeds. The 4 fixed credits are not charged; the 1 base per-request credit still applies."
 					}
 				},
 				"description": "Generate event summaries based on keyword mentions within a time period.\nThis endpoint costs 5 credits total",
@@ -3974,7 +5870,7 @@
 						"description": "Unauthorized"
 					}
 				},
-				"description": "Send a message to the Elfa AI and receive a complete response.\nSuited for agents and integrations that do not support server-sent events (SSE).\n\n**Session management:** omit `sessionId` to start a new conversation.\nThe response includes a `sessionId` — pass it in subsequent requests to continue the same conversation.\n\n**Analysis types and required fields:**\n- `chat` (default) — general conversation. Requires `message`.\n- `macro` — macro market overview. No `message` needed.\n- `summary` — quick market summary. No `message` needed.\n- `tokenIntro` — token introduction. Requires `assetMetadata` with `symbol`, or `chain` + `contractAddress`.\n- `tokenAnalysis` — token trade setup analysis. Same `assetMetadata` requirements as `tokenIntro`.\n- `accountAnalysis` — Twitter/X account analysis. Requires `assetMetadata.username`.\n\n`message` is only used for `analysisType: \"chat\"` and is ignored for other\nanalysis types.\n\n**`assetMetadata` fields (when applicable):**\n- `symbol` — token ticker symbol (e.g. `\"BTC\"`, `\"$ETH\"`)\n- `chain` — blockchain name (e.g. `\"ethereum\"`, `\"solana\"`)\n- `contractAddress` — token contract address\n- `username` — Twitter/X username for account analysis",
+				"description": "Send a message to the Elfa AI and receive a complete response.\nSuited for agents and integrations that do not support server-sent events (SSE).\n\n**Session management:** omit `sessionId` to start a new conversation.\nThe response includes a `sessionId` — pass it in subsequent requests to continue the same conversation.\n\n**Analysis types and required fields:**\n- `chat` (default) — general conversation. Requires `message`.\n- `macro` — macro market overview. No `message` needed.\n- `summary` — quick market summary. No `message` needed.\n- `tokenIntro` — token introduction. Requires `assetMetadata` with `symbol`, or `chain` + `contractAddress`.\n- `tokenAnalysis` — token trade setup analysis. Same `assetMetadata` requirements as `tokenIntro`.\n- `accountAnalysis` — Twitter/X account analysis. Requires `assetMetadata.username`.\n\n`message` is only used for `analysisType: \"chat\"` and is ignored for other\nanalysis types.\n\n**Sources (opt-in):** send `includeSources: true` to receive `data.sources`,\nthe links the research behind the answer read (X posts, news, DEX and\nexplorer pages, prediction markets), each with a `kind`. Links only: page\nand post content is not returned. A source was read, not necessarily cited\nin `message`. Without the flag the response is unchanged.\n\n**`assetMetadata` fields (when applicable):**\n- `symbol` — token ticker symbol (e.g. `\"BTC\"`, `\"$ETH\"`)\n- `chain` — blockchain name (e.g. `\"ethereum\"`, `\"solana\"`)\n- `contractAddress` — token contract address\n- `username` — Twitter/X username for account analysis",
 				"summary": "AI chat",
 				"tags": [
 					"v2 Chat"
@@ -4024,7 +5920,7 @@
 						"description": "PAYG or Enterprise plan required"
 					}
 				},
-				"description": "Stream a response from Elfa AI using Server-Sent Events (SSE).\n\nUse this when your client can consume incremental events. Use\n`POST /v2/chat` instead when your integration needs a complete JSON\nresponse.\n\n**Access:** PAYG and Enterprise API keys.\n\n**Response format:** `text/event-stream`.\n\nCommon `data:` event payloads include:\n- `session_info` with `sessionId` and `analysisType`\n- `title` with a generated session or analysis title\n- `text` with incremental Markdown content\n- `text_complete` when incremental text has finished\n- `status` with progress updates\n- `credits` with consumed credits\n- `complete` with final `sessionId`, `success`, and `creditsConsumed`\n- `invalid_request` when a query is rejected by safety checks\n- `error` for stream failures\n\nA `: keep-alive` comment may be sent during long gaps. The stream ends\nwith `data: [DONE]`.\n\nRequest-body semantics match `POST /v2/chat`: `message` is required only\nfor `analysisType: \"chat\"`; token and account modes use `assetMetadata`.",
+				"description": "Stream a response from Elfa AI using Server-Sent Events (SSE).\n\nUse this when your client can consume incremental events. Use\n`POST /v2/chat` instead when your integration needs a complete JSON\nresponse.\n\n**Access:** PAYG and Enterprise API keys.\n\n**Response format:** `text/event-stream`.\n\nCommon `data:` event payloads include:\n- `session_info` with `sessionId` and `analysisType`\n- `title` with a generated session or analysis title\n- `text` with incremental Markdown content\n- `text_complete` when incremental text has finished\n- `status` with progress updates\n- `credits` with consumed credits\n- `complete` with final `sessionId`, `success`, and `creditsConsumed`; with\n  `includeSources: true` in the request it also carries `sources` (the\n  links the research read; same shape as `POST /v2/chat`)\n- `invalid_request` when a query is rejected by safety checks\n- `error` for stream failures\n\nA `: keep-alive` comment may be sent during long gaps. The stream ends\nwith `data: [DONE]`.\n\nRequest-body semantics match `POST /v2/chat`: `message` is required only\nfor `analysisType: \"chat\"`; token and account modes use `assetMetadata`.",
 				"summary": "AI chat stream",
 				"tags": [
 					"v2 Chat"
@@ -4117,7 +6013,7 @@
 						}
 					}
 				},
-				"description": "Ask the AI to help you build an EQL query.\n\nThe response message contains the AI's reply in Markdown. When it generates EQL,\nit will be in a JSON code block that you can extract, validate, and submit.\n\nUse `sessionId` in follow-up requests to maintain conversation context.\n\n### Cost\n\nAPI mode: `1 + dynamic` credits\n- base request charge: `1` credit\n- dynamic usage charge: `ceil(request_cost * 750)` credits\n\nx402 mode is quoted in USD per turn, not credits. The 402 response lists\nboth schemes and the client picks one:\n- `exact` (flat, charged in full): `fast` `$1`, `expert` `$2`\n- `upto` (authorize a ceiling, settle actual cost): `fast` `$2`, `expert` `$6`\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\nChat produces drafts only; subsequent activation goes through\n`POST /queries/drafts/{draftId}/convert`.\n\n### Request Example\n\n```json\n{\n  \"message\": \"Alert me when BTC breaks 100k\",\n  \"speed\": \"expert\",\n  \"sessionId\": \"optional-session-id\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"sessionId\": \"session-uuid\",\n  \"response\": \"I can help with that...\",\n  \"title\": \"BTC Breakout Alert\",\n  \"reasoning\": null,\n  \"planIds\": [],\n  \"credits\": 104\n}\n```\n\n`credits` is what this call cost, and carries the same total as the\n`x-elfa-credits` response header. Chat is dynamically priced, so read it\nrather than assuming a flat cost.\n\n> Best practice: persist `sessionId` and reuse it for follow-up prompts so\n> the model keeps context across turns.",
+				"description": "Ask the AI to help you build an EQL query.\n\nThe response message contains the AI's reply in Markdown. When it generates EQL,\nit will be in a JSON code block that you can extract, validate, and submit.\n\nUse `sessionId` in follow-up requests to maintain conversation context.\n\n### Cost\n\nAPI mode: `1 + dynamic` credits\n- base request charge: `1` credit\n- dynamic usage charge: `ceil(request_cost * 750)` credits\n\nx402 mode is quoted in USD per turn, not credits. The 402 response lists\nthe schemes it accepts and the client picks one:\n- `exact` (flat, charged in full): `fast` `$1`, `expert` `$2`\n- `batch-settlement` (Base, when listed: deposit once into a payment\n  channel; each turn is capped at `fast` `$2`, `expert` `$6` and charged\n  its actual cost)\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\nChat produces drafts only; subsequent activation goes through\n`POST /queries/drafts/{draftId}/convert`.\n\n### Request Example\n\n```json\n{\n  \"message\": \"Alert me when BTC breaks 100k\",\n  \"speed\": \"expert\",\n  \"sessionId\": \"optional-session-id\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"sessionId\": \"session-uuid\",\n  \"response\": \"I can help with that...\",\n  \"title\": \"BTC Breakout Alert\",\n  \"reasoning\": null,\n  \"planIds\": [],\n  \"credits\": 104\n}\n```\n\n`credits` is what this call cost, and carries the same total as the\n`x-elfa-credits` response header. Chat is dynamically priced, so read it\nrather than assuming a flat cost.\n\n> Best practice: persist `sessionId` and reuse it for follow-up prompts so\n> the model keeps context across turns.",
 				"summary": "Builder Chat",
 				"tags": [
 					"v2 Auto"
@@ -6749,7 +8645,7 @@
 						"description": "Payment required (x402)"
 					}
 				},
-				"description": "Send a message to the Elfa AI and receive a complete response.\nSuited for agents and integrations that do not support server-sent events (SSE).\n\n**Analysis types and required fields:**\n- `chat` (default) — general conversation. Requires `message`.\n- `macro` — macro market overview. No `message` needed.\n- `summary` — quick market summary. No `message` needed.\n- `tokenIntro` — token introduction. Requires `assetMetadata` with `symbol`, or `chain` + `contractAddress`.\n- `tokenAnalysis` — token trade setup analysis. Same `assetMetadata` requirements as `tokenIntro`.\n- `accountAnalysis` — Twitter/X account analysis. Requires `assetMetadata.username`.\n\n`message` is only used for `analysisType: \"chat\"` and is ignored for other\nanalysis types. `adaptive` speed is not available on x402.\n\n**`assetMetadata` fields (when applicable):**\n- `symbol` — token ticker symbol (e.g. `\"BTC\"`, `\"$ETH\"`)\n- `chain` — blockchain name (e.g. `\"ethereum\"`, `\"solana\"`)\n- `contractAddress` — token contract address\n- `username` — Twitter/X username for account analysis\n\n**Cost:** speed based. Pay a flat price with the `exact` scheme (`fast` $1,\n`expert` $2), or authorize a ceiling with `upto` (`fast` $2, `expert` $6)\nand settle only what the turn cost. Requires x402 payment.",
+				"description": "Send a message to the Elfa AI and receive a complete response.\nSuited for agents and integrations that do not support server-sent events (SSE).\n\n**Analysis types and required fields:**\n- `chat` (default) — general conversation. Requires `message`.\n- `macro` — macro market overview. No `message` needed.\n- `summary` — quick market summary. No `message` needed.\n- `tokenIntro` — token introduction. Requires `assetMetadata` with `symbol`, or `chain` + `contractAddress`.\n- `tokenAnalysis` — token trade setup analysis. Same `assetMetadata` requirements as `tokenIntro`.\n- `accountAnalysis` — Twitter/X account analysis. Requires `assetMetadata.username`.\n\n`message` is only used for `analysisType: \"chat\"` and is ignored for other\nanalysis types. `adaptive` speed is not available on x402.\n\nSend `includeSources: true` to receive `data.sources`: the links the\nresearch behind the answer read, with a `kind` each. Links only: page and\npost content is not returned.\n\n**`assetMetadata` fields (when applicable):**\n- `symbol` — token ticker symbol (e.g. `\"BTC\"`, `\"$ETH\"`)\n- `chain` — blockchain name (e.g. `\"ethereum\"`, `\"solana\"`)\n- `contractAddress` — token contract address\n- `username` — Twitter/X username for account analysis\n\n**Cost:** speed based. Pay a flat price per turn with the `exact` scheme\n(`fast` $1, `expert` $2). Where the 402 also lists `batch-settlement`\n(Base), you can instead deposit once into a payment channel: each turn is\nthen capped at `fast` $2 / `expert` $6 and charged only what it cost.\nRequires x402 payment.",
 				"summary": "AI chat",
 				"tags": [
 					"x402 Chat"
@@ -6820,7 +8716,7 @@
 						"description": "Payment required (x402)"
 					}
 				},
-				"description": "Ask the AI to help you build an EQL query. It can research live market data, suggest strategies, and return ready-to-use EQL JSON.\n\nThe response message contains the AI's reply in Markdown. When it generates EQL,\nit will be in a JSON code block that you can extract, validate, and submit.\n\nUse `sessionId` in follow-up requests to maintain conversation context.\n\n**Cost:** speed based. Pay a flat price with the `exact` scheme (`fast` $1,\n`expert` $2), or authorize a ceiling with `upto` (`fast` $2, `expert` $6)\nand settle only what the turn cost. Requires x402 payment.",
+				"description": "Ask the AI to help you build an EQL query. It can research live market data, suggest strategies, and return ready-to-use EQL JSON.\n\nThe response message contains the AI's reply in Markdown. When it generates EQL,\nit will be in a JSON code block that you can extract, validate, and submit.\n\nUse `sessionId` in follow-up requests to maintain conversation context.\n\n**Cost:** speed based. Pay a flat price per turn with the `exact` scheme\n(`fast` $1, `expert` $2). Where the 402 also lists `batch-settlement`\n(Base), you can instead deposit once into a payment channel: each turn is\nthen capped at `fast` $2 / `expert` $6 and charged only what it cost.\nRequires x402 payment.",
 				"summary": "Builder Chat",
 				"tags": [
 					"x402 Auto"
@@ -7485,6 +9381,2280 @@
 					}
 				]
 			}
+		},
+		"/v3/events": {
+			"get": {
+				"operationId": "events-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_EventsResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"events": [
+												{
+													"id": "string",
+													"eventClass": "market",
+													"alertTitle": "string",
+													"summary": "string",
+													"implication": {},
+													"eventType": {},
+													"primaryEntities": [
+														{
+															"id": "string",
+															"symbol": "string",
+															"name": "string",
+															"entityType": null
+														}
+													],
+													"relatedEntities": [
+														{}
+													],
+													"alertAction": {},
+													"originCount": 1,
+													"impacts": [
+														{
+															"entityId": "string",
+															"symbol": "string",
+															"priceChange1d": 1,
+															"movedFirst": true,
+															"marketWide": true,
+															"final": true
+														}
+													],
+													"analyzedAt": 1,
+													"novelty": "new",
+													"firstSeenAt": 1,
+													"storylineId": "string",
+													"citedSources": [
+														{
+															"source": "string",
+															"sourceRecordId": "string",
+															"handle": "string",
+															"link": "string"
+														}
+													],
+													"positions": {
+														"long": 1,
+														"short": 1,
+														"side": "long"
+													}
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter, or an id we do not hold",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Search with `q` is unavailable; retry",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: `1` credit. Requires `x-elfa-api-key`.",
+				"summary": "Events",
+				"tags": [
+					"v3 Events"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Topic to search for, up to 500 characters. Ranks by relevance; see above.",
+						"in": "query",
+						"name": "q",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Unix seconds. Required unless `eventIds` or `q` is sent.",
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Unix seconds. Default now.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Up to 30. An id we do not hold, or older than the plan's history, is skipped.",
+						"in": "query",
+						"name": "eventIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "eventClass",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/EventClassV3"
+						}
+					},
+					{
+						"in": "query",
+						"name": "eventType",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/EventTypeV3"
+						}
+					},
+					{
+						"in": "query",
+						"name": "implication",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/ImplicationV3"
+						}
+					},
+					{
+						"description": "Up to 30 family or entity UUIDs. Matches events naming any of them.",
+						"in": "query",
+						"name": "entityIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "Market-wide events with no asset come through either way.",
+						"in": "query",
+						"name": "assetClass",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"crypto",
+								"equity"
+							]
+						}
+					},
+					{
+						"description": "`new` skips second readings of a story already served.",
+						"in": "query",
+						"name": "novelty",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/NoveltyV3"
+						}
+					},
+					{
+						"description": "Repeatable, or comma separated.",
+						"in": "query",
+						"name": "alertAction",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/AlertActionV3"
+							}
+						}
+					},
+					{
+						"description": "Default `latest`, newest first. `relevant` ranks the last 24 hours.",
+						"in": "query",
+						"name": "sort",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"latest",
+								"relevant"
+							]
+						}
+					},
+					{
+						"description": "`true` keeps events that belong to a storyline, `false` those that do not.",
+						"in": "query",
+						"name": "hasStoryline",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"true",
+								"false"
+							]
+						}
+					},
+					{
+						"description": "Events in one arc's storylines. Not with `sort=relevant`. An arc id we do not hold is a 400.",
+						"in": "query",
+						"name": "arcId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "`true` drops events a storyline marked as not material.",
+						"in": "query",
+						"name": "notable",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"true",
+								"false"
+							]
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"description": "Default 10, maximum 30.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "`nextCursor` from the previous response.",
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/events/storylines": {
+			"get": {
+				"operationId": "storylines-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_StorylinesResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"storylines": [
+												{
+													"id": "string",
+													"title": "string",
+													"summary": "string",
+													"status": "open",
+													"entities": [
+														{
+															"id": "string",
+															"symbol": "string",
+															"name": "string",
+															"entityType": null
+														}
+													],
+													"startedAt": 1,
+													"lastEventAt": 1,
+													"lastMaterialAt": 1,
+													"arcId": "string",
+													"events": [
+														{
+															"eventId": "string",
+															"relation": null,
+															"material": true,
+															"occurredAt": 1
+														}
+													]
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter, or an id we do not hold",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Search with `q` is unavailable; retry",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: `1` credit.",
+				"summary": "Storylines",
+				"tags": [
+					"v3 Events"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Topic to search for, up to 500 characters. Ranks by relevance.",
+						"in": "query",
+						"name": "q",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Unix seconds. Required unless `storylineIds` or `q` is sent.",
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Unix seconds. Default now.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Up to 30. An id we do not hold is skipped.",
+						"in": "query",
+						"name": "storylineIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "Up to 30 family or entity UUIDs. A storyline matches if it involves any of them.",
+						"in": "query",
+						"name": "entityIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "Default `open`, or `any` with `q`. `any` reads every status.",
+						"in": "query",
+						"name": "status",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"description": "Repeatable, or comma separated. Matches storylines carrying any of them.",
+						"in": "query",
+						"name": "relation",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/StorylineRelationV3"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"description": "Default 10, maximum 30.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/events/arcs": {
+			"get": {
+				"operationId": "arcs-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ArcsResponseV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"arcs": [
+												{
+													"id": "string",
+													"name": "string",
+													"summary": "string",
+													"status": "active",
+													"storylineIds": [
+														"string"
+													],
+													"updatedAt": 1
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Search with `q` is unavailable; retry",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: `1` credit.",
+				"summary": "Arcs",
+				"tags": [
+					"v3 Events"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Topic to search for, up to 500 characters. Ranks by relevance.",
+						"in": "query",
+						"name": "q",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Up to 30. An id we do not hold is skipped.",
+						"in": "query",
+						"name": "arcIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "Default `active`.",
+						"in": "query",
+						"name": "status",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/ArcStatusV3"
+						}
+					},
+					{
+						"description": "Arcs where at least 15% of the shown events name an asset in this market, then\narcs in neither market (macro news), each group in `sort` order. Counts and\nrecency leave out events tagged only for the other market.",
+						"in": "query",
+						"name": "assetClass",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"crypto",
+								"equity"
+							]
+						}
+					},
+					{
+						"description": "Up to 30 asset family UUIDs. A person, project or organisation is refused.",
+						"in": "query",
+						"name": "entityIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "`latest` (newest event), `storylines` or `events` (most first).",
+						"in": "query",
+						"name": "sort",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"latest",
+								"storylines",
+								"events"
+							]
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"description": "Default 10, maximum 30.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/entities": {
+			"get": {
+				"operationId": "entities-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/EntitiesResponseV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"entities": [
+												{
+													"id": "string",
+													"entityType": "token",
+													"name": "string",
+													"symbol": "string",
+													"handle": "string",
+													"matchedOn": "symbol",
+													"score": 1,
+													"externalIds": {
+														"coingeckoId": "string",
+														"figi": "string",
+														"cik": "string"
+													}
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: `1` credit.",
+				"summary": "Entities",
+				"tags": [
+					"v3 Entities"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "A ticker, cashtag, name, `@handle`, contract address, CoinGecko id, FIGI or CIK.",
+						"in": "query",
+						"name": "q",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Repeatable, or comma separated. Omit to search every kind.",
+						"in": "query",
+						"name": "entityType",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/EntityTypeV3"
+							}
+						}
+					},
+					{
+						"description": "Default 10, maximum 200.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/market/crypto/call-book": {
+			"get": {
+				"operationId": "call-book-crypto-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_CallBookResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"bars": [
+												{
+													"barAt": 1,
+													"live": true,
+													"longShare": 1,
+													"shortShare": 1,
+													"crowdingPercentile": 1,
+													"accountCount": 1,
+													"pulse24": 1,
+													"pulse24LongShare": 1,
+													"pulse6": 1,
+													"pulse6LongShare": 1,
+													"formulaVersion": "string",
+													"computedAt": 1
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: `1` credit.",
+				"summary": "Crypto call book",
+				"tags": [
+					"v3 Market"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Unix seconds.",
+						"in": "query",
+						"name": "from",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Unix seconds. Default now.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"description": "Default 50, maximum 200.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/market/equity/call-book": {
+			"get": {
+				"operationId": "call-book-equity-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_CallBookResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"bars": [
+												{
+													"barAt": 1,
+													"live": true,
+													"longShare": 1,
+													"shortShare": 1,
+													"crowdingPercentile": 1,
+													"accountCount": 1,
+													"pulse24": 1,
+													"pulse24LongShare": 1,
+													"pulse6": 1,
+													"pulse6LongShare": 1,
+													"formulaVersion": "string",
+													"computedAt": 1
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: `1` credit.",
+				"summary": "Equity call book",
+				"tags": [
+					"v3 Market"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "from",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/market/crypto/mindshare": {
+			"get": {
+				"operationId": "mindshare-crypto-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MindshareResponseV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"assets": [
+												{
+													"rank": 1,
+													"id": "string",
+													"symbol": "string",
+													"name": "string",
+													"share": 1,
+													"changePct": 1,
+													"hot": true,
+													"share1h": 1,
+													"share4h": 1,
+													"ratio1h4h": 1,
+													"capped1h": 1
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: `1` credit.",
+				"summary": "Crypto mindshare",
+				"tags": [
+					"v3 Market"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Default `4h`.",
+						"in": "query",
+						"name": "period",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/MindsharePeriodV3"
+						}
+					},
+					{
+						"description": "Unix seconds. Default now: the board as of that moment.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Default 50, maximum 200.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/market/equity/mindshare": {
+			"get": {
+				"operationId": "mindshare-equity-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MindshareResponseV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"assets": [
+												{
+													"rank": 1,
+													"id": "string",
+													"symbol": "string",
+													"name": "string",
+													"share": 1,
+													"changePct": 1,
+													"hot": true,
+													"share1h": 1,
+													"share4h": 1,
+													"ratio1h4h": 1,
+													"capped1h": 1
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "The same board over equities.\n\nCost: `1` credit.",
+				"summary": "Equity mindshare",
+				"tags": [
+					"v3 Market"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "period",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/MindsharePeriodV3"
+						}
+					},
+					{
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/market/crypto/trending-contracts": {
+			"get": {
+				"operationId": "trending-contracts-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_TrendingContractsResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"contracts": [
+												{
+													"rank": 1,
+													"contractAddress": "string",
+													"mentionCount": 1,
+													"asset": {
+														"symbol": "string",
+														"name": "string",
+														"id": "string",
+														"chains": [
+															null
+														]
+													}
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: `1` credit.",
+				"summary": "Trending contracts",
+				"tags": [
+					"v3 Market"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Unix seconds.",
+						"in": "query",
+						"name": "from",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Unix seconds. Default now.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Default 5. Posts, not accounts.",
+						"in": "query",
+						"name": "minMentions",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Default 50, maximum 200.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/calls": {
+			"get": {
+				"operationId": "calls-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_CallsResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"calls": [
+												{
+													"handle": "string",
+													"source": {},
+													"channel": "string",
+													"id": "string",
+													"episodeId": "string",
+													"asset": {
+														"id": "string",
+														"symbol": "string",
+														"name": "string",
+														"entityType": null
+													},
+													"callAction": "open",
+													"setup": {},
+													"thesis": {},
+													"sourceRecordId": "string",
+													"occurredAt": 1
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter, or a handle or id we do not hold",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: `1` credit.",
+				"summary": "Calls",
+				"tags": [
+					"v3 Calls"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Unix seconds. Required unless `callIds` is sent.",
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Unix seconds. Default now.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Up to 30. An id we do not hold, or older than the plan's history, is skipped.",
+						"in": "query",
+						"name": "callIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "An X username, with or without the at sign.",
+						"in": "query",
+						"name": "handle",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Up to 30 asset family UUIDs.",
+						"in": "query",
+						"name": "entityIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"description": "Default 10, maximum 30.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/calls/episodes": {
+			"get": {
+				"operationId": "call-episodes-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_CallEpisodesResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"episodes": [
+												{
+													"handle": "string",
+													"source": {},
+													"channel": "string",
+													"id": "string",
+													"asset": {
+														"id": "string",
+														"symbol": "string",
+														"name": "string",
+														"entityType": null
+													},
+													"direction": "long",
+													"horizon": "scalp",
+													"status": "open",
+													"openedAt": 1,
+													"closedAt": 1,
+													"observedAt": 1,
+													"entryPrice": 1,
+													"exitPrice": 1,
+													"closeReason": {},
+													"setup": {},
+													"thesis": {},
+													"statedTarget": 1,
+													"statedStop": 1,
+													"track": {
+														"alphaScore": 1,
+														"hitRate": 1,
+														"avgReturn": 1,
+														"scoredEpisodes": 1,
+														"totalEpisodes": 1
+													},
+													"calls": [
+														{
+															"callId": "string",
+															"callAction": null,
+															"occurredAt": 1
+														}
+													]
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter, or a handle or id we do not hold",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: `1` credit.",
+				"summary": "Call episodes",
+				"tags": [
+					"v3 Calls"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Unix seconds. Required unless `episodeIds` is sent.",
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Unix seconds. Default now.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Up to 30. An id we do not hold, or older than the plan's history, is skipped.",
+						"in": "query",
+						"name": "episodeIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "An X username, with or without the at sign.",
+						"in": "query",
+						"name": "handle",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Up to 30 asset family UUIDs.",
+						"in": "query",
+						"name": "entityIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "status",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/CallStatusV3"
+						}
+					},
+					{
+						"in": "query",
+						"name": "direction",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/CallDirectionV3"
+						}
+					},
+					{
+						"description": "The market of the episode's asset.",
+						"in": "query",
+						"name": "assetClass",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"crypto",
+								"equity"
+							]
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"description": "Default 10, maximum 30.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/calls/positioning": {
+			"get": {
+				"operationId": "positioning-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PositioningResponseV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"id": "string",
+											"symbol": "string",
+											"name": "string",
+											"openLong": 1,
+											"openShort": 1,
+											"asOf": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter, unknown id, or not an asset",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: `1` credit.",
+				"summary": "Positioning",
+				"tags": [
+					"v3 Calls"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "An asset family UUID from `/v3/entities`.",
+						"in": "query",
+						"name": "entityId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/people/accounts": {
+			"get": {
+				"operationId": "top-accounts-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TopAccountsResponseV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"accounts": [
+												{
+													"rank": 1,
+													"handle": "string",
+													"name": "string",
+													"followerCount": 1,
+													"verified": true,
+													"standing": 1,
+													"track": {
+														"alphaScore": 1,
+														"hitRate": 1,
+														"avgReturn": 1,
+														"scoredEpisodes": 1,
+														"totalEpisodes": 1
+													}
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "Who to watch, ranked by standing: how much other accounts reply to, quote and repost\nan account, newer engagement counting more. Standing refreshes daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (the 0 to 1 percentile it is ranked by), its\ndisplay name, follower count and verified flag, and `track`, its record as a caller\n(null when it has never opened a position).\n\nCost: `1` credit.",
+				"summary": "Top accounts",
+				"tags": [
+					"v3 People"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Default `standing`.",
+						"in": "query",
+						"name": "metric",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/AccountMetricV3"
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"desc",
+								"asc"
+							]
+						}
+					},
+					{
+						"description": "Default 50, maximum 200.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/v3/key-status": {
+			"get": {
+				"operationId": "key-status-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KeyStatusV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"plan": "payg",
+											"billingMode": "deposit",
+											"owner": "user",
+											"scopes": [
+												"string"
+											],
+											"credits": {
+												"requestsPerMinute": 1,
+												"resetsAt": 1,
+												"remaining": 1,
+												"used": 1,
+												"limit": 1
+											},
+											"historyFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "What this key can do: its plan, scopes, credits, and how far back its plan reaches.\n\nFree.",
+				"summary": "Key status",
+				"tags": [
+					"v3 System"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": []
+			}
 		}
 	},
 	"servers": [
@@ -7516,7 +11686,31 @@
 		},
 		{
 			"name": "v2 Auto",
-			"description": "Conditional query builder and runner: create, validate, poll, and stream EQL queries, and manage LLM sessions.\n\n**Required Sequence (Enforced)**\n1. `POST /v2/auto/queries/validate`\n2. `POST /v2/auto/queries`\n3. `POST /v2/auto/queries/{queryId}/cancel` (only while status is `active`)\n4. `DELETE /v2/auto/queries/{queryId}` (only after status is terminal: `triggered`, `expired`, `cancelled`, `failed`)\n\n**Intent Routing (Strict)**\n\n| User intent | Required source | Required fields |\n| --- | --- | --- |\n| Account-anchored post intent (`@user posted ...`) | `source: \"tweet\"` | `args.username` (no `@`), `args.text`, `args.minConfidence` (start at `80`) |\n| World event intent (`ETF approved`, exploit, sanctions) | `source: \"news\"` | `args.text`, `args.minConfidence` (start at `80`) |\n| Fuzzy world-state predicate not naturally post/event matching | `source: \"llm\"` | `method: \"athena_condition\"`, `args.query`, `args.period` (`>= 1h`) |"
+			"description": "Conditional query builder and runner: create, validate, poll, and stream EQL queries, and manage LLM sessions.\n\n**Required Sequence (Enforced)**\n1. `POST /v2/auto/queries/validate`\n2. `POST /v2/auto/queries`\n3. `POST /v2/auto/queries/{queryId}/cancel` (only while status is `active`)\n4. `DELETE /v2/auto/queries/{queryId}` (only after status is terminal: `triggered`, `expired`, `cancelled`, `failed`)\n\n**Intent Routing (Strict)**\n\n| User intent | Required source | Required fields |\n| --- | --- | --- |\n| Account-anchored post intent (`@user posted ...`) | `source: \"tweet\"` | `args.username` (no `@`), `args.text`, `args.minConfidence` (start at `80`) |\n| News or world event intent (`ETF approved`, exploit, listing, bearish news on ETH) | `source: \"events\"` | At least one filter (`args.entity`, `args.eventType`, `args.implication`, …) or `args.text` + `args.minConfidence` (start at `80`) |\n| Fuzzy world-state predicate not naturally post/event matching | `source: \"llm\"` | `method: \"athena_condition\"`, `args.query`, `args.period` (`>= 1h`) |"
+		},
+		{
+			"name": "v3 Entities",
+			"description": "Resolve a ticker, name, handle, address or identifier to the id every other v3 endpoint takes."
+		},
+		{
+			"name": "v3 Events",
+			"description": "What happened, to what, and when: events, storylines and arcs, searchable by topic."
+		},
+		{
+			"name": "v3 Market",
+			"description": "Market-wide reads for crypto and equities: call books, mindshare and trending contracts."
+		},
+		{
+			"name": "v3 Calls",
+			"description": "Posts that take or change a position, each position from open to close, and open positioning on one asset."
+		},
+		{
+			"name": "v3 People",
+			"description": "X accounts ranked by standing."
+		},
+		{
+			"name": "v3 System",
+			"description": "API key status: plan, scopes, credits and history reach."
 		},
 		{
 			"name": "x402 Account",
@@ -7554,6 +11748,17 @@
 				"v2 Chat",
 				"v2 System",
 				"v2 Auto"
+			]
+		},
+		{
+			"name": "API v3 (Iris)",
+			"tags": [
+				"v3 Entities",
+				"v3 Events",
+				"v3 Market",
+				"v3 Calls",
+				"v3 People",
+				"v3 System"
 			]
 		},
 		{
