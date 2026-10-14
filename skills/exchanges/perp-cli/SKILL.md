@@ -1,6 +1,6 @@
 ---
 name: perp-cli
-description: "Multi-DEX perpetual futures trading via the perp-cli command-line tool. Use when user asks to: trade perps, check funding rates, scan/execute arbitrage (perp-perp or spot-perp), run delta-neutral strategies, bridge USDC across chains, manage positions/orders/leverage, deposit/withdraw, hedge spot+perp, trade HIP-3 DEXes, or mentions perp-cli, hypurrquant, Pacifica, Hyperliquid, Lighter, Aster, Lighter RH, Ondo Perps, Arcus, HyperEVM, funding arb, or U-tokens (UBTC/UETH/USOL). Covers Pacifica (Solana), Hyperliquid (HyperEVM), Lighter (Ethereum), Aster (BNB Chain), Lighter RH and Arcus (Robinhood chain) and Ondo Perps (off-chain)."
+description: "Multi-DEX perpetual futures trading via the perp-cli command-line tool. Use when user asks to: trade perps, check funding rates, scan/execute arbitrage (perp-perp or spot-perp), run delta-neutral strategies, bridge USDC across chains, manage positions/orders/leverage, deposit/withdraw, hedge spot+perp, trade HIP-3 DEXes, or mentions perp-cli, hypurrquant, Pacifica, Hyperliquid, Lighter, Aster, Lighter RH, Ondo Perps, Arcus, QFEX, RISEx, TxFlow, HyperEVM, funding arb, or U-tokens (UBTC/UETH/USOL). Covers Pacifica (Solana), Hyperliquid (HyperEVM), Lighter (Ethereum), Aster (BNB Chain), Lighter RH and Arcus (Robinhood chain), Ondo Perps and QFEX (off-chain), RISEx (RISE chain) and TxFlow (market data only, UNOFFICIAL API)."
 license: MIT
 allowed-tools: "Bash(perp:*), Bash(npx -y perp-cli:*), Bash(bash scripts/preflight.sh:*), Bash(bash scripts/arb-monitor.sh:*), Bash(bash scripts/funding-analysis.sh:*), Bash(bash scripts/spot-perp-scan.sh:*), Bash(bash scripts/validate-arb.sh:*)"
 compatibility: "Requires Node.js 20 or newer and the perp-cli npm package (global install or npx). Network access required for exchange APIs and bridge providers. Mutating commands need a wallet key imported into the OWS vault via 'perp wallet set EXCHANGE' (key on stdin or hidden prompt — never argv). Skill is portable across Claude Code, Claude.ai, Cursor, Codex, and Gemini CLI — no platform-specific features."
@@ -11,7 +11,7 @@ metadata:
 
 # perp-cli
 
-Multi-DEX perpetual futures CLI + MCP server for Pacifica (Solana), Hyperliquid (HyperEVM), Lighter (Ethereum), Aster (BNB Chain), Lighter RH (`lighter-rh`, Robinhood chain, USDG), Ondo Perps (`ondo`), QFEX (`qfex`, custodial TradFi perps — import-only API key; resting reduce-only limits and automation are refused for now, see "QFEX" below), Arcus (`arcus`, Robinhood chain, USDG). v0.13.0+ also supports Hyperliquid Outcome markets (HIP-4) — fully-collateralized binary/range contracts; each outcome's quote token comes from `outcomeMeta.quoteToken` (USDC on every listed outcome as of 2026-10-12), minimum order value 10 quote tokens.
+Multi-DEX perpetual futures CLI + MCP server for Pacifica (Solana), Hyperliquid (HyperEVM), Lighter (Ethereum), Aster (BNB Chain), Lighter RH (`lighter-rh`, Robinhood chain, USDG), Ondo Perps (`ondo`), QFEX (`qfex`, custodial TradFi perps — import-only API key; resting reduce-only limits and automation are refused for now, see "QFEX" below), Arcus (`arcus`, Robinhood chain, USDG), RISEx (`risex|rise`, RISE chain, USDC — trading through a trading-only session signer; deposits / withdrawals in the RISEx app only, see "RISEx" below), TxFlow (`txflow|txf`, MARKET DATA ONLY through an UNOFFICIAL API — no official API exists; it may break without notice, see "TxFlow" below). v0.13.0+ also supports Hyperliquid Outcome markets (HIP-4) — fully-collateralized binary/range contracts; each outcome's quote token comes from `outcomeMeta.quoteToken` (USDC on every listed outcome as of 2026-10-12), minimum order value 10 quote tokens.
 
 ## Instructions
 
@@ -28,6 +28,7 @@ This skill uses progressive disclosure. Read these on demand:
 - `references/commands.md` — full command tree for every group (market, account, trade, outcome, arb, funds, wallet, risk, history, strategy, background, alerts, settings, backtest)
 - `references/agent-operations.md` — non-interactive setup flows, idempotency rules, error codes, common mistakes
 - `references/strategies.md` — funding-arb decision framework + risk-management playbook (read before designing arb strategy)
+- `references/ws-library.md` — `perp-cli/ws` library (0.14.4, @experimental): build a live dashboard / funding comparison / account feed in the browser or Node (streams, events, nullability, comparator, user channels, errors, capability matrix)
 
 Also bundled under `scripts/`: `preflight.sh`, `arb-monitor.sh`, `funding-analysis.sh`, `spot-perp-scan.sh`, `validate-arb.sh`. Use these for repeatable multi-step diagnostics.
 
@@ -95,6 +96,22 @@ Imported keys trade; `funds deposit|withdraw|transfer|bridge`, `wallet manage re
 - `ORDER_PENDING` = outcome unknown: NEVER resubmit; check with the `c:<id>` in the remediation.
 - Funding rates on QFEX are unverified: excluded everywhere unless `perp --json arb scan --rates --include-unverified` (display only).
 - Withdrawals are disabled in perp-cli for now: `funds withdraw qfex` → `CAPABILITY_UNSUPPORTED` (also under `--dry-run`). Withdraw in the QFEX web app. Ondo Perps has no API withdrawals either.
+
+**RISEx** (`-e risex`, testnet = `-n testnet`): orders are signed by a session SIGNER that the user registers with the master wallet (`perp wallet agent approve risex --master <ows-wallet> [--expires-in 30d]`, default 30 days). Rules an agent must follow:
+- Approve = master signs RegisterSigner (+ the new signer's VerifySigner), then the signer is restricted ON-CHAIN to trading only (it signs DisablePermission for every other permission; the MASTER sends those transactions and needs a little ETH on RISE chain for gas — `INSUFFICIENT_BALANCE` before anything is registered otherwise). Only the master can re-enable a permission. If the restriction fails, the signer is revoked automatically; `APPROVE_PARTIAL` means it could not be — tell the user to revoke it in the RISEx app.
+- `wallet agent import risex` is refused (`CAPABILITY_UNSUPPORTED`): an app-created signer keeps fund-movement permissions. `wallet agent verify risex` re-reads the on-chain permissions; `wallet agent revoke risex <name>` revokes with the master.
+- Deposits and withdrawals are app-only: `funds deposit|withdraw risex` → `CAPABILITY_UNSUPPORTED` (also under `--dry-run`), remediation app.rise.trade. Testnet only: `perp -n testnet funds faucet risex` (1000 test USDC, once).
+- Works: market (IOC within `--slippage-bps`, which must fit the market's match price band, 2% on mainnet today), limit GTC / IOC / FOK / ALO (post-only), reduce-only, cancel, cancel-all, leverage, margin mode (refused while a position is open), `trade status c:<id>`. Sizes / prices must sit exactly on the step / tick grid (`INVALID_TICK`, never rounded). Client ids are uint64 decimals (generated when omitted).
+- Not yet: TP/SL / stops, amend, builder fee, bots / TWAP / grid / background jobs (`CAPABILITY_UNSUPPORTED`).
+- Account reads (`portfolio`, `account positions|orders|history|trades|funding-history`) work with only the master address selected (public by address) — no signer needed.
+- `ORDER_PENDING` = outcome unknown (the symbol is quarantined): NEVER resubmit; check with `perp --json trade status c:<id> --symbol <S> -e risex`. Each signed action uses a fresh permit nonce that is never reused.
+- Funding: hourly, `current_funding_rate` = the last settled hourly print (verified against funding payments).
+- Mainnet RISEx trading has not been verified with real funds yet (testnet-verified): ask the user before placing mainnet RISEx orders.
+
+**TxFlow** (`-e txflow`): UNOFFICIAL — TxFlow has no official API; perp-cli reads the undocumented API its web app uses, READ-ONLY. It may change or be blocked at any time; every JSON row says `venueApi: "unofficial"` (`apiStatus` in mixed tables, MCP meta), human output carries a footnote. Rules an agent must follow:
+- Works: `market list|prices|info|book|trades|kline -e txflow`, and TxFlow rows in `perp --json arb scan --rates --include-unverified` (display only). Funding is percent per hour on the venue, shown as a FRACTION per hour, and is UNVERIFIED (a live estimate) — never rank or trade on it.
+- Refused with `CAPABILITY_UNSUPPORTED` before any request: every trade / account / portfolio / funds / agent / builder / bot command, and funding history (`market funding`). Never try to trade TxFlow through perp-cli; the user trades on the TxFlow website.
+- A blocked read (`EXCHANGE_ERROR` "unofficial API refused …") is not retried and has no fallback; there is no testnet.
 
 Venue rules for these: `trade limit` defaults to `--tif GTC` on every venue (arcus maps it to GTT; ondo offers GTC|IOC|ALO; FOK is never emulated → `CAPABILITY_UNSUPPORTED` where not offered); market orders on every venue are bounded by `--slippage-bps <n>` → `settings.slippageBps.<venue>` → `settings.defaultSlippageBps` (shipped default 50). Ondo (US, PA) and Arcus (US, CA, GB) print a one-time restricted-region notice on stderr when used with credentials (warn only, never blocks).
 
