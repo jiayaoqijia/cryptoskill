@@ -572,6 +572,11 @@
   <div class="kept" id="accuracyKept"></div>
   <p class="basis" id="accuracyBasis"></p>
 </div>
+<div class="trust" id="promisePanel" hidden>
+  <p class="when">Forecast against what was actually paid</p>
+  <div class="kept" id="promiseKept"></div>
+  <p class="basis" id="promiseBasis"></p>
+</div>
 
 <details>
   <summary>How this works, and what it does not know</summary>
@@ -1069,7 +1074,8 @@ async function renderMigration(ids, truncated) {
   const staked = totals.stake + totals.permanent;
   if (staked > 0) parts.push(num(staked, 2) + " AERO would become sAERO, one for one.");
   if (staked > 0 && steadyFeeRate) parts.push("In today's steadiest fee pools that is about " +
-    usd(staked / 10000 * steadyFeeRate.per10k) + " a day from fees alone (see \u201cWhere to point sAERO\u201d below).");
+    usd(staked / 10000 * steadyFeeRate.per10k) + " a day (" + usd(staked / 10000 * steadyFeeRate.per10k * 7) +
+    " a week) from fees alone (see \u201cWhere to point sAERO\u201d below).");
   if (totals.liquid > 0) parts.push(num(totals.liquid, 2) + " AERO would come back as plain AERO, because those locks have ended by October 22.");
   if (totals.stake > 0) parts.push("Stake lengths assume you move on launch day: each week you wait takes a week off.");
   if (voting > 0) parts.push("The contract refuses a lock that still has a vote on it, and the old lock is merged away when it moves — so claim first, then reset.");
@@ -2027,6 +2033,39 @@ function renderAccuracy() {
   el.accuracyPanel.hidden = false;
 }
 
+// data/promise.json: for each settled week, the radar's top 10 as forecast a day
+// or two before the close, against what those pools then paid per 10,000 votes.
+// Bad weeks are shown as plainly as good ones — that is the point of the panel.
+function renderPromise(promise) {
+  const epochs = (promise && Array.isArray(promise.epochs) ? promise.epochs : []).filter((e) => e.rows && e.rows.length);
+  if (!epochs.length) return;
+  const date = (iso) => new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  const tiles = epochs.slice().reverse().map((e) => {
+    const forecast = e.rows.reduce((a, r) => a + r.forecastUsd, 0);
+    const paid = e.rows.reduce((a, r) => a + (r.paidUsd || 0), 0);
+    const ratio = forecast > 0 ? paid / forecast : 0;
+    const box = document.createElement("div");
+    const n = document.createElement("div");
+    n.className = "k " + (ratio >= 0.9 ? "good" : ratio >= 0.6 ? "mid" : "bad");
+    n.textContent = "×" + ratio.toFixed(2);
+    const w = document.createElement("div");
+    w.className = "w";
+    const above = e.rows.filter((r) => (r.paidUsd || 0) >= r.forecastUsd).length;
+    w.textContent = "Week of " + date(e.epochStart) + ": forecast " + usd(forecast / e.rows.length) +
+      ", paid " + usd(paid / e.rows.length) + " per pool. " + above + " of " + e.rows.length + " paid at least the forecast.";
+    box.appendChild(n);
+    box.appendChild(w);
+    return box;
+  });
+  document.getElementById("promiseKept").replaceChildren(...tiles);
+  document.getElementById("promiseBasis").textContent =
+    "Paid ÷ forecast for the radar's top " + (promise.topPools || 10) + " pools, per " + num(promise.perVeAero || 10000) +
+    " votes, read a day or two before each close. The numbers on this page move because every scan, about every six hours, " +
+    "reads fresh fees and votes. To stay honest the forecast takes the lower of the recent average and the last finished week, " +
+    "so one big week can't inflate it. A new week is added here after each close.";
+  document.getElementById("promisePanel").hidden = false;
+}
+
 /** The measured error of whichever basis the visitor has selected, or null. */
 function measuredErrorFor(basisName) {
   if (!timing || !timing.accuracy || !Array.isArray(timing.accuracy.overall)) return null;
@@ -2366,7 +2405,7 @@ function renderSaero() {
       ? " (~" + Math.round(per10k * 365 / (10000 * tok.priceUsd) * 100) + "% a year at AERO $" + tok.priceUsd.toFixed(2) + ")" : "";
     const name = (sym) => sym.replace(/^(CL\d*|vAMM|sAMM)-/, "");
     const b = document.createElement("b");
-    b.textContent = "10,000 sAERO → about " + usd(per10k) + " a day";
+    b.textContent = "10,000 sAERO → about " + usd(per10k) + " a day, " + usd(per10k * 7) + " a week";
     const sub = document.createElement("div");
     sub.className = "sub";
     sub.textContent = "From fees alone" + yearly + ", split across the " + steadyTop.length + " steadiest fee pools: " +
@@ -2474,6 +2513,11 @@ fetch("data/timing.json", { cache: "no-cache" })
     // No panel, no range, no measured tooltips — and no error either. The
     // measurement is the page's admission of doubt, not its subject.
   });
+
+fetch("data/promise.json", { cache: "no-cache" })
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(renderPromise)
+  .catch(() => {});
 
 fetch("data/snapshot.json", { cache: "no-cache" })
   .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })

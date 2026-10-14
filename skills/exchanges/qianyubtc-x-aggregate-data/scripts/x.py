@@ -520,7 +520,13 @@ def cmd_search(a):
         q += " since_time:%d" % _when(a.since)
     if a.until:
         q += " until_time:%d" % _when(a.until)
-    items, more = paged("/2/search", a.limit, q=q, feed="top" if a.top else "latest", count=40)
+    try:
+        items, more = paged("/2/search", a.limit, q=q, feed="top" if a.top else "latest", count=40)
+    except Fail as e:
+        if e.code == 4:  # 搜索对任何查询都回 404 = 数据源的搜索暂时坏了，不是"没找到"
+            raise Fail("搜索暂时不可用（数据源的搜索接口出了问题，不是没有结果）",
+                       "可以换个办法：看某个人发了什么用 tweets <账号>；看 X 中文区热帖、话题用 hot / topics；读具体某条推用 tweet <链接>", code=5)
+        raise
     rows = [tweet_out(t) for t in items]
     if a.sort:
         rows.sort(key=lambda r: r.get(a.sort) or 0, reverse=True)
