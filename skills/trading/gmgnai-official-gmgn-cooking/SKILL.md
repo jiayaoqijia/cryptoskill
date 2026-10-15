@@ -114,6 +114,8 @@ When a request returns `429`:
 - If the response body contains `reset_at` (e.g., `{"code":429,"error":"RATE_LIMIT_BANNED","message":"...","reset_at":1775184222}`), extract `reset_at` — it is the Unix timestamp when the ban lifts (typically 5 minutes). Convert to local time and tell the user exactly when they can retry.
 - `cooking create` is a real transaction: **never loop or auto-resubmit** after a `429`. Wait until the reset time, then ask for confirmation again before retrying.
 - For `RATE_LIMIT_EXCEEDED` or `RATE_LIMIT_BANNED`, repeated requests during cooldown extend the ban by 5 seconds each time, up to 5 minutes.
+- On `RATE_LIMIT_BANNED_MAX`, the ban has hit the 5-minute ceiling because requests kept arriving during the cooldown. Stop **all** GMGN calls for this task (not just the failing one) and tell the user the exact reset time; any request before `reset_at` resets the ban to 5 minutes again.
+- On `403 PLAN_UPGRADE_REQUIRED`, the endpoint costs more rate-limit weight than the user's plan capacity, so it can never succeed on this plan — do not retry or wait. Tell the user the endpoint is unavailable on their current plan and show the `upgrade_message` from the response (it contains the upgrade link `https://gmgn.ai/ai?chain=bsc&tab=paid_plans`).
 
 ### Credential Model
 

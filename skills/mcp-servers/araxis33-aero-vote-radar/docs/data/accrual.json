@@ -1,60 +1,60 @@
 {
-  "generatedAt": "2026-10-08T09:23:27.565Z",
-  "scans": 152,
+  "generatedAt": "2026-10-15T07:41:27.707Z",
+  "scans": 175,
   "from": "2026-08-27T22:14:40.000Z",
-  "to": "2026-10-08T06:00:10.000Z",
+  "to": "2026-10-15T04:35:18.000Z",
   "windows": [
     {
       "hours": 48,
-      "observations": 25732,
-      "negativeNaive": 0.4590004663454065,
+      "observations": 32343,
+      "negativeNaive": 0.4797947005534428,
       "negativeAccrual": 0,
-      "withAccrual": 0.03256645422042593,
-      "medianNaiveUsd": 0.06408456706748211,
+      "withAccrual": 0.03246452091642705,
+      "medianNaiveUsd": 0.013236326987666303,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 500.1650441831849,
+      "medianAccrualWhenMoved": 499.960460725511,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 186
+      "withUnpriced": 327
     },
     {
       "hours": 72,
-      "observations": 21441,
-      "negativeNaive": 0.4517979571848328,
+      "observations": 26393,
+      "negativeNaive": 0.47073087561095744,
       "negativeAccrual": 0,
-      "withAccrual": 0.04883167762697636,
-      "medianNaiveUsd": 0.1099623756733692,
+      "withAccrual": 0.047739931042321826,
+      "medianNaiveUsd": 0.034539958208577914,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 502.0628595205743,
+      "medianAccrualWhenMoved": 499.95489689645956,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 162
+      "withUnpriced": 266
     },
     {
       "hours": 96,
-      "observations": 16441,
-      "negativeNaive": 0.44316039170366767,
+      "observations": 20150,
+      "negativeNaive": 0.46431761786600495,
       "negativeAccrual": 0,
-      "withAccrual": 0.06368225777020863,
-      "medianNaiveUsd": 0.17770925278495042,
+      "withAccrual": 0.06238213399503722,
+      "medianNaiveUsd": 0.06111850843912903,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 530.7074557830485,
+      "medianAccrualWhenMoved": 500.1249016409406,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 131
+      "withUnpriced": 209
     },
     {
       "hours": 120,
-      "observations": 10464,
-      "negativeNaive": 0.4381689602446483,
+      "observations": 12931,
+      "negativeNaive": 0.4636145696388524,
       "negativeAccrual": 0,
-      "withAccrual": 0.0797974006116208,
-      "medianNaiveUsd": 0.28201196533071204,
+      "withAccrual": 0.0774108730956616,
+      "medianNaiveUsd": 0.0784898793031239,
       "medianAccrualUsd": 0,
-      "medianAccrualWhenMoved": 559.6510459187302,
+      "medianAccrualWhenMoved": 531.75842860581,
       "medianRepricingShare": 1,
       "amountFell": 0,
-      "withUnpriced": 86
+      "withUnpriced": 140
     }
   ],
   "pureRepricing": [
@@ -113,8 +113,8 @@
     {
       "symbol": "vAMM-fBOMB/AERO",
       "pool": "0xbbf71aad6e1f8d180d3b1d898528654c1d18b2ff",
-      "accrualUsd": 94488.06080491154,
-      "repricingUsd": 138.6360055720288
+      "accrualUsd": 119174.43393212807,
+      "repricingUsd": 509.94210217054933
     },
     {
       "symbol": "CL-XDP/USDC",
@@ -147,16 +147,16 @@
       "repricingUsd": -4880.849858221285
     },
     {
+      "symbol": "sAMM-msUSD/USDC",
+      "pool": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
+      "accrualUsd": 9996.749903586426,
+      "repricingUsd": -0.006786191841456457
+    },
+    {
       "symbol": "CL-WETH/msETH",
       "pool": "0x74f72788f4814d7ff3c49b44684aa98eee140c0e",
       "accrualUsd": 8749.305814293304,
       "repricingUsd": 111.72730440040323
-    },
-    {
-      "symbol": "sAMM-msUSD/USDC",
-      "pool": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
-      "accrualUsd": 7497.911469843437,
-      "repricingUsd": 0.1691229896423465
     },
     {
       "symbol": "vAMM-WETH/VVV",
@@ -165,10 +165,10 @@
       "repricingUsd": -1242.7379486323734
     },
     {
-      "symbol": "vAMM-WETH/VEIL",
-      "pool": "0xf207d02becd4417aaa3383804b6b87b17602c86d",
-      "accrualUsd": 6921.055010888545,
-      "repricingUsd": 407.7977484371395
+      "symbol": "sAMM-WETH/msETH",
+      "pool": "0xde4fb30ccc2f1210fce2c8ad66410c586c8d1f9a",
+      "accrualUsd": 6997.724932510498,
+      "repricingUsd": -1.7846563901539412
     }
   ]
 }

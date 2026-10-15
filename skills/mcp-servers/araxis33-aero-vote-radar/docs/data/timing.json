@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T09:23:24.332Z",
+  "generatedAt": "2026-10-15T07:41:23.260Z",
   "epochs": [
     "2026-08-06",
     "2026-08-13",
@@ -9,27 +9,28 @@
     "2026-09-10",
     "2026-09-17",
     "2026-09-24",
-    "2026-10-01"
+    "2026-10-01",
+    "2026-10-08"
   ],
-  "scans": 234,
-  "pools": 418,
-  "observations": 45723,
-  "medianPoolsPerScan": 106,
+  "scans": 257,
+  "pools": 480,
+  "observations": 55726,
+  "medianPoolsPerScan": 107,
   "trust": [
     {
       "label": "Thursday–Friday",
       "fromHours": 120,
       "toHours": 168,
-      "scans": 62,
+      "scans": 68,
       "keptAll": 1,
       "keptThick": 2,
-      "keptRich": 5.5
+      "keptRich": 6
     },
     {
       "label": "Saturday–Sunday",
       "fromHours": 72,
       "toHours": 120,
-      "scans": 70,
+      "scans": 76,
       "keptAll": 1,
       "keptThick": 2,
       "keptRich": 6
@@ -38,7 +39,7 @@
       "label": "Monday–Tuesday",
       "fromHours": 24,
       "toHours": 72,
-      "scans": 65,
+      "scans": 72,
       "keptAll": 2,
       "keptThick": 2,
       "keptRich": 5
@@ -47,27 +48,33 @@
       "label": "Wednesday",
       "fromHours": 5,
       "toHours": 24,
-      "scans": 28,
+      "scans": 31,
       "keptAll": 2,
-      "keptThick": 2.5,
+      "keptThick": 2,
       "keptRich": 5
     },
     {
       "label": "final hours",
       "fromHours": 0,
       "toHours": 5,
-      "scans": 9,
-      "keptAll": 3,
-      "keptThick": 4,
-      "keptRich": 6
+      "scans": 10,
+      "keptAll": 2.5,
+      "keptThick": 4.5,
+      "keptRich": 5.5
     }
   ],
   "lateMovers": [
     {
       "address": "0x275be3a43b66516e532bcaa36ee453edd47614ea",
       "symbol": "CL-WETH/LSK",
-      "medianSurge": 19.98860710845218,
-      "readings": 12
+      "medianSurge": 7.8266717211503565,
+      "readings": 16
+    },
+    {
+      "address": "0x5230845439fa66fbea20af7cf09bc413b99e10b7",
+      "symbol": "CL-cbBTC/EDGE",
+      "medianSurge": 6.707496730068276,
+      "readings": 16
     },
     {
       "address": "0x5aac53d1b18f1eaf908c223a94916b339b74309f",
@@ -78,668 +85,530 @@
     {
       "address": "0x1524a14c55f097bb54f0b24383f3ae3e3743804a",
       "symbol": "vAMM-YFI/wstETH",
-      "medianSurge": 4.010292982589657,
-      "readings": 35
+      "medianSurge": 3.3616784131104644,
+      "readings": 39
     },
     {
       "address": "0xe2b182796518e76845f46ccdc522495d81630d14",
       "symbol": "CL-USDC/EDEL",
-      "medianSurge": 2.8415885078438126,
-      "readings": 10
+      "medianSurge": 2.5461097928612038,
+      "readings": 14
+    },
+    {
+      "address": "0xd3d9f0f7d0d477e0a19222965b59233ad7f6bc6b",
+      "symbol": "CL-USDC/frxUSD",
+      "medianSurge": 1.6196119318562125,
+      "readings": 16
     },
     {
       "address": "0xf8593b97ae3ddf084da845cf7ddf591e3d52106d",
       "symbol": "CL-USDC/VVV",
-      "medianSurge": 2.6593909514365226,
-      "readings": 10
-    },
-    {
-      "address": "0xe2b3aa806e56603a244bfc111c9474f7dedd03db",
-      "symbol": "CL-MAMO/cbBTC",
-      "medianSurge": 1.9374756681501837,
-      "readings": 12
-    },
-    {
-      "address": "0x678f431da2abb9b5726bbf5ccdbaeebb60da9813",
-      "symbol": "CL-MAMO/USDC",
-      "medianSurge": 1.760852317843101,
-      "readings": 12
-    },
-    {
-      "address": "0x4a021ba3ab1f0121e7df76f345c547db86cb3468",
-      "symbol": "CL-VIRTUAL/MAMO",
-      "medianSurge": 1.5916374625376766,
-      "readings": 12
-    },
-    {
-      "address": "0xc395664b295ed5bf1d249ae8be9740655aa174ef",
-      "symbol": "vAMM-fBOMB/USDbC",
-      "medianSurge": 1.5473457911938047,
-      "readings": 23
+      "medianSurge": 1.4280406255778288,
+      "readings": 14
     },
     {
       "address": "0xd5b83c33a8711e727c0abb6f72ee508755d37e10",
       "symbol": "CL-wtSGOV/USDC",
-      "medianSurge": 1.5422111740056463,
-      "readings": 12
-    },
-    {
-      "address": "0x99f0364e162a36a77e5d77b5eeb56539563735a3",
-      "symbol": "CL-USDC/TAO",
-      "medianSurge": 1.196118194578061,
-      "readings": 12
-    },
-    {
-      "address": "0xd1edc6961222bf35afac0989ce602212f28464f6",
-      "symbol": "CL-AERO/DIEM",
-      "medianSurge": 1.1942269720939622,
-      "readings": 10
-    },
-    {
-      "address": "0x62916b911f2b64d0e3a3b72472d6f8c08c75dcaa",
-      "symbol": "CL-cbXRP/cbBTC",
-      "medianSurge": 1.1418573775464664,
-      "readings": 12
-    },
-    {
-      "address": "0x9dcbb8258e0015d6cb81061b3f5c47d5c5d6188f",
-      "symbol": "CL-SYND/USDC",
-      "medianSurge": 1.037300998598797,
-      "readings": 12
-    },
-    {
-      "address": "0x37e1490f7f6f98d263f826e1244c7e7f128632f2",
-      "symbol": "CL-UP/cbBTC",
-      "medianSurge": 1.0343629445256326,
-      "readings": 12
-    },
-    {
-      "address": "0xaa067f08fef60420d050a92e7800e588748b7d67",
-      "symbol": "CL-WETH/MAMO",
-      "medianSurge": 0.9733280674586695,
-      "readings": 12
-    },
-    {
-      "address": "0x200681425b0c8d78c6a467512c5d49fa56bac88a",
-      "symbol": "CL-WETH/cbLTC",
-      "medianSurge": 0.8938754619308886,
-      "readings": 12
-    },
-    {
-      "address": "0x32bb4ad5fed77f7abf97d1435f8d6aaae59aa64e",
-      "symbol": "CL-WETH/POKT",
-      "medianSurge": 0.8773267587431879,
-      "readings": 12
-    },
-    {
-      "address": "0x41d4934322f2bd6fe1dbe4124070fe61651a2067",
-      "symbol": "CL-USDC/GHST",
-      "medianSurge": 0.8637406865146837,
-      "readings": 12
-    },
-    {
-      "address": "0xa11fbd0f7112f2fad10f92f09b4a8d85e8ddd401",
-      "symbol": "CL-CHZ/USDC",
-      "medianSurge": 0.8123673535115905,
-      "readings": 12
-    },
-    {
-      "address": "0xb099c658e784b41ee435d48a8eb67e8f27285c93",
-      "symbol": "CL-WETH/B3",
-      "medianSurge": 0.792785245540021,
-      "readings": 12
+      "medianSurge": 1.344931770367257,
+      "readings": 16
     },
     {
       "address": "0xf91e0dfe1265b914182de54e08c9ca2068beddde",
       "symbol": "vAMM-WETH/MET",
-      "medianSurge": 0.7737367645971824,
-      "readings": 35
+      "medianSurge": 1.127564157544977,
+      "readings": 39
+    },
+    {
+      "address": "0x86c21942420b5648bb813637dcd33b97cc57ede9",
+      "symbol": "CL-VIRTUAL/USDC",
+      "medianSurge": 1.0685889338475838,
+      "readings": 10
+    },
+    {
+      "address": "0x6fb655476fdcfb9712dd200308d941a1c6d1119e",
+      "symbol": "vAMM-OGN/OETHb",
+      "medianSurge": 0.8542860447315108,
+      "readings": 39
+    },
+    {
+      "address": "0x62916b911f2b64d0e3a3b72472d6f8c08c75dcaa",
+      "symbol": "CL-cbXRP/cbBTC",
+      "medianSurge": 0.8435917032363376,
+      "readings": 16
+    },
+    {
+      "address": "0xa11fbd0f7112f2fad10f92f09b4a8d85e8ddd401",
+      "symbol": "CL-CHZ/USDC",
+      "medianSurge": 0.8063923457784827,
+      "readings": 16
+    },
+    {
+      "address": "0x00d43aad1b34e7ba8d037e060517f7b5318c0b83",
+      "symbol": "CL-THQ/USDC",
+      "medianSurge": 0.7914919692445199,
+      "readings": 16
     },
     {
       "address": "0xdc55a0291029665fecff5ca5add0e51dd2964877",
       "symbol": "CL-MOCA/USDC",
-      "medianSurge": 0.7341980850079373,
-      "readings": 12
+      "medianSurge": 0.7292004944988808,
+      "readings": 16
     },
     {
-      "address": "0x9d14ff91ae2c6e3d1a760542248b6c7f206894b0",
-      "symbol": "CL-USDC/cbBTC",
-      "medianSurge": 0.6986678088597345,
-      "readings": 12
+      "address": "0xe2a363898dccfb6e509cde97a77cf51aea6813a0",
+      "symbol": "CL-IDRX/frxUSD",
+      "medianSurge": 0.704594644524996,
+      "readings": 16
     },
     {
-      "address": "0xb07d7eece8866e549601af5c7622d8cdbedc914e",
-      "symbol": "CL-EURC/cbBTC",
-      "medianSurge": 0.6541437460151411,
-      "readings": 12
+      "address": "0x48c5d4a6677ed59646a9c6465db2562be4a20aec",
+      "symbol": "CL-USDC/POD",
+      "medianSurge": 0.6978771384305018,
+      "readings": 16
+    },
+    {
+      "address": "0x688f778c51db4d990bf1abaf8d33fd95e48c6641",
+      "symbol": "vAMM-EXTRA/AERO",
+      "medianSurge": 0.6832842942822541,
+      "readings": 10
+    },
+    {
+      "address": "0x27bd426ec343845995c527d634c4e07f0608aacd",
+      "symbol": "CL-WETH/ORDER",
+      "medianSurge": 0.6372182496382097,
+      "readings": 16
     },
     {
       "address": "0xac4e562d7c6108f971321f14238e24ae2cc398ac",
       "symbol": "vAMM-WETH/DRV",
       "medianSurge": 0.628580241685887,
-      "readings": 35
+      "readings": 39
     },
     {
-      "address": "0x28a9ec9928a689410e82e579fd9418fbbf6452f3",
-      "symbol": "CL-WETH/FAI",
-      "medianSurge": 0.6269580927596223,
-      "readings": 12
-    },
-    {
-      "address": "0xfcda5ab6bbc1fe5b8e1a185e86bb5f24b12e2278",
-      "symbol": "CL-USDC/cbBTC",
-      "medianSurge": 0.605232535740315,
-      "readings": 12
-    },
-    {
-      "address": "0xb211a9ddff3a10806c8fdb92dbc4c34596a23f84",
-      "symbol": "CL-WETH/KEYCAT",
-      "medianSurge": 0.6010588327893349,
-      "readings": 12
-    },
-    {
-      "address": "0xf1eef36d55978edfd427e95c3d0c9b9359ef0aef",
-      "symbol": "CL-WETH/W",
-      "medianSurge": 0.5988684920762446,
-      "readings": 12
-    },
-    {
-      "address": "0x594b83709464a83f37ac77e69ddd447a8a33c0ee",
-      "symbol": "vAMM-cbBTC/EDGE",
-      "medianSurge": 0.5868014017376111,
-      "readings": 35
-    },
-    {
-      "address": "0x16f7e8199b46ff86d33be983ee6c642d9c14a5ae",
-      "symbol": "vAMM-AERO/AUKI",
-      "medianSurge": 0.5753756110923387,
-      "readings": 10
-    },
-    {
-      "address": "0xcb4bc943314405c01907ae910e57afc2d0549706",
-      "symbol": "CL-LAPTOP/AAPLc",
-      "medianSurge": 0.5357482301199878,
-      "readings": 12
-    },
-    {
-      "address": "0xd7338b6f338da54b922bbbc6fbe3efedd5ce35fa",
-      "symbol": "CL-FLOCK/USDC",
-      "medianSurge": 0.520149214216187,
-      "readings": 12
-    },
-    {
-      "address": "0x3667af77ff1481aca513d2c97a32c0ac31ba813d",
-      "symbol": "vAMM-Anon/USDC",
-      "medianSurge": 0.5095685291980157,
-      "readings": 35
-    },
-    {
-      "address": "0x4c76ef610b9f6feeb3ca70951bef09ed31e7f6d0",
-      "symbol": "CL-USDC/CLAWD",
-      "medianSurge": 0.5085797582317717,
-      "readings": 12
-    },
-    {
-      "address": "0xb909f567c5c2bb1a4271349708cc4637d7318b4a",
-      "symbol": "vAMM-VIRTUAL/cbBTC",
-      "medianSurge": 0.49905724199725743,
-      "readings": 35
-    },
-    {
-      "address": "0x8b27f626ab668197000bc722a1012022caed10e2",
-      "symbol": "CL-USDC/MSTRc",
-      "medianSurge": 0.4963617883694238,
-      "readings": 12
-    },
-    {
-      "address": "0x160d7e9d948b16c163332a277b393c288408eb12",
-      "symbol": "CL-USDC/cbBTC",
-      "medianSurge": 0.49536883646265406,
-      "readings": 12
-    },
-    {
-      "address": "0x0fc47c17af86078d809358db1b4db2debc988566",
-      "symbol": "CL-USDC/cbZEC",
-      "medianSurge": 0.478882885575286,
-      "readings": 12
-    },
-    {
-      "address": "0xeaf57753bc382e0324a1d43f72e7027705a2273e",
-      "symbol": "CL-USDC/METAc",
-      "medianSurge": 0.4763941594905683,
-      "readings": 12
-    },
-    {
-      "address": "0x3dfdecc334a8f2618321c78a9de0e9428438f871",
-      "symbol": "CL-USDC/BLUECHIP",
-      "medianSurge": 0.47532443432907145,
-      "readings": 12
-    },
-    {
-      "address": "0x94a734bf60cde88ab10a9951b17278a3ce129860",
-      "symbol": "CL-USDC/FOLKS",
-      "medianSurge": 0.46826403239342773,
-      "readings": 12
+      "address": "0xff8e0bd2d8f02904e7e18dd00ea50aec68f37a10",
+      "symbol": "vAMM-fBOMB/USDC",
+      "medianSurge": 0.6147481217468429,
+      "readings": 39
     },
     {
       "address": "0x0ab02e160f0df68dc049b012c514857306960eae",
       "symbol": "CL-CTR/USDC",
-      "medianSurge": 0.46662163527829303,
-      "readings": 12
+      "medianSurge": 0.5924227961078739,
+      "readings": 16
+    },
+    {
+      "address": "0x32bb4ad5fed77f7abf97d1435f8d6aaae59aa64e",
+      "symbol": "CL-WETH/POKT",
+      "medianSurge": 0.5795072076206425,
+      "readings": 16
+    },
+    {
+      "address": "0xb099c658e784b41ee435d48a8eb67e8f27285c93",
+      "symbol": "CL-WETH/B3",
+      "medianSurge": 0.5757673224236741,
+      "readings": 16
+    },
+    {
+      "address": "0xb07d7eece8866e549601af5c7622d8cdbedc914e",
+      "symbol": "CL-EURC/cbBTC",
+      "medianSurge": 0.5303205997765266,
+      "readings": 16
+    },
+    {
+      "address": "0x3667af77ff1481aca513d2c97a32c0ac31ba813d",
+      "symbol": "vAMM-Anon/USDC",
+      "medianSurge": 0.5095554749097142,
+      "readings": 39
+    },
+    {
+      "address": "0x9d14ff91ae2c6e3d1a760542248b6c7f206894b0",
+      "symbol": "CL-USDC/cbBTC",
+      "medianSurge": 0.4954225855569785,
+      "readings": 16
+    },
+    {
+      "address": "0xb909f567c5c2bb1a4271349708cc4637d7318b4a",
+      "symbol": "vAMM-VIRTUAL/cbBTC",
+      "medianSurge": 0.4803072067752814,
+      "readings": 39
+    },
+    {
+      "address": "0x0fc47c17af86078d809358db1b4db2debc988566",
+      "symbol": "CL-USDC/cbZEC",
+      "medianSurge": 0.47721661220452805,
+      "readings": 16
+    },
+    {
+      "address": "0x28a9ec9928a689410e82e579fd9418fbbf6452f3",
+      "symbol": "CL-WETH/FAI",
+      "medianSurge": 0.47450439461950356,
+      "readings": 16
+    },
+    {
+      "address": "0x98c7a2338336d2d354663246f64676009c7bda97",
+      "symbol": "CL-USDC/USDbC",
+      "medianSurge": 0.46842461985980255,
+      "readings": 16
     },
     {
       "address": "0xea5cb64754ad7aa24f7a6bbe3b724f29b4f822b8",
       "symbol": "CL-USDC/RIZE",
       "medianSurge": 0.46429078620339825,
-      "readings": 12
+      "readings": 16
     },
     {
-      "address": "0xff8e0bd2d8f02904e7e18dd00ea50aec68f37a10",
-      "symbol": "vAMM-fBOMB/USDC",
-      "medianSurge": 0.4525056568472732,
-      "readings": 35
+      "address": "0xde4fb30ccc2f1210fce2c8ad66410c586c8d1f9a",
+      "symbol": "sAMM-WETH/msETH",
+      "medianSurge": 0.43654354314964583,
+      "readings": 39
     },
     {
-      "address": "0x74f72788f4814d7ff3c49b44684aa98eee140c0e",
-      "symbol": "CL-WETH/msETH",
-      "medianSurge": 0.45230335221694107,
-      "readings": 12
+      "address": "0x17ea71d7e2dfb58f6b7e95c2dddad863e225091c",
+      "symbol": "CL-WETH/COOKIE",
+      "medianSurge": 0.4364198334675504,
+      "readings": 16
     },
     {
-      "address": "0xa3b1e3f9747065e2073722ff4c9027d3ea4994f0",
-      "symbol": "CL-USDC/AAPLc",
-      "medianSurge": 0.45088237884563775,
-      "readings": 12
+      "address": "0x566bee7ef7b39f29d150ab3be6b6242c17cc5a31",
+      "symbol": "vAMM-WETH/EDEL",
+      "medianSurge": 0.4310773002356958,
+      "readings": 39
     },
     {
-      "address": "0xfba22a6b7629a2fec052cc2a6eddd2c9d6da5ea5",
-      "symbol": "CL-WETH/Basecat",
-      "medianSurge": 0.45042699005885845,
-      "readings": 12
+      "address": "0xd1edc6961222bf35afac0989ce602212f28464f6",
+      "symbol": "CL-AERO/DIEM",
+      "medianSurge": 0.4296828350069961,
+      "readings": 14
     },
     {
-      "address": "0x76f9aefa6abcbceb10cc149e071209366f64ce9d",
-      "symbol": "CL-USDC/PSG",
-      "medianSurge": 0.43626100275004465,
-      "readings": 12
+      "address": "0xc422bfb18f9fc217f955d759d3753f31137ccefd",
+      "symbol": "CL-WETH/ENA",
+      "medianSurge": 0.391489485729031,
+      "readings": 16
     },
     {
-      "address": "0xb7068556049df8fb3ae77ccbb9611fe0e85b2641",
-      "symbol": "CL-USDC/ODOS",
-      "medianSurge": 0.4302457628975591,
-      "readings": 12
-    },
-    {
-      "address": "0x00d43aad1b34e7ba8d037e060517f7b5318c0b83",
-      "symbol": "CL-THQ/USDC",
-      "medianSurge": 0.42305462214368905,
-      "readings": 12
-    },
-    {
-      "address": "0xb1987cad1682841b4b641d50e520777ec5ab5542",
-      "symbol": "CL-USDC/GOOGLc",
-      "medianSurge": 0.415093333576247,
-      "readings": 12
-    },
-    {
-      "address": "0x7c7420dd105e2779316423ba3e973f434315efa9",
-      "symbol": "CL-WETH/cbBTC",
-      "medianSurge": 0.4132433205516506,
-      "readings": 12
-    },
-    {
-      "address": "0x27bd426ec343845995c527d634c4e07f0608aacd",
-      "symbol": "CL-WETH/ORDER",
-      "medianSurge": 0.41276940499857173,
-      "readings": 12
-    },
-    {
-      "address": "0x4e962bb3889bf030368f56810a9c96b83cb3e778",
-      "symbol": "CL-USDC/cbBTC",
-      "medianSurge": 0.40361219230980483,
-      "readings": 12
+      "address": "0x274e24a53aa2aaf704c1ea0013be91fdef533f50",
+      "symbol": "CL-WETH/MORPHO",
+      "medianSurge": 0.38217990674931235,
+      "readings": 10
     },
     {
       "address": "0xfefe4e80f2d747a484154f7ae18b20d478e49d40",
       "symbol": "CL-WETH/ETHFI",
       "medianSurge": 0.37754628610591645,
-      "readings": 12
-    },
-    {
-      "address": "0x6d0b9c9e92a3de30081563c3657b5258b3ffa38b",
-      "symbol": "sAMM-USDz/USDC",
-      "medianSurge": 0.3704558168877141,
-      "readings": 23
-    },
-    {
-      "address": "0xbc3231036ee1eca03e5f67fecedc640d21610823",
-      "symbol": "CL-USDC/DIEM",
-      "medianSurge": 0.36672647101005884,
-      "readings": 12
-    },
-    {
-      "address": "0x7501bc8bb51616f79bfa524e464fb7b41f0b10fb",
-      "symbol": "CL-msUSD/USDC",
-      "medianSurge": 0.35001091696643605,
-      "readings": 12
-    },
-    {
-      "address": "0xb828dc3d77360f053f1379cd8676bac6141684f3",
-      "symbol": "CL-USDC/OPG",
-      "medianSurge": 0.3414446372435187,
-      "readings": 12
-    },
-    {
-      "address": "0xff0df9b15c29542fa5d7efe169452507b4d648c2",
-      "symbol": "CL-USDC/AVAIL",
-      "medianSurge": 0.31993441465341954,
-      "readings": 12
-    },
-    {
-      "address": "0xb90fe999be6869af0afc557dccfbe169ea3403d6",
-      "symbol": "CL-WETH/cbXRP",
-      "medianSurge": 0.3107095884495441,
-      "readings": 12
+      "readings": 16
     },
     {
       "address": "0x09da4832d34bebbb55783340d5bede7a70f5c48e",
       "symbol": "CL-CADC/USDC",
-      "medianSurge": 0.3086656021462906,
-      "readings": 12
+      "medianSurge": 0.3324006016347998,
+      "readings": 16
+    },
+    {
+      "address": "0x6d0b9c9e92a3de30081563c3657b5258b3ffa38b",
+      "symbol": "sAMM-USDz/USDC",
+      "medianSurge": 0.3212985239138544,
+      "readings": 27
+    },
+    {
+      "address": "0x4c76ef610b9f6feeb3ca70951bef09ed31e7f6d0",
+      "symbol": "CL-USDC/CLAWD",
+      "medianSurge": 0.3128899185912004,
+      "readings": 16
+    },
+    {
+      "address": "0xa41bc0affba7fd420d186b84899d7ab2ac57fcd1",
+      "symbol": "CL-USDC/USDT",
+      "medianSurge": 0.30800061195893425,
+      "readings": 16
+    },
+    {
+      "address": "0x26029ed89a19b919b5698f10cf776a4f4aea1529",
+      "symbol": "vAMM-WETH/CHAMP",
+      "medianSurge": 0.3075160008991136,
+      "readings": 39
+    },
+    {
+      "address": "0x74f72788f4814d7ff3c49b44684aa98eee140c0e",
+      "symbol": "CL-WETH/msETH",
+      "medianSurge": 0.3062517610377271,
+      "readings": 16
+    },
+    {
+      "address": "0x94a734bf60cde88ab10a9951b17278a3ce129860",
+      "symbol": "CL-USDC/FOLKS",
+      "medianSurge": 0.3046079263313317,
+      "readings": 16
     },
     {
       "address": "0x51663b8a28e7ea197c5ccf983afc084da0a8023d",
       "symbol": "CL-RAVE/USDC",
-      "medianSurge": 0.305755630843042,
-      "readings": 12
+      "medianSurge": 0.29959334396347925,
+      "readings": 16
+    },
+    {
+      "address": "0xcefc8b799a8ee5d9b312aeca73262645d664aaf7",
+      "symbol": "sAMM-msUSD/USDC",
+      "medianSurge": 0.26638347096828374,
+      "readings": 39
+    },
+    {
+      "address": "0x7501bc8bb51616f79bfa524e464fb7b41f0b10fb",
+      "symbol": "CL-msUSD/USDC",
+      "medianSurge": 0.26283933695604267,
+      "readings": 16
+    },
+    {
+      "address": "0xb90fe999be6869af0afc557dccfbe169ea3403d6",
+      "symbol": "CL-WETH/cbXRP",
+      "medianSurge": 0.2564517896735432,
+      "readings": 16
+    },
+    {
+      "address": "0xb1987cad1682841b4b641d50e520777ec5ab5542",
+      "symbol": "CL-USDC/GOOGLc",
+      "medianSurge": -0.25022513362307264,
+      "readings": 16
+    },
+    {
+      "address": "0xad06a870fc2198398c18a6f2ca035bf795edeefe",
+      "symbol": "CL-WETH/WOO",
+      "medianSurge": -0.255379238408977,
+      "readings": 16
+    },
+    {
+      "address": "0x7f670f78b17dec44d5ef68a48740b6f8849cc2e6",
+      "symbol": "vAMM-WETH/AERO",
+      "medianSurge": -0.25539241524969425,
+      "readings": 39
+    },
+    {
+      "address": "0x48be08d21fccf3f793783c23c33555f5e0c2b7cd",
+      "symbol": "CL-TOWNS/WETH",
+      "medianSurge": -0.25617016889667743,
+      "readings": 16
+    },
+    {
+      "address": "0xbe762d548f8ca86a78e9da6e3ddc87f91457e398",
+      "symbol": "CL-ICP/WETH",
+      "medianSurge": -0.25689094976867244,
+      "readings": 16
     },
     {
       "address": "0x458f1d779e5f9ee149b53b8f77c5d62c2bc28d8e",
       "symbol": "CL-1000X/USDC",
-      "medianSurge": 0.3008209376068909,
-      "readings": 12
+      "medianSurge": -0.2612877637902058,
+      "readings": 16
     },
     {
-      "address": "0x87cd18069b6547a0e88b6155dd657e71779500ea",
-      "symbol": "CL-WETH/PRIME",
-      "medianSurge": 0.2937467140422738,
-      "readings": 12
-    },
-    {
-      "address": "0xc200f21efe67c7f41b81a854c26f9cda80593065",
-      "symbol": "CL-VIRTUAL/WETH",
-      "medianSurge": 0.28571443552689924,
-      "readings": 12
-    },
-    {
-      "address": "0x23da62ce083687cd72ebcba36eec6752fa51b715",
-      "symbol": "vAMM-1000X/WETH",
-      "medianSurge": 0.2795270512811552,
-      "readings": 31
-    },
-    {
-      "address": "0x50f8f7ffbd70c6c87b1668eee4e03f5ac057de3f",
-      "symbol": "CL-SYND/WETH",
-      "medianSurge": 0.27891989469502443,
-      "readings": 12
-    },
-    {
-      "address": "0x02b6b7ab1ede16f48c57893d2fdf6251c2cb3821",
-      "symbol": "CL-jEUR/USDC",
-      "medianSurge": 0.2774082309168038,
-      "readings": 12
-    },
-    {
-      "address": "0x3e66e55e97ce60096f74b7c475e8249f2d31a9fb",
+      "address": "0xfcda5ab6bbc1fe5b8e1a185e86bb5f24b12e2278",
       "symbol": "CL-USDC/cbBTC",
-      "medianSurge": 0.2680060124956667,
-      "readings": 12
+      "medianSurge": -0.2678402909402805,
+      "readings": 16
     },
     {
-      "address": "0xebd2eeab20cefa41c94343f506ac506bfc3f681e",
-      "symbol": "CL-WETH/WCT",
-      "medianSurge": 0.2594749943294261,
-      "readings": 12
+      "address": "0x3c4384f3664b37a3cb5a5cb3452b4b4a3aa1256f",
+      "symbol": "CL-USDC/CHECK",
+      "medianSurge": -0.2691883779802663,
+      "readings": 16
     },
     {
-      "address": "0x098a4de96305bafaea0c0ce07cf6456e2c64982a",
-      "symbol": "CL-WETH/HOME",
-      "medianSurge": 0.2562033855546535,
-      "readings": 12
+      "address": "0x14f7ce67e16c435c876aff4092eb547584121312",
+      "symbol": "vAMM-WETH/LRDS",
+      "medianSurge": -0.2699978654558025,
+      "readings": 39
     },
     {
-      "address": "0xfc67fb1dd64fe7681cd75095e618818435546a21",
-      "symbol": "CL-USDC/wtNVDA",
-      "medianSurge": -0.25034671277189624,
-      "readings": 12
+      "address": "0xeaf57753bc382e0324a1d43f72e7027705a2273e",
+      "symbol": "CL-USDC/METAc",
+      "medianSurge": -0.2717945897835693,
+      "readings": 16
     },
     {
-      "address": "0x8a7b72f8ff5299e493317d4430293894107af859",
-      "symbol": "CL-WETH/SIGN",
-      "medianSurge": -0.25132895137827294,
-      "readings": 12
+      "address": "0x44b7cbbb1e326617d439a2966c4475e78b9d42e6",
+      "symbol": "CL-VCHF/USDC",
+      "medianSurge": -0.2732037123357208,
+      "readings": 16
+    },
+    {
+      "address": "0x56b92e5b391dbfb8b8028ac95a4b97f52ffeb416",
+      "symbol": "CL-WETH/KAITO",
+      "medianSurge": -0.27858525035862725,
+      "readings": 16
     },
     {
       "address": "0x00145e8fc9f06a0b71bd57fefbf451ec1db9d69f",
       "symbol": "CL-msUSD/msETH",
-      "medianSurge": -0.2539374653476435,
-      "readings": 12
-    },
-    {
-      "address": "0x5ebdb19a6931431f959fd3835193cf7243961807",
-      "symbol": "CL-USDC/aeon",
-      "medianSurge": -0.2570101511502594,
-      "readings": 12
-    },
-    {
-      "address": "0xbd1f3d188de7ee07b1b323c0d26d6720cafb8780",
-      "symbol": "vAMM-fBOMB/wstETH",
-      "medianSurge": -0.26590895350401733,
-      "readings": 35
-    },
-    {
-      "address": "0x89d0f320ac73dd7d9513ffc5bc58d1161452a657",
-      "symbol": "vAMM-WETH/WELL",
-      "medianSurge": -0.267053070788669,
-      "readings": 35
+      "medianSurge": -0.27859615170419727,
+      "readings": 16
     },
     {
       "address": "0xef724d142f283411f66bde8de4d863e7295b9972",
       "symbol": "vAMM-FLOCK/VVV",
       "medianSurge": -0.2819114957852332,
-      "readings": 35
+      "readings": 39
     },
     {
-      "address": "0xda9b1279a069a7166560f3d7f20b5b0237af8459",
-      "symbol": "vAMM-USDC/MET",
-      "medianSurge": -0.2844944434896659,
-      "readings": 35
-    },
-    {
-      "address": "0xfd22d75b2fb405ee185155d57b0277b9db2f8e29",
-      "symbol": "CL-BITCOIN/WETH",
-      "medianSurge": -0.28573702795929523,
-      "readings": 12
+      "address": "0xa3b1e3f9747065e2073722ff4c9027d3ea4994f0",
+      "symbol": "CL-USDC/AAPLc",
+      "medianSurge": -0.28461747068308685,
+      "readings": 16
     },
     {
       "address": "0x46d710c35bdfb800a18a820712310048ef8b5256",
       "symbol": "CL-WETH/KTA",
       "medianSurge": -0.2877575354000983,
-      "readings": 12
+      "readings": 16
     },
     {
       "address": "0xadb8fb846dbd3bd6a23335cee65bb610c1cf0ea3",
       "symbol": "CL-ZORA/WETH",
-      "medianSurge": -0.290077039049758,
-      "readings": 12
+      "medianSurge": -0.2904858344475536,
+      "readings": 16
     },
     {
       "address": "0xa6c7fbd1b4c71673dfdadfaa9d17f14833d3245e",
       "symbol": "vAMM-USDC/SQD",
       "medianSurge": -0.29384694149845925,
-      "readings": 35
-    },
-    {
-      "address": "0x4e40ff3be6bda5b131c91520fa73515076eee098",
-      "symbol": "CL-WETH/jesse",
-      "medianSurge": -0.2942375063042366,
-      "readings": 12
-    },
-    {
-      "address": "0xc0113e59471a17ce37b708572114162c3030307e",
-      "symbol": "CL-VFY/ZEN",
-      "medianSurge": -0.29588345806673466,
-      "readings": 12
+      "readings": 39
     },
     {
       "address": "0x3f5e98c7ebff35056ab4346bccd722a537c1aefa",
       "symbol": "CL-TIG/USDC",
-      "medianSurge": -0.29623438110538625,
-      "readings": 12
+      "medianSurge": -0.2972898258463492,
+      "readings": 16
     },
     {
-      "address": "0xff56d037d948fad1027a1ac82ae610e4b694c641",
-      "symbol": "CL-USDC/MUSD",
-      "medianSurge": -0.2984666538843158,
-      "readings": 12
-    },
-    {
-      "address": "0xad06a870fc2198398c18a6f2ca035bf795edeefe",
-      "symbol": "CL-WETH/WOO",
-      "medianSurge": -0.2993351700914928,
-      "readings": 12
-    },
-    {
-      "address": "0xde201c571ea87d8769f088ad0766c61ba1d6ccb3",
-      "symbol": "CL-cbBTC/cbDOGE",
-      "medianSurge": -0.2998129345864795,
-      "readings": 12
+      "address": "0x20e5fad2661ee9eb0c04824524030af31943b62d",
+      "symbol": "CL-WETH/NVDAc",
+      "medianSurge": -0.30094945893599223,
+      "readings": 16
     },
     {
       "address": "0xb5a64b150730b6c475cdc9c40632ce1d1ebf3cec",
       "symbol": "CL-CHECK/TOWER",
       "medianSurge": -0.30237296260981517,
-      "readings": 12
+      "readings": 16
     },
     {
-      "address": "0xcdbe19a6ef1b633be744920c93ee40521d5cf2a6",
-      "symbol": "CL-AERO/cbBTC",
-      "medianSurge": -0.3057779576663653,
-      "readings": 12
+      "address": "0x4e40ff3be6bda5b131c91520fa73515076eee098",
+      "symbol": "CL-WETH/jesse",
+      "medianSurge": -0.3081828781035918,
+      "readings": 16
+    },
+    {
+      "address": "0xdc7ead706795eda3feda08ad519d9452badf2c0d",
+      "symbol": "CL-ezETH/WETH",
+      "medianSurge": -0.30950823309585906,
+      "readings": 14
     },
     {
       "address": "0x8d479a4c680a76d4ae03f10203569558405ddfff",
       "symbol": "CL-O/USDC",
-      "medianSurge": -0.3068296086198474,
-      "readings": 12
+      "medianSurge": -0.31056655375995845,
+      "readings": 16
     },
     {
       "address": "0xb378137c90444bbcecd44a1f766851fbf53d2a9e",
       "symbol": "CL-WETH/mooBIFI",
-      "medianSurge": -0.31072389336459394,
-      "readings": 12
+      "medianSurge": -0.3112069396625876,
+      "readings": 16
+    },
+    {
+      "address": "0x016df91005f30039c9f1a89b44db5e8c60613603",
+      "symbol": "CL-WETH/PENDLE",
+      "medianSurge": -0.3128995940082753,
+      "readings": 16
     },
     {
       "address": "0x923bebd9fbcaf0f85251a3d5a11bf5bfaa19942f",
       "symbol": "vAMM-WETH/CXT",
       "medianSurge": -0.3132541877497834,
-      "readings": 35
+      "readings": 39
     },
     {
       "address": "0x088c39ee29fc30df8adc394e9f7dea33e3a26507",
       "symbol": "CL-WETH/doginme",
       "medianSurge": -0.31369004869933825,
-      "readings": 12
-    },
-    {
-      "address": "0x82685574957fef6ab359d8c1083401b492dca0cf",
-      "symbol": "CL-ZRO/ZEN",
-      "medianSurge": -0.31622617932665054,
-      "readings": 12
-    },
-    {
-      "address": "0x3c4384f3664b37a3cb5a5cb3452b4b4a3aa1256f",
-      "symbol": "CL-USDC/CHECK",
-      "medianSurge": -0.31698274483790323,
-      "readings": 12
+      "readings": 16
     },
     {
       "address": "0x7432aab631b801a10bef7d70c1507a32755595fa",
       "symbol": "CL-WETH/SYRUP",
-      "medianSurge": -0.3179010731962826,
-      "readings": 12
+      "medianSurge": -0.3193557866743123,
+      "readings": 16
     },
     {
       "address": "0x32450cebe156b2ca77dd517e0182409d89b723ff",
       "symbol": "vAMM-cbBTC/CHAMP",
       "medianSurge": -0.3208103532942195,
-      "readings": 35
+      "readings": 39
     },
     {
-      "address": "0x48be08d21fccf3f793783c23c33555f5e0c2b7cd",
-      "symbol": "CL-TOWNS/WETH",
-      "medianSurge": -0.321755665831137,
-      "readings": 12
-    },
-    {
-      "address": "0x222ccbe78890a4d9ef8d22d7fc1b968be0f2c653",
-      "symbol": "CL-BIO/WETH",
-      "medianSurge": -0.32436480978236126,
-      "readings": 12
+      "address": "0xbc3231036ee1eca03e5f67fecedc640d21610823",
+      "symbol": "CL-USDC/DIEM",
+      "medianSurge": -0.327772640822675,
+      "readings": 16
     },
     {
       "address": "0x3f53f1fd5b7723ddf38d93a584d280b9b94c3111",
       "symbol": "CL-ZORA/USDC",
-      "medianSurge": -0.33947681008267017,
-      "readings": 12
+      "medianSurge": -0.33972714991335007,
+      "readings": 16
     },
     {
-      "address": "0xbfa5184f90b071c34c85d065b8c7877617248ef7",
-      "symbol": "CL-USDC/ZEN",
-      "medianSurge": -0.3454192740482369,
-      "readings": 12
+      "address": "0x99cf3e8bfb02c300312c53aac5d0b082e3d5975c",
+      "symbol": "CL-USDC/LAPTOP",
+      "medianSurge": -0.3449078407190703,
+      "readings": 16
     },
     {
-      "address": "0x565aecf84b5d30a6e79a5cef3f0da0fc4280debc",
-      "symbol": "CL-AERO/wstETH",
-      "medianSurge": -0.3479994038287757,
-      "readings": 12
+      "address": "0xb1857b20d91c216f51656b63081f35c7cd0a489d",
+      "symbol": "CL-UP/USDC",
+      "medianSurge": -0.34671745466552506,
+      "readings": 16
     },
     {
-      "address": "0x4618dfcbc52d9fbcd45ec4a65fc61b5da57ad205",
-      "symbol": "CL-wtCOIN/USDC",
-      "medianSurge": -0.35284234976686113,
-      "readings": 12
-    },
-    {
-      "address": "0xfb338cb462c9e44cae9f442feb09e8e904ffed47",
-      "symbol": "CL-WETH/cbDOGE",
-      "medianSurge": -0.3585450659836005,
-      "readings": 12
-    },
-    {
-      "address": "0x01271a205e3f37cbfc9b353170d726060e193c0d",
-      "symbol": "CL-VVV/DIEM",
-      "medianSurge": -0.3598953141990635,
-      "readings": 12
+      "address": "0xde201c571ea87d8769f088ad0766c61ba1d6ccb3",
+      "symbol": "CL-cbBTC/cbDOGE",
+      "medianSurge": -0.35819747383230616,
+      "readings": 16
     },
     {
       "address": "0x681d6e4b0b020656ca04956ddaf76add7ef022f6",
       "symbol": "CL-SEDA/WETH",
       "medianSurge": -0.3600489452527923,
-      "readings": 12
+      "readings": 16
     },
     {
       "address": "0xe9eed359ef1e600cec91f240768f463ed3c88730",
       "symbol": "CL-GIZA/USDC",
-      "medianSurge": -0.37009058032878495,
-      "readings": 12
+      "medianSurge": -0.3680310328608696,
+      "readings": 16
     },
     {
-      "address": "0x46d398a5b33709877f50c8918a7ee96f1be1d7dd",
-      "symbol": "CL-WETH/VVV",
-      "medianSurge": -0.37274327554177245,
-      "readings": 12
+      "address": "0x0392b12a1ceb0cd13af5ea448cf5586ea609852d",
+      "symbol": "CL-WETH/ZEN",
+      "medianSurge": -0.3744026988947442,
+      "readings": 16
+    },
+    {
+      "address": "0xe2b3aa806e56603a244bfc111c9474f7dedd03db",
+      "symbol": "CL-MAMO/cbBTC",
+      "medianSurge": -0.3763807594076649,
+      "readings": 16
+    },
+    {
+      "address": "0x4618dfcbc52d9fbcd45ec4a65fc61b5da57ad205",
+      "symbol": "CL-wtCOIN/USDC",
+      "medianSurge": -0.3786131447309491,
+      "readings": 16
+    },
+    {
+      "address": "0xaa067f08fef60420d050a92e7800e588748b7d67",
+      "symbol": "CL-WETH/MAMO",
+      "medianSurge": -0.38380278625212605,
+      "readings": 16
     },
     {
       "address": "0x69bc1d350fe13f499c6aeded2c5ea9471b2a599a",
@@ -751,31 +620,31 @@
       "address": "0x80cc08712aa61ce9dc7604f9ce7560a25094b862",
       "symbol": "CL-USDC/SAPIEN",
       "medianSurge": -0.39479796617146357,
-      "readings": 12
+      "readings": 16
     },
     {
-      "address": "0xf8f33db251d41942f3b6518e3925df03c8c35f2c",
-      "symbol": "CL-WETH/REI",
-      "medianSurge": -0.41064549207600964,
-      "readings": 12
+      "address": "0x82685574957fef6ab359d8c1083401b492dca0cf",
+      "symbol": "CL-ZRO/ZEN",
+      "medianSurge": -0.39564766419397346,
+      "readings": 16
     },
     {
-      "address": "0x1024c20c048ea6087293f46d4a1c042cb6705924",
-      "symbol": "CL-WETH/BID",
-      "medianSurge": -0.42265875580966594,
-      "readings": 12
+      "address": "0xbfa5184f90b071c34c85d065b8c7877617248ef7",
+      "symbol": "CL-USDC/ZEN",
+      "medianSurge": -0.42667598413864105,
+      "readings": 16
     },
     {
-      "address": "0xb1857b20d91c216f51656b63081f35c7cd0a489d",
-      "symbol": "CL-UP/USDC",
-      "medianSurge": -0.42337323181415676,
-      "readings": 12
+      "address": "0x4660ff55a4db144734ae76550ee3093e0ba7f8d1",
+      "symbol": "vAMM-AERO/TOSHI",
+      "medianSurge": -0.42937406307261705,
+      "readings": 35
     },
     {
-      "address": "0xb862f23ba38c8c65e256782b31e8c08c9aefd612",
-      "symbol": "CL-WETH/cbADA",
-      "medianSurge": -0.43676218507757625,
-      "readings": 12
+      "address": "0x47f9e291bb766fc307ad7bba4f29f3eab6a97101",
+      "symbol": "CL-cbBTC/ZEN",
+      "medianSurge": -0.4394655906290019,
+      "readings": 16
     },
     {
       "address": "0xa678c47022f2e5286c51cc433be1599bba88df05",
@@ -784,130 +653,136 @@
       "readings": 12
     },
     {
-      "address": "0x6cca90e732942d73c276f73b805ca2948f6b3018",
-      "symbol": "CL-WETH/RSC",
-      "medianSurge": -0.45729468166777165,
-      "readings": 12
-    },
-    {
-      "address": "0xd5eaea9da564217ea101d1e369fda168a3025686",
-      "symbol": "CL-USDC/cbHYPE",
-      "medianSurge": -0.46043277006378003,
-      "readings": 12
-    },
-    {
       "address": "0x0f56aeba06f65e2790c5b6687f5c3128b7456f76",
       "symbol": "CL-ALIGN/USDC",
-      "medianSurge": -0.46471652011749054,
-      "readings": 12
+      "medianSurge": -0.46530345137572837,
+      "readings": 16
     },
     {
-      "address": "0x47f9e291bb766fc307ad7bba4f29f3eab6a97101",
-      "symbol": "CL-cbBTC/ZEN",
-      "medianSurge": -0.4655335855520145,
-      "readings": 12
+      "address": "0x565aecf84b5d30a6e79a5cef3f0da0fc4280debc",
+      "symbol": "CL-AERO/wstETH",
+      "medianSurge": -0.47442592713254883,
+      "readings": 16
     },
     {
-      "address": "0x17ea71d7e2dfb58f6b7e95c2dddad863e225091c",
-      "symbol": "CL-WETH/COOKIE",
-      "medianSurge": -0.4761356289792418,
-      "readings": 12
+      "address": "0xb211a9ddff3a10806c8fdb92dbc4c34596a23f84",
+      "symbol": "CL-WETH/KEYCAT",
+      "medianSurge": -0.48231459786721276,
+      "readings": 16
+    },
+    {
+      "address": "0x99f0364e162a36a77e5d77b5eeb56539563735a3",
+      "symbol": "CL-USDC/TAO",
+      "medianSurge": -0.5023188486889923,
+      "readings": 16
+    },
+    {
+      "address": "0x932e66cafaf7c434bdc999389d405760a7e2d047",
+      "symbol": "CL-LAPTOP/BLUECHIP",
+      "medianSurge": -0.5089674751977676,
+      "readings": 10
+    },
+    {
+      "address": "0x98c83e7b5348373e5866f4fdb3ae1682353b8574",
+      "symbol": "CL-wtDRAM/USDC",
+      "medianSurge": -0.5126999517753938,
+      "readings": 16
     },
     {
       "address": "0x1dda8b6469df243971381f1f3f4137814ca68722",
       "symbol": "vAMM-WMTX/WETH",
-      "medianSurge": -0.499534984465956,
-      "readings": 35
-    },
-    {
-      "address": "0xd23fe2db317e1a96454a2d1c7e8fc0dbf19bb000",
-      "symbol": "CL-CLANKER/WETH",
-      "medianSurge": -0.5296353376282945,
-      "readings": 12
+      "medianSurge": -0.5198765093696793,
+      "readings": 39
     },
     {
       "address": "0x7ce345561e1690445eefa0db04f59d64b65598a8",
       "symbol": "CL-wBLT/USDC",
-      "medianSurge": -0.5548790864128311,
-      "readings": 12
+      "medianSurge": -0.5455991172885938,
+      "readings": 16
     },
     {
-      "address": "0x0392b12a1ceb0cd13af5ea448cf5586ea609852d",
-      "symbol": "CL-WETH/ZEN",
-      "medianSurge": -0.5914837099907682,
-      "readings": 12
+      "address": "0x4ba79157c6e7ab14bce06a869af2d14c51c8e269",
+      "symbol": "CL-WETH/LINKS",
+      "medianSurge": -0.5668750432422237,
+      "readings": 14
     },
     {
-      "address": "0xf81d3c731b3ac5a4dfc968f514860bedeebebaf2",
-      "symbol": "CL-USDC/VFY",
-      "medianSurge": -0.5983274062145786,
-      "readings": 12
+      "address": "0x9be74093980230702f766bc6f8234177e58237e4",
+      "symbol": "CL-WETH/AERO",
+      "medianSurge": -0.5681792666979263,
+      "readings": 10
     },
     {
-      "address": "0xdc7ead706795eda3feda08ad519d9452badf2c0d",
-      "symbol": "CL-ezETH/WETH",
-      "medianSurge": -0.6190164661917181,
+      "address": "0xd7338b6f338da54b922bbbc6fbe3efedd5ce35fa",
+      "symbol": "CL-FLOCK/USDC",
+      "medianSurge": -0.5709262507861871,
+      "readings": 16
+    },
+    {
+      "address": "0x99fb961b5f8d5bf137976ba50cf6999546b0503f",
+      "symbol": "CL-tGBP/USDC",
+      "medianSurge": -0.571562008363161,
+      "readings": 16
+    },
+    {
+      "address": "0x4a021ba3ab1f0121e7df76f345c547db86cb3468",
+      "symbol": "CL-VIRTUAL/MAMO",
+      "medianSurge": -0.5733181372011513,
+      "readings": 16
+    },
+    {
+      "address": "0xcb4bc943314405c01907ae910e57afc2d0549706",
+      "symbol": "CL-LAPTOP/AAPLc",
+      "medianSurge": -0.5887454614426375,
+      "readings": 16
+    },
+    {
+      "address": "0x12c96e79a2bb8613012420300668e4a96e465ceb",
+      "symbol": "CL-jesse/LAPTOP",
+      "medianSurge": -0.5915943226389826,
       "readings": 10
     },
     {
       "address": "0x7313b413727ed86b01cce08c2e2f9e0a8462f5c0",
       "symbol": "CL-USDC/wtSKHY",
-      "medianSurge": -0.638533878688748,
-      "readings": 12
+      "medianSurge": -0.6520621196312142,
+      "readings": 16
     },
     {
-      "address": "0x85c99e6b9adab159a33a999a6303933212ac091e",
-      "symbol": "CL-oUSDT/cbBTC",
-      "medianSurge": -0.6766813357192656,
-      "readings": 12
+      "address": "0x098a4de96305bafaea0c0ce07cf6456e2c64982a",
+      "symbol": "CL-WETH/HOME",
+      "medianSurge": -0.6985993126197081,
+      "readings": 16
     },
     {
-      "address": "0x4ba79157c6e7ab14bce06a869af2d14c51c8e269",
-      "symbol": "CL-WETH/LINKS",
-      "medianSurge": -0.7081038031875571,
-      "readings": 10
-    },
-    {
-      "address": "0x5230845439fa66fbea20af7cf09bc413b99e10b7",
-      "symbol": "CL-cbBTC/EDGE",
-      "medianSurge": -0.8114358707023932,
-      "readings": 12
-    },
-    {
-      "address": "0x98c83e7b5348373e5866f4fdb3ae1682353b8574",
-      "symbol": "CL-wtDRAM/USDC",
-      "medianSurge": -0.8372142678230203,
-      "readings": 12
-    },
-    {
-      "address": "0x99fb961b5f8d5bf137976ba50cf6999546b0503f",
-      "symbol": "CL-tGBP/USDC",
-      "medianSurge": -0.921050221055668,
-      "readings": 12
+      "address": "0x41d4934322f2bd6fe1dbe4124070fe61651a2067",
+      "symbol": "CL-USDC/GHST",
+      "medianSurge": -0.7105775353334265,
+      "readings": 16
     }
   ],
   "accuracy": {
     "overall": [
       {
         "name": "previous",
-        "observations": 42572,
-        "medianAbsError": 0.4336378280781603,
-        "medianBias": 3.415853873089958e-7,
-        "closestOn": 18026
+        "observations": 47951,
+        "medianAbsError": 0.4401211099475557,
+        "medianBias": 0.0020842704913188737,
+        "closestOn": 20101
       },
       {
         "name": "current",
-        "observations": 42572,
-        "medianAbsError": 0.4017178742855989,
+        "observations": 47951,
+        "medianAbsError": 0.4040162580895039,
         "medianBias": 0,
-        "closestOn": 16958
+        "closestOn": 20104
       },
       {
         "name": "typical",
-        "observations": 42572,
-        "medianAbsError": 0.48437527092471333,
-        "medianBias": 0.17238218778195313,
-        "closestOn": 7588
+        "observations": 47951,
+        "medianAbsError": 0.4886305427070736,
+        "medianBias": 0.22931695228282112,
+        "closestOn": 7746
       }
     ],
     "buckets": [
@@ -916,24 +791,24 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 4814,
-            "medianAbsError": 0.4557178012721712,
+            "observations": 5327,
+            "medianAbsError": 0.39364914792571715,
             "medianBias": 0,
-            "closestOn": 2694
+            "closestOn": 2958
           },
           {
             "name": "current",
-            "observations": 4814,
-            "medianAbsError": 0.41276940499857173,
+            "observations": 5327,
+            "medianAbsError": 0.3533686567272005,
             "medianBias": 0,
-            "closestOn": 875
+            "closestOn": 1081
           },
           {
             "name": "typical",
-            "observations": 4814,
-            "medianAbsError": 0.581123519221769,
-            "medianBias": 0.22273130567136756,
-            "closestOn": 1245
+            "observations": 5327,
+            "medianAbsError": 0.5364601742759108,
+            "medianBias": 0.2015357316133135,
+            "closestOn": 1288
           }
         ]
       },
@@ -942,24 +817,24 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 12449,
-            "medianAbsError": 0.3450167409140079,
-            "medianBias": 0,
-            "closestOn": 6481
+            "observations": 13687,
+            "medianAbsError": 0.37091853648661055,
+            "medianBias": 0.00007845448192189686,
+            "closestOn": 7117
           },
           {
             "name": "current",
-            "observations": 12449,
-            "medianAbsError": 0.3008209376068909,
+            "observations": 13687,
+            "medianAbsError": 0.3357001241085249,
             "medianBias": 0,
-            "closestOn": 4000
+            "closestOn": 4572
           },
           {
             "name": "typical",
-            "observations": 12449,
-            "medianAbsError": 0.4188079255076289,
-            "medianBias": 0.11476284588426422,
-            "closestOn": 1968
+            "observations": 13687,
+            "medianAbsError": 0.47712276555882127,
+            "medianBias": 0.1911550651732734,
+            "closestOn": 1998
           }
         ]
       },
@@ -968,24 +843,24 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 16095,
-            "medianAbsError": 0.45181485932819876,
-            "medianBias": 0,
-            "closestOn": 6037
+            "observations": 18049,
+            "medianAbsError": 0.4570719053628567,
+            "medianBias": 0.000026621622687628133,
+            "closestOn": 6886
           },
           {
             "name": "current",
-            "observations": 16095,
-            "medianAbsError": 0.41370429684660803,
+            "observations": 18049,
+            "medianAbsError": 0.4135070257680775,
             "medianBias": 0,
-            "closestOn": 7453
+            "closestOn": 8492
           },
           {
             "name": "typical",
-            "observations": 16095,
-            "medianAbsError": 0.48520551306745974,
-            "medianBias": 0.13435587696845075,
-            "closestOn": 2605
+            "observations": 18049,
+            "medianAbsError": 0.48095587291364605,
+            "medianBias": 0.1769108896025442,
+            "closestOn": 2671
           }
         ]
       },
@@ -994,30 +869,29 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 9214,
-            "medianAbsError": 0.49970304396565046,
-            "medianBias": 0.12607470924948316,
-            "closestOn": 2814
+            "observations": 10888,
+            "medianAbsError": 0.4848185991635172,
+            "medianBias": 0.19836060455389215,
+            "closestOn": 3140
           },
           {
             "name": "current",
-            "observations": 9214,
-            "medianAbsError": 0.44811584688522466,
-            "medianBias": 0.1195545207223252,
-            "closestOn": 4630
+            "observations": 10888,
+            "medianAbsError": 0.4435958311846553,
+            "medianBias": 0.15546254178068342,
+            "closestOn": 5959
           },
           {
             "name": "typical",
-            "observations": 9214,
-            "medianAbsError": 0.48767273246892096,
-            "medianBias": 0.30866475792833525,
-            "closestOn": 1770
+            "observations": 10888,
+            "medianAbsError": 0.4859687921214273,
+            "medianBias": 0.36231513947158756,
+            "closestOn": 1789
           }
         ]
       }
     ],
     "epochs": [
-      "2026-08-06",
       "2026-08-13",
       "2026-08-20",
       "2026-08-27",
@@ -1025,7 +899,8 @@
       "2026-09-10",
       "2026-09-17",
       "2026-09-24",
-      "2026-10-01"
+      "2026-10-01",
+      "2026-10-08"
     ]
   }
 }

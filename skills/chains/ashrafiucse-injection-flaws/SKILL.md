@@ -53,6 +53,14 @@ Report when a request object/field reaches a Mongo-style query without operator 
 ```bash
 rg -n "os\.system|subprocess\.(call|run|Popen)\(.*shell\s*=\s*True|child_process\.(exec|execSync)|spawn\([^)]*shell:\s*true|Runtime\.getRuntime\(\)\.exec|system\(|popen\(|exec\.Command\(.*\+"
 ```
+**PHP sinks are case-INSENSITIVE**: `SyStem(`, `EXEC(`, `PoPen(` are the
+same calls — run the PHP sink census case-insensitively or the
+mixed-case spelling evades it (community-rule confirmation: semgrep's
+php `exec-use` went case-insensitive 2026-10 for exactly this):
+```bash
+rg -n -i "\b(system|exec|passthru|shell_exec|proc_open|popen)\s*\(" -g '*.php'
+rg -n -i "(system|passthru|shell_exec|proc_open|popen)\s*\(\s*['\"][^'\"]*['\"]\s*\.\s*\$_(GET|POST|REQUEST)" -g '*.php'
+```
 `exec("ls " + filename)` = classic. Safe: `execFile(cmd, [args])`, `subprocess.run([cmd, arg])` without `shell=True`. **`spawn(cmd, [args], { shell: true })` is NOT the safe shape** — the shell re-parses the array (drill finding, gaps4).
 
 ### XSS

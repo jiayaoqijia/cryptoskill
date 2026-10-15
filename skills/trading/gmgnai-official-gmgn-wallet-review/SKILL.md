@@ -113,7 +113,8 @@ Rules for pulling:
   an error message mentioning `429` or `RATE_LIMIT`. It never arrives as a normal JSON body. Don't
   search the returned data for "429": prices, amounts and timestamps contain it all the time.
 - **Rate limits: one `429` / `RATE_LIMIT` stops everything.** Make no further calls and don't
-  retry; retries extend a `RATE_LIMIT_BANNED` ban. If calls 1–4 succeeded, continue without 5–6
+  retry; retries extend a `RATE_LIMIT_BANNED` ban (`RATE_LIMIT_BANNED_MAX` means it is already at
+  the 5-minute ceiling). If calls 1–4 succeeded, continue without 5–6
   and say those parts were skipped. If 1–4 did not finish, tell the user to wait for the reset
   time and stop.
 - **A rejected key stops everything too.** `config --check` only confirms a key is present, not

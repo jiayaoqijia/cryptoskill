@@ -135,6 +135,8 @@ When a request returns `429`:
 - `swap` is a real transaction: never loop or auto-submit repeated swap attempts after a `429`. Wait until the reset time, then ask for confirmation again before retrying.
 - The CLI may wait and retry once automatically for short cooldowns on read-only commands such as `order quote` and `order get`. If it still fails, stop and tell the user the exact retry time instead of sending more requests.
 - For `RATE_LIMIT_EXCEEDED` or `RATE_LIMIT_BANNED`, repeated requests during the cooldown can extend the ban by 5 seconds each time, up to 5 minutes.
+- On `RATE_LIMIT_BANNED_MAX`, the ban has hit the 5-minute ceiling because requests kept arriving during the cooldown. Stop **all** GMGN calls for this task (not just the failing one) and tell the user the exact reset time; any request before `reset_at` resets the ban to 5 minutes again.
+- On `403 PLAN_UPGRADE_REQUIRED`, the endpoint costs more rate-limit weight than the user's plan capacity, so it can never succeed on this plan — do not retry or wait. Tell the user the endpoint is unavailable on their current plan and show the `upgrade_message` from the response (it contains the upgrade link `https://gmgn.ai/ai?chain=bsc&tab=paid_plans`).
 - `POST /v1/trade/swap` also has an error-count limiter. Repeatedly triggering the same business error, especially `40003701` (insufficient token balance), can return `ERROR_RATE_LIMIT_BLOCKED`. When this happens, do not retry until the reset time and fix the underlying request first.
 
 ## `swap` Usage

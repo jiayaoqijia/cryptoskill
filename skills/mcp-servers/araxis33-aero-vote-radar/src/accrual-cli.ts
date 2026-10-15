@@ -106,7 +106,14 @@ async function main() {
   console.log(`\nWrote ${outPath}`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Only run when this file is executed directly (as `npm run accrual`), not
+// when it's imported — e.g. by tests importing `formatReport`. Guarding on
+// `process.argv[1]` being defined first matches predict-cli.ts, timing-cli.ts,
+// promise-cli.ts and mcp-server.ts: `pathToFileURL(undefined)` throws, so
+// without this an import in a context with no argv[1] (a worker thread, some
+// REPLs) would crash on load instead of just skipping `main`.
+const isMainModule = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMainModule) {
   main().catch((err) => {
     console.error(formatError(err));
     process.exitCode = 1;
