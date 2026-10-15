@@ -272,6 +272,9 @@ icp canister top-up backend --amount 1000000000000 -e ic
 
 # Convert ICP to cycles and top up in one step (mainnet)
 icp cycles mint --icp 1.0 -n ic   # no canister argument, so -n is fine (see Pitfall 8)
+
+# No ICP to convert? Buy cycles with a card for the identity instead (load the `buy-cycles` skill)
+icp cycles buy --amount 10 -n ic
 icp canister top-up backend --amount 1000000000000 -e ic
 ```
 

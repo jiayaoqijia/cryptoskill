@@ -211,6 +211,7 @@ npm install -g @icp-sdk/icp-cli @icp-sdk/ic-wasm
     icp cycles balance -n ic   # check cycles balance on mainnet
     icp identity account-id    # get account ID to fund if needed
     ```
+    With a card and no ICP, `icp cycles buy --amount <usd> -n ic` buys cycles for the identity itself through CyclePay's on-chain gateway: the agent creates the order, the human pays on the link it prints, and the cycles land on the identity's cycles-ledger account, where `icp deploy -e ic` spends from. Load the `buy-cycles` skill for the flow, the agent flags (`--yes --no-open --json`) and the order states.
 
 21. **Over-specifying (or wrongly omitting) `package` in the Rust recipe.** As of `@dfinity/rust@v3.3.0` the `package` config is **optional** and defaults to the canister `name` in `icp.yaml`. By convention, keep the canister `name` equal to the `[package] name` in `Cargo.toml` and omit `package` entirely:
     ```yaml
@@ -476,6 +477,10 @@ Two specialized skills cover `icp identity link web`. Load the right one for the
 
 - `deploy-to-cloud-engine` — link the CLI to a cloud engine console with `--auth <console-origin>`, then deploy to the engine's subnet
 - `agent-web-identity` — obtain a delegation for an app-specific principal with `--app <domain>`, then make canister calls as the user
+
+### Funding an identity for mainnet
+
+A new identity has neither ICP nor cycles. `icp deploy -e ic` then fails with `Insufficient cycles. Requested: <n> cycles, available balance: 0 cycles.` (or `insufficient liquid cycles balance` from the cycles ledger): the deploying identity's cycles-ledger balance on mainnet is empty. Check it with `icp cycles balance -n ic`, then fund it. With ICP in hand, `icp cycles mint` converts it (see `cycles-management`). With only a card, load the `buy-cycles` skill: `icp cycles buy` buys cycles for the CLI identity itself, no wallet, exchange or Internet Identity sign-in needed (Pitfall 20).
 
 ## Additional References
 

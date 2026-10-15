@@ -194,7 +194,7 @@
 					},
 					"athenaEnabled": {
 						"type": "boolean",
-						"description": "Whether this key is provisioned for Auto / Athena."
+						"description": "Whether this key is provisioned for Auto."
 					},
 					"scopes": {
 						"items": {
@@ -1395,18 +1395,47 @@
 					}
 				]
 			},
+			"ApiKeyAutoErrorBody": {
+				"description": "An error passed through as an object, e.g. a failed account lookup or validation.",
+				"properties": {
+					"code": {
+						"type": "string",
+						"description": "Error code.",
+						"example": "ERR_SERVICE_UNAVAILABLE"
+					},
+					"message": {
+						"type": "string",
+						"description": "What went wrong.",
+						"example": "ACCOUNT_LOOKUP_UNAVAILABLE"
+					},
+					"details": {
+						"$ref": "#/components/schemas/ApiKeyAutoErrorDetails",
+						"description": "Per-field or per-condition details, when present"
+					}
+				},
+				"required": [
+					"code",
+					"message"
+				],
+				"type": "object"
+			},
 			"ApiKeyAutoErrorResponse": {
 				"properties": {
 					"error": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/ApiKeyAutoErrorBody"
+							}
+						],
+						"description": "A message string, or an object with `code` and `message` (for example a `503`\nwhen the X account lookup is unavailable: `{ \"code\": \"ERR_SERVICE_UNAVAILABLE\",\n\"message\": \"ACCOUNT_LOOKUP_UNAVAILABLE\" }`)."
 					},
 					"details": {
 						"$ref": "#/components/schemas/ApiKeyAutoErrorDetails"
 					}
 				},
-				"required": [
-					"error"
-				],
 				"type": "object",
 				"additionalProperties": {}
 			},
@@ -1452,6 +1481,47 @@
 				],
 				"type": "object"
 			},
+			"ApiKeyTweetAccount": {
+				"description": "The X account a `tweet.semantic` condition resolved to, and how it is billed.",
+				"properties": {
+					"path": {
+						"type": "string",
+						"description": "The condition this entry belongs to. Join on this field.",
+						"example": "conditions.OR[1]"
+					},
+					"username": {
+						"type": "string",
+						"description": "The `username` exactly as submitted (trimmed; case and any leading `@` kept), so\nit may differ from the account's canonical handle. Join on `path`, not on this.",
+						"example": "NASA"
+					},
+					"accountSourceRefId": {
+						"type": "string",
+						"description": "The X account id the username resolved to.",
+						"example": "11348282"
+					},
+					"billing": {
+						"type": "string",
+						"enum": [
+							"included",
+							"per_post"
+						],
+						"description": "`included`: the account is in Elfa's included real-time set and costs nothing\nextra. `per_post`: every post from the account is billed while the query runs."
+					},
+					"creditsPerPost": {
+						"type": "number",
+						"format": "double",
+						"description": "`per_post` only: credits charged to this API key for each post from the account\n(posts, quotes, notes and articles; not replies or reposts).",
+						"example": 1
+					}
+				},
+				"required": [
+					"path",
+					"username",
+					"accountSourceRefId",
+					"billing"
+				],
+				"type": "object"
+			},
 			"ApiKeyValidateQueryResponse": {
 				"properties": {
 					"valid": {
@@ -1486,13 +1556,23 @@
 						"type": "array",
 						"description": "Validation warnings"
 					},
-					"estimatedCost": {
-						"$ref": "#/components/schemas/JsonObject",
-						"description": "Optional cost estimate"
+					"estimatedCredits": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Estimated credits for the query's model calls over its lifetime, from the\nsimulation. `null` when no estimate can be made. Per-post X account charges are\nnot included.",
+						"example": 30
 					},
 					"simulationLlmCallsEstimate": {
 						"$ref": "#/components/schemas/JsonObject",
 						"description": "Optional simulation details"
+					},
+					"tweetAccounts": {
+						"items": {
+							"$ref": "#/components/schemas/ApiKeyTweetAccount"
+						},
+						"type": "array",
+						"description": "One entry per `tweet.semantic` condition, with its account and billing. Absent\nwhen the query has no `tweet.semantic` condition or failed an earlier check."
 					}
 				},
 				"required": [
@@ -1528,7 +1608,36 @@
 				"additionalProperties": false
 			},
 			"ApiKeyCreateQueryResponse": {
-				"properties": {},
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "The new query's id. Use it for poll, stream, cancel and delete.",
+						"example": "a12d20ff-6cb2-433e-afed-cc2e6a0380b6"
+					},
+					"status": {
+						"type": "string",
+						"description": "Query status after create.",
+						"example": "active"
+					},
+					"estimatedCredits": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Estimated credits for the query's model calls over its lifetime, as on validate.\n`null` when no estimate can be made. Per-post X account charges are not included.",
+						"example": 116
+					},
+					"tweetAccounts": {
+						"items": {
+							"$ref": "#/components/schemas/ApiKeyTweetAccount"
+						},
+						"type": "array",
+						"description": "One entry per `tweet.semantic` condition, with its account and billing, as on\nvalidate. Absent when the query has no `tweet.semantic` condition."
+					}
+				},
+				"required": [
+					"id",
+					"status"
+				],
 				"type": "object",
 				"additionalProperties": {}
 			},
@@ -1891,7 +2000,7 @@
 							}
 						],
 						"nullable": true,
-						"description": "Optional execution error object from Athena (when present)"
+						"description": "Optional execution error object (when present)"
 					}
 				},
 				"required": [
@@ -1900,6 +2009,32 @@
 					"type",
 					"status",
 					"createdAt"
+				],
+				"type": "object"
+			},
+			"ApiKeyAutoQueryFailure": {
+				"description": "Why a query ended as `failed`.",
+				"properties": {
+					"code": {
+						"type": "string",
+						"description": "Failure code.",
+						"example": "SUBSCRIPTION_CREDITS_EXHAUSTED"
+					},
+					"message": {
+						"type": "string",
+						"nullable": true,
+						"description": "What happened and what to do next, in plain language."
+					},
+					"source": {
+						"type": "string",
+						"description": "Where the failure came from: `billing` (a per-post charge was refused),\n`execution`, `query_evaluation`, `pending_setup` or `agent_validation`.",
+						"example": "billing"
+					}
+				},
+				"required": [
+					"code",
+					"message",
+					"source"
 				],
 				"type": "object"
 			},
@@ -1933,6 +2068,10 @@
 						"type": "number",
 						"format": "double",
 						"description": "Aggregated LLM credits from sessions linked to this query"
+					},
+					"failure": {
+						"$ref": "#/components/schemas/ApiKeyAutoQueryFailure",
+						"description": "Present when the query ended as `failed` with a recorded reason."
 					}
 				},
 				"required": [
@@ -2102,7 +2241,7 @@
 							}
 						],
 						"nullable": true,
-						"description": "Optional execution error object from Athena (when present)"
+						"description": "Optional execution error object (when present)"
 					},
 					"createdAt": {
 						"type": "string",
@@ -2110,7 +2249,7 @@
 					},
 					"auditDetails": {
 						"$ref": "#/components/schemas/JsonObject",
-						"description": "Full Athena audit details; returned by the single-execution endpoint"
+						"description": "Full execution audit details; returned by the single-execution endpoint"
 					},
 					"actionSnapshot": {
 						"$ref": "#/components/schemas/JsonObject",
@@ -2502,7 +2641,7 @@
 				"properties": {
 					"stepId": {
 						"type": "string",
-						"description": "Deterministic step id (Athena requires exactly one action step)"
+						"description": "Deterministic step id (Auto requires exactly one action step)"
 					},
 					"type": {
 						"type": "string",
@@ -2681,6 +2820,10 @@
 						},
 						"type": "array",
 						"description": "List of executions triggered by this query"
+					},
+					"failure": {
+						"$ref": "#/components/schemas/ApiKeyAutoQueryFailure",
+						"description": "Present when the query ended as `failed` with a recorded reason."
 					}
 				},
 				"required": [
@@ -4701,7 +4844,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "2.11.0",
+		"version": "3.0.0",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -6193,9 +6336,19 @@
 								}
 							}
 						}
+					},
+					"503": {
+						"description": "X account lookup temporarily unavailable; retry",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoErrorResponse"
+								}
+							}
+						}
 					}
 				},
-				"description": "Validate EQL syntax and get a cost estimate without creating a query.\nReturns simulation-based cost details when the query is valid.\n\n### Required Sequence (Enforced)\n\n`POST /v2/auto/queries/validate` must be called before\n`POST /v2/auto/queries`.\n\nLifecycle sequencing after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is\n   `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only after status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k so I can review the breakout setup.\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"valid\": true,\n  \"errors\": [],\n  \"warnings\": [],\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": { \"fast\": 1, \"expert\": 0, \"adaptive\": 0 },\n    \"actionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 },\n    \"autoActionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 }\n  },\n  \"estimatedCost\": {\n    \"credits\": 30,\n    \"price\": \"$0.270\"\n  }\n}\n```\n\n> Best practice: always validate before create to catch schema issues and\n> preview estimated cost.",
+				"description": "Validate EQL syntax and get a cost estimate without creating a query.\nReturns simulation-based cost details when the query is valid.\n\n### Required Sequence (Enforced)\n\n`POST /v2/auto/queries/validate` must be called before\n`POST /v2/auto/queries`.\n\nLifecycle sequencing after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is\n   `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only after status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k so I can review the breakout setup.\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"valid\": true,\n  \"errors\": [],\n  \"warnings\": [],\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": { \"fast\": 1, \"expert\": 0, \"adaptive\": 0 },\n    \"actionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 },\n    \"autoActionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 }\n  },\n  \"estimatedCredits\": 30\n}\n```\n\n`tweetAccounts` lists the X account behind each `tweet.semantic`\ncondition and whether it is `included` or billed `per_post`; join on\n`path`.\n\n> Best practice: always validate before create to catch schema issues and\n> preview estimated cost.",
 				"summary": "Validate Query",
 				"tags": [
 					"v2 Auto"
@@ -6267,7 +6420,8 @@
 									"success": {
 										"summary": "Example successful response",
 										"value": {
-											"key": {}
+											"id": "a12d20ff-6cb2-433e-afed-cc2e6a0380b6",
+											"status": "active"
 										}
 									}
 								}
@@ -6285,7 +6439,8 @@
 									"success": {
 										"summary": "Example successful response",
 										"value": {
-											"key": {}
+											"id": "a12d20ff-6cb2-433e-afed-cc2e6a0380b6",
+											"status": "active"
 										}
 									}
 								}
@@ -6341,9 +6496,19 @@
 								}
 							}
 						}
+					},
+					"503": {
+						"description": "X account lookup temporarily unavailable; retry",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoErrorResponse"
+								}
+							}
+						}
 					}
 				},
-				"description": "Create and activate a conditional query.\n\n### Required Sequence (Enforced)\n\nCall `POST /v2/auto/queries/validate` immediately before create.\n\nLifecycle after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only when status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n**Allowed action types (API key mode):**\n`webhook`, `notify`, `telegram_bot`, `llm`.\n\n### Cost\n\nSimulation-driven estimate (reference values):\n- baseline: `5 credits` (`$0.0725`)\n- fast call: `+5 credits` (`+$0.0725`)\n- expert call: `+18 credits` (`+$0.261`)\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\"\n}\n```\n\n### Response Example (201)\n\n```json\n{\n  \"queryId\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"active\",\n  \"estimatedCredits\": 116,\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": {\"fast\": 1, \"expert\": 0, \"adaptive\": 0},\n    \"actionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0},\n    \"autoActionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0}\n  }\n}\n```\n\n> Best practice: call validate first, then create. After creation, wire\n> notifications (`webhook`, `telegram_bot`, or SSE) to a background runner.",
+				"description": "Create and activate a conditional query.\n\n### Required Sequence (Enforced)\n\nCall `POST /v2/auto/queries/validate` immediately before create.\n\nLifecycle after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only when status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n**Allowed action types (API key mode):**\n`webhook`, `notify`, `telegram_bot`, `llm`.\n\n### Cost\n\nSimulation-driven estimate (reference values):\n- baseline: `5 credits` (`$0.0725`)\n- fast call: `+5 credits` (`+$0.0725`)\n- expert call: `+18 credits` (`+$0.261`)\n\nPer-post X accounts (`tweetAccounts[].billing` `per_post`) add\n`creditsPerPost` per post while the query runs.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\"\n}\n```\n\n### Response Example (201)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"active\",\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\",\n  \"createdAt\": \"2026-04-01T12:00:00.000Z\",\n  \"expiresAt\": \"2026-04-02T12:00:00.000Z\",\n  \"evaluationType\": \"price_driven\",\n  \"timeframe\": null,\n  \"preview\": {\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \">\",\n        \"isMet\": false,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": false,\n    \"matchingConditions\": 0\n  },\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": {\"fast\": 1, \"expert\": 0, \"adaptive\": 0},\n    \"actionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0},\n    \"autoActionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0}\n  },\n  \"estimatedCredits\": 116\n}\n```\n\nUse `id` for poll, stream, cancel and delete.\n\n> Best practice: call validate first, then create. After creation, wire\n> notifications (`webhook`, `telegram_bot`, or SSE) to a background runner.",
 				"summary": "Create Query",
 				"tags": [
 					"v2 Auto"
@@ -6545,7 +6710,7 @@
 						}
 					}
 				},
-				"description": "Check query status and execution results.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Example (200)\n\n```json\n{\n  \"queryId\": \"76e2e824-fc47-4d60-99b1-c227fbd2d3f5\",\n  \"status\": \"active\",\n  \"credits\": 0,\n  \"latestEvaluation\": {\n    \"evaluatedAt\": \"2026-04-01T12:00:00.000Z\",\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \"<\",\n        \"isMet\": true,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": true,\n    \"matchingConditions\": 1,\n    \"totalConditions\": 1\n  },\n  \"executions\": [\n    {\n      \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n      \"queryId\": \"76e2e824-fc47-4d60-99b1-c227fbd2d3f5\",\n      \"type\": \"notification\",\n      \"status\": \"success\",\n      \"details\": { \"notification\": { \"channel\": \"webhook\" } },\n      \"triggerTime\": \"2026-04-01T12:00:00.000Z\",\n      \"conditionsMet\": 1,\n      \"trigger\": {\n        \"type\": \"price\",\n        \"time\": \"2026-04-01T12:00:00.000Z\",\n        \"matchedConditions\": [\n          {\n            \"condition\": {\n              \"source\": \"price\",\n              \"method\": \"current\",\n              \"args\": { \"symbol\": \"BTC\" },\n              \"operator\": \"<\",\n              \"value\": 100000\n            },\n            \"match\": { \"observedValue\": 97250.5 }\n          }\n        ]\n      },\n      \"createdAt\": \"2026-04-01T12:00:01.000Z\"\n    }\n  ]\n}\n```\n\n`latestEvaluation` is the latest current-state snapshot. Auto Trigger\nContext (`triggerTime`, `conditionsMet`, `trigger`) explains what fired for\nan execution and uses the same public redaction boundary as outbound\ndelivery payloads.\n\n> Best practice: use polling for debugging or backfills. For production\n> delivery, prefer webhook/SSE notifications.",
+				"description": "Check query status and execution results.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Example (200)\n\n```json\n{\n  \"queryId\": \"76e2e824-fc47-4d60-99b1-c227fbd2d3f5\",\n  \"status\": \"active\",\n  \"credits\": 0,\n  \"latestEvaluation\": {\n    \"evaluatedAt\": \"2026-04-01T12:00:00.000Z\",\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \"<\",\n        \"isMet\": true,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": true,\n    \"matchingConditions\": 1,\n    \"totalConditions\": 1\n  },\n  \"executions\": [\n    {\n      \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n      \"queryId\": \"76e2e824-fc47-4d60-99b1-c227fbd2d3f5\",\n      \"type\": \"notification\",\n      \"status\": \"success\",\n      \"details\": { \"notification\": { \"channel\": \"webhook\" } },\n      \"triggerTime\": \"2026-04-01T12:00:00.000Z\",\n      \"conditionsMet\": 1,\n      \"trigger\": {\n        \"type\": \"price\",\n        \"time\": \"2026-04-01T12:00:00.000Z\",\n        \"matchedConditions\": [\n          {\n            \"condition\": {\n              \"source\": \"price\",\n              \"method\": \"current\",\n              \"args\": { \"symbol\": \"BTC\" },\n              \"operator\": \"<\",\n              \"value\": 100000\n            },\n            \"match\": { \"observedValue\": 97250.5 }\n          }\n        ]\n      },\n      \"createdAt\": \"2026-04-01T12:00:01.000Z\"\n    }\n  ]\n}\n```\n\n`latestEvaluation` is the latest current-state snapshot. Auto Trigger\nContext (`triggerTime`, `conditionsMet`, `trigger`) explains what fired for\nan execution and uses the same public redaction boundary as outbound\ndelivery payloads.\n\n`failure` (`code`, `message`, `source`) says why a query ended as\n`failed`.\n\n> Best practice: use polling for debugging or backfills. For production\n> delivery, prefer webhook/SSE notifications.",
 				"summary": "Poll Query",
 				"tags": [
 					"v2 Auto"
@@ -9509,7 +9674,7 @@
 						}
 					}
 				},
-				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: `1` credit. Requires `x-elfa-api-key`.",
+				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: free until 31 October 2026. Requires `x-elfa-api-key`.",
 				"summary": "Events",
 				"tags": [
 					"v3 Events"
@@ -9816,7 +9981,7 @@
 						}
 					}
 				},
-				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: `1` credit.",
+				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: free until 31 October 2026.",
 				"summary": "Storylines",
 				"tags": [
 					"v3 Events"
@@ -10018,7 +10183,7 @@
 						}
 					}
 				},
-				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: `1` credit.",
+				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: free until 31 October 2026.",
 				"summary": "Arcs",
 				"tags": [
 					"v3 Events"
@@ -10211,7 +10376,7 @@
 						}
 					}
 				},
-				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: `1` credit.",
+				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: free until 31 October 2026.",
 				"summary": "Entities",
 				"tags": [
 					"v3 Entities"
@@ -10345,7 +10510,7 @@
 						}
 					}
 				},
-				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: `1` credit.",
+				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: free until 31 October 2026.",
 				"summary": "Crypto call book",
 				"tags": [
 					"v3 Market"
@@ -10490,7 +10655,7 @@
 						}
 					}
 				},
-				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: `1` credit.",
+				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: free until 31 October 2026.",
 				"summary": "Equity call book",
 				"tags": [
 					"v3 Market"
@@ -10630,7 +10795,7 @@
 						}
 					}
 				},
-				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: `1` credit.",
+				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: free until 31 October 2026.",
 				"summary": "Crypto mindshare",
 				"tags": [
 					"v3 Market"
@@ -10760,7 +10925,7 @@
 						}
 					}
 				},
-				"description": "The same board over equities.\n\nCost: `1` credit.",
+				"description": "The same board over equities.\n\nCost: free until 31 October 2026.",
 				"summary": "Equity mindshare",
 				"tags": [
 					"v3 Market"
@@ -10888,7 +11053,7 @@
 						}
 					}
 				},
-				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: `1` credit.",
+				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: free until 31 October 2026.",
 				"summary": "Trending contracts",
 				"tags": [
 					"v3 Market"
@@ -11035,7 +11200,7 @@
 						}
 					}
 				},
-				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: `1` credit.",
+				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: free until 31 October 2026.",
 				"summary": "Calls",
 				"tags": [
 					"v3 Calls"
@@ -11238,7 +11403,7 @@
 						}
 					}
 				},
-				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: `1` credit.",
+				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: free until 31 October 2026.",
 				"summary": "Call episodes",
 				"tags": [
 					"v3 Calls"
@@ -11432,7 +11597,7 @@
 						}
 					}
 				},
-				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: `1` credit.",
+				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: free until 31 October 2026.",
 				"summary": "Positioning",
 				"tags": [
 					"v3 Calls"
@@ -11536,7 +11701,7 @@
 						}
 					}
 				},
-				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: `1` credit.",
+				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: free until 31 October 2026.",
 				"summary": "Top accounts",
 				"tags": [
 					"v3 People"
@@ -11753,7 +11918,7 @@
 			]
 		},
 		{
-			"name": "API v3 (Iris)",
+			"name": "API v3",
 			"tags": [
 				"v3 Entities",
 				"v3 Events",

@@ -131,8 +131,8 @@ except `key-status` which is API key mode only.
 
 API v3 turns news and market chatter across crypto and equities into events, positions and
 rankings. Every endpoint is `GET` and authenticates with `x-elfa-api-key` (no x402). The v3 API
-is free on the Pay-as-you-go and Grow plans, and Enterprise keys can call it too; a Free key can
-call only `/v3/key-status`. See Step 2d for the rules they share.
+is free on the Pay-as-you-go and Grow plans until 31 October 2026, and Enterprise keys can call
+it too; a Free key can call only `/v3/key-status`. See Step 2d for the rules they share.
 
 | Question | Endpoint | Returns |
 |---|---|---|
@@ -246,12 +246,12 @@ Install or refresh the skill with `npx skills add elfa-ai/skills`.
 If you are running inside a client that cannot execute commands, such as Claude Desktop,
 there is an MCP server that exposes the API as tools: connect the hosted server at
 `https://mcp.elfa.ai/mcp` and sign in with Elfa, or run `npx -y @elfa-ai/mcp` with an API key.
-See [docs.elfa.ai/mcp](https://docs.elfa.ai/mcp). Where you can run
+See [docs.elfa.ai/tools/mcp](https://docs.elfa.ai/tools/mcp). Where you can run
 commands, prefer this skill — it costs no context until you use it.
 
 When you are writing TypeScript or Python rather than calling the API by hand, the official
 SDKs (`@elfa-ai/sdk`, `elfa-sdk`) wrap the same surface with typed responses, retries, and SSE
-streaming. See [docs.elfa.ai/sdks](https://docs.elfa.ai/sdks).
+streaming. See [docs.elfa.ai/tools/sdks](https://docs.elfa.ai/tools/sdks).
 
 ## How to use this skill
 
@@ -291,7 +291,7 @@ Use the `bash_tool` to call the Elfa API via curl.
    >
    > **Option B — x402 keyless payments:** Pay per request with USDC on Base, Arbitrum,
    > Polygon, Avalanche, or Solana — no signup needed. See the
-   > [x402 docs](https://docs.elfa.ai/x402-payments) for setup.
+   > [x402 docs](https://docs.elfa.ai/get-started/x402) for setup.
 
    Do not attempt any authenticated API calls without a key or x402 setup. Wait for the user.
 3. **Credential safety:**
@@ -392,7 +392,7 @@ Solana — no API key, no registration. This is ideal for agents, bots, and prog
   present even on the short shape. On the Auto endpoints, EQL validation failures return
   `{ valid, errors, warnings }` (at `422` from create, at `200` from validate, where you must read
   `valid`), and errors raised by the execution engine are passed through unchanged. A `402` is
-  the payment handshake, not a billing error. See [Error Responses](https://docs.elfa.ai/errors).
+  the payment handshake, not a billing error. See [Error Responses](https://docs.elfa.ai/get-started/errors).
 - **Status:** Currently in beta.
 
 | Network | Chain ID | USDC Address | Facilitator |
@@ -616,7 +616,7 @@ curl -s https://api.elfa.ai/v2/ping
 Use API v3 when the user wants to know what happened and how a story developed, who is long
 or short an asset and whose calls to trust, which assets get the most attention, or which
 accounts are worth reading — across crypto and equities. Endpoints are listed in
-[API v3 endpoints](#api-v3-endpoints). Full docs: [docs.elfa.ai/v3/overview](https://docs.elfa.ai/v3/overview).
+[API v3 endpoints](#api-v3-endpoints). Full docs: [docs.elfa.ai/api/v3/overview](https://docs.elfa.ai/api/v3/overview).
 
 API v3 needs `ELFA_API_KEY` with v3 access (see [API v3 endpoints](#api-v3-endpoints)), and the
 Step 2a key rules apply. Without one, offer one, or fall back to `event-summary` (any key, or
@@ -690,9 +690,9 @@ post behind them.
   so on) with `track.scoredEpisodes`.
 
 To be alerted when a new event matches your filters instead of polling, use an Auto `events`
-condition (Step 3). Per-family docs: [Entities](https://docs.elfa.ai/v3/entities),
-[Events](https://docs.elfa.ai/v3/events), [Market](https://docs.elfa.ai/v3/market),
-[Calls](https://docs.elfa.ai/v3/calls), [People](https://docs.elfa.ai/v3/people).
+condition (Step 3). Per-family docs: [Entities](https://docs.elfa.ai/api/v3/entities),
+[Events](https://docs.elfa.ai/api/v3/events), [Market](https://docs.elfa.ai/api/v3/market),
+[Calls](https://docs.elfa.ai/api/v3/calls), [People](https://docs.elfa.ai/api/v3/people).
 
 ### Step 3: Auto — Condition Engine and Trigger Pipeline
 
@@ -792,6 +792,7 @@ existing queries/sessions may become inaccessible.
 | `POST /v2/auto/chat` (Builder Chat) | `1 + dynamic` | Base 1 credit + `ceil(request_cost * 750)` dynamic charge based on LLM usage |
 | `POST /v2/auto/queries` (Create) | Simulation-driven | Baseline `5` + per simulated LLM call: fast `+5`, expert `+18` |
 | `POST /v2/auto/queries/validate` | Free | Returns cost estimate — always call before Create |
+| Per-post X account (`tweet` on an account outside Elfa's real-time set) | `creditsPerPost` (`1`) per post while the plan runs | Not in `estimatedCredits` or `x-elfa-credits`; see `tweetAccounts` on Validate |
 | `GET /v2/auto/queries/*` (list, poll, stream, sessions) | Free | |
 | `POST /v2/auto/queries/:queryId/cancel` (Cancel active query) | Free | |
 | `DELETE /v2/auto/queries/:queryId` (Delete terminal query) | Free | |
@@ -1242,7 +1243,7 @@ In the Builder Chat catalog this is the `Signal` category, **X/Twitter Post**.
 
 Rules:
 - `username` must be passed **without** `@` (e.g. `cz_binance`, not `@cz_binance`).
-- `username` must resolve to an active monitored account at create-time, otherwise validation/create fails.
+- `username` can be any public X account. Validate's `tweetAccounts` says how each is billed: `included` (Elfa's real-time set) costs nothing extra; `per_post` costs `creditsPerPost` for every post while the plan runs (posts, quotes, notes and articles; not replies or reposts), matched or not, and is not in `estimatedCredits`. Tell the user before Create. A key without a paid API plan, and x402, can watch only `included` accounts; a rejected account is an `errors[]` entry (see [Validation Errors](#validation-errors--next-action-table)). Builder Chat drafts `tweet` conditions only for `included` accounts: write any other yourself. Details: [X Accounts and Per-Post Billing](https://docs.elfa.ai/auto/signal#x-accounts-and-per-post-billing).
 - `minConfidence` must be a JSON integer between `0` and `100`; use `80` when the user gives no threshold.
 - `method`, `operator`, and `value` are auto-filled defaults (`semantic`, `==`, `true`) — do **not** include them in the condition JSON.
 
@@ -1287,7 +1288,7 @@ Rules:
 
 In the Builder Chat catalog this is the `Signal` category, **Events**.
 
-Triggers on events: news about an asset, project, company, person, or macro — listings, hacks, regulatory decisions, macro releases, company news, large flows, bullish or bearish news. These are the events `GET /v3/events` (API v3) serves, each written up from many posts, and the condition takes that endpoint's filter values, matched the same way. Use it for news **about** a subject; use `tweet` for posts **from** an account. Not yet in the app's visual builder catalog; Builder Chat and the API both author it. Full reference: https://docs.elfa.ai/auto/events — the events themselves: https://docs.elfa.ai/v3/events
+Triggers on events: news about an asset, project, company, person, or macro — listings, hacks, regulatory decisions, macro releases, company news, large flows, bullish or bearish news. These are the events `GET /v3/events` (API v3) serves, each written up from many posts, and the condition takes that endpoint's filter values, matched the same way. Use it for news **about** a subject; use `tweet` for posts **from** an account. Not yet in the app's visual builder catalog; Builder Chat and the API both author it. Full reference: https://docs.elfa.ai/auto/events — the events themselves: https://docs.elfa.ai/api/v3/events
 
 | Method | Args (all optional; at least one filter or `text`) | Returns |
 |---|---|---|
@@ -1953,7 +1954,9 @@ guess.
 
 `GET /v2/auto/queries/{queryId}` (and the x402 `POST` equivalent) returns `queryId`, `status`,
 an optional `credits`, `latestEvaluation` (current state), and `executions` (what actually
-fired).
+fired). A query that failed with a recorded reason also carries `failure` (`code`, `message`,
+which may be `null`, and `source`); `source: "billing"` means a per-post X account charge was
+refused, so top up, upgrade or raise the limit, then create the plan again.
 
 **Distinguish the two runtime surfaces — this is the most common polling mistake:**
 
@@ -2430,7 +2433,12 @@ issue, not a capability gap. Iterate on Validate instead of abandoning the query
 | Unsupported `symbol` / source | Asset not indexed or DEX pair unsupported | Skip symbol and report it; proceed with supported subset |
 | Depth / leaf-count exceeded | More than depth 3 or 10 leaves | Split into two queries joined by your runner |
 | `cron` / `llm` period too short | Below 1h minimum | Raise to `1h` or higher |
-| Unmonitored `tweet` username | `tweet.semantic` `args.username` not in monitored active accounts | Replace with a monitored active handle (without `@`) and re-validate |
+| `tweet` username, `details.reason: paid_plan_required` | The key has no paid API plan, and the account isn't in Elfa's real-time set (a misspelled handle lands here too on such a key) | Check the spelling; use a paid API key, or pick an `included` account |
+| `tweet` username, `details.reason: not_found` | No X account has that handle, or the value isn't a handle | Check the spelling and pass the bare handle (no `@`) |
+| `tweet` username, `details.reason: protected` | The account is protected | Pick a public account |
+| `tweet` username, `details.reason: capacity_reached` | The per-post account pool is full | Retry later, or pick an `included` account |
+| `tweet` username on x402, `EQL_INVALID_ARG_TYPE` | x402 watches only accounts in the real-time set | Pick another account, or use a paid API key |
+| `503` `ERR_SERVICE_UNAVAILABLE`, `error.message: ACCOUNT_LOOKUP_UNAVAILABLE` | The X account lookup failed; the account may well exist | Retry after a few seconds |
 | Invalid `minConfidence` (`tweet` / `telegram` / `events`) | Non-integer or outside `0..100` | Use a JSON integer between `0` and `100` (start with `80`) |
 | `events` unknown / ambiguous `entity` | No entity matches, or several match equally (`details.candidates`) | Set `entityType`, pass a candidate's `publishedId` as `entity`, or drop `entity` and use `eventType` + `text` |
 | `events` with no filter and no `text`, or `text`/`minConfidence`/`entityType` unpaired | At least one filter or `text`; `text` and `minConfidence` together; `entityType` only with `entity` | Add a filter, or pair the args |
@@ -2569,7 +2577,7 @@ See the [Elfa API documentation](https://docs.elfa.ai) for the full parameter sp
   `timeWindow`; mindshare takes `period`), page with `nextCursor` → `cursor`, and read the list at the top level of the
   response. See Step 2d
 - Include the signup link `https://go.elfa.ai/claude-skills` as a comment near the
-  API key placeholder, and link to `https://docs.elfa.ai/x402-payments` for x402
+  API key placeholder, and link to `https://docs.elfa.ai/get-started/x402` for x402
 - Always include proper error handling
 - For API key mode: show the `x-elfa-api-key` header (use a placeholder like `YOUR_API_KEY`)
 - For x402 mode: show the `/x402/v2/` prefix and recommend `@x402/fetch` or `@x402/axios`
@@ -2662,7 +2670,7 @@ Use `$` when you want only cashtag-specific mentions. Omit `$` for a more inclus
 - Event summary: 5 credits ($0.0725 via x402)
 - Trending narratives: 5 credits ($0.0725 via x402)
 - Chat: speed-based; via x402 pay `exact` (fast $1, expert $2) or `batch-settlement` (up to fast $2, expert $6)
-- API v3: free on the Pay-as-you-go and Grow plans. API key only
+- API v3: free on the Pay-as-you-go and Grow plans until 31 October 2026. API key only
 - `/v2/ping`, `/v2/key-status`: free
 - Every `/v2/*` and `/v3/*` response to an authenticated request carries an **`x-elfa-credits`** header with
   the credits that request consumed — read it instead of diffing `/v2/key-status` around a call.
@@ -2708,7 +2716,7 @@ Use `$` when you want only cashtag-specific mentions. Omit `$` for a more inclus
 - Install/update this skill with `npx skills add elfa-ai/skills`. API keys come from the
   [Elfa Developer Portal](https://go.elfa.ai/dev).
 - x402 and API key credits are independent — they do not overlap or share balances.
-- For x402 documentation and setup, refer users to https://docs.elfa.ai/x402-payments.
+- For x402 documentation and setup, refer users to https://docs.elfa.ai/get-started/x402.
 - For Auto documentation, refer users to https://docs.elfa.ai/auto/overview.
 - Auto x402 agent secret must be persistent — do not rotate per request.
 - For the full list of Auto capabilities, triggers, and query templates, see

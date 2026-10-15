@@ -147,7 +147,7 @@ if [[ "$X402" == true ]]; then
   [[ "${ENDPOINT#/x402}" == /v3/* ]] && die "API v3 takes an API key only; x402 is not available on /v3. Set ELFA_API_KEY instead."
   # Rewrite /v2/ → /x402/v2/ if not already prefixed
   [[ "$ENDPOINT" == /v2/* ]] && ENDPOINT="/x402${ENDPOINT}"
-  [[ -n "$PAYMENT" ]] || die "--x402 requires --payment <payload>. See https://docs.elfa.ai/x402-payments"
+  [[ -n "$PAYMENT" ]] || die "--x402 requires --payment <payload>. See https://docs.elfa.ai/get-started/x402"
 else
   [[ -z "${ELFA_API_KEY:-}" ]] && die "ELFA_API_KEY is not set. Get a key at https://go.elfa.ai/claude-skills"
 fi

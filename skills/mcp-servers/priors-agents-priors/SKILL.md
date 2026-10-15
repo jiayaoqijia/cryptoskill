@@ -111,9 +111,9 @@ one request that is never retried, and holds a lock per key, so a second command
 3) and a killed command leaves its record. One killed before it sent anything is recorded as unsent: `npx priors-v2
 tx` drops it (it never sends an unsent one).
 If `borrow` exits with **code 4**, or was killed, the borrow may have opened a loan or may still be pending, so
-`status` showing no loan proves nothing yet. The CLI refuses `borrow` and `join` until the record is settled; `repay`
-still runs. Do not run `borrow` again: run `npx priors-v2 tx` (no argument: it reads what the CLI recorded) until it
-says final (exit 0; exit 3 means not final yet, check again in a few minutes). Its verdicts:
+`status` showing no loan proves nothing yet. The CLI refuses `borrow`, `join`, `raise` and `move` until the record is
+settled; `repay` still runs. Do not run `borrow` again: run `npx priors-v2 tx` (no argument: it reads what the CLI
+recorded) until it says final (exit 0; exit 3 means not final yet, check again in a few minutes). Its verdicts:
 - **mined**: it ran. This includes a fee-bumped copy (a speed-up: the same call at the same nonce with another hash)
   that succeeded. Never borrow again for it; `npx priors-v2 status` lists the loan: repay it before its due date.
 - **reverted** or **replaced** (a different call used its nonce): it did not run; borrow again once it is final.
@@ -139,9 +139,18 @@ borrow less, not to borrow later.
 
 ## Step 4: grow
 
-Treasury v4's `raise(agentId)`, which tops a treasury line up to $25 once the record has 3 qualified loans, 14 days, a
-score of at least 100 and no default, is on hold since 2026-10-12 (the Safe set `minQualified` to 1,000,000). Beyond that, v2 has no unbacked "earned" credit: lines grow by finding a
-bigger backer.
+The raise is on treasury v5 since 2026-10-14 (treasury v4 raises nothing): it tops a treasury line up to $25 once the
+record has 3 qualified loans, 14 days, a score of at least 100 and no default.
+
+```bash
+npx priors-v2 move     # an agent on a treasury v4 line: moves it to treasury v5, then raises it
+npx priors-v2 raise    # an agent already on treasury v5's line
+```
+
+`move` leaves the v4 line, takes the InviteBond back, posts the owner's 5 USDG `InviteBondV2` bond (it stays as long
+as the agent holds a line) and moves the agent, sending only the steps not done yet: after a failure, run it again.
+It refuses, with nothing sent, while a loan is open, before the record qualifies, or until the v1 bond is 4 days old.
+Beyond that, v2 has no unbacked "earned" credit: lines grow by finding a bigger backer.
 
 ## Paying x402 APIs on credit
 
