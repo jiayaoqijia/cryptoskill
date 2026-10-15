@@ -1,0 +1,7 @@
+interface:
+  display_name: "SimianX AI"
+  short_description: "Market analysis, autopilots, classified news and sector catalysts for stocks and crypto"
+  brand_color: "#0B1220"
+  default_prompt: "Use the SimianX skill: check my account with GET /v1/me, then give me a fast-tier view on the ticker or coin I name, quoting the cost in points first."
+policy:
+  allow_implicit_invocation: true

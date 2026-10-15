@@ -1,6 +1,6 @@
 # TRADING-RULES.md — Reglas de Trading Crypto de Sic SI™
 
-_Las reglas que gobiernan cada orden del kit. Nada aquí es teórico: cada regla existe porque pasó algo (la lección está anotada). Última revisión: 2026-10-11._
+_Las reglas que gobiernan cada orden del kit. Nada aquí es teórico: cada regla existe porque pasó algo (la lección está anotada). Última revisión: 2026-10-15._
 
 ---
 
@@ -36,6 +36,7 @@ _Las reglas que gobiernan cada orden del kit. Nada aquí es teórico: cada regla
 - **R16 — Trading SOLO por IP residencial.** MEXC y Bitunix bloquean IPs datacenter/VPN (AT&T 45.30.88.207 es la ruta buena).
 - **R17 — Bitunix por el host correcto.** `fapi.bitunix.com` (api.bitunix.com = WAF 403). Firma doble SHA-256: GET firma payload vacío, POST firma body JSON compacto.
 - **R18 — Un solo bot por cuenta.** Sin watchers duplicados ni instancias paralelas pateando la misma llave.
+- **R24 — Endpoints verificados solamente.** Prohibido el probing ciego: ninguna llamada firmada a endpoints no documentados en este kit. Un endpoint nuevo se valida contra la documentación oficial del exchange antes de tocarlo con la llave de producción. _(Lección 13-oct: 4 probes a endpoints inexistentes = llave lockeada 30+ horas, trading ciego)_
 
 ## 6. Seguridad
 
@@ -47,6 +48,7 @@ _Las reglas que gobiernan cada orden del kit. Nada aquí es teórico: cada regla
 
 - **R22 — Alertas explícitas.** SL/TP y cambios de estado anuncian por WhatsApp con announce explícito; silencio = nada pasó.
 - **R23 — Cambios de scope se anuncian antes de aplicarse.** Subir un riel, ampliar un stop, escalar capital: primero el anuncio, después el trade.
+- **R25 — Validar antes de ingerir.** Nada entra al acta sin fuente primaria confirmada; reportes de segunda mano se marcan NO VERIFICADO hasta que una fuente directa confirme o niegue. _(Lección 14-oct: MS NOW reportó a Patel 'aterrizando en Moscú'; el FBI lo negó y la cadena se corrigió en 4 horas — el poisoning se evita validando en la entrada)_
 
 ---
 
@@ -58,5 +60,6 @@ _Las reglas que gobiernan cada orden del kit. Nada aquí es teórico: cada regla
 | 2026-10-07 | KamdenAI: señales de terceros no auditadas | R12 |
 | 2026-10-09 | Tuni rail-capped; stop cubría solo lota 1 | R2, R6 |
 | 2026-10-10 | Prueba de fuego del SL nativo diseñada | R8 |
+| 2026-10-13/14 | Llave lockeada por probing ciego; poisoning MS NOW-Patel en vivo | R24, R25 |
 
 _Repo privado. El código obedece estas reglas; las reglas obedecen a los errores que ya pagamos._
