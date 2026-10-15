@@ -1,8 +1,8 @@
 ---
 name: deploy-to-cloud-engine
-description: "Deploys a built Internet Computer project to a cloud engine (OpenCloud): link the console identity with `icp identity link web` (defaults to https://opencloud.org; a delegation handoff covers sandboxes the browser cannot reach), run `icp deploy` on the engine's subnet, tag canisters with `__META_*` for a named console app, bake version metadata (service:git:sha) into the wasm, and deploy the proxy an app needs for Bitcoin/Ethereum signing, VetKeys or exchange rates, card-funded from the console or self-deployed via `icp new --subfolder proxy`. Use when shipping to a cloud engine; on mention of OpenCloud, an engine subnet id, or linking the icp CLI; when sign-in never completes from a sandbox; when naming, versioning or giving an icon to a console app; when a proxy must be deployed, funded or topped up (failing proxied calls: cloud-engine-canisters); or which balance to top up (subscription, reserve, proxy). Do NOT use for a mainnet deploy with no engine (icp-cli) or canister logic (cloud-engine-canisters)."
+description: "Deploys a built Internet Computer project to a cloud engine (OpenCloud): link the console identity with `icp identity link web` (defaults to https://opencloud.org; a delegation handoff covers sandboxes), run `icp deploy` on the engine's subnet, tag canisters with `__META_*` for a named console app, bake version metadata (service:git:sha) into the wasm, and get the proxy an app needs for Bitcoin/Ethereum signing, VetKeys or exchange rates: deployed by the engine owner in the console and paid from the engine's balance, or self-deployed (`icp new --subfolder proxy`). Use when shipping to a cloud engine; on mention of OpenCloud, an engine subnet id, or linking the icp CLI; when sign-in never completes from a sandbox; when naming, versioning or giving an icon to a console app; when a proxy must be deployed or funded, or which balance to top up (engine, proxy; failing proxied calls: cloud-engine-canisters). Do NOT use for a mainnet deploy with no engine (icp-cli) or canister logic (cloud-engine-canisters)."
 license: Apache-2.0
-compatibility: "icp-cli >= 0.3.0 (deploy/identity commands verified against 0.3.0 and 1.0.2, proxy and cycles commands against 1.0.2 and 1.3.0; the delegation handoff needs `icp identity delegation`, present in 1.0.x; the `proxy` project template needs `icp new --subfolder`), a cloud engine console account, a browser for the Internet Identity sign-in, and a saved payment method for the console-funded proxy"
+compatibility: "icp-cli >= 0.3.0 (deploy/identity commands verified against 0.3.0 and 1.0.2, proxy and cycles commands against 1.0.2 and 1.3.0; the delegation handoff needs `icp identity delegation`, present in 1.0.x; the `proxy` project template needs `icp new --subfolder`), a cloud engine console account, a browser for the Internet Identity sign-in, and, for a console proxy, the engine owner to deploy it"
 metadata:
   title: Deploy to Cloud Engine
   category: CloudEngine
@@ -16,24 +16,29 @@ A **cloud engine** is a user-owned slice of Internet Computer capacity, administ
 
 This skill only covers the cloud-engine-specific steps: linking the CLI to the engine's console identity, and a subnet-targeted deploy. For everything else about the CLI (`icp.yaml`, recipes, environments, bindings, identities), load the **`icp-cli`** skill.
 
+**Check where you run before you write any code.** The normal sign-in, `icp identity link web`, completes only when `icp` runs on the same machine as the user's browser (see Step 1.0). If you run in a remote or cloud sandbox, tell the user before you build anything, and ask them to start a local session instead: for example, the local environment when they start a session in the Claude desktop app, or a coding agent on their own computer (Claude Code, Codex CLI, Cursor). A cloud session cannot move to their computer later, so ask before you build, not after, and wait for the answer. Continue in the sandbox only when the user has no local option. Then do the delegation handoff in Step 1.0 **first**, and build only after the sandbox CLI signs as the user: do not leave the sign-in for deploy time.
+
 Before running any `icp` command you are unsure of, run `icp <subcommand> --help` (e.g. `icp identity link --help`, `icp deploy --help`) to confirm the command and flags exist. Do not infer flags. Authoritative reference: https://cli.internetcomputer.org/llms.txt
 
 ## What You Need
 
-Two values. Look for them first in `icp.yaml` or earlier in the conversation. One has a default; the other you must ask for:
+Two values, and a third for some apps. Look for them first in `icp.yaml` or earlier in the conversation. One has a default; the others you must ask for:
 
 1. **Console origin** — the URL the user signs in to their cloud engine console with. **Defaults to `https://opencloud.org`** (the main OpenCloud console). It is used as the `--auth` origin in Step 1 so the linked CLI identity derives the **same principal that administers the engine**. Use the default, but say so and give the user a chance to override before linking:
    - Say: "I'll link the CLI against `https://opencloud.org`, the default console. If you sign in to your engine console at a different URL, tell me now."
    - Only use a different origin when the user names one — never substitute another URL on your own; the `--auth` origin determines the derived principal (see Pitfall 2).
 2. **Subnet id**: the subnet the engine deploys to, required by `icp deploy --subnet`. There is **no default**; never guess it. The user finds it on the engine's **Settings** page in the console (under the engine's identifiers), or copies it from the console's command palette. If absent, **ask and do not proceed without it**:
    - Ask: "What is your engine's subnet id? It is on your engine's Settings page in the console."
+3. **Proxy canister id**: only if the app calls threshold ECDSA/Schnorr, vetKD, the exchange-rate canister, the Bitcoin API, or the EVM/SOL RPC canisters (look for a `PROXY_CANISTER_ID` variable, or a call to a `proxy` method). There is **no default**, you cannot create the console proxy yourself, and a self-deployed one is no substitute (Step 5). If absent, **ask before deploying**:
+   - Ask: "This app needs your engine's proxy canister. If the engine has one, send me its id (engine → Canisters → Proxy canisters). If not, the engine owner can deploy one there with Deploy a proxy: it is paid from the engine's balance, no card. Then send me its id."
 
-Record both so you do not re-ask within the session.
+Record them so you do not re-ask within the session.
 
 ## Prerequisites
 
 - `icp` on `$PATH` — see the **`icp-cli`** skill to install. Verify with `icp --version` (this skill's commands are verified against 0.3.0 and 1.0.2). If the installed version differs, confirm the flag set with `icp <cmd> --help` before running — flags have changed across major versions.
 - A project that already builds. If it does not build or package yet, set that up first (see the `icp-cli` skill), then return here.
+- **No project yet, and no description of one?** Ask the user what to build before you write any code or create any files: "What app do you want to build?" Do **not** pick a sample app (a guestbook, a counter, a to-do list) on your own. A prompt that only says "build and deploy an app" is a request to ask, not a request to choose.
 - macOS: `icp` stores its data under `~/Library/Application Support/org.dfinity.icp-cli/`. If the shell cannot write there (`Operation not permitted` from macOS TCC, e.g. when commands run through a bridge), redirect the data to an unprotected path for the session — `HOME=/tmp/icp-home icp …` — and keep that same `HOME` on **every** subsequent `icp` command, or the later commands will not see the linked identity.
 
 ## Step 1 — Link the CLI to your engine identity (once per machine)
@@ -45,7 +50,7 @@ The CLI must sign as the **same identity that administers the engine** — that 
 `icp identity link web` completes the sign-in via a redirect to `http://127.0.0.1:<port>` **on the machine where the CLI runs**. The browser in which the user completes the Internet Identity sign-in must be able to reach that loopback address. Determine the environment before linking:
 
 - **CLI and browser on the same machine, with network** (local development, or a terminal-integrated agent on the user's own machine) → use the normal link flow below.
-- **CLI in a remote or isolated sandbox, with network** (the agent runs in the cloud; the user's browser is on a different machine) → the normal flow **cannot** work: the sign-in URL carries a `callback=http://127.0.0.1:<port>` bound to the sandbox, the user's browser resolves `127.0.0.1` to its *own* machine, and the delegation never reaches the CLI. Later commands then fail with authorization errors. Use the **delegation handoff** below instead.
+- **CLI in a remote or isolated sandbox, with network** (the agent runs in the cloud; the user's browser is on a different machine) → the normal flow **cannot** work: the sign-in URL carries a `callback=http://127.0.0.1:<port>` bound to the sandbox, the user's browser resolves `127.0.0.1` to its *own* machine, and the delegation never reaches the CLI. Later commands then fail with authorization errors. Ask the user to switch to a local session first (see "What This Is"). Use the **delegation handoff** below only if they cannot.
 - **CLI shell with no network at all** (e.g. a sandboxed device bridge on the user's own machine: DNS blocked, HTTPS requests fail, writes limited to `/tmp`) → **no** `icp` network command can run there — not the link, and not `icp deploy` either. The delegation handoff does not help: it only moves signing authority, not network access. Do not retry, tunnel, or proxy. Prepare the project and hand the user **one script** to run in their real terminal — see "No-network CLI host" below.
 
 When in doubt, probe before linking: `curl -sI https://<console-origin>` failing (or DNS not resolving) from the CLI shell means the no-network case.
@@ -299,9 +304,11 @@ Report the deployed canister ids (and the frontend URL, if any) back to the user
 
 ## Step 5: Deploy a proxy canister (only if the app needs chain-key services)
 
-Skip this step unless the app calls **threshold ECDSA or Schnorr** (Bitcoin, Ethereum), **vetKD / VetKeys**, the **exchange-rate canister** (XRC), or any other canister that must be paid in cycles across a subnet boundary. Everything else (the app's own execution, storage, messaging, and HTTPS outcalls) is free on an engine and needs no proxy at all.
+Skip this step unless the app calls **threshold ECDSA or Schnorr** (Bitcoin, Ethereum), **vetKD / VetKeys**, the **exchange-rate canister** (XRC), the **Bitcoin API**, or the **EVM / SOL RPC** canisters: a console proxy relays nothing else for the engine's canisters (the exact list is in `cloud-engine-canisters`). Everything else (the app's own execution, storage, messaging, and HTTPS outcalls) is free on an engine and needs no proxy at all.
 
 Those services live on other subnets and charge cycles per call, and an engine canister can neither hold cycles nor send a cycle-bearing message across the engine boundary. A **proxy canister** on a normal Application subnet makes the call on its behalf and pays from its own balance.
+
+If you are writing or deploying such an app and do not have the proxy id yet, ask for it now (What You Need, item 3) rather than deploying with a placeholder: the first proxied call would fail.
 
 ### Which proxy
 
@@ -309,30 +316,36 @@ Two different canisters can play this role, and picking the wrong one produces a
 
 | | **Console proxy** | **Self-deployed proxy** |
 |---|---|---|
-| Deployed by | The console, per engine | You, with `icp` |
+| Deployed by | The engine's **owner**, from the console | You, with `icp` |
 | Authorized callers | The engine's **canister-id ranges**, plus controllers | **Controllers only** |
 | Your engine canisters may call it | Yes, automatically | Only after you add each one as a controller |
+| What it relays for them | Only chain-key, Bitcoin and exchange-rate / RPC services (list in `cloud-engine-canisters`) | Anything |
 | Your CLI identity may call it | **No** (rejected as `UnauthorizedUser`) | Yes: you are a controller |
 | Threshold-key derivation | Isolated per calling canister | No isolation |
-| Funded with | A card, in USD | Cycles you hold (`icp cycles mint`) |
+| Funded with | The engine's balance, automatically (no card) | Cycles you hold (`icp cycles mint`) |
 
 - **App code calling chain-key services → the console proxy.** It is the one that admits your engine's canisters without per-canister configuration.
 - **You calling something from the CLI** (`icp canister call --proxy`, `icp deploy --proxy`, canister-only management methods like `canister_info` or `raw_rand`) **→ your own proxy.** The console proxy cannot serve this: it rejects ingress from any non-controller principal, and your CLI identity is not one.
 
 They are not substitutes, and they derive **different keys**: see the derivation warning in `cloud-engine-canisters` before switching an app from one to the other.
 
-### Console proxy: deploy and fund it (a console action, not a CLI one)
+### Console proxy: the engine owner deploys it (a console action, not a CLI one)
 
-There is no `icp` command and no agent-drivable API for this: the console endpoints behind it authenticate with a browser session cookie minted by the Internet Identity login. Hand the user these steps and wait for the proxy canister id:
+Only the engine's **owner** can deploy one, and only from the console. There is no `icp` command for it, and nothing an agent can call creates one: the console endpoints behind the button authenticate with a browser session cookie minted by the Internet Identity login. Hand the user these steps and wait for the proxy canister id:
 
 1. Open the engine in the console → **Canisters** in the engine's sidebar (not **Applications**, which lists deployed apps) → the **Proxy canisters** section.
-2. **Deploy a proxy**: choose the initial balance (**minimum $5**, maximum $1000 per spend). The saved card is charged for that amount and the proxy is provisioned in under a minute; if no card is saved yet, the console opens a hosted Stripe Checkout to capture one first.
-3. Optionally turn on **Automatic top-up** and pick a recharge amount. The console then charges the card and refills the proxy whenever its balance falls below a low threshold (500 G cycles by default), so a signing app does not stall at 3am. Without it the proxy is **Manual**: its balance is still refreshed and shown, but it is never charged.
-4. Copy the **proxy canister id** from the table. That id is what the app calls.
+2. **Deploy a proxy**, then **Deploy proxy** in the dialog. There is no amount to choose and no card is charged: the proxy is created on a normal Application subnet out of the engine's balance, starting with a few dollars' worth of cycles.
+3. Copy the **proxy canister id** from the table; its row carries an **Engine balance** badge. That id is what the app calls.
 
-Also on that table: **Refresh balance** (a live read, since the displayed figure is cached), **Top up** (charge the card and deliver cycles now), and **Delete proxy** (stops and deletes the canister and refunds the remaining balance to the payment method).
+The deploy is refused while the engine is not serving, or when the engine's balance has too little free to cover the proxy's first cycles: the owner adds funds to the engine, then retries.
 
-An engine may have **more than one** proxy ("Deploy another proxy"). They are independent balances and, for a signing app, independent key namespaces.
+**How it stays funded.** Every few minutes while its balance is below a low threshold, the proxy asks for a top-up, which is sent out of the engine's balance: capped per hour, and never out of what the engine owes for its nodes. There is no **Top up** button and no automatic top-up setting for it; its row shows the balance and the cycles it has drawn so far. If it runs dry anyway, fund the engine (see "Paying for an engine" below).
+
+Also on that table: **Refresh balance** (a live read, since the displayed figure is cached) and **Delete proxy** (stops and deletes the canister; its unspent cycles, less the small reserve a canister keeps to run, go back to the engine's balance).
+
+A proxy deployed before engine-funded proxies existed is **card-paid**: it shows **Top up** (charge the card now) and **Automatic top-up** (charge the card when low) instead, and deleting it refunds the remaining balance to the payment method.
+
+An engine may have **more than one** proxy ("Deploy another proxy"). Each has its own balance (all refilled from the same engine balance) and, for a signing app, its own key namespace.
 
 ### Wire the proxy id into the app
 
@@ -379,15 +392,16 @@ Three things to get right:
 - **It authorizes controllers only.** For an *engine canister* to call it, that canister's principal must be added as a controller (`icp canister settings update "$PROXY_ID" --add-controller <canister-id> -e ic`), one call per canister, repeated whenever a canister is added. This is the maintenance burden the console proxy exists to remove.
 - **It does not isolate key derivation.** Any authorized caller can request any derivation path, and the keys it produces differ from the console proxy's. Do not point a signing app at one casually.
 
-## Paying for an engine: the three balances
+## Paying for an engine: which balance
 
-Three separate balances exist, they are funded differently, and running one dry has nothing to do with the others. Do not "top up the canister" on an engine without first establishing which of these is meant:
+Two balances exist, they are funded differently, and the app's own canisters have neither. Do not "top up the canister" on an engine without first establishing which of these is meant:
 
 | Balance | What it pays for | How it is funded | What happens when it empties |
 |---|---|---|---|
-| **Engine operating budget** | The engine itself: node payments, compute, bandwidth | The engine's subscription: a recurring card charge set up at checkout | The engine **freezes**: the console describes this as canisters paused with code and data preserved. Recovered by paying the outstanding renewal from the engine's billing page, possible only while the failed invoice is still payable, so treat a freeze as urgent, not parked |
-| **Engine emergency reserve** | Holding a frozen engine open long enough to recover it | A prepaid window chosen at checkout (capped at **4 weeks**), extendable later by the engine **owner** from the console | The engine is **permanently deleted**: this is the one that is not reversible |
-| **Proxy cycle balance** | Only the calls the proxy relays (signing, vetKD, XRC) | Card, per the console flow above, or `icp canister top-up` for a self-deployed one | Relayed calls fail with `InsufficientCycles`; the proxy freezes rather than being deleted, and recovers on a later top-up |
+| **Engine balance** | The engine itself (its nodes, day by day), and the top-ups of its console proxies | **Add funds** on the engine's **Billing** page (charged to the card on file), and automatic top-ups that charge the card about a week before the balance would run out | The engine is **deleted**, with everything on it: not reversible, so treat a low-runway warning as urgent. An engine whose automatic top-up keeps failing is **halted**, and runs again once a payment lands |
+| **Proxy cycle balance** | Only the calls the proxy relays (signing, vetKD, XRC, Bitcoin API, EVM/SOL RPC) | A console proxy refills itself from the engine balance (Step 5); an older card-paid one has **Top up** and **Automatic top-up**; a self-deployed one takes `icp canister top-up` | Relayed calls fail with `InsufficientCycles`; the proxy freezes rather than being deleted, and recovers on a later top-up |
+
+A console proxy's top-ups come out of the engine balance, so a busy proxy shortens the engine's runway, though never by what the engine owes for its nodes.
 
 The app's own canisters have **none** of these: they hold 0 cycles by design and cannot be topped up. A "0 cycles" reading on an engine canister is normal (see `cloud-engine-canisters`, pitfall 5).
 
@@ -406,16 +420,17 @@ A cloud engine runs on a **`CloudEngine` subnet** with protocol-level call rules
 7. **Wrong `__META_MAIN_CANISTER` value.** It is matched as the exact string `"true"`. A boolean, `"True"`, or marking more than one canister means no (or the wrong) "Open" button. Mark exactly one entry-point canister.
 8. **Inventing an icon variable.** The icon variable is `__META_ICON_PATH` (a path resolved against `__META_BASE_URL`). Do not guess `__META_ICON`, `__META_LOGO`, or `__META_ICON_LINK` — they are ignored, so the icon silently never appears.
 9. **Icon set on the wrong canister, or without a base URL.** The icon is read only from the **main** canister and needs **both** `__META_BASE_URL` (a valid absolute `https://` URL) and `__META_ICON_PATH`. Setting the icon path on a side canister, omitting the base URL, or giving a non-https / `data:` base means no icon renders. (The "Open" button still works — it falls back to the main canister's gateway URL — so a bad base URL costs the icon and the custom Open URL, not the button.)
-10. **Assuming the browser and CLI share localhost.** `icp identity link web` returns the delegation to `127.0.0.1:<port>` on the CLI host. If the CLI runs in a remote sandbox while the user's browser is on a different machine, the sign-in never completes and later commands fail with authorization errors — no amount of re-running the link fixes it. See Step 1.0: use the delegation handoff (`icp identity delegation request` / `sign` / `use`), or run the link and deploy where the browser and CLI share a loopback.
+10. **Assuming the browser and CLI share localhost.** `icp identity link web` returns the delegation to `127.0.0.1:<port>` on the CLI host. If the CLI runs in a remote sandbox while the user's browser is on a different machine, the sign-in never completes and later commands fail with authorization errors — no amount of re-running the link fixes it. See Step 1.0: prefer a local session, where the browser and CLI share a loopback, and use the delegation handoff (`icp identity delegation request` / `sign` / `use`) only when the user has no local option. Ask before you build in the sandbox, not after.
 11. **Expecting the delegation handoff to fix a missing network.** The handoff moves signing authority, not connectivity — `icp deploy` still needs the network from the shell that runs it. If the CLI shell has no network at all (a sandboxed device bridge: DNS blocked, HTTPS fails), no `icp` network command can run there, link or deploy. Do not offer to "do the rest" from that shell and do not tunnel — hand the user one script for their real terminal (see "No-network CLI host" in Step 1.0), where the normal link flow works because terminal and browser share a loopback.
 12. **Build timestamps in wasm metadata.** Metadata is baked into the wasm and must be deterministic — a build time (`$(date)`) changes every build even with identical source, breaking reproducibility and changing the module hash on every deploy. The deterministic alternative is the last commit's date, `service:git:updated_at` = `$(git log -1 --format=%cI)` — a property of the source tree, not the build. The deploy time itself comes from the canister history recorded by the network, never from metadata.
 13. **Git metadata substitutions in a non-git project.** Outside a git repository, `$(git rev-parse HEAD)` does not fail the build — it silently bakes garbage: `service:git:sha` becomes the literal `+dirty` and `service:git:origin` comes out empty. Check for a git repo first (`git rev-parse HEAD` succeeds); if there is none, set only `service:version` with an explicit value (or `git init` and commit before deploying, if version control is wanted anyway).
 14. **Letting an engine app collect sign-ins before pinning a derivation origin.** Internet Identity principals are per-origin, so adding a custom domain later turns every existing user into a stranger at the new address — and the fix cannot be applied retroactively without orphaning the accounts already made under the old origin. On the first deploy of any app that uses II, set `derivationOrigin` to the address of the canister that serves the frontend, built from its canister id (`https://<frontend-canister-id>.icp.net`), even when that is currently the app's only origin. Do **not** copy `__META_BASE_URL`: it is allowed to point at a custom domain, and a custom domain is exactly what must not become the derivation origin. See the `internet-identity` skill for the `.well-known/ii-alternative-origins` half.
-15. **Trying to deploy or fund the console proxy from the CLI or an API.** There is no `icp` command for it, and the console endpoints behind the buttons authenticate with a browser-session cookie from the Internet Identity login (no token auth), so an agent cannot drive them. Hand the user the console steps (engine → **Canisters** → **Proxy canisters**) and wait for the proxy canister id. An agent *can* do the whole self-deployed-proxy path unattended, but that is a different canister with different authorization (Step 5).
+15. **Trying to deploy or fund the console proxy from the CLI or an API.** There is no `icp` command for it, and the console endpoints behind the buttons authenticate with a browser-session cookie from the Internet Identity login (no token auth), so an agent cannot drive them. Only the engine's owner can deploy one. Hand the user the console steps (engine → **Canisters** → **Proxy canisters** → **Deploy a proxy**) and wait for the proxy canister id. It needs no funding step: it is paid from the engine's balance. An agent *can* do the whole self-deployed-proxy path unattended, but that is a different canister with different authorization (Step 5).
 16. **Deploying a self-deployed proxy onto the engine's subnet.** Reusing Step 3's `--subnet <engine-subnet-id>` puts the proxy on the `CloudEngine` subnet, where it holds 0 cycles and may not send cycle-bearing messages either, so it cannot do the one thing a proxy is for. Omit `--subnet` so it lands on a normal Application subnet.
 17. **Expecting a self-deployed proxy to accept calls from engine canisters.** It authorizes **controllers only**. An engine canister calling it gets `UnauthorizedUser` until that canister's principal is added with `icp canister settings update <proxy> --add-controller <canister-id> -e ic`, and again for every canister added later. The console proxy authorizes the engine's whole canister-id range instead, which is why it is the right one for app code.
-18. **Deleting a proxy that a signing app derives keys from.** The delete button refunds the remaining cycles, which makes it look like a tidy-up. It is not: threshold keys are derived from the proxy's own principal, so deleting it (or repointing the app at another proxy) changes every Bitcoin/Ethereum address the app owns and strands any funds at the old ones. See `cloud-engine-canisters` for the derivation rules before touching a proxy that an app already signs with.
-19. **Confusing the three balances.** "The canister is out of cycles" means something different for each: an engine canister holds 0 cycles by design and cannot be topped up, a frozen *engine* is a subscription/emergency-reserve problem, and `InsufficientCycles` from a relayed call is the *proxy's* balance. Establish which one before topping anything up, and note that only the engine's emergency reserve running out is irreversible.
+18. **Deleting a proxy that a signing app derives keys from.** The delete button sends the unspent cycles back to the engine's balance, which makes it look like a tidy-up. It is not: threshold keys are derived from the proxy's own principal, so deleting it (or repointing the app at another proxy) changes every Bitcoin/Ethereum address the app owns and strands any funds at the old ones. See `cloud-engine-canisters` for the derivation rules before touching a proxy that an app already signs with.
+19. **Confusing the balances.** "The canister is out of cycles" means something different for each: an engine canister holds 0 cycles by design and cannot be topped up, the *engine's* balance running low is fixed with **Add funds** on its Billing page, and `InsufficientCycles` from a relayed call is the *proxy's* balance (for a console proxy, which refills from the engine's balance, that again means funding the engine). Establish which one before topping anything up, and note that the engine's balance running out deletes the engine.
+20. **Deploying a proxy-dependent app without the proxy id.** An app that signs, derives vetKeys, reads exchange rates or calls the Bitcoin API or EVM/SOL RPC deploys fine with a placeholder, a guessed id or an id from another engine, then fails on its first proxied call (`UnauthorizedUser`, or keys and addresses that belong to someone else's proxy). Ask for the id before deploying (What You Need, item 3). If the engine has none, the owner deploys one from the console (Step 5); never stand in a self-deployed proxy for it.
 
 ## Additional References
 

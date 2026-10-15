@@ -1,0 +1,139 @@
+{
+  "name": "GenTech Labs",
+  "description": "AI agent economy infrastructure — risk scoring, data access, identity verification, and DeFi intelligence for autonomous agents. Built by GenTech Labs.",
+  "version": "1.0.0",
+  "author": "ProtoJay4789",
+  "homepage": "https://github.com/Gentech-Labs",
+  "contact": "jordanjones0902@gmail.com",
+  "skills": [
+    "token-analysis",
+    "risk-scoring",
+    "rugpull-detection",
+    "security-audit",
+    "credit-scoring",
+    "reputation-analysis",
+    "agent-verification",
+    "travel-search",
+    "flight-research",
+    "hotel-search",
+    "destination-intelligence",
+    "social-scraping",
+    "content-analysis",
+    "trend-detection",
+    "media-intelligence",
+    "agent-identity",
+    "payment-processing",
+    "enforcement",
+    "audit-trails",
+    "erc-8004"
+  ],
+  "domains": [
+    "defi",
+    "security",
+    "blockchain",
+    "ai-agents",
+    "identity",
+    "finance",
+    "travel",
+    "data",
+    "tourism",
+    "social-media",
+    "content",
+    "analytics",
+    "infrastructure",
+    "payments"
+  ],
+  "services": [
+    {
+      "type": "x402",
+      "url": "http://localhost:8088/v1",
+      "name": "Rugcheck v2",
+      "description": "Token risk scoring — analyze any Solana token for rugpull signals, honeypot detection, and risk factors. $0.01/query via x402.",
+      "oasfVersion": "1.0",
+      "skills": ["token-analysis", "risk-scoring", "rugpull-detection", "security-audit"],
+      "domains": ["defi", "security", "blockchain"],
+      "pricing": {
+        "model": "pay-per-query",
+        "amount": 0.01,
+        "currency": "USDC",
+        "protocol": "x402"
+      },
+      "active": true
+    },
+    {
+      "type": "x402",
+      "url": "http://localhost:8088/v1",
+      "name": "Agent Credit Score",
+      "description": "Credit scoring for AI agents — reputation, transaction history, and trustworthiness assessment. $0.02/query via x402.",
+      "oasfVersion": "1.0",
+      "skills": ["credit-scoring", "reputation-analysis", "agent-verification"],
+      "domains": ["ai-agents", "identity", "finance"],
+      "pricing": {
+        "model": "pay-per-query",
+        "amount": 0.02,
+        "currency": "USDC",
+        "protocol": "x402"
+      },
+      "active": true
+    },
+    {
+      "type": "mcp",
+      "url": "https://api.gentechlabs.com/travel",
+      "name": "GenTech Travel Hub",
+      "description": "Travel intelligence — search flights, hotels, and destinations with x402 micropayments. $0.01-$0.05/query via x402.",
+      "oasfVersion": "1.0",
+      "skills": ["travel-search", "flight-research", "hotel-search", "destination-intelligence"],
+      "domains": ["travel", "data", "tourism"],
+      "pricing": {
+        "model": "pay-per-query",
+        "amount": 0.01,
+        "currency": "USDC",
+        "protocol": "x402"
+      },
+      "active": true
+    },
+    {
+      "type": "mcp",
+      "url": "https://api.gentechlabs.com/content",
+      "name": "Content Engine",
+      "description": "Social media intelligence — scrape, analyze, and aggregate content from X, Reddit, YouTube, Instagram, and more. $0.005-$0.03/query via x402.",
+      "oasfVersion": "1.0",
+      "skills": ["social-scraping", "content-analysis", "trend-detection", "media-intelligence"],
+      "domains": ["social-media", "content", "analytics"],
+      "pricing": {
+        "model": "pay-per-query",
+        "amount": 0.005,
+        "currency": "USDC",
+        "protocol": "x402"
+      },
+      "active": true
+    },
+    {
+      "type": "mcp",
+      "url": "https://api.gentechlabs.com/agent-kit",
+      "name": "Agent Kit",
+      "description": "Agent infrastructure — identity (ERC-8004), payments (x402), enforcement, and audit trails for autonomous agents. Modular, composable, self-healing.",
+      "oasfVersion": "1.0",
+      "skills": ["agent-identity", "payment-processing", "enforcement", "audit-trails", "erc-8004"],
+      "domains": ["ai-agents", "infrastructure", "identity", "payments"],
+      "pricing": {
+        "model": "freemium",
+        "amount": 0,
+        "currency": "USDC",
+        "protocol": "x402",
+        "note": "Core framework free. Premium features via x402."
+      },
+      "active": true
+    }
+  ],
+  "metadata": {
+    "chain": "base",
+    "erc8004": true,
+    "x402": true,
+    "mcp": true,
+    "openSource": true,
+    "license": "MIT",
+    "github": "https://github.com/Gentech-Labs",
+    "tags": ["defi", "security", "travel", "content", "ai-agents", "infrastructure"]
+  }
+}

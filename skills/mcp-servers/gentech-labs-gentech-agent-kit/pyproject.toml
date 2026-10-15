@@ -1,0 +1,22 @@
+[project]
+name = "gentech-agent-kit"
+version = "0.3.0"
+description = "GenTech Agent Kit — one install to deploy a full AI agent with payment rails, DeFi intelligence, market data, and identity."
+authors = [{ name = "GenTech Labs" }]
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.6.0",
+    "fastmcp>=2.0.0",
+    "httpx>=0.28.0",
+    "pydantic>=2.0.0",
+]
+
+[project.scripts]
+gentech-kit = "gentech_agent_kit.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gentech_agent_kit"]

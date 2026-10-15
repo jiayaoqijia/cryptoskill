@@ -1,0 +1,10 @@
+# Pika MCP Plugin — Dependencies
+# Core dependencies (minimal)
+requests>=2.31.0
+
+# For MCP protocol support (optional — server still runs without it)
+mcp>=1.0.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.23.0

@@ -1,0 +1,7 @@
+{
+  "name": "Context Snapshot — Mess Hall",
+  "prompt": "You are running a context snapshot. Your job is to preserve recent session insights to the Mess Hall.\n\n**Step 1: Check for recent sessions**\nUse session_search to find the most recent 2-3 sessions from today.\n\n**Step 2: Identify key insights**\nFor each session, identify:\n- Decisions made\n- Ideas generated\n- Files modified\n- Open threads\n- Next steps\n\n**Step 3: Write to Mess Hall**\nCreate or update the vault's `11-Mess Hall/YYYY-MM-DD-context-snapshot.md` with:\n- Timestamp\n- Session titles and key insights\n- Open threads to pick up\n- Files that were modified\n\n**Step 4: Clean up old snapshots**\nIf there are context snapshots older than 7 days, archive them to `Archive/`.\n\n**IMPORTANT:**\n- Only capture meaningful insights, not routine operations\n- Keep it concise — bullet points, not paragraphs\n- Don't duplicate what's already in the Mess Hall\n- If nothing new to report, stay silent",
+  "schedule": "0 */6 * * *",
+  "skills": ["obsidian", "proactive-context"],
+  "enabled_toolsets": ["terminal", "file", "session_search"]
+}

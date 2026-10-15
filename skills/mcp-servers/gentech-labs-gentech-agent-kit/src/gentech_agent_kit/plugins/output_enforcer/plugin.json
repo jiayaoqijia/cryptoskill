@@ -1,0 +1,6 @@
+{
+  "name": "Output Enforcer",
+  "version": "0.1.0",
+  "description": "Validates every tool output against its declared pydantic schema. Auto-retries on mismatch. Logs violations for audit.",
+  "module": "gentech_agent_kit.plugins.output_enforcer"
+}
