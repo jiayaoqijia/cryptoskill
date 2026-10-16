@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T18:43:22.880726+00:00",
+  "generated_at": "2026-10-16T01:05:06.319261+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -112932,6 +112932,68 @@
         "thegraph.com"
       ]
     },
+    "mcp-servers/jimbob1414-defi-yield-research": {
+      "name": "defi-yield-research",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/jupiter-mcp": {
       "name": "jupiter-mcp",
       "execution_model": "unknown",
@@ -117677,7 +117739,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -219886,11 +219948,11 @@
     }
   },
   "summary": {
-    "discovered": 3534,
-    "processed": 3534,
+    "discovered": 3535,
+    "processed": 3535,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2558,
+      "read_only": 2559,
       "router_orchestrator": 146,
       "unknown": 335,
       "analysis_only": 214,
@@ -219901,7 +219963,7 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1225,
+      "can_execute_shell": 1224,
       "can_install_code": 550,
       "can_write_files": 172,
       "can_browse_web": 243,

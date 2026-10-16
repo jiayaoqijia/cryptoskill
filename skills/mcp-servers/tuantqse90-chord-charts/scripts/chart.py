@@ -19,7 +19,7 @@ import urllib.parse
 import urllib.request
 
 API = "https://api.getchord.xyz/v1"
-CHAINS = {"monad": 143, "robinhood": 4663, "arc": 5042, "avalanche": 43114, "base": 8453, "bnb": 56, "arbitrum": 42161}
+CHAINS = {"ethereum": 1, "monad": 143, "robinhood": 4663, "arc": 5042, "avalanche": 43114, "base": 8453, "bnb": 56, "arbitrum": 42161}
 TFS = ("1m", "5m", "15m", "1h", "4h", "1d", "1w")
 EVM_ADDR = re.compile(r"^0x[0-9a-fA-F]{40}$")
 SOL_ADDR = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")

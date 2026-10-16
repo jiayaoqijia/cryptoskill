@@ -1,6 +1,6 @@
 ---
 name: chord-charts
-description: Draw a candlestick price chart (SVG) with volume for any token traded on Base, Monad, BNB Chain, Avalanche, Arbitrum, Robinhood Chain (tokenized stocks such as NVDA, TSLA), Arc or Solana, from Chord's own DEX trade data, and summarise the move (change, high, low, volume, trades). Use when the user asks for a chart, candles, price history or "how did X move" for a token on those chains. No API key; Python 3 standard library only.
+description: Draw a candlestick price chart (SVG) with volume for any token traded on Ethereum, Base, Monad, BNB Chain, Avalanche, Arbitrum, Robinhood Chain (tokenized stocks such as NVDA, TSLA), Arc or Solana, from Chord's own DEX trade data, and summarise the move (change, high, low, volume, trades). Use when the user asks for a chart, candles, price history or "how did X move" for a token on those chains. No API key; Python 3 standard library only.
 license: MIT
 metadata:
   author: Chord (getchord.xyz)
@@ -21,7 +21,7 @@ python3 scripts/chart.py --chain robinhood --token NVDA --tf 1d --limit 60
 python3 scripts/chart.py --chain arbitrum --token 0x912ce59144191c1204e64559fe8253a0e49e6548 --tf 4h --limit 42 --out arb.svg
 ```
 
-- `--chain`: `base`, `monad`, `bnb`, `avalanche`, `arbitrum`, `robinhood`, `arc`, `solana`.
+- `--chain`: `ethereum`, `base`, `monad`, `bnb`, `avalanche`, `arbitrum`, `robinhood`, `arc`, `solana`.
 - `--token`: a symbol or name, or an address (`0x…` on EVM chains, the base58 mint on Solana, case-sensitive). A symbol is resolved through Chord's search; the script prints the address it picked. Similar tickers are common: if the user named a token loosely, show them the resolved address.
 - `--tf`: `1m 5m 15m 1h 4h 1d 1w` (Solana up to `1d`). `--limit`: number of candles, up to 1000.
 - Output: the SVG file (path in the summary, default `chart-<symbol>-<chain>-<tf>.svg`) and a JSON summary on stdout: `symbol`, `token`, `open`, `close`, `changePct`, `high`, `low`, `volumeUsd`, `trades`, `lastCandleOpen`.
