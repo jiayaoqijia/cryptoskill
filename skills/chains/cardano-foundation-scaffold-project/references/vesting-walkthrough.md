@@ -422,12 +422,12 @@ if __name__ == "__main__":
 
 ## Frontend (Next.js + Mesh or Evolution + Blockfrost)
 
-The frontend is the same shape regardless of which backend stack you picked. It does its own transaction building client-side and talks directly to Blockfrost. Wallet integration uses CIP-30 via Mesh or Evolution.
+The frontend is the same shape regardless of which backend stack you picked. It builds transactions client-side and reaches Blockfrost through a Next.js route handler, so the project ID stays server-side. Wallet integration uses CIP-30 via Mesh or Evolution.
 
 Three components:
 
 1. **Wallet connect button.** Hand off to `connect-wallet` skill for the CIP-30 details. Mesh's `<CardanoWallet />` component is the fastest path; Evolution exposes `selectWallet.fromAPI(walletApi)`.
-2. **Lock funds form.** Fields: beneficiary address (bech32), unlock deadline (datetime-local input → POSIX ms), ADA amount. On submit, build the lock tx client-side using the same patterns as the off-chain code above, sign through the wallet, submit via Blockfrost.
+2. **Lock funds form.** Fields: beneficiary address (bech32), unlock deadline (datetime-local input → POSIX ms), ADA amount. On submit, build the lock tx client-side using the same patterns as the off-chain code above, sign through the wallet, submit through the route handler.
 3. **Unlock funds button.** Visible only to the beneficiary (compare `wallet.getUsedAddresses()` against the datum's `beneficiary` field). Disabled until the deadline passes. On click, build the unlock tx with `invalidBefore` set strictly after the deadline.
 
 Project layout: the frontend is a sibling Next.js App Router app. For TypeScript backends (Mesh/Evolution) it lives in the same monorepo and can share types via a small shared package. For Python/Java backends the frontend is its own Next.js app and reads the same `plutus.json` (committed under `onchain/`) for the validator hex.
@@ -442,16 +442,17 @@ acme-dapp/
     ├── app/
     │   ├── layout.tsx           # MeshProvider wrapper
     │   ├── page.tsx             # WalletButton + lock form + unlock list
+    │   ├── api/blockfrost/[...path]/route.ts  # proxies Blockfrost; holds the project ID
     │   └── lib/
     │       ├── blueprint.ts     # imports ../../onchain/plutus.json
     │       └── tx.ts            # buildLockTx / buildUnlockTx
-    └── .env.local.example       # NEXT_PUBLIC_BLOCKFROST_PROJECT_ID, NEXT_PUBLIC_NETWORK
+    └── .env.local.example       # NEXT_PUBLIC_NETWORK; BLOCKFROST_PROJECT_ID stays server-side
 ```
 
 Important Next.js notes (lifted from `connect-wallet`):
 
 - CIP-30 needs `window`. Use `"use client"` and dynamic imports for any wallet-touching module.
-- Don't expose your Blockfrost project ID as `NEXT_PUBLIC_*` if you can avoid it. Front the Blockfrost calls behind a small `/api/` route in Next.js so the project ID stays server-side. Wallet calls (sign / submit) remain client-side because the wallet has no server.
+- Keep the Blockfrost project ID out of `NEXT_PUBLIC_*`: Next.js inlines every `NEXT_PUBLIC_` variable into the browser bundle. Front the Blockfrost calls behind the `/api/blockfrost` route so the project ID stays server-side. Wallet calls (sign / submit) remain client-side because the wallet has no server.
 
 ## End-to-end run
 

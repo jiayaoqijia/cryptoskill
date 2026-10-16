@@ -53,16 +53,24 @@ Run `aiken build` to emit `plutus.json` (CIP-57 blueprint) into the project root
 
 ```gitignore
 # --- Aiken ---
-build/                        # aiken build output (compiled UPLC, plutus.json copies)
-artifacts/                    # any per-validator artifacts
-.aiken/                       # local Aiken cache
+# aiken build output (compiled UPLC, plutus.json copies)
+build/
+# any per-validator artifacts
+artifacts/
+# local Aiken cache
+.aiken/
 
 # --- Secrets ---
-.env                          # never committed; .env.example is the committed template
-.env.*.local                  # framework-specific local overrides
-.keys/                        # dev signing keys from Yaci DevKit
-*.skey                        # signing keys
-*.vkey                        # verification keys (usually safe but kept private by convention)
+# never committed; .env.example is the committed template
+.env
+# framework local overrides (.env.local, .env.development.local, ...)
+.env*.local
+# dev signing keys from Yaci DevKit
+.keys/
+# signing keys
+*.skey
+# verification keys (usually safe but kept private by convention)
+*.vkey
 
 # --- OS / editor ---
 .DS_Store
@@ -73,6 +81,8 @@ artifacts/                    # any per-validator artifacts
 
 # Add stack-specific entries below.
 ```
+
+Git reads a `#` only at the start of a line as a comment. A comment after a pattern becomes part of the pattern, so `.env   # note` ignores nothing. Keep comments on their own lines.
 
 Stack-specific additions:
 

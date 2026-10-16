@@ -316,7 +316,7 @@ Each non-devnet network needs its own Blockfrost project ID from https://blockfr
 
 ## Frontend (optional sibling, default ON in the scaffold)
 
-A Python backend cannot run in the browser. When the developer opts in to a frontend, scaffold a separate Next.js App Router app — independent of the Python backend — that talks directly to Blockfrost from the user's browser. The frontend reads the same `onchain/plutus.json` (committed alongside the backend) and does its own client-side tx building.
+A Python backend cannot run in the browser. When the developer opts in to a frontend, scaffold a separate Next.js App Router app — independent of the Python backend — that reaches Blockfrost through its own route handler, so the project ID stays server-side. The frontend reads the same `onchain/plutus.json` (committed alongside the backend) and does its own client-side tx building.
 
 ```
 acme-dapp/

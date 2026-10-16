@@ -73,12 +73,21 @@ rg -n -i "fetch|requests\.get|urllib|webbrowser|http" | rg -i "tool|agent|functi
 
 ```bash
 rg -n -i "ShellTool|PythonREPL|BashTool|DockerTerminal|terminal\.run|subprocess|exec\(|eval\("
+rg -n -i "bypassPermissions|dangerously-skip-permissions|--yolo"
 ```
 
 Agent with shell/REPL/filesystem tools reachable from untrusted chat →
 **Critical** by default ("prompt injection → shell" is one step). Verify:
 allowlisted tool set, sandboxed execution (containers, no host mounts),
-human-in-the-loop for writes/spends/sends.
+human-in-the-loop for writes/spends/sends. The **permission-bypass
+amplifier**: agent configs running with `bypassPermissions` /
+`--dangerously-skip-permissions` (Claude-Code-style) behind ANY
+network-reachable surface convert "maybe RCE" into direct command
+execution — the Archon CVE-2026-111322 shape: unauthenticated `/api/*`
+control API on 0.0.0.0 + `bypassPermissions` agent = unauth host
+command execution. Flag the flag wherever it appears in reachable
+agent configs (entry:
+`../cve-research/vuln-db/entries/2026-10-15-cve-2026-111322.md`).
 - **Model-emitted code executed verbatim by the agent loop** (beyond named
   REPL tools): custom planner/agent frameworks extract a code block from
   the MODEL's response — first markdown fence, an `<|action_start|>` /

@@ -119,7 +119,7 @@ Default is yes. Ask the developer if they want to opt out.
 When a frontend is included, scaffold a sibling Next.js App Router application that:
 
 - Uses Mesh or Evolution for wallet integration (CIP-30) and chain queries via Blockfrost
-- Talks directly to Blockfrost from the browser — independent of any Python or Java backend
+- Reaches Blockfrost through a Next.js route handler that holds the project ID, independent of any Python or Java backend
 - For TS stacks (1 and 2), lives in the same monorepo as the off-chain code and shares types
 - For Python (stack 3) and Java (stack 4), is a separate Next.js app that uses the same on-chain blueprint (`plutus.json`) but does its own tx building client-side
 

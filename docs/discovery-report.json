@@ -22,6 +22,13 @@
       "official": false
     },
     {
+      "org": "ashrafiucse",
+      "repo": "security-audit-skills",
+      "category": "chains",
+      "prefix": "ashrafiucse-",
+      "official": false
+    },
+    {
       "org": "GMGNAI",
       "repo": "gmgn-skills",
       "category": "chains",
@@ -50,17 +57,10 @@
       "official": false
     },
     {
-      "org": "pokiehead",
-      "repo": "sic-crypto-kit",
-      "category": "dev-tools",
-      "prefix": "pokiehead-",
-      "official": false
-    },
-    {
-      "org": "mmxrealQQ",
-      "repo": "bobai-buyburn",
+      "org": "true402",
+      "repo": "mcp-server",
       "category": "mcp-servers",
-      "prefix": "mmxrealqq-",
+      "prefix": "true402-",
       "official": false
     },
     {
@@ -71,24 +71,24 @@
       "official": false
     },
     {
-      "org": "sentioxyz",
-      "repo": "sentio-connect",
+      "org": "mmxrealQQ",
+      "repo": "bobai-buyburn",
       "category": "mcp-servers",
-      "prefix": "sentioxyz-",
+      "prefix": "mmxrealqq-",
       "official": false
     },
     {
-      "org": "scutuatua-crypto",
-      "repo": "whaletrucker-ecosystem",
+      "org": "coinpaprika",
+      "repo": "dexpaprika-mcp",
       "category": "mcp-servers",
-      "prefix": "scutuatua-crypto-",
+      "prefix": "coinpaprika-",
       "official": false
     },
     {
-      "org": "0xfreak0",
-      "repo": "sui-mcp",
+      "org": "truenorth-lj",
+      "repo": "sofinance-public",
       "category": "mcp-servers",
-      "prefix": "0xfreak0-",
+      "prefix": "truenorth-lj-",
       "official": false
     },
     {
@@ -180,20 +180,6 @@
       "repo": "sui-dev-skills",
       "category": "chains",
       "prefix": "mystenlabs-",
-      "official": true
-    },
-    {
-      "org": "ton-blockchain",
-      "repo": "skills",
-      "category": "chains",
-      "prefix": "ton-blockchain-",
-      "official": true
-    },
-    {
-      "org": "ton-blockchain",
-      "repo": "ton-triage-skill",
-      "category": "chains",
-      "prefix": "ton-blockchain-",
       "official": true
     }
   ],
@@ -317,12 +303,13 @@
     },
     {
       "query": "org:ton-blockchain (mcp OR skill OR agent)",
-      "status": "checked"
+      "status": "unavailable",
+      "detail": "HTTP Error 403: Forbidden"
     },
     {
       "query": "org:tronprotocol (mcp OR skill OR agent)",
-      "status": "unavailable",
-      "detail": "HTTP Error 403: Forbidden"
+      "status": "skipped",
+      "detail": "GitHub discovery rate limit reached"
     },
     {
       "query": "org:stellar (mcp OR skill OR agent)",

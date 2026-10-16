@@ -726,6 +726,8 @@ src/
   voted.ts         what a lock actually voted for, and what that vote earned once the epoch settled
   accrual.ts       pure separation of real accrual from reward-token repricing, using the published raw amounts
   accrual-cli.ts   entrypoint for `npm run accrual`, writes docs/data/accrual.json
+scripts/
+  aero-chains.mjs  which of Aero's chains have published pool/allocation contracts, read from dromos-labs/metadex-public, written to docs/data/aero-chains.json; run by the snapshot workflow
 docs/              the web app, served by GitHub Pages
   index.html       static page: reads the snapshot, runs the allocator client-side
   llms.txt         plain-text summary for AI assistants/crawlers, refreshed every 6 hours by CI (src/llms.ts)
@@ -735,6 +737,7 @@ docs/              the web app, served by GitHub Pages
     fee-rate.json    trailing 96-hour fee USD per day per pool and per 10k votes, built from those counters (src/feeRate.ts)
     timing.json      survival + accuracy measurement, refreshed weekly by CI
     accrual.json     accrual-vs-repricing measurement, refreshed weekly by CI
+    aero-chains.json which of Aero's chains have published pool/allocation contracts, refreshed every 6 hours by CI (scripts/aero-chains.mjs)
 test/
   allocator.test.ts    unit tests for the greedy marginal-allocation algorithm and percentage rounding
   backtest.test.ts     unit tests for the backtester, including that it never peeks at the epoch under test
@@ -760,9 +763,12 @@ test/
   accrual.test.ts      unit tests for revaluing at one price vector, the epoch-boundary skip, and the pools-that-only-repriced split
   accrual-cli.test.ts  unit tests for formatReport's rendering of the accrual report, including NaN-as-"n/a" and the data-notes/pool-list sections
   feeStream.test.ts    unit tests for accruedBetween (CL gauge-fee growth/reset, v2 index growth, changed-kind refusal) and buildFeeCounters (CL/classic classification and index alignment across the filtered classic-only arrays, partial-failure drops)
+  feeRate.test.ts      unit tests for poolFeeRate's trailing-window math (v2/CL pools, boundary-interval proration) and the pack/prune of stored fee intervals
+  v3.test.ts           unit tests for the Aero v3 (MetaDEX) reader: gauge weight decay, incentive rates, and FeesCollected/gauge-point struct unpacking
   llms.test.ts         unit tests for renderLlmsTxt's rendering of docs/llms.txt
   site-parity.test.ts  runs docs/index.html's hand-ported allocator/countdown/vote-basis logic against src/ on the same inputs
   migration-site.test.ts  pins docs/index.html's ported migrationOutcome() against Aerodrome's migration-contract rules
+  aero-chains.test.ts  unit tests for scripts/aero-chains.mjs's chain-name matching (aliases, case-insensitivity) and pool/allocation classification
 ```
 
 ## Testing

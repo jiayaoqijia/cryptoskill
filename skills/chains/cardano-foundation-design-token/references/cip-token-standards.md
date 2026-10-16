@@ -22,7 +22,7 @@ Comparison of Cardano Improvement Proposals for native token metadata.
 
 **How it works:**
 - Metadata is included in the minting transaction under label `721`
-- Metadata is permanently recorded in the transaction, immutable
+- Each mint's metadata stays in its transaction; the latest mint's metadata is the current one
 - No on-chain UTxO is created for metadata -- it lives in tx metadata only
 - Wallets and marketplaces read label 721 from the minting transaction
 
@@ -62,8 +62,13 @@ Comparison of Cardano Improvement Proposals for native token metadata.
 **Required fields:** `name`, `image`
 **Optional fields:** `mediaType`, `description`, `files`, any custom fields
 
-**Update mechanism:** None. Metadata is immutable once the minting transaction
-is confirmed. To "update," you must burn and re-mint (new token).
+**Update mechanism:** Mint the same token again. CIP-25 treats the latest
+minting transaction that carries label 721 and a positive amount of the token as
+its current metadata ("Update metadata link" in the CIP). Burn transactions
+don't count, and a burn and a mint in one transaction net to zero, so for an NFT
+burn it first and mint it again in a second transaction. This needs a policy that
+still allows minting: under a time-locked or one-shot policy, the metadata is
+fixed for good.
 
 ---
 
@@ -183,7 +188,7 @@ memory for this standard; it is still evolving.
 ## Migration Paths
 
 **CIP-25 to CIP-68:**
-- Cannot update existing CIP-25 tokens (metadata is immutable)
+- An existing CIP-25 token cannot become a CIP-68 token: CIP-68 asset names carry a label prefix, so the pair is a new asset
 - Burn old tokens and re-mint as CIP-68 pair
 - Or maintain both standards and let users swap
 

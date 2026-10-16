@@ -119,12 +119,13 @@ the standard path is CIP-26, the off-chain token registry, not CIP-25.)
 
 **Developer impact:**
 - Metadata is stored in the transaction, not on the UTxO itself
-- Metadata is only in the minting transaction — it cannot be updated after minting
+- Metadata lives in minting transactions. It is fixed once the minting policy closes;
+  while the policy is open, a later mint carrying label 721 replaces it
 - Off-chain indexers (Blockfrost, Koios, etc.) parse and serve CIP-25 metadata
 - Simple to implement: add a metadata entry to the minting transaction
 
 **Limitations:**
-- Immutable after minting (no metadata updates)
+- Updatable only by minting again under an open policy, so no updates once the policy closes
 - Stored off-chain relative to the UTxO (only in the transaction)
 - Led to the creation of CIP-68 to address mutability and on-chain storage
 
@@ -292,7 +293,7 @@ When a developer describes a feature, map it to the relevant CIP:
 
 | Developer asks about... | Relevant CIP(s) |
 |---|---|
-| NFT metadata | CIP-25 (immutable), CIP-68 (updatable) |
+| NFT metadata | CIP-25 (updatable only by re-minting), CIP-68 (updatable) |
 | Wallet connection | CIP-30 |
 | Wallet governance | CIP-95 (extends CIP-30) |
 | Message signing | CIP-8 (via CIP-30's `signData`) |

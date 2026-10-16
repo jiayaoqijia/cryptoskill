@@ -203,12 +203,23 @@ The expensive logic runs once in the staking validator instead of N times in the
 validator.
 
 **Implementation:**
-1. Create a staking validator containing the shared validation logic
-2. Register the stake credential on-chain
-3. Derive the script address using both the spending script hash and the staking credential
-4. In the spending validator, verify that a withdrawal of 0 ADA from the stake credential
-   exists in `tx.withdrawals`
-5. In the staking validator, perform the full validation logic once
+1. Put the shared validation logic in the stake script's `withdraw` handler.
+2. Give the stake script a `publish` handler that accepts `RegisterCredential` for its
+   own credential and rejects de-registration and delegation. Registration runs the
+   script once the legacy certificate is gone, so a script that refuses it can never be
+   registered again.
+3. Register the stake credential on-chain (a refundable deposit) before the first spend.
+4. In the spending validator, require the exact `Script(stake_script_hash)` key in
+   `tx.withdrawals`, with the hash passed in as a validator parameter. Check the key,
+   not the amount: the ledger already requires a withdrawal to equal the full reward
+   balance. Don't assume that balance is zero. Governance deposit refunds (CIP-1694)
+   and treasury withdrawals can credit any registered reward account, delegated or not.
+   Read the balance off-chain when building the transaction, and let the `withdraw`
+   handler decide where a non-zero amount may go.
+5. The stake script then runs once per transaction, whatever the number of inputs.
+
+The review checklist in `review-contract` (#13, withdrawal validation bypass) covers
+how this pattern fails when the credential is not pinned.
 
 **Example:** A batched order processor validates 20 orders. Instead of running the full
 validation 20 times (once per spending input), the spending validator does a cheap withdrawal

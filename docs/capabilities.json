@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T06:51:08.890130+00:00",
+  "generated_at": "2026-10-16T12:49:04.116356+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -206302,6 +206302,70 @@
         "gmgn.ai"
       ]
     },
+    "trading/gmgnai-official-gmgn-callout-score": {
+      "name": "gmgn-callout-score",
+      "execution_model": "analysis_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": [
+        "gmgn.ai"
+      ]
+    },
     "trading/gmgnai-official-gmgn-contract-dd": {
       "name": "gmgn-contract-dd",
       "execution_model": "unknown",
@@ -220010,14 +220074,14 @@
     }
   },
   "summary": {
-    "discovered": 3536,
-    "processed": 3536,
+    "discovered": 3537,
+    "processed": 3537,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2560,
       "router_orchestrator": 146,
       "unknown": 335,
-      "analysis_only": 214,
+      "analysis_only": 215,
       "unsigned_tx_builder": 116,
       "local_executor": 102,
       "installer_bootstrap": 44,
@@ -220026,15 +220090,15 @@
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 1224,
-      "can_install_code": 550,
+      "can_install_code": 551,
       "can_write_files": 172,
-      "can_browse_web": 243,
+      "can_browse_web": 244,
       "can_spawn_subagents": 264,
       "can_move_funds": 299,
-      "requires_private_key": 484,
-      "requires_hosted_operator": 341,
+      "requires_private_key": 485,
+      "requires_hosted_operator": 342,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 550
+      "mutable_remote_runtime": 551
     }
   }
 }

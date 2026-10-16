@@ -35,8 +35,9 @@ for ecosystem compatibility.
 
 ## Key Principles
 
-1. **Pick the right CIP standard first.** CIP-25 is simple but immutable.
-   CIP-68 enables updatable metadata via reference tokens. CIP-113 (still a
+1. **Pick the right CIP standard first.** CIP-25 is simple; its metadata
+   changes only by minting the token again, so it is fixed once the policy
+   closes. CIP-68 enables updatable metadata via reference tokens. CIP-113 (still a
    draft) makes tokens programmable via shared-custody validation. The choice
    affects the entire architecture.
 
@@ -83,7 +84,9 @@ Search `../../docs/sources/` for detailed CIP comparisons.
 
 **CIP-25 (Simple Metadata)**
 - Metadata stored in transaction metadata (label 721)
-- Immutable after minting -- cannot update
+- Fixed once the policy closes. While the policy still allows minting, a later
+  mint of the token with label-721 metadata replaces it (for an NFT: burn it,
+  then mint it again in a separate transaction)
 - Simplest to implement
 - Universally supported by wallets and marketplaces
 - Best for: simple NFTs and collections that never need updates

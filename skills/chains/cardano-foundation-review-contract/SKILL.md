@@ -127,7 +127,7 @@ follow them rather than treating the split as a hard wall.
 
 **Plutus (Haskell):**
 - Unsafe use of `error` vs returning `False`
-- Integer overflow considerations
+- Integer division and rounding (integers are arbitrary-precision, so overflow is not the risk; see #31)
 - Lazy evaluation causing unexpected memory use
 - Proper use of `PlutusTx.IsData` derivations
 
