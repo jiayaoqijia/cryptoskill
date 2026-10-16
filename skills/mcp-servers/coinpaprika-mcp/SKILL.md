@@ -1,7 +1,7 @@
 ---
 name: coinpaprika-mcp
-description: "Official CoinPaprika MCP server — real-time crypto market data for 12K+ coins and 350+ exchanges. 30 tools for tickers, OHLCV, exchange data, search, and price conversion. Free tier available."
-version: 1.0.0
+description: "Official CoinPaprika MCP server — real-time crypto market data for 12K+ coins and 350+ exchanges. 31 tools for tickers, OHLCV, exchange data, search, and price conversion. Free tier available."
+version: 1.1.0
 metadata:
   openclaw:
     tags: [coinpaprika, market-data, prices, exchanges, mcp, official]
@@ -11,7 +11,7 @@ metadata:
 
 # CoinPaprika MCP Server
 
-Official CoinPaprika MCP server providing real-time cryptocurrency market data for 12,000+ coins and 350+ exchanges. 30 tools for tickers, OHLCV candles, exchange data, search, price conversion, and contract lookup. Free tier with 10,000 requests/day, no API key required.
+Official CoinPaprika MCP server providing real-time cryptocurrency market data for 12,000+ coins and 350+ exchanges. 31 tools for tickers, OHLCV candles, exchange data, search, price conversion, and contract lookup. Free tier, no API key required; plans and quotas at https://coinpaprika.com/api/pricing.
 
 ## Installation
 
@@ -26,7 +26,7 @@ claude mcp add coinpaprika -- npx @coinpaprika/mcp
 claude mcp add coinpaprika --transport http https://mcp.coinpaprika.com/streamable-http
 ```
 
-## Tools (30)
+## Tools (31)
 
 ### Discovery & System
 - `getCapabilities` — Server capabilities and workflow patterns

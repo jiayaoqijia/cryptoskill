@@ -1,7 +1,7 @@
 ---
 name: dexpaprika-dex-search
-description: "Search 5M+ tokens and pools across DEXes with price and liquidity data."
-version: 1.0.0
+description: "Search 33M+ tokens and 36M+ pools across 230+ DEXes with price and liquidity data."
+version: 1.1.0
 metadata:
   openclaw:
     tags:
@@ -12,7 +12,7 @@ metadata:
 
 # DexPaprika Token Discovery
 
-Search 5M+ tokens and pools across DEXes with price and liquidity data.
+Search 33M+ tokens and 36M+ pools across 230+ DEXes with price and liquidity data.
 
 ## Source
 
