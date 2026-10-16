@@ -11,6 +11,8 @@ description: 管理多阶段、多目标、需要中断恢复或协作的分析�
 
 优先使用 `analysis_session` 工具。`action=init` 配合 `options={"goal":"用户目标","data":{}}` 建任务并自动绑定当前会话；随后传 `task=任务ID` 调用 status、checkpoint、transition、target、record、lease 等。参数与旧 CLI 一一对应，结构化内容放 options.data，CLI 的 --file 不用于此入口。
 
+不明参数用 `action=schema, options={"action":"checkpoint"}` 查询该动作的字段、必填项与例子；错误反馈也返回当前动作契约，不要反复猜参数。`checkpoint` 使用 `options={data:{summary,...}}`；`transition` 使用 `options={status:"complete",data:{summary:"完成情况",unresolved:[]}}`。init/bind/status/target 返回 readiness：实际绑定、目标代次、后台任务覆盖与 HTTP 策略状态。组件已加载不代表任务已创建，也不代表请求预算已生效。
+
 `action=health` 返回 SQLite 实际完整性、已落库事件数和当前 host 的 hook 成功/失败计数。工具 decision=pass 只表示动作没有被阻断，不代表记录成功。hook 返回非阻断错误码 1 时，独立会话卡/建议与故障提示仍会注入；宿主健康文件同时保留生命周期点的结果。
 
 原生入口与钩子仅获专用 analysis-state 目录的写能力，普通 shell、会话权限和审批不变。不能经该工具执行 guard/discover 的外部命令、选择解释器或更改沙箱；证据文件须位于当前工作区。
@@ -70,6 +72,12 @@ python3 "$AS" guard TASK_ID --resource project:ABSOLUTE_PATH --owner SESSION_ID 
 这一接口约束通过 guard 发起的操作，不能推断任意 shell 命令的资源语义。共同写同一项目时统一使用这个入口；已有 Ghidra handler 的串行锁继续生效。guard 不替代目标系统自己的事务机制。
 
 长任务可用 DSH 原生 jobs 或 `guarded_run.py`，也可使用满足日志、心跳、超时、进程树终止和结果查询的等价工具。需长时共享变更时按预计时长设置 guard timeout；不要让裸进程脱离租约继续写。
+
+### 访问具体目标的原生后台任务
+
+在普通分析会话已有授权、需要后台访问目标时，用 `job_scope` 为未来原生后台 bash 设置当前目标代次、环境标识与期限；随后照常使用 bash(run_in_background=true)、job_output/job_kill。原生 job id、真实 owner 与执行句柄由宿主自动登记，不要求再手工注册 PID。示例和覆盖见 [native-jobs.md](references/native-jobs.md)。此接口不执行命令，不扩大权限，不给 SSH/FTP 提供请求计数。
+
+目标更新、任务离开 running 或重新绑定前，入口取消其登记的旧任务并等待原生执行器确认收尾；未确认则拒绝切换并保留清理异常。更换目标后重新设置作用域。普通离线计算、未登记的既有任务和共享长期服务不自动认领或终止；外部平台的槽位释放仍需调用方在切换成功后操作。
 
 ## 交接
 

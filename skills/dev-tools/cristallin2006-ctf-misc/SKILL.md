@@ -39,3 +39,5 @@ description: 处理编码与语言沙箱能力隔离、受限解释器、二维�
 ## 平台成本决策
 
 需要评估 hint 或有限容器槽位时，按需读取 [platform-decisions.md](references/platform-decisions.md)，结合原材料、成本和信息价值；不以请求数充当分析进展。
+
+认证候选或多服务访问受阻时，按需读取同级 ctf-web 的 [有限候选实验卡](../ctf-web/references/login-evidence.md)，不加载整套 Web 正文。已有依据的有限集合可以分批完成；缺少新增依据时不自动扩大字典。网络后台任务的目标代次、期限与原生 job 生命周期由 analysis-session 的 job_scope 管理；这不等同于 SSH/FTP 请求额度控制。
