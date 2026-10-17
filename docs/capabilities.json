@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T06:47:25.425118+00:00",
+  "generated_at": "2026-10-17T12:43:58.546690+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -117915,6 +117915,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/tuantqse90-chord-swap": {
+      "name": "chord-swap",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/tuantqse90-moltnode": {
       "name": "moltnode",
       "execution_model": "read_only",
@@ -220198,11 +220260,11 @@
     }
   },
   "summary": {
-    "discovered": 3539,
-    "processed": 3539,
+    "discovered": 3540,
+    "processed": 3540,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2562,
+      "read_only": 2563,
       "router_orchestrator": 146,
       "unknown": 335,
       "analysis_only": 215,
@@ -220219,7 +220281,7 @@
       "can_browse_web": 244,
       "can_spawn_subagents": 264,
       "can_move_funds": 299,
-      "requires_private_key": 487,
+      "requires_private_key": 488,
       "requires_hosted_operator": 342,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 552

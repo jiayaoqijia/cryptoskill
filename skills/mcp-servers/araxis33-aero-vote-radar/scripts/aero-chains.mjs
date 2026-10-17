@@ -8,6 +8,11 @@ import { pathToFileURL } from "node:url";
 
 const API = "https://api.github.com/repos/dromos-labs/metadex-public/contents/deployment-addresses";
 
+// Without this, a hung GitHub API response would block the whole step for the
+// runner's default job timeout (hours), not just skip this best-effort check
+// as `continue-on-error: true` in the workflow implies it should.
+const GITHUB_API_TIMEOUT_MS = 10_000;
+
 // File names are not announced yet (only arc.json exists on 12.10.2026), so match loosely.
 export const CHAINS = {
   base: /^base/, ethereum: /^(ethereum|eth|mainnet)\b/, optimism: /^(optimism|op)\b/, arc: /^arc/,
@@ -34,12 +39,12 @@ async function main() {
   const headers = { accept: "application/vnd.github+json", "user-agent": "aero-vote-radar" };
   if (process.env.GITHUB_TOKEN) headers.authorization = "Bearer " + process.env.GITHUB_TOKEN;
 
-  const list = await fetch(API, { headers }).then((r) => { if (!r.ok) throw new Error("list " + r.status); return r.json(); });
+  const list = await fetch(API, { headers, signal: AbortSignal.timeout(GITHUB_API_TIMEOUT_MS) }).then((r) => { if (!r.ok) throw new Error("list " + r.status); return r.json(); });
   const chains = {};
   for (const f of list.filter((x) => x.name.endsWith(".json"))) {
     const key = matchChainKey(f.name);
     if (!key) continue;
-    const body = await fetch(f.download_url, { headers }).then((r) => { if (!r.ok) throw new Error(f.name + " " + r.status); return r.json(); });
+    const body = await fetch(f.download_url, { headers, signal: AbortSignal.timeout(GITHUB_API_TIMEOUT_MS) }).then((r) => { if (!r.ok) throw new Error(f.name + " " + r.status); return r.json(); });
     const names = Object.keys(body).map((k) => k.toLowerCase());
     chains[key] = { file: f.name, ...classifyChainFile(names) };
   }
