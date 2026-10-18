@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "71ddb1852f23564b4272753574e9e5c1bdd1e0e3",
+      "revision": "8fe530223effc97ba66402e38cda7a7beb97d184",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -23440,7 +23440,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "8ccea4eab9f3850db786caa88589fc41b22f47b0",
+      "revision": "e1cda623b6bb402963361f9bb190b645376a0a1e",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/snapshot.yml": "4c7b2723a80b0a2a50c71102a4583ecb945f7484d7c4d8f6be7e3da292040ca5",
@@ -23451,14 +23451,14 @@
         "SKILL.md": "6627d86f8a611ad87f902dfa4355d4f1bef58709f21cb9e96d54a09dcec7a2c2",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/data/accrual.json": "e5bcddd61677c617e2c8f08e98fa09cfb6a512932b7c0134ef47fe6cbc44966e",
-        "docs/data/aero-chains.json": "86a42699d22d52ecc39f1e65a74a8a985fd4354669996ab2ebe609ab79cf0318",
-        "docs/data/fee-rate.json": "fd9c4db4d219a578bf91e863a22afdfd120bd31a3e570e26e6ddbc8ca34d0bba",
-        "docs/data/fee-stream.json": "014b63d00f0af1e5c3a580b3307a7abd06dbd897bbd180dc15f81996d8307bb0",
+        "docs/data/aero-chains.json": "ea9766ce7dff05bd362bcad760f7613ac7c9d4c6dd6c44bb7351e647f1839f89",
+        "docs/data/fee-rate.json": "fdb1ca3450ca3bb3950035a186f0b47a6fe98f291825c361729fbfc047180d5d",
+        "docs/data/fee-stream.json": "f688d372f6b531bc4afc37246903872598be279325caca5e913655bde9252b70",
         "docs/data/promise.json": "cbd19b7700fd85a4bcb44bd0947b36a5e925ac344c82d65227e399bdbce669ee",
-        "docs/data/snapshot.json": "5596f1b501ccac32ebf700afc832e2bbf5eb50b9484d5af493b6be222ccf12f5",
+        "docs/data/snapshot.json": "e13db324d4f6ce590c177a3b67cdd5f6c941f3dcc30fd5820f4f35b048e927b7",
         "docs/data/timing.json": "783269e5195b2d67813b87977b143f945c29bd46d2213b07b6a3c778fd2b09c7",
         "docs/index.html": "7c89288f14de4e6ea17096d2b3b07f708ba340096cbadd56b527a53766d4aee4",
-        "docs/llms.txt": "2fdd8df4f1648fbf4decd27e201555e09eb8b24b1fbd021d71585a749e20b239",
+        "docs/llms.txt": "b016e93cb6a62fcdfdb0de2c7a1b9ebf3b65c7ab8cc9eb1427c7f6d8362b1f31",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "c8f479f697a29e9b5d4421aa4ce1716ffc38b45b6dbf2642f9b8a2fde6d3eed7",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -23476,8 +23476,8 @@
         "src/constants.ts": "80a4a3a11b927771689a866b1601854e94d6d9b2f4765bac976cbee5fe4cc9fc",
         "src/dilution.ts": "919b321ae69af27964fdee04abb84d7b52de85b00c3a5059e0f8002adfdc74fc",
         "src/efficiency.ts": "6147196af1d7d6321abd685691f5f487d87b8c5ac1e9c0ad40527ea464f65ed3",
-        "src/feeRate.ts": "b6764ffdebaf6cac8a8e2372b85d8e64a7af8a2700b132fd6adad28448d4383d",
-        "src/feeStream.ts": "3ebc7bfe2ce4031296a224ccbc360bcb5aea4e8a268c978117a85fbfbbfa1e11",
+        "src/feeRate.ts": "0d151bdd6c641387f4e6fc3cce80ab0416bc607445b5a9a99749c840ac815ca7",
+        "src/feeStream.ts": "517121b76850e80867639ebe228aaa224385c7ecdbbb69402247fd41bca33587",
         "src/llms.ts": "a2ca61f08af5257b4d49d339360f209b39a9a96a1cf3fcf5ac5dac633a536cb8",
         "src/mcp-server.ts": "af9da1c1f7f1827d043391ca10a4935bb5ec4cf3aa42eaacb7e626eb8113f482",
         "src/pools.ts": "d1ab873ff96644c57faa4a94becea60b48ee12db8fd9f3c464fab9257f36f0d9",
@@ -30173,7 +30173,7 @@
     "mcp-servers/priors-agents-priors": {
       "repo": "priors-agents/priors",
       "path": "skills/priors/SKILL.md",
-      "revision": "df7f94436c92db1f84b753563e0728053af5d515",
+      "revision": "bfd4c087016c9e32358366837993d62873005b76",
       "files": {
         "SKILL.md": "c4203ec9b6d6428f61d7f500959ae2a3aff540241d141f2f2e1899f32688a041",
         "LICENSE": "8c3d1e9e897b0fd0890bc7d1f05a73f822934c6439368b2e57d6f1707e9d1981"
@@ -44383,24 +44383,26 @@
     "dev-tools/cristallin2006-analysis-memory": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/analysis-memory/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
-        "SKILL.md": "1b92175126813a6445c652058f820e1b42f1a224247872a9d2b18b0def43a1e0",
+        "SKILL.md": "aaa5c724fc0e4a17ba80208111bb9d7521bcc511270f343216e1740ed39ab2b4",
         "references/contract.md": "9d2c8c51225e155c44ada0c11259f04b675f9eb3bea5f45ea59415441f3cc6b5",
+        "references/negative-evidence.md": "8eab9ce772437e0223fd58c3ae616a0c425e7f3bb82b125b0719e57c6fb6e23e",
         "LICENSE": "c61b65c632204828bb9f86b3bdca8a84236399d7cd44b27a7262d5802f7249eb"
       },
       "modes": {
         "SKILL.md": 420,
         "references/contract.md": 420,
+        "references/negative-evidence.md": 420,
         "LICENSE": 420
       }
     },
     "dev-tools/cristallin2006-analysis-session": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/analysis-session/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
-        "SKILL.md": "12823487953368c2238024b5a7e6612cb94caf8148eeb2b2cb773ea2661924cb",
+        "SKILL.md": "815cb722d4a96a8824cdf8135538f1c870c31497c2a44e4d3a1db8466571e330",
         "references/controlled-requests.md": "6f87c4ce9a0ab09ea6f19394869c160d9835d1cf2a7abc1942953497747d1112",
         "references/legacy-ledger.md": "45217df6ba5efd5e2cdf6e1e5468f540b1aa0a8c31b1297f283e5f6834a85597",
         "references/native-jobs.md": "2eb01dc95c857d1788f8b37910c9cba34e5767882e5107b9de50114826ce6192",
@@ -44419,7 +44421,7 @@
     "dev-tools/cristallin2006-android-re": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/android-re/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
         "SKILL.md": "0f26ae28f3ac770b508f0751cece053d07625046ef80aeb41a72b1e9fe1365f9",
         "references/apk-triage.md": "6c73705d5f4ee96fff524dc4d1db330595cd7a28a49deb5df28439c98f8906bd",
@@ -44450,7 +44452,7 @@
     "dev-tools/cristallin2006-ctf-misc": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/ctf-misc/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
         "SKILL.md": "2810fc62e1b468acedd2146622f45a7d96f4a2a93e4e953be027ad25531f9a28",
         "bashjails.md": "49fc1a4c20575d78e63dcf065b63681cf3817606ffc8eb2c4475d5802b4835f0",
@@ -44493,7 +44495,7 @@
     "dev-tools/cristallin2006-ghidra-core": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/ghidra-core/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
         "SKILL.md": "ae6bfebd8f2ba92e246c8b38f98131765685994be5d0da45089371df6d32edf7",
         "engine/VENDOR.md": "f1e8ce906ff28197cae5117680b4875081af221b3e210c34da0b1ac39ebeb0e2",
@@ -44712,7 +44714,7 @@
     "dev-tools/cristallin2006-ghidra-static": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/ghidra-static/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
         "SKILL.md": "7fffd39bf318a0cd610d1255d94d13e6e3dbb967ec76b3107607a7d8f97a313f",
         "references/classic-crypto.md": "fe8df564c2d2aa29bb9d5473c7c0c4a878c3cb15fe0cc2760c8f8c74a8070e36",
@@ -44757,7 +44759,7 @@
     "dev-tools/cristallin2006-pwn-exploit": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/pwn-exploit/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
         "SKILL.md": "16c67a72c24bdc030ab971b77764e01bb0ebf5a046a738a0247f7ae4e4aef51c",
         "references/advanced-exploits-2.md": "99418340c14a83b1848086b88163fc2a297b12ef1fa85fbf9a16db29686ed09b",
@@ -44826,9 +44828,9 @@
     "dev-tools/cristallin2006-re-triage": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/re-triage/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
-        "SKILL.md": "18fb7d20da1ccecd92709b65caf6df9e0952f96704e8747fc81903082bc855ca",
+        "SKILL.md": "062d6c659b94a0ef78fe203246f9a4b9560a9860d47d5af981eafb892b835e92",
         "references/anti-analysis.md": "adcb51b36aa37829e1243114ce4840a32c97331c282467172037246836fc93ba",
         "references/capability-evidence.md": "86d42341e6abc4c366f6b7f25621581e969faa5cdb4efa0c9adf55e483b9c3a9",
         "references/dotnet-il.md": "fdfbeb6fea9c654a61edfedb85faab041960d276ae672452be816d9270b70910",
@@ -44859,7 +44861,7 @@
     "dev-tools/cristallin2006-re-unpack": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/re-unpack/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
         "SKILL.md": "87d5d55dfcab71a7c9afce4189dbc14131ec96c31db8702bc1f586d238f92f48",
         "references/tools.md": "43b640a84674056e2f58f3ef2605bfdd385eb3ec0ef29d6c166f55bd31c8499f",
@@ -44880,7 +44882,7 @@
     "dev-tools/cristallin2006-vuln-audit": {
       "repo": "cristallin2006/dsh-ctf-skill",
       "path": "skills/vuln-audit/SKILL.md",
-      "revision": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
       "files": {
         "SKILL.md": "04ba19de0709a8fc4c7e1bc80fb60a9598f95093848b33c6a02de34beb699278",
         "references/fuzzing-harness-evidence.md": "2e44420627cf8bc7e3caf70179196c60d38f9dbedb05d38d03856de08fec4b35",
@@ -44989,7 +44991,7 @@
     "mcp-servers/flow-executor-flow": {
       "repo": "flow-executor/flow",
       "path": "skills/flow/SKILL.md",
-      "revision": "954a30637f16ed4b5007180af102a5d6c0d7b193",
+      "revision": "11b51c2e96932ef05a674645fb4018fe2dce043d",
       "files": {
         "SKILL.md": "a172e8b0e383c34cffd1122c06f5d09a1828f0d7bd13d560b2021fd1073a13c1",
         "LICENSE": "2c13967cdedec5e93c38e653eb7a6ba2bf3e96af45f08521bdccd6e1d0a37aae",
@@ -44999,6 +45001,25 @@
         "SKILL.md": 420,
         "LICENSE": 420,
         "NOTICE": 420
+      }
+    },
+    "dev-tools/cristallin2006-analysis-orchestration": {
+      "repo": "cristallin2006/dsh-ctf-skill",
+      "path": "skills/analysis-orchestration/SKILL.md",
+      "revision": "0da7e039f2b62438b93d98aa0f411701a0da70b7",
+      "files": {
+        "SKILL.md": "17d3834edccc048ed8b7e63ecfd66a53b9fe0ef5938711c044bba53efd640153",
+        "references/design.md": "9707b906b40dd4262c2ebb451195cefa0fc5a7f6e64c99dcbbd976688ea55131",
+        "references/resolution.md": "49f92f22533cb0254e3d56efcb69f23f9ae71a0bf95fd5385297d5fea57c558d",
+        "references/supervision.md": "bede129c42c19aceffb42eed6cca8911b333ea6f2b42b63c874d969644efab67",
+        "LICENSE": "c61b65c632204828bb9f86b3bdca8a84236399d7cd44b27a7262d5802f7249eb"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "references/design.md": 420,
+        "references/resolution.md": 420,
+        "references/supervision.md": 420,
+        "LICENSE": 420
       }
     }
   },
@@ -45033,7 +45054,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "0339e6bf160865f9089b6f1e0a52076ff141d672",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "71ddb1852f23564b4272753574e9e5c1bdd1e0e3",
+    "jiayaoqijia/cryptoskill": "8fe530223effc97ba66402e38cda7a7beb97d184",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
@@ -45117,7 +45138,7 @@
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "cff9201dd1078c06a5ea30b5779587aad9e1cab4",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "8ccea4eab9f3850db786caa88589fc41b22f47b0",
+    "araxis33/aero-vote-radar": "e1cda623b6bb402963361f9bb190b645376a0a1e",
     "paulf280-ui/cabal-hunter-mcp": "1c059944b62b0df52d0bede5d03d3ef75cfaa625",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "a6434064fe7c76e60c8749fbc212ee396983415c",
@@ -45158,7 +45179,7 @@
     "gemachdao/gdex-skill": "7d5329f8a4a3c6271bbd0dc3bc3736ff34f02be8",
     "blockchains/blockchainlab-mcp": "4d7ff1b1934c02cbca347d4e3d597d0c1c00668a",
     "kant19801201behax5/silicon-dna-release": "b68651880b477e4147112b197d6f4d0f330342ab",
-    "priors-agents/priors": "df7f94436c92db1f84b753563e0728053af5d515",
+    "priors-agents/priors": "bfd4c087016c9e32358366837993d62873005b76",
     "ox31461/gasless-anygas-robyn-relay": "b2ac270d6f7e55a685db3efa987684e2e2913f04",
     "pokiehead/sic-crypto-kit": "40608e3ed0286b32596aa6c5704c63a643971cb5",
     "hristovdimitri2-hub/kristo-intelligence-6": "5feb200bc7c629ee097216bc4d3bf200c09843b1",
@@ -45203,7 +45224,8 @@
     "cristallin2006/dsh-ctf-skill": "ec0eb5764e2f14ddbd13a7fef4ea693fbae4789f",
     "nerosaa/usdt-agent-skills-lite": "63f638c2424a4b7e999b747d7ecd2aed24ce5b12",
     "fliplabsai/signo-mcp": "b3419b48ec950cdf04cad91f838e569e74ef3987",
-    "ralf9090/agent-kiosk": "6be154dd1b41d016fe25acdc1dd5180dade7502e",
-    "flow-executor/flow": "954a30637f16ed4b5007180af102a5d6c0d7b193"
+    "ralf9090/agent-kiosk": "174854577ccebc56dcb4dd9dde86246f81c29c34",
+    "flow-executor/flow": "11b51c2e96932ef05a674645fb4018fe2dce043d",
+    "layerhop/layerhop-js": "dc8c1645cb22dd1fb66484bd4061a7c4e7beec0e"
   }
 }

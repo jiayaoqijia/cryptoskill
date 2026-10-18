@@ -11,8 +11,9 @@ import type { MulticallOutcome, PoolInfo } from "./pools.js";
  * it in the first 12 hours, zero afterwards), so any window shorter than a
  * week measures that lump, not the pool. Aero's Predictive Allocation (from
  * 2026-10-22) streams revenue continuously and lets an allocation move every
- * 48 hours — the question "how long does a pool's revenue hold up?" needs the
- * underlying flow, and that flow is readable straight off the pools:
+ * 47 hours (aero.xyz/aero-upgrade) — the question "how long does a pool's
+ * revenue hold up?" needs the underlying flow, and that flow is readable
+ * straight off the pools:
  *
  * - Slipstream (CL) pools keep `gaugeFees()` — fees owed to the gauge, i.e. to
  *   voters, since the gauge last collected. It grows with every swap and drops

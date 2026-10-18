@@ -5,15 +5,17 @@ import { accruedBetween, type FeeCounter } from "./feeStream.js";
  * counters (see feeStream.ts) — the figure the radar will rank by once Aero's
  * Predictive Allocation replaces the weekly epoch on 2026-10-22.
  *
- * Why a trailing 96 hours: an allocation can move every 48 hours under sAERO,
- * so the question is which pools will earn the most over the next 48. Measured
- * on this repo's own counter history (29 reads, 2026-09-27..10-06, fixed
- * prices, ~219 pools with at least 100k votes), the last 96 hours ranked the
- * next 48 hours best: Spearman 0.77 per 10k votes, and a top-10 picked this way
- * collected 78% of what the best possible top-10 did. The last 12 hours did
- * worse (0.72 / 62%) — chasing "where the money is flowing right now" loses to
- * a few days of history. The dollar figure itself is rough (median miss about
- * half), so it is published as an estimate to rank by, not a promise.
+ * Why a trailing 96 hours: an allocation can move every 47 hours under sAERO
+ * (aero.xyz/aero-upgrade), so the question is which pools will earn the most
+ * over roughly the next 48 — close enough to that cadence that the window
+ * measured below is the honest answer. Measured on this repo's own counter
+ * history (29 reads, 2026-09-27..10-06, fixed prices, ~219 pools with at
+ * least 100k votes), the last 96 hours ranked the next 48 hours best: Spearman
+ * 0.77 per 10k votes, and a top-10 picked this way collected 78% of what the
+ * best possible top-10 did. The last 12 hours did worse (0.72 / 62%) —
+ * chasing "where the money is flowing right now" loses to a few days of
+ * history. The dollar figure itself is rough (median miss about half), so it
+ * is published as an estimate to rank by, not a promise.
  *
  * Fees only. Incentives (bribes) arrive in lumps under the weekly system and
  * will stream per second under Aero; they are added once the new contracts are

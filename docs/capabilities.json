@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-18T06:46:39.534914+00:00",
+  "generated_at": "2026-10-18T12:43:29.986551+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -62901,6 +62901,68 @@
     },
     "dev-tools/cristallin2006-analysis-memory": {
       "name": "analysis-memory",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/cristallin2006-analysis-orchestration": {
+      "name": "analysis-orchestration",
       "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
@@ -220322,11 +220384,11 @@
     }
   },
   "summary": {
-    "discovered": 3541,
-    "processed": 3541,
+    "discovered": 3542,
+    "processed": 3542,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2563,
+      "read_only": 2564,
       "router_orchestrator": 146,
       "unknown": 336,
       "analysis_only": 215,

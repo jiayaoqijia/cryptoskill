@@ -17,7 +17,7 @@ description: 识别未知文件、语言、架构、壳与运行条件，给出�
 
 ## 交接选择
 
-要回答程序语义 → ghidra-static；运行时行为/实验 → re-dynamic；已确认需解包 → re-unpack；缺陷与可控性 → vuln-audit。pcap → traffic-analysis；APK 的 Manifest/DEX/加载环境 → android-re，其中 native 主体可并行交给静态/动态分析。 .NET 通常用 IL 工具，NativeAOT/IL2CPP 用 native 方法。运行条件选择以执行环境实测为准。
+要回答程序语义 → ghidra-static；运行时行为/实验 → re-dynamic；已确认需解包 → re-unpack；缺陷与可控性 → vuln-audit。pcap → traffic-analysis；APK 的 Manifest/DEX/加载环境 → android-re，其中 native 主体可并行交给静态/动态分析。 .NET 通常用 IL 工具，NativeAOT/IL2CPP 用 native 方法。运行条件选择以执行环境实测为准。准备从局部静态观察推断“没有其他路径/数据无作用”时，按 re-dynamic 的 references/coverage-review.md 评估证据覆盖，选择适用实验或证明。
 
 Unity 的输入校验与场景探索按用户目标及实际入口分流；NES 状态注入与原始通关分别记录。具体条件见对应 reference。输出交接保留已确认事实，避免重复分诊。
 

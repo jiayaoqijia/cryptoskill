@@ -33,7 +33,7 @@ origin、verification、review_state 和 applicability 相互独立。看到工�
 
 实验分别记录执行状态和对命题的影响。缺依赖为 blocked/inconclusive，超时为 interrupted/unknown；一次无效果只说明相应输入与条件，不能直接排除整条假设。
 
-同条件的反证用 link kind=contradicts 保留双方；不同条件的结果先写清条件。新结论可 revise 或 archive/supersede，历史保留。目标代次或证据内容变化后，查询时自动判 needs_recheck；v0.2 不自动跨代次继承静态结论。query 无命中不代表此前从未尝试。
+同条件的反证用 link kind=contradicts 保留双方；不同条件的结果先写清条件。新结论可 revise 或 archive/supersede，历史保留。目标代次或证据内容变化后，查询时自动判 needs_recheck；v0.2 不自动跨代次继承静态结论。query 无命中不代表此前从未尝试。准备重复实验、把局部失败提升为路线失败或复核关键负面结论时，读取 [负结果复用](references/negative-evidence.md)，使用现有 experiment/claim 和来源，不另建台账。
 
 环境、hook、权限、Ghidra 分析选项/人工类型修正改变时，显式 invalidate 相关成果并更新来源/目标；运行层不能自动识别所有环境变化。derived_from/depends_on 建立真实依赖，不能以相似文本代替证据关系。
 
@@ -58,3 +58,7 @@ dsh_memory_read health 查看数据库、索引和宿主计数。写入失败必
 ## 完整原始材料交接
 
 任务原文超过普通记忆来源上限时，使用 dsh_handoff source 登记完整 UTF-8 材料并生成分块目录；将 doc- 来源显式分配给只读支线。dsh_evidence 可传 chunk，dsh_handoff coverage 显示实际读取覆盖，完整阅读不证明理解。详情按需读同级 analysis-session/references/controlled-requests.md。凭据不进入原文快照或普通记忆。
+
+## 专职解题编排模式
+
+复杂长任务需要独立运行的调度监督时，读取同级 analysis-orchestration/SKILL.md。该模式按任务显式启用，由主代理负责战略推理、原生 Solver 负责具体执行；运行层维护事件唤醒、定期巡检、纠偏和取消。启用后的角色规则覆盖本文普通模式下“主代理直接分析执行”的默认分工。简单任务和普通只读协作仍使用原有模式。不要同时启动另一条派发通道；严格 HTTP 控制会话暂不支持执行型 Solver，不能绕过原控制器。

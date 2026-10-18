@@ -49,7 +49,7 @@ python3 "$AS" artifact TASK_ID --path ./sample
 
 ## 检查点、预算与收尾
 
-`checkpoint TASK_ID --file checkpoint.json` 保存 summary、unresolved、next_experiment、resource_plan。状态为 running/waiting/paused/blocked/complete/cancelled；`transition TASK_ID --status paused --file checkpoint.json` 是显式转换。工具调用结束或回合结束不自动完成任务。尚未达到用户目标时保留未完成状态；报告可以先交付。
+`checkpoint TASK_ID --file checkpoint.json` 保存 summary、unresolved、next_experiment、resource_plan。状态为 running/waiting/paused/blocked/complete/cancelled；`transition TASK_ID --status paused --file checkpoint.json` 是显式转换。工具调用结束或回合结束不自动完成任务。尚未达到用户目标时保留未完成状态；报告可以先交付。已有编排记录的任务，complete 在共享状态层检查最新目标处置、结果修订、目标代次和证据引用；finish/disable 或把 unresolved 清空不能代替处置。具体步骤见同级 analysis-orchestration 的 references/resolution.md。用户只要求限定范围的报告时，可明确交付范围及范围外研究项后完成，不要求穷尽所有设想。
 
 用户明确的请求、时间或并发上限为硬约束；自行估计的软预算用于复查。资源容量按实际环境决定，不设跨任务通用并发值。暂停/取消/结束时列明保留、终止、移交的资源和责任方，运行库不会擅自杀旧进程。
 
@@ -92,3 +92,7 @@ python3 "$AS" guard TASK_ID --resource project:ABSOLUTE_PATH --owner SESSION_ID 
 ## 受控请求与完整交接
 
 需要任务级请求预算、来源限制、凭据引用或完整长材料交接时，读取 [controlled-requests.md](references/controlled-requests.md)。先用 dsh_control status 确认覆盖；普通会话未全局拦网。宿主显式导入策略后，该会话仅可经受控 HTTP 发送器联网，不可用 shell/浏览器/MCP 绕过。主 agent 继续核心分析；方法提示不作为硬门。
+
+## 专职解题编排模式
+
+复杂长任务需要独立运行的调度监督时，读取同级 analysis-orchestration/SKILL.md。该模式按任务显式启用，由主代理负责战略推理、原生 Solver 负责具体执行；运行层维护事件唤醒、定期巡检、纠偏和取消。启用后的角色规则覆盖本文普通模式下“主代理直接分析执行”的默认分工。简单任务和普通只读协作仍使用原有模式。不要同时启动另一条派发通道；严格 HTTP 控制会话暂不支持执行型 Solver，不能绕过原控制器。
