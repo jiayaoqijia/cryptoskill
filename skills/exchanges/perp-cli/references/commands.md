@@ -91,6 +91,16 @@ perp --json -e <EX> trade scale-in <SYMBOL> <SIDE> --levels '<P1>:<PCT>,<P2>:<PC
 perp --json -e <EX> trade pnl-track                     # real-time PnL tracker
 perp --json -e <EX> trade twap <SYMBOL> <SIDE> <SIZE> <DURATION>   # Pacifica: seconds (native), HL: minutes (native, min $100); others client-side: --background [--slices <n>]
 
+# Pacifica Atomic basket (pacifica only; other venues → CAPABILITY_UNSUPPORTED). Legs SYMBOL[:WEIGHT] (≤ 5 per side, each market once);
+# --usd is split by weight at each mark, floored to the lot, each leg ≥ the market's USD minimum. ONE POST /orders/batch of market
+# orders — NOT all-or-nothing: each leg fills or fails on its own (ORDER_PARTIAL / ORDER_REJECTED / ORDER_PENDING per basket).
+# --reduce-only: --long legs must close shorts, --short legs must close longs (checked before sending). Supports --dry-run (plan + unsigned body).
+perp --json -e pacifica trade atomic --long BTC:50 --short ETH:50 --usd 1000 [--reduce-only] [--slippage-bps <n>] [--force]
+# A leg needs notional ≥ the market minimum × (1 + slippage bound). Legs without an order_id in the ack are traced by their client_order_id.
+# A batch failure other than HTTP 400 / 429 (timeout, 5xx, unreadable answer) → ORDER_PENDING and EVERY leg is quarantined.
+# Pacifica Chase / OCO / Trailing Stop / Swarm / Trigger Swarm / Conditional Market|Limit: no documented API / SDK path (as of 2026-10-19) —
+# nearest here: trade twap (≈ Swarm, split market execution), trade tpsl (≈ OCO bracket exit).
+
 # Spot helpers (any venue with spot)
 perp --json -e <EX> trade spot-buy <SYMBOL> <SIZE>
 perp --json -e <EX> trade spot-sell <SYMBOL> <SIZE>
@@ -180,6 +190,61 @@ Encoding formula: `enc = 10 * outcome + side`; asset id = `100,000,000 + enc`.
 `outcome view` replaces the old multi-call pattern (separate `book` + `market mid` lookups). One round-trip returns everything an agent needs to decide direction.
 
 Settlement at `expiryMs` is venue-side: winning side → 1 quote token per share, losing → 0. Decide before expiry whether to self-close or let the venue settle.
+
+## Options market data (read-only, `-e derive`)
+
+Derive (derive.xyz, formerly Lyra) options through its official public v3 API — keyless, no orders, no account. Options venues are separate from the perp venues (not in `perp health`, arb or `market`). JSON objects carry `schema: 1`; decimals are strings; unknown is `null` (empty book side → `bid`/`ask` `null`; IV the venue could not compute → `null`; 24h high/low `null` without trades).
+
+```bash
+perp --json -e derive options underlyings                     # underlyings with options (spot price)
+perp --json -e derive options expiries ETH                    # active expiries: expiry (YYYY-MM-DD UTC), expiryMs, strikes, instruments
+perp --json -e derive options chain ETH                       # nearest expiry (expirySelection: "nearest"), every strike
+perp --json -e derive options chain ETH --expiry 2026-12-25 --strikes 10   # 10 strikes closest to ATM (forward, else index)
+perp --json -e derive options quote ETH-20261225-3500-P       # one option
+```
+
+- Chain row: `{strike, call, put}`; each side is an option quote: `bid`/`ask` `{price, size}`, `mark`, `index`, `forward`, `discountFactor`, `iv {mark, bid, ask}`, `greeks {delta, gamma, theta, vega, rho}` (venue units, verbatim), `openInterest` (contracts), `stats24h {contracts, notional, premium, trades, high, low}`, `timestampMs`. Chain level: `index`, `forward` (both of the newest ticker of the expiry, not an average), `atm {strike, reference, price}`, `strikesListed`, `missingTickers`.
+- Errors: unknown underlying / expiry / instrument → `SYMBOL_NOT_FOUND` (remediation names the listing command / active expiries); a perp name in `quote` → `INVALID_PARAMS`; an active option with no live ticker (activation / expiry race) → `EXCHANGE_ERROR` (retry); other Derive rejections → `EXCHANGE_ERROR`; no `-e` or a perp venue → `CAPABILITY_UNSUPPORTED`; Derive's rate limit → `RATE_LIMITED` (retryable).
+- Cost: `expiries` 1 request, `chain` 2 (instruments + ONE tickers call for the expiry), `quote` 2. Derive's public budget is 5 requests/s per IP.
+- `-n testnet` reads `testnet.api.derive.xyz`. MCP: `get_option_expiries`, `get_option_chain`, `get_option_quote` (`venue: "derive"`).
+
+## Pacifica Print (`perp print`) and vaults (`perp vault`)
+
+Pacifica-only products: these commands always use Pacifica (`-e <other venue>` → `INVALID_PARAMS`). Reads are unauthenticated GETs and never sign; `--account <address>` reads any account without a key. Every write supports `--dry-run`, which prints the exact message to sign and the body (`signature: null`), never signs and sends nothing. `--account` on a write only plans (with `--dry-run`); a live write with `--account` is refused.
+
+**Signer rule (perp-cli, stricter than the venue):** `vault deposit` is **master-only** (like `funds withdraw pacifica`) — an agent key must never be able to move the balance into a vault someone else manages; with only an agent key on the machine it is `NO_SIGNER_AVAILABLE`. `vault withdraw` (pays only into the own account), `print deposit` and `print cancel` are signed by the active signer (the agent key when approved, else the master). `wallet manage lake deposit|withdraw` were replaced by these commands (they now refuse with a pointer); `wallet manage lake create --initial-deposit` is refused with an agent key.
+
+**Idempotency:** every deposit / withdraw sends a fresh `idempotency_key`. After `ORDER_PENDING` never resubmit with a new key; the only safe retry is the same command with `--idempotency-key <the reported key>` (the venue answers a duplicate with HTTP 409; how long it remembers a key is unverified). `error.details.before` holds the pre-write state (Print order count / vault shares) to compare with `print positions` / `vault positions`.
+
+### Print — strike orders that earn a premium every cycle
+A Print order locks a USDC deposit (min 10) as margin at a target price: **long** = target BELOW mark, **short** = target ABOVE mark, 0.5% … 10% / 20% / 40% from mark for a 24-hour / 7-day / 30-day cycle. Leverage 1 … product max (`print games`). The premium is credited to the order at the START of each cycle. **While resting** (before a fill) it is evaluated only at the END of each cycle: it fills AT the target (size = deposit × leverage ÷ target), rolls to a new target at the same % distance, or is liquidated; max loss = deposit + premiums. **After a fill** it is an ordinary perp position in the main account — continuous mark-price liquidation, it nets with an existing position in the same market and may be cross-margined; read it with `perp -e pacifica account positions`. Product / pool deposit caps are totals across all users (the venue refuses when full). `--cycles 1…1000` caps the cycles (default: roll until cancelled). A cancel takes effect only at the end of the running cycle — funds stay locked until then (up to 30 days on BTC_1M).
+```bash
+perp --json -e pacifica print games                                  # products: cycle, max lev, caps, allowed target range
+perp --json -e pacifica print quote BTC_24H long 100 --strike 79000 --leverage 10 [--cycles 7]
+#   read-only preview: notional, size on fill, docsLiquidationPrice, maxLoss, lock; estimatedPremium is null
+#   (the venue's premium preview is a signed request — never called on a read path)
+perp --json -e pacifica print positions [--account <addr>]           # current orders: printing | cancelling | filled | liquidated | cancelled | completed | ended
+perp --json -e pacifica print history [--account <addr>] [--limit N] [--cursor C]
+perp --json -e pacifica print events <printAddress> [--limit N] [--cursor C]   # created / premium / end_requested / position_opened / liquidated
+perp --json -e pacifica --dry-run print deposit BTC_24H long 100 --strike 79000 --leverage 10 --cycles 7
+perp --json -e pacifica print deposit BTC_24H long 100 --strike 79000 --leverage 10 --cycles 7   # POST /game/deposit (deposit_to_game)
+perp --json -e pacifica --dry-run print cancel <printAddress>         # UNOFFICIAL: POST /game/end (end_game) is not in the API docs (apiStatus: "unofficial")
+perp --json -e pacifica print cancel <printAddress> --unverified-endpoint   #   live run needs the flag; only a `printing` order
+```
+- `docsLiquidationPrice` is the docs formula (margin fully lost) — an outer bound, not the trigger: a liquidation was observed earlier in one live case (2026-10-16, ZEC_24H short at mark 1216.84 vs formula ≈ 1269); the venue's trigger is unpublished. For a 1× long the formula gives ≤ 0: `null` = unknown, not "no liquidation". Show the user `maxLoss`.
+
+### Vaults (API: lakes)
+A vault is a Pacifica account traded by its manager; LPs get shares at NAV (lp_balance ÷ lp_shares). Min deposit 10 USDC; `deposit_cap` caps the LP balance; the manager takes `manager_profit_share` above the high-water mark. A withdrawal redeems shares into YOUR OWN trading balance (the API has no destination) only after `deposit_min_duration_ms` since your LAST deposit (each deposit restarts the lock for your whole balance), inside the withdrawal window when one is set (open while now_s mod window < duration), and from the vault's free balance (a fully deployed vault may pay partially). APY is not published (`apy: null`).
+```bash
+perp --json -e pacifica vault list [--account <addr>]                 # TVL, NAV/share, fee, lock-up, window, config
+perp --json -e pacifica vault info <address|nickname>                 # + live equity, positions, deposit whitelist (UNOFFICIAL endpoint, advisory), window open now?
+#   a nickname must match exactly ONE vault (case-insensitive) — duplicates exist live ("Pacifica Vault" / "Pacifica vault");
+#   ambiguity → INVALID_PARAMS listing every candidate's address / manager / TVL. Writes: prefer the ADDRESS.
+perp --json -e pacifica vault positions [--account <addr>]            # your LP (or manager) shares and value
+perp --json -e pacifica --dry-run vault deposit <vault> <amount>      # POST /lake/deposit (deposit_to_lake) — MASTER-ONLY; refused when the LP NAV is zero / undefined
+perp --json -e pacifica --dry-run vault withdraw <vault> <shares>|--all   # POST /lake/withdraw (withdraw_from_lake)
+```
+MCP (read-only): `pacifica_print_products`, `pacifica_print_quote`, `pacifica_print_positions`, `pacifica_vaults`. Print / vault writes are CLI-only.
 
 ## Funds (deposit, withdraw, transfer, bridge, rebalance)
 
@@ -389,9 +454,8 @@ perp --json wallet manage account-mode [unified|standard|portfolio]   # Hyperliq
 perp --json wallet manage sub create <name>            # not supported (CAPABILITY_UNSUPPORTED): the subaccount wallet must co-sign — use the web app
 perp --json wallet manage sub list
 perp --json wallet manage sub transfer <from> <to> <amount>   # <from> must be the signing account
-perp --json wallet manage lake create [--manager <address>] [--nickname <name>] [--initial-deposit <amount>]
-perp --json wallet manage lake deposit <lake> <amount>       # <lake> = vault address
-perp --json wallet manage lake withdraw <lake> <shares>      # shares to redeem, not USDC
+perp --json wallet manage lake create [--manager <address>] [--nickname <name>] [--initial-deposit <amount>]   # --initial-deposit: master-signed only
+perp --json wallet manage lake deposit|withdraw …           # MOVED → perp -e pacifica vault deposit|withdraw (refused here)
 perp --json wallet manage builder overview                    # Pacifica builder-OWNER tools only (user approvals: wallet builder)
 perp --json wallet manage builder trades <code>
 perp --json wallet manage builder leaderboard <code>

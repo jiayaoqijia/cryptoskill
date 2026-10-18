@@ -40,7 +40,7 @@ Two packages, **the same code and API** (built from one source):
   (`@hypurrquant/perp-ws/node` → `perp-cli/ws/node`). Everything else is identical.
 - The Node entry caps one inbound message at 16 MiB (`DEFAULT_MAX_PAYLOAD`; real frames are ≤ ~150 KB).
   An oversized message closes the socket (`reconnecting` reason `WS_PROTOCOL_ERROR`, naming
-  `WS_ERR_UNSUPPORTED_MESSAGE_LENGTH`); 3 within 10 min fail the subscriptions with `WS_PROTOCOL_ERROR`.
+  `WS_ERR_UNSUPPORTED_MESSAGE_LENGTH`); 3 within 10 min on one socket fail the subscriptions on it with `WS_PROTOCOL_ERROR`.
   Raise the cap with `createVenueStream(codec, { transport: createNodeTransport({ maxPayload }) })`.
 - The browser entry in Node 20 without a `transport` throws `INVALID_PARAMS` ("import from the /node
   entry … or pass transport").
@@ -194,6 +194,15 @@ await Promise.all(streams.map((s) => s.close()));
   `staleAfterMs` (from message timestamps, re-checked when a hidden tab becomes visible); 2× → forced
   reconnect. Reconnect backoff 1 s → 30 s with jitter, a per-venue new-connection budget, then
   resubscribe; the first frame after a (re)subscribe has `source: "snapshot"`.
+- Several sockets (Pacifica, > 20 channels of one kind): each socket reconnects and resubscribes only
+  its own channels (gaps only for channels on it). `reconnect.maxAttempts` counts per socket, but **one
+  socket exhausting it closes the whole stream** (every subscription ends with that reason). The state is
+  the aggregate, worst first: `closed` > `reconnecting` > `stale` > `connecting` (of a socket that was
+  open before) > `live`. A socket opening for the first time (just added, waiting on the
+  new-connection budget, or retrying a failed first handshake) does not turn a live stream into
+  `connecting` / `reconnecting`: it stays `live` with
+  `sockets` = open sockets and `pending` = sockets still opening — the channels on those are not ready
+  yet (their `ready` resolves when they open). `pending` is present only on multi-socket streams.
 - `closed` is terminal: a later `subscribe` rejects with the close reason. A handshake failure before
   open = `EXCHANGE_UNREACHABLE` ("network, venue outage, or Origin/CORS block").
 - Ack timeout: no acknowledgement and no data within the channel's stale threshold → a **pending**
@@ -235,7 +244,9 @@ null) and `notes` (why). lighter-rh has no testnet (`CAPABILITY_UNSUPPORTED`).
 
 `BboUpdate`: `bid, bidSize, ask, askSize` (null = that side of the book is empty), `venueTs, recvTs`.
 Venue sequence numbers only drop out-of-order frames (they are not contiguous; bbo never emits gaps).
-Pacifica allows ≤ 20 bbo channels per connection (`SUBSCRIPTION_LIMIT` beyond).
+Pacifica allows ≤ 20 subscriptions per channel per connection: the stream spreads further `bbo` channels
+over more sockets (≤ 50 per stream; `budget.maxSockets` lowers it; `SUBSCRIPTION_LIMIT` beyond).
+`live.sockets` counts the open ones.
 
 ## 5. Funding comparator
 
@@ -390,7 +401,8 @@ sub.on((e) => {
 Events:
 - `account` — `equity, available, marginUsed, unrealizedPnl` (+ `dex` on hyperliquid, one per perp dex);
   `source: "snapshot"` when the frame was a full snapshot.
-- `positions` / `orders` — always the **full current set** (snapshot + merged deltas).
+- `positions` / `orders` — always the **full current set** (snapshot + merged deltas). Pacifica
+  `account_positions` snapshots older than the last applied one (envelope `li`) are dropped.
   `orders.complete` = every part of the set came from a venue snapshot. **Pacifica sends no order
   snapshot: `complete` stays `false` — refetch open orders over REST.**
 - `fills` (`snapshot: true`) — ONE event per venue fill snapshot (HL / Arcus replay recent fills on every
@@ -443,7 +455,11 @@ Where an error surfaces:
 
 ## 8. Budgets and limits
 
-- `budget: { maxSubscriptions, newConnectionsPerMin }` caps below the venue limits (checked before sending).
+- `budget: { maxSubscriptions, maxSockets, newConnectionsPerMin }` caps below the venue limits (checked
+  before sending). One socket per stream, except venues whose caps are per connection (Pacifica: 20 per
+  channel per connection, 100 connections per IP → up to 50 sockets per stream). The new-connection
+  budget is per stream (a socket waiting on it is `pending`; it never opens once its channels are
+  released); one socket exhausting its reconnects closes the stream.
 - **Per-IP limits are shared by every tab and app on one IP** (HL: 10 connections, 1000 subscriptions,
   30 new connections/min, 10 users). Several tabs of one dashboard share them — keep one stream per venue
   per page.

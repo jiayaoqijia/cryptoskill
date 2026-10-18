@@ -25,7 +25,7 @@ Activate whenever the user wants to do anything against perp-cli, including: sca
 
 This skill uses progressive disclosure. Read these on demand:
 
-- `references/commands.md` — full command tree for every group (market, account, trade, outcome, arb, funds, wallet, risk, history, strategy, background, alerts, settings, backtest)
+- `references/commands.md` — full command tree for every group (market, account, trade, outcome, options, print, vault, arb, funds, wallet, risk, history, strategy, background, alerts, settings, backtest)
 - `references/agent-operations.md` — non-interactive setup flows, idempotency rules, error codes, common mistakes
 - `references/strategies.md` — funding-arb decision framework + risk-management playbook (read before designing arb strategy)
 - `references/ws-library.md` — WebSocket library (0.15.0, @experimental), published standalone as **`@hypurrquant/perp-ws`** (zero dependencies; recommended for integrators — `npm install @hypurrquant/perp-ws`) and inside perp-cli as `perp-cli/ws` (same code, use it when perp-cli is already installed): build a live dashboard / funding comparison / account feed in the browser or Node (streams, events, nullability, comparator, user channels, errors, capability matrix). Cross-venue subscriptions use `canonicals` (e.g. `{ kind: "allMarkets", canonicals: ["BTC"] }`), never `symbols` (those are per-venue directory symbols); always surface `ready` rejections — an `idle` venue is not "fine"
@@ -153,6 +153,18 @@ perp --json -e hyperliquid --dex xyz --dry-run trade market GOLD buy 0.01
 - `portfolio --dexes xyz,…` adds HIP-3 dex balances; builder fees are never attached on HIP-3.
 - MCP tools cover native Hyperliquid perps only — use the CLI for HIP-3.
 
+#### Options market data (Derive, read-only)
+
+Derive (derive.xyz) options via the official public API — keyless, never trades. Not a perp venue (`-e derive` works only with `perp options`).
+
+```bash
+perp --json -e derive options expiries ETH                              # active expiries
+perp --json -e derive options chain ETH --expiry 2026-12-25 --strikes 10 # calls/puts per strike: bid/ask, mark, IV, greeks, OI
+perp --json -e derive options quote ETH-20261225-3500-P                 # one option
+```
+
+`schema: 1`; decimals are strings; `null` = unknown (empty side, uncomputable IV). Unknown underlying / expiry / instrument → `SYMBOL_NOT_FOUND`. Full reference: `references/commands.md` → "Options market data".
+
 ### Step 4: Validate before mutating
 
 For arb:
@@ -173,6 +185,8 @@ perp --json --dry-run -e <ex> trade buy <SYM> <SIZE> --smart
 > `trade check` does NOT read exchange-set leverage. Always pass `--leverage` explicitly.
 >
 > `--smart` (IOC at best bid/ask ± 1 tick) exists only on pacifica / hyperliquid / lighter / aster, and is refused (`CAPABILITY_UNSUPPORTED`) together with `--tp`/`--sl` or `--client-id`/`--auto-id`.
+>
+> Pacifica basket (pair trade): `perp --json --dry-run -e pacifica trade atomic --long BTC:50 --short ETH:50 --usd 1000` — one batch of market orders, NOT all-or-nothing (a leg can fill while another is refused → `ORDER_PARTIAL`; an unconfirmed leg → `ORDER_PENDING` + quarantine). A batch failure other than HTTP 400 / 429 quarantines every leg. Pacifica's Chase / OCO / Trailing Stop / Swarm / Trigger Swarm / Conditional orders have no documented API / SDK path (as of 2026-10-19); nearest here: `trade twap` (≈ Swarm) and `trade tpsl` (≈ OCO bracket exit).
 
 Show the dry-run output to the user. Wait for confirmation.
 
@@ -226,6 +240,13 @@ perp --json -e <ex> trade close <SYM>                           # close one symb
 perp --json -e <ex> trade close-all                             # close all positions on this exchange
 perp --json -e <ex> trade flatten                               # close ALL + cancel ALL orders
 ```
+
+### Pacifica Print and vaults (`perp print`, `perp vault`)
+
+Pacifica-only, details in `references/commands.md`. Reads first (`print games`, `print quote`, `print positions`, `vault list|info|positions`); every write is `--dry-run` first and needs the user's confirmation:
+- **Print** (`print deposit <game> long|short <usd> --strike <px> --leverage <n> [--cycles 1-1000]`) locks the deposit until a fill or until a cancel settles at the END of the running cycle (up to 30 days on `BTC_1M`). Before asking, show the user: cycle length, `--cycles`, leverage, `maxLoss` (deposit + premiums), and that `docsLiquidationPrice` is only an outer bound (a liquidation was observed earlier in one live case; the venue trigger is unpublished). Checkpoint-only evaluation applies while resting; after a fill it is an ordinary position in the main account (continuous liquidation, nets with an existing position) — `account positions`. The premium is not quoted by perp-cli. `print cancel` uses an UNOFFICIAL endpoint: live runs need `--unverified-endpoint`.
+- **Vaults** (`vault deposit <vault> <usd>`, `vault withdraw <vault> <shares>|--all`): third-party trading pools (can lose the whole deposit); every deposit restarts the lock-up for the whole balance; withdrawals only go to the own account, inside the vault's window. **`vault deposit` is master-only** (never an agent key). Pass the vault ADDRESS and confirm the shown manager with the user — nicknames are not unique (an ambiguous one is refused with the candidates).
+- `ORDER_PENDING` on any of them → NEVER resubmit with a new key; check `print positions` / `vault positions` against `error.details.before`. The only safe retry is the same command with `--idempotency-key <reported key>` (dedupe window unverified).
 
 ### Funds workflow (deposit / withdraw / transfer / bridge / rebalance)
 
@@ -387,7 +408,7 @@ Every response is `{ "ok": true, "data": ... }` or `{ "ok": false, "error": { "c
 | `PASSPHRASE_REQUIRED` | Vault passphrase needed | Ask the user to provide `OWS_PASSPHRASE` (or stdin); never put it on argv. |
 | `LOCK_HELD` | Another perp process holds a state lock | Wait ~5s and retry once; check `background list`. |
 | `NO_BRIDGE_ROUTE` | No supported bridge route (e.g. deBridge from Solana, HyperCore → Solana) | Use the route in `remediation` (e.g. `--provider cctp`). |
-| `RATE_LIMITED` / `EXCHANGE_UNREACHABLE` | Throttled / API down (reads) | Wait 5–10s, retry once; then skip that venue. |
+| `RATE_LIMITED` / `EXCHANGE_UNREACHABLE` | Throttled / API down (reads) | Wait 5–10s (or `retryAfterMs` when present — Pacifica sets it from its credit headers), retry once; then skip that venue. |
 | `INSUFFICIENT_BALANCE` | Not enough collateral on that venue | Reduce size or move funds first (user-confirmed). |
 | `SYMBOL_NOT_FOUND` | Not listed on this venue | `market list`. Don't add `-PERP`. |
 | `SIZE_TOO_SMALL` | Below venue minimum (HL TWAP: $100 total) | Compute `size × price`; raise size. |
@@ -397,8 +418,8 @@ Every response is `{ "ok": true, "data": ... }` or `{ "ok": false, "error": { "c
 ## Safety rules
 
 - **Unknown outcome (`ORDER_PENDING`) on ANY write** — orders, cancels, edits, leverage, withdraw / deposit / bridge / transfer: do NOT resubmit. Check `perp --json -e <ex> trade status c:<id> --symbol <S>` (the id in `remediation`), `account orders` / `account positions` / `portfolio`, and the tx hash / request id in `error.details` (`funds bridge status <id>` for bridges). Report to the user.
-- **Quarantine**: an unknown or unhedged outcome (arb, bots, `trade close`, `trade multi`) quarantines the symbol — global per symbol, scoped by network. It blocks opening orders, `arb exec`, `arb auto` and bots (`RISK_VIOLATION`); reduce-only orders pass. List: `perp --json strategy quarantine`. Clear only after the USER has verified the positions on the venues: `perp --json strategy quarantine-clear <SYM>`. `arb close` on a quarantined symbol needs `--force`.
-- **Risk gate**: `trade market / buy / sell / limit / split / market --split / scale-in / twap / multi / stop --no-reduce-only` check `~/.perp/risk.json` (`perp risk limits ...`); reduce-only is exempt. `--force` bypasses the limits (never quarantine) — only with explicit user consent.
+- **Quarantine**: an unknown or unhedged outcome (arb, bots, `trade close`, `trade multi`, `trade atomic`) quarantines the symbol — global per symbol, scoped by network. It blocks opening orders, `arb exec`, `arb auto` and bots (`RISK_VIOLATION`); reduce-only orders pass. List: `perp --json strategy quarantine`. Clear only after the USER has verified the positions on the venues: `perp --json strategy quarantine-clear <SYM>`. `arb close` on a quarantined symbol needs `--force`.
+- **Risk gate**: `trade market / buy / sell / limit / split / market --split / scale-in / twap / multi / atomic / stop --no-reduce-only` check `~/.perp/risk.json` (`perp risk limits ...`); reduce-only is exempt. `--force` bypasses the limits (never quarantine) — only with explicit user consent.
 - **Stops** (`trade stop`, `tpsl`) are reduce-only by default; `--no-reduce-only` is refused on ondo and qfex. `trade tpsl <SYM> long|short` = the OPEN position's side; legs are sized to the live position.
 - **Dry-run is default-deny**: commands that cannot simulate refuse `--dry-run` with `INVALID_PARAMS` (e.g. `trade twap`, `trade multi`, `trade cancel-stop`, `trade cancel-twap`, `strategy start / preset / grid / dca / quick-* / funding-arb`, `wallet agent approve`, `wallet rotate`). Simulate bots with `perp --json --dry-run strategy run <strategy>` / `perp --json --dry-run arb auto`.
 - **A dry-run is not a full venue check**: it validates arguments, the risk gate and quarantine, but some venue rules are enforced only on the live send — e.g. an off-grid limit price (`INVALID_TICK`) or `--no-reduce-only` on ondo / qfex (`CAPABILITY_UNSUPPORTED`). Those refusals happen before anything is sent.
@@ -442,7 +463,7 @@ qfex: `builder.qfex <uuid>` is a fee share (no extra fee, no approval; mainnet o
 
 ## MCP Server
 
-The package also ships a 22-tool MCP server (no API keys required for read-only market data — `get_markets`, `get_orderbook`, `get_funding_rates`, `get_prices`, `get_outcome_markets`, `get_outcome_view`, `get_outcome_book`, plus 15 account/advisor tools):
+The package also ships a 29-tool MCP server (no API keys required for read-only market data — `get_markets`, `get_orderbook`, `get_funding_rates`, `get_prices`, `get_outcome_markets`, `get_outcome_view`, `get_outcome_book`, `get_option_expiries`, `get_option_chain`, `get_option_quote` (Derive options), the read-only Pacifica Print / vault tools `pacifica_print_products`, `pacifica_print_quote`, `pacifica_print_positions`, `pacifica_vaults`, plus 15 account/advisor tools):
 
 MCP network: `PERP_NETWORK=mainnet|testnet` (validated; unset = mainnet); every result's `meta.network` says which. The only write tools, `trade_execute` / `trade_close`, run the same local risk gate as `perp trade` (no override over MCP), refuse non-reduce-only orders on quarantined symbols, and log every order.
 
