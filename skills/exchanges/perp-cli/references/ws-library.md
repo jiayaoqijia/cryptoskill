@@ -8,6 +8,14 @@ custom live dashboard, funding comparison or price/account feed for **hyperliqui
 > minor bump (CHANGELOG callouts); every event carries `schema: 1`. **@stable from 0.16.0** after consumer
 > sign-off. Planned for **0.15.1**: Aster user channels, Ondo / QFEX, `book` / `trades`, `perp stream`.
 > The `VenueId` type already includes `"ondo"` and `"qfex"`, but there are no codecs for them until 0.15.1.
+> **GRVT** (CLI venue, market data only) has no codec: its public WS has per-instrument selectors only (no
+> all-markets stream) and a 150-stream cap below its 184 perpetuals, so `allMarkets` cannot be served.
+> **Extended** (CLI venue `extended`, market data only) has no codec: its public streams are one socket
+> per stream URL (`wss://api.starknet.extended.exchange/stream.extended.exchange/v1/prices/mark`,
+> `/orderbooks/<m>?depth=1`, `/funding`, …) pushed on connect with no subscribe frame (the bare root
+> answers HTTP 404), while a codec here is one `url(network)` plus subscribe / unsubscribe frames. Its
+> accruing funding rate is REST-only (`/info/markets`); the `/funding` stream is documented as applied
+> rates only. Use the CLI (`perp -e extended market …`) for Extended.
 
 Runnable examples: `examples/ws-funding-compare-browser`, `examples/ws-next-smoke`,
 `examples/ws-node-stream` in the perp-cli repository.

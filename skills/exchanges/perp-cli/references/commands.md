@@ -6,7 +6,7 @@ All commands support `--json` for structured output. Always use `--json` when ca
 
 `--json` (required for agents) | `-e <venue>` | `-n mainnet|testnet` | `--dry-run` (only commands whose `--help` says "supports --dry-run"; others refuse with `INVALID_PARAMS`) | `--fields <f1,f2>` | `--ndjson` | `-w, --wallet <name>` | `--ows <name>` (OWS wallet) | `--no-agent` (skip agent-key routing) | `--no-builder` | `--dex <name>` (HIP-3, Hyperliquid)
 
-Venues (`-e`, id | aliases): `pacifica|pac`, `hyperliquid|hl`, `lighter|lt`, `lighter-rh|lrh|rh`, `aster|ast`, `ondo|ondo-perps`, `arcus`, `qfex|qf`, `risex|rise` (READ-ONLY in this release — market data + account reads; trading is planned for a later release, every trade / agent / bot write refuses with CAPABILITY_UNSUPPORTED), `txflow|txf` (market data only, UNOFFICIAL API — every write refuses with CAPABILITY_UNSUPPORTED), `variational|var|omni` (market data only, official API, RFQ venue: `market book` = indicative RFQ quotes, `market funding` = current terms — every write refuses with CAPABILITY_UNSUPPORTED). Default = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
+Venues (`-e`, id | aliases): `pacifica|pac`, `hyperliquid|hl`, `lighter|lt`, `lighter-rh|lrh|rh`, `aster|ast`, `ondo|ondo-perps`, `arcus`, `qfex|qf`, `risex|rise` (READ-ONLY in this release — market data + account reads; trading is planned for a later release, every trade / agent / bot write refuses with CAPABILITY_UNSUPPORTED), `txflow|txf` (market data only, UNOFFICIAL API — every write refuses with CAPABILITY_UNSUPPORTED), `variational|var|omni` (market data only, official API, RFQ venue: `market book` = indicative RFQ quotes, `market funding` = current terms — every write refuses with CAPABILITY_UNSUPPORTED), `grvt|grv` (market data only in this version, official API — every write refuses with CAPABILITY_UNSUPPORTED), `extended|ext|x10` (Extended on Starknet, official API, market data only in this version — every write refuses with CAPABILITY_UNSUPPORTED). Default = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
 `-k <key>` is rejected (keys only via stdin / OWS vault). `--passphrase` is deprecated → `OWS_PASSPHRASE` env or stdin.
 
 ## Market Data (read-only, safe)
@@ -326,7 +326,9 @@ perp --json arb scan --compare <SYMBOL>                     # compare a symbol a
 perp --json arb scan --positions                            # position funding impact; actual24h null + fundingHistoryErrors when a venue's history is unreadable
 perp --json arb scan --live --interval 60                   # continuous monitoring
 perp --json arb scan --top 10 --hold-days 7 --bridge-cost 0 --size 100  # cost-aware filtering
-perp --json arb scan --rates --include-unverified           # also show QFEX, TxFlow and Variational (unverified funding; TxFlow rows apiStatus "unofficial"; display only, never ranked)
+perp --json -e extended market list                          # Extended (read-only): rows carry assetClass, venueSymbol (TSLA_24_5-USD), tickSize, minSize, tradable, fundingRateKind "accruing"
+perp --json -e extended market funding BTC -l 24            # applied hourly prints: rateKind "lastSettled", intervalHours 1, annualizedPct
+perp --json arb scan --rates --include-unverified           # also show QFEX, TxFlow, Variational, GRVT and Extended (unverified funding; TxFlow rows apiStatus "unofficial"; display only, never ranked)
 # netSpread / grossSpread = annualized % (netSpread = gross minus round-trip costs amortized over --hold-days)
 # spot-perp rows: netSpreadPct / grossSpreadPct, spotExchanges[], perpExchange, direction
 
@@ -406,7 +408,7 @@ perp --json wallet agent approve <exchange> \
   [--force]                            # Lighter: overwrite an --api-key-index slot that already holds an on-chain key
 # risex: READ-ONLY in this release (trading is planned for a later release) — `wallet agent approve|import|revoke|rotate
 #   risex` → CAPABILITY_UNSUPPORTED (also with --dry-run); `wallet agent verify risex` (read-only) still works.
-#   txflow / variational: every agent command → CAPABILITY_UNSUPPORTED (market data only).
+#   txflow / variational / extended: every agent command → CAPABILITY_UNSUPPORTED (market data only).
 
 # Import a key the USER created on the exchange WEBSITE (master wallet not needed here).
 # Key on stdin only (one line; ondo: key id + secret; qfex: public key + secret) — an argv key is rejected (INVALID_PARAMS).
