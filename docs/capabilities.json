@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19T07:03:34.472584+00:00",
+  "generated_at": "2026-10-19T12:50:56.452220+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -28673,6 +28673,68 @@
         },
         "requires_private_key": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/cardano-foundation-assess-constitutionality": {
+      "name": "assess-constitutionality",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -69378,6 +69440,70 @@
     },
     "exchanges/binance-official-binance-onchain-copy-trader": {
       "name": "binance-onchain-copy-trader",
+      "execution_model": "analysis_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": [
+        "binance.com"
+      ]
+    },
+    "exchanges/binance-official-binance-prediction-updown": {
+      "name": "binance-prediction-updown",
       "execution_model": "analysis_only",
       "capabilities": {
         "auto_invocable": {
@@ -220384,14 +220510,14 @@
     }
   },
   "summary": {
-    "discovered": 3542,
-    "processed": 3542,
+    "discovered": 3544,
+    "processed": 3544,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2564,
+      "read_only": 2565,
       "router_orchestrator": 146,
       "unknown": 336,
-      "analysis_only": 215,
+      "analysis_only": 216,
       "unsigned_tx_builder": 116,
       "local_executor": 102,
       "installer_bootstrap": 44,
@@ -220399,14 +220525,14 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1225,
+      "can_execute_shell": 1226,
       "can_install_code": 553,
-      "can_write_files": 172,
-      "can_browse_web": 244,
+      "can_write_files": 173,
+      "can_browse_web": 245,
       "can_spawn_subagents": 264,
       "can_move_funds": 299,
       "requires_private_key": 489,
-      "requires_hosted_operator": 342,
+      "requires_hosted_operator": 343,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 553
     }

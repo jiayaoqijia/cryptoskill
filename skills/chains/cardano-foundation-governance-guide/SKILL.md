@@ -28,6 +28,7 @@ Help developers, DReps, SPOs, and ADA holders understand and participate in Card
 - Stake pool setup or configuration (separate topic)
 - Token minting or NFT creation
 - Basic wallet integration without governance (use `connect-wallet` skill)
+- Assessing whether a specific governance action or draft complies with the Constitution (use `assess-constitutionality` skill)
 
 ## Key principles
 

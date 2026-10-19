@@ -58,7 +58,6 @@ Search the project for related files:
 Search the bundled documentation for relevant content:
 - `../../docs/sources/aiken/` - Aiken language docs
 - `../../docs/sources/aiken-design-patterns/` - Aiken design patterns
-- `../../docs/sources/smart-contract-vulnerabilities/` - Smart contract vulnerability reference
 - `../../docs/sources/plinth/` - Plinth (PlutusTx) docs
 
 ### Step 3: Check against the vulnerability checklist
@@ -178,7 +177,7 @@ what it covers, so they can ask for it.
 
 ## References
 
-- `references/vulnerability-checklist.md` -- 32 eUTxO exploit classes with detection and mitigation guidance; this is the source of findings
+- `references/vulnerability-checklist.md` -- 33 eUTxO exploit classes with detection and mitigation guidance; this is the source of findings
 - `references/design-and-operational-risks.md` -- 5 design, deployment, and compatibility concerns that are *not* vulnerabilities; report as observations only
 - Search `../../docs/sources/` for protocol specifications, design documents, and architecture notes
 - Aiken standard library documentation at https://aiken-lang.github.io/stdlib/

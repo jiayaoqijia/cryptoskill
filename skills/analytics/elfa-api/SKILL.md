@@ -6,11 +6,10 @@ description: >
   mentions, smart account stats, token news, trending contract addresses, AI market chat
   (JSON and SSE streaming), curl/code snippets, automated alerts,
   EQL queries, trigger pipelines, and agent workflows that react to market conditions.
-  Auto can trigger on X/Twitter posts, Telegram channels, events (news), SEC filings,
-  Kalshi and Polymarket prediction markets,
+  Auto can trigger on X/Twitter posts, Telegram channels, events (news), one trader's
+  calls, token or stock mindshare, SEC filings, Kalshi and Polymarket prediction markets,
   funding rates, liquidation cascades, the Fear & Greed index, and X follow-graph
-  moves (a new follower on a watched account, an account it starts following, or
-  several tracked accounts converging on one), re-fire
+  moves (new followers, new follows, accounts converging), re-fire
   recurring plans via `repeat`, run calendar schedules via
   `cron.schedule`, and monitor crypto plus HIP-3 assets (equities, indices, commodities, FX,
   pre-IPO — 24/7). Supports API-key calls and x402 pay-per-request USDC on Base, Arbitrum,
@@ -75,6 +74,8 @@ x402 wallet signing is handled client-side by `@x402/fetch` or `@x402/axios`.
 - User wants to **build condition-based triggers** (e.g., "alert me when BTC crosses 100k")
 - User wants to **watch the X follow graph** — who followed a tracked account, who it started
   following, or several tracked accounts converging on the same account
+- User wants an alert when **a specific trader opens or closes a position**, or when **attention
+  on a token or stock spikes** (Auto `calls`, `mindshare`)
 - User mentions **Auto**, **EQL**, **condition engine**, or **trigger pipeline** in a crypto context
 - User wants **agent workflows** that react to market conditions automatically
 - User wants to **build queries with Builder Chat** using natural language
@@ -621,7 +622,10 @@ accounts are worth reading — across crypto and equities. Endpoints are listed 
 API v3 needs `ELFA_API_KEY` with v3 access (see [API v3 endpoints](#api-v3-endpoints)), and the
 Step 2a key rules apply. Without one, offer one, or fall back to `event-summary` (any key, or
 x402) or `chat` via x402. To check eligibility, read `scopes` on `/v3/key-status`, not `plan`:
-a Free key reads `payg` there, with no v3 scope.
+a Free key reads `payg` there, with no v3 scope. The two plan `403` messages are stable and tell
+the cases apart: `The v3 API isn't included in this key's plan. …` is a Free key (upgrade in
+the [Developer Portal](https://go.elfa.ai/dev)); `API key does not have the required scope: …`
+is a paid key without that endpoint (email support@elfa.ai with the `requestId`).
 
 **Resolve first.** Entity filters take an id, not a ticker. Resolve the asset, read its last day
 of events, then see how accounts are positioned on it. Check the resolved name: the first match
@@ -690,7 +694,8 @@ post behind them.
   so on) with `track.scoredEpisodes`.
 
 To be alerted when a new event matches your filters instead of polling, use an Auto `events`
-condition (Step 3). Per-family docs: [Entities](https://docs.elfa.ai/api/v3/entities),
+condition (Step 3); for one account's new calls, a `calls` condition; for an asset's mindshare
+share, rank or hot flag, a `mindshare` condition. Per-family docs: [Entities](https://docs.elfa.ai/api/v3/entities),
 [Events](https://docs.elfa.ai/api/v3/events), [Market](https://docs.elfa.ai/api/v3/market),
 [Calls](https://docs.elfa.ai/api/v3/calls), [People](https://docs.elfa.ai/api/v3/people).
 
@@ -698,7 +703,8 @@ condition (Step 3). Per-family docs: [Entities](https://docs.elfa.ai/api/v3/enti
 
 Auto is a managed **condition engine + trigger pipeline** for agents. You describe what to
 watch for (price, technical indicators, LLM-evaluated conditions, scheduled checks,
-prediction-market activity, funding rates, liquidation cascades, market sentiment), and Auto
+prediction-market activity, funding rates, liquidation cascades, market sentiment, social
+attention on an asset, one trader's calls), and Auto
 evaluates continuously and fires actions when conditions resolve to true. Assets are not
 crypto-only — HIP-3 perps cover equities, indices, commodities, FX, and pre-IPO names, 24/7.
 
@@ -731,12 +737,14 @@ Pick the condition source by user intent **before** writing condition args:
 | Prediction-market price/trade on a Polymarket outcome token | `source: "polymarket"` | `method` (`price`, `bid`, `ask`, `size`, `side`), `args.ticker` (outcome-token `asset_id`), `operator`/`value` per the per-method allowlists |
 | Perp funding-rate intent (overheated funding, funding flips negative) | `source: "funding"` | `method` (prefer `annualized_rate`), `args.ticker` as `SYMBOL:EXCHANGE` (e.g. `BTC:BINANCE`) |
 | Liquidation-flow intent (cascade, long/short flush) | `source: "liquidation"` | `method` (e.g. `total_usd_5m`, `total_pct_oi_1h`), `args.ticker` as `SYMBOL:EXCHANGE` |
+| One X account's trading calls (`@user opens a long`, `@user exits BTC`) | `source: "calls"` | `args.handle` (no `@`); optional `args.asset`, `args.direction`, `args.action` — see **Calls** below |
+| Social-attention intent on one token or stock (rises above a share, enters the top N, turns hot) | `source: "mindshare"` | `method` (e.g. `share_24h`, `rank_24h`, `hot_4h`), `args.asset` (ticker, name or id) and `args.market` when known |
 | Market-wide sentiment (fear/greed regime) | `source: "fear_greed"` | `method` (`value` or `classification`), empty `args: {}` |
 | Follow-graph intent (who followed a watched account, who it followed, or a tracked set converging on one account) | `source: "x_follow_received"` / `"x_follow_made"` / `"x_follow_overlap"` | `method` per source, `args.account` (or `args.accounts` for overlap), `operator` `>` or `>=` |
 | Real-world catalyst moving an equity/index/commodity (rate decision, CPI, earnings) | the catalyst's own source (`kalshi` / `polymarket` / `events` / `price`), optionally with a HIP-3 `price` / `ta` confirmation | Pick the catalyst source, then bridge to the asset class it moves — see [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers) |
 | Fuzzy world-state predicate not naturally expressible as a post or event | `source: "llm"` | `method: "athena_condition"`, `args.query`, `args.period` (`>= 1h`) |
 
-When the prompt is account-anchored, **start with `tweet`** — do not route to `events` or `llm` first. When it is Telegram-channel-anchored, start with `telegram`. When the prompt is news about a subject without a specific account, start with `events` — unless it is an official SEC filing for an issuer, which routes to `sec`. When the trigger maps to a concrete prediction market you can name (a Kalshi ticker or a Polymarket outcome-token id), use `kalshi` / `polymarket` (prefer them over `llm` for supported methods). Use `llm` (`athena_condition`) only when the predicate cannot reasonably be matched against a post, event, or named prediction market.
+When the prompt is account-anchored, **start with `tweet`** — do not route to `events` or `llm` first — unless it asks for that account's trading calls (`@user opens a long`, `@user exits BTC`), which route to `calls`. When it is Telegram-channel-anchored, start with `telegram`. When the prompt is news about a subject without a specific account, start with `events` — unless it is an official SEC filing for an issuer, which routes to `sec`. When the trigger maps to a concrete prediction market you can name (a Kalshi ticker or a Polymarket outcome-token id), use `kalshi` / `polymarket` (prefer them over `llm` for supported methods). Use `llm` (`athena_condition`) only when the predicate cannot reasonably be matched against a post, event, or named prediction market.
 
 #### When to suggest Auto
 
@@ -755,6 +763,8 @@ When the prompt is account-anchored, **start with `tweet`** — do not route to 
 - User wants **prediction-market triggers** ("alert when this Kalshi market's YES probability crosses 60%", "notify when the market settles YES", "alert when this Polymarket outcome trades above 60c") — use **Prediction Markets** (`source: "kalshi"` or `source: "polymarket"`)
 - User wants **funding / liquidation / sentiment triggers** ("alert when BTC funding flips negative", "notify on an ETH liquidation cascade", "alert when Fear & Greed drops below 20") — use `source: "funding"` / `"liquidation"` / `"fear_greed"`
 - User wants **follow-graph triggers** ("tell me when someone big follows @elfa_ai", "alert when cobie follows a new account", "notify when 3 funds I track all follow the same account") — use `source: "x_follow_received"` / `"x_follow_made"` / `"x_follow_overlap"`
+- User wants to **follow one trader's calls** ("ping me every time @3PeaksTrading opens a long", "tell me when this trader closes or is stopped out of BTC") — use **Calls** (`source: "calls"`)
+- User wants **attention triggers on a token or stock** ("alert me when SOL turns hot on mindshare", "when ETH enters the top 10 by mindshare") — use **Mindshare** (`source: "mindshare"`)
 - User wants to **watch a macro catalyst on stocks/indices/commodities** ("tell me when the market prices a Fed cut", "alert on gold if CPI runs hot") — fire on the catalyst source and reference the HIP-3 perp, which trades 24/7. See [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers)
 
 #### Auto access models
@@ -793,6 +803,7 @@ existing queries/sessions may become inaccessible.
 | `POST /v2/auto/queries` (Create) | Simulation-driven | Baseline `5` + per simulated LLM call: fast `+5`, expert `+18` |
 | `POST /v2/auto/queries/validate` | Free | Returns cost estimate — always call before Create |
 | Per-post X account (`tweet` on an account outside Elfa's real-time set) | `creditsPerPost` (`1`) per post while the plan runs | Not in `estimatedCredits` or `x-elfa-credits`; see `tweetAccounts` on Validate |
+| Per-day follow account (`x_follow_made` / `x_follow_overlap` on an account Elfa doesn't monitor) | `creditsPerDay` (`1`) per UTC day its follows are read | Not in `estimatedCredits` or `x-elfa-credits`; see `followAccounts` on Validate |
 | `GET /v2/auto/queries/*` (list, poll, stream, sessions) | Free | |
 | `POST /v2/auto/queries/:queryId/cancel` (Cancel active query) | Free | |
 | `DELETE /v2/auto/queries/:queryId` (Delete terminal query) | Free | |
@@ -865,7 +876,7 @@ without spending credits.
 
 **Failure handling order** (apply in sequence):
 
-1. Retry transient network errors with exponential backoff.
+1. Retry transient network errors with exponential backoff. If `5xx` responses persist across endpoints after a few retries, check [status.elfa.ai](https://status.elfa.ai) before debugging further (`https://status.elfa.ai/status.json` serves the same data to scripts; `https://status.elfa.ai/feed.xml` announces outages and recoveries).
 2. On `400` / `422` validation failure → repair query using [Validation Errors table](#validation-errors--next-action-table), re-validate.
 3. On `401` / `403` auth failure → refresh credentials or re-check the key's permissions.
 4. On `402` x402 payment failure → re-price and retry with valid payment payload.
@@ -1292,20 +1303,23 @@ Triggers on events: news about an asset, project, company, person, or macro — 
 
 | Method | Args (all optional; at least one filter or `text`) | Returns |
 |---|---|---|
-| `match` | `entity`, `entityType`, `eventClass`, `eventType`, `implication`, `alertAction`, `assetClass`, `novelty`, `text` + `minConfidence` | boolean |
+| `match` | `entity`, `entityType`, `eventClass`, `eventType`, `implication`, `alertAction`, `assetClass`, `novelty`, `relation`, `storylineId`, `text` + `minConfidence` | boolean |
 
 - `entity`: one id from `GET /v3/entities` (exact: the same id `/v3/events` takes in `entityIds`), or one ticker or name (`"ETH"`, `"Hyperliquid"`). A ticker or name resolves **ticker first**: `"Elon Musk"` resolves to a token named MUSK and `"Fed"` to a stock with the ticker FED, so set `entityType` (`token`, `equity`, `project`, `person`, `organisation`) for anything that is not a token or a stock. Central banks, regulators, and macro themes are not entities — use `eventType` + `text`.
 - `eventClass`: `market` (news, including about one asset) or `call` (trader positioning). For one asset use `entity`, not `asset`.
 - `eventType`: `security`, `listing`, `regulatory`, `macro`, `protocol`, `company`, `marketFlow`, `price`, `social`, `other`.
 - `implication`: `bullish`, `bearish`, `mixed`, `unclear` — the likely direction for the assets named. Put stance here, never in `text`.
-- `alertAction`: `alert` (judged impactful) or `monitor` (worth watching). `assetClass`: `crypto` or `equity` (events that name no asset pass). `novelty`: `new` or `update` — does **not** reliably filter repeats: most later readings of a story still say `new`.
+- `alertAction`: `alert` (judged impactful) or `monitor` (worth watching). `assetClass`: `crypto` or `equity` (events that name no asset pass). `novelty`: `new` or `update` — does **not** reliably filter repeats: most later readings of a story still say `new`; use `relation`.
+- `relation`: where the event sits in its story — `origin`, `update`, `confirmation`, `contradiction`, `mitigation`, `consequence`, `reaction`, `context`. `origin` is the event that started a story (a story that grew out of an earlier one is a story of its own, so its first event is `origin` too): add `relation: "origin"` for one alert per story. About 6 in 10 events start a story, so `origin` keeps more than half of what the plan would fire on and drops the follow-ups; with `repeat`, the plan fires once per new story.
+- `storylineId`: the later events of one story. Take the id from the API, never compose it: an event's `storylineId` in `/v3/events`, or `storylines[0].id` from `GET /v3/events/storylines?q=<topic>`. Validate and Create reject an id that names no storyline. Most stories never get a second event, so follow one that is still developing; add `relation` to narrow it (e.g. `contradiction` for reports that dispute the story so far). A story that grows out of the followed one has its own id and is not followed.
+- Call events, and the few other events not threaded into a story, match neither `relation` nor `storylineId`.
 - `text` + `minConfidence` (both or neither, start at `80`): one specific claim, checked against the event's title and summary. Filter-only conditions consume no credits.
 - One value per argument; several assets or types → several `events` conditions under `OR`. An array is rejected with `EQL_INVALID_JSON`.
 - Shorthand only in practice: the full form takes just `operator: "=="`, `value: true`. No dynamic values.
-- Runtime: events arrive minutes to hours after the first post (to be first, watch the account with `tweet`); only events less than an hour old are matched; each event fires a plan at most once; about 1 in 9 events continues a story already reported that day. To act once per story, skip an event whose `storylineId` you already hold (fetch it by `eventId`, below); `storylineId` is null on call events and the few not threaded.
-- Preview before creating: `GET /v3/events` with the same filters and `from=<now - 1d>` (`entityIds=<id>` for `entity`) returns what the condition would have fired on. `q` has no counterpart: `text` checks a claim per event instead. One value per argument, no time range. Mapping: https://docs.elfa.ai/auto/events#from-v3-events
+- Runtime: events arrive minutes to hours after the first post (to be first, watch the account with `tweet`); only events less than an hour old are matched; each event fires a plan at most once; about 1 in 9 events continues a story already reported that day. To fire once per story, add `relation: "origin"`, or use `repeat.cooldown` to space alerts out.
+- Preview before creating: `GET /v3/events` with the same filters and `from=<now - 1d>` (`entityIds=<id>` for `entity`) returns what the condition would have fired on. `q` has no counterpart: `text` checks a claim per event instead. `GET /v3/events/storylines?storylineIds=<id>` maps to `"storylineId": "<id>"`, one storyline per condition. One value per argument, no time range. Mapping: https://docs.elfa.ai/auto/events#from-v3-events
 - `match` in the trigger payload: `eventId`, `title` (the event's `alertTitle`), `eventClass`, `eventType`, `implication`, `alertAction`, `novelty`, `timeSensitivity`, `citedSourceCount`, `analyzedAt` (ISO 8601), `entities[]` (`symbol`, `name`, `entityType`; up to 10), and `confidence` when `text` was checked. No link, no summary.
-- `match.eventId` is the event's `id` in `/v3/events` — **not** the webhook delivery id (`X-Auto-Event-Id`, the one to dedupe deliveries on). `GET /v3/events?eventIds=<match.eventId>` returns the summary, cited posts with links, price impacts and `storylineId`.
+- `match.eventId` is the event's `id` in `/v3/events` — **not** the webhook delivery id (`X-Auto-Event-Id`, the one to dedupe deliveries on). `GET /v3/events?eventIds=<match.eventId>` returns the summary, cited posts with links, price impacts and `storylineId`. To be alerted once per story, filter on `relation: "origin"` rather than comparing `storylineId` values yourself; to follow the story an alert belongs to, create a condition on its `storylineId`.
 - The `/v3` endpoints need a Pay-as-you-go, Grow or Enterprise key. Without one, name the entity by ticker or name and read the Validate response for what it resolved to.
 
 ```json
@@ -1315,8 +1329,32 @@ Triggers on events: news about an asset, project, company, person, or macro — 
 }
 ```
 
+**Calls (`calls`):**
+
+Triggers on the trading calls one X account makes: each time it opens a long or short, adds to it, trims it, closes it, gets stopped out, or reverses it. These are the calls `GET /v3/calls` (API v3) serves, so a plan fires on the same call the endpoint returns, as soon as Elfa records it. Use `calls` for an account's calls, `tweet` for its posts in general, and `events` with `eventClass: "call"` for many traders calling the same asset. A `calls` condition reads the call Elfa recorded, so it needs no `text` and costs no credits. Full reference: https://docs.elfa.ai/auto/calls
+
+| Method | Args (`handle` required, the rest optional) | Returns |
+|---|---|---|
+| `match` | `handle`, `asset`, `market`, `direction`, `action` | boolean |
+
+- `handle`: the caller's X handle, with or without `@`; write it without. One account per condition; several callers → several `calls` conditions under `OR`.
+- `asset`: an id from `GET /v3/entities`, a ticker or a name of the token or stock the call is on, stored as `assetId` (the asset's family id, the `asset.id` a call carries). `market` (`crypto` or `equity`, requires `asset`) settles a ticker that names both a coin and a stock; without it, the one that leads its own market wins. A project, person or organisation is rejected. When other assets match `asset` just as closely, the market leader wins and Validate returns a warning naming the others; only a tie that nothing breaks is rejected, as "Ambiguous asset".
+- `direction`: `long` or `short`. `action`: `open`, `add`, `trim`, `reverse`, `close`, `stopOut`; leave it out to fire on every action. One value per argument: for "close or stop out", or "BTC or ETH", write an `OR` of conditions.
+- Shorthand `{ "source": "calls", "args": { … } }` expands to `method: "match"`, `operator: "=="`, `value: true`. No `text`, no `minConfidence`, no dynamic values.
+- Which accounts: Elfa records calls from the X accounts it collects posts from, and Validate/Create reject any other with `EQL_INVALID_ARG_VALUE`. Find callers with `GET /v3/calls` or `GET /v3/people/accounts?metric=alphaScore`; for an account outside them, use `tweet`. Some accounts are collected with a delay: Validate accepts them with a warning, and their calls are recorded hours after the post, typically two to five. Telegram channels cannot be followed yet.
+- Runtime: usually within a minute of the post (hours later for a delayed account). Each call fires a plan once; with `repeat`, each new call fires again. Only calls made after the plan was created, and never a call recorded more than 12 hours after its post. Restating an open position (`reaffirm` in `/v3/calls`) is not an action, and neither is a position expiring at the end of its horizon, which is how most positions end: "tell me when the position ends" hears only explicit exits. A reversal is two calls (`reverse` on the side it leaves, `open` on the side it takes), so a condition without `action` fires twice; a post naming several assets is one call per asset.
+- `match` in the trigger payload: `callId` and `episodeId` (the call's `id` and `episodeId` in `/v3/calls`; read the position with `GET /v3/calls/episodes`), `handle`, `source` (`twitter`), `callAction`, `direction`, `horizon`, `asset` (`id`, `symbol`, `name`, `entityType`), `setup`, `statedTarget`, `statedStop`, `entryPrice`, `occurredAt` (ISO 8601 here; Unix seconds on `/v3/calls`) and `postUrl`. `exitPrice` and `closeReason` appear on `close`, `stopOut` and `reverse`; fields the call does not have are left out.
+
+```json
+{
+  "source": "calls",
+  "args": { "handle": "3PeaksTrading", "direction": "long", "action": "open" }
+}
+```
+
 **Signal selection policy** (which source to pick):
 
+- One account's trading calls (`@user opens a long`, `@user exits BTC`) → `calls`.
 - Account-anchored intent (handle in the prompt) → `tweet`.
 - Channel-anchored intent (a public Telegram channel in the prompt) → `telegram`.
 - News about a subject (no specific account) → `events`.
@@ -1601,6 +1639,47 @@ global reading, no per-market identity — so its methods take **no ticker**. Pa
 { "source": "fear_greed", "method": "value", "args": {}, "operator": "crosses_below", "value": 20 }
 ```
 
+**Mindshare source (`mindshare`) — social attention to one token or stock:**
+
+Trigger on an asset's share of its market's attention, its rank, how fast that share is
+changing, and whether it is hot: the numbers `GET /v3/market/{market}/mindshare` (API v3)
+returns. One asset per condition; several → several conditions under `OR` (there is no "any
+asset turns hot" condition). Write the full form. A match carries the condition, the resolved
+`assetId` and the observed value — **no post, no event, no name**; read the board or
+`/v3/events` for the reason behind a move. Full reference: https://docs.elfa.ai/auto/mindshare
+
+| Method | Args | Returns | Operators | Description |
+|---|---|---|---|---|
+| `share_1h`, `share_4h`, `share_24h`, `share_7d` | `asset`, `market?` | number | all 8 | Share of the market's mentions in the period, weighted by who posted, `0`–`100` (`5` = 5%). The endpoint's `share`. |
+| `rank_1h` … `rank_7d` | `asset`, `market?` | number | all 8 | Place by share, `1` = most attention. The endpoint's `rank`. |
+| `change_pct_1h` … `change_pct_7d` | `asset`, `market?` | number | all 8 | Change of its share against the previous period, as a percent of itself (`100` = doubled). The endpoint's `changePct`. |
+| `hot_4h`, `hot_24h`, `hot_7d` | `asset`, `market?` | boolean | `==` / `!=` | Heating up in the last hour, as the endpoint's `hot` defines it. No `hot_1h`. |
+
+- `asset` (required): an id from `GET /v3/entities`, a ticker or a name, stored as `assetId`
+  (the asset's family id, the `id` the mindshare endpoint returns). `market` (`crypto` or
+  `equity`): set it whenever you know the asset class — without it, a ticker that names both a
+  coin and a stock goes to whichever leads its own market (Coinbase is `"asset": "COIN",
+  "market": "equity"`). Projects, people and organisations are rejected. When other assets
+  match just as closely, the market leader wins and Validate warns; only a tie that nothing
+  breaks is rejected, as "Ambiguous asset".
+- Periods end at the last whole five minutes. Use `24h` when the user gives no period. "Enters
+  the top N" is `rank_<p>` `crosses_below` N; "drops out of the top N" is `crosses_above` N + 1.
+  No dynamic values.
+- Off the board, readings stay numeric: no mentions in the period reads share `0`, rank
+  `1000000`, `change_pct` `-100` (or `0` if it had no share before either) and hot `false`; a
+  new entrant's `change_pct` is `0`, so catch a first appearance with `share_*` or `rank_*`.
+- Runtime: readings arrive every five minutes. A condition fires on the reading where it turns
+  true (an already-true one about five minutes after creation); `crosses_*` needs two readings.
+  With `repeat`, it fires again only after turning false and true again. An asset with no
+  mentions in 7 days validates and waits.
+- Preview: read `GET /v3/market/crypto/mindshare?period=24h&limit=50` and set the threshold
+  beyond the current values, so the plan does not fire on its first reading.
+- `match.observedValue` is the reading that fired (a `hot_*` reading is `1` or `0`).
+
+```json
+{ "source": "mindshare", "method": "rank_24h", "args": { "asset": "SOL", "market": "crypto" }, "operator": "crosses_below", "value": 10 }
+```
+
 **Follow-graph sources (`x_follow_received`, `x_follow_made`, `x_follow_overlap`) — new X
 follow edges:**
 
@@ -1640,12 +1719,42 @@ and it cannot exceed the size of `accounts` (one below it with `>`) — either i
 create time.
 
 Coverage is bounded and the limits change how you should write the plan: only follows by
-accounts inside Elfa's tracked set are seen, data is collected on a recurring check rather
-than streamed so alerts are **not real time**, at most 500 matches land per evaluation, and
-unfollows and re-follows never fire. A quiet plan means no tracked account made that follow —
-it does not prove nobody did. `x_follow_made` and `x_follow_overlap` read the watched
-account's own following list, so those accounts must themselves be ones Elfa monitors;
-`x_follow_received` has no such requirement.
+accounts Elfa reads are seen — the accounts it monitors, plus the per-day accounts your own
+queries watch with `x_follow_made` or `x_follow_overlap` — data is collected on a recurring
+check rather than streamed so alerts are **not real time** (a per-day account's follows are
+read once a day, so a new follow can take up to a day to fire), at most 500 matches land per
+evaluation, and unfollows and re-follows never fire. A quiet plan means no account Elfa reads
+made that follow — it does not prove nobody did.
+
+`x_follow_made` and `x_follow_overlap` read the watched account's own following list and can
+watch any public X account. Accounts Elfa already monitors for follows cost nothing extra; any
+other account needs a paid API key and is billed for each day its follows are read.
+`x_follow_received` works for any public account at no extra cost, because it is the followers
+that must be monitored. Validate is free and tells you which applies.
+
+| Watched account (`x_follow_made`, `x_follow_overlap`) | Free API key | Paid API key | x402 |
+|---|---|---|---|
+| Monitored for follows | Included | Included | Included |
+| Any other public account | Rejected (`paid_plan_required`) | Billed per day | Rejected |
+
+- `followAccounts[]` (Validate and Create): one entry per watched account — `path` (counting
+  leaf conditions in order: `conditions[1]` is the second, whatever `AND`/`OR` groups hold
+  them, unlike `tweetAccounts[].path`, which includes the group; an `x_follow_overlap`
+  condition has one entry per account, all with the same `path`), `username` (as stored:
+  lowercase, without `@`), `accountSourceRefId`, `billing` (`included` or `per_day`) and
+  `creditsPerDay` (`per_day` only: `1`). Match entries on `path` and `username`. Absent when
+  the query has no such condition, on x402, or when an account was rejected.
+- Cost: each UTC day on which a `per_day` account's follows are read costs `creditsPerDay`,
+  whether or not the query fires; follows are read once a day, and a day with no read is not
+  billed. The first read, when a query starts watching the account, is free. A key pays once
+  per account and day, however many of its queries watch it. Not in `estimatedCredits` or
+  `x-elfa-credits` — check `/v2/key-status`. `billing` is a snapshot. Example: 3 `per_day`
+  accounts for 30 days cost about 90 credits, even if the query never fires.
+- If a charge is refused (credits exhausted, spend cap or monthly limit reached with overage
+  off, or the key is no longer on a paid tier), every query of that key watching the account
+  stops: Poll returns `status: "failed"` with `failure.code` `SUBSCRIPTION_CREDITS_EXHAUSTED`
+  and `source: "billing"`, and the lifecycle notification (`status: "stopped"`) carries the
+  same text in `reasonUser`. Top up, upgrade or raise the limit, then create the query again.
 
 Each matched account is a distinct event: without `repeat` the first match triggers the plan
 once, and with `repeat` it fires once per distinct matched account (`cooldown: "0"` for
@@ -1945,6 +2054,36 @@ guess.
 }
 ```
 
+**18) Asset enters the mindshare top 10 (`mindshare`):**
+
+A rank falls as the asset climbs, so "enters the top 10" is `crosses_below 10`: its rank goes
+from 11 or more to 10 or less.
+
+```json
+{
+  "title": "SOL enters the mindshare top 10",
+  "description": "Notify when SOL enters the top 10 crypto assets by 24h mindshare.",
+  "conditions": { "AND": [{ "source": "mindshare", "method": "rank_24h", "args": { "asset": "SOL", "market": "crypto" }, "operator": "crosses_below", "value": 10 }] },
+  "actions": [{ "stepId": "step_1", "type": "notify", "params": { "message": "SOL entered the top 10 by 24h mindshare" } }],
+  "expiresIn": "7d"
+}
+```
+
+**19) Every long a caller opens (`calls`):**
+
+Fires each time one X account opens a long, up to 50 times, as soon as Elfa records the call.
+
+```json
+{
+  "title": "3PeaksTrading goes long",
+  "description": "Notify each time 3PeaksTrading opens a long.",
+  "conditions": { "AND": [{ "source": "calls", "args": { "handle": "3PeaksTrading", "direction": "long", "action": "open" } }] },
+  "actions": [{ "stepId": "step_1", "type": "notify", "params": { "message": "3PeaksTrading opened a long" } }],
+  "expiresIn": "720h",
+  "repeat": { "cooldown": "0", "maxTriggers": 50 }
+}
+```
+
 #### Poll response shape
 
 > **All query and execution identifiers are UUIDs** (e.g.
@@ -1955,8 +2094,9 @@ guess.
 `GET /v2/auto/queries/{queryId}` (and the x402 `POST` equivalent) returns `queryId`, `status`,
 an optional `credits`, `latestEvaluation` (current state), and `executions` (what actually
 fired). A query that failed with a recorded reason also carries `failure` (`code`, `message`,
-which may be `null`, and `source`); `source: "billing"` means a per-post X account charge was
-refused, so top up, upgrade or raise the limit, then create the plan again.
+which may be `null`, and `source`); `source: "billing"` means a per-post X account or per-day
+follow account charge was refused, so top up, upgrade or raise the limit, then create the plan
+again.
 
 **Distinguish the two runtime surfaces — this is the most common polling mistake:**
 
@@ -2438,10 +2578,24 @@ issue, not a capability gap. Iterate on Validate instead of abandoning the query
 | `tweet` username, `details.reason: protected` | The account is protected | Pick a public account |
 | `tweet` username, `details.reason: capacity_reached` | The per-post account pool is full | Retry later, or pick an `included` account |
 | `tweet` username on x402, `EQL_INVALID_ARG_TYPE` | x402 watches only accounts in the real-time set | Pick another account, or use a paid API key |
-| `503` `ERR_SERVICE_UNAVAILABLE`, `error.message: ACCOUNT_LOOKUP_UNAVAILABLE` | The X account lookup failed; the account may well exist | Retry after a few seconds |
+| `503` `ERR_SERVICE_UNAVAILABLE`, `error.message: ACCOUNT_LOOKUP_UNAVAILABLE` | The X account lookup (`tweet` or follow account) failed; the account may well exist | Retry after a few seconds |
 | Invalid `minConfidence` (`tweet` / `telegram` / `events`) | Non-integer or outside `0..100` | Use a JSON integer between `0` and `100` (start with `80`) |
 | `events` unknown / ambiguous `entity` | No entity matches, or several match equally (`details.candidates`) | Set `entityType`, pass a candidate's `publishedId` as `entity`, or drop `entity` and use `eventType` + `text` |
 | `events` with no filter and no `text`, or `text`/`minConfidence`/`entityType` unpaired | At least one filter or `text`; `text` and `minConfidence` together; `entityType` only with `entity` | Add a filter, or pair the args |
+| `events` `storylineId`, "expected a storyline id" | `storylineId` is not shaped like a storyline id | Copy the id from an event's `storylineId` or a storyline's `id` |
+| `events` "Unknown storylineId" | No storyline has that id | Check it with `GET /v3/events/storylines?storylineIds=<id>` |
+| `calls` `handle`, "Unknown X account" / "not an account Elfa extracts calls from" | No X account has that handle, or Elfa does not record its calls, so the plan would never fire | Check the spelling; pick a caller from `GET /v3/calls`, or follow its posts with `tweet` |
+| `calls` `handle`, "expected an X handle" | Not letters, digits and underscores, at most 15 | Pass the bare handle |
+| `calls` / `mindshare` `asset`, "Unknown asset" / "Ambiguous asset" / "not a token or equity" | No token or stock matches; several match equally and none leads the others (`details.candidates`); or it resolved to a project, person or organisation | Set `market`, pass the `publishedId` you mean, or name its token or stock |
+| `calls` `market`, "'asset' is required" | `market` without `asset` | Add `asset`, or drop `market` |
+| `calls` `direction` / `action` out of set | Often `reaffirm` or `stop_out` | Use `long`/`short`, and `open`, `add`, `trim`, `reverse`, `close` or `stopOut` |
+| `calls` with `text` or `minConfidence` | A `calls` condition matches by its filters, not by text | Drop them; narrow with `asset`, `direction` or `action` |
+| `calls` warning "… arrive hours after the post" | Elfa collects the account with a delay | Expect alerts hours after the call, or follow another caller |
+| `mindshare` "is not one mindshare tracks", or `market` "is in the … market" | The asset is on no mindshare board, or an id's market differs from `market` | Pick another asset; drop `market` or pass the id in the market you mean |
+| `mindshare` `EQL_INVALID_METHOD` / `EQL_INVALID_OPERATOR` on `hot_*` | Often `hot_1h`; or an operator other than `==` / `!=` on `hot_*` | Use `hot_4h` for the last hour; use `== true` / `== false` |
+| `mindshare` / `calls` warning "… can also mean …" | `asset` resolved to the one that leads its market, but other assets match it just as closely | Confirm the resolved asset; otherwise set `market` or pass an id |
+| `x_follow_made` / `x_follow_overlap` account, `details.reason`: `paid_plan_required`, `not_found`, `protected`, `capacity_reached`, `too_many_follow_accounts` | Free key on an account Elfa doesn't monitor (a misspelling lands here too); no such account; protected; the per-day pool is full; more than 25 distinct accounts across the query's made/overlap conditions | Check the spelling, use a paid key or `x_follow_received` or a monitored account; pick a public account; retry later; drop or split accounts |
+| x402 follow account, "Elfa does not index this account" / "does not track this account's follows" | x402 watches only accounts Elfa tracks or monitors for follows | Use `x_follow_received`, a monitored account, or a paid API key |
 | Unresolved `telegram` channel | `chatUsername` / `chatId` does not resolve to a monitored public channel, or shorthand carried both identifiers | Use one identifier on shorthand, drop `@` and `t.me/`, and pick a monitored public channel |
 | Invalid `sec` CIK | `args.ticker` is not 1–10 digits, or the CIK is absent from SEC submissions metadata | Pass the issuer CIK (not the stock ticker) and re-validate |
 | `EQL_INVALID_ACTION` | The query or draft uses `market_order` / `limit_order`, at top level or in an `llm` callback | Replace with `webhook`, `notify`, `telegram_bot` or `llm`, and run execution from your own runner |

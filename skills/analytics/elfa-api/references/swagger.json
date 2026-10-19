@@ -1522,6 +1522,47 @@
 				],
 				"type": "object"
 			},
+			"ApiKeyFollowAccount": {
+				"description": "An X account watched by an `x_follow_made` or `x_follow_overlap` condition, the\naccount it resolved to, and how it is billed.",
+				"properties": {
+					"path": {
+						"type": "string",
+						"description": "The condition this entry belongs to. An `x_follow_overlap` condition has one\nentry per account, all with the same `path`. Join on `path` and `username`.",
+						"example": "conditions[0]"
+					},
+					"username": {
+						"type": "string",
+						"description": "The watched account's username as stored on the query: lowercase, without `@`.",
+						"example": "nasa"
+					},
+					"accountSourceRefId": {
+						"type": "string",
+						"description": "The X account id the username resolved to.",
+						"example": "11348282"
+					},
+					"billing": {
+						"type": "string",
+						"enum": [
+							"included",
+							"per_day"
+						],
+						"description": "`included`: Elfa already reads this account's follows and it costs nothing extra.\n`per_day`: billed for each UTC day its follows are read while the query runs."
+					},
+					"creditsPerDay": {
+						"type": "number",
+						"format": "double",
+						"description": "`per_day` only: credits charged to this API key for each day the account's\nfollows are read.",
+						"example": 1
+					}
+				},
+				"required": [
+					"path",
+					"username",
+					"accountSourceRefId",
+					"billing"
+				],
+				"type": "object"
+			},
 			"ApiKeyValidateQueryResponse": {
 				"properties": {
 					"valid": {
@@ -1560,7 +1601,7 @@
 						"type": "number",
 						"format": "double",
 						"nullable": true,
-						"description": "Estimated credits for the query's model calls over its lifetime, from the\nsimulation. `null` when no estimate can be made. Per-post X account charges are\nnot included.",
+						"description": "Estimated credits for the query's model calls over its lifetime, from the\nsimulation. `null` when no estimate can be made. Per-post X account charges and\nper-day follow account charges are not included.",
 						"example": 30
 					},
 					"simulationLlmCallsEstimate": {
@@ -1573,6 +1614,13 @@
 						},
 						"type": "array",
 						"description": "One entry per `tweet.semantic` condition, with its account and billing. Absent\nwhen the query has no `tweet.semantic` condition or failed an earlier check."
+					},
+					"followAccounts": {
+						"items": {
+							"$ref": "#/components/schemas/ApiKeyFollowAccount"
+						},
+						"type": "array",
+						"description": "One entry per account an `x_follow_made` or `x_follow_overlap` condition watches,\nwith its billing. Absent when the query has no such condition, when the key\ncannot watch accounts billed per day, or when one of those accounts was rejected."
 					}
 				},
 				"required": [
@@ -1623,7 +1671,7 @@
 						"type": "number",
 						"format": "double",
 						"nullable": true,
-						"description": "Estimated credits for the query's model calls over its lifetime, as on validate.\n`null` when no estimate can be made. Per-post X account charges are not included.",
+						"description": "Estimated credits for the query's model calls over its lifetime, as on validate.\n`null` when no estimate can be made. Per-post X account charges and per-day\nfollow account charges are not included.",
 						"example": 116
 					},
 					"tweetAccounts": {
@@ -1632,6 +1680,13 @@
 						},
 						"type": "array",
 						"description": "One entry per `tweet.semantic` condition, with its account and billing, as on\nvalidate. Absent when the query has no `tweet.semantic` condition."
+					},
+					"followAccounts": {
+						"items": {
+							"$ref": "#/components/schemas/ApiKeyFollowAccount"
+						},
+						"type": "array",
+						"description": "One entry per account an `x_follow_made` or `x_follow_overlap` condition watches,\nwith its billing, as on validate."
 					}
 				},
 				"required": [
@@ -4844,7 +4899,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "3.0.0",
+		"version": "3.2.0",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -6348,7 +6403,7 @@
 						}
 					}
 				},
-				"description": "Validate EQL syntax and get a cost estimate without creating a query.\nReturns simulation-based cost details when the query is valid.\n\n### Required Sequence (Enforced)\n\n`POST /v2/auto/queries/validate` must be called before\n`POST /v2/auto/queries`.\n\nLifecycle sequencing after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is\n   `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only after status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k so I can review the breakout setup.\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"valid\": true,\n  \"errors\": [],\n  \"warnings\": [],\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": { \"fast\": 1, \"expert\": 0, \"adaptive\": 0 },\n    \"actionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 },\n    \"autoActionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 }\n  },\n  \"estimatedCredits\": 30\n}\n```\n\n`tweetAccounts` lists the X account behind each `tweet.semantic`\ncondition and whether it is `included` or billed `per_post`; join on\n`path`.\n\n> Best practice: always validate before create to catch schema issues and\n> preview estimated cost.",
+				"description": "Validate EQL syntax and get a cost estimate without creating a query.\nReturns simulation-based cost details when the query is valid.\n\n### Required Sequence (Enforced)\n\n`POST /v2/auto/queries/validate` must be called before\n`POST /v2/auto/queries`.\n\nLifecycle sequencing after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is\n   `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only after status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k so I can review the breakout setup.\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"valid\": true,\n  \"errors\": [],\n  \"warnings\": [],\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": { \"fast\": 1, \"expert\": 0, \"adaptive\": 0 },\n    \"actionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 },\n    \"autoActionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 }\n  },\n  \"estimatedCredits\": 30\n}\n```\n\n`tweetAccounts` lists the X account behind each `tweet.semantic`\ncondition and whether it is `included` or billed `per_post`; join on\n`path`. `followAccounts` does the same for the accounts `x_follow_made`\nand `x_follow_overlap` conditions watch, `included` or billed `per_day`;\njoin on `path` and `username`.\n\n> Best practice: always validate before create to catch schema issues and\n> preview estimated cost.",
 				"summary": "Validate Query",
 				"tags": [
 					"v2 Auto"
@@ -6508,7 +6563,7 @@
 						}
 					}
 				},
-				"description": "Create and activate a conditional query.\n\n### Required Sequence (Enforced)\n\nCall `POST /v2/auto/queries/validate` immediately before create.\n\nLifecycle after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only when status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n**Allowed action types (API key mode):**\n`webhook`, `notify`, `telegram_bot`, `llm`.\n\n### Cost\n\nSimulation-driven estimate (reference values):\n- baseline: `5 credits` (`$0.0725`)\n- fast call: `+5 credits` (`+$0.0725`)\n- expert call: `+18 credits` (`+$0.261`)\n\nPer-post X accounts (`tweetAccounts[].billing` `per_post`) add\n`creditsPerPost` per post while the query runs.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\"\n}\n```\n\n### Response Example (201)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"active\",\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\",\n  \"createdAt\": \"2026-04-01T12:00:00.000Z\",\n  \"expiresAt\": \"2026-04-02T12:00:00.000Z\",\n  \"evaluationType\": \"price_driven\",\n  \"timeframe\": null,\n  \"preview\": {\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \">\",\n        \"isMet\": false,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": false,\n    \"matchingConditions\": 0\n  },\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": {\"fast\": 1, \"expert\": 0, \"adaptive\": 0},\n    \"actionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0},\n    \"autoActionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0}\n  },\n  \"estimatedCredits\": 116\n}\n```\n\nUse `id` for poll, stream, cancel and delete.\n\n> Best practice: call validate first, then create. After creation, wire\n> notifications (`webhook`, `telegram_bot`, or SSE) to a background runner.",
+				"description": "Create and activate a conditional query.\n\n### Required Sequence (Enforced)\n\nCall `POST /v2/auto/queries/validate` immediately before create.\n\nLifecycle after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only when status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n**Allowed action types (API key mode):**\n`webhook`, `notify`, `telegram_bot`, `llm`.\n\n### Cost\n\nSimulation-driven estimate (reference values):\n- baseline: `5 credits` (`$0.0725`)\n- fast call: `+5 credits` (`+$0.0725`)\n- expert call: `+18 credits` (`+$0.261`)\n\nPer-post X accounts (`tweetAccounts[].billing` `per_post`) add\n`creditsPerPost` per post while the query runs. Per-day follow accounts\n(`followAccounts[].billing` `per_day`) add `creditsPerDay` for each UTC\nday their follows are read.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\"\n}\n```\n\n### Response Example (201)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"active\",\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\",\n  \"createdAt\": \"2026-04-01T12:00:00.000Z\",\n  \"expiresAt\": \"2026-04-02T12:00:00.000Z\",\n  \"evaluationType\": \"price_driven\",\n  \"timeframe\": null,\n  \"preview\": {\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \">\",\n        \"isMet\": false,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": false,\n    \"matchingConditions\": 0\n  },\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": {\"fast\": 1, \"expert\": 0, \"adaptive\": 0},\n    \"actionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0},\n    \"autoActionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0}\n  },\n  \"estimatedCredits\": 116\n}\n```\n\nUse `id` for poll, stream, cancel and delete.\n\n> Best practice: call validate first, then create. After creation, wire\n> notifications (`webhook`, `telegram_bot`, or SSE) to a background runner.",
 				"summary": "Create Query",
 				"tags": [
 					"v2 Auto"
@@ -11853,7 +11908,7 @@
 		},
 		{
 			"name": "v2 Auto",
-			"description": "Conditional query builder and runner: create, validate, poll, and stream EQL queries, and manage LLM sessions.\n\n**Required Sequence (Enforced)**\n1. `POST /v2/auto/queries/validate`\n2. `POST /v2/auto/queries`\n3. `POST /v2/auto/queries/{queryId}/cancel` (only while status is `active`)\n4. `DELETE /v2/auto/queries/{queryId}` (only after status is terminal: `triggered`, `expired`, `cancelled`, `failed`)\n\n**Intent Routing (Strict)**\n\n| User intent | Required source | Required fields |\n| --- | --- | --- |\n| Account-anchored post intent (`@user posted ...`) | `source: \"tweet\"` | `args.username` (no `@`), `args.text`, `args.minConfidence` (start at `80`) |\n| News or world event intent (`ETF approved`, exploit, listing, bearish news on ETH) | `source: \"events\"` | At least one filter (`args.entity`, `args.eventType`, `args.implication`, …) or `args.text` + `args.minConfidence` (start at `80`) |\n| Fuzzy world-state predicate not naturally post/event matching | `source: \"llm\"` | `method: \"athena_condition\"`, `args.query`, `args.period` (`>= 1h`) |"
+			"description": "Conditional query builder and runner: create, validate, poll, and stream EQL queries, and manage LLM sessions.\n\n**Required Sequence (Enforced)**\n1. `POST /v2/auto/queries/validate`\n2. `POST /v2/auto/queries`\n3. `POST /v2/auto/queries/{queryId}/cancel` (only while status is `active`)\n4. `DELETE /v2/auto/queries/{queryId}` (only after status is terminal: `triggered`, `expired`, `cancelled`, `failed`)\n\n**Intent Routing (Strict)**\n\n| User intent | Required source | Required fields |\n| --- | --- | --- |\n| Account-anchored post intent (`@user posted ...`) | `source: \"tweet\"` | `args.username` (no `@`), `args.text`, `args.minConfidence` (start at `80`) |\n| One account's trading calls (`@user opens a long`, `@user exits BTC`) | `source: \"calls\"` | `args.handle` (no `@`); optional `args.asset`, `args.direction`, `args.action` |\n| News or world event intent (`ETF approved`, exploit, listing, bearish news on ETH) | `source: \"events\"` | At least one filter (`args.entity`, `args.eventType`, `args.implication`, …) or `args.text` + `args.minConfidence` (start at `80`) |\n| Fuzzy world-state predicate not naturally post/event matching | `source: \"llm\"` | `method: \"athena_condition\"`, `args.query`, `args.period` (`>= 1h`) |"
 		},
 		{
 			"name": "v3 Entities",

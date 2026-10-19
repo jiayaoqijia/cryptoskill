@@ -117,6 +117,15 @@ Comprehensive map of tools, SDKs, and infrastructure in the Cardano developer ec
 | **tx-village** | Tx testing framework | Experimental | Transaction-level testing. |
 | **Plutip** | Local cluster | Production | Haskell-based local cluster testing. |
 
+## Debugging
+
+| Name | Type | Status | Best For |
+|---|---|---|---|
+| **aiken tx simulate** | CLI evaluator | Production | Per-redeemer budgets and traces for a whole transaction, with `--script-override` to test a fix. Works for devnet transactions when you supply the resolved inputs. |
+| **Cquisitor** | Web app | Production | Decoding CBOR byte by byte, checking it against the CDDL, and validating both phases in the browser. |
+| **cardano-debug-mcp** | MCP server | Experimental | Letting an agent validate a transaction, step its scripts and decompile them, on Cquisitor's engines. Preview, preprod and mainnet inputs only. |
+| **Gastronomy** | UPLC step debugger | Beta (pre-1.0) | Stepping a script forward and backward by hand in a terminal or desktop UI. No agent-readable output. |
+
 ## Governance Tools
 
 | Name | Status | Best For |
