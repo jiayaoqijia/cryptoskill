@@ -37,8 +37,8 @@ for ecosystem compatibility.
 
 1. **Pick the right CIP standard first.** CIP-25 is simple; its metadata
    changes only by minting the token again, so it is fixed once the policy
-   closes. CIP-68 enables updatable metadata via reference tokens. CIP-113 (still a
-   draft) makes tokens programmable via shared-custody validation. The choice
+   closes. CIP-68 enables updatable metadata via reference tokens. CIP-113
+   (Proposed) makes tokens programmable via shared-custody validation. The choice
    affects the entire architecture.
 
 2. **Design the minting policy before the metadata.** The policy determines
@@ -99,12 +99,14 @@ Search `../../docs/sources/` for detailed CIP comparisons.
 - Best for: projects needing updatable metadata, rich fungible tokens,
   or dynamic NFTs
 
-**CIP-113 (Programmable Tokens — draft, unmerged PR #444)**
+**CIP-113 (Programmable Tokens — Proposed)**
 - Tokens are held at a shared script address; ownership is tracked by stake
   credential, and validation logic runs on every transfer, mint, and burn
 - An on-chain registry links each token to its transfer/issuance logic;
-  substandards (freeze-and-seize, KYC) plug into the shared framework
-- Most complex; reference implementation is unaudited and not production-ready
+  modules (freeze-and-seize, KYC) plug into the shared framework
+- Most complex. The core on-chain framework has been professionally
+  audited, with each finding resolved or acknowledged as a residual design
+  limitation; the modules and the off-chain platform have not been audited
 - Best for: regulated tokens, stablecoins, and compliance-bound assets
 
 See `references/cip-token-standards.md` for a detailed comparison.
@@ -112,6 +114,10 @@ See `references/cip-token-standards.md` for a detailed comparison.
 ### Step 4: Design the Minting Policy
 
 The minting policy is a Cardano script that authorizes token creation.
+Its hash is the policy ID: a 28-byte Blake2b-224 digest of a one-byte tag
+followed by the serialized script, with tag `0x00` for a native script and
+`0x01`, `0x02`, `0x03` for Plutus V1, V2, V3. CIP-29's text says Blake2b-192
+for native scripts; the ledger hashes every script with Blake2b-224.
 
 **Native Script Policies (no Plutus needed):**
 
@@ -216,8 +222,11 @@ Guide the user through these design choices:
   by default. Time-locked policies make burning impossible after the deadline.
 - **Metadata storage:** IPFS (decentralized, persistent) vs. HTTP URLs
   (centralized, mutable). Prefer IPFS with CID pinning.
-- **Royalties:** CIP-27 defines on-chain royalty info. Marketplaces may
-  or may not enforce it. CIP-113 can enforce royalties at the protocol level.
+- **Royalties:** CIP-27 (policy-wide) and CIP-102 (a CIP-68 royalty token)
+  publish royalty terms on-chain. No ledger rule enforces them, so payment
+  depends on the marketplace. CIP-113 leaves royalties out of its framework;
+  a CIP-113 module can pay them out on transfer, and the issuer writes and
+  audits that module.
 - **Collection grouping:** All tokens under one policy ID form a
   "collection." Use one policy per logical collection.
 

@@ -5,15 +5,15 @@ ad-hoc XOR hunt into a tool).
 Host-side tool (any Python 3.8+, stdlib only). Pure local byte crunching - no
 daemon needed. Motivation (case-F retro): the analyst hand-wrote 4 throwaway
 scripts on site (entropy profile, histogram, cosine similarity, single-byte
-XOR sweep) to find that the payload at .data+0xc0 was XOR 0x77. That sweep is
-a mandatory step for any multi-layer payload challenge and belongs in a tool.
+XOR sweep) to find that the payload at .data+0xc0 was XOR 0x77. Use it when single-byte or periodic XOR is a justified hypothesis; it is not
+a mandatory step for every payload or a complete compound-transform search.
 
 What it does:
-  1. Single-byte XOR sweep (0x01..0xFF). For each key: printable ratio,
+  1. Single-byte XOR sweep (0x00..0xFF, including identity). For each key: printable ratio,
      known-magic hits (MZ+PE\0\0 at start, \x7fELF, PK\x03\x04, UPX!, flag
      regex `[A-Za-z0-9_]+\{[^}]{4,}\}`, x86/x86-64 code prologues), entropy.
   2. --rolling N: repeating-key XOR with key length N. Per-lane frequency
-     analysis picks each key byte independently (budget: 255 * len ops, no
+     analysis picks each key byte independently (budget: 256 * len ops, no
      full-space brute force), then the assembled key is scored like any
      other candidate.
   3. --two-byte-add: optional single-byte ADD/SUB transform sweep.
@@ -162,8 +162,8 @@ def rolling_key_guess(data: bytes, klen: int) -> bytes:
     key = bytearray()
     for lane in range(klen):
         segment = data[lane::klen]
-        best_k, best_w = 1, None
-        for k in range(1, 256):
+        best_k, best_w = 0, None
+        for k in range(256):
             w = 0.0
             for b in segment:
                 w += lane_weight(b ^ k)
@@ -261,7 +261,7 @@ def main() -> int:
 
     candidates = []
 
-    for k in range(1, 256):
+    for k in range(256):
         decoded = xor_bytes(data, bytes([k]))
         score, ev = find_evidence(decoded, raw_ratio)
         if score > 0:
@@ -319,15 +319,16 @@ def main() -> int:
               f"用 --dump {top[0]['key'].split(',')[0] if top[0]['transform'] != 'roll' else 'roll:' + top[0]['key']} 解密落盘后人工复核。")
     else:
         print(f"[结论] Top1 评分仅 {best:.1f} < {WEAK_SCORE:.0f}，无强结论——"
-              "载荷大概率不是单字节 XOR/ADD/SUB。考虑：多字节滚动密钥（--rolling N）、"
+              "当前判据未给出强候选；这不排除相应变换或其他数据布局。可按线索考虑周期密钥（--rolling N，仅启发式）、"
               "分段异或、先 Base 系解码再异或、或根本不是异或族变换。"
-              "禁止在低分候选上宣布「解不出来」——先换变换族再谈（评分只是排序线索）。")
+              "无命中只描述本次搜索与评分；是否扩展空间取决于新证据，不按次数强制换族。")
 
     report = {
         "blob": args.blob, "size": len(data),
         "raw_entropy": round(raw_entropy, 2), "raw_printable": round(raw_ratio, 4),
         "rolling": args.rolling, "two_byte_add": args.two_byte_add,
         "candidates": candidates,
+        "coverage": {"single_byte_xor_keys": 256, "periodic_key_search": "per-lane heuristic only" if args.rolling else "not requested", "compound_search": False, "authority": "ranking only; no target acceptance"},
     }
     if args.json_out:
         with open(args.json_out, "w", encoding="utf-8") as f:

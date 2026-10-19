@@ -48,11 +48,17 @@ changes happen by consuming old UTxOs and creating new ones with updated datums.
 ### 2. Validators verify, they do not compute
 
 Cardano validators are **predicates**: they return true or false. They do not modify state
-or call other contracts. A validator receives three arguments and decides whether the
-transaction is allowed:
-- **Datum** — data sitting on the UTxO being spent (the current state)
+or call other contracts. A validator works from three pieces of data and decides whether
+the transaction is allowed:
+- **Datum** — data sitting on the UTxO being spent (the current state); spending validators only
 - **Redeemer** — data provided by the transaction builder (the action/intent)
 - **Script Context** — the full transaction being validated (inputs, outputs, signatories, mint, validity range, etc.)
+
+Plutus V3 passes a validator one argument, the script context, which carries the redeemer,
+the transaction and, for a spending validator, the datum as an option (CIP-69). Plutus V1
+and V2 passed the datum and redeemer as separate arguments in front of the context. Aiken's
+`spend` handler shows the V3 shape: `datum: Option<T>`, the redeemer, the spent output
+reference and `self: Transaction`.
 
 The off-chain code (transaction builder) does all the computation: selecting UTxOs,
 constructing outputs, calculating values. The validator merely checks that the result is
@@ -60,11 +66,11 @@ valid.
 
 ### 3. The datum/redeemer/script-context triad
 
-Every validator invocation receives exactly these three pieces of data:
+Every validator invocation works from these three pieces of data:
 
 | Component | Provided by | Purpose |
 |---|---|---|
-| **Datum** | Attached to the UTxO at the script address | Represents current state |
+| **Datum** | Attached to the UTxO at the script address (spending only) | Represents current state |
 | **Redeemer** | Supplied by the transaction spending the UTxO | Represents the action or intent |
 | **Script Context** | Constructed by the ledger from the transaction | Full transaction view for validation |
 
@@ -82,7 +88,7 @@ When a developer comes from Ethereum, use these mappings to bridge understanding
 
 | Ethereum Concept | Cardano Equivalent | Key Difference |
 |---|---|---|
-| Smart contract | **Validator** (spending, minting, or withdrawing) | Validators are stateless predicates, not persistent programs |
+| Smart contract | **Validator** (spend, mint, withdraw, publish, vote, or propose) | Validators are stateless predicates, not persistent programs |
 | Contract storage | **Datum** on UTxOs at the script address | No global storage; state is per-UTxO |
 | Function call | **Redeemer** | The redeemer encodes which "action" is being taken |
 | `msg.sender` | **`extra_signatories`** in script context | Must explicitly check that a required key signed the tx |
@@ -167,8 +173,9 @@ Off-chain pattern (conceptual):
 
 ### Step 6: Highlight common mistakes
 
-- **Forgetting the datum on outputs:** When sending to a script address, always attach a
-  datum. UTxOs without datums at script addresses are unspendable.
+- **Forgetting the datum on outputs:** When sending to a script address, attach the datum
+  the validator expects. A Plutus V1 or V2 script can never spend an output without a datum;
+  a V3 validator receives `None` and decides for itself, so it must handle that case.
 - **Not checking all conditions:** Validators must check every invariant. If you check the
   signer but not the value, someone can drain the funds to a different address.
 - **Double satisfaction:** When multiple script inputs exist in one transaction, each

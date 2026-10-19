@@ -119,8 +119,8 @@ Filters: by address, policy, asset, transaction metadata, block slot range.
 | UTxO by address | Yes | No | Yes | Yes | Yes | Yes | No | Yes |
 | Tx history | Yes | No | No | Yes | Yes | Yes | No | Yes |
 | Protocol params | Yes | Yes | No | Yes | Yes | Yes | No | Yes |
-| Tx submission | Yes | Yes | No | No | No | No | No | Yes |
-| Tx evaluation | No | Yes | No | No | No | No | No | Yes† |
+| Tx submission | Yes | Yes | No | Yes | No | No | No | Yes |
+| Tx evaluation | Yes | Yes | No | Yes‡ | No | No | No | Yes† |
 | Datum resolution | Yes | No | Yes | Yes | Yes | Yes | No | Yes |
 | Asset metadata | Yes | No | No | Yes | Yes | Yes | No | Yes |
 | Real-time events | No | Yes | No | No | Sub | No | Yes | In-proc |
@@ -131,14 +131,17 @@ Filters: by address, policy, asset, transaction metadata, block slot range.
 
 *Self-hosted: free software but requires infrastructure.
 †Requires a configured evaluation backend — Ogmios, or a Scalus-backed local evaluator.
+‡Through Koios's `/ogmios` passthrough (`evaluateTransaction`).
 
 **Yaci Store** is a modular JVM indexer: enable only the stores you need (UTxO,
-transaction, assets, governance, ...), each backed by your own Postgres — hence
-direct SQL access. It exposes a **Blockfrost-compatible REST API** (`/blocks`,
-`/epochs` including `latest/parameters`, `/txs`, `/tx/submit`, `/addresses`,
-`/accounts`, `/assets`, `/scripts`, `/metadata`, `/utils/txs/evaluate`), so any
-Blockfrost client — including cardano-client-lib's `BFBackendService` — points at
-it unchanged.
+transaction, assets, governance, ...), each backed by your own database
+(PostgreSQL, MySQL or H2) — hence direct SQL access. Its own REST API is served
+under `/api/v1/`. The 3.x line adds an opt-in **Blockfrost-compatible REST API**
+(the `blockfrost` profile, under `/api/v1/blockfrost`; `/blocks`, `/epochs`,
+`/txs`, `/tx/submit`, `/addresses`, `/accounts`, `/assets`, `/scripts`,
+`/metadata`, `/utils/txs/evaluate`), so a Blockfrost client — including
+cardano-client-lib's `BFBackendService` — works against it once its base URL
+includes that prefix. See `../../docs/sources/yaci-store-mcp/docs/app/docs/v3/blockfrost/`.
 
 Its "events" are **Spring application events consumed in-process**: you write
 listeners and processors inside your own Spring Boot app to build custom indexers.

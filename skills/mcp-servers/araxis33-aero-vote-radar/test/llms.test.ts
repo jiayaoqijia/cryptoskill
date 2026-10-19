@@ -93,3 +93,14 @@ test("llms.txt says so plainly when nothing qualified instead of printing an emp
   assert.match(txt, /No pool qualified in this scan/);
   assert.doesNotMatch(txt, /^- \d+% /m);
 });
+
+test("after the last weekly vote closes, llms.txt stops suggesting a vote and says why", () => {
+  const pools = [ranked("0xaaa", "vAMM-A/USDC", { trailingAvgUsd: 900 })];
+  const before = renderLlmsTxt(pools, new Date("2026-10-21T22:58:00Z"), ENDS);
+  const after = renderLlmsTxt(pools, new Date("2026-10-21T22:59:00Z"), ENDS);
+  assert.match(before, /This week's suggestion/);
+  assert.doesNotMatch(after, /This week's suggestion/);
+  assert.doesNotMatch(after, /^- \d+% /m);
+  assert.match(after, /weekly veAERO vote has ended/);
+  assert.match(after, /aero\.xyz\/aero-upgrade/);
+});

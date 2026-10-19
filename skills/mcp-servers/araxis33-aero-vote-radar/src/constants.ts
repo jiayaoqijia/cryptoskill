@@ -218,3 +218,17 @@ export const SNAPSHOT_MIN_POOL_RATIO = 0.5;
 // Leaving out the newest epoch the gain is still +11% / +15% / +22%.
 // `pools` keeps no filter: it lists, it does not recommend.
 export const DEFAULT_MIN_CONSISTENCY = 0.5;
+
+// Aero replaces the weekly veAERO vote (aero.xyz/aero-upgrade): the last vote
+// closes 2026-10-21 22:59 UTC, Aero launches 2026-10-22 00:00 UTC and the
+// legacy gauges are switched off. From the close on, a weekly vote suggestion
+// points at gauges that no longer pay, so everything that recommends or
+// encodes a vote stops and says why instead. The page holds the same instant.
+export const LAST_WEEKLY_VOTE_CLOSE_TS = Date.UTC(2026, 9, 21, 22, 59) / 1000;
+
+export const WEEKLY_VOTE_ENDED_NOTE =
+  "The weekly veAERO vote has ended: the last vote closed on Oct 21, 22:59 UTC, Aero launched on Oct 22 and the old gauges are switched off, so there is no vote left to suggest. Upgrade veAERO to sAERO at aero.xyz/aero-upgrade. Ranking for sAERO allocation will follow once Aero publishes its contract addresses.";
+
+export function weeklyVoteEnded(nowUnixSeconds: number = Math.floor(Date.now() / 1000)): boolean {
+  return nowUnixSeconds >= LAST_WEEKLY_VOTE_CLOSE_TS;
+}

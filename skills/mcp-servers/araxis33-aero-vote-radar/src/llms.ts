@@ -5,6 +5,7 @@ import {
   toWholePercentWeights,
 } from "./allocator.js";
 import { withoutMigrating } from "./pools.js";
+import { WEEKLY_VOTE_ENDED_NOTE, weeklyVoteEnded } from "./constants.js";
 
 /**
  * The budget the plain-text summary is priced for — the hosted page's own
@@ -55,6 +56,7 @@ export function renderLlmsTxt(
   epochEndsAt: number,
 ): string {
   const asOf = Math.floor(generatedAt.getTime() / 1000);
+  if (weeklyVoteEnded(asOf)) return renderVoteEnded(generatedAt);
   const notMigrating = withoutMigrating(ranked);
   const migrating = ranked.length - notMigrating.length;
   const eligible = notMigrating.filter((p) => p.consistency >= LLMS_MIN_CONSISTENCY);
@@ -67,10 +69,10 @@ export function renderLlmsTxt(
     "",
     "> Where to vote veAERO on Aerodrome (Base) this week to earn the most. Enter how much veAERO you hold and get whole percentages to paste into Aerodrome's voting page, ranked by what each pool pays per vote after your own vote dilutes it. Free, open source (MIT), read-only: no wallet connection, no signatures.",
     "",
-    `Scanned from Base mainnet: ${generatedAt.toISOString()}. The scan re-runs every 6 hours.`,
+    `Scanned from Base mainnet: ${generatedAt.toISOString()}. The scan re-runs every 4 hours.`,
     `Current epoch closes: ${utc(epochEndsAt)}. A vote only counts for the epoch it is cast in, so the suggestion below expires then.`,
     "",
-    `Coming change: Aerodrome becomes Aero on ${AERO_LAUNCH_UTC}, with a new rewards system (sAERO and Predictive Allocation). Official upgrade steps (aero.xyz/aero-upgrade): withdraw locks from Relay or any vault by Oct 20; the last vote closes Oct 21, 22:59 UTC; claim rewards and rebase, then reset the vote before upgrading; Aero launches Oct 22, 00:00 UTC; the first Autopilot allocation is Oct 22, 16:00 UTC, and allocation can move every 47 hours. Aerodrome's published migration contract fixes the rules: each veAERO lock converts 1:1 by locked AERO; a permanent lock becomes a permanent sAERO stake, an ended lock comes back as plain AERO, any other lock becomes an sAERO stake for its remaining time rounded up to whole weeks; a lock that still has a vote, or sits in a Relay, is refused until the vote is reset or it is withdrawn. The site previews this per lock for any wallet; this file covers the current weekly veAERO vote. Source: ${AERO_LAUNCH_URL}`,
+    `Coming change: Aerodrome becomes Aero on ${AERO_LAUNCH_UTC}, with a new rewards system (sAERO and Predictive Allocation). Official upgrade steps (aero.xyz/aero-upgrade): withdraw locks from Relay or any vault by Oct 20; the last vote closes Oct 21, 22:59 UTC; claim rewards and rebase, then reset the vote before upgrading; Aero launches Oct 22, 00:00 UTC; the first Autopilot allocation is Oct 22, 16:00 UTC, and allocation can move every 47 hours. Aerodrome's published migration contract fixes the rules: each veAERO lock converts 1:1 by locked AERO; a permanent lock becomes an sAERO stake at the maximum duration, an ended lock comes back as plain AERO, any other lock becomes an sAERO stake for its remaining time rounded up to whole weeks; a lock that still has a vote, or sits in a Relay, is refused until the vote is reset or it is withdrawn. The site previews this per lock for any wallet; this file covers the current weekly veAERO vote. Source: ${AERO_LAUNCH_URL}`,
     "",
     `## This week's suggestion for ${LLMS_EXAMPLE_VEAERO.toLocaleString("en-US")} veAERO`,
     "",
@@ -112,4 +114,28 @@ export function renderLlmsTxt(
   );
 
   return lines.join("\n");
+}
+
+/**
+ * After the last weekly vote closes there is nothing to suggest, and an
+ * assistant quoting last week's percentages would send a reader to gauges that
+ * no longer pay. The file says so and keeps only what still holds.
+ */
+function renderVoteEnded(generatedAt: Date): string {
+  return [
+    "# Aero Vote Radar",
+    "",
+    "> Built to show where to vote veAERO on Aerodrome (Base) each week. Free, open source (MIT), read-only: no wallet connection, no signatures.",
+    "",
+    `Status as of ${generatedAt.toISOString()}: ${WEEKLY_VOTE_ENDED_NOTE}`,
+    "",
+    `The page (${SITE}) still previews, for any wallet, what each veAERO lock becomes as sAERO, and keeps the last weekly scan for reference only.`,
+    "",
+    "## Links",
+    "",
+    `- [Live page](${SITE})`,
+    "- [Aero upgrade steps](https://aero.xyz/aero-upgrade)",
+    `- [Source and method](${REPO})`,
+    "",
+  ].join("\n");
 }

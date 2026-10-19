@@ -86,3 +86,24 @@ test("a lock deposited into a Relay, or a Relay's own veNFT, cannot be moved as 
 test("an emptied lock carries nothing over", () => {
   assert.deepEqual(migrationOutcome(normal({ amount: 0, end: LAUNCH + WEEK }), LAUNCH), { kind: "empty" });
 });
+
+test("the page and the CLI/MCP stop suggesting a vote at the same instant", async () => {
+  const { LAST_WEEKLY_VOTE_CLOSE_TS, weeklyVoteEnded } = await import("../src/constants.js");
+  const pageTs = new Function(`${extractConst(siteSource, "LAST_WEEKLY_VOTE_CLOSE_TS")} return LAST_WEEKLY_VOTE_CLOSE_TS;`)();
+  assert.equal(pageTs, LAST_WEEKLY_VOTE_CLOSE_TS);
+  assert.equal(LAST_WEEKLY_VOTE_CLOSE_TS, Date.parse("2026-10-21T22:59:00Z") / 1000);
+  assert.equal(weeklyVoteEnded(LAST_WEEKLY_VOTE_CLOSE_TS - 1), false);
+  assert.equal(weeklyVoteEnded(LAST_WEEKLY_VOTE_CLOSE_TS), true);
+});
+
+test("per-day figures price your own stake after it dilutes the pool, so size changes the ranking", () => {
+  const dilutedPerDay = new Function(`${extractFunction(siteSource, "dilutedPerDay")} return dilutedPerDay;`)();
+  // The DM example: a small pool paying $14 a day to 10k drops hard at 100k; a big pool barely moves.
+  const small = { usdPerDay: 140 * 1.1, votes: 100_000 };
+  const big = { usdPerDay: 10 * 100.1, votes: 1_000_000 };
+  const at = (pool: { usdPerDay: number; votes: number }, amount: number) => dilutedPerDay(pool.usdPerDay, pool.votes, amount);
+  assert.ok(at(small, 10_000) > at(big, 10_000));
+  assert.ok(at(small, 100_000) < at(big, 100_000));
+  assert.equal(at(small, 0), 0);
+  assert.ok(Math.abs(at({ usdPerDay: 100, votes: 90_000 }, 10_000) - 10) < 1e-9);
+});

@@ -4,7 +4,7 @@ Comparison of Cardano Improvement Proposals for native token metadata.
 
 ## Quick Comparison
 
-| Feature | CIP-25 | CIP-68 | CIP-113 (draft) |
+| Feature | CIP-25 | CIP-68 | CIP-113 (Proposed) |
 |---------|--------|--------|---------|
 | Metadata location | Transaction metadata (label 721) | Datum on reference UTxO | Orthogonal — standard native-asset naming; can pair with CIP-68 metadata |
 | Updatable | No | Yes | n/a (metadata is a separate concern) |
@@ -135,11 +135,17 @@ Both the reference token (100) and user token (222/333/444) share the same
 
 ## CIP-113: Programmable Tokens
 
-**Status:** "Proposed" per the draft's own header, but the CIP is an unmerged
-PR ([cardano-foundation/CIPs#444](https://github.com/cardano-foundation/CIPs/pull/444))
-— not yet in the official CIPs repo. The Cardano Foundation reference
-implementation has not been professionally audited, has only been briefly
-tested on the Preview testnet, and is not production-ready.
+**Status:** Proposed, merged into the CIPs repository through
+[cardano-foundation/CIPs#444](https://github.com/cardano-foundation/CIPs/pull/444).
+The Cardano Foundation's core on-chain framework has been professionally
+audited; each finding was resolved or acknowledged as a residual design
+limitation, and an audit does not by itself make a deployment safe. The modules
+and the off-chain platform have not been audited, and have been tested only on
+the Preview testnet: audit any module you deploy. The "Audit and
+Production Readiness" section of `../../docs/sources/cip-113-programmable-tokens/README.md`
+and the "Project Status" section of
+`../../docs/sources/cip-113-programmable-tokens-platform/README.md` give each
+repository's state.
 
 **Purpose:** Native tokens whose transfers, mints, and burns must satisfy
 on-chain validation logic — freeze/seize, allowlists, KYC gating, and other
@@ -158,8 +164,8 @@ compliance rules an issuer must enforce after issuance.
 - Validation uses the **withdraw-zero pattern**: the base validator delegates to
   a global stake validator that runs once per transaction and requires the
   token-specific transfer-logic script to run alongside it
-- **Substandards** (e.g. freeze-and-seize, KYC) plug custom rules into the
-  shared framework instead of re-implementing the plumbing
+- **Modules** (e.g. freeze-and-seize, KYC; the TypeScript SDK calls them
+  substandards) plug custom rules into the shared framework instead of re-implementing the plumbing
 
 **Relationship to CIP-68 — it is NOT an extension:**
 - CIP-113 builds on native-asset infrastructure (its registry design descends
@@ -179,9 +185,9 @@ and explorers need stake-credential-aware integration to support these tokens.
 If control at mint/burn is enough, a plain minting policy is the right tool.
 
 **Source of truth:** search `../../docs/sources/cip-113-programmable-tokens/` (core
-framework), `../../docs/sources/cip-113-programmable-tokens-platform/` (substandards),
+framework), `../../docs/sources/cip-113-programmable-tokens-platform/` (modules),
 and `../../docs/sources/cip-113-sdk-typescript/` (off-chain SDK) — do not rely on
-memory for this standard; it is still evolving.
+memory for this standard.
 
 ---
 
@@ -198,7 +204,7 @@ memory for this standard; it is still evolving.
   registered in the on-chain registry (new policy ID = new token)
 - Existing CIP-68 metadata practices can be reused for the new token's metadata
 - If compliance rules are likely, design for CIP-113 from the start — and note
-  it is still a draft standard (unmerged PR #444)
+  its status is still Proposed, not Active
 
 ## Choosing the Right Standard
 

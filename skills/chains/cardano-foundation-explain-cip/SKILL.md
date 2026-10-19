@@ -158,7 +158,7 @@ standard for dApp-wallet interaction in browsers.
 - `window.cardano.<walletName>` exposes the wallet API
 - `enable()` returns an API object with methods for address, UTxO, and signing operations
 - All data is CBOR-encoded — SDKs handle serialization
-- Wallets: Begin, Eternl, Flint, GeroWallet, Lace, Nami, NuFi, RayWallet, Yoroi all implement CIP-30
+- Wallets: Begin, Eternl, GeroWallet, Lace, NuFi, RayWallet, Yoroi all implement CIP-30
 
 **Key API methods:**
 - `getNetworkId()` — returns 0 (testnet) or 1 (mainnet)
@@ -243,15 +243,15 @@ governance actions.
 
 ### CIP-113: Programmable Tokens
 
-**Status:** Proposed per the draft's own header — but the CIP is an **unmerged PR**
-([cardano-foundation/CIPs#444](https://github.com/cardano-foundation/CIPs/pull/444)),
-so it is not yet in the official CIPs repo or the bundled `cips/` mirror — though an
-adapted reference implementation is bundled under `../../docs/sources/cip-113-programmable-tokens/`.
+**Status:** Proposed, merged into the CIPs repository through
+[cardano-foundation/CIPs#444](https://github.com/cardano-foundation/CIPs/pull/444).
+The specification is at `../../docs/sources/cips/CIP-0113/README.md`; the reference
+implementation is bundled under `../../docs/sources/cip-113-programmable-tokens/`.
 
 **Summary:** Defines a standard for tokens with programmable validation logic — rules
 enforced on every transfer, mint, and burn. Tokens are held at a shared script address
 with ownership tracked by stake credential; an on-chain registry links each token to its
-transfer/issuance logic, and substandards (freeze-and-seize, KYC) plug into the shared
+transfer/issuance logic, and modules (freeze-and-seize, KYC) plug into the shared
 framework.
 
 **Developer impact:**
@@ -259,10 +259,12 @@ framework.
 - Shared-custody model: wallets/DEXes need stake-credential-aware integration
 - Relevant for compliance-bound assets; plain minting policies remain right for most tokens
 
-**Note:** The specification may still change, and the Cardano Foundation reference
-implementation is not professionally audited, has only been briefly tested on the
-Preview testnet, and is not production-ready. Check the PR and
-`../../docs/sources/cip-113-programmable-tokens/` for current state.
+**Note:** The Cardano Foundation's core on-chain framework has been professionally
+audited, with each finding resolved or acknowledged as a residual design limitation; an
+audit does not by itself make a deployment safe. The modules and the off-chain platform
+have not been audited, and have been tested only on the Preview testnet. The READMEs of
+`../../docs/sources/cip-113-programmable-tokens/` and
+`../../docs/sources/cip-113-programmable-tokens-platform/` for each repository's audit status.
 
 ### CIP-1694: Conway Era Governance (Voltaire)
 

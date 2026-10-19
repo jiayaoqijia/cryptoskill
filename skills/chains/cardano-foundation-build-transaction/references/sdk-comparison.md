@@ -12,7 +12,7 @@ Quick reference for choosing and using Cardano transaction-building SDKs.
 | cardano-client-lib | Java | Mid-Low | Active | JVM fine-grained control |
 | Apollo | Go | Mid | Active | Go backends, Conway-era certs |
 | cardano-js-sdk | TypeScript | Low-Mid | IOG-maintained | Full-stack TS, Lace wallet |
-| Cardano Serialization Lib | Rust/WASM | Low | IOG-maintained | Custom tooling, performance |
+| Cardano Serialization Lib | Rust/WASM | Low | EMURGO-maintained | Custom tooling, performance |
 | Tx3 | DSL -> TS/Rust/Go/Python | High/Declarative | Active (pre-1.0) | Multi-language teams, published protocols |
 | cardano-ledger | Haskell | Low (ledger types) | Active (Intersect) | Haskell services; same types as the node |
 
@@ -269,7 +269,7 @@ npm install @cardano-sdk/core @cardano-sdk/wallet
 ## Cardano Serialization Lib (CSL)
 
 - **Language:** Rust (with WASM/JS and mobile bindings)
-- **Repository:** github.com/input-output-hk/cardano-multiplatform-lib
+- **Repository:** github.com/Emurgo/cardano-serialization-lib
 - **Documentation:** Limited (Rust docs)
 
 **Strengths:**

@@ -7,13 +7,18 @@ and how to fix them.
 
 ## ValueNotConservedUTxO
 
-**What it means:** The total value of inputs does not equal the total value
-of outputs plus the fee (adjusted for minting/burning).
+**What it means:** The value the transaction consumes does not equal the
+value it produces.
 
-**The ledger rule:**
+**The ledger rule (Conway):**
 ```
-sum(inputs) + mint = sum(outputs) + fee + burn
+inputs + minted + withdrawals + deposit refunds
+  = outputs + fee + new deposits + treasury donation + burned
 ```
+
+Deposits cover stake credential, stake pool and DRep registrations and
+governance proposals; refunds come back from stake credential and DRep
+deregistrations. All of these, the withdrawals and the donation are lovelace.
 
 **Common causes:**
 - Forgot to include all input UTxOs in the transaction
@@ -21,6 +26,8 @@ sum(inputs) + mint = sum(outputs) + fee + burn
 - Minted tokens but did not include them in an output
 - Burned tokens but did not remove them from outputs
 - Fee was not accounted for correctly
+- A reward withdrawal, registration deposit, deregistration refund or treasury
+  donation was left out of the balance
 
 **Fix:** Let the SDK handle coin selection and change output calculation.
 If building manually, verify the value equation above balances exactly.
@@ -237,7 +244,7 @@ When encountering any error:
 
 1. Read the full error message -- the error type name identifies the issue
 2. Check the simplest causes first (wrong network, stale UTxOs, insufficient ADA)
-3. Verify the value equation balances: inputs = outputs + fee +/- mint/burn
+3. Verify the value equation balances, withdrawals, deposits, refunds and donation included
 4. For Plutus errors: check redeemer, datum, signers, and validity range
 5. Use transaction evaluation (dry run) to test fixes before submitting
 6. Test on Preview testnet before Preprod or Mainnet

@@ -89,7 +89,7 @@ Patterns to lift:
 
 ### PyCardano
 
-CF did not ship a PyCardano implementation upstream. The implementation below is purpose-written for this skill. It targets PyCardano's `TransactionBuilder` and `BlockFrostChainContext` and follows the same datum / redeemer / validity-range shape as the other three.
+The CF template's own PyCardano version, which runs against Yaci DevKit, is under `../../docs/sources/cardano-use-case-templates/vesting/offchain/pycardano/`. The implementation below is written for this skill. It targets PyCardano's `TransactionBuilder` and `BlockFrostChainContext` and follows the same datum / redeemer / validity-range shape as the other three.
 
 Project layout (monorepo scaffold from `references/layout-aiken-pycardano.md`):
 

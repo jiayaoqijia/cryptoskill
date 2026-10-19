@@ -237,7 +237,7 @@ Based on the project type, flag relevant CIPs:
 | Governance | CIP-1694 (governance), CIP-95 (wallet governance) |
 | Multi-sig | CIP-1854 (multi-sig wallets) |
 | Metadata | CIP-20 (tx metadata), CIP-25 (NFT metadata) |
-| DEX | CIP-35 (on-chain message signing) |
+| DEX | CIP-8 (message signing) |
 
 ### Step 7: Flag trade-offs
 

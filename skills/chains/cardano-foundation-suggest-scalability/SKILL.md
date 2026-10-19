@@ -49,14 +49,14 @@ Interview only what you can't infer:
 - **Is the real problem eUTxO contention?** If the pain is "users collide on the same UTxO," the fix is usually an L1 design pattern (batching, UTxO indexing, multiple script UTxOs), not L2. Hand to `explain-eutxo` / `write-validator`.
 - **Who transacts, and with whom?** A *small and fixed* set of counterparties transacting among themselves is the signal for a state channel. A *large and variable* set of counterparties is the signal against one, or for a different scaling solution.
 
-**The Leios horizon (context, not a dependency).** Ouroboros Leios is L1 throughput scaling (input-endorser pipelining) that raises Cardano's own tx/s ceiling substantially. It is protocol research, **not** something a dApp integrates, but it matters to this decision: a throughput requirement that L1 can't meet *today* may be met by L1 itself before a bespoke L2 pays off. For status and scope, read `../../docs/sources/ouroboros-leios/` (start with the latest `status-report-*.md` and `technical-report-*.md`). Treat it as a reason to be *more* conservative about adopting L2, never as a shippable component.
+**The Leios horizon (context, not a dependency).** Ouroboros Leios (CIP-164) is L1 throughput scaling: a committee of stake pools certifies larger endorser blocks that ride alongside the regular Praos blocks, raising Cardano's own tx/s ceiling substantially. It is a protocol upgrade to the node, **not** something a dApp integrates, but it matters to this decision: a throughput requirement that L1 can't meet *today* may be met by L1 itself before a bespoke L2 pays off. For status and scope, read `../../docs/sources/ouroboros-leios/` (start with the latest `status-report-*.md` and `technical-report-*.md`). Treat it as a reason to be *more* conservative about adopting L2, never as a shippable component.
 
 ### Step 2: Search the bundled documentation
 
 Ground scaling claims in the bundled sources rather than memory:
 
 - `../../docs/sources/hydra/` — Hydra Head protocol (start with `docs/protocol-overview.md`, then `topologies/` and `use-cases/`)
-- `../../docs/sources/ouroboros-leios/` — Leios L1-throughput research
+- `../../docs/sources/ouroboros-leios/` — Leios L1-throughput design (CIP-164), status reports and simulations
 
 Mithril is bundled under `../../docs/sources/mithril/`. The emerging rollups are **not** bundled — verify their status upstream and flag them as such.
 

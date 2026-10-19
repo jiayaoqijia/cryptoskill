@@ -153,7 +153,7 @@ Guardrails protect the network from harmful parameter changes while still allowi
 
 - `dRepDeposit`: Deposit for DRep registration
 - `govActionDeposit`: Deposit for governance action proposals
-- `dRepActivity`: Number of epochs before inactive DRep is considered dormant
+- `dRepActivity`: Epochs a DRep can go without voting or updating before it becomes inactive; an inactive DRep stays registered, but its stake stops counting until it votes or updates
 - `govActionLifetime`: Number of epochs a governance action stays open for voting
 - `committeeMinSize`: Minimum number of CC members
 - `committeeMaxTermLength`: Maximum term for CC members in epochs

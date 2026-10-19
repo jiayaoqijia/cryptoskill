@@ -2,9 +2,9 @@ name: Snapshot
 
 on:
   schedule:
-    # Every 6 hours, at :17 rather than on the hour — GitHub's scheduler queues
+    # Every 4 hours, at :17 rather than on the hour — GitHub's scheduler queues
     # on-the-hour jobs from every repo at once and delays them under load.
-    - cron: "17 */6 * * *"
+    - cron: "17 */4 * * *"
   workflow_dispatch:
 
 # A scan takes several minutes. If a scheduled run is still going when the next

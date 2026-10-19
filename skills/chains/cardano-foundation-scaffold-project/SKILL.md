@@ -68,7 +68,7 @@ The 5 curated use cases have hand-reviewed implementations across on-chain Aiken
 - **token-transfer** — native-token movement under a spend validator (not bare ADA)
 - **htlc** — Hashed Time-Locked Contract; redeem-with-preimage or refund-after-deadline
 
-The other 16 use cases (bet, auction, crowdfund, vault, storage, simple-wallet, pricebet, payment-splitter, lottery, constant-product-amm, upgradable-proxy, factory, decentralized-identity, editable-nft, anonymous-data, atomic-transaction) have Aiken on-chain coverage upstream; off-chain code is agent-generated in-session.
+The other 16 use cases (bet, auction, crowdfund, vault, storage, simple-wallet, pricebet, payment-splitter, lottery, constant-product-amm, upgradable-proxy, factory, decentralized-identity, editable-nft, anonymous-data, atomic-transaction) ship an Aiken validator and, for most, off-chain code in all four stacks upstream, which has not been hand-reviewed here; the Evolution code uses the older `@evolution-sdk/lucid` package and needs porting. constant-product-amm and editable-nft ship only a Scalus full-stack version.
 
 For full descriptions and source-code paths see `references/use-cases.md`. For an end-to-end flagship walkthrough of vesting (the recommended first project) see `references/vesting-walkthrough.md`.
 
@@ -228,7 +228,7 @@ Report the final state to the developer plainly: "Scaffold built successfully. R
 
 Aiken emits CIP-57 `plutus.json` as part of `aiken build`. This is the single source of truth that bridges on-chain and off-chain code. Every off-chain SDK in the v1 stack matrix can load this file directly:
 
-- Evolution SDK: `applyParamsToScript(blueprint.validators[0].compiledCode, [])` plus `validatorToAddress`
+- Evolution SDK: `new PlutusV3.PlutusV3({ bytes: Bytes.fromHex(compiledCode) })`, with the address from `ScriptHash.fromScript`
 - Mesh SDK: `applyParamsToScript` and `serializePlutusScript` consume the compiled CBOR
 - PyCardano: reads `plutus.json` and constructs `PlutusV3Script` from the CBOR
 - cardano-client-lib: parses `plutus.json` via `PlutusBlueprintLoader` + `PlutusBlueprintUtil`

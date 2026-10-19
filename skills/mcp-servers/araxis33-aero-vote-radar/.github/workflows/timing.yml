@@ -43,12 +43,23 @@ jobs:
       - name: Set what the radar quoted beside what the pools paid
         run: npm run promise-check
 
+      # The link-preview card (scripts/result-card.mjs): the week just settled,
+      # photographed with the runner's own Chrome. og:image carries the week so X
+      # fetches the new picture rather than the one it cached last week.
+      - name: Draw the forecast-vs-paid card
+        continue-on-error: true
+        run: |
+          sudo apt-get install -y -qq fonts-inter > /dev/null || true
+          week=$(node scripts/result-card.mjs "$RUNNER_TEMP/card.html")
+          google-chrome --headless=new --disable-gpu --hide-scrollbars --window-size=1200,630             --screenshot="$PWD/docs/card.png" "file://$RUNNER_TEMP/card.html"
+          sed -i "s#card.png?w=[0-9-]*#card.png?w=$week#" docs/index.html
+
       - name: Commit the measurement if it changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/timing.json docs/data/accrual.json docs/data/promise.json
-          if git diff --cached --quiet -- docs/data/timing.json docs/data/accrual.json docs/data/promise.json; then
+          git add docs/data/timing.json docs/data/accrual.json docs/data/promise.json docs/card.png docs/index.html
+          if git diff --cached --quiet -- docs/data/timing.json docs/data/accrual.json docs/data/promise.json docs/card.png docs/index.html; then
             echo "measurement unchanged — nothing to commit"
             exit 0
           fi

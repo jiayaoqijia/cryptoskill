@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-15T07:41:23.260Z",
+  "generatedAt": "2026-10-19T15:08:46.873Z",
   "epochs": [
     "2026-08-06",
     "2026-08-13",
@@ -22,8 +22,8 @@
       "fromHours": 120,
       "toHours": 168,
       "scans": 68,
-      "keptAll": 1,
-      "keptThick": 2,
+      "keptAll": 1.5,
+      "keptThick": 1,
       "keptRich": 6
     },
     {
@@ -31,7 +31,7 @@
       "fromHours": 72,
       "toHours": 120,
       "scans": 76,
-      "keptAll": 1,
+      "keptAll": 2,
       "keptThick": 2,
       "keptRich": 6
     },
@@ -42,7 +42,7 @@
       "scans": 72,
       "keptAll": 2,
       "keptThick": 2,
-      "keptRich": 5
+      "keptRich": 6
     },
     {
       "label": "Wednesday",
@@ -58,9 +58,9 @@
       "fromHours": 0,
       "toHours": 5,
       "scans": 10,
-      "keptAll": 2.5,
-      "keptThick": 4.5,
-      "keptRich": 5.5
+      "keptAll": 3,
+      "keptThick": 4,
+      "keptRich": 6
     }
   ],
   "lateMovers": [
@@ -765,23 +765,23 @@
     "overall": [
       {
         "name": "previous",
-        "observations": 47951,
+        "observations": 47992,
         "medianAbsError": 0.4401211099475557,
         "medianBias": 0.0020842704913188737,
-        "closestOn": 20101
+        "closestOn": 20142
       },
       {
         "name": "current",
-        "observations": 47951,
-        "medianAbsError": 0.4040162580895039,
+        "observations": 47992,
+        "medianAbsError": 0.40412836463200286,
         "medianBias": 0,
         "closestOn": 20104
       },
       {
         "name": "typical",
-        "observations": 47951,
+        "observations": 47992,
         "medianAbsError": 0.4886305427070736,
-        "medianBias": 0.22931695228282112,
+        "medianBias": 0.22985448583929546,
         "closestOn": 7746
       }
     ],
@@ -791,23 +791,23 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 5327,
-            "medianAbsError": 0.39364914792571715,
+            "observations": 5320,
+            "medianAbsError": 0.4000322024585037,
             "medianBias": 0,
-            "closestOn": 2958
+            "closestOn": 2956
           },
           {
             "name": "current",
-            "observations": 5327,
-            "medianAbsError": 0.3533686567272005,
+            "observations": 5320,
+            "medianAbsError": 0.375120229813676,
             "medianBias": 0,
-            "closestOn": 1081
+            "closestOn": 1076
           },
           {
             "name": "typical",
-            "observations": 5327,
-            "medianAbsError": 0.5364601742759108,
-            "medianBias": 0.2015357316133135,
+            "observations": 5320,
+            "medianAbsError": 0.5436042237238161,
+            "medianBias": 0.20447919683436155,
             "closestOn": 1288
           }
         ]
@@ -817,23 +817,23 @@
         "bases": [
           {
             "name": "previous",
-            "observations": 13687,
-            "medianAbsError": 0.37091853648661055,
-            "medianBias": 0.00007845448192189686,
-            "closestOn": 7117
+            "observations": 13735,
+            "medianAbsError": 0.3704558168877141,
+            "medianBias": 0.00008083811522285878,
+            "closestOn": 7160
           },
           {
             "name": "current",
-            "observations": 13687,
-            "medianAbsError": 0.3357001241085249,
+            "observations": 13735,
+            "medianAbsError": 0.3357001073314634,
             "medianBias": 0,
-            "closestOn": 4572
+            "closestOn": 4577
           },
           {
             "name": "typical",
-            "observations": 13687,
-            "medianAbsError": 0.47712276555882127,
-            "medianBias": 0.1911550651732734,
+            "observations": 13735,
+            "medianAbsError": 0.4708275349431368,
+            "medianBias": 0.1911505734155834,
             "closestOn": 1998
           }
         ]

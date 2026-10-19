@@ -34,6 +34,8 @@ description: 恢复二进制函数语义、控制流/数据流、常量与算法
 
 | 文件 | 何时读 |
 |---|---|
+| [数据驱动恢复](references/data-driven-recovery.md) | 固定输出、未知数据表或代码/数据关系不清；需要区分布局、恢复假设和验证 |
+| [复合变换与搜索](references/transform-pipelines.md) | 数据布局已明确且有有限变换假设；需要求逆、约束搜索、等价去重或解释无命中 |
 | [P-code 位宽语义](references/pcode-width-contracts.md) | 伪码出现截断/溢出/符号扩展等疑点时核对 P-code 语义 |
 | `references/ctf-patterns.md` | CTF 模式库与 flag 狩猎启发式（XOR/期望值/oracle/自定义 VM/魔数/S-box 指纹/随机源分类/侧信道/动态工具选型/Cython 扩展元数据） |
 | `references/go-binary.md` | triage 报 `lang_hints.go=true` 或发现 Go 指纹（pclntab/buildinfo/garble）时 |

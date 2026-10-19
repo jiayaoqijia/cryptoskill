@@ -16,7 +16,13 @@ import {
 import { backtestLive } from "./backtest.js";
 import { buildVoteCalldata } from "./calldata.js";
 import { fetchVeAeroPositions } from "./veAero.js";
-import { BACKTEST_EPOCHS, DEFAULT_MIN_CONSISTENCY, MAX_BACKTEST_EPOCHS } from "./constants.js";
+import {
+  BACKTEST_EPOCHS,
+  DEFAULT_MIN_CONSISTENCY,
+  MAX_BACKTEST_EPOCHS,
+  WEEKLY_VOTE_ENDED_NOTE,
+  weeklyVoteEnded,
+} from "./constants.js";
 import { formatError, isValidAddress } from "./util.js";
 import { computeTrend, isEpochInProgress } from "./trend.js";
 
@@ -159,6 +165,7 @@ server.registerTool(
     },
   },
   withErrorHandling(async ({ veAero, address, topCandidates = 15, minConsistency = DEFAULT_MIN_CONSISTENCY, maxWeight = 1, voteBasis = "previous" }) => {
+    if (weeklyVoteEnded()) throw new Error(WEEKLY_VOTE_ENDED_NOTE);
     const budget = await resolveVeAeroBudget(veAero, address);
     // Same rule as the CLI: pools Aerodrome is migrating are never recommended.
     const ranked = withoutMigrating(await rankPoolsByEfficiency()).filter((p) => p.consistency >= minConsistency);
@@ -298,6 +305,7 @@ server.registerTool(
     },
   },
   withErrorHandling(async ({ tokenId, votePercents }) => {
+    if (weeklyVoteEnded()) throw new Error(WEEKLY_VOTE_ENDED_NOTE);
     const tx = buildVoteCalldata(tokenId, votePercents);
 
     return {

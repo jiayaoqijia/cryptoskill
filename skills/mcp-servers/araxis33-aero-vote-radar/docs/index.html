@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://aero.deftools.xyz/">
 <meta property="og:title" content="Aero Vote Radar — where to vote your veAERO to earn the most">
 <meta property="og:description" content="Enter how much veAERO you hold, copy the percentages, paste them into Aerodrome. Priced after your own vote dilutes each pool. Free, read-only.">
-<meta property="og:image" content="https://aero.deftools.xyz/screenshot.png">
+<meta property="og:image" content="https://aero.deftools.xyz/card.png?w=2026-10-08">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Aero Vote Radar","url":"https://aero.deftools.xyz/","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Tells veAERO holders where to vote on Aerodrome (Base) this week to earn the most: whole percentages ready to paste into Aerodrome's vote page, priced after your own vote dilutes each pool. Read-only, no wallet connection.","sameAs":["https://github.com/araxis33/aero-vote-radar","https://www.npmjs.com/package/aero-vote-radar"],"isAccessibleForFree":true}
@@ -260,6 +260,7 @@
   </div>
 </header>
 
+<div class="note" id="voteEndedNote" hidden><b>The weekly veAERO vote has ended.</b> The last vote closed on October 21, 22:59 UTC, Aero launched on October 22 and the old gauges are switched off, so this page no longer suggests a vote. Upgrade your veAERO to sAERO at <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noreferrer">aero.xyz/aero-upgrade</a>; look up your wallet below to see what each lock becomes. Ranking for sAERO allocation will follow once Aero publishes its contract addresses. The figures further down are the last weekly scan, kept for reference.</div>
 <p class="meta" id="meta"><span class="dot"></span> Loading the latest scan…</p>
 <div class="note" id="aeroLaunchNote">Aerodrome becomes <b>Aero</b> on <b>October 22, 00:00 UTC</b>, with a new rewards system (sAERO and Predictive Allocation). Official steps and dates are in <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noreferrer">aero.xyz/aero-upgrade</a> (see "Before Aero, Oct 22" below); look up your wallet below to preview what each veAERO lock becomes, read from Aerodrome's published migration contract. This page covers the current weekly veAERO vote. <a href="https://aero.xyz/articles/aero-launch-update-all-systems-go/" target="_blank" rel="noreferrer">Aero's announcement</a></div>
 
@@ -340,10 +341,10 @@
     <tbody>
       <tr><td>By Oct 20</td><td>Withdraw your lock from Relay or any other vault</td></tr>
       <tr><td>Oct 21, 22:59 UTC</td><td>Last vote closes</td></tr>
-      <tr><td>Before you upgrade</td><td>Claim rewards and rebase, then reset your vote: a lock with active votes cannot be upgraded</td></tr>
+      <tr><td>Before you upgrade</td><td>Claim rewards and rebase, then reset your vote: a lock with active votes cannot be upgraded, and rewards left unclaimed cannot be recovered after it</td></tr>
       <tr><td>Oct 22, 00:00 UTC</td><td>Aero launches. Each veAERO becomes 1 AERO in sAERO with the same lock time left (rounded up to a full week). If you voted in the last week, you can upgrade from 01:00 UTC</td></tr>
       <tr><td>Oct 22, 16:00 UTC</td><td>First Autopilot allocation. sAERO added after that waits for the next one</td></tr>
-      <tr><td>After that</td><td>You can move your allocation every 47 hours, across 7 chains</td></tr>
+      <tr><td>After that</td><td>You can move your allocation every 47 hours, across 7 chains in one transaction, with gas paid on Base only. sAERO positions can be merged, not split</td></tr>
     </tbody>
   </table>
   </div>
@@ -444,7 +445,7 @@
     </div>
   </div>
   <div class="totals">
-    <div class="stat"><div class="n num" id="perDayTop">—</div><div class="l">Best pool, per day for 10,000 votes</div></div>
+    <div class="stat"><div class="n num" id="perDayTop">—</div><div class="l" id="perDayTopLabel">Best pool for your sAERO, per day</div></div>
     <div class="stat"><div class="n num" id="perDayAll">—</div><div class="l">All pools&rsquo; voter fees per day</div></div>
     <div class="stat"><div class="n num">78%</div><div class="l">Of the best possible top 10, next 48 h</div></div>
   </div>
@@ -453,7 +454,7 @@
       <thead>
         <tr>
           <th>Pool</th>
-          <th class="num">Per day for 10,000 votes</th>
+          <th class="num" id="perDayAmtHead">Per day for your sAERO</th>
           <th class="num">Pool fees per day</th>
           <th class="num">Votes</th>
         </tr>
@@ -466,12 +467,12 @@
 
 <div class="rowhead">
   <div>
-    <h2>Suggested allocation</h2>
-    <p class="h2note">Whole percentages that add up to exactly 100 — the form Aerodrome's UI accepts.</p>
+    <h2 id="allocTitle">Suggested allocation</h2>
+    <p class="h2note" id="allocSub">Whole percentages that add up to exactly 100 — the form Aerodrome's UI accepts.</p>
   </div>
   <div style="display:flex; gap:8px">
     <button id="copyBtn" type="button">Copy weights</button>
-    <a href="https://aerodrome.finance/vote" target="_blank" rel="noopener noreferrer"><button class="primary" type="button">Vote on Aerodrome ↗</button></a>
+    <a id="voteLink" href="https://aerodrome.finance/vote" target="_blank" rel="noopener noreferrer"><button class="primary" type="button">Vote on Aerodrome ↗</button></a>
   </div>
 </div>
 
@@ -1045,7 +1046,7 @@ async function renderMigration(ids, truncated) {
     } else {
       totals[out.kind] += lock.amount;
       becomes =
-        out.kind === "permanent" ? "Permanent sAERO stake"
+        out.kind === "permanent" ? "sAERO stake at the maximum duration (permanent lock)"
         : out.kind === "liquid" ? "Plain AERO (the lock has ended)"
         : "sAERO stake for " + out.weeks + " week" + (out.weeks === 1 ? "" : "s");
       if (lock.voted) {
@@ -1074,7 +1075,7 @@ async function renderMigration(ids, truncated) {
   const staked = totals.stake + totals.permanent;
   if (staked > 0) parts.push(num(staked, 2) + " AERO would become sAERO, one for one.");
   if (staked > 0 && steadyFeeRate) parts.push("In today's steadiest fee pools that is about " +
-    usd(staked / 10000 * steadyFeeRate.per10k) + " a day (" + usd(staked / 10000 * steadyFeeRate.per10k * 7) +
+    usd(steadyPerDay(staked)) + " a day (" + usd(steadyPerDay(staked) * 7) +
     " a week) from fees alone (see \u201cWhere to point sAERO\u201d below).");
   if (totals.liquid > 0) parts.push(num(totals.liquid, 2) + " AERO would come back as plain AERO, because those locks have ended by October 22.");
   if (totals.stake > 0) parts.push("Stake lengths assume you move on launch day: each week you wait takes a week off.");
@@ -1468,7 +1469,7 @@ const el = {
 
 // Epoch arithmetic, matching epochEndOf/formatDuration in src/trend.ts. Computed
 // from the visitor's own clock rather than read from snapshot.epochEndsAt: the
-// snapshot can be up to six hours old, and a countdown is the one number on this
+// snapshot can be up to four hours old, and a countdown is the one number on this
 // page that must never be stale.
 const EPOCH_SECONDS = 604800;
 
@@ -1486,11 +1487,34 @@ function formatDuration(seconds) {
   return minutes + "m";
 }
 
+// The last weekly veAERO vote closes here (aero.xyz/aero-upgrade); same instant
+// as LAST_WEEKLY_VOTE_CLOSE_TS in src/constants.ts. From then on the gauges this
+// page ranks stop paying, so it stops suggesting a vote and says why.
+const LAST_WEEKLY_VOTE_CLOSE_TS = Date.UTC(2026, 9, 21, 22, 59) / 1000;
+
+function weeklyVoteEnded(nowSec) {
+  return nowSec >= LAST_WEEKLY_VOTE_CLOSE_TS;
+}
+
+function applyVoteEnded() {
+  if (!weeklyVoteEnded(Math.floor(Date.now() / 1000))) return;
+  document.getElementById("voteEndedNote").hidden = false;
+  document.getElementById("aeroLaunchNote").hidden = true;
+  document.getElementById("voteLink").hidden = true;
+  document.getElementById("copyBtn").hidden = true;
+  el.calldataBox.hidden = true;
+  document.querySelector("header .sub").textContent =
+    "Built to show where to vote veAERO each week. The weekly vote has ended with the Aero launch.";
+  document.getElementById("allocTitle").textContent = "Last weekly suggestion (for reference)";
+  document.getElementById("allocSub").textContent =
+    "From the final veAERO week. The weekly vote has ended, so this is no longer something to cast.";
+}
+
 function renderMeta() {
   const scanned = new Date(snapshot.generatedAt);
   const ageHours = (Date.now() - scanned.getTime()) / 3600000;
   const age = ageHours < 1 ? "just now" : ageHours < 24 ? Math.round(ageHours) + "h ago" : Math.round(ageHours / 24) + "d ago";
-  const stale = ageHours > 12; // the job runs every 6h; well past that means it's stuck
+  const stale = ageHours > 8; // the job runs every 4h; well past that means it's stuck
 
   const nowSec = Math.floor(Date.now() / 1000);
   const remaining = epochEndOf(nowSec) - nowSec;
@@ -1502,7 +1526,9 @@ function renderMeta() {
   text.innerHTML =
     "<strong>" + snapshot.poolCount + "</strong> live-gauge pools · scanned <strong>" + age +
     "</strong> · epoch of " + new Date(snapshot.latestEpochTs * 1000).toISOString().slice(0, 10) +
-    " · voting closes in <strong>" + formatDuration(remaining) + "</strong>";
+    (weeklyVoteEnded(nowSec)
+      ? " · <strong>weekly voting ended Oct 21, 22:59 UTC</strong>"
+      : " · voting closes in <strong>" + formatDuration(remaining) + "</strong>");
   el.meta.append(dot, text);
 }
 
@@ -1511,7 +1537,9 @@ function renderMeta() {
 // page honest if someone leaves the tab open across the Thursday boundary.
 setInterval(function () {
   if (snapshot) renderMeta();
+  applyVoteEnded();
 }, 60000);
+applyVoteEnded();
 
 /** One line in the movers panel: name, its history, and the size of the move. */
 function moverRow(p) {
@@ -2060,7 +2088,7 @@ function renderPromise(promise) {
   document.getElementById("promiseKept").replaceChildren(...tiles);
   document.getElementById("promiseBasis").textContent =
     "Paid ÷ forecast for the radar's top " + (promise.topPools || 10) + " pools, per " + num(promise.perVeAero || 10000) +
-    " votes, read a day or two before each close. The numbers on this page move because every scan, about every six hours, " +
+    " votes, read a day or two before each close. The numbers on this page move because every scan, about every four hours, " +
     "reads fresh fees and votes. To stay honest the forecast takes the lower of the recent average and the last finished week, " +
     "so one big week can't inflate it. A new week is added here after each close.";
   document.getElementById("promisePanel").hidden = false;
@@ -2294,6 +2322,7 @@ async function copyCalldata() {
 
 for (const control of [el.veaero, el.topk, el.mincons, el.maxweight]) {
   control.addEventListener("input", renderAllocation);
+  if (control === el.veaero) control.addEventListener("input", renderPerDay);
   control.addEventListener("change", renderAllocation);
 }
 // The vote basis reorders the full ranking as well as the allocation, so that
@@ -2321,9 +2350,32 @@ if (calldataEncoderIsSound()) {
 
 // "Where to point sAERO on Oct 22". From both files already on the page: fees per day now (fee-rate.json, last
 // 96 h), everything a pool paid its voters in the last complete week (snapshot epochUsd: fees + incentives), and how
-// steady the fees were — the share of fee-rate's ~6-hour windows that paid at least half the pool's own average.
+// steady the fees were — the share of fee-rate's scan-to-scan windows that paid at least half the pool's own average.
 // Fees move into Aero by themselves; incentives have to be posted again, so a pool that lived on them is marked.
-let steadyFeeRate = null;   // { per10k, pools } — read by the lock preview for its "about $X a day" line
+let steadyFeeRate = null;   // { per10k, pools, rows } — read by the lock preview for its "about $X a day" line
+
+/**
+ * What a pool pays per day to `amount` of sAERO once that stake has joined the
+ * votes already there: fees are split by weight, so your own stake dilutes the
+ * pool. Scaling the 10,000 figure up instead promised 100,000 in a small pool
+ * ten times the money (asked for in a DM, 19.10.2026).
+ */
+function dilutedPerDay(usdPerDay, votes, amount) {
+  return amount > 0 ? usdPerDay * amount / (votes + amount) : 0;
+}
+
+/** `amount` split evenly across the steadiest fee pools, each priced after its own dilution. */
+function steadyPerDay(amount) {
+  if (!steadyFeeRate || !steadyFeeRate.rows.length) return 0;
+  const each = amount / steadyFeeRate.rows.length;
+  return steadyFeeRate.rows.reduce((a, x) => a + dilutedPerDay(x.usdPerDay, x.votes, each), 0);
+}
+
+/** The amount typed in the main field, the same number the allocation reads; 10,000 when empty. */
+function myAmount() {
+  const v = Number(el.veaero.value);
+  return Number.isFinite(v) && v > 0 ? v : 10000;
+}
 let aeroChains = null;      // data/aero-chains.json: which chains Aero has published contracts for
 const AERO_TOKEN = "0x940181a94a35a4569e4529a3cdfb74e38fd98631";
 const AERO_CHAINS = [["base", "Base"], ["ethereum", "Ethereum"], ["optimism", "OP Mainnet"], ["arc", "Arc"],
@@ -2348,7 +2400,7 @@ function renderSaero() {
       if (rates.length && mean > 0) steady = { n: rates.filter((x) => x >= 0.5 * mean).length, of: rates.length };
     }
     const inc = week > 0 ? Math.min(1, Math.max(0, 1 - r.usdPerDayPer10k / week)) : null;
-    rows.push({ p, fee: r.usdPerDayPer10k, week, steady, inc });
+    rows.push({ p, fee: r.usdPerDayPer10k, usdPerDay: r.usdPerDay, week, steady, inc });
   }
   if (!rows.length) return;
 
@@ -2399,18 +2451,20 @@ function renderSaero() {
     const per10k = steadyTop.reduce((a, x) => a + x.fee, 0) / steadyTop.length;
     const top3 = byWeek.slice(0, 3);
     const withInc = top3.length ? top3.reduce((a, x) => a + x.week, 0) / top3.length : 0;
-    steadyFeeRate = { per10k, pools: steadyTop.map((x) => x.p.symbol) };
+    steadyFeeRate = { per10k, pools: steadyTop.map((x) => x.p.symbol),
+      rows: steadyTop.map((x) => ({ usdPerDay: x.usdPerDay, votes: x.p.votesVeAero })) };
+    const day10k = steadyPerDay(10000);
     const tok = (snapshot.rewardTokens || []).find((t) => t.address.toLowerCase() === AERO_TOKEN);
     const yearly = tok && tok.priceUsd
-      ? " (~" + Math.round(per10k * 365 / (10000 * tok.priceUsd) * 100) + "% a year at AERO $" + tok.priceUsd.toFixed(2) + ")" : "";
+      ? " (~" + Math.round(steadyPerDay(10000) * 365 / (10000 * tok.priceUsd) * 100) + "% a year at AERO $" + tok.priceUsd.toFixed(2) + ")" : "";
     const name = (sym) => sym.replace(/^(CL\d*|vAMM|sAMM)-/, "");
     const b = document.createElement("b");
-    b.textContent = "10,000 sAERO → about " + usd(per10k) + " a day, " + usd(per10k * 7) + " a week";
+    b.textContent = "10,000 sAERO → about " + usd(day10k) + " a day, " + usd(day10k * 7) + " a week";
     const sub = document.createElement("div");
     sub.className = "sub";
-    sub.textContent = "From fees alone" + yearly + ", split across the " + steadyTop.length + " steadiest fee pools: " +
+    sub.textContent = "From fees alone, after your own stake dilutes each pool" + yearly + ", split across the " + steadyTop.length + " steadiest fee pools: " +
       steadyTop.map((x) => name(x.p.symbol)).join(", ") + "." +
-      (withInc > per10k ? " Up to " + usd(withInc) + " a day if last week's incentives come back." : "") +
+      (withInc > day10k ? " Up to " + usd(withInc) + " a day if last week's incentives come back." : "") +
       " Look up your wallet above for your own locks.";
     you.replaceChildren(b, sub);
     you.hidden = false;
@@ -2420,7 +2474,7 @@ function renderSaero() {
   document.getElementById("saeroNote").textContent =
     "Fees: last " + feeRate.windowHours + " hours, divided by each pool's current votes. All rewards: the last complete week, " +
     "fees plus incentives, per 10,000 votes. From incentives: how much of last week's figure today's fees don't cover. " +
-    "Steady: how many of the ~6-hour windows paid at least half the pool's own average. Pools with at least " +
+    "Steady: how many of the scan-to-scan windows paid at least half the pool's own average. Pools with at least " +
     num(PER_DAY_MIN_VOTES) + " votes. Estimates from today's Aerodrome, not promises: on Aero your own stake also dilutes the pool.";
   document.getElementById("saeroPanel").hidden = false;
 }
@@ -2456,17 +2510,20 @@ const PER_DAY_ROWS = 10;
 function renderPerDay() {
   if (!feeRate || !snapshot || !feeRate.pools) return;
   const byAddr = new Map(snapshot.pools.map((p) => [p.pool.toLowerCase(), p]));
+  const amount = myAmount();
   const rows = Object.entries(feeRate.pools)
     .map(([addr, r]) => ({ addr, r, p: byAddr.get(addr) }))
     .filter((x) => x.p && !x.p.migrating && x.r.usdPerDayPer10k !== null && x.p.votesVeAero >= PER_DAY_MIN_VOTES)
-    .sort((a, b) => b.r.usdPerDayPer10k - a.r.usdPerDayPer10k);
+    .map((x) => ({ ...x, mine: dilutedPerDay(x.r.usdPerDay, x.p.votesVeAero, amount) }))
+    .sort((a, b) => b.mine - a.mine);
   if (rows.length === 0) return;
 
   const frag = document.createDocumentFragment();
-  for (const { r, p } of rows.slice(0, PER_DAY_ROWS)) {
+  const amtText = "your " + num(amount) + " sAERO";
+  for (const { r, p, mine } of rows.slice(0, PER_DAY_ROWS)) {
     const tr = document.createElement("tr");
     tr.appendChild(poolCell(p.symbol, p.pool, p.migrating));
-    tr.appendChild(cell("≈ $" + r.usdPerDayPer10k.toFixed(2), "num", "Per day for 10,000 votes"));
+    tr.appendChild(cell("≈ $" + mine.toFixed(2), "num", "Per day for " + amtText));
     tr.appendChild(cell(usd(r.usdPerDay), "num", "Pool fees per day"));
     tr.appendChild(cell(num(p.votesVeAero), "num", "Votes"));
     frag.appendChild(tr);
@@ -2474,11 +2531,14 @@ function renderPerDay() {
   document.getElementById("perDayBody").replaceChildren(frag);
 
   const total = Object.values(feeRate.pools).reduce((s, r) => s + r.usdPerDay, 0);
-  document.getElementById("perDayTop").textContent = "≈ $" + rows[0].r.usdPerDayPer10k.toFixed(2);
+  document.getElementById("perDayTop").textContent = "≈ $" + rows[0].mine.toFixed(2);
+  document.getElementById("perDayTopLabel").textContent = "Best pool for " + amtText + ", per day";
+  document.getElementById("perDayAmtHead").textContent = "Per day for " + amtText;
   document.getElementById("perDayAll").textContent = usd(total);
   document.getElementById("perDayNote").textContent =
     "Swap fees that reached each pool's voters over the last " + feeRate.windowHours +
-    " hours, averaged per day, divided by the pool's current votes. Pools with at least " +
+    " hours, averaged per day, split between the pool's current votes and your " + num(amount) +
+    " sAERO, so a big stake in a small pool earns less per sAERO than in a big one. Change the amount at the top. Pools with at least " +
     num(PER_DAY_MIN_VOTES) + " votes. Fees only: incentives join the figure once Aero's new contracts are live. " +
     "Tested on this site's own history since September 27: the top 10 picked by the last 96 hours collected 78% " +
     "of what the best possible top 10 earned over the next 48 hours. The dollar figure is an estimate, typically off by about half; " +

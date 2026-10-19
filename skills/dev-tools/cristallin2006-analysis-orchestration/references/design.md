@@ -1,4 +1,10 @@
-# 持续型解题编排 0.4.0
+# 持续型解题编排 0.6.1
+
+0.6.1 增加 skill 自身维护的必需参考卡声明、完整原文交付与覆盖数量回执。brief 摘要不能关闭声明；读取失败在模型入口阻塞。其他 skill 可见性、64KiB 上限与执行权限保持，见 [skill-delivery.md](skill-delivery.md)。
+
+0.6.0 增加显式目标续做映射、执行能力预检及默认轻量查询，详见 [reliable-work.md](reliable-work.md)。旧工作需在 pending/空闲时补 execution_plan。新表 orch_objectives 使用同一状态库，按 task/epoch/目标代次限定；不自动接管或运行。资源清理仍需真实适配器，硬额度执行缺兼容路径时明确阻塞。
+
+0.5.0 增加按子代理作用域解析的必要技能交付、当前上下文可见性检查与材料阻塞恢复，见 [skill-delivery.md](skill-delivery.md)。不改变其他技能目录和执行授权。
 
 0.4.0 增加持久化的空闲处置、状态签名与完成检查；0.3.1 的取消监听清理和数据库关闭顺序修复继续保留。完成检查与证据边界见 [resolution.md](resolution.md)。以下持续型生命周期设计沿用 0.3.0。
 

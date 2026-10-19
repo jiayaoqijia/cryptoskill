@@ -16,7 +16,13 @@ import { fetchPoolEpochs, withoutMigrating, type EpochData } from "./pools.js";
 import { getTokenPrices } from "./prices.js";
 import { mapWithConcurrency } from "./util.js";
 import { periodStartOf, WEEKLY_EPOCH } from "./trend.js";
-import { BACKTEST_EPOCHS, DEFAULT_MIN_CONSISTENCY, MAX_BACKTEST_EPOCHS } from "./constants.js";
+import {
+  BACKTEST_EPOCHS,
+  DEFAULT_MIN_CONSISTENCY,
+  MAX_BACKTEST_EPOCHS,
+  WEEKLY_VOTE_ENDED_NOTE,
+  weeklyVoteEnded,
+} from "./constants.js";
 import { formatError, isValidAddress, padCol, wrapText } from "./util.js";
 import { computeTrend, epochEndOf, formatDuration, isEpochInProgress } from "./trend.js";
 
@@ -394,6 +400,11 @@ export function chooseRecommendOutputMode(args: string[]): RecommendOutputMode {
 }
 
 async function cmdRecommend(args: string[]) {
+  if (weeklyVoteEnded()) {
+    console.error(wrapText(WEEKLY_VOTE_ENDED_NOTE, 92));
+    process.exitCode = 1;
+    return;
+  }
   const topK = parsePositiveIntFlag(args, "top", 15);
   const minConsistency = parseUnitIntervalFlag(args, "min-consistency", DEFAULT_MIN_CONSISTENCY);
   const maxWeight = parseUnitIntervalFlag(args, "max-weight", 1);

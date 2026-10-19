@@ -9,9 +9,9 @@ This file lists the reference use cases derived from `../../docs/sources/cardano
 Not every use case is equally polished. We split them into two tiers:
 
 - **Curated (5).** End-to-end implementations have been hand-reviewed across Aiken on-chain plus all four off-chain stacks (Mesh, Evolution, cardano-client-lib, PyCardano). The skill points you at the source files; the on-chain code, off-chain code, and (for vesting) a walkthrough are in the repo.
-- **Agent-generated (16).** The Aiken on-chain implementation exists upstream, but off-chain coverage is patchy or non-existent. For these the workflow is: read the Aiken validator as the spec, run `aiken build` to emit the CIP-57 `plutus.json`, then write off-chain code on the fly. The agent uses bundled SDK docs at `../../docs/sources/<sdk-slug>/` and the corresponding upstream off-chain implementation (where present) as a model.
+- **Agent-generated (16).** Upstream ships the Aiken validator and, for most, off-chain code in all four stacks under `<name>/offchain/`, but none of it has been hand-reviewed here. The upstream Evolution SDK code (`offchain/evolutionsdk/`) is written for the older `@evolution-sdk/lucid` package, not `@evolution-sdk/evolution`: read it for the transaction shape and port the calls using `references/layout-aiken-evolution.md` and the bundled Evolution docs, rather than copying its imports. The workflow is: read the Aiken validator as the spec, run `aiken build` to emit the CIP-57 `plutus.json`, then start from the upstream off-chain code for your stack and check it against the validator. Where a stack is missing, write it in-session from the bundled SDK docs at `../../docs/sources/<sdk-slug>/`.
 
-For curated use cases the deliverable is a working starting point. For agent-generated use cases the deliverable is a structured plan plus the on-chain code, and the off-chain code is written in-session by the agent.
+For curated use cases the deliverable is a working starting point. For agent-generated use cases the deliverable is the on-chain code plus the upstream off-chain code for the chosen stack, reviewed against the validator in-session.
 
 ## How to pick
 
@@ -31,10 +31,12 @@ For each: source code at `../../docs/sources/cardano-use-case-templates/<name>/`
 
 ## Agent-generated use cases (16)
 
+Most of these also ship a Scalus full-stack version under `<name>/fullstack/`.
+
 | # | Name | One-liner | On-chain frameworks | Off-chain notes |
 |---|---|---|---|---|
-| 6 | bet | Two parties stake funds; oracle or timer settles. | aiken | Build off-chain from `../../docs/sources/cardano-use-case-templates/bet/onchain/aiken/`. |
-| 7 | auction | English auction; highest bidder wins after a deadline. | aiken, scalus | Read the Aiken validator first; CF has partial off-chain coverage. |
+| 6 | bet | Two parties stake funds; oracle or timer settles. | aiken | Read the validator first; upstream off-chain code is under `../../docs/sources/cardano-use-case-templates/bet/offchain/`. |
+| 7 | auction | English auction; highest bidder wins after a deadline. | aiken, scalus | Read the Aiken validator first. |
 | 8 | crowdfund | Goal-based fundraising; refund or release on deadline. | aiken | Refund logic is the subtle bit; read the validator carefully. |
 | 9 | vault | Holds funds under a single beneficiary key with an optional admin override. | aiken | Read the validator. |
 | 10 | storage | Verifiable audit snapshots: a one-shot NFT locks the canonical SHA-256 hash of off-chain data at an append-only validator; anyone can re-hash and compare, and an off-chain Merkle tree pinpoints which item changed. | aiken | Spend always fails, so every check lives in the minting policy: the datum must be right at mint because it can never be corrected. |
@@ -42,11 +44,11 @@ For each: source code at `../../docs/sources/cardano-use-case-templates/<name>/`
 | 12 | pricebet | Bet against an oracle-reported price. | aiken | Requires an oracle UTxO; combine with `query-chain` skill for the oracle read path. |
 | 13 | payment-splitter | Distributes incoming payments across multiple recipients by share. | aiken, scalus | Useful pattern when one address receives funds destined for several parties. |
 | 14 | lottery | Pick a winner from a pot via a verifiable mechanism (commit-reveal or oracle randomness). | aiken | Randomness on-chain is the tricky part; treat the upstream impl as a starting point only. |
-| 15 | constant-product-amm | x*y=k AMM pool (README only upstream, no full implementation). | aiken | Treat as a learning target; implementing safely is a multi-skill exercise. |
+| 15 | constant-product-amm | x*y=k AMM pool. Upstream ships only a Scalus full-stack version, no Aiken validator. | scalus | Treat as a learning target; implementing safely is a multi-skill exercise. |
 | 16 | upgradable-proxy | A proxy validator that delegates to a swappable implementation. | aiken | Approach with care; review the security implications via `review-contract` skill. |
 | 17 | factory | One validator mints many child instances. | aiken | Common for spawning per-user vaults; combine with `design-token` for the minting policy side. |
 | 18 | decentralized-identity | DID-style identity records anchored on-chain. | aiken | Read the validator; off-chain wraps DID resolution. |
-| 19 | editable-nft | CIP-68-style mutable NFT metadata (README only upstream). | aiken | Combine with `design-token` skill for the CIP-68 token-pair design. |
+| 19 | editable-nft | CIP-68-style mutable NFT metadata. Upstream ships only a Scalus full-stack version, no Aiken validator. | scalus | Combine with `design-token` skill for the CIP-68 token-pair design. |
 | 20 | anonymous-data | Commit-reveal pattern for private data publication. | aiken | Useful primitive; agent generates off-chain wrappers. |
 | 21 | atomic-transaction | Multi-step swap that commits or aborts atomically. | aiken | Off-chain orchestration is the bulk of the work. |
 
@@ -57,7 +59,7 @@ When the agent and developer pick an agent-generated use case, the workflow is:
 1. Read the Aiken validator at `../../docs/sources/cardano-use-case-templates/<name>/onchain/aiken/validators/<name>.ak`. This is the spec.
 2. Run `aiken build` after copying the validator into the scaffolded project. The CIP-57 `plutus.json` produced is the contract between on-chain and off-chain code.
 3. Open bundled SDK docs at `../../docs/sources/<sdk-slug>/` to look up current API shapes. SDKs change quickly; the bundled docs are the source of truth.
-4. Read the closest curated off-chain implementation as a structural model (e.g. for any new use case, vesting's off-chain code shows the load-blueprint, build-tx, submit pattern).
+4. Read the use case's own upstream off-chain code for your stack at `../../docs/sources/cardano-use-case-templates/<name>/offchain/<stack>/` (`meshjs`, `evolutionsdk`, `pycardano` or `ccl-java`; for Evolution, port it as described above). Where it is missing, use the closest curated implementation as a structural model (vesting's off-chain code shows the load-blueprint, build-tx, submit pattern).
 5. Write the off-chain code in the scaffolded project. Don't paste from the bundled docs verbatim — adapt to your stack and the validator's exact datum/redeemer shapes.
 
 ## Caveats
