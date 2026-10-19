@@ -6,7 +6,7 @@ All commands support `--json` for structured output. Always use `--json` when ca
 
 `--json` (required for agents) | `-e <venue>` | `-n mainnet|testnet` | `--dry-run` (only commands whose `--help` says "supports --dry-run"; others refuse with `INVALID_PARAMS`) | `--fields <f1,f2>` | `--ndjson` | `-w, --wallet <name>` | `--ows <name>` (OWS wallet) | `--no-agent` (skip agent-key routing) | `--no-builder` | `--dex <name>` (HIP-3, Hyperliquid)
 
-Venues (`-e`, id | aliases): `pacifica|pac`, `hyperliquid|hl`, `lighter|lt`, `lighter-rh|lrh|rh`, `aster|ast`, `ondo|ondo-perps`, `arcus`, `qfex|qf`, `risex|rise`, `txflow|txf` (market data only, UNOFFICIAL API — every write refuses with CAPABILITY_UNSUPPORTED). Default = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
+Venues (`-e`, id | aliases): `pacifica|pac`, `hyperliquid|hl`, `lighter|lt`, `lighter-rh|lrh|rh`, `aster|ast`, `ondo|ondo-perps`, `arcus`, `qfex|qf`, `risex|rise` (READ-ONLY in this release — market data + account reads; trading is planned for a later release, every trade / agent / bot write refuses with CAPABILITY_UNSUPPORTED), `txflow|txf` (market data only, UNOFFICIAL API — every write refuses with CAPABILITY_UNSUPPORTED), `variational|var|omni` (market data only, official API, RFQ venue: `market book` = indicative RFQ quotes, `market funding` = current terms — every write refuses with CAPABILITY_UNSUPPORTED). Default = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
 `-k <key>` is rejected (keys only via stdin / OWS vault). `--passphrase` is deprecated → `OWS_PASSPHRASE` env or stdin.
 
 ## Market Data (read-only, safe)
@@ -267,7 +267,7 @@ perp --json funds deposit lighter-rh <AMOUNT>               # USDG on Robinhood 
 perp --json funds withdraw arcus <AMOUNT>                   # USDG → the account owner (min 1)
 perp --json funds deposit qfex                              # prints the USDC / Arbitrum One deposit address (sends nothing)
 # RISEx: deposits / withdrawals are app-only — `funds deposit|withdraw risex` → CAPABILITY_UNSUPPORTED (app.rise.trade)
-perp --json -n testnet funds faucet risex                   # testnet only: 1000 test USDC once (also registers the account)
+# RISEx is read-only in this release (trading later): `funds faucet risex` → CAPABILITY_UNSUPPORTED too
 # QFEX: withdrawals disabled in perp-cli for now — `funds withdraw qfex` → CAPABILITY_UNSUPPORTED; withdraw in the QFEX web app
 perp --json -e qfex funds transfer <AMOUNT> primary --from <account-uuid>   # between your QFEX accounts
 perp --json funds deposit aster <AMOUNT> [--chain bsc|arbitrum] [--asset USDT|USDC]   # vault approve + deposit (mainnet; default BNB Chain USDT)
@@ -326,7 +326,7 @@ perp --json arb scan --compare <SYMBOL>                     # compare a symbol a
 perp --json arb scan --positions                            # position funding impact; actual24h null + fundingHistoryErrors when a venue's history is unreadable
 perp --json arb scan --live --interval 60                   # continuous monitoring
 perp --json arb scan --top 10 --hold-days 7 --bridge-cost 0 --size 100  # cost-aware filtering
-perp --json arb scan --rates --include-unverified           # also show QFEX and TxFlow (unverified funding; TxFlow rows apiStatus "unofficial"; display only, never ranked)
+perp --json arb scan --rates --include-unverified           # also show QFEX, TxFlow and Variational (unverified funding; TxFlow rows apiStatus "unofficial"; display only, never ranked)
 # netSpread / grossSpread = annualized % (netSpread = gross minus round-trip costs amortized over --hold-days)
 # spot-perp rows: netSpreadPct / grossSpreadPct, spotExchanges[], perpExchange, direction
 
@@ -404,10 +404,9 @@ perp --json wallet agent approve <exchange> \
   [--account-index <0-9|255>]          # Arcus subaccount
   [--api-key-index <n>]                # Lighter slot 4-254 (default: first slot free locally AND on-chain)
   [--force]                            # Lighter: overwrite an --api-key-index slot that already holds an on-chain key
-# risex: registers a session signer (default --expires-in 30d) and restricts it ON-CHAIN to trading only
-#   (the master sends the DisablePermission transactions: needs RISE-chain ETH for gas). --can-withdraw / --can-spot
-#   are refused; --rotate revokes the old signer first. `wallet agent import risex` is refused (app signers keep
-#   fund-movement permissions). txflow: every agent command → CAPABILITY_UNSUPPORTED (market data only).
+# risex: READ-ONLY in this release (trading is planned for a later release) — `wallet agent approve|import|revoke|rotate
+#   risex` → CAPABILITY_UNSUPPORTED (also with --dry-run); `wallet agent verify risex` (read-only) still works.
+#   txflow / variational: every agent command → CAPABILITY_UNSUPPORTED (market data only).
 
 # Import a key the USER created on the exchange WEBSITE (master wallet not needed here).
 # Key on stdin only (one line; ondo: key id + secret; qfex: public key + secret) — an argv key is rejected (INVALID_PARAMS).

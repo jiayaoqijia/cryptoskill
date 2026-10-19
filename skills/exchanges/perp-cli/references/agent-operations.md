@@ -141,8 +141,9 @@ printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set hl
 | `ondo` \| `ondo-perps` | off-chain (USDC deposits from Arbitrum / Ethereum) | API key id + secret (stdin) |
 | `arcus` | Robinhood Chain (USDG) | Ed25519 API key (`wallet agent approve arcus --master <w>` / `import`) |
 | `qfex` \| `qf` | custodial (USDC on Arbitrum One) | website key, imported by the user only (`wallet agent import qfex`) |
-| `risex` \| `rise` | RISE chain (USDC; deposit / withdraw in the RISEx app only) | EVM master + session signer registered and restricted to trading-only on-chain (`wallet agent approve risex --master <w>`; import refused) |
+| `risex` \| `rise` | RISE chain (USDC; deposit / withdraw in the RISEx app only) | none for market data; master address only for account reads. READ-ONLY in this release: trading is planned for a later release — every trade / agent / bot write → `CAPABILITY_UNSUPPORTED` |
 | `txflow` \| `txf` | — | none: MARKET DATA ONLY through an UNOFFICIAL API (every write → `CAPABILITY_UNSUPPORTED`) |
+| `variational` \| `var` \| `omni` | — | none: MARKET DATA ONLY through the official read-only API; no public trading API yet (every write → `CAPABILITY_UNSUPPORTED`) |
 
 Default `-e` = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
 
@@ -170,7 +171,7 @@ perp --json funds deposit lighter ethereum 100        # L1 direct (min 1 USDC)
 perp --json funds deposit lighter cctp arbitrum 100   # via CCTP from Arbitrum (min 5 USDC)
 ```
 
-RISEx: deposits are app-only (`funds deposit risex` → `CAPABILITY_UNSUPPORTED`, remediation app.rise.trade). Testnet: `perp --json -n testnet funds faucet risex`.
+RISEx: deposits are app-only (`funds deposit risex` → `CAPABILITY_UNSUPPORTED`, remediation app.rise.trade). RISEx is read-only in this release (trading in a later release), so `funds faucet risex` is refused too.
 
 ### Withdraw from Exchange (`funds withdraw`)
 ```bash
