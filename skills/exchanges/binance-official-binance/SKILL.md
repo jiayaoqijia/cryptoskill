@@ -2,7 +2,7 @@
 name: binance
 description: Use binance-cli for Binance Spot, Futures (USD-S), and Convert. Requires auth.
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   author: Binance
   openclaw:
     requires:
@@ -63,6 +63,7 @@ binance-cli --version
 | [`algo`](./references/algo.md) | Algo Trading |
 | [`alpha`](./references/alpha.md) | Alpha |
 | [`c2c`](./references/c2c.md) | C2C |
+| [`cms`](./references/cms-streams.md) | CMS Streams |
 | [`convert`](./references/convert.md) | Convert |
 | [`copy-trading`](./references/copy-trading.md) | Copy Trading |
 | [`crypto-loan`](./references/crypto-loan.md) | Crypto Loan |
@@ -87,6 +88,8 @@ binance-cli --version
 | [`spot`](./references/spot.md) | Spot Trading |
 | [`spot-streams`](./references/spot-streams.md) | Spot Trading Streams |
 | [`staking`](./references/staking.md) | Staking |
+| [`stocks`](./references/stocks.md) | Stocks |
+| [`stocks-streams`](./references/stocks-streams.md) | Stocks Streams |
 | [`sub-account`](./references/sub-account.md) | Sub Account |
 | [`vip-loan`](./references/vip-loan.md) | VIP Loan |
 | [`wallet`](./references/wallet.md) | Wallet |
@@ -94,7 +97,6 @@ binance-cli --version
 ## Notes
 
 - ⚠️ **Prod transactions** — always ask user to type `CONFIRM` before executing.
-- Install binance-cli using `npm install -g @binance/binance-cli`
 - Use `--help` to get the list of commands and parameters.
 - Use the output from both stdout and stderr.
 - Append `--profile <name>` to any command to use a non-active profile.

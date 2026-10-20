@@ -85,7 +85,7 @@ nothing about whether AERO goes up.
 ## Hosted page
 
 **[aero.deftools.xyz](https://aero.deftools.xyz)** — nothing to install, rescanned
-every 6 hours, allocation runs in the visitor's browser.
+every 4 hours, allocation runs in the visitor's browser.
 
 ## Source
 
