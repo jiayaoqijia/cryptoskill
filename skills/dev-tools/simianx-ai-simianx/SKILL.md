@@ -1,11 +1,11 @@
 ---
 name: simianx
-description: "Use SimianX AI from an agent. Run the four live agents (chart, news flow, fundamentals, and a decision with entry, stop and target) on any US stock or crypto pair, and read the scored news feed behind Market Pulse (symbols, value score, sentiment; list or live stream). Also 8-agent deep research with a verdict, a plan and a PDF, Market Pulse price events, Sector Watch catalyst calendars (biopharma: PDUFA dates, approvals, advisory committees, trial readouts), candles and indicators, and autopilots that run the live agents on a schedule with a paper position and an event log. Signs the user in from the agent (browser link or emailed code). Use when the user asks for a trading analysis, a view on a ticker or coin, news on a symbol, upcoming catalysts in a sector, or wants a symbol watched."
+description: "Give an agent SimianX AI, a research desk on US stocks and crypto. Convene the 8-agent research committee (four analysts, a bull and a bear researcher, a research manager, a risk manager) on any stock or coin for a verdict with entry, stop and target and a PDF, then put follow-up questions to the same committee. Run the four live agents (chart, news flow, fundamentals, decision) for a read on one timeframe, and read the scored news feed behind Market Pulse (symbols, value, sentiment; list or live stream). Also Market Pulse price events, Sector Watch catalyst calendars (biopharma PDUFA dates, advisory committees, trial readouts), candles and indicators, and autopilots that run the live agents on a schedule with a paper position. Signs the user in from the agent. Use when the user asks whether to buy or sell a stock or coin, for a trading analysis or a second opinion, news on a symbol, upcoming catalysts, or wants a symbol watched."
 license: MIT
 compatibility: "Needs network access to the SimianX API. Optional: python3 for the runner."
 metadata:
   author: simianx
-  version: "1.0.2"
+  version: "1.0.3"
   api_base: https://service.simianx.ai
   docs: https://www.simianx.ai/agents
   openapi: https://service.simianx.ai/v1/openapi.json
@@ -14,21 +14,22 @@ metadata:
 # SimianX for agents
 
 Base URL: `https://service.simianx.ai` (every path below starts with `/v1`). Auth: `Authorization: Bearer $SIMIANX_API_KEY`,
-plus `X-SimianX-Skill: 1.0.2` (this file's version) on every request.
+plus `X-SimianX-Skill: 1.0.3` (this file's version) on every request.
 Responses use `{"code": <http status>, "notify": "<human text>", "data": {...}}`. Every response carries `X-Request-Id`,
 `X-SimianX-Skill-Version`, `X-SimianX-Api-Version`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`;
 paid responses carry `X-Points-Charged` and `X-Points-Remaining`.
 
 ## Coverage
 
-- **Live analysis** (lead with this): the four live agents on one symbol and timeframe: indicator (the chart),
+- **Live analysis** (lead with this for a read on one timeframe): the four live agents on one symbol and timeframe: indicator (the chart),
   intelligence (the news flow), fundamental (filings and insider trades, or on-chain and derivatives for a coin) and
   decision (a trade with entry, stop and target).
 - **News** (lead with this too): every article tagged with its symbols, a value (`low` / `medium` / `high`) and a
   sentiment. It is the Market Pulse feed on the website. List, by id, titles translated into 16 languages, SSE stream.
 - **Market Pulse**: price shocks on 1-, 5- and 15-minute windows, 24-hour / 30-day / 52-week highs and lows, day moves
   and gaps, plus news events, for crypto and stocks, severity 1–4.
-- **Deep research**: 8 agents per run. Four analysts (stocks: fundamentals, market, news, timing; crypto: fundamentals,
+- **Research committee (deep research)**, lead with this when the user wants a full view (buy or not, the case,
+  the risks): 8 agents per run. Four analysts (stocks: fundamentals, market, news, timing; crypto: fundamentals,
   market, news, derivatives), a bull and a bear researcher, a research manager, a risk manager who issues the verdict
   and the plan. Horizons `short` / `swing` / `long`, follow-up questions, PDF report.
 - **Sector Watch**: primary-source catalysts per sector: calendar (PDUFA dates, advisory committees, trial readouts),
@@ -47,8 +48,8 @@ paid responses carry `X-Points-Charged` and `X-Points-Remaining`.
 
 ## Setup
 
-0. **Version check, once per session.** This file is version `1.0.2` (frontmatter `metadata.version`). Send
-   `X-SimianX-Skill: 1.0.2` on every request. Before the first real call, `GET /v1/skill` (public): if `data.version`
+0. **Version check, once per session.** This file is version `1.0.3` (frontmatter `metadata.version`). Send
+   `X-SimianX-Skill: 1.0.3` on every request. Before the first real call, `GET /v1/skill` (public): if `data.version`
    is newer than yours, or `data.minimum_version` is above yours, re-read https://www.simianx.ai/SKILL.md and follow
    the new file. Any response with HTTP 426 (`reason: skill_outdated`) means the same: re-read, then retry.
    `data.deprecations` lists endpoints with a sunset date; stop using them before that date. The authoritative

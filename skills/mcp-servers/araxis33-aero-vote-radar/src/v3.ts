@@ -190,6 +190,92 @@ export async function readIncentivePrograms(c: V3Client, rewards: Address): Prom
   return progs.map((p) => ({ token: p.token, amount: p.amount, rate: p.rate, start: Number(p.start), end: Number(p.end) }));
 }
 
+/** Aero goes live at 2026-10-22 00:00 UTC; no allocator fees exist before it, so the fee window starts no earlier. */
+export const AERO_LAUNCH_TS = Date.UTC(2026, 9, 22) / 1000;
+/** Fee window, the same 96 h the per-day fee figure uses (src/feeRate.ts). */
+export const V3_WINDOW_HOURS = 96;
+/** Base produces a block every 2 s; used to turn the fee window into a block range. */
+export const BASE_BLOCK_TIME_SEC = 2;
+/** Rewards contracts per getLogs filter, so a public RPC is not handed hundreds of addresses at once. */
+export const V3_LOG_ADDRESS_CHUNK = 50;
+
+/** The FactoryRegistry address in one of Aero's deployment files (`deployment-addresses/<chain>.json`). */
+export function registryFromDeployment(file: Record<string, unknown>): Address | undefined {
+  for (const [k, v] of Object.entries(file)) {
+    if (k.toLowerCase() === "factoryregistry" && typeof v === "string" && /^0x[0-9a-fA-F]{40}$/.test(v)) return v as Address;
+  }
+  return undefined;
+}
+
+export interface V3ScanGauge extends V3GaugeYield {
+  gauge: Address;
+  pool: Address;
+  /** Allocation weight right now, in sAERO. */
+  weight: number;
+}
+
+export interface V3ScanFile {
+  checkedAt: string;
+  chain: string;
+  /** no-addresses: no deployment file yet; not-live: registry deployed but no voter; live: gauges read. */
+  status: "no-addresses" | "not-live" | "live";
+  registry?: Address;
+  leafVoter?: Address;
+  /** Hours of fees actually behind the figures — shorter than V3_WINDOW_HOURS in the first days after launch. */
+  windowHours: number;
+  gauges: V3ScanGauge[];
+}
+
+const ZERO = /^0x0*$/;
+
+/**
+ * One pass over a chain's Aero contracts: every gauge's weight, its incentives
+ * streaming now, and the fees swept to its allocators over the last
+ * V3_WINDOW_HOURS (cut at launch). Sorted by what 10,000 sAERO would earn a day.
+ */
+export async function scanV3(
+  c: V3Client & { getBlockNumber(): Promise<bigint> },
+  registry: Address,
+  opts: { chain: string; now: Date; priceOf: (tokens: string[]) => Promise<(token: string) => TokenPrice | undefined> },
+): Promise<V3ScanFile> {
+  const base = { checkedAt: opts.now.toISOString(), chain: opts.chain, registry };
+  const { leafVoter, gauges } = await readV3Gauges(c, registry);
+  if (ZERO.test(leafVoter) || gauges.length === 0) return { ...base, status: "not-live", leafVoter, windowHours: 0, gauges: [] };
+
+  const nowSec = Math.floor(opts.now.getTime() / 1000);
+  const windowSec = Math.max(0, Math.min(V3_WINDOW_HOURS * 3600, nowSec - AERO_LAUNCH_TS));
+  const latest = await c.getBlockNumber();
+  const span = BigInt(Math.ceil(windowSec / BASE_BLOCK_TIME_SEC));
+  const fees: Awaited<ReturnType<typeof readFeesCollected>> = [];
+  if (windowSec > 0) {
+    const rewards = gauges.map((g) => g.rewards);
+    for (let i = 0; i < rewards.length; i += V3_LOG_ADDRESS_CHUNK) {
+      fees.push(...(await readFeesCollected(c, rewards.slice(i, i + V3_LOG_ADDRESS_CHUNK), latest > span ? latest - span : 0n, latest)));
+    }
+  }
+
+  const rows: { g: V3Gauge; point: GaugePoint; programs: IncentiveProgram[] }[] = [];
+  for (const g of gauges) {
+    rows.push({ g, point: await readGaugePoint(c, leafVoter, g.gauge), programs: await readIncentivePrograms(c, g.rewards) });
+  }
+  const tokens = [...fees.map((f) => f.token), ...rows.flatMap((r) => r.programs.map((p) => p.token))];
+  const priceOf = await opts.priceOf(tokens);
+
+  const out: V3ScanGauge[] = rows.map(({ g, point, programs }) => {
+    const weight = gaugeWeightAt(point, nowSec);
+    const y = v3GaugeYield({
+      feesCollected: fees.filter((f) => f.gauge.toLowerCase() === g.gauge.toLowerCase()),
+      windowHours: windowSec / 3600,
+      incentiveRates: incentiveRatesNow(programs, nowSec),
+      weight,
+      priceOf,
+    });
+    return { gauge: g.gauge, pool: g.pool, weight: Number(weight / 10n ** 12n) / 1e6, ...y };
+  });
+  out.sort((a, b) => (b.usdPerDayPer10k ?? -1) - (a.usdPerDayPer10k ?? -1));
+  return { ...base, status: "live", leafVoter, windowHours: windowSec / 3600, gauges: out };
+}
+
 /** `FeesCollected` from the given rewards contracts over a block range, in chunks of `step` blocks. */
 export async function readFeesCollected(
   c: V3Client,

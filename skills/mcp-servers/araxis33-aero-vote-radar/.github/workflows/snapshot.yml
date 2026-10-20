@@ -41,6 +41,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/aero-chains.mjs
 
+      # Aero's own contracts on Base (src/v3-cli.ts), once the step above has found Base's
+      # deployment file; until then it writes status "no-addresses". Best-effort, like the step above.
+      - name: Scan Aero (v3) on Base
+        continue-on-error: true
+        run: npm run v3scan
+
       - name: Commit the snapshot if it changed
         run: |
           git config user.name "github-actions[bot]"
@@ -60,6 +66,7 @@ jobs:
           # counters (src/feeRate.ts), written in the same best-effort step.
           if [ -f docs/data/fee-rate.json ]; then git add docs/data/fee-rate.json; fi
           if [ -f docs/data/aero-chains.json ]; then git add docs/data/aero-chains.json; fi
+          if [ -f docs/data/v3.json ]; then git add docs/data/v3.json; fi
           if git diff --cached --quiet; then
             echo "snapshot unchanged — nothing to commit"
             exit 0

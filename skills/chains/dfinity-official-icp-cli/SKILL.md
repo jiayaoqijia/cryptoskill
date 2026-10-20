@@ -211,7 +211,7 @@ npm install -g @icp-sdk/icp-cli @icp-sdk/ic-wasm
     icp cycles balance -n ic   # check cycles balance on mainnet
     icp identity account-id    # get account ID to fund if needed
     ```
-    With a card and no ICP, `icp cycles buy --amount <usd> -n ic` buys cycles for the identity itself through CyclePay's on-chain gateway: the agent creates the order, the human pays on the link it prints, and the cycles land on the identity's cycles-ledger account, where `icp deploy -e ic` spends from. Load the `buy-cycles` skill for the flow, the agent flags (`--yes --no-open --json`) and the order states.
+    With a card and no ICP, `icp cycles buy --amount <usd> -n ic` (or `--cycles <n>` for the amount the deploy needs; see "Funding an identity for mainnet" below for the estimate) buys cycles for the identity itself through CyclePay's on-chain gateway: the agent creates the order, the human pays on the link it prints, and the cycles land on the identity's cycles-ledger account, where `icp deploy -e ic` spends from. Load the `buy-cycles` skill for the flow, the agent flags (`--yes --no-open --json`) and the order states.
 
 21. **Over-specifying (or wrongly omitting) `package` in the Rust recipe.** As of `@dfinity/rust@v3.3.0` the `package` config is **optional** and defaults to the canister `name` in `icp.yaml`. By convention, keep the canister `name` equal to the `[package] name` in `Cargo.toml` and omit `package` entirely:
     ```yaml
@@ -480,7 +480,15 @@ Two specialized skills cover `icp identity link web`. Load the right one for the
 
 ### Funding an identity for mainnet
 
-A new identity has neither ICP nor cycles. `icp deploy -e ic` then fails with `Insufficient cycles. Requested: <n> cycles, available balance: 0 cycles.` (or `insufficient liquid cycles balance` from the cycles ledger): the deploying identity's cycles-ledger balance on mainnet is empty. Check it with `icp cycles balance -n ic`, then fund it. With ICP in hand, `icp cycles mint` converts it (see `cycles-management`). With only a card, load the `buy-cycles` skill: `icp cycles buy` buys cycles for the CLI identity itself, no wallet, exchange or Internet Identity sign-in needed (Pitfall 20).
+A new identity has neither ICP nor cycles. `icp deploy -e ic` then fails with `Insufficient cycles. Requested: <n> cycles, available balance: 0 cycles.` (or `insufficient liquid cycles balance` from the cycles ledger): the deploying identity's cycles-ledger balance on mainnet is empty. The CLI does not estimate or warn beforehand, so do it yourself before the deploy, not after the failure:
+
+1. **Count the canisters still to create.** `icp deploy` creates every canister of the environment that has no id in `.icp/data/mappings/<env>.ids.json` (a `name: id` map; absent before the first deploy, so then it is all of them). `icp deploy --no-create -e ic` lists them without touching the network: it builds, then refuses with `the following canisters do not exist: ...`.
+2. **Estimate.** Each creation takes the `--cycles` amount (default 2T; suffixes `k`/`m`/`b`/`t`) plus the cycles-ledger fee of 100M out of the identity's balance, so N canisters need `N × (2T + 100M)`. The network's creation fee (500B on a 13-node subnet) and the install itself come out of each canister's 2T, not the identity's balance; add a margin of about 10% so a top-up is possible afterwards.
+3. **Compare** with `icp cycles balance -n ic --identity "$ID"` for the identity that will deploy (Pitfall 20; `-q` prints the bare number).
+4. **If short, do not guess: tell the human the gap and offer both ways to close it.**
+   - With ICP (`icp token balance -n ic` shows enough): `icp cycles mint --cycles <gap> -n ic` converts just that much (see `cycles-management`).
+   - With a card and no ICP: `icp cycles buy --cycles <gap> -n ic --identity "$ID" --no-open --yes --json` pays the least that buys the gap; load the `buy-cycles` skill for the flow, the link hand-off and the order states. The human pays; the agent waits for `icp cycles balance -n ic` to reach the estimate.
+5. **Deploy** as the same identity: `icp deploy -e ic --identity "$ID"`.
 
 ## Additional References
 

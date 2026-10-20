@@ -301,6 +301,8 @@ icp canister create my_canister -e ic --cycles 2000000000000
 icp canister settings update my_canister --add-controller BACKUP_PRINCIPAL_HERE
 ```
 
+Each creation takes `--cycles` (default 2T) plus the cycles ledger's 100M fee out of the identity's balance. Before `icp deploy -e ic` creates several canisters at once, estimate `N × (2T + 100M)`, compare with `icp cycles balance -n ic`, and close any gap before deploying -- `icp cycles mint --cycles <gap> -n ic` with ICP, `icp cycles buy --cycles <gap> -n ic` with a card. The `icp-cli` skill's "Funding an identity for mainnet" section has the steps.
+
 ### Set Freezing Threshold
 
 ```bash

@@ -44,7 +44,8 @@ the canister or the CLI.
 icp identity principal --identity "$ID"
 icp cycles balance -n ic --identity "$ID"
 
-# 2. Buy (spend 10 USD; or `--cycles 5t` to pay the least that buys 5 T cycles)
+# 2. Buy (spend 10 USD; or `--cycles 5t` to pay the least that buys 5 T cycles -- for a deploy,
+#    the gap from the `icp-cli` skill's pre-deploy estimate, N canisters × (2T + 100M) − balance)
 icp cycles buy --amount 10 -n ic --identity "$ID" --no-open --yes --json
 #  stdout, line 1, as soon as the order exists:
 #  {"order_id":"co-12-…","checkout_url":"https://buy.stripe.com/…","amount":{"currency":"USD","value":"10.00"},

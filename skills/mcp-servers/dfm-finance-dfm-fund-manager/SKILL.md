@@ -34,7 +34,7 @@ The agent signs in with its own Solana **identity keypair** (SIWS). No API key i
 | 2 | (if no identity) | `create_identity_wallet {}` | The identity public key. Created once at `~/.config/dfm/agent-wallet.json` (0600) or reused; never a second. |
 | 3 | "Set your profile, name it Atlas" | `set_profile {displayName:"Atlas"}` | Profile + `avatar.isDefault`. With no image at `~/.config/dfm/avatar.png` a deterministic default avatar is generated, so no file is required. |
 | 4 | (automatic in onboard) | `create_app_wallet {}` | The app wallet address. It is owned by a local P-256 key (`~/.config/dfm/app-wallet-owner.pem`) — back it up; DFM cannot recover it. |
-| 5 | "Fund your app wallet" | the human sends USDC + SOL to the **identity** public key, then `app_wallet_fund {usdc, sol}` | A transaction signature. `onboard`/`whoami` print the exact amounts as `next` / `fundingStep`. |
+| 5 | "Fund your app wallet" | send USDC + SOL to the **app wallet** address from ANY wallet — the agent's own identity wallet (`app_wallet_fund {usdc, sol}`), another wallet the agent controls, or a person's; who sends does not matter | A transaction signature. `onboard`/`whoami` print the exact amounts as `next` / `fundingStep`. |
 | 6 | (optional) | `create_api_key {name}` | A read-only `dfm_` key stored in a 0600 file; the key itself never enters the chat. |
 
 What the launch preflight enforces on the app wallet: **USDC** = 0.1 (factory seed, read live) + whatever
@@ -46,8 +46,8 @@ the identity wallet for the `app_wallet_fund` fee.
 
 The human mints a `dfm_` key at https://app.dfm.finance → **Agent → Keys** (tick "allow writes" for write
 tools) and installs: `npx -y @dfm-fi/agent install --write --api-key dfm_...`.
-The human funds their own app wallet in the app (https://app.dfm.finance/account); `app_wallet_fund` is
-refused in key-only mode because it signs from a local wallet.
+The app wallet is funded by a plain USDC + SOL transfer to its address from any wallet (or in the app,
+https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode because it signs from a local wallet.
 
 ## Rules that are easy to get wrong
 
@@ -103,7 +103,7 @@ refuse and transfer nothing. Rebalancing is manual: there are no auto-rebalance 
 | `Refused: <tool> … confirmPhrase=` | `DFM_MCP_CONFIRM_REQUIRED=1` | ask the human, relay the exact phrase |
 | `PROFILE_REQUIRED` (412) | no display name or avatar yet | `set_profile {displayName}` |
 | `No active app-wallet signer` / `hasAppWallet: false` | no app wallet | path A: `onboard`; path B: the human signs in at app.dfm.finance |
-| `Insufficient SOL: need ~…` / `Insufficient SOL for account rent` | app wallet short of SOL | fund it (`app_wallet_fund` or the app); waiting adds nothing |
+| `Insufficient SOL: need ~…` / `Insufficient SOL for account rent` | app wallet short of SOL | send SOL to the app wallet address from any wallet (`app_wallet_fund`, another wallet, or the app); waiting adds nothing |
 | `allocationBps must sum to exactly 10000` / `The allocation must contain 2–10 unique assets` | bad basket | fix weights / asset count |
 | `must be a raw 6dp integer` | a float or bare dollars | send raw units, e.g. `"12000000"` |
 | `has no app-wallet signing path in this agent` | that tool has no executor in this mode | do it in the app |

@@ -38,6 +38,7 @@
     "cli": "tsx src/cli.ts",
     "mcp": "tsx src/mcp-server.ts",
     "snapshot": "tsx src/snapshot-cli.ts",
+    "v3scan": "tsx src/v3-cli.ts",
     "test": "node --import tsx --test test/**/*.test.ts",
     "predict-check": "tsx src/predict-cli.ts",
     "timing": "tsx src/timing-cli.ts",

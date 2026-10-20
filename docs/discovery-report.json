@@ -15,6 +15,13 @@
       "official": false
     },
     {
+      "org": "SimianX-AI",
+      "repo": "simianx-skills",
+      "category": "mcp-servers",
+      "prefix": "simianx-ai-",
+      "official": false
+    },
+    {
       "org": "binance",
       "repo": "binance-skills-hub",
       "category": "exchanges",
@@ -43,38 +50,10 @@
       "official": false
     },
     {
-      "org": "Senpi-ai",
-      "repo": "senpi-skills",
-      "category": "exchanges",
-      "prefix": "senpi-ai-",
-      "official": false
-    },
-    {
-      "org": "0xfreak0",
-      "repo": "sui-mcp",
-      "category": "mcp-servers",
-      "prefix": "0xfreak0-",
-      "official": false
-    },
-    {
       "org": "DFM-Finance",
       "repo": "dfm-agent",
       "category": "mcp-servers",
       "prefix": "dfm-finance-",
-      "official": false
-    },
-    {
-      "org": "priors-agents",
-      "repo": "priors",
-      "category": "mcp-servers",
-      "prefix": "priors-agents-",
-      "official": false
-    },
-    {
-      "org": "FlipLabsAI",
-      "repo": "signo-mcp",
-      "category": "mcp-servers",
-      "prefix": "fliplabsai-",
       "official": false
     },
     {
@@ -85,16 +64,37 @@
       "official": false
     },
     {
-      "org": "bybit-exchange",
-      "repo": "trading-mcp",
+      "org": "0xfreak0",
+      "repo": "sui-mcp",
       "category": "mcp-servers",
-      "prefix": "bybit-exchange-",
-      "official": true
+      "prefix": "0xfreak0-",
+      "official": false
+    },
+    {
+      "org": "TRDEFI",
+      "repo": "mcp-server",
+      "category": "mcp-servers",
+      "prefix": "trdefi-",
+      "official": false
+    },
+    {
+      "org": "priors-agents",
+      "repo": "priors",
+      "category": "mcp-servers",
+      "prefix": "priors-agents-",
+      "official": false
     },
     {
       "org": "bybit-exchange",
       "repo": "skills",
       "category": "exchanges",
+      "prefix": "bybit-exchange-",
+      "official": true
+    },
+    {
+      "org": "bybit-exchange",
+      "repo": "trading-mcp",
+      "category": "mcp-servers",
       "prefix": "bybit-exchange-",
       "official": true
     },

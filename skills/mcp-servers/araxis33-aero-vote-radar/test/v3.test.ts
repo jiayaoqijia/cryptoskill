@@ -9,6 +9,9 @@ import {
   readV3Gauges,
   v3GaugeYield,
   V3_PRECISION,
+  AERO_LAUNCH_TS,
+  registryFromDeployment,
+  scanV3,
   type V3Client,
 } from "../src/v3.js";
 
@@ -112,4 +115,64 @@ test("FeesCollected: range split into chunks, incomplete logs skipped", async ()
   assert.equal(out.length, 3);
   assert.deepEqual(out[0], { rewards: "0xM", gauge: "0xG", token: "0xT", amount: 7n });
   assert.deepEqual(await readFeesCollected(c, [], 0n, 10n), []);
+});
+
+test("deployment file: factoryRegistry found by name, any case; absent or malformed is undefined", () => {
+  assert.equal(registryFromDeployment({ factoryRegistry: "0xCe44907DC45D3BFa3f5f6035B0e6E8B22D780A42", metarouter: "0x1" }), "0xCe44907DC45D3BFa3f5f6035B0e6E8B22D780A42");
+  assert.equal(registryFromDeployment({ FactoryRegistry: "0x" + "a".repeat(40) }), "0x" + "a".repeat(40));
+  assert.equal(registryFromDeployment({ factoryRegistry: "0x123" }), undefined);
+  assert.equal(registryFromDeployment({ voter: "0x" + "b".repeat(40) }), undefined);
+});
+
+test("scan: a registry with no voter yet is not live and reads nothing else", async () => {
+  const c = Object.assign(fake({ "0xR|leafVoter": "0x0000000000000000000000000000000000000000", "0xR|gaugeFactories": [] }), {
+    getBlockNumber: async () => { throw new Error("must not be called"); },
+  });
+  const r = await scanV3(c, "0xR", { chain: "base", now: new Date(AERO_LAUNCH_TS * 1000 + 3600_000), priceOf: async () => () => undefined });
+  assert.equal(r.status, "not-live");
+  assert.deepEqual(r.gauges, []);
+});
+
+test("scan: fee window cut at launch, gauges ranked by per-10k, fees matched to their gauge", async () => {
+  const now = new Date((AERO_LAUNCH_TS + 24 * 3600) * 1000); // one day after launch
+  const nowSec = AERO_LAUNCH_TS + 24 * 3600;
+  const point = (w: bigint) => [0n, 0n, 0, true, true, 0n, 0n, 0n, { bias: 0n, slope: 0n, ts: nowSec, permanentStakeBalance: w * e18 }];
+  const c = Object.assign(
+    fake(
+      {
+        "0xR|leafVoter": "0xV",
+        "0xR|gaugeFactories": ["0xF"],
+        "0xR|factoryToGauges|0xF": ["0xG1", "0xG2"],
+        "0xR|gaugeToRewards|0xG1": "0xM1",
+        "0xR|gaugeToTarget|0xG1": "0xP1",
+        "0xR|gaugeToRewards|0xG2": "0xM2",
+        "0xR|gaugeToTarget|0xG2": "0xP2",
+        "0xV|gaugeStates|0xG1": point(100_000n),
+        "0xV|gaugeStates|0xG2": point(10_000n),
+        "0xM1|incentiveCount": 0n,
+        "0xM2|incentiveCount": 0n,
+      },
+      [
+        { address: "0xM1", args: { _gauge: "0xG1", _token: "0xUSDC", _amount: 100_000_000n } }, // $100 in a day
+        { address: "0xM2", args: { _gauge: "0xG2", _token: "0xUSDC", _amount: 20_000_000n } }, // $20 in a day
+      ],
+    ),
+    { getBlockNumber: async () => 1_000_000n },
+  );
+  // the fake answers every getLogs call with the same logs; hand them out on the first chunk only
+  const getLogs = c.getLogs.bind(c);
+  c.getLogs = async (a) => { const l = await getLogs(a); return c.ranges.length === 1 ? l : []; };
+  const r = await scanV3(c, "0xR", {
+    chain: "base",
+    now,
+    priceOf: async () => (t) => (t === "0xusdc" ? { decimals: 6, priceUsd: 1 } : undefined),
+  });
+  assert.equal(r.status, "live");
+  assert.equal(r.windowHours, 24);
+  // 24 h of 2 s blocks back from block 1,000,000, in one 50-address chunk
+  assert.equal(c.ranges[0][0], 1_000_000n - 43_200n);
+  assert.deepEqual(r.gauges.map((g) => g.gauge), ["0xG2", "0xG1"]); // $20 over 10k beats $100 over 100k
+  assert.ok(Math.abs((r.gauges[0].usdPerDayPer10k ?? 0) - 20) < 1e-9);
+  assert.ok(Math.abs((r.gauges[1].usdPerDayPer10k ?? 0) - 10) < 1e-9);
+  assert.equal(r.gauges[1].weight, 100_000);
 });
