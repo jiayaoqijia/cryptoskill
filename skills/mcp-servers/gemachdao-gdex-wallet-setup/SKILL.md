@@ -56,7 +56,9 @@ const { sessionPrivateKey, sessionKey } = generateGdexSessionKeyPair();
 
 ## Get Wallet Info
 
-Query native balance and token count on a specific chain (requires auth):
+Managed-wallet native balance and token count on one chain. This is an
+authenticated managed read (`/v1/user` + `/v1/portfolio` with `userId`, the
+encrypted session `data` and `chainId`); GDEX has no address-only balance read:
 
 ```typescript
 import { GdexSkill, GDEX_API_KEY_PRIMARY } from '@gemachdao/gdex-skill';
@@ -65,21 +67,28 @@ const skill = new GdexSkill();
 skill.loginWithApiKey(GDEX_API_KEY_PRIMARY);
 
 const info = await skill.getWalletInfo({
-  walletAddress: '0xYourAddress',
+  walletAddress: '0xYourControlWallet',   // the GDEX userId
+  sessionPrivateKey,                      // from sign-in (or pass `data`)
+  apiKey: GDEX_API_KEY_PRIMARY,
   chain: 1,   // Ethereum
 });
 ```
+
+MCP: `get_wallet_info` takes `accountRef` (from `gdex_connect`) instead of the raw keys.
 
 ### Wallet Info Response
 
 ```typescript
 interface WalletInfo {
-  address: string;
-  chain: string | number;
-  nativeBalance: string;
+  address: string;         // managed trading wallet on this chain
+  userId: string;          // control wallet
+  chain: number;           // normalized numeric chain id
+  chainId: number;
+  nativeBalance: string;   // whole units, approximate (backend float)
   nativeSymbol: string;    // 'ETH', 'SOL', 'SUI', etc.
-  totalValueUsd?: number;
-  tokenCount?: number;
+  precision: 'approximate';
+  totalValueUsd?: string;
+  tokenCount: number;
 }
 ```
 

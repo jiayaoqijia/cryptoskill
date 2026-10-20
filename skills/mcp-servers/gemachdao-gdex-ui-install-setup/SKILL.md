@@ -138,21 +138,21 @@ Build feature-specific hooks on top of `useGdex()`:
 import { useState, useCallback } from 'react';
 import { useGdex } from '@/providers/GdexProvider';
 
-export function usePortfolio() {
+export function usePortfolio(walletAddress: string) {
   const { skill, isReady } = useGdex();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(async () => {
-    if (!isReady) return;
+    if (!isReady || !walletAddress) return;
     setLoading(true);
     try {
-      const data = await skill.getPortfolio();
+      const data = await skill.getPortfolio({ walletAddress, chain: 8453 });
       setPortfolio(data);
     } finally {
       setLoading(false);
     }
-  }, [skill, isReady]);
+  }, [skill, isReady, walletAddress]);
 
   return { portfolio, loading, refresh };
 }
@@ -161,18 +161,23 @@ export function usePortfolio() {
 ```typescript
 // src/hooks/useTrade.ts
 import { useState } from 'react';
+import type { SupportedChain } from '@gemachdao/gdex-skill';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider'; // managed-custody creds, see gdex-ui-wallet-connection
+
+type TradeInput = { chain: SupportedChain; tokenAddress: string; amount: string; slippage?: number };
 
 export function useTrade() {
   const { skill, isReady } = useGdex();
+  const { creds } = useAuth();
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<any>(null);
 
-  const buyToken = async (params: { chain: string; tokenAddress: string; amount: string; slippage?: number }) => {
-    if (!isReady) throw new Error('SDK not ready');
+  const buyToken = async (params: TradeInput) => {
+    if (!isReady || !creds) throw new Error('Sign in with a wallet first');
     setPending(true);
     try {
-      const res = await skill.buyToken(params);
+      const res = await skill.buyToken({ ...params, ...creds });
       setResult(res);
       return res;
     } finally {
@@ -180,11 +185,11 @@ export function useTrade() {
     }
   };
 
-  const sellToken = async (params: { chain: string; tokenAddress: string; amount: string; slippage?: number }) => {
-    if (!isReady) throw new Error('SDK not ready');
+  const sellToken = async (params: TradeInput) => {
+    if (!isReady || !creds) throw new Error('Sign in with a wallet first');
     setPending(true);
     try {
-      const res = await skill.sellToken(params);
+      const res = await skill.sellToken({ ...params, walletAddress: creds.walletAddress });
       setResult(res);
       return res;
     } finally {

@@ -20,20 +20,17 @@ Manage USDC deposits and withdrawals between your managed wallet and HyperLiquid
 
 ## Deposit USDC to HyperLiquid
 
+Every deposit needs the managed-custody credentials from sign-in (sign in with
+`chainId: 1`). MCP users pass `accountRef` from `gdex_connect` to `perp_deposit` instead.
+
 ```typescript
 import { GdexSkill, GDEX_API_KEY_PRIMARY } from '@gemachdao/gdex-skill';
 
 const skill = new GdexSkill();
 skill.loginWithApiKey(GDEX_API_KEY_PRIMARY);
+// ... managed sign-in (see gdex-authentication) → apiKey, walletAddress (control), sessionPrivateKey
 
-// Amount is human-readable USDC — SDK converts to smallest unit (6 decimals) internally
-await skill.perpDeposit({ amount: '10' });   // deposit 10 USDC (minimum)
-await skill.perpDeposit({ amount: '100' });  // deposit 100 USDC
-```
-
-### Managed-Custody Deposit (Explicit)
-
-```typescript
+// Amount is human-readable USDC — SDK converts to smallest unit (6 decimals) internally. Min 10 USDC.
 await skill.perpDeposit({
   amount: '50',
   tokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', // USDC on Arbitrum
@@ -47,12 +44,6 @@ await skill.perpDeposit({
 > **CRITICAL:** `walletAddress` must be the **control wallet address** used during sign-in — NOT the managed-custody address returned by `/v1/user`. Passing the managed address causes `400 Unauthorized (code 103)`. See **gdex-authentication** for details.
 
 ## Withdraw USDC from HyperLiquid
-
-```typescript
-await skill.perpWithdraw({ amount: '5' });   // withdraw 5 USDC
-```
-
-### Managed-Custody Withdraw (Explicit)
 
 ```typescript
 await skill.perpWithdraw({
@@ -78,7 +69,8 @@ await skill.perpWithdraw({
 ## Check USDC Balance on HyperLiquid
 
 ```typescript
-const balance = await skill.getHlUsdcBalance({ walletAddress: '0xYourAddress' });
+// HL funds sit on the managed EVM wallet (getManagedUser with chainId 1)
+const balance = await skill.getHlUsdcBalance(managedEvmAddress);
 console.log('Available USDC:', balance);
 ```
 
@@ -122,8 +114,8 @@ retry if the balance is unchanged after a few minutes.
 
 ### Deposited funds show under the managed address (and may move to spot)
 HyperLiquid credits the depositing wallet (the **managed** address), so check
-`getHlAccountState(managedAddress)`. Enabling outcome (HIP-3) trading or placing
-an outcome order can move USDC from the perp account to the **spot** balance —
+`getHlAccountState(managedAddress)`. Enabling HL trading or placing
+a HIP-4 outcome order can move USDC from the perp account to the **spot** balance —
 check `getHlSpotState(managedAddress)` if the perp balance reads `$0`.
 
 ### 400 Unauthorized (code 103)

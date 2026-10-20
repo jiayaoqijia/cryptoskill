@@ -57,25 +57,28 @@ Managed wallet:  0x9967179de55bd67e6b90fcc4f908556d93938c0f  ← server-side, ex
 
 The `/v1/hl/close_all_positions` endpoint frequently returns `TIMEOUT` or JSON parse errors.
 
-**Workaround:** Place a reduce-only order for the exact position size:
+**Workaround:** Close each coin with `closePerpPosition` (MCP: `close_perp_position`). It reads the live
+position and sends a reduce-only market order for the exact size on the opposite side:
 ```typescript
 // Instead of skill.hlCloseAll() — use this:
-const positions = await skill.hlGetPositions();
+const positions = await skill.getPerpPositions({ walletAddress: managedEvmAddress }); // positions live on the managed wallet
 for (const pos of positions) {
-  if (Number(pos.szi) !== 0) {
-    await skill.closePerpPosition({
-      coin: pos.coin,
-      closePercent: 100,  // close full position
-    });
-  }
+  await skill.closePerpPosition({
+    coin: pos.coin,
+    positionAddress: managedEvmAddress,
+    apiKey,
+    walletAddress: controlAddress,  // control wallet signs
+    sessionPrivateKey,
+  });
 }
 ```
 
-### Leverage Cannot Be Set via API
+### Leverage Is Set Per Order
 
-The `hlUpdateLeverage` / `/v1/hl/update_leverage` endpoint returns **404** — it's not implemented. The backend sets leverage automatically before each trade.
-
-**Implication:** You control effective leverage through position sizing relative to your account balance.
+The standalone `hlUpdateLeverage` / `/v1/hl/update_leverage` endpoint returns **404**. Set leverage on the
+order instead: `hlCreateOrder({ ..., leverage: 5 })` (MCP: `open_perp_position` with `leverage`). The SDK
+sends it as a top-level field next to `computedData`, which is where the backend reads it. Omitted, HL
+uses its default (20x on most markets).
 
 ### HL Signature Format
 
@@ -147,19 +150,22 @@ CFSi4YimeCbfSNqH2WmHwJKwj1YYG1cWBtQyVPB4sCe1
 
 ## Copy Trade Pitfalls
 
-### `isDelete` and `isChangeStatus` Both Delete
+### `isDelete` Deletes, `isChangeStatus` Toggles
 
-On **both Solana and HyperLiquid**, setting either `isDelete='1'` or `isChangeStatus='1'` **permanently deletes** the copy trade. There is no "pause" or "toggle" — it's irreversible.
+On both Solana and HyperLiquid the backend deletes only on `isDelete`; `isChangeStatus`
+flips `isActive` (`isActive = !existing.isActive`). Neither closes positions or cancels
+their TP/SL orders. Use `pauseCopyTrade`/`resumeCopyTrade`/`deleteCopyTrade` (and the
+`Hl` variants), which read the current state before toggling.
 
-> **Boolean encoding:** Use `''` (empty string) for false and `'1'` for true. The string `'0'` is **truthy** and will trigger deletion.
+SDK versions up to 4.12 ABI-encoded every copy-trade field as a string. The backend
+decodes `uint64`/`bool` slots, so those versions sent `isDelete=true` on every update
+(the old "both flags delete" behaviour) and stored `copyMode=416/480`,
+`oppositeCopy=true`. The SDK now encodes the typed ABI the backend and gdex.pro use.
 
-### ABI Offset Bugs in Responses
+### Legacy Values in Responses
 
-The backend returns ABI **byte-offsets** instead of actual values for some fields:
-- `copyMode` → Returns `416` or `480` (byte offset), not the JSON value
-- `oppositeCopy` → Always returns `true` regardless of actual setting
-
-**Workaround:** Store your own copy trade configuration locally. Don't rely on response values for `copyMode` or `oppositeCopy`.
+`copyMode` 416/480 and `oppositeCopy: true` in a response come from configs written by
+SDK <= 4.12. Repair them with `updateHlCopyTradeSettings` and explicit values.
 
 ### Max 3 HL Copy Trades
 
@@ -199,35 +205,21 @@ When a trade fails, check in order:
 6. **Signature:** Is the session key signing (not control key)? Is the message format correct?
 7. **Balance:** Does the managed wallet have enough funds + gas?
 
-## Portfolio / Balances / Trade History Quirks (Live-Tested)
+## Portfolio / Balances / Trade History (Fixed in SDK)
 
-These are **critical for autonomous agents** — the high-level SDK methods have parameter mismatches:
+The high-level methods now send what the backend reads; no raw-client workaround is needed.
 
-| Endpoint | SDK Method Issue | Correct Raw Client Call |
-|----------|-----------------|------------------------|
-| Portfolio | `getPortfolio()` sends `walletAddress`+`chain` | `GET /v1/portfolio?userId=X&chainId=N&data=Y` |
-| Balances | `getBalances()` sends `walletAddress`+`chain` | `GET /v1/portfolio?userId=X&chainId=N&data=Y` (balances embedded under `portfolio.balances[]`) |
-| Trade History | `getTradeHistory()` sends `userId` | `GET /v1/user_history?user=X&chainId=900&data=Y` |
+| Method | Backend call |
+|--------|--------------|
+| `getPortfolio({ walletAddress, sessionPrivateKey, apiKey, chain })` | `GET /v1/portfolio?userId&data&chainId` → `{ holding: [] }` |
+| `getBalances({ ..., chain, tokenAddress? })` | same read, filtered |
+| `getTradingFunds({ ..., chain })` | `GET /v1/user?userId&data&chainId` → native `balance` |
+| `getTradeHistory({ walletAddress, chain, limit?, cursor? })` | `GET /v1/user_history?user&chainId&limit&cursor` (no session) |
 
-**Key differences:**
-- Portfolio/balances: Backend expects `userId` + `chainId` + `data` (encrypted session key), NOT `walletAddress` + `chain`. On v1.1.0 there is no separate `/v1/balances` endpoint — balances are embedded under `portfolio.balances[]`.
-- Trade history: Backend expects `user` (NOT `userId`) and `chainId: 900` for Solana (NOT `622112261`)
-- All three require the encrypted session key from `buildGdexUserSessionData()`
-
-```typescript
-import { buildGdexUserSessionData } from '@gemachdao/gdex-skill';
-const data = buildGdexUserSessionData(sessionKey, apiKey);
-
-// Correct portfolio call (balances are inside portfolio.balances[])
-const portfolio = await skill.client.get('/v1/portfolio', {
-  params: { userId: controlAddress, chainId: 622112261, data }
-});
-
-// Correct trade history call
-const history = await skill.client.get('/v1/user_history', {
-  params: { user: controlAddress, chainId: 900, data, page: 1, limit: 20 }
-});
-```
+- `walletAddress` / `userId` is the **control** wallet; `data` is derived from the session key.
+- A refused or malformed response throws (`GdexApiError`); `[]` only means the backend reported no holdings.
+- History pages with `cursor` (= `nextCursor`), at most 50 per page; `page`/`startTime`/`endTime` are rejected.
+- Solana history uses the same chain id as every other Solana read (`622112261`); older notes said `900`. If a live Solana history call comes back empty, compare both.
 
 ## Limit Order ABI Bug (Fixed in SDK)
 

@@ -55,6 +55,17 @@ const result2 = await skill.transferToken({
   computedData,
   chainId: 622112261,     // Solana SPL
 });
+
+// Or let the SDK build and sign the payload. `amount` is raw base units
+// (native decimals for transferNative, the token's decimals for transferToken)
+// and chainId is required.
+const result3 = await skill.transferToken({
+  recipient: '0xRecipient',
+  tokenAddress: '0xToken',
+  amount: '1000000',      // 1 USDC at 6 decimals
+  chainId: 8453,
+  managed: { apiKey, walletAddress, sessionPrivateKey, userId },
+});
 ```
 
 ## Response

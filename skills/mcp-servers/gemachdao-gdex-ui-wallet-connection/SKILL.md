@@ -28,14 +28,29 @@ Extend the base `GdexProvider` with wallet connection state:
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import {
+  GDEX_API_KEY_PRIMARY,
+  generateGdexSessionKeyPair,
+  buildGdexSignInMessage,
+  buildGdexSignInComputedData,
+  buildGdexUserSessionData,
+} from '@gemachdao/gdex-skill';
 import { useGdex } from '@/providers/GdexProvider';
 
 type AuthMethod = 'none' | 'api-key' | 'wallet';
+
+/** Managed-custody credentials every write call takes (walletAddress = control wallet). */
+export interface GdexCreds {
+  apiKey: string;
+  walletAddress: string;
+  sessionPrivateKey: string;
+}
 
 interface AuthContextValue {
   authMethod: AuthMethod;
   walletAddress: string | null;
   managedAddress: string | null;
+  creds: GdexCreds | null;
   isAuthenticated: boolean;
   loginWithApiKey: (key: string) => void;
   loginWithWallet: (address: string, signFn: (msg: string) => Promise<string>) => Promise<void>;
@@ -49,36 +64,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authMethod, setAuthMethod] = useState<AuthMethod>('none');
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [managedAddress, setManagedAddress] = useState<string | null>(null);
+  const [creds, setCreds] = useState<GdexCreds | null>(null);
 
+  // Read-only access (token data, trending, charts). Trading needs loginWithWallet.
   const loginWithApiKey = useCallback((key: string) => {
     skill.loginWithApiKey(key);
     setAuthMethod('api-key');
     setWalletAddress(null);
+    setCreds(null);
   }, [skill]);
 
+  // Managed-custody sign-in: the user's wallet signs once (personal_sign), then a
+  // browser-held session key signs every trade.
   const loginWithWallet = useCallback(async (
     address: string,
     signFn: (msg: string) => Promise<string>
   ) => {
-    await skill.loginWithWallet(address, signFn);
+    const apiKey = GDEX_API_KEY_PRIMARY;
+    skill.loginWithApiKey(apiKey);
+    const { sessionPrivateKey, sessionKey } = generateGdexSessionKeyPair();
+    const nonce = String(Math.floor(Date.now() / 1000) + Math.floor(Math.random() * 1000));
+    const signature = await signFn(buildGdexSignInMessage(address, nonce, sessionKey));
+    const signIn = buildGdexSignInComputedData({ apiKey, userId: address, sessionKey, nonce, signature });
+    await skill.signInWithComputedData({ computedData: signIn.computedData, chainId: 1 });
+
+    // Managed EVM wallet: receives funds and holds HyperLiquid positions
+    const user = await skill.getManagedUser({
+      userId: address,
+      data: buildGdexUserSessionData(sessionKey, apiKey),
+      chainId: 1,
+    });
     setAuthMethod('wallet');
     setWalletAddress(address);
-    // Fetch managed address after login
-    const user = await skill.getWalletInfo();
-    setManagedAddress(user?.managedAddress ?? null);
+    setManagedAddress(typeof user.address === 'string' ? user.address : null);
+    setCreds({ apiKey, walletAddress: address, sessionPrivateKey });
   }, [skill]);
 
   const logout = useCallback(() => {
+    skill.logout();
     setAuthMethod('none');
     setWalletAddress(null);
     setManagedAddress(null);
-  }, []);
+    setCreds(null);
+  }, [skill]);
 
   return (
     <AuthContext.Provider value={{
       authMethod,
       walletAddress,
       managedAddress,
+      creds,
       isAuthenticated: authMethod !== 'none',
       loginWithApiKey,
       loginWithWallet,
@@ -278,7 +313,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 | Path | When | Flow |
 |------|------|------|
 | **API Key (quick)** | Shared/demo accounts, agent-driven apps | Call `loginWithApiKey(GDEX_API_KEY_PRIMARY)` — instant, no wallet needed |
-| **Wallet (full)** | User's own wallet, production apps | User connects wallet → signs message → `loginWithWallet(address, signFn)` → SDK creates session key |
+| **Wallet (full)** | User's own wallet, production apps, any trading | User connects wallet → signs the sign-in message → `loginWithWallet(address, signFn)` runs the managed sign-in and exposes `creds` + `managedAddress` |
 
 > Most agent-driven apps use the **API key path** since shared keys are built into the SDK. Wallet-based auth is for production apps where users bring their own wallets.
 

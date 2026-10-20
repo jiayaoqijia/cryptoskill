@@ -64,15 +64,15 @@ const result = await skill.limitBuy({
 | `sessionPrivateKey` | `string` | Yes | Session key from sign-in |
 | `chainId` | `number` | Yes | Numeric chain ID (e.g. 622112261 for Solana) |
 | `tokenAddress` | `string` | Yes | Token to buy |
-| `amount` | `string` | Yes | Native token to spend (raw units: wei/lamports) |
+| `amount` | `string` | Yes | Native token to spend (raw units: wei/lamports, positive integer string) |
 | `triggerPrice` | `string` | Yes | USD price to trigger the buy |
-| `profitPercent` | `string` | No | Take-profit % above trigger ("0" to skip) |
-| `lossPercent` | `string` | No | Stop-loss % below trigger ("0" to skip) |
+| `profitPercent` | `string` | No | Take-profit % above trigger, whole number ("0" to skip) |
+| `lossPercent` | `string` | No | Stop-loss % below trigger, whole number below 100 ("0" to skip) |
 
-**ABI schema:** `['string','string','string','uint256','uint256','string']` = `[tokenAddress, amount, triggerPrice, profitPercent, lossPercent, nonce]`
+**ABI schema:** `['string','string','string','uint64','uint64','string']` = `[tokenAddress, amount, triggerPrice, profitPercent, lossPercent, nonce]`
 **Signature:** `limit_buy-{userId}-{data}`
 
-> **CRITICAL (Live-Tested):** `profitPercent` and `lossPercent` MUST be ABI-encoded as `uint256`, NOT `string`. The backend decodes them as uint256 and validates `0-100` range. Using `string` type produces ABI byte-offsets (e.g. 192) that fail the range check with `"lossPercent must be between 0 and 100"`. The SDK handles this correctly — only matters if encoding manually.
+> **CRITICAL (Live-Tested):** `profitPercent` and `lossPercent` MUST be ABI-encoded as integers (`uint64`), NOT `string`. The backend decodes them as uint256 and validates `0-100` range. Using `string` type produces ABI byte-offsets (e.g. 192) that fail the range check with `"lossPercent must be between 0 and 100"`. The SDK handles this correctly — only matters if encoding manually.
 
 ## Limit Sell — Sell Token at Target Price
 
@@ -119,7 +119,8 @@ await skill.updateOrder({
   isDelete: true,
 });
 
-// Update an order's trigger price
+// Update an order: the backend replaces amount, price and TP/SL together,
+// so pass the full new state ('0' = no TP / SL; sell orders ignore both)
 await skill.updateOrder({
   apiKey: GDEX_API_KEY_PRIMARY,
   userId: '0x53D029a671bd1CF61a2fB1F4F6e4bD830BFBb2eD',
@@ -128,6 +129,8 @@ await skill.updateOrder({
   orderId: '64-char-hex-order-id',
   triggerPrice: '1.50',
   amount: '10000000',
+  profitPercent: '50',
+  lossPercent: '25',
 });
 ```
 
@@ -140,16 +143,16 @@ await skill.updateOrder({
 | `sessionPrivateKey` | `string` | Yes | Session key from sign-in |
 | `chainId` | `number` | Yes | Numeric chain ID |
 | `orderId` | `string` | Yes | Order ID from getLimitOrders() |
-| `amount` | `string` | No | New amount (raw units) |
-| `triggerPrice` | `string` | No | New trigger price (USD) |
-| `profitPercent` | `string` | No | New take-profit % (buy orders) |
-| `lossPercent` | `string` | No | New stop-loss % (buy orders) |
+| `amount` | `string` | Unless `isDelete` | New amount, raw units as a positive integer string |
+| `triggerPrice` | `string` | Unless `isDelete` | New trigger price (USD, plain decimal) |
+| `profitPercent` | `string` | Unless `isDelete` | New take-profit %, whole number, `'0'` = none (buy orders) |
+| `lossPercent` | `string` | Unless `isDelete` | New stop-loss %, whole number below 100, `'0'` = none (buy orders) |
 | `isDelete` | `boolean` | No | Set true to cancel/delete the order |
 
-**ABI schema:** `['string','string','string','uint256','uint256','string','string']` = `[orderId, amount, triggerPrice, profitPercent, lossPercent, nonce, isDelete]`
+**ABI schema:** `['string','string','string','uint64','uint64','string','bool']` = `[orderId, amount, triggerPrice, profitPercent, lossPercent, nonce, isDelete]`
 **Signature:** `update_order-{userId}-{data}`
 
-> **CRITICAL:** Same as `limit_buy` — `profitPercent` and `lossPercent` are `uint256`, not `string`.
+> **CRITICAL:** `profitPercent` / `lossPercent` are `uint64` and `isDelete` is an ABI `bool`, as the backend decodes them. An `isDelete` encoded as a string decodes as `true`, so every update would delete the order. The SDK encodes these correctly and rejects a malformed amount, price or percentage before signing.
 
 ## List Orders
 
@@ -259,7 +262,7 @@ await skill.updateOrder({
 
 - `amount` must be in **raw units** (lamports for Solana, wei for EVM) — NOT float
 - `profitPercent` and `lossPercent` are **mandatory** for `limit_buy` (both must be > 0)
-- `profitPercent` and `lossPercent` must be valid 0-100 range (ABI-encoded as `uint256`)
+- `profitPercent` and `lossPercent` are whole numbers (ABI-encoded as `uint64`); `lossPercent` must be below 100
 - `userId` must be the **control** wallet address, **lowercase**
 - `triggerPrice` is in USD (string)
 

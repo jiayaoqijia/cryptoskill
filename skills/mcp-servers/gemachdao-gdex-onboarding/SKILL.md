@@ -40,14 +40,21 @@ skill.loginWithApiKey(GDEX_API_KEY_PRIMARY);
 // No-auth: check trending tokens
 const trending = await skill.getTrendingTokens({ chain: 'solana', period: '24h', limit: 5 });
 
-// Auth required: buy a token
+// Trading needs the managed-custody session from sign-in (see "Full Managed-Custody Setup"
+// below or gdex-authentication): apiKey + control walletAddress + sessionPrivateKey.
 const trade = await skill.buyToken({
-  chain: 'solana',
-  tokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-  amount: '0.1',
+  chain: 8453,                     // Base
+  tokenAddress: '0xTokenAddress',
+  amount: '0.01',                  // 0.01 ETH
   slippage: 1,
+  apiKey: GDEX_API_KEY_PRIMARY,
+  walletAddress: controlAddress,   // the control wallet that signed in
+  sessionPrivateKey,
 });
 ```
+
+**Using the MCP server?** Run `gdex_connect` once and pass the returned `accountRef` to every
+trading tool (`buy_token`, `open_perp_position`, `usdc_buy`, ...) instead of keys.
 
 **Shared API Keys (pre-configured for all agents):**
 - Primary: `9b4e1c73-6a2f-4d88-b5c9-3e7a2f1d6c54`
@@ -88,6 +95,7 @@ const trade = await skill.buyToken({
 | **Platform** | `gdex-copy-trading` | Copy trade wallets, create/manage configs, tx history, DEXes (Solana writes only) |
 | | `gdex-perp-copy-trading` | HL perp copy trading — top traders, create/manage configs, market data |
 | | `gdex-bridge` | Cross-chain bridging with quotes |
+| | `gdex-usdc-wallet` | Unified USDC wallet — one USDC balance across chains, auto-bridge funding |
 | | `gdex-wallet-setup` | Generate EVM wallets, session keys, get wallet info |
 | **Frontend** | `gdex-ui-install-setup` | React/Next.js project setup, SDK context providers |
 | | `gdex-ui-trading-components` | React component patterns for trading UIs |
@@ -122,6 +130,7 @@ const trade = await skill.buyToken({
 **If you want to bridge assets cross-chain:**
 1. Load **gdex-authentication** for auth setup
 2. Load **gdex-bridge** for bridging operations
+3. For USDC, load **gdex-usdc-wallet**: it trades and bridges USDC across chains as one balance
 
 **If you want to build a trading frontend:**
 1. Load **gdex-ui-install-setup** for React/Next.js project setup
@@ -157,9 +166,9 @@ npm install @gemachdao/gdex-skill
 ## MCP Server
 
 For AI clients that support [Model Context Protocol](https://modelcontextprotocol.io),
-the GDEX MCP server exposes **117 tools** covering the full SDK surface — spot and
+the GDEX MCP server exposes **154 tools** covering the full SDK surface — spot and
 perp trading, HyperLiquid funding, limit orders, copy trading, bridging, portfolio
-and token data, transfers/social, and HIP-3/HIP-4 outcome (event) markets (e.g.
+and token data, transfers/social, and Hyperliquid HIP-4 outcome markets (e.g.
 `buy_token`, `open_perp_position`, `place_perp_order`, `hl_create_outcome_order`,
 `hl_swap_collateral`, `get_account_state`, `estimate_bridge`).
 
@@ -263,9 +272,9 @@ _Consolidated reference (migrated from the umbrella skill). Critical notes and a
 
 > **walletAddress = CONTROL address, NOT managed address.** All HL write operations (`hlCreateOrder`, `hlCloseAll`, `perpDeposit`, etc.) require `walletAddress` set to the **control wallet address** used during sign-in — NOT the managed-custody address returned by `/v1/user`. The backend verifies the session key signature against the sign-in `userId`. Passing the managed address causes `400 Unauthorized (code 103)`.
 
-> **`hlCloseAll` / `/v1/hl/close_all_positions` is unreliable.** It frequently returns `TIMEOUT` or JSON parse errors. To close positions reliably, place a **reduce-only** `hl_create_order` sell/buy for the exact position size instead.
+> **`hlCloseAll` / `/v1/hl/close_all_positions` is unreliable.** It frequently returns `TIMEOUT` or JSON parse errors. Close per coin with `closePerpPosition` (MCP: `close_perp_position`), which places a **reduce-only** order for the exact live position size.
 
-> **`hlUpdateLeverage` / `/v1/hl/update_leverage` is not implemented** on the backend (returns 404). Leverage is set automatically when placing orders — pass the desired leverage indirectly via position sizing.
+> **`hlUpdateLeverage` / `/v1/hl/update_leverage` is not implemented** on the backend (returns 404). Set leverage on the order instead: `hlCreateOrder({ ..., leverage: 5 })` (MCP: `open_perp_position` with `leverage`) sends it as a top-level field with the order.
 
 > **Solana chainId is `622112261`, NOT `900`.** The correct Solana chain ID is `ChainId.SOLANA = 622112261`. Using `900` falls back to the EVM managed address with `balance: null`. The `/v1/user` endpoint returns a **different managed wallet** per `chainId`:
 > - `chainId=1` → EVM managed: `0x9967...`
@@ -278,43 +287,26 @@ _Consolidated reference (migrated from the umbrella skill). Critical notes and a
 
 > **Bridge endpoints use different paths than expected.** The actual backend routes are `GET /v1/bridge/estimate_bridge`, `POST /v1/bridge/request_bridge`, and `GET /v1/bridge/bridge_orders`. The `request_bridge` endpoint requires ABI-encoded + signed + AES-encrypted `computedData` (same pattern as managed trades). Bridge is **native tokens only** and uses ChangeNow as provider. Amounts must be in **raw token units** (wei/lamports). See **gdex-bridge** skill for full details.
 
-> **Copy trade write operations (create/delete) use `chainId: 622112261` for sign-in, NOT `chainId: 1`.** The chainId field in the ABI is `uint256` (not string). The update endpoint uses 16 ABI fields (not 15): `[traderWallet, copyTradeName, chainId(uint256), gasPrice, buyMode, copyBuyAmount, isBuyExistingToken, lossPercent, profitPercent, nonce, copySell, excludedDexNumbers, copyTradeId, isDelete, isChangeStatus, excludedProgramIds]`. Both `isDelete='1'` and `isChangeStatus='1'` permanently delete the trade — there is no toggle. Boolean fields use `''` (empty string) for false and `'1'` for true; string `'0'` is truthy and will trigger deletion.
+> **Copy trade write operations (create/delete) use `chainId: 622112261` for sign-in, NOT `chainId: 1`.** The update endpoint decodes 15 typed ABI fields: `[traderWallet, copyTradeName, chainId(uint64), gasPrice, buyMode(uint64), copyBuyAmount, isBuyExistingToken(bool), lossPercent, profitPercent, nonce, isDelete(bool), isChangeStatus(bool), copyTradeId, copySell(bool), excludedDexNumbers(uint64[])]`. `isDelete` deletes the config; `isChangeStatus` toggles `isActive`. Use `pauseCopyTrade`/`resumeCopyTrade`/`deleteCopyTrade`; none of them closes positions.
 
 > **Limit order endpoints are `limit_buy` / `limit_sell` / `update_order` — NOT `orders/create` / `orders/cancel`.** Use `limitBuy()` for buy orders, `limitSell()` for sell orders (auto-classifies TP vs SL), and `updateOrder({ isDelete: true })` to cancel. Listing uses `GET /v1/orders` with `userId` + encrypted `data` + `chainId`. All write endpoints use ABI-encoded + signed + AES-encrypted `computedData` (same managed-custody pattern). Minimum order is ~0.01 native token. See **gdex-limit-orders** skill for full details.
 
-> **HL perp copy trading is completely separate from Solana copy trading.** Uses `chainId: 1` (EVM), ABI methods `hl_create`/`hl_update` (8 and 11 string fields), and goes through `buildHlComputedData()`. Both `isDelete` and `isChangeStatus` permanently **DELETE** the trade (same as Solana — there is no toggle). Both TP and SL are **mandatory** (> 0). Max 3 copy trades per user. Supports opposite-direction copying via `oppositeCopy`. Backend stores ABI byte-offsets for `copyMode` and `oppositeCopy` (e.g., `copyMode=416`), not the actual values. `user_stats` requires the managed wallet address, not the control wallet. See **gdex-perp-copy-trading** skill for full details.
+> **HL perp copy trading is completely separate from Solana copy trading.** Uses `chainId: 1` (EVM), ABI methods `hl_create`/`hl_update` (8 and 11 typed fields), and goes through `buildHlComputedData()`. `isDelete` deletes the config and `isChangeStatus` toggles `isActive`; use `pauseHlCopyTrade`/`resumeHlCopyTrade`/`deleteHlCopyTrade` (none closes positions). Both TP and SL are **mandatory** (> 0). Max 3 copy trades per user. Supports opposite-direction copying via `oppositeCopy`. Configs written by SDK <= 4.12 hold `copyMode=416/480` and `oppositeCopy=true` (string-encoded ABI); repair with `updateHlCopyTradeSettings`. `user_stats` requires the managed wallet address, not the control wallet. See **gdex-perp-copy-trading** skill for full details.
 
 ## Autonomous Agent Playbook
 
 > **This section contains everything an autonomous AI agent needs to trade without human help.**
 
-### Portfolio / Balances — Backend Param Mismatch (Live-Tested)
-
-The high-level `getPortfolio()` and `getBalances()` methods send `walletAddress` + `chain`, but the backend expects `userId` + `chainId` + `data` (encrypted session key). **Workaround — use the raw client directly:**
+### Portfolio / Balances / History (Fixed in SDK)
 
 ```typescript
-import { buildGdexUserSessionData } from '@gemachdao/gdex-skill';
-const data = buildGdexUserSessionData(sessionKey, apiKey);
-
-// Portfolio (balances embedded under portfolio.balances[])
-const portfolio = await skill.client.get('/v1/portfolio', {
-  params: { userId: controlAddress, chainId: 622112261, data }
-});
-
-// Balances — read from /v1/portfolio (balances embedded under portfolio.balances[]).
-// There is no separate /v1/balances endpoint on backend v1.1.0.
-const balances = portfolio.balances ?? [];
+const session = { walletAddress: controlAddress, sessionPrivateKey, apiKey };
+const { holdings } = await skill.getPortfolio({ ...session, chain: 622112261 });   // per chain
+const funds = await skill.getTradingFunds({ ...session, chain: 622112261 });        // native balance
+const page = await skill.getTradeHistory({ walletAddress: controlAddress, chain: 622112261 });
 ```
 
-### Trade History — Different Param Names (Live-Tested)
-
-Backend expects `user` (not `userId`), and the managed Solana chainId for trade history is `900` (not `622112261`):
-
-```typescript
-const history = await skill.client.get('/v1/user_history', {
-  params: { user: controlAddress, chainId: 900, data, page: 1, limit: 20 }
-});
-```
+Failed or malformed reads throw instead of returning an empty, zero-balance account. See **gdex-portfolio**.
 
 ### OHLCV / TopTraders — Numeric chainId Required (Live-Tested)
 
@@ -326,7 +318,7 @@ await skill.getTopTraders({ chain: 622112261, period: '7d', limit: 5 });
 
 ### Spot Trading (Managed Custody) — Raw Units Required (Live-Tested)
 
-For managed-custody trades, amounts must be in **raw units** (lamports for Solana, wei for EVM), NOT float:
+For hand-built managed-custody payloads (`buildGdexManagedTradeComputedData` → `submitManagedPurchase` / `submitManagedSell`), amounts must be in **raw units** (lamports for Solana, wei for EVM), NOT float. (`buyToken` with a session key takes a decimal native amount and converts it.)
 ```typescript
 // ❌ WRONG: amount: '0.01'
 // ✅ CORRECT: amount: '10000000' (0.01 SOL = 10000000 lamports)
@@ -340,8 +332,8 @@ The `limit_buy` and `update_order` ABI schemas use `uint256` for `profitPercent`
 
 | Endpoint | Status | Alternative |
 |----------|--------|-------------|
-| `hlCloseAll` / `/v1/hl/close_all_positions` | Returns TIMEOUT/400 | Use `hlCreateOrder` with `reduceOnly: true, isMarket: true` |
-| `hlUpdateLeverage` / `/v1/hl/update_leverage` | Returns 404 | Leverage is set automatically by the backend per order |
+| `hlCloseAll` / `/v1/hl/close_all_positions` | Returns TIMEOUT/400 | Use `closePerpPosition` per coin (or `hlCreateOrder` with `reduceOnly: true, isMarket: true`) |
+| `hlUpdateLeverage` / `/v1/hl/update_leverage` | Returns 404 | Pass `leverage` on `hlCreateOrder` |
 | `getGbotUsdcBalance` | Returns 404 | Use `getHlAccountState()` to check USDC balance |
 | `getHlUserStats(controlAddress)` | Returns 400 | Must pass the **managed** wallet address, not control |
 
@@ -354,7 +346,7 @@ The `limit_buy` and `update_order` ABI schemas use `uint256` for `profitPercent`
 | `TIMEOUT` on hlCloseAll | Use reduce-only order instead (see above) |
 | `Program error: 1` on Solana | Token routes through Meteora DLMM. Swap to a Raydium-routed token instead. |
 | `lossPercent must be between 0 and 100` | ABI encoding bug — profitPercent/lossPercent must be uint256, not string |
-| `404` on leverage | Expected — leverage is auto-set. Control via position sizing. |
+| `404` on leverage | Expected from `hlUpdateLeverage` — pass `leverage` on `hlCreateOrder` instead. |
 | `Reused nonce` | Always generate fresh: `String(Math.floor(Date.now() / 1000) + Math.floor(Math.random() * 1000))` |
 | Rate limited (429) | SDK auto-retries with exponential backoff. If manual, wait `retryAfter` seconds. |
 
@@ -384,12 +376,15 @@ skill.loginWithApiKey(GDEX_API_KEY_PRIMARY);
 // No-auth endpoints work immediately
 const trending = await skill.getTrendingTokens({ chain: 'solana', period: '24h', limit: 5 });
 
-// Auth-required endpoints
+// Trades need the managed-custody session (apiKey + control walletAddress + sessionPrivateKey)
 const trade = await skill.buyToken({
-  chain: 'solana',
-  tokenAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-  amount: '0.1',
+  chain: 8453,
+  tokenAddress: '0xTokenAddress',
+  amount: '0.01',
   slippage: 1,
+  apiKey: GDEX_API_KEY_PRIMARY,
+  walletAddress: controlAddress,
+  sessionPrivateKey,
 });
 ```
 

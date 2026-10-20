@@ -24,8 +24,8 @@ Trade perpetual futures on HyperLiquid through GDEX managed-custody. Supports lo
 ## Open a Position (managed custody)
 
 Perp orders go through `hlCreateOrder` after a managed sign-in. There is **no**
-`openPerpPosition`/`closePerpPosition`/`setPerpLeverage` — those don't exist. The
-real flow:
+`openPerpPosition`/`setPerpLeverage` — those don't exist (closing has
+`closePerpPosition`, below). The real flow:
 
 ```typescript
 import { GdexSkill, GDEX_API_KEY_PRIMARY } from '@gemachdao/gdex-skill';
@@ -54,7 +54,19 @@ request (the SDK forwards it for you). Verified: setting `leverage: 3` opens at
 
 ## Close a Position
 
-Close with a reduce-only order (the opposite side, full size), or close everything:
+Prefer `closePerpPosition`: it reads the live position (dex-scoped
+clearinghouse state, signed `szi`) and picks the side for you — a long closes
+with a sell, a short with a buy. Omit `size` for a full close; a larger `size`,
+a flat position, or a bare coin open on several builder dexes is rejected.
+`positionAddress` is the address whose HL account holds the position (the
+managed wallet; defaults to `walletAddress`).
+
+```typescript
+const r = await skill.closePerpPosition({ ...creds, coin: 'xyz:TSLA', positionAddress: managedAddress });
+// r: { closeSide: 'buy' | 'sell', size, positionSize, remainingSize, order, ... }
+```
+
+Or by hand with a reduce-only order (the opposite side, full size), or close everything:
 
 ```typescript
 await skill.hlCreateOrder({ coin: 'ETH', isLong: false, price: String(mark),
@@ -88,20 +100,23 @@ like "the order never filled" when it actually did.
 
 ## Query Positions & Account State
 
+Positions live on the **managed** EVM wallet (from sign-in / `getManagedUser`), so
+reads take that address; writes take the control wallet.
+
 ```typescript
 // Get open positions
 const positions = await skill.getPerpPositions({
-  walletAddress: '0xYourAddress',
+  walletAddress: managedEvmAddress,
   coin: 'BTC',   // optional filter
 });
 // Each: { coin, side, size, entryPrice, markPrice, leverage, unrealizedPnl, liquidationPrice }
 
 // Full account state
-const state = await skill.getHlAccountState({ walletAddress: '0xYourAddress' });
+const state = await skill.getHlAccountState(managedEvmAddress);
 // { accountValue, totalNtlPos, totalRawUsd, totalMarginUsed, withdrawable, positions[] }
 
 // Mark price for an asset
-const price = await skill.getHlMarkPrice({ coin: 'BTC' });
+const price = await skill.getHlMarkPrice('BTC');
 ```
 
 ## Place Orders (HL Managed-Custody)
@@ -161,7 +176,7 @@ await skill.hlCancelAllOrders({
 
 ## Close All Positions
 
-> **WARNING:** The `hlCloseAll` / `/v1/hl/close_all_positions` endpoint is unreliable — it frequently returns `TIMEOUT` or JSON parse errors from the backend. **Use a reduce-only order instead** (see below).
+> **WARNING:** The `hlCloseAll` / `/v1/hl/close_all_positions` endpoint is unreliable — it frequently returns `TIMEOUT` or JSON parse errors from the backend. **Close per coin with `closePerpPosition`, or a reduce-only order** (see below).
 
 ```typescript
 // ❌ Unreliable — may timeout
@@ -171,8 +186,10 @@ await skill.hlCloseAll({
   sessionPrivateKey,
 });
 
-// ✅ Reliable — close via reduce-only sell order
-// To close a LONG position, place a SHORT reduce-only order for the exact size:
+// ✅ Reliable — close one coin; side and size come from the live position
+await skill.closePerpPosition({ coin: 'BTC', positionAddress: managedEvmAddress, apiKey, walletAddress, sessionPrivateKey });
+
+// ✅ Or by hand: to close a LONG, place a SHORT reduce-only order for the exact size
 const btcPrice = await skill.getHlMarkPrice('BTC');
 await skill.hlCreateOrder({
   coin: 'BTC',
@@ -181,8 +198,8 @@ await skill.hlCreateOrder({
   size: '0.001',                                 // exact position size
   reduceOnly: true,                              // close only, don't open new position
   isMarket: true,
-  tpPrice: '0',
-  slPrice: '0',
+  tpPrice: '',
+  slPrice: '',
   apiKey,
   walletAddress,   // MUST be control address
   sessionPrivateKey,
@@ -252,34 +269,24 @@ const creds = { apiKey, walletAddress: controlAddress, sessionPrivateKey };
 | Endpoint | Status | What to Do |
 |----------|--------|------------|
 | `hlCloseAll` / `/v1/hl/close_all_positions` | Returns TIMEOUT or 400 | Place a reduce-only `hlCreateOrder` for the exact position size |
-| `hlUpdateLeverage` / `/v1/hl/update_leverage` | Returns 404 | The backend sets leverage automatically per order. Control effective leverage via position sizing. |
+| `hlUpdateLeverage` / `/v1/hl/update_leverage` | Returns 404 | Pass `leverage` on `hlCreateOrder` (sent top-level with the order) |
 | `getGbotUsdcBalance` | Returns 404 | Use `getHlAccountState()` or clearinghouse state to check balance |
 
 ### Close Position Reliably (Live-Tested)
 
 ```typescript
-// Get current positions
-const state = await skill.getHlAccountState({ walletAddress: controlAddress });
-const positions = state?.assetPositions || [];
+// Positions are read from the MANAGED wallet; the close is signed with the CONTROL wallet.
+const positions = await skill.getPerpPositions({ walletAddress: managedEvmAddress });
 
-for (const p of positions) {
-  const pos = p.position;
-  if (Number(pos.szi) !== 0) {
-    const markPrice = Number(pos.entryPx); // or fetch via getHlMarkPrice
-    await skill.hlCreateOrder({
-      coin: pos.coin,
-      isLong: Number(pos.szi) < 0,    // opposite direction
-      price: '0',                       // market
-      size: Math.abs(Number(pos.szi)).toString(),
-      reduceOnly: true,
-      isMarket: true,
-      tpPrice: '0',
-      slPrice: '0',
-      apiKey,
-      walletAddress: controlAddress,   // MUST be control address
-      sessionPrivateKey,
-    });
-  }
+for (const pos of positions) {
+  // Reads the live side/size and sends a reduce-only market order on the opposite side
+  await skill.closePerpPosition({
+    coin: pos.coin,
+    positionAddress: managedEvmAddress,
+    apiKey,
+    walletAddress: controlAddress,   // MUST be control address
+    sessionPrivateKey,
+  });
 }
 ```
 
@@ -289,17 +296,18 @@ for (const p of positions) {
 - Managed wallet must hold `amount × 1.01` (1% fee buffer)
 - Delivery takes ~10 minutes after Arbitrum tx confirms
 
-### Position Sizing Notes
+### Leverage and Position Sizing
 
-Since leverage cannot be set via API:
-- **Effective leverage** = position notional value / account equity
-- To get 5x leverage on $100 account: open a $500 position
-- The backend may auto-set leverage to 50x cross — your risk is determined by position size relative to margin
+- Set leverage per order with `leverage` on `hlCreateOrder` (MCP: `open_perp_position`); it is sent as a
+  top-level field with the order. Omitted, HL uses its default (20x on most markets).
+- `hlUpdateLeverage` (MCP: `set_leverage`) hits `/hl/update_leverage`, which has returned 404 — don't rely on it.
+- **Effective leverage** = position notional value / account equity, so size positions with that in mind.
 
 ### Critical Checks Before Opening a Position
 
 1. Verify USDC is deposited on HL (use `getHlAccountState()`)
 2. Use **control** wallet address (not managed) for all write operations
 3. Generate a fresh nonce for every order
-4. For market orders: set `price: '0'` and `isMarket: true`
-5. `tpPrice` and `slPrice` can be `'0'` to skip TP/SL
+4. For market orders: set `isMarket: true` and pass the mark price (`'0'` is resolved to the mark price by the SDK)
+5. Pass `''` for `tpPrice` / `slPrice` to skip TP/SL. Set both or neither: the backend drops a lone TP or SL
+6. Prices and sizes are plain positive decimals (no exponent). Pass `szDecimals` (HL meta) to also check Hyperliquid precision before signing: size up to `szDecimals` decimals; limit/TP/SL prices up to 5 significant figures and `6 - szDecimals` decimals. Without it the backend rounds instead of rejecting

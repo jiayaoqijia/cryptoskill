@@ -1,178 +1,106 @@
 ---
 name: gdex-portfolio
-description: Cross-chain portfolio overview, chain-specific token balances, and paginated trade history
+description: Managed-account holdings, balances, native trading funds and cursor-paginated trade history per chain
 ---
 
 # GDEX: Portfolio & Balances
 
 Query cross-chain portfolio summaries, chain-specific balances, and trade history.
 
+> **USDC across chains:** `getUsdcBalances` returns the user's USDC and gas balance on every USDC chain plus the total. See **gdex-usdc-wallet**.
+
 ## When to Use
 
-- Getting a user's total portfolio value across all chains
-- Checking token balances on a specific chain
-- Retrieving trade history with pagination and filters
+- Reading a managed account's token holdings on a chain
+- Checking token balances or native trading funds on a specific chain
+- Retrieving trade history with cursor pagination
 
 ## Prerequisites
 
 - `@gemachdao/gdex-skill` installed
-- Authenticated via `loginWithApiKey()` — see **gdex-authentication**
+- A managed session (control wallet + session key + API key, or `accountRef` in MCP) — see **gdex-authentication**
 
-## Cross-Chain Portfolio
+## Managed Holdings (`getPortfolio`)
 
-> **WARNING (Live-Tested):** The high-level `getPortfolio()` and `getBalances()` methods send `walletAddress` + `chain` to the backend, but the backend expects `userId` + `chainId` + `data` (encrypted session key). **These methods return empty or incorrect results.** Use the raw client workaround below.
-
-### Correct Way — Raw Client (Live-Tested, Works)
+`/v1/portfolio` is per chain and authenticated: `userId` (the **control**
+wallet, not the managed wallet) + encrypted session `data` + `chainId`. The SDK
+builds the query from your session; there is no public address-only holdings read.
 
 ```typescript
-import { GdexSkill, GDEX_API_KEY_PRIMARY, buildGdexUserSessionData } from '@gemachdao/gdex-skill';
+import { GdexSkill, ChainId } from '@gemachdao/gdex-skill';
 
 const skill = new GdexSkill();
-skill.loginWithApiKey(GDEX_API_KEY_PRIMARY);
+const session = { walletAddress: controlAddress, sessionPrivateKey, apiKey };
 
-// Build encrypted session data
-const data = buildGdexUserSessionData(sessionKey, GDEX_API_KEY_PRIMARY);
-
-// Portfolio — use raw client with correct params
-const portfolio = await skill.client.get('/v1/portfolio', {
-  params: {
-    userId: controlAddress,   // control wallet, NOT managed
-    chainId: 622112261,       // numeric Solana chain ID
-    data,                     // encrypted session key
-  }
-});
+const p = await skill.getPortfolio({ ...session, chain: ChainId.SOLANA });
+// { status: 'ok', mode: 'managed', userId, chainId, holdings: Balance[], balances: (same) }
+for (const h of p.holdings) console.log(h.symbol, h.balance, h.rawBalance);
 ```
 
-### Incorrect Way — High-Level Methods (SDK Bug)
+Pass `data` (from `buildGdexReadSessionData(sessionPrivateKey, apiKey)`) instead
+of `sessionPrivateKey` + `apiKey` if you already have it. In MCP, pass `accountRef`.
 
 ```typescript
-// ❌ These send wrong params to backend — DO NOT USE for managed custody
-const portfolio = await skill.getPortfolio({ walletAddress: '0x...', chain: 'solana' });
-const balances = await skill.getBalances({ walletAddress: '0x...', chain: 8453 });
-```
-
-### Portfolio Response
-
-```typescript
-interface Portfolio {
-  totalValueUsd: number;
-  balances: Balance[];
-  perpPositions?: PerpPosition[];
-  realizedPnl?: number;
-  unrealizedPnl?: number;
-  totalPnl?: number;
-}
-
 interface Balance {
   tokenAddress: string;
   symbol: string;
   name: string;
   decimals: number;
-  rawBalance: string;
-  balance: string;        // human-readable
-  usdValue: number;
-  priceUsd: number;
-  change24h?: number;
-  chain: string | number;
+  rawBalance: string;      // exact integer base units
+  balance: string;         // exact decimal of rawBalance
+  priceUsd?: string;
+  usdValue?: string;
+  priceNative?: string;
+  valueNative?: string;    // backend `holding` (current worth, native)
+  investedNative?: string; // backend `invested`
+  pnlPercentage?: number;
+  chain: number;
+  chainId?: number;
 }
 ```
 
-## Chain-Specific Balances
+**Failures are errors, not zeros.** A refused session (400 code 102/104) or a
+response without `holding[]` throws; `[]` only ever means the backend answered
+with no holdings.
 
-> **WARNING (Live-Tested):** Same issue as portfolio — use raw client. On
-> backend v1.1.0 balances are embedded in the portfolio response under
-> `portfolio.balances[]` (there is no separate `/v1/balances` endpoint).
+## Balances and Trading Funds
 
 ```typescript
-const portfolio = await skill.client.get('/v1/portfolio', {
-  params: {
-    userId: controlAddress,
-    chainId: 622112261,       // numeric chain ID
-    data,                     // encrypted session key
-  }
-});
-const balances = portfolio.balances ?? [];
+// Token balances on one chain (optionally one token)
+const usdc = await skill.getBalances({ ...session, chain: 8453, tokenAddress: '0x8335...' });
+
+// Native balance available to trade (GET /v1/user)
+const funds = await skill.getTradingFunds({ ...session, chain: 8453 });
+// { address (managed wallet), nativeBalance, nativeSymbol, walletsByChain, precision: 'approximate' }
 ```
 
-### Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `walletAddress` | `string` | Yes | Wallet address to query |
-| `chain` | `string \| ChainId` | Yes | Chain to query balances on |
-| `tokenAddress` | `string` | No | Filter to a specific token |
+`nativeBalance` is a backend float, and the backend reports 0 when its RPC read
+fails, so treat a zero as unconfirmed. Cross-chain USDC: `getUsdcBalances`
+(**gdex-usdc-wallet**).
 
 ## Trade History
 
-> **WARNING (Live-Tested):** The backend expects param `user` (NOT `userId`), and managed Solana chainId for trade history is `900` (NOT `622112261`). Use the raw client:
+`/v1/user_history` is keyed by the control wallet (`user`) and `chainId`; it
+needs no session. Cursor pagination, at most 50 per page:
 
 ```typescript
-const history = await skill.client.get('/v1/user_history', {
-  params: {
-    user: controlAddress,     // NOTE: "user", not "userId"
-    chainId: 900,             // NOTE: 900 for Solana trade history, not 622112261
-    data,                     // encrypted session key
-    page: 1,
-    limit: 20,
-  }
-});
-```
-
-> The high-level `getTradeHistory()` sends wrong param names. Use raw client above.
-
-### Trade Record
-
-```typescript
-interface TradeRecord {
-  id: string;
-  type: string;        // 'buy' | 'sell'
-  inputToken: string;
-  outputToken: string;
-  amountIn: string;
-  amountOut: string;
-  usdValue?: number;
-  chain: string | number;
-  dex?: string;
-  txHash: string;
-  timestamp: number;
-  status: string;
+let page = await skill.getTradeHistory({ walletAddress: controlAddress, chain: 8453, limit: 50 });
+while (page.nextCursor) {
+  page = await skill.getTradeHistory({ walletAddress: controlAddress, chain: 8453, cursor: page.nextCursor });
 }
+// page.trades: TradeRecord[] — { type: 'buy'|'sell', tokenAddress, tokenAmount, nativeAmount (raw), txHash, timestamp, ... }
 ```
 
-## Example: Portfolio Dashboard (Autonomous Agent — Live-Tested)
-
-```typescript
-import { GdexSkill, GDEX_API_KEY_PRIMARY, buildGdexUserSessionData } from '@gemachdao/gdex-skill';
-
-const skill = new GdexSkill();
-skill.loginWithApiKey(GDEX_API_KEY_PRIMARY);
-
-// Build encrypted session data (required for all portfolio/balance/history queries)
-const data = buildGdexUserSessionData(sessionKey, GDEX_API_KEY_PRIMARY);
-const userId = controlAddress; // control wallet, NOT managed
-
-// 1. Get portfolio (raw client — high-level method has wrong params)
-const portfolio = await skill.client.get('/v1/portfolio', {
-  params: { userId, chainId: 622112261, data }
-});
-
-// 2. Get balances (embedded in portfolio.balances[] on backend v1.1.0)
-const balances = portfolio.balances ?? [];
-
-// 3. Get trade history (use "user" param, chainId 900 for Solana)
-const history = await skill.client.get('/v1/user_history', {
-  params: { user: userId, chainId: 900, data, page: 1, limit: 20 }
-});
-```
+`page`, `startTime` and `endTime` are not supported by the backend and are rejected.
+The backend returns an empty page on its own database errors, so an empty page is
+not proof of no trades.
 
 ## Autonomous Agent Notes
 
-1. **Always use raw client** for portfolio, balances, and trade history. The high-level SDK methods send incorrect parameter names.
-2. **Portfolio/balances chainId**: Use `622112261` for Solana, standard EVM chain IDs for others.
-3. **Trade history chainId**: Use `900` for Solana (not `622112261`). This is a backend quirk.
-4. **Trade history param**: Use `user` (not `userId`) — backend expects different param name for this endpoint.
-5. **Data param**: Always pass the encrypted session key from `buildGdexUserSessionData()`.
-6. **userId**: Always use the **control** wallet address, never the managed address.
+1. Use `getPortfolio` / `getBalances` / `getTradingFunds` / `getTradeHistory`; no raw-client workaround is needed.
+2. `walletAddress` is always the **control** wallet (GDEX `userId`).
+3. Reads are per chain: pass `chain` every time (Solana `622112261`).
+4. For percentage sells, `sellToken({ amount: '50%' })` reads the holding itself (**gdex-spot-trading**).
 
 ## Related Skills
 

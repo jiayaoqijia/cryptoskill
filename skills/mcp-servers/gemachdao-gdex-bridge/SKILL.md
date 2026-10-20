@@ -8,6 +8,8 @@ description: Cross-chain bridging — get estimates and execute native token tra
 Bridge **native tokens** between supported chains with quote previews and time estimates.
 Uses ChangeNow as the bridge provider (StarGate support exists but is currently disabled).
 
+> **Moving USDC?** The unified USDC wallet has its own capped USDC bridge (`estimateUsdcBridge` / `executeUsdcBridge`) and trades can auto-bridge USDC for you. See **gdex-usdc-wallet**.
+
 ## When to Use
 
 - Moving native tokens from one chain to another (e.g., ETH on Ethereum → ETH on Base)

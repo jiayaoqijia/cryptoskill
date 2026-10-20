@@ -22,26 +22,29 @@ React component patterns for building portfolio dashboards with the GDEX SDK. Co
 ## Portfolio Overview
 
 ```typescript
+import type { SupportedChain } from '@gemachdao/gdex-skill';
 // components/PortfolioOverview.tsx
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
-export function PortfolioOverview({ pollInterval = 30000 }: { pollInterval?: number }) {
+export function PortfolioOverview({ chain = 8453, pollInterval = 30000 }: { chain?: SupportedChain; pollInterval?: number }) {
   const { skill, isReady } = useGdex();
+  const { walletAddress } = useAuth();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    if (!isReady) return;
+    if (!isReady || !walletAddress) return;
     try {
-      const data = await skill.getPortfolio();
+      const data = await skill.getPortfolio({ walletAddress, chain });
       setPortfolio(data);
     } finally {
       setLoading(false);
     }
-  }, [skill, isReady]);
+  }, [skill, isReady, walletAddress]);
 
   useEffect(() => {
     refresh();
@@ -82,6 +85,8 @@ function StatCard({ label, value, className = '' }: { label: string; value: any;
 
 import { useState, useEffect } from 'react';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider';
+import type { SupportedChain } from '@gemachdao/gdex-skill';
 
 interface Token {
   symbol: string;
@@ -93,15 +98,16 @@ interface Token {
   logoUrl?: string;
 }
 
-export function TokenBalanceGrid({ chain }: { chain?: string }) {
+export function TokenBalanceGrid({ chain }: { chain: SupportedChain }) {
   const { skill, isReady } = useGdex();
+  const { walletAddress } = useAuth();
   const [tokens, setTokens] = useState<Token[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || !walletAddress) return;
     setLoading(true);
-    skill.getPortfolio(chain ? { chain } : undefined)
+    skill.getPortfolio({ walletAddress, chain })
       .then(data => {
         setTokens(data?.tokens ?? []);
       })
@@ -136,23 +142,26 @@ export function TokenBalanceGrid({ chain }: { chain?: string }) {
 ## Trade History Table
 
 ```typescript
+import type { SupportedChain } from '@gemachdao/gdex-skill';
 // components/TradeHistoryTable.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
-export function TradeHistoryTable({ pageSize = 20 }: { pageSize?: number }) {
+export function TradeHistoryTable({ chain, pageSize = 20 }: { chain: SupportedChain; pageSize?: number }) {
   const { skill, isReady } = useGdex();
+  const { walletAddress } = useAuth();
   const [trades, setTrades] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || !walletAddress) return;
     setLoading(true);
-    skill.getTradeHistory({ page, limit: pageSize })
+    skill.getTradeHistory({ walletAddress, chain, page, limit: pageSize })
       .then(data => {
         setTrades(data?.trades ?? []);
         setHasMore((data?.trades?.length ?? 0) >= pageSize);
@@ -263,15 +272,16 @@ For production apps, wrap SDK calls with a caching library:
 ```typescript
 // hooks/usePortfolioQuery.ts (React Query example)
 import { useQuery } from '@tanstack/react-query';
+import type { SupportedChain } from '@gemachdao/gdex-skill';
 import { useGdex } from '@/providers/GdexProvider';
 
-export function usePortfolioQuery(chain?: string) {
+export function usePortfolioQuery(walletAddress: string, chain: SupportedChain) {
   const { skill, isReady } = useGdex();
 
   return useQuery({
-    queryKey: ['portfolio', chain],
-    queryFn: () => skill.getPortfolio(chain ? { chain } : undefined),
-    enabled: isReady,
+    queryKey: ['portfolio', walletAddress, chain],
+    queryFn: () => skill.getPortfolio({ walletAddress, chain }),
+    enabled: isReady && !!walletAddress,
     refetchInterval: 30_000,      // poll every 30s
     staleTime: 10_000,            // consider fresh for 10s
   });
@@ -279,17 +289,18 @@ export function usePortfolioQuery(chain?: string) {
 ```
 
 ```typescript
+import type { SupportedChain } from '@gemachdao/gdex-skill';
 // hooks/useTradeHistoryQuery.ts
 import { useQuery } from '@tanstack/react-query';
 import { useGdex } from '@/providers/GdexProvider';
 
-export function useTradeHistoryQuery(page: number, limit = 20) {
+export function useTradeHistoryQuery(walletAddress: string, chain: SupportedChain, page: number, limit = 20) {
   const { skill, isReady } = useGdex();
 
   return useQuery({
-    queryKey: ['tradeHistory', page, limit],
-    queryFn: () => skill.getTradeHistory({ page, limit }),
-    enabled: isReady,
+    queryKey: ['tradeHistory', walletAddress, chain, page, limit],
+    queryFn: () => skill.getTradeHistory({ walletAddress, chain, page, limit }),
+    enabled: isReady && !!walletAddress,
     keepPreviousData: true,       // smooth pagination
   });
 }
@@ -297,7 +308,7 @@ export function useTradeHistoryQuery(page: number, limit = 20) {
 
 ## Backend Quirk: SDK Methods Need Raw Client (Live-Tested)
 
-> **WARNING:** The high-level `skill.getPortfolio()` and `skill.getTradeHistory()` methods send incorrect params to the backend. For managed-custody users, the UI components above will return empty/incorrect data unless you use the raw client workaround. See **gdex-portfolio** skill for correct raw client calls.
+> **Note:** `skill.getPortfolio()`, `getBalances()` and `getTradeHistory()` are managed-account reads: pass the control `walletAddress`, the session (`sessionPrivateKey` + `apiKey`, or `data`) and a `chain` on every call. The examples above omit them for brevity. Holdings are returned under `holdings[]`; history pages with `cursor`. See **gdex-portfolio**.
 
 **For frontend React Query hooks, use raw client instead:**
 

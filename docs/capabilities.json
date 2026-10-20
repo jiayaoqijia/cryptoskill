@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19T18:47:18.914463+00:00",
+  "generated_at": "2026-10-20T01:04:23.628403+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -109328,6 +109328,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/gemachdao-gdex-agent-trading": {
+      "name": "gdex-agent-trading",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/gemachdao-gdex-authentication": {
       "name": "gdex-authentication",
       "execution_model": "installer_bootstrap",
@@ -110074,7 +110136,7 @@
     },
     "mcp-servers/gemachdao-gdex-perp-funding": {
       "name": "gdex-perp-funding",
-      "execution_model": "unsigned_tx_builder",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -110107,7 +110169,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -111105,6 +111167,68 @@
         },
         "requires_private_key": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "mcp-servers/gemachdao-gdex-usdc-wallet": {
+      "name": "gdex-usdc-wallet",
+      "execution_model": "unsigned_tx_builder",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -220758,11 +220882,11 @@
     }
   },
   "summary": {
-    "discovered": 3548,
-    "processed": 3548,
+    "discovered": 3550,
+    "processed": 3550,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2568,
+      "read_only": 2570,
       "router_orchestrator": 147,
       "unknown": 337,
       "analysis_only": 216,
@@ -220779,7 +220903,7 @@
       "can_browse_web": 245,
       "can_spawn_subagents": 263,
       "can_move_funds": 299,
-      "requires_private_key": 489,
+      "requires_private_key": 490,
       "requires_hosted_operator": 343,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 554

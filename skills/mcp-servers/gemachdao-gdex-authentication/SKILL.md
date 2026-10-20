@@ -20,9 +20,21 @@ All GDEX trading uses **managed-custody wallets** with encrypted `computedData` 
 npm install @gemachdao/gdex-skill
 ```
 
+## 0. MCP Server: `gdex_connect` (no secrets in chat)
+
+MCP clients do not run this flow by hand. Call `gdex_connect` with a local key file
+(`{ keyFile: "~/wallet.json" }`) or `{ create: true }` for a new wallet; the server signs in,
+stores the keys under `~/.gdex/accounts` (0600) and returns an `accountRef`. Pass `accountRef`
+to every trading tool instead of `apiKey` / `walletAddress` / `sessionPrivateKey` / `data`.
+`gdex_accounts` lists connected accounts and `gdex_disconnect` forgets one.
+
+SDK users run the managed-custody sign-in below and pass `apiKey`, `walletAddress`
+(the control wallet) and `sessionPrivateKey` to each write call.
+
 ## 1. Shared API Key Login (Simple)
 
-For agents that need quick access — no wallet signing required:
+For read-only access — no wallet signing required. Trading additionally needs the
+managed-custody session from section 2:
 
 ```typescript
 import { GdexSkill, GDEX_API_KEY_PRIMARY } from '@gemachdao/gdex-skill';
@@ -85,7 +97,7 @@ const signInPayload = buildGdexSignInComputedData({
 });
 const signInResult = await skill.signInWithComputedData({
   computedData: signInPayload.computedData,
-  chainId: 900, // 900=Solana, 101=Sui, or numeric EVM chain ID
+  chainId: 1, // 1 for EVM / HyperLiquid, 622112261 for Solana (see "ChainId for Sign-In Matters")
 });
 
 // Step 5: Resolve user profile / check managed wallet
@@ -177,7 +189,7 @@ const trade = buildGdexManagedTradeComputedData({
 
 const result = await skill.submitManagedPurchase({
   computedData: trade.computedData,
-  chainId: 900,
+  chainId: 622112261, // Solana (ChainId.SOLANA), NOT 900
   slippage: 1,
 });
 

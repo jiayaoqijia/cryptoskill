@@ -164,44 +164,44 @@ await skill.createCopyTrade({
 });
 ```
 
-### Update a Copy Trade
+### Update, Pause, Resume, Delete
+
+Use the explicit operations. Each reads the current configuration from the list
+endpoint first (the backend rewrites every field on update), so you only pass
+what you want to change.
 
 ```typescript
-await skill.updateCopyTrade({
-  apiKey,
-  userId,
-  sessionPrivateKey,
-  chainId: 622112261,
-  copyTradeId: 'a1b2c3...',
-  traderWallet: 'SolanaWalletAddress',
-  copyTradeName: 'Updated Name',
-  buyMode: 2,                // switch to percentage mode
-  copyBuyAmount: '50',       // 50% of trader's amount
-  lossPercent: '30',
-  profitPercent: '200',
-  copySell: true,
-});
+const ids = { apiKey, userId, sessionPrivateKey, copyTradeId: 'a1b2c3...' };
+
+// Change settings only. Never deletes, never pauses. Omitted fields keep current values.
+await skill.updateCopyTradeSettings({ ...ids, buyMode: 2, copyBuyAmount: '50', lossPercent: '30' });
+
+// Pause without deleting (isActive=false). No-op if already paused.
+await skill.pauseCopyTrade(ids);
+// Resume (isActive=true). No-op if already active.
+await skill.resumeCopyTrade(ids);
+
+// Permanent delete.
+await skill.deleteCopyTrade(ids);
 ```
 
-### Delete a Copy Trade (isChangeStatus)
+What each does on the backend (`ServiceCopyTrade.update`):
 
-> **⚠️ WARNING: `isChangeStatus` permanently DELETES the trade. It does NOT toggle `isActive`.**
+| Operation | Backend effect | Open positions / TP-SL orders |
+|---|---|---|
+| `updateCopyTradeSettings` | rewrites the config fields | unchanged, not resized |
+| `pauseCopyTrade` | `isChangeStatus` toggle → `isActive=false`; the copier skips inactive configs for buys AND sells | stay open, TP/SL limit orders stay |
+| `resumeCopyTrade` | toggle → `isActive=true` | trades made while paused are not replayed |
+| `deleteCopyTrade` | `CopyTradeSetting.deleteOne` (+ the trader tracking row if nobody else follows them) | NOT sold, TP/SL limit orders NOT cancelled |
 
-```typescript
-await skill.updateCopyTrade({
-  ...existingParams,
-  isChangeStatus: true,      // WARNING: permanently deletes (same as isDelete)
-});
-```
+`isChangeStatus` is a relative toggle, so pause/resume refuse to act when the
+state cannot be confirmed (`PAUSE_STATE_UNVERIFIED`; also raised for a second
+toggle within 25 s because the list is cached for 20 s). `PAUSE_UNSUPPORTED`
+means the stored config holds an invalid `buyMode`: fix it with
+`updateCopyTradeSettings` first, or delete (positions stay open).
 
-### Delete a Copy Trade (isDelete)
-
-```typescript
-await skill.updateCopyTrade({
-  ...existingParams,
-  isDelete: true,
-});
-```
+The low-level `updateCopyTrade` still exists: `isDelete` deletes, `isChangeStatus`
+toggles, and setting both is rejected.
 
 ## Backend Validation Rules
 
@@ -283,8 +283,8 @@ for (const ct of list.allCopyTrades) {
 1. **All 4 discovery endpoints work with API key only (E2E verified):** `getCopyTradeWallets()`, `getCopyTradeCustomWallets()`, `getCopyTradeGems()`, `getCopyTradeDexes()`.
 2. **`getCopyTradeGems()` may return empty array** — this is normal (cached 20 seconds, depends on hot wallet activity).
 3. **Sign-in for Solana copy trading must use `chainId: 622112261`** (Solana), not `chainId: 1` (EVM). This is the opposite of HL perp copy trading.
-4. **Both `isDelete` and `isChangeStatus` permanently DELETE the copy trade.** There is NO way to pause/toggle — you must delete and recreate.
-5. **Boolean fields in ABI use `''` (empty string) for false and `'1'` for true.** The string `'0'` is truthy and WILL trigger deletion.
+4. **`isChangeStatus` toggles `isActive`; only `isDelete` deletes.** SDK versions up to 4.12 encoded every field as an ABI string, which the backend decoded with `isDelete=true`, so every update deleted. The SDK now encodes the typed ABI the backend expects (`uint64` chainId/buyMode, real `bool`s, `uint64[]` excludedDexNumbers).
+5. **Pause with `pauseCopyTrade`, never with delete.** Pausing or deleting never closes positions.
 6. **`copySell: true`** means the copy will also mirror sell transactions, not just buys.
 
 ## Related Skills

@@ -7,7 +7,7 @@ description: HyperLiquid perpetual futures copy trading — discover top perp tr
 
 Automatically mirror perpetual futures positions (long/short) from top-performing HyperLiquid traders. Supports opposite-direction copying, fixed or proportional sizing, and TP/SL controls.
 
-> **This is completely separate from Solana spot copy trading (`gdex-copy-trading`).** Different chain (EVM, chainId=1 vs Solana 622112261), different ABI methods (`hl_create`/`hl_update` vs `create_copy_trade`/`update_copy_trade`), different field schemas. Both `isDelete` and `isChangeStatus` permanently DELETE copy trades on both chains.
+> **This is completely separate from Solana spot copy trading (`gdex-copy-trading`).** Different chain (EVM, chainId=1 vs Solana 622112261), different ABI methods (`hl_create`/`hl_update` vs `create_copy_trade`/`update_copy_trade`), different field schemas. On both chains `isDelete` deletes the configuration and `isChangeStatus` toggles `isActive` (pause/resume); neither closes positions.
 
 ## When to Use
 
@@ -41,9 +41,9 @@ Automatically mirror perpetual futures positions (long/short) from top-performin
 | Chain | Solana (622112261) | EVM (chainId = 1) |
 | Asset Type | Spot tokens | Perpetual futures (long/short) |
 | ABI Methods | `create_copy_trade` / `update_copy_trade` | `hl_create` / `hl_update` |
-| ABI Fields | 12 create / 16 update (chainId=uint256) | 8 create / 11 update (all strings) |
+| ABI Fields | 12 create / 15 update (typed: uint64, bool, uint64[]) | 8 create / 11 update (typed: copyMode uint64, bool flags) |
 | Opposite Copy | ❌ Not supported | ✅ `oppositeCopy` flag |
-| `isChangeStatus` | ⚠️ Permanently deletes! | ⚠️ Also permanently deletes (same as `isDelete`) |
+| `isChangeStatus` | Toggles `isActive` (use `pauseCopyTrade`/`resumeCopyTrade`) | Toggles `isActive` (use `pauseHlCopyTrade`/`resumeHlCopyTrade`) |
 | Copy Modes | 1=fixed SOL, 2=% of trader | 1=fixed USD per order, 2=proportion of trader's size |
 | TP/SL | Optional | **Mandatory** (both > 0, lossPercent < 100) |
 | Max Copies | `config.maxCopyTrades` | Default 3 (`hyperLiquidConfig.maxFuturesCopy`) |
@@ -167,7 +167,7 @@ const list = await skill.getHlCopyTradeList({ userId, data });
 interface HlCopyTradeConfig {
   copyTradeId: string;
   copyTradeName: string;
-  copyMode: number;              // Backend stores ABI offset (416/480), not the actual 1/2 value
+  copyMode: number;              // 1 or 2; configs written by SDK <= 4.12 hold 416/480 (string-encoded ABI)
   chainId: number;               // Always 1 (EVM)
   isActive: boolean;
   userId: string;
@@ -176,7 +176,7 @@ interface HlCopyTradeConfig {
   lossPercent: number;
   profitPercent: number;
   fixedAmountCostPerOrder: string;
-  oppositeCopy: boolean;         // Always true in response (backend ABI offset bug)
+  oppositeCopy: boolean;         // configs written by SDK <= 4.12 hold true regardless of the request
   createdAt: number;
   lastUpdated: number;
   totalTrades: number;
@@ -230,84 +230,81 @@ await skill.createHlCopyTrade({
   traderWallet: '0xTraderEvmAddress',
   copyTradeName: 'BTC Whale Follower',
   copyMode: 1,                    // Fixed USD amount per order
-  fixedAmountCostPerOrder: '50',  // $50 per copied trade
+  fixedAmountCostPerOrder: '50000000',  // $50 per copied trade (raw USDC, 6 decimals)
   lossPercent: '25',              // 25% stop-loss (mandatory, > 0)
   profitPercent: '100',           // 100% take-profit (mandatory, > 0)
   oppositeCopy: false,            // Copy same direction
 });
 ```
 
-**ABI Schema (`hl_create`, 8 fields, ALL strings):**
+**ABI Schema (`hl_create`, 8 fields, typed as backend decoder.ts decodes it):**
 
 | # | Field | Type | Description |
 |---|-------|------|-------------|
 | 0 | traderWallet | string | EVM address to copy |
 | 1 | copyTradeName | string | Human-readable label |
-| 2 | copyMode | string | "1" or "2" |
-| 3 | fixedAmountCostPerOrder | string | USD amount (mode 1) or ratio (mode 2) |
+| 2 | copyMode | uint64 | 1 or 2 |
+| 3 | fixedAmountCostPerOrder | string | Mode 1: raw USDC, 6 decimals (`'50000000'` = $50); mode 2: percentage |
 | 4 | lossPercent | string | Stop-loss % |
 | 5 | profitPercent | string | Take-profit % |
 | 6 | nonce | string | Auto-generated |
-| 7 | oppositeCopy | string | "1" or "" |
+| 7 | oppositeCopy | bool | |
 
-### Update an HL Perp Copy Trade
+### Update, Pause, Resume, Delete
 
-```typescript
-await skill.updateHlCopyTrade({
-  apiKey,
-  userId,
-  sessionPrivateKey,
-  copyTradeId: 'abc123...',
-  traderWallet: '0xTraderEvmAddress',
-  copyTradeName: 'BTC Whale (Updated)',
-  copyMode: 2,                    // Switch to proportional
-  fixedAmountCostPerOrder: '0.5', // 50% of trader's size
-  lossPercent: '30',
-  profitPercent: '150',
-  oppositeCopy: true,             // Now copy opposite direction
-});
-```
-
-### Delete an HL Perp Copy Trade
-
-Use either `isDelete` or `isChangeStatus` — both permanently delete the trade.
+Use the explicit operations. Each reads the current configuration first (the
+backend rewrites every field on update), so pass only what changes.
 
 ```typescript
-await skill.updateHlCopyTrade({
-  ...existingParams,
-  isDelete: true,  // Permanently deletes
-});
+const ids = { apiKey, userId, sessionPrivateKey, copyTradeId: 'abc123...' };
+
+// Settings only; never deletes or pauses. Omitted fields keep current values.
+await skill.updateHlCopyTradeSettings({ ...ids, copyMode: 2, fixedAmountCostPerOrder: '0.5', oppositeCopy: false });
+
+await skill.pauseHlCopyTrade(ids);   // isActive=false, no-op if already paused
+await skill.resumeHlCopyTrade(ids);  // isActive=true, no-op if already active
+await skill.deleteHlCopyTrade(ids);  // permanent
 ```
 
-> **⚠️ WARNING: `isChangeStatus` also PERMANENTLY DELETES the trade.**
-> Despite the name suggesting a toggle, `isChangeStatus` behaves identically to `isDelete`
-> on the current backend. This matches Solana copy trade behavior.
+| Operation | Backend effect (`ServiceHyperLiquid.update`) | Open perp positions / TP-SL |
+|---|---|---|
+| `updateHlCopyTradeSettings` | rewrites the config fields | unchanged |
+| `pauseHlCopyTrade` | toggle → `isActive=false`; the copier skips inactive configs for opens AND closes | stay open and will not follow the trader's exits; TP/SL stays |
+| `resumeHlCopyTrade` | toggle → `isActive=true` | fills made while paused are not replayed |
+| `deleteHlCopyTrade` | `HLFuturesCopySetting.deleteOne` | NOT closed, TP/SL NOT cancelled |
 
-**ABI Schema (`hl_update`, 11 fields, ALL strings):**
+Pause/resume raise `PAUSE_STATE_UNVERIFIED` when the current state cannot be
+read (nothing is sent) and `PAUSE_UNSUPPORTED` when the stored `copyMode` is not
+1 or 2 (a config written by SDK <= 4.12): repair it with
+`updateHlCopyTradeSettings({ copyMode, fixedAmountCostPerOrder, oppositeCopy })`
+first, or delete (positions stay open). The low-level `updateHlCopyTrade` still
+exists; setting both `isDelete` and `isChangeStatus` is rejected.
+
+**ABI Schema (`hl_update`, 11 fields, typed):**
 
 | # | Field | Type | Description |
 |---|-------|------|-------------|
 | 0 | traderWallet | string | EVM address |
 | 1 | copyTradeName | string | Label |
-| 2 | copyMode | string | "1" or "2" |
+| 2 | copyMode | uint64 | 1 or 2 |
 | 3 | fixedAmountCostPerOrder | string | Amount or ratio |
 | 4 | lossPercent | string | Stop-loss % |
 | 5 | profitPercent | string | Take-profit % |
 | 6 | nonce | string | Auto-generated |
-| 7 | isDelete | string | "1" or "" |
-| 8 | isChangeStatus | string | "1" or "" |
+| 7 | isDelete | bool | |
+| 8 | isChangeStatus | bool | toggles isActive |
 | 9 | copyTradeId | string | Existing trade ID |
-| 10 | oppositeCopy | string | "1" or "" |
+| 10 | oppositeCopy | bool | |
 
 ## Backend Quirks (Live E2E Findings)
 
 > These are verified behaviors observed during live E2E testing.
 
-1. **`copyMode` in responses is the ABI byte-offset, not the actual value.** For `hl_create` (8 fields) the offset is 416; for `hl_update` (11 fields) it's 480. The actual copy mode value (1 or 2) exists in the ABI data but the backend stores the offset instead.
+1. **Legacy `copyMode` values.** SDK versions up to 4.12 encoded every `hl_create`/`hl_update` field as an ABI string. The backend decodes `copyMode` as `uint64` and the flags as `bool`, so it stored the head-slot offset (416 after create, 480 after update) as `copyMode` and `true` for `oppositeCopy`, and read `isDelete=true` on every update (which is why updates "always deleted"). The SDK now sends the typed ABI. Configs created by old versions keep the bad values until you call `updateHlCopyTradeSettings` with explicit ones.
 
-2. **`oppositeCopy` in responses is always `true`** for the same ABI-offset reason. The offset slot is always a non-zero number (736 for create, 960 for update), which the backend interprets as truthy.
+2. **`isChangeStatus` toggles `isActive`** (`isActive = !existing.isActive`); it does not delete. Only `isDelete` deletes. Neither closes positions.
 
-3. **Both `isDelete` and `isChangeStatus` permanently DELETE** the copy trade. `isChangeStatus` does NOT toggle `isActive` on/off. This matches Solana copy trade behavior exactly.
+3. **The copier only mirrors `isActive: true` configs** (`copyTradeHyperLiquid.ts`), for both opens and closes.
 
 4. **`user_stats` requires the MANAGED wallet address** (`userWallet` from the copy trade config), not the control wallet address. The control wallet and external trader wallets return `{"code":103,"error":"Wallet not found"}`.
 
@@ -384,7 +381,7 @@ await skill.createHlCopyTrade({
   traderWallet: bestTrader.address,
   copyTradeName: `Top PnL: ${bestTrader.address.slice(0, 8)}`,
   copyMode: 1,
-  fixedAmountCostPerOrder: '25',  // $25 per copied trade
+  fixedAmountCostPerOrder: '25000000',  // $25 per copied trade (raw USDC, 6 decimals)
   lossPercent: '30',
   profitPercent: '100',
 });
@@ -406,8 +403,8 @@ for (const tx of fills.txes) {
 
 1. **`getHlUserStats()` requires the MANAGED wallet address.** Passing the control address or any external trader address returns 400 `"Wallet not found"`. Use the managed EVM address from `/v1/user?chainId=1`.
 2. **All 7 other discovery endpoints (topTraders, topTradersByPnl, allAssets, perpDexes, depositTokens, clearinghouseState, openOrders) work with the control address or any external address.** Only `user_stats` has the managed-address requirement.
-3. **Don't trust `copyMode` or `oppositeCopy` in API responses.** The backend returns ABI byte-offsets (416, 480, 736, etc.) instead of the real values. Store your own copy trade configs locally.
-4. **To pause a copy trade, you must delete and recreate it.** There is no toggle endpoint — `isChangeStatus` deletes permanently.
+3. **A `copyMode` other than 1 or 2 in a response is a legacy config** written by SDK <= 4.12; repair it with `updateHlCopyTradeSettings`.
+4. **To pause, call `pauseHlCopyTrade`, never delete.** Pausing leaves copied positions open and unmanaged by the copier.
 5. **Sign-in for HL copy trading must use `chainId: 1`** (EVM), not `622112261` (Solana).
 
 ## Related Skills

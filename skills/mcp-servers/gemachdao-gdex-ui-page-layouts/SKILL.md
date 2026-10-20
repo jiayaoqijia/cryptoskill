@@ -234,10 +234,10 @@ export default function BridgePage() {
     if (!isReady || !amount) return;
     setLoading(true);
     try {
-      const est = await skill.getBridgeEstimate({
-        fromChain: String(fromChain),
-        toChain: String(toChain),
-        amount,
+      const est = await skill.estimateBridge({
+        fromChainId: fromChain,
+        toChainId: toChain,
+        amount,   // raw units of the source native token (wei / lamports)
       });
       setEstimate(est);
     } finally {
@@ -285,11 +285,11 @@ export default function BridgePage() {
           <div className="border border-[var(--border-primary)] rounded-lg p-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-[var(--text-secondary)]">You receive</span>
-              <span className="font-bold">{estimate.estimatedAmount}</span>
+              <span className="font-bold">{estimate.estimateAmount}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[var(--text-secondary)]">Fee</span>
-              <span>{estimate.fee}</span>
+              <span className="text-[var(--text-secondary)]">ETA</span>
+              <span>{estimate.minEstimateTime}–{estimate.maxEstimateTime}s via {estimate.tool}</span>
             </div>
             <button className="w-full py-2 mt-2 bg-brand text-white rounded-lg">
               Bridge Now
@@ -351,10 +351,10 @@ export function Navigation() {
 
 | Page | Components Used | SDK Methods |
 |------|----------------|-------------|
-| Trading | `SpotTradeForm`, `PerpOrderForm`, `PositionTable`, `TokenSearch`, `ChainSelector` | `buyToken`, `sellToken`, `openPerpPosition`, `hlGetPositions`, `getTokenDetails` |
+| Trading | `SpotTradeForm`, `PerpOrderForm`, `PositionTable`, `TokenSearch`, `ChainSelector` | `buyToken`, `sellToken`, `hlCreateOrder`, `getPerpPositions`, `closePerpPosition`, `getTokenDetails` |
 | Portfolio | `PortfolioOverview`, `TokenBalanceGrid`, `TradeHistoryTable`, `ChainSelector` | `getPortfolio`, `getTradeHistory` |
-| Copy Trading | `CopyTradePanel` | `getCopyTrades`, `getTopTraders` |
-| Bridge | `ChainSwitcher` | `getBridgeEstimate`, `executeBridge` |
+| Copy Trading | `CopyTradePanel` | `getCopyTradeList`, `getCopyTradeWallets` |
+| Bridge | `ChainSwitcher` | `estimateBridge`, `requestBridge` |
 
 ## Related Skills
 

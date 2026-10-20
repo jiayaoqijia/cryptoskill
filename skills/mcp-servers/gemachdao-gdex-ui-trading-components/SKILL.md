@@ -17,7 +17,9 @@ React component patterns for building trading interfaces with the GDEX SDK. Each
 ## Prerequisites
 
 - GDEX SDK context provider set up — see **gdex-ui-install-setup**
-- Authenticated via `loginWithApiKey()` — see **gdex-authentication**
+- Wallet sign-in via `AuthProvider.loginWithWallet()` — see **gdex-ui-wallet-connection**. It runs the managed-custody
+  sign-in and exposes `creds` (`{ apiKey, walletAddress, sessionPrivateKey }`, walletAddress = control wallet) and
+  `managedAddress`. Every write call below takes `creds`; `loginWithApiKey()` alone only covers read-only data.
 
 ## Spot Trade Form
 
@@ -27,6 +29,7 @@ React component patterns for building trading interfaces with the GDEX SDK. Each
 
 import { useState } from 'react';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
 interface SpotTradeFormProps {
   defaultChain?: string;
@@ -35,6 +38,7 @@ interface SpotTradeFormProps {
 
 export function SpotTradeForm({ defaultChain = 'solana', onTradeComplete }: SpotTradeFormProps) {
   const { skill, isReady } = useGdex();
+  const { creds } = useAuth();
   const [mode, setMode] = useState<'buy' | 'sell'>('buy');
   const [chain, setChain] = useState(defaultChain);
   const [tokenAddress, setTokenAddress] = useState('');
@@ -45,12 +49,14 @@ export function SpotTradeForm({ defaultChain = 'solana', onTradeComplete }: Spot
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isReady) return;
+    if (!isReady || !creds) return;
     setLoading(true);
     setError(null);
     try {
-      const fn = mode === 'buy' ? skill.buyToken : skill.sellToken;
-      const result = await fn.call(skill, { chain, tokenAddress, amount, slippage });
+      const chainArg = /^\d+$/.test(chain) ? Number(chain) : chain; // numeric ChainId or 'solana' / 'sui'
+      const result = mode === 'buy'
+        ? await skill.buyToken({ chain: chainArg, tokenAddress, amount, slippage, ...creds })
+        : await skill.sellToken({ chain: chainArg, tokenAddress, amount, slippage, walletAddress: creds.walletAddress });
       onTradeComplete?.(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Trade failed');
@@ -109,6 +115,7 @@ export function SpotTradeForm({ defaultChain = 'solana', onTradeComplete }: Spot
 
 import { useState } from 'react';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
 interface PerpOrderFormProps {
   onOrderPlaced?: (result: any) => void;
@@ -116,6 +123,7 @@ interface PerpOrderFormProps {
 
 export function PerpOrderForm({ onOrderPlaced }: PerpOrderFormProps) {
   const { skill, isReady } = useGdex();
+  const { creds } = useAuth();
   const [coin, setCoin] = useState('BTC');
   const [side, setSide] = useState<'long' | 'short'>('long');
   const [sizeUsd, setSizeUsd] = useState('');
@@ -127,14 +135,23 @@ export function PerpOrderForm({ onOrderPlaced }: PerpOrderFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isReady) return;
+    if (!isReady || !creds) return;
     setLoading(true);
     setError(null);
     try {
-      const result = await skill.openPerpPosition({
-        coin, side, sizeUsd, leverage,
-        ...(takeProfitPrice && { takeProfitPrice }),
-        ...(stopLossPrice && { stopLossPrice }),
+      // hlCreateOrder takes size in contracts (coin units): convert the USD notional at the mark price
+      const mark = await skill.getHlMarkPrice(coin);
+      const size = (Number(sizeUsd) / mark).toFixed(5); // round to the market's szDecimals in production
+      const result = await skill.hlCreateOrder({
+        coin,
+        isLong: side === 'long',
+        price: String(mark),
+        size,
+        isMarket: true,
+        leverage,                   // sent top-level with the order
+        tpPrice: takeProfitPrice,   // '' skips TP
+        slPrice: stopLossPrice,     // '' skips SL
+        ...creds,
       });
       onOrderPlaced?.(result);
     } catch (err) {
@@ -185,7 +202,7 @@ export function PerpOrderForm({ onOrderPlaced }: PerpOrderFormProps) {
 }
 ```
 
-**SDK method called:** `skill.openPerpPosition()`
+**SDK methods called:** `skill.getHlMarkPrice()`, `skill.hlCreateOrder()`
 
 ## Position Table
 
@@ -195,16 +212,18 @@ export function PerpOrderForm({ onOrderPlaced }: PerpOrderFormProps) {
 
 import { useState, useEffect, useCallback } from 'react';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
 export function PositionTable({ pollInterval = 10000 }: { pollInterval?: number }) {
   const { skill, isReady } = useGdex();
+  const { creds, managedAddress } = useAuth();
   const [positions, setPositions] = useState<any[]>([]);
 
+  // Positions live on the managed EVM wallet, not the control wallet
   const refresh = useCallback(async () => {
-    if (!isReady) return;
-    const data = await skill.hlGetPositions();
-    setPositions(data?.positions ?? []);
-  }, [skill, isReady]);
+    if (!isReady || !managedAddress) return;
+    setPositions(await skill.getPerpPositions({ walletAddress: managedAddress }));
+  }, [skill, isReady, managedAddress]);
 
   useEffect(() => {
     refresh();
@@ -224,23 +243,27 @@ export function PositionTable({ pollInterval = 10000 }: { pollInterval?: number 
       </thead>
       <tbody>
         {positions.map((pos, i) => {
-          const pnl = pos.unrealizedPnl ?? pos.pnl ?? 0;
-          const isLong = Number(pos.szi ?? pos.size ?? 0) > 0;
+          // PerpPosition: { coin, side, size, entryPrice, markPrice, leverage, unrealizedPnl, liquidationPrice }
+          const pnl = Number(pos.unrealizedPnl ?? 0);
+          const isLong = pos.side === 'long';
           return (
             <tr key={i} className="border-b">
               <td>{pos.coin}</td>
               <td className={isLong ? 'text-green-500' : 'text-red-500'}>
                 {isLong ? 'LONG' : 'SHORT'}
               </td>
-              <td>${Math.abs(Number(pos.szi ?? pos.size ?? 0)).toFixed(2)}</td>
-              <td>${Number(pos.entryPx ?? 0).toFixed(2)}</td>
-              <td>${Number(pos.markPx ?? 0).toFixed(2)}</td>
+              <td>{pos.size}</td>
+              <td>${Number(pos.entryPrice ?? 0).toFixed(2)}</td>
+              <td>${Number(pos.markPrice ?? 0).toFixed(2)}</td>
               <td className={pnl >= 0 ? 'text-green-500' : 'text-red-500'}>
                 ${Number(pnl).toFixed(2)}
               </td>
-              <td>{pos.leverage?.value ?? '—'}×</td>
+              <td>{pos.leverage ?? '—'}×</td>
               <td>
-                <button onClick={() => skill.closePerpPosition({ coin: pos.coin })}
+                <button
+                  onClick={() => {
+                    if (creds && managedAddress) void skill.closePerpPosition({ ...creds, coin: pos.coin, positionAddress: managedAddress });
+                  }}
                   className="text-red-500 hover:underline">
                   Close
                 </button>
@@ -254,7 +277,7 @@ export function PositionTable({ pollInterval = 10000 }: { pollInterval?: number 
 }
 ```
 
-**SDK methods called:** `skill.hlGetPositions()`, `skill.closePerpPosition()`
+**SDK methods called:** `skill.getPerpPositions()`, `skill.closePerpPosition()`
 
 ## Copy Trade Panel
 
@@ -263,22 +286,27 @@ export function PositionTable({ pollInterval = 10000 }: { pollInterval?: number 
 'use client';
 
 import { useState, useEffect } from 'react';
+import { buildGdexUserSessionData } from '@gemachdao/gdex-skill';
 import { useGdex } from '@/providers/GdexProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
-export function CopyTradePanel() {
+export function CopyTradePanel({ sessionKey }: { sessionKey: string }) {
   const { skill, isReady } = useGdex();
+  const { creds } = useAuth();
   const [activeTrades, setActiveTrades] = useState<any[]>([]);
   const [topTraders, setTopTraders] = useState<any[]>([]);
   const [tab, setTab] = useState<'active' | 'discover'>('active');
 
   useEffect(() => {
-    if (!isReady) return;
-    // Load active copy trades
-    skill.getCopyTrades?.().then(setActiveTrades).catch(() => {});
-    // Load top traders for discovery
-    skill.getTopTraders?.({ chain: 'solana', limit: 10 })
-      .then(setTopTraders).catch(() => {});
-  }, [skill, isReady]);
+    if (!isReady || !creds) return;
+    // Load the user's copy trades (Solana sign-in; data = encrypted session key)
+    skill.getCopyTradeList({
+      userId: creds.walletAddress,
+      data: buildGdexUserSessionData(sessionKey, creds.apiKey),
+    }).then((r) => setActiveTrades(r.allCopyTrades ?? [])).catch(() => {});
+    // Load top traders for discovery (no auth)
+    skill.getCopyTradeWallets().then((w) => setTopTraders(w.slice(0, 10))).catch(() => {});
+  }, [skill, isReady, creds, sessionKey]);
 
   return (
     <div>
@@ -302,7 +330,7 @@ export function CopyTradePanel() {
                 <p className="text-xs text-gray-500">{trade.copyTradeName}</p>
               </div>
               <span className="text-sm">
-                {trade.copyBuyAmount} {trade.buyMode === 'fixed' ? 'fixed' : '%'}
+                {trade.buyMode === 1 ? `${trade.copyBuyFixedAmount} SOL` : `${trade.copyBuyPercent}%`}
               </span>
             </div>
           ))}
@@ -315,8 +343,8 @@ export function CopyTradePanel() {
           {topTraders.map((trader, i) => (
             <div key={i} className="border rounded p-3 flex justify-between items-center">
               <div>
-                <p className="font-mono text-sm">{trader.wallet}</p>
-                <p className="text-xs text-green-500">PnL: {trader.pnl}</p>
+                <p className="font-mono text-sm">{trader.address}</p>
+                <p className="text-xs text-green-500">PnL: {trader.totalPnl}</p>
               </div>
               <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm">
                 Copy
@@ -330,7 +358,7 @@ export function CopyTradePanel() {
 }
 ```
 
-**SDK methods called:** `skill.getCopyTrades()`, `skill.getTopTraders()`
+**SDK methods called:** `skill.getCopyTradeList()`, `skill.getCopyTradeWallets()`
 
 ## PnL Display
 
@@ -365,11 +393,12 @@ export function PnLDisplay({ value, label, showSign = true, currency = '$' }: Pn
 'use client';
 
 import { useState, useCallback } from 'react';
+import type { SupportedChain } from '@gemachdao/gdex-skill';
 import { useGdex } from '@/providers/GdexProvider';
 import { debounce } from '@/utils/debounce'; // simple debounce utility
 
 interface TokenSearchProps {
-  chain: string;
+  chain: SupportedChain;
   onSelect: (token: { address: string; symbol: string; name: string }) => void;
 }
 
@@ -381,7 +410,7 @@ export function TokenSearch({ chain, onSelect }: TokenSearchProps) {
   const search = useCallback(
     debounce(async (q: string) => {
       if (!isReady || q.length < 2) { setResults([]); return; }
-      const data = await skill.getTokenDetails({ chain, address: q });
+      const data = await skill.getTokenDetails({ chain, tokenAddress: q });
       setResults(data ? [data] : []);
     }, 300),
     [skill, isReady, chain]
@@ -413,18 +442,18 @@ export function TokenSearch({ chain, onSelect }: TokenSearchProps) {
 | Component | SDK Method | Skill |
 |-----------|------------|-------|
 | `SpotTradeForm` | `buyToken()`, `sellToken()` | gdex-spot-trading |
-| `PerpOrderForm` | `openPerpPosition()` | gdex-perp-trading |
-| `PositionTable` | `hlGetPositions()`, `closePerpPosition()` | gdex-perp-trading |
-| `CopyTradePanel` | `getCopyTrades()`, `getTopTraders()` | gdex-copy-trading |
+| `PerpOrderForm` | `getHlMarkPrice()`, `hlCreateOrder()` | gdex-perp-trading |
+| `PositionTable` | `getPerpPositions()`, `closePerpPosition()` | gdex-perp-trading |
+| `CopyTradePanel` | `getCopyTradeList()`, `getCopyTradeWallets()` | gdex-copy-trading |
 | `PnLDisplay` | (display only) | — |
 | `TokenSearch` | `getTokenDetails()` | gdex-token-discovery |
 
 ## Backend Quirks Affecting UI (Live-Tested)
 
 1. **Spot trading amounts in managed custody are RAW UNITS** (lamports/wei), not human-readable. The `SpotTradeForm` above uses `skill.buyToken()` which handles conversion, but if using `submitManagedPurchase()` directly, convert first.
-2. **`hlCloseAll` is unreliable** — the `PositionTable` close button should use reduce-only orders, not `skill.hlCloseAll()`. See **gdex-perp-trading** for the workaround.
+2. **`hlCloseAll` is unreliable** — the `PositionTable` close button uses `closePerpPosition()` per coin (a reduce-only order for the live size), not `skill.hlCloseAll()`.
 3. **Solana Meteora tokens fail** — if building a token selector, filter out `dexId === 'meteora'` tokens to avoid failed trades.
-4. **Leverage slider is informational only** — `hlUpdateLeverage` returns 404. Effective leverage is determined by position size vs account equity.
+4. **Leverage goes on the order** — the slider value is passed as `leverage` to `hlCreateOrder()` (sent top-level with the order). The standalone `hlUpdateLeverage` endpoint returns 404.
 5. **`getTopTraders()` needs numeric chainId** — use `622112261`, not `'solana'`.
 
 ## Related Skills
