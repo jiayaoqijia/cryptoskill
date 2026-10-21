@@ -1,49 +1,31 @@
-# Windows / PowerShell 5.1 环境坑（每条都真实消耗过轮次）
+# Windows / PowerShell：参数、字节与进程
 
-在 Windows 宿主导.shell 里跑工具前必读。Git Bash 用户注意：dsh 宿主侧命令可能落在 PowerShell 5.1，本文所有"PowerShell"特指 5.1（`\"` 行为与 7+ 不同）。
+当工具实际经 Windows shell 运行、出现参数或编码疑点时使用。先确认宿主 shell 和版本；DSH、Git Bash 和 WSL 不一定使用相同的参数传递规则。
 
-## 1. 引号与参数传递（最痛）
+## 引号与载荷
 
-- **`\"` 在 PowerShell 5.1 双引号字符串里不是转义**（反引号 `` ` `` 才是）——写了 `\"` 会**提前结束字符串**，后续参数全部错位，报错却指向无关的"缺少参数"（ledger.py 两次失败调用即此坑）。
-  → 长文本一律 here-string `@'...'@`，且文本内避免双引号；**更稳的做法：长文本走文件**（ledger.py 已支持 `--conclusion-file/--evidence-file/--quote-file`）。
-- 向 native exe 传**含内嵌 `"` 的字符串参数**会损坏参数边界（PS 5.1 已知缺陷）→ 走文件传递。
-- `python -c "..."` 内联带引号/括号必然碎 → **一律写成 `.py` 文件再执行**。
+- PowerShell 双引号字符串使用反引号转义，反斜杠不负责转义引号。Windows PowerShell 5.1 向原生程序传递内嵌引号可能改变参数边界；复杂载荷适合写入 UTF-8 文件或用结构化参数，不是所有 `python -c` 都不可用。
+- 单引号 here-string 可保存不需要插值的长文本，内容可含普通双引号。检查原生程序实际收到的参数；不要用 JSON 序列化结果代替 shell 转义。
+- 参数经过多层 shell 时优先减少层数。可将脚本落盘并让目标解释器读取，或用简单的直接参数调用；没有需要时不强制生成临时脚本。
 
-## 2. 重定向与编码
+## 重定向与字节
 
-- **PowerShell 的 `<` 输入重定向不存在** → 用 `cmd /c "... < input.txt > out.txt 2> err.txt"`。
-- **`>` 重定向会破坏二进制**（PS 按文本重编码）：`adb exec-out screencap -p > x.png` 产出的 PNG 无法解析 → 设备端落盘再 pull：`adb shell screencap -p /sdcard/a.png && adb pull /sdcard/a.png`。
-- **外部程序输出被 PS 重定向后可能是 UTF-16LE（带 `ff fe` BOM）** → 用 `[System.Text.Encoding]::Unicode` 读，或让程序直接写 UTF-8 文件。
-- 控制台默认 **GBK/cp936**：Python 打印非 GBK 字符（如 `\uf900`）抛 `UnicodeEncodeError` → 脚本首行 `sys.stdout.reconfigure(encoding='utf-8', errors='replace')`，**stderr 同样要 reconfigure**（`[GATE]` 等报错行在 stderr，漏了照样乱码）。本家族全部宿主脚本已强制此约定。
+- Windows PowerShell 5.1 的外部输出重定向可能按文本重编码；二进制结果优先由程序直接写文件。PowerShell 新版本的行为可能不同，不能把某版本现象当成全平台事实。
+- PowerShell 不提供传统 `<` 输入重定向。需要精确 stdin 字节时使用支持该能力的程序接口或明确的单一 shell；不通过拼接不可信文件路径构造另一层命令。
+- 根据实际控制台/管道检查编码，不预设一定是 GBK。Python 可显式配置 stdout/stderr 为 UTF-8；原始字节不要为方便显示先做有损解码。
+- 验证输入/输出的长度和必要字节。截取 JSON 前几行不是完整结构化响应，解析前核对分页或截断。
 
-## 3. 进程与路径
+## 路径、进程与长操作
 
-- `cd` **不改变** `[Environment]::CurrentDirectory`——.NET API 的相对路径会走偏 → 统一绝对路径。
-- `Get-WindowsOptionalFeature` 需要提权 → 判定虚拟化可用性改用 `emulator-check accel`（实测 WHPX 可用）。
-- Windows 上**被强杀的进程以裸 `exit code: 1` 收尾、不带 signal 标记** → 应判为"被打断"而非"命令失败"。
-- 只取 `python` 输出的前几行来 grep JSON 容易截断漏项 → 结构化解析（`ConvertFrom-Json` / python 读全量），别 grep 文本片段。
+- PowerShell 当前位置与部分 .NET API 的进程工作目录可能不同；跨 API 使用已解析绝对路径。权限/路径错误不直接证明工具未安装。
+- Windows 退出码 1 本身不能区分强杀、程序错误和其他失败；结合宿主取消事件、退出状态和日志判断，证据不足时保留未知。
+- 映像下载、模拟器启动等操作可能超过单次工具等待。按所属任务使用受管理后台任务、进展落盘或获准的等待；重试前核对已有进程/产物，不能因超时就启动第二份。
+- 提权仅在具体操作需要且已有授权时使用；工具探测尽量选择不改变系统的入口。
 
-## 4. 长耗时操作
+## Git Bash / WSL
 
-下载 ~1GB 系统镜像、无头模拟器启动、`sdkmanager --list` 都可能超过默认超时 → **一律后台任务 + 输出落盘**，靠"只读可重试"判断是否安全重试，避免"中断后状态未知"。
-
-## 5. 跨 shell 调用（Git Bash / WSL）
-
-- **Git Bash 会把 `/root/...` 这类参数转成 Windows 路径** → `wsl` 命令前必须 `export MSYS_NO_PATHCONV=1`。
-- Git Bash 的 `/tmp` 对 Windows 原生 python 不可见（它是 Bash 的虚拟挂载）→ 跨 shell 传文件用 `~/` 下的真实路径。
-- **`wsl -e bash -lc '...'` 内联时，载荷里的一层反斜杠会被吞掉**（实测隔离复现，与 printf 无关，是参数传递层）：
-
-  | 写法 | 实测 `od -c` | 结果 |
-  |---|---|---|
-  | `wsl -e bash -lc 'printf "A\nB" \| od -c'` | `A n B`（`41 6E 42`） | `\n` 变成字面量 `n` |
-  | `wsl -e bash -lc 'printf "A\\nB" \| od -c'` | `A \n B`（`41 0A 42`） | 加倍可得到真换行 |
-  | `wsl -e bash -lc 'printf "a\tb" \| od -c'` | `a t b` | `\t` 同样被吞 |
-
-  → **纪律同 §1 的 `python -c`：一律把载荷写成 `.sh` 文件再 `bash file.sh`**（实测同一 payload 从文件走就是真换行）。
-  本会话（本文档落地之后）正是被这条坑到：`printf 'DDDJJJBBBRRREEE\n'` 实际喂进去的是 `DDDJJJBBBRRREEn`，
-  程序正确地回了 `NO!NO!NO!`，**一度看起来像"flag 结论被推翻"**。是"正 + 负对照成对"的 oracle 把假警报拆掉的 ——
-  单看那一次输出会误判。
-- **从 Windows 侧写入的 `.sh` / `.txt` 是 CRLF**，bash 会报 `$'\r': command not found` 或用错值 →
-  执行前先 `sed -i 's/\r$//' <file>`。本会话每个脚本都跑过这一句，属固定动作而非偶发。
-- **WSL 默认只有 x86_64 运行库**：跑 32 位 ELF 前先 `dpkg --add-architecture i386 && apt-get update && apt-get install -y libc6:i386 libstdc++6:i386`，
-  否则 `/lib/ld-linux.so.2: No such file or directory`（`ldd` 还会误报 "not a dynamic executable"）。
+- Git Bash 可能把 Linux 风格参数转换为 Windows 路径；实际经 MSYS 调用且参数受影响时，使用本次命令范围的路径转换配置，例如 `MSYS_NO_PATHCONV=1`，不修改全局环境。
+- Git Bash 的 `/tmp` 与 Linux/WSL 的 `/tmp` 不是同一目录。跨环境用明确可访问的真实路径，并确认路径属于哪一侧。
+- Windows 到 WSL 的多层引号可能改变反斜杠和换行。用短已知字节样本核对当前调用方式，或让 WSL 从文件读取复杂脚本；不机械加倍所有反斜杠。
+- Windows 文件不必然是 CRLF。出现回车相关错误时先检查文件字节；只转换自己管理且确需 LF 的文本，不能每次对所有输入运行 `sed -i`。
+- 32 位 ELF 缺动态加载器可能来自架构运行库缺失，先核对文件架构、解释器路径与后端。安装 i386 支持会改变系统环境，需要相应授权；不把安装命令当成每次运行前置步骤。

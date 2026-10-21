@@ -1,34 +1,11 @@
 #!/usr/bin/env python
-"""model_diff.py - 模型实现 vs 真实 oracle 随机对拍（铁律 10② 分歧指纹产出工具）。
+"""Compare a local model command and oracle on a declared sampled input distribution.
 
-Host-side tool (any Python 3.8+, stdlib only; 纯本地子进程工具，不经 daemon)。
-
-用法:
-  model_diff.py --model "<cmd 模板>" --oracle "<cmd 模板>" \
-      --input-gen hex:32 | dec[:min:max] | ascii:16 [--n 200] [--seed 1] [--json]
-
-两条命令各为一个进程；每组输入经 stdin 喂入（hex 生裸字节，dec/ascii 追加
-换行），stdout 逐字节比对。首个分歧给出输入 + 双方输出（hex 对照）+ 分歧
-模式指纹 + 判词。
-
-分歧指纹（判据出处 ghidra-core 铁律 10②：差异呈规律 = 接口/搬运写错，
-不是"程序少了运算"；判词优先级：宽度级规律 > 字节级搬运 > 无规律——
-命中宽度级规律时绝不落"疑似算法错"）:
-  长度不一致        输出长度不同            -> 疑似接口错（framing/编码/换行/padding）
-  ── 宽度级（按 2/4 字节块统计）──
-  高低半块交换      model == 块内高低半互换   -> 疑似接口错（16/32 位半字拼装写反）
-  低半块全对+高半块恒定差  低半块逐字节相等，高半块 XOR/加法差恒定
-                                          -> 疑似接口错（移位/掩码/字段位宽，铁律 10② 点名形状）
-  单侧半块恒为常量  每块某半块恒为同一常量    -> 疑似接口错（常量写死/掩码错）
-  ── 字节级（nibble 粒度）──
-  低半字节全对      每字节低 4 bit 全部相等  -> 疑似接口错（nibble/位宽搬运错）
-  高低半字节交换    model == 逐字节 nibble 交换 -> 疑似接口错（hex 解码/位拼接写反）
-  单常量差          恰好 1 个字节不同        -> 疑似接口错（单字段/边界处理错）
-  全体偏移固定值    所有字节的差值恒定        -> 疑似接口错（基址/起点/常量加错）
-  完全无关          无上述规律              -> 疑似算法错（模型本身错）
-
-统计: mismatch 率 + 全部分歧的指纹汇总（--json 输出机器可读结构）。
-exit: 0 全部一致; 2 有分歧; 3 命令错误（子进程非零退出/超时/启动失败/用法错）。
+--model and --oracle receive stdin; --input-gen hex:N / dec / ascii:N,
+--n, --seed and --json control sampling and output. Commands execute only when
+explicitly supplied. Fingerprints are descriptive heuristics, not root-cause
+proof: interface, model, algorithm and environment errors can share a pattern.
+Exit 0: sampled outputs match; 2: divergence; 3: command/setup failure.
 """
 from __future__ import annotations
 
@@ -45,12 +22,12 @@ for _stream in (sys.stdout, sys.stderr):
 
 TIMEOUT = 10  # 每组输入的子进程超时（秒）
 
-VERDICT_INTERFACE = ("疑似接口/搬运错，不是算法错（铁律 10②）：输出结构对得上，"
-                     "先怀疑输入输出解析、半字/位宽、基址偏移——修接口，别改算法")
+VERDICT_INTERFACE = ("该结构提示核对接口、搬运或位宽；也可能来自算法、模型或组合错误。"
+                     "用输入输出解析、半字和偏移对照区分解释，指纹本身不确定根因。")
 VERDICT_LENGTH = ("疑似接口错（framing）：先核对编码（hex vs raw）、换行、padding、"
-                  "长度前缀——输出形状都不对，谈不上算法")
+                  "长度前缀；算法、模型和初始状态错误也可能改变长度，不能排除。")
 VERDICT_ALGORITHM = ("疑似算法错/模型整体错误：差异无搬运规律，回到算法层面对照"
-                     "（此时才允许怀疑程序/模型少了运算）")
+                     "；也保留未被当前启发式识别的接口或环境差异，根因未确定。")
 
 
 def gen_input(spec: str, rng: random.Random) -> bytes:
@@ -95,7 +72,7 @@ def _swap_nib(b: int) -> int:
 def _word_fp(mo: bytes, om: bytes, size: int) -> tuple[str, str] | None:
     """按 size 字节块检查宽度级指纹（16/32 位半字级规律）；命中返回
     (指纹名, 细节)，否则 None。判词一律 VERDICT_INTERFACE——宽度级规律
-    出现时禁止落"疑似算法错"（铁律 10②）。"""
+    模式只描述观测到的形状，不能排除算法或其他根因。"""
     n = len(mo)
     if size < 2 or n % size != 0:
         return None
@@ -108,7 +85,7 @@ def _word_fp(mo: bytes, om: bytes, size: int) -> tuple[str, str] | None:
         return (f"高低半块交换（按 {size} 字节块）",
                 f"model 输出 = oracle 输出按 {size} 字节块高低 {h} 字节互换，"
                 f"典型的 {size * 4} 位半字拼装写反（移位方向/字段顺序错）")
-    # ② 低半块全对 + 高半块差异恒定（chal 形状：铁律 10② 点名指纹）
+    # ② 低半块全对 + 高半块差异恒定（历史样本中的一种形状）
     if all(mw[:h] == ow[:h] for mw, ow in pairs):
         per_pos_xor = [{(mw[h + p] ^ ow[h + p]) for mw, ow in pairs}
                        for p in range(h)]
@@ -120,7 +97,7 @@ def _word_fp(mo: bytes, om: bytes, size: int) -> tuple[str, str] | None:
                 return (f"低半块全对+高半块 XOR 恒定（按 {size} 字节块）",
                         f"低 {h} 字节全部一致，高 {h} 字节逐位 XOR 差恒定为 "
                         f"{' '.join('0x%02x' % d for d in ds)}——接口/搬运写错的"
-                        "典型指纹（铁律 10② 点名形状），查移位/掩码/字段位宽，"
+                        "形状线索，查移位/掩码/字段位宽，"
                         "第一嫌疑人是 harness/连线")
         if all(len(s) == 1 for s in per_pos_add):
             ds = [s.pop() for s in per_pos_add]
@@ -128,7 +105,7 @@ def _word_fp(mo: bytes, om: bytes, size: int) -> tuple[str, str] | None:
                 return (f"低半块全对+高半块加法恒定（按 {size} 字节块）",
                         f"低 {h} 字节全部一致，高 {h} 字节逐字节差恒定为 "
                         f"{' '.join('+0x%02x' % d for d in ds)}（mod 256）——"
-                        "接口/搬运写错的典型指纹（铁律 10②），查常量/基址/位宽")
+                        "可能的接口/搬运线索，查常量/基址/位宽")
     # ③ 单侧半块恒为常量（需 ≥2 个块，单块时"恒为常量"无意义）
     if len(pairs) >= 2:
         for side, sl in (("低", slice(0, h)), ("高", slice(h, size))):
@@ -149,7 +126,7 @@ def fingerprint(model_out: bytes, oracle_out: bytes) -> tuple[str, str, str]:
                 VERDICT_LENGTH)
     n = len(model_out)
     diffs = [i for i in range(n) if model_out[i] != oracle_out[i]]
-    # 宽度级（16/32 位块）优先：命中即接口判词，绝不落"疑似算法错"
+    # 按既有形状优先级分类；分类不构成根因排除。
     for size in (4, 2):
         hit = _word_fp(model_out, oracle_out, size)
         if hit is not None:
@@ -191,7 +168,7 @@ def hexs(b: bytes, limit: int = 64) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser(
-        description="模型 vs oracle 随机对拍 + 分歧指纹（铁律 10②）")
+        description="模型 vs oracle 对拍；分歧指纹只提供排查线索，不确定根因")
     ap.add_argument("--model", required=True,
                     help="我方模型实现命令（stdin 喂输入/stdout 出结果）")
     ap.add_argument("--oracle", required=True, help="真实 oracle 命令（同约定）")
@@ -249,6 +226,8 @@ def main() -> int:
         "mismatch_rate": len(mismatches) / max(args.n, 1),
         "fingerprint_histogram": dict(fp_counter),
         "first_divergence": mismatches[0] if mismatches else None,
+        "diagnostic_scope": "sampled output patterns only; root cause undetermined",
+        "root_cause": "undetermined" if mismatches else None,
     }
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))

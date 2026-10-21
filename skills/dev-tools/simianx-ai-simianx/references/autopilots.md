@@ -3,6 +3,14 @@
 An autopilot runs the four live agents (indicator, intelligence, fundamental, decision) on one symbol on a schedule,
 optionally managing a paper position. Everything it does lands in an event log you read with a cursor.
 
+## Connect your own real-trading system
+
+You can use the API's analyses and signals to drive your own authorized trading system. Your integration reads
+the event log below and submits real orders through your broker or exchange API, using your own account and
+permissions. SimianX's position history and manual position actions remain simulations inside the platform.
+Check real order status and fills with your execution system; a simulated fill in SimianX does not confirm an
+external fill. Use the event cursor to resume processing and check `expires_at`, when present, before using a signal.
+
 ## Start
 
 `POST /v1/autopilots` (scope `automation:manage`, metered: each analysis cycle costs the models it uses; `typical_points_per_cycle` in the answer)

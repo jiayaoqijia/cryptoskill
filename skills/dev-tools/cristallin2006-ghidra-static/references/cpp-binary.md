@@ -107,7 +107,7 @@ COL（RVA 结构）`+0x10` = TypeDescriptor → 其 `+0x10` 起是名字 `.?AVPl
 
 - **模板/STL 展开函数禁止逐个深读**（本篇 §4）；vtable/RTTI 重建 ~15 分钟无业务层进展 → 铁律 6 转动态：Frida `Interceptor.attach` 直接 hook vtable 槽目标函数（槽地址 §2 已解析），或 gdb `info vtbl this`（pwndbg 增强）。
 - 同一区域第二次 `ledger.py observe` 必须答 `--delta`（铁律 7）；类归属/槽目标这类权威结论 `conclude` 写入即锁定。
-- RTTI/vtable 里读出的字符串与指针常量走 `read_views.py` 三视图取数（铁律 8）；patch vtable 劫持类需求求逆前过 `crypto_sanity.py check`（铁律 9）。
+- RTTI/vtable 里读出的字符串与指针常量走 `read_views.py` 三视图取数（保留地址与版本）；涉及字节/编码条件核对时可用 `crypto_sanity.py check`（仅验证所声明的局部格式）。
 
 ---
 

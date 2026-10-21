@@ -1,11 +1,11 @@
 ---
 name: simianx
-description: "Give an agent SimianX AI, a research desk on US stocks and crypto. Convene the 8-agent research committee (four analysts, a bull and a bear researcher, a research manager, a risk manager) on any stock or coin for a verdict with entry, stop and target and a PDF, then put follow-up questions to the same committee. Run the four live agents (chart, news flow, fundamentals, decision) for a read on one timeframe, and read the scored news feed behind Market Pulse (symbols, value, sentiment; list or live stream). Also Market Pulse price events, Sector Watch catalyst calendars (biopharma PDUFA dates, advisory committees, trial readouts), candles and indicators, and autopilots that run the live agents on a schedule with a paper position. Signs the user in from the agent. Use when the user asks whether to buy or sell a stock or coin, for a trading analysis or a second opinion, news on a symbol, upcoming catalysts, or wants a symbol watched."
+description: "Give an agent SimianX AI, a research desk on US stocks and crypto. Convene the 8-agent research committee (four analysts, a bull and a bear researcher, a research manager, a risk manager) on any stock or coin for a verdict with entry, stop and target and a PDF, then put follow-up questions to the same committee. Run the four live agents (chart, news flow, fundamentals, decision) for a read on one timeframe, and read the scored news feed behind Market Pulse (symbols, value, sentiment; list or live stream). Also Market Pulse price events, Sector Watch catalyst calendars (biopharma PDUFA dates, advisory committees, trial readouts), candles and indicators, and autopilots that run the live agents on a schedule with a paper position. Signs the user in from the agent. Connect API signals to your own authorized system for real trading. Use when the user asks whether to buy or sell a stock or coin, for a trading analysis or a second opinion, news on a symbol, upcoming catalysts, or wants a symbol watched."
 license: MIT
 compatibility: "Needs network access to the SimianX API. Optional: python3 for the runner."
 metadata:
   author: simianx
-  version: "1.0.3"
+  version: "1.0.5"
   api_base: https://service.simianx.ai
   docs: https://www.simianx.ai/agents
   openapi: https://service.simianx.ai/v1/openapi.json
@@ -14,7 +14,7 @@ metadata:
 # SimianX for agents
 
 Base URL: `https://service.simianx.ai` (every path below starts with `/v1`). Auth: `Authorization: Bearer $SIMIANX_API_KEY`,
-plus `X-SimianX-Skill: 1.0.3` (this file's version) on every request.
+plus `X-SimianX-Skill: 1.0.5` (this file's version) on every request.
 Responses use `{"code": <http status>, "notify": "<human text>", "data": {...}}`. Every response carries `X-Request-Id`,
 `X-SimianX-Skill-Version`, `X-SimianX-Api-Version`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`;
 paid responses carry `X-Points-Charged` and `X-Points-Remaining`.
@@ -43,13 +43,14 @@ paid responses carry `X-Points-Charged` and `X-Points-Remaining`.
   spot and USDT/USD perpetuals, a bare `BTC` means the perpetual; timeframes `1m 5m 15m 1H 4H 1D`).
 - **Models**: tiers `fast` / `standard` / `frontier`; paid plans set any of 50+ models per agent (`GET /v1/models`);
   the crypto leaderboard shows how each model has traded.
-- **Plans and languages**: Free, Starter, Plus, Pro. Answers in 16 languages (`X-Language`). Paper positions only:
-  SimianX never trades a real account.
+- **Plans and languages**: Free, Starter, Plus, Pro. Answers in 16 languages (`X-Language`). Positions recorded
+  inside SimianX are simulated. Users can connect API analysis and signals to their own authorized trading system
+  to execute real orders through their broker or exchange.
 
 ## Setup
 
-0. **Version check, once per session.** This file is version `1.0.3` (frontmatter `metadata.version`). Send
-   `X-SimianX-Skill: 1.0.3` on every request. Before the first real call, `GET /v1/skill` (public): if `data.version`
+0. **Version check, once per session.** This file is version `1.0.5` (frontmatter `metadata.version`). Send
+   `X-SimianX-Skill: 1.0.5` on every request. Before the first real call, `GET /v1/skill` (public): if `data.version`
    is newer than yours, or `data.minimum_version` is above yours, re-read https://www.simianx.ai/SKILL.md and follow
    the new file. Any response with HTTP 426 (`reason: skill_outdated`) means the same: re-read, then retry.
    `data.deprecations` lists endpoints with a sunset date; stop using them before that date. The authoritative
@@ -86,6 +87,17 @@ paid responses carry `X-Points-Charged` and `X-Points-Remaining`.
 - Ask the human before: starting an autopilot that manages a paper position, spending more than ~50 points in one call,
   or anything about subscription changes. Never put the key in a repository, a log or a message.
 - Analyses are information, not investment advice. Say so when you relay a decision.
+
+## Real trading with your own execution system
+
+Users can connect SimianX analysis and signals through the API to their own trading system and execute real orders
+through a broker or exchange they authorize. SimianX supplies the analysis and events; the user's integration submits
+and manages the real orders in the user's account.
+
+Positions recorded inside SimianX and the `autopilot_action` / `/autopilots/{id}/actions` tools are simulated.
+To build an execution workflow, read the analysis or autopilot event log, then pass the selected signal to the user's
+separate execution integration. A SimianX position event is not confirmation that an external order filled.
+See `references/autopilots.md` for the event stream.
 
 ## Calls
 
