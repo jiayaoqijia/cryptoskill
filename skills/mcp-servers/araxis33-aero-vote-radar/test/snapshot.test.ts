@@ -1,7 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildEpochYields, buildRewardTokens, buildSnapshot, isSnapshotSuspiciouslySmall, toSnapshotPool } from "../src/snapshot.js";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { buildEpochYields, buildRewardTokens, buildSnapshot, isSnapshotSuspiciouslySmall, toSnapshotPool, writeSnapshot } from "../src/snapshot.js";
+import { LAST_WEEKLY_VOTE_CLOSE_TS } from "../src/constants.js";
 import type { PoolEfficiency } from "../src/efficiency.js";
+
+const AFTER_VOTE_CLOSE = new Date((LAST_WEEKLY_VOTE_CLOSE_TS + 3600) * 1000);
 
 function ranked(overrides: Partial<PoolEfficiency> & { symbol?: string }): PoolEfficiency {
   const { symbol, ...rest } = overrides;
@@ -355,4 +361,33 @@ test("an unpriced reward token still gets its amount recorded, so it can be valu
   );
   assert.deepEqual(snap.pools[0].latestEpochBribes, [[AERO.toLowerCase(), "7"]]);
   assert.equal(snap.rewardTokens[0].priceUsd, 0);
+});
+
+test("writeSnapshot keeps the last weekly scan untouched once the weekly vote has ended", async () => {
+  // Past LAST_WEEKLY_VOTE_CLOSE_TS, Aerodrome's legacy gauges are switched
+  // off, so a fresh scan would legitimately come back collapsed. This must
+  // not reach rankPoolsByEfficiency (which would hit the chain) at all — it
+  // should return the existing file exactly as published, the same thing
+  // llms.ts's renderVoteEnded documents as the intended behaviour.
+  const dir = mkdtempSync(join(tmpdir(), "snapshot-vote-ended-test-"));
+  const outPath = join(dir, "snapshot.json");
+  const llmsPath = join(dir, "llms.txt");
+  const existing = buildSnapshot([ranked({})], AT);
+  writeFileSync(outPath, JSON.stringify(existing), "utf8");
+  writeFileSync(llmsPath, "stale pre-close content", "utf8");
+
+  const result = await writeSnapshot(outPath, llmsPath, AFTER_VOTE_CLOSE);
+
+  assert.deepEqual(result, existing);
+  assert.deepEqual(JSON.parse(readFileSync(outPath, "utf8")), existing);
+  assert.match(readFileSync(llmsPath, "utf8"), /weekly veAERO vote has ended/);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("writeSnapshot refuses to invent a snapshot after the vote has ended with nothing on disk to keep", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "snapshot-vote-ended-empty-test-"));
+  const outPath = join(dir, "snapshot.json");
+
+  await assert.rejects(() => writeSnapshot(outPath, undefined, AFTER_VOTE_CLOSE), /no existing snapshot/);
+  rmSync(dir, { recursive: true, force: true });
 });

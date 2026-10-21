@@ -14,7 +14,7 @@ add 原有 key/question/success/tools 等不变，新增可选 handoff：
 {"inputs":[{"ref":"sample.txt","description":"用户提供的原始材料"}],"claims":[{"statement":"当前候选解释","verification":"untested","evidence_refs":[],"conditions":"仅在当前输入下猜测"}],"hypotheses":["另一种解释仍可能成立"],"failure_boundaries":["上次只检查了一个输入，不能排除整个方法"],"constraints":["本次只读，不访问外部目标"],"responsibility":"负责判别两种解释；不要与其他 Solver 修改同一产物"}
 ```
 
-自动交接 goal、constraints 和目标代次及 endpoint/url/host/port/service/fingerprint/description 等必要字段；不整份复制任务数据库或目标中的凭据字段。记录与 handoff 不产生额外授权。输入引用不自动授予文件权限；需要读取工具和正确原文位置。单份 handoff、记录目标/约束、目标上下文各有 16KiB 上限，超限明确要求使用引用，不静默截断约束。
+自动交接 goal、constraints 和目标代次及 endpoint/url/host/port/service/fingerprint/description 等必要字段；不整份复制任务数据库或目标中的凭据字段。记录与 handoff 不产生额外授权。输入引用不自动授予文件权限；需要读取工具和正确原文位置。关键用户约束仍完整保留，超过约 16KiB 的直接上下文预算会明确拒绝；长 goal、非关键约束部分的 handoff、目标上下文和续做文本通过完整材料包分块交付。原文件用明确授权的引用与读取工具，见 [长任务与完整材料](long-tasks.md)。
 
 claims 的 tested 需要显式证据引用，但字段检查不证明引用真实或充分；不支持在此自行标为 accepted。依赖的 adopted、验证状态和检查点一同传递。
 

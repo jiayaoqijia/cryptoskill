@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { rankPoolsByEfficiency } from "./efficiency.js";
 import { computeTrend, epochEndOf, isEpochInProgress, WEEKLY_EPOCH } from "./trend.js";
 import { computeVoteStability, previousSettledVotes } from "./dilution.js";
-import { SNAPSHOT_MIN_POOL_RATIO } from "./constants.js";
+import { SNAPSHOT_MIN_POOL_RATIO, weeklyVoteEnded } from "./constants.js";
 import { renderLlmsTxt } from "./llms.js";
 import { readFeeCounters, type FeeCounter, type FeeStreamFile } from "./feeStream.js";
 import {
@@ -348,8 +348,34 @@ async function previousPoolCount(outPath: string): Promise<number | null> {
  * slow and rate-limited to run from a visitor's browser on a public RPC, so it
  * runs on a schedule in CI and the result is committed as a plain JSON file. The
  * page then does only the cheap part — the personalised allocation — client-side.
+ *
+ * `now` is a parameter (defaulting to the real clock) purely so the
+ * weekly-vote-ended branch below is testable without waiting for 2026-10-21
+ * to actually arrive.
  */
-export async function writeSnapshot(outPath: string, llmsPath?: string): Promise<Snapshot> {
+export async function writeSnapshot(outPath: string, llmsPath?: string, now: Date = new Date()): Promise<Snapshot> {
+  if (weeklyVoteEnded(Math.floor(now.getTime() / 1000))) {
+    // Once the weekly vote closes, Aerodrome's legacy gauges are switched off
+    // (constants.ts), so a fresh scan would legitimately come back empty or far
+    // smaller than the last real one — not the degraded-scan case the guards
+    // below exist to catch, but the genuine, permanent end of what this scan
+    // measures. llms.ts's `renderVoteEnded` already documents the intended
+    // behaviour ("the page ... keeps the last weekly scan for reference
+    // only"), so stop scanning and leave snapshot.json (and the fee-stream/
+    // fee-rate files published beside it) exactly as they are, rather than
+    // either overwriting a good snapshot with a collapsed one or crashing this
+    // scheduled job every few hours from here on. llms.txt has its own
+    // "vote has ended" text and keeps refreshing, since it needs no live scan.
+    if (llmsPath) {
+      await writeFile(resolve(llmsPath), renderLlmsTxt([], now, 0), "utf8");
+    }
+    const existing = await readJson<Snapshot>(resolve(outPath));
+    if (!existing) {
+      throw new Error("the weekly veAERO vote has ended and no existing snapshot was found to keep");
+    }
+    return existing;
+  }
+
   const ranked = await rankPoolsByEfficiency();
   if (ranked.length === 0) {
     // Refuse to publish an empty snapshot. A failed or rate-limited scan would
@@ -373,7 +399,7 @@ export async function writeSnapshot(outPath: string, llmsPath?: string): Promise
     );
   }
 
-  const generatedAt = new Date();
+  const generatedAt = now;
   const snapshot = buildSnapshot(ranked, generatedAt);
 
   await mkdir(dirname(resolve(outPath)), { recursive: true });

@@ -65,4 +65,6 @@ dsh_memory_read health 查看数据库、索引和宿主计数。写入失败必
 
 ## 协作推理与受限记忆
 
+复杂目标可用主会话工具 dsh_target_map 把已复核记忆分类为组件、关系与目标，并绑定真实工作。地图不复制证据或授予 Solver 全图访问；详情见 [目标地图契约](../analysis-orchestration/references/target-map.md)。
+
 遇到重要前提传播、第二角度复核、执行型 Solver 召回记忆、授权变化或原件阅读覆盖时，先读 [协作推理与受限记忆](references/collaborative-memory.md)。摘要不能代替原件；读取回执不能证明理解；保留观察、解释、假设与有效范围。
