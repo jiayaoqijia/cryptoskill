@@ -6,13 +6,15 @@ import { formatError } from "./util.js";
 import { registryFromDeployment, scanV3, type V3ScanFile, type V3Client } from "./v3.js";
 
 /**
- * Entrypoint for the scheduled Aero (v3) scan on Base. It waits on Aero's own
+ * Entrypoint for the scheduled Aero (v3) scan on Base. It prefers Aero's own
  * deployment file: scripts/aero-chains.mjs records which file in
- * dromos-labs/metadex-public belongs to Base, and until there is one this
- * writes `status: "no-addresses"` and stops. Nothing on the page reads the
- * output yet. `V3_REGISTRY` overrides the registry for a manual check.
+ * dromos-labs/metadex-public belongs to Base. Until that file exists it uses
+ * the Base FactoryRegistry Aero published at app.aero.xyz/docs/security on
+ * 2026-10-21. Nothing on the page reads the output yet. `V3_REGISTRY`
+ * overrides the registry for a manual check.
  */
 const RAW = "https://raw.githubusercontent.com/dromos-labs/metadex-public/main/deployment-addresses/";
+const BASE_REGISTRY = "0x7b2A2c12dC5Ea2a31455952a05031C3E4BB28F3E";
 
 async function registryAddress(): Promise<string | undefined> {
   if (process.env.V3_REGISTRY) return process.env.V3_REGISTRY;
@@ -20,9 +22,9 @@ async function registryAddress(): Promise<string | undefined> {
   try {
     file = JSON.parse(readFileSync("docs/data/aero-chains.json", "utf8")).chains?.base?.file;
   } catch {
-    return undefined;
+    return BASE_REGISTRY;
   }
-  if (!file) return undefined;
+  if (!file) return BASE_REGISTRY;
   const res = await fetch(RAW + file, { signal: AbortSignal.timeout(10_000) });
   if (!res.ok) throw new Error(`${file} ${res.status}`);
   return registryFromDeployment((await res.json()) as Record<string, unknown>);

@@ -245,13 +245,16 @@ Schema only; for the exit *behavior* (phases, floors, breach counting, time cuts
   `weak_peak_cut` (`interval_in_minutes` > 0, `min_value` > 0); `dead_weight_cut`
   (`interval_in_minutes` > 0). Each requires those fields when `enabled: true`. Durations are in
   **minutes** (the DSL preset's own unit — unchanged).
-- `phase1`: `enabled` (default true); when enabled, `max_loss_pct` (>0, ≤100),
-  `retrace_threshold` (>0), `consecutive_breaches_required` (int ≥1).
+- `phase1`: `enabled` (default true); `max_loss_pct` (>0, ≤100) applies **whether or not phase1 is
+  enabled**: it is the hard stop from entry, placed as an exchange stop-loss. `enabled: false` turns off
+  only the phase-1 **trailing retrace/breach** logic; it does NOT remove the max-loss stop. When enabled,
+  `retrace_threshold` (>0) and `consecutive_breaches_required` (int ≥1) are also required.
 - `phase2`: `enabled` (default true); when enabled, non-empty `tiers` **sorted ascending by
   `trigger_pct`**. Each tier: `trigger_pct` (>0, ≤100), `lock_hw_pct` (0–100). Phase-2
   `retrace_threshold`/`consecutive_breaches_required` and tier `retrace`/`breaches` are **rejected**.
 - `max_loss_pct` resolution: `dsl_preset.max_loss_pct` → `phase1.max_loss_pct` → 1% if
-  `phase1.enabled: false` → else error.
+  `phase1.enabled: false` → else error. So a disabled phase1 still has a max-loss exchange stop from entry
+  (1% when no value is set); it is never "no stop".
 
 ---
 
@@ -263,14 +266,19 @@ every `OPEN_POSITION`; if `risk` is absent, none are evaluated.
 | Field | Constraints |
 |---|---|
 | `data_retention_seconds` | integer, 3600–604800 |
-| `guard_rails.daily_loss_limit_pct` | ≥ 0 |
+| `guard_rails.daily_loss_limit_pct` | ≥ 0. **Latches:** once breached it stays CLOSED until 00:00 UTC, even if PnL recovers intraday |
 | `guard_rails.max_entries_per_day` | integer ≥ 1 |
 | `guard_rails.bypass_max_entries_per_day_on_profit` | bool (default false) |
 | `guard_rails.max_consecutive_losses` | integer ≥ 1 |
 | `guard_rails.cooldown_seconds` | min 60 |
-| `guard_rails.drawdown_halt_pct` | 0–100 |
-| `guard_rails.drawdown_reset_on_day_rollover` | bool (default false) |
+| `guard_rails.drawdown_halt_pct` | 0–100. **Latches:** once breached it stays CLOSED even if drawdown recovers (release: next row) |
+| `guard_rails.drawdown_reset_on_day_rollover` | bool (default false). `true`: reset the PnL peak at UTC midnight AND release a latched drawdown halt then. `false`: the peak carries ~24h and a latched drawdown halt **never auto-resets** — tell the user and wait for their decision |
 | `guard_rails.per_asset_cooldown_seconds` | min 300 |
+
+The two halt latches are saved in the strategy's state dir and survive gateway restarts and updates; editing a
+threshold does not release one, removing the rail drops it. A latched halt is the user's call — never clear it or
+resume entries without their explicit approval. Release rules, status fields and events:
+`senpi-strategy-author/references/risk-gates.md` → *Halt latch*.
 
 ---
 

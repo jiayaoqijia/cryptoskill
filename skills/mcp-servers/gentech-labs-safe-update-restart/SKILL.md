@@ -9,6 +9,14 @@ license: MIT
 
 # Safe Update & Restart for Production VPS
 
+> ### 🐳 Running in a CONTAINER? Read `fleet-update-container` instead — several commands here do NOT work there.
+> If your agent runs from a **Docker image** (no writable `/opt/hermes`, no `systemd`, `/opt/data` is a
+> bind mount), the commands below are **wrong for your box**: `hermes update` refuses in-container,
+> `systemctl` does not exist (services are **s6**), and the update is a **host recreate**, not an agent
+> action. Use the companion skill **`fleet-update-container`** for the container-correct procedure —
+> it also covers how to read the real version from the image's install stamp and the boot trap that
+> false-flags lost ports.
+
 ## When to Use
 - Updating Hermes Agent (`hermes update`) on a box that runs live services.
 - Restarting the gateway, x402 gateway, or any service someone may be connected to.
