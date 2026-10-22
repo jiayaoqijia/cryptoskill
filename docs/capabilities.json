@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T01:05:36.618184+00:00",
+  "generated_at": "2026-10-22T06:51:57.944030+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -61014,7 +61014,6 @@
         }
       },
       "hosted_operators": [
-        "1inch.io",
         "robinhood.com"
       ]
     },
@@ -61082,7 +61081,7 @@
     },
     "dev-tools/austintgriffith-official-building-blocks": {
       "name": "building-blocks",
-      "execution_model": "unsigned_tx_builder",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -61115,7 +61114,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -61125,7 +61124,7 @@
           "source": "extracted"
         },
         "requires_hosted_operator": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -61140,9 +61139,7 @@
           "source": "extracted"
         }
       },
-      "hosted_operators": [
-        "dune.com"
-      ]
+      "hosted_operators": []
     },
     "dev-tools/austintgriffith-official-concepts": {
       "name": "concepts",
@@ -61518,7 +61515,7 @@
     },
     "dev-tools/austintgriffith-official-frontend-playbook": {
       "name": "frontend-playbook",
-      "execution_model": "router_orchestrator",
+      "execution_model": "unsigned_tx_builder",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -61546,12 +61543,12 @@
           "source": "extracted"
         },
         "can_spawn_subagents": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -61701,12 +61698,12 @@
         }
       },
       "hosted_operators": [
-        "etherscan.io"
+        "coinbase.com"
       ]
     },
     "dev-tools/austintgriffith-official-indexing": {
       "name": "indexing",
-      "execution_model": "unsigned_tx_builder",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -61719,7 +61716,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -61739,7 +61736,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -61759,7 +61756,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -61802,6 +61799,68 @@
         },
         "can_move_funds": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/austintgriffith-official-l2s": {
+      "name": "l2s",
+      "execution_model": "unsigned_tx_builder",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -61892,7 +61951,7 @@
     },
     "dev-tools/austintgriffith-official-noir": {
       "name": "noir",
-      "execution_model": "installer_bootstrap",
+      "execution_model": "unknown",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -61940,81 +61999,79 @@
           "source": "extracted"
         },
         "uses_remote_install_script": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
         "mutable_remote_runtime": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/austintgriffith-official-orchestration": {
+      "name": "orchestration",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
       },
       "hosted_operators": []
-    },
-    "dev-tools/austintgriffith-official-orchestration": {
-      "name": "orchestration",
-      "execution_model": "analysis_only",
-      "capabilities": {
-        "auto_invocable": {
-          "value": null,
-          "confidence": "low",
-          "source": "unknown"
-        },
-        "can_execute_shell": {
-          "value": true,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "can_install_code": {
-          "value": true,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "can_write_files": {
-          "value": false,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "can_browse_web": {
-          "value": false,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "can_spawn_subagents": {
-          "value": false,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "can_move_funds": {
-          "value": false,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "requires_private_key": {
-          "value": false,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "requires_hosted_operator": {
-          "value": true,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "uses_remote_install_script": {
-          "value": false,
-          "confidence": "medium",
-          "source": "extracted"
-        },
-        "mutable_remote_runtime": {
-          "value": true,
-          "confidence": "medium",
-          "source": "extracted"
-        }
-      },
-      "hosted_operators": [
-        "alchemy.com"
-      ]
     },
     "dev-tools/austintgriffith-official-protocol": {
       "name": "protocol",
@@ -62088,7 +62145,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62108,7 +62165,7 @@
           "source": "extracted"
         },
         "can_spawn_subagents": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62142,7 +62199,7 @@
     },
     "dev-tools/austintgriffith-official-security": {
       "name": "security",
-      "execution_model": "unsigned_tx_builder",
+      "execution_model": "local_executor",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -62150,7 +62207,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62180,7 +62237,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62204,7 +62261,7 @@
     },
     "dev-tools/austintgriffith-official-ship": {
       "name": "ship",
-      "execution_model": "router_orchestrator",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -62232,7 +62289,7 @@
           "source": "extracted"
         },
         "can_spawn_subagents": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62266,7 +62323,7 @@
     },
     "dev-tools/austintgriffith-official-standards": {
       "name": "standards",
-      "execution_model": "unknown",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -62274,12 +62331,12 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
         "can_install_code": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62304,7 +62361,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62319,7 +62376,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -62328,7 +62385,7 @@
     },
     "dev-tools/austintgriffith-official-testing": {
       "name": "testing",
-      "execution_model": "unsigned_tx_builder",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -62336,7 +62393,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62361,7 +62418,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62371,7 +62428,7 @@
           "source": "extracted"
         },
         "requires_hosted_operator": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62386,13 +62443,11 @@
           "source": "extracted"
         }
       },
-      "hosted_operators": [
-        "alchemy.com"
-      ]
+      "hosted_operators": []
     },
     "dev-tools/austintgriffith-official-tools": {
       "name": "tools",
-      "execution_model": "local_executor",
+      "execution_model": "analysis_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -62400,7 +62455,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62425,12 +62480,12 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62451,17 +62506,12 @@
         }
       },
       "hosted_operators": [
-        "alchemy.com",
-        "ankr.com",
-        "blockscout.com",
-        "etherscan.io",
-        "infura.io",
-        "quicknode.com"
+        "blockscout.com"
       ]
     },
     "dev-tools/austintgriffith-official-wallets": {
       "name": "wallets",
-      "execution_model": "local_executor",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -62469,7 +62519,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62494,7 +62544,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62504,7 +62554,7 @@
           "source": "extracted"
         },
         "requires_hosted_operator": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -62519,9 +62569,7 @@
           "source": "extracted"
         }
       },
-      "hosted_operators": [
-        "alchemy.com"
-      ]
+      "hosted_operators": []
     },
     "dev-tools/austintgriffith-official-why-ethereum": {
       "name": "why-ethereum",
@@ -117107,6 +117155,68 @@
       "hosted_operators": [
         "quicknode.com"
       ]
+    },
+    "mcp-servers/rezearcher-mcp-scan": {
+      "name": "mcp-scan",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
     },
     "mcp-servers/robinhood-trading-mcp": {
       "name": "robinhood-trading-mcp",
@@ -221257,31 +221367,31 @@
     }
   },
   "summary": {
-    "discovered": 3556,
-    "processed": 3556,
+    "discovered": 3558,
+    "processed": 3558,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2572,
-      "router_orchestrator": 148,
-      "unknown": 338,
+      "read_only": 2579,
+      "router_orchestrator": 146,
+      "unknown": 339,
       "analysis_only": 217,
-      "unsigned_tx_builder": 115,
-      "local_executor": 103,
-      "installer_bootstrap": 44,
+      "unsigned_tx_builder": 113,
+      "local_executor": 102,
+      "installer_bootstrap": 43,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1230,
-      "can_install_code": 556,
+      "can_execute_shell": 1224,
+      "can_install_code": 554,
       "can_write_files": 175,
       "can_browse_web": 246,
-      "can_spawn_subagents": 264,
-      "can_move_funds": 301,
+      "can_spawn_subagents": 261,
+      "can_move_funds": 298,
       "requires_private_key": 493,
-      "requires_hosted_operator": 344,
-      "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 556
+      "requires_hosted_operator": 340,
+      "uses_remote_install_script": 42,
+      "mutable_remote_runtime": 554
     }
   }
 }

@@ -13,7 +13,7 @@ description: >-
 license: Apache-2.0
 metadata:
   homepage: https://nirium.xyz
-  repository: https://github.com/nirium-protocol/nirium-sdk
+  repository: https://github.com/nirium-protocol/nirium
 ---
 
 # Nirium: charge AI agents and read live signals on Stellar
@@ -71,16 +71,25 @@ import { x402Serve } from 'nirium';
 
 app.use('/premium', x402Serve({
     payTo: 'G...',
+    facilitatorApiKey: process.env.X402_FACILITATOR_API_KEY,
+    network: 'stellar:testnet',
     routes: { 'GET /signals': '$0.02' },
 }));
 ```
+
+`facilitatorApiKey` is required: without it `x402Serve()` throws when the
+server starts. The key is free and per network: get a testnet one at
+[channels.openzeppelin.com/testnet/gen](https://channels.openzeppelin.com/testnet/gen)
+and a mainnet one at [channels.openzeppelin.com/gen](https://channels.openzeppelin.com/gen).
+A mainnet key returns 401 against testnet. For mainnet, also set
+`network: 'stellar:pubnet'`.
 
 A caller without payment gets a 402 carrying the terms; one that pays
 gets the data, and the USDC transfer settles on Stellar before your
 handler returns. No subscription, no card, no invoice, no human in the
 middle. This is the exact pattern Nirium's own mainnet endpoint runs in
 production against real callers — see the devlog for a real incident
-(and its fix) from operating it at scale: [docs/devlog.md](https://github.com/nirium-protocol/nirium-sdk/blob/main/docs/devlog.md).
+(and its fix) from operating it at scale: [docs/devlog.md](https://github.com/nirium-protocol/nirium/blob/main/docs/devlog.md).
 
 Optional, off by default: set `NIRIUM_X402SERVE_TELEMETRY=true` if you
 want to send Nirium a non-blocking usage ping (your `payTo`, a
@@ -119,24 +128,16 @@ live mainnet agent right now:
 Paid tools (`get_premium_signals` $0.02, `get_premium_market` $0.05,
 `execute_paid_strategy` $0.25, over x402; `get_mpp_signals` $0.02,
 `get_mpp_market` $0.05, over MPP) need a funded `STELLAR_SECRET_KEY` and
-are **testnet only today** — the mainnet box holds no signing key by
-design, so it returns `501` rather than charging for an endpoint it
-cannot serve. Don't tell a user these settle on mainnet; they do not yet.
-
-### Alternative: scaffold a standalone signal listener (no MCP client needed)
-
-```bash
-nirium create bot --name my-agent          # TypeScript
-nirium create bot --name my-agent -t py    # Python
-```
-
-Connects directly to a Nirium agent and prints incoming signals from
-its autonomous loop. Defaults to the testnet agent; set `NIRIUM_API_URL`
-and `NIRIUM_API_KEY` in `.env` to point elsewhere.
+are **testnet only today**, with one exception: `get_premium_market` is
+also payable on mainnet (`/api/v1/premium/market` answers `402`). On
+mainnet, `/api/v1/premium/signals` and `/api/v1/premium/execute` return
+`501`: the mainnet box holds no signing key by design, so it does not
+charge for an endpoint it cannot serve. Don't tell a user the other paid
+tools settle on mainnet; they do not yet.
 
 ## Reference
 
-- SDK + CLI + MCP source, examples: [github.com/nirium-protocol/nirium-sdk](https://github.com/nirium-protocol/nirium-sdk)
+- SDK + CLI + MCP source, examples: [github.com/nirium-protocol/nirium](https://github.com/nirium-protocol/nirium)
 - CLI: [npmjs.com/package/nirium-cli](https://www.npmjs.com/package/nirium-cli)
 - MCP server: [npmjs.com/package/nirium-mcp](https://www.npmjs.com/package/nirium-mcp)
 - TypeScript SDK: [npmjs.com/package/nirium](https://www.npmjs.com/package/nirium) · Python: [pypi.org/project/nirium](https://pypi.org/project/nirium/)
