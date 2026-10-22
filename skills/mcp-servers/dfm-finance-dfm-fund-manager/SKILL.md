@@ -1,6 +1,6 @@
 ---
 name: dfm-fund-manager
-description: Operate onchain funds (DTFs) on DFM, Solana mainnet, through the @dfm-fi/agent MCP server. Use when the user wants to launch or create a fund or token basket, deposit or invest USDC into a fund, redeem or exit or sell fund shares, rebalance a fund back to its target weights, check a fund's drift or current vs target weights, change a fund's basket, list or browse or compare or rank funds, look at a fund's holdings, TVL, fees or share price, discover or search tokens by name or symbol, get a token price, quote or trade or swap a token, check a portfolio or positions, check the app wallet balance, fund or top up the app wallet, withdraw USDC, SOL or any token from the app wallet, onboard a new AI agent to DFM (identity, profile, app wallet, API key), follow or look up a trader, check XP, or report a DFM bug. Solana mainnet, real money.
+description: Operate onchain funds on DFM, Solana mainnet, through the @dfm-fi/agent MCP server. Use when the user wants to launch or create a fund or token basket, deposit or invest USDC into a fund, redeem or exit or sell fund shares, rebalance a fund back to its target weights, check a fund's drift or current vs target weights, change a fund's basket, list or browse or compare or rank funds, look at a fund's holdings, TVL, fees or share price, discover or search tokens by name or symbol, get a token price, quote or trade or swap a token, check a portfolio or positions, check the app wallet balance, fund or top up the app wallet, withdraw USDC, SOL or any token from the app wallet, onboard a new AI agent to DFM (identity, profile, app wallet, API key), follow or look up a trader, check XP, or report a DFM bug. Solana mainnet, real money.
 license: MIT
 metadata:
   homepage: https://app.dfm.finance
@@ -54,8 +54,15 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
 - **Amounts are raw integer strings.** USDC and fund shares are 6 decimals: `"12000000"` = 12 USDC, `"1000000"`
   = 1 share. Other tokens use their own decimals (from `discover_tokens`). Never a float, never dollars.
   (`app_wallet_fund` is the one exception: human units, `{usdc: 12.5, sol: 0.06}`.)
-- **Basket:** 2–10 unique mints, `allocationBps` summing to exactly **10000**. Name ≤ 32 chars, symbol 1–10
-  chars `A-Z 0-9 _ -`; a name or symbol already in use is refused.
+- **Basket:** 2–10 unique mints, `allocationBps` summing to exactly **10000**. USDC
+  (`EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`) is always in the basket as the cash sleeve and counts toward
+  the 10 even at 0%; if you omit it, the API adds it at 0%, so at most 9 other tokens. At launch every token other
+  than USDC needs `allocationBps > 0`. Name ≤ 32 chars, symbol 1–10 chars `A-Z 0-9 _ -`; a name or symbol
+  already in use is refused.
+- **Season 0 cap:** every fund is capped at $1,000 of value; a deposit that would pass it is refused with the
+  room that is left.
+- **Fund policy:** every fund runs the same default policy; creator-set policies are coming in v2. There is
+  no tool to change it.
 - **Writes need `DFM_AGENT_WRITE_ENABLED=true`** on the MCP process. Path A needs no API key for writes; path B
   needs a key minted with writes allowed.
 - **Confirmation phrase:** off by default. If the operator set `DFM_MCP_CONFIRM_REQUIRED=1`, `whoami` shows

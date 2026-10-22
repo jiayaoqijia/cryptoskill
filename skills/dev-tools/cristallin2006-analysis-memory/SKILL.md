@@ -53,7 +53,7 @@ checkpoint/transition/资源管理仍使用 analysis_session。任务 complete �
 
 dsh_memory_read health 查看数据库、索引和宿主计数。写入失败必须明确“未持久化”；不能回落临时库、声称成功或自动重做外部实验。索引降级时仍可使用有范围限制的中文子串/标识符查询。
 
-项目共享、向量检索、独立后台整理 agent 和自动更新 skill 尚未启用。method_candidate 是评审材料，不会自动修改专业方法。
+需要找深入参考或复用同一工作区经验时，可按需使用 dsh_knowledge；见 [知识召回与项目方法记忆](references/knowledge-library.md)。method_candidate 可经显式脱敏复核后提炼为项目方法卡；目录命中和已发布卡均不证明当前适用，不携带实例事实或授权。不要求每题查库。全局跨项目共享、向量检索、独立后台整理 agent 和自动更新 skill 尚未启用。
 
 ## 完整原始材料交接
 
