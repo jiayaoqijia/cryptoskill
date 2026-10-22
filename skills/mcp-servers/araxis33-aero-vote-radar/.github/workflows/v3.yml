@@ -1,0 +1,48 @@
+name: Aero scan
+
+on:
+  schedule:
+    # Hourly, at :47 rather than on the hour (see snapshot.yml). An sAERO stake can
+    # move every 47 h and pools fill up within hours, so the 4-hourly snapshot
+    # left the ranking stale.
+    - cron: "47 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: v3
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - run: npm ci
+
+      # Aero's seven networks (src/v3-cli.ts); a network that fails is recorded in the
+      # file and the others still publish.
+      - name: Scan Aero (v3)
+        run: npm run v3scan
+
+      - name: Commit the scan if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/v3.json
+          if git diff --cached --quiet; then
+            echo "v3 unchanged — nothing to commit"
+            exit 0
+          fi
+          git commit -m "Refresh the Aero scan"
+          # The snapshot workflow and the daily routine push to the same branch.
+          git pull --rebase
+          git push

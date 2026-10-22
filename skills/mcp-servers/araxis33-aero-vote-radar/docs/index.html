@@ -240,6 +240,25 @@
   .pill.wa { color: var(--warn); background: rgba(255, 184, 77, 0.1); }
   .chains { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
   .chains span { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 7px 11px; font-size: 13.5px; }
+  /* Aero (sAERO) radar, the block at the top */
+  #aeroRadar h2:first-child { margin-top: 22px; }
+  .ar-controls { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 14px; }
+  .ar-totals { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 16px; }
+  .stat.hi { border-color: rgba(53, 208, 127, 0.45); }
+  .ar-callout { margin-top: 16px; padding: 12px 14px; border: 1px solid rgba(53, 208, 127, 0.4); background: rgba(53, 208, 127, 0.07); border-radius: 10px; font-size: 14px; }
+  .ar-mine { font-weight: 660; color: var(--good); }
+  #arBody .badge { margin-right: 8px; }
+  .ar-nets { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  .ar-net { font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); cursor: pointer; }
+  .ar-net.on { background: var(--aero); border-color: var(--aero); color: #fff; }
+  .ar-chip { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; margin-left: 6px; }
+  .ar-split { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .ar-split a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 14px; text-decoration: none; }
+  .ar-hold { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .ar-hold .n { font-size: 20px; font-weight: 660; }
+  .ar-bar { height: 8px; border-radius: 4px; background: var(--aero); }
+  .ar-old { margin-top: 40px; padding-top: 6px; border-top: 1px solid var(--line); }
+  @media (max-width: 600px) { .ar-controls { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -255,12 +274,68 @@
   </svg>
   <div>
     <h1>Aero Vote Radar</h1>
-    <p class="sub">Where to vote your veAERO this week to earn the most.<br>
-      Tell it how much you hold, copy the percentages, paste them into Aerodrome.</p>
+    <p class="sub">Where your sAERO earns the most on Aero.<br>
+      Enter how much you hold and see what each pool pays you per day, after your own stake dilutes it.</p>
   </div>
 </header>
 
-<div class="note" id="voteEndedNote" hidden><b>The weekly veAERO vote has ended.</b> The last vote closed on October 21, 22:59 UTC, Aero launched on October 22 and the old gauges are switched off, so this page no longer suggests a vote. Upgrade your veAERO to sAERO at <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noreferrer">aero.xyz/aero-upgrade</a>; look up your wallet below to see what each lock becomes. Ranking for sAERO allocation will follow once Aero publishes its contract addresses. The figures further down are the last weekly scan, kept for reference.</div>
+<!-- Aero (sAERO) ranking, read from data/v3.json (src/v3-cli.ts, every scheduled
+     scan). Hidden until the scan reports the Base contracts live. -->
+<section id="aeroRadar" hidden>
+  <p class="meta" id="arMeta"></p>
+  <div class="panel">
+    <div class="ar-controls">
+      <div class="field">
+        <label for="arAmount">Your sAERO</label>
+        <input id="arAmount" type="number" min="0" step="any" value="10000" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="arAddr">Wallet (optional, shows your 47 h timer)</label>
+        <div class="addr-row">
+          <input id="arAddr" type="text" spellcheck="false" autocomplete="off" placeholder="0x…">
+          <button id="arLookup" class="primary" type="button">Look up</button>
+        </div>
+        <div class="lookup-msg" id="arMsg"></div>
+      </div>
+    </div>
+    <div class="totals ar-totals">
+      <div class="stat hi"><div class="n num c-good" id="arBest">&mdash;</div><div class="l">Best pool for your sAERO, per day</div></div>
+      <div class="stat"><div class="n num" id="arTimer">47 h</div><div class="l" id="arTimerLabel">Between moves of one stake (enter a wallet for yours)</div></div>
+      <div class="stat"><div class="n num" id="arCurrent">&mdash;</div><div class="l">What your current split on Base pays per day</div></div>
+      <div class="stat"><div class="n num">1.7&times;</div><div class="l">Switching every 47 h vs weekly (backtest)</div></div>
+    </div>
+    <div class="ar-callout" id="arCallout" hidden></div>
+  </div>
+
+  <h2>Where to point your sAERO now</h2>
+  <p class="h2note">Ranked by what <b>your</b> amount earns per day, pools with at least 100,000 sAERO. Fees are what the pool actually swept to allocators; incentives are what projects are streaming right now. <span id="arEarly"></span></p>
+  <div class="ar-nets" id="arChains"></div>
+  <div class="scroll"><table>
+    <thead><tr><th>Pool</th><th class="num">Your split</th><th class="num">Per day for you</th><th class="num">Fees / day</th><th class="num">Incentives / day</th><th class="num">sAERO in pool</th><th class="num">Last 24 h</th></tr></thead>
+    <tbody id="arBody"></tbody>
+  </table></div>
+  <div class="ar-split">
+    <a class="primary" href="https://app.aero.xyz/markets/allocate" target="_blank" rel="noreferrer">Allocate on Aero</a>
+    <button id="arCopy" type="button">Copy percentages</button>
+    <span class="hint" style="margin:0">Opens Aero's Allocate page; you sign in your own wallet. This page never holds funds.</span>
+  </div>
+
+  <h2>How long to hold a pool</h2>
+  <p class="h2note">Backtest on 3 weeks of pool fees (Sep 27 – Oct 20), 10,000 sAERO, best pool each time. Fees only.</p>
+  <div class="panel">
+    <div class="ar-hold">
+      <div><div class="n num">$10.08</div><div class="ar-bar" style="width:100%"></div><div class="hint">every 47 h</div></div>
+      <div><div class="n num">$7.57</div><div class="ar-bar" style="width:75%"></div><div class="hint">every 4 days</div></div>
+      <div><div class="n num">$5.90</div><div class="ar-bar" style="width:59%"></div><div class="hint">once a week</div></div>
+      <div><div class="n num">$4.12</div><div class="ar-bar" style="width:41%"></div><div class="hint">every 2 weeks</div></div>
+    </div>
+    <p class="hint">Top pools cool off fast: a day later they pay about 38% of what put them on top.</p>
+    <p class="hint"><b>Tip:</b> the 47 h timer runs per stake, not per wallet. Split your sAERO into a few stakes and each gets its own timer &mdash; a new stake's first allocation has no wait.</p>
+  </div>
+  <h2 class="ar-old">Before Aero: the last weekly veAERO vote</h2>
+</section>
+
+<div class="note" id="voteEndedNote" hidden><b>The weekly veAERO vote has ended.</b> The last vote closed on October 21, 22:59 UTC, Aero launched on October 22 and the old gauges are switched off, so this page no longer suggests a vote. Upgrade your veAERO to sAERO at <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noreferrer">aero.xyz/aero-upgrade</a>; look up your wallet below to see what each lock becomes. The sAERO ranking is at the top of this page. The figures further down are the last weekly scan, kept for reference.</div>
 <p class="meta" id="meta"><span class="dot"></span> Loading the latest scan…</p>
 <div class="note" id="aeroLaunchNote">Aerodrome becomes <b>Aero</b> on <b>October 22, 00:00 UTC</b>, with a new rewards system (sAERO and Predictive Allocation). Official steps and dates are in <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noreferrer">aero.xyz/aero-upgrade</a> (see "Before Aero, Oct 22" below); look up your wallet below to preview what each veAERO lock becomes, read from Aerodrome's published migration contract. This page covers the current weekly veAERO vote. <a href="https://aero.xyz/articles/aero-launch-update-all-systems-go/" target="_blank" rel="noreferrer">Aero's announcement</a></div>
 
@@ -1503,8 +1578,6 @@ function applyVoteEnded() {
   document.getElementById("voteLink").hidden = true;
   document.getElementById("copyBtn").hidden = true;
   el.calldataBox.hidden = true;
-  document.querySelector("header .sub").textContent =
-    "Built to show where to vote veAERO each week. The weekly vote has ended with the Aero launch.";
   document.getElementById("allocTitle").textContent = "Last weekly suggestion (for reference)";
   document.getElementById("allocSub").textContent =
     "From the final veAERO week. The weekly vote has ended, so this is no longer something to cast.";
@@ -2604,6 +2677,239 @@ fetch("data/snapshot.json", { cache: "no-cache" })
     text.textContent = "Could not load the snapshot (" + err.message + "). The scheduled scan may be mid-run — try again shortly.";
     el.meta.append(dot, text);
   });
+
+// --- Aero (sAERO) radar ---------------------------------------------------
+// Reads data/v3.json (src/v3-cli.ts). A wallet is looked up on Aero's Base
+// contracts (app.aero.xyz/docs/security): stakes from the VotingEscrow, the
+// 47 h timer and current split from the LeafVoter (tokenStates.lastAllocated +
+// allocationCooldown − accumulatedCooldownReduction, as ILeafVoter documents).
+const AR_VE = "0xbf7977e1521e9a3032bf7243ee4712f311f13915";
+const AR_LEAF_VOTER = "0x382409fad8503fbcdbb27a4211551fa03e884078";
+const AR_SEL_TOKEN_OF_OWNER = "0x2f745c59";   // tokenOfOwnerByIndex(address,uint256)
+const AR_SEL_TOKEN_STATES = "0xaa9f3eca";     // tokenStates(uint256) -> (operator, lastAllocated, canVoteForZeroCapGauges, chainAllocation)
+const AR_SEL_COOLDOWN = "0x6f5aa6ab";         // allocationCooldown()
+const AR_SEL_REDUCTION = "0xbe8cfed2";        // accumulatedCooldownReduction(uint256)
+const AR_SEL_GAUGES = "0xd596efe1";           // allocatedGauges(uint256) -> address[]
+const AR_SEL_ALLOCATION = "0x1c3a964f";       // allocations(uint256,address) -> uint128
+// Same floor the earlier per-day blocks used: below it one stake moves the pool's rate.
+const AR_MIN_WEIGHT = 100000;
+const AR_MAX_POOLS = 3;
+const AR_STEPS = 20;
+const AR_MAX_STAKES = 20;
+
+const AR_CHAIN_NAMES = { base: "Base", ethereum: "Ethereum", optimism: "OP Mainnet", arbitrum: "Arbitrum", ink: "Ink", robinhood: "Robinhood Chain", arc: "Arc" };
+
+let arData = null;
+let arWallet = null;
+let arChain = "all";
+const arEl = (id) => document.getElementById(id);
+const arPerDay = (g) => g.feesUsdPerDay + g.incentivesUsdPerDay;
+const arChainOf = (g) => g.chain || "base";
+// Pools worth ranking on the chosen network, best for `amount` first.
+const arPools = (amount) =>
+  arData.gauges
+    .filter((g) => g.weight >= AR_MIN_WEIGHT && arPerDay(g) > 0 && (arChain === "all" || arChainOf(g) === arChain))
+    .map((g) => ({ g, mine: dilutedPerDay(arPerDay(g), g.weight, amount) }))
+    .sort((a, b) => b.mine - a.mine);
+
+// One button per network that has rankable pools, plus "All networks".
+function arRenderChains() {
+  const box = arEl("arChains");
+  box.innerHTML = "";
+  const counts = {};
+  for (const g of arData.gauges) if (g.weight >= AR_MIN_WEIGHT && arPerDay(g) > 0) counts[arChainOf(g)] = (counts[arChainOf(g)] || 0) + 1;
+  for (const key of ["all", ...Object.keys(AR_CHAIN_NAMES).filter((k) => counts[k])]) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "ar-net" + (key === arChain ? " on" : "");
+    b.textContent = key === "all" ? "All networks" : AR_CHAIN_NAMES[key] + " " + counts[key];
+    b.addEventListener("click", () => { arChain = key; arRenderChains(); arRender(); });
+    box.append(b);
+  }
+}
+const arName = (g) => (g.symbol0 ? g.symbol0 + "/" + g.symbol1 : g.pool.slice(0, 6) + "…" + g.pool.slice(-4));
+
+// Greedy in 5% steps: each step goes where it adds the most after dilution,
+// then the split is redone over the top AR_MAX_POOLS so it stays short enough to enter by hand.
+function arSplit(pools, amount) {
+  const run = (cands) => {
+    const alloc = new Map(cands.map((g) => [g, 0]));
+    const step = amount / AR_STEPS;
+    for (let i = 0; i < AR_STEPS; i++) {
+      let best = null, gain = -1;
+      for (const g of cands) {
+        const a = alloc.get(g);
+        const d = dilutedPerDay(arPerDay(g), g.weight, a + step) - dilutedPerDay(arPerDay(g), g.weight, a);
+        if (d > gain) { gain = d; best = g; }
+      }
+      alloc.set(best, alloc.get(best) + step);
+    }
+    return [...alloc].filter(([, a]) => a > 0).sort((x, y) => y[1] - x[1]);
+  };
+  if (!(amount > 0) || pools.length === 0) return [];
+  let out = run(pools.slice(0, 15));
+  if (out.length > AR_MAX_POOLS) out = run(out.slice(0, AR_MAX_POOLS).map(([g]) => g));
+  return out.map(([g, a]) => ({ g, share: a / amount, perDay: dilutedPerDay(arPerDay(g), g.weight, a) }));
+}
+
+function arTrend(g) {
+  if (arData.windowHours < 36 || !(g.feesUsdPerDay > 0)) return ["new", ""];
+  const r = g.fees24hUsdPerDay / g.feesUsdPerDay - 1;
+  if (r > 0.1) return ["rising " + pctChange(r), "c-good"];
+  if (r < -0.1) return ["cooling " + pctChange(r).replace("-", "−"), "c-bad"];
+  return ["steady", ""];
+}
+
+function arCell(row, text, cls) {
+  const td = document.createElement("td");
+  td.className = "num" + (cls ? " " + cls : "");
+  td.textContent = text;
+  row.append(td);
+}
+
+function arRender() {
+  if (!arData) return;
+  const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
+  const pools = arPools(amount);
+  const split = arSplit(pools.map((x) => x.g), amount);
+  const splitPays = split.reduce((a, s) => a + s.perDay, 0);
+  arEl("arBest").textContent = pools.length && amount > 0 ? usd(pools[0].mine) : "—";
+
+  const shares = new Map(split.map((s) => [s.g, s]));
+  const rows = [...split.map((s) => s.g), ...pools.map((x) => x.g).filter((g) => !shares.has(g))].slice(0, 12);
+  const body = arEl("arBody");
+  body.innerHTML = "";
+  for (const g of rows) {
+    const tr = document.createElement("tr");
+    const name = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.className = "badge " + (g.kind && g.kind.startsWith("CL") ? "c" : g.kind === "sAMM" ? "s" : "v");
+    badge.textContent = g.kind ? g.kind.replace(/^CL\d+$/, "CL") : "?";
+    const chip = document.createElement("span");
+    chip.className = "ar-chip";
+    chip.textContent = AR_CHAIN_NAMES[arChainOf(g)] || arChainOf(g);
+    name.append(badge, document.createTextNode(arName(g)), chip);
+    tr.append(name);
+    const s = shares.get(g);
+    arCell(tr, s ? Math.round(s.share * 100) + "%" : "—", s ? "pct" : "");
+    arCell(tr, usd(s ? s.perDay : dilutedPerDay(arPerDay(g), g.weight, amount)), s ? "ar-mine" : "");
+    arCell(tr, g.feesUsdPerDay > 0 ? usd(g.feesUsdPerDay) : "$0");
+    arCell(tr, g.incentivesUsdPerDay > 0 ? usd(g.incentivesUsdPerDay) : "$0");
+    arCell(tr, num(g.weight));
+    const [trend, cls] = arTrend(g);
+    arCell(tr, trend, cls);
+    body.append(tr);
+  }
+
+  const timer = arEl("arTimer"), timerLabel = arEl("arTimerLabel"), current = arEl("arCurrent"), callout = arEl("arCallout");
+  callout.hidden = true;
+  current.textContent = "—";
+  if (!arWallet) {
+    timer.textContent = "47 h";
+    timerLabel.textContent = "Between moves of one stake (enter a wallet for yours)";
+    return;
+  }
+  if (arWallet.stakes.length === 0) {
+    timer.textContent = "—";
+    timerLabel.textContent = "No sAERO stake in this wallet on Base";
+    return;
+  }
+  const nowSec = Date.now() / 1000;
+  const next = Math.min(...arWallet.stakes.map((s) => s.readyAt));
+  timer.textContent = next <= nowSec ? "now" : "in " + Math.ceil((next - nowSec) / 3600) + " h";
+  timerLabel.textContent = arWallet.stakes.length > 1 ? "Your first stake can move again" : "You can move your sAERO again";
+  // The wallet is read on Base, so only its Base allocations are matched.
+  const byGauge = new Map(arData.gauges.filter((g) => arChainOf(g) === "base").map((g) => [g.gauge.toLowerCase(), g]));
+  let pays = 0, placed = 0;
+  for (const st of arWallet.stakes) {
+    for (const a of st.allocs) {
+      const g = byGauge.get(a.gauge);
+      placed += a.amount;
+      if (g && g.weight > 0) pays += arPerDay(g) * Math.min(1, a.amount / g.weight);
+    }
+  }
+  if (placed > 0) {
+    current.textContent = usd(pays);
+    if (splitPays > pays) {
+      callout.hidden = false;
+      callout.innerHTML = (next <= nowSec ? "You can move now: " : "When your 47 h are up: ") +
+        "moving to the suggested split below would pay about <b>" + usd(splitPays) + " a day</b> instead of <b>" + usd(pays) + "</b>.";
+    }
+  } else {
+    current.textContent = "$0";
+  }
+}
+
+async function arReadWallet(addr) {
+  const big = (hex) => BigInt(hex === "0x" ? 0 : hex);
+  const count = Number(big(await ethCall(SEL_BALANCE_OF + word(addr), AR_VE)));
+  const cooldown = Number(big(await ethCall(AR_SEL_COOLDOWN, AR_LEAF_VOTER)));
+  const stakes = [];
+  for (let i = 0; i < Math.min(count, AR_MAX_STAKES); i++) {
+    const id = big(await ethCall(AR_SEL_TOKEN_OF_OWNER + word(addr) + hexOf(i), AR_VE));
+    const power = Number(big(await ethCall(SEL_POWER_OF + hexOf(id), AR_VE))) / 1e18;
+    const state = (await ethCall(AR_SEL_TOKEN_STATES + hexOf(id), AR_LEAF_VOTER)).slice(2);
+    const last = Number(BigInt("0x" + state.slice(64, 128)));
+    const reduction = Number(big(await ethCall(AR_SEL_REDUCTION + hexOf(id), AR_LEAF_VOTER)));
+    const list = (await ethCall(AR_SEL_GAUGES + hexOf(id), AR_LEAF_VOTER)).slice(2);
+    const n = Number(BigInt("0x" + list.slice(64, 128)));
+    const allocs = [];
+    for (let k = 0; k < n; k++) {
+      const gauge = "0x" + list.slice(128 + k * 64 + 24, 128 + (k + 1) * 64);
+      const raw = big(await ethCall(AR_SEL_ALLOCATION + hexOf(id) + word(gauge), AR_LEAF_VOTER));
+      allocs.push({ gauge, amount: Number(raw) / 1e18 });
+    }
+    // A stake that never allocated has no wait: its first allocation skips the cooldown.
+    stakes.push({ id, power, readyAt: last ? last + Math.max(0, cooldown - reduction) : 0, allocs });
+  }
+  return { stakes, total: stakes.reduce((a, s) => a + s.power, 0), count };
+}
+
+arEl("arLookup").addEventListener("click", async () => {
+  const addr = arEl("arAddr").value.trim();
+  const msg = arEl("arMsg");
+  msg.className = "lookup-msg";
+  if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) { msg.textContent = "Paste a 0x… wallet address."; msg.classList.add("err"); return; }
+  msg.textContent = "Reading your stakes on Aero…";
+  try {
+    arWallet = await arReadWallet(addr);
+    if (arWallet.total > 0) arEl("arAmount").value = Math.floor(arWallet.total);
+    msg.textContent = arWallet.count === 0 ? "No sAERO stake in this wallet on Base." :
+      arWallet.count + (arWallet.count === 1 ? " stake, " : " stakes, ") + num(arWallet.total) + " sAERO" +
+      (arWallet.count > AR_MAX_STAKES ? " (first " + AR_MAX_STAKES + " read)" : "") + ".";
+    msg.classList.add("ok");
+  } catch (err) {
+    arWallet = null;
+    msg.textContent = "Could not read the wallet (" + err.message + "). Try again in a moment.";
+    msg.classList.add("err");
+  }
+  arRender();
+});
+arEl("arAmount").addEventListener("input", arRender);
+arEl("arCopy").addEventListener("click", () => {
+  const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
+  const pools = arPools(amount).map((x) => x.g);
+  const text = arSplit(pools, amount).map((s) => arName(s.g) + " (" + (s.g.kind || "?") + ", " + (AR_CHAIN_NAMES[arChainOf(s.g)] || arChainOf(s.g)) + ") " + Math.round(s.share * 100) + "%").join("\n");
+  navigator.clipboard.writeText(text).then(() => { arEl("arCopy").textContent = "Copied"; setTimeout(() => (arEl("arCopy").textContent = "Copy percentages"), 1500); });
+});
+
+fetch("data/v3.json", { cache: "no-cache" })
+  .then((r) => (r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status))))
+  .then((data) => {
+    if (data.status !== "live" || !data.gauges.length) return;
+    arData = data;
+    const ago = Math.max(0, Math.round((Date.now() - Date.parse(data.checkedAt)) / 3600000));
+    const hours = Math.round(data.windowHours);
+    const nets = new Set(data.gauges.map(arChainOf)).size;
+    arEl("arMeta").innerHTML = '<span class="dot"></span> Live from Aero\'s contracts on ' + (nets > 1 ? nets + " networks" : "Base") +
+      " · updated <strong>" + (ago === 0 ? "under an hour ago" : ago + " h ago") + "</strong> · fees from the last " + hours + " h" +
+      (data.windowHours < 96 ? " (since launch)" : "") + " · rescanned every hour";
+    arRenderChains();
+    if (data.windowHours < 48) arEl("arEarly").textContent = "Aero launched " + hours + " h ago and fees arrive in lumps, so these figures are rough for the first days.";
+    arEl("aeroRadar").hidden = false;
+    arRender();
+  })
+  .catch(() => {});
 </script>
 </body>
 </html>

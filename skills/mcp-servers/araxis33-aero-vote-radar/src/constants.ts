@@ -15,6 +15,11 @@ export const BUILDER_CODE_SUFFIX = "62635f6d726b7775326d300b00802180218021802180
 // get a much higher rate-limit ceiling than the shared public endpoints.
 export const BASE_RPC_URL = process.env.BASE_RPC_URL ?? "https://base-rpc.publicnode.com";
 
+// Logs for the Aero (v3) fee window. publicnode answers 403 to eth_getLogs older
+// than ~10,000 blocks (5.5 h); Tenderly's public gateway serves the full 96 h,
+// 1,000 blocks per call (measured 2026-10-22).
+export const V3_LOGS_RPC_URL = process.env.V3_LOGS_RPC_URL ?? "https://base.gateway.tenderly.co";
+
 export const VOTER_ADDRESS = "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5" as const;
 export const REWARDS_SUGAR_ADDRESS = "0x1b121EfDaF4ABb8785a315C51D29BCE0552A7678" as const;
 // VotingEscrow (the veAERO NFT contract). Obtained by calling `Voter.ve()` on

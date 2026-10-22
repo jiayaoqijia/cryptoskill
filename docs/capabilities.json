@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T12:54:59.887092+00:00",
+  "generated_at": "2026-10-22T18:52:43.364874+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -87844,7 +87844,7 @@
           "source": "extracted"
         },
         "requires_hosted_operator": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -87859,7 +87859,10 @@
           "source": "extracted"
         }
       },
-      "hosted_operators": []
+      "hosted_operators": [
+        "robinhood.com",
+        "tenderly.co"
+      ]
     },
     "mcp-servers/arcadia-finance-arcadia-finance": {
       "name": "arcadia-finance",
@@ -221389,7 +221392,7 @@
       "can_spawn_subagents": 261,
       "can_move_funds": 298,
       "requires_private_key": 493,
-      "requires_hosted_operator": 340,
+      "requires_hosted_operator": 341,
       "uses_remote_install_script": 42,
       "mutable_remote_runtime": 554
     }

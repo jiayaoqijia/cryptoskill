@@ -117,6 +117,30 @@ test("FeesCollected: range split into chunks, incomplete logs skipped", async ()
   assert.deepEqual(await readFeesCollected(c, [], 0n, 10n), []);
 });
 
+test("FeesCollected: a refused call is split, range first, then addresses; every log arrives once", async () => {
+  const calls: [number, bigint, bigint][] = [];
+  const c = {
+    readContract: async () => { throw new Error("unused"); },
+    // refuses more than 100 blocks, and more than one address below that
+    getLogs: async (a: { address: string | string[]; fromBlock: bigint; toBlock: bigint }) => {
+      const addrs = [a.address].flat();
+      calls.push([addrs.length, a.fromBlock, a.toBlock]);
+      if (a.toBlock - a.fromBlock + 1n > 100n || addrs.length > 1) throw new Error("HTTP 403");
+      return a.fromBlock === 0n ? [{ address: addrs[0], args: { _gauge: "0xG" + addrs[0], _token: "0xT", _amount: 1n } }] : [];
+    },
+  } as unknown as V3Client;
+  const out = await readFeesCollected(c, ["0xA", "0xB"], 0n, 199n, 200n);
+  assert.deepEqual(out.map((x) => x.gauge).sort(), ["0xG0xA", "0xG0xB"]);
+  // never asked for one block with a single address more than once
+  const single = calls.filter(([n]) => n === 1).map(([, f, t]) => `${f}-${t}`);
+  assert.equal(new Set(single).size, single.length / 2);
+});
+
+test("FeesCollected: a call refused even at the smallest size is an error", async () => {
+  const c = { readContract: async () => 0, getLogs: async () => { throw new Error("HTTP 403"); } } as unknown as V3Client;
+  await assert.rejects(readFeesCollected(c, ["0xA"], 0n, 10n), /403/);
+});
+
 test("deployment file: factoryRegistry found by name, any case; absent or malformed is undefined", () => {
   assert.equal(registryFromDeployment({ factoryRegistry: "0xCe44907DC45D3BFa3f5f6035B0e6E8B22D780A42", metarouter: "0x1" }), "0xCe44907DC45D3BFa3f5f6035B0e6E8B22D780A42");
   assert.equal(registryFromDeployment({ FactoryRegistry: "0x" + "a".repeat(40) }), "0x" + "a".repeat(40));
@@ -169,7 +193,7 @@ test("scan: fee window cut at launch, gauges ranked by per-10k, fees matched to 
   });
   assert.equal(r.status, "live");
   assert.equal(r.windowHours, 24);
-  // 24 h of 2 s blocks back from block 1,000,000, in one 50-address chunk
+  // 24 h of 2 s blocks back from block 1,000,000, in one 100-address chunk
   assert.equal(c.ranges[0][0], 1_000_000n - 43_200n);
   assert.deepEqual(r.gauges.map((g) => g.gauge), ["0xG2", "0xG1"]); // $20 over 10k beats $100 over 100k
   assert.ok(Math.abs((r.gauges[0].usdPerDayPer10k ?? 0) - 20) < 1e-9);

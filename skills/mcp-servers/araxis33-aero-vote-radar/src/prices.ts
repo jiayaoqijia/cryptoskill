@@ -52,9 +52,14 @@ function isFresh(entry: CachedPrice | undefined): entry is CachedPrice {
  */
 export async function getTokenPrices(
   tokenAddresses: string[],
+  // DefiLlama's chain key; Aero (src/v3-cli.ts) prices its other networks here too.
+  chain = "base",
 ): Promise<Map<string, TokenPrice>> {
+  // Base keeps the bare address as its cache key; other chains are prefixed so the
+  // same address on two networks never shares a price.
+  const ck = (a: string) => (chain === "base" ? a : `${chain}:${a}`);
   const unique = [...new Set(tokenAddresses.map((a) => a.toLowerCase()))];
-  const uncached = unique.filter((a) => !isFresh(cache.get(a)));
+  const uncached = unique.filter((a) => !isFresh(cache.get(ck(a))));
 
   const batches: string[][] = [];
   for (let i = 0; i < uncached.length; i += PRICE_BATCH_SIZE) {
@@ -62,7 +67,7 @@ export async function getTokenPrices(
   }
 
   await mapWithConcurrency(batches, PRICE_BATCH_CONCURRENCY, async (batch) => {
-    const keys = batch.map((a) => `base:${a}`).join(",");
+    const keys = batch.map((a) => `${chain}:${a}`).join(",");
     for (let attempt = 0; attempt <= DEFILLAMA_RETRY_COUNT; attempt++) {
       try {
         const res = await fetch(`${DEFILLAMA_PRICE_URL}/${keys}`, { signal: AbortSignal.timeout(DEFILLAMA_TIMEOUT_MS) });
@@ -81,7 +86,7 @@ export async function getTokenPrices(
             // (below) zero it out on the same short failure TTL as any other
             // unpriced token.
             if (address && Number.isFinite(coin.price) && coin.price >= 0 && Number.isFinite(coin.decimals)) {
-              cache.set(address, { price: coin.price, decimals: coin.decimals, cachedAt: Date.now(), isFallback: false });
+              cache.set(ck(address), { price: coin.price, decimals: coin.decimals, cachedAt: Date.now(), isFallback: false });
             }
           }
           break;
@@ -96,13 +101,13 @@ export async function getTokenPrices(
       if (attempt < DEFILLAMA_RETRY_COUNT) await new Promise((resolve) => setTimeout(resolve, DEFILLAMA_RETRY_DELAY_MS));
     }
     for (const a of batch) {
-      if (!isFresh(cache.get(a))) cache.set(a, { price: 0, decimals: 18, cachedAt: Date.now(), isFallback: true });
+      if (!isFresh(cache.get(ck(a)))) cache.set(ck(a), { price: 0, decimals: 18, cachedAt: Date.now(), isFallback: true });
     }
   });
 
   const result = new Map<string, TokenPrice>();
   for (const a of unique) {
-    const entry = cache.get(a);
+    const entry = cache.get(ck(a));
     result.set(a, entry ? { price: entry.price, decimals: entry.decimals } : { price: 0, decimals: 18 });
   }
   return result;

@@ -71,8 +71,11 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
 - **Deposits and redeems are asynchronous.** A `status:"pending"` result is not settled: poll `zap_status {vault}`
   and verify with `get_portfolio` / `app_wallet`. **Never resend a money call before checking its status** —
   calling `deposit`/`redeem` again on the same vault resumes the open escrow, it does not poll.
-- **Withdrawals:** `app_wallet_withdraw` sends USDC + SOL to the withdrawal wallet the owner saved in the app,
-  or to the sign-in wallet when none is saved; the MCP cannot choose the destination.
+- **Withdrawals:** `app_wallet_withdraw` (USDC + SOL) and `withdraw_asset` (one token) send to the withdrawal
+  wallet the owner saved in the app. Pass `to:"sign_in_wallet"` ONLY when the human asked for their sign-in
+  wallet; with none saved and no `to` the call is refused — ask the human which. No tool takes an address.
+  An agent-owned wallet signs a withdrawal to the saved wallet only if the operator pinned that wallet
+  locally in `DFM_WITHDRAWAL_WALLET` (the MCP never takes the server's word for where money goes).
 - **User-owned (Privy) app wallets:** swaps into arbitrary tokens and withdrawals of anything but
   USDC/USDT/wSOL/SOL must be approved by the owner in the app; the tool answers "approve it in the app".
   Agent-owned wallets (path A) sign those locally with the owner key after checking the transaction.
