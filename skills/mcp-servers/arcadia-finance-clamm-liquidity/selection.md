@@ -7,8 +7,8 @@ Use this guide to evaluate whether a strategy makes sense and how to configure i
 ## 1. Pool / Strategy Selection
 
 ```
-read.strategy.list(chain_id: 8453)           // browse all LP strategies + fee APY
-read.pool.list(chain_id: 8453)        // check borrow cost for leveraged strategies
+read_strategy_list(chain_id: 8453)           // browse all LP strategies + fee APY
+read_pool_list(chain_id: 8453)        // check borrow cost for leveraged strategies
 ```
 
 **Viability check (leveraged):**
@@ -32,12 +32,12 @@ Must be positive to justify the leverage cost. Higher leverage amplifies both si
 
 - Fee tier: higher fee tier (0.3%, 1%) = more fee per trade, better for volatile pairs
 - Volume + TVL: high volume/TVL ratio = fees are being earned actively
-- Active Merkl rewards: extra yield on top, check `read.strategy.list` APY breakdown
+- Active Merkl rewards: extra yield on top, check `read_strategy_list` APY breakdown
 
 **`numeraire` — context-dependent meaning:**
 
-- **`write.account.add_liquidity`**: `numeraire` = account base currency (typically the stable side, e.g. USDC for a WETH/USDC position). The backend uses it to denominate calculations and determine the optimal swap ratio. For WETH/USDC: `numeraire = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` (USDC).
-- **`write.account.deleverage`**: `numeraire` = the debt token you're repaying (e.g. WETH address when repaying WETH debt). This differs from the add liquidity usage.
+- **`write_account_add_liquidity`**: `numeraire` = account base currency (typically the stable side, e.g. USDC for a WETH/USDC position). The backend uses it to denominate calculations and determine the optimal swap ratio. For WETH/USDC: `numeraire = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` (USDC).
+- **`write_account_deleverage`**: `numeraire` = the debt token you're repaying (e.g. WETH address when repaying WETH debt). This differs from the add liquidity usage.
 
 ---
 
@@ -45,7 +45,7 @@ Must be positive to justify the leverage cost. Higher leverage amplifies both si
 
 Range width is the central tradeoff in any LP strategy. It is set in the Arcadia platform after enabling the rebalancer. Understanding the full tradeoff is essential for choosing parameters — a simple fee APY comparison is not enough.
 
-**Core principle:** The `strategy_apy` from `read.strategy.list` (list view) is the 7-day average APY computed for that strategy's **default range width** (configured per strategy — e.g. very narrow for stables, ±7.5% / balanced for most volatile pairs). It is sampled every ~3 hours and averaged over 7d. It already reflects a concentrated range — NOT a full-range / pool-level number. Choosing a different range width changes your actual yield: narrower = higher fee capture but more rebalancing cost/risk, wider = lower fees but fewer rebalances. Call `read.strategy.list(strategy_id: <id>)` to see APY broken down by range width (very_narrow, narrow, balanced, wide, very_wide, full_range). The net return after rebalancing costs, IL, and gas determines the optimal width — see the model below.
+**Core principle:** The `strategy_apy` from `read_strategy_list` (list view) is the 7-day average APY computed for that strategy's **default range width** (configured per strategy: e.g. very narrow for stables, ±7.5% / balanced for most volatile pairs). It is sampled every ~3 hours and averaged over 7d. It already reflects a concentrated range: NOT a full-range / pool-level number. Choosing a different range width changes your actual yield: narrower = higher fee capture but more rebalancing cost/risk, wider = lower fees but fewer rebalances. Call `read_strategy_list(strategy_id: <id>)` to see APY broken down by range width (very_narrow, narrow, balanced, wide, very_wide, full_range). The net return after rebalancing costs, IL, and gas determines the optimal width: see the model below.
 
 ### The full tradeoff
 
@@ -76,7 +76,7 @@ expected_net_return =
 
 Inputs to estimate from market data:
 
-- **time_in_range_fraction**: given the pool's historical volatility, how often does price stay within ±X% of the current price? Use `read.strategy.list` APY + historical vol data.
+- **time_in_range_fraction**: given the pool's historical volatility, how often does price stay within ±X% of the current price? Use `read_strategy_list` APY + historical vol data.
 - **rebalance_frequency**: how many rebalances per day does the chosen range width require? Wider range = fewer rebalances.
 - **gas_cost_per_rebalance**: check current chain gas price × ~4M units per rebalance.
 - **IL_rate**: IL as a function of how far price moved before the rebalance; wider ranges accumulate less IL per rebalance.
@@ -137,7 +137,7 @@ Target collateral ratio ≥ 1.5 at entry (≈ health factor ~0.5+). Never open b
 - Borrow APY rising (utilization climbing in lending pool)
 - Market showing high volatility (gap risk)
 - Position already near support/resistance — a breakout would spike debt fast
-- Health factor dropping toward 0.5 (check with `read.account.info`)
+- Health factor dropping toward 0.5 (check with `read_account_info`)
 
 ---
 
@@ -156,7 +156,7 @@ Target collateral ratio ≥ 1.5 at entry (≈ health factor ~0.5+). Never open b
 
 ## 5. Exit Signals
 
-Monitor periodically with `read.account.info` and `read.account.pnl`. Exit or adjust when:
+Monitor periodically with `read_account_info` and `read_account_pnl`. Exit or adjust when:
 
 | Signal                           | Threshold                | Action                                |
 | -------------------------------- | ------------------------ | ------------------------------------- |
@@ -164,17 +164,17 @@ Monitor periodically with `read.account.info` and `read.account.pnl`. Exit or ad
 | Health factor falling            | < 0.5                    | Add collateral or reduce debt         |
 | Health factor critical           | < 0.2                    | Immediate action required             |
 | Position out-of-range repeatedly | Bot can't keep up        | Widen range or reduce leverage        |
-| Net PnL negative over time       | Check `read.account.pnl` | Evaluate whether IL is outpacing fees |
+| Net PnL negative over time       | Check `read_account_pnl` | Evaluate whether IL is outpacing fees |
 
-**Closing in volatile conditions:** Atomic close (`write.account.close`) may revert during high volatility or for low-liquidity pools because on-chain state diverges from when the backend computed the calldata. If atomic close fails, fall back to individual tools with tighter slippage — see strategies.md closing section for the full fallback sequence.
+**Closing in volatile conditions:** Atomic close (`write_account_close`) may revert during high volatility or for low-liquidity pools because on-chain state diverges from when the backend computed the calldata. If atomic close fails, fall back to individual tools with tighter slippage: see strategies.md closing section for the full fallback sequence.
 
 ---
 
 ## 6. Quick Checklist Before Opening a Position
 
 ```
-[ ] read.strategy.list → fee_APY noted (7d avg for default range; call with strategy_id for per-range APY)
-[ ] read.pool.list → borrow_APY noted (if leveraged)
+[ ] read_strategy_list → fee_APY noted (7d avg for default range; call with strategy_id for per-range APY)
+[ ] read_pool_list → borrow_APY noted (if leveraged)
 [ ] net_APY = fee_APY - (leverage-1) × borrow_APY > 0
 [ ] Pair type matches strategy (volatile/stable for delta neutral)
 [ ] Range width: modeled or estimated for pair volatility + stAAA quota

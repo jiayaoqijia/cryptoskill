@@ -25,23 +25,24 @@ Rebalancers, compounders, and yield claimers are deployed per DEX protocol. Most
 
 Protocol availability per chain:
 
-- **Base**: Slipstream V1, V2, V3, Uniswap V3, V4, CoW Swap
-- **Optimism**: Slipstream V1, V3, Uniswap V3, V4 (no V2, no CoW Swap). V3 uses different AM addresses than Base (exception to the deterministic deployment pattern).
+- **Base**: Slipstream V1, V2, V3, Uniswap V3, V4, Aero CL (MetadexCL V1), CoW Swap.
+- **Optimism**: Slipstream V1, V3, Uniswap V3, V4, Aero CL (MetadexCL V1) (no V2, no CoW Swap). V3 uses different AM addresses than Base (exception to the deterministic deployment pattern).
 - **Unichain**: Slipstream V1, Uniswap V3, V4 (no V2/V3, no CoW Swap)
-- **Robinhood**: Uniswap V3, V4 only (no Slipstream or Aerodrome deployment, no CoW Swap). Lending pools are WETH and USDG — there is no USDC on this chain.
+- **Robinhood**: Uniswap V3, V4 and Aero CL (no Slipstream V1-V3, no Aerodrome V1, no CoW Swap). Lending pools are WETH and USDG, there is no USDC on this chain.
 
-Use `read.asset_manager.intents` to discover available automations and their addresses per chain.
+Use `read_asset_manager_intents` to discover available automations and their addresses per chain.
 
 ## Chain-Specific Tokens
 
 ### Base (8453)
 
-| Token | Address                                    | Decimals |
-| ----- | ------------------------------------------ | -------- |
-| WETH  | 0x4200000000000000000000000000000000000006 | 18       |
-| USDC  | 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 | 6        |
-| cbBTC | 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf | 8        |
-| AERO  | 0x940181a94A35A4569E4529A3CDfB74e38FD98631 | 18       |
+| Token         | Address                                    | Decimals |
+| ------------- | ------------------------------------------ | -------- |
+| WETH          | 0x4200000000000000000000000000000000000006 | 18       |
+| USDC          | 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 | 6        |
+| cbBTC         | 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf | 8        |
+| AERO          | 0x3f5bF3EdAc59d650D8fDf9657a71F2f904A3a4Ee | 18       |
+| AERO (legacy) | 0x940181a94A35A4569E4529A3CDfB74e38FD98631 | 18       |
 
 ### Optimism (10)
 

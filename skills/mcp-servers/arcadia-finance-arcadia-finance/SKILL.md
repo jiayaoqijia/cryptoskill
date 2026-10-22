@@ -1,7 +1,7 @@
 ---
 name: arcadia-finance
-version: 1.2.0
-description: "DeFi liquidity management on Uniswap and Aerodrome, live on Base, Unichain, and Optimism. Deploy concentrated liquidity positions with automated rebalancing, compounding, yield optimization, and leverage, or provide single-sided liquidity to lending pools."
+version: 1.4.0
+description: "DeFi liquidity management on Uniswap and Aero, live on Base, Optimism, Unichain and Robinhood. Deploy concentrated liquidity positions with automated rebalancing, compounding, yield optimization, and leverage, or provide single-sided liquidity to lending pools."
 metadata:
   openclaw:
     homepage: https://arcadia.finance
@@ -13,7 +13,7 @@ metadata:
 
 > **Agent note:** `{baseDir}` refers to the directory containing this SKILL.md file. Resolve all `{baseDir}` paths relative to it.
 
-Arcadia helps users deploy concentrated liquidity positions on Uniswap, Aerodrome, and Velodrome with automated rebalancing, compounding, yield optimization, and optional leverage, or provide single-sided liquidity to lending pools to earn borrower interest. Supported chains: Base (8453), Unichain (130), Optimism (10), Robinhood (4663).
+Arcadia helps users deploy concentrated liquidity positions on Uniswap, Aero, Aerodrome and Velodrome with automated rebalancing, compounding, yield optimization, and optional leverage, or provide single-sided liquidity to lending pools to earn borrower interest. Supported chains: Base (8453), Unichain (130), Optimism (10), Robinhood (4663).
 
 ## CLI Usage
 

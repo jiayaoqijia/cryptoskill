@@ -7,10 +7,10 @@ Automations are configured as **intents**: you describe the outcome you want and
 ## Agent Workflow
 
 ```
-1. read.account.info               → find the LP position id and what is already automated
-2. read.asset_manager.current      → decoded per-manager config, plus superseded managers to clear
-3. read.asset_manager.intents      → which intents this account can enable, and why any are blocked
-4. write.account.automations       → pass the full intents array, get back the unsigned tx
+1. read_account_info               → find the LP position id and what is already automated
+2. read_asset_manager_current      → decoded per-manager config, plus superseded managers to clear
+3. read_asset_manager_intents      → which intents this account can enable, and why any are blocked
+4. write_account_automations       → pass the full intents array, get back the unsigned tx
 ```
 
 Pass the LP position's `position_id` and the backend fetches the protocol, staked flag, pool tokens and reward tokens for you. Only supply `protocol` / `token0` / `token1` by hand when you have no position id. `claim_merkl` needs no position context at all.
@@ -29,18 +29,18 @@ Every intent takes `enabled` (default true) and an optional `position_id`.
 
 ## Full desired state vs delta
 
-`write.account.automations` takes the **complete desired state**. Any automation not in the `intents` array gets disabled, so include everything the user wants kept, not just what is new. To turn everything off, pass a single intent with `enabled: false`.
+`write_account_automations` takes the **complete desired state**. Any automation not in the `intents` array gets disabled, so include everything the user wants kept, not just what is new. To turn everything off, pass a single intent with `enabled: false`.
 
 `mode: "save"` (the default) diffs the desired state against what is on-chain and returns a signable transaction that both enables what you asked for and disables what you left out.
 
 `mode: "preview"` resolves and validates the intents **without** reading chain state, and deliberately returns **no transaction** (`preview_only: true`). Because it does not diff, its calldata contains no disable entries: broadcasting it would enable the new managers while leaving omitted automations running. Use preview to check that a combination is legal or to show a plan, then re-run with `save` to get something signable.
 
-`write.account.automations_delta` is the **change-only** variant: `enable` switches intents on, `disable` takes asset-manager addresses (from `read.asset_manager.current`) to switch off, and anything unmentioned is left alone. Use it to flip one automation without restating the rest.
+`write_account_automations_delta` is the **change-only** variant: `enable` switches intents on, `disable` takes asset-manager addresses (from `read_asset_manager_current`) to switch off, and anything unmentioned is left alone. Use it to flip one automation without restating the rest.
 
 Example: add rebalancing to an account that is already compounding, without disturbing the compounder:
 
 ```
-write.account.automations_delta(
+write_account_automations_delta(
   account_address: "0x...",
   position_id: 12345,
   enable: [{ kind: "rebalance" }]
@@ -50,7 +50,7 @@ write.account.automations_delta(
 Same thing expressed as full desired state:
 
 ```
-write.account.automations(
+write_account_automations(
   account_address: "0x...",
   position_id: 12345,
   intents: [{ kind: "compound_fees" }, { kind: "rebalance" }]
@@ -68,7 +68,7 @@ write.account.automations(
 A mixed partition is valid and common: compound token0's fees while claiming token1's out.
 
 ```
-write.account.automations(
+write_account_automations(
   account_address: "0x...",
   position_id: 12345,
   intents: [
@@ -103,7 +103,7 @@ The backend enforces compatibility rules rather than letting an invalid combinat
 | `compound_reward_buy_token_not_pool_token` | The compound CowSwap leg must buy one of the position's underlyings.                                                         |
 | `multiple_convert_targets`                 | One account has a single CowSwapper metadata slot, so a compound-reward swap leg and a claim-and-convert leg cannot coexist. |
 
-Read `errors[].reason`, adjust the intents, retry. `read.asset_manager.intents` with an account address tells you up front which intents are currently blocked.
+Read `errors[].reason`, adjust the intents, retry. `read_asset_manager_intents` with an account address tells you up front which intents are currently blocked.
 
 ## Simulation
 
@@ -127,7 +127,7 @@ Three success-path cases return no `transaction`, and an agent must not treat an
 
 ## Superseded managers
 
-Asset managers are redeployed over time. An account registered on an older deployment keeps working, but `read.asset_manager.current` lists those under `deprecated` (and `read.account.info` under `automation.deprecated_managers`). They should be cleared: `write.account.automations` disables them as part of a save, or pass their addresses to `write.account.automations_delta`.
+Asset managers are redeployed over time. An account registered on an older deployment keeps working, but `read_asset_manager_current` lists those under `deprecated` (and `read_account_info` under `automation.deprecated_managers`). They should be cleared: `write_account_automations` disables them as part of a save, or pass their addresses to `write_account_automations_delta`.
 
 ---
 
@@ -167,7 +167,7 @@ Trigger ratios are **tick distance, not price**: a ratio of 50000 shifts the tri
 
 Quota is bypassed when: gas cost < pending fees / 2, or position value >= $50k.
 
-**Pay for extra rebalances with AAA:** Deposit AAA tokens into the account, then approve them to the gas relayer `0xD938C8d04cF91094fecAF0A2018EAac483a40137`. The relayer is an asset manager but no intent configures it, so it sits outside the intent model: `read.account.info` reports it as `automation.gas_relayer`.
+**Pay for extra rebalances with AAA:** Deposit AAA tokens into the account, then approve them to the gas relayer `0xD938C8d04cF91094fecAF0A2018EAac483a40137`. The relayer is an asset manager but no intent configures it, so it sits outside the intent model: `read_account_info` reports it as `automation.gas_relayer`.
 
 **Fees:** 7.5% of yield earned, max 1% liquidity decrease per rebalance (MDL).
 
@@ -216,8 +216,8 @@ Both a rebalance and a compound may carry the same fold instruction. The amount 
 
 **What it does:** Claims external Merkl protocol incentive rewards into the account, which are additional rewards paid by token teams on top of regular LP fees.
 
-**When to enable:** When the pool has active Merkl campaigns (check the APY breakdown in `read.strategy.list`).
+**When to enable:** When the pool has active Merkl campaigns (check the APY breakdown in `read_strategy_list`).
 
 **Always combine with a rebalance** when both are relevant: no conflict, extra free yield.
 
-Merkl authorization is the Merkl distributor whitelist, not `isAssetManager`, so it is reported separately. `read.asset_manager.current` returns a `merkl` block with `connected`, `active` and `tokens_missing`. When `tokens_missing` is true the user still has to register reward tokens with Merkl before claims land.
+Merkl authorization is the Merkl distributor whitelist, not `isAssetManager`, so it is reported separately. `read_asset_manager_current` returns a `merkl` block with `connected`, `active` and `tokens_missing`. When `tokens_missing` is true the user still has to register reward tokens with Merkl before claims land.

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T18:43:20.355355+00:00",
+  "generated_at": "2026-10-22T01:05:36.618184+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -116114,6 +116114,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/nirium-protocol-nirium-agentic-payments": {
+      "name": "nirium-agentic-payments",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/nodit-mcp": {
       "name": "nodit-mcp",
       "execution_model": "unknown",
@@ -221195,13 +221257,13 @@
     }
   },
   "summary": {
-    "discovered": 3555,
-    "processed": 3555,
+    "discovered": 3556,
+    "processed": 3556,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2572,
       "router_orchestrator": 148,
-      "unknown": 337,
+      "unknown": 338,
       "analysis_only": 217,
       "unsigned_tx_builder": 115,
       "local_executor": 103,
@@ -221210,8 +221272,8 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1229,
-      "can_install_code": 555,
+      "can_execute_shell": 1230,
+      "can_install_code": 556,
       "can_write_files": 175,
       "can_browse_web": 246,
       "can_spawn_subagents": 264,
@@ -221219,7 +221281,7 @@
       "requires_private_key": 493,
       "requires_hosted_operator": 344,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 555
+      "mutable_remote_runtime": 556
     }
   }
 }
