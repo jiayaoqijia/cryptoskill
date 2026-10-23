@@ -26,7 +26,7 @@ peel_inverse 检出段与求解目标不重合（或无干净递推段）时的�
   --diff-symbolize 为符号化模式（29bf99c0 判例：只符号化部分输入常量时，
   锥体被残留字面量完全决定 → 全可正算报矛盾 → 误弃本路径）：本 recon 与
   reconB（同输入长度、不同输入值重跑 tracer 得来）按【值集合】diff——
-  A 有 B 没有的字面量 = 随输入变化，在 A 的副本里符号化为 IN0..INK 写出；
+  A 有 B 没有的字面量 = 两次轨迹的差异候选（也可能来自路径/环境变化），在 A 的副本里符号化为 IN0..INK 写出；
   按值 diff 不按行号，两份 recon 行数不一致（控制流差异）也能用；
   --min-lit 过滤结构小常量（默认 256，位移量/小掩码不误符号化）。
 
@@ -203,7 +203,7 @@ def literal_values(path):
 
 
 def diff_symbolize(recon_a, recon_b, out_path, min_lit):
-    """A 有 B 没有的字面量 = 随输入变化，在 A 的副本里符号化为 IN0..INK。"""
+    """A 有 B 没有的字面量 = 两次轨迹的差异候选（也可能来自路径/环境变化），在 A 的副本里符号化为 IN0..INK。"""
     try:
         set_a = literal_values(recon_a)
         set_b = literal_values(recon_b)
@@ -238,7 +238,7 @@ def diff_symbolize(recon_a, recon_b, out_path, min_lit):
     except OSError as e:
         print("--out 写入失败: %s" % e, file=sys.stderr)
         return 2
-    print("随输入变化的字面量 %d 个（>= %d）已符号化 -> %s："
+    print("轨迹差异字面量候选 %d 个（>= %d）已符号化 -> %s："
           % (len(only_a), min_lit, os.path.abspath(out_path)))
     for v in only_a[:40]:
         print("   %s = %d (0x%x)" % (names[v], v, v))
@@ -251,8 +251,8 @@ def diff_symbolize(recon_a, recon_b, out_path, min_lit):
     print("下一步：cone_invert.py %s --known <锚点> [--calls calls.py]" % out_path)
     print("解出 IN<i> 后，用「输入 -> 常量」映射（已知输入实测）把常量换回输入字节。")
     print("注意：按值集合 diff 不按行号，两份 recon 行数不一致也能用；")
-    print("行数差来自控制流差异时可能多符号化个别结构常量——多符号化无害，")
-    print("漏符号化才会让锥体被残留字面量锁死（29bf99c0 判例）。")
+    print("行数差来自控制流差异时可能误符号化结构常量并引入伪解；")
+    print("漏符号化也会锁死锥体。恢复映射后须对拍，并在原目标验证候选。")
     return 0
 
 

@@ -25,8 +25,8 @@ pip install -e .
 3. Set up environment variables (optional):
 
 ```bash
-export CELO_RPC_URL="https://forno.celo.org"  # Default: Celo mainnet
-export CELO_TESTNET_RPC_URL="https://alfajores-forno.celo-testnet.org"  # Alfajores testnet
+export CELO_MCP_RPC_URL="https://forno.celo.org"  # Default: Celo mainnet
+export CELO_MCP_USE_TESTNET=true                  # Use Celo Sepolia instead
 ```
 
 ## MCP Integration
@@ -98,7 +98,9 @@ Configuration (environment variables):
 | `MCP_RATE_LIMIT` / `MCP_RATE_WINDOW` | Requests per client per window (seconds); `/health` is exempt | `60` / `60` |
 | `MCP_TRUST_PROXY` | Number of `X-Forwarded-For` hops your infrastructure appends, so the rate limiter keys on the client rather than the proxy address. `1` for a single reverse proxy, `2` behind a Google external load balancer. Counted from the right — see [deployment](docs/DEPLOYMENT.md) | unset |
 | `MCP_AUTH_TOKEN` | If set, requires `Authorization: Bearer <token>` on `/mcp` | unset (open) |
-| `CELO_RPC_URL` | Celo RPC endpoint | (existing default) |
+| `CELO_MCP_RPC_URL` | Celo RPC endpoint | Forno for the selected network |
+| `CELO_MCP_USE_TESTNET` | Use Celo Sepolia (chain ID 11142220) instead of mainnet | `false` |
+| `CELO_MCP_FAUCET_API_KEY` | Enables the faucet tools. Create one at [faucet.celo.org/keys](https://faucet.celo.org/keys) — see [Faucet access](#faucet-access) | unset (faucet tools disabled) |
 
 `GET /health` returns `200` for hosting health checks. See
 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for container/hosting instructions.
@@ -229,12 +231,65 @@ celo-mcp-server
     - Get network-wide staking information including total votes and participation metrics
     - No parameters required
 
+#### Faucet Operations
+
+Both faucet tools are testnet-only and require `CELO_MCP_FAUCET_API_KEY` (see
+[Faucet access](#faucet-access) below).
+
+22. **request_faucet_funds**
+
+    - Request testnet CELO for an address. Returns the payout transaction hash if it lands while the request is open, otherwise a `request_key` to poll with
+    - Sends **3 CELO** per request, and **CELO only** — no USDm or other stablecoins
+    - Parameters: `beneficiary`, optional `network` (`celo-sepolia`), optional `wait` (default `true`)
+
+23. **get_faucet_request_status**
+    - Check whether a queued faucet request has paid out
+    - Parameters: `request_key`, optional `network` (`celo-sepolia`)
+
+### Faucet access
+
+The faucet's browser flow is gated on reCAPTCHA v3, which scores headless
+callers badly, so the faucet tools use its API-key path instead. Create a key at
+[faucet.celo.org/keys](https://faucet.celo.org/keys) (sign in with GitHub; up to
+2 keys, 90-day expiry) and set it in your MCP client's `env` block:
+
+```json
+{
+  "mcpServers": {
+    "celo-mcp": {
+      "command": "uvx",
+      "args": ["celo-mcp"],
+      "env": { "CELO_MCP_FAUCET_API_KEY": "cfk_..." }
+    }
+  }
+}
+```
+
+The key is read from the environment and never passed as a tool argument, so it
+does not enter the model's context or the conversation transcript.
+
+Limits are set by the faucet, not by this server: **10 requests per 24 hours**,
+counted per GitHub account and per beneficiary address — holding two keys does
+not double the allowance. Global daily and 10-minute burst ceilings apply across
+all keys on top of that. `celo-sepolia` (chain ID 11142220) is the only
+supported network; there is no mainnet faucet.
+
+The faucet publishes its API contract at
+[openapi.json](https://faucet.celo.org/openapi.json) and
+[llms-full.txt](https://faucet.celo.org/llms-full.txt); treat those as the source
+of truth if amounts or limits change.
+
+> **Deployment note:** the HTTP transport is open unless `MCP_AUTH_TOKEN` is
+> set. Only configure a faucet key for stdio or authenticated deployments —
+> otherwise anyone reaching `/mcp` can spend your daily allowance on arbitrary
+> addresses, and the key can be revoked for abuse.
+
 ## Key Features
 
 ### Token Support
 
 - **ERC20 Standard**: Full support for ERC20 tokens
-- **Celo Stable Tokens**: Built-in support for cUSD, cEUR, and cREAL
+- **Mento Stable Tokens**: Built-in support for USDm, EURm and BRLm (formerly cUSD, cEUR and cREAL), plus XOFm, KESm, PHPm, COPm and GHSm
 - **Balance Queries**: Get token balances with proper decimal formatting
 - **Token Information**: Retrieve name, symbol, decimals, and total supply
 
