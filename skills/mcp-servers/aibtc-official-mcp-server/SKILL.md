@@ -4,7 +4,7 @@ description: Bitcoin L1 wallet for agents - check balances, send BTC, manage UTX
 license: MIT
 metadata:
   author: aibtcdev
-  version: 1.76.0 # x-release-please-version
+  version: 1.76.1 # x-release-please-version
   npm: "@aibtc/mcp-server"
   github: https://github.com/aibtcdev/aibtc-mcp-server
 ---
@@ -224,13 +224,13 @@ tools sign locally with the unlocked wallet and call the gateway, so an agent ca
 register and manage a listing in one step.
 
 ```
-"Register my endpoint https://my-host/v1 serving Qwen/Qwen2.5-7B-Instruct on the inference marketplace"
+"Register my endpoint https://my-host/v1 serving Qwen/Qwen2.5-7B-Instruct on the inference marketplace at 5 sats per request"
 ```
 
 | Tool | Description | Signed |
 |------|-------------|:------:|
-| `inference_register_provider` | Verify + list an endpoint (name, models, payout, optional apiKey) | ✅ |
-| `inference_update_provider` | Change name/models/payout/endpoint/description/apiKey in place | ✅ |
+| `inference_register_provider` | Verify + list an endpoint (name, models, payout, `pricePerRequest`, optional `acceptedToken` sBTC/USDCx, optional apiKey) | ✅ |
+| `inference_update_provider` | Change name/models/payout/endpoint/description/price/token/apiKey in place (a token switch needs a new price) | ✅ |
 | `inference_reveal_key` | Reveal or rotate the gateway↔endpoint shared key (`rotate: true`) | ✅ |
 | `inference_check_provider` | Re-run the health/functional probe | — |
 | `inference_list_providers` | List providers + health (find your id by `payoutAddress`) | — |
