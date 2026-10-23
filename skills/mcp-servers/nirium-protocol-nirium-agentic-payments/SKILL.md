@@ -19,18 +19,18 @@ metadata:
 # Nirium: charge AI agents and read live signals on Stellar
 
 Nirium publishes open-source client libraries for x402 agentic payments
-on Stellar — a TypeScript/Python SDK, a scaffolding CLI, and an MCP
+on Stellar - a TypeScript/Python SDK, a scaffolding CLI, and an MCP
 server. `x402Serve()`, the function these scaffold around, runs on
 **your own server**: Nirium doesn't operate, host, or route through
 anything in that path, and never sees your end users' requests. It's
-not a demo — Nirium's own mainnet endpoint, running the identical
+not a demo - Nirium's own mainnet endpoint, running the identical
 function, has been billing real USDC over x402 since 9 July 2026. A
 mainnet settlement from that day, verifiable on Stellar Expert:
 [`3134a51c…7558bc`](https://stellar.expert/explorer/public/tx/3134a51c66091fd7fbd85b38a4a6ec6cd432bb92c2450eac84ea7855cb7558bc).
 
 **You're responsible for your own compliance.** `x402Serve()` is a
 general-purpose library, not a service Nirium provides to your end
-users — you choose what to charge for, who `payTo` is, and which
+users - you choose what to charge for, who `payTo` is, and which
 jurisdiction you operate in. You remain solely responsible for
 complying with the financial, tax, and consumer-protection laws that
 apply to your own use of it.
@@ -50,9 +50,9 @@ Fill two values in the generated `.env`:
 | Variable | Where it comes from |
 |---|---|
 | `STELLAR_PAY_TO` | the Stellar account that receives payments (`G...`) |
-| `X402_FACILITATOR_API_KEY` | free — keys are per network, and the scaffold defaults `STELLAR_NETWORK` to `testnet`: [channels.openzeppelin.com/testnet/gen](https://channels.openzeppelin.com/testnet/gen) for testnet, [channels.openzeppelin.com/gen](https://channels.openzeppelin.com/gen) for mainnet |
+| `X402_FACILITATOR_API_KEY` | free - keys are per network, and the scaffold defaults `STELLAR_NETWORK` to `testnet`: [channels.openzeppelin.com/testnet/gen](https://channels.openzeppelin.com/testnet/gen) for testnet, [channels.openzeppelin.com/gen](https://channels.openzeppelin.com/gen) for mainnet |
 
-The API key is not optional — the facilitator rejects unauthenticated
+The API key is not optional - the facilitator rejects unauthenticated
 servers on both testnet and mainnet, so without it your routes never
 get as far as offering a 402.
 
@@ -88,12 +88,12 @@ A caller without payment gets a 402 carrying the terms; one that pays
 gets the data, and the USDC transfer settles on Stellar before your
 handler returns. No subscription, no card, no invoice, no human in the
 middle. This is the exact pattern Nirium's own mainnet endpoint runs in
-production against real callers — see the devlog for a real incident
+production against real callers - see the devlog for a real incident
 (and its fix) from operating it at scale: [docs/devlog.md](https://github.com/nirium-protocol/nirium/blob/main/docs/devlog.md).
 
 Optional, off by default: set `NIRIUM_X402SERVE_TELEMETRY=true` if you
 want to send Nirium a non-blocking usage ping (your `payTo`, a
-SHA-256 hash of your `facilitatorApiKey` — never the key itself,
+SHA-256 hash of your `facilitatorApiKey` - never the key itself,
 network, route/request counts, SDK version). It never affects a
 payment either way, on or off.
 
@@ -117,13 +117,13 @@ Claude Desktop / Cursor MCP config:
 }
 ```
 
-No key needed for the read-only tools below — they work against the
+No key needed for the read-only tools below - they work against the
 live mainnet agent right now:
 
-- `get_market_state` — XLM/USDC price, SDEX spread, base fee, Blend rate, CETES rate
-- `get_loop_status` — autonomous loop status, scan count, last decision
-- `get_nodes` — execution nodes with live status, custody model, network
-- `get_wallet_info` — the configured x402/MPP wallet and which tools are enabled
+- `get_market_state` - XLM/USDC price, SDEX spread, base fee, Blend rate, CETES rate
+- `get_loop_status` - autonomous loop status, scan count, last decision
+- `get_nodes` - execution nodes with live status, custody model, network
+- `get_wallet_info` - the configured x402/MPP wallet and which tools are enabled
 
 Paid tools (`get_premium_signals` $0.02, `get_premium_market` $0.05,
 `execute_paid_strategy` $0.25, over x402; `get_mpp_signals` $0.02,

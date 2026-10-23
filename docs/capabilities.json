@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-23T01:08:21.347871+00:00",
+  "generated_at": "2026-10-23T06:51:49.394970+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -67807,7 +67807,7 @@
     },
     "dev-tools/simianx-ai-simianx": {
       "name": "simianx",
-      "execution_model": "unknown",
+      "execution_model": "unsigned_tx_builder",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -67820,7 +67820,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -67830,7 +67830,7 @@
           "source": "extracted"
         },
         "can_browse_web": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -67840,7 +67840,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -67860,7 +67860,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -221376,9 +221376,9 @@
     "execution_models": {
       "read_only": 2579,
       "router_orchestrator": 146,
-      "unknown": 339,
+      "unknown": 338,
       "analysis_only": 217,
-      "unsigned_tx_builder": 113,
+      "unsigned_tx_builder": 114,
       "local_executor": 102,
       "installer_bootstrap": 43,
       "custodial_executor": 19
@@ -221386,15 +221386,15 @@
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 1224,
-      "can_install_code": 554,
+      "can_install_code": 555,
       "can_write_files": 175,
-      "can_browse_web": 246,
+      "can_browse_web": 247,
       "can_spawn_subagents": 261,
-      "can_move_funds": 298,
+      "can_move_funds": 299,
       "requires_private_key": 493,
       "requires_hosted_operator": 341,
       "uses_remote_install_script": 42,
-      "mutable_remote_runtime": 554
+      "mutable_remote_runtime": 555
     }
   }
 }

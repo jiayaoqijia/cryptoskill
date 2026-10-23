@@ -1,7 +1,19 @@
 # Autopilots
 
 An autopilot runs the four live agents (indicator, intelligence, fundamental, decision) on one symbol on a schedule,
-optionally managing a paper position. Everything it does lands in an event log you read with a cursor.
+**server side**: it keeps going when you are offline, which is the difference from a live session
+(`references/live.md`, which needs you connected). Optionally it manages a paper position. Everything it does lands
+in the updates feed and in an event log you read with a cursor.
+
+## What the user hears
+
+Every analysis and every decision of an autopilot started over the API is an update in `GET /v1/updates`
+(`references/following.md`), with a `say` line: `autopilot.started`, then per cycle `fundamental_done`,
+`indicator_done`, `intelligence_done` (whichever finishes first comes first), `decision` (full plan + the exchange /
+broker `ask`), `next_run` (when the next cycle runs), and `position.changed` when the simulated book moves;
+`autopilot.stopped` / `autopilot.paused` at the end. Relay each as it arrives; when you were away, the feed has
+everything you missed, poll it every 10 s exactly (or `wait=30`) and catch up from the cursor. When the user asks
+"what is running?", list the autopilots (symbol, timeframe, since when, next run, last decision), no points.
 
 ## Connect your own real-trading system
 
@@ -31,8 +43,11 @@ external fill. Use the event cursor to resume processing and check `expires_at`,
   `data.allowed`). `PATCH /v1/autopilots/{id}` with `models` or `tier` changes them for the next cycles.
 - `intervals` are seconds per agent (≥ 60). Without them the account's saved defaults apply.
 - `ai_position_control` (default true): the decision agent opens, moves and closes a paper position; `position.changed`
-  events follow. `webhook` is optional (HMAC-signed `X-SimianX-Signature: sha256=…` over `"<ts>.<body>"` when `secret` is set).
-- Answer: `data.autopilot` (id, session_id, status, models, intervals…), `data.cursor` (start reading events here), `data.events_url`.
+  events follow. `webhook` here is the engine's own per-autopilot notification channel (HMAC-signed
+  `X-SimianX-Signature: sha256=…` over `"<ts>.<body>"` when `secret` is set); account-wide webhooks that carry every
+  update of every run are `POST /v1/webhooks` (`references/developers.md`).
+- Answer: `data.autopilot` (id, session_id, status, models, intervals…), `data.cursor` (start reading events here), `data.events_url`,
+  `data.next_step` (keep following). Ask the human before starting one that manages a paper position.
 - Limits: running autopilots per plan (Free 1, Starter 2, Plus 3, Pro 10) and `ai_concurrency`; 429 `autopilot_limit` / `ai_concurrency` when full.
 
 ## Read the event log

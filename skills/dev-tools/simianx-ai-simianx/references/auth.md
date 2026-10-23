@@ -16,21 +16,29 @@ POST /v1/auth/link
  "key": {"name": "Claude Code on my laptop", "scopes": ["data:read", "analysis:run", "automation:manage"],
          "daily_points_budget": 50}}
 → 201 {"link_id": "…", "user_code": "K7MP-4R2X", "url": "https://www.simianx.ai/link/K7MP-4R2X",
-        "expires_in": 900, "interval": 3}
+        "expires_in": 1800, "interval": 3}
 ```
 
-Show the user `url` (and the code, in case they type it). On that page the user signs in, or signs up, and sees
-exactly what you asked for: name, scopes, budgets, expiry. They may trim it before approving, or decline. Poll:
+Give the user `url` (and the code, in case they type it) in one short message, then **poll at once, without
+waiting for a reply**. On that page the user signs in, or signs up (email verification and the agreement, no
+onboarding tour), and sees exactly what you asked for: name, scopes, budgets, expiry. They may trim it before
+approving, or decline. After approving, the page tells them: "Go back to your agent: most continue on their own; if
+yours is quiet, tell it you approved." Poll:
 
 ```
 GET /v1/auth/link/{link_id}?wait=30        # long-poll: returns at once on a decision, else after `wait` seconds
-→ {"status": "pending", "user_code": "…", "url": "…", "expires_in": 842}
+→ {"status": "pending", "user_code": "…", "url": "…", "expires_in": 1742}
 → {"status": "approved", "token": "simx_live_…", "key": {…}, "account": {…}, "points": {…}, "limits": {…}, "web": {…}}
 → {"status": "denied"} · {"status": "expired"}
 ```
 
 `approved` is answered once: the token is deleted the moment you read it. `expired` also covers an unknown link id
-and a result that was already collected. A link lives 15 minutes.
+and a result that was already collected. A link lives **30 minutes**, and an approved key that you have not collected
+yet waits **30 minutes** too, so a user who approves and comes back to you later still gets through. Keep calling
+`?wait=30` back to back until the status is decided; each call's `notify` tells you what to do next. If your platform
+ends your turn when you reply, write in the same message "approve it, then tell me 'approved'", and poll as soon as
+the next message arrives, whatever it says. Once approved, say one sentence (signed in, which plan) and go on with
+what the user asked; never read out the balance or the budgets.
 
 ## 2. Email code (no browser needed)
 
@@ -95,7 +103,7 @@ or send them to `actions.change_plan.url`. The ticket lives 10 minutes.
 
 Store `token` where this agent reads its environment: the shell profile, a git-ignored `.env`, or the agent's own
 secret store. Say which file you wrote and show only the prefix (`simx_live_abc123…`). Never commit it, never log it,
-never paste it into a prompt. Then continue with `GET /v1/me` as in SKILL.md.
+never paste it into a prompt. Then continue with `GET /v1/me` as in SKILL.md, and keep the points to yourself.
 
 ## Why no cookie
 
