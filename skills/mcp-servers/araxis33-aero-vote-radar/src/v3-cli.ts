@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createPublicClient, http, type Chain } from "viem";
 import { arbitrum, base, mainnet, optimism } from "viem/chains";
 import { client } from "./chain.js";
@@ -7,6 +7,8 @@ import { V3_LOGS_RPC_URL } from "./constants.js";
 import { getTokenPrices } from "./prices.js";
 import { formatError } from "./util.js";
 import { registryFromDeployment, scanV3, type V3ScanFile, type V3ScanGauge, type V3Client } from "./v3.js";
+import { appendV3Sample, poolKey, steadiness, type V3HistoryFile } from "./v3History.js";
+import { renderV3LlmsTxt } from "./v3Llms.js";
 
 /**
  * Entrypoint for the scheduled Aero (v3) scan across Aero's seven networks,
@@ -106,6 +108,14 @@ async function main() {
   const gauges: V3ScanGauge[] = results.flatMap((x) => x.r?.gauges ?? []);
   if (gauges.length === 0 && results.every((x) => x.error)) throw new Error("every network failed");
   gauges.sort((a, b) => (b.usdPerDayPer10k ?? -1) - (a.usdPerDayPer10k ?? -1));
+  // Hourly history next to the scan; each gauge gets its steadiness from it.
+  const historyPath = outPath.replace(/v3\.json$/, "v3-history.json");
+  const history = appendV3Sample(existsSync(historyPath) ? (JSON.parse(readFileSync(historyPath, "utf8")) as V3HistoryFile) : null, gauges, now);
+  writeFileSync(historyPath, JSON.stringify(history) + "\n");
+  for (const g of gauges) {
+    const s = steadiness(history.pools[poolKey(g)] ?? []);
+    if (s) g.steady = s;
+  }
   const out: V3ScanFile = {
     checkedAt: now.toISOString(),
     chain: "all",
@@ -123,6 +133,12 @@ async function main() {
   };
   writeFileSync(outPath, JSON.stringify(out, null, 1) + "\n");
   console.error(`v3: ${out.status}, ${gauges.length} gauges -> ${outPath}`);
+  // The same scan as plain text for AI assistants, next to the page (docs/llms.txt).
+  if (/data[\\/]v3\.json$/.test(outPath) && out.status === "live") {
+    const llmsPath = outPath.replace(/data[\\/]v3\.json$/, "llms.txt");
+    writeFileSync(llmsPath, renderV3LlmsTxt(out));
+    console.error(`v3: llms.txt -> ${llmsPath}`);
+  }
 }
 
 main().catch((err) => {

@@ -1,13 +1,41 @@
 # Aero Vote Radar
 
-> Built to show where to vote veAERO on Aerodrome (Base) each week. Free, open source (MIT), read-only: no wallet connection, no signatures.
+> Where sAERO earns the most on Aero (formerly Aerodrome), across its networks. Enter how much sAERO you hold and see what every pool pays you per day after your own stake dilutes it, plus the 47 h timer of your stakes on each network. Free, open source (MIT), read-only: no wallet connection, no signatures.
 
-Status as of 2026-10-24T04:31:08.619Z: The weekly veAERO vote has ended: the last vote closed on Oct 21, 22:59 UTC, Aero launched on Oct 22 and the old gauges are switched off, so there is no vote left to suggest. Upgrade veAERO to sAERO at aero.xyz/aero-upgrade. Ranking for sAERO allocation will follow once Aero publishes its contract addresses.
+Scanned from Aero's contracts on 7 networks: 2026-10-24T17:47:21.224Z. The scan re-runs every hour.
+Fees are what each pool swept to its allocators over the last 66 h; incentives are what projects stream right now. 903,345,750 sAERO is allocated across 474 pools.
 
-The page (https://aero.deftools.xyz) still previews, for any wallet, what each veAERO lock becomes as sAERO, and keeps the last weekly scan for reference only.
+## Best pools for 10,000 sAERO right now
+
+- UP/cbBTC (CL, Base): about $3.21 a day for 10,000 sAERO — fees $38.44/day, incentives $62.06/day, 303,221 sAERO in the pool
+- FLOCK/USDC (CL, Base): about $3.15 a day for 10,000 sAERO — fees $11.33/day, incentives $62.06/day, 223,317 sAERO in the pool
+- USDC/alUSD (sAMM, OP Mainnet): about $3.14 a day for 10,000 sAERO — fees $3.83/day, incentives $113.76/day, 364,248 sAERO in the pool
+- WETH/METAc (CL, Base): about $3.07 a day for 10,000 sAERO — fees $67.30/day, incentives $0.00/day, 209,034 sAERO in the pool
+- msETH/WETH (sAMM, OP Mainnet): about $3.05 a day for 10,000 sAERO — fees $3.92/day, incentives $99.97/day, 330,910 sAERO in the pool
+- USDC/BIDUc (CL, Base): about $3.00 a day for 10,000 sAERO — fees $2.20/day, incentives $183.37/day, 608,116 sAERO in the pool
+- USDC/INFYc (CL, Base): about $2.96 a day for 10,000 sAERO — fees $4.32/day, incentives $183.36/day, 623,484 sAERO in the pool
+- USDC/NIOc (CL, Base): about $2.95 a day for 10,000 sAERO — fees $5.67/day, incentives $183.37/day, 630,941 sAERO in the pool
+- USDC/SAPc (CL, Base): about $2.93 a day for 10,000 sAERO — fees $3.85/day, incentives $183.37/day, 629,580 sAERO in the pool
+- USDC/TAO (CL, Base): about $2.92 a day for 10,000 sAERO — fees $45.59/day, incentives $62.06/day, 358,127 sAERO in the pool
+
+Pools with at least 100,000 sAERO. A larger amount dilutes each pool more and is better split across a few; the page splits any amount.
+
+## Steadiest pools
+
+Not enough hourly history yet (needs a day of scans).
+
+## How allocation works on Aero
+
+- Each sAERO stake can change its allocation once every 47 hours, separately on each network; a new stake's first allocation has no wait.
+- Your own stake dilutes a pool: per day ≈ the pool's daily rewards × your sAERO / (sAERO already in the pool + yours).
+- Top pools cool off fast; moving every 47 h earned about 1.7× moving weekly in a 3-week backtest on pre-launch Aerodrome fees.
+- Allocate at https://app.aero.xyz/markets/allocate in your own wallet. The radar never holds funds.
 
 ## Links
 
 - [Live page](https://aero.deftools.xyz)
-- [Aero upgrade steps](https://aero.xyz/aero-upgrade)
+- [How to use it](https://aero.deftools.xyz/#guide)
+- [Raw scan, JSON](https://aero.deftools.xyz/data/v3.json)
 - [Source and method](https://github.com/araxis33/aero-vote-radar)
+
+Not financial advice. The tool prints numbers; the user allocates.

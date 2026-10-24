@@ -1,0 +1,22 @@
+<!-- The link-preview card (docs/card.png, 1200x630). Static since Aero launched: X caches the picture for days, so it carries no figures. To redraw: screenshot this file at 1200x630 into docs/card.png and bump ?v= on og:image in docs/index.html. -->
+<!doctype html><html><head><meta charset="utf-8"><style>
+body { margin: 0; font-family: Inter, "Segoe UI", "DejaVu Sans", system-ui, sans-serif; font-feature-settings: "calt" 0; }
+.card { width: 1200px; height: 630px; box-sizing: border-box; padding: 56px 64px; display: flex; flex-direction: column;
+  justify-content: space-between; color: #e8ecf3; background: radial-gradient(circle at 85% 0%, #3a1220 0%, #0b0f19 55%); }
+.top { display: flex; justify-content: space-between; font-size: 26px; color: #9aa4b6; } .top b { color: #e8ecf3; }
+h1 { font-size: 52px; line-height: 1.1; margin: 0; font-weight: 800; } h1 .blue { color: #5aa2ff; }
+.nums { display: flex; gap: 28px; }
+.n { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 24px 28px; }
+.v { font-size: 52px; font-weight: 800; } .l { font-size: 22px; color: #9aa4b6; margin-top: 6px; line-height: 1.3; }
+.good { color: #35d07f; } .blue { color: #5aa2ff; } .mid { color: #ffb648; }
+.foot { display: flex; justify-content: space-between; font-size: 24px; color: #9aa4b6; } .foot b { color: #e8ecf3; }
+</style></head><body><div class="card">
+<div class="top"><span><b>Aero Vote Radar</b> · for sAERO holders</span><span>aero.deftools.xyz</span></div>
+<h1>Where your <span class="blue">sAERO</span> earns the most on Aero.</h1>
+<div class="nums">
+  <div class="n"><div class="v good">7 networks</div><div class="l">every pool, ranked by what your amount earns per day</div></div>
+  <div class="n"><div class="v blue">47 h</div><div class="l">your timer on each network: where you can move now</div></div>
+  <div class="n"><div class="v mid">Every hour</div><div class="l">rescanned straight from Aero's contracts</div></div>
+</div>
+<div class="foot"><span>Priced after <b>your own stake</b> dilutes the pool</span><span>Free · read-only</span></div>
+</div></body></html>

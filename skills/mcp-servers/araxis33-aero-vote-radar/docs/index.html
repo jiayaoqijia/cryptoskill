@@ -3,18 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aero Vote Radar — where to vote your veAERO to earn the most</title>
-<meta name="description" content="Tells you where to vote your veAERO on Aerodrome this week to earn the most. Enter how much you hold, copy the percentages, paste them into Aerodrome. Free, read-only, no wallet connection.">
+<title>Aero Vote Radar — where your sAERO earns the most on Aero</title>
+<meta name="description" content="Enter how much sAERO you hold and see what every Aero pool on 7 networks pays you per day, after your own stake dilutes it. Your 47 h timer per network, rescanned every hour. Free, read-only.">
 <link rel="canonical" href="https://aero.deftools.xyz/">
-<link rel="alternate" type="text/plain" title="This week's suggestion as plain text" href="/llms.txt">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aero.deftools.xyz/">
-<meta property="og:title" content="Aero Vote Radar — where to vote your veAERO to earn the most">
-<meta property="og:description" content="Enter how much veAERO you hold, copy the percentages, paste them into Aerodrome. Priced after your own vote dilutes each pool. Free, read-only.">
-<meta property="og:image" content="https://aero.deftools.xyz/card.png?w=2026-10-08">
+<meta property="og:title" content="Aero Vote Radar — where your sAERO earns the most on Aero">
+<meta property="og:description" content="Enter how much sAERO you hold and see what every Aero pool on 7 networks pays you per day, after your own stake dilutes it. Your 47 h timer per network, rescanned every hour. Free, read-only.">
+<meta property="og:image" content="https://aero.deftools.xyz/card.png?v=aero-1">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"Aero Vote Radar","url":"https://aero.deftools.xyz/","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Tells veAERO holders where to vote on Aerodrome (Base) this week to earn the most: whole percentages ready to paste into Aerodrome's vote page, priced after your own vote dilutes each pool. Read-only, no wallet connection.","sameAs":["https://github.com/araxis33/aero-vote-radar","https://www.npmjs.com/package/aero-vote-radar"],"isAccessibleForFree":true}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Aero Vote Radar","url":"https://aero.deftools.xyz/","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Shows sAERO holders where to allocate on Aero across its seven networks: what every pool pays per day for the amount entered, after that stake dilutes it, with the 47 h timer per network. Rescanned hourly from Aero's contracts. Free, read-only.","sameAs":["https://github.com/araxis33/aero-vote-radar","https://www.npmjs.com/package/aero-vote-radar"],"isAccessibleForFree":true}
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cpath fill='%230433ff' d='M29.5 62.6c1.4-5.5 11.8-11.2 16.7-13.8 14.7-7 30.5-11.3 46.3-14.7 3.6-.8 7.3-1.5 11-2.1 6.7-1.5 3.2-9.7-2.9-7.6-6.5 1.1-12.9 2.5-19.3 4-14.8 3.7-29.6 8.1-43.1 15.4-6.9 3.9-15.6 9.2-17.5 17.4 0 .4-.2.9-.1 1.4v1c0 .3 0 .7.1 1 3.6 15.9 45.5 20.9 59.6 22.3 6.6.8 13.3 1.1 19.9 1.5 2 .6 3.1-2 .8-2.3-1 0-2-.2-3.1-.3-17-1.6-34.2-4-50.4-9.8-3.8-1.3-7.5-2.9-10.9-5.1-2.2-1.4-4.4-2.9-5.9-5.1-.2-.3-.3-.6-.5-.9 0-.1 0-.3-.1-.4v-1.4z'/%3E%3Cpath fill='%23ff1100' d='M29.5 86.4c1.4-5.5 11.8-11.2 16.7-13.8 14.7-7 30.5-11.3 46.3-14.7 3.6-.8 7.3-1.5 11-2.1 6.7-1.5 3.2-9.7-2.9-7.6-6.5 1.1-12.9 2.5-19.3 4-14.8 3.7-29.6 8.1-43.1 15.4-6.9 3.9-15.6 9.2-17.5 17.4 0 .4-.2.9-.1 1.4v1c0 .3 0 .7.1 1 3.6 15.9 45.5 20.9 59.6 22.3 6.6.7 13.2 1.1 19.7 1.5.3 0 .6 0 .9 0 1.7 0 1.7-2.4 0-2.4-1 0-2-.2-3.1-.3-17-1.6-34.2-4-50.4-9.8-3.8-1.3-7.5-2.9-10.9-5.1-2.2-1.4-4.4-2.9-5.9-5.1-.2-.3-.3-.6-.5-.9 0-.1 0-.3-.1-.4v-1.4z'/%3E%3C/svg%3E">
 <style>
@@ -254,6 +253,11 @@
   .ar-chip { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; margin-left: 6px; }
   .ar-split { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
   .ar-split a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 14px; text-decoration: none; }
+  .ar-guide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 14px; counter-reset: step; }
+  .ar-guide > div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--dim); }
+  .ar-guide > div::before { counter-increment: step; content: counter(step); display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 8px; border-radius: 50%; background: rgba(53, 208, 127, 0.15); color: var(--good); font-weight: 660; font-size: 12px; }
+  .ar-guide b { color: var(--text); }
+  @media (max-width: 640px) { .ar-guide { grid-template-columns: 1fr; } }
   .ar-hold { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
   .ar-hold .n { font-size: 20px; font-weight: 660; }
   .ar-bar { height: 8px; border-radius: 4px; background: var(--aero); }
@@ -283,6 +287,11 @@
      scan). Hidden until the scan reports the Base contracts live. -->
 <section id="aeroRadar" hidden>
   <p class="meta" id="arMeta"></p>
+  <div class="ar-guide" id="guide">
+    <div><b>Type how much sAERO you have.</b> Add your wallet if you like: it shows when your 47 h timer runs out.</div>
+    <div><b>Look at "Per day for you".</b> The radar splits your amount across up to 3 pools, so your own stake doesn't dilute your income.</div>
+    <div><b>Press "Allocate on Aero"</b> and set the same percentages there. You sign in your own wallet. Come back when your 47 h are up.</div>
+  </div>
   <div class="panel">
     <div class="ar-controls">
       <div class="field">
@@ -301,9 +310,10 @@
     <div class="totals ar-totals">
       <div class="stat hi"><div class="n num c-good" id="arBest">&mdash;</div><div class="l">Best pool for your sAERO, per day</div></div>
       <div class="stat"><div class="n num" id="arTimer">47 h</div><div class="l" id="arTimerLabel">Between moves of one stake (enter a wallet for yours)</div></div>
-      <div class="stat"><div class="n num" id="arCurrent">&mdash;</div><div class="l">What your current split on Base pays per day</div></div>
+      <div class="stat"><div class="n num" id="arCurrent">&mdash;</div><div class="l">What your current split pays per day</div></div>
       <div class="stat"><div class="n num">1.7&times;</div><div class="l">Switching every 47 h vs weekly (backtest)</div></div>
     </div>
+    <p class="hint" id="arTimers" style="margin:12px 0 0" hidden></p>
     <div class="ar-callout" id="arCallout" hidden></div>
   </div>
 
@@ -320,476 +330,38 @@
     <span class="hint" style="margin:0">Opens Aero's Allocate page; you sign in your own wallet. This page never holds funds.</span>
   </div>
 
+  <h2>Steadiest pools</h2>
+  <p class="h2note">For a steady payout rather than the top spot: pools that paid at least half their own average in 75% of the hours or more. Average and lowest hour are for 10,000 sAERO; "per day for you" is for your amount now.</p>
+  <p class="hint" id="arSteadyWait">Needs a day of hourly scans; the table fills in on its own.</p>
+  <div class="scroll" id="arSteadyWrap" hidden><table>
+    <thead><tr><th>Pool</th><th class="num">Per day for you</th><th class="num">Average / day (10K)</th><th class="num">Lowest hour (10K)</th><th class="num">Held up</th></tr></thead>
+    <tbody id="arSteadyBody"></tbody>
+  </table></div>
+
   <h2>How long to hold a pool</h2>
-  <p class="h2note">Backtest on 3 weeks of pool fees (Sep 27 – Oct 20), 10,000 sAERO, best pool each time. Fees only.</p>
+  <p class="h2note">How much more you earn by moving to the best pool more often, compared with moving once a week. Backtest on 3 weeks of Aerodrome pool fees before Aero (Sep 27 – Oct 20), fees only.</p>
   <div class="panel">
     <div class="ar-hold">
-      <div><div class="n num">$10.08</div><div class="ar-bar" style="width:100%"></div><div class="hint">every 47 h</div></div>
-      <div><div class="n num">$7.57</div><div class="ar-bar" style="width:75%"></div><div class="hint">every 4 days</div></div>
-      <div><div class="n num">$5.90</div><div class="ar-bar" style="width:59%"></div><div class="hint">once a week</div></div>
-      <div><div class="n num">$4.12</div><div class="ar-bar" style="width:41%"></div><div class="hint">every 2 weeks</div></div>
+      <div><div class="n num">1.7&times;</div><div class="ar-bar" style="width:100%"></div><div class="hint">every 47 h</div></div>
+      <div><div class="n num">1.3&times;</div><div class="ar-bar" style="width:75%"></div><div class="hint">every 4 days</div></div>
+      <div><div class="n num">1&times;</div><div class="ar-bar" style="width:59%"></div><div class="hint">once a week</div></div>
+      <div><div class="n num">0.7&times;</div><div class="ar-bar" style="width:41%"></div><div class="hint">every 2 weeks</div></div>
     </div>
     <p class="hint">Top pools cool off fast: a day later they pay about 38% of what put them on top.</p>
     <p class="hint"><b>Tip:</b> the 47 h timer runs per stake, not per wallet. Split your sAERO into a few stakes and each gets its own timer &mdash; a new stake's first allocation has no wait.</p>
   </div>
-  <h2 class="ar-old">Before Aero: the last weekly veAERO vote</h2>
 </section>
-
-<div class="note" id="voteEndedNote" hidden><b>The weekly veAERO vote has ended.</b> The last vote closed on October 21, 22:59 UTC, Aero launched on October 22 and the old gauges are switched off, so this page no longer suggests a vote. Upgrade your veAERO to sAERO at <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noreferrer">aero.xyz/aero-upgrade</a>; look up your wallet below to see what each lock becomes. The sAERO ranking is at the top of this page. The figures further down are the last weekly scan, kept for reference.</div>
-<p class="meta" id="meta"><span class="dot"></span> Loading the latest scan…</p>
-<div class="note" id="aeroLaunchNote">Aerodrome becomes <b>Aero</b> on <b>October 22, 00:00 UTC</b>, with a new rewards system (sAERO and Predictive Allocation). Official steps and dates are in <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noreferrer">aero.xyz/aero-upgrade</a> (see "Before Aero, Oct 22" below); look up your wallet below to preview what each veAERO lock becomes, read from Aerodrome's published migration contract. This page covers the current weekly veAERO vote. <a href="https://aero.xyz/articles/aero-launch-update-all-systems-go/" target="_blank" rel="noreferrer">Aero's announcement</a></div>
-
-<section class="panel">
-  <div class="field" style="margin-bottom:14px">
-    <label for="addr">Your wallet — it will look up how much veAERO you have</label>
-    <div class="addr-row">
-      <input id="addr" type="text" spellcheck="false" autocomplete="off" placeholder="0x… (optional — or just type the amount below)">
-      <button id="lookup" class="primary" type="button">Look up</button>
-    </div>
-    <div class="lookup-msg" id="lookupMsg"></div>
-  </div>
-
-  <div class="controls controls-main">
-    <div class="field">
-      <label for="veaero">How much veAERO do you have?</label>
-      <input id="veaero" type="number" min="0" step="any" value="10000" inputmode="decimal">
-    </div>
-  </div>
-
-  <details class="advanced">
-    <summary>Settings</summary>
-    <div class="controls">
-    <div class="field">
-      <label for="topk">Pools considered</label>
-      <input id="topk" type="number" min="1" max="60" step="1" value="15">
-    </div>
-    <div class="field">
-      <label for="mincons">Min consistency</label>
-      <select id="mincons">
-        <option value="0">0 — no filter</option>
-        <option value="0.4">0.4 — drop the spikiest</option>
-        <option value="0.5" selected>0.5 — balanced</option>
-        <option value="0.6">0.6 — steady only</option>
-        <option value="0.7">0.7 — very steady</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="votebasis">Vote weight to expect</label>
-      <select id="votebasis">
-        <option value="typical" selected>The weight it usually settles at</option>
-        <option value="previous">Last epoch&rsquo;s final weight</option>
-        <option value="current">The live weight right now</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="maxweight">Max per pool</label>
-      <select id="maxweight">
-        <option value="1" selected>No cap</option>
-        <option value="0.5">50%</option>
-        <option value="0.34">34%</option>
-        <option value="0.25">25%</option>
-        <option value="0.2">20%</option>
-      </select>
-    </div>
-    </div>
-  </details>
-  <p class="hint">Read-only. The page never asks to connect a wallet, and nothing you type is sent anywhere except a public Base RPC call to read your voting power.</p>
-</section>
-
-<!-- Fixed dates from Aerodrome's own upgrade page (aero.xyz/aero-upgrade,
-     checked 2026-10-11). Static on purpose: these are announced, not measured. -->
-<section id="beforeAero">
-  <div class="rowhead">
-    <div>
-      <h2>Before Aero, Oct 22</h2>
-      <p class="h2note">What a veAERO holder has to do, in order. Dates from <a href="https://aero.xyz/aero-upgrade" target="_blank" rel="noopener">aero.xyz/aero-upgrade</a>.</p>
-    </div>
-  </div>
-  <div class="scroll cards">
-  <table>
-      <thead>
-        <tr>
-          <th>When</th>
-          <th>What to do</th>
-        </tr>
-      </thead>
-    <tbody>
-      <tr><td>By Oct 20</td><td>Withdraw your lock from Relay or any other vault</td></tr>
-      <tr><td>Oct 21, 22:59 UTC</td><td>Last vote closes</td></tr>
-      <tr><td>Before you upgrade</td><td>Claim rewards and rebase, then reset your vote: a lock with active votes cannot be upgraded, and rewards left unclaimed cannot be recovered after it</td></tr>
-      <tr><td>Oct 22, 00:00 UTC</td><td>Aero launches. Each veAERO becomes 1 AERO in sAERO with the same lock time left (rounded up to a full week). If you voted in the last week, you can upgrade from 01:00 UTC</td></tr>
-      <tr><td>Oct 22, 16:00 UTC</td><td>First Autopilot allocation. sAERO added after that waits for the next one</td></tr>
-      <tr><td>After that</td><td>You can move your allocation every 47 hours, across 7 chains in one transaction, with gas paid on Base only. sAERO positions can be merged, not split</td></tr>
-    </tbody>
-  </table>
-  </div>
-</section>
-
-<!-- The receipt, above the forecast. Everything below this section is a
-     prediction a stranger has no reason to trust yet; this is the one part of
-     the page they can check against their own wallet. Hidden until an address
-     is looked up, because there is nothing honest to show without one. -->
-<section id="reviewPanel" hidden>
-  <div class="rowhead">
-    <div>
-      <h2>What your last vote actually earned</h2>
-      <p class="h2note">The epoch is closed and the weights are final — nothing here is a forecast.</p>
-    </div>
-  </div>
-  <div class="lookup-msg" id="reviewMsg"></div>
-  <p class="h2note" id="reviewSummary"></p>
-  <table>
-      <thead>
-        <tr>
-          <th>Pool</th>
-          <th class="num">Your veAERO</th>
-          <th class="num">Pool total</th>
-          <th class="num">Pool paid</th>
-          <th class="num">You earned</th>
-        </tr>
-      </thead>
-    <tbody id="reviewBody"></tbody>
-  </table>
-</section>
-
-<section id="migrationPanel" hidden>
-  <div class="rowhead">
-    <div>
-      <h2>What happens to your locks on October 22</h2>
-      <p class="h2note">A preview read from Aerodrome's published migration contract. The steps and dates are in &ldquo;Before Aero, Oct 22&rdquo; above.</p>
-    </div>
-  </div>
-  <div class="lookup-msg" id="migrationMsg"></div>
-  <p class="h2note" id="migrationSummary"></p>
-  <div class="scroll cards">
-  <table>
-      <thead>
-        <tr>
-          <th>Lock</th>
-          <th class="num">AERO locked</th>
-          <th>Lock ends</th>
-          <th>Becomes</th>
-          <th>Before you move it</th>
-        </tr>
-      </thead>
-    <tbody id="migrationBody"></tbody>
-  </table>
-  </div>
-</section>
-
-<!-- What a pool has been paying per day, from the continuous fee counters
-     (src/feeRate.ts). It does not depend on weekly epochs, which is why it is
-     the figure that carries over to Aero's Predictive Allocation. -->
-<section id="saeroPanel" hidden>
-  <div class="rowhead">
-    <div>
-      <h2>Where to point sAERO on Oct 22</h2>
-      <p class="h2note">Fees keep flowing to sAERO by themselves. Incentives don&rsquo;t: whoever pays them has to post them again in Aero. Last week they were <span id="saeroIncShareText">a share</span> of what voters earned, and most of what the top pools paid.</p>
-    </div>
-  </div>
-  <div class="totals">
-    <div class="stat"><div class="n num" id="saeroFees">&mdash;</div><div class="l">Voter fees per day right now</div></div>
-    <div class="stat"><div class="n num" id="saeroIncShare">&mdash;</div><div class="l">Of last week&rsquo;s rewards were incentives</div></div>
-    <div class="stat"><div class="n num">47 h</div><div class="l">Before you can move your sAERO again</div></div>
-  </div>
-  <div class="you" id="saeroYou" hidden></div>
-  <div class="scroll cards">
-  <table>
-      <thead>
-        <tr>
-          <th>Pool</th>
-          <th class="num">Fees per day for 10,000</th>
-          <th class="num">All rewards per day last week</th>
-          <th class="num">From incentives</th>
-          <th class="num">Steady fees</th>
-          <th class="num">Votes</th>
-        </tr>
-      </thead>
-    <tbody id="saeroBody"></tbody>
-  </table>
-  </div>
-  <div class="chains" id="saeroChains"></div>
-  <div class="note" id="saeroNote"></div>
-</section>
-
-<section id="perDayPanel" hidden>
-  <div class="rowhead">
-    <div>
-      <h2>Ready for Aero: what pools pay per day</h2>
-      <p class="h2note">From October 22 there is no weekly vote: sAERO is allocated continuously and can move every 47 hours. This is the figure that ranking needs, already measured on today&rsquo;s pools.</p>
-    </div>
-  </div>
-  <div class="totals">
-    <div class="stat"><div class="n num" id="perDayTop">—</div><div class="l" id="perDayTopLabel">Best pool for your sAERO, per day</div></div>
-    <div class="stat"><div class="n num" id="perDayAll">—</div><div class="l">All pools&rsquo; voter fees per day</div></div>
-    <div class="stat"><div class="n num">78%</div><div class="l">Of the best possible top 10, next 48 h</div></div>
-  </div>
-  <div class="scroll cards">
-  <table>
-      <thead>
-        <tr>
-          <th>Pool</th>
-          <th class="num" id="perDayAmtHead">Per day for your sAERO</th>
-          <th class="num">Pool fees per day</th>
-          <th class="num">Votes</th>
-        </tr>
-      </thead>
-    <tbody id="perDayBody"></tbody>
-  </table>
-  </div>
-  <div class="note" id="perDayNote"></div>
-</section>
-
-<div class="rowhead">
-  <div>
-    <h2 id="allocTitle">Suggested allocation</h2>
-    <p class="h2note" id="allocSub">Whole percentages that add up to exactly 100 — the form Aerodrome's UI accepts.</p>
-  </div>
-  <div style="display:flex; gap:8px">
-    <button id="copyBtn" type="button">Copy weights</button>
-    <a id="voteLink" href="https://aerodrome.finance/vote" target="_blank" rel="noopener noreferrer"><button class="primary" type="button">Vote on Aerodrome ↗</button></a>
-  </div>
-</div>
-
-<div class="totals">
-  <div class="stat">
-    <div class="n num" id="statUsd">—</div>
-    <div class="l">You would earn next week</div>
-    <div class="r" id="statUsdRange" hidden></div>
-  </div>
-  <div class="stat"><div class="n num" id="statPools">—</div><div class="l">Pools used</div></div>
-  <div class="stat"><div class="n num" id="statPerVote">—</div><div class="l">Per veAERO</div></div>
-  <div class="stat" id="statKeptBox" hidden>
-    <div class="n num" id="statKept">—</div>
-    <div class="l">Still on top at close</div>
-    <div class="r" id="statKeptNote"></div>
-  </div>
-</div>
-
-<div class="scroll cards">
-  <table>
-    <thead>
-      <tr><th>Pool</th><th>Vote %</th><th>veAERO</th><th>Expected $</th><th>Pool votes assumed</th><th>Consistency</th></tr>
-    </thead>
-    <tbody id="allocBody"></tbody>
-  </table>
-</div>
-<div class="note" id="allocNote" hidden></div>
-<div class="note" id="refillNote" hidden></div>
-<div class="note" id="basisNote" hidden></div>
-
-<details id="calldataBox">
-  <summary>Cast this from your own wallet — unsigned calldata</summary>
-  <p>Retyping seven weights into a form is where a measured allocation loses accuracy, to a mistyped digit or a row skipped because the page scrolled. This builds the exact bytes <code>Voter.vote()</code> expects instead. It is unsigned: no key, no wallet connection, nothing sent anywhere. Paste it into the wallet that holds the veNFT, check that <code>to</code> is the Voter contract and that the pools and percentages match the table above, and sign it there.</p>
-  <div class="calldata-row">
-    <input id="tokenId" type="text" spellcheck="false" autocomplete="off" inputmode="numeric" placeholder="veNFT id, e.g. 118577">
-    <button id="calldataBtn" type="button">Build calldata</button>
-    <button id="calldataCopy" type="button" hidden>Copy</button>
-  </div>
-  <div class="lookup-msg" id="calldataMsg"></div>
-  <div class="hex" id="calldataOut" hidden></div>
-</details>
-
-<h2>Which way incentives are moving</h2>
-<p class="h2note">Recent finished epochs against the older ones, per pool. A high average is worth less if it is on the way down.</p>
-<div class="movers">
-  <div class="panel">
-    <h3 class="up">Ramping up</h3>
-    <p class="h3note">Paying more lately than they used to.</p>
-    <div id="moversUp"></div>
-  </div>
-  <div class="panel">
-    <h3 class="down">Fading</h3>
-    <p class="h3note">Still on the board, but paying less than they used to.</p>
-    <div id="moversDown"></div>
-  </div>
-</div>
-
-<h2>What the whole pot is paying</h2>
-<p class="h2note">Every pool’s incentives divided by every pool’s votes, epoch by epoch. Picking a better pool cannot fix a shrinking pot, so this is the one number the ranking above structurally cannot tell you.</p>
-<div class="scroll">
-  <table>
-    <thead>
-      <tr><th>Epoch (opens)</th><th>Bribes + fees</th><th>Votes cast</th><th>$ per veAERO</th><th>Vs. the oldest epoch shown</th></tr>
-    </thead>
-    <tbody id="yieldBody"></tbody>
-  </table>
-</div>
-<div class="note" id="yieldNote"></div>
-
-<h2>How much of this list survives the week</h2>
-<p class="h2note">Every dashboard here, this one included, ranks pools by a rate computed from vote weight that is still moving. So: of the ten pools a list like this one put on top, how many were still on top when the epoch closed?</p>
-<div class="trust" id="trustPanel" hidden>
-  <p class="when" id="trustWhen"></p>
-  <div class="kept" id="trustKept"></div>
-  <p class="basis" id="trustBasis"></p>
-</div>
-
-<h2>All ranked pools</h2>
-<p class="h2note">Every live-gauge pool that clears a minimum trailing value, sorted by predicted dollars per vote.</p>
-<div class="scroll">
-  <table>
-    <thead>
-      <tr><th>Pool</th><th>History</th><th>Trend</th><th>Predicted $/vote</th><th>On last epoch&rsquo;s weight</th><th>Refill</th><th>Current $/vote</th><th>Edge</th><th>Trailing avg</th><th>Votes</th><th>Consistency</th><th>Epochs</th></tr>
-    </thead>
-    <tbody id="rankBody"></tbody>
-  </table>
-</div>
-<div class="legend">
-  <span><b class="badge v" style="margin-right:4px">vAMM</b> volatile pool — plain <code>x·y=k</code>, for tokens whose prices move independently</span>
-  <span><svg class="spark" style="display:inline-block; width:34px; height:14px; vertical-align:-2px; margin-right:4px" viewBox="0 0 34 14" aria-hidden="true"><rect x="0" y="4" width="9" height="10"/><rect x="12" y="2" width="9" height="12"/><rect class="partial" x="24.5" y="7.5" width="8" height="6"/></svg> the dashed last bar is the epoch still running — a part-week, so it is charted but left out of the trend. Bar heights are square-rooted so a single huge week doesn’t flatten the rest; hover for exact dollars</span>
-  <span><b class="badge s" style="margin-right:4px">sAMM</b> stable pool — a flatter curve for pairs meant to hold the same value, like two stablecoins or ETH and a liquid-staking version of it</span>
-  <span><b class="badge c" style="margin-right:4px">CL</b> concentrated-liquidity pool — liquidity sits in a price range instead of across the whole curve. These carry the largest vote weights on Aerodrome</span>
-</div>
-
-<h2>How wrong this page usually is</h2>
-<p class="h2note">The allocation is built on an assumption about the weight each pool will settle at. Every six-hourly scan this repo has committed since 7 August is a moment when that assumption was made and the answer is now known, so the size of the miss can be stated rather than hoped about.</p>
-<div class="trust" id="accuracyPanel" hidden>
-  <div class="kept" id="accuracyKept"></div>
-  <p class="basis" id="accuracyBasis"></p>
-</div>
-<div class="trust" id="promisePanel" hidden>
-  <p class="when">Forecast against what was actually paid</p>
-  <div class="kept" id="promiseKept"></div>
-  <p class="basis" id="promiseBasis"></p>
-</div>
-
-<details>
-  <summary>How this works, and what it does not know</summary>
-  <p><strong>Value per vote.</strong> Each pool pays out bribes plus fees to whoever voted for it, split by vote weight. Divide that by the votes already sitting there and you get dollars per veAERO. The <em>predicted</em> figure uses a trailing average across recent epochs, but never more than the last finished week actually paid — so a pool whose incentives have dried up is not priced on weeks that are gone.</p>
-  <p><strong>Self-dilution.</strong> Voting into a pool adds your votes to the denominator, so the last vote you cast into a pool is worth less than the first. The allocation hands out your veAERO in small slices, each time to whichever pool currently offers the most for the next slice. That is why it spreads across several pools instead of dumping everything into the top-ranked one.</p>
-  <p><strong>Consistency.</strong> A pool that paid $600 once and nothing for five weeks averages the same as one paying $100 every week, and the average alone cannot tell them apart. Consistency scores how steady the payouts have been: 1 is perfectly even, lower is spikier. A pool with only one epoch of history scores 0 — one data point cannot prove steadiness.</p>
-  <p><strong>History and trend.</strong> The bars are the pool's last six epochs, oldest on the left, and the trend figure next to them is the recent finished epochs' average against the older ones'. It answers something the average and consistency both hide: a pool climbing from $50 to $500 an epoch and one sliding from $500 to $50 score identically on those two. Two deliberate choices: the epoch still running is drawn as a dashed outline and left out of the trend, because a scan taken mid-week has only counted part of that week; and a pool whose older epochs paid only loose change reports no trend at all rather than a huge percentage, since dividing by pennies produces headline numbers that mean nothing. Bar heights are square-rooted so one enormous week doesn't flatten the rest into invisible stubs — taller always means a bigger epoch, but the height is not proportional to the dollars. Hover any chart for the exact figures.</p>
-  <p><strong>Reading your wallet.</strong> The lookup calls three read-only Base contract methods on the veAERO contract — how many locks you own, their token ids, and each one's current voting power — and adds them up. It cannot move anything, and it never asks for a signature.</p>
-  <p><strong>What it does not model.</strong> Other voters react to incentives too, and this holds their votes fixed at the last snapshot. It does not predict new bribes, and it is not advice — it is arithmetic on public data.</p>
-</details>
 
 <footer>
-  Data scanned on-chain from <a href="https://aerodrome.finance" target="_blank" rel="noopener noreferrer">Aerodrome</a> on Base. Open source —
+  Data read on-chain from <a href="https://aero.xyz" target="_blank" rel="noopener noreferrer">Aero</a>'s contracts on seven networks. Open source —
   <a href="https://github.com/araxis33/aero-vote-radar" target="_blank" rel="noopener noreferrer">github.com/araxis33/aero-vote-radar</a>.
-  Part of <a href="https://deftools.xyz">deftools.xyz</a>. Not affiliated with Aerodrome.
+  Part of <a href="https://deftools.xyz">deftools.xyz</a>. Not affiliated with Aero.
 </footer>
 
 </div>
 
 <script>
-// ---------------------------------------------------------------------------
-// Allocator, ported verbatim from src/allocator.ts. The heavy scan runs in CI
-// and lands in data/snapshot.json; everything below is cheap enough to run per
-// keystroke, which is why the personalised half lives in the browser.
-// ---------------------------------------------------------------------------
-
-/**
- * What the next `stepSize` of budget is worth to this candidate, per veAERO.
- * The V = 0 branch matters: a pool nobody else has voted on pays its whole
- * epoch value to whoever votes at all, but the derivative R*V/(V+x)^2 is 0
- * there, so without it such a pool would never receive a single step.
- */
-function marginalValuePerVeAero(c, stepSize) {
-  if (c.expectedUsd <= 0) return 0;
-  if (c.existingVotes === 0) return c.allocated === 0 ? c.expectedUsd / stepSize : 0;
-  const v = c.existingVotes + c.allocated;
-  return (c.expectedUsd * c.existingVotes) / (v * v);
-}
-
-// 100 steps, not 400: a vote is cast in whole percentages, so one step is one
-// castable percentage point. Finer steps only hand out fractions of a point
-// that toWholePercentWeights then rounds away, printing an expected total no
-// real vote could earn. Kept in step with WHOLE_PERCENT_STEPS in src/allocator.ts
-// — site-parity.test.ts fails if these two drift apart.
-function allocateAcrossCandidates(input, veAeroBudget, steps, maxWeight) {
-  steps = steps || 100;
-  maxWeight = maxWeight === undefined ? 1 : maxWeight;
-  if (!Number.isFinite(veAeroBudget) || veAeroBudget <= 0) return [];
-
-  const candidates = input.map((c) => ({ ...c, allocated: 0, units: 0 }));
-  const stepSize = veAeroBudget / steps;
-  const maxUnits =
-    Number.isFinite(maxWeight) && maxWeight > 0 && maxWeight < 1
-      ? Math.max(1, Math.floor(maxWeight * steps))
-      : steps;
-
-  for (let s = 0; s < steps; s++) {
-    let bestIndex = -1;
-    let bestMarginal = 0;
-    for (let i = 0; i < candidates.length; i++) {
-      if (candidates[i].units >= maxUnits) continue;
-      const marginal = marginalValuePerVeAero(candidates[i], stepSize);
-      if (marginal > bestMarginal) { bestMarginal = marginal; bestIndex = i; }
-    }
-    if (bestIndex === -1) break;
-    candidates[bestIndex].allocated += stepSize;
-    candidates[bestIndex].units++;
-  }
-
-  return candidates
-    .filter((c) => c.allocated > 0)
-    .map((c) => ({
-      pool: c.address, symbol: c.symbol, consistency: c.consistency, existingVotes: c.existingVotes,
-      weight: c.allocated / veAeroBudget,
-      veAeroAllocated: c.allocated,
-      expectedUsd: (c.expectedUsd * c.allocated) / (c.existingVotes + c.allocated),
-      poolExpectedUsd: c.expectedUsd,
-    }))
-    .sort((a, b) => b.veAeroAllocated - a.veAeroAllocated);
-}
-
-/** Largest-remainder (Hamilton) rounding, so percentages total exactly 100. */
-function toWholePercentWeights(allocation) {
-  const totalWeight = allocation.reduce((a, b) => a + b.weight, 0);
-  if (allocation.length === 0 || totalWeight <= 0) return new Map();
-
-  const rows = allocation.map((a) => {
-    const raw = (a.weight / totalWeight) * 100;
-    const floor = Math.floor(raw);
-    return { pool: a.pool, percent: floor, remainder: raw - floor };
-  });
-
-  let deficit = 100 - rows.reduce((a, b) => a + b.percent, 0);
-  const byRemainder = rows
-    .map((row, index) => ({ row, index }))
-    .sort((a, b) => b.row.remainder - a.row.remainder || a.index - b.index);
-  for (const { row } of byRemainder) {
-    if (deficit <= 0) break;
-    row.percent++; deficit--;
-  }
-
-  return new Map(rows.map((r) => [r.pool, r.percent]));
-}
-
-/**
- * Expected USD from the vote actually cast, not from the continuous allocation.
- * Sub-1% rows are dropped, and their points are redistributed to the rows that
- * survived — so those rows receive more veAERO than the allocator penciled in.
- * Each surviving pool is therefore rescored at the veAERO its percentage really
- * puts there. Mirrors expectedUsdForWholePercentVote in src/allocator.ts.
- */
-function expectedUsdForWholePercentVote(allocation, veAeroBudget) {
-  if (!Number.isFinite(veAeroBudget) || veAeroBudget <= 0) return 0;
-
-  const byPool = new Map(allocation.map((a) => [a.pool, a]));
-  let total = 0;
-  for (const [pool, percent] of toWholePercentWeights(allocation)) {
-    const row = byPool.get(pool);
-    if (!row || percent <= 0) continue;
-    const votes = (percent / 100) * veAeroBudget;
-    total += (row.poolExpectedUsd * votes) / (row.existingVotes + votes);
-  }
-  return total;
-}
-
-// --- reading veAERO voting power -------------------------------------------
-// Three read-only calls against the VotingEscrow contract, whose address was
-// read off Voter.ve() rather than copied from a blog post. Deliberately NOT
-// VeSugar.byAccount, which returns one large struct per lock (including every
-// vote it has cast) and reverts outright on a public RPC for wallets holding
-// many locks — a 22-lock wallet already fails. These three methods return
-// plain integers, so they decode with parseInt and never revert. The CLI
-// (src/veAero.ts) reads the same way, for the same reason.
-
-const VE_ADDRESS = "0xebf418fe2512e7e6bd9b87a8f0f294acdc67e6b4";
 const SEL_BALANCE_OF = "0x70a08231";       // balanceOf(address)
-const SEL_TOKEN_AT = "0x8bf9d84c";         // ownerToNFTokenIdList(address,uint256)
 const SEL_POWER_OF = "0xe7e242d4";         // balanceOfNFT(uint256)
 
 // Tried in order; the first that answers wins. One endpoint going down or
@@ -815,14 +387,10 @@ let rpcIndex = 0;
 
 // A JSON-RPC error whose message names a revert/panic, as opposed to one about
 // the request itself (rate limit, malformed input, node trouble). Only the
-// former is a fact about the contract call; marking it lets a caller that
-// walks an index until "the end" (see fetchCastVotes below) tell that genuine
-// signal apart from `ethCall` simply having failed to get an answer — mirrors
-// `isEndOfVoteList` in src/voted.ts, which draws the same line via viem's
-// ContractFunctionRevertedError/ContractFunctionZeroDataError.
+// former is a fact about the contract call, so ethCall stops retrying on it.
 const isRevertMessage = (message) => /revert|invalid opcode|out-of-bounds|panic/i.test(message || "");
 
-async function ethCall(data, to = VE_ADDRESS) {
+async function ethCall(data, to) {
   let lastErr;
   for (let attempt = 0; attempt < RPCS.length; attempt++) {
     const url = RPCS[(rpcIndex + attempt) % RPCS.length];
@@ -855,1834 +423,23 @@ async function ethCall(data, to = VE_ADDRESS) {
   throw lastErr || new Error("all RPC endpoints failed");
 }
 
-async function fetchVotingPower(address) {
-  const count = Number(BigInt(await ethCall(SEL_BALANCE_OF + word(address))));
-  if (count === 0) return { total: 0, locks: 0 };
-
-  // Cap the walk: an address holding hundreds of locks would otherwise fire
-  // hundreds of sequential calls at a public endpoint and get rate-limited.
-  const limit = Math.min(count, 60);
-  const ids = [];
-  for (let i = 0; i < limit; i++) ids.push(BigInt(await ethCall(SEL_TOKEN_AT + word(address) + hexOf(i))));
-
-  const powers = await Promise.all(ids.map((id) => ethCall(SEL_POWER_OF + hexOf(id)).then((r) => BigInt(r))));
-  const total = powers.reduce((a, b) => a + b, 0n);
-
-  return { total: Number(total) / 1e18, locks: count, truncated: count > limit, ids };
-}
-
-// --- what the vote already cast actually earned ------------------------------
-// The one thing on this page that asks the visitor to believe nothing. The
-// epoch is closed, the weights are final, and every figure below can be checked
-// against their own wallet — which is the only honest way to introduce a tool
-// whose main output is a forecast.
-//
-// Read through the Voter's own getters rather than event logs: a week of Base is
-// roughly 300,000 blocks and public RPCs cap a getLogs range far below that, so
-// the log route is ~150 chunked requests and will not run in a browser. These
-// are the same plain eth_calls the voting-power lookup above already makes.
-
-// VOTER_ADDRESS is declared once, with the calldata builder further down —
-// site-parity.test.ts pins that single copy against src/constants.ts, and a
-// second const of the same name in this scope is a syntax error.
-const SEL_POOL_VOTE = "0xa86a366d";        // poolVote(uint256,uint256)
-const SEL_VOTES = "0xd23254b4";            // votes(uint256,address)
-
-const WEEK_SECONDS = 604800;
-
-/**
- * The pools these locks have weight on, merged across locks.
- *
- * There is no length getter for a token's pool list on this deployment, so the
- * index is walked upward until the call reverts — that revert is the length.
- * The cap is there so a malformed answer cannot spin forever against a public
- * endpoint.
- */
-async function fetchCastVotes(ids, maxPoolsPerLock = 20) {
-  const merged = new Map();
-  for (const id of ids) {
-    for (let i = 0; i < maxPoolsPerLock; i++) {
-      let pool;
-      try {
-        pool = await ethCall(SEL_POOL_VOTE + hexOf(id) + hexOf(i), VOTER_ADDRESS);
-      } catch (err) {
-        // Only a genuine on-chain revert means "no more pools" (see
-        // isRevertMessage above). A transient RPC failure — rate limit,
-        // timeout, dropped connection, all three endpoints down — throws from
-        // here too, and must not be read as an answer: it would silently
-        // under-report this lock's real vote list, understating the "you
-        // earned" total this whole panel exists to make checkable. Same
-        // reasoning as isEndOfVoteList in src/voted.ts.
-        if (err.isRevert) break;
-        throw err;
-      }
-      if (!pool || pool === "0x") break; // some nodes answer an out-of-range index with empty data instead of reverting
-      const address = "0x" + pool.replace(/^0x/, "").slice(-40).toLowerCase();
-      const weight = Number(BigInt(await ethCall(SEL_VOTES + hexOf(id) + word(address), VOTER_ADDRESS))) / 1e18;
-      // A pool can stay in the list with zero weight after a re-vote; keeping it
-      // would put an empty row in a report about where the vote went.
-      if (weight > 0) merged.set(address, (merged.get(address) || 0) + weight);
-    }
-  }
-  return [...merged].map(([pool, veAero]) => ({ pool, veAero }));
-}
-
-/**
- * Scores those votes against what the epoch settled at, using the per-epoch
- * series the snapshot already publishes.
- *
- * Index 0 of `epochUsd` / `epochVotes` is the pool's own latest epoch, each
- * further index one week older, so the offset is derived per pool rather than
- * assumed — a pool whose rewards contract has not been touched this week has a
- * different latest epoch from the snapshot's.
- */
-function scoreCastVotes(votes, epochTs) {
-  const byAddress = new Map(snapshot.pools.map((p) => [p.pool.toLowerCase(), p]));
-  const rows = [];
-  let unscored = 0;
-  let budget = 0;
-
-  for (const v of votes) {
-    budget += v.veAero;
-    const p = byAddress.get(v.pool);
-    if (!p || !Array.isArray(p.epochUsd) || !Array.isArray(p.epochVotes)) { unscored++; continue; }
-    const index = Math.round((p.latestEpochTs - epochTs) / WEEK_SECONDS);
-    if (index < 0 || index >= p.epochUsd.length || index >= p.epochVotes.length) { unscored++; continue; }
-
-    const poolUsd = p.epochUsd[index];
-    const poolVotes = p.epochVotes[index];
-    // A pool with no recorded weight cannot have paid a share of anything.
-    const earnedUsd = poolVotes > 0 ? (poolUsd * v.veAero) / poolVotes : 0;
-    rows.push({ symbol: p.symbol, pool: v.pool, veAero: v.veAero, poolUsd, poolVotes, earnedUsd, migrating: !!p.migrating });
-  }
-
-  rows.sort((a, b) => b.earnedUsd - a.earnedUsd);
-  return { rows, unscored, budget, earnedUsd: rows.reduce((a, r) => a + r.earnedUsd, 0) };
-}
-
-/** The most recently closed epoch in the snapshot — never the one still running. */
-function lastSettledEpoch() {
-  if (!snapshot || !Array.isArray(snapshot.epochYields)) return null;
-  return snapshot.epochYields.find((y) => !y.partial) || null;
-}
-
-async function renderVoteReview(address) {
-  const settled = lastSettledEpoch();
-  if (!settled) return;
-
-  el.reviewMsg.textContent = "Reading what your locks voted for…";
-  el.reviewPanel.hidden = false;
-  el.reviewBody.replaceChildren();
-  el.reviewSummary.textContent = "";
-
-  let power;
-  try {
-    power = await fetchVotingPower(address);
-  } catch {
-    el.reviewMsg.textContent = "Could not reach a Base RPC to read this address. Try again in a moment.";
-    return;
-  }
-  if (!power.ids || power.ids.length === 0) {
-    el.reviewMsg.textContent = "No veAERO locks on this address, so there is no vote to score.";
-    return;
-  }
-
-  let votes;
-  try {
-    votes = await fetchCastVotes(power.ids);
-  } catch {
-    el.reviewMsg.textContent = "Could not read this address's votes. Try again in a moment.";
-    return;
-  }
-  if (votes.length === 0) {
-    el.reviewMsg.textContent = "These locks have no vote recorded on any pool, so there is nothing to score yet.";
-    return;
-  }
-
-  const scored = scoreCastVotes(votes, settled.ts);
-  const day = new Date(settled.ts * 1000).toISOString().slice(0, 10);
-
-  if (scored.rows.length === 0) {
-    el.reviewMsg.textContent =
-      "This address voted, but none of the pools it chose have a settled record for the epoch of " + day + ".";
-    return;
-  }
-
-  const frag = document.createDocumentFragment();
-  for (const r of scored.rows) {
-    const tr = document.createElement("tr");
-    // A vote already sitting in a migrating pool is worth flagging here most of all.
-    tr.appendChild(poolCell(r.symbol, r.pool, r.migrating));
-    tr.appendChild(cell(num(r.veAero), "num", "Your veAERO"));
-    tr.appendChild(cell(num(r.poolVotes), "num", "Pool total"));
-    tr.appendChild(cell(usd(r.poolUsd), "num", "Pool paid"));
-    tr.appendChild(cell(smallUsd(r.earnedUsd), "num", "You earned"));
-    frag.appendChild(tr);
-  }
-  el.reviewBody.replaceChildren(frag);
-
-  const perVote = scored.budget > 0 ? scored.earnedUsd / scored.budget : 0;
-  const parts = [
-    "Epoch of " + day + ", settled. You earned " + smallUsd(scored.earnedUsd) + " on " +
-      num(scored.budget) + " veAERO, or " + smallUsd(perVote) + " per veAERO.",
-    // The protocol-wide figure for the same epoch is the fair benchmark: it is a
-    // fact about the week rather than a claim about this tool, and it is already
-    // published in the snapshot.
-    "Across every pool that epoch, one veAERO earned " + smallUsd(settled.usdPerVote) + " on average — " +
-      (perVote >= settled.usdPerVote
-        ? "your vote beat that by " + Math.round((perVote / settled.usdPerVote - 1) * 100) + "%."
-        : "your vote came in " + Math.round((1 - perVote / settled.usdPerVote) * 100) + "% under it."),
-  ];
-  if (scored.unscored > 0) {
-    parts.push(scored.unscored + " pool(s) you voted for have no settled record for that epoch and are not counted.");
-  }
-  el.reviewSummary.textContent = parts.join(" ");
-  el.reviewMsg.textContent = "";
-}
-
-// --- what each lock becomes when Aerodrome turns into Aero -------------------
-// Mirrors dromos-labs/metadex-public V3/src/migration/Migration.sol as published
-// on 2026-08-30: depositVeNFT converts a lock's locked AERO 1:1 (not its decayed
-// voting power) and `_resolveStake` decides the shape — a permanent lock stays
-// permanent, an expired one comes out as plain AERO, anything else becomes a
-// stake for the remaining time rounded UP to whole weeks and capped at the new
-// escrow's maximum. It also refuses a lock that still has a vote on it
-// (AlreadyVoted) and anything that is not a NORMAL veNFT (NotNormalVeNFT) — a
-// lock deposited into a Relay reads as amount 0 until it is withdrawn.
-// No migration contract is deployed yet and the opening date is unannounced, so
-// the page prices it at launch; every week of waiting shortens the stake by one.
-
-const SEL_LOCKED = "0xb45a3c0e";           // locked(uint256) -> (int128 amount, uint256 end, bool isPermanent)
-const SEL_VOTED = "0x8fbb38ff";            // voted(uint256) -> bool
-const SEL_ESCROW_TYPE = "0x7c728000";      // escrowType(uint256) -> 0 NORMAL, 1 LOCKED (in a Relay), 2 MANAGED
-
-const AERO_LAUNCH_TS = Date.UTC(2026, 9, 22) / 1000; // 2026-10-22 00:00 UTC
-const NEW_MAXTIME = 4 * 365 * 86400;                  // V3 ProtocolConstants MAXTIME
-
-/** The contract's `_resolveStake`, for a lock read at `atTs`. */
-function migrationOutcome(lock, atTs) {
-  if (lock.escrowType !== 0) return { kind: "relay" };
-  if (lock.amount <= 0) return { kind: "empty" };
-  if (lock.isPermanent) return { kind: "permanent" };
-  if (lock.end <= atTs) return { kind: "liquid" };
-  const weeks = Math.ceil((lock.end - atTs) / WEEK_SECONDS);
-  const maxWeeks = Math.floor((NEW_MAXTIME + (atTs % WEEK_SECONDS)) / WEEK_SECONDS);
-  return { kind: "stake", weeks: Math.min(weeks, maxWeeks) };
-}
-
-async function fetchLockDetails(id) {
-  const [lockedHex, votedHex, typeHex] = await Promise.all([
-    ethCall(SEL_LOCKED + hexOf(id)),
-    ethCall(SEL_VOTED + hexOf(id)),
-    ethCall(SEL_ESCROW_TYPE + hexOf(id)),
-  ]);
-  const raw = lockedHex.replace(/^0x/, "");
-  let amount = BigInt("0x" + raw.slice(0, 64));
-  if (amount >= 2n ** 255n) amount -= 2n ** 256n; // int128, sign-extended in its word
-  return {
-    id,
-    amount: Number(amount) / 1e18,
-    end: Number(BigInt("0x" + raw.slice(64, 128))),
-    isPermanent: BigInt("0x" + raw.slice(128, 192)) !== 0n,
-    voted: BigInt(votedHex) !== 0n,
-    escrowType: Number(BigInt(typeHex)),
-  };
-}
-
-async function renderMigration(ids, truncated) {
-  el.migrationPanel.hidden = false;
-  el.migrationBody.replaceChildren();
-  el.migrationSummary.textContent = "";
-  el.migrationMsg.textContent = "Reading each lock…";
-
-  let locks;
-  try {
-    locks = await Promise.all(ids.map(fetchLockDetails));
-  } catch {
-    el.migrationMsg.textContent = "Could not read these locks from Base. Try again in a moment.";
-    return;
-  }
-
-  const day = (ts) => new Date(ts * 1000).toISOString().slice(0, 10);
-  const totals = { stake: 0, permanent: 0, liquid: 0 };
-  let relays = 0;
-  let voting = 0;
-  const frag = document.createDocumentFragment();
-  for (const lock of locks) {
-    const out = migrationOutcome(lock, AERO_LAUNCH_TS);
-    if (out.kind === "empty") continue; // withdrawn or merged away: nothing left to carry over
-
-    let becomes;
-    const todo = [];
-    if (out.kind === "relay") {
-      relays++;
-      becomes = "Can't be moved while it sits in a Relay";
-      todo.push("Withdraw it from the Relay first");
-    } else {
-      totals[out.kind] += lock.amount;
-      becomes =
-        out.kind === "permanent" ? "sAERO stake at the maximum duration (permanent lock)"
-        : out.kind === "liquid" ? "Plain AERO (the lock has ended)"
-        : "sAERO stake for " + out.weeks + " week" + (out.weeks === 1 ? "" : "s");
-      if (lock.voted) {
-        voting++;
-        todo.push("Claim its rewards, then reset its vote");
-      }
-    }
-
-    const tr = document.createElement("tr");
-    tr.appendChild(cell("#" + lock.id, "", "Lock"));
-    tr.appendChild(cell(out.kind === "relay" ? "—" : num(lock.amount, 2), "num", "AERO locked"));
-    tr.appendChild(cell(
-      out.kind === "relay" ? "—" : lock.isPermanent ? "Never (permanent)" : day(lock.end), "", "Lock ends"));
-    tr.appendChild(cell(becomes, "", "Becomes"));
-    tr.appendChild(cell(todo.length ? todo.join("; ") : "Nothing", "", "Before you move it"));
-    frag.appendChild(tr);
-  }
-  el.migrationBody.replaceChildren(frag);
-
-  if (!el.migrationBody.childNodes.length) {
-    el.migrationMsg.textContent = "These locks are empty — they were withdrawn or merged, so nothing carries over.";
-    return;
-  }
-
-  const parts = [];
-  const staked = totals.stake + totals.permanent;
-  if (staked > 0) parts.push(num(staked, 2) + " AERO would become sAERO, one for one.");
-  if (staked > 0 && steadyFeeRate) parts.push("In today's steadiest fee pools that is about " +
-    usd(steadyPerDay(staked)) + " a day (" + usd(steadyPerDay(staked) * 7) +
-    " a week) from fees alone (see \u201cWhere to point sAERO\u201d below).");
-  if (totals.liquid > 0) parts.push(num(totals.liquid, 2) + " AERO would come back as plain AERO, because those locks have ended by October 22.");
-  if (totals.stake > 0) parts.push("Stake lengths assume you move on launch day: each week you wait takes a week off.");
-  if (voting > 0) parts.push("The contract refuses a lock that still has a vote on it, and the old lock is merged away when it moves — so claim first, then reset.");
-  if (relays > 0) parts.push(relays + " lock" + (relays === 1 ? " is" : "s are") + " inside a Relay, which the contract only accepts once withdrawn.");
-  if (truncated) parts.push("Only the first 60 locks are shown.");
-  el.migrationSummary.textContent = parts.join(" ");
-  el.migrationMsg.textContent = "";
-}
-
-// --- formatting -------------------------------------------------------------
-
 const usd = (n) =>
   n >= 1000 ? "$" + Math.round(n).toLocaleString("en-US")
   : n >= 1 ? "$" + n.toFixed(2)
   : "$" + n.toFixed(4);
 const num = (n, d) => n.toLocaleString("en-US", { maximumFractionDigits: d === undefined ? 0 : d });
-// A small lock's share of a pool is routinely fractions of a cent, and usd()
-// rounds those to "$0.0000" — which reads as "this pool paid you nothing"
-// rather than "your share was small". On figures whose whole point is that the
-// holder can check them against their wallet, the figure has to survive being
-// printed.
-const smallUsd = (n) => (n === 0 ? "$0" : n < 0.01 ? "$" + n.toFixed(6) : usd(n));
 const pctChange = (n) => (n >= 0 ? "+" : "") + Math.round(n * 100).toLocaleString("en-US") + "%";
-const consistencyClass = (c) => (c >= 0.6 ? "c-good" : c >= 0.45 ? "c-warn" : "c-bad");
-
-/**
- * The vote weight a pool should be judged against: the weight it settled at
- * last epoch. Mirrors previousSettledVotes in src/dilution.ts;
- * test/site-parity.test.ts holds the two together.
- *
- * Votes carry over, so an epoch's final weight is mostly last week's with
- * re-votes applied. The live tally is that same number part-way through being
- * rewritten, so mid-week it reads low. Measured against what epochs actually
- * settled at, last week's figure is the more accurate of the two and carries no
- * bias either way.
- */
-function votesToExpect(p) {
-  const series = p.epochVotes;
-  if (!Array.isArray(series)) return p.votesVeAero;
-  const previous = series[p.currentEpochPartial ? 1 : 0];
-  if (typeof previous !== "number" || !(previous > 0)) return p.votesVeAero;
-  return previous;
-}
-
-/**
- * Hand-port of expectedDilutedVotes in src/dilution.ts: the weight this pool
- * usually settles at, never below what it already carries — a pool cannot
- * un-receive votes it has.
- *
- * This basis predicts settled weight *worse* than the default (26% median error
- * against 17%, and far worse on small pools), and replaying past epochs it has
- * still earned more below the crossover. Both measurements are in the repo and
- * they genuinely disagree; the page offers the choice and says which is which
- * rather than picking for the visitor.
- */
-function typicalVotes(p) {
-  const expected = p.expectedVotes;
-  if (typeof expected !== "number" || !Number.isFinite(expected)) return p.votesVeAero;
-  return Math.max(p.votesVeAero, expected);
-}
-
-/** The weight an allocation priced on this basis should divide rewards by. */
-function votesForBasis(p, basis) {
-  if (basis === "current") return p.votesVeAero;
-  if (basis === "typical") return typicalVotes(p);
-  return votesToExpect(p);
-}
-
-/**
- * What the pool is expected to pay next epoch: the trailing average capped at
- * the last completed epoch. Same as `forecastEpochUsd` in src/trend.ts; a
- * snapshot written before that field existed falls back to the plain average.
- */
-function forecastUsd(p) {
-  return p.forecastUsd ?? p.trailingAvgUsd;
-}
-
-/** Dollars per vote under that same basis, so the table and the suggestion agree. */
-function rateForBasis(p, basis) {
-  if (basis === "current") return p.predictedValuePerVote;
-  if (basis === "previous") return p.dilutionAdjustedValuePerVote ?? p.predictedValuePerVote;
-  const votes = votesForBasis(p, basis);
-  return votes > 0 ? forecastUsd(p) / votes : 0;
-}
-
-/**
- * The veAERO budget above which the default vote basis is the one the evidence
- * favours. Mirrors VOTE_BASIS_CROSSOVER_VEAERO in src/constants.ts, which
- * carries the measurement and the date it was taken.
- */
-const VOTE_BASIS_CROSSOVER_VEAERO = 20000;
-
-/**
- * Whether, at this budget, the basis this allocation was priced on is the one
- * the evidence supports. Mirrors voteBasisCaveat in src/allocator.ts;
- * test/site-parity.test.ts holds the two together, so the wording cannot drift
- * apart between the page and the CLI.
- *
- * Returns null when there is nothing to say, which is most of the time — a
- * caveat shown on every render is a caveat nobody reads. The page offers all
- * three bases, "typical" selected by default, and keeps every branch so the
- * two copies stay literally the same function.
- */
-function voteBasisCaveat(veAeroBudget, voteBasis) {
-  if (!Number.isFinite(veAeroBudget) || veAeroBudget <= 0) return null;
-
-  const belowCrossover = veAeroBudget < VOTE_BASIS_CROSSOVER_VEAERO;
-
-  if (voteBasis === "typical" && !belowCrossover) {
-    return (
-      "At your size, replaying the last five epochs, this setting earned less than \"last epoch's final " +
-      "weight\" — about 4% less at 25,000 veAERO and 24% less at 100,000. Above roughly " +
-      VOTE_BASIS_CROSSOVER_VEAERO.toLocaleString("en-US") + " veAERO your vote is big enough to move a pool's weight itself, " +
-      "so assuming the weight will arrive anyway starts costing you."
-    );
-  }
-
-  return null;
-}
-
-/** How loudly to flag a pool whose live weight is well below its usual one. */
-/** Where a pool stops being "roughly where it usually sits" and starts being a pool
- * whose weight has not arrived yet. The same boundary the Refill column colours on. */
-const REFILL_WARN_RATIO = 1.5;
-const refillClass = (r) => (r >= 3 ? "c-bad" : r >= REFILL_WARN_RATIO ? "c-warn" : "c-good");
-
-function refillCell(p) {
-  const td = document.createElement("td");
-  td.className = "num";
-  if (typeof p.refillRatio !== "number") {
-    td.textContent = "—";
-    td.title = "Too little vote history, or too few votes to form a ratio against.";
-    return td;
-  }
-  const r = p.refillRatio;
-  td.classList.add(refillClass(r));
-  td.textContent = r >= 1 ? "x" + r.toFixed(1) : "x" + r.toFixed(2);
-  td.title = r >= 1
-    ? "This pool usually settles at " + r.toFixed(1) + "x the weight it is showing right now, so the predicted figure beside it is optimistic by roughly that much."
-    : "This pool is currently carrying more weight than it usually settles at.";
-
-  // This column is a prediction from the pool's own settled history. The scan
-  // archive can check it against what the pool actually did, which is worth
-  // more than a second column saying nearly the same thing — especially when
-  // the two disagree.
-  const measured = measuredSurge(p.pool);
-  if (measured) {
-    const actual = 1 + measured.medianSurge;
-    td.title +=
-      " Measured: across " + measured.readings + " readings taken a day or two before the close, it ended up at x" +
-      actual.toFixed(1) + " the weight it was showing then.";
-  }
-  return td;
-}
-
-// --- history chart ----------------------------------------------------------
-
-const SPARK_W = 78;
-const SPARK_H = 24;
-const SPARK_GAP = 3;
-/** Shortest bar drawn for a non-zero epoch, so a small week stays visible next to a huge one. */
-const SPARK_MIN_BAR = 2.5;
-/** Below this the trend is called flat rather than a direction, so ±3% drift isn't dressed up as a signal. */
-const MOVER_MIN = 0.1;
-const MOVER_COUNT = 5;
-
-/**
- * Draws one pool's epoch history as bars, oldest on the left.
- *
- * The series arrives most-recent-first (the contract's own ordering, kept all
- * the way through the snapshot) and is reversed here rather than at the source:
- * every consumer other than a left-to-right chart wants index 0 to mean "now".
- *
- * Each pool is scaled to its own maximum. A shared scale across pools would
- * flatten every small pool into an invisible line, and the question this column
- * answers is "which way is this pool going", not "is it bigger than that one" —
- * the $ columns next to it already answer that.
- *
- * Bar heights are square-rooted rather than linear, and that is a deliberate
- * trade with a real cost. Incentives are spiky enough that one big week buries
- * the rest: fBOMB/cbBTC ran $783 an epoch against a $8,946 peak, which on a
- * linear scale in 24 pixels is a two-pixel stub — indistinguishable from a dead
- * week, so the shape the column exists to show is destroyed by the outlier.
- * A square root keeps the ordering exact (it is monotonic, so a taller bar is
- * always a bigger epoch) while compressing the peak, at the price of a bar's
- * height no longer being proportional to its dollars. The exact figures are one
- * hover away in the tooltip, and the trend figure beside it is computed from the
- * numbers rather than from the drawing.
- */
-function sparkline(epochUsd, partial) {
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("class", "spark");
-  svg.setAttribute("viewBox", "0 0 " + SPARK_W + " " + SPARK_H);
-  svg.setAttribute("aria-hidden", "true");
-
-  const series = epochUsd.slice().reverse();
-  const n = series.length;
-  const max = Math.max(...series);
-  const barW = (SPARK_W - SPARK_GAP * (n - 1)) / n;
-
-  series.forEach((value, i) => {
-    // The in-progress epoch is index 0 of the original series, so the last bar here.
-    const isPartial = partial && i === n - 1;
-    const scaled = max > 0 ? Math.sqrt(value / max) * SPARK_H : 0;
-    const h = value > 0 ? Math.max(SPARK_MIN_BAR, scaled) : 1.5;
-
-    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    if (isPartial) {
-      // Inset by half a stroke width, or the dashed outline clips on the edges.
-      const outlineH = Math.max(4, h);
-      rect.setAttribute("class", "partial");
-      rect.setAttribute("x", (i * (barW + SPARK_GAP) + 0.5).toFixed(2));
-      rect.setAttribute("y", (SPARK_H - outlineH + 0.5).toFixed(2));
-      rect.setAttribute("width", (barW - 1).toFixed(2));
-      rect.setAttribute("height", (outlineH - 1).toFixed(2));
-    } else {
-      if (value <= 0) rect.setAttribute("class", "zero");
-      rect.setAttribute("x", (i * (barW + SPARK_GAP)).toFixed(2));
-      rect.setAttribute("y", (SPARK_H - h).toFixed(2));
-      rect.setAttribute("width", barW.toFixed(2));
-      rect.setAttribute("height", h.toFixed(2));
-    }
-    svg.appendChild(rect);
-  });
-
-  const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
-  title.textContent =
-    "Oldest to newest: " + series.map((v) => usd(v)).join(" · ") +
-    (partial ? " — the last one is this epoch so far, still accruing" : "");
-  svg.appendChild(title);
-
-  return svg;
-}
-
-/** History cell, or a dash when the snapshot predates the series being published. */
-function historyCell(p) {
-  const td = document.createElement("td");
-  td.dataset.label = "History";
-  if (!Array.isArray(p.epochUsd) || p.epochUsd.length === 0) {
-    td.className = "mom none";
-    td.textContent = "—";
-    return td;
-  }
-  td.appendChild(sparkline(p.epochUsd, Boolean(p.currentEpochPartial)));
-  return td;
-}
-
-/** Trend cell: direction and size, or a dash when there is no honest basis for one. */
-function momentumCell(p) {
-  const td = document.createElement("td");
-  td.dataset.label = "Trend";
-
-  if (typeof p.momentum !== "number") {
-    td.className = "mom none";
-    td.textContent = "—";
-    td.title = "Not enough finished epochs to compare a recent half against an older one";
-    return td;
-  }
-
-  const flat = Math.abs(p.momentum) < MOVER_MIN;
-  const arrow = flat ? "→" : p.momentum > 0 ? "↑" : "↓";
-  td.className = "mom " + (flat ? "flat" : p.momentum > 0 ? "c-good" : "c-bad");
-  td.title = flat
-    ? "Holding roughly level across the epochs it has been paying"
-    : "Recent finished epochs against the older ones";
-
-  const span = document.createElement("span");
-  span.className = "arrow";
-  span.textContent = arrow;
-  td.append(span, document.createTextNode(flat ? "level" : pctChange(p.momentum)));
-  return td;
-}
-
-function cell(text, cls, label) {
-  const td = document.createElement("td");
-  td.textContent = text;
-  if (cls) td.className = cls;
-  if (label) td.dataset.label = label;
-  return td;
-}
-
-/** Pool name cell: type badge + name, and a link out to the pool on Basescan. */
-function poolCell(symbol, address, migrating) {
-  const td = document.createElement("td");
-  const box = document.createElement("div");
-  box.className = "poolcell";
-
-  // Three kinds now, not two. Concentrated-liquidity pools joined the ranking
-  // on 2026-09-15 and were briefly labelled "vAMM" by the old else-branch, which
-  // is simply the wrong pool type on the row a visitor is about to vote into.
-  const kind = /^sAMM/i.test(symbol) ? "s" : /^CL-/i.test(symbol) ? "c" : "v";
-  const badge = document.createElement("span");
-  badge.className = "badge " + kind;
-  badge.textContent = kind === "s" ? "sAMM" : kind === "c" ? "CL" : "vAMM";
-  badge.title =
-    kind === "s" ? "Stable pool — a flatter curve for pairs meant to hold the same value"
-    : kind === "c" ? "Concentrated-liquidity pool — liquidity is placed in a price range rather than across the whole curve"
-    : "Volatile pool — plain x·y=k, for tokens whose prices move independently";
-
-  const name = document.createElement("span");
-  name.className = "pname";
-  name.textContent = symbol.replace(/^[sv]AMM-/i, "");
-
-  box.append(badge, name);
-
-  // Aerodrome is moving this pool to a new gauge: its vote page hides it by
-  // default and tells liquidity to leave. Still listed so the history reads
-  // right, never put in a suggested allocation.
-  if (migrating) {
-    const mig = document.createElement("span");
-    mig.className = "badge m";
-    mig.textContent = "Migrating";
-    mig.title = "Aerodrome is moving this pool to a new gauge ahead of the Aero launch. Its vote page hides it by default and liquidity is being asked to leave, so its fees are likely to fall. Left out of the suggested allocation.";
-    box.append(mig);
-  }
-
-  if (address) {
-    const link = document.createElement("a");
-    link.className = "ext";
-    link.href = "https://basescan.org/address/" + address;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "↗";
-    link.title = "View the pool contract on Basescan";
-    box.append(link);
-  }
-
-  td.appendChild(box);
-  return td;
-}
-
-// --- state ------------------------------------------------------------------
-
-let snapshot = null;
-// The weekly measurement in data/timing.json. Null until it loads, and it may
-// stay null: the page has to work when the measurement is missing, because the
-// snapshot is what the site is for and the measurement is what it admits.
-let timing = null;
-let lastPercents = [];
-
-const el = {
-  meta: document.getElementById("meta"),
-  addr: document.getElementById("addr"),
-  lookup: document.getElementById("lookup"),
-  lookupMsg: document.getElementById("lookupMsg"),
-  veaero: document.getElementById("veaero"),
-  topk: document.getElementById("topk"),
-  mincons: document.getElementById("mincons"),
-  maxweight: document.getElementById("maxweight"),
-  votebasis: document.getElementById("votebasis"),
-  yieldBody: document.getElementById("yieldBody"),
-  yieldNote: document.getElementById("yieldNote"),
-  allocBody: document.getElementById("allocBody"),
-  rankBody: document.getElementById("rankBody"),
-  moversUp: document.getElementById("moversUp"),
-  moversDown: document.getElementById("moversDown"),
-  allocNote: document.getElementById("allocNote"),
-  refillNote: document.getElementById("refillNote"),
-  basisNote: document.getElementById("basisNote"),
-  copyBtn: document.getElementById("copyBtn"),
-  statUsd: document.getElementById("statUsd"),
-  statUsdRange: document.getElementById("statUsdRange"),
-  statPools: document.getElementById("statPools"),
-  statPerVote: document.getElementById("statPerVote"),
-  reviewPanel: document.getElementById("reviewPanel"),
-  reviewMsg: document.getElementById("reviewMsg"),
-  reviewSummary: document.getElementById("reviewSummary"),
-  reviewBody: document.getElementById("reviewBody"),
-  migrationPanel: document.getElementById("migrationPanel"),
-  migrationMsg: document.getElementById("migrationMsg"),
-  migrationSummary: document.getElementById("migrationSummary"),
-  migrationBody: document.getElementById("migrationBody"),
-  statKeptBox: document.getElementById("statKeptBox"),
-  statKept: document.getElementById("statKept"),
-  statKeptNote: document.getElementById("statKeptNote"),
-  trustPanel: document.getElementById("trustPanel"),
-  trustWhen: document.getElementById("trustWhen"),
-  trustKept: document.getElementById("trustKept"),
-  trustBasis: document.getElementById("trustBasis"),
-  accuracyPanel: document.getElementById("accuracyPanel"),
-  accuracyKept: document.getElementById("accuracyKept"),
-  accuracyBasis: document.getElementById("accuracyBasis"),
-  calldataBox: document.getElementById("calldataBox"),
-  tokenId: document.getElementById("tokenId"),
-  calldataBtn: document.getElementById("calldataBtn"),
-  calldataCopy: document.getElementById("calldataCopy"),
-  calldataMsg: document.getElementById("calldataMsg"),
-  calldataOut: document.getElementById("calldataOut"),
-};
-
-// Epoch arithmetic, matching epochEndOf/formatDuration in src/trend.ts. Computed
-// from the visitor's own clock rather than read from snapshot.epochEndsAt: the
-// snapshot can be up to four hours old, and a countdown is the one number on this
-// page that must never be stale.
-const EPOCH_SECONDS = 604800;
-
-function epochEndOf(unixSeconds) {
-  return Math.floor(unixSeconds / EPOCH_SECONDS) * EPOCH_SECONDS + EPOCH_SECONDS;
-}
-
-function formatDuration(seconds) {
-  if (!Number.isFinite(seconds) || seconds <= 0) return "0m";
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  if (days > 0) return days + "d " + hours + "h";
-  if (hours > 0) return hours + "h " + minutes + "m";
-  return minutes + "m";
-}
-
-// The last weekly veAERO vote closes here (aero.xyz/aero-upgrade); same instant
-// as LAST_WEEKLY_VOTE_CLOSE_TS in src/constants.ts. From then on the gauges this
-// page ranks stop paying, so it stops suggesting a vote and says why.
-const LAST_WEEKLY_VOTE_CLOSE_TS = Date.UTC(2026, 9, 21, 22, 59) / 1000;
-
-function weeklyVoteEnded(nowSec) {
-  return nowSec >= LAST_WEEKLY_VOTE_CLOSE_TS;
-}
-
-function applyVoteEnded() {
-  if (!weeklyVoteEnded(Math.floor(Date.now() / 1000))) return;
-  document.getElementById("voteEndedNote").hidden = false;
-  document.getElementById("aeroLaunchNote").hidden = true;
-  document.getElementById("voteLink").hidden = true;
-  document.getElementById("copyBtn").hidden = true;
-  el.calldataBox.hidden = true;
-  document.getElementById("allocTitle").textContent = "Last weekly suggestion (for reference)";
-  document.getElementById("allocSub").textContent =
-    "From the final veAERO week. The weekly vote has ended, so this is no longer something to cast.";
-}
-
-function renderMeta() {
-  const scanned = new Date(snapshot.generatedAt);
-  const ageHours = (Date.now() - scanned.getTime()) / 3600000;
-  const age = ageHours < 1 ? "just now" : ageHours < 24 ? Math.round(ageHours) + "h ago" : Math.round(ageHours / 24) + "d ago";
-  const stale = ageHours > 8; // the job runs every 4h; well past that means it's stuck
-
-  const nowSec = Math.floor(Date.now() / 1000);
-  const remaining = epochEndOf(nowSec) - nowSec;
-
-  el.meta.innerHTML = "";
-  const dot = document.createElement("span");
-  dot.className = "dot" + (stale ? " stale" : "");
-  const text = document.createElement("span");
-  text.innerHTML =
-    "<strong>" + snapshot.poolCount + "</strong> live-gauge pools · scanned <strong>" + age +
-    "</strong> · epoch of " + new Date(snapshot.latestEpochTs * 1000).toISOString().slice(0, 10) +
-    (weeklyVoteEnded(nowSec)
-      ? " · <strong>weekly voting ended Oct 21, 22:59 UTC</strong>"
-      : " · voting closes in <strong>" + formatDuration(remaining) + "</strong>");
-  el.meta.append(dot, text);
-}
-
-// The countdown is the only part of the page that changes on its own. Once a
-// minute is enough for a figure whose finest unit is minutes, and it keeps the
-// page honest if someone leaves the tab open across the Thursday boundary.
-setInterval(function () {
-  if (snapshot) renderMeta();
-  applyVoteEnded();
-}, 60000);
-applyVoteEnded();
-
-/** One line in the movers panel: name, its history, and the size of the move. */
-function moverRow(p) {
-  const row = document.createElement("div");
-  row.className = "mover";
-
-  const name = document.createElement("span");
-  name.className = "name";
-  name.textContent = p.symbol.replace(/^[sv]AMM-/i, "");
-  name.title = p.symbol + " — trailing average " + usd(p.trailingAvgUsd) + " per epoch";
-
-  const chart = document.createElement("span");
-  chart.appendChild(sparkline(p.epochUsd, Boolean(p.currentEpochPartial)));
-
-  const pct = document.createElement("span");
-  pct.className = "mom " + (p.momentum > 0 ? "c-good" : "c-bad");
-  pct.textContent = pctChange(p.momentum);
-
-  row.append(name, chart, pct);
-  return row;
-}
-
-function moversEmpty(message) {
-  const div = document.createElement("div");
-  div.className = "empty";
-  div.textContent = message;
-  return div;
-}
-
-/**
- * Fills the two movers panels.
- *
- * Deliberately not filtered by the controls above: the allocation answers "where
- * should my veAERO go", while this answers "what is happening to incentives" —
- * a pool collapsing is worth seeing even when a consistency filter would have
- * excluded it from your own allocation.
- *
- * Pools with null momentum are absent by construction rather than by a filter
- * here: the snapshot only reports a figure where a recent half and an older half
- * of finished epochs can actually be compared.
- */
-function renderMovers() {
-  const scored = snapshot.pools.filter((p) => typeof p.momentum === "number" && Array.isArray(p.epochUsd));
-
-  if (scored.length === 0) {
-    // Either a snapshot published before the history existed, or a scan too
-    // early in this pool set's life for any pool to have four finished epochs.
-    const note = "No pool has enough finished epochs yet — this fills in as history builds.";
-    el.moversUp.replaceChildren(moversEmpty(note));
-    el.moversDown.replaceChildren(moversEmpty(note));
-    return;
-  }
-
-  const up = scored.filter((p) => p.momentum >= MOVER_MIN).sort((a, b) => b.momentum - a.momentum);
-  const down = scored.filter((p) => p.momentum <= -MOVER_MIN).sort((a, b) => a.momentum - b.momentum);
-
-  const rows = (list, emptyNote) =>
-    list.length ? list.slice(0, MOVER_COUNT).map(moverRow) : [moversEmpty(emptyNote)];
-
-  el.moversUp.replaceChildren(...rows(up, "Nothing is ramping by more than 10% right now."));
-  el.moversDown.replaceChildren(...rows(down, "Nothing is fading by more than 10% right now."));
-}
-
-/**
- * The protocol-wide yield table.
- *
- * The epoch still running is shown but marked, for the same reason its bar is
- * dashed everywhere else on this page: a scan taken mid-week has only counted
- * part of that week, so comparing it against finished epochs reads as a
- * collapse that has not happened. The percentage column therefore compares
- * finished epochs only.
- */
-function renderEpochYields() {
-  const rows = Array.isArray(snapshot.epochYields) ? snapshot.epochYields : [];
-  if (rows.length === 0) {
-    el.yieldNote.textContent = "This snapshot predates the protocol-wide yield series.";
-    return;
-  }
-
-  const finished = rows.filter((y) => !y.partial);
-  const baseline = finished.length > 0 ? finished[finished.length - 1].usdPerVote : 0;
-
-  const frag = document.createDocumentFragment();
-  for (const y of rows) {
-    const tr = document.createElement("tr");
-    const when = new Date(y.ts * 1000).toISOString().slice(0, 10);
-    tr.appendChild(cell(y.partial ? when + " (running)" : when));
-    tr.appendChild(cell(usd(y.totalUsd), "num"));
-    tr.appendChild(cell(num(y.totalVotes), "num"));
-    tr.appendChild(cell(y.usdPerVote.toFixed(5), "num"));
-
-    if (y.partial || baseline <= 0) {
-      tr.appendChild(cell("—", "num"));
-    } else {
-      const change = y.usdPerVote / baseline - 1;
-      const td = cell(pctChange(change), "num " + (change >= 0 ? "c-good" : "c-bad"));
-      tr.appendChild(td);
-    }
-    frag.appendChild(tr);
-  }
-  el.yieldBody.replaceChildren(frag);
-
-  if (finished.length >= 2) {
-    const newest = finished[0].usdPerVote;
-    const change = baseline > 0 ? newest / baseline - 1 : 0;
-    el.yieldNote.textContent =
-      "Across the " + finished.length + " finished epochs in this snapshot, a veAERO vote went from $" +
-      baseline.toFixed(5) + " to $" + newest.toFixed(5) + " (" + pctChange(change) +
-      "). Reward tokens are valued at today's prices even for older epochs, and only pools with a live gauge today are counted — both push the older figures down, so a decline shown here is a floor on the real one.";
-  }
-}
-
-function renderRanking() {
-  const frag = document.createDocumentFragment();
-  // Sorted by whichever per-vote figure the reader has asked to be shown, so
-  // the table and the allocation below it never disagree about what is best.
-  const basis = el.votebasis.value;
-  const ordered = [...snapshot.pools].sort((a, b) => rateForBasis(b, basis) - rateForBasis(a, basis));
-  for (const p of ordered) {
-    const tr = document.createElement("tr");
-    if (p.migrating) tr.className = "migrating";
-    tr.appendChild(poolCell(p.symbol, p.pool, p.migrating));
-    tr.appendChild(historyCell(p));
-    tr.appendChild(momentumCell(p));
-    tr.appendChild(cell(p.predictedValuePerVote.toFixed(6), "num"));
-    tr.appendChild(cell((p.dilutionAdjustedValuePerVote ?? p.predictedValuePerVote).toFixed(6), "num"));
-    tr.appendChild(refillCell(p));
-    tr.appendChild(cell(p.currentValuePerVote.toFixed(6), "num"));
-    tr.appendChild(cell(pctChange(p.predictiveEdge), "num"));
-    tr.appendChild(cell(usd(p.trailingAvgUsd), "num"));
-    tr.appendChild(cell(num(p.votesVeAero), "num"));
-    tr.appendChild(cell(p.consistency.toFixed(2), "num " + consistencyClass(p.consistency)));
-    tr.appendChild(cell(String(p.epochsObserved), "num"));
-    frag.appendChild(tr);
-  }
-  el.rankBody.replaceChildren(frag);
-}
-
-/**
- * The weight this row's expected dollars were divided by — marked when the pool
- * usually settles well above it, so a reader scanning the suggestion sees which
- * specific row the caveat underneath is about rather than having to match names.
- */
-function assumedVotesCell(a, basis) {
-  const td = cell(num(a.existingVotes), "num", "Pool votes assumed");
-  // Under "typical" this number already is the settled weight, so there is
-  // nothing left to flag: the row is priced against what the pool fills up to.
-  if (basis === "typical") return td;
-  const pool = snapshot.pools.find((p) => p.pool === a.pool);
-  const ratio = pool && typeof pool.refillRatio === "number" ? pool.refillRatio : null;
-  if (ratio === null || ratio < REFILL_WARN_RATIO) return td;
-
-  td.classList.add(refillClass(ratio));
-  td.textContent = num(a.existingVotes) + " ⚠";
-  td.title =
-    "This pool usually settles at x" + ratio.toFixed(1) + " this weight. Rewards are split by weight, " +
-    "so if it fills up again the expected dollars on this row fall by roughly that much.";
-  return td;
-}
-
-function clearAllocation(message) {
-  el.allocBody.replaceChildren();
-  lastPercents = [];
-  el.copyBtn.disabled = true;
-  el.statUsd.textContent = el.statPools.textContent = el.statPerVote.textContent = "—";
-  el.statUsdRange.hidden = true;
-  el.allocNote.textContent = message;
-  el.allocNote.hidden = !message;
-  el.refillNote.hidden = true;
-  el.basisNote.hidden = true;
-}
-
-/**
- * Warns, under the suggestion itself, when the vote is being funded into pools
- * that usually settle with far more weight than they are showing right now.
- *
- * The Refill column has carried this for weeks, but it sits in a different
- * table further down the page, and a visitor who reads the allocation and
- * stops — which is the whole point of the allocation — never meets it. A caveat
- * only the diligent reader finds is a caveat the tool does not really make.
- *
- * The measured figure is quoted beside the predicted one wherever the archive
- * has enough readings on that pool, because "it usually refills" and "it did
- * refill, this many times" are different strengths of claim.
- */
-function renderRefillNote(shown, percents, basis) {
-  // "typical" already divides by the weight each pool usually settles at, so
-  // the dollars on screen are the post-refill ones. Warning that they are
-  // about to fall by the refill factor would be warning about an adjustment
-  // this page has already made.
-  if (basis === "typical") {
-    el.refillNote.hidden = true;
-    return;
-  }
-  const byAddress = new Map(snapshot.pools.map((p) => [p.pool, p]));
-  const flagged = [];
-  let share = 0;
-  for (const a of shown) {
-    const pool = byAddress.get(a.pool);
-    const ratio = pool && typeof pool.refillRatio === "number" ? pool.refillRatio : null;
-    if (ratio === null || ratio < REFILL_WARN_RATIO) continue;
-    const percent = percents.get(a.pool) || 0;
-    share += percent;
-    flagged.push({ symbol: a.symbol, ratio, percent, measured: measuredSurge(a.pool) });
-  }
-
-  if (flagged.length === 0) {
-    el.refillNote.hidden = true;
-    return;
-  }
-
-  flagged.sort((a, b) => b.percent - a.percent);
-  const described = flagged.map((f) => {
-    const measured = f.measured ? ", and did so at x" + (1 + f.measured.medianSurge).toFixed(1) +
-      " across " + f.measured.readings + " measured weeks" : "";
-    return f.symbol + " (" + f.percent + "% of your vote) usually settles at x" + f.ratio.toFixed(1) +
-      " the weight it shows now" + measured;
-  });
-
-  el.refillNote.textContent =
-    share + "% of this suggestion goes into pools whose weight is not all there yet. " +
-    described.join("; ") + ". Rewards are split by weight, so if that weight arrives, the dollars above " +
-    "fall by roughly the same factor — the pool is not paying more, it is simply emptier at this moment. " +
-    "The Refill column in the full ranking marks every pool this way.";
-  el.refillNote.hidden = false;
-}
-
-/**
- * Shows the vote-basis caveat under the allocation when this visitor's size sits
- * on the side of the crossover where the basis they are using is the one the
- * evidence does not favour — with the way to check it rather than an
- * instruction, because the two measurements genuinely disagree.
- */
-function renderBasisNote(budget, voteBasis) {
-  const caveat = voteBasisCaveat(budget, voteBasis);
-  el.basisNote.hidden = caveat === null;
-  if (caveat === null) return;
-  el.basisNote.textContent =
-    caveat +
-    " The repository's backtest command replays both on your own amount: see “Checking the vote basis yourself” in the README.";
-}
-
-function renderAllocation() {
-  const budget = Number(el.veaero.value);
-  const topK = Math.max(1, Math.min(60, Number(el.topk.value) || 15));
-  const minConsistency = Number(el.mincons.value);
-  const maxWeight = Number(el.maxweight.value) || 1;
-  const basis = el.votebasis.value;
-
-  el.allocNote.hidden = true;
-
-  if (!Number.isFinite(budget) || budget <= 0) {
-    clearAllocation("Enter how much veAERO you hold — or paste your wallet address above and let the page read it.");
-    return;
-  }
-
-  renderBasisNote(budget, basis);
-
-  // Pools Aerodrome is migrating are never suggested: its vote page hides them
-  // by default, so a suggestion into one sends the reader looking for a pool
-  // they cannot find. Same rule as `withoutMigrating` in src/pools.ts.
-  const eligible = snapshot.pools
-    .filter((p) => !p.migrating && p.consistency >= minConsistency)
-    .sort((a, b) => rateForBasis(b, basis) - rateForBasis(a, basis));
-  if (eligible.length === 0) {
-    clearAllocation("No pool clears that consistency threshold in the current snapshot. Try a lower one.");
-    return;
-  }
-
-  const allocation = allocateAcrossCandidates(
-    eligible.slice(0, topK).map((p) => ({
-      address: p.pool, symbol: p.symbol, consistency: p.consistency,
-      existingVotes: votesForBasis(p, basis),
-      expectedUsd: forecastUsd(p),
-    })),
-    budget,
-    undefined,
-    maxWeight,
-  );
-
-  // A cap too tight for the pools that qualified leaves part of the budget
-  // unplaceable, and toWholePercentWeights normalises whatever it is given
-  // straight back to 100% — handing back the concentration the cap was set to
-  // avoid. Say so instead of drawing a table that quietly breaks the cap.
-  const placed = allocation.reduce((a, b) => a + b.veAeroAllocated, 0);
-  if (placed < budget * (1 - 1e-9)) {
-    clearAllocation(
-      "A cap of " + Math.round(maxWeight * 100) + "% is too tight for the " + allocation.length +
-      " pool(s) that qualified — " + Math.round(((budget - placed) / budget) * 100) +
-      "% of your veAERO would have nowhere to go. Raise the cap, consider more pools, or lower the consistency filter.",
-    );
-    return;
-  }
-
-  const percents = toWholePercentWeights(allocation);
-
-  // Rows rounded down to 0% are dropped — you cannot cast a 0% vote — so the
-  // visible rows can be fewer than the allocator's.
-  const shown = allocation.filter((a) => (percents.get(a.pool) || 0) > 0);
-  const dropped = allocation.length - shown.length;
-
-  const frag = document.createDocumentFragment();
-  lastPercents = [];
-  for (const a of shown) {
-    const pct = percents.get(a.pool);
-    lastPercents.push({ pool: a.pool, symbol: a.symbol, percent: pct });
-
-    const tr = document.createElement("tr");
-    tr.appendChild(poolCell(a.symbol, a.pool));
-    tr.appendChild(cell(pct + "%", "num pct", "Vote %"));
-    tr.appendChild(cell(num(a.veAeroAllocated), "num", "veAERO"));
-    tr.appendChild(cell(usd(a.expectedUsd), "num", "Expected $"));
-    tr.appendChild(assumedVotesCell(a, basis));
-    tr.appendChild(cell(a.consistency.toFixed(2), "num " + consistencyClass(a.consistency), "Consistency"));
-    frag.appendChild(tr);
-  }
-  el.allocBody.replaceChildren(frag);
-  el.copyBtn.disabled = lastPercents.length === 0;
-  renderRefillNote(shown, percents, basis);
-
-  // The headline must describe the vote on screen, not the continuous allocation
-  // behind it: sub-1% rows are not shown and their points went to the rows that are.
-  const totalUsd = expectedUsdForWholePercentVote(allocation, budget);
-  el.statUsd.textContent = usd(totalUsd);
-  el.statPools.textContent = String(shown.length);
-  el.statPerVote.textContent = "$" + (totalUsd / budget).toFixed(5);
-
-  // A single figure implies a precision the measurement does not support. The
-  // spread is the measured typical miss on the weight this figure divides by,
-  // so it moves with the basis the visitor selected rather than being decorative.
-  const error = measuredErrorFor(el.votebasis.value);
-  if (error === null) {
-    el.statUsdRange.hidden = true;
-  } else {
-    el.statUsdRange.textContent = usd(totalUsd / (1 + error)) + " – " + usd(totalUsd * (1 + error)) + " typical";
-    el.statUsdRange.title =
-      "The weight this assumes is typically " + Math.round(error * 100) + "% out, measured over " +
-      "every scan since the history began. Payout moves with weight, so the dollars move with it too.";
-    el.statUsdRange.hidden = false;
-  }
-
-  if (dropped > 0) {
-    el.allocNote.textContent =
-      dropped + " pool" + (dropped > 1 ? "s" : "") + " received a share too small to round up to 1% and " +
-      (dropped > 1 ? "were" : "was") + " dropped. Their weight sits in the rows above.";
-    el.allocNote.hidden = false;
-  }
-}
-
-// --- how much of this page to believe ---------------------------------------
-
-/**
- * The measured window that covers how far this epoch still has to run, so a
- * visitor is told what a list looks like *from where they are standing* rather
- * than an average over the week.
- *
- * Falls back to the best-covered window when the visitor's own one has no scans
- * behind it yet — an honest figure from a different hour beats a blank panel,
- * as long as the label says which hour it came from, which it does.
- */
-function trustWindowNow() {
-  if (!timing || !Array.isArray(timing.trust)) return null;
-  const hoursLeft = (epochEndOf(Math.floor(Date.now() / 1000)) - Math.floor(Date.now() / 1000)) / 3600;
-  const here = timing.trust.find((w) => hoursLeft >= w.fromHours && hoursLeft < w.toHours);
-  if (here && here.keptRich !== null) return { window: here, isNow: true };
-  const covered = timing.trust.filter((w) => w.keptRich !== null).sort((a, b) => b.scans - a.scans);
-  return covered.length ? { window: covered[0], isNow: false } : null;
-}
-
-const keptClass = (kept) => (kept === null ? "" : kept >= 6 ? "good" : kept >= 3 ? "mid" : "bad");
-
-/**
- * The same survival figure the trust panel carries, repeated beside the dollar
- * headline.
- *
- * It was measured weeks ago and published honestly, but it sat below three
- * screens of table, and a visitor who reads the suggestion and stops — which is
- * what the suggestion is for — never met it. A number about how much to believe
- * the headline belongs next to the headline.
- */
-/**
- * True when the survival measurement was taken over a materially smaller set of
- * pools than the scan on screen.
- *
- * Every scan committed before 2026-09-15 covers 107 pools, because pool
- * discovery was dropping every concentrated-liquidity pool; the ranking beside
- * this figure is now drawn from 359. Quoting the old number without saying so
- * would be presenting a fact about a third of Aerodrome as a fact about all of
- * it. The threshold is generous — a fifth — because week-to-week wobble in the
- * pool count is normal and does not need a disclaimer. It clears itself as
- * post-fix scans accumulate.
- */
-function coverageGap() {
-  if (!timing || !snapshot) return false;
-  const measured = timing.medianPoolsPerScan;
-  if (typeof measured !== "number" || measured <= 0 || !snapshot.poolCount) return false;
-  return measured < snapshot.poolCount * 0.8;
-}
-
-function renderKeptStat() {
-  const found = trustWindowNow();
-  if (!found || found.window.keptRich === null) {
-    el.statKeptBox.hidden = true;
-    return;
-  }
-  el.statKept.textContent = found.window.keptRich + " of 10";
-  el.statKept.className = "n num c-" + (keptClass(found.window.keptRich) === "good" ? "good" : keptClass(found.window.keptRich) === "mid" ? "warn" : "bad");
-  el.statKeptNote.textContent = coverageGap() ? "measured before the pool list was fixed" : "of pools paying $1,000+, measured";
-  el.statKeptNote.title =
-    "Of the ten pools a list like this one put on top at this hour of the week, how many were still in the top " +
-    "ten when the epoch closed. Measured over " + found.window.scans + " scans of " + timing.epochs.length +
-    " settled epochs" + (found.isNow ? "" : ", taken from the best-covered window rather than this hour") + ".";
-  el.statKeptBox.hidden = false;
-}
-
-// observations === 0 leaves medianAbsError as NaN (see scorePredictors in
-// src/predict.ts, which medians an empty array rather than fabricating a
-// number) — every `<=` comparison against NaN is false, so this used to fall
-// through to "bad" and print "NaN% out": the same "no data reads as the worst
-// possible score" bug keptClass/keptTile above were fixed for.
-const accuracyClass = (basis) =>
-  basis.observations === 0 ? "" : basis.medianAbsError <= 0.15 ? "good" : basis.medianAbsError <= 0.25 ? "mid" : "bad";
-const accuracyText = (basis) => (basis.observations === 0 ? "—" : (basis.medianAbsError * 100).toFixed(0) + "% out");
-
-/** One "6.0 of 10" tile with the set of pools it was measured over. */
-function keptTile(kept, label) {
-  const box = document.createElement("div");
-  const n = document.createElement("div");
-  n.className = "k " + keptClass(kept);
-  n.textContent = kept === null ? "—" : kept.toFixed(1) + " of 10";
-  const w = document.createElement("div");
-  w.className = "w";
-  w.textContent = label;
-  box.appendChild(n);
-  box.appendChild(w);
-  return box;
-}
-
-function renderTrust() {
-  const found = trustWindowNow();
-  if (!found) return;
-  const { window: w, isNow } = found;
-
-  el.trustWhen.textContent = isNow
-    ? "Measured for where this epoch is right now — " + w.label
-    : "Measured at the best-covered point of the week — " + w.label;
-
-  el.trustKept.replaceChildren(
-    keptTile(w.keptRich, "of pools paying $1,000+ an epoch"),
-    keptTile(w.keptThick, "of pools with 50,000+ votes behind them"),
-    keptTile(w.keptAll, "of every pool, near-empty gauges included"),
-  );
-
-  el.trustBasis.textContent =
-    (coverageGap()
-      ? "Measured before 2026-09-15, when pool discovery was still dropping every concentrated-liquidity pool: these " +
-        "scans each saw about " + timing.medianPoolsPerScan + " pools, against " + snapshot.poolCount +
-        " in the scan above. Read it as a fact about the pools it could see. It corrects itself as new scans land. " +
-      "" : "") +
-    "Median over " + w.scans + " scans of " + timing.epochs.length + " settled epoch" +
-    (timing.epochs.length === 1 ? "" : "s") + " (" + timing.epochs.join(", ") + "), " +
-    timing.observations.toLocaleString("en-US") + " pool readings in total. Both lists were ranked with the " +
-    "epoch's final rewards, so the churn measured here comes purely from votes moving, not from anyone " +
-    "mispredicting fees — the real figure is no better than this. Which is the argument for the consistency " +
-    "filter and the per-pool cap above: the thinner the gauge, the less of your list is still there on Thursday.";
-  el.trustPanel.hidden = false;
-}
-
-function renderAccuracy() {
-  if (!timing || !timing.accuracy || !Array.isArray(timing.accuracy.overall)) return;
-  const byName = new Map(timing.accuracy.overall.map((b) => [b.name, b]));
-  const previous = byName.get("previous");
-  const current = byName.get("current");
-  const typical = byName.get("typical");
-  if (!previous || !current) return;
-
-  const tile = (basis, label) => {
-    const box = document.createElement("div");
-    const n = document.createElement("div");
-    n.className = "k " + accuracyClass(basis);
-    n.textContent = accuracyText(basis);
-    const w = document.createElement("div");
-    w.className = "w";
-    w.textContent = label;
-    box.appendChild(n);
-    box.appendChild(w);
-    return box;
-  };
-
-  const tiles = [
-    tile(previous, "assuming last epoch's final weight"),
-    tile(current, "assuming the weight showing right now"),
-  ];
-  // The third basis is on the dropdown too. It predicts weight worst of the
-  // three, and the replay advantage that used to justify that cost is gone on
-  // re-measurement. Showing its error beside the others is how a visitor can
-  // see the trade rather than be told about it.
-  if (typical) tiles.push(tile(typical, "assuming the weight it usually settles at"));
-  el.accuracyKept.replaceChildren(...tiles);
-
-  const closest = previous.closestOn >= current.closestOn ? previous : current;
-  el.accuracyBasis.textContent =
-    "Typical miss on a pool's settled weight, measured over " + previous.observations.toLocaleString("en-US") +
-    " mid-week readings of " + timing.accuracy.epochs.length + " settled epoch" +
-    (timing.accuracy.epochs.length === 1 ? "" : "s") + ". Read it as the size of the error you are voting on, not " +
-    "as a claim: the two are close, and by a different measure — how often each was the nearest of the two — " +
-    "“" + (closest.name === "previous" ? "last epoch's final weight" : "the live weight") + "” wins, on " +
-    closest.closestOn.toLocaleString("en-US") + " readings against " +
-    (closest === previous ? current : previous).closestOn.toLocaleString("en-US") + ". Payout moves with weight, " +
-    "so this is also where the range under “You would earn next week” comes from. Observations inside one pool " +
-    "are not independent, and only epochs the scan history reaches can be scored at all." +
-    (typical
-      ? " The third option, “the weight it usually settles at”, is the least accurate of the three here — " +
-        "and it is the default, because accuracy over every pool is not the question an allocator asks. " +
-        "Replaying the last five epochs it earned +53% at 2,000 veAERO, +77% at 5,000 and +61% at 10,000, " +
-        "ahead in every single epoch at each size, then fell behind above roughly 20,000. Past that the page " +
-        "says so under the allocation."
-      : "");
-  el.accuracyPanel.hidden = false;
-}
-
-// data/promise.json: for each settled week, the radar's top 10 as forecast a day
-// or two before the close, against what those pools then paid per 10,000 votes.
-// Bad weeks are shown as plainly as good ones — that is the point of the panel.
-function renderPromise(promise) {
-  const epochs = (promise && Array.isArray(promise.epochs) ? promise.epochs : []).filter((e) => e.rows && e.rows.length);
-  if (!epochs.length) return;
-  const date = (iso) => new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
-  const tiles = epochs.slice().reverse().map((e) => {
-    const forecast = e.rows.reduce((a, r) => a + r.forecastUsd, 0);
-    const paid = e.rows.reduce((a, r) => a + (r.paidUsd || 0), 0);
-    const ratio = forecast > 0 ? paid / forecast : 0;
-    const box = document.createElement("div");
-    const n = document.createElement("div");
-    n.className = "k " + (ratio >= 0.9 ? "good" : ratio >= 0.6 ? "mid" : "bad");
-    n.textContent = "×" + ratio.toFixed(2);
-    const w = document.createElement("div");
-    w.className = "w";
-    const above = e.rows.filter((r) => (r.paidUsd || 0) >= r.forecastUsd).length;
-    w.textContent = "Week of " + date(e.epochStart) + ": forecast " + usd(forecast / e.rows.length) +
-      ", paid " + usd(paid / e.rows.length) + " per pool. " + above + " of " + e.rows.length + " paid at least the forecast.";
-    box.appendChild(n);
-    box.appendChild(w);
-    return box;
-  });
-  document.getElementById("promiseKept").replaceChildren(...tiles);
-  document.getElementById("promiseBasis").textContent =
-    "Paid ÷ forecast for the radar's top " + (promise.topPools || 10) + " pools, per " + num(promise.perVeAero || 10000) +
-    " votes, read a day or two before each close. The numbers on this page move because every scan, about every four hours, " +
-    "reads fresh fees and votes. To stay honest the forecast takes the lower of the recent average and the last finished week, " +
-    "so one big week can't inflate it. A new week is added here after each close.";
-  document.getElementById("promisePanel").hidden = false;
-}
-
-/** The measured error of whichever basis the visitor has selected, or null. */
-function measuredErrorFor(basisName) {
-  if (!timing || !timing.accuracy || !Array.isArray(timing.accuracy.overall)) return null;
-  const found = timing.accuracy.overall.find((b) => b.name === basisName);
-  return found && found.medianAbsError > 0 ? found.medianAbsError : null;
-}
-
-/** What this pool actually did between a day or two out and the close, if it was measured. */
-function measuredSurge(address) {
-  if (!timing || !Array.isArray(timing.lateMovers)) return null;
-  return timing.lateMovers.find((m) => m.address === String(address).toLowerCase()) ?? null;
-}
-
-// --- wallet lookup ----------------------------------------------------------
-
-async function doLookup() {
-  const raw = el.addr.value.trim();
-  el.lookupMsg.className = "lookup-msg";
-
-  if (!/^0x[0-9a-fA-F]{40}$/.test(raw)) {
-    el.lookupMsg.className = "lookup-msg err";
-    el.lookupMsg.textContent = "That doesn't look like a Base address — it should be 0x followed by 40 characters.";
-    return;
-  }
-
-  el.lookup.disabled = true;
-  el.lookupMsg.textContent = "Reading your locks from Base…";
-
-  try {
-    const { total, locks, truncated, ids } = await fetchVotingPower(raw.toLowerCase());
-    // Before the zero-power exit on purpose: an expired or Relay-held lock has
-    // no voting power, yet it is exactly the one whose owner needs to know what
-    // October 22 does to it. Not awaited, same as the vote review below.
-    el.migrationPanel.hidden = true;
-    if (ids && ids.length) renderMigration(ids, truncated);
-    if (total <= 0) {
-      el.lookupMsg.className = "lookup-msg err";
-      el.lookupMsg.textContent = locks === 0
-        ? "No veAERO locks on this address."
-        // Zero power has two causes the lookup can't tell apart here: the lock
-        // ended, or it sits in a Relay (balanceOfNFT reads 0 for both). The
-        // migration panel below reads each lock and says which.
-        : locks + " lock" + (locks > 1 ? "s" : "") + " found, but none can vote right now — each has either ended or sits in a Relay. See below for which.";
-      return;
-    }
-    el.veaero.value = total.toFixed(4).replace(/\.?0+$/, "");
-    el.lookupMsg.className = "lookup-msg ok";
-    el.lookupMsg.textContent =
-      "Found " + num(total, 2) + " veAERO across " + locks + " lock" + (locks > 1 ? "s" : "") +
-      (truncated ? " (only the first 60 counted)" : "") + ".";
-    renderAllocation();
-    // Deliberately not awaited: the allocation is the page's job and is already
-    // on screen, while this walks one call per lock per pool and can take a
-    // moment. A slow receipt must not hold up the forecast.
-    renderVoteReview(raw.toLowerCase());
-  } catch (err) {
-    el.lookupMsg.className = "lookup-msg err";
-    el.lookupMsg.textContent = "Couldn't reach a Base node (" + (err.message || err) + "). Type the amount manually instead.";
-  } finally {
-    el.lookup.disabled = false;
-  }
-}
-
-// --- copy -------------------------------------------------------------------
-
-async function copyWeights() {
-  if (lastPercents.length === 0) return;
-  const text = lastPercents.map((r) => r.percent + "%  " + r.symbol).join("\n");
-  const original = el.copyBtn.textContent;
-  try {
-    await navigator.clipboard.writeText(text);
-    el.copyBtn.textContent = "Copied ✓";
-  } catch {
-    // Clipboard access can be refused (insecure context, permissions). Falling
-    // back to a selectable prompt beats a button that silently does nothing.
-    window.prompt("Copy the weights:", text.replace(/\n/g, " | "));
-    el.copyBtn.textContent = original;
-    return;
-  }
-  setTimeout(() => { el.copyBtn.textContent = original; }, 1600);
-}
-
-// --- unsigned calldata ------------------------------------------------------
-
-/**
- * The Voter contract on Base, and the call being built. Both are repeated in
- * the output so nobody has to trust this page about where their vote is going.
- */
-const VOTER_ADDRESS = "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5";
-const VOTE_SELECTOR = "0x7ac09bf7"; // vote(uint256,address[],uint256[])
-// ERC-8021 builder-code tag (bc_mrkwu2m0) appended after the vote; the contract
-// ignores it. Pinned to BUILDER_CODE_SUFFIX in src/constants.ts by site-parity.test.ts.
-const BUILDER_SUFFIX = "62635f6d726b7775326d300b0080218021802180218021802180218021";
-
-/**
- * Hand-port of src/calldata.ts for a page with no build step, held to the real
- * implementation by test/site-parity.test.ts — the same arrangement the
- * allocator itself is under. Encoding by hand rather than shipping an ABI
- * library keeps the page a single static file; the parity test is what makes
- * that safe rather than merely convenient.
- *
- * Validation throws instead of repairing. Voting is a once-a-week financial
- * action, and guessing what a malformed request meant is not a service.
- */
-function voteCalldata(tokenId, rows) {
-  if (!/^[0-9]+$/.test(tokenId) || BigInt(tokenId) <= 0n) {
-    throw new Error("The veNFT id must be a positive whole number.");
-  }
-  if (rows.length === 0) throw new Error("Nothing to vote: the allocation is empty.");
-
-  const seen = new Set();
-  let total = 0;
-  for (const r of rows) {
-    if (!/^0x[0-9a-fA-F]{40}$/.test(r.pool)) throw new Error(r.pool + " is not a pool address.");
-    const key = r.pool.toLowerCase();
-    if (seen.has(key)) throw new Error("Pool " + r.pool + " appears twice in the allocation.");
-    seen.add(key);
-    if (!Number.isInteger(r.percent) || r.percent <= 0) {
-      throw new Error(r.symbol + " has a weight that is not a whole number of percentage points above zero.");
-    }
-    total += r.percent;
-  }
-  if (total !== 100) throw new Error("Weights must total 100%, got " + total + "%.");
-
-  const word = (value) => BigInt(value).toString(16).padStart(64, "0");
-  const addressWord = (address) => address.toLowerCase().replace(/^0x/, "").padStart(64, "0");
-  const n = rows.length;
-  // Head: tokenId, then the offsets of the two dynamic arrays. The pools array
-  // starts after those three words; the weights array after the pools array.
-  const head = word(tokenId) + word(96) + word(96 + 32 * (1 + n));
-  const pools = word(n) + rows.map((r) => addressWord(r.pool)).join("");
-  const weights = word(n) + rows.map((r) => word(r.percent)).join("");
-  return VOTE_SELECTOR + head + pools + weights + BUILDER_SUFFIX;
-}
-
-/**
- * A known vector, checked once on load. If this page's encoder ever disagrees
- * with what the tested implementation produces, the button is withdrawn rather
- * than left offering bytes for someone to sign.
- */
-const CALLDATA_SELF_TEST = {
-  tokenId: "1",
-  rows: [
-    { pool: "0x0000000000000000000000000000000000000001", symbol: "A", percent: 60 },
-    { pool: "0x0000000000000000000000000000000000000002", symbol: "B", percent: 40 },
-  ],
-  expected:
-    "0x7ac09bf7" +
-    "0000000000000000000000000000000000000000000000000000000000000001" +
-    "0000000000000000000000000000000000000000000000000000000000000060" +
-    "00000000000000000000000000000000000000000000000000000000000000c0" +
-    "0000000000000000000000000000000000000000000000000000000000000002" +
-    "0000000000000000000000000000000000000000000000000000000000000001" +
-    "0000000000000000000000000000000000000000000000000000000000000002" +
-    "0000000000000000000000000000000000000000000000000000000000000002" +
-    "000000000000000000000000000000000000000000000000000000000000003c" +
-    "0000000000000000000000000000000000000000000000000000000000000028" +
-    "62635f6d726b7775326d300b0080218021802180218021802180218021",
-};
-
-function calldataEncoderIsSound() {
-  try {
-    return voteCalldata(CALLDATA_SELF_TEST.tokenId, CALLDATA_SELF_TEST.rows) === CALLDATA_SELF_TEST.expected;
-  } catch {
-    return false;
-  }
-}
-
-let lastCalldataText = "";
-
-function buildCalldata() {
-  el.calldataMsg.className = "lookup-msg";
-  el.calldataOut.hidden = true;
-  el.calldataCopy.hidden = true;
-
-  if (lastPercents.length === 0) {
-    el.calldataMsg.className = "lookup-msg err";
-    el.calldataMsg.textContent = "There is no allocation to encode yet — enter your veAERO above.";
-    return;
-  }
-
-  let tx;
-  try {
-    const data = voteCalldata(el.tokenId.value.trim(), lastPercents);
-    tx = {
-      chainId: 8453,
-      to: VOTER_ADDRESS,
-      value: "0x0",
-      data: data,
-      functionSignature: "vote(uint256,address[],uint256[])",
-      tokenId: el.tokenId.value.trim(),
-      pools: lastPercents.map((r) => r.pool),
-      weights: lastPercents.map((r) => r.percent),
-    };
-  } catch (err) {
-    el.calldataMsg.className = "lookup-msg err";
-    el.calldataMsg.textContent = err.message || String(err);
-    return;
-  }
-
-  lastCalldataText = JSON.stringify(tx, null, 2);
-  el.calldataOut.textContent = lastCalldataText;
-  el.calldataOut.hidden = false;
-  el.calldataCopy.hidden = false;
-  el.calldataMsg.className = "lookup-msg ok";
-  el.calldataMsg.textContent =
-    "Unsigned. " + lastPercents.length + " pools, " +
-    lastPercents.map((r) => r.percent + "% " + r.symbol).join(", ") + ". " +
-    "The data ends with a 29-byte Base builder-code tag (ERC-8021) that credits the vote to this site; the contract ignores it.";
-}
-
-async function copyCalldata() {
-  if (!lastCalldataText) return;
-  const original = el.calldataCopy.textContent;
-  try {
-    await navigator.clipboard.writeText(lastCalldataText);
-    el.calldataCopy.textContent = "Copied ✓";
-    setTimeout(() => { el.calldataCopy.textContent = original; }, 1600);
-  } catch {
-    el.calldataMsg.className = "lookup-msg";
-    el.calldataMsg.textContent = "Clipboard refused — select the text below and copy it manually.";
-  }
-}
-
-// --- wiring -----------------------------------------------------------------
-
-for (const control of [el.veaero, el.topk, el.mincons, el.maxweight]) {
-  control.addEventListener("input", renderAllocation);
-  if (control === el.veaero) control.addEventListener("input", renderPerDay);
-  control.addEventListener("change", renderAllocation);
-}
-// The vote basis reorders the full ranking as well as the allocation, so that
-// the table and the suggestion below it never disagree about what ranks best.
-for (const event of ["input", "change"]) {
-  el.votebasis.addEventListener(event, () => {
-    renderRanking();
-    renderAllocation();
-  });
-}
-el.lookup.addEventListener("click", doLookup);
-el.addr.addEventListener("keydown", (e) => { if (e.key === "Enter") doLookup(); });
-el.copyBtn.addEventListener("click", copyWeights);
-el.copyBtn.disabled = true;
-
-if (calldataEncoderIsSound()) {
-  el.calldataBtn.addEventListener("click", buildCalldata);
-  el.calldataCopy.addEventListener("click", copyCalldata);
-  el.tokenId.addEventListener("keydown", (e) => { if (e.key === "Enter") buildCalldata(); });
-} else {
-  // Withdrawn rather than degraded: a transaction builder that fails its own
-  // known vector has no business offering bytes for someone to sign.
-  el.calldataBox.hidden = true;
-}
-
-// "Where to point sAERO on Oct 22". From both files already on the page: fees per day now (fee-rate.json, last
-// 96 h), everything a pool paid its voters in the last complete week (snapshot epochUsd: fees + incentives), and how
-// steady the fees were — the share of fee-rate's scan-to-scan windows that paid at least half the pool's own average.
-// Fees move into Aero by themselves; incentives have to be posted again, so a pool that lived on them is marked.
-let steadyFeeRate = null;   // { per10k, pools, rows } — read by the lock preview for its "about $X a day" line
-
-/**
- * What a pool pays per day to `amount` of sAERO once that stake has joined the
- * votes already there: fees are split by weight, so your own stake dilutes the
- * pool. Scaling the 10,000 figure up instead promised 100,000 in a small pool
- * ten times the money (asked for in a DM, 19.10.2026).
- */
 function dilutedPerDay(usdPerDay, votes, amount) {
   return amount > 0 ? usdPerDay * amount / (votes + amount) : 0;
 }
-
-/** `amount` split evenly across the steadiest fee pools, each priced after its own dilution. */
-function steadyPerDay(amount) {
-  if (!steadyFeeRate || !steadyFeeRate.rows.length) return 0;
-  const each = amount / steadyFeeRate.rows.length;
-  return steadyFeeRate.rows.reduce((a, x) => a + dilutedPerDay(x.usdPerDay, x.votes, each), 0);
-}
-
-/** The amount typed in the main field, the same number the allocation reads; 10,000 when empty. */
-function myAmount() {
-  const v = Number(el.veaero.value);
-  return Number.isFinite(v) && v > 0 ? v : 10000;
-}
-let aeroChains = null;      // data/aero-chains.json: which chains Aero has published contracts for
-const AERO_TOKEN = "0x940181a94a35a4569e4529a3cdfb74e38fd98631";
-const AERO_CHAINS = [["base", "Base"], ["ethereum", "Ethereum"], ["optimism", "OP Mainnet"], ["arc", "Arc"],
-  ["ink", "Ink"], ["robinhood", "Robinhood Chain"], ["arbitrum", "Arbitrum"]];
-
-function renderSaero() {
-  if (!feeRate || !snapshot || !feeRate.pools || !feeRate.intervals || !feeRate.poolIds) return;
-  const hours = feeRate.intervals.map((iv) => (Date.parse(iv.to) - Date.parse(iv.from)) / 3600000);
-  const col = new Map(feeRate.poolIds.map((a, i) => [a, i]));
-  const rows = [];
-  for (const p of snapshot.pools) {
-    const addr = p.pool.toLowerCase();
-    const r = feeRate.pools[addr];
-    if (p.migrating || p.votesVeAero < PER_DAY_MIN_VOTES || !r || r.usdPerDayPer10k === null) continue;
-    const k = p.currentEpochPartial ? p.epochUsd.length - 2 : p.epochUsd.length - 1;
-    const week = k >= 0 && p.epochVotes[k] > 0 ? p.epochUsd[k] / 7 / p.epochVotes[k] * 10000 : null;
-    let steady = null;
-    const j = col.get(addr);
-    if (j !== undefined) {
-      const rates = feeRate.intervals.map((iv, i) => (iv.usd[j] === null ? null : iv.usd[j] / hours[i] * 24)).filter((x) => x !== null);
-      const mean = rates.reduce((a, x) => a + x, 0) / (rates.length || 1);
-      if (rates.length && mean > 0) steady = { n: rates.filter((x) => x >= 0.5 * mean).length, of: rates.length };
-    }
-    const inc = week > 0 ? Math.min(1, Math.max(0, 1 - r.usdPerDayPer10k / week)) : null;
-    rows.push({ p, fee: r.usdPerDayPer10k, usdPerDay: r.usdPerDay, week, steady, inc });
-  }
-  if (!rows.length) return;
-
-  const isSteady = (x) => x.steady && x.steady.of >= 8 && x.steady.n >= 0.75 * x.steady.of;
-  const steadyTop = rows.filter(isSteady).sort((a, b) => b.fee - a.fee).slice(0, 3);
-  const byWeek = rows.filter((x) => x.week !== null).sort((a, b) => b.week - a.week).slice(0, 5);
-  const shown = [...new Set([...byWeek, ...steadyTop])]
-    .sort((a, b) => Math.max(b.fee, b.week || 0) - Math.max(a.fee, a.week || 0));
-
-  const frag = document.createDocumentFragment();
-  for (const x of shown) {
-    const tr = document.createElement("tr");
-    tr.appendChild(poolCell(x.p.symbol, x.p.pool, x.p.migrating));
-    tr.appendChild(cell("$" + x.fee.toFixed(2), "num", "Fees per day for 10,000"));
-    tr.appendChild(cell(x.week === null ? "—" : "$" + x.week.toFixed(2), "num", "All rewards per day last week"));
-    const inc = cell("", "num", "From incentives");
-    if (x.inc === null) inc.textContent = "—";
-    else if (x.inc >= 0.5) {
-      const s = document.createElement("span");
-      s.className = "pill wa";
-      s.textContent = Math.round(x.inc * 100) + "% · must return";
-      inc.appendChild(s);
-    } else inc.textContent = Math.round(x.inc * 100) + "%";
-    tr.appendChild(inc);
-    const st = cell("", "num", "Steady fees");
-    if (!x.steady) st.textContent = "—";
-    else {
-      const s = document.createElement("span");
-      s.className = "pill " + (isSteady(x) ? "ok" : "wa");
-      s.textContent = x.steady.n + " of " + x.steady.of + (isSteady(x) ? "" : " · spiky");
-      st.appendChild(s);
-    }
-    tr.appendChild(st);
-    tr.appendChild(cell(num(x.p.votesVeAero), "num", "Votes"));
-    frag.appendChild(tr);
-  }
-  document.getElementById("saeroBody").replaceChildren(frag);
-
-  const feesDay = Object.values(feeRate.pools).reduce((a, r) => a + (r.usdPerDay || 0), 0);
-  const lastWeek = (snapshot.epochYields || []).find((e) => !e.partial);
-  const share = lastWeek ? Math.max(0, 1 - feesDay / (lastWeek.totalUsd / 7)) : null;
-  document.getElementById("saeroFees").textContent = usd(feesDay);
-  document.getElementById("saeroIncShare").textContent = share === null ? "—" : Math.round(share * 100) + "%";
-  document.getElementById("saeroIncShareText").textContent = share === null ? "a share" : Math.round(share * 100) + "%";
-
-  const you = document.getElementById("saeroYou");
-  if (steadyTop.length) {
-    const per10k = steadyTop.reduce((a, x) => a + x.fee, 0) / steadyTop.length;
-    const top3 = byWeek.slice(0, 3);
-    const withInc = top3.length ? top3.reduce((a, x) => a + x.week, 0) / top3.length : 0;
-    steadyFeeRate = { per10k, pools: steadyTop.map((x) => x.p.symbol),
-      rows: steadyTop.map((x) => ({ usdPerDay: x.usdPerDay, votes: x.p.votesVeAero })) };
-    const day10k = steadyPerDay(10000);
-    const tok = (snapshot.rewardTokens || []).find((t) => t.address.toLowerCase() === AERO_TOKEN);
-    const yearly = tok && tok.priceUsd
-      ? " (~" + Math.round(steadyPerDay(10000) * 365 / (10000 * tok.priceUsd) * 100) + "% a year at AERO $" + tok.priceUsd.toFixed(2) + ")" : "";
-    const name = (sym) => sym.replace(/^(CL\d*|vAMM|sAMM)-/, "");
-    const b = document.createElement("b");
-    b.textContent = "10,000 sAERO → about " + usd(day10k) + " a day, " + usd(day10k * 7) + " a week";
-    const sub = document.createElement("div");
-    sub.className = "sub";
-    sub.textContent = "From fees alone, after your own stake dilutes each pool" + yearly + ", split across the " + steadyTop.length + " steadiest fee pools: " +
-      steadyTop.map((x) => name(x.p.symbol)).join(", ") + "." +
-      (withInc > day10k ? " Up to " + usd(withInc) + " a day if last week's incentives come back." : "") +
-      " Look up your wallet above for your own locks.";
-    you.replaceChildren(b, sub);
-    you.hidden = false;
-  } else you.hidden = true;
-
-  renderAeroChains();
-  document.getElementById("saeroNote").textContent =
-    "Fees: last " + feeRate.windowHours + " hours, divided by each pool's current votes. All rewards: the last complete week, " +
-    "fees plus incentives, per 10,000 votes. From incentives: how much of last week's figure today's fees don't cover. " +
-    "Steady: how many of the scan-to-scan windows paid at least half the pool's own average. Pools with at least " +
-    num(PER_DAY_MIN_VOTES) + " votes. Estimates from today's Aerodrome, not promises: on Aero your own stake also dilutes the pool.";
-  document.getElementById("saeroPanel").hidden = false;
-}
-
-function renderAeroChains() {
-  const box = document.getElementById("saeroChains");
-  const c = (aeroChains && aeroChains.chains) || {};
-  box.replaceChildren(...AERO_CHAINS.map(([key, label]) => {
-    const s = document.createElement("span");
-    const x = c[key];
-    s.textContent = x && x.allocation ? "✅ " + label + " · contracts out"
-      : x && x.pools ? "🟡 " + label + " · pool contracts out, allocation not yet"
-      : "⏳ " + label + (aeroChains ? " · addresses not out" : "");
-    return s;
-  }));
-  if (aeroChains && aeroChains.checkedAt) {
-    box.title = "Aero's own deployment files (dromos-labs/metadex-public), checked " +
-      aeroChains.checkedAt.slice(0, 16).replace("T", " ") + " UTC";
-  }
-}
-
-fetch("data/aero-chains.json", { cache: "no-cache" })
-  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then((data) => { aeroChains = data; renderAeroChains(); })
-  .catch(() => { /* the chips just stay "⏳" */ });
-
-// Per-day fee figures (src/feeRate.ts). Pool names come from the snapshot, so
-// this draws only once both files are in, whichever arrives second.
-let feeRate = null;
-const PER_DAY_MIN_VOTES = 100000;
-const PER_DAY_ROWS = 10;
-
-function renderPerDay() {
-  if (!feeRate || !snapshot || !feeRate.pools) return;
-  const byAddr = new Map(snapshot.pools.map((p) => [p.pool.toLowerCase(), p]));
-  const amount = myAmount();
-  const rows = Object.entries(feeRate.pools)
-    .map(([addr, r]) => ({ addr, r, p: byAddr.get(addr) }))
-    .filter((x) => x.p && !x.p.migrating && x.r.usdPerDayPer10k !== null && x.p.votesVeAero >= PER_DAY_MIN_VOTES)
-    .map((x) => ({ ...x, mine: dilutedPerDay(x.r.usdPerDay, x.p.votesVeAero, amount) }))
-    .sort((a, b) => b.mine - a.mine);
-  if (rows.length === 0) return;
-
-  const frag = document.createDocumentFragment();
-  const amtText = "your " + num(amount) + " sAERO";
-  for (const { r, p, mine } of rows.slice(0, PER_DAY_ROWS)) {
-    const tr = document.createElement("tr");
-    tr.appendChild(poolCell(p.symbol, p.pool, p.migrating));
-    tr.appendChild(cell("≈ $" + mine.toFixed(2), "num", "Per day for " + amtText));
-    tr.appendChild(cell(usd(r.usdPerDay), "num", "Pool fees per day"));
-    tr.appendChild(cell(num(p.votesVeAero), "num", "Votes"));
-    frag.appendChild(tr);
-  }
-  document.getElementById("perDayBody").replaceChildren(frag);
-
-  const total = Object.values(feeRate.pools).reduce((s, r) => s + r.usdPerDay, 0);
-  document.getElementById("perDayTop").textContent = "≈ $" + rows[0].mine.toFixed(2);
-  document.getElementById("perDayTopLabel").textContent = "Best pool for " + amtText + ", per day";
-  document.getElementById("perDayAmtHead").textContent = "Per day for " + amtText;
-  document.getElementById("perDayAll").textContent = usd(total);
-  document.getElementById("perDayNote").textContent =
-    "Swap fees that reached each pool's voters over the last " + feeRate.windowHours +
-    " hours, averaged per day, split between the pool's current votes and your " + num(amount) +
-    " sAERO, so a big stake in a small pool earns less per sAERO than in a big one. Change the amount at the top. Pools with at least " +
-    num(PER_DAY_MIN_VOTES) + " votes. Fees only: incentives join the figure once Aero's new contracts are live. " +
-    "Tested on this site's own history since September 27: the top 10 picked by the last 96 hours collected 78% " +
-    "of what the best possible top 10 earned over the next 48 hours. The dollar figure is an estimate, typically off by about half; " +
-    "trust the order more than the number. Updated " + new Date(feeRate.generatedAt).toISOString().slice(0, 16).replace("T", " ") + " UTC.";
-  document.getElementById("perDayPanel").hidden = false;
-}
-
-fetch("data/fee-rate.json", { cache: "no-cache" })
-  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then((data) => { feeRate = data; renderPerDay(); renderSaero(); })
-  .catch(() => {
-    // Without the file the panel simply stays hidden; the weekly page is unaffected.
-  });
-
-// The weekly measurement, fetched beside the snapshot. It is deliberately not
-// awaited together with it: if this file is missing or stale the page must still
-// render the allocation, minus the parts that say how much to believe it.
-fetch("data/timing.json", { cache: "no-cache" })
-  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then((data) => {
-    timing = data;
-    renderTrust();
-    renderKeptStat();
-    renderAccuracy();
-    // renderRanking's Refill tooltips read `timing` too (via measuredSurge), and
-    // this fetch deliberately isn't awaited together with the snapshot one — so
-    // whichever of the two resolves second has to re-render what the first one
-    // already drew with the other half of the data missing.
-    if (snapshot) { renderRanking(); renderAllocation(); }
-  })
-  .catch(() => {
-    // No panel, no range, no measured tooltips — and no error either. The
-    // measurement is the page's admission of doubt, not its subject.
-  });
-
-fetch("data/promise.json", { cache: "no-cache" })
-  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then(renderPromise)
-  .catch(() => {});
-
-fetch("data/snapshot.json", { cache: "no-cache" })
-  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then((data) => {
-    snapshot = data;
-    renderMeta();
-    renderMovers();
-    renderEpochYields();
-    renderRanking();
-    renderAllocation();
-    renderPerDay();
-    renderSaero();
-    // The survival tile compares the measurement's pool coverage against this
-    // scan's, so it cannot be right until both files are in. Whichever fetch
-    // resolves second has to redraw it — the same reason renderRanking is
-    // repeated in the other handler.
-    if (timing) { renderKeptStat(); renderTrust(); }
-  })
-  .catch((err) => {
-    el.meta.innerHTML = "";
-    const dot = document.createElement("span");
-    dot.className = "dot stale";
-    const text = document.createElement("span");
-    text.textContent = "Could not load the snapshot (" + err.message + "). The scheduled scan may be mid-run — try again shortly.";
-    el.meta.append(dot, text);
-  });
 
 // --- Aero (sAERO) radar ---------------------------------------------------
 // Reads data/v3.json (src/v3-cli.ts). A wallet is looked up on Aero's Base
 // contracts (app.aero.xyz/docs/security): stakes from the VotingEscrow, the
 // 47 h timer and current split from the LeafVoter (tokenStates.lastAllocated +
 // allocationCooldown − accumulatedCooldownReduction, as ILeafVoter documents).
+// Every network has its own LeafVoter at the same address, keyed by the Base
+// stake id, so each stake has a timer and a split per network.
 const AR_VE = "0xbf7977e1521e9a3032bf7243ee4712f311f13915";
 const AR_LEAF_VOTER = "0x382409fad8503fbcdbb27a4211551fa03e884078";
 const AR_SEL_TOKEN_OF_OWNER = "0x2f745c59";   // tokenOfOwnerByIndex(address,uint256)
@@ -2698,6 +455,16 @@ const AR_STEPS = 20;
 const AR_MAX_STAKES = 20;
 
 const AR_CHAIN_NAMES = { base: "Base", ethereum: "Ethereum", optimism: "OP Mainnet", arbitrum: "Arbitrum", ink: "Ink", robinhood: "Robinhood Chain", arc: "Arc" };
+// Endpoints that answer eth_call from a browser (CORS), measured 2026-10-24.
+// Base goes through ethCall and its RPCS list.
+const AR_CHAIN_RPCS = {
+  ethereum: ["https://ethereum-rpc.publicnode.com"],
+  optimism: ["https://optimism-rpc.publicnode.com", "https://mainnet.optimism.io"],
+  arbitrum: ["https://arbitrum-one-rpc.publicnode.com", "https://arb1.arbitrum.io/rpc"],
+  ink: ["https://rpc-gel.inkonchain.com", "https://rpc-qnd.inkonchain.com", "https://ink-rpc.publicnode.com"],
+  robinhood: ["https://rpc.mainnet.chain.robinhood.com"],
+  arc: ["https://rpc.mainnet.arc.io"],
+};
 
 let arData = null;
 let arWallet = null;
@@ -2767,6 +534,45 @@ function arCell(row, text, cls) {
   row.append(td);
 }
 
+function arNameCell(g) {
+  const name = document.createElement("td");
+  const badge = document.createElement("span");
+  badge.className = "badge " + (g.kind && g.kind.startsWith("CL") ? "c" : g.kind === "sAMM" ? "s" : "v");
+  badge.textContent = g.kind ? g.kind.replace(/^CL\d+$/, "CL") : "?";
+  const chip = document.createElement("span");
+  chip.className = "ar-chip";
+  chip.textContent = AR_CHAIN_NAMES[arChainOf(g)] || arChainOf(g);
+  name.append(badge, document.createTextNode(arName(g)), chip);
+  return name;
+}
+
+// Pools that kept paying hour after hour (src/v3History.ts): at least 75% of the
+// hourly samples at half the pool's own average or more. Ranked by what they pay
+// now on the same basis as the samples (last 24 h of fees plus incentives).
+const AR_STEADY_SHARE = 0.75;
+const AR_STEADY_ROWS = 5;
+const arSteadyNow = (g, amount) => dilutedPerDay(g.fees24hUsdPerDay + g.incentivesUsdPerDay, g.weight, amount);
+function arRenderSteady(amount) {
+  const steady = arData.gauges
+    .filter((g) => g.steady && g.weight >= AR_MIN_WEIGHT && g.steady.avgPer10k > 0 && g.steady.held >= AR_STEADY_SHARE * g.steady.of)
+    .filter((g) => arChain === "all" || arChainOf(g) === arChain)
+    .sort((a, b) => arSteadyNow(b, amount) - arSteadyNow(a, amount))
+    .slice(0, AR_STEADY_ROWS);
+  const body = arEl("arSteadyBody");
+  body.innerHTML = "";
+  arEl("arSteadyWrap").hidden = steady.length === 0;
+  arEl("arSteadyWait").hidden = steady.length > 0;
+  for (const g of steady) {
+    const tr = document.createElement("tr");
+    tr.append(arNameCell(g));
+    arCell(tr, usd(arSteadyNow(g, amount)), "ar-mine");
+    arCell(tr, usd(g.steady.avgPer10k));
+    arCell(tr, usd(g.steady.minPer10k));
+    arCell(tr, g.steady.held + " of " + g.steady.of + " h");
+    body.append(tr);
+  }
+}
+
 function arRender() {
   if (!arData) return;
   const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
@@ -2781,15 +587,7 @@ function arRender() {
   body.innerHTML = "";
   for (const g of rows) {
     const tr = document.createElement("tr");
-    const name = document.createElement("td");
-    const badge = document.createElement("span");
-    badge.className = "badge " + (g.kind && g.kind.startsWith("CL") ? "c" : g.kind === "sAMM" ? "s" : "v");
-    badge.textContent = g.kind ? g.kind.replace(/^CL\d+$/, "CL") : "?";
-    const chip = document.createElement("span");
-    chip.className = "ar-chip";
-    chip.textContent = AR_CHAIN_NAMES[arChainOf(g)] || arChainOf(g);
-    name.append(badge, document.createTextNode(arName(g)), chip);
-    tr.append(name);
+    tr.append(arNameCell(g));
     const s = shares.get(g);
     arCell(tr, s ? Math.round(s.share * 100) + "%" : "—", s ? "pct" : "");
     arCell(tr, usd(s ? s.perDay : dilutedPerDay(arPerDay(g), g.weight, amount)), s ? "ar-mine" : "");
@@ -2800,9 +598,11 @@ function arRender() {
     arCell(tr, trend, cls);
     body.append(tr);
   }
+  arRenderSteady(amount);
 
-  const timer = arEl("arTimer"), timerLabel = arEl("arTimerLabel"), current = arEl("arCurrent"), callout = arEl("arCallout");
+  const timer = arEl("arTimer"), timerLabel = arEl("arTimerLabel"), current = arEl("arCurrent"), callout = arEl("arCallout"), timers = arEl("arTimers");
   callout.hidden = true;
+  timers.hidden = true;
   current.textContent = "—";
   if (!arWallet) {
     timer.textContent = "47 h";
@@ -2815,17 +615,36 @@ function arRender() {
     return;
   }
   const nowSec = Date.now() / 1000;
-  const next = Math.min(...arWallet.stakes.map((s) => s.readyAt));
-  timer.textContent = next <= nowSec ? "now" : "in " + Math.ceil((next - nowSec) / 3600) + " h";
-  timerLabel.textContent = arWallet.stakes.length > 1 ? "Your first stake can move again" : "You can move your sAERO again";
-  // The wallet is read on Base, so only its Base allocations are matched.
-  const byGauge = new Map(arData.gauges.filter((g) => arChainOf(g) === "base").map((g) => [g.gauge.toLowerCase(), g]));
+  const until = (t) => (t <= nowSec ? "now" : "in " + Math.ceil((t - nowSec) / 3600) + " h");
+  // Only networks a stake has allocated on have a running timer; a stake with
+  // none anywhere can make its first allocation right away.
+  const placedOn = arWallet.stakes.flatMap((s) => Object.entries(s.chains).filter(([, c]) => c.last).map(([chain, c]) => ({ chain, readyAt: c.readyAt })));
+  const next = placedOn.length ? Math.min(...placedOn.map((p) => p.readyAt)) : 0;
+  if (placedOn.length) {
+    const first = placedOn.reduce((a, b) => (b.readyAt < a.readyAt ? b : a));
+    timer.textContent = until(first.readyAt);
+    timerLabel.textContent = (placedOn.length > 1 ? "Your first stake can move again on " : "You can move your sAERO again on ") + AR_CHAIN_NAMES[first.chain];
+    const soonest = {};
+    for (const p of placedOn) soonest[p.chain] = Math.min(soonest[p.chain] ?? Infinity, p.readyAt);
+    timers.textContent = "Your timers: " + Object.keys(AR_CHAIN_NAMES).filter((k) => k in soonest).map((k) => AR_CHAIN_NAMES[k] + " " + until(soonest[k])).join(" · ") +
+      (arWallet.failed.length ? " · not read: " + arWallet.failed.map((k) => AR_CHAIN_NAMES[k]).join(", ") : "");
+    timers.hidden = false;
+  } else if (arWallet.failed.length) {
+    timer.textContent = "—";
+    timerLabel.textContent = "Could not read " + arWallet.failed.map((k) => AR_CHAIN_NAMES[k]).join(", ") + ". Try again in a moment.";
+  } else {
+    timer.textContent = "now";
+    timerLabel.textContent = "Not allocated yet: the first allocation has no wait";
+  }
+  const byGauge = new Map(arData.gauges.map((g) => [arChainOf(g) + ":" + g.gauge.toLowerCase(), g]));
   let pays = 0, placed = 0;
   for (const st of arWallet.stakes) {
-    for (const a of st.allocs) {
-      const g = byGauge.get(a.gauge);
-      placed += a.amount;
-      if (g && g.weight > 0) pays += arPerDay(g) * Math.min(1, a.amount / g.weight);
+    for (const [chain, c] of Object.entries(st.chains)) {
+      for (const a of c.allocs) {
+        const g = byGauge.get(chain + ":" + a.gauge);
+        placed += a.amount;
+        if (g && g.weight > 0) pays += arPerDay(g) * Math.min(1, a.amount / g.weight);
+      }
     }
   }
   if (placed > 0) {
@@ -2840,29 +659,67 @@ function arRender() {
   }
 }
 
+// eth_call on the LeafVoter of `chain`, trying its endpoints in order.
+async function arLeafCall(chain, data) {
+  if (chain === "base") return ethCall(data, AR_LEAF_VOTER);
+  let lastErr;
+  for (const url of AR_CHAIN_RPCS[chain]) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: AR_LEAF_VOTER, data }, "latest"] }),
+        signal: AbortSignal.timeout(RPC_TIMEOUT_MS),
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const json = await res.json();
+      if (json.error) throw new Error(json.error.message || "rpc error");
+      return json.result;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr;
+}
+
+// One stake's timer and split on one network.
+async function arReadStakeOn(chain, id, cooldown) {
+  const big = (hex) => BigInt(hex === "0x" ? 0 : hex);
+  const state = (await arLeafCall(chain, AR_SEL_TOKEN_STATES + hexOf(id))).slice(2);
+  const last = Number(BigInt("0x" + (state.slice(64, 128) || "0")));
+  const reduction = Number(big(await arLeafCall(chain, AR_SEL_REDUCTION + hexOf(id))));
+  const list = (await arLeafCall(chain, AR_SEL_GAUGES + hexOf(id))).slice(2);
+  const n = list.length >= 128 ? Number(BigInt("0x" + list.slice(64, 128))) : 0;
+  const allocs = [];
+  for (let k = 0; k < n; k++) {
+    const gauge = "0x" + list.slice(128 + k * 64 + 24, 128 + (k + 1) * 64);
+    const raw = big(await arLeafCall(chain, AR_SEL_ALLOCATION + hexOf(id) + word(gauge)));
+    allocs.push({ gauge, amount: Number(raw) / 1e18 });
+  }
+  return { last, readyAt: last ? last + Math.max(0, cooldown - reduction) : 0, allocs };
+}
+
 async function arReadWallet(addr) {
   const big = (hex) => BigInt(hex === "0x" ? 0 : hex);
   const count = Number(big(await ethCall(SEL_BALANCE_OF + word(addr), AR_VE)));
-  const cooldown = Number(big(await ethCall(AR_SEL_COOLDOWN, AR_LEAF_VOTER)));
   const stakes = [];
   for (let i = 0; i < Math.min(count, AR_MAX_STAKES); i++) {
     const id = big(await ethCall(AR_SEL_TOKEN_OF_OWNER + word(addr) + hexOf(i), AR_VE));
     const power = Number(big(await ethCall(SEL_POWER_OF + hexOf(id), AR_VE))) / 1e18;
-    const state = (await ethCall(AR_SEL_TOKEN_STATES + hexOf(id), AR_LEAF_VOTER)).slice(2);
-    const last = Number(BigInt("0x" + state.slice(64, 128)));
-    const reduction = Number(big(await ethCall(AR_SEL_REDUCTION + hexOf(id), AR_LEAF_VOTER)));
-    const list = (await ethCall(AR_SEL_GAUGES + hexOf(id), AR_LEAF_VOTER)).slice(2);
-    const n = Number(BigInt("0x" + list.slice(64, 128)));
-    const allocs = [];
-    for (let k = 0; k < n; k++) {
-      const gauge = "0x" + list.slice(128 + k * 64 + 24, 128 + (k + 1) * 64);
-      const raw = big(await ethCall(AR_SEL_ALLOCATION + hexOf(id) + word(gauge), AR_LEAF_VOTER));
-      allocs.push({ gauge, amount: Number(raw) / 1e18 });
-    }
-    // A stake that never allocated has no wait: its first allocation skips the cooldown.
-    stakes.push({ id, power, readyAt: last ? last + Math.max(0, cooldown - reduction) : 0, allocs });
+    stakes.push({ id, power, chains: {} });
   }
-  return { stakes, total: stakes.reduce((a, s) => a + s.power, 0), count };
+  // Networks are read in parallel; one that doesn't answer is reported, not fatal.
+  const failed = [];
+  await Promise.all(Object.keys(AR_CHAIN_NAMES).map(async (chain) => {
+    try {
+      const cooldown = Number(big(await arLeafCall(chain, AR_SEL_COOLDOWN)));
+      for (const st of stakes) st.chains[chain] = await arReadStakeOn(chain, st.id, cooldown);
+    } catch {
+      for (const st of stakes) delete st.chains[chain];
+      failed.push(chain);
+    }
+  }));
+  return { stakes, failed, total: stakes.reduce((a, s) => a + s.power, 0), count };
 }
 
 arEl("arLookup").addEventListener("click", async () => {
@@ -2908,6 +765,8 @@ fetch("data/v3.json", { cache: "no-cache" })
     if (data.windowHours < 48) arEl("arEarly").textContent = "Aero launched " + hours + " h ago and fees arrive in lumps, so these figures are rough for the first days.";
     arEl("aeroRadar").hidden = false;
     arRender();
+    // The section is hidden until the scan loads, so the browser can't jump to #guide on its own.
+    if (location.hash === "#guide") arEl("guide").scrollIntoView();
   })
   .catch(() => {});
 </script>

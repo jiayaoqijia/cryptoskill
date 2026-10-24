@@ -57,6 +57,8 @@ python3 "$AS" artifact TASK_ID --path ./sample
 
 ## 共享资源与受控变更
 
+本地多服务实验要区分挂载表、底层文件、路径 socket 与网络端口的隔离。复制二进制不会改变硬编码路径，按完整路径或字符类 pkill 不证明归属；只清理本次有准确身份的资源。专业诊断和受限自有进程实验见 pwn-exploit/references/multi-stage-local.md；该 CLI 不代表资源适配器已接入，不扩大当前运行层覆盖。
+
 `resource TASK_ID --id ID --data JSON` 登记后台任务或项目；Linux PID 同时绑定启动时刻和 boot ID，防止 PID 复用。`status` 检查进程身份；登记的活跃 PID 已失效时标记 inactive、结果待核对，不继续占用活跃资源预算，也不自动杀进程或宣布任务成功。
 
 本机实测：DSH host 重载可停止关联的后台进程；不能只靠 detach 假定 daemon 会保留。维护前保存准确的 PID/启动身份、项目路径、加载程序与启动环境清单，结束活动回合；维护后逐项核对并按需恢复已有项目。Ghidra 用匹配的保存程序跳过分析重新打开，避免重新导入覆盖旧分析。项目缓存、用户计算任务和 host jobs 各自明确生命周期。

@@ -49,6 +49,8 @@ status 查看支线；retire 显式放弃非运行支线；recover 只处理确�
 
 ## 收尾与故障
 
+有价值的结论在 complete 前按需 source/propose/review；不用发布所有候选或保存全部流水。写入仍要求 running，终态拒绝不自动重开任务。MEMORY_TASK_NOT_RUNNING 错误明确 persisted=false，并引用原工具调用，正文和来源保留在原调用参数中，未额外保存恢复副本；迟到复盘可在明确的后续任务中引用原任务。不要为通过完成检查清空尚在范围内的 unresolved。
+
 checkpoint/transition/资源管理仍使用 analysis_session。任务 complete 前复核或显式放弃协作支线；不用把所有设想都变成待办。保留未决结论及交付范围。
 
 dsh_memory_read health 查看数据库、索引和宿主计数。写入失败必须明确“未持久化”；不能回落临时库、声称成功或自动重做外部实验。索引降级时仍可使用有范围限制的中文子串/标识符查询。

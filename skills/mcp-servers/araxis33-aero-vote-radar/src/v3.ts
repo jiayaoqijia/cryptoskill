@@ -262,6 +262,16 @@ export interface V3ScanGauge extends V3GaugeYield {
   symbol0?: string;
   symbol1?: string;
   kind?: string;
+  /** How steadily the pool has paid over the hourly history (v3History.ts); absent until it has enough hours. */
+  steady?: V3Steadiness;
+}
+
+/** Hourly samples of what 10,000 sAERO would earn a day in the pool: how many held up, out of how many, their average and low. */
+export interface V3Steadiness {
+  held: number;
+  of: number;
+  avgPer10k: number;
+  minPer10k: number;
 }
 
 /** Smallest block span a refused getLogs call is split down to before splitting its addresses instead. */

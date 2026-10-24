@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { LLMS_EXAMPLE_VEAERO, LLMS_MIN_CONSISTENCY, LLMS_VOTE_BASIS, renderLlmsTxt } from "../src/llms.js";
+import { LLMS_EXAMPLE_VEAERO, LLMS_MIN_CONSISTENCY, renderLlmsTxt } from "../src/llms.js";
 import type { PoolEfficiency } from "../src/efficiency.js";
 import { DEFAULT_MIN_CONSISTENCY } from "../src/constants.js";
 
@@ -72,20 +72,14 @@ test("llms.txt drops a spiky pool the page's consistency filter drops, instead o
   assert.match(txt, /0xsteady/);
 });
 
-test("llms.txt uses the same defaults the hosted page opens on", async () => {
+test("llms.txt uses the same consistency default as the CLI and MCP", async () => {
   const { readFile } = await import("node:fs/promises");
-  const html = await readFile(new URL("../docs/index.html", import.meta.url), "utf8");
-  const selected = (id: string) =>
-    html.match(new RegExp(`<select id="${id}">[\\s\\S]*?<option value="([^"]+)" selected>`))?.[1];
-  assert.equal(Number(selected("mincons")), LLMS_MIN_CONSISTENCY);
-  // The CLI's and MCP's recommend default is the page's too (2026-09-25).
+  // The weekly-vote controls left the hosted page with the Oct 24 cleanup; the CLI and MCP still share the default.
   assert.equal(DEFAULT_MIN_CONSISTENCY, LLMS_MIN_CONSISTENCY);
   const cli = await readFile(new URL("../src/cli.ts", import.meta.url), "utf8");
   assert.equal((cli.match(/"min-consistency", DEFAULT_MIN_CONSISTENCY\)/g) ?? []).length, 2, "recommend and backtest");
   const mcp = await readFile(new URL("../src/mcp-server.ts", import.meta.url), "utf8");
   assert.equal((mcp.match(/minConsistency = DEFAULT_MIN_CONSISTENCY/g) ?? []).length, 2, "recommend_allocation and backtest_strategy");
-  assert.equal(selected("votebasis"), LLMS_VOTE_BASIS);
-  assert.equal(Number(html.match(/<input id="veaero"[^>]*value="(\d+)"/)?.[1]), LLMS_EXAMPLE_VEAERO);
 });
 
 test("llms.txt says so plainly when nothing qualified instead of printing an empty list", () => {
