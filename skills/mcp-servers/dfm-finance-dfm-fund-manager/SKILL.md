@@ -10,11 +10,13 @@ metadata:
 
 # DFM fund manager
 
-DFM lets anyone launch an onchain fund: a basket of Solana tokens with declared weights, held by a
-vault no person holds the key to. Depositors put in USDC and get shares; a share is an equal claim on
+DFM is a permissionless launchpad for decentralized onchain funds. Anyone can launch an onchain fund: a
+basket of Solana tokens with declared weights, held by a vault no person holds the key to. Depositors put in USDC and get shares; a share is an equal claim on
 every token the vault holds. Entry and exit fees are the same for every fund (read them live with
 `get_vault` or at https://app.dfm.finance/docs/fees), split between creator and platform; there is no
-management or performance fee. **Real money on Solana mainnet. There is no testnet mode.**
+management or performance fee. Besides funds, the app wallet can buy and sell any Solana token Jupiter
+routes (`swap_quote` → `swap`). Call a fund an onchain fund, never an ETF or a DTF.
+**Real money on Solana mainnet. There is no testnet mode.**
 
 The tool list is whatever the server returns from `tools/list`; this file is the router.
 
@@ -61,6 +63,10 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
   already in use is refused.
 - **Season 0 cap:** every fund is capped at $1,000 of value; a deposit that would pass it is refused with the
   room that is left.
+- **XP:** never quote XP amounts or conditions from memory. `xp_status` returns the person's XP and the live
+  rules: `rules.howToEarn` (each action, what it pays, what it waits for) and `rules.doesNotEarn`. XP comes from
+  deposits, a completed profile, a linked X account, launching funds that keep money in them, and referrals;
+  redeeming earns nothing and never takes XP away.
 - **Fund policy:** every fund runs the same default policy; creator-set policies are coming in v2. There is
   no tool to change it.
 - **Writes need `DFM_AGENT_WRITE_ENABLED=true`** on the MCP process. Path A needs no API key for writes; path B
@@ -100,6 +106,7 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
 | "Swap 5 USDC to JUP" | `swap_quote` → `swap {inputMint, outputMint, amountRaw}` | signature, or "approve it in the app" | — |
 | "Withdraw my USDC" | `app_wallet_withdraw` · `withdraw_asset` | signature | — |
 | "My positions" | `get_portfolio` | shares and value | — |
+| "My XP" / "how do I earn XP?" | `xp_status` | total, by kind, `rules.howToEarn` | point to the next bonus the person can reach |
 | "Report a bug" | `report_bug {title, description}` | confirmation | — |
 
 `transfer_admin` and new `accept_admin_transfer` acceptances are **not available yet in this MCP**: they
