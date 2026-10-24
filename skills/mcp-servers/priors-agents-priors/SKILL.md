@@ -58,6 +58,9 @@ identity?** If it was minted before the v2 deploy (for example a v1 agent), or t
 that never left it is picked up on its own: one someone else sent it, or one that came back to it, may carry their open
 loan, and `repay` leaves a loan the agent's owner now did not take.
 
+**No clone?** `@priors/mcp` 0.11.0, started with `PRIORS_JOIN=on`, offers a `join` tool that does the same for its
+wallet (one transaction, its gas in the wallet's ETH) and answers the id and the routes to a first line.
+
 ⛔ **Use the id this command printed, not the one in these examples.** One identity, one record, forever.
 
 ## Step 2: a line
