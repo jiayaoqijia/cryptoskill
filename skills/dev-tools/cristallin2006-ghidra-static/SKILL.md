@@ -36,6 +36,8 @@ description: 恢复二进制函数语义、控制流/数据流、常量与算法
 
 | 文件 | 何时读 |
 |---|---|
+| [nginx 模块分析](references/nginx-module-analysis.md) | 模块/配置回调、真实请求 handler 或 master/worker/request 对象关联不清 |
+| [VM 状态与求逆](references/vm-state-inversion.md) | 指令位宽、副作用、就地读写版本、容器选择或可逆条件影响当前结论 |
 | [数据驱动恢复](references/data-driven-recovery.md) | 固定输出、未知数据表或代码/数据关系不清；需要区分布局、恢复假设和验证 |
 | [复合变换与搜索](references/transform-pipelines.md) | 数据布局已明确且有有限变换假设；需要求逆、约束搜索、等价去重或解释无命中 |
 | [P-code 位宽语义](references/pcode-width-contracts.md) | 伪码出现截断/溢出/符号扩展等疑点时核对 P-code 语义 |
@@ -44,7 +46,7 @@ description: 恢复二进制函数语义、控制流/数据流、常量与算法
 | `references/rust-binary.md` | triage 报 `lang_hints.rust=true` 或发现 Rust 特征串时 |
 | `references/cpp-binary.md` | C++ 样本：vtable/RTTI 恢复、this 指针类型化、STL 噪声过滤、MFC 消息映射 |
 | `references/classic-crypto.md` | 认出算法后的求逆执行：换表 base64/RC4/TEA 手撕、流水线求逆纪律（识别归 ghidra-core crypto-ident.md） |
-| `references/decompiler-pitfalls.md` | 要引用伪码下结论前：L0-L3 信任模型、反编译器失败模式表、五阶段流水线、质量门 6 条（decomp_lint.py 体检先行） |
+| `references/decompiler-pitfalls.md` | 结论依赖有疑点的伪码时，对照常量、类型、向量初始化、调用参数及控制流；按问题选视图，不固定全量体检 |
 | （已迁移） | 漏洞定位完成、要写 exp 时 → 转 **`pwn-exploit`** 场景 skill（`pwn-exploit/references/basic-chain.md`：checksec 打法树/ROP/libc 泄露/pwntools 骨架，WSL 工具链） |
 
 ## 补充专题入口

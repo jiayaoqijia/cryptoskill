@@ -36,7 +36,7 @@ it does not have to disclaim.
 
 | | |
 |---|---|
-| **Hosted page** | **[aero.deftools.xyz](https://aero.deftools.xyz)** — nothing to install. A scheduled job re-scans the chain every 4 hours; the allocation itself runs in your browser. |
+| **Hosted page** | **[aero.deftools.xyz](https://aero.deftools.xyz)** — nothing to install. A scheduled job re-scans Aero's seven networks every hour; the per-wallet split itself runs in your browser. |
 | **CLI** | `npx aero-vote-radar recommend --veaero 25000 --vote-ready` — a live scan off Base mainnet, nothing to clone. No API keys, no backend, no database. |
 | **MCP server** | `npx aero-vote-radar-mcp` — five tools for Claude or any MCP-capable agent: *"recommend an allocation for my 25,000 veAERO."* |
 
@@ -109,36 +109,31 @@ Two things worth calling out honestly, so the tool isn't oversold:
 
 ## Web app
 
-[aero.deftools.xyz](https://aero.deftools.xyz) is the same ranking and the same allocator, without installing anything.
+[aero.deftools.xyz](https://aero.deftools.xyz) tracks the live Aero (sAERO) system across Aero's seven networks (Base, Ethereum, Optimism, Arbitrum, Ink, Robinhood Chain, Arc), without installing anything. It is **not** the veAERO allocator described above — the weekly veAERO vote this README otherwise documents ended on October 21, 2026 (see the banner at the top); the hosted page is the new per-network, per-stake successor.
 
-It exists because the two halves of this tool have very different costs. The **scan** is heavy — one epoch-history call per live-gauge pool, several hundred of them — which a visitor's browser cannot do against a public RPC without being rate-limited into uselessness. The **allocation** is just arithmetic over an already-scanned list, and is instant.
+It exists because the two halves of this tool have very different costs. The **scan** is heavy — reading fees and incentives for every live gauge, across seven networks — which a visitor's browser cannot do against public RPCs without being rate-limited into uselessness. The **split** is just arithmetic over an already-scanned list, and is instant.
 
 So they're split:
 
-- A scheduled job (`.github/workflows/snapshot.yml`, every 4 hours) runs `npm run snapshot`, which performs the full live scan and writes [`docs/data/snapshot.json`](docs/data/snapshot.json). If the file changed, the job commits it. A scan that returns zero pools throws instead of publishing, so a rate-limited run can't blank out yesterday's perfectly good data.
-- [`docs/index.html`](docs/index.html) fetches that JSON and runs `allocateAcrossCandidates` + `toWholePercentWeights` — ported verbatim from `src/allocator.ts` — in the browser, per keystroke.
+- A scheduled job (`.github/workflows/v3.yml`, hourly) runs `npm run v3scan` (`src/v3-cli.ts`), which scans all seven networks and writes [`docs/data/v3.json`](docs/data/v3.json) plus an hourly history file, [`docs/data/v3-history.json`](docs/data/v3-history.json). If either changed, the job commits them. A network that fails to scan is recorded per-chain in `v3.json`'s `chains` field and the rest still publish; the run only fails outright if every network failed.
+- [`docs/index.html`](docs/index.html) fetches `data/v3.json` and, per keystroke, splits the entered sAERO amount across up to three pools in 5% steps, each step going wherever it adds the most after dilution (`arSplit` in the page's own script — a smaller, pool-count-capped version of the same self-dilution idea as `src/allocator.ts`, not that module ported verbatim).
 
-Nothing is sent anywhere: the page is a static file plus a JSON file, with no backend and no analytics. Because the personalised half runs client-side, changing your veAERO amount doesn't trigger a re-scan, and the snapshot can be shared by every visitor.
+Nothing is sent anywhere: the page is a static file plus a JSON file, with no backend and no analytics. Because the per-wallet half runs client-side, changing your sAERO amount doesn't trigger a re-scan, and the hourly scan can be shared by every visitor.
 
 The page also:
 
-- **Reads your voting power from an address.** Paste a wallet and it sums your locks' live voting power. This is read-only — the page never requests a wallet connection or a signature.
-- **Charts each pool's epoch history and which way it's moving.** Every row in the full ranking carries a six-epoch bar chart and a trend figure, and a *Which way incentives are moving* panel lists the five pools ramping hardest and the five fading hardest. The bar for the epoch still running is drawn as a dashed outline rather than a solid bar, because it is a part-week: showing it solid would draw a cliff on every pool in the table. Each pool is scaled to its own maximum — the column answers "which way is this pool going", not "is it bigger than that one", which the dollar columns beside it already answer.
-- **Shows how far each pool's live weight sits from its usual one.** A *Refill* column carries that ratio, and the *Vote weight to expect* control switches the ranking and the suggested allocation between last epoch's settled weight (the default) and the live tally. The Refill figure is a warning worth reading — a pool whose weight swings by an order of magnitude between epochs is a different proposition from a steady one — but it deliberately no longer drives the denominator: see the measurement above for why letting it do so made the tool worse.
-- **Shows what the whole pot is paying.** A protocol-wide table of every pool's incentives over every pool's votes, epoch by epoch. The per-pool ranking is about choosing *between* pools and looks identical whether the pot it divides is growing or collapsing — and across the five finished epochs in the snapshot this was written against, a veAERO vote went from $0.00100 to $0.00066. Reward tokens are valued at today's prices even for older epochs and only pools with a live gauge today are counted, which both push the older figures down, so a decline shown there is a floor on the real one.
-- **Copies the weights** as `93%  sAMM-WETH/msETH` lines, so they can go straight into Aerodrome's UI instead of being retyped from the screen.
-- **Labels each pool `vAMM` or `sAMM`** — volatile (`x·y=k`, for tokens whose prices move independently) versus stable (a flatter curve for pairs meant to hold the same value). Each row links to the pool contract on Basescan.
+- **Reads your wallet's stakes.** Paste an address and it looks up each stake's sAERO balance, current per-pool split and 47 h reallocation timer directly from Aero's `VotingEscrow` and per-network `LeafVoter` contracts — read-only, no wallet connection or signature.
+- **Ranks pools by $/day for your amount**, across all seven networks, restricted to pools with at least 100,000 sAERO staked on them, with fees (swept to allocators) and incentives (currently streaming) broken out.
+- **Lists the steadiest pools separately from the top payers** — pools that paid at least half their own average in 75%+ of the hours sampled so far, scored off the hourly history once a day of it has accumulated.
+- **Backs the 47 h-vs-weekly advice with a number**: a backtest over three weeks of pre-Aero Aerodrome fee data shows switching pools every 47 h (the reallocation cooldown) earning ~1.7× what moving once a week would have.
+- **Copies the chosen split as percentages** and links straight to [app.aero.xyz/markets/allocate](https://app.aero.xyz/markets/allocate), where you sign in your own wallet — this page never holds funds or requests a connection.
 
-**Why this reads `VotingEscrow` directly instead of `VeSugar.byAccount`:** that method returns one large struct per lock, including every vote each lock has cast, and on a public RPC it **reverts** for wallets holding many locks — `0xbde0…ea5a`, with 22 locks, fails outright. Both the web page and the CLI's `--address`/`my-veaero` instead make three plain calls against the `VotingEscrow` contract (`balanceOf` → `ownerToNFTokenIdList` → `balanceOfNFT`), all of which return single integers. Verified equal to the VeSugar path where VeSugar works (`0xde86…ee31`: both report `81.50845401781879`), and working on the 22-lock wallet where it doesn't. The contract address is read from `Voter.ve()` rather than copied from documentation. Note that voting power decays continuously toward a lock's expiry, so two reads seconds apart legitimately differ.
-
-The site is served by GitHub Pages from the `docs/` folder on `main`. To regenerate the snapshot by hand:
+The site is served by GitHub Pages from the `docs/` folder on `main`. To regenerate the scan by hand:
 
 ```bash
-npm run snapshot                      # writes docs/data/snapshot.json
-npm run snapshot -- some/other.json   # or somewhere else
+npm run v3scan                      # writes docs/data/v3.json and docs/data/v3-history.json
+npm run v3scan -- some/other.json   # or somewhere else
 ```
-
-**Verified parity:** for 25,000 veAERO with no consistency filter, the page and `npm run cli -- recommend --veaero 25000 --vote-ready` produce the same weights (76/20/2/1/1) and the same expected total, to the cent.
 
 ## Checking the vote basis yourself
 
@@ -593,6 +588,8 @@ below were captured in.
 Pass `--json` to any command for machine-readable output instead of a table — useful for piping into other scripts or tools.
 
 `recommend` and `backtest` take **either** `--veaero <amount>` **or** `--address <0x...>`; with an address they read your live voting power off-chain so you don't have to look it up and retype it.
+
+**Why `--address`/`my-veaero` read `VotingEscrow` directly instead of `VeSugar.byAccount`:** that method returns one large struct per lock, including every vote each lock has cast, and on a public RPC it **reverts** for wallets holding many locks — `0xbde0…ea5a`, with 22 locks, fails outright. The CLI instead makes three plain calls against the `VotingEscrow` contract (`balanceOf` → `ownerToNFTokenIdList` → `balanceOfNFT`), all of which return single integers. Verified equal to the VeSugar path where VeSugar works (`0xde86…ee31`: both report `81.50845401781879`), and working on the 22-lock wallet where it doesn't. The contract address is read from `Voter.ve()` rather than copied from documentation. Note that voting power decays continuously toward a lock's expiry, so two reads seconds apart legitimately differ.
 
 Real output from live runs (Base mainnet, no mocking):
 
