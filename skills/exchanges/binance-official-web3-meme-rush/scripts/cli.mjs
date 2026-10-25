@@ -7,6 +7,9 @@
 //   topic-rush  GET   AI-powered hot-topic discovery with associated tokens
 //
 
+import { realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
 // ---- inline HTTP helper (self-contained, zero dependency) ----
 const TIMEOUT_MS = 10_000;
 const UA = { 'Accept-Encoding': 'identity', 'User-Agent': 'binance-web3/2.0 (Skill)' };
@@ -71,7 +74,13 @@ const COMMANDS = {
 export { COMMANDS, call, qs, UA, TIMEOUT_MS, CHAINS, validateChainId };
 
 // ---- CLI dispatch (only runs when executed directly, not when imported) ----
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Compare real paths: skill directories are usually symlinks (e.g. ~/.claude/skills/<name>), and
+// import.meta.url resolves the link while process.argv[1] does not.
+const isMain = (() => {
+  try { return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1]); }
+  catch { return false; }
+})();
+if (isMain) {
   const [cmd, paramsStr] = process.argv.slice(2);
 
   if (!cmd || cmd === '--help' || cmd === '-h') {
