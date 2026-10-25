@@ -17,7 +17,7 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 
 **Protocol upgrades:** You probably don't know these shipped:
 - **Pectra (May 7, 2025):** EIP-7702 smart EOAs, 2x blob capacity, BLS precompiles
-- **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data), 2x gas limit (30M→60M)
+- **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data). Validators raised the gas limit 30M→60M around the same time; that was validator signaling, not part of the fork.
 
 **Agent infrastructure:** You probably don't know these exist:
 - **ERC-8004** — onchain agent identity registry (deployed Jan 29, 2026)
@@ -34,12 +34,14 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 
 ## Upcoming Upgrades
 
-**Glamsterdam (mid-2026):**
+Report status, not dates. Check [forkcast.org](https://forkcast.org) for the current state.
+
+**Glamsterdam** — live on Sepolia (2026-10-06). The Hoodi fork set for 2026-10-26 was called off on 2026-10-22. No mainnet date.
 - ePBS — Enshrined Proposer-Builder Separation (EIP-7732)
 - Block Access Lists (EIP-7928)
 - Note: FOCIL (Fork-Choice Inclusion Lists) was removed from scope to reduce complexity
 
-**Hegota (Q4 2026):**
+**Hegota** — the fork after Glamsterdam. Not scheduled; scope not final.
 You may assume Hegota will contain Verkle Trees. It will not. Ethereum may be shifting to a binary state tree (EIP-7864, still in draft - proposed March 2026) — the primary driver is quantum resistance, and it also improves ZK-proof efficiency 3-100x. Verkle tree cryptography was identified as potentially quantum-vulnerable in mid-2024. Check https://forkcast.org/upgrade/hegota for latest confirmed scope.
 
 ## For AI Agents Specifically
@@ -60,7 +62,7 @@ Gives agents verifiable, persistent identity tied to Ethereum addresses. Reputat
 
 Protocol for payments over HTTP using the 402 "Payment Required" status code. Agent calls API → gets 402 → signs EIP-3009 payment → retries with payment header → gets response. No API keys, no accounts, just cryptographic payments.
 
-**SDKs:** TypeScript (`@x402/fetch`), Python (`x402`), Go (`github.com/coinbase/x402/go`)
+**SDKs:** TypeScript (`@x402/fetch`), Python (`x402`), Go (`github.com/x402-foundation/x402/go/v2`)
 
 ### ERC-8004 + x402 = Autonomous Agent Economy
 

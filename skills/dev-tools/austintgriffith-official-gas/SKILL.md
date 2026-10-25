@@ -8,12 +8,12 @@ description: Use when quoting a gas or dollar cost for a transaction or deployme
 Your trained gas-price and ETH-price priors are stale. Never quote a transaction cost or exclude a chain for cost reasons without measuring the relevant chain now.
 
 ```bash
-# Mainnet. If it fails: https://eth.drpc.org, https://rpc.flashbots.net
-cast gas-price --rpc-url https://ethereum-rpc.publicnode.com
+# Use the project's own RPC provider (Alchemy, Infura, QuickNode) for the chain under consideration.
+cast gas-price --rpc-url "$MAINNET_RPC_URL"
+cast gas-price --rpc-url "$BASE_RPC_URL"
 
-# Example L2; query the chain actually under consideration.
-# Base fallback: https://base.publicnode.com
-cast gas-price --rpc-url https://mainnet.base.org
+# No provider key yet? Public endpoints work for a one-off read, but are rate-limited.
+# Never ship them in an app. Mainnet: https://ethereum-rpc.publicnode.com  Base: https://mainnet.base.org
 ```
 
 `cast gas-price` returns the base fee plus a suggested tip — what a transaction actually pays, so it is the reading the formula below takes. `cast base-fee` returns the base fee alone; use it for setting `maxFeePerGas`, and never add a separate priority fee on top of a `gas-price` reading.

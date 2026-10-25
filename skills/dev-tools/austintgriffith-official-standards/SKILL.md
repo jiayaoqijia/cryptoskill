@@ -35,7 +35,7 @@ Either implementation is fine — the scoped SDKs, or your own handler posting t
 
 ## EIP-7702 — contract code on an EOA the user already has
 
-Live on Ethereum mainnet since Pectra, **2025-05-07**. The EOA signs an authorization **with its own key** (a type `0x04` transaction) that writes a delegation designator, `0xef0100 || implementation address`, into the account. Calls to that same address then execute the implementation's code — an approve+swap batched atomically, sponsored gas, session-key auth — with the address, key, ENS name and history untouched. Deploying a fresh ERC-4337 wallet instead puts the user at a **new address**, which is what to reject whenever the existing address has to survive.
+Live on Ethereum mainnet since Pectra, **2025-05-07**. The EOA signs an authorization **with its own key**. That signed tuple rides in a type `0x04` transaction, which anyone (a relayer or sponsor) can send, and it writes a delegation designator, `0xef0100 || implementation address`, into the account. Calls to that same address then execute the implementation's code — an approve+swap batched atomically, sponsored gas, session-key auth — with the address, key, ENS name and history untouched. Deploying a fresh ERC-4337 wallet instead puts the user at a **new address**, which is what to reject whenever the existing address has to survive.
 
 The delegation **persists**. It stays in place until a later authorization replaces it, or clears it by delegating to the zero address. It is not single-transaction-only and does not auto-revert when the batched call finishes.
 

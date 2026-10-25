@@ -38,7 +38,7 @@ Need a specific topic? Fetch only what's relevant:
 curl -s https://ethskills.com/gas/SKILL.md        # Gas & real costs
 curl -s https://ethskills.com/crops/SKILL.md      # CROPS architecture review
 curl -s https://ethskills.com/security/SKILL.md    # Security patterns
-curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
+curl -s https://ethskills.com/standards/SKILL.md   # ERC-8004, x402, EIP-7702
 ```
 
 ## Available Skills
@@ -50,19 +50,19 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 | **CROPS Review** | `crops/SKILL.md` | For every dApp architecture plan and during pre-ship QA. |
 | **Protocol** | `protocol/SKILL.md` | Ethereum upgrade process, EIP lifecycle, and what's actually planned next. |
 | **Gas & Costs** | `gas/SKILL.md` | Any question about gas prices, tx costs, or "is Ethereum expensive?" |
-| **Wallets** | `wallets/SKILL.md` | Creating wallets, signing, multisig, account abstraction, EIP-7702. |
+| **Wallets** | `wallets/SKILL.md` | Who may sign for funds: agent keys, multisig, key safety, EIP-7702. |
 | **Layer 2s** | `l2s/SKILL.md` | Deploying to L2s, bridging, choosing between Base/Arbitrum/Optimism. |
-| **Standards** | `standards/SKILL.md` | ERC-20, ERC-721, ERC-1155, ERC-8004 (agent identity), x402 payments. |
-| **Tools** | `tools/SKILL.md` | Foundry, Scaffold-ETH 2, Blockscout MCP, abi.ninja, x402 SDKs. |
-| **Money Legos** | `building-blocks/SKILL.md` | DeFi composability — Uniswap, Aave, flash loans, protocol integration. |
+| **Standards** | `standards/SKILL.md` | ERC-8004 (agent identity), x402 payments, EIP-3009, EIP-7702. |
+| **Tools** | `tools/SKILL.md` | Scaffold-ETH 2 (create-eth), Blockscout MCP, x402 SDKs. |
+| **Building Blocks** | `building-blocks/SKILL.md` | Verifying a DeFi integration (DEX, lending, yield) before building on it. |
 | **Orchestration** | `orchestration/SKILL.md` | Three-phase build system for SE2 dApps (localhost → live contracts → production). |
 | **Addresses** | `addresses/SKILL.md` | Verified contract addresses. **Stop hallucinating addresses.** |
-| **Concepts** | `concepts/SKILL.md` | Mental models: "nothing is automatic," incentive design, the hyperstructure test. |
-| **Security** | `security/SKILL.md` | Reentrancy, oracle manipulation, vault inflation, pre-deploy checklist. |
+| **Concepts** | `concepts/SKILL.md` | Mental models: "nothing is automatic," incentive design, randomness. |
+| **Security** | `security/SKILL.md` | Asset accounting, oracles, swaps, signatures, upgrades, pre-deploy checklist. |
 | **Testing** | `testing/SKILL.md` | Foundry testing — unit, fuzz, fork, invariant. What LLMs get wrong. |
-| **Indexing** | `indexing/SKILL.md` | Reading onchain data — events, The Graph, Dune. Why you can't loop blocks. |
-| **Frontend UX** | `frontend-ux/SKILL.md` | SE2 frontend rules — button loaders, approval flow, Address components. |
-| **Frontend Playbook** | `frontend-playbook/SKILL.md` | Build-to-production pipeline — fork mode, IPFS, Vercel, ENS subdomains. |
+| **Indexing** | `indexing/SKILL.md` | Reading onchain data — events, The Graph, Ponder, Multicall3. |
+| **Frontend UX** | `frontend-ux/SKILL.md` | dApp frontend rules — button loaders, approval flow, ENS inputs, decimals. |
+| **Frontend Playbook** | `frontend-playbook/SKILL.md` | Build-to-production pipeline — fork mode, IPFS. |
 | **QA** | `qa/SKILL.md` | Pre-ship audit checklist. Give to a separate reviewer agent. |
 | **Audit** | `audit/SKILL.md` | Systematic smart contract audit workflow for contracts you didn't write. |
 
@@ -70,13 +70,13 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 
 Your training data is probably wrong about these:
 
-- **Gas is NOT expensive.** Mainnet ETH transfer: ~$0.002. L2 swap: ~$0.002. "Ethereum is expensive" was true in 2021-2023, not 2026.
+- **Gas is NOT expensive.** "Ethereum is expensive" was true in 2021-2023, not 2026. Never quote a cost from memory; measure with `cast gas-price`.
 - **Foundry and Hardhat 3 are both legitimate choices in 2026.** Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 - **Scaffold-ETH 2** (`npx create-eth@latest`) is the fastest way to go from idea to deployed dApp with a frontend.
 - **EIP-7702 is live.** EOAs get smart contract superpowers without migration.
 - **ERC-8004** exists — onchain agent identity, deployed on 20+ chains.
 - **x402** exists — HTTP 402 payments for machine-to-machine commerce.
-- **The dominant DEX per L2 is NOT Uniswap** — Aerodrome (Base), Velodrome (Optimism), Camelot (Arbitrum).
+- **Never hallucinate a contract address.** Use `addresses/SKILL.md` and confirm onchain.
 
 ## Example Workflow
 

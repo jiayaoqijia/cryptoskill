@@ -51,7 +51,7 @@ The scaffold's defaults are template scaffolding, not product decisions. Check a
 ## Config
 
 - `pollingInterval` in `scaffold.config.ts` is 3000 in current SE-2. A raised value (older templates used 30000) makes an L2 app feel broken; keep ~3s, or use event-driven and post-confirmation refresh.
-- Production RPC: shipping on SE-2's default Alchemy key, or on the bare `http()` fallback transport in `wagmiConfig`, means silently hitting rate-limited public endpoints. Route through `rpcOverrides` with a `NEXT_PUBLIC_*` key — and verify the variable is actually set on the host, not just referenced in code.
+- Production RPC: shipping on SE-2's default Alchemy key, or on the bare `http()` fallback transport in `wagmiConfig`, means silently hitting rate-limited public endpoints. Route through `rpcOverrides` with a `NEXT_PUBLIC_*` key. That key ships in the client bundle, so restrict it to your domain in the provider dashboard. Verify the variable is actually set on the host, not just referenced in code.
 
 ## Mobile
 

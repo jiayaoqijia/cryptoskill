@@ -21,7 +21,7 @@ Use the generated Foundry/Next.js monorepo, wallet integration, contract hooks, 
 
 - Use `yarn chain` for isolated contracts, mocks, and unit tests.
 - Use `yarn fork --network <chain>` when behavior depends on deployed protocols, tokens, balances, or other real chain state.
-- In fork mode, point the frontend at the local Anvil network (`chains.foundry`, chain ID 31337), not the upstream chain being copied. Switch to the real target chain only for a real deployment.
+- In fork mode, point the frontend at the local network (`chains.foundry`, or `chains.hardhat` in the Hardhat flavor; chain ID 31337), not the upstream chain being copied. Switch to the real target chain only for a real deployment.
 
 A fork also grants powers the real chain does not. Fund demo identities from state that already exists rather than deploying a mock token:
 
