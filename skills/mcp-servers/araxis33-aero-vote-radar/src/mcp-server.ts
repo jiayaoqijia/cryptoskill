@@ -1,56 +1,34 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { createRequire } from "node:module";
-import { rankPoolsByEfficiency } from "./efficiency.js";
-import { withoutMigrating } from "./pools.js";
-import {
-  recommendAllocation,
-  toWholePercentWeights,
-  expectedUsdForWholePercentVote,
-  unallocatedVeAero,
-  voteBasisCaveat,
-} from "./allocator.js";
-import { backtestLive } from "./backtest.js";
-import { buildVoteCalldata } from "./calldata.js";
-import { fetchVeAeroPositions } from "./veAero.js";
-import {
-  BACKTEST_EPOCHS,
-  DEFAULT_MIN_CONSISTENCY,
-  MAX_BACKTEST_EPOCHS,
-  WEEKLY_VOTE_ENDED_NOTE,
-  weeklyVoteEnded,
-} from "./constants.js";
+import { ALLOCATE_URL, CHAIN_NAMES, fetchScan, poolToJson, rankPools, scanAgeHours, splitAllocation, splitToText, steadyPools } from "./radar.js";
+import { currentSplitPays, readWalletStakes, timersByChain } from "./stakes.js";
 import { formatError, isValidAddress } from "./util.js";
-import { computeTrend, isEpochInProgress } from "./trend.js";
 
 /**
- * Resolves a veAERO budget from either an explicit amount or a wallet address,
- * shared by the allocation and backtest tools so both accept the same input.
+ * Resolves an sAERO amount from either an explicit amount or a wallet address,
+ * and returns the wallet when one was read so the caller can report its split.
  */
-export async function resolveVeAeroBudget(veAero?: number, address?: string): Promise<number> {
-  if (veAero !== undefined && address !== undefined) {
-    throw new Error("Pass either veAero or address, not both.");
-  }
+export async function resolveSAero(amount?: number, address?: string) {
+  if (amount !== undefined && address !== undefined) throw new Error("Pass either amount or address, not both.");
   if (address !== undefined) {
-    const positions = await fetchVeAeroPositions(address);
-    const total = positions.reduce((a, b) => a + b.votingPowerVeAero, 0);
-    if (total <= 0) throw new Error(`No veAERO voting power found for ${address} — nothing to allocate.`);
-    return total;
+    if (!isValidAddress(address)) throw new Error(`Not a wallet address: ${address}`);
+    const wallet = await readWalletStakes(address);
+    if (!(wallet.totalSAero > 0)) throw new Error(`No sAERO stake found for ${address} on Base — nothing to allocate.`);
+    return { amount: wallet.totalSAero, wallet };
   }
-  if (veAero === undefined) throw new Error("Provide either veAero (an amount) or address (a wallet to read it from).");
-  return veAero;
+  if (amount === undefined) throw new Error("Provide either amount (sAERO) or address (a wallet to read it from).");
+  return { amount, wallet: undefined };
 }
 
 /**
- * Wraps a tool handler so a thrown error (almost always a failed RPC or
- * price-lookup call, since this server holds one process open across many
- * calls) comes back as a clean one-line `formatError` message instead of the
- * MCP SDK's own catch-all, which surfaces viem's raw `.message` — a
- * multi-paragraph dump of docs links and version info that buries the actual
- * problem for whatever agent is consuming this tool.
+ * Wraps a tool handler so a thrown error (a failed fetch or RPC call, since
+ * this server holds one process open across many calls) comes back as a clean
+ * one-line `formatError` message instead of the SDK's raw dump.
  */
 function withErrorHandling<Args extends unknown[]>(
   handler: (...args: Args) => Promise<{ content: { type: "text"; text: string }[] }>,
@@ -64,13 +42,12 @@ function withErrorHandling<Args extends unknown[]>(
   };
 }
 
+const json = (value: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }] });
+
 /**
- * Read from package.json rather than repeated here. The two had already been
- * written twice and would have drifted at the first release, leaving clients
- * told one version by the manifest and another by the handshake.
- *
- * `../package.json` resolves from both `src/` under tsx and `dist/` when
- * installed, since the manifest ships with the package either way.
+ * Read from package.json rather than repeated here, so the manifest and the
+ * handshake can't drift. `../package.json` resolves from both `src/` under tsx
+ * and `dist/` when installed.
  */
 const { version } = createRequire(import.meta.url)("../package.json") as { version: string };
 
@@ -79,250 +56,95 @@ const server = new McpServer({
   version,
 });
 
+const chainSchema = z
+  .enum(Object.keys(CHAIN_NAMES) as [string, ...string[]])
+  .optional()
+  .describe("Only pools on this network. Omit for all networks.");
+
+const SCAN_NOTE =
+  "Figures are per day at the rates of the latest hourly scan: fees swept to allocators over the scan window plus incentives streaming now, split by the pool's allocated sAERO after the user's own stake joins it. They move hour to hour; they are not a promise.";
+
 server.registerTool(
-  "list_pool_efficiency",
+  "list_pools",
   {
-    title: "List Aerodrome pool vote efficiency",
+    title: "List Aero pools by what sAERO earns there",
     description:
-      "Ranks all live-gauge Aerodrome (Base) pools by current and trend-predicted USD value per veAERO vote, using live on-chain data from Aerodrome's Sugar contracts plus DefiLlama USD pricing. 'Predicted' is the trailing average of recent epochs capped at what the last completed epoch paid, not a machine-learning forecast. Each pool also reports `momentum`: the recent completed epochs' average over the older ones', minus 1 (null without enough history) — direction that the trailing average and consistency alone can't show.",
+      "Ranks Aero (formerly Aerodrome) pools on all 7 of its networks by what a given amount of sAERO would earn a day after its own stake dilutes the pool. Reads the hourly scan of Aero's contracts behind aero.deftools.xyz. Pools with under 100,000 sAERO allocated are left out: one stake would move their rate. `steadyOnly` keeps only pools that kept paying hour after hour (at least 75% of 24+ hourly samples at half their own average or more).",
     inputSchema: {
-      top: z.number().int().positive().max(100).optional().describe("How many top pools to return (default 20)"),
-      minConsistency: z
-        .number()
-        .min(0)
-        .max(1)
-        .optional()
-        .describe("Only include pools whose consistency score is at least this (0..1). 1.00 = identical payout every epoch; a low score usually means one big one-off bribe rather than a repeatable opportunity."),
+      amount: z.number().positive().default(10_000).describe("sAERO to rank for. Default 10,000."),
+      chain: chainSchema,
+      top: z.number().int().positive().max(100).default(15).describe("How many pools to return."),
+      steadyOnly: z.boolean().default(false).describe("Only pools that paid steadily over the hourly history."),
     },
   },
-  withErrorHandling(async ({ top = 20, minConsistency = 0 }) => {
-    const ranked = await rankPoolsByEfficiency();
-    const eligible = ranked.filter((p) => p.consistency >= minConsistency);
-    const asOfUnixSeconds = Math.floor(Date.now() / 1000);
-    const rows = eligible.slice(0, top).map((p) => {
-      const currentEpochPartial = isEpochInProgress(p.latestEpochTs, asOfUnixSeconds);
-      const { momentum } = computeTrend(p.epochUsdSeries, currentEpochPartial);
-      return {
-        pool: p.pool.address,
-        symbol: p.pool.symbol,
-        currentVotesVeAero: p.currentVotesVeAero,
-        currentValuePerVoteUsd: p.currentValuePerVote,
-        predictedValuePerVoteUsd: p.predictedValuePerVote,
-        predictiveEdgePct: p.predictiveEdge * 100,
-        epochsObserved: p.epochsObserved,
-        volatility: p.volatility,
-        consistency: p.consistency,
-        momentum,
-        migrating: !!p.pool.migrating,
-      };
+  withErrorHandling(async ({ amount, chain, top, steadyOnly }) => {
+    const scan = await fetchScan();
+    const ranked = (steadyOnly ? steadyPools(scan, amount, chain) : rankPools(scan, amount, chain)).slice(0, top);
+    return json({
+      checkedAt: scan.checkedAt,
+      scanAgeHours: Math.round(scanAgeHours(scan) * 10) / 10,
+      windowHours: scan.windowHours,
+      amountSAero: amount,
+      pools: ranked.map((r) => ({ ...poolToJson(r.gauge, scan.windowHours, amount), yourUsdPerDay: r.mine })),
+      note: SCAN_NOTE,
     });
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify({ poolsConsidered: ranked.length, poolsPassingConsistency: eligible.length, top: rows }, null, 2),
-        },
-      ],
-    };
   }),
 );
 
 server.registerTool(
   "recommend_allocation",
   {
-    title: "Recommend a veAERO vote allocation",
+    title: "Recommend how to split sAERO across Aero pools",
     description:
-      "Given a veAERO amount, recommends how to split votes across the current highest-efficiency Aerodrome pools using a greedy marginal-value ('water-filling') algorithm that accounts for self-dilution — voting more of your own veAERO into a pool measurably lowers your own $-per-vote there. Output is weights and expected USD only; this tool never touches a wallet, private key, or sends any transaction. The user reviews the recommendation and votes themselves on aerodrome.finance.",
+      "Suggests how to allocate sAERO across up to 3 Aero pools in 5% steps: each step goes where it adds the most after dilution, so a large stake spreads out instead of crowding one pool. Pass `amount`, or `address` to read the wallet's sAERO on-chain — then the answer also has what its current split pays and its 47 h timer on each network (a stake can move only 47 h after its last allocation there). Output only: this tool holds no keys and sends nothing. The user enters the split themselves on Aero's Allocate page; Aero has no link that pre-fills it.",
     inputSchema: {
-      veAero: z.number().positive().finite().optional().describe("Amount of veAERO voting power to allocate. Omit this if you pass `address` instead."),
-      address: z
-        .string()
-        .refine(isValidAddress, "Must be a 0x-prefixed 40-character hex address")
-        .optional()
-        .describe("Base wallet address to read live voting power from, instead of stating an amount. Pass either this or veAero, not both."),
-      topCandidates: z.number().int().positive().max(50).optional().describe("How many top-ranked pools to consider as candidates (default 15)"),
-      minConsistency: z
-        .number()
-        .min(0)
-        .max(1)
-        .optional()
-        .describe(`Only allocate to pools whose consistency score is at least this (0..1), filtering out pools whose apparent value is one one-off bribe. Default ${DEFAULT_MIN_CONSISTENCY}, the same as the hosted page; pass 0 to consider every pool.`),
-      maxWeight: z
-        .number()
-        .gt(0)
-        .max(1)
-        .optional()
-        .describe(
-          "Cap on any single pool's share of the vote (0..1, default 1 = uncapped). The unconstrained optimum is often one pool at 100%, which is correct arithmetic and more concentration than many voters want. Too tight a cap for the candidate set leaves part of the budget unplaceable and the call fails rather than silently renormalising past the cap.",
-        ),
-      voteBasis: z
-        .enum(["previous", "current", "typical"])
-        .optional()
-        .describe(
-          "Which vote weight to judge each pool against (default 'previous'). Each option is a prediction of the weight the epoch will settle at, chosen by measuring that prediction: 'previous' uses last epoch's settled weight (most accurate, unbiased), 'current' the live mid-week tally (slightly worse), 'typical' the larger of the tally and the pool's usual weight (measured clearly worst; kept only for reproducibility).",
-        ),
+      amount: z.number().positive().optional().describe("sAERO to allocate. Pass this or address."),
+      address: z.string().optional().describe("A Base wallet whose sAERO stakes to read. Pass this or amount."),
+      chain: chainSchema,
     },
   },
-  withErrorHandling(async ({ veAero, address, topCandidates = 15, minConsistency = DEFAULT_MIN_CONSISTENCY, maxWeight = 1, voteBasis = "previous" }) => {
-    if (weeklyVoteEnded()) throw new Error(WEEKLY_VOTE_ENDED_NOTE);
-    const budget = await resolveVeAeroBudget(veAero, address);
-    // Same rule as the CLI: pools Aerodrome is migrating are never recommended.
-    const ranked = withoutMigrating(await rankPoolsByEfficiency()).filter((p) => p.consistency >= minConsistency);
-    const allocation = recommendAllocation(ranked, budget, topCandidates, undefined, maxWeight, voteBasis);
-
-    // Zero qualifying pools is a distinct failure from "maxWeight too tight":
-    // unallocatedVeAero(allocation=[], ...) returns the *whole* budget (nothing
-    // was spent), which would otherwise always read as "unplaced > 0" below and
-    // blame maxWeight even when it's untouched at its uncapped default of 1.
-    if (allocation.length === 0) {
-      throw new Error(
-        minConsistency > 0
-          ? `No live-gauge pool passes minConsistency ${minConsistency} right now — try a lower value.`
-          : "No live-gauge pool with a big enough trailing average is available to allocate to right now.",
-      );
-    }
-
-    // Same guard the CLI applies: toWholePercentWeights normalises by the
-    // weights it is handed, so publishing a part-spent allocation would restore
-    // the concentration the cap was asked to prevent.
-    const unplaced = unallocatedVeAero(allocation, budget);
-    if (unplaced > 0) {
-      throw new Error(
-        `maxWeight ${maxWeight} is too tight for the ${allocation.length} pool(s) that qualified: ${Math.round((unplaced / budget) * 100)}% of the veAERO has nowhere to go. Raise maxWeight, raise topCandidates, or lower minConsistency.`,
-      );
-    }
-    const totalExpectedUsd = allocation.reduce((a, b) => a + b.expectedUsd, 0);
-    const votePercents = toWholePercentWeights(allocation);
-    const votePercentsExpectedUsd = expectedUsdForWholePercentVote(allocation, budget);
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(
-            {
-              veAeroBudget: budget,
-              budgetSource: address ? `live on-chain voting power of ${address}` : "caller-supplied amount",
-              totalExpectedUsdNextEpoch: totalExpectedUsd,
-              votePercentsExpectedUsdNextEpoch: votePercentsExpectedUsd,
-              allocation,
-              votePercents,
-              voteBasis,
-              // Null on most calls, by design: it appears only when this
-              // budget sits on the side of the measured crossover where the
-              // chosen basis is the one the evidence does not favour. An agent
-              // relaying a recommendation should relay this with it.
-              voteBasisCaveat: voteBasisCaveat(budget, voteBasis),
-              note: "Weights and expected $ are a heuristic recommendation based on trailing-epoch trends and current vote snapshots, not a guarantee. `votePercents` are whole percentages summing to exactly 100, ready to enter in Aerodrome's voting UI. Quote `votePercentsExpectedUsdNextEpoch` when telling the user what they would earn: `totalExpectedUsdNextEpoch` belongs to the continuous `allocation`, which includes rows too small to round up to 1% and so cannot be voted as written. If `voteBasisCaveat` is not null, pass it on: at this budget the vote basis used is the one the evidence does not favour, and the user should hear that alongside the numbers it produced. You sign and submit the vote yourself.",
-            },
-            null,
-            2,
-          ),
-        },
-      ],
-    };
+  withErrorHandling(async ({ amount, address, chain }) => {
+    const resolved = await resolveSAero(amount, address);
+    const scan = await fetchScan();
+    const split = splitAllocation(rankPools(scan, resolved.amount, chain).map((r) => r.gauge), resolved.amount);
+    return json({
+      checkedAt: scan.checkedAt,
+      amountSAero: resolved.amount,
+      split: split.map((s) => ({ ...poolToJson(s.gauge, scan.windowHours, s.amount), percent: Math.round(s.share * 100), sAero: s.amount })),
+      splitUsdPerDay: split.reduce((a, s) => a + s.perDay, 0),
+      splitText: splitToText(split),
+      current: resolved.wallet ? currentSplitPays(resolved.wallet, scan) : null,
+      timers: resolved.wallet ? timersByChain(resolved.wallet) : null,
+      notRead: resolved.wallet ? resolved.wallet.failed : null,
+      allocateUrl: ALLOCATE_URL,
+      note: `${SCAN_NOTE} Timers are Unix seconds when a stake may move again on that network. Do not describe the allocation as done: the user saves it on ${ALLOCATE_URL}.`,
+    });
   }),
 );
 
 server.registerTool(
-  "backtest_strategy",
+  "get_my_stakes",
   {
-    title: "Backtest the vote-allocation strategy against past epochs",
+    title: "Get a wallet's sAERO stakes, timers and current split",
     description:
-      "Replays recent completed epochs and compares what this tool's self-dilution-aware allocation would have earned against the naive 'put everything in the pool with the highest current $/vote' strategy. Each epoch's decision uses only data that existed before that epoch resolved, so it is not a hindsight fit. Caveats: it assumes your votes would not have changed other voters' behaviour, only sees pools whose gauge is still alive today (survivorship bias), and a handful of weekly epochs is a small sample.",
+      "Reads a Base wallet's sAERO stakes from Aero's VotingEscrow, and on each of Aero's 7 networks the stake's 47 h timer and which pools it has allocated to, from that network's LeafVoter. Also what that split pays a day at the latest scan's rates. A network that does not answer is listed in `notRead` rather than failing the call.",
     inputSchema: {
-      veAero: z.number().positive().finite().optional().describe("Amount of veAERO to simulate voting with. Omit this if you pass `address` instead."),
-      address: z
-        .string()
-        .refine(isValidAddress, "Must be a 0x-prefixed 40-character hex address")
-        .optional()
-        .describe("Base wallet address to read live voting power from, instead of stating an amount."),
-      epochs: z.number().int().positive().max(MAX_BACKTEST_EPOCHS).optional().describe(`How many past epochs to replay (default ${BACKTEST_EPOCHS}, max ${MAX_BACKTEST_EPOCHS})`),
-      minConsistency: z
-        .number()
-        .min(0)
-        .max(1)
-        .optional()
-        .describe(
-          `Only allocate to pools whose consistency — measured over the trailing window as it stood before each tested epoch, never today's — was at least this (0..1). Default ${DEFAULT_MIN_CONSISTENCY}, the same as the allocation tool's, so the backtest scores the strategy it recommends; pass 0 to score the unfiltered strategy. The naive baseline stays unfiltered either way, so uplift figures remain comparable.`,
-        ),
-    },
-  },
-  withErrorHandling(async ({ veAero, address, epochs = BACKTEST_EPOCHS, minConsistency = DEFAULT_MIN_CONSISTENCY }) => {
-    const budget = await resolveVeAeroBudget(veAero, address);
-    const report = await backtestLive(budget, epochs, undefined, minConsistency);
-
-    return {
-      content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
-    };
-  }),
-);
-
-server.registerTool(
-  "get_my_veaero",
-  {
-    title: "Get an account's veAERO voting power",
-    description: "Looks up all veAERO locks (NFTs) owned by a Base wallet address and their current voting power, read from Aerodrome's VotingEscrow contract.",
-    inputSchema: {
-      address: z
-        .string()
-        .refine(isValidAddress, "Must be a 0x-prefixed 40-character hex address")
-        .describe("Base wallet address (0x...)"),
+      address: z.string().describe("The Base wallet address (0x…)."),
     },
   },
   withErrorHandling(async ({ address }) => {
-    const positions = await fetchVeAeroPositions(address);
-    const totalVeAero = positions.reduce((a, b) => a + b.votingPowerVeAero, 0);
-
-    return {
-      content: [{ type: "text", text: JSON.stringify({ address, totalVeAero, locks: positions }, null, 2) }],
-    };
-  }),
-);
-
-server.registerTool(
-  "prepare_vote_calldata",
-  {
-    title: "Build the unsigned transaction that casts a recommended vote",
-    description:
-      "Turns a vote allocation into the exact bytes Aerodrome's Voter.vote expects, as an unsigned transaction (chainId, to, value, data) for the veNFT owner to review and sign in their own wallet. This server holds no keys, signs nothing and sends nothing — the output is inert until someone signs it. Weights must be whole percentage points totalling 100, which is what `recommend_allocation` returns in `votePercents`; anything else is refused rather than normalised, so the bytes always match the table the user was shown.",
-    inputSchema: {
-      tokenId: z
-        .string()
-        .regex(/^[0-9]+$/, "veNFT id must be a positive whole number")
-        .describe("The veNFT to cast from, as a decimal string. Ids exceed Number.MAX_SAFE_INTEGER, so pass a string. `get_my_veaero` lists an account's locks; a wallet with several has no default — ask which one."),
-      votePercents: z
-        .array(
-          z.object({
-            pool: z.string().refine(isValidAddress, "Must be a 0x-prefixed 40-character hex address"),
-            symbol: z.string(),
-            percent: z.number().int().positive(),
-          }),
-        )
-        .min(1)
-        .describe("The `votePercents` array from `recommend_allocation`, unchanged: pool address, symbol and whole-percent weight, totalling 100."),
-    },
-  },
-  withErrorHandling(async ({ tokenId, votePercents }) => {
-    if (weeklyVoteEnded()) throw new Error(WEEKLY_VOTE_ENDED_NOTE);
-    const tx = buildVoteCalldata(tokenId, votePercents);
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(
-            {
-              ...tx,
-              note: "Unsigned and unsent. Show the user the pools, the weights and the `to` address, and tell them plainly that signing it in their own wallet is what casts the vote and that only the owner of that veNFT can. Do not describe the vote as cast, submitted or done. `value` is zero: voting moves no funds, but the transaction does commit that veNFT's voting power for the epoch.",
-            },
-            null,
-            2,
-          ),
-        },
-      ],
-    };
+    if (!isValidAddress(address)) throw new Error(`Not a wallet address: ${address}`);
+    const [wallet, scan] = await Promise.all([readWalletStakes(address), fetchScan()]);
+    return json({
+      address,
+      stakeCount: wallet.count,
+      totalSAero: wallet.totalSAero,
+      stakes: wallet.stakes.map((s) => ({ id: s.id.toString(), sAero: s.sAero, chains: s.chains })),
+      timers: timersByChain(wallet),
+      notRead: wallet.failed,
+      current: currentSplitPays(wallet, scan),
+      note: "readyAt and timers are Unix seconds; 0 means the stake has never allocated on that network and can do so right away.",
+    });
   }),
 );
 
@@ -331,12 +153,11 @@ async function main() {
   await server.connect(transport);
 }
 
-// Only run the server when this file is executed directly (as the CLI binary
-// or via `npx tsx src/mcp-server.ts`), not when it's imported — e.g. by tests
-// importing `resolveVeAeroBudget`. `server.connect` never resolves for the
-// life of the stdio connection, so importing this module would otherwise hang
-// the importing process forever waiting on stdin.
-const isMainModule = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+// Only run the server when this file is executed directly, not when it's
+// imported (e.g. by tests importing `resolveSAero`): `server.connect` never
+// resolves for the life of the stdio connection. realpath, because npx runs the
+// bin through a symlink while import.meta.url is the real file.
+const isMainModule = process.argv[1] !== undefined && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
 if (isMainModule) {
   main().catch((err) => {
     console.error("aero-vote-radar MCP server failed to start:", err);

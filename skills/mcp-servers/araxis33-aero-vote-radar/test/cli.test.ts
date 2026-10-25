@@ -2,419 +2,84 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import {
-  chooseRecommendOutputMode,
-  chooseVoteTokenId,
-  epochDeadlineLine,
-  parsePositiveIntFlag,
-  parseUnitIntervalFlag,
-  parseVoteBasisFlag,
-  poolEfficiencyToJson,
-  resolveBudget,
-  resolveReviewTarget,
-  veAeroPositionsToJson,
-} from "../src/cli.js";
-import { EPOCH_SECONDS } from "../src/trend.js";
-import type { PoolEfficiency } from "../src/efficiency.js";
-import type { VeNftSummary } from "../src/veAero.js";
+import { fmtUsd, parseAmountFlag, parseChainFlag, parsePositiveIntFlag, scanLine, walletToJson } from "../src/cli.js";
+import type { V3ScanFile } from "../src/v3.js";
 
-/** Runs `fn` with console.error silenced, returning its return value and everything logged. */
-async function captureStderr<T>(fn: () => Promise<T>): Promise<{ result: T; logged: string[] }> {
-  const original = console.error;
-  const logged: string[] = [];
-  console.error = (...parts: unknown[]) => {
-    logged.push(parts.join(" "));
-  };
-  try {
-    const result = await fn();
-    return { result, logged };
-  } finally {
-    console.error = original;
-  }
-}
-
-test("parsePositiveIntFlag returns the fallback when the flag is absent", () => {
-  assert.equal(parsePositiveIntFlag([], "top", 20), 20);
+test("parsePositiveIntFlag: fallback when absent, undefined for garbage or a dangling flag", () => {
+  assert.equal(parsePositiveIntFlag([], "top", 15), 15);
+  assert.equal(parsePositiveIntFlag(["--top", "5"], "top", 15), 5);
+  assert.equal(parsePositiveIntFlag(["--top", "abc"], "top", 15), undefined);
+  assert.equal(parsePositiveIntFlag(["--top", "-2"], "top", 15), undefined);
+  assert.equal(parsePositiveIntFlag(["--top"], "top", 15), undefined);
 });
 
-test("parsePositiveIntFlag parses a valid positive integer flag", () => {
-  assert.equal(parsePositiveIntFlag(["--top", "5"], "top", 20), 5);
+test("parseAmountFlag accepts thousands separators and rejects zero", () => {
+  assert.equal(parseAmountFlag([], 10_000), 10_000);
+  assert.equal(parseAmountFlag(["--amount", "25,000"], undefined), 25_000);
+  assert.equal(parseAmountFlag(["--amount", "0"], 10_000), undefined);
+  assert.equal(parseAmountFlag(["--amount"], 10_000), undefined);
 });
 
-test("parsePositiveIntFlag rejects a non-numeric value instead of returning NaN", () => {
-  assert.equal(parsePositiveIntFlag(["--top", "abc"], "top", 20), undefined);
+test("parseChainFlag: known network, any case; null for an unknown or missing value", () => {
+  assert.equal(parseChainFlag([]), undefined);
+  assert.equal(parseChainFlag(["--chain", "Optimism"]), "optimism");
+  assert.equal(parseChainFlag(["--chain", "solana"]), null);
+  assert.equal(parseChainFlag(["--chain"]), null);
 });
 
-test("parsePositiveIntFlag rejects zero and negative values", () => {
-  assert.equal(parsePositiveIntFlag(["--top", "0"], "top", 20), undefined);
-  assert.equal(parsePositiveIntFlag(["--top", "-5"], "top", 20), undefined);
+test("fmtUsd keeps cents under $1,000 and four places under $1", () => {
+  assert.equal(fmtUsd(1234.6), "$1,235");
+  assert.equal(fmtUsd(3.456), "$3.46");
+  assert.equal(fmtUsd(0.01234), "$0.0123");
+  assert.equal(fmtUsd(0), "$0");
 });
 
-test("parsePositiveIntFlag rejects non-integer values", () => {
-  assert.equal(parsePositiveIntFlag(["--top", "3.5"], "top", 20), undefined);
+test("scanLine flags a scan older than 3 h", () => {
+  const scan = { checkedAt: "2026-10-25T10:00:00.000Z", windowHours: 66.4, gauges: [{ chain: "base" }, { chain: "arc" }] } as unknown as V3ScanFile;
+  assert.match(scanLine(scan, Date.parse("2026-10-25T10:30:00.000Z")), /on 2 networks under an hour ago; fees from the last 66 h/);
+  assert.match(scanLine(scan, Date.parse("2026-10-25T15:00:00.000Z")), /5 h ago — older than usual/);
 });
 
-test("parsePositiveIntFlag rejects a dangling flag with no value instead of silently using the fallback", () => {
-  assert.equal(parsePositiveIntFlag(["--top"], "top", 20), undefined);
-  assert.equal(parsePositiveIntFlag(["--veaero", "25000", "--top"], "top", 20), undefined);
+test("walletToJson turns stake ids into strings so JSON.stringify works", () => {
+  const out = walletToJson({ address: "0x1", count: 1, totalSAero: 5, failed: [], stakes: [{ id: 619n, sAero: 5, chains: {} }] });
+  assert.equal(JSON.parse(JSON.stringify(out)).stakes[0].id, "619");
 });
 
-test("parsePositiveIntFlag accepts a value at or below the given max", () => {
-  assert.equal(parsePositiveIntFlag(["--epochs", "20"], "epochs", 6, 20), 20);
-  assert.equal(parsePositiveIntFlag(["--epochs", "6"], "epochs", 6, 20), 6);
-});
-
-test("parsePositiveIntFlag rejects a value above the given max instead of silently clamping it", () => {
-  assert.equal(parsePositiveIntFlag(["--epochs", "21"], "epochs", 6, 20), undefined);
-  assert.equal(parsePositiveIntFlag(["--epochs", "100000"], "epochs", 6, 20), undefined);
-});
-
-test("parsePositiveIntFlag ignores max when the flag is absent, still returning the fallback", () => {
-  assert.equal(parsePositiveIntFlag([], "epochs", 6, 20), 6);
-});
-
-test("parseUnitIntervalFlag returns the fallback when the flag is absent", () => {
-  assert.equal(parseUnitIntervalFlag([], "min-consistency", 0), 0);
-});
-
-test("parseUnitIntervalFlag accepts both ends of the 0..1 range and a fraction inside it", () => {
-  assert.equal(parseUnitIntervalFlag(["--min-consistency", "0"], "min-consistency", 0), 0);
-  assert.equal(parseUnitIntervalFlag(["--min-consistency", "1"], "min-consistency", 0), 1);
-  assert.equal(parseUnitIntervalFlag(["--min-consistency", "0.55"], "min-consistency", 0), 0.55);
-});
-
-test("parseUnitIntervalFlag rejects values outside 0..1 rather than silently clamping", () => {
-  assert.equal(parseUnitIntervalFlag(["--min-consistency", "-0.1"], "min-consistency", 0), undefined);
-  assert.equal(parseUnitIntervalFlag(["--min-consistency", "1.5"], "min-consistency", 0), undefined);
-});
-
-test("parseUnitIntervalFlag rejects non-numeric and dangling flags", () => {
-  assert.equal(parseUnitIntervalFlag(["--min-consistency", "abc"], "min-consistency", 0), undefined);
-  assert.equal(parseUnitIntervalFlag(["--min-consistency"], "min-consistency", 0), undefined);
-  assert.equal(parseUnitIntervalFlag(["--min-consistency", "Infinity"], "min-consistency", 0), undefined);
-});
-
-test("poolEfficiencyToJson includes epochsObserved and the consistency fields, matching the MCP list_pool_efficiency shape", () => {
-  const p: PoolEfficiency = {
-    pool: { address: "0xpool", symbol: "vAMM-TEST/USDC", token0: "0xtoken0", token1: "0xtoken1", gauge: "0xgauge", gaugeAlive: true },
-    latestEpochTs: 100,
-    currentVotesVeAero: 10,
-    latestEpochUsd: 5,
-    trailingAvgUsd: 4, forecastUsd: 4,
-    epochsObserved: 3,
-    epochUsdSeries: [5, 4, 3],
-    epochVotesSeries: [10, 10, 10],
-    currentValuePerVote: 0.5,
-    predictedValuePerVote: 0.4,
-    predictiveEdge: -0.2,
-    volatility: 0.25,
-    consistency: 0.8,
-    latestEpochBribes: [],
-    latestEpochFees: [],
-  };
-
-  // Only 3 epochs observed — below MOMENTUM_MIN_EPOCHS, so momentum is null
-  // regardless of the "as of" time passed in.
-  assert.deepEqual(poolEfficiencyToJson(p, 1000), {
-    symbol: "vAMM-TEST/USDC",
-    pool: "0xpool",
-    votesVeAero: 10,
-    currentValuePerVote: 0.5,
-    predictedValuePerVote: 0.4,
-    predictiveEdge: -0.2,
-    epochsObserved: 3,
-    volatility: 0.25,
-    consistency: 0.8,
-    momentum: null,
-    migrating: false,
-  });
-});
-
-test("poolEfficiencyToJson says when a pool is one Aerodrome is migrating", () => {
-  const p = {
-    pool: { address: "0xpool", symbol: "CL-cbBTC/EDGE", token0: "0xa", token1: "0xb", gauge: "0xg", gaugeAlive: true, migrating: true as const },
-    latestEpochTs: 100, currentVotesVeAero: 10, latestEpochUsd: 5, trailingAvgUsd: 4, forecastUsd: 4, epochsObserved: 3,
-    epochUsdSeries: [5, 4, 3], epochVotesSeries: [10, 10, 10], currentValuePerVote: 0.5, predictedValuePerVote: 0.4,
-    predictiveEdge: -0.2, volatility: 0.25, consistency: 0.8, latestEpochBribes: [], latestEpochFees: [],
-  } satisfies PoolEfficiency;
-  assert.equal(poolEfficiencyToJson(p, 1000).migrating, true);
-});
-
-test("poolEfficiencyToJson wires momentum from the pool's epoch series and the given time, matching the MCP tool", () => {
-  const p: PoolEfficiency = {
-    pool: { address: "0xpool", symbol: "vAMM-TEST/USDC", token0: "0xtoken0", token1: "0xtoken1", gauge: "0xgauge", gaugeAlive: true },
-    latestEpochTs: 1_786_579_200, // a Thursday 00:00 UTC epoch boundary
-    currentVotesVeAero: 10,
-    latestEpochUsd: 400,
-    trailingAvgUsd: 250,
-    forecastUsd: 250,
-    epochsObserved: 4,
-    epochUsdSeries: [400, 400, 100, 100],
-    epochVotesSeries: [10, 10, 10, 10],
-    currentValuePerVote: 40,
-    predictedValuePerVote: 25,
-    predictiveEdge: -0.375,
-    volatility: 0.6,
-    consistency: 0.625,
-    latestEpochBribes: [],
-    latestEpochFees: [],
-  };
-
-  // A full epoch after latestEpochTs: that epoch has closed, so all 4 entries
-  // are completed history and momentum compares the recent half to the older half.
-  const asOfUnixSeconds = p.latestEpochTs + EPOCH_SECONDS;
-  assert.equal(poolEfficiencyToJson(p, asOfUnixSeconds).momentum, 3);
-});
-
-test("veAeroPositionsToJson sums voting power across locks and matches the MCP get_my_veaero shape", () => {
-  const positions: VeNftSummary[] = [
-    { id: "6", votingPowerVeAero: 11_362_738.622, expiresAt: 0, isPermanent: true },
-    { id: "17324", votingPowerVeAero: 107_871.726, expiresAt: 1_893_456_000, isPermanent: false },
-  ];
-
-  assert.deepEqual(veAeroPositionsToJson("0xAccount", positions), {
-    address: "0xAccount",
-    totalVeAero: 11_362_738.622 + 107_871.726,
-    locks: positions,
-  });
-});
-
-test("veAeroPositionsToJson returns a zero total and empty locks for an account with no veAERO", () => {
-  assert.deepEqual(veAeroPositionsToJson("0xEmpty", []), {
-    address: "0xEmpty",
-    totalVeAero: 0,
-    locks: [],
-  });
-});
-
-// resolveBudget backs both `recommend` and `backtest`'s budget resolution, but
-// unlike the rest of this file's flag parsers it had no direct test coverage —
-// these cover every branch that doesn't require a live RPC call (a valid
-// --address still hits fetchVeAeroPositions, so that branch is exercised live
-// via the CLI instead, same as fetchActivePools/fetchVeAeroPositions elsewhere).
-
-test("resolveBudget rejects passing both --veaero and --address", async () => {
-  const { result, logged } = await captureStderr(() =>
-    resolveBudget(["--veaero", "25000", "--address", "0x1234567890123456789012345678901234567890"], "USAGE"),
-  );
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("not both")), `expected a "not both" message, got: ${logged.join(" | ")}`);
-});
-
-test("resolveBudget rejects a malformed --address before attempting any RPC call", async () => {
-  const { result, logged } = await captureStderr(() => resolveBudget(["--address", "not-an-address"], "USAGE"));
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("40-character hex address")), `expected an address-format message, got: ${logged.join(" | ")}`);
-});
-
-test("resolveBudget rejects a missing --veaero/--address entirely", async () => {
-  const { result, logged } = await captureStderr(() => resolveBudget([], "USAGE"));
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("finite positive number")), `expected an amount-format message, got: ${logged.join(" | ")}`);
-});
-
-test("resolveBudget rejects a non-numeric --veaero", async () => {
-  const { result } = await captureStderr(() => resolveBudget(["--veaero", "abc"], "USAGE"));
-  assert.equal(result, null);
-});
-
-test("resolveBudget rejects zero and negative --veaero amounts", async () => {
-  assert.equal((await captureStderr(() => resolveBudget(["--veaero", "0"], "USAGE"))).result, null);
-  assert.equal((await captureStderr(() => resolveBudget(["--veaero", "-100"], "USAGE"))).result, null);
-});
-
-test("resolveBudget accepts a valid --veaero amount and logs nothing", async () => {
-  const { result, logged } = await captureStderr(() => resolveBudget(["--veaero", "25000"], "USAGE"));
-  assert.deepEqual(result, { veaero: 25000, positions: [] });
-  assert.deepEqual(logged, []);
-});
-
-// resolveReviewTarget backs `review`'s --address/--nft resolution. It used to
-// let --nft silently win when both were passed, with no word to the user that
-// --address was ignored — unlike resolveBudget's --veaero/--address, which has
-// rejected "both" outright since it was written. These cover every branch
-// (the --address branch only validates the flag's format here; turning it
-// into token ids needs a live fetchVeAeroPositions call, exercised via the
-// CLI instead, same as resolveBudget's --address branch above).
-
-test("resolveReviewTarget rejects passing both --address and --nft", async () => {
-  const { result, logged } = await captureStderr(async () =>
-    resolveReviewTarget(["--address", "0x1234567890123456789012345678901234567890", "--nft", "42"]),
-  );
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("not both")), `expected a "not both" message, got: ${logged.join(" | ")}`);
-});
-
-test("resolveReviewTarget rejects a missing --address/--nft entirely", async () => {
-  const { result, logged } = await captureStderr(async () => resolveReviewTarget([]));
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("Usage:")), `expected a usage message, got: ${logged.join(" | ")}`);
-});
-
-test("resolveReviewTarget rejects a malformed --address", async () => {
-  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--address", "not-an-address"]));
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("40-character hex address")), `expected an address-format message, got: ${logged.join(" | ")}`);
-});
-
-test("resolveReviewTarget rejects a non-numeric --nft", async () => {
-  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--nft", "abc"]));
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("positive whole veNFT id")), `expected a veNFT-id message, got: ${logged.join(" | ")}`);
-});
-
-// veNFT ids start at 1, the same as chooseVoteTokenId (used by --calldata)
-// already enforces — this used to accept "0" as a token id, which can never
-// exist on-chain, and would go on to make live RPC calls for it.
-test("resolveReviewTarget rejects a zero --nft", async () => {
-  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--nft", "0"]));
-  assert.equal(result, null);
-  assert.ok(logged.some((l) => l.includes("positive whole veNFT id")), `expected a veNFT-id message, got: ${logged.join(" | ")}`);
-});
-
-test("resolveReviewTarget accepts a valid --nft and logs nothing", async () => {
-  const { result, logged } = await captureStderr(async () => resolveReviewTarget(["--nft", "42"]));
-  assert.deepEqual(result, { kind: "nft", tokenIds: [42n] });
-  assert.deepEqual(logged, []);
-});
-
-test("resolveReviewTarget accepts a valid --address and logs nothing", async () => {
-  const { result, logged } = await captureStderr(async () =>
-    resolveReviewTarget(["--address", "0x1234567890123456789012345678901234567890"]),
-  );
-  assert.deepEqual(result, { kind: "address", address: "0x1234567890123456789012345678901234567890" });
-  assert.deepEqual(logged, []);
-});
-
-/**
- * Runs the CLI as a real child process. Exit codes are the one part of this
- * program a caller can only observe from outside, and they are what a script
- * wrapping the tool actually branches on — so this spawns rather than importing.
- * Only argument-handling paths are exercised here; none of them touch the chain.
- */
-function runCli(args: string[]): Promise<{ code: number; stdout: string; stderr: string }> {
-  return new Promise((resolvePromise) => {
-    const child = spawn(
-      process.execPath,
-      ["--import", "tsx", fileURLToPath(new URL("../src/cli.ts", import.meta.url)), ...args],
-      { stdio: ["ignore", "pipe", "pipe"] },
-    );
+/** Runs the CLI with tsx and returns its exit code and output. No network: these paths stop before any fetch. */
+function runCli(args: string[]): Promise<{ code: number | null; stdout: string; stderr: string }> {
+  const cli = fileURLToPath(new URL("../src/cli.ts", import.meta.url));
+  return new Promise((resolve) => {
+    const child = spawn(process.execPath, ["--import", "tsx", cli, ...args]);
     let stdout = "";
     let stderr = "";
     child.stdout.on("data", (d) => (stdout += d));
     child.stderr.on("data", (d) => (stderr += d));
-    child.on("close", (code) => resolvePromise({ code: code ?? 0, stdout, stderr }));
+    child.on("close", (code) => resolve({ code, stdout, stderr }));
   });
 }
 
-test("the CLI exits 0 and prints usage when asked for help", async () => {
-  for (const args of [[], ["--help"], ["-h"], ["help"]]) {
-    const { code, stdout } = await runCli(args);
-    assert.equal(code, 0, `\`${args.join(" ")}\` should succeed`);
-    assert.match(stdout, /Commands:/);
-    // --vote-basis is a real, tested recommend flag (see parseVoteBasisFlag
-    // tests below) — the top-level help text previously omitted it entirely,
-    // leaving it undiscoverable short of reading the README or the source.
-    assert.match(stdout, /--vote-basis/);
+test("no command prints usage and exits 0", async () => {
+  const r = await runCli([]);
+  assert.equal(r.code, 0);
+  assert.match(r.stdout, /my-stakes <address>/);
+});
+
+test("an unknown or old veAERO command exits 1 with usage", async () => {
+  for (const cmd of ["poolz", "backtest", "my-veaero"]) {
+    const r = await runCli([cmd]);
+    assert.equal(r.code, 1, cmd);
+    assert.match(r.stderr, /Unknown command/);
   }
 });
 
-test("the CLI exits non-zero on an unknown command", async () => {
-  // Printing usage and reporting success meant a typo in a script — `poolz` for
-  // `pools` — was indistinguishable from a completed run.
-  const { code, stderr } = await runCli(["poolz"]);
-  assert.equal(code, 1);
-  assert.match(stderr, /Unknown command: poolz/);
-  // Usage still goes out, just on stderr where a failure's output belongs.
-  assert.match(stderr, /Commands:/);
+test("recommend without --amount or --address exits 1", async () => {
+  const r = await runCli(["recommend"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /needs --amount <sAERO> or --address/);
 });
 
-test("epochDeadlineLine states the deadline in both remaining time and UTC", () => {
-  // Saturday 2026-08-22 12:00 UTC — four days and twelve hours before the flip.
-  const line = epochDeadlineLine(new Date(Date.UTC(2026, 7, 22, 12, 0, 0)));
-
-  assert.match(line, /closes in 4d 12h/);
-  assert.match(line, /2026-08-27 00:00 UTC/);
-  assert.match(line, /counts toward the next epoch/);
-});
-
-test("epochDeadlineLine does not report a negative countdown at the boundary", () => {
-  // The instant of the flip belongs to the epoch opening there, so a full week
-  // remains rather than zero or a negative figure.
-  const line = epochDeadlineLine(new Date(Date.UTC(2026, 7, 27, 0, 0, 0)));
-  assert.match(line, /closes in 7d 0h/);
-});
-
-test("parseVoteBasisFlag accepts every basis and rejects anything else", () => {
-  assert.equal(parseVoteBasisFlag([]), "previous");
-  assert.equal(parseVoteBasisFlag(["--vote-basis", "previous"]), "previous");
-  assert.equal(parseVoteBasisFlag(["--vote-basis", "current"]), "current");
-  assert.equal(parseVoteBasisFlag(["--vote-basis", "typical"]), "typical");
-  // A typo must print usage rather than quietly allocating on a different basis.
-  assert.equal(parseVoteBasisFlag(["--vote-basis", "Current"]), undefined);
-  assert.equal(parseVoteBasisFlag(["--vote-basis", "median"]), undefined);
-  assert.equal(parseVoteBasisFlag(["--vote-basis"]), undefined);
-});
-
-test("chooseRecommendOutputMode picks --calldata over the generic --json branch", () => {
-  // Regression: --calldata has its own --json handling (the unsigned
-  // transaction), but recommend used to check the generic --json flag first
-  // and return before --calldata was ever read — so `recommend --calldata
-  // --json` silently printed the plain allocation JSON instead.
-  assert.equal(chooseRecommendOutputMode(["--calldata", "--json"]), "calldata");
-  assert.equal(chooseRecommendOutputMode(["--json", "--calldata"]), "calldata");
-});
-
-test("chooseRecommendOutputMode falls back through json, vote-ready, then table", () => {
-  assert.equal(chooseRecommendOutputMode(["--json"]), "json");
-  assert.equal(chooseRecommendOutputMode(["--vote-ready"]), "vote-ready");
-  assert.equal(chooseRecommendOutputMode([]), "table");
-  assert.equal(chooseRecommendOutputMode(["--json", "--vote-ready"]), "json");
-});
-
-/**
- * A wallet with several locks is the case worth testing: `Voter.vote` casts
- * from exactly one veNFT, and locks differ in size and expiry, so there is no
- * default the tool is entitled to pick on someone's behalf.
- */
-const LOCK = (id: string, votingPowerVeAero: number): VeNftSummary => ({
-  id,
-  votingPowerVeAero,
-  expiresAt: 0,
-  isPermanent: true,
-});
-
-test("chooseVoteTokenId takes --nft whenever it is given", () => {
-  assert.deepEqual(chooseVoteTokenId("17324", []), { tokenId: "17324" });
-  // Even when the wallet's locks would have answered on their own.
-  assert.deepEqual(chooseVoteTokenId("6", [LOCK("17324", 100)]), { tokenId: "6" });
-});
-
-test("chooseVoteTokenId rejects an --nft that is not a positive whole id", () => {
-  for (const bad of ["0", "-4", "17e3", "abc", "", "1.5"]) {
-    const chosen = chooseVoteTokenId(bad, []);
-    assert.ok("error" in chosen, `expected "${bad}" to be rejected`);
-    assert.match(chosen.error, /positive whole veNFT id/);
-  }
-});
-
-test("chooseVoteTokenId uses a single lock without asking", () => {
-  assert.deepEqual(chooseVoteTokenId(undefined, [LOCK("17324", 107_871)]), { tokenId: "17324" });
-});
-
-test("chooseVoteTokenId refuses to pick between several locks, and names them", () => {
-  const chosen = chooseVoteTokenId(undefined, [LOCK("6", 11_362_738), LOCK("17324", 107_871)]);
-
-  assert.ok("error" in chosen);
-  assert.match(chosen.error, /holds 2 locks/);
-  assert.match(chosen.error, /#6/);
-  assert.match(chosen.error, /#17324/);
-  assert.match(chosen.error, /--nft/);
-});
-
-test("chooseVoteTokenId asks for one when there is nothing to read", () => {
-  const chosen = chooseVoteTokenId(undefined, []);
-
-  assert.ok("error" in chosen);
-  assert.match(chosen.error, /--nft <id>/);
+test("pools with an unknown network exits 1", async () => {
+  const r = await runCli(["pools", "--chain", "solana"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /--chain must be one of: base, ethereum/);
 });

@@ -42,7 +42,7 @@ instructions, so never run them with the key set anywhere else.
 argument (it would land in shell history) and never prints it.
 
 The wallet needs a little native gas, 5 USDG for the bond if you take a self-service invite (step 2), and, for
-step 3, enough USDG to pay the fee (about $0.012 on $5 for 7 days).
+step 3, enough USDG to pay the fee (about $0.023 on $5 for 14 days).
 `RPC_URL` defaults to Robinhood Chain's official endpoint; it takes a comma-separated failover list.
 
 ## Step 1: identity
@@ -92,7 +92,7 @@ npx priors-v2 join --seat <stakerAddress>                             # a staker
 
 Ways it legitimately fails, and what they mean:
 
-- **`EpochCapReached`** — treasury v4 has spent its $25 of new lines for this 7-day epoch. Wait, or find a backer
+- **`EpochCapReached`** — treasury v4 has spent its $100 of new lines for this 7-day epoch. Wait, or find a backer
   or open a stock line (a seat needs 10 repaid loans). Do not retry in a loop.
 - **`NotInvited` / `InviteExpired` / `InviteUsed`** — the code is wrong, stale, or spent. Ask for a new one. There
   is no path around the invite; that is the gate working.
@@ -104,7 +104,7 @@ Ways it legitimately fails, and what they mean:
 ## Step 3: borrow, hold, repay
 
 ```bash
-npx priors-v2 borrow 5 --days 7    # -> loan #N, $5 lands in the wallet, due date printed
+npx priors-v2 borrow 5 --days 14   # -> loan #N, $5 lands in the wallet, due date printed (14 days is the default)
 #  ... the agent does its work ...
 npx priors-v2 repay --all          # principal + fee; approves USDG for exactly what is due
 ```
@@ -132,7 +132,10 @@ reverted or cancelled); a revert or cancel that mined stays recorded until `tx` 
 
 **Hold it for real time, then repay at or before the due date.** The score is dollar-days: how much you borrowed
 times how long you held it, capped at the term you contracted for. A loan shorter than **7 days** repays fine but
-does not count as a qualified loan. Churning one-day loans gets you nowhere; that is deliberate. On a growth seat a
+does not count as a qualified loan. Take 14 days: hold it a week, then repay any time before its due date. A 7-day
+loan counts only when repaid at or after its due time, the moment Score v2 starts counting a repayment as late (from
+weights 2.0.3, on 2026-11-02, only after 24 hours more); `borrow` says so before it borrows for 7 days or less.
+Churning one-day loans gets you nowhere; that is deliberate. On a growth seat a
 loan lasts at most 7 days (`BorrowBlockedByBacker` above that), so borrow for exactly 7 and hold it to the due date.
 
 ⛔ **Repay before the due date.** Three days past due and *anyone* can mark the loan defaulted. The record is

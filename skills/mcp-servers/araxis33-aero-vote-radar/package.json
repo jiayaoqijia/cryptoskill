@@ -1,7 +1,7 @@
 {
   "name": "aero-vote-radar",
-  "version": "0.1.0",
-  "description": "MCP server + CLI that reads live Aerodrome (Base) on-chain data to rank pools by veAERO vote efficiency and recommend a self-dilution-aware vote allocation.",
+  "version": "0.2.0",
+  "description": "MCP server + CLI that ranks Aero (formerly Aerodrome) pools by what your sAERO earns a day after dilution, across Aero's 7 networks, suggests a split and reads your stakes' 47 h timers.",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -16,10 +16,11 @@
     "url": "https://github.com/araxis33/aero-vote-radar/issues"
   },
   "keywords": [
+    "aero",
     "aerodrome",
+    "sAERO",
     "base",
     "mcp",
-    "veaero",
     "defi",
     "ai-agent"
   ],
@@ -37,13 +38,8 @@
     "typecheck": "tsc -p tsconfig.typecheck.json",
     "cli": "tsx src/cli.ts",
     "mcp": "tsx src/mcp-server.ts",
-    "snapshot": "tsx src/snapshot-cli.ts",
     "v3scan": "tsx src/v3-cli.ts",
-    "test": "node --import tsx --test test/**/*.test.ts",
-    "predict-check": "tsx src/predict-cli.ts",
-    "timing": "tsx src/timing-cli.ts",
-    "accrual": "tsx src/accrual-cli.ts",
-    "promise-check": "tsx src/promise-cli.ts"
+    "test": "node --import tsx --test test/**/*.test.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
