@@ -6,16 +6,17 @@
 
 set -euo pipefail
 
-# Auto-detect perp command (supports npx fallback for agents without install permissions)
-if command -v perp &>/dev/null; then
-  PERP="perp"
-else
-  PERP="npx -y perp-cli@latest"
+# perp must be installed (no npx / auto-install path: the user decides what gets installed).
+if ! command -v perp &>/dev/null; then
+  echo "perp not found — ask the user to install perp-cli >= 0.16.0" >&2
+  echo '{"ok":false,"error":{"code":"PERP_NOT_FOUND","message":"perp not found — ask the user to install perp-cli >= 0.16.0"}}'
+  exit 1
 fi
+PERP="perp"
 
 # perp exits 1 on {"ok":false} and prints exactly one JSON document: capture it as-is
-# (never append a fallback document); empty output (crash / not installed) → {"ok":false}.
-pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false}'; fi; }
+# (never append a fallback document); empty output (crash) → an explicit NO_OUTPUT error document.
+pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false,"error":{"code":"NO_OUTPUT","message":"perp printed nothing (crashed?)"}}'; fi; }
 isok() { jq -e '.ok == true' >/dev/null 2>&1 <<<"$1"; }
 
 JSON_MODE=false
@@ -30,13 +31,15 @@ done
 
 # 1. Get current arb status (already includes funding earned per period)
 ARB_STATUS=$(pj --json arb status)
+# A failed read is an error, never "no positions" (arb status fails as a whole when one
+# configured venue's read fails — check that venue: perp --json -e <venue> account positions).
 if ! isok "$ARB_STATUS"; then
   if $JSON_MODE; then
-    echo '{"ok":false,"error":"No arb positions or arb status unavailable"}'
+    jq -c '{ok:false, error:{code:.error.code, message:.error.message, source:"perp --json arb status"}}' <<<"$ARB_STATUS"
   else
-    echo "No open arb positions found."
+    echo "ERROR: arb status failed: $(jq -r '"\(.error.code): \(.error.message)"' <<<"$ARB_STATUS")" >&2
   fi
-  exit 0
+  exit 1
 fi
 
 # 2. Get current spreads (all modes)

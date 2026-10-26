@@ -11,13 +11,13 @@ Invoked as `/bnbagent-studio <ask>`? Treat `<ask>` as the user's intent and rout
 
 ## Runtime preflight
 
-This skill requires `bag` **0.0.14 or newer**. Before following any workflow,
+This skill requires `bag` **0.0.16 or newer**. Before following any workflow,
 run the read-only command `bag --version`. If `bag` is missing or older, stop
 and ask the user to run `npm install -g @bnbagent/studio-cli@latest`, then
 repeat the version check. Never install or upgrade a global executable without
 the user's approval.
 
-<!-- bag-compatibility: >=0.0.14 -->
+<!-- bag-compatibility: >=0.0.16 -->
 
 ## The single seller runtime model (the invariants)
 

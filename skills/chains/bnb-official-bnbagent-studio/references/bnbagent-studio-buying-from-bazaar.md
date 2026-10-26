@@ -102,11 +102,13 @@ bag dev        # then ask the agent something that needs the paid data
 | `X402RecipientMismatchError` | Live payTo drifted from the pin - do NOT override casually; re-verify the merchant |
 | `X402BudgetExhaustedError` | Per-call cap or daily budget hit - raise `per_call_cap_usd` / `[budget].max_per_day_usd` deliberately |
 | `x402 402 has no EIP-3009-payable option` | The selected asset has no catalog-verified EIP-3009 route for a local/Turnkey buyer. Do not enable raw Permit2 signing. Altana requires a matching `requestExact` Permit2 route; TWAK paid x402 remains pre-dispatch unsupported. |
-| `…→Permit2 allowance … cannot cover max_usd` | Altana only: the bounded Permit2 allowance for that asset is spent/too small - re-run `bag wallet session x402-setup --allowance <amount>` (admin key) |
-| `wallet/payment method unsupported for USDC/USDT` | The asset settles b402 through `permit2-exact` only, and `evm-local`/`turnkey` sign EIP-3009 only (`twak` is fail-closed for paid x402). The route is fine - the wallet cannot sign it. Pay it from an `altana` session wallet armed with `bag wallet session x402-setup --allowance <amount> --asset USDC`, or retry the offered EIP-3009 alternative. |
+| `…→Permit2 allowance … cannot cover max_usd` | Altana only: the bounded Permit2 allowance for that asset is spent/too small - re-run `bag wallet session x402-setup --allowance <amount> --archive-rpc-url <archive-rpc>` (admin key) |
+| `wallet/payment method unsupported for USDC/USDT` | The asset settles b402 through `permit2-exact` only, and `evm-local`/`turnkey` sign EIP-3009 only (`twak` is fail-closed for paid x402). The route is fine - the wallet cannot sign it. Pay it from an `altana` session wallet armed with `bag wallet session x402-setup --allowance <amount> --asset USDC --archive-rpc-url <archive-rpc>`, or retry the offered EIP-3009 alternative. |
 | `X402PolicyError` / `PolicyViolation` | Signing allowlist - see `bnbagent-studio-extending-signing.md` |
+| `server returned 400` after `payment … was dispatched`, body `x402 request requires a non-empty prompt` | A Studio x402 seller rejects an empty task before settlement. Check the wallet balance, then retry with `--method POST --json '{"prompt":"…"}'` |
 
 **Different from**:
 
 - `bnbagent-studio-buying-via-8183.md` (same directory) - buying from an **ERC-8183 seller agent** (jobs, disputes, settle windows). This file is about flat pay-per-call x402 APIs; no job lifecycle.
 - `bnbagent-studio-extending-signing.md` - the signing-policy allowlist mechanics that back all of this.
+- `bnbagent-studio-selling-via-b402.md` - paying your own Studio x402 seller from the buyer side: the non-empty `prompt`, the settlement receipt, and a third-party `@x402/fetch` buyer.

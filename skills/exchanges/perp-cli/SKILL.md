@@ -1,9 +1,9 @@
 ---
 name: perp-cli
-description: "Multi-DEX perpetual futures trading via the perp-cli command-line tool. Use when user asks to: trade perps, check funding rates, scan/execute arbitrage (perp-perp or spot-perp), run delta-neutral strategies, bridge USDC across chains, manage positions/orders/leverage, deposit/withdraw, hedge spot+perp, trade HIP-3 DEXes, or mentions perp-cli, hypurrquant, Pacifica, Hyperliquid, Lighter, Aster, Lighter RH, Ondo Perps, Arcus, QFEX, RISEx, TxFlow, Variational, GRVT, HyperEVM, funding arb, or U-tokens (UBTC/UETH/USOL). Covers Pacifica (Solana), Hyperliquid (HyperEVM), Lighter (Ethereum), Aster (BNB Chain), Lighter RH and Arcus (Robinhood chain), Ondo Perps and QFEX (off-chain), RISEx (RISE chain), TxFlow (market data only, UNOFFICIAL API) Variational Omni (market data only, official API) and GRVT (market data only for now, official API)."
+description: "Multi-DEX perpetual futures trading via the perp-cli command-line tool. Use when user asks to: trade perps, check funding rates, scan/execute arbitrage (perp-perp or spot-perp), run delta-neutral strategies, bridge USDC across chains, manage positions/orders/leverage, deposit/withdraw, hedge spot+perp, trade HIP-3 DEXes, read Derive options chains, use Pacifica Print or Pacifica vaults, or mentions perp-cli, hypurrquant, Pacifica, Hyperliquid, Lighter, Aster, Lighter RH, Ondo Perps, Arcus, QFEX, RISEx, TxFlow, Variational, GRVT, Extended, Derive, HyperEVM, funding arb, or U-tokens (UBTC/UETH/USOL). Covers Pacifica (Solana), Hyperliquid (HyperEVM), Lighter (Ethereum), Aster (BNB Chain), Lighter RH and Arcus (Robinhood chain), Ondo Perps and QFEX (off-chain), RISEx (RISE chain), TxFlow (market data only, UNOFFICIAL API) Variational Omni (market data only, official API), GRVT and Extended (Starknet) (market data only for now, official API), Derive options (read-only), and Pacifica Print / vaults."
 license: MIT
-allowed-tools: "Bash(perp:*), Bash(npx -y perp-cli:*), Bash(bash scripts/preflight.sh:*), Bash(bash scripts/arb-monitor.sh:*), Bash(bash scripts/funding-analysis.sh:*), Bash(bash scripts/spot-perp-scan.sh:*), Bash(bash scripts/validate-arb.sh:*)"
-compatibility: "Requires Node.js 20 or newer and the perp-cli npm package (global install or npx). Network access required for exchange APIs and bridge providers. Mutating commands need a wallet key imported into the OWS vault via 'perp wallet set EXCHANGE' (key on stdin or hidden prompt — never argv). Skill is portable across Claude Code, Claude.ai, Cursor, Codex, and Gemini CLI — no platform-specific features."
+allowed-tools: "Bash(perp:*), Bash(bash scripts/preflight.sh:*), Bash(bash scripts/arb-monitor.sh:*), Bash(bash scripts/funding-analysis.sh:*), Bash(bash scripts/spot-perp-scan.sh:*), Bash(bash scripts/validate-arb.sh:*)"
+compatibility: "Requires Node.js 20 or newer and the perp-cli npm package installed by the user (version must be >= 0.16.0; the user runs `npm install -g perp-cli` — never install it yourself). Network access required for exchange APIs and bridge providers. Mutating commands need a wallet key imported into the OWS vault via 'perp wallet set EXCHANGE' (key on stdin or hidden prompt — never argv). Skill is portable across Claude Code, Claude.ai, Cursor, Codex, and Gemini CLI — no platform-specific features."
 metadata:
   author: hypurrquant
   version: "0.16.0"
@@ -28,15 +28,15 @@ This skill uses progressive disclosure. Read these on demand:
 - `references/commands.md` — full command tree for every group (market, account, trade, outcome, options, print, vault, arb, funds, wallet, risk, history, strategy, background, alerts, settings, backtest)
 - `references/agent-operations.md` — non-interactive setup flows, idempotency rules, error codes, common mistakes
 - `references/strategies.md` — funding-arb decision framework + risk-management playbook (read before designing arb strategy)
-- `references/ws-library.md` — WebSocket library (0.15.0, @experimental), published standalone as **`@hypurrquant/perp-ws`** (zero dependencies; recommended for integrators — `npm install @hypurrquant/perp-ws`) and inside perp-cli as `perp-cli/ws` (same code, use it when perp-cli is already installed): build a live dashboard / funding comparison / account feed in the browser or Node (streams, events, nullability, comparator, user channels, errors, capability matrix). Cross-venue subscriptions use `canonicals` (e.g. `{ kind: "allMarkets", canonicals: ["BTC"] }`), never `symbols` (those are per-venue directory symbols); always surface `ready` rejections — an `idle` venue is not "fine"
+- `references/ws-library.md` — WebSocket library (shipped since 0.15.0, @experimental), published standalone as **`@hypurrquant/perp-ws`** (zero dependencies; recommended for integrators — `npm install @hypurrquant/perp-ws`) and inside perp-cli as `perp-cli/ws` (same code, use it when perp-cli is already installed): build a live dashboard / funding comparison / account feed in the browser or Node (streams, events, nullability, comparator, user channels, errors, capability matrix). Cross-venue subscriptions use `canonicals` (e.g. `{ kind: "allMarkets", canonicals: ["BTC"] }`), never `symbols` (those are per-venue directory symbols); always surface `ready` rejections — an `idle` venue is not "fine"
 
-Also bundled under `scripts/`: `preflight.sh`, `arb-monitor.sh`, `funding-analysis.sh`, `spot-perp-scan.sh`, `validate-arb.sh`. Use these for repeatable multi-step diagnostics.
+Also bundled under `scripts/`: `preflight.sh`, `arb-monitor.sh`, `funding-analysis.sh`, `spot-perp-scan.sh`, `validate-arb.sh`. Use these for repeatable multi-step diagnostics. They need `perp` on PATH (else they exit 1 with `PERP_NOT_FOUND` — ask the user to install it) and exit non-zero on a failed read; `funding-analysis.sh` / `spot-perp-scan.sh` take `-n mainnet|testnet`, `spot-perp-scan.sh --no-portfolio` scans without a wallet.
 
 ### Critical rules
 
 1. **Always pass `--json`.** Without it, output is human-formatted and hard to parse. `ok:false` also exits 1.
 2. **Always pass `-e <venue>`** on venue-scoped commands. The default is `settings.defaultExchange`, else `pacifica` — never rely on it.
-3. **Always run `--dry-run` first** for any mutating command that supports it (`--help` says "supports --dry-run"). Show the result, get user confirmation, then execute without `--dry-run`. Commands without dry-run support refuse `--dry-run` with `INVALID_PARAMS` (see "Safety rules").
+3. **Always run `--dry-run` first** for any mutating command that supports it, show the result, get user confirmation, then execute without `--dry-run`. `--help` is NOT a reliable indicator — the 0.16.0 list: every `trade` write (market / buy / sell / limit / split / cancel / cancel-all / stop / tpsl / scale-tp / scale-in / edit / atomic / leverage / close / close-all / flatten / reduce / spot-buy / spot-sell / spot-limit / spot-cancel / spot-transfer), `arb exec|close|auto|rebalance`, `funds deposit|withdraw|transfer|faucet|bridge send|bridge exchange|rebalance execute|address-book add`, `outcome buy|sell`, `print deposit|cancel`, `vault deposit|withdraw`, `wallet builder approve|revoke`, `wallet manage referral set`, `strategy run`, `strategy plan execute`. Everything else (read-only commands too; `trade twap|multi|cancel-stop|cancel-twap`; the moved stubs `wallet manage lake deposit|withdraw` → use `vault deposit|withdraw`) refuses `--dry-run` with `INVALID_PARAMS` — that refusal means "unsupported", nothing ran (see "Safety rules").
 4. **Always use `--fields`** when you only need specific data — saves tokens.
 5. **Avoid bare `perp setup` / `perp init` / `perp wallet setup`** — they prompt and will hang an agent. Use `printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set <exchange>` for key registration (key on stdin; a key on argv or `-k` is rejected), or `perp --json setup --non-interactive --wallet <ows-wallet> --venues <list> [--default-venue <v>] [--slippage-bps <n>] [--slippage <venue>=<bps>]` (new wallet: `--wallet-name <name>` with the passphrase in `OWS_PASSPHRASE`; agent registration only with `--approve-agents --yes`, after user confirmation) (and `OWS_PASSPHRASE=<pp> perp wallet setup --name <n> --max-tx-usd <usd> --max-daily-usd <usd>`) when the wizard is required. The passphrase goes in `OWS_PASSPHRASE` or stdin — the root `--passphrase` flag is deprecated (visible in `ps`).
 6. **NEVER trade without explicit user confirmation.** A dry-run is not consent.
@@ -44,19 +44,20 @@ Also bundled under `scripts/`: `preflight.sh`, `arb-monitor.sh`, `funding-analys
 8. **NEVER manually add `-PERP` suffix** to symbols. Use bare names (`BTC`, `SOL`, `ICP`); the CLI resolves exchange-specific naming.
 9. **NEVER resubmit after `ORDER_PENDING`** (or any unknown outcome). See "Safety rules".
 
-### Step 1: Verify install + version
+### Step 1: Verify install, version, venue health
 
 ```bash
-perp --version 2>/dev/null || npx -y perp-cli@latest --version   # must be >= 0.16.0
+perp --version         # must be >= 0.16.0
+perp --json health     # keyless venue connectivity
 ```
 
-If it is missing or older, ask the user before installing/upgrading (`npm install -g perp-cli@latest`) — never install on your own. If `perp` is not on PATH, prefix every command with `npx -y perp-cli@latest`.
+If `perp` is missing or older, STOP and ask the user to install / upgrade it (`npm install -g perp-cli`) — never install it yourself and never switch to `npx`. `health`: `data.healthy` = every OFFICIAL-API venue is up (use this); `allHealthy` also counts unofficial APIs (TxFlow, listed under `unofficial[]`); `skipped[]` = venues with no environment on this network (not probed). Don't use a venue whose `exchanges[].status` is not `"ok"`.
 
 ### Step 2: Verify wallet + balance
 
 ```bash
-perp --json wallet show               # confirms configured exchanges
-perp --json portfolio -e <venue-id>   # per-exchange USDC available; full id (hyperliquid, not hl) — portfolio rejects aliases
+perp --json wallet show               # with an OWS wallet, `exchanges: []` is normal — owsActiveWallet serves every venue
+perp --json portfolio -e <venue>      # per-exchange perp.available (aliases like hl / pac accepted)
 ```
 
 If any required exchange is missing, register it (user supplies the key):
@@ -140,30 +141,42 @@ perp --json arb scan --rates                      # raw funding rates
 perp --json arb scan --basis [<symbol>]           # cross-exchange basis
 perp --json arb scan --gaps                       # cross-exchange price gaps
 perp --json arb scan --hip3                       # HIP-3 cross-dex spreads
-perp --json arb scan --history <symbol>           # historical funding
+perp --json arb scan --history <symbol>           # LOCAL snapshots only (written by earlier `arb scan --rates` runs; often `rates: {}`)
+perp --json -e <ex> market funding <symbol> -l 24 # real settled history (newest first; rate per `intervalHours`)
 perp --json arb scan --compare <symbol>           # one symbol across all exchanges
 perp --json arb scan --positions                  # funding impact on open positions
 perp --json arb scan --live --interval 60         # continuous monitoring
 ```
 
-Common knobs: `--min <pct>`, `--top <n>`, `--hold-days <n>`, `--bridge-cost <usd>`, `--size <usd>`.
+Common knobs: `--min <pct>`, `--top <n>`, `--hold-days <n>` (default 7), `--bridge-cost <usd>`, `--size <usd>`.
+
+Prices: `perp --json -e <ex> market mid <SYM>` is the canonical price read; cross-venue: `arb scan --compare <SYM>`. `market prices` takes no symbol (every market). There is no spot price / book read (`market *` are perp markets; `HYPE/USDC`, `@107`, `HYPE-SPOT` → `SYMBOL_NOT_FOUND`), and `arb scan --basis` is cross-venue PERP basis, not spot-perp.
+
+**Reading scan rows** — act only on these fields (detail: `references/commands.md` → "Arbitrage"):
+- perp-perp rows (`mode: "perp-perp"`): `longExch` / `shortExch`, `netSpread` / `grossSpread` (= `netSpreadPct` / `grossSpreadPct`, annual %), `estFeesPct` (estimated round trip on BOTH legs incl. 0.1 % slippage — e.g. hl+hl 0.24 %; `perp settings fees show` is the per-fill taker rate it is built from).
+- spot-perp rows (`mode: "spot-perp"`): `spotExchanges[]`, `perpExchange`, `direction`, `netSpread`, `estFeesPct`, `breakEvenDays` — no `longExch` / `shortExch`. Executable ONLY when `direction == "long-spot-short-perp"`: `arb exec <SYM> spot:<one of spotExchanges> <perpExchange> <USD>`. `arb exec spot:` does not look at the funding sign — it always buys spot and shorts the perp, so on a `sell-spot-long-perp` row it would PAY the funding. Never act on `sell-spot-long-perp` rows.
+- `--rates` / `--compare` rows: `longExchange` / `shortExchange` / `maxSpreadAnnual` (all null when fewer than two verified rates), `executable`, `readOnlyLegs`, `unverifiedLegs`, `mixedKinds` (the legs' rates are of different kinds — lastSettled / accruing / predicted); `--rates` top level has `minSpread` / `belowMinSpread`. Act only when `executable === true`. `--compare <unknown>` is `ok:true` with `data.available: false`.
+- **Testnet funding rates and spreads are meaningless** (thousands of % / yr). Never report them as opportunities; do yield analysis on mainnet public reads (keyless, `-n mainnet`).
 
 #### HIP-3 dexes (part of Hyperliquid, not a separate venue)
 
 HIP-3 dexes are selected on the Hyperliquid venue with the root `--dex <name>` flag; every market / account / trade command works the same way. Same account and wallet as native Hyperliquid perps.
 
 ```bash
-perp --json -e hyperliquid market hip3                               # list deployed dexes (name, markets)
+perp --json -e hyperliquid market hip3                               # deployed dexes: name, deployer, assets, delistedAssets, delisted
+perp --json -e hyperliquid market list --hip3                        # native + every HIP-3 dex market
 perp --json -e hyperliquid --dex xyz market list                     # markets on dex "xyz"
 perp --json -e hyperliquid --dex xyz market info GOLD                # symbols WITHOUT the "xyz:" prefix
 perp --json -e hyperliquid --dex xyz account positions               # positions on that dex only
+perp --json -e hyperliquid account positions --hip3                  # native + every HIP-3 dex
 perp --json -e hyperliquid --dex xyz --dry-run trade market GOLD buy 0.01
 ```
 
 - `--dex` with any other `-e` venue → `INVALID_PARAMS` (never ignored).
 - A dex symbol without `--dex` (e.g. `-e hyperliquid market mid xyz:GOLD`) → `SYMBOL_NOT_FOUND` with remediation `--dex xyz`; it is never read from the native dex.
-- `portfolio --dexes xyz,…` adds HIP-3 dex balances; builder fees are never attached on HIP-3.
-- MCP tools cover native Hyperliquid perps only — use the CLI for HIP-3.
+- `portfolio --dexes` works only with `--serve` (web dashboard); for HIP-3 positions use `account positions --hip3` / `--dex <name>` or `--address`. Builder fees are never attached on HIP-3.
+- Symbols: input is bare (`BTC`; HIP-3 `TSLA` + `--dex xyz`). Output differs: market rows are plain, keyed HL native position / order rows show `<COIN>-PERP`, HIP-3 rows `xyz:TSLA` — pass the bare name back (`BTC`, `TSLA` + `--dex xyz`).
+- MCP tools cover native Hyperliquid perps only, except `get_positions_by_address` (reads every HIP-3 dex) — use the CLI for the rest of HIP-3.
 
 #### Options market data (Derive, read-only)
 
@@ -182,25 +195,45 @@ perp --json -e derive options quote ETH-20261225-3500-P                 # one op
 For arb:
 
 ```bash
-perp --json portfolio -e <longEx>                     # check available USDC (long leg)
-perp --json portfolio -e <shortEx>                    # check available USDC (short leg)
+perp --json portfolio -e <longEx>                     # perp.available (long leg)
+perp --json portfolio -e <shortEx>                    # perp.available (short leg)
 perp --json --dry-run arb exec <SYM> <longEx> <shortEx> <USD>
 ```
+
+Spot-perp (`spot:<venue>` long leg, only for `direction == "long-spot-short-perp"` rows): the spot leg needs the full spot notional in the spot venue's quote (`perp --json -e <venue> trade spot-balance`; separate-margin venues transfer the shortfall perp→spot) plus perp margin on the perp leg — the dry-run checks both and refuses an empty book or a > 5% spot/perp price gap.
 
 For a single trade:
 
 ```bash
+perp --json -e <ex> market info <SYM>                                    # markPrice, stepSize (lot), maxLeverage
 perp --json -e <ex> trade check <SYM> <SIDE> <SIZE> --leverage <N>
-perp --json --dry-run -e <ex> trade buy <SYM> <SIZE> --smart
+perp --json --dry-run -e <ex> trade buy <SYM> <SIZE>                     # market entry
+perp --json --dry-run -e <ex> trade buy <SYM> <SIZE> --tp <PX> --sl <PX> # entry + TP/SL
+perp --json --dry-run -e <ex> trade buy <SYM> <SIZE> --smart             # IOC at best ask + 1 tick (no TP/SL)
 ```
 
 > `trade check` does NOT read exchange-set leverage. Always pass `--leverage` explicitly.
 >
-> `--smart` (IOC at best bid/ask ± 1 tick) exists only on pacifica / hyperliquid / lighter / aster, and is refused (`CAPABILITY_UNSUPPORTED`) together with `--tp`/`--sl` or `--client-id`/`--auto-id`.
+> `--tp` / `--sl` are ABSOLUTE trigger prices (not %). Market entries: every venue (venues that place TP/SL as separate orders need a market / IOC entry); `trade limit --tp/--sl`: ondo / arcus on any entry, elsewhere only with `--tif IOC`. TP/SL on an already open position: `trade tpsl <SYM> long|short --tp <PX> --sl <PX>` (side = the position's side).
+>
+> `--smart` (IOC at best bid/ask ± 1 tick) exists only on pacifica / hyperliquid / lighter / aster, and is refused (`CAPABILITY_UNSUPPORTED`) together with `--tp`/`--sl` or `--client-id`/`--auto-id` — need TP/SL → plain market entry (or `--smart`, then `trade tpsl`).
 >
 > Pacifica basket (pair trade): `perp --json --dry-run -e pacifica trade atomic --long BTC:50 --short ETH:50 --usd 1000` — one batch of market orders, NOT all-or-nothing (a leg can fill while another is refused → `ORDER_PARTIAL`; an unconfirmed leg → `ORDER_PENDING` + quarantine). A batch failure other than HTTP 400 / 429 quarantines every leg. Pacifica's Chase / OCO / Trailing Stop / Swarm / Trigger Swarm / Conditional orders have no documented API / SDK path (as of 2026-10-19); nearest here: `trade twap` (≈ Swarm) and `trade tpsl` (≈ OCO bracket exit).
 
 Show the dry-run output to the user. Wait for confirmation.
+
+#### Minimum order size and tick (not in `market info`; `trade check` and `--dry-run` do NOT enforce the minimum)
+
+| Venue | Min order value (USD notional) |
+|---|---|
+| hyperliquid | $10 (also spot; HIP-4 outcomes: 10 quote tokens) |
+| pacifica | $10 (per market `min_order_size`) |
+| lighter, lighter-rh | $10 (per market `min_quote_amount`; a few markets 0) |
+| aster | $5 (`MIN_NOTIONAL`) |
+| arcus | $5 (`minOrderNotional`; reduce-only exempt; perp-cli refuses below it, `SIZE_TOO_SMALL`) |
+| ondo, qfex | unknown (not published) |
+
+Values read from the venues' public market data on 2026-10-26; keyless MCP `get_markets` (no credentials configured) returns them per market as `minNotional`, with `tickSize` / `minSize`. **Default smallest order = $15 notional** (on every venue, including the $5 ones and the unknown ones): `mark` = `market mid <SYM>`, `step` = `stepSize` from `market info`; `size = ceil(15 / mark / step) × step`, then `trade check` + dry-run. The $15 buffer over the $10 venue minimum absorbs price moves between sizing and the fill, step rounding and fees; below the venue minimum the live order is rejected. Use the bare venue minimum only when the user explicitly asks for it. Anything that splits a position must keep every piece ≥ $15 too: `trade reduce 50` / `scale-tp` / partial `tpsl --size` need a position of ≥ $30 (≥ $15 × number of pieces), and an arb's matched size must clear $15 on both legs. Tick: off-grid limit / trigger prices are refused with `INVALID_TICK` on the live send (never rounded, nothing sent) — Hyperliquid: ≤ 5 significant figures; elsewhere take `tickSize` from keyless MCP `get_markets` or the price steps of `market book <SYM>`.
 
 ### Step 5: Execute
 
@@ -213,14 +246,28 @@ After explicit user confirmation:
 perp --json arb exec <SYM> <longEx> <shortEx> <USD> --smart
 
 # Spot+perp arb (spot has 0 funding cost; spot:<venue> = hl, lt, lrh, aster, ondo)
+# ONLY for a spot-perp scan row with direction == "long-spot-short-perp": buys spot, shorts the perp.
 perp --json arb exec <SYM> spot:hl hl <USD>
 perp --json arb exec <SYM> spot:lt pac <USD>
 
 # Single trade
 perp --json -e <ex> trade buy  <SYM> <SIZE> --smart
-perp --json -e <ex> trade sell <SYM> <SIZE> --smart
+perp --json -e <ex> trade sell <SYM> <SIZE> --tp <PX> --sl <PX>
 perp --json -e <ex> trade split <SYM> buy <USD> --max-slippage 0.5
 ```
+
+#### Orders: limit / status / edit / cancel
+
+```bash
+perp --json -e <ex> trade limit <SYM> buy|sell <PRICE> <SIZE> [--tif GTC|IOC|FOK|ALO] [--reduce-only]   # default GTC
+perp --json -e <ex> account orders                                # open orders + ids
+perp --json -e <ex> trade status <ORDER_ID> [--symbol <SYM>]      # --symbol required on ondo / arcus / qfex
+perp --json -e <ex> trade edit <SYM> <ORDER_ID> <PRICE> <SIZE>    # SIZE = new open (unfilled) size
+perp --json -e <ex> trade cancel <SYM> <ORDER_ID>                 # one order
+perp --json -e <ex> trade cancel <SYM>                            # every order on that symbol
+```
+
+All of these writes take `--dry-run`. **`trade edit` may return a NEW `orderId` — always continue with the id it returns**: pacifica (ALO → native edit, GTC / TOB → cancel+replace; new id either way, TIF kept), ondo (cancel+replace), qfex (venue assigns a new id); hyperliquid / lighter / lighter-rh / aster / arcus amend natively — use the returned id anyway. `trade edit --tif` only on ondo / pacifica.
 
 HL spot uses U-tokens (`BTC→UBTC`, `ETH→UETH`, `SOL→USOL`) — auto-resolved.
 
@@ -231,7 +278,13 @@ perp --json arb status                              # open arb positions, PnL, f
 perp --json portfolio                               # cross-exchange equity + risk
 perp --json risk status                             # canTrade, level, violations
 perp --json risk liquidation-distance               # % from liq for ALL positions
+perp --json -e <ex> account positions --address <ADDR> [--symbol BTC] [--account-index <n>]   # keyless, ANY account
+perp --json -e <ex> account balance --address <ADDR> [--account-index <n>]                  # keyless balances of ANY account
 ```
+
+`arb status` reads every configured venue and fails as a whole (`EXCHANGE_ERROR`) when one venue's read fails — there is no venue filter; check the venues one by one with `perp --json -e <ex> account positions` and report which one failed. Never read the failure as "no positions".
+
+`account positions --address` (keyless, nothing signed; without `-e`: every venue that supports it): hyperliquid (0x; native + every HIP-3 dex, rows carry `dex`), lighter / lighter-rh (0x; every account of the address, rows carry `accountIndex`, narrow with `--account-index`), pacifica (Solana address), risex (0x). Other venues → `CAPABILITY_UNSUPPORTED`. MCP `get_positions_by_address` returns the same rows (HIP-3 included). `account balance --address` (same venues and address rules; MCP `get_balance_by_address`): `data = { exchange, address, balance, spot }` — `balance` = `{ equity, available, marginUsed, unrealizedPnl }` (+ Pacifica `usdcBalance` / `borrowedUsdc` / `pendingInterest` / `availableToWithdraw`), `spot` = token rows or null (RISEx). Hyperliquid: `accountMode` decides equity (unified / portfolio → the spot collateral row; standard / default → perp `accountValue`; read `meta.notes`), `dexes` = HIP-3 dexes with a non-zero value, a failed dex → `meta.errors["hip3:<dex>"]` + `meta.warnings` (unknown, not zero). Lighter: top-level `balance` / `spot` null, one row per account in `accounts: [{ accountIndex, balance, spot }]`; no account → `[]` + note. `account balance` WITHOUT `--address` is the renamed-command error — your own balance is `perp portfolio`.
 
 If `risk status.canTrade === false`, do NOT open new positions. If liquidation distance falls below the user's `--min-liq-distance`, recommend reducing position size.
 
@@ -247,11 +300,13 @@ perp --json arb close <SYM> --smart                             # IOC limits
 perp --json arb close <SYM> --force                             # quarantined symbol — only after the user checked positions
 perp --json arb close <SYM> --state-only --yes                  # drop a stale state entry (arb status staleStateEntries); sends no order
 
-# Single trade
+# Single trade (dry-run first, then confirm)
 perp --json -e <ex> trade close <SYM>                           # close one symbol
 perp --json -e <ex> trade close-all                             # close all positions on this exchange
-perp --json -e <ex> trade flatten                               # close ALL + cancel ALL orders
+perp --json -e <ex> trade flatten                               # cancel ALL orders, then close ALL positions
 ```
+
+`trade close` / `close-all` close positions only — perp-cli does not cancel resting TP/SL / stop / limit orders (QFEX lists the leftovers as a WARNING). After a close, run `account orders` and cancel what is left (`trade cancel <SYM> <id>`), or use `trade flatten`, which cancels every order on the venue first.
 
 ### Pacifica Print and vaults (`perp print`, `perp vault`)
 
@@ -328,7 +383,7 @@ Background jobs inherit the parent's `-n`, `--dry-run`, `-e`, `--ows`, `-w`, `--
 - Single position notional < **80%** of that exchange's available balance.
 - Leverage 1–3x for arb; never above 5x for arb positions.
 - `arb exec` sizes the short to the verified long fill and always reconciles; still check `arb status` (`unconfirmedPairs`, `staleStateEntries`) afterwards.
-- ALWAYS follow `longExch`/`shortExch` from `arb scan` — NEVER reverse direction.
+- ALWAYS follow `longExch`/`shortExch` (perp-perp) or `longExchange`/`shortExchange` (`--rates` / `--compare`) — NEVER reverse direction. Spot-perp: only `direction == "long-spot-short-perp"`.
 - NEVER enter if `netSpread <= 0` or `netSpread < estimated round-trip slippage`.
 - Capital that's mid-bridge is "at risk" and unhedged — factor it in.
 
@@ -355,6 +410,7 @@ perp --json arb status
 ### Example 2: "ETH spot+perp arb, $100"
 
 ```bash
+perp --json arb scan --mode spot-perp --min 0       # ETH row must say direction "long-spot-short-perp"
 perp --json --dry-run arb exec ETH spot:hl hl 100
 # → show dry-run, ask confirmation
 perp --json arb exec ETH spot:hl hl 100
@@ -366,11 +422,11 @@ perp --json arb close ETH --spot-exch hl --perp-exch hl
 ### Example 3: "Long SOL 0.5 on Hyperliquid with 2x leverage"
 
 ```bash
-perp --json -e hl wallet manage margin SOL isolated   # use isolated margin for new trade
-perp --json -e hl trade leverage SOL 2 --isolated
 perp --json -e hl trade check SOL buy 0.5 --leverage 2
+perp --json --dry-run -e hl trade leverage SOL 2 --isolated
 perp --json --dry-run -e hl trade buy SOL 0.5 --smart
-# → show dry-run, ask confirmation
+# → show both dry-runs (isolated 2x + the order), ask confirmation; only then:
+perp --json -e hl trade leverage SOL 2 --isolated
 perp --json -e hl trade buy SOL 0.5 --smart
 perp --json -e hl account positions
 ```
@@ -378,9 +434,10 @@ perp --json -e hl account positions
 ### Example 4: "Move 500 USDC from Pacifica to Hyperliquid"
 
 ```bash
-perp --json funds withdraw pacifica 500
+perp --json --dry-run funds withdraw pacifica 500
 perp --json funds bridge quote --from solana --to arbitrum --amount 500
-# → show fee, ETA, ask confirmation
+# → show the withdraw plan + bridge fee / ETA, ask confirmation; only then:
+perp --json funds withdraw pacifica 500
 perp --json funds bridge send  --from solana --to arbitrum --amount 500
 perp --json funds bridge status <orderId>             # poll until completed
 perp --json funds deposit hyperliquid 500
@@ -423,7 +480,10 @@ Every response is `{ "ok": true, "data": ... }` or `{ "ok": false, "error": { "c
 | `RATE_LIMITED` / `EXCHANGE_UNREACHABLE` | Throttled / API down (reads) | Wait 5–10s (or `retryAfterMs` when present — Pacifica sets it from its credit headers), retry once; then skip that venue. |
 | `INSUFFICIENT_BALANCE` | Not enough collateral on that venue | Reduce size or move funds first (user-confirmed). |
 | `SYMBOL_NOT_FOUND` | Not listed on this venue | `market list`. Don't add `-PERP`. |
-| `SIZE_TOO_SMALL` | Below venue minimum (HL TWAP: $100 total) | Compute `size × price`; raise size. |
+| `SIZE_TOO_SMALL` | Below venue minimum (HL TWAP: $100 total) | Compute `size × price`; raise size (minimum table in Step 4). |
+| `UNKNOWN` | Unclassified failure (the message matched no known code) | Read `error.message`. After a write: treat the outcome as unknown — check `account orders` / `account positions` / `portfolio` before anything else, never resubmit blindly; report to the user. |
+
+Lighter / Lighter RH "account not found" (venue code `21100`): the address has no account on that venue / network — the user must fund (create) the account first, then `perp wallet agent approve lighter` (or `lighter-rh`).
 
 `--client-id` (`trade market/buy/sell/limit`): an id already recorded in `~/.perp/client-ids.jsonl` (and not marked failed) returns `ok:true` with `data.duplicate: true` and sends nothing — local tracking only, not a venue check (it is NOT a `DUPLICATE_ORDER` error). Formats: Pacifica a full UUID, Hyperliquid `0x` + 32 hex; QFEX refuses `--client-id` (use `--auto-id`); `--smart` + client id → `CAPABILITY_UNSUPPORTED`.
 
@@ -475,7 +535,9 @@ qfex: `builder.qfex <uuid>` is a fee share (no extra fee, no approval; mainnet o
 
 ## MCP Server
 
-The package also ships a 29-tool MCP server (no API keys required for read-only market data — `get_markets`, `get_orderbook`, `get_funding_rates`, `get_prices`, `get_outcome_markets`, `get_outcome_view`, `get_outcome_book`, `get_option_expiries`, `get_option_chain`, `get_option_quote` (Derive options), the read-only Pacifica Print / vault tools `pacifica_print_products`, `pacifica_print_quote`, `pacifica_print_positions`, `pacifica_vaults`, plus 15 account/advisor tools):
+The package also ships a 30-tool MCP server (no API keys required for read-only market data — `get_markets`, `get_orderbook`, `get_funding_rates`, `get_prices`, `get_outcome_markets`, `get_outcome_view`, `get_outcome_book`, `get_option_expiries`, `get_option_chain`, `get_option_quote` (Derive options), the read-only Pacifica Print / vault tools `pacifica_print_products`, `pacifica_print_quote`, `pacifica_print_positions`, `pacifica_vaults`, plus 16 account/advisor tools, incl. keyless `get_positions_by_address`):
+
+MCP `portfolio` totals (`totalEquity`, `totalAvailable`, `totalMarginUsed`, `totalUnrealizedPnl`, `riskMetrics.marginUtilization`) are `null` when no balance was read — check `accountState` (`"ok"` | `"unread"` = credentials but no balance read | `"noAccount"`) and `totalsCover` (the venues the totals include) before quoting a total. The CLI `portfolio` shape differs: `totals.{equity,marginUsed,marginPct,funding24h,fundingIncomplete}`, `risk.{level,marginPct}`.
 
 MCP network: `PERP_NETWORK=mainnet|testnet` (validated; unset = mainnet); every result's `meta.network` says which. The only write tools, `trade_execute` / `trade_close`, run the same local risk gate as `perp trade` (no override over MCP), refuse non-reduce-only orders on quarantined symbols, and log every order.
 
@@ -489,5 +551,7 @@ MCP network: `PERP_NETWORK=mainnet|testnet` (validated; unset = mainnet); every 
   }
 }
 ```
+
+**`perp-guardrail`** (third binary): not run by hand — the OWS Policy Engine spawns it before an agent API key signs anything; it allows / denies by chain + contract whitelist, per-tx and daily USD limits, withdrawal limits and blocked selectors. Set it up through `perp wallet setup` or `perp wallet policy create --perp-defaults`; it is a second line of defence, not a replacement for perp-cli's risk gate.
 
 [![Glama MCP server](https://glama.ai/mcp/servers/hypurrquant/perp-cli/badges/score.svg)](https://glama.ai/mcp/servers/hypurrquant/perp-cli)

@@ -160,6 +160,54 @@ bag deploy --provider azure                 # self-hosted Azure Foundry
 
 When readiness succeeds, a managed-platform deploy summary reports `x402 rail is ACTIVE` (or `ACTIVE in FREE mode`) and prints the anonymous `/x402` URL. A self-hosted AgentCore or Azure Foundry summary uses the corresponding self-hosted label: the rail runs in-process, but there is no anonymous URL. Operate the documented envelope-v1 front for that runtime. The default Bag self-deploy uses Cognito OAuth over raw HTTPS; AWS SDK/SigV4 is only for a runtime deliberately configured with IAM authorization; PAID also needs a fixed-egress B402 Relay or equivalent network path. Review the public [BNB Agent Studio deployment guide](https://docs.bnbchain.org/developer-kit/bnbchain-studio/deployment/) for supported provider and front-door patterns. A dormant or forced-dormant summary means the rail was not activated; fix the named credential, runtime, network, or tunnel condition and redeploy. These are implemented status/readiness semantics, not a claim that a live deployment or payment has been verified.
 
+## Verify from the buyer side
+
+Every paid request must carry a non-empty task. The seller reads `prompt` from the JSON body (or the `?prompt=` query) and answers HTTP 400 `x402 request requires a non-empty prompt` before settlement when it is missing or blank. An unpaid body-less probe still receives the 402 challenge, so a bare `fetch(url)` reaches the paid retry and only then fails.
+
+With Studio's own buyer, pin the seller, inspect the challenge, then pay once:
+
+```bash
+bag x402 trust "<x402-url>"
+bag x402 quote "<x402-url>" --asset U
+bag x402 buy "<x402-url>" --asset U --max-usd 0.10 \
+  --method POST --json '{"prompt":"Summarize the latest BNB Chain activity."}'
+```
+
+A settled payment prints `✓ Paid`, the asset facts, and `Transaction: 0x…`, the facilitator's settlement transaction; the `x402_buy` audit event records the same hash. Any other status after the payment header left is an unknown outcome: do not retry before checking the wallet balance and the seller's reconciliation. `evm-local` and `turnkey` buyers sign EIP-3009, so on BSC Testnet they pay `TEST_U`, the 6-decimal B402 Mock U from the B402 sandbox onboarding, not the 18-decimal faucet U.
+
+A third-party buyer should use the combination Studio tests against its seller: `@x402/fetch@2.19.0` with `B402ExactClientScheme` from `@bnb-chain/b402@0.2.1`.
+
+```ts
+import { B402ExactClientScheme } from "@bnb-chain/b402/client";
+import {
+  decodePaymentResponseHeader,
+  wrapFetchWithPayment,
+  x402Client,
+} from "@x402/fetch";
+import { privateKeyToAccount } from "viem/accounts";
+
+const account = privateKeyToAccount(buyerKey);
+const paidFetch = wrapFetchWithPayment(
+  fetch,
+  new x402Client().register(
+    "eip155:97", // eip155:56 against a production merchant
+    new B402ExactClientScheme({ account, methods: ["eip3009"] }),
+  ),
+);
+const response = await paidFetch(x402Url, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ prompt: "Summarize the latest BNB Chain activity." }),
+  signal: AbortSignal.timeout(120_000),
+});
+const receipt =
+  response.headers.get("PAYMENT-RESPONSE") ??
+  response.headers.get("X-PAYMENT-RESPONSE");
+const settlement = receipt ? decodePaymentResponseHeader(receipt) : null;
+```
+
+The receipt is the base64-encoded x402 settlement response (`success`, `transaction`, `network`, `payer`). Only `success: true` with a transaction hash proves settlement; a missing receipt or `success: false` is not a refund and must be reconciled, never replayed.
+
 ## Hard rules
 
 - Never log or print any B402 value or private key.

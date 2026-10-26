@@ -38,9 +38,9 @@ OWS_PASSPHRASE=<pp> perp --json wallet setup --name <name> --max-tx-usd <usd> --
 ### ALWAYS use these (non-interactive, agent-safe):
 ```bash
 printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set <exchange>   # import key (stdin) into OWS vault → active wallet
-perp --json wallet generate evm             # generate EVM wallet
-perp --json wallet generate solana          # generate Solana wallet
-perp --json wallet show                     # check configured wallets
+OWS_PASSPHRASE=<pp> perp --json wallet generate [name] [--words 12|24]   # new multi-chain OWS wallet (EVM + Solana)
+perp --json health                          # keyless venue connectivity: use data.healthy
+perp --json wallet show                     # check configured wallets (OWS wallet: exchanges: [] is normal)
 perp --json wallet list                     # list named wallets
 perp --json wallet balance   # gas token + USDC/USDT per chain (Arbitrum, Ethereum, Base, BNB, Robinhood USDG, Solana); failed reads → balance null + error
 perp --json portfolio -e <EX>               # per-exchange balance + positions (account balance was renamed in v0.12)
@@ -61,9 +61,8 @@ perp --json risk check --notional <$> --leverage <L>  # pre-trade risk check
 
 ### Single Exchange Setup
 ```bash
-# 1. Install
-npm install -g perp-cli@latest
-# or use npx -y perp-cli@latest as the prefix
+# 1. Install — ASK THE USER; they run it (never install perp-cli yourself, never fall back to npx)
+#    the user runs: npm install -g perp-cli        → then check: perp --version  (must be >= 0.16.0)
 
 # 2. Register wallet (user provides key — on stdin, never argv)
 printf '%s' "$USER_PRIVATE_KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set hl
@@ -342,13 +341,17 @@ Orders, cancels, edits, leverage, withdraw / deposit / bridge / transfer: `ORDER
 
 ## Symbol Naming Across Exchanges
 
-Symbols are auto-resolved by the CLI. **Always use bare symbols** (e.g., `BTC`, `SOL`, `ICP`) — the CLI handles exchange-specific naming automatically:
+Symbols are auto-resolved by the CLI. **Always INPUT bare symbols** (e.g., `BTC`, `SOL`, `ICP`; HIP-3: `TSLA` with `-e hyperliquid --dex xyz`) — no `-PERP` suffix, no `xyz:` prefix. OUTPUT rows are not uniform:
 
-| Input | Pacifica | Hyperliquid | Lighter | Aster |
-|-------|----------|-------------|---------|-------|
-| `ICP` | → `ICP` | → `ICP-PERP` | → `ICP` | → `ICP` |
-| `BTC` | → `BTC` | → `BTC` | → `BTC` | → `BTC` |
-| `SOL` | → `SOL` | → `SOL` | → `SOL` | → `SOL` |
+| Row kind | Example | Notes |
+|----------|---------|-------|
+| `market list` / `info` / `mid`, `arb scan` | `BTC` | plain on every venue (HIP-3 market rows: `xyz:TSLA`, wire coin in `venueSymbol`) |
+| Keyed Hyperliquid native positions / orders / history (`account …` with your key) | `BTC-PERP` | internal display name — strip `-PERP` to compare with market rows |
+| HIP-3 position / order rows | `xyz:TSLA` | dex prefix; also `account positions --address` rows (with `dex: "xyz"`) |
+| `account positions --address` (public) native HL rows | `BTC` | plain, `dex: null` |
+| Pacifica / Lighter / Aster / other venues | `BTC` | plain |
+
+Why: the CLI resolves your bare input to each venue's own name, but keyed Hyperliquid rows keep the adapter's internal `<COIN>-PERP` key. When feeding a row back into a command, pass the bare name (`BTC`, `TSLA` + `--dex xyz`).
 
 - `arb scan` returns bare symbols — pass them directly to trade/leverage commands on any exchange.
 - Do NOT manually add `-PERP` suffix — the CLI resolves this automatically.

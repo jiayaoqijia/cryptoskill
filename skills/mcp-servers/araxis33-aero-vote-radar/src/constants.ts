@@ -42,8 +42,7 @@ export const PRICE_BATCH_SIZE = 50;
 
 // How many DefiLlama batch requests run at once. Bounded rather than unbounded
 // (a run can produce several batches) so a burst of simultaneous requests
-// doesn't look like abuse to DefiLlama's edge/CDN — matches the concurrency
-// cap already used for Base RPC calls in pools.ts/efficiency.ts/backtest.ts.
+// doesn't look like abuse to DefiLlama's edge/CDN.
 export const PRICE_BATCH_CONCURRENCY = 4;
 
 // How long a successfully looked-up price stays valid before it's refetched.

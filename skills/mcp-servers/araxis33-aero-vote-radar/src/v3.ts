@@ -1,11 +1,10 @@
 import { parseAbi, parseAbiItem, type Address } from "viem";
 
 /**
- * Reader for Aero (MetaDEX v3) — the system that replaces weekly veAERO voting
- * on 2026-10-22. Nothing here runs against live data yet: on Arc the
- * FactoryRegistry is deployed but `leafVoter()` is still zero and there are no
- * gauge factories (checked 2026-10-06), and the other chains have no addresses
- * at all. The shapes follow the public source, `dromos-labs/metadex-public` at
+ * Reader for Aero (MetaDEX v3) — the system that replaced weekly veAERO
+ * voting on 2026-10-22. Live on all 7 networks since launch (Arc included:
+ * its FactoryRegistry now has gauge factories and a non-zero `leafVoter()`).
+ * The shapes follow the public source, `dromos-labs/metadex-public` at
  * 2026-10-02, and Dromos Labs' own revenue methodology
  * (`dromos-labs/aerov3_analytics_alpha`, queries/revenue/METHODOLOGY.md):
  *

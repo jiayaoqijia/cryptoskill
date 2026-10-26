@@ -59,7 +59,10 @@ During transition, you are **unhedged**. Price can move against you. Factor this
 ```bash
 perp --json arb scan --min 5             # find spreads > 5% annual (shows longExch/shortExch/netSpread)
 perp --json arb scan --rates             # raw funding rates across all exchanges
-perp --json arb scan --history <SYMBOL>  # historical funding for a symbol
+perp --json -e <EX> market funding <SYMBOL> -l 168   # settled funding history per venue (newest first; average it yourself)
+# `arb scan --history <SYMBOL>` = only snapshots THIS machine recorded during earlier `arb scan --rates` runs
+# (often `rates: {}`; `historicalAvg` in --rates / --compare rows is null for the same reason) — not venue history.
+# Testnet rates are meaningless (thousands of %/yr): analyse on mainnet only.
 # NOTE: legacy 'arb rates'/'arb prices'/'arb dex' are removed — all routes go through 'arb scan'
 ```
 
@@ -74,6 +77,8 @@ grossSpread: 15.2         → funding spread, annualized %
 netSpread: 12.87          → annualized % after round-trip trading costs amortized over --hold-days (default 7)
                             (and --bridge-cost if given)
 ```
+
+(perp-perp rows. `--rates` / `--compare` rows name the legs `longExchange` / `shortExchange` and are actionable only when `executable === true`; spot-perp rows have `spotExchanges` / `perpExchange` / `direction` — see "Spot-Perp Carry".)
 
 **Rules:**
 1. **ALWAYS follow longExch/shortExch directions exactly.** DO NOT reverse them.
@@ -181,7 +186,7 @@ Desired size: 1.0
 ```bash
 perp --json -e <EX> market info <SYM>    # check maxLeverage, volume, openInterest
 ```
-Round `ORDER_SIZE` to the coarser step size of the two exchanges. If the matched size falls below either exchange's minimum, the arb is NOT executable at this size — reduce target or skip.
+Round `ORDER_SIZE` to the coarser step size of the two exchanges. If the matched size is below $15 notional on either leg (the skill's default smallest order — the $10 venue minimums plus a buffer for price moves, step rounding and fees; see SKILL.md Step 4), the arb is NOT executable at this size — raise the target or skip.
 
 #### Step 2: Execute Legs Sequentially with Same Size
 
@@ -266,6 +271,34 @@ If positions already have mismatched sizes, close to the smaller size first, the
 - One side's funding flipped direction
 - Better opportunity found (after accounting for switch cost!)
 - Risk limits breached
+
+## Spot-Perp Carry (long spot + short perp)
+
+**What:** buy the asset spot and short the same asset's perp while perp funding is POSITIVE (longs pay shorts) — the short leg collects funding, the spot leg pays none, price exposure nets out.
+
+**Find:**
+```bash
+perp --json arb scan --mode spot-perp --min 0 --hold-days 14 --size 500   # mainnet; keep only direction == "long-spot-short-perp"
+perp --json -e <perpExchange> market funding <SYM> -l 168                 # is the rate persistent? (settled, newest first)
+```
+Row fields: `spotExchanges[]` (venues that can hold the spot leg; `arb exec` spot venues: hl, lt, lrh, aster, ondo), `perpExchange`, `direction`, `grossSpread` / `netSpread` (annual %), `estFeesPct` (round trip on BOTH legs: 2 × (taker A + taker B) + 0.1 % slippage — taker fees from `perp settings fees show`), `breakEvenDays` (days of funding needed to pay `estFeesPct`), `estHourlyIncomeUsd` (per $1000). `--hold-days` amortizes the fees into `netSpread`; `--size` / `--bridge-cost` add a bridge cost when the legs sit on different venues. A `sell-spot-long-perp` row is NOT a carry trade for perp-cli: `arb exec spot:` always buys spot and shorts the perp (it does not check the funding sign), so on such a row it pays funding.
+
+**Economics:**
+- Net ≈ funding received on the short − `estFeesPct` (entry + exit, both legs) − bridge cost if the legs are on different venues.
+- Capital = the FULL spot notional in the spot venue's quote token (`trade spot-balance`; separate-margin venues transfer the shortfall perp→spot) + perp margin (notional / leverage, with a buffer) on the perp venue. Hyperliquid unified accounts fund both legs from one balance.
+- Practical ceiling: on many venues funding sits at the base interest rate, 0.00125 %/h ≈ 10.95 % APR (observed 2026-10-26 on HYPE: Pacifica / Ondo / Arcus 10.95 %, Hyperliquid 24 h average ≈ 7.6 %). Treat ~11 % gross as the normal ceiling for liquid assets; much higher prints are usually short-lived spikes — check the settled history before entering.
+- There is no spot price / book read in perp-cli, so the spot-perp basis cannot be pre-computed here; `arb exec` itself compares the spot and perp books (refuses an empty book or a > 5 % mid gap) and checks depth and venue minimums before anything moves.
+
+**Risks:** funding flips negative (the short then PAYS — exit when the settled rate stays negative); short-leg liquidation on a rally (spot gains on another venue do not margin the perp) → 1–2x leverage, isolated margin, watch `risk liquidation-distance`; basis moves at entry / exit; venue / transfer risk on the spot leg.
+
+**Execute / exit (dry-run first, user confirmation for each live step):**
+```bash
+perp --json --dry-run arb exec <SYM> spot:hl hl <USD> --leverage 2 --isolated   # only for a long-spot-short-perp row
+perp --json arb exec <SYM> spot:hl hl <USD> --leverage 2 --isolated
+perp --json arb status                                    # spotPerpPairs; fails as a whole if one venue read fails
+perp --json --dry-run arb close <SYM> --spot-exch hl --perp-exch hl
+perp --json arb close <SYM> --spot-exch hl --perp-exch hl
+```
 
 ## Risk Management — THE MOST IMPORTANT SECTION
 
@@ -399,7 +432,9 @@ Compare each position's unrealized P&L. In a perfect arb, they should roughly of
 
 Think in terms of total capital across all exchanges:
 ```bash
-perp --json portfolio                        # totalEquity, marginUtilization, concentration
+perp --json portfolio                        # totals.{equity,marginUsed,marginPct,funding24h,fundingIncomplete}, risk.{level,marginPct}, exchanges[].perp.available
+# MCP `portfolio`: totalEquity / totalAvailable / totalMarginUsed / riskMetrics.marginUtilization are null when no balance
+# was read — check accountState ("ok" | "unread" | "noAccount") and totalsCover (venues included) first
 ```
 
 Rules of thumb:

@@ -106,6 +106,8 @@ If the selected asset is unavailable or underfunded, Studio prints only verified
 
 Output prints 4 tx hashes + `job_id`. Note the `job_id` for later.
 
+**Pending write - do NOT re-run `buy`.** If a step's receipt is not observed, SDK 0.6.1 keeps the signed hash instead of re-signing, and `buy` exits 1 printing `pending_step:`, `job_id:` (once created) and `pending_tx_hash:`. Check that hash on-chain and continue with `bag erc8183 status <job_id>`. Re-running `buy` creates a new job and can fund twice. `settle` reports a pending transaction the same way.
+
 **Gotcha**: `expired_at = now + deadline_minutes*60 + dispute_window` (24h). This is intentional - the chain enforces that submission must happen before `expired_at - dispute_window`. If you set `deadline_minutes=30`, the seller has 30 min to submit (then a 24h dispute window starts).
 
 ## Stage 4 - Wait for SUBMITTED
@@ -134,6 +136,8 @@ bag erc8183 fetch <job_id>
 ```
 
 Prints the `deliverable_url`. Fetch it directly (using a gateway when the scheme is `ipfs://`) to read the `DeliverableManifest`: `{"chain_id", "contracts", "job_id", "response": {"content": ..., "content_type": ...}, "metadata": {...}}`.
+
+The URL is resolved from the submission log. When the RPC cannot serve that log, `fetch` fails with "temporarily unresolvable" and `status` shows `deliverable_url_status: unresolvable` - retry later or use an RPC that keeps the job's logs; it is not a missing deliverable.
 
 ## Stage 6 - Settle
 

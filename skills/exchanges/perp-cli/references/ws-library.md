@@ -26,7 +26,7 @@ Two packages, **the same code and API** (built from one source):
 
 | Package | Install | When |
 |---|---|---|
-| **`@hypurrquant/perp-ws`** (recommended for integrators) | `npm install @hypurrquant/perp-ws` (+ `ws` for the Node entry) | apps, dashboards, bots — **no dependencies** (~170 KB ESM, ~41 KB gzip; 0.15.1 build) |
+| **`@hypurrquant/perp-ws`** (recommended for integrators) | `npm install @hypurrquant/perp-ws` (+ `ws` for the Node entry) | apps, dashboards, bots — **no dependencies** (~170 KB ESM, ~41 KB gzip; 0.16.0 build) |
 | `perp-cli/ws` | `npm install perp-cli` | perp-cli is already installed (the CLI pulls ~140 MB of CLI deps) |
 
 | Runtime | `@hypurrquant/perp-ws` | `perp-cli` | Transport |

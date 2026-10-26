@@ -218,7 +218,7 @@ For each todo item:
 - Step 6b (deliverable storage): skip for `local` and for every managed-platform deploy. Self-hosted IPFS needs its write endpoint, S3 needs namespaced keys unless ambient identity is deliberately configured, and Azure Blob needs a write SAS/service principal unless ambient identity is deliberately configured. Do not ask for secret values in chat; have the user set them with `bag env set`. Self-hosted deploy readiness blocks incomplete storage configuration.
 - Business-logic step: ask the user what the Agent should produce when it delivers a job - the `runWork` hook in `app/agent/src/sellerCore.ts` (A2A) / `app/agent/src/mcpMain.ts` (MCP) is the developer hook. Leave the generic LLM passthrough stub if they don't know yet
 
-**Never** ask the user to `echo "KEY=VALUE" >> .env.local`. Always call `bag env set KEY VALUE` - it replaces the existing line if present, otherwise appends, so it's safe to run repeatedly.
+**Never** ask the user to `echo "KEY=VALUE" >> .env.local`. Always call `bag env set KEY VALUE` - it replaces the existing line if present, otherwise appends, so it's safe to run repeatedly. When a key repeats, Studio uses its first line, so an appended copy below the scaffold's empty `KEY=` placeholder is ignored; `bag dev`, `bag doctor --check-env`, and `bag deploy prepare` name such keys. For a secret that `bag env set` refuses on argv, have the user fill the existing line in place.
 
 ## Stage 4 - Summary
 

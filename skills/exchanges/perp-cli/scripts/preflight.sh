@@ -6,16 +6,17 @@
 
 set -euo pipefail
 
-# Auto-detect perp command (supports npx fallback for agents without install permissions)
-if command -v perp &>/dev/null; then
-  PERP="perp"
-else
-  PERP="npx -y perp-cli@latest"
+# perp must be installed (no npx / auto-install path: the user decides what gets installed).
+if ! command -v perp &>/dev/null; then
+  echo "perp not found — ask the user to install perp-cli >= 0.16.0" >&2
+  echo '{"ok":false,"error":{"code":"PERP_NOT_FOUND","message":"perp not found — ask the user to install perp-cli >= 0.16.0"}}'
+  exit 1
 fi
+PERP="perp"
 
 # perp exits 1 on {"ok":false} and prints exactly one JSON document: capture it as-is
-# (never append a fallback document); empty output (crash / not installed) → {"ok":false}.
-pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false}'; fi; }
+# (never append a fallback document); empty output (crash) → an explicit NO_OUTPUT error document.
+pj() { local out; out=$($PERP "$@" 2>/dev/null) || true; if [[ -n "$out" ]]; then printf '%s\n' "$out"; else echo '{"ok":false,"error":{"code":"NO_OUTPUT","message":"perp printed nothing (crashed?)"}}'; fi; }
 isok() { jq -e '.ok == true' >/dev/null 2>&1 <<<"$1"; }
 
 JSON_MODE=false
@@ -30,28 +31,35 @@ add_check() {
   if [[ "$status" == "fail" ]]; then issues+=("$name: $detail"); fi
 }
 
-# 1. perp-cli installed and version check
-VERSION=$($PERP --version 2>/dev/null || echo "unknown")
-if [[ "$VERSION" != "unknown" ]]; then
-  add_check "install" "pass" "perp-cli $VERSION ($(command -v perp &>/dev/null && echo 'global' || echo 'npx'))"
+# 1. perp-cli version (must be >= 0.16.0)
+VERSION=$($PERP --version 2>/dev/null || true)
+MIN_VERSION="0.16.0"
+if [[ -z "$VERSION" ]]; then
+  add_check "install" "fail" "perp --version printed nothing — ask the user to (re)install perp-cli >= $MIN_VERSION"
+elif [[ "$(printf '%s\n%s\n' "$MIN_VERSION" "$VERSION" | sort -V | head -1)" != "$MIN_VERSION" ]]; then
+  add_check "install" "fail" "perp-cli $VERSION < $MIN_VERSION — ask the user to upgrade"
 else
-  add_check "install" "fail" "perp-cli not found — ask the user before installing (npm i -g perp-cli@latest) or use npx"
+  add_check "install" "pass" "perp-cli $VERSION"
 fi
 
-# 2. Wallet configured
+# 2. Wallet configured (with an OWS wallet, `exchanges: []` in wallet show is normal)
 WALLET_OUT=$(pj --json wallet show)
 if isok "$WALLET_OUT"; then
   add_check "wallet" "pass" "Wallet configured"
 else
-  add_check "wallet" "fail" "No wallet configured — run: perp wallet set <exchange>  (key via hidden prompt or stdin)"
+  add_check "wallet" "fail" "wallet show failed ($(jq -r '.error.code' <<<"$WALLET_OUT")) — the user registers a key: perp wallet set <exchange> (stdin / hidden prompt)"
 fi
 
-# 3. Exchange connectivity (proxy via unauthenticated market prices fetch)
-HEALTH_OUT=$(pj --json market prices)
-if isok "$HEALTH_OUT"; then
-  add_check "connectivity" "pass" "Exchange reachable"
+# 3. Venue connectivity: perp health (healthy = every OFFICIAL-API venue is up;
+#    allHealthy also counts unofficial APIs such as TxFlow)
+HEALTH_OUT=$(pj --json health)
+if ! isok "$HEALTH_OUT"; then
+  add_check "connectivity" "fail" "perp health failed ($(jq -r '.error.code' <<<"$HEALTH_OUT"))"
+elif [[ "$(jq -r '.data.healthy' <<<"$HEALTH_OUT")" == "true" ]]; then
+  add_check "connectivity" "pass" "All official venues reachable"
 else
-  add_check "connectivity" "warn" "Exchange unreachable"
+  DOWN=$(jq -r '[.data.exchanges[] | select(.status != "ok") | .exchange] | join(",")' <<<"$HEALTH_OUT")
+  add_check "connectivity" "warn" "Official venues down: $DOWN — do not use them until perp health shows them ok"
 fi
 
 # 4. Portfolio & balances

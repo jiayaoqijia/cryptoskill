@@ -4,7 +4,7 @@ All commands support `--json` for structured output. Always use `--json` when ca
 
 ## Global Flags
 
-`--json` (required for agents) | `-e <venue>` | `-n mainnet|testnet` | `--dry-run` (only commands whose `--help` says "supports --dry-run"; others refuse with `INVALID_PARAMS`) | `--fields <f1,f2>` | `--ndjson` | `-w, --wallet <name>` | `--ows <name>` (OWS wallet) | `--no-agent` (skip agent-key routing) | `--no-builder` | `--dex <name>` (HIP-3, Hyperliquid)
+`--json` (required for agents) | `-e <venue>` | `-n mainnet|testnet` | `--dry-run` (honored by: every `trade` write, `arb exec|close|auto|rebalance`, `funds deposit|withdraw|transfer|faucet|bridge send|bridge exchange|rebalance execute|address-book add`, `outcome buy|sell`, `print deposit|cancel`, `vault deposit|withdraw`, `wallet builder approve|revoke`, `wallet manage referral set`, `strategy run`, `strategy plan execute` — `--help` does not always say so; every other command, read-only ones included, refuses it with `INVALID_PARAMS` = unsupported, nothing ran) | `--fields <f1,f2>` | `--ndjson` | `-w, --wallet <name>` | `--ows <name>` (OWS wallet) | `--no-agent` (skip agent-key routing) | `--no-builder` | `--dex <name>` (HIP-3, Hyperliquid)
 
 Venues (`-e`, id | aliases): `pacifica|pac`, `hyperliquid|hl`, `lighter|lt`, `lighter-rh|lrh|rh`, `aster|ast`, `ondo|ondo-perps`, `arcus`, `qfex|qf`, `risex|rise` (READ-ONLY in this release — market data + account reads; trading is planned for a later release, every trade / agent / bot write refuses with CAPABILITY_UNSUPPORTED), `txflow|txf` (market data only, UNOFFICIAL API — every write refuses with CAPABILITY_UNSUPPORTED), `variational|var|omni` (market data only, official API, RFQ venue: `market book` = indicative RFQ quotes, `market funding` = current terms — every write refuses with CAPABILITY_UNSUPPORTED), `grvt|grv` (market data only in this version, official API — every write refuses with CAPABILITY_UNSUPPORTED), `extended|ext|x10` (Extended on Starknet, official API, market data only in this version — every write refuses with CAPABILITY_UNSUPPORTED). Default = `settings.defaultExchange`, else `pacifica` — always pass `-e`.
 `-k <key>` is rejected (keys only via stdin / OWS vault). `--passphrase` is deprecated → `OWS_PASSPHRASE` env or stdin.
@@ -12,9 +12,11 @@ Venues (`-e`, id | aliases): `pacifica|pac`, `hyperliquid|hl`, `lighter|lt`, `li
 ## Market Data (read-only, safe)
 ```bash
 perp --json -e <EX> market list                # all markets with prices, funding, volume
-perp --json market prices                      # cross-exchange price comparison
-perp --json -e <EX> market mid <SYMBOL>        # mid price (fast)
-perp --json -e <EX> market info <SYMBOL>       # mark/index price, funding, volume, OI, max leverage
+perp --json market prices                      # cross-exchange price comparison (every market; takes no symbol)
+perp --json -e <EX> market mid <SYMBOL>        # mid price (fast) — the canonical single-symbol price read
+perp --json -e <EX> market info <SYMBOL>       # mark/index price, funding, volume, OI, max leverage, stepSize (no tickSize / min notional — see SKILL.md Step 4)
+# No spot market reads: `market *` are perp markets (HYPE/USDC, @107, HYPE-SPOT → SYMBOL_NOT_FOUND). Spot balances / orders:
+# `trade spot-balance`, `trade spot-orders` (keyed). `arb scan --basis` = cross-venue PERP basis, not spot-perp.
 perp --json -e <EX> market book <SYMBOL>       # orderbook (bids/asks)
 perp --json -e <EX> market trades <SYMBOL>     # recent trades
 perp --json -e <EX> market funding <SYMBOL>    # funding rate history
@@ -38,6 +40,8 @@ perp --json portfolio -e <VENUE_ID>            # perp balance + spot holdings + 
 perp --json -e <EX> account positions          # open positions
 perp --json -e <EX> account positions --address <ADDR>   # ANY account's open positions, keyless (public data; nothing signed)
 perp --json account positions --address <0xADDR>         # every supporting venue: { venues, errors?, notes? }
+perp --json -e <EX> account balance --address <ADDR>     # ANY account's balances + spot, keyless (same venues; Lighter: per account, --account-index)
+perp --json account balance --address <0xADDR>           # every supporting venue: { venues, errors?, notes? }
 perp --json -e <EX> account orders             # open/pending orders
 perp --json -e <EX> account history            # order history
 perp --json -e <EX> account trades             # trade fill history
@@ -79,10 +83,13 @@ perp --json -e <EX> trade market <SYM> buy <SIZE> --split   # split via flag
 perp --json -e <EX> trade limit <SYMBOL> <buy|sell> <PRICE> <SIZE> [--tif GTC|IOC|FOK|ALO]   # default GTC on every venue; off-grid price → INVALID_TICK (never rounded)
 perp --json -e <EX> trade stop <SYMBOL> <SIDE> <SIZE> <STOP_PRICE>   # reduce-only by default; --no-reduce-only to open (refused on ondo / qfex)
 perp --json -e <EX> trade tpsl <SYMBOL> <long|short> --tp <P> --sl <P>   # positionSide = the open position's side
-perp --json -e <EX> trade buy <SYMBOL> <SIZE> --tp <P> --sl <P>         # entry protected by TP/SL (verified fill)
+perp --json -e <EX> trade buy <SYMBOL> <SIZE> --tp <P> --sl <P>         # entry protected by TP/SL (verified fill); absolute prices, not %; not with --smart
+#   trade limit --tp/--sl: ondo / arcus any entry, other venues --tif IOC only
 
 # Order management
-perp --json -e <EX> trade edit <SYMBOL> <ORDER_ID> <PRICE> <SIZE>
+perp --json -e <EX> trade edit <SYMBOL> <ORDER_ID> <PRICE> <SIZE>   # SIZE = new open size; may return a NEW orderId — use it
+#   pacifica: TIF from the order's client id — ALO native edit, GTC / TOB cancel+replace (new id either way);
+#   ondo: cancel+replace; qfex: venue assigns a new id (client id kept); --tif only on ondo / pacifica
 perp --json -e <EX> trade cancel <SYMBOL_OR_ORDER_ID> [orderId]
 perp --json -e <EX> trade cancel-all
 perp --json -e <EX> trade cancel-stop <SYMBOL> <STOP_ORDER_ID>   # pacifica / qfex only; other venues: trade cancel
@@ -100,6 +107,7 @@ perp --json -e <EX> trade check <SYM> <SIDE> <SIZE> --leverage 3
 perp --json -e <EX> trade close <SYMBOL>                # close single position
 perp --json -e <EX> trade close-all                     # close all positions
 perp --json -e <EX> trade flatten                       # cancel all orders + close all positions
+# close / close-all do NOT cancel resting TP/SL / stop / limit orders (QFEX: WARNING lists them) — check account orders
 perp --json -e <EX> trade reduce <SYMBOL> <PCT>         # reduce by percentage
 perp --json -e <EX> trade leverage <SYMBOL> <N> [--isolated]
 
@@ -337,13 +345,17 @@ perp --json arb scan --mode perp-perp --min 10              # perp-only with min
 perp --json arb scan --mode spot-perp --min 10              # spot+perp only
 perp --json arb scan --rates                                # funding rates across exchanges
 # Which rate is compared: each venue's market-row `fundingRate` (the CURRENT rate it publishes), labelled
-# per row by `rateKind` — Pacifica / Lighter / Lighter RH / Arcus / RISEx "lastSettled", Hyperliquid /
-# Aster / TxFlow "accruing", null = not verified. It is NOT the WS comparator's kind:"next" (predicted
+# per row by `rateKind` — Pacifica / Lighter / Lighter RH / Arcus / RISEx / Ondo "lastSettled", Hyperliquid /
+# Aster / TxFlow / Extended "accruing", GRVT / Variational "predicted", null = QFEX (not established). It is NOT the WS comparator's kind:"next" (predicted
 # next-period rate, where a venue publishes one: Pacifica `predictedFundingRate`).
 perp --json arb scan --basis [SYMBOL]                       # cross-exchange basis
 perp --json arb scan --gaps                                 # cross-exchange price gaps
 perp --json arb scan --hip3                                 # HIP-3 cross-dex spreads
-perp --json arb scan --history [SYMBOL]                     # historical funding
+perp --json arb scan --history [SYMBOL] [--hours 24]        # LOCAL snapshots only (~/.perp/funding-rates/, written by
+#   `arb scan --rates` / `portfolio --arb`; hyperliquid / pacifica / lighter unless -e) — `rates: {}` until scans
+#   have run; `historicalAvg` (avg1h/8h/24h/7d) in --rates / --compare rows comes from the same store (null when empty).
+#   Real settled history: perp --json -e <EX> market funding <SYM> -l <N>  (newest first; rate = fraction per
+#   intervalHours → hourly = rate / intervalHours, annual % = hourly × 8760 × 100; average the rows yourself)
 perp --json arb scan --compare <SYMBOL>                     # compare a symbol across exchanges
 perp --json arb scan --positions                            # position funding impact; actual24h null + fundingHistoryErrors when a venue's history is unreadable
 perp --json arb scan --live --interval 60                   # continuous monitoring
@@ -358,14 +370,28 @@ perp --json -e qfex market funding AAPL -l 72               # hourly windows; ou
 # so only an exact 0 with no part of the hour in any funding session counts as closed — a real 0
 # in a gap would also read as closed. Averages / APRs skip marketClosed rows only.
 # netSpread / grossSpread = annualized % (netSpread = gross minus round-trip costs amortized over --hold-days)
-# spot-perp rows: netSpreadPct / grossSpreadPct, spotExchanges[], perpExchange, direction
+# estFeesPct = round trip on BOTH legs = 2 × (taker fee leg A + taker fee leg B) + 2 × 0.05 % slippage, taker fees from
+#   `perp settings fees show` (settings.fees, else the shipped table — the spot leg uses its venue's perp taker rate);
+#   e.g. hl+hl: 2 × (0.035 + 0.035) + 0.1 = 0.24 %. `settings fees show` is the per-fill rate, estFeesPct the round trip.
+# perp-perp rows: mode, longExch, shortExch, markPrice, grossSpread(Pct), netSpread(Pct), estFeesPct, priceGapPct
+# spot-perp rows: mode, spotExchanges[], perpExchange, direction, perpFundingRate, netSpreadPct / grossSpreadPct AND
+#   netSpread / grossSpread (same values), estFeesPct, estHourlyIncomeUsd (per $1000), breakEvenDays, markPrice.
+#   Executable only when direction == "long-spot-short-perp" (arb exec spot: always buys spot + shorts the perp and
+#   does not check the funding sign) — never act on "sell-spot-long-perp".
+# --rates / --compare rows: symbol, rates[] (exchange, fundingRate, hourlyRate, annualizedPct, rateKind, fundingVerified,
+#   historicalAvg), maxSpreadAnnual / longExchange / shortExchange / estHourlyIncomeUsd (null with < 2 verified rates),
+#   executable (act only when true), readOnlyLegs, unverifiedLegs, mixedKinds; --rates top level: symbols[], minSpread,
+#   belowMinSpread, exchangeStatus, exchangeErrors. --compare <unknown> → ok:true, data { symbol, available: false }.
+# Testnet funding / spreads are meaningless (thousands of %/yr) — analyse yield on mainnet only.
 
 # Execute (perp-perp or spot+perp via spot:<venue>; spot venues: hl, lt, lrh, aster, ondo)
 # Sequential: long first, then the short sized to the verified long fill; reconcile always on;
 # an unconfirmed leg quarantines the symbol. Supports --dry-run.
 perp --json arb exec <SYM> <longEx> <shortEx> <USD>         # perp-perp dual-leg entry
-perp --json arb exec <SYM> spot:hl hl <USD>                 # spot+perp via HL spot
+perp --json arb exec <SYM> spot:hl hl <USD>                 # spot+perp via HL spot (long-spot-short-perp rows only)
 perp --json arb exec <SYM> spot:lt pac <USD>                # spot+perp via LT spot
+#   spot: validates balances (spot quote + transferable perp; perp margin), both books (empty book → refused),
+#   spot/perp mid gap ≤ 5 %, depth and venue minimums before anything moves
 perp --json arb exec <SYM> <longEx> <shortEx> <USD> \
    --leverage 2 --isolated --smart --max-slippage 0.5
 
@@ -379,6 +405,8 @@ perp --json arb close <SYM> --state-only --yes              # drop a stale state
 
 # Status / history / config / rebalance
 perp --json arb status                                      # open arb positions + PnL + funding; check unconfirmedPairs, staleStateEntries
+#   reads every configured venue; one failing venue fails the whole command (EXCHANGE_ERROR, no venue filter) →
+#   check per venue with `-e <EX> account positions`
 # spot-perp entries: fundingSource actual | partial | estimate | recorded (+ fundingError) — only "actual" is complete settled funding
 perp --json arb status --period 7 --symbol BTC              # filter funding lookback / symbol
 perp --json arb history                                     # alias: arb log
@@ -396,8 +424,7 @@ perp --json --dry-run arb auto                              # simulate (--backgr
 
 ## Wallet Management
 ```bash
-perp --json wallet generate evm                # generate EVM wallet
-perp --json wallet generate solana             # generate Solana wallet
+perp --json wallet generate [name] [--words 12|24]   # new multi-chain OWS vault wallet (EVM + Solana); passphrase via OWS_PASSPHRASE / stdin
 printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet import --name <n> [--chain evm|solana|dual] [--mnemonic]   # import a key (stdin / hidden prompt; argv key, --evm/--solana <key>, --legacy rejected)
 printf '%s' "$KEY" | OWS_PASSPHRASE=<pp> perp --json wallet set hl   # import key (stdin / hidden prompt; argv key rejected) into OWS vault → active wallet
 perp --json wallet set pac --name pac          # Solana key, hidden prompt (TTY)
@@ -510,7 +537,7 @@ perp --json wallet policy delete <id>
 ## Risk & Analytics
 ```bash
 perp --json risk status                        # portfolio risk overview (level, violations, canTrade)
-perp --json health                             # adapter health: ping venue REST endpoints (connectivity + latency)
+perp --json health                             # keyless venue ping: data.healthy (official venues up), allHealthy (+ unofficial), exchanges[], unofficial[], skipped[]
 perp --json risk liquidation-distance          # % distance from liquidation for ALL positions
 perp --json risk limits                        # view current risk limits
 perp --json risk limits --min-liq-distance 30 --max-leverage 5  # set risk limits (also --max-position[-pct], --max-exposure[-pct], --max-positions, --daily-loss[-pct], --max-drawdown[-pct], --max-margin, --reset)
