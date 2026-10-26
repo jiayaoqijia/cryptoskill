@@ -9,6 +9,7 @@ import { formatError } from "./util.js";
 import { registryFromDeployment, scanV3, type V3ScanFile, type V3ScanGauge, type V3Client } from "./v3.js";
 import { appendV3Sample, poolKey, steadiness, type V3HistoryFile } from "./v3History.js";
 import { renderV3LlmsTxt } from "./v3Llms.js";
+import { scanTopAllocators } from "./topAllocators.js";
 
 /**
  * Entrypoint for the scheduled Aero (v3) scan across Aero's seven networks,
@@ -138,6 +139,18 @@ async function main() {
     const llmsPath = outPath.replace(/data[\\/]v3\.json$/, "llms.txt");
     writeFileSync(llmsPath, renderV3LlmsTxt(out));
     console.error(`v3: llms.txt -> ${llmsPath}`);
+  }
+  // Where the best allocators are pointed now. Optional: if dromos.kitchen or a
+  // network doesn't answer, the last file stays and the page hides it once stale.
+  if (out.status === "live") {
+    const topPath = outPath.replace(/v3\.json$/, "top-allocators.json");
+    try {
+      const top = await scanTopAllocators(now);
+      writeFileSync(topPath, JSON.stringify(top, null, 1) + "\n");
+      console.error(`v3: top allocators, ${top.positions.length} positions -> ${topPath}`);
+    } catch (err) {
+      console.error(`v3: top allocators skipped: ${formatError(err)}`);
+    }
   }
 }
 

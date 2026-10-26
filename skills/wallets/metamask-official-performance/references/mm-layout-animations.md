@@ -29,9 +29,9 @@ Animated.timing(widthAnim, {
 | `WhatsNewModal.tsx` | layout property |
 | `TabsBar.tsx` (×2) | tab indicator |
 
-## Fix — Reanimated v3 (already installed)
+## Fix — Reanimated 4.x (already installed)
 
-Reanimated v3 **can** animate layout props on the UI thread.
+Reanimated 4.x **can** animate layout props on the UI thread.
 
 ```jsx
 // BEFORE — legacy Animated, JS thread
@@ -39,7 +39,7 @@ const widthAnim = useRef(new Animated.Value(0)).current;
 Animated.timing(widthAnim, { toValue: target, duration: 300, useNativeDriver: false }).start();
 // style={{ width: widthAnim }}
 
-// AFTER — Reanimated v3, UI thread
+// AFTER — Reanimated 4.x, UI thread
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 const width = useSharedValue(0);
 const animatedStyle = useAnimatedStyle(() => ({ width: width.value }));
@@ -49,7 +49,7 @@ width.value = withTiming(target, { duration: 300 });
 
 For a progress bar, animate a `0→1` shared value and `interpolate` to width, or animate `transform: [{ scaleX }]` (a transform — even cheaper, and works with the native driver in legacy `Animated` too if you can express it as a transform).
 
-> Use **v3** APIs only (`useSharedValue`, `useAnimatedStyle`, `withTiming`, `runOnJS`). `react-native-worklets` / `scheduleOnRN` are **v4** and not installed — see [js-animations-reanimated.md](js-animations-reanimated.md).
+> `useSharedValue`, `useAnimatedStyle`, and `withTiming` come from `react-native-reanimated`. From a worklet, call `scheduleOnRN` (`react-native-worklets`). `runOnJS` is a deprecated alias. See [js-animations-reanimated.md](js-animations-reanimated.md).
 
 ## When you can't avoid layout
 
@@ -63,7 +63,7 @@ If a true layout reflow is unavoidable (content-driven height with unknown size)
 ```bash
 grep -rn "useNativeDriver: false" app --include="*.tsx" --include="*.ts" | grep -v ".test."
 ```
-For each, check the animated style prop: layout prop (`width`/`height`/`flex`/`top`/`left`) → migrate to Reanimated v3 or a transform. Non-layout prop → lower priority.
+For each, check the animated style prop: layout prop (`width`/`height`/`flex`/`top`/`left`) → migrate to Reanimated 4.x or a transform. Non-layout prop → lower priority.
 
 ## Verify
 
@@ -76,6 +76,6 @@ For complex *designed* animations (not value-driven UI motion), prefer **Rive** 
 
 ## Related
 
-- [js-animations-reanimated.md](js-animations-reanimated.md) — full v3 API + patterns
+- [js-animations-reanimated.md](js-animations-reanimated.md) — full 4.x API + patterns
 - [mm-context-performance.md](mm-context-performance.md) — don't plumb animated values through Context as React state
 - [js-measure-fps.md](js-measure-fps.md) — confirm the FPS win

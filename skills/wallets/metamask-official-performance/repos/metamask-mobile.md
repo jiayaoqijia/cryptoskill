@@ -27,9 +27,9 @@ Always pair measurement with the **power-user scenario on Android** — see [ref
 
 | Fact | Value | Consequence |
 |---|---|---|
-| React Native | 0.81.5, **New Architecture ON**, Hermes on **both** platforms | React Native DevTools works on iOS too; Concurrent React available |
-| Expo SDK | 54 (`babel-preset-expo`) | Bundle analysis via Expo Atlas; tree-shaking prereq already set in Metro |
-| Reanimated | **v3** (`runOnJS`/`runOnUI`) | Do NOT use v4 `scheduleOnRN`/`react-native-worklets` APIs |
+| React Native | 0.86.x, **New Architecture ON**, Hermes on **both** platforms | React Native DevTools works on iOS too; Concurrent React available |
+| Expo SDK | 57 (`babel-preset-expo`) | Bundle analysis via Expo Atlas. Static-ESM tree-shaking stays off: Metro sets `experimentalImportSupport`, and `babel.config.js` pins `disableImportExportTransform: false` |
+| Reanimated | **4.x** (`react-native-worklets`) | From a worklet, call `scheduleOnRN(fn, ...args)` (`react-native-worklets`). `runOnJS(fn)(...args)` still runs and is a deprecated alias. Same for `scheduleOnUI` / `runOnUI` |
 | FlashList | **v2** | `estimatedItemSize` is deprecated — never flag it as missing; use `getItemType` |
 | Instrumentation | `app/util/trace.ts` `trace()` + `TraceName` (~230) | This is THE way to instrument flows — already wired to Sentry |
 | Reassure | installed (`yarn test:reassure:baseline` / `:branch`) | Write `*.perf-test.tsx`; do not "install" it |

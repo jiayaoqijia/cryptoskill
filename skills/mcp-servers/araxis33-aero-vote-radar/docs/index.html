@@ -139,6 +139,21 @@
   /* Sized in px rather than em: every sparkline must share one baseline width so
      the column reads as a single chart, and bar height is meaningless unless the
      plot box is identical row to row. */
+  td.ar-where { text-align: left; white-space: normal; color: var(--muted); font-size: 13px; min-width: 260px; }
+  td.ar-where b { color: var(--text); font-weight: 600; }
+  .ar-answer { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(53, 208, 127, 0.45); background: rgba(53, 208, 127, 0.07); border-radius: 10px; font-size: 15px; }
+  .ar-answer b { color: var(--good); }
+  .ar-answer a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 14px; text-decoration: none; white-space: nowrap; }
+  .ar-moved { display: none; color: var(--dim); font-size: 12px; margin-top: 3px; }
+  /* On a phone the split is what matters; size and dollars earned give way to it. */
+  @media (max-width: 600px) {
+    #arTopWrap thead th:nth-child(2), #arTopWrap thead th:nth-child(3), #arTopWrap thead th:nth-child(6),
+    #arTopBody td:nth-child(2), #arTopBody td:nth-child(3), #arTopBody td:nth-child(6), #arTopBody .ar-chip { display: none; }
+    td.ar-where { min-width: 0; }
+    .ar-moved { display: block; }
+    #arTopBody .ar-new { display: table; margin: 4px 0 0; }
+  }
+  .ar-new { font-size: 11px; color: var(--warn); border: 1px solid rgba(255, 176, 32, 0.4); border-radius: 999px; padding: 1px 8px; margin-left: 6px; white-space: nowrap; }
   .spark { display: block; width: 78px; height: 24px; }
   .spark rect { fill: var(--aero-soft); }
   /* The epoch still in progress: outline only, no fill. A dimmer solid bar would
@@ -307,6 +322,10 @@
         <div class="lookup-msg" id="arMsg"></div>
       </div>
     </div>
+    <div class="ar-answer" id="arAnswer" hidden>
+      <div id="arAnswerText"></div>
+      <a class="primary" href="https://app.aero.xyz/markets/allocate" target="_blank" rel="noreferrer">Allocate on Aero</a>
+    </div>
     <div class="totals ar-totals">
       <div class="stat hi"><div class="n num c-good" id="arBest">&mdash;</div><div class="l">Best pool for your sAERO, per day</div></div>
       <div class="stat"><div class="n num" id="arTimer">47 h</div><div class="l" id="arTimerLabel">Between moves of one stake (enter a wallet for yours)</div></div>
@@ -337,6 +356,20 @@
     <thead><tr><th>Pool</th><th class="num">Per day for you</th><th class="num">Average / day (10K)</th><th class="num">Lowest hour (10K)</th><th class="num">Held up</th></tr></thead>
     <tbody id="arSteadyBody"></tbody>
   </table></div>
+
+  <div id="arTopWrap" hidden>
+  <h2>What the top allocators hold now</h2>
+  <p class="h2note">The 10 sAERO positions (10,000+) that earned the most per sAERO over the last 7 days, and where each is allocated <b>right now</b>, read onchain. A past return, not a promise: they move every 47 h. Ranking: <a href="https://dromos.kitchen/dashboards/aero-analytics?view=allocation#caps" target="_blank" rel="noreferrer">dromos.kitchen</a>.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>#</th><th class="num">sAERO</th><th class="num">Earned 7 d</th><th class="num">Return / yr</th><th style="text-align:left">Allocated now</th><th class="num">Last move</th></tr></thead>
+    <tbody id="arTopBody"></tbody>
+  </table></div>
+  <p class="hint" style="margin:14px 0 8px">Their pools together, each position counted once whatever its size. "Per day for you" is your whole amount in that pool, after it dilutes the pool.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Pool</th><th class="num">Share of the top 10</th><th class="num">Per day for you</th></tr></thead>
+    <tbody id="arTogetherBody"></tbody>
+  </table></div>
+  </div>
 
   <h2>How long to hold a pool</h2>
   <p class="h2note">How much more you earn by moving to the best pool more often, compared with moving once a week. Backtest on 3 weeks of Aerodrome pool fees before Aero (Sep 27 – Oct 20), fees only.</p>
@@ -578,6 +611,79 @@ function arRenderSteady(amount) {
   }
 }
 
+// Where the best allocators are pointed now: data/top-allocators.json (src/topAllocators.ts),
+// dromos.kitchen's 7-day ranking plus each position's split read from the LeafVoters.
+// A split newer than a day hasn't earned the rank it sits next to, so it says so.
+let arTop = null;
+const AR_TOP_STALE_H = 6;
+const AR_TOP_NEW_H = 24;
+const AR_TOP_SHOWN = 3;
+const AR_TOGETHER_ROWS = 8;
+const arGauge = (s) => arData.gauges.find((g) => arChainOf(g) === s.chain && g.gauge.toLowerCase() === s.gauge);
+const arSliceName = (s) => {
+  const g = arGauge(s);
+  const name = g ? arName(g) : s.gauge.slice(0, 6) + "…" + s.gauge.slice(-4);
+  return s.chain === "base" ? name : name + " (" + (AR_CHAIN_NAMES[s.chain] || s.chain) + ")";
+};
+const arAgo = (sec) => {
+  const h = (Date.now() / 1000 - sec) / 3600;
+  return h < 1 ? Math.max(1, Math.round(h * 60)) + " min ago" : h < 48 ? Math.round(h) + " h ago" : (h / 24).toFixed(1) + " d ago";
+};
+function arRenderTop(amount) {
+  const wrap = arEl("arTopWrap");
+  wrap.hidden = !arTop || !arTop.positions.length || Date.now() - Date.parse(arTop.checkedAt) > AR_TOP_STALE_H * 3600000;
+  if (wrap.hidden) return;
+  const body = arEl("arTopBody");
+  body.innerHTML = "";
+  for (const p of arTop.positions) {
+    const tr = document.createElement("tr");
+    const first = document.createElement("td");
+    const tag = document.createElement("span");
+    tag.className = "ar-chip";
+    tag.textContent = "#" + p.id;
+    first.append(document.createTextNode(String(p.rank)), tag);
+    tr.append(first);
+    arCell(tr, num(p.sAero));
+    arCell(tr, usd(p.earned7d));
+    arCell(tr, Math.round(p.apr7d * 100) + "%", "c-good");
+    const where = document.createElement("td");
+    where.className = "ar-where";
+    if (!p.split.length) where.textContent = "nothing allocated";
+    p.split.slice(0, AR_TOP_SHOWN).forEach((s, i) => {
+      const b = document.createElement("b");
+      b.textContent = Math.round(s.share * 100) + "%";
+      where.append(i ? " · " : "", b, " " + arSliceName(s));
+    });
+    if (p.split.length > AR_TOP_SHOWN) where.append(" · +" + (p.split.length - AR_TOP_SHOWN) + " more");
+    if (p.lastMoved && Date.now() / 1000 - p.lastMoved < AR_TOP_NEW_H * 3600) {
+      const fresh = document.createElement("span");
+      fresh.className = "ar-new";
+      fresh.textContent = "new split, not yet proven";
+      where.append(fresh);
+    }
+    if (p.lastMoved) {
+      const moved = document.createElement("span");
+      moved.className = "ar-moved";
+      moved.textContent = "Last move " + arAgo(p.lastMoved);
+      where.append(moved);
+    }
+    tr.append(where);
+    arCell(tr, p.lastMoved ? arAgo(p.lastMoved) : "—");
+    body.append(tr);
+  }
+  const together = arEl("arTogetherBody");
+  together.innerHTML = "";
+  for (const s of arTop.together.slice(0, AR_TOGETHER_ROWS)) {
+    const g = arGauge(s);
+    const tr = document.createElement("tr");
+    if (g) tr.append(arNameCell(g));
+    else { const td = document.createElement("td"); td.textContent = arSliceName(s); tr.append(td); }
+    arCell(tr, Math.round(s.share * 100) + "%", "pct");
+    arCell(tr, g ? usd(dilutedPerDay(arPerDay(g), arW(g), amount)) : "—", g ? "ar-mine" : "");
+    together.append(tr);
+  }
+}
+
 function arRender() {
   if (!arData) return;
   const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
@@ -585,6 +691,18 @@ function arRender() {
   const split = arSplit(pools.map((x) => x.g), amount);
   const splitPays = split.reduce((a, s) => a + s.perDay, 0);
   arEl("arBest").textContent = pools.length && amount > 0 ? usd(pools[0].mine) : "—";
+  // The answer in one sentence, so a first visit doesn't have to read the table for it.
+  arEl("arAnswer").hidden = split.length === 0;
+  const answer = arEl("arAnswerText");
+  answer.innerHTML = "";
+  if (split.length) {
+    const b = (t) => { const e = document.createElement("b"); e.textContent = t; return e; };
+    answer.append("For ", b(num(amount) + " sAERO"), ": ");
+    split.forEach((s, i) => {
+      answer.append(i ? (i === split.length - 1 ? " and " : ", ") : "", b(Math.round(s.share * 100) + "%"), " " + arName(s.g) + " (" + (AR_CHAIN_NAMES[arChainOf(s.g)] || arChainOf(s.g)) + ")");
+    });
+    answer.append(" → about ", b(usd(splitPays) + " a day"), " at today's rates.");
+  }
 
   const shares = new Map(split.map((s) => [s.g, s]));
   const rows = [...split.map((s) => s.g), ...pools.map((x) => x.g).filter((g) => !shares.has(g))].slice(0, 12);
@@ -604,6 +722,7 @@ function arRender() {
     body.append(tr);
   }
   arRenderSteady(amount);
+  arRenderTop(amount);
 
   const timer = arEl("arTimer"), timerLabel = arEl("arTimerLabel"), current = arEl("arCurrent"), callout = arEl("arCallout"), timers = arEl("arTimers");
   callout.hidden = true;
@@ -777,6 +896,10 @@ fetch("data/v3.json", { cache: "no-cache" })
     arRender();
     // The section is hidden until the scan loads, so the browser can't jump to #guide on its own.
     if (location.hash === "#guide") arEl("guide").scrollIntoView();
+    return fetch("data/top-allocators.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((top) => { arTop = top; arRender(); })
+      .catch(() => {});
   })
   .catch(() => {});
 </script>

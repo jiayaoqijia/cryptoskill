@@ -114,7 +114,7 @@ Confirm any hit with the Profiler ("why did this render?") before asserting — 
 - [ ] No `JSON.stringify` in a hot dependency array
 - [ ] Async effects guard against post-unmount / stale setState (cancelled flag or `AbortController`)
 - [ ] No new parameterized selector (cache thrashing on unstable args) on a list/hot path — use a lookup-map selector instead
-- [ ] Layout animations use Reanimated v3, not `Animated` + `useNativeDriver:false`
+- [ ] Layout animations use Reanimated 4.x, not `Animated` + `useNativeDriver:false`
 - [ ] Growable lists use FlashList with stable keys (+ `getItemType` if mixed)
 - [ ] New event listeners / timers / subscriptions have cleanup
 - [ ] New deps justified for bundle size; no main-package lodash / barrel imports

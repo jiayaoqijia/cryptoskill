@@ -84,7 +84,12 @@ export interface WalletStakes {
   failed: string[];
 }
 
-async function readStakeOn(chain: string, id: bigint, cooldown: number): Promise<StakeOnChain> {
+/** The network's cooldown between moves of one stake, in seconds. */
+export async function readCooldown(chain: string): Promise<number> {
+  return Number(big(await ethCall(chain, LEAF_VOTER, SEL_COOLDOWN)));
+}
+
+export async function readStakeOn(chain: string, id: bigint, cooldown: number): Promise<StakeOnChain> {
   const state = (await ethCall(chain, LEAF_VOTER, SEL_TOKEN_STATES + hexOf(id))).slice(2);
   const last = Number(BigInt("0x" + (state.slice(64, 128) || "0")));
   const reduction = Number(big(await ethCall(chain, LEAF_VOTER, SEL_REDUCTION + hexOf(id))));

@@ -184,7 +184,7 @@ const x = trace({ name: TraceName.Tokens, op: TraceOperation.UIStartup }, () => 
 
 ### Bundle analysis (no script wired — run manually)
 ```bash
-# Expo Atlas (this is an Expo SDK 54 project)
+# Expo Atlas (this is an Expo SDK 57 project)
 yarn expo install expo-atlas                                     # one-time, pinned
 EXPO_ATLAS=1 yarn expo export --platform ios && yarn expo-atlas
 ```

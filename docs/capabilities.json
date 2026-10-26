@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T14:16:02.040434+00:00",
+  "generated_at": "2026-10-26T18:53:12.389762+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -219012,7 +219012,7 @@
     },
     "wallets/metamask-official-planning": {
       "name": "planning",
-      "execution_model": "read_only",
+      "execution_model": "unknown",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -219030,7 +219030,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -221935,9 +221935,9 @@
     "processed": 3567,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2585,
+      "read_only": 2584,
       "router_orchestrator": 145,
-      "unknown": 340,
+      "unknown": 341,
       "analysis_only": 219,
       "unsigned_tx_builder": 114,
       "local_executor": 102,
@@ -221948,7 +221948,7 @@
       "auto_invocable": 3,
       "can_execute_shell": 1227,
       "can_install_code": 555,
-      "can_write_files": 177,
+      "can_write_files": 178,
       "can_browse_web": 250,
       "can_spawn_subagents": 263,
       "can_move_funds": 299,

@@ -33,4 +33,4 @@ Installed name: `mms-jira-brief`. `mms-planning` calls it for ticket identificat
 10. Do not copy secrets, tokens, credentials, or customer data into the file.
 11. In chat, name the path. Do not paste the file. Do not write to Jira. Do not say that code will not change.
 
-`A Jira ticket would improve this context.` belongs to `mms-planning` when no brief was actually read. This skill does not add that line after a brief was read.
+`A Jira ticket would improve this context.` belongs to `mms-planning`. That skill adds the line only when no brief was actually read and the change stops for a brief. A revert does not get that line. This skill does not add that line.

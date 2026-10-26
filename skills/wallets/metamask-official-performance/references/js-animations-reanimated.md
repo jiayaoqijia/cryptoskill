@@ -1,14 +1,14 @@
 ---
-title: High-Performance Animations (Reanimated v3)
+title: High-Performance Animations (Reanimated 4.x)
 impact: MEDIUM
 tags: reanimated, animations, worklets, ui-thread, usenativedriver
 ---
 
-# Skill: High-Performance Animations (Reanimated v3)
+# Skill: High-Performance Animations (Reanimated 4.x)
 
 Run animations on the UI thread so they stay smooth even when the JS thread is busy.
 
-> **MetaMask note (verified):** This app is on **`react-native-reanimated@3.19.0`** and uses the **v3 API** (`runOnJS`/`runOnUI`, 83 usages; `scheduleOnRN`/`scheduleOnUI`: 0). **`react-native-worklets` is NOT installed.** Do **not** use the Reanimated v4 APIs (`scheduleOnRN`, `scheduleOnUI`, `react-native-worklets/plugin`) — they don't apply here. The reanimated babel plugin (`react-native-reanimated/plugin`) is already configured **last** in `babel.config.js`, which is required for `'worklet'` directives.
+> **MetaMask note (verified):** This app is on **Reanimated 4.x** with **`react-native-worklets` installed**. From a worklet, call `scheduleOnRN(fn, ...args)` from `react-native-worklets`. `runOnJS(fn)(...args)` still runs and is a deprecated alias. Same for `scheduleOnUI` / `runOnUI`. `react-native-worklets/plugin` is already **last** in `babel.config.js` (required for `'worklet'` directives). `react-native-reanimated/plugin` is a deprecated alias.
 
 ## Quick Pattern
 
@@ -19,7 +19,7 @@ const opacity = useRef(new Animated.Value(0)).current;
 Animated.timing(opacity, { toValue: 1, useNativeDriver: true }).start();
 ```
 
-**Correct (UI thread via Reanimated v3):**
+**Correct (UI thread via Reanimated 4.x):**
 
 ```jsx
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
@@ -34,7 +34,7 @@ opacity.value = withTiming(1);
 
 There are **12 instances of `useNativeDriver: false`** across 6 files (e.g. `WalletHomeOnboardingSteps`, `Carousel/animations/useTransitionToEmpty`, `NetworksManagement/useExpandableFormAnimation`, `TabsBar`). `useNativeDriver: false` is required by the **legacy `Animated` API** whenever you animate **layout** props (`width`, `height`, `flex`) — the native driver can't drive layout. So these animations run entirely on the JS thread and compete with React rendering.
 
-**The fix is Reanimated v3**, which *can* animate layout props on the UI thread:
+**The fix is Reanimated 4.x**, which *can* animate layout props on the UI thread:
 
 ```jsx
 // BEFORE — legacy Animated, JS thread (blocks during heavy JS)
@@ -44,7 +44,7 @@ Animated.timing(widthAnim, {
   useNativeDriver: false,   // forced, because width is a layout prop
 }).start();
 
-// AFTER — Reanimated v3, UI thread
+// AFTER — Reanimated 4.x, UI thread
 const width = useSharedValue(0);
 const style = useAnimatedStyle(() => ({ width: width.value }));
 width.value = withTiming(target, { duration: 300 });
@@ -59,29 +59,30 @@ See [mm-layout-animations.md](mm-layout-animations.md) for the full list of inst
 - Gesture-driven animation (drag, swipe, pan)
 - You see `useNativeDriver: false` animating `width`/`height`/`flex`
 
-## Key concepts (v3)
+## Key concepts (4.x)
 
 | Thread | Best for |
 |---|---|
 | **UI thread** (worklets) | Visual animations, transforms, layout, gestures |
 | **JS thread** | State updates, data processing, API calls |
 
-| API (v3) | Use |
+| API (4.x) | Use |
 |---|---|
 | `useSharedValue` | The animated value (lives on UI thread) |
 | `useAnimatedStyle` | Maps shared values → style (runs on UI thread) |
 | `withTiming` / `withSpring` / `withDecay` | Animation drivers |
 | `useAnimatedScrollHandler` | Scroll-driven animation on the UI thread |
 | `useAnimatedReaction` | React to a shared value changing |
-| `runOnJS(fn)(args)` | Call a JS function **from** a worklet (e.g. set React state at the end) |
-| `runOnUI(fn)()` | Run a worklet **from** JS |
+| `scheduleOnRN(fn, ...args)` | Call a function on the RN runtime **from** a worklet. Import from `react-native-worklets`. `runOnJS(fn)(...args)` is a deprecated alias. |
+| `scheduleOnUI(fn, ...args)` | Run a worklet on the UI runtime **from** JS. Import from `react-native-worklets`. `runOnUI(fn)(...args)` is a deprecated alias. |
 
 ## Patterns
 
 ### Run a JS callback when an animation finishes
 
 ```jsx
-import { runOnJS, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 const scale = useSharedValue(1);
 const onDone = () => trackEvent('animation_complete');
@@ -89,7 +90,7 @@ const onDone = () => trackEvent('animation_complete');
 const press = () => {
   scale.value = withTiming(1.2, { duration: 200 }, (finished) => {
     'worklet';
-    if (finished) runOnJS(onDone)();
+    if (finished) scheduleOnRN(onDone);
   });
 };
 const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
@@ -113,7 +114,7 @@ const headerStyle = useAnimatedStyle(() => ({
 - **Heavy work inside `useAnimatedStyle`** — it runs every frame on the UI thread; keep it to value reads/interpolation.
 - **Forgetting the `'worklet'` directive** on inline callbacks passed into reanimated (the babel plugin handles component-level worklets, but explicit callbacks may need it).
 - **Reading React state inside a worklet** — use `useSharedValue`, not `useState`.
-- **Reaching for v4 APIs** (`scheduleOnRN`/`scheduleOnUI`/`react-native-worklets`) — not installed here; use `runOnJS`/`runOnUI`.
+- **`runOnJS` / `runOnUI`** — deprecated aliases. Use `scheduleOnRN(fn, ...args)` / `scheduleOnUI(fn, ...args)` from `react-native-worklets`.
 - **Animating a plain `View`** — must be `Animated.View`/`Animated.Text`.
 
 ## Verify

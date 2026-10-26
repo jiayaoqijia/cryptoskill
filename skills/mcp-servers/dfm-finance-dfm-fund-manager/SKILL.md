@@ -40,7 +40,7 @@ The agent signs in with its own Solana **identity keypair** (SIWS). No API key i
 | 6 | (optional) | `create_api_key {name}` | A read-only `dfm_` key stored in a 0600 file; the key itself never enters the chat. |
 
 What the launch preflight enforces on the app wallet: **USDC** = 0.1 (factory seed, read live) + whatever
-you will deposit (the API sets no minimum deposit); **SOL** ≥ 0.0381 for a launch (0.023 without share-mint
+you will deposit (minimum $1, the same floor as the app's deposit screen); **SOL** ≥ 0.0381 for a launch (0.023 without share-mint
 metadata) + 0.02 per deposit — about 0.06 SOL for a launch plus its first deposit. Send a little more SOL to
 the identity wallet for the `app_wallet_fund` fee.
 

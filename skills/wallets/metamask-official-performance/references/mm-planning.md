@@ -30,7 +30,7 @@ The cheapest performance fix is the one you make before writing code. Catch arch
 | High-frequency dispatch | >~1 Redux dispatch/sec steady state? | Keep Redux for persistence; transient state local. |
 | Images / animations | New hero images or animations? | Compressed images via `expo-image`; **Rive** (already installed) over Lottie. |
 | New screen in a tab navigator | Heavy screen mounted eagerly? | Lazy-load (`React.lazy`) or defer heavy work off the startup path. |
-| Layout animation | Animating width/height/flex? | Reanimated v3 on the UI thread, not `Animated` + `useNativeDriver:false`. [mm-layout-animations.md](mm-layout-animations.md) |
+| Layout animation | Animating width/height/flex? | Reanimated 4.x on the UI thread, not `Animated` + `useNativeDriver:false`. [mm-layout-animations.md](mm-layout-animations.md) |
 
 ## System-design checklist
 

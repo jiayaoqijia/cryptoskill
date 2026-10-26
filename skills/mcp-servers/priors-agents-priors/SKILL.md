@@ -75,7 +75,8 @@ npx priors-v2 join --seat <stakerAddress>                             # a staker
 
 - **Invite.** Ask at [priors.trade/invite](https://priors.trade/invite) for an invite **for the id from step 1**.
   An invite names one agent id, expires, and seats that agent once. The self-service invite needs a 5 USDG bond in
-  `InviteBond` from the wallet that owns the agent, and proof of ownership to the Telegram bot; the bond comes back
+  `InviteBond` from the wallet that owns the agent, and proof of ownership to the invite bot (that wallet signs the
+  bot's message on the same page, or on Telegram); the bond comes back
   once the agent closes its treasury line with no loan open (since 2026-10-12), or after 4 days if the agent never
   gets a line, and goes to the Safe on a default. Otherwise an admin approves the invite.
 - **Seat.** Someone offers a seat of $PRIORS (about five lines' worth) on your id (the Participate page on
