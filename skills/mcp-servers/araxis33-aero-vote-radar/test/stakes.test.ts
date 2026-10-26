@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { currentSplitPays, timersByChain, untilText, type Stake } from "../src/stakes.js";
+import { currentSplitPays, timersByChain, untilText, withoutOwnSAero, type Stake } from "../src/stakes.js";
 import type { V3ScanFile, V3ScanGauge } from "../src/v3.js";
 
 const gauge = (chain: string, addr: string, weight: number, fees: number) =>
@@ -35,6 +35,19 @@ test("currentSplitPays matches gauges per network, case-insensitively, and count
   const r = currentSplitPays(w, scan);
   assert.equal(r.placedSAero, 16_000);
   assert.equal(r.usdPerDay, 100 * 0.1 + 10 * 0.1);
+});
+
+test("withoutOwnSAero takes the wallet's sAERO out of the pools it sits in, summed over stakes, never below zero", () => {
+  const w = {
+    stakes: [
+      stake({ base: { lastAllocated: 1, readyAt: 2, allocations: [{ gauge: "0xaaaa", amount: 10_000 }] } }),
+      stake({ base: { lastAllocated: 1, readyAt: 2, allocations: [{ gauge: "0xaaaa", amount: 5_000 }] }, optimism: { lastAllocated: 1, readyAt: 2, allocations: [{ gauge: "0xbbbb", amount: 60_000 }] } }),
+    ],
+  };
+  const out = withoutOwnSAero(scan, w);
+  assert.deepEqual(out.gauges.map((g) => g.weight), [85_000, 0]);
+  assert.equal(scan.gauges[0].weight, 100_000);
+  assert.equal(withoutOwnSAero(scan, { stakes: [] }), scan);
 });
 
 test("untilText rounds up to whole hours and says now once due", () => {

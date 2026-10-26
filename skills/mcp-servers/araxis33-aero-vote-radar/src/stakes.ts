@@ -149,6 +149,30 @@ export function currentSplitPays(w: Pick<WalletStakes, "stakes">, scan: V3ScanFi
   return { usdPerDay, placedSAero };
 }
 
+/**
+ * The scan with the wallet's own sAERO taken out of each pool's weight. A
+ * suggested split moves the whole stake, so ranking against the full weight
+ * would count the sAERO already in a pool twice: once in the pool, once as
+ * the amount joining it.
+ */
+export function withoutOwnSAero(scan: V3ScanFile, w: Pick<WalletStakes, "stakes">): V3ScanFile {
+  const own = new Map<string, number>();
+  for (const st of w.stakes)
+    for (const [chain, c] of Object.entries(st.chains))
+      for (const a of c.allocations) {
+        const key = `${chain}:${a.gauge.toLowerCase()}`;
+        own.set(key, (own.get(key) ?? 0) + a.amount);
+      }
+  if (own.size === 0) return scan;
+  return {
+    ...scan,
+    gauges: scan.gauges.map((g) => {
+      const mine = own.get(`${chainOf(g)}:${g.gauge.toLowerCase()}`);
+      return mine ? { ...g, weight: Math.max(0, g.weight - mine) } : g;
+    }),
+  };
+}
+
 /** "now" or "in N h". */
 export const untilText = (readyAt: number, nowSec: number = Date.now() / 1000) =>
   readyAt <= nowSec ? "now" : `in ${Math.ceil((readyAt - nowSec) / 3600)} h`;

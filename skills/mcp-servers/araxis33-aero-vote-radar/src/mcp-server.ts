@@ -6,7 +6,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { createRequire } from "node:module";
 import { ALLOCATE_URL, CHAIN_NAMES, fetchScan, poolToJson, rankPools, scanAgeHours, splitAllocation, splitToText, steadyPools } from "./radar.js";
-import { currentSplitPays, readWalletStakes, timersByChain } from "./stakes.js";
+import { currentSplitPays, readWalletStakes, timersByChain, withoutOwnSAero } from "./stakes.js";
 import { formatError, isValidAddress } from "./util.js";
 
 /**
@@ -106,7 +106,8 @@ server.registerTool(
   withErrorHandling(async ({ amount, address, chain }) => {
     const resolved = await resolveSAero(amount, address);
     const scan = await fetchScan();
-    const split = splitAllocation(rankPools(scan, resolved.amount, chain).map((r) => r.gauge), resolved.amount);
+    const others = resolved.wallet ? withoutOwnSAero(scan, resolved.wallet) : scan;
+    const split = splitAllocation(rankPools(others, resolved.amount, chain).map((r) => r.gauge), resolved.amount);
     return json({
       checkedAt: scan.checkedAt,
       amountSAero: resolved.amount,
@@ -117,7 +118,7 @@ server.registerTool(
       timers: resolved.wallet ? timersByChain(resolved.wallet) : null,
       notRead: resolved.wallet ? resolved.wallet.failed : null,
       allocateUrl: ALLOCATE_URL,
-      note: `${SCAN_NOTE} Timers are Unix seconds when a stake may move again on that network. Do not describe the allocation as done: the user saves it on ${ALLOCATE_URL}.`,
+      note: `${SCAN_NOTE} Timers are Unix seconds when a stake may move again on that network. With an address, the wallet's own sAERO is left out of each pool's allocatedSAero, since the split moves it. Do not describe the allocation as done: the user saves it on ${ALLOCATE_URL}.`,
     });
   }),
 );

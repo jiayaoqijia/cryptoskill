@@ -16,7 +16,7 @@ import {
   steadyPools,
   trendOf,
 } from "./radar.js";
-import { currentSplitPays, readWalletStakes, timersByChain, untilText, MAX_STAKES, type WalletStakes } from "./stakes.js";
+import { currentSplitPays, readWalletStakes, timersByChain, untilText, withoutOwnSAero, MAX_STAKES, type WalletStakes } from "./stakes.js";
 import type { V3ScanFile } from "./v3.js";
 import { formatError, isValidAddress, padCol } from "./util.js";
 
@@ -153,7 +153,8 @@ async function cmdRecommend(args: string[]) {
     console.log(`\nNo sAERO stake in ${address} on Base — nothing to allocate. Stake AERO on app.aero.xyz first.\n`);
     return;
   }
-  const split = splitAllocation(rankPools(scan, amount, chain).map((r) => r.gauge), amount);
+  const others = wallet ? withoutOwnSAero(scan, wallet) : scan;
+  const split = splitAllocation(rankPools(others, amount, chain).map((r) => r.gauge), amount);
   const pays = split.reduce((a, s) => a + s.perDay, 0);
   const current = wallet ? currentSplitPays(wallet, scan) : undefined;
 

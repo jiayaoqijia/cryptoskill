@@ -472,11 +472,16 @@ let arChain = "all";
 const arEl = (id) => document.getElementById(id);
 const arPerDay = (g) => g.feesUsdPerDay + g.incentivesUsdPerDay;
 const arChainOf = (g) => g.chain || "base";
+// sAERO the looked-up wallet already has in each pool, by "chain:gauge". The
+// suggested split moves the whole stake, so it is left out of the pool's weight
+// before diluting; otherwise it would count twice.
+let arOwn = new Map();
+const arW = (g) => Math.max(0, g.weight - (arOwn.get(arChainOf(g) + ":" + g.gauge.toLowerCase()) || 0));
 // Pools worth ranking on the chosen network, best for `amount` first.
 const arPools = (amount) =>
   arData.gauges
-    .filter((g) => g.weight >= AR_MIN_WEIGHT && arPerDay(g) > 0 && (arChain === "all" || arChainOf(g) === arChain))
-    .map((g) => ({ g, mine: dilutedPerDay(arPerDay(g), g.weight, amount) }))
+    .filter((g) => arW(g) >= AR_MIN_WEIGHT && arPerDay(g) > 0 && (arChain === "all" || arChainOf(g) === arChain))
+    .map((g) => ({ g, mine: dilutedPerDay(arPerDay(g), arW(g), amount) }))
     .sort((a, b) => b.mine - a.mine);
 
 // One button per network that has rankable pools, plus "All networks".
@@ -506,7 +511,7 @@ function arSplit(pools, amount) {
       let best = null, gain = -1;
       for (const g of cands) {
         const a = alloc.get(g);
-        const d = dilutedPerDay(arPerDay(g), g.weight, a + step) - dilutedPerDay(arPerDay(g), g.weight, a);
+        const d = dilutedPerDay(arPerDay(g), arW(g), a + step) - dilutedPerDay(arPerDay(g), arW(g), a);
         if (d > gain) { gain = d; best = g; }
       }
       alloc.set(best, alloc.get(best) + step);
@@ -516,7 +521,7 @@ function arSplit(pools, amount) {
   if (!(amount > 0) || pools.length === 0) return [];
   let out = run(pools.slice(0, 15));
   if (out.length > AR_MAX_POOLS) out = run(out.slice(0, AR_MAX_POOLS).map(([g]) => g));
-  return out.map(([g, a]) => ({ g, share: a / amount, perDay: dilutedPerDay(arPerDay(g), g.weight, a) }));
+  return out.map(([g, a]) => ({ g, share: a / amount, perDay: dilutedPerDay(arPerDay(g), arW(g), a) }));
 }
 
 function arTrend(g) {
@@ -551,7 +556,7 @@ function arNameCell(g) {
 // now on the same basis as the samples (last 24 h of fees plus incentives).
 const AR_STEADY_SHARE = 0.75;
 const AR_STEADY_ROWS = 5;
-const arSteadyNow = (g, amount) => dilutedPerDay(g.fees24hUsdPerDay + g.incentivesUsdPerDay, g.weight, amount);
+const arSteadyNow = (g, amount) => dilutedPerDay(g.fees24hUsdPerDay + g.incentivesUsdPerDay, arW(g), amount);
 function arRenderSteady(amount) {
   const steady = arData.gauges
     .filter((g) => g.steady && g.weight >= AR_MIN_WEIGHT && g.steady.avgPer10k > 0 && g.steady.held >= AR_STEADY_SHARE * g.steady.of)
@@ -590,7 +595,7 @@ function arRender() {
     tr.append(arNameCell(g));
     const s = shares.get(g);
     arCell(tr, s ? Math.round(s.share * 100) + "%" : "—", s ? "pct" : "");
-    arCell(tr, usd(s ? s.perDay : dilutedPerDay(arPerDay(g), g.weight, amount)), s ? "ar-mine" : "");
+    arCell(tr, usd(s ? s.perDay : dilutedPerDay(arPerDay(g), arW(g), amount)), s ? "ar-mine" : "");
     arCell(tr, g.feesUsdPerDay > 0 ? usd(g.feesUsdPerDay) : "$0");
     arCell(tr, g.incentivesUsdPerDay > 0 ? usd(g.incentivesUsdPerDay) : "$0");
     arCell(tr, num(g.weight));
@@ -730,6 +735,10 @@ arEl("arLookup").addEventListener("click", async () => {
   msg.textContent = "Reading your stakes on Aero…";
   try {
     arWallet = await arReadWallet(addr);
+    arOwn = new Map();
+    for (const st of arWallet.stakes)
+      for (const [chain, c] of Object.entries(st.chains))
+        for (const a of c.allocs) arOwn.set(chain + ":" + a.gauge, (arOwn.get(chain + ":" + a.gauge) || 0) + a.amount);
     if (arWallet.total > 0) arEl("arAmount").value = Math.floor(arWallet.total);
     msg.textContent = arWallet.count === 0 ? "No sAERO stake in this wallet on Base." :
       arWallet.count + (arWallet.count === 1 ? " stake, " : " stakes, ") + num(arWallet.total) + " sAERO" +
@@ -737,6 +746,7 @@ arEl("arLookup").addEventListener("click", async () => {
     msg.classList.add("ok");
   } catch (err) {
     arWallet = null;
+    arOwn = new Map();
     msg.textContent = "Could not read the wallet (" + err.message + "). Try again in a moment.";
     msg.classList.add("err");
   }
