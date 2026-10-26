@@ -6,7 +6,7 @@ allowed-tools: "Bash(perp:*), Bash(npx -y perp-cli:*), Bash(bash scripts/preflig
 compatibility: "Requires Node.js 20 or newer and the perp-cli npm package (global install or npx). Network access required for exchange APIs and bridge providers. Mutating commands need a wallet key imported into the OWS vault via 'perp wallet set EXCHANGE' (key on stdin or hidden prompt — never argv). Skill is portable across Claude Code, Claude.ai, Cursor, Codex, and Gemini CLI — no platform-specific features."
 metadata:
   author: hypurrquant
-  version: "0.15.0"
+  version: "0.16.0"
 ---
 
 # perp-cli
@@ -47,7 +47,7 @@ Also bundled under `scripts/`: `preflight.sh`, `arb-monitor.sh`, `funding-analys
 ### Step 1: Verify install + version
 
 ```bash
-perp --version 2>/dev/null || npx -y perp-cli@latest --version   # must be >= 0.15.0
+perp --version 2>/dev/null || npx -y perp-cli@latest --version   # must be >= 0.16.0
 ```
 
 If it is missing or older, ask the user before installing/upgrading (`npm install -g perp-cli@latest`) — never install on your own. If `perp` is not on PATH, prefix every command with `npx -y perp-cli@latest`.
@@ -125,7 +125,7 @@ Imported keys trade; `funds deposit|withdraw|transfer|bridge`, `wallet manage re
 **Extended** (`-e extended`, aliases `ext` / `x10`; testnet = Sepolia via `-n testnet`): official public API (api.docs.extended.exchange), READ-ONLY in this version — counted as an official venue in `perp health`. Rules an agent must follow:
 - Works: `market list|prices|info|book|trades|funding|kline -e extended`, and Extended rows in `perp --json arb scan --rates --include-unverified` (display only — funding is UNVERIFIED: never rank or trade on it). `market list` rows carry `assetClass` (crypto / equity / etf / index / commodity / fx / preIpo; human table "Class" column), `venueSymbol` (wire name, e.g. `TSLA_24_5-USD`), `tickSize`, `minSize`, `tradable` (false while `REDUCE_ONLY` or `isOffHours`), `isRfq`, `tradingHours`.
 - Symbols: `assetName` without the `_24_5` suffix (`TSLA_24_5-USD` → `TSLA`, `SPX500m-USD` → `SPX500M`); `-e extended market book TSLA-USD` and the wire name also resolve. The crypto `SPX` market is SPX6900, not the S&P 500 (index = `SPX500M`). RWA tickers that are also crypto tickers (PURR = Hyperliquid Strategies Inc., QNT, BB, ON, ADI, BOT), XIAOMI and the crypto SPX are never matched across venues.
-- Funding: applied hourly; `fundingRate` in market rows = the current hour's ACCRUING rate (fraction per hour, recomputed every minute, rounded to 6 decimals; `fundingRateKind: "accruing"`, `nextFundingTime`), `market funding` = applied hourly prints (`rateKind: "lastSettled"`, `annualizedPct`). `_24_5` equities print 0 while their underlying is closed (weekends / holidays), so an annualized rate overstates them.
+- Funding: applied hourly; `fundingRate` in market rows = the current hour's ACCRUING rate (fraction per hour, recomputed every minute, rounded to 6 decimals by the venue — no public source is more precise; `fundingRateKind: "accruing"`, `nextFundingTime`), `market funding` = applied hourly prints (`rateKind: "lastSettled"`, `annualizedPct`). `_24_5` equities print 0 while their underlying is closed (weekends / holidays), so an annualized rate overstates them.
 - Refused with `CAPABILITY_UNSUPPORTED` before any request ("Extended is read-only (market data) in this version; trading is planned for a later release"): every trade / account / portfolio / funds / agent / builder / bot command, also under `--dry-run`. RFQ markets' REST order book is the indicative book.
 
 Venue rules for these: `trade limit` defaults to `--tif GTC` on every venue (arcus maps it to GTT; ondo offers GTC|IOC|ALO; FOK is never emulated → `CAPABILITY_UNSUPPORTED` where not offered); market orders on every venue are bounded by `--slippage-bps <n>` → `settings.slippageBps.<venue>` → `settings.defaultSlippageBps` (shipped default 50). Ondo (US, PA) and Arcus (US, CA, GB) print a one-time restricted-region notice on stderr when used with credentials (warn only, never blocks).

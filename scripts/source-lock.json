@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "f37430b3033a3adfcc691a79c865366586be41b2",
+      "revision": "b0a6b2780dae2dce4e0ce75ab8ed9d2ae16e19c6",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3464,14 +3464,14 @@
     "exchanges/perp-cli": {
       "repo": "hypurrquant/perp-cli",
       "path": "skills/perp-cli/SKILL.md",
-      "revision": "ab2f715514922792a0a0a05f01d7354221ee6ecd",
+      "revision": "5177323fc1c45bb4476b3929cec69213378477e3",
       "files": {
-        "SKILL.md": "e39f5176febe6f88f3bd19e2ddf6cabc3af6ce20b9981a18e44863e57fb67d5e",
+        "SKILL.md": "b88771766f085433672647dedf75eadfb095762fb5048c23c5d67f1822935c70",
         "package.json": "4de4e3ce8a6fc36cb57ae2c1ac916af860bf2b5d25f3ae88c2fb2337116ca83c",
         "references/agent-operations.md": "42107f4391de2624183dceed3342b5fe7550993482c37ba59b210894d974fa21",
-        "references/commands.md": "556f46256155bc833993770e8c6e76bd379c7633e4e76a8f6f327e77dec64565",
+        "references/commands.md": "500aa76b2d12b271dc7bb6a18186f2f7193f4d9c8457bbc09fc70aa936eacade",
         "references/strategies.md": "2165217e189ce29eb631c28e6be37a38ae4cd66a99dc86d9e2040e47f9cbcff1",
-        "references/ws-library.md": "2b9c1535ec31980e0dcadc8026965a2b966c22adc58782f21ceae99ad8ff0f18",
+        "references/ws-library.md": "c38a29f6eb3dfac70e539e11fe4708efbe2d0645e9cd6022ef6af68f5eaf7723",
         "scripts/arb-monitor.sh": "06d0497ee05edd0694e9a64ec2287e32359d202e5b737a17da39e885369de6df",
         "scripts/funding-analysis.sh": "512aeaae05090f20a13b17526a0148b23e7aef55855af17137b76c2da663c232",
         "scripts/preflight.sh": "1dca0b091b01815955075763d5df53b9351afb0cc6e153edffcd44500c1f7d73",
@@ -4007,15 +4007,16 @@
     "mcp-servers/aibtc-official-mcp-server": {
       "repo": "aibtcdev/aibtc-mcp-server",
       "path": "skill/SKILL.md",
-      "revision": "a2a0afa30a087e8f056fdbbecc21e8cf78d2d0fb",
+      "revision": "0bc081c3857570767f0c766e297efb41dd68984a",
       "files": {
         "README.md": "898727136452f53003dec5666831ae01aff707c94a35c01036a31d3367dd11a5",
-        "SKILL.md": "53806efa9882b74f89ae0480a454406e358f17b8742b11430ca13b802a6f2455",
+        "SKILL.md": "a5bfff9162d05b991314669acbb5456ddd953994fa8add49021db8e4b4efff51",
         "references/at-stake.md": "9eddb5527500794d522125eb59e4d693ae3e55bc5ecdba04e0a9a84ea7604532",
         "references/genesis-lifecycle.md": "8df8b90bc2450937e3a4e573c7c6c48e3f3bf2e1a434693383dee4fadb1781f8",
         "references/inscription-workflow.md": "5914a8fd80fa4d944bdcbb15e5d4b847a544d6eec435e4333fe0a67e9a949b44",
         "references/pillar-wallet.md": "223b83c50433eda7bab14a3f7240a0d5ef0858e8caab2c556cd287c635ac29c5",
         "references/stacks-defi.md": "39b7fdf01dd2da3ed67c3a5a9b4990c807660ca11d325fa74f6dcb61b0e0e604",
+        "references/taskmarket.md": "fc0f9acf7a610881dbf93b1581374a2f42608bdd6feef90d55dc6791c2e9586e",
         "references/troubleshooting.md": "b9e41b23fdd666487904c0d72b548e7fc1d5ae088cf8d066c2a62e7eb32ec311",
         "references/x402-inbox.md": "31725b73c0c3992eee01eb70023b4fdd60e2f3d3421a1cc7f1fcb20e62666989"
       },
@@ -4027,6 +4028,7 @@
         "references/inscription-workflow.md": 420,
         "references/pillar-wallet.md": 420,
         "references/stacks-defi.md": 420,
+        "references/taskmarket.md": 420,
         "references/troubleshooting.md": 420,
         "references/x402-inbox.md": 420
       }
@@ -4034,15 +4036,16 @@
     "payments/aibtc-mcp-server": {
       "repo": "aibtcdev/aibtc-mcp-server",
       "path": "skill/SKILL.md",
-      "revision": "a2a0afa30a087e8f056fdbbecc21e8cf78d2d0fb",
+      "revision": "0bc081c3857570767f0c766e297efb41dd68984a",
       "files": {
         "README.md": "898727136452f53003dec5666831ae01aff707c94a35c01036a31d3367dd11a5",
-        "SKILL.md": "53806efa9882b74f89ae0480a454406e358f17b8742b11430ca13b802a6f2455",
+        "SKILL.md": "a5bfff9162d05b991314669acbb5456ddd953994fa8add49021db8e4b4efff51",
         "references/at-stake.md": "9eddb5527500794d522125eb59e4d693ae3e55bc5ecdba04e0a9a84ea7604532",
         "references/genesis-lifecycle.md": "8df8b90bc2450937e3a4e573c7c6c48e3f3bf2e1a434693383dee4fadb1781f8",
         "references/inscription-workflow.md": "5914a8fd80fa4d944bdcbb15e5d4b847a544d6eec435e4333fe0a67e9a949b44",
         "references/pillar-wallet.md": "223b83c50433eda7bab14a3f7240a0d5ef0858e8caab2c556cd287c635ac29c5",
         "references/stacks-defi.md": "39b7fdf01dd2da3ed67c3a5a9b4990c807660ca11d325fa74f6dcb61b0e0e604",
+        "references/taskmarket.md": "fc0f9acf7a610881dbf93b1581374a2f42608bdd6feef90d55dc6791c2e9586e",
         "references/troubleshooting.md": "b9e41b23fdd666487904c0d72b548e7fc1d5ae088cf8d066c2a62e7eb32ec311",
         "references/x402-inbox.md": "31725b73c0c3992eee01eb70023b4fdd60e2f3d3421a1cc7f1fcb20e62666989"
       },
@@ -4054,6 +4057,7 @@
         "references/inscription-workflow.md": 420,
         "references/pillar-wallet.md": 420,
         "references/stacks-defi.md": 420,
+        "references/taskmarket.md": 420,
         "references/troubleshooting.md": 420,
         "references/x402-inbox.md": 420
       }
@@ -4331,7 +4335,7 @@
     "mcp-servers/dexter-mcp": {
       "repo": "dexter-dao/dexter-mcp",
       "path": "skills/dexter-mcp/SKILL.md",
-      "revision": "f769ed2d548084f5ebd675607c157813fc8e6040",
+      "revision": "e970a8651cb1f494dac4ed1323a832f911854b21",
       "files": {
         "SKILL.md": "be782604f6204a7e4ebf4d6e5ba2265a0225a89a9689cc97ec3ecea6203302e4"
       },
@@ -17436,7 +17440,7 @@
     "dev-tools/eth2-quickstart": {
       "repo": "chimera-defi/eth2-quickstart",
       "path": "skills/eth2-quickstart/SKILL.md",
-      "revision": "bbef52f6fa9a8911b752c47ae2492f58d6da31f9",
+      "revision": "2a22ea1c46cdb509c69df9189a290d74061c0078",
       "files": {
         "SKILL.md": "5b1b76c2c4ad5ecf5a77a456bc121bc310914bb529cfd9785d0f5bbc051a703c",
         "evals/evals.json": "24af89da13714e05dbeee8eb97198468ce5bdc7e9e686941aa8c54fe376f29ac",
@@ -23584,7 +23588,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "228e66b845af1464fe7ff747f6bd31fe21ef231a",
+      "revision": "88e95b95686d008973f7230a524807ab08aff47b",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/v3.yml": "d43e42ff2f974fc7638f74be2a4c10732b11509b47c9f9974107a15220ed6659",
@@ -23594,10 +23598,10 @@
         "SKILL.md": "869fe11d60694023ceb12e741392b5d5212b3010335d4020837668e87e10a8fc",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/card.png": "f5c9652f9ce62ba9ae88ffa37d103af19b9ea7e619d303c94b92aa94f8bc424f",
-        "docs/data/v3-history.json": "14029528d43911945f1ce811b9216fe117c6d230732758577903b15ce27495bc",
-        "docs/data/v3.json": "a555de8171efba61f12354dbc6e1c6b17faa2bbee381da85d3c1cdc52c0f271f",
+        "docs/data/v3-history.json": "71be12e82b4b5bc87aa38e81c6177d6815555b0bc03bf14859cdcbee37a662db",
+        "docs/data/v3.json": "409425ef63fea6886af9353f73c0a47dc1f49765b8697f4fd5ebc8951f590ec1",
         "docs/index.html": "f1abeb7c958913960de2e71ad2ab73966cf065d503ee6554fd43c230bbeee322",
-        "docs/llms.txt": "bc4a0cfc4fa9061a647fee49ae933430576da01f6a4cccabfdb1df3a063b0fdb",
+        "docs/llms.txt": "2c986ea22628b93974e3e7591e0aa3bb507c41fb6b00740bb9753303feabd657",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "a5274eac2ea6e3cfcf36b9b31f4e6d36836bedfebef4ebde3e65d0acb1fe4168",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -45561,19 +45565,19 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "41181967a808fe7931d885aeda6279cab543e2c2",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "f37430b3033a3adfcc691a79c865366586be41b2",
+    "jiayaoqijia/cryptoskill": "b0a6b2780dae2dce4e0ce75ab8ed9d2ae16e19c6",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
     "okx/agent-skills": "0ea4378645dfc212e9d58df9fc4ca4446398c9e3",
-    "hypurrquant/perp-cli": "ab2f715514922792a0a0a05f01d7354221ee6ecd",
-    "aibtcdev/aibtc-mcp-server": "a2a0afa30a087e8f056fdbbecc21e8cf78d2d0fb",
+    "hypurrquant/perp-cli": "5177323fc1c45bb4476b3929cec69213378477e3",
+    "aibtcdev/aibtc-mcp-server": "0bc081c3857570767f0c766e297efb41dd68984a",
     "cumpsd/broker-as-a-service": "890029c51731cfed899d9216f03ef9cfcee1f3be",
     "chainstacklabs/rpc-nodes-mcp": "8920ed796409e2efc32953f787cdcdfff2e6c335",
     "celo-org/celo-mcp": "7cbfd1c8ba5fde9e395b11775e2dbee34b779889",
     "alexchenai/chenswap-mcp": "df99e1a7861004abfb0f2b0c77bdacd50d44f361",
     "coinrithm/coinrithm-agent-trading": "e2d6032cfd1d4a8fdaa1df42fceca0fb0ddfe6cb",
-    "dexter-dao/dexter-mcp": "f769ed2d548084f5ebd675607c157813fc8e6040",
+    "dexter-dao/dexter-mcp": "e970a8651cb1f494dac4ed1323a832f911854b21",
     "onflow/flow-mcp": "2afc462130e957e3f311f27cd0d0201698cad8ce",
     "injectivelabs/mcp-server": "daa98388cdf6c472c93211b1e9059725d72bc42e",
     "kukapay/crypto-feargreed-mcp": "b1f22947d81be0e34a502dfed0b866024db46e6a",
@@ -45636,7 +45640,7 @@
     "laplace0x/awesome-agent-trading": "3eb53dfa9f02dcedb902209c1c97b43c79353f1e",
     "igor-holt/mcp-servers": "13a04a48f73f4104050eaae3a4fb0cb3a32d2b32",
     "ronaldanton/x402-shop": "0ca7329e43c0f084a38214237b99f24f784332c9",
-    "api-evangelist/farmdash": "fe3541443b7f3bbcfeb838692e1d13a72c3e4c20",
+    "api-evangelist/farmdash": "258c514759d49f128fa62f7937f481913b2f048d",
     "sicomelure-design/agent-skills-pack": "3890d11d53d679108bd01a660cdf190bbe85b37a",
     "mangrovetechnologies/mangrove-agent": "aacbce72622e820ea3c21e890ce512fdb5a49ce5",
     "pugarhuda/utuh": "becec5beb49242694d0d26a37a3019e407d60626",
@@ -45645,7 +45649,7 @@
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "cff9201dd1078c06a5ea30b5779587aad9e1cab4",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "228e66b845af1464fe7ff747f6bd31fe21ef231a",
+    "araxis33/aero-vote-radar": "88e95b95686d008973f7230a524807ab08aff47b",
     "paulf280-ui/cabal-hunter-mcp": "9d0de91567593976367d1bdd5ef1696b90e92bd7",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "a6434064fe7c76e60c8749fbc212ee396983415c",
@@ -45744,7 +45748,7 @@
     "dalee66/crypto-chart-agent": "9bf7c901a2d5ac629abedaba6e2f19b7aa824d2c",
     "nirium-protocol/nirium": "ff8f21f1d5964d98a07cde2e892fbc8275f1c0ce",
     "rezearcher/greyridge-x402-tools": "93e5cd7a377a553a5de9f06988f4f184bd7f911d",
-    "cp0x-org/cp0x-mcp": "18be37678f56f02c1c909d8fbf0fd50c491264af",
+    "cp0x-org/cp0x-mcp": "d9aa3d248f13e15d78fb0b23e3c26ad947eebc67",
     "wickedapi/wicked-mcp": "bbafa43a9a2a7280955731a2c6c15c4a00ea72ad",
     "cryptyx-ai/agents": "406a587da0ba3e192c39dbd8c266fda38b2ada8c"
   }

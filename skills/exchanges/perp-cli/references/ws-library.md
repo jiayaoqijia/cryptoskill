@@ -4,10 +4,10 @@
 custom live dashboard, funding comparison or price/account feed for **hyperliquid** (native + HIP-3),
 **pacifica**, **lighter**, **lighter-rh**, **aster** and **arcus**, in the browser or in Node.
 
-> **Stability:** ships in **0.15.0** and is **@experimental** through 0.15.x — breaking changes only in a
+> **Stability:** shipped since **0.15.0** and **@experimental** through 0.15.x — breaking changes only in a
 > minor bump (CHANGELOG callouts); every event carries `schema: 1`. **@stable from 0.16.0** after consumer
-> sign-off. Planned for **0.15.1**: Aster user channels, Ondo / QFEX, `book` / `trades`, `perp stream`.
-> The `VenueId` type already includes `"ondo"` and `"qfex"`, but there are no codecs for them until 0.15.1.
+> sign-off. Planned, not yet available: Aster user channels, Ondo / QFEX, `book` / `trades`, `perp stream`.
+> The `VenueId` type already includes `"ondo"` and `"qfex"`, but there are no codecs for them yet.
 > **GRVT** (CLI venue, market data only) has no codec: its public WS has per-instrument selectors only (no
 > all-markets stream) and a 150-stream cap below its 184 perpetuals, so `allMarkets` cannot be served.
 > **Extended** (CLI venue `extended`, market data only) has no codec: its public streams are one socket
@@ -26,7 +26,7 @@ Two packages, **the same code and API** (built from one source):
 
 | Package | Install | When |
 |---|---|---|
-| **`@hypurrquant/perp-ws`** (recommended for integrators) | `npm install @hypurrquant/perp-ws` (+ `ws` for the Node entry) | apps, dashboards, bots — **no dependencies** (~100 KB ESM) |
+| **`@hypurrquant/perp-ws`** (recommended for integrators) | `npm install @hypurrquant/perp-ws` (+ `ws` for the Node entry) | apps, dashboards, bots — **no dependencies** (~170 KB ESM, ~41 KB gzip; 0.15.1 build) |
 | `perp-cli/ws` | `npm install perp-cli` | perp-cli is already installed (the CLI pulls ~140 MB of CLI deps) |
 
 | Runtime | `@hypurrquant/perp-ws` | `perp-cli` | Transport |
@@ -76,7 +76,7 @@ page's job, like a bundler's resolver):
 
 Serve the page and `node_modules` from the same static server (any origin works: the venues do not check
 Origin and their REST CORS is `*`). Do the same with a CDN that serves npm files (e.g.
-`https://cdn.jsdelivr.net/npm/@hypurrquant/perp-ws@0.15.0/dist/index.js`). The `/node` entry is
+`https://cdn.jsdelivr.net/npm/@hypurrquant/perp-ws@<version>/dist/index.js`). The `/node` entry is
 Node-only (it loads `ws`); never map it in a browser.
 
 ## 2. Minimal examples
@@ -123,7 +123,8 @@ declare function show(venue: string, text: string): void; // your UI: one status
 
 const streams: VenueStream[] = [hyperliquid, pacifica, lighter, aster, arcus].map((c) => createVenueStream(c));
 for (const stream of streams) {
-  // canonicals: "BTC" → hyperliquid/pacifica/lighter BTC, aster BTCUSDT + BTCUSD1, arcus BTC-USD.
+  // canonicals: "BTC" → hyperliquid/pacifica/lighter BTC, aster BTCUSDT, arcus BTC-USD (Aster's
+  // BTCUSD1 / BTCU listings are canonical null — only the USDT listing is matchable, as in the CLI).
   // (symbols would need each venue's directory symbols; ["BTC"] rejects on aster and arcus.)
   // A canonical this venue does not list (e.g. SOL somewhere) is skipped with a non-fatal warning;
   // ready rejects only when the venue lists none of them.
@@ -172,10 +173,12 @@ await Promise.all(streams.map((s) => s.close()));
 - `subscribe(target)`:
   - `{ kind: "allMarkets", canonicals? | symbols? }` → `MarketUpdate` for every market, or a subset:
     **`canonicals`** (recommended across venues) selects every directory market whose `canonical` matches
-    — `["BTC"]` is `BTC` on hyperliquid / pacifica / lighter / lighter-rh (USDG), `BTCUSDT` + `BTCUSD1` on
+    — `["BTC"]` is `BTC` on hyperliquid / pacifica / lighter / lighter-rh (USDG), `BTCUSDT` on
     aster and `BTC-USD` on arcus; HIP-3 markets are `"<dex>:<BASE>"` (`"xyz:TSLA"`, with `hip3Dexes`) and
     `"BTC"` never pulls them in. Canonicals come from `opts.canonicalize` (default: USD-like quotes
-    collapse) — see `MarketDirectoryEntry.canonical` in `stream.markets()`. Canonicals the venue does
+    collapse; an ambiguous ticker — SPX6900 on Hyperliquid / Aster / Lighter / Pacifica, Pacifica BP /
+    CHIP, Lighter BB / BOT / WEN / QNT, an unclassified Lighter RH market — and a non-USDT Aster listing
+    are null, never grouped: the CLI's rule) — see `MarketDirectoryEntry.canonical` in `stream.markets()`. Canonicals the venue does
     not list are **skipped and reported once** as a non-fatal control
     `{ type: "error", code: "SYMBOL_NOT_FOUND", fatal: false, details: { missing: string[], suggestions:
     Record<string, string[]> } }` (suggestions e.g. `"xyz:TSLA"` for `"TSLA"`; the others are subscribed and
@@ -183,7 +186,7 @@ await Promise.all(streams.map((s) => s.close()));
     **`symbols`** are this venue's exact directory symbols. Pass **one or the other** — both together
     reject `INVALID_PARAMS`. Same wire subscription and budget either way (filtering is client-side);
   - `{ kind: "market", symbol, channels: ["market" | "bbo"] }`. `"book"` and `"trades"` are already in
-    the types but **reject with `CAPABILITY_UNSUPPORTED` until 0.15.1** — don't ship UI that needs them.
+    the types but **reject with `CAPABILITY_UNSUPPORTED`** (planned, not yet available) — don't ship UI that needs them.
     Any other channel name (e.g. `"ticker"`) or an empty `channels` rejects with `INVALID_PARAMS`;
   - `{ kind: "user", channels: ["account" | "positions" | "orders" | "fills"] }` (needs `credentials`).
 - **`symbols` / `symbol` mean the venue's directory symbols, case-sensitive** — not canonical names. `BTC` is `"BTC"` on
@@ -211,7 +214,9 @@ await Promise.all(streams.map((s) => s.close()));
   `connecting` / `reconnecting`: it stays `live` with
   `sockets` = open sockets and `pending` = sockets still opening — the channels on those are not ready
   yet (their `ready` resolves when they open). `pending` is present only on multi-socket streams.
-- `closed` is terminal: a later `subscribe` rejects with the close reason. A handshake failure before
+- `closed` is terminal: a later `subscribe` rejects with the close reason (e.g. the code that exhausted
+  the reconnects). After your own `close()` the reason is `CLIENT_CLOSE`, which is not an error code: the
+  rejection is `INVALID_PARAMS` "stream is closed" with `details.closeReason: "CLIENT_CLOSE"`. A handshake failure before
   open = `EXCHANGE_UNREACHABLE` ("network, venue outage, or Origin/CORS block").
 - Ack timeout: no acknowledgement and no data within the channel's stale threshold → a **pending**
   subscription fails with `WS_PROTOCOL_ERROR`.
@@ -232,9 +237,17 @@ funding{ rate, rateKind, rateSource, rateIntervalHours, settlementIntervalHours,
 nextFundingTime, predictedRate, marketClosed }, openInterest{ value, unit: "base"|"usd"|null, sides },
 volume24hNotional, venueTs, recvTs, source, changed[], asOf{}`.
 
+- **Aster `volume24hNotional` can stay `null` for minutes after subscribing:** the venue's `!ticker@arr`
+  pushes only the tickers that changed, so a quiet market's first ticker (and its 24 h notional) arrives
+  late. `null` there means "not received yet", not "no volume" — a volume filter must not treat it as 0
+  (see the example in §5, which keeps such legs out explicitly and says so).
+
 Funding:
 - `rate` is **raw per `rateIntervalHours`** — never pre-annualized. Use `toHourly(rate, h)` to compare and
   `toApr(rate, h)` only for display (both return `null` for `null` input).
+- **Units:** `toHourly` and `toApr` return **fractions** (`toApr` 0.1095 = 10.95 % a year, simple ×24×365).
+  The CLI's `annualizedPct` (`perp --json arb scan --rates`, MCP `get_funding_rates`) is the same figure in
+  **percent** (10.95). Multiply `toApr` by 100 before comparing it with `annualizedPct` or printing a "%".
 - `rateKind`: `"lastSettled"` (the last payment), `"accruing"` (the current period so far, the "if it
   settled now" rate), `"predicted"` (the venue's estimate of the next payment). `predictedRate` is always
   kind `"predicted"`.
@@ -243,7 +256,7 @@ Funding:
 |---|---|---|---|---|---|
 | hyperliquid | accruing | null | 1 h | base, one side | bid/ask/last null → `bbo` channel |
 | pacifica | lastSettled | next_funding | 1 h | base, `sides` null | bid/ask/last/nextFundingTime null |
-| lighter / lighter-rh | lastSettled | current_funding_rate | 1 h | **usd** | wire values are percent/h, emitted as fractions/h |
+| lighter / lighter-rh | lastSettled | current_funding_rate | 1 h | **usd**, one side (inferred, not documented by the venue) | wire values are percent/h, emitted as fractions/h; REST `market info` OI is the same side in base units — convert before comparing; inactive / frozen markets are not streamed (same set as `market list`) |
 | aster | accruing | null | per market (`rest:/fapi/v3/fundingInfo`, null if missing) | null | all quotes (USDT, USD1, …) with `quote` set |
 | arcus | lastSettled | nextFundingRate | 1 h | base, one side | bid/ask null → `bbo` channel |
 
@@ -286,12 +299,12 @@ Options and defaults:
   are forward-looking estimates of the coming payment, so the row is usable for ranking; care when you
   need exact like-for-like numbers (e.g. P&L attribution, or an accruing rate early in its period that
   can still move a lot) — then use `kind: "accruing"` or `"predicted"` and accept fewer legs.
-- **Several legs per venue:** one venue can contribute more than one leg to a row. Aster lists BTC as
-  `BTCUSDT` (quote USDT) and `BTCUSD1` (quote USD1); both canonicalize to `"BTC"`. Pick one per venue
-  before ranking — by `quote`, or by the most liquid market (below) — or pass a `canonicalize` that
-  returns `null` for the quotes you don't want.
+- **One leg per venue by default:** Aster lists BTC as `BTCUSDT` (quote USDT) and `BTCUSD1` (quote
+  USD1); the default canonicalization keeps only the USDT listing matchable and gives every other
+  quote `canonical: null`, as the CLI does. A custom `canonicalize` that
+  returns a key for both brings back several legs per venue — pick one before ranking.
 - **`fundingVerified`** (per leg): the CLI's verdict that the venue's funding unit and which published
-  rate actually settles were confirmed against its funding payments. All six venues in 0.15.0 are
+  rate actually settles were confirmed against its funding payments. All six WS venues are
   `true`; a `false` leg (a future venue) is indicative only — the CLI keeps such venues out of funding
   comparison and refuses them as funding-arb legs, so do the same.
 - **Filter illiquid outliers before ranking spreads.** Tiny or newly listed markets often show extreme
@@ -316,13 +329,19 @@ for (const s of streams) {
 }
 
 const MIN_NOTIONAL = 1_000_000;
-/** One leg per venue: the most liquid market that passes the filter (null volume = unknown → skipped). */
+/**
+ * One leg per venue: the most liquid market that passes the filter. A leg whose 24 h notional is not
+ * known yet (Aster sends a ticker only when it changes — minutes on quiet markets) is skipped, never
+ * read as 0; `unknownVolume` counts them so a dashboard can show "N legs waiting for volume".
+ */
+let unknownVolume = 0;
 function pickLegs(row: FundingRow): FundingLeg[] {
   const best = new Map<string, { leg: FundingLeg; vol: number }>();
   for (const leg of row.legs) {
     if (leg.rate === null || leg.stale || !leg.fundingVerified) continue;
     const vol = notional.get(`${leg.venue}|${leg.symbol}`);
-    if (vol === undefined || vol < MIN_NOTIONAL) continue;
+    if (vol === undefined) { unknownVolume++; continue; } // not received yet — unknown, not 0
+    if (vol < MIN_NOTIONAL) continue;
     const cur = best.get(leg.venue);
     if (cur === undefined || vol > cur.vol) best.set(leg.venue, { leg, vol });
   }
@@ -397,18 +416,28 @@ sub.on((e) => {
 - **The library never holds keys.** `CredentialProvider` is async callbacks: `user()` (the account
   identity), `authToken({ purpose, maxTtlSec })` (Lighter `account_all_orders`; re-called at 80 % of the
   TTL with backoff retries; a read-only `ro:` token is recommended in browsers), `hmacSha256` /
-  `signTypedData` (reserved for 0.15.1 venues). Tokens handed in are redacted from every error, log and
+  `signTypedData` (reserved for planned venues). Tokens handed in are redacted from every error, log and
   raw excerpt.
 - `allowInPageSecrets: true` is required for venues whose auth needs a signing secret in the page
-  (Aster / Ondo / QFEX, 0.15.1). Without it they reject `CAPABILITY_UNSUPPORTED` in a browser.
+  (Aster / Ondo / QFEX — planned, not yet available). Without it they reject `CAPABILITY_UNSUPPORTED` in a browser.
 - `UserRef` per venue: hyperliquid `{ address }` (no auth), pacifica `{ account }` (Solana address, no
   auth), lighter / lighter-rh `{ accountIndex }`, arcus `{ address, subaccount }` (`null` = account 0, no auth).
-- **KNOWN GAP (0.15.0): Aster user channels are not implemented** — `kind: "user"` on aster rejects
-  `CAPABILITY_UNSUPPORTED` (no parity; 0.15.1).
+- **Any account, keyless:** the Hyperliquid (`{ address }`) and Pacifica (`{ account }`) user channels
+  need no auth, so `user()` may return ANY public address — a live positions / fills feed of someone
+  else's account. The REST counterpart (one snapshot, also Lighter / Lighter RH / RISEx) is
+  `perp --json -e <venue> account positions --address <addr>` / MCP `get_positions_by_address`.
+- **KNOWN GAP: Aster user channels are not implemented** — `kind: "user"` on aster rejects
+  `CAPABILITY_UNSUPPORTED` (no parity; planned, not yet available).
 
 Events:
 - `account` — `equity, available, marginUsed, unrealizedPnl` (+ `dex` on hyperliquid, one per perp dex);
-  `source: "snapshot"` when the frame was a full snapshot.
+  `source: "snapshot"` when the frame was a full snapshot. `unrealizedPnl` per venue:
+  hyperliquid = the exact sum of that dex's position `unrealizedPnl` in the same `clearinghouseState`
+  frame (`"0"` with no position; `null` if a position lacks it — the frame has no account-level field);
+  pacifica = `null` (`account_info` publishes none, and the position stream carries no unrealized PnL
+  either); lighter / lighter-rh = `null` on `account` (`user_stats` publishes none) — per position it is
+  `PositionRow.unrealizedPnl` (`unrealized_pnl` on the positions channel); arcus = `null` on `account`,
+  per position on `PositionRow`.
 - `positions` / `orders` — always the **full current set** (snapshot + merged deltas). Pacifica
   `account_positions` snapshots older than the last applied one (envelope `li`) are dropped.
   `orders.complete` = every part of the set came from a venue snapshot. **Pacifica sends no order
@@ -436,7 +465,9 @@ Mark price in `PositionRow` is null except on Arcus — join the `MarketUpdate` 
 
 `StreamControl { type: "error", code, message, remediation, raw (redacted ≤ 200 chars), fatal }` — always
 check `fatal`: a fatal error ended that subscription, a non-fatal one is informational (it keeps running);
-`ready` rejects with a `WsError` whose `structured = { code, message, status, retryable, remediation? }`.
+`ready` rejects with a `WsError` whose `structured = { code, message, status, retryable, remediation? }`;
+`err.code` and `err.remediation` (null when none) mirror `structured`, so one handler reads `code` the same
+way on error events (`e.code`) and on rejections (`err.code`).
 
 Where an error surfaces:
 - **Thrown synchronously** (`WsError`, `INVALID_PARAMS`) — bad options, before anything starts:

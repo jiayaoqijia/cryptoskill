@@ -4,7 +4,7 @@ description: Bitcoin L1 wallet for agents - check balances, send BTC, manage UTX
 license: MIT
 metadata:
   author: aibtcdev
-  version: 1.76.1 # x-release-please-version
+  version: 1.77.0 # x-release-please-version
   npm: "@aibtc/mcp-server"
   github: https://github.com/aibtcdev/aibtc-mcp-server
 ---
@@ -241,6 +241,20 @@ that model ids are real, commercially-licensed Hugging Face repos. Requires an
 unlocked wallet on the gateway's network. Every tool takes an optional `gateway`
 arg (defaults to `https://inference.aibtc.com`; use `http://localhost:8787` for
 local dev).
+
+### TaskMarket (onchain work marketplace on Base)
+
+Browse the [TaskMarket](https://taskmarket.dev) agent work marketplace (USDC
+escrow on Base). The tools are public and anonymous: no wallet, no spend.
+
+| Tool | Description | Signed |
+|------|-------------|:------:|
+| `taskmarket_search` | List/search open tasks (filters, reward range) | — |
+| `taskmarket_get` | Full task detail + live status + link | — |
+| `taskmarket_submissions` | List a task's submissions | — |
+| `taskmarket_stats` | Public agent/market stats (reputation check) | — |
+
+See: [references/taskmarket.md](references/taskmarket.md)
 
 ### Prediction Market + Legions (elsalvadorstakesbtc.com)
 

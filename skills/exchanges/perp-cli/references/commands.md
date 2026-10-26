@@ -24,10 +24,20 @@ perp --json -e hyperliquid --dex <DEX> market list           # one HIP-3 dex's m
 perp --json -e hyperliquid --dex <DEX> market book <SYMBOL>  # any market/account/trade command takes --dex the same way
 ```
 
+Hyperliquid read-path notes:
+- **Venue caps that cannot be paged are refused** (`INVALID_PARAMS` naming the cap; never fewer rows than asked, silently). `trades`: the venue serves only the last 10 trades — the default `--limit` is min(20, 10) = 10, an explicit `--limit` above 10 is refused. `book`: at most 20 levels per side — `-d` above 20 is refused (`-d` cuts JSON too). `kline`: only the most recent 5000 candles per interval exist — a `--start` before now − 5000 × interval is refused before any request, naming the earliest allowed start. `backtest grid --days N` clamps its start to that window and reports `dataFrom` / `truncated`.
+- **kline intervals:** `1m,3m,5m,15m,30m,1h,2h,4h,8h,12h,1d,3d,1w,1M` (anything else → `INVALID_PARAMS`, not retryable). `1M` candles are **30-day buckets**, not calendar months; `1w` candles open **Thursday 00:00 UTC**. Each candle carries `closed` (false on the in-progress last candle).
+- **funding:** `--limit N` = the last N hourly settlements (paged over the venue's 500-row cap; max 5000).
+- **Delisted markets** (meta `isDelisted`, e.g. `MATIC`, every asset of `--dex km`) → `SYMBOL_NOT_FOUND` with `details.reason: "delisted"` on `info` / `trades` / `funding` / `book` / `kline`; orders / positions / history still resolve them. `market hip3` lists live assets only (`assets`), plus `delistedAssets` and `delisted: true` for a dex with no live asset; `deployer` comes from `perpDexs`.
+- **Symbol naming:** `market list` / `info` rows use the plain coin `BTC` (HIP-3: `xyz:XYZ100`; the wire coin is in `venueSymbol`), as `market trades` rows and the WS codec. `-PERP` arguments still resolve. Keyed `account positions` rows still show `BTC-PERP`; strip `-PERP` to compare.
+- **marginTiers:** a market on a single-tier table (`marginTableId` < 50) reports `[{ lowerBound: 0, maxLeverage: <id> }]` (docs "Margin tiers"), not null.
+
 ## Account (read-only, safe)
 ```bash
 perp --json portfolio -e <VENUE_ID>            # perp balance + spot holdings + 24h funding; venue id or alias (hl, lt, …)
 perp --json -e <EX> account positions          # open positions
+perp --json -e <EX> account positions --address <ADDR>   # ANY account's open positions, keyless (public data; nothing signed)
+perp --json account positions --address <0xADDR>         # every supporting venue: { venues, errors?, notes? }
 perp --json -e <EX> account orders             # open/pending orders
 perp --json -e <EX> account history            # order history
 perp --json -e <EX> account trades             # trade fill history
@@ -38,6 +48,14 @@ perp --json -e <EX> account pnl                # realized + unrealized + funding
 perp --json -e <EX> account twap-orders        # active TWAP orders
 perp --json portfolio                          # cross-exchange unified view
 # funding24h is null (with fundingError) when a venue's funding history is unreadable; totals.fundingIncomplete = true then
+# --address (public-address positions): hyperliquid / lighter / lighter-rh / risex take a 0x address, pacifica a base58
+#   Solana address (a wrong format → INVALID_PARAMS before any request); other venues → CAPABILITY_UNSUPPORTED
+#   (feature publicPositions). Rows = the account positions rows with plain symbols, plus:
+#   hyperliquid: native + EVERY HIP-3 dex (one read each), `dex: null | "<dex>"`; a dex that fails is in
+#     meta.errors["hip3:<dex>"] + meta.warnings — its rows are missing, the others are kept (exit 0).
+#   lighter / lighter-rh: every account (sub-account) of the address, `accountIndex` on each row; zero-size rows
+#     dropped; --account-index <n> narrows (not an account of the address → INVALID_PARAMS). No account → [] + meta.notes.
+#   --symbol <SYM> filters (GOLD matches xyz:GOLD). meta: { address, source: "public" }. MCP: get_positions_by_address.
 perp --json portfolio --arb                    # full dashboard with arb top 5
 ```
 
@@ -318,6 +336,10 @@ perp --json arb scan                                        # default --mode all
 perp --json arb scan --mode perp-perp --min 10              # perp-only with min annual %
 perp --json arb scan --mode spot-perp --min 10              # spot+perp only
 perp --json arb scan --rates                                # funding rates across exchanges
+# Which rate is compared: each venue's market-row `fundingRate` (the CURRENT rate it publishes), labelled
+# per row by `rateKind` — Pacifica / Lighter / Lighter RH / Arcus / RISEx "lastSettled", Hyperliquid /
+# Aster / TxFlow "accruing", null = not verified. It is NOT the WS comparator's kind:"next" (predicted
+# next-period rate, where a venue publishes one: Pacifica `predictedFundingRate`).
 perp --json arb scan --basis [SYMBOL]                       # cross-exchange basis
 perp --json arb scan --gaps                                 # cross-exchange price gaps
 perp --json arb scan --hip3                                 # HIP-3 cross-dex spreads
@@ -329,6 +351,12 @@ perp --json arb scan --top 10 --hold-days 7 --bridge-cost 0 --size 100  # cost-a
 perp --json -e extended market list                          # Extended (read-only): rows carry assetClass, venueSymbol (TSLA_24_5-USD), tickSize, minSize, tradable, fundingRateKind "accruing"
 perp --json -e extended market funding BTC -l 24            # applied hourly prints: rateKind "lastSettled", intervalHours 1, annualizedPct
 perp --json arb scan --rates --include-unverified           # also show QFEX, TxFlow, Variational, GRVT and Extended (unverified funding; TxFlow rows apiStatus "unofficial"; display only, never ranked)
+perp --json -e qfex market funding AAPL -l 72               # hourly windows; outside the market's funding hours: rate null + marketClosed true (not a 0 rate)
+# QFEX marketClosed limits: (1) a market holiday INSIDE a configured session (e.g. SAMSUNG-KRW on
+# Hangul Day, a weekday) is not in market_hours, so its 0 prints as a real-looking rate "0" with
+# marketClosed false; (2) US equities DO fund in the weekday overnight gap (post_market → pre_market),
+# so only an exact 0 with no part of the hour in any funding session counts as closed — a real 0
+# in a gap would also read as closed. Averages / APRs skip marketClosed rows only.
 # netSpread / grossSpread = annualized % (netSpread = gross minus round-trip costs amortized over --hold-days)
 # spot-perp rows: netSpreadPct / grossSpreadPct, spotExchanges[], perpExchange, direction
 
