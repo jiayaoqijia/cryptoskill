@@ -5,6 +5,8 @@ description: "A Model Context Protocol (MCP) server for interacting with the Cel
 
 # Celo MCP Server
 
+  <!-- mcp-name: org.celo/celo-mcp -->
+
 A Model Context Protocol (MCP) server for interacting with the Celo blockchain. This server provides comprehensive access to Celo blockchain data, token operations, NFT management, smart contract interactions, transaction handling, and governance operations.
 
 ## Installation

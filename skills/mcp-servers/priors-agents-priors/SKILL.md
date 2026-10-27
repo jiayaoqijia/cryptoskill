@@ -1,6 +1,6 @@
 ---
 name: priors
-description: Give an AI agent a credit history on Priors — register an ERC-8004 identity, get a line (a $5 treasury invite, a $50 $PRIORS seat after 10 repaid loans, a backer, or a stock line against the agent's own stock tokens), borrow, repay, and earn a public trust score on Robinhood Chain. Use when the user wants to give their agent credit, reputation, a trust score, an ERC-8004 identity, wants to borrow, repay, pay x402 APIs on credit, or look up an agent's record on Priors (priors.trade).
+description: Give an AI agent a credit history on Priors — register an ERC-8004 identity, get a line (a $5 treasury invite, a $25 Ethos lane line, a line its owner's own $PRIORS stake opens, a backer, or a stock line against the agent's own stock tokens), borrow, repay, and earn a public trust score on Robinhood Chain. Use when the user wants to give their agent credit, reputation, a trust score, an ERC-8004 identity, wants to borrow, repay, pay x402 APIs on credit, or look up an agent's record on Priors (priors.trade).
 ---
 
 # Priors: give your agent a credit history
@@ -58,19 +58,19 @@ identity?** If it was minted before the v2 deploy (for example a v1 agent), or t
 that never left it is picked up on its own: one someone else sent it, or one that came back to it, may carry their open
 loan, and `repay` leaves a loan the agent's owner now did not take.
 
-**No clone?** `@priors/mcp` 0.11.0, started with `PRIORS_JOIN=on`, offers a `join` tool that does the same for its
+**No clone?** `@priors/mcp` 0.12.1, started with `PRIORS_JOIN=on`, offers a `join` tool that does the same for its
 wallet (one transaction, its gas in the wallet's ETH) and answers the id and the routes to a first line.
 
 ⛔ **Use the id this command printed, not the one in these examples.** One identity, one record, forever.
 
 ## Step 2: a line
 
-Four ways, and every one needs the agent owner's signature (the pool consent), which `join` or the SDK signs for you.
-A brand-new agent cannot take a seat: its first line is an invite, a backer or a stock line.
+Five ways, and every one needs the agent owner's signature (the pool consent), which `join`, the SDK or Go mode signs
+for you. Seats are not a way in: the growth seat vault (SeatVaultV4) takes no new seats since 2026-10-09, and the
+seats already open run until they close.
 
 ```bash
 npx priors-v2 join --invite priors-invite:<id>:<expiry>:<signature>   # treasury v4: $5
-npx priors-v2 join --seat <stakerAddress>                             # a staker's $PRIORS seat: $50
 ```
 
 - **Invite.** Ask at [priors.trade/invite](https://priors.trade/invite) for an invite **for the id from step 1**.
@@ -79,11 +79,16 @@ npx priors-v2 join --seat <stakerAddress>                             # a staker
   bot's message on the same page, or on Telegram); the bond comes back
   once the agent closes its treasury line with no loan open (since 2026-10-12), or after 4 days if the agent never
   gets a line, and goes to the Safe on a default. Otherwise an admin approves the invite.
-- **Seat.** Someone offers a seat of $PRIORS (about five lines' worth) on your id (the Participate page on
-  priors.trade), then you accept it: the growth seat vault backs a $50 line, on loans of at most 7 days. The agent
-  must have repaid at least 10 loans first. The first seat vault's $5 seats (3 repaid loans) were all taken, 10 of 10,
-  as of 2026-09-29, so new seats go to the growth seat vault. If no offer exists yet, `join --seat` exits with
-  code 3: that is "waiting on someone else", not a failure.
+- **Ethos lane.** A new agent (no Priors record yet) whose owner proves a wallet with an Ethos score of 1400 or more
+  gets a $25 line from the lane's root, with no bond and no invite. The owner takes it on Go mode's Start page
+  ([go.priors.trade/start](https://go.priors.trade/start)), signed in with the account that owns the agent; the lane
+  checks the score and its room for the day before anything is spent.
+- **The owner's $PRIORS (SeatVaultV5).** The agent's owner, and only its owner, stakes its own $PRIORS behind the
+  agent as collateral, in Go mode's Back agents ([go.priors.trade/account](https://go.priors.trade/account), the Seats
+  tab), signed in with the account that owns the agent. The stake opens the line; the line itself is 100% USDG from
+  SeatVaultV5's root, $25 to $50 to start, and it grows by steps up to $500. Loans on it last at most 10 days. V5 opens
+  no line while a loan is open, and the agent's current line ends as it opens. On a default, 75% of the stake burns.
+  There is no CLI subcommand: Go mode shows the exact line before the owner confirms.
 - **Backer.** A root backer can vouch any size, with your signed consent (`signConsent` in the SDK).
 - **Stock line.** Deposit one of the 35 accepted Robinhood stock tokens and the stock vault vouches 25-70% of its
   value by token (plus up to 15 points for a record of repaid treasury credit), at most $500. New loans follow the
@@ -93,14 +98,10 @@ npx priors-v2 join --seat <stakerAddress>                             # a staker
 
 Ways it legitimately fails, and what they mean:
 
-- **`EpochCapReached`** — treasury v4 has spent its $100 of new lines for this 7-day epoch. Wait, or find a backer
-  or open a stock line (a seat needs 10 repaid loans). Do not retry in a loop.
+- **`EpochCapReached`** — treasury v4 has spent its $100 of new lines for this 7-day epoch. Wait, or take another
+  way above (the Ethos lane, the owner's $PRIORS, a backer or a stock line). Do not retry in a loop.
 - **`NotInvited` / `InviteExpired` / `InviteUsed`** — the code is wrong, stale, or spent. Ask for a new one. There
   is no path around the invite; that is the gate working.
-- **`NotSeatable`** — the agent has not repaid 10 loans yet (3 if the offer waits on the first seat vault), is
-  already backed by or seated on that seat vault, is a root, or has defaulted.
-- **`TooManySeats`** — every seat on that vault is taken (the first seat vault's 10 were, as of 2026-09-29; the growth
-  seat vault holds at most 20). Ask the staker to offer on the growth seat vault, or wait for a seat to close.
 
 ## Step 3: borrow, hold, repay
 
@@ -136,13 +137,15 @@ times how long you held it, capped at the term you contracted for. A loan shorte
 does not count as a qualified loan. Take 14 days: hold it a week, then repay any time before its due date. A 7-day
 loan counts only when repaid at or after its due time, the moment Score v2 starts counting a repayment as late (from
 weights 2.0.3, on 2026-11-02, only after 24 hours more); `borrow` says so before it borrows for 7 days or less.
-Churning one-day loans gets you nowhere; that is deliberate. On a growth seat a
-loan lasts at most 7 days (`BorrowBlockedByBacker` above that), so borrow for exactly 7 and hold it to the due date.
+Churning one-day loans gets you nowhere; that is deliberate. On a line the owner's $PRIORS opens (SeatVaultV5), a loan
+lasts at most 10 days (`BorrowBlockedByBacker` above that): `borrow` takes 10 there by default and refuses a longer
+`--days` before sending anything. Borrow for 8 to 10 days and hold it a week or more; that is also what V5 counts
+toward its next step.
 
 ⛔ **Repay before the due date.** Three days past due and *anyone* can mark the loan defaulted. The record is
 defaulted forever, the identity can never borrow again, the owner's address is marked, and the sponsor pays (its
-shares burnt, or half the staker's seat). There is no appeal. If the user cannot repay on time, tell them to
-borrow less, not to borrow later.
+shares burnt, or 75% of the owner's $PRIORS on a SeatVaultV5 line). There is no appeal. If the user cannot repay
+on time, tell them to borrow less, not to borrow later.
 
 ## Step 4: grow
 
@@ -157,7 +160,8 @@ npx priors-v2 raise    # an agent already on treasury v5's line
 `move` leaves the v4 line, takes the InviteBond back, posts the owner's 5 USDG `InviteBondV2` bond (it stays as long
 as the agent holds a line) and moves the agent, sending only the steps not done yet: after a failure, run it again.
 It refuses, with nothing sent, while a loan is open, before the record qualifies, or until the v1 bond is 4 days old.
-Beyond that, v2 has no unbacked "earned" credit: lines grow by finding a bigger backer.
+Beyond that, v2 has no unbacked "earned" credit: a bigger line comes from a backer, a stock line or the owner's
+$PRIORS (whose line grows by steps).
 
 ## Paying x402 APIs on credit
 
@@ -185,7 +189,7 @@ await priors.status(agentId);
 
 ## Doing it from code instead of the CLI
 
-`sdk/priors-v2.mjs` is the v2 client on ethers v6 — `register`, `signConsent`, `redeemInvite`, `acceptSeat`,
+`sdk/priors-v2.mjs` is the v2 client on ethers v6 — `register`, `signConsent`, `redeemInvite`,
 `quoteFee`, `borrow`, `repay`, `openLoans`, `status`, plus `pay`/`settleLoans` for x402 and `stockAssets`,
 `stockPosition`, `openStockLine`, `addCollateral`, `closeStockLine` for a stock line. `sdk/env.mjs`'s
 `resolveV2()` resolves chain, deployment and signer the same way the CLI does. Every write is simulated first and
@@ -200,3 +204,5 @@ a revert is decoded to the contract's own error. Prefer these over hand-rolling 
   was found — that is still not a proof.
 - Do not tell a lender they cannot lose money, and do not tell a backer or staker their stake is safe: backers and
   stakers carry the credit risk by design.
+- The owner's $PRIORS behind a SeatVaultV5 line is collateral the owner posts, never a return, and only the agent's
+  owner can stake behind it: do not say anyone else can.

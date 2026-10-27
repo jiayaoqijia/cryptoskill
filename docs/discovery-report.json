@@ -8,6 +8,13 @@
       "official": false
     },
     {
+      "org": "Senpi-ai",
+      "repo": "senpi-skills",
+      "category": "exchanges",
+      "prefix": "senpi-ai-",
+      "official": false
+    },
+    {
       "org": "openclawby",
       "repo": "openclawby-skills",
       "category": "ai-crypto",
@@ -29,13 +36,6 @@
       "official": false
     },
     {
-      "org": "Senpi-ai",
-      "repo": "senpi-skills",
-      "category": "exchanges",
-      "prefix": "senpi-ai-",
-      "official": false
-    },
-    {
       "org": "binance",
       "repo": "binance-skills-hub",
       "category": "exchanges",
@@ -43,24 +43,10 @@
       "official": false
     },
     {
-      "org": "DFM-Finance",
-      "repo": "dfm-agent",
+      "org": "0xfreak0",
+      "repo": "sui-mcp",
       "category": "mcp-servers",
-      "prefix": "dfm-finance-",
-      "official": false
-    },
-    {
-      "org": "mmxrealQQ",
-      "repo": "bobai-buyburn",
-      "category": "mcp-servers",
-      "prefix": "mmxrealqq-",
-      "official": false
-    },
-    {
-      "org": "truenorth-lj",
-      "repo": "sofinance-public",
-      "category": "mcp-servers",
-      "prefix": "truenorth-lj-",
+      "prefix": "0xfreak0-",
       "official": false
     },
     {
@@ -71,10 +57,24 @@
       "official": false
     },
     {
-      "org": "rezearcher",
-      "repo": "greyridge-x402-tools",
+      "org": "priors-agents",
+      "repo": "priors",
       "category": "mcp-servers",
-      "prefix": "rezearcher-",
+      "prefix": "priors-agents-",
+      "official": false
+    },
+    {
+      "org": "fbsobreira",
+      "repo": "gotron-mcp",
+      "category": "mcp-servers",
+      "prefix": "fbsobreira-",
+      "official": false
+    },
+    {
+      "org": "truenorth-lj",
+      "repo": "sofinance-public",
+      "category": "mcp-servers",
+      "prefix": "truenorth-lj-",
       "official": false
     },
     {
@@ -124,6 +124,62 @@
       "repo": "agent-skills",
       "category": "defi",
       "prefix": "jup-ag-",
+      "official": true
+    },
+    {
+      "org": "ethereum",
+      "repo": "beaconrunner",
+      "category": "chains",
+      "prefix": "ethereum-",
+      "official": true
+    },
+    {
+      "org": "ava-labs",
+      "repo": "avalanche-telemetry",
+      "category": "chains",
+      "prefix": "ava-labs-",
+      "official": true
+    },
+    {
+      "org": "cardano-foundation",
+      "repo": "cardano-dev-skills",
+      "category": "chains",
+      "prefix": "cardano-foundation-",
+      "official": true
+    },
+    {
+      "org": "MystenLabs",
+      "repo": "walrus-memory",
+      "category": "ai-crypto",
+      "prefix": "mystenlabs-",
+      "official": true
+    },
+    {
+      "org": "MystenLabs",
+      "repo": "skills",
+      "category": "chains",
+      "prefix": "mystenlabs-",
+      "official": true
+    },
+    {
+      "org": "MystenLabs",
+      "repo": "community-skills",
+      "category": "chains",
+      "prefix": "mystenlabs-",
+      "official": true
+    },
+    {
+      "org": "ton-blockchain",
+      "repo": "skills",
+      "category": "chains",
+      "prefix": "ton-blockchain-",
+      "official": true
+    },
+    {
+      "org": "ton-blockchain",
+      "repo": "ton-triage-skill",
+      "category": "chains",
+      "prefix": "ton-blockchain-",
       "official": true
     }
   ],
@@ -223,43 +279,36 @@
     },
     {
       "query": "org:ethereum (mcp OR skill OR agent)",
-      "status": "unavailable",
-      "detail": "HTTP Error 403: Forbidden"
+      "status": "checked"
     },
     {
       "query": "org:ava-labs (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:cardano-foundation (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:polkadot-fellows (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:MystenLabs (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:cosmos (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:ton-blockchain (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "checked"
     },
     {
       "query": "org:tronprotocol (mcp OR skill OR agent)",
-      "status": "skipped",
-      "detail": "GitHub discovery rate limit reached"
+      "status": "unavailable",
+      "detail": "HTTP Error 403: Forbidden"
     },
     {
       "query": "org:stellar (mcp OR skill OR agent)",

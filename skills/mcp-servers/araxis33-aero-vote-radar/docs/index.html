@@ -350,10 +350,10 @@
   </div>
 
   <h2>Steadiest pools</h2>
-  <p class="h2note">For a steady payout rather than the top spot: pools that paid at least half their own average in 75% of the hours or more. "Per day for you" is your amount on the same figures as the table above. The 7-day average and lowest hour are for 10,000 sAERO, each hour counting that hour's last 24 h of fees, so they run higher when fees are rising.</p>
+  <p class="h2note">For a steady payout rather than the top spot: pools that paid at least half their own average in 75% of the hours or more. "Per day for you" is your amount on the same figures as the table above. The 7-day average and lowest hour are for 10,000 sAERO, each hour counting that hour's last 24 h of fees, so they run higher when fees are rising. Incentives last only while a project keeps streaming them; fees don't depend on that.</p>
   <p class="hint" id="arSteadyWait">Needs a day of hourly scans; the table fills in on its own.</p>
   <div class="scroll" id="arSteadyWrap" hidden><table>
-    <thead><tr><th>Pool</th><th class="num">Per day for you</th><th class="num">7-day average / day (10K)</th><th class="num">Lowest hour (10K)</th><th class="num">Held up</th></tr></thead>
+    <thead><tr><th>Pool</th><th class="num">Per day for you</th><th class="num">Fees / day</th><th class="num">Incentives / day</th><th class="num">7-day average / day (10K)</th><th class="num">Lowest hour (10K)</th><th class="num">Held up</th></tr></thead>
     <tbody id="arSteadyBody"></tbody>
   </table></div>
 
@@ -605,6 +605,8 @@ function arRenderSteady(amount) {
     const tr = document.createElement("tr");
     tr.append(arNameCell(g));
     arCell(tr, usd(arSteadyNow(g, amount)), "ar-mine");
+    arCell(tr, g.feesUsdPerDay > 0 ? usd(g.feesUsdPerDay) : "$0");
+    arCell(tr, g.incentivesUsdPerDay > 0 ? usd(g.incentivesUsdPerDay) : "$0");
     arCell(tr, usd(g.steady.avgPer10k));
     arCell(tr, usd(g.steady.minPer10k));
     arCell(tr, g.steady.held + " of " + g.steady.of + " h");
