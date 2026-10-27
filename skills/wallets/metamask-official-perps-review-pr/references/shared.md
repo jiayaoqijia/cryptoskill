@@ -1,5 +1,11 @@
 # Shared Perps review rules
 
+<a id="blocking-review-checks"></a>
+
+## Blocking review checks
+
+Every confirmed violation of an applicable Perps anti-pattern is blocking and requires `REQUEST_CHANGES`; never downgrade it to a non-blocking nit. Style suggestions outside these anti-patterns may remain non-blocking.
+
 <a id="controller-portability-core"></a>
 
 ## Controller Portability (Core)
@@ -154,7 +160,7 @@ Order submission runs the shared pre-trade checks, carries the user's slippage, 
 
 Removing a `strings(...)` call or deleting a helper that wrapped locale keys is a regression risk that is cheap to catch during review.
 
-- [ ] **Hardcoded string replacing a `strings(...)` call** — verify locale coverage across `locales/languages/*.json` before accepting the change. A key translated in only some of the supported locales is a quantified regression, not a nit.
+- [ ] **Source-language translations** — keep user-facing copy behind translation helpers and update only the source-language file (`locales/languages/en.json` on Mobile; `app/_locales/en/messages.json` on Extension). The translation pipeline fills other locales; missing non-English strings are never a finding.
 - [ ] **Orphaned locale keys** — when a PR deletes a function that called `strings(...)`, grep for the keys it used (e.g. `rg 'order_card\.(take_profit|stop|open_limit|close_limit)' app`). Dead keys accumulate silently and bloat the translation pipeline; flag them even when runtime is unaffected.
 - [ ] **Test revert-sensitivity for locale keys** — mocked `strings` implementations that fall back to `|| key` render the raw key when a key goes stale, so an exact `getByText` assertion still fails on revert. Confirm that fallback exists before accepting a test as regression-proof; do not assume it.
 

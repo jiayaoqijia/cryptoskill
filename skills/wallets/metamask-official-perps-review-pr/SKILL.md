@@ -7,7 +7,7 @@ maturity: stable
 
 # Perps static review
 
-Generated from the canonical Perps review rules @ f9f8cb914c4c0fd1f7a592b9b4507b410a5d8651. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
+Generated from the canonical Perps review rules @ cc1fe2d29937273f1ba3c142d5ef7b1ba9762120. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
 
 Run only on explicit invocation by name or an explicitly selected workflow. Review source and diff only: no app launch, no product change, no publish, no workspace cleanup. The criteria below are review criteria, not instructions to perform the fixes, releases or migrations they describe.
 
@@ -34,6 +34,7 @@ For maintaining or adapting this skill to another team, see references/maintaini
 
 Check applicability against the frozen diff and its affected callers. Open each applicable family and examine every rule in it; a family checkbox is complete only when its individual outcomes are recorded.
 
+- [ ] Blocking review checks: Every confirmed violation of an applicable Perps anti-pattern is blocking and requires `REQUEST_CHANGES`; never downgrade it to a non-blocking nit. See references/shared.md#blocking-review-checks
 - [ ] Controller Portability (Core): `PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; mobile and extension both consume the package. See references/shared.md#controller-portability-core
 - [ ] Missing numeric data stays undefined: Missing Perps numeric data must remain `undefined` through provider adapters, controller state, selectors, hooks and calculations. See references/shared.md#missing-numeric-data-stays-undefined
 - [ ] Magic Strings, Magic Numbers & Placeholder Values: Constants live in the controller package (`core/packages/perps-controller/src/constants/perpsConfig.ts`, exported by `@metamask/perps-controller`) and in the reviewed client's UI constants module. See references/shared.md#magic-strings-magic-numbers-placeholder-values

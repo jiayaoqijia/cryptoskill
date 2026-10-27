@@ -59,7 +59,7 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
 - **Basket:** 2–10 unique mints, `allocationBps` summing to exactly **10000**. USDC
   (`EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`) is always in the basket as the cash sleeve and counts toward
   the 10 even at 0%; if you omit it, the API adds it at 0%, so at most 9 other tokens. At launch every token other
-  than USDC needs `allocationBps > 0`. Name ≤ 32 chars, symbol 1–10 chars `A-Z 0-9 _ -`; a name or symbol
+  than USDC needs `allocationBps > 0`. Name 1–24 chars (funds launched earlier keep names up to 32), symbol 1–10 chars `A-Z 0-9 _ -`; a name or symbol
   already in use is refused.
 - **Season 0 cap:** every fund is capped at $1,000 of value; a deposit that would pass it is refused with the
   room that is left.
