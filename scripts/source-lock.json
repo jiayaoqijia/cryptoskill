@@ -1525,7 +1525,7 @@
     "defi/uniswap-official-cca-configurator": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-cca/skills/configurator/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "60fe645ae5557293800f32509aa9e14de3537a3514ad1a2f493cd93dd59868b4",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
@@ -1538,9 +1538,9 @@
     "defi/uniswap-official-cca-deployer": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-cca/skills/deployer/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
-        "SKILL.md": "ce50f4135d2312c658ef2bca6681eae03fb0f3560caf3023780d7f603fa5dba9",
+        "SKILL.md": "493543c5d8d225fc2728e2895d8ea5a9a2a8c60281f837b0dcb51c701fd2340c",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
       },
       "modes": {
@@ -1551,7 +1551,7 @@
     "defi/uniswap-official-liquidity-planner": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-driver/skills/liquidity-planner/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "5a1fc4cd1819e44250b636be112ae4810baeb6e0088681a8bc71cd32fa7123f9",
         "references/data-providers.md": "b758b4c5f5d9a6d4ecdc0a64d8ad22fdeb6a202bc30ce8f606056b3a08020fe5",
@@ -1568,7 +1568,7 @@
     "defi/uniswap-official-pay-with-any-token": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading/skills/pay-with-any-token/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "618d8f6d6111e4dff4117c0abc8f76aa01fd471b4ab75286f713ffbbc3359b15",
         "references/credential-construction.md": "28b54ca4d95194c175643883f7d7ce6c66c3bd77425a7e900fada052f450fa3e",
@@ -1585,7 +1585,7 @@
     "defi/uniswap-official-swap-integration": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading/skills/swap-integration/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "09c603095692dbee771e772f0401ec602d02d2024de7403a6ce5978a41f9a19e",
         "references/advanced-patterns.md": "162cbea3ad8263896bffc0b09aa105c6b672244330b2dc1edc85e5906ae3e7ce",
@@ -1600,7 +1600,7 @@
     "defi/uniswap-official-swap-planner": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-driver/skills/swap-planner/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "2af6fac803b81f5c17b5ee9c8a14408e2a5f82d30ae4bcf1d9d6c36cf2191745",
         "references/data-providers.md": "69bbdab0febc33706655f346e3856cf6fb68cf4f8407b2e285cfccbe174e9f93",
@@ -1615,12 +1615,12 @@
     "defi/uniswap-official-v4-hooks": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-hooks/skills/v4-security-foundations/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
-        "SKILL.md": "2d66ed0779a73e86dd006b474645a363e571768cc18cf663dbc915d8ec674cb4",
+        "SKILL.md": "f9d28f5b3350018260a3aa370c67b96b1f3bc27a0629b2dc101b9fafcd87a4be",
         "references/audit-checklist.md": "f5a32af59308ebc6f1dc103d5ac4bc5e5ab03dcc746f91b677f1c25f3a19eceb",
         "references/base-hook-template.md": "0b12f85cb2e4d4710a2debf70fc72607973a2e8344c1adf28e3a1a5650b4ad0c",
-        "references/vulnerabilities-catalog.md": "50f1e28f2ea2d912f634046f3b2e48f188f8f0974dde4f41339c8a72e506ea75",
+        "references/vulnerabilities-catalog.md": "7b8f3049db8386446dae40f703cd88992a3f50a29d799f07f311cb7205e6ca77",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
       },
       "modes": {
@@ -1634,7 +1634,7 @@
     "defi/uniswap-official-v4-hook-generator": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-hooks/skills/v4-hook-generator/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "441ef1b497fa88f4bb412e56140a4a1ec2d15f3eb91bdb0b9fbede34ca9cb6e6",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
@@ -1647,7 +1647,7 @@
     "defi/uniswap-official-permissioned-pools-deployer": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-permissioned-pools/skills/permissioned-pools-deployer/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "09659f1c68f7226fa18490701e9fff021ecfc17250d0f52cd11b0563fdaed2b8",
         "references/preflight-and-validation.md": "ab5e84ca3f1a4d507b3111d93c99c404a1324c7f49240ba55b9a4ee8cf3be7b2",
@@ -1664,7 +1664,7 @@
     "defi/uniswap-official-dca-bot": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading-tools/skills/dca-bot/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "5278af3e8be5ab45a2be77bf17df0b162e97c56850b095e3630e6a822b066183",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
@@ -1677,7 +1677,7 @@
     "defi/uniswap-official-lp-integration": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading/skills/lp-integration/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "09c90a0f051e2a845fca498ff0a76005c23f217b785e54504726e20a476b68f7",
         "references/advanced-patterns.md": "d51bd9f60def03d783e32a2a6638819fa9e46b8e67ed352840ad3fb013196ffb",
@@ -1692,7 +1692,7 @@
     "defi/uniswap-official-pay-with-app": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading/skills/pay-with-app/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "fd701f2d48445b73281854d172a09f5383ff10851ae2fa0fb78f9f430b99c220",
         "references/app-x402-flow.md": "017e8e2aaf88375d59d6173c9690ff37bdfbbb85bf4da96cd80e842935e9be8c",
@@ -1709,7 +1709,7 @@
     "defi/uniswap-official-v4-sdk-integration": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading/skills/v4-sdk-integration/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "02b5000ed2f6eabd90add6c277d2506dfb7309070046b3754be8154f28adfcc6",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "deac31c8d66d1a9bedd461f92035a836d3c2321e",
+      "revision": "fa1d515df49dde3e31674f5e3ee32a31ceb241bf",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3857,7 +3857,7 @@
     "exchanges/senpi-ai-senpi-account-status": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-account-status/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "5d57ca5023bbc039465855f68adf9d4b13c14277fd55a30d930781491d2f48e5",
         "references/presentation-notes.md": "208af9529447ca64da1862d4c4fe5b4c1c0adfe8ba740caef07b2ac8f809d21b",
@@ -3882,7 +3882,7 @@
     "exchanges/senpi-ai-senpi-deposit-withdraw-transfer": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-deposit-withdraw-transfer/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "0982ea085de437357e07bedfb9bf7187840fa23523b32f24caf2ae2bccddb538",
         "tests/test_money_rails_skill.py": "dba9d742b978b7140012cfd9514d213846af96001b31fe62307e5be49b01224f",
@@ -3897,7 +3897,7 @@
     "exchanges/senpi-ai-senpi-market-pulse": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-market-pulse/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "74910005b56fe8f9fe340f00967866291a384067bf240a4b740c6d391f04f557",
         "references/analysis-framework.md": "f28318e3cff4ded3a3c58369a6b7157d7d0e88b1f16f15ee4609fdd05813d634",
@@ -3926,7 +3926,7 @@
     "exchanges/senpi-ai-senpi-trader-research": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trader-research/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "3cb8d7b8d523bcffa2cfb8e96095e70e863443c5b4b8aae595ca24c7deb9c30c",
         "references/analysis-framework.md": "251247922522a5a2c546fd5f44b8c5f865f34ebabd7f52c9ba140231f328d379",
@@ -3951,11 +3951,11 @@
     "exchanges/senpi-ai-senpi-trading-runtime": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trading-runtime/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
-        "SKILL.md": "2662228150843c99ebf18783f3bd5bd79091c29255015c0f5e69aa0b441a95e0",
+        "SKILL.md": "6924b671340f243d84a4af6031cacd5eea2e9301c21f55638807ebfe5ab9c6c3",
         "references/dsl-protection-check.md": "2b004cd3b65834e9adf9964087fa97e9e65e81feb3d4d7a8a70e494ed138dd96",
-        "references/runtime-cli.md": "b9489e76c232c5f08d5ad07735b38cbce69874b8606a2791a180102e211ad9c2",
+        "references/runtime-cli.md": "7ebb478b8290da73ee07c64a62be1a2c1f00353995a9b03fcc2c56122d7b5c59",
         "references/runtime-concepts.md": "8132594e255536fd0db7f6cad7ea4166be01bfb33f14d5797e5c757dba2e8a3b",
         "references/runtime-yaml.md": "3e9aabc65d322b2f4a6f85e5526e9bab879f61fe0f9ebde93af6862179617a18",
         "references/scan-contract.md": "527f5165285e6f4c8d5fc482dfc6fdea413920885e614025dbd21f581929320f",
@@ -3992,7 +3992,7 @@
     "exchanges/senpi-ai-senpi-why": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-why/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "2d827419b1a84d01b3f583953eb0ec02085102e51363168492fe2b5ec1224918",
         "references/overview-positioning.md": "9b6cdbaf8071c66958abbb27112492d2acc11c590d963f6760827df4779abd56",
@@ -4335,7 +4335,7 @@
     "mcp-servers/dexter-mcp": {
       "repo": "dexter-dao/dexter-mcp",
       "path": "skills/dexter-mcp/SKILL.md",
-      "revision": "96f095d03e7d77fd865985b7ddecc1fc571a1e32",
+      "revision": "499c6c72d278bfdb2ac1ddc3bc8f2fe85b58229e",
       "files": {
         "SKILL.md": "be782604f6204a7e4ebf4d6e5ba2265a0225a89a9689cc97ec3ecea6203302e4"
       },
@@ -17203,7 +17203,7 @@
     "defi/uniswap-official-permissioned-pools-configurator": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-permissioned-pools/skills/permissioned-pools-configurator/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "cf8e06e9f29dab9c0de4f857290eb1767e66f170091ae8de6237b69dcacc7715",
         "references/config-schema.md": "73da8380fdeea9eefe37082a8cce4d4c5ee9e06a3f37fb84b75894d38efcd59f",
@@ -17220,7 +17220,7 @@
     "defi/uniswap-official-permissioned-pools-issuer": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-permissioned-pools/skills/permissioned-pools-issuer/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "4e15d4e44fee28381e0629060bf7cb889fb5418095373a72f80e0bdb01aa687f",
         "references/contract-architecture.md": "215c5af44706f62644d44499fe07a8e51948b3c47cd3d7945e156755644be64e",
@@ -17245,7 +17245,7 @@
     "defi/uniswap-official-copy-trade": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading-tools/skills/copy-trade/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "b4e74930ffe8588bea4e9b9fc5e12209bd3d0075d678b4c213adaa402cb425bc",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
@@ -17258,7 +17258,7 @@
     "defi/uniswap-official-index-bot": {
       "repo": "uniswap/uniswap-ai",
       "path": "packages/plugins/uniswap-trading-tools/skills/index-bot/SKILL.md",
-      "revision": "dfe7a98fb767486cf8e4f026c1e43c883c18d871",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941",
       "files": {
         "SKILL.md": "896e8997b8ec159d6c0a7799fbb0d3127ff5611d43ab5ae9cbb2c8093ca59812",
         "LICENSE": "75a59fbc77e5ff2a1442d50bb1bdf2fbd46405617fe443373455b4fa9225c40e"
@@ -17742,7 +17742,7 @@
     "exchanges/senpi-ai-senpi-improve-trades": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-improve-trades/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "9e270bb7a30153d27a51ef8880b0446ade4d894683a0bd9cd346d5b286f7bd6b",
         "references/event-log.md": "d7482c6647e679b4c69db7f5b74f8522462a90ef9ec7341b3491899bdcbae0ef",
@@ -17795,9 +17795,9 @@
     "exchanges/senpi-ai-senpi-portfolio": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-portfolio/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
-        "SKILL.md": "bb553132cc5bbfda338f73b1333bd7b26ae9d43d77b908a0e21c583ca1d7bae3",
+        "SKILL.md": "fa6557f173057ffb4b2206765a44dd6ca11977adb887661c3c90c1d5af6015d8",
         "references/analysis-framework.md": "3768f9572c4d37b6996c9c277c0e884a6fe586f87ebb39281498e9a24d847419",
         "references/dsl.md": "d75d2524b4c888716dff0465d6800571ebd920c7b426e6872e7ccd019ec34aed",
         "references/mandate.md": "e5cf69daae107f8279169cb70e818cb36b308646d78fe46071f22d2c189e47f7",
@@ -17805,19 +17805,19 @@
         "references/output-contract.md": "6eb3454d38010ff20a965da4aba0d8709b809464832835b1d2feab9aa472f687",
         "references/output-fields.md": "3a7b1c43074535982d1f8bce9a739a6a10994c3734bca3428c8e557f9ff29bbe",
         "references/rationale.md": "579836ec905a64b3c5fe41e7c16781c2a3de1a4502d8d2f3540dfada4aebba1d",
-        "references/runtime-health.md": "8d7f14e08e4bd5573184ef73a8612b1d9f2d8c0fb93cbed5ca23ace5330bcfca",
+        "references/runtime-health.md": "0b33b76451a06ccf6007ace1cdfdd056edf2029ee18c19ea9234e6c7b41fa6f2",
         "references/why-not-trading.md": "418ee9f6532be7414d297be3a56448ced23b09e665065ab72da833d535416b79",
         "scripts/mcp_client.py": "1bb95ac39e0cdc2219efd19b6397c58b6ea0749071504a90f16c7f587a890ca2",
-        "scripts/portfolio.py": "421f402d9aac96c74c5b2f192641c7cfbabf64c014c8a7c0fe9c32995699162f",
+        "scripts/portfolio.py": "f787f74873da9eea2dcc9138f419b37df30108544b9dd9e90878c14e555db76e",
         "tests/fixtures/portfolio_fixture.json": "9b1ce64fa930b6e532e629f42f7cb89eee986260bc9f2a03ceae760462e90317",
         "tests/fixtures/runtimes_list.json": "d9464c52428645df1720ae6278559cacf0da34274d78d19d088a44c8c48c85fa",
         "tests/test_close_recency.py": "c3252ab4c7f7eddcd1e4ec3d32c46a52f759effa9432065f055fbab539f5fcd3",
         "tests/test_closed_stats.py": "c7057cea83db5b88b5fad942fad1ab09dfbde2133f5d054ac51fca46e447a9ba",
         "tests/test_name_reader_parity.py": "683c1e4b3a5a961f51ef7b3c0445f6d6286d1af72c664c8355529612630ce627",
-        "tests/test_portfolio.py": "324382e9947a97150a61c2652d8882d5b6dfb96cb6f0d8f0b75b399ed217252b",
+        "tests/test_portfolio.py": "66f42e02bfb2c30d24588e0ccb3cb1ecea7fd2e50bd557992331c13228ca64d4",
         "tests/test_portfolio_external_wallets.py": "39ccba8be2840e3ff18bc44e30a8ea77da1ad91006d0675d0150bee2789cf87b",
         "tests/test_portfolio_one_wallet_list.py": "21deb8ce4c25e4b8708a636caf4e595d6c0c5fb12fcf7fd9c5b379c7f1df5e73",
-        "tests/test_portfolio_skill_layout.py": "b8731438b7e74eadb5d94e4c476ab4c91f109546f5f12aa9e2833d9f43ea66a6",
+        "tests/test_portfolio_skill_layout.py": "78e9f3cb90b04f64b65c769a379d1ce39dd18939f1d1b930b115407e56c1a030",
         "tests/test_prescribed_tools_exist.py": "d8fe51a684defe9d48b915506e52279c162a5f6c99e7af9002bfad6480290f51",
         "tests/test_skill_raw_position_stop.py": "20f511a2918f061c3a5c01d47ad28f5c3f0c464ae9124ed2e88c6aba8b2b4e9c",
         "tests/test_skill_source_trader_read.py": "34aeb13cb6354a3a9c28e5f7c70ee2b883887aba81a55dcdcb17651824676020",
@@ -17856,7 +17856,7 @@
     "exchanges/senpi-ai-senpi-smart-money": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-smart-money/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "4d2e68504932c344599fe98860a0593ce8ef2767a5b10650ee0d4e88103e4c36",
         "references/analysis-framework.md": "0b0487582583aa9c9ac17daa49ec2eb140a164cb7cd65af514b66786b6cc4ba7",
@@ -17881,7 +17881,7 @@
     "exchanges/senpi-ai-senpi-strategy-author": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-author/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "3262d2edc2b9b9cb450ebcbdf0e2ef6f6b03afe76ead81a93433e3a454603463",
         "references/creating-a-strategy.md": "a0bddc0bcc58588a7914a53e9c9e18db58def5e80f7fcb8f43dd0dc8a0e714f2",
@@ -17958,7 +17958,7 @@
     "exchanges/senpi-ai-senpi-strategy-discover": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-discover/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "31110bf091dfbfe4d6be6b38eb10031f8844ee0f7f7f081cb2a51ee61062ffab",
         "catalog.json": "85beff9fa6fb4ba99a1b89086d53290be0ef435821b609819722b59f651e5179",
@@ -18019,16 +18019,16 @@
     "exchanges/senpi-ai-senpi-strategy-ops": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-strategy-ops/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
-        "SKILL.md": "57519e9eda76e9eaa9fc83609d4a97c93479419d31583a78365873075d0debcf",
+        "SKILL.md": "a174eb8e35a76e03eba47b75d63bc4e8e4f03ac2aa56eb482181a3c9c19fa1ef",
         "references/editing-a-live-strategy.md": "b0e0c543670be55d933a714754b525c7eeb32eb01208c268d1dae57e26ce42f4",
         "references/lifecycle.md": "82215dab8e4253417063fbfbe1e879f1bca11b3c6f5715b42f33062ef16d0d7c",
-        "references/liveness-verification.md": "808d636c4f2382dd07b1fecbebd0446d5da0993c6a90f01253a064df535ac50e",
+        "references/liveness-verification.md": "1db0f05476b4a6408a2e9077275c2a4f2f3a5ed732d397f712edb314fb77eab7",
         "references/refusal-playbook.md": "d605e68a92f161c1515507e90b4e5ff9ff7ea0d8afb516f1c215fa549f3dba4a",
         "references/strategy-yaml-schema.md": "57205bce92b49758c5cd2d7e08d05de2324998af6cc5e05d4ce161f9ed5a1331",
         "references/walkthrough.md": "63f87f4b1ba3ceb65191a1681c3407053f16faffeba65a7552dd19fb0338169b",
-        "scripts/_cli.py": "6eefeb221543c057c294649f4e537feed98b24295eb44dae02d5c20ffa58ab3f",
+        "scripts/_cli.py": "bed75765c4ed5670a7ffdba76e40a6bd7ab195c84ca18a94a6f4c65f3f270b62",
         "scripts/_fetch.py": "f70d4e2715676e0efeca49292dcecf46e498c167ff750ae042b9cc4adbb04e26",
         "scripts/_fork.py": "0ae2944251f283fc5d1747cc2da3cbf0a1e2c4f0c1f1e6afca8f2e4b505c4488",
         "scripts/_pkg.py": "1f7f1e06e1762c1bec372cc7a0eaa2b6871bac94de4f1ecd46a028ad51f0fe68",
@@ -18116,7 +18116,7 @@
     "exchanges/senpi-ai-senpi-trade": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-trade/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "52da5a75ebbdd5c8eb5c5d7258da1cd8dc0b3892e95da692f4cd974c2fde7874",
         "references/mirror-monitoring.md": "cdccc8739732d67d95a369a94229194a1af0b6a7c4edddb6b4de9e7d8ebaf542",
@@ -23039,9 +23039,9 @@
     "dev-tools/ljagiello-ctf-ai-ml": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-ai-ml/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "83fc0f06fa4fa146a40b95eab82e95100f8341f33e9c77eeda003dd6d5b700e8",
+        "SKILL.md": "5b9911c99ff161de1b584251824b9cccc31c02f6a3e467cae5e503032f55c1a4",
         "adversarial-ml.md": "075dc01a0d8993eaffca7e55c75e0fe23c886ef722406540cc9309136bd1caf3",
         "llm-attacks.md": "8338d986970f4d5d928f957cf52cba309a1a39cab971314c0d8c76bd31cca3f6",
         "model-attacks.md": "5ecff96546090e28f716dd8c68947d72097fbfb7ce3f9880c7c8290ada12f6d4",
@@ -23058,10 +23058,10 @@
     "dev-tools/ljagiello-ctf-forensics": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-forensics/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
         "3d-printing.md": "692cbb9502427693aab97be70a06cb84b7db7c777e9f37d9554dd9ffa595d3f8",
-        "SKILL.md": "3a4aa80110766836fef016ebb9e33023b97926851e8b23a3b59f0c7a8e82189f",
+        "SKILL.md": "5f28e2511595b559678649f8f68b2e40a64861e7f2a9f6562a0cf91b145998bb",
         "disk-advanced.md": "3ac76f151c22a99ed59acf82681d49c1a3b024e612e05701e26c58edce1f2018",
         "disk-and-memory.md": "210cb5b49305e08ba54a083c8052cf5b9bbe11a1ca295152102a9f50db3fd4ad",
         "disk-recovery.md": "5ec827477b486c3ebe07e07cd49b01c7806330486f6f025696527691e4763c6c",
@@ -23099,9 +23099,9 @@
     "dev-tools/ljagiello-ctf-malware": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-malware/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "505684318d0d7e5b1c282569dc1719c1f842d24aaa80d186d05909f2d6277cbc",
+        "SKILL.md": "1fd901d9ce449b1030ac47b1cda9440aaec12e3b9c42eec780ff2abbb4ec0902",
         "c2-and-protocols.md": "99531543f925c5681ad123747f0f92e1a3680229652e46800a0169fa65015cf0",
         "pe-and-dotnet.md": "6f6f17a5ec07c57c82e0919998261c15229051401594602b39c6ae47a349e6b4",
         "scripts-and-obfuscation.md": "e84300816c8f3aebc69b5689abde85afafce921b80a8a8c88f51436b9664d356",
@@ -23120,9 +23120,9 @@
     "dev-tools/ljagiello-ctf-misc": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-misc/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "5347e81b39cfe7466ef164db6df7eefa5294e00b2c7f22706f1614f42be78197",
+        "SKILL.md": "9a8d25b6c945edd4b318e5dd60a67fb6e7f820d9ed0ea30de6b418ffefe14f48",
         "audio.md": "58d5caebffb5450353e6a8faeb513f9aab26fff96a76add9352b9872a1ea1a6a",
         "bashjails.md": "49fc1a4c20575d78e63dcf065b63681cf3817606ffc8eb2c4475d5802b4835f0",
         "ctfd-navigation.md": "04b31fe69a64bd4543b3441160ded9921f6ac55c51931ece38b3f54f6d4eacbf",
@@ -23159,9 +23159,9 @@
     "dev-tools/ljagiello-ctf-osint": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-osint/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "92c0afad525c8dce1047db2a749a7148b6aa0c5f13aac91755b4218835a95e4c",
+        "SKILL.md": "465ff8c0537b23edbc1f1d63a9588b2e181cc3a6369a309929690f0a31c90a3c",
         "geolocation-and-media.md": "506ac15a6f395f50b5919db213cc8208ddc63513a8b225c9adadb937393e499a",
         "social-media.md": "2340de372f00cfe81c75fe7a27813b9bf0e108ce8441cd174f80cf804bff8a71",
         "tools-mcp.md": "785257a7b0ffeba6726e58f185487dfe19f33aca06169c25c352e1fe1f3b2a26",
@@ -23180,9 +23180,9 @@
     "dev-tools/ljagiello-ctf-pwn": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-pwn/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "b869c797f60905eca912006bde57c29f091cd1c2738ef2bb58f2f4d46a234b89",
+        "SKILL.md": "ca3b7254d973c18d2b30fd1f07db1ea30a2a032560031589786d1a3cfa0d4237",
         "advanced-exploits-2.md": "519ab81fe6ba6203b7f1ad5fa6ed34cc82f1060cf6775933ce1eb39d765bea25",
         "advanced-exploits-3.md": "534a95bd40a5a07bba8320c25080bc236956396104f3deee46eaf5378beddb8f",
         "advanced-exploits-4.md": "3b0c77247da9e7aeb1566f9dc5ef892cb180934ab4e60d7e5a4255e92d09f6b5",
@@ -23333,9 +23333,9 @@
     "dev-tools/ljagiello-ctf-reverse": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-reverse/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "c1baacbc2926dc366eee6ae2a469cbd12c903afb3fef995f4c2c478169d68ec2",
+        "SKILL.md": "f8df1575e6e0d2452058de2529901a60755e03d2ab8b65cb89bd68cb840229a0",
         "anti-analysis-ctf.md": "765391aea65cc073bf805622c5b6e77b18f130501865f73e4592224087bdc22c",
         "anti-analysis.md": "bceec4e7337f12ca7b86577b43f4854b2aa2189ba9a012646753082a5d2053c4",
         "field-notes.md": "735d774e7fd8bff0e0fd637ae33f43eee15b488c7d996ff9c24275dda21b7655",
@@ -23390,9 +23390,9 @@
     "dev-tools/ljagiello-ctf-writeup": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-writeup/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "f67169dc8287284d1beb9ef86ee9927567acb29df18656b5b05360bd84cd5ed8",
+        "SKILL.md": "09633dc2d75f6c4dc3377337391844ac883041c739d80fe4b72d90d73bc4fa23",
         "LICENSE": "25fb2cfc684b4f1e510e8ecf2deeeedfe9ee80ebae4c41b806baa439857a394b"
       },
       "modes": {
@@ -23403,9 +23403,9 @@
     "dev-tools/ljagiello-solve-challenge": {
       "repo": "ljagiello/ctf-skills",
       "path": "solve-challenge/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "8be345af4002d5c119c8f25b2db8f89a334cd59b7ea596a0c9a4bdb3d926170f",
+        "SKILL.md": "a18d5aa7cee44bfdfb9d9b6cbf9e464595cca546162101405471f625fec077aa",
         "difficulty-routing.md": "9dd234b05cedd48158a083f7e50f5a3b63ad010119bd674dd2fa2b3ca2d741d2",
         "LICENSE": "25fb2cfc684b4f1e510e8ecf2deeeedfe9ee80ebae4c41b806baa439857a394b"
       },
@@ -23588,7 +23588,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "18fb9057e0ba93d619e121d4cfbf21f3dfc348ce",
+      "revision": "ddfdeaf1b83dee3fef2324d4dba6f1a32201e976",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/v3.yml": "69328df330f33f515c8b4d91d8d1b0516f701606ca268595968151cb0c005cb8",
@@ -23598,11 +23598,11 @@
         "SKILL.md": "869fe11d60694023ceb12e741392b5d5212b3010335d4020837668e87e10a8fc",
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/card.png": "f5c9652f9ce62ba9ae88ffa37d103af19b9ea7e619d303c94b92aa94f8bc424f",
-        "docs/data/top-allocators.json": "5c3b22c5c771fa46ec6bef13d7ad959459c5e8c2c32e4cb349fd3f0520c087ca",
-        "docs/data/v3-history.json": "c418d02f1f80b2bbd1e3338b9980b8a51c78b9f390cc3baec0b53faaae20c961",
-        "docs/data/v3.json": "160ec85d0c85b5dc8e7663dc4b1ecab0577b7fcb59a683937cc82a1a883745cf",
-        "docs/index.html": "2b0df31489da4a56f68453c7b11254f858484640e51b0e2612c7f0d1a9b5b600",
-        "docs/llms.txt": "eda58d12e94f1c6d97eb7b5d3c9fd4ad0ce4be0c70da38ea42a47dac6f92b1fa",
+        "docs/data/top-allocators.json": "e8b92ad4b40a6d9e5597e7f1a7b80f38c3b6449f5ad2b67eda0e88c4141940f9",
+        "docs/data/v3-history.json": "c3577e6759c5af40b5717a5d7f3df2f5cec29b5e310be6138dfeef18c4a418e7",
+        "docs/data/v3.json": "4bd74fed38255136f938295ae5fa2252152dee69ac491419affd3dc4d06d15c1",
+        "docs/index.html": "865d3fb14df4e889e6d088049a715687d84358e88fe0a5d1a319805227a98b6a",
+        "docs/llms.txt": "52c352560228ef24d52c7ef7248315f9b3b8cf9d84faff8ee3b03fce282cd662",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "a5274eac2ea6e3cfcf36b9b31f4e6d36836bedfebef4ebde3e65d0acb1fe4168",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -23740,7 +23740,7 @@
     "exchanges/senpi-ai-quant-desk": {
       "repo": "senpi-ai/senpi-skills",
       "path": "quant-desk/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "9b79b98d9869361594901b854dda6fd62f968c4050f7575aaf75e2933fc76514",
         "references/coverage.json": "9f328f8ac194a5647608ac407cd161fa14dd0b6148d747ffeed719611904b09a",
@@ -23831,7 +23831,7 @@
     "exchanges/senpi-ai-senpi-signals": {
       "repo": "senpi-ai/senpi-skills",
       "path": "senpi-signals/SKILL.md",
-      "revision": "31921f29c8649e47da1ab60dfb4e3825d9194e52",
+      "revision": "c223c730a751fb2d9399a0637c00c5b830c96159",
       "files": {
         "SKILL.md": "fc2344df430fe2a22ba40cef15d93e19fcbfe5615795fbb82f2a501f7f08a435",
         "references/detectors.md": "2adbcf6340f84dc6ec718a5ed2b6a5c228f2b30e3a024a5b1ed1b7cd4d681ac7",
@@ -29717,9 +29717,9 @@
     "mcp-servers/blazephoenixxyz-crypto-blazephoenix-defi": {
       "repo": "blazephoenixxyz-crypto/blazephoenix-mcp",
       "path": "plugins/blazephoenix/skills/blazephoenix-defi/SKILL.md",
-      "revision": "6d09d286e0804fdcfd4cebb3bdaa494eb206865c",
+      "revision": "b13ffc382335f601ab50bd5686d464449abfe800",
       "files": {
-        "SKILL.md": "1fee869058cf7272d662c9d1544ef4523843f2e107278777f259c96b65f2a2c5",
+        "SKILL.md": "463bd7923ec00dca679d13379a26bf75d963e1a88216ac17fc02f56f19be2943",
         "LICENSE": "b5bab758e3ed4b3cf300c2d4f627da8e7502d07bf668e21281e0f9e5a0c87bdc"
       },
       "modes": {
@@ -30235,7 +30235,7 @@
     "mcp-servers/priors-agents-priors": {
       "repo": "priors-agents/priors",
       "path": "skills/priors/SKILL.md",
-      "revision": "6a96901d5d986c988b1350fd8a2e9ebc54c19707",
+      "revision": "c1c8609e3b49ee9b2405bcc21c1abfc3deb46a9f",
       "files": {
         "SKILL.md": "062cbb0e881391aeff37e5b844d6782cd4e61b7e2709de6f14b93730479f4986",
         "LICENSE": "8c3d1e9e897b0fd0890bc7d1f05a73f822934c6439368b2e57d6f1707e9d1981"
@@ -45203,9 +45203,9 @@
     "dev-tools/ljagiello-ctf-similar-search": {
       "repo": "ljagiello/ctf-skills",
       "path": "ctf-similar-search/SKILL.md",
-      "revision": "b42145497fc568a9059bc970c347ff4b4415011d",
+      "revision": "2388a3bcd5f081836c9a038c54e26bc658d5b7d1",
       "files": {
-        "SKILL.md": "408c4d219becc1106a5599892783ab487f58cfe36a4eed9d776041bb7a23b3e9",
+        "SKILL.md": "cfeb99deb4cdbce64a4a528f9ef2007085f21821739451c77b0b4b2d41dadfb1",
         "search.py": "dceba9fee01a8bd06a259f2d5d9d0fc4d890ab390b528457ed7a5a9043165f12",
         "search.sh": "5fdd3270c0f24ee0f35017d947d1a6fe07112c22330324f52d35e3b5705a336d",
         "LICENSE": "25fb2cfc684b4f1e510e8ecf2deeeedfe9ee80ebae4c41b806baa439857a394b"
@@ -45291,7 +45291,7 @@
     "mcp-servers/dfm-finance-dfm-fund-manager": {
       "repo": "dfm-finance/dfm-agent",
       "path": "plugin/skills/dfm-fund-manager/SKILL.md",
-      "revision": "c533682dde3ce80d78e10a56a0a624a96f8cd7c2",
+      "revision": "69fcd001682c7c1fe49fa38441095dbc11f4a64f",
       "files": {
         "SKILL.md": "1589f43e040701e213326f184855a64312c4cf8db48f7473f1a9774335d80e53",
         "LICENSE": "4b94ed2cb0c136aa5e7004d8549c4d24bf759e036997616243b5b1f7940c6fbc"
@@ -45538,6 +45538,32 @@
         "SKILL.md": 420,
         "LICENSE": 420
       }
+    },
+    "mcp-servers/fbsobreira-estimate-energy": {
+      "repo": "fbsobreira/gotron-mcp",
+      "path": "plugin-local/skills/estimate-energy/SKILL.md",
+      "revision": "62f1c3d50fcf830c32524dc141d95c97a74d7e7c",
+      "files": {
+        "SKILL.md": "1faf582d0d7fa7195f15413a14fb2c7e456364bfa5cc4996510ea63b8f22e2c3",
+        "LICENSE": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "mcp-servers/fbsobreira-send-usdt": {
+      "repo": "fbsobreira/gotron-mcp",
+      "path": "plugin-local/skills/send-usdt/SKILL.md",
+      "revision": "62f1c3d50fcf830c32524dc141d95c97a74d7e7c",
+      "files": {
+        "SKILL.md": "bcaab651d0b90dad076b3b2a23adc68601bc97dd0d7f00d837aea05b55a4e199",
+        "LICENSE": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
     }
   },
   "repositories": {
@@ -45571,7 +45597,7 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "41181967a808fe7931d885aeda6279cab543e2c2",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "deac31c8d66d1a9bedd461f92035a836d3c2321e",
+    "jiayaoqijia/cryptoskill": "fa1d515df49dde3e31674f5e3ee32a31ceb241bf",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
@@ -45583,7 +45609,7 @@
     "celo-org/celo-mcp": "7cbfd1c8ba5fde9e395b11775e2dbee34b779889",
     "alexchenai/chenswap-mcp": "df99e1a7861004abfb0f2b0c77bdacd50d44f361",
     "coinrithm/coinrithm-agent-trading": "e2d6032cfd1d4a8fdaa1df42fceca0fb0ddfe6cb",
-    "dexter-dao/dexter-mcp": "96f095d03e7d77fd865985b7ddecc1fc571a1e32",
+    "dexter-dao/dexter-mcp": "499c6c72d278bfdb2ac1ddc3bc8f2fe85b58229e",
     "onflow/flow-mcp": "2afc462130e957e3f311f27cd0d0201698cad8ce",
     "injectivelabs/mcp-server": "daa98388cdf6c472c93211b1e9059725d72bc42e",
     "kukapay/crypto-feargreed-mcp": "b1f22947d81be0e34a502dfed0b866024db46e6a",
@@ -45609,7 +45635,7 @@
     "scutuatua-crypto/whaletrucker-ecosystem": "7cb30ee9733d303106dc6fbc3f33457ce1484cfb",
     "eschatological-cpi959/finance-mcp": "c0f17fc3a76367ffbee3a1b037d58bdbf396adf1",
     "fibrous-finance/fibx": "a742b16f54dffabb0afe622fb4ab7e1a5baa1a93",
-    "danny-397/rl-for-crypto-and-stocks-": "717b2b45c26b810e03687039f10cfab1cd8f9353",
+    "danny-397/rl-for-crypto-and-stocks-": "057e0eb3a8ef74a66c8c7618d727a3112c38455b",
     "jup-ag/agent-skills": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f",
     "metamask/openclaw-skills": "4f0184cff6484905906b1821c5e81ef23250e6e5",
     "bybit-exchange/kaas": "41fd0d0b64d61d5ae39d5fe23e5c689179d2efa6",
@@ -45655,7 +45681,7 @@
     "nirholas/ucai": "c4a0c7e1dca82a6be7cc347efb08d8287cd41a8f",
     "nirholas/lyra-tool-discovery": "cff9201dd1078c06a5ea30b5779587aad9e1cab4",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "18fb9057e0ba93d619e121d4cfbf21f3dfc348ce",
+    "araxis33/aero-vote-radar": "ddfdeaf1b83dee3fef2324d4dba6f1a32201e976",
     "paulf280-ui/cabal-hunter-mcp": "9d0de91567593976367d1bdd5ef1696b90e92bd7",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "a6434064fe7c76e60c8749fbc212ee396983415c",
@@ -45684,7 +45710,7 @@
     "rivaldotimoty/trading-agents-lite": "b3ce8b5910ac326ecc9d53c8668fbf1e3abe0c67",
     "cryptolir/agentglob-trader": "25c310337b155c418f7638a96eb8a6dc7abd02dc",
     "true402/mcp-server": "3b0656f73819b70a932af46f43b09095915918fc",
-    "blazephoenixxyz-crypto/blazephoenix-mcp": "6d09d286e0804fdcfd4cebb3bdaa494eb206865c",
+    "blazephoenixxyz-crypto/blazephoenix-mcp": "b13ffc382335f601ab50bd5686d464449abfe800",
     "fernsugi/x402-api-server": "e57f46120c469316f0e70c99d8fbf72922ce735f",
     "philidor-labs/philidor-mcp": "5bfff105b2288c3548bafb8f2860ef2dd17789c1",
     "ghostswap1/ghostswap-agents": "262f4b8690396387c50d4c1d58e3919cf654c172",
@@ -45696,7 +45722,7 @@
     "gemachdao/gdex-skill": "7e51b52977be7ada679d2cbe58107d14db83cd83",
     "blockchains/blockchainlab-mcp": "4d7ff1b1934c02cbca347d4e3d597d0c1c00668a",
     "kant19801201behax5/silicon-dna-release": "3c6a4cfa73b2a071e5ddd5f3b00ef0fa2d6a26bf",
-    "priors-agents/priors": "6a96901d5d986c988b1350fd8a2e9ebc54c19707",
+    "priors-agents/priors": "c1c8609e3b49ee9b2405bcc21c1abfc3deb46a9f",
     "ox31461/gasless-anygas-robyn-relay": "b2ac270d6f7e55a685db3efa987684e2e2913f04",
     "pokiehead/sic-crypto-kit": "40608e3ed0286b32596aa6c5704c63a643971cb5",
     "hristovdimitri2-hub/kristo-intelligence-6": "4c61a8dd385ec40a75e9bc93aa5f2a08a0754176",
@@ -45727,7 +45753,7 @@
     "1nfernet/1nfer-agent-tools": "e32c4b1bf624ffa43664309f5d087d10a4e9c158",
     "pedrobraiti/market-research-mcp": "070c90833082d7deb8dfe27ba42c72ac2c45a9f4",
     "eidostein/segnals-mcp": "e12d2877410c9c311a4fa9376836de276845fee3",
-    "fbsobreira/gotron-mcp": "495eb6e016c4c652db7bfbbbd65df18610ce8e88",
+    "fbsobreira/gotron-mcp": "62f1c3d50fcf830c32524dc141d95c97a74d7e7c",
     "narekgevorgyan/crypto-mcp-servers": "49c10bc82fa5fd459177c6b459961e183e03daf8",
     "bck-stack/sitecheck-x402": "24acae3ecda1302a5e4064099f2d3b3fd3b29e4a",
     "jimbob1414/web3juice-mcp": "54c7666910c59a681ab37c71bc899606b15de565",
@@ -45748,15 +45774,17 @@
     "dexra-dev/mcp": "9811ed474eee35753aa362c5aac790f1683c3462",
     "c-viper-work/cabal-radar-mcp": "bfe0edc8016c14b7e56183ce82e6260b8ffb0f1f",
     "c-viper-work/omniroute-bridge-mcp": "072e1d2c51f49f3599c49cfa926ebb501ebc40e4",
-    "dfm-finance/dfm-agent": "c533682dde3ce80d78e10a56a0a624a96f8cd7c2",
+    "dfm-finance/dfm-agent": "69fcd001682c7c1fe49fa38441095dbc11f4a64f",
     "lendwise-fi/lendwise-mcp": "56d9020e95ce24f800c909e8b38911340a1bdf32",
     "warden-protocol/warden-mcp": "0bef3a17482780aab8b0f6ca2a70283642d55747",
     "dalee66/crypto-chart-agent": "9bf7c901a2d5ac629abedaba6e2f19b7aa824d2c",
     "nirium-protocol/nirium": "ff8f21f1d5964d98a07cde2e892fbc8275f1c0ce",
     "rezearcher/greyridge-x402-tools": "92fedefac1fdbc4bab0a7c92bd82374482b8692b",
     "cp0x-org/cp0x-mcp": "d9aa3d248f13e15d78fb0b23e3c26ad947eebc67",
-    "wickedapi/wicked-mcp": "bbafa43a9a2a7280955731a2c6c15c4a00ea72ad",
+    "wickedapi/wicked-mcp": "1a9c6079dfd571b55e6c5114f94005dbd22a19d8",
     "cryptyx-ai/agents": "406a587da0ba3e192c39dbd8c266fda38b2ada8c",
-    "dingyining2007/poolsentry": "a85bb68d31451e994db2f260b46e040ee8a528ef"
+    "dingyining2007/poolsentry": "a85bb68d31451e994db2f260b46e040ee8a528ef",
+    "openfinance-tech/mcp": "5f3e161b0c9131c192ff118531f45bc4f7c292bf",
+    "blixvip/blixtrade": "51c0dac14c9dad27625ab9d7fe402e110f7ec862"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T18:53:12.389762+00:00",
+  "generated_at": "2026-10-27T01:09:36.173817+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -109612,6 +109612,130 @@
         },
         "requires_private_key": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "mcp-servers/fbsobreira-estimate-energy": {
+      "name": "estimate-energy",
+      "execution_model": "local_executor",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "mcp-servers/fbsobreira-send-usdt": {
+      "name": "send-usdt",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -221931,16 +222055,16 @@
     }
   },
   "summary": {
-    "discovered": 3567,
-    "processed": 3567,
+    "discovered": 3569,
+    "processed": 3569,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2584,
+      "read_only": 2585,
       "router_orchestrator": 145,
       "unknown": 341,
       "analysis_only": 219,
       "unsigned_tx_builder": 114,
-      "local_executor": 102,
+      "local_executor": 103,
       "installer_bootstrap": 43,
       "custodial_executor": 19
     },
@@ -221951,8 +222075,8 @@
       "can_write_files": 178,
       "can_browse_web": 250,
       "can_spawn_subagents": 263,
-      "can_move_funds": 299,
-      "requires_private_key": 493,
+      "can_move_funds": 300,
+      "requires_private_key": 495,
       "requires_hosted_operator": 342,
       "uses_remote_install_script": 42,
       "mutable_remote_runtime": 555

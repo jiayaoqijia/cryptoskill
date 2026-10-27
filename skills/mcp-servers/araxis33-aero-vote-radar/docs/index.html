@@ -350,10 +350,10 @@
   </div>
 
   <h2>Steadiest pools</h2>
-  <p class="h2note">For a steady payout rather than the top spot: pools that paid at least half their own average in 75% of the hours or more. Average and lowest hour are for 10,000 sAERO; "per day for you" is for your amount now.</p>
+  <p class="h2note">For a steady payout rather than the top spot: pools that paid at least half their own average in 75% of the hours or more. "Per day for you" is your amount on the same figures as the table above. The 7-day average and lowest hour are for 10,000 sAERO, each hour counting that hour's last 24 h of fees, so they run higher when fees are rising.</p>
   <p class="hint" id="arSteadyWait">Needs a day of hourly scans; the table fills in on its own.</p>
   <div class="scroll" id="arSteadyWrap" hidden><table>
-    <thead><tr><th>Pool</th><th class="num">Per day for you</th><th class="num">Average / day (10K)</th><th class="num">Lowest hour (10K)</th><th class="num">Held up</th></tr></thead>
+    <thead><tr><th>Pool</th><th class="num">Per day for you</th><th class="num">7-day average / day (10K)</th><th class="num">Lowest hour (10K)</th><th class="num">Held up</th></tr></thead>
     <tbody id="arSteadyBody"></tbody>
   </table></div>
 
@@ -585,11 +585,12 @@ function arNameCell(g) {
 }
 
 // Pools that kept paying hour after hour (src/v3History.ts): at least 75% of the
-// hourly samples at half the pool's own average or more. Ranked by what they pay
-// now on the same basis as the samples (last 24 h of fees plus incentives).
+// hourly samples at half the pool's own average or more. "Per day for you" and the
+// order use the same figures as the ranking above, so one pool never shows two
+// prices (Oct 27, Macro: the last-24 h basis read as "steady pays more than top").
 const AR_STEADY_SHARE = 0.75;
 const AR_STEADY_ROWS = 5;
-const arSteadyNow = (g, amount) => dilutedPerDay(g.fees24hUsdPerDay + g.incentivesUsdPerDay, arW(g), amount);
+const arSteadyNow = (g, amount) => dilutedPerDay(arPerDay(g), arW(g), amount);
 function arRenderSteady(amount) {
   const steady = arData.gauges
     .filter((g) => g.steady && g.weight >= AR_MIN_WEIGHT && g.steady.avgPer10k > 0 && g.steady.held >= AR_STEADY_SHARE * g.steady.of)
