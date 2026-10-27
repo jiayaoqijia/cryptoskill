@@ -34,6 +34,8 @@ Unity 的输入校验与场景探索按用户目标及实际入口分流；NES �
 
 | 文件 | 何时读 |
 |---|---|
+| `references/beam-artifacts.md` | BEAM/IFF 模块、原子/导入导出和 LitT/ETF 静态清点；不执行 release |
+| `references/evidence-chunks.md` | 已保存分块文件的顺序、覆盖、冲突与哈希核对；不联网取件 |
 | [能力识别证据](references/capability-evidence.md) | 能力规则命中、组合特征、作用域和未命中的解释 |
 | `references/triage.md` | 分诊细节：语言识别特征、壳检测、高危 API 组合、平台速查、flag 形态 regex 集（全家权威源） |
 | `references/anti-analysis.md` | 命中反调试/反混淆/自校验时的识别与绕过对照表 |

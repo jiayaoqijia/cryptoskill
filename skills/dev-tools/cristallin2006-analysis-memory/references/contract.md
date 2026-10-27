@@ -39,6 +39,8 @@
 
 evidence_refs 的 locator 描述真实位置；可额外给 content_sha256 核对内容。宿主只能检查来源存在、哈希和权限，不能证明自然语言解释正确。
 
+候选校验失败会指出具体字段路径与原因，例如 `$.details.conditions: missing required field`。按当前 schema 补全真实资料或显式允许的 null 后重试；不要猜填证据、自动重开已结束任务或绕过权限。错误不会持久化候选，也不回显字段值；schema 仍为 0.2。
+
 review_publish：options 为 id、expected_revision、decision=publish|reject、reason；publish 前用 read_source 回查全部支持来源。返回 revision 增加，引用/后续修改使用新值。revise 输入 candidate、id、expected_revision，candidate 使用新的 operation_id。
 
 ## 各类 details

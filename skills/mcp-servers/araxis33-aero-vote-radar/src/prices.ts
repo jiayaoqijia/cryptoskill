@@ -81,10 +81,10 @@ export async function getTokenPrices(
             // that as-is would store NaN as a "real" price for the full
             // PRICE_CACHE_TTL_MS, which is worse than the $0 fallback below: every
             // downstream guard checks `price === 0`, and `NaN === 0` is false, so a
-            // NaN price slips past the MIN_TRAILING_USD filter instead of being
-            // excluded. Skipping it here lets the batch's own post-loop fallback
-            // (below) zero it out on the same short failure TTL as any other
-            // unpriced token.
+            // NaN price slips past the `perDay(g) > 0` filter (src/radar.ts)
+            // instead of being excluded. Skipping it here lets the batch's own
+            // post-loop fallback (below) zero it out on the same short failure
+            // TTL as any other unpriced token.
             if (address && Number.isFinite(coin.price) && coin.price >= 0 && Number.isFinite(coin.decimals)) {
               cache.set(ck(address), { price: coin.price, decimals: coin.decimals, cachedAt: Date.now(), isFallback: false });
             }
@@ -119,8 +119,9 @@ export async function getTokenPrices(
  * An unpriced token silently contributes $0 to every epoch it appears in, which
  * is the right behaviour — one obscure bribe token shouldn't blow up a pool's
  * whole calculation — but it is not a fact worth hiding. A pool incentivised
- * entirely in something DefiLlama doesn't cover reads as $0, falls under
- * MIN_TRAILING_USD, and vanishes from the ranking with nothing said. Callers
+ * entirely in something DefiLlama doesn't cover reads as $0, fails the
+ * `perDay(g) > 0` filter (src/radar.ts), and vanishes from the ranking with
+ * nothing said. Callers
  * report this the same way they already report skipped pools and failed epoch
  * fetches, so a thin-looking scan can be recognised as a pricing gap rather
  * than a quiet market.

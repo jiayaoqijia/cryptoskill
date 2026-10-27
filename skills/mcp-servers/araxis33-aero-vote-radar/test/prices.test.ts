@@ -130,8 +130,8 @@ test("getTokenPrices falls back to price 0 rather than caching NaN when DefiLlam
   // DefiLlama's free API occasionally omits `decimals` or returns a null/non-numeric
   // `price` for a thin or newly-listed token. Caching that as-is would store NaN as a
   // "real" price: every downstream guard checks `price === 0`, and `NaN === 0` is
-  // false, so a NaN price would bypass the MIN_TRAILING_USD filter instead of being
-  // excluded the way an explicitly unpriced token is.
+  // false, so a NaN price would bypass the `perDay(g) > 0` filter (src/radar.ts)
+  // instead of being excluded the way an explicitly unpriced token is.
   global.fetch = (async () =>
     ({
       ok: true,

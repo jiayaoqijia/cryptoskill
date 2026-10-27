@@ -20,7 +20,7 @@ mkdir app && tar -xzf my-app.icp -C app
 cd app && icp deploy -e <environment>
 ```
 
-An `.icp` package can also be uploaded to a Caffeine cloud engine via the console's App Center ("Upload a custom app") — see the `deploy-to-cloud-engine` skill.
+An `.icp` package can also be uploaded to a Caffeine cloud engine via the console (engine → **Your apps and services** → **Upload a bundle**) — see the `deploy-to-cloud-engine` skill.
 
 Bundling fails when:
 

@@ -97,7 +97,7 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
 | "Show me funds" / "compare X and Y" | `list_dtfs` · `get_vault {vault}` | funds; basket, current vs target weights, fees, TVL | — |
 | "Find token BONK" | `discover_tokens {query}` | mints (exact symbol first) | confirm the mint with the user |
 | "Price of X" | `get_token_price {mints}` | USD prices | — |
-| "Launch a fund of SOL/JUP/BONK" | `launch_vault {name, symbol, assets:[{mint,symbol,allocationBps}]}` | vault address + signature | first `deposit` |
+| "Launch a fund of SOL/JUP/BONK" | `launch_vault {name, symbol, assets:[{mint,symbol,allocationBps}], logoUri, description}` | vault address + signature | BEFORE launching, confirm every field with your human — name, symbol, `description` (you may propose a draft), the image (`logoUri`, a public link), `category`, basket and weights — never fill one silently; the image and description are optional but strongly recommended and cannot be changed after launch. Then the first `deposit` |
 | "Put 20 USDC in fund V" | `deposit {vault, usdcAmount:"20000000"}` | `status` (often `pending`) | `zap_status {vault}` until settled |
 | "Exit fund V" | `redeem {vault, shares}` | `status` | `zap_status {vault}` |
 | "Is my deposit done?" | `zap_status {vault}` | per-leg progress / failures | `zap_v2_update_envelope` or `zap_v2_cancel` if stuck |

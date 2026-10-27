@@ -58,8 +58,10 @@ export const PRICE_CACHE_TTL_MS = 5 * 60 * 1000;
 // it is written both for tokens DefiLlama genuinely doesn't price and for a
 // batch that merely failed to reach it. Caching those together for five minutes
 // meant one timed-out request could value a token at $0 across a whole run of
-// mcp-server.ts calls — enough to drop real pools below MIN_TRAILING_USD and
-// reorder a ranking, with nothing in the output saying why. At 30s a transient
+// mcp-server.ts calls — enough to zero out a pool's fees/incentives (every
+// unpriced token contributes $0, src/prices.ts's toUsd), drop it below
+// rankPools'/steadyPools' `perDay(g) > 0` filter (src/radar.ts) and vanish from
+// the ranking, with nothing in the output saying why. At 30s a transient
 // failure costs one refetch; a genuinely unpriced token costs a cheap retry per
 // batch, since it is looked up alongside the rest of its batch either way.
 export const PRICE_FAILURE_CACHE_TTL_MS = 30 * 1000;
