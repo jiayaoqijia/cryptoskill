@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 """_android_tools.py - android-re scripts 共享的 Android SDK 工具探测与调用层.
 
-本目录下 5 个脚本共用的内部模块（不是入口脚本）。铁律 11 配套：所有
-DEX/AXML/Manifest 事实一律包官方工具（apkanalyzer/aapt2/apksigner/adb）或
-androguard，不手写解析器；工具缺失时调用方负责优雅降级（exit 3）。
+共享调用层（不是入口脚本）。使用已验证的解码实现，不用临时 parser
+替代未经验证的 DEX/AXML 语义。工具缺失时明确降级（exit 3）。
 
 环境变量覆盖（优先级高于默认路径）：
   ANDROID_SDK_ROOT / ANDROID_HOME  SDK 根目录
@@ -38,7 +37,14 @@ def find_sdk() -> str | None:
         cand = os.path.join(local, "Android", "Sdk")
         if os.path.isdir(cand):
             return cand
+    if os.name != 'nt':
+        for cand in (os.path.expanduser('~/Android/Sdk'),os.path.expanduser('~/Android/sdk'),'/opt/android-sdk'):
+            if os.path.isdir(cand):return cand
     return None
+
+
+def native_name(name: str) -> str:
+    return re.sub(r'\.(bat|exe)$','',name,flags=re.I) if os.name != 'nt' else name
 
 
 def _build_tools_dir(tool_name: str) -> str | None:
@@ -55,7 +61,7 @@ def _build_tools_dir(tool_name: str) -> str | None:
         reverse=True,
     )
     for ver in versions:
-        cand = os.path.join(bt_root, ver, tool_name)
+        cand = os.path.join(bt_root, ver, native_name(tool_name))
         if os.path.isfile(cand):
             return cand
     return None
@@ -68,14 +74,22 @@ def find_tool(env_var: str, sdk_rel: str | None, build_tool: str | None,
         return p
     sdk = find_sdk()
     if sdk and sdk_rel:
-        cand = os.path.join(sdk, sdk_rel)
+        parent,leaf=os.path.split(sdk_rel)
+        cand = os.path.join(sdk,parent,native_name(leaf))
         if os.path.isfile(cand):
             return cand
+        if parent.replace('\\','/').startswith('cmdline-tools/latest/'):
+            root=os.path.join(sdk,'cmdline-tools')
+            if os.path.isdir(root):
+                for version in sorted((v for v in os.listdir(root) if re.fullmatch(r'\d+(?:\.\d+)*',v)),key=lambda v:tuple(map(int,v.split('.'))),reverse=True):
+                    cand=os.path.join(root,version,'bin',native_name(leaf))
+                    if os.path.isfile(cand):return cand
     if build_tool:
         cand = _build_tools_dir(build_tool)
         if cand:
             return cand
     for name in path_names:
+        if os.name != 'nt' and name.lower().endswith(('.exe','.bat')):continue
         w = shutil.which(name)
         if w:
             return w
@@ -110,7 +124,7 @@ def emulator() -> str | None:
 def emulator_check() -> str | None:
     sdk = find_sdk()
     if sdk:
-        cand = os.path.join(sdk, "emulator", "emulator-check.exe")
+        cand = os.path.join(sdk, "emulator", native_name("emulator-check.exe"))
         if os.path.isfile(cand):
             return cand
     return None
@@ -134,11 +148,22 @@ def agpy() -> str | None:
     for c in cands:
         if not c or not os.path.isfile(c):
             continue
-        r = subprocess.run([c, "-c", "import androguard"],
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
+        try:r = subprocess.run([c, "-c", "import androguard"],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
+        except (OSError,subprocess.TimeoutExpired):continue
         if r.returncode == 0:
             return c
     return None
+
+
+def jadx() -> str | None:
+    p=os.environ.get('JADX') or shutil.which('jadx')
+    if p and os.path.isfile(p):return p
+    p=os.path.expanduser(os.path.join('~','tools','jadx','bin','jadx.bat' if os.name=='nt' else 'jadx'))
+    return p if os.path.isfile(p) else None
+
+
+def dexdump() -> str | None:
+    return find_tool('DEXDUMP',None,'dexdump.exe',('dexdump','dexdump.exe'))
 
 
 def run_tool(argv: list[str], timeout: int = 300, cwd: str | None = None) -> subprocess.CompletedProcess:
@@ -157,7 +182,7 @@ def run_tool(argv: list[str], timeout: int = 300, cwd: str | None = None) -> sub
 
 
 def missing(tool: str, hint: str) -> int:
-    print(f"[工具缺失] {tool} 不可用，本脚本此功能无法运行（铁律 11：不手写解析器顶上）。")
+    print(f"[工具缺失] {tool} 在当前发现范围不可用，此后端未运行；可选择其他已验证工具。")
     print(f"  装法：{hint}")
     print("  或用环境变量指定全路径后重试（见 _android_tools.py 头注释）。")
     return EXIT_NO_TOOL

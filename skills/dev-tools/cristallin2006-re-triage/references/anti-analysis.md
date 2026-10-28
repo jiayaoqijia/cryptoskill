@@ -14,17 +14,15 @@ NtSetInformationThread  rdtsc  cpuid  GetTickCount  QueryPerformanceCounter
 
 `triage` 命令（ghidra-core §5）的 `suspicious_imports.anti_debug` 已覆盖 Windows 侧主项。
 
-## 1.5 「疑似反调试」必须先证伪（误判 = 路线自杀）
+## 1.5 区分程序逻辑、检测条件与插桩副作用
 
-看到像陷阱的字面量/分支（`"Don't hook!!!"` 这类字符串、可疑的恒假比较）就宣布
-"anti-tamper 设计"并放弃插桩，等于把唯一能看穿内部的工具亲手扔掉（858e13b3：
-`_p3` 的固定实参与 `_tips` 的初值本来就长那样——是设计常量，不是反调试）。
+可疑字符串、恒定参数或单次崩溃只提供线索。按当前命题选择静态条件追踪、未插桩对照或其他可区分实验；已有明确源码/指令证据时可先保留静态解释，不要求每次重新跑完整基线。
 
-证伪纪律：判某字面量/分支是陷阱之前，必须做**无插桩基线对照**——不挂任何 hook 跑一遍，
-该值/该分支仍在 ⇒ 程序固有逻辑，不是冲你来的。「挂上 hook 后行为变了」不构成陷阱证据
-（hook 本身就改变行为）。基线对照做不了 ⇒ 不许下"有反调试"结论（铁律 10④ 否定性结论门槛）。
+基线中也出现该分支，仅说明它不是此次插桩独有的现象，不能排除其中确有反调试检查。插桩后行为改变可能来自检测、时序、ABI/参数错误、异常或探针副作用，需要比较实际条件。无法运行时标明未动态确认，仍可交付静态证据与未决项。
 
-## 2. Check → Bypass 对照表
+## 2. 检测线索与候选干预
+
+表中偏移和实现仅作特定构建下的线索，需核对当前位宽、版本、参数与输出含义；命中不自动证明可达或可绕过。
 
 | 检测手段 | 识别特征 | 绕过 |
 |---|---|---|
@@ -33,7 +31,7 @@ NtSetInformationThread  rdtsc  cpuid  GetTickCount  QueryPerformanceCounter
 | PEB.BeingDebugged | 偏移 0x2 读取 | ScyllaHide；或 patch 判断跳转 |
 | PEB.NtGlobalFlag | 64 位偏移 0xBC，掩码 0x70 | ScyllaHide |
 | Heap Flags/ForceFlags | 偏移 0x70 应为 0x2；0x74 应为 0 | ScyllaHide |
-| `NtQueryInformationProcess` | class 0x7(DebugPort)/0x1E(DebugObject)/0x1F(DebugFlags)，返回 0 = 被调试 | hook 改返回值 |
+| `NtQueryInformationProcess` | 区分 NTSTATUS 与 class 0x7(DebugPort)/0x1E(DebugObject)/0x1F(DebugFlags) 的输出，各字段的零值语义分别核对 | 结合实际检查字段设计受控干预 |
 | ThreadHideFromDebugger | `NtSetInformationThread` class 0x11 | hook 掉 |
 | `rdtsc` + sub/cmp 时间差 | rdtsc 指令 | bp rdtsc；patch 比较；hook 时间源 |
 | `cpuid` 后 jz/jnz | CPUID 指令 + 条件跳 | 改标志位或 patch（Ghidra 批量标记脚本见 scripting.md §8） |
@@ -41,7 +39,7 @@ NtSetInformationThread  rdtsc  cpuid  GetTickCount  QueryPerformanceCounter
 | TLS 回调 | PE TLS Directory AddressOfCallBacks（先于 main） | TLS 断点或 patch 回调 |
 | VEH + 故意异常 | AddVectoredExceptionHandler + 触发异常 | bp VEH 注册函数；跟 handler |
 | 时间锁 | 与大整数常量比较（2012≈1.35B, 2017≈1.5B） | faketime / patch 比较 |
-| 代码自校验 | CRC32 over .text | 硬件断点；patch 比较点；hook hash 函数；**用 Unicorn/Qiling 仿真天然免疫** |
+| 代码自校验 | CRC32 over .text | 硬件断点；patch 比较点；hook hash 函数；可按条件选择仿真，并核对自校验读取的真实字节、映射和系统语义；不保证免疫 |
 
 ## 3. 反反汇编（Ghidra 侧处理）
 
@@ -55,7 +53,7 @@ NtSetInformationThread  rdtsc  cpuid  GetTickCount  QueryPerformanceCounter
 
 ## 4. OLLVM 反混淆（分层顺序有讲究）
 
-**顺序：先 bcf（虚假控制流/不透明谓词）→ 再 fla（控制流平坦化）→ 最后 sub/MBA（指令替换/混合布尔算术）**。嵌套 fla 需迭代处理。
+可按依赖尝试 bcf（虚假控制流/不透明谓词）、fla（控制流平坦化）与 sub/MBA（指令替换/混合布尔算术）。先处理会妨碍后续分析的层；嵌套结构按实际证据迭代，不规定通用固定顺序。
 
 - 平坦化识别：while+switch 星形 CFG，状态变量驱动 → GDB 脚本断 `je` 记录状态变量序列，重建真实 CFG；Ghidra 侧用 `get_basic_blocks.py` 导出 CFG 后离线分析。
 - MBA 化简表（常见等价式）：
@@ -72,14 +70,13 @@ NtSetInformationThread  rdtsc  cpuid  GetTickCount  QueryPerformanceCounter
 
 ## 5. 动态交接原则（静态被反分析卡死时）
 
-**断点四级火箭（顺序 MUST）**：
-1. TLS 回调断点 → 2. EP 断点 → 3. 敏感 API 断点 → 4. 保底 `ExitProcess` 断点。
+依据初始化时序和待区分问题选择 TLS 回调、入口点、敏感 API 或退出位置；这些是候选观察点，不要求依次打满。
 
-因反调试退出时**不急着重启**——立即 dump memory 写证据。
+目标即将退出且相关状态可能消失时，可在已有授权与可用工具下保存必要内存或日志；不能采集时记录缺口，不强制 dump 全进程。
 
 - 沙箱无行为/秒退 → 查反调试/反 VM；**禁止把"无行为 + 疑似 anti-VM"写成"样本无害"**。
-- 仿真器优先于调试器：Qiling/Unicorn 无调试器痕迹，默认绕过一切反调试；Qiling 还能 `ql.os.set_syscall("ptrace", hook)` 定点骗。
-- API 哈希解析：不浪费时间逆哈希函数本身——`LD_PRELOAD` hook OpenSSL/系统 API 抓解析结果；`bp GetProcAddress` 反查回注。
+- 按问题选择真实进程、调试器或 Qiling/Unicorn。仿真可能改变某些检测条件，也可能因系统调用、时间或环境模型不足产生差异；`ptrace` 等 stub 属于明确干预，不能代表未干预目标行为。
+- API 哈希解析可结合静态算法恢复与动态解析结果；`LD_PRELOAD`、符号断点或 `GetProcAddress` 观察需符合目标加载条件，并核对实际命中与返回地址。
 
 ## 6. 动态/静态不一致时
 
@@ -87,7 +84,7 @@ Ghidra 分析与调试器行为对不上 → 查 PEB anti-debug 是否**改变�
 
 ## 7. 反 VM / 反沙箱（样本"秒退/无行为"时的排查清单）
 
-样本在沙箱里无行为，第一反应是查这些检测点（命中即证实"有条件执行"，不是"无害"）：
+样本静默或提前退出时，可结合启动条件、权限、输入和以下检测线索区分解释；字符串命中不等于检测已执行，未观察到行为也不足以判定无害：
 
 | 检测点 | 具体特征 |
 |---|---|
@@ -98,4 +95,4 @@ Ghidra 分析与调试器行为对不上 → 查 PEB anti-debug 是否**改变�
 | 环境指纹 | 磁盘 < 60GB、CPU ≤ 2 核、RAM < 4GB（WMI/Win32 API 查询） |
 | sleep 膨胀 | `Sleep(600000)` 配合沙箱时间加速检测：`GetTickCount` 差值 ÷ 请求值异常 = 被加速 |
 
-绕过：Qiling/Unicorn 仿真天然无 VM artifact（仿真器优先原则，见 §5）；静态侧定位检测函数后 patch 返回值，或 xor 分支条件。
+仿真、调试和实际设备各有环境指纹与覆盖限制。定位检测条件后可设计范围明确的干预副本，再与原始条件区分；patch 后的行为不替代原件验证。

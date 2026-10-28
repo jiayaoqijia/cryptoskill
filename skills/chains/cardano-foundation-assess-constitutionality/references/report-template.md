@@ -19,7 +19,7 @@ omitted and never abbreviated, because a missing row is indistinguishable from a
 | Action type | <TreasuryWithdrawals / ParameterChange / …> |
 | Stage | Live action / Pre-submission / Draft |
 | Identifier | <gov_action1…, or the transaction ID for a pre-submission transaction, or "not yet submitted"> |
-| Source | <on-chain record; transaction decoded with <tool>; file path; URL as supplied by the user; or "pasted into conversation"> |
+| Source | <provider observation fetched by agent; locally decoded transaction with tool; file path; public URL; or user-pasted data> |
 | Assessed | <date> |
 
 ## Basis
@@ -28,8 +28,11 @@ omitted and never abbreviated, because a missing row is indistinguishable from a
 |---|---|
 | Constitution | enacted epoch 609, anchor hash `b368bd…` |
 | Currency | Confirmed current / Unverified |
-| On-chain record | Supplied and assessed / Decoded from the transaction / Not supplied / Not applicable (draft) |
-| Data read at | <epoch, and date> |
+| On-chain record | Agent-fetched and assessed / User-pasted and assessed / Decoded locally from the transaction / Unavailable / Not applicable (draft) |
+| Network | <mainnet / preview / preprod / other> |
+| Data read at | <UTC time; provider tip epoch, block/hash and slot when available> |
+| Provider | <provider and endpoint; first-hand provider observation, not independent consensus verification> |
+| Anchor retrieval | <original URI; requested/final URL and redirects; status, type, raw byte length and BLAKE2b-256> |
 
 <If currency is unverified, one sentence: the assessment rests on the snapshot above and a
 newer Constitution may have been enacted since.>
@@ -62,6 +65,21 @@ and state what the competing reading would produce.>
 <Satisfied provisions that were straightforward need one line each in the table and no
 subsection. Do not pad.>
 
+## Net Change Limit arithmetic
+
+<Treasury withdrawals only. Identify the approved action and epoch window. Use integer lovelace,
+format ada only as a second representation, list action IDs, prove complete pagination, and do not
+double-count the assessed action. Keep pending exposure outside the constitutional total. If an
+approved competing limit covers the window, show the result under both bases.>
+
+| Component | Lovelace | Ada | Actions / basis |
+|---|---:|---:|---|
+| Approved limit | <integer> | <formatted> | <approved Info action and vote evidence> |
+| Enacted in window | <integer> | <formatted> | <action IDs> |
+| Assessed action, if not already counted | <integer> | <formatted> | <action ID or draft> |
+| Constitutional total | <integer> | <formatted> | <no pending actions> |
+| Other pending exposure | <integer> | <formatted> | <action IDs; context only> |
+
 ## Open questions
 
 <Matters a voter may reasonably weigh that are not constitutional defects: scope, bundling,
@@ -82,7 +100,7 @@ reason.>
 
 ## Verification checklist
 
-<Drafts, and live actions with unsupplied on-chain data. Each item states what must be true
+<Drafts, and live actions with unavailable on-chain data. Each item states what must be true
 and how to establish it. See onchain-verification.md.>
 
 - [ ] Withdrawal destination is a separate account, not delegated to any stake pool, and
@@ -116,4 +134,6 @@ likely to be wrong. Constrain it:
   satisfied". If it is uncertain, it is Not-yet-verifiable and the Basis column says what
   would settle it.
 - The Basis column cites what establishes the state: a quoted term from the proposal, a field
-  from a supplied on-chain record, or the specific absence relied on.
+  from an agent-fetched provider observation, user-pasted data, a locally decoded transaction,
+  or the specific absence relied on. Label the evidence class; do not upgrade a user paste into a
+  provider observation.

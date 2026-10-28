@@ -9,4 +9,5 @@
 | `scripts/apk_triage.py` | apk_triage.py - APK 一条命令分诊（签名 / Manifest / 逐 dex 自有类统计 / 可疑 API / flag 全扫）. |
 | `scripts/axml_decompile.py` | axml_decompile.py - 二进制 AndroidManifest.xml（AXML）→ 文本 XML. |
 | `scripts/dex_disasm.py` | dex_disasm.py - Dalvik 反汇编（包官方 apkanalyzer，内置自检）. |
+| `scripts/dex_index.py` | 被动发现、可重建 DEX 方法/使用点索引、精确分页、显式 JADX 类导出；见 dex-static-index.md。 |
 | `scripts/dex_triage.py` | dex_triage.py - 多 dex 枚举与扫描（类/方法/字符串 + 包前缀过滤 + 关键词扫描）. |

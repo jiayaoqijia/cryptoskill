@@ -21,8 +21,9 @@ Decoding needs a tool. Pick the first option available and tell the user which o
 because it goes in the report's Source row.
 
 **Option A, `cardano-cli` on the user's machine (preferred).** It decodes locally, so nothing
-leaves the machine. Running it needs the agent's shell access, which the user is asked to
-approve. If shell access is unavailable or declined, hand the user the commands instead.
+leaves the machine. Use it under the host's normal permissions when it is already installed. If
+execution is unavailable or denied, preserve the rest of the assessment and give the commands as
+the targeted fallback.
 
 `debug transaction view` reads a text-envelope file, not bare hex. Wrap the CBOR hex first:
 
@@ -42,13 +43,14 @@ a witness set, which is not a transaction; ask for the full transaction CBOR ins
 cardano-client-lib. Use one only if it is already installed; installing packages to decode one
 transaction is not worth it.
 
-**Option C, an online decoder, only with the user's consent.** Cquisitor
+**Option C, an online manual decoder, only with the user's explicit consent.** Cquisitor
 (`https://cardananium.github.io/cquisitor/`) decodes Cardano transactions against the ledger
 CDDL in the browser. Before suggesting it, say plainly that the transaction is then pasted into a
-third-party web page before it is public. For a governance action whose content will be public
-on submission this is usually acceptable, but it is the user's decision. A generic CBOR viewer
-such as cbor.me shows structure without Cardano field names, which makes the fields below easy
-to misread.
+third-party web page before it is public. Never send the bytes there on the user's behalf. Signed
+transaction bytes are especially sensitive because a holder may be able to submit them; unsigned
+bytes can still disclose private intent and transaction structure. Do not send either form to a
+network decoder, evaluator, or submission endpoint. A generic CBOR viewer such as cbor.me shows
+structure without Cardano field names, which makes the fields below easy to misread.
 
 If none of the three is possible, the assessment continues on whatever the user can paste (the
 anchor document, the amounts, the addresses), and the Source row says the transaction itself
@@ -64,7 +66,7 @@ procedure (transaction body key 20). Each entry has:
 | Field | Feeds |
 |---|---|
 | `deposit` | Ledger check `ProposalDepositIncorrect`: must equal the current `govActionDeposit` |
-| `return address` | Ledger check `ProposalReturnAccountDoesNotExist`, and refund-style withdrawals (`onchain-verification.md` section 5) |
+| `return address` | Ledger check `ProposalReturnAccountDoesNotExist`, and refund-style withdrawals (`onchain-verification.md` section 6) |
 | `governance action` | The action type and its contents: withdrawal map, parameter map, previous action ID, guardrails script hash |
 | `anchor` | URL and data hash: Article II.6.1 and II.6.2 |
 
@@ -78,7 +80,106 @@ only route.
 
 ---
 
-## 3. Run the checks
+## 3. Match witness keys locally
+
+When `cbor2` is already available, the following script reads a full transaction CBOR file and a
+saved `script_info` JSON response. It handles the common tagged (`CBORTag(258, ...)`) and untagged
+CBOR-set representations, hashes each 32-byte vkey with BLAKE2b-224, and deduplicates matches.
+Run it as `python3 -I witness-key-match.py tx.cbor script-info.json`. Do not install `cbor2` into
+the user's system or project merely for this check.
+
+```python
+#!/usr/bin/env python3
+import hashlib
+import json
+import re
+import sys
+
+import cbor2
+
+
+def untag(value):
+    while isinstance(value, cbor2.CBORTag):
+        value = value.value
+    return value
+
+
+def key_hash(value):
+    if not isinstance(value, str):
+        return None
+    value = value.removeprefix("0x").lower()
+    return value if re.fullmatch(r"[0-9a-f]{56}", value) else None
+
+
+def script_keys(value, found):
+    value = untag(value)
+    if isinstance(value, dict):
+        for name, child in value.items():
+            normalized = re.sub(r"[^a-z]", "", str(name).lower())
+            if normalized in {"keyhash", "keyhashes"}:
+                candidates = child if isinstance(child, list) else [child]
+                found.update(h for item in candidates if (h := key_hash(item)))
+            script_keys(child, found)
+    elif isinstance(value, (list, tuple)):
+        for child in value:
+            script_keys(child, found)
+
+
+if len(sys.argv) != 3:
+    raise SystemExit("usage: witness-key-match.py TX.cbor SCRIPT_INFO.json")
+
+with open(sys.argv[1], "rb") as source:
+    transaction = untag(cbor2.load(source))
+if not isinstance(transaction, (list, tuple)) or len(transaction) < 2:
+    raise SystemExit("expected full transaction CBOR, not a witness set")
+
+witness_set = untag(transaction[1])
+if not isinstance(witness_set, dict):
+    raise SystemExit("transaction witness set is not a CBOR map")
+vkey_witnesses = untag(witness_set.get(0, []))
+if not isinstance(vkey_witnesses, (list, tuple, set, frozenset)):
+    raise SystemExit("vkey witnesses are not an array or CBOR set")
+
+observed = []
+for index, witness in enumerate(vkey_witnesses):
+    witness = untag(witness)
+    if not isinstance(witness, (list, tuple)) or len(witness) != 2:
+        raise SystemExit(f"vkey witness {index} is not [vkey, signature]")
+    vkey = untag(witness[0])
+    if not isinstance(vkey, bytes) or len(vkey) != 32:
+        raise SystemExit(f"vkey witness {index} does not contain a 32-byte vkey")
+    signature = untag(witness[1])
+    if not isinstance(signature, bytes) or len(signature) != 64:
+        raise SystemExit(f"vkey witness {index} does not contain a 64-byte signature")
+    observed.append(hashlib.blake2b(vkey, digest_size=28).hexdigest())
+
+with open(sys.argv[2], encoding="utf-8") as source:
+    script_info = json.load(source)
+expected = set()
+script_keys(script_info, expected)
+unique_observed = set(observed)
+
+print(json.dumps({
+    "observed_vkey_hashes": sorted(unique_observed),
+    "duplicate_witness_keys": len(observed) - len(unique_observed),
+    "script_key_hashes": sorted(expected),
+    "matching_key_hashes": sorted(unique_observed & expected),
+}, indent=2))
+```
+
+This output establishes only which key hashes were observed. It does **not** validate Ed25519
+signatures, evaluate the native script's threshold/timelocks, or establish a human
+administrator's identity or consent. `duplicate_witness_keys` counts repeated key hashes that
+remain in the decoded witness collection. When `cbor2` materializes a CBOR set, exact duplicate
+witness pairs can already have collapsed, so a zero count cannot certify that the encoded set had
+no duplicates. Report signature validity, threshold/timelocks, identity, and consent as four
+separate questions. Inspect relevant registration and delegation transactions as well as the
+proposal transaction; a key used only in one of those histories can still be evidence of
+existence, while mere appearance in `script_info` is only a public key.
+
+---
+
+## 4. Run the checks
 
 Two groups, reported separately in the report's Pre-submission checks table. Each row is Pass,
 Fail, or Not checked with the reason.
@@ -122,7 +223,7 @@ live action. The mechanical rows add to it; they never replace it.
 
 ---
 
-## 4. Rehearse on a testnet
+## 5. Rehearse on a testnet
 
 If the user is the one who will submit, encourage a rehearsal first: build the same action for
 preview or preprod and submit it there. Test ada comes from the faucet, so a failed rehearsal
@@ -146,7 +247,7 @@ Skip the suggestion when the user is a reviewer, a DRep or anyone other than the
 
 ---
 
-## 5. Close the loop
+## 6. Close the loop
 
 A pre-submission report ends with a readiness line above the disposition:
 
@@ -157,4 +258,4 @@ A pre-submission report ends with a readiness line above the disposition:
 - **Not checked**: name the rows that could not be run and what would run them.
 
 When the user is the submitter and has not rehearsed yet, end with the testnet suggestion from
-section 4.
+section 5.

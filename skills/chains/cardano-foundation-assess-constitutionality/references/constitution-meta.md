@@ -27,24 +27,31 @@ automatically.
 
 The Constitution is amendable through `NewConstitution` governance actions. If one has been
 enacted since the version above, that text is superseded and any finding derived from it may
-be wrong. This skill cannot check that itself, so it never claims the version is current. It
-states the version and hands the reader the check.
+be wrong. Currency is therefore the one mandatory fetch-first gate: retrieve the public chain
+record under the host's normal permissions before issuing findings. Network availability is not
+assumed; a denied or failed targeted fetch produces `Currency: unverified`, while a confirmed
+newer enactment stops the assessment.
 
 ## Verifying currency
 
-This skill does not make network calls. Ask the user to run the check and paste the result
-back, or point them at it so they can confirm independently:
+Use the `proposal_list` endpoint and provenance rules in `onchain-verification.md`. The request is
+bounded to public `NewConstitution` records and must be paginated to completion if the provider
+does not return the full set in one response:
 
 ```sh
-curl -s "https://api.koios.rest/api/v1/proposal_list?proposal_type=eq.NewConstitution&select=proposal_id,ratified_epoch,enacted_epoch,expiration,proposal_description" \
+curl --fail-with-body --connect-timeout 10 --max-time 30 \
+  "https://api.koios.rest/api/v1/proposal_list?proposal_type=eq.NewConstitution&select=proposal_id,ratified_epoch,enacted_epoch,expiration,proposal_description&order=enacted_epoch.desc&limit=1000&offset=0" \
   | jq '[.[] | {proposal_id, ratified_epoch, enacted_epoch, expiration,
                hash: .proposal_description.contents[1].anchor.dataHash}]
         | sort_by(.enacted_epoch // 0) | reverse'
 ```
 
-Compare the anchor hash of the latest enacted entry with the table above; a matching hash is
-stronger than a matching epoch. Also look for an entry with a `ratified_epoch` but no
-`enacted_epoch` yet: a ratified Constitution is enacted at the next epoch boundary.
+Record the network, UTC read time, provider `/tip`, request, response shape and matching action
+identifiers. A provider response fetched by the agent is a first-hand provider observation, not
+independent consensus verification. Compare the anchor hash of the latest enacted entry with the
+table above; a matching hash is stronger than a matching epoch. Also look for an entry with a
+`ratified_epoch` but no `enacted_epoch` yet: a ratified Constitution is enacted at the next epoch
+boundary.
 
 Interpreting the result:
 
@@ -53,9 +60,10 @@ Interpreting the result:
   stale. Say so plainly, stop, and do not issue findings from superseded text. Check whether
   `../../docs/sources/cardano-constitution/` already holds a newer version directory; retargeting
   this skill at it is a repo maintenance task, not something to work around mid-assessment.
-- **Check not run, or the command failed** — proceed, but stamp the report
-  `Constitution currency: unverified` alongside the version table. Never silently assume
-  currency.
+- **The targeted fetch is denied, unavailable, incomplete, or fails validation** — diagnose the
+  transport/schema issue, proceed, and stamp the report `Constitution currency: unverified`
+  alongside the version table. Give the user the command above as the fallback for this item
+  only. Never silently assume currency.
 
 An `enacted_epoch` below 609 should not occur; if it does, treat the discrepancy itself as
 the finding and stop.

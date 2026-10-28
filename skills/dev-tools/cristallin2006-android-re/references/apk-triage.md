@@ -61,7 +61,7 @@ CTF 题多为第一种；判定记录进 ledger（`observe`，key 用 apk 文件
 
 ## 4. 多 dex 自有类统计法
 
-**启发式**：dexJEA/multidex 分包时，体积最大的 dex 几乎总是 androidx/material/kotlin 库代码，应用自有逻辑常集中在一个**极小 dex**。实测基准：`classes.dex` 5.1MB / 3346 类 / 自有类 0；全部逻辑在 `classes3.dex` 3172 字节 / 3 类 / 23 方法。
+**启发式**：dexJEA/multidex 分包时，体积与包前缀仅是导航线索，不证明代码归属或价值；不要固定优先最大或最小 DEX。某历史样本观察：`classes.dex` 5.1MB / 3346 类 / 自有类 0；全部逻辑在 `classes3.dex` 3172 字节 / 3 类 / 23 方法。
 
 一条命令出逐 dex 统计（androguard 4.1.4，API 已验证）：
 

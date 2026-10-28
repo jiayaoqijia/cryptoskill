@@ -2,7 +2,7 @@
 """dex_triage.py - 多 dex 枚举与扫描（类/方法/字符串 + 包前缀过滤 + 关键词扫描）.
 
 包 androguard（androguard.core.dex）或 apkanalyzer（dex packages），不手写 DEX 解析。
-配合 apk_triage.py 的多 dex 启发式：自有类 <20 的 dex 优先人肉通读。
+包前缀/大小仅用于导航；精确方法与使用点索引见 dex_index.py。
 
 Usage:
   python dex_triage.py app.apk                          # 全 dex 概览
@@ -140,7 +140,7 @@ def main() -> int:
     ap.add_argument("--pkg", metavar="PREFIX", help="包名前缀过滤（点分或 L 形态均可，如 com.reverse）")
     ap.add_argument("--scan", metavar="KEYWORD", help="关键词扫描（字符串表 + 类/方法名，不区分大小写）")
     ap.add_argument("--list-methods", action="store_true", help="连同方法一起列出（默认只列类）")
-    ap.add_argument("--own-only", action="store_true", help="只显示自有类（排除 androidx/kotlin/com.google 等库包）")
+    ap.add_argument("--own-only", action="store_true", help="按包前缀启发式过滤常见库名，不证明代码归属")
     ap.add_argument("--json", metavar="OUT", help="结论写 JSON 文件")
     args = ap.parse_args()
 

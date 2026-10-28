@@ -15,6 +15,10 @@ description: 分析 APK/DEX、Manifest、Java/smali、Android 加载环境和运
 
 原生 .so 按设备 ABI、JNI_OnLoad/RegisterNatives 与加载条件交 static/dynamic，Android 侧不退出整个任务。改写/重签输出副本，记录签名与原包差异，不用修改后的接受证明原包行为。设备/图形工具不足时可以交付静态部分。
 
+需要关联运行时方法时，区分 ClassLoader、DEX 身份、方法签名、进程和加载实例；同名方法不自动属于同一实现。离线发现、保存证据与宿主协议检查按需转 `re-dynamic/references/re-workbench.md`；它们不证明 Android attach/Java 观察已可用。
+
+需要完整签名、方法体、字段/字符串使用点、多 DEX 引用与精确分页时，按需读 [DEX 静态索引](references/dex-static-index.md)。运行观察与 Ghidra 的只读关联见 `re-dynamic/references/static-correlation.md`。不要求普通查询先建索引或启动后台实验。
+
 ## 会话与交接
 
 按当前问题选方法，可静态先行、动态先行或直接建模。连续实验没有新增证据时盘点前提和可区分解释的实验；时间盒用于复查，可说明价值后继续原路线。
