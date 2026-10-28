@@ -51,7 +51,7 @@ else
 fi
 
 # 3. Venue connectivity: perp health (healthy = every OFFICIAL-API venue is up;
-#    allHealthy also counts unofficial APIs such as TxFlow)
+#    allHealthy also counts unofficial APIs, none at present)
 HEALTH_OUT=$(pj --json health)
 if ! isok "$HEALTH_OUT"; then
   add_check "connectivity" "fail" "perp health failed ($(jq -r '.error.code' <<<"$HEALTH_OUT"))"
