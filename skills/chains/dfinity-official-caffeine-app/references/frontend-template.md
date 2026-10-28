@@ -521,11 +521,11 @@ export function createActor(
 the result). Backend — write it with the **`writing-motoko` skill**:
 
 ```motoko
-import MixinViews "mo:caffeineai-data-viewer/MixinViews";
+import Expose "mo:caffeineai-oql/Expose";
 import Time "mo:core/Time";
 
 actor {
-  include MixinViews();
+  include Expose({ entities = [] });
 
   public query func getCurrentTime() : async Int {
     Time.now();

@@ -76,6 +76,8 @@ exact tree (file contents below):
 
 ```text
 my-app/
+├── .old/src/backend/dist/
+│   └── backend.most           # stable-signature baseline — seed with an empty actor (see below)
 ├── caffeine.toml              # root workspace manifest — MUST contain [workspace]
 ├── mops.toml                  # Motoko build config — ONE per project, at the root
 ├── package.json               # pnpm workspace root + the `bindgen` script
@@ -85,8 +87,8 @@ my-app/
     ├── backend/                # the single Motoko canister, named "backend"
     │   ├── caffeine.toml        #   canister manifest: type = "motoko"
     │   ├── main.mo              #   actor entry point (write with the `writing-motoko` skill)
-    │   └── system-idl/          #   Candid for IC system canisters (see note below)
-    │       └── aaaaa-aa.did     #   IC management canister interface
+    │   └── migrations/          #   enhanced-migration chain (see the `mops.toml` notes)
+    │       └── 00000000.mo      #   the no-op first migration
     └── frontend/               # the assets canister (React + Vite)
         ├── caffeine.toml        #   canister manifest: type = "assets"
         ├── package.json         #   frontend deps + scripts (see references/frontend-template.md)
@@ -187,12 +189,13 @@ commands = ["pnpm typecheck", "pnpm fix"]
 
 ### `mops.toml` — the Motoko build (one per project, at the root)
 
-There is exactly **one** `[canisters.backend]`. The structural pieces are invariant —
-the single `[canisters.backend]`, `[canisters.backend.check-stable]`, and the `[moc]`
-flags `--default-persistent-actors`, `--actor-idl=src/backend/system-idl`, and
-`--implicit-package=core`. The **toolchain versions, the `-E`/`-W`/`-A` diagnostic codes,
-and the dependency list are a current snapshot** that the Caffeine template bumps over
-time — see "Versions and dependencies drift" below.
+There is exactly **one** `[canisters.backend]`. `caffeine preview` checks only the
+structural pieces, which are invariant: the single `[canisters.backend]`,
+`[canisters.backend.check-stable]` with the path shown and no `skipIfMissing`, and
+`[build] outputDir = "src/backend/dist"`. Everything else — the **toolchain versions, the
+`[moc]` flags and `-E`/`-W`/`-A` diagnostic codes, and the dependency list — is a current
+snapshot** that the Caffeine template bumps over time; see "Versions and dependencies
+drift" below.
 
 ```toml
 [package]
@@ -202,63 +205,94 @@ version = "0.1.0"
 [build]
 outputDir = "src/backend/dist"
 args = ["--release"]
+check-wasm = true
 
 [canisters.backend]
 main = "src/backend/main.mo"
 
 [canisters.backend.check-stable]
 path = ".old/src/backend/dist/backend.most"
-skipIfMissing = true
 
 [toolchain]
-moc = "1.8.1"
-lintoko = "0.10.0"
+moc = "2.0.0"
+lintoko = "0.12.0"
 
 [lint]
 extends = true
 
 [moc]
 args = [
-  "--default-persistent-actors",
-  "--actor-idl=src/backend/system-idl",
   "--implicit-package=core",
   "-no-check-ir",
-  "-E=M0236,M0223,M0237,M0254",
-  "-W=M0235",
-  "-A=M0241",
-  "--generate-view-queries",
+  "-E=M0254",
+  "-W=M0235,M0223,M0236,M0237",
+  "-A=M0241"
 ]
 
 [dependencies]
-core = "2.5.0"
-caffeineai-data-viewer = "0.1.0"
+core = "2.6.1"
+ic = "4.2.0"
+caffeineai-lints = "0.1.0"
+caffeineai-oql = "0.8.0"
+
+[canisters.backend.migrations]
+chain = "src/backend/migrations"
+check-limit = 1
 ```
 
 Notes:
 
-- **`check-stable`** points at `.old/src/backend/dist/backend.most`. The CLI saves the
-  previous build's `.most` (stable-signature snapshot) under `.old/` so the next build
-  can verify your stable state did not change incompatibly. Do not delete `.old/` between
-  builds; do not commit it as source — it is build state. **`skipIfMissing = true` is
-  required for a from-scratch project:** on the first run that snapshot does not exist
-  yet, and without it `caffeine check` fails with
-  `Deployed file not found: .old/src/backend/dist/backend.most`.
-- **`--actor-idl=src/backend/system-idl`** tells `moc` where to find the Candid interfaces
-  of IC system canisters. `src/backend/system-idl/` must exist; the canonical template
-  ships `aaaaa-aa.did` (the IC management-canister interface). A minimal backend needs only
-  the directory.
-- **`core = "2.5.0"`** is the `mo:core` standard library. Use `mo:core`, never the
-  deprecated `mo:base` — see the `writing-motoko` skill. **`caffeineai-data-viewer`** backs the
-  built-in data-viewer mixin used by the default `main.mo` (below) and pairs with the
-  `--generate-view-queries` flag.
+- **New projects use moc 2.** Under moc 2 a bare `actor` is persistent, and the
+  `persistent` keyword only triggers warning M0217. Older guides add
+  `--default-persistent-actors` or `--generate-view-queries` to `[moc] args`: those are
+  moc 1.x flags that moc 2.0 removed, and passing them fails every compile with
+  `unknown option`. Projects cloned from before the switch may still pin moc 1.x and keep
+  `--default-persistent-actors`; leave such a project on its pinned version.
+- **`check-stable`** points at `.old/src/backend/dist/backend.most`, the stable-signature
+  snapshot of the last deployed backend. `caffeine check` compares your stable state
+  against it, and `caffeine projects clone` restores it from the cloud. Do not delete
+  `.old/`. **A from-scratch project must seed it** with an empty actor, as the Caffeine
+  template does, or `caffeine check` fails with
+  `Deployed file not found: .old/src/backend/dist/backend.most`:
+
+  ```motoko
+  // Version: 1.0.0
+  actor {};
+  ```
+
+  Do not set `skipIfMissing = true` instead: mops deprecated it, and `caffeine preview`
+  rejects it because a skipped check only fails later, at deploy.
+- **`[canisters.backend.migrations]`** turns on enhanced migration: every `.mo` file in
+  `src/backend/migrations/`, in name order, is one step that maps the previous stable
+  state to the next. A new project starts with the no-op `00000000.mo`, which sorts before
+  the `YYYYMMDD_HHMMSS.mo` files the `writing-motoko` skill writes:
+
+  ```motoko
+  module {
+    public type OldActor = {};
+    public type NewActor = {};
+
+    public func migration(_ : OldActor) : NewActor {
+      {};
+    };
+  };
+  ```
+
+  Never edit or delete a migration after it is deployed.
+- **`core`** is the `mo:core` standard library. Use `mo:core`, never the deprecated
+  `mo:base` — see the `writing-motoko` skill. **`caffeineai-oql`** provides the `Expose` mixin the
+  starting `main.mo` includes (below).
+- **`ic`** provides the IC management canister's types and calls (`mo:ic/Types`,
+  `mo:ic/Call`). Use it instead of `import ... "ic:aaaaa-aa"`, which only resolves with an
+  `--actor-idl` directory of `.did` files that Caffeine projects no longer have.
 
 > **Versions and dependencies drift.** The `[toolchain]` versions, the `[moc]`
 > `-E`/`-W`/`-A` codes, and the frontend dependency set are template-managed and change
 > over time (e.g. the `@dfinity/*` → `@icp-sdk/*` migration, moc/core bumps). Treat the
 > exact values here as a snapshot — for current ones, `caffeine projects clone` a recent
 > project and copy its `mops.toml` + `src/frontend/package.json`. Stable across versions:
-> the file layout, the single `backend` canister, the structural `[moc]` flags,
-> `check-stable` with `skipIfMissing`, `mo:core`, and `useActor(createActor)`.
+> the file layout, the single `backend` canister, `check-stable` with the seeded
+> baseline, `[build] outputDir`, `mo:core`, and `useActor(createActor)`.
 
 ### `package.json` (root) — pnpm workspace + the `bindgen` script
 
@@ -314,22 +348,20 @@ onlyBuiltDependencies:
 
 ### `src/backend/main.mo` — the starting backend
 
-The canonical template's starting `main.mo` includes the built-in **data-viewer mixin**
-(`include MixinViews()`), which pairs with the `caffeineai-data-viewer` dependency and the
-`--generate-view-queries` flag in `mops.toml`. With `--default-persistent-actors` the
-actor is already persistent. Add your own functions inside the actor, following the
-**`writing-motoko` skill**.
+The canonical template's starting `main.mo` includes the **`Expose` mixin** from
+`caffeineai-oql`, which publishes the backend's query interface. The actor has no stable
+state yet, which is why the first migration maps `{}` to `{}`. Add your own functions
+inside the actor, following the **`writing-motoko` skill**.
 
 ```motoko
-import MixinViews "mo:caffeineai-data-viewer/MixinViews";
+import Expose "mo:caffeineai-oql/Expose";
 
 actor {
-  include MixinViews();
+  include Expose({ entities = [] });
 };
 ```
 
-(A bare `actor {}` also compiles if you drop the `caffeineai-data-viewer` dependency and
-the `--generate-view-queries` flag.) Do not write more Motoko than this without loading
+Do not write more Motoko than this without loading
 the `writing-motoko` skill — it covers persistent actors, stable types, `mo:core`, and the
 compiler-error pitfalls that an agent will otherwise hallucinate.
 
@@ -387,6 +419,10 @@ caffeine projects create                 # reports a new project id
 caffeine preview --build --project-id <id>
 ```
 
+Set `CAFFEINE_VERBOSE=1` to stream complete subprocess output from `caffeine install`,
+`caffeine build`, and `caffeine check`. This is equivalent to passing `--verbose` to
+each command. `--json` continues to suppress streamed output.
+
 **Generation ordering.** `src/frontend/src/backend.ts` does not exist until a build runs
 `pnpm bindgen`. So if your frontend imports from `./backend`, you must run `caffeine build`
 at least once before `caffeine check` can typecheck the frontend. A brand-new app whose
@@ -395,7 +431,7 @@ at least once before `caffeine check` can typecheck the frontend. A brand-new ap
 **Going live.** `caffeine preview --build` (with a `project.id`) produces a *draft* and
 returns its URL. Promote a draft to a live URL in the caffeine.ai web app (open it with
 `caffeine chat open` or visit caffeine.ai). There is no CLI deploy command. Use
-`caffeine projects show <id>` to see draft and live URLs.
+`caffeine projects show <id>` to see draft and live URLs, including a ready custom domain when one is assigned.
 
 ### Alternative: let Caffeine's own AI build it
 
@@ -424,8 +460,8 @@ having no deploy command. This skill is for the **local, hand-authored** path.
    the `caffeine` CLI and go live via the web app. There is no `dfx` in the workflow and
    no CLI deploy/publish command.
 6. **Dropping required `mops.toml` settings.** Keep the single `[canisters.backend]`,
-   the `[toolchain]` pins, `[canisters.backend.check-stable]`, and the `[moc] args`
-   (especially `--default-persistent-actors` and `--actor-idl=src/backend/system-idl`).
+   `[canisters.backend.check-stable]`, `[build] outputDir`, and a `[toolchain] moc` pin
+   (mops cannot compile without one).
 7. **Deleting `.old/` or `env.json`, or skipping `copy:env`.** `.old/` holds the
    stable-signature snapshot `check-stable` compares against; `env.json` must be copied
    into `dist/` so the served frontend can read its runtime config.
@@ -440,9 +476,9 @@ having no deploy command. This skill is for the **local, hand-authored** path.
     brand-new project does not have. Run `pnpm install` once first to generate the
     lockfile, then the loop works. (An interactive terminal creates it for you.)
 11. **First `caffeine check` fails with `Deployed file not found: …/backend.most`.** The
-    stable-signature check needs a previous build's snapshot, which a never-built project
-    lacks. Set `skipIfMissing = true` under `[canisters.backend.check-stable]` (shown in
-    the `mops.toml` above), or run `caffeine build` first so a baseline exists.
+    stable-signature check needs the last deployed snapshot, which a never-deployed project
+    lacks. Seed `.old/src/backend/dist/backend.most` with an empty actor (shown under the
+    `mops.toml` above). `caffeine build` does not create it.
 12. **`caffeine preview --build` fails with `No project.id in caffeine.toml`.** Uploading
     a draft needs a cloud project. Run `caffeine projects create` to get an id, set it in
     `[project] id` (or pass `--project-id <id>`), then preview. `caffeine build` alone

@@ -21,7 +21,8 @@
       "App wrapped in DAppKitProvider with dAppKit instance",
       "ConnectButton imported from @mysten/dapp-kit-react/ui",
       "WalletStatus uses useCurrentAccount hook to show address"
-    ]
+    ],
+    "language": "tsx"
   },
   {
     "id": "dapp-send-transaction",
@@ -43,6 +44,7 @@
       "Builds Transaction with coinWithBalance and transferObjects",
       "Checks result.$kind === 'FailedTransaction' for error handling",
       "Displays transaction digest on success"
-    ]
+    ],
+    "language": "tsx"
   }
 ]

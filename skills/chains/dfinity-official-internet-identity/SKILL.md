@@ -1,6 +1,6 @@
 ---
 name: internet-identity
-description: "Integrate Internet Identity authentication. Covers passkey, OpenID (Google, Apple, Microsoft), and organization SSO sign-in with @icp-sdk/auth, the SSO domain check (getSsoStatus), identity attributes (verified email, name) and their backend verification, sessions shared across subdomains, alternative origins, and the /.well-known/ii-app-metadata document. Use when adding sign-in, login, auth, passkeys, SSO, or Internet Identity to a frontend or canister. Do NOT use for wallet integration or ICRC signer flows (use wallet-integration) or for an agent or CLI signing in as a user (use agent-web-identity)."
+description: "Integrate Internet Identity authentication. Covers passkey, OpenID (Google, Apple, Microsoft), and organization SSO sign-in with @icp-sdk/auth, the SSO domain check (getSsoStatus), identity attributes (verified email, name) and their backend verification, sessions shared across subdomains, alternative origins, the /.well-known/ii-app-metadata document, and web push notifications (consent, the sender list, and sending from a Motoko or Rust canister). Use when adding sign-in, login, auth, passkeys, SSO, notifications, web push, or Internet Identity to a frontend or canister. Do NOT use for wallet integration or ICRC signer flows (use wallet-integration) or for an agent or CLI signing in as a user (use agent-web-identity)."
 license: Apache-2.0
 compatibility: "icp-cli >= 0.2.4, Node.js >= 22, moc >= 1.6.0"
 metadata:
@@ -20,6 +20,7 @@ Reference material for this skill lives in `references/`:
 - `references/app-metadata.md`: every validation rule for `/.well-known/ii-app-metadata`.
 - `references/enterprise-sso.md`: the organization's side of SSO (OIDC client, discovery file, limits, caching).
 - `references/rust-identity-attributes.md`: the Rust backend for identity attributes, with the `identity-attributes` crate.
+- `references/notifications.md`: notifying a signed-in user, end to end: consent, the sender list, sending, and delivery semantics.
 - `references/older-api.md`: how `@icp-sdk/auth` 10.x and older differ.
 
 ## Prerequisites
@@ -395,6 +396,28 @@ Sharing one sign-in across sibling subdomains builds on this: `references/shared
 ## App metadata on the sign-in screen
 
 Serve `/.well-known/ii-app-metadata` (`{ "name", "description", "logo" }`, all optional) on the derivation origin, with CORS on the document and the logo, and II shows your app's name, tagline, and logo next to the origin. `name` at most 40 and `description` at most 120 code points; `logo` a relative URL to a same-origin raster image (no SVG). One invalid field invalidates the whole document. Full rules: `references/app-metadata.md`.
+
+## Notifications
+
+Your canister can notify a signed-in user while the app is closed. II owns the push subscriptions, so there is no push service, no VAPID keys, and no device tokens in the app. Three pieces, all required; leaving one out produces silence rather than an error.
+
+**Consent**, in the frontend. Needs `@icp-sdk/auth` 11.1.0 or later:
+
+```javascript
+const { granted } = await authClient.requestNotificationConsent();   // opens II; signs in if needed
+const { granted } = await authClient.getNotificationConsentStatus(); // query, no screen
+await authClient.revokeNotificationConsent();
+```
+
+All three answer a **record**, not a bare boolean. `granted: false` is the user's refusal, not a failure. Ask from a click: the ceremony renders, so it cannot run under `prompt: 'none'`.
+
+**The sender list.** Serve `/.well-known/ii-notification-senders` on the derivation origin, naming the canisters allowed to notify for it: `{ "senders": ["ryjl3-tyaaa-aaaaa-aaaba-cai"] }`. At most 10, and cached, so a change is not instant. Without it every send is refused, silently.
+
+**Sending**, with the `identity-notifications` library (crates.io for Rust, Mops for Motoko, which needs moc 2.0.0 or later), then `send(recipient, { title, body, url, key, ... })`. Rust wires `endpoints!()` and three `MemoryId`s into `init`, and calls `init` again from `post_upgrade`; Motoko's mixin needs neither and nothing on upgrade. Configuration is environment variables (`notification_sender`, `notification_origin`), not init arguments.
+
+`key` is what a notification is *about*: sending again under the same key updates it rather than adding another, and it is what `dismiss` names, so derive it from something the caller cannot choose. `urgency` schedules against the origin's other traffic and is not a rendering hint.
+
+The app addresses a user and nothing finer: where a notification reaches them is II's and the user's to manage. II composes what is shown, so publishing `/.well-known/ii-app-metadata` (see above) is what names the app on its notifications too. `send` neither traps nor awaits, so nothing comes back to branch on; `metrics()` is where a notification's fate shows up. Full rules: `references/notifications.md`.
 
 ## Backend: Access Control
 

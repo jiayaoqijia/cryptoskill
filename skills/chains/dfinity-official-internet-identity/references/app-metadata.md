@@ -1,4 +1,6 @@
-# App metadata: showing your app's name, description, and logo
+# App metadata
+
+Also names the app on the notifications it sends, not only on the sign-in screen. See `references/notifications.md`.: showing your app's name, description, and logo
 
 By default the Internet Identity sign-in screens identify an app by its **origin** alone. To also show a name, a short tagline, and a logo, serve a JSON document at `/.well-known/ii-app-metadata`. Publishing it is permissionless: there is no list to join and no approval step. A valid document replaces the curated entry II still ships for a small set of known apps.
 

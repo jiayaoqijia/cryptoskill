@@ -19,7 +19,8 @@
       "First moveCall result is captured and passed to second moveCall",
       "Final result transferred to recipient with transferObjects",
       "All operations composed in a single Transaction"
-    ]
+    ],
+    "language": "typescript"
   },
   {
     "id": "kiosk-list-via-ptb",
@@ -41,6 +42,7 @@
       "Creates Kiosk via moveCall to 0x2::kiosk::new or 0x2::kiosk::default",
       "Places item via moveCall to 0x2::kiosk::place",
       "Lists item via moveCall to 0x2::kiosk::list with price"
-    ]
+    ],
+    "language": "typescript"
   }
 ]

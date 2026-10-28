@@ -20,7 +20,8 @@
       "Uses Transaction and coinWithBalance from @mysten/sui/transactions",
       "Checks result.$kind === 'FailedTransaction' for error handling",
       "Prints transaction digest on success"
-    ]
+    ],
+    "language": "typescript"
   },
   {
     "id": "gasless-usdc-transfer",
@@ -42,7 +43,8 @@
       "Specifies USDC type as typeArguments",
       "Uses tx.balance() for the amount input",
       "Transaction is gasless (zero gas cost for allowlisted stablecoins)"
-    ]
+    ],
+    "language": "typescript"
   },
   {
     "id": "address-balance-send-receive",
@@ -64,6 +66,7 @@
       "Withdraws using coin::redeem_funds with tx.withdrawal()",
       "Uses SuiGrpcClient from @mysten/sui/grpc",
       "Demonstrates both send-to-balance and withdraw-from-balance patterns"
-    ]
+    ],
+    "language": "typescript"
   }
 ]

@@ -4,7 +4,9 @@ SKILL.md targets `@icp-sdk/auth` 11.x. On an older major the same flow differs a
 
 ## 10.x
 
-The same API, except the SSO domain check:
+No notification consent: `requestNotificationConsent`, `getNotificationConsentStatus` and `revokeNotificationConsent` arrive in 11.1.0. Earlier 11.x majors do not have them either.
+
+Otherwise the same API, except the SSO domain check:
 
 - `isValidSsoDomain(domain, signal)` fetched `/.well-known/ii-openid-configuration` from the browser and returned a boolean; the organization had to serve it with `Access-Control-Allow-Origin: *`. 11.x removes it: a client built with `ssoDomain` checks the domain through Internet Identity and reports `getSsoStatus()`.
 - `new AuthClient({ ssoDomain })` threw on a malformed domain; 11.x reports `{ state: 'invalid', reason }` from `getSsoStatus()` instead and never throws for the domain. 11.x also reports `invalid` for a port on any host other than a loopback host (`localhost`, `127.0.0.1`, `*.localhost`), and for a malformed name such as `foo..com` or `ab--cd.com`.
