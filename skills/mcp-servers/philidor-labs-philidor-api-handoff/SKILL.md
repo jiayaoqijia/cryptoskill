@@ -13,6 +13,12 @@ The Cursor plugin talks to `https://mcp.philidor.io/api/mcp` with no API key. Th
 
 If the question is answered by one of those, stay on MCP. Do not browse `api.philidor.io` to fill a number a tool should have returned, and do not fabricate the missing figure.
 
+## Key material
+
+**Philidor never accepts keys.** Never send private keys, session keys, seeds, or mnemonics to any Philidor API or MCP input. Inputs carrying key material receive a structured refusal before tool, prompt, or resource handlers run. The API and MCP return data only; they do not build, sign, or broadcast transactions. Keys and execution stay in the client-side SDK.
+
+A 32-byte pool identifier and a private key can have the same shape. Documented identifier fields still accept exact identifiers; never paste a key into them.
+
 ## Stay on MCP
 
 - Vault search, one vault, vector breakdown, compare, safest-vault screen, curator, protocol, platform overview.

@@ -21,6 +21,8 @@ The hosted server is `https://mcp.philidor.io/api/mcp`.
 5. Check events on `get_vault`. `list_vaults_with_incidents` is a separate global list of critical incidents in the last 365 days. Absence from that list is not proof of a clean history. Say which call you made.
 6. `find_safest_vaults` returns at most 10 audited vaults sorted by score (higher means lower assessed risk). It is a screen, not the full market, and not a safety guarantee.
 
+7. Ask the user to supply the positions, exposure limits and constraints they want evaluated. Do not invent a policy or preselect a Philidor preset. For graph-covered EVM positions, call `check_policy` with those inputs and `issue: true` as the final attestation step. Use only `compliance`, `violations`, `policy_hash`, `snapshotId`, `attestation_id`, `signerAddress` and `verification_url` returned by the tool. A plan refusal, missing field, stale/unavailable data, or missing attestation is not proof of conformity. Do not use the deprecated verdict as advice. Non-EVM positions are not covered by this graph tool. Philidor does not prepare transactions.
+
 Report the vault id, network, address, score, tier, TVL, APR labels, and deposit status from those results. Stop if the user asked you to send a transaction.
 
 ## Loop (collateral posted, debt borrowed)

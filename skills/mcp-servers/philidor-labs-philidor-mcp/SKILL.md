@@ -14,6 +14,12 @@ An MCP server that gives AI agents access to institutional-grade DeFi vault risk
 
 No API key required. No installation needed. Read-only: Philidor does not compute health factor and does not prepare transactions.
 
+## Key material
+
+**Philidor never accepts keys.** Never send private keys, session keys, seeds, or mnemonics to any Philidor API or MCP input. Inputs carrying key material receive a structured refusal before tool, prompt, or resource handlers run. The API and MCP return data only; they do not build, sign, or broadcast transactions. Keys and execution stay in the client-side SDK.
+
+A 32-byte pool identifier and a private key can have the same shape. Documented identifier fields still accept exact identifiers; never paste a key into them.
+
 ## When to Use This Skill
 
 - User wants to set up the Philidor MCP server in Claude Desktop, Claude Code, Cursor, or Windsurf

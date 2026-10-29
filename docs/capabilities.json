@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T06:42:16.481618+00:00",
+  "generated_at": "2026-10-29T12:39:40.845985+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -117448,7 +117448,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -117510,7 +117510,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -222262,7 +222262,7 @@
       "can_browse_web": 250,
       "can_spawn_subagents": 264,
       "can_move_funds": 301,
-      "requires_private_key": 496,
+      "requires_private_key": 498,
       "requires_hosted_operator": 342,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 555
