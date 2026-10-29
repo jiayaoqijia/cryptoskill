@@ -258,6 +258,8 @@ export interface V3ScanGauge extends V3GaugeYield {
   weight: number;
   /** Fees per day over the last 24 h only, to show whether a pool is cooling or rising against the window. */
   fees24hUsdPerDay: number;
+  /** Fees per day over the last 48 h: the window Aero's own APR uses, so the page can show the radar on Aero's terms. */
+  fees48hUsdPerDay: number;
   symbol0?: string;
   symbol1?: string;
   kind?: string;
@@ -320,6 +322,7 @@ export async function scanV3(
   const blockTime = opts.blockTimeSec ?? BASE_BLOCK_TIME_SEC;
   const span = BigInt(Math.ceil(windowSec / blockTime));
   const dayBlocks = BigInt(Math.ceil(86_400 / blockTime));
+  const twoDayBlocks = 2n * dayBlocks;
   const fees: Awaited<ReturnType<typeof readFeesCollected>> = [];
   if (windowSec > 0) {
     const rewards = gauges.map((g) => g.rewards);
@@ -347,6 +350,7 @@ export async function scanV3(
   const priceOf = await opts.priceOf(tokens);
 
   const dayStart = latest > dayBlocks ? latest - dayBlocks : 0n;
+  const twoDayStart = latest > twoDayBlocks ? latest - twoDayBlocks : 0n;
   const out: V3ScanGauge[] = rows.map(({ g, point, programs, meta }) => {
     const weight = gaugeWeightAt(point, nowSec);
     const mine = fees.filter((f) => f.gauge.toLowerCase() === g.gauge.toLowerCase());
@@ -364,7 +368,17 @@ export async function scanV3(
       weight,
       priceOf,
     });
-    return { chain: opts.chain, gauge: g.gauge, pool: g.pool, weight: Number(weight / 10n ** 12n) / 1e6, ...y, fees24hUsdPerDay: day.feesUsdPerDay, ...meta };
+    const twoDays = v3GaugeYield({
+      feesCollected: mine.filter((f) => f.block === undefined || f.block >= twoDayStart),
+      windowHours: Math.min(48, windowSec / 3600),
+      incentiveRates: new Map(),
+      weight,
+      priceOf,
+    });
+    return {
+      chain: opts.chain, gauge: g.gauge, pool: g.pool, weight: Number(weight / 10n ** 12n) / 1e6, ...y,
+      fees24hUsdPerDay: day.feesUsdPerDay, fees48hUsdPerDay: twoDays.feesUsdPerDay, ...meta,
+    };
   });
   out.sort((a, b) => (b.usdPerDayPer10k ?? -1) - (a.usdPerDayPer10k ?? -1));
   return { ...base, status: "live", leafVoter, windowHours: windowSec / 3600, gauges: out };

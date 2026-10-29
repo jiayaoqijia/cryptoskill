@@ -93,7 +93,7 @@ Use a fallback ladder rather than writing N/A, and state which step was used: (1
 ## Source-use rules
 
 1. Primary filings/chain state > issuer documents > independent research > media > social. A source that copies another is not independent.
-2. Treat DeSearch and social output as discovery or sentiment unless the underlying claim is independently verified. Social following is not proof of quality.
+2. Treat social search and social output as discovery or sentiment unless the underlying claim is independently verified. Social following is not proof of quality.
 3. Cite factual claims close to the claim; record publication/effective date, retrieval date, definition, unit and period.
 4. Two dashboards sharing one upstream dataset count as one source.
 5. If sources conflict (supply, price change, TVL, revenue), show both, choose the primary basis and explain the difference; never average silently.

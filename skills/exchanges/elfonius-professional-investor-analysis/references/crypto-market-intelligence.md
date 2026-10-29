@@ -8,7 +8,7 @@ Purpose: capture the narrative and information layer without confusing it with e
 2. Independent research: SubnetRadar, Taosis, TaoMarketCap, Messari, Delphi, block explorers, Dune dashboards; label each.
 3. Trade press: The Block, CoinDesk, Blockworks, TAO Daily, sector newsletters; check author, date and whether the piece is independent or sponsored.
 4. Social: X, Discord, Telegram, Reddit, Farcaster; discovery and sentiment only.
-5. Search/DeSearch: discovery only; never cite a snippet as if the underlying page was read.
+5. Search/public social search: discovery only; never cite a snippet as if the underlying page was read.
 
 ## Metrics
 

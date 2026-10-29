@@ -92,7 +92,7 @@ Month-by-month table: tokens unlocking, % of current float, % of 30-day volume, 
 
 - Emission split: read `owner_cut`, `server_emission`, `validator_emission` and `root_alpha_divs` from `/subnets/epochs`; the observed split is 18% owner / 41% miners / 41% validators, but owner cut is a hyperparameter — read it, do not hard-code. Owner cut is a claim on emissions, not on revenue; compute its spot value and compare it with any disclosed revenue.
 - Daily alpha emission: `alpha_out_emission` is **per block**; daily = that value × 7,200 (12-second blocks). Do not assume 1 α/block — halving makes it subnet-specific. The SN53 case happened to be 1 α/block (7,200 α/day); that is an observation, not a protocol constant.
-- Annual emission as % of current supply and of the 21M cap; staking APR = validator/staker alpha per day ÷ staked alpha × 365. Use the validator slice excluding root; the full formula and unit traps are in the `bittensor-analytics` skill's emission-yield reference (`skill_view(name='bittensor-analytics')`, §3b).
+- Annual emission as % of current supply and of the 21M cap; staking APR = validator/staker alpha per day ÷ staked alpha × 365. Use the validator slice excluding root; state the block time, per-block emission and annualization convention, and say whether the figure is gross or net of root cut.
 - Market-cap basis: in the observed Taostats feed, `market_cap` uses pool + staked float, not total supply; compute FDV separately as 21M × price and label both.
 - Buyback offset: company burn ÷ same-period emission; a burn of a few percent of emissions does not offset the dilution.
 - Conviction/ownership: owner stake lock, takeover threshold and whether any non-owner hotkey holds a meaningful lock.
@@ -139,7 +139,7 @@ Read the post-mortem or governance report, not the announcement post. Repeated i
 
 Record dated snapshots; social metrics are signals, not evidence.
 
-- Channels: X followers and engagement rate; Discord/Telegram members and online; GitHub stars, forks, open issues, contributors and commit cadence; governance-forum proposals and turnout; Reddit/DeSearch sentiment; news flow.
+- Channels: X followers and engagement rate; Discord/Telegram members and online; GitHub stars, forks, open issues, contributors and commit cadence; governance-forum proposals and turnout; Reddit/public social sentiment; news flow.
 - Separate company claims, independent reporting and community sentiment. Check engagement quality (reply/quote ratio, bot-like repetition) rather than follower count alone; follower count is not demand.
 - Catalyst table: event | date or `unknown` | what it changes | how to monitor. Include product/model launches, listings, Phase 2/upgrade dates, buyback cadence, token unlocks, competitor pricing and regulatory dates.
 - A small but technical community (e.g. a few hundred Discord members, single-digit GitHub stars, four contributors) is a risk signal for a large market cap, not a disqualifier. State the comparison.
@@ -179,8 +179,8 @@ Unlock dates and sizes; governance proposals with treasury impact; upgrade annou
 5. Repository releases, commit history and contributor activity.
 6. Venue order books and DEX pool state at a timestamp.
 7. Aggregators (DefiLlama, Dune, Token Terminal, CoinGecko, CMC) as cross-checks only — they frequently share one upstream dataset.
-8. **Bittensor:** Taostats chain endpoints (`subnet/latest`, `dtao/pool/latest`, `dtao/pool/history`, `dtao/subnet_emission`, `dtao/stake_balance`, `subnets/epochs`) as primary; Taosis, SubnetStats, Taoswap and bittensor.ai as cross-checks, expecting supply/burn definition conflicts. Use the `bittensor-analytics` skill for endpoint contracts and rate limits.
-9. **Social and news:** X, Discord/Telegram invite APIs, GitHub API, governance forum, DeSearch and dated news. Date every snapshot; label sentiment as signal, never as evidence.
+8. **Bittensor:** Taostats chain endpoints (`subnet/latest`, `dtao/pool/latest`, `dtao/pool/history`, `dtao/subnet_emission`, `dtao/stake_balance`, `subnets/epochs`) as primary; Taosis, SubnetStats, Taoswap and bittensor.ai as cross-checks, expecting supply/burn definition conflicts. Check the current Taostats API documentation for endpoint contracts and rate limits; do not assume a remembered schema.
+9. **Social and news:** X, Discord/Telegram invite APIs, GitHub API, governance forum, public social search and dated news. Date every snapshot; label sentiment as signal, never as evidence.
 
 ## Reporting
 

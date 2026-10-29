@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T18:34:15.804017+00:00",
+  "generated_at": "2026-10-29T00:58:02.843375+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -43258,6 +43258,68 @@
         },
         "requires_private_key": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "defi/elfonius-defi-protocol-analysis": {
+      "name": "defi-protocol-analysis",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -222179,12 +222241,12 @@
     }
   },
   "summary": {
-    "discovered": 3571,
-    "processed": 3571,
+    "discovered": 3572,
+    "processed": 3572,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2586,
-      "router_orchestrator": 145,
+      "router_orchestrator": 146,
       "unknown": 341,
       "analysis_only": 218,
       "unsigned_tx_builder": 115,
@@ -222200,7 +222262,7 @@
       "can_browse_web": 250,
       "can_spawn_subagents": 264,
       "can_move_funds": 301,
-      "requires_private_key": 495,
+      "requires_private_key": 496,
       "requires_hosted_operator": 342,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 555

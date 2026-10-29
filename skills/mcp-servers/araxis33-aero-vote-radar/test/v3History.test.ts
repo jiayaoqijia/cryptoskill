@@ -49,3 +49,13 @@ test("steadiness: needs a day of samples; steady when 75% pay half the average o
   assert.equal(spiky!.held, 1);
   assert.ok(!isSteady(spiky));
 });
+
+test("appendV3Sample: records the radar's pick for 10,000 sAERO, null for samples from before it was kept", () => {
+  const t = (h: number) => new Date(Date.UTC(2026, 9, 24, h));
+  const old = { at: [t(0).toISOString()], pools: { "base:0xb": [10] } };
+  // 0xA pays more but is under 100,000 sAERO; 0xC pays 50 a day on 490,000: 1 for 10,000.
+  const f = appendV3Sample(old, [gauge("0xA", 90_000, 900), gauge("0xB", 200_000, 10), gauge("0xC", 490_000, 50)], t(1));
+  assert.deepEqual(f.picks, [null, { pool: "base:0xc", per10k: 1 }]);
+  const g = appendV3Sample(f, [], t(2), 1);
+  assert.deepEqual(g.picks, [{ pool: "base:0xc", per10k: 1 }, null]);
+});

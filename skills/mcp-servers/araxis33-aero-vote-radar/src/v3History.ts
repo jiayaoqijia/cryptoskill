@@ -27,6 +27,28 @@ const PER = 10_000;
 export interface V3HistoryFile {
   at: string[];
   pools: Record<string, (number | null)[]>;
+  /**
+   * The radar's own pick at each sample, for its public track record: the pool it
+   * ranked first for 10,000 sAERO (96 h of fees plus incentives, after dilution)
+   * and what it said that would pay a day. `null` before this was recorded (28.10).
+   */
+  picks?: (V3Pick | null)[];
+}
+
+export interface V3Pick {
+  pool: string;
+  per10k: number;
+}
+
+/** The pool the page ranks first for 10,000 sAERO, the same figures as its table. */
+export function topPick(gauges: readonly V3ScanGauge[]): V3Pick | null {
+  let best: V3Pick | null = null;
+  for (const g of gauges) {
+    if (g.weight < V3_HISTORY_MIN_WEIGHT) continue;
+    const per10k = ((g.feesUsdPerDay + g.incentivesUsdPerDay) * PER) / (g.weight + PER);
+    if (!best || per10k > best.per10k) best = { pool: poolKey(g), per10k: Math.round(per10k * 1e4) / 1e4 };
+  }
+  return best;
 }
 
 export const poolKey = (g: Pick<V3ScanGauge, "chain" | "gauge">) => `${g.chain}:${g.gauge.toLowerCase()}`;
@@ -46,7 +68,10 @@ export function appendV3Sample(
   const at = [...(file?.at ?? [])];
   const pools: Record<string, (number | null)[]> = {};
   for (const [k, v] of Object.entries(file?.pools ?? {})) pools[k] = [...v];
+  const picks = [...(file?.picks ?? [])];
+  while (picks.length < at.length) picks.unshift(null);
   at.push(now.toISOString());
+  picks.push(topPick(gauges));
   for (const col of Object.values(pools)) col.push(null);
   for (const g of gauges) {
     if (g.weight < V3_HISTORY_MIN_WEIGHT) continue;
@@ -57,7 +82,7 @@ export function appendV3Sample(
   const cutoff = now.getTime() - keepHours * 3_600_000;
   const drop = at.findIndex((t) => Date.parse(t) >= cutoff);
   const from = drop < 0 ? at.length : drop;
-  const out: V3HistoryFile = { at: at.slice(from), pools: {} };
+  const out: V3HistoryFile = { at: at.slice(from), pools: {}, picks: picks.slice(from) };
   for (const [k, v] of Object.entries(pools)) {
     const kept = v.slice(from);
     if (kept.some((x) => x !== null)) out.pools[k] = kept;

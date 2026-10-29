@@ -1,14 +1,13 @@
 ---
 name: professional-investor-analysis
 description: "Use when evaluating a token, protocol, company, fund or asset."
-version: 0.4.0
+version: 0.4.1
 author: Hermes Agent and contributors
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [investment, due-diligence, valuation, risk, crypto, technical, sentiment]
-    related_skills: [grounded-citations, crypto-protocol-research, bittensor-analytics, evm, desearch-api]
 ---
 
 # Professional Investor Analysis
@@ -65,11 +64,10 @@ Templates: English `templates/investment-screen-en.md`, `templates/investment-me
 
 ## Prerequisites
 
-- `web_search` and `web_extract`; `desearch-api` for community/sentiment discovery; `browser-harness` for JS-rendered protocol state; `evm` for read-only contract reads.
-- `grounded-citations` for cited deliverables. `crypto-protocol-research` for protocol UI, redemption and on-chain mechanics; `bittensor-analytics` is authoritative for TAO/subnet definitions.
+- Web search and page extraction for public sources; a browser or HTTP client for JS-rendered protocol state, dashboards and filings.
+- Read-only chain/RPC access for contract state; no signing, custody or transaction execution.
+- A citation discipline: record source, date, definition and independence for every material number.
 - Never expose API keys. Record an inaccessible source as a gap; never fill it with a plausible number.
-
-**Precedence:** this skill owns the decision frame, gate, valuation, risk and report format. `crypto-protocol-research` supplies protocol mechanics and UI/exit verification. Do not import its hard-coded scenario probabilities; here a probability is judgmental unless a base rate and method are shown.
 
 ## Procedure
 
@@ -138,4 +136,4 @@ Templates: English `templates/investment-screen-en.md`, `templates/investment-me
 
 ## Verification
 
-Reopen the final report and check every material number against its cited source, definition and date; recompute calculations with a tool and keep inputs, period and unit. For crypto, confirm the contract address, chain and block behind each state claim and that the price series is migration-adjusted. Confirm the report is in the requested language, matches the chosen mode, contains the non-compressible minimum, and is free of internal scaffolding. `skill-audit` confirms file structure only; it does not validate an investment conclusion.
+Reopen the final report and check every material number against its cited source, definition and date; recompute calculations with a tool and keep inputs, period and unit. For crypto, confirm the contract address, chain and block behind each state claim and that the price series is migration-adjusted. Confirm the report is in the requested language, matches the chosen mode, contains the non-compressible minimum, and is free of internal scaffolding. The repository validator confirms package structure only; it does not validate an investment conclusion.

@@ -141,6 +141,19 @@
      plot box is identical row to row. */
   td.ar-where { text-align: left; white-space: normal; color: var(--muted); font-size: 13px; min-width: 260px; }
   td.ar-where b { color: var(--text); font-weight: 600; }
+  .ar-hero { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; margin: 10px 0 18px; padding: 20px 22px; border: 1px solid rgba(53, 208, 127, 0.45); background: rgba(53, 208, 127, 0.07); border-radius: var(--radius); }
+  .ar-hero-q { font-size: 15px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ar-hero-q input { width: 130px; font-size: 17px; font-weight: 650; }
+  .ar-hero-a { font-size: 22px; font-weight: 650; line-height: 1.35; }
+  .ar-hero-a b { color: var(--good); }
+  .ar-hero-pay { font-size: 30px; margin-top: 2px; }
+  .ar-hero-pay small { font-size: 14px; color: var(--muted); font-weight: 500; }
+  .ar-hero a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 11px 18px; text-decoration: none; }
+  @media (max-width: 600px) { .ar-hero { padding: 16px; } .ar-hero-a { font-size: 19px; } .ar-hero-pay { font-size: 26px; } .ar-hero a.primary { align-self: stretch; text-align: center; } }
+  .ar-record { margin: 0 0 18px; }
+  .ar-record h3 { font-size: 15px; margin: 0 0 8px; }
+  .ar-record td:nth-child(2), .ar-record th:nth-child(2) { text-align: left; }
+  .ar-record .hint { margin: 8px 0 0; }
   .ar-answer { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(53, 208, 127, 0.45); background: rgba(53, 208, 127, 0.07); border-radius: 10px; font-size: 15px; }
   .ar-answer b { color: var(--good); }
   .ar-answer a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 14px; text-decoration: none; white-space: nowrap; }
@@ -244,6 +257,7 @@
     }
     .scroll.cards td:first-child::before { content: none; }
     #beforeAero .scroll.cards td { justify-content: flex-start; text-align: left; }
+    #arTable td:first-child { justify-content: flex-start; }
   }
   .you { background: linear-gradient(90deg, rgba(4, 51, 255, 0.18), rgba(4, 51, 255, 0.05)); border: 1px solid rgba(77, 141, 255, 0.45);
     border-radius: var(--radius); padding: 14px 16px; margin: 0 0 14px; }
@@ -256,7 +270,7 @@
   .chains span { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 7px 11px; font-size: 13.5px; }
   /* Aero (sAERO) radar, the block at the top */
   #aeroRadar h2:first-child { margin-top: 22px; }
-  .ar-controls { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 14px; }
+  .ar-controls { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .ar-totals { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 16px; }
   .stat.hi { border-color: rgba(53, 208, 127, 0.45); }
   .ar-callout { margin-top: 16px; padding: 12px 14px; border: 1px solid rgba(53, 208, 127, 0.4); background: rgba(53, 208, 127, 0.07); border-radius: 10px; font-size: 14px; }
@@ -302,17 +316,26 @@
      scan). Hidden until the scan reports the Base contracts live. -->
 <section id="aeroRadar" hidden>
   <p class="meta" id="arMeta"></p>
+  <div class="ar-hero">
+    <label class="ar-hero-q" for="arAmount">If you hold <input id="arAmount" type="number" min="0" step="any" value="10000" inputmode="decimal"> sAERO</label>
+    <div class="ar-hero-a" id="arAnswerText"></div>
+    <a class="primary" href="https://app.aero.xyz/markets/allocate" target="_blank" rel="noreferrer">Allocate on Aero</a>
+  </div>
+  <div class="ar-record" id="arRecord" hidden>
+    <h3>Track record: what the radar said, and what it paid</h3>
+    <div class="scroll cards"><table>
+      <thead><tr><th>When</th><th>Radar said</th><th class="num">It showed</th><th class="num">It paid</th><th class="num">A typical pool paid</th></tr></thead>
+      <tbody id="arRecordBody"></tbody>
+    </table></div>
+    <p class="hint" id="arRecordNote"></p>
+  </div>
   <div class="ar-guide" id="guide">
     <div><b>Type how much sAERO you have.</b> Add your wallet if you like: it shows when your 47 h timer runs out.</div>
-    <div><b>Look at "Per day for you".</b> The radar splits your amount across up to 3 pools, so your own stake doesn't dilute your income.</div>
+    <div><b>Look at "You'd earn / day".</b> The radar splits your amount across up to 3 pools, so your own stake doesn't dilute your income.</div>
     <div><b>Press "Allocate on Aero"</b> and set the same percentages there. You sign in your own wallet. Come back when your 47 h are up.</div>
   </div>
   <div class="panel">
     <div class="ar-controls">
-      <div class="field">
-        <label for="arAmount">Your sAERO</label>
-        <input id="arAmount" type="number" min="0" step="any" value="10000" inputmode="decimal">
-      </div>
       <div class="field">
         <label for="arAddr">Wallet (optional, shows your 47 h timer)</label>
         <div class="addr-row">
@@ -321,10 +344,6 @@
         </div>
         <div class="lookup-msg" id="arMsg"></div>
       </div>
-    </div>
-    <div class="ar-answer" id="arAnswer" hidden>
-      <div id="arAnswerText"></div>
-      <a class="primary" href="https://app.aero.xyz/markets/allocate" target="_blank" rel="noreferrer">Allocate on Aero</a>
     </div>
     <div class="totals ar-totals">
       <div class="stat hi"><div class="n num c-good" id="arBest">&mdash;</div><div class="l">Best pool for your sAERO, per day</div></div>
@@ -337,10 +356,10 @@
   </div>
 
   <h2>Where to point your sAERO now</h2>
-  <p class="h2note">Ranked by what <b>your</b> amount earns per day, pools with at least 100,000 sAERO. Fees are what the pool actually swept to allocators; incentives are what projects are streaming right now. <span id="arEarly"></span></p>
+  <p class="h2note">Best first for <b>your</b> amount. "You'd earn" already counts that your sAERO makes the pool more crowded. Trading fees and the project bonus are what the whole pool pays a day, shared by everyone in it. Only pools with 100,000+ sAERO. Aero's own APR counts fees over the last 48 h, the radar over 96 h, so the two can differ; both are right. <span id="arEarly"></span></p>
   <div class="ar-nets" id="arChains"></div>
-  <div class="scroll"><table>
-    <thead><tr><th>Pool</th><th class="num">Your split</th><th class="num">Per day for you</th><th class="num">Fees / day</th><th class="num">Incentives / day</th><th class="num">sAERO in pool</th><th class="num">Last 24 h</th></tr></thead>
+  <div class="scroll cards"><table id="arTable">
+    <thead><tr><th>Pool</th><th class="num">Put here</th><th class="num">You'd earn / day</th><th class="num">Trading fees / day</th><th class="num">Project bonus / day</th><th class="num">Already in pool</th><th class="num">Trend</th></tr></thead>
     <tbody id="arBody"></tbody>
   </table></div>
   <div class="ar-split">
@@ -687,6 +706,64 @@ function arRenderTop(amount) {
   }
 }
 
+const AR_HEADS = [...document.querySelectorAll("#arTable thead th")].map((th) => th.textContent);
+// Open track record: every 47 h back from the last scan, the pool the radar put
+// first for 10,000 sAERO, the daily figure it showed then (times 47/24), and what
+// that pool actually paid over those 47 h. History samples are fees over the
+// trailing 24 h plus incentives, per day for 10,000 sAERO after dilution, so the
+// sample 24 h after the pick covers the first day and the one 47 h after covers
+// the last 23 h. "A typical pool" is the median of the same figure over every
+// pool in the history at the time of the pick. Picks before they were recorded
+// (28.10) are rebuilt from the history the way the radar ranks: the average of
+// the samples 0, 24, 48 and 72 h before, standing in for its 96 h of fees.
+function arRenderRecord(h) {
+  const at = h.at.map((t) => Date.parse(t)), H = 3600000;
+  const near = (t) => {
+    let best = -1;
+    at.forEach((x, i) => { if (Math.abs(x - t) <= 2 * H && (best < 0 || Math.abs(x - t) < Math.abs(at[best] - t))) best = i; });
+    return best < 0 ? null : best;
+  };
+  const paid = (k, a, b) => { const p = h.pools[k]; return p && p[a] != null && p[b] != null ? p[a] + p[b] * 23 / 24 : null; };
+  const names = new Map(arData.gauges.map((g) => [arChainOf(g) + ":" + g.gauge.toLowerCase(), arName(g) + (arChainOf(g) === "base" ? "" : " (" + (AR_CHAIN_NAMES[arChainOf(g)] || arChainOf(g)) + ")")]));
+  const body = arEl("arRecordBody");
+  body.innerHTML = "";
+  const heads = [...document.querySelectorAll("#arRecord thead th")].map((th) => th.textContent);
+  let rebuilt = false, rows = 0;
+  for (let n = 1; n <= 3; n++) {
+    const t0 = at[at.length - 1] - 47 * n * H;
+    const i0 = near(t0), i24 = near(t0 + 24 * H), i47 = near(t0 + 47 * H);
+    if (i0 === null || i24 === null || i47 === null) continue;
+    let pick = h.picks && h.picks[i0];
+    if (!pick) {
+      const back = [0, 1, 2, 3].map((d) => near(t0 - 24 * d * H)).filter((i) => i !== null);
+      for (const [k, col] of Object.entries(h.pools)) {
+        if (col[i0] == null || back.some((i) => col[i] == null)) continue;
+        const avg = back.reduce((a, i) => a + col[i], 0) / back.length;
+        if (!pick || avg > pick.per10k) pick = { pool: k, per10k: avg, rebuilt: true };
+      }
+      rebuilt = rebuilt || !!pick;
+    }
+    const got = pick && paid(pick.pool, i24, i47);
+    if (got == null) continue;
+    const all = Object.keys(h.pools).filter((k) => h.pools[k][i0] != null).map((k) => paid(k, i24, i47)).filter((x) => x != null).sort((a, b) => a - b);
+    const typical = all[Math.floor(all.length / 2)];
+    const tr = document.createElement("tr");
+    const when = new Date(at[i0]).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "UTC" }) + " UTC" + (pick.rebuilt ? " *" : "");
+    const cell = (text, cls) => { const td = document.createElement("td"); td.className = cls || ""; td.textContent = text; tr.append(td); };
+    cell(when);
+    cell(names.get(pick.pool) || pick.pool.split(":")[1].slice(0, 8) + "…");
+    cell(usd(pick.per10k * 47 / 24), "num");
+    cell(usd(got), "num " + (got > typical ? "c-good" : "c-bad"));
+    cell(usd(typical), "num");
+    tr.querySelectorAll("td").forEach((td, i) => { td.dataset.label = heads[i]; });
+    body.append(tr);
+    rows++;
+  }
+  arEl("arRecord").hidden = rows === 0;
+  arEl("arRecordNote").textContent = "On 10,000 sAERO, over the 47 h a stake stays put. \"It showed\" is the radar's figure at that moment: pools cool once others pile in, so read it as a ceiling, not a promise." +
+    (rebuilt ? " * Rebuilt from the hourly history; newer rows use the pick the radar saved at the time." : "");
+}
+
 function arRender() {
   if (!arData) return;
   const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
@@ -694,17 +771,27 @@ function arRender() {
   const split = arSplit(pools.map((x) => x.g), amount);
   const splitPays = split.reduce((a, s) => a + s.perDay, 0);
   arEl("arBest").textContent = pools.length && amount > 0 ? usd(pools[0].mine) : "—";
-  // The answer in one sentence, so a first visit doesn't have to read the table for it.
-  arEl("arAnswer").hidden = split.length === 0;
+  // The answer in one sentence at the top, so a first visit doesn't have to read the table for it.
   const answer = arEl("arAnswerText");
   answer.innerHTML = "";
   if (split.length) {
     const b = (t) => { const e = document.createElement("b"); e.textContent = t; return e; };
-    answer.append("For ", b(num(amount) + " sAERO"), ": ");
+    const where = document.createElement("div");
+    where.append("Put ");
     split.forEach((s, i) => {
-      answer.append(i ? (i === split.length - 1 ? " and " : ", ") : "", b(Math.round(s.share * 100) + "%"), " " + arName(s.g) + " (" + (AR_CHAIN_NAMES[arChainOf(s.g)] || arChainOf(s.g)) + ")");
+      where.append(i ? (i === split.length - 1 ? " and " : ", ") : "", b(Math.round(s.share * 100) + "%"), " in " + arName(s.g));
     });
-    answer.append(" → about ", b(usd(splitPays) + " a day"), " at today's rates.");
+    const nets = [...new Set(split.map((s) => AR_CHAIN_NAMES[arChainOf(s.g)] || arChainOf(s.g)))];
+    where.append(" on " + nets.join(" and "));
+    const pays = document.createElement("div");
+    pays.className = "ar-hero-pay";
+    pays.append("about ", b(usd(splitPays) + " a day"));
+    const note = document.createElement("small");
+    note.textContent = " at today's rates";
+    pays.append(note);
+    answer.append(where, pays);
+  } else {
+    answer.textContent = amount > 0 ? "No pool is paying right now." : "Type how much sAERO you have.";
   }
 
   const shares = new Map(split.map((s) => [s.g, s]));
@@ -722,6 +809,8 @@ function arRender() {
     arCell(tr, num(g.weight));
     const [trend, cls] = arTrend(g);
     arCell(tr, trend, cls);
+    // Column names on each cell: on a phone the rows turn into cards (.scroll.cards).
+    tr.querySelectorAll("td").forEach((td, i) => { td.dataset.label = AR_HEADS[i] || ""; });
     body.append(tr);
   }
   arRenderSteady(amount);
@@ -899,6 +988,10 @@ fetch("data/v3.json", { cache: "no-cache" })
     arRender();
     // The section is hidden until the scan loads, so the browser can't jump to #guide on its own.
     if (location.hash === "#guide") arEl("guide").scrollIntoView();
+    fetch("data/v3-history.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((h) => { if (h) arRenderRecord(h); })
+      .catch(() => {});
     return fetch("data/top-allocators.json", { cache: "no-cache" })
       .then((r) => (r.ok ? r.json() : null))
       .then((top) => { arTop = top; arRender(); })
@@ -907,5 +1000,6 @@ fetch("data/v3.json", { cache: "no-cache" })
   .catch(() => {});
 </script>
 <!-- Cloudflare Web Analytics: page views only, no cookies (same site token as deftools.xyz; shows up under host aero.deftools.xyz) --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d66a3ce27f4e4b47bb1eb31a0e5fa912"}'></script>
+<script src="https://deftools.xyz/support.js"></script>
 </body>
 </html>
