@@ -12,8 +12,10 @@ import type { V3ScanGauge, V3Steadiness } from "./v3.js";
  * half the pool's own average or more, over at least a day of samples.
  */
 
-/** Samples older than this are dropped. */
-export const V3_HISTORY_KEEP_HOURS = 168;
+/** Samples older than this are dropped: 30 days, kept open for anyone who wants longer views. */
+export const V3_HISTORY_KEEP_HOURS = 720;
+/** Steadiness is judged over the last week only, as the page's "7-day average" column says. */
+export const V3_STEADY_WINDOW_HOURS = 168;
 /** Pools below this weight are left out, as on the page's ranking. */
 export const V3_HISTORY_MIN_WEIGHT = 100_000;
 /** Fewer samples than this say too little about a pool. */
@@ -90,6 +92,13 @@ export function appendV3Sample(
     if (kept.some((x) => x !== null)) out.pools[k] = kept;
   }
   return out;
+}
+
+/** Index of the first sample inside the last `hours`, so older samples stay out of a judgement. */
+export function windowStart(file: Pick<V3HistoryFile, "at">, now: Date, hours = V3_STEADY_WINDOW_HOURS): number {
+  const cutoff = now.getTime() - hours * 3_600_000;
+  const i = file.at.findIndex((t) => Date.parse(t) >= cutoff);
+  return i < 0 ? file.at.length : i;
 }
 
 /** The pool's steadiness over the history, or undefined while it has fewer than V3_STEADY_MIN_SAMPLES samples. */

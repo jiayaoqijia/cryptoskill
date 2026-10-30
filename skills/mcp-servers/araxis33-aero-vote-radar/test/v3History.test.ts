@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { appendV3Sample, isSteady, per10kNow, poolKey, steadiness, V3_STEADY_MIN_SAMPLES } from "../src/v3History.js";
+import { appendV3Sample, isSteady, per10kNow, poolKey, steadiness, V3_STEADY_MIN_SAMPLES, windowStart } from "../src/v3History.js";
 import type { V3ScanGauge } from "../src/v3.js";
 
 const gauge = (gauge: string, weight: number, fees24h: number, incentives = 0): V3ScanGauge =>
@@ -37,6 +37,13 @@ test("appendV3Sample: samples past the keep window are dropped, and pools left w
   assert.deepEqual(f.at, [t(1).toISOString(), t(3).toISOString()]);
   assert.equal(f.pools["base:0xb"], undefined);
   assert.deepEqual(f.pools["base:0xc"], [1, 1]);
+});
+
+test("windowStart: the first sample inside the last week; none when all are older", () => {
+  const t = (h: number) => new Date(Date.UTC(2026, 9, 1, h));
+  const f = { at: [t(0), t(100), t(200), t(300)].map((d) => d.toISOString()) };
+  assert.equal(windowStart(f, t(300)), 2);
+  assert.equal(windowStart(f, t(1000)), 4);
 });
 
 test("steadiness: needs a day of samples; steady when 75% pay half the average or more", () => {

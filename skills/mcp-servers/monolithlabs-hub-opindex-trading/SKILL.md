@@ -23,7 +23,9 @@ were measured; the decision is yours.
   measurable field.
 - **History is by samples.** `history` and `indicators` come from readings the
   service takes of a pool about once a minute and of its holders about once an
-  hour. `sampling.method` says so: `reserve_snapshot`. A candle is a candle over
+  hour (an `established` token: every five minutes and every six hours, and its
+  reserve flow is `null` by design, not partial). `sampling.method` says so:
+  `reserve_snapshot`. A candle is a candle over
   samples. A minute with no sample has no candle. There is no transaction feed
   behind any of it.
 - **Position is by your data.** It does not know what you hold or what you paid.
@@ -121,8 +123,14 @@ Three more habits worth having:
   `holder_concentration` still say what they say. `heuristic.maturity` shows
   why the token counted as mature (liquidity, age since this service first saw
   it, and who holds its LP). A token not yet mature, including every token in
-  the first 30 days of the service seeing it, keeps these as `caution`. The
+  the first 30 days of the service seeing it, keeps these as `caution`, unless
+  it is on Jupiter's verified list (see below): that meets the age condition,
+  and the liquidity and LP conditions still apply. The
   default `screen` filter `max_level=no_flags` now lists mature tokens.
+  The age condition can also be met by the mint being on Jupiter's verified
+  list: `basis` then contains `jupiter_verified`. That is verification meeting
+  the age condition only. Liquidity and LP conditions still apply, it forgives
+  no risk factor, and wrapped or bridged tokens (WBTC, ETH, ...) stay `risky`.
 - **`unknown` outranks `caution`.** An unnamed gap can hide anything, so treat
   it as worse than a named mild finding, never better.
 - **A null is not a small number.** `null` means the service could not measure
@@ -190,6 +198,18 @@ is not a failure: it is the start of an answer.
   nobody watches, call `history` first, then `indicators`.
 - `404 NOT_WATCHED` means the pool you named is not that token's watched pool, or
   its watch has ended. Asking again does not change that; do not loop on it.
+- `404 NOT_ASSESSED` from `screen` means none of the watched tokens has a risk
+  assessment yet, so no condition could be checked. It is free; the watcher
+  assesses them as it runs. Ask again in a few minutes, not in a loop.
+- An empty `screen` is a paid answer, and the same conditions a minute later
+  will almost always be empty again. Read `meta.coverage`: `no_facts` is what
+  this service has not assessed, `unknown_or_risky` what it assessed and will
+  not list. Then change the conditions or tell your human what the watched set
+  holds — do not repeat the call. An empty `no_flags` list is an answer about
+  the watched set (it holds no such token), not a fault: tell your human. Each
+  item's `seed` says why it is watched and may be `established` (liquid tokens
+  older than a month from Jupiter's verified list); `meta.coverage.by_seed`
+  counts them.
 - `404 NOT_WATCHED` from all three routes, `screen` included, with "the watcher
   is not running on this deployment" means that deployment collects nothing.
   It is free; do not retry it there.

@@ -723,7 +723,7 @@ const AR_HEADS = [...document.querySelectorAll("#arTable thead th")].map((th) =>
 // pool in the history at the time of the pick. Picks before they were recorded
 // (28.10) were rebuilt once from the history the way the radar ranks (the average
 // of the samples 0, 24, 48 and 72 h before, standing in for its 96 h of fees) and
-// saved into picks with rebuilt: true, since the history keeps only 7 days and a
+// saved into picks with rebuilt: true, since the history then kept only 7 days and a
 // rebuild done later would drift. The rebuild below stays as a fallback.
 const AR_RECORD_FROM = Date.parse("2026-10-28T22:47:15.785Z");
 function arRenderRecord(h) {

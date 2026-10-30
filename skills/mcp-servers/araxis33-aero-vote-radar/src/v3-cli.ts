@@ -7,7 +7,7 @@ import { V3_LOGS_RPC_URL } from "./constants.js";
 import { getTokenPrices } from "./prices.js";
 import { formatError } from "./util.js";
 import { registryFromDeployment, scanV3, type V3ScanFile, type V3ScanGauge, type V3Client } from "./v3.js";
-import { appendV3Sample, poolKey, steadiness, type V3HistoryFile } from "./v3History.js";
+import { appendV3Sample, poolKey, steadiness, windowStart, type V3HistoryFile } from "./v3History.js";
 import { renderV3LlmsTxt } from "./v3Llms.js";
 import { scanTopAllocators } from "./topAllocators.js";
 
@@ -113,8 +113,9 @@ async function main() {
   const historyPath = outPath.replace(/v3\.json$/, "v3-history.json");
   const history = appendV3Sample(existsSync(historyPath) ? (JSON.parse(readFileSync(historyPath, "utf8")) as V3HistoryFile) : null, gauges, now);
   writeFileSync(historyPath, JSON.stringify(history) + "\n");
+  const week = windowStart(history, now);
   for (const g of gauges) {
-    const s = steadiness(history.pools[poolKey(g)] ?? []);
+    const s = steadiness((history.pools[poolKey(g)] ?? []).slice(week));
     if (s) g.steady = s;
   }
   const out: V3ScanFile = {

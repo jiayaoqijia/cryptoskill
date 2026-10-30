@@ -37,9 +37,9 @@ No API keys, no wallet connection, no signatures: it reads, you allocate.
 - **Splits a large stake.** Past a certain size, a second pool beats piling
   more into the first. The split is built in 5% steps, each going where it adds
   the most, and kept to at most 3 pools so it can be typed into Aero by hand.
-- **Shows which pools keep paying.** Each hour's rate is kept for a week. A pool
-  is *steady* when at least 75% of 24+ hourly samples paid half its own average
-  or more. A pool that paid once in a burst doesn't make that list.
+- **Shows which pools keep paying.** Each hour's rate is kept for 30 days, open
+  in `docs/data/v3-history.json`. A pool is *steady* when at least 75% of 24+
+  hourly samples over the last week paid half its own average or more. A pool that paid once in a burst doesn't make that list.
 - **Reads your wallet.** Your stakes, where each one is allocated on every
   network, its 47 h timer there, and what your current split pays a day
   against the suggested one.
