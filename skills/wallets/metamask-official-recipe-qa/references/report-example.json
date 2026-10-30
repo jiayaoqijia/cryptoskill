@@ -1,0 +1,100 @@
+{
+  "title": "Example QA report: daily integration check",
+  "subtitle": "Illustrative reference, not validation evidence",
+  "testedBuild": {"name": "example-wallet", "version": "1.0.0", "branch": "release/1.0.0", "commit": "1111111111111111111111111111111111111111"},
+  "verdict": "PARTIAL",
+  "summary": "Two of three selected checks were proved and one needs follow-up. One additional criterion is outside the plan. This reference illustrates reporting, not a real test run.",
+  "boundary": "A finished session and a reviewed report do not certify an entire release. Keep every unproved criterion visible.",
+  "sources": [
+    {
+      "id": "pr-42",
+      "label": "PR #42 \u00b7 illustrative",
+      "title": "Keep the amount slider consistent when the payment token changes",
+      "url": "https://github.com/example/wallet/pull/42"
+    },
+    {
+      "id": "smoke",
+      "label": "Domain smoke",
+      "title": "Shared application navigation"
+    }
+  ],
+  "criteria": [
+    {
+      "id": "AC1",
+      "sourceId": "pr-42",
+      "text": "Changing the payment token preserves the entered amount and updates the slider range.",
+      "verdict": "PASS",
+      "detail": "Example only: a recorded amount assertion and slider-range assertion would be linked here.",
+      "evidence": [
+        {
+          "label": "Execution trace",
+          "note": "Example placeholder; a real report links the retained trace."
+        }
+      ]
+    },
+    {
+      "id": "AC2",
+      "sourceId": "pr-42",
+      "text": "The submit button remains visible throughout the payment-token transition.",
+      "verdict": "UNTESTABLE",
+      "detail": "Example only: a settled screenshot cannot prove visibility throughout a transition. Continuous evidence is missing.",
+      "coverageState": "incomplete-evidence"
+    },
+    {
+      "id": "SMOKE1",
+      "sourceId": "smoke",
+      "text": "The home screen opens and the user can return from a detail screen.",
+      "verdict": "PASS",
+      "detail": "Example only: both navigation assertions would have retained execution evidence."
+    },
+    {
+      "id": "AC3",
+      "sourceId": "pr-42",
+      "text": "The amount label retains its existing spacing at each supported text size.",
+      "verdict": "UNTESTABLE",
+      "detail": "Outside this illustrative smoke plan; no current-build proof claimed."
+    }
+  ],
+  "findings": [
+    {
+      "id": "G1",
+      "kind": "Coverage gap",
+      "title": "Continuous button visibility is unproved",
+      "detail": "A final screen image is insufficient to prove a time-spanning claim.",
+      "nextAction": "Record the transition and run the corresponding visibility assertion."
+    }
+  ],
+  "nextSteps": [
+    "Review the report and the evidence for each criterion.",
+    "Close the completed session while preserving its PARTIAL result, or schedule a follow-up validation for the gap.",
+    "Release approval remains a separate human decision."
+  ],
+  "scope": [
+    {
+      "label": "Window",
+      "value": "Illustrative daily window; replace with exact frozen boundaries."
+    },
+    {
+      "label": "Build",
+      "value": "Record the actual build identifier and source SHA."
+    }
+  ],
+  "exportNote": "This reference is self-contained and uses native collapsible sections and CSS filters. Real reports embed criterion-linked screenshots and identify recordings or raw traces that are not bundled.",
+  "plan": {
+    "level": "Daily integration smoke",
+    "evidence": {
+      "label": "Illustrative pre-execution plan, replace with retained plan reference"
+    },
+    "selectedCriterionIds": [
+      "AC1",
+      "AC2",
+      "SMOKE1"
+    ],
+    "exclusions": [
+      {
+        "criterionId": "AC3",
+        "reason": "An unchanged presentation detail is excluded from this integration smoke; inspect it if the amount transition exposes a visual regression."
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+harness="${1:-}"
+subcommand="${2:-}"
+[ -n "$harness" ] && [ -n "$subcommand" ] || {
+  echo "usage: template-command <mm-harness> <list|materialize|lint|new|task> [args]" >&2
+  exit 2
+}
+shift 2
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+skill_dir="$(cd "$script_dir/.." && pwd)"
+domain=""
+previous=""
+for argument in "$@"; do
+  if [ "$previous" = "--domain" ]; then domain="$argument"; fi
+  previous="$argument"
+done
+
+# `task` forwards its own subcommand (`task init …`); everything else is an
+# `execution-template` subcommand. Both consume the same template sources.
+case "$subcommand" in
+  task) args=(task "$@") ;;
+  *) args=(execution-template "$subcommand" "$@") ;;
+esac
+args+=(
+  --package-templates "$skill_dir/references/templates"
+  --package-id consensys-recipe-cook
+)
+
+append_roots() {
+  local value="$1"
+  local kind="$2"
+  local root checklist library_name library_root
+  [ -z "$value" ] && return
+  local roots=()
+  IFS=':' read -r -a roots <<<"$value"
+  for root in "${roots[@]}"; do
+    [ -n "$root" ] || continue
+    if [ "$kind" = "team" ]; then
+      library_name=""
+      library_root="$root"
+      case "$root" in
+        *=*)
+          library_name="${root%%=*}"
+          library_root="${root#*=}"
+          ;;
+      esac
+      if [ -n "$domain" ] && [ -n "$library_name" ] && [ "$library_name" != "$domain" ]; then
+        continue
+      fi
+      checklist="${library_root%/}/checklists"
+      if [ ! -d "$checklist" ]; then
+        continue
+      fi
+      if [ -n "$library_name" ]; then
+        args+=(--domain-dir "$library_name=$checklist")
+      elif [ -n "$domain" ]; then
+        echo "template-command: name team libraries as <domain>=<path> before selecting --domain $domain" >&2
+        exit 2
+      else
+        args+=(--dir "$checklist")
+      fi
+    else
+      args+=(--dir "$root")
+    fi
+  done
+}
+
+append_roots "${RECIPE_COOK_TEMPLATES_DIRS:-}" custom
+append_roots "${RECIPE_LIBRARY_PATH:-}" team
+
+exec "$harness" "${args[@]}"

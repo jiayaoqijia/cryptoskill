@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+task_dir="${1:-}"
+[ -n "$task_dir" ] || { echo "usage: prepare-sandbox <task-dir> --platform mobile|extension|core [--mobile-platform ios|android] [--harness-choice 1]" >&2; exit 2; }
+shift
+mobile_platform=""
+harness_choice=""
+platform=""
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --mobile-platform) mobile_platform="${2:-}"; shift 2 ;;
+    --platform) platform="${2:-}"; shift 2 ;;
+    --harness-choice) harness_choice="${2:-}"; shift 2 ;;
+    *) echo "prepare-sandbox: unknown argument: $1" >&2; exit 2 ;;
+  esac
+done
+case "$mobile_platform" in ""|ios|android) ;; *) echo "prepare-sandbox: --mobile-platform must be ios or android" >&2; exit 2 ;; esac
+case "$platform" in mobile|extension|core) ;; *) echo "prepare-sandbox: --platform must be mobile, extension, or core" >&2; exit 2 ;; esac
+case "$harness_choice" in ""|1) ;; *) echo "prepare-sandbox: --harness-choice must be 1" >&2; exit 2 ;; esac
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+task_dir="$(cd "$task_dir" && pwd)"
+artifacts="$task_dir/artifacts"
+mkdir -p "$artifacts"
+# Harness commands target the product checkout, not the task/artifacts directory.
+# Resolve it from the task path so callers may invoke this script from anywhere.
+repo_root="$(git -C "$task_dir" rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -n "$repo_root" ]; then
+  cd "$repo_root"
+fi
+rerun_hint="$0 $task_dir --platform $platform"
+[ -z "$mobile_platform" ] || rerun_hint="$rerun_hint --mobile-platform $mobile_platform"
+
+resolve_args=("$task_dir")
+[ -z "$harness_choice" ] || resolve_args+=(--choice "$harness_choice")
+if ! mm_harness="$("$script_dir/resolve-harness" "${resolve_args[@]}")"; then
+  echo "After a NEW human reply of 1, rerun exactly:" >&2
+  printf '%q %q' "$0" "$task_dir" >&2
+  printf ' --platform %q' "$platform" >&2
+  [ -z "$mobile_platform" ] || printf ' --mobile-platform %q' "$mobile_platform" >&2
+  printf ' --harness-choice 1\n' >&2
+  exit 1
+fi
+
+prepare_args=(prepare --platform "$platform" --artifacts-dir "$artifacts" --json)
+[ -z "$mobile_platform" ] || prepare_args+=(--mobile-platform "$mobile_platform")
+
+report="$(mktemp)"
+trap 'rm -f "$report"' EXIT
+set +e
+"$mm_harness" "${prepare_args[@]}" >"$report"
+prepare_status=$?
+set -e
+
+if [ "$prepare_status" -ne 0 ]; then
+  # A harness that died before emitting its report leaves nothing to quote, and a
+  # non-JSON body is quoted as-is. Any extraction error still reaches stderr; the
+  # STOP lines below carry the operator through recovery either way.
+  set +e
+  user_action="$(node -e '
+    const fs = require("node:fs");
+    const raw = fs.readFileSync(process.argv[1], "utf8").trim();
+    if (!raw) process.exit(0);
+    if (!raw.startsWith("{")) {
+      process.stdout.write(raw);
+      process.exit(0);
+    }
+    const value = JSON.parse(raw);
+    if (value && value.error && typeof value.error.userAction === "string") {
+      process.stdout.write(value.error.userAction);
+    }
+  ' "$report")"
+  set -e
+  [ -z "$user_action" ] || printf '%s\n' "$user_action" >&2
+  if printf '%s\n' "$user_action" | grep -qE '^[[:space:]]*[0-9]+[.)]'; then
+    echo "STOP: show the exact numbered options from the output above; wait for a NEW human reply; do not rerun yet." >&2
+    echo "After the human reply, run the selected recovery, then rerun exactly this prepare-sandbox command synchronously:" >&2
+    echo "$rerun_hint" >&2
+  else
+    echo "STOP: no choice to make. Run the recovery above once, then rerun exactly this prepare-sandbox command synchronously:" >&2
+    echo "$rerun_hint" >&2
+    echo "If the same failure repeats, stop and report it." >&2
+  fi
+  exit 1
+fi
+
+# A zero exit is not readiness. artifacts/sandbox.json is the authoritative gate:
+# it must be a regular file (never a symlink) the harness just wrote with
+# `ready: true`; anything else stops here instead of letting the Cook continue
+# on an incompatible or faulty harness.
+record="$artifacts/sandbox.json"
+if [ -L "$record" ] || [ ! -f "$record" ]; then
+  echo "prepare-sandbox: harness exited 0 but $record is missing or not a regular file" >&2
+  echo "STOP: the harness did not write a sandbox readiness record; check the harness version against the skill (mm-harness --version) and rerun:" >&2
+  echo "$rerun_hint" >&2
+  exit 1
+fi
+set +e
+readiness="$(node - "$record" 2>/dev/null <<'NODE'
+const fs = require('node:fs');
+const [record] = process.argv.slice(2);
+const value = JSON.parse(fs.readFileSync(record, 'utf8'));
+process.stdout.write(value && value.ready === true ? 'ready' : 'not-ready');
+NODE
+)"
+set -e
+if [ "$readiness" != "ready" ]; then
+  echo "prepare-sandbox: $record does not report ready: true" >&2
+  echo "STOP: the sandbox is not ready; read the failed step in $record, run its recovery, then rerun:" >&2
+  echo "$rerun_hint" >&2
+  exit 1
+fi
+
+printf '%s\n' "$record"

@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# Detect cook platform (mobile|extension|core) from the current client repo.
+# Used by list-templates / init-template so agents never pass or discuss platform.
+set -euo pipefail
+
+detect_platform() {
+  local cwd root name remote base
+  cwd="$(pwd -P 2>/dev/null || pwd)"
+  base="$(basename "$cwd")"
+
+  # Common checkout-name and path hints.
+  case "$cwd" in
+    *metamask-extension*)
+      printf '%s\n' extension
+      return 0
+      ;;
+    *metamask-mobile*)
+      printf '%s\n' mobile
+      return 0
+      ;;
+    *metamask-core*)
+      printf '%s\n' core
+      return 0
+      ;;
+  esac
+  case "$base" in
+    metamask-extension*) printf '%s\n' extension; return 0 ;;
+    metamask-mobile*) printf '%s\n' mobile; return 0 ;;
+    metamask-core*) printf '%s\n' core; return 0 ;;
+  esac
+
+  # package.json name (walk up to repo root; a non-matching manifest does not stop the walk)
+  root="$cwd"
+  while [ "$root" != "/" ]; do
+    if [ -f "$root/package.json" ]; then
+      name="$(node -e 'try{const n=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).name||""; process.stdout.write(String(n))}catch(e){}' "$root/package.json" 2>/dev/null || true)"
+      case "$name" in
+        *metamask-mobile*)
+          printf '%s\n' mobile
+          return 0
+          ;;
+        *metamask-extension*)
+          printf '%s\n' extension
+          return 0
+          ;;
+        *@metamask/core*|*metamask-core*)
+          printf '%s\n' core
+          return 0
+          ;;
+      esac
+    fi
+    root="$(dirname "$root")"
+  done
+
+  # git remote
+  remote="$(git -C "$cwd" remote get-url origin 2>/dev/null || true)"
+  case "$remote" in
+    *metamask-mobile*)
+      printf '%s\n' mobile
+      return 0
+      ;;
+    *metamask-extension*)
+      printf '%s\n' extension
+      return 0
+      ;;
+    *MetaMask/core*|*metamask-core*|*consensys/core*)
+      printf '%s\n' core
+      return 0
+      ;;
+  esac
+
+  return 1
+}
+
+if detect_platform; then
+  exit 0
+fi
+echo "detect-platform: could not detect mobile|extension|core from $(pwd)" >&2
+exit 1

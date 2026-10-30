@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage: init-template --task-kind dev|fix-bug|review-pr|qa [--platform mobile|extension|core] [--slug slug] [--task-file path] [--task-text text] [--acceptance criterion]... [--task-dir path] [--template ID] [--domain name] [--ticket id] [--source-ref ref] [--title text] [--prepare] [--harness-choice 1]
+       init-template --resume-task-dir path
+
+Creates a task directory with TASK.md (the task document: title, ticket, source,
+description, acceptance criteria, pointers) and CHECKLIST.md (the execution
+template, materialized verbatim — the only file whose checkboxes count as steps).
+Both are produced by `mm-harness task init`; this script owns routing, argument
+validation, and the harness bootstrap only.
+Platform defaults to auto-detect from the current repo when omitted.
+Resume mode validates an existing materialized task without creating another
+directory or checklist.
+USAGE
+}
+
+task_kind=""
+platform=""
+slug="task"
+task_file=""
+task_text=""
+acceptance=()
+task_dir=""
+template=""
+domain=""
+ticket=""
+source_ref=""
+title=""
+prepare="false"
+resume_task_dir=""
+harness_choice=""
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --task-kind) task_kind="${2:-}"; shift 2 ;;
+    --platform) platform="${2:-}"; shift 2 ;;
+    --slug) slug="${2:-}"; shift 2 ;;
+    --task-file) task_file="${2:-}"; shift 2 ;;
+    --task-text) task_text="${2:-}"; shift 2 ;;
+    --acceptance) [ -n "${2:-}" ] || { echo '--acceptance requires a criterion' >&2; exit 2; }; acceptance+=("$2"); shift 2 ;;
+    --task-dir) task_dir="${2:-}"; shift 2 ;;
+    --template) template="${2:-}"; shift 2 ;;
+    --domain) domain="${2:-}"; shift 2 ;;
+    --ticket) ticket="${2:-}"; shift 2 ;;
+    --source-ref) source_ref="${2:-}"; shift 2 ;;
+    --title) title="${2:-}"; shift 2 ;;
+    --resume-task-dir) resume_task_dir="${2:-}"; shift 2 ;;
+    --harness-choice) harness_choice="${2:-}"; shift 2 ;;
+    --prepare) prepare="true"; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Unknown arg: $1" >&2; usage; exit 2 ;;
+  esac
+done
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+detect_platform="$script_dir/detect-platform"
+resolve_harness="$script_dir/resolve-harness"
+
+if [ -n "$resume_task_dir" ]; then
+  resume_task_dir="$(cd "$resume_task_dir" && pwd)"
+  # CHECKLIST.md is the task-dir contract: a regular, non-symlink file directly
+  # inside the task directory. Nothing else may stand in for it on resume.
+  resume_checklist="$resume_task_dir/CHECKLIST.md"
+  if [ ! -f "$resume_checklist" ] || [ -L "$resume_checklist" ]; then
+    echo "Task checklist target is invalid or missing: $resume_task_dir" >&2
+    exit 1
+  fi
+  # A hosting workflow may have produced TASK/CHECKLIST through the shared
+  # producer without this skill's task-local harness binding. Preserve both
+  # documents and any existing lock; only a missing lock permits bootstrap.
+  if [ -e "$resume_task_dir/artifacts/harness-provenance.json" ]; then
+    resume_lock_kind="$(node "$script_dir/verify-harness.mjs" "$resume_task_dir")"
+  else
+    "$resolve_harness" "$resume_task_dir" >/dev/null
+    resume_lock_kind=""
+  fi
+  # Preserve existing retained commands; provide the missing runtime front door.
+  if [ "$resume_lock_kind" != "task-retained" ] || { [ ! -e "$resume_task_dir/mm-harness" ] && [ ! -L "$resume_task_dir/mm-harness" ]; }; then
+    "$resolve_harness" "$resume_task_dir" --verify-only >/dev/null
+    "$script_dir/create-harness-runner" "$resume_task_dir" >/dev/null
+  fi
+  printf '%s\n' "$resume_checklist"
+  exit 0
+fi
+
+if [ -z "$platform" ]; then
+  platform="$("$detect_platform")" || {
+    echo "init-template: pass --platform mobile|extension|core (auto-detect failed)" >&2
+    exit 2
+  }
+fi
+
+case "$task_kind" in dev|fix-bug|review-pr|qa) ;; *) echo "--task-kind must be dev, fix-bug, review-pr, or qa" >&2; exit 2 ;; esac
+case "$platform" in mobile|extension|core) ;; *) echo "--platform must be mobile, extension, or core" >&2; exit 2 ;; esac
+case "$harness_choice" in ""|1) ;; *) echo "--harness-choice must be 1" >&2; exit 2 ;; esac
+if { [ "$task_kind" = "review-pr" ] || [ "$task_kind" = "qa" ]; } && [ "$prepare" = "true" ]; then
+  echo "$task_kind must materialize without --prepare; freeze scope before runtime preparation" >&2
+  exit 2
+fi
+if [ -n "$domain" ] &&
+  ! [[ "$domain" =~ ^[a-z0-9]$|^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$ ]]; then
+  echo "--domain must match ^[a-z0-9]([a-z0-9-]{0,62}[a-z0-9])?$" >&2
+  exit 2
+fi
+
+if [ "$task_kind" = "qa" ]; then
+  template_id="${template:-qa/default}"
+else
+  template_id="${template:-$task_kind/$platform}"
+fi
+if [ "$task_kind" = "review-pr" ]; then
+  if [ -z "$template" ]; then
+    echo "Static review requires an explicit --template ID from the team's catalog; runtime PR validation uses --task-kind qa." >&2
+    exit 2
+  fi
+fi
+
+if [ -n "$task_file" ]; then
+  [ -f "$task_file" ] || { echo "Task file not found: $task_file" >&2; exit 1; }
+  # A task file is its own source of record when the caller names none.
+  [ -n "$source_ref" ] || source_ref="$(basename "$task_file")"
+fi
+
+safe_slug="$(printf '%s' "$slug" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9._-]+/-/g; s/^-+//; s/-+$//')"
+[ -n "$safe_slug" ] || safe_slug="task"
+if [ -z "$task_dir" ]; then
+  ts="$(date -u +%Y%m%dT%H%M%SZ)"
+  task_dir="temp/tasks/recipe-cook/${ts}-${safe_slug}"
+fi
+[ -n "$title" ] || title="$safe_slug"
+created_task_dir="false"
+if [ ! -d "$task_dir" ]; then created_task_dir="true"; fi
+mkdir -p "$task_dir"
+out="$task_dir/CHECKLIST.md"
+task_document_path="$task_dir/TASK.md"
+
+# The task document refers to itself by its repo-relative path when it has one.
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+absolute_task_dir="$(cd "$task_dir" && pwd)"
+case "$absolute_task_dir" in
+  "$repo_root"/*) task_dir_label="${absolute_task_dir#"$repo_root"/}" ;;
+  *) task_dir_label="$absolute_task_dir" ;;
+esac
+
+# Resolve and record the exact harness before producing the task. The task
+# directory remains on disk when resolution stops for the required one-character
+# human choice.
+resolve_args=("$task_dir")
+[ -z "$harness_choice" ] || resolve_args+=(--choice "$harness_choice")
+if ! harness="$("$resolve_harness" "${resolve_args[@]}")"; then
+  resume_args=(
+    --task-kind "$task_kind"
+    --platform "$platform"
+    --task-dir "$task_dir"
+    --template "$template_id"
+    --title "$title"
+  )
+  [ -z "$task_file" ] || resume_args+=(--task-file "$task_file")
+  [ -z "$task_text" ] || resume_args+=(--task-text "$task_text")
+  for criterion in "${acceptance[@]-}"; do
+    [ -z "$criterion" ] || resume_args+=(--acceptance "$criterion")
+  done
+  [ -z "$domain" ] || resume_args+=(--domain "$domain")
+  [ -z "$ticket" ] || resume_args+=(--ticket "$ticket")
+  [ -z "$source_ref" ] || resume_args+=(--source-ref "$source_ref")
+  [ "$prepare" != "true" ] || resume_args+=(--prepare)
+  # Keep the human-choice flag last so the printed command ends with it.
+  resume_args+=(--harness-choice 1)
+  echo "After a NEW human reply of 1, run exactly:" >&2
+  printf '%q' "$script_dir/init-template" >&2
+  printf ' %q' "${resume_args[@]}" >&2
+  printf '\n' >&2
+  exit 1
+fi
+
+# The harness owns task-directory production: TASK.md, CHECKLIST.md, the mark
+# shim, and the inputs/ handoff files.
+init_args=(
+  task init "$task_dir"
+  --flow "$task_kind"
+  --platform "$platform"
+  --template "$template_id"
+  --title "$title"
+  --task-dir-label "$task_dir_label"
+  # Route marks through the task-local front door instead of the resolved
+  # executable: it re-runs `resolve-harness --verify-only`, so a tampered or
+  # drifted harness is refused at mark time.
+  --mark-command '"$DIR/mm-harness" checklist mark'
+)
+[ -z "$domain" ] || init_args+=(--domain "$domain")
+[ -z "$ticket" ] || init_args+=(--ticket "$ticket")
+[ -z "$source_ref" ] || init_args+=(--source-ref "$source_ref")
+for criterion in "${acceptance[@]-}"; do
+  [ -z "$criterion" ] || init_args+=(--acceptance "$criterion")
+done
+# --task-file is the authoritative description when both are given; --task-text
+# is the conversational form used when there is no file.
+if [ -n "$task_file" ]; then
+  init_args+=(--task-file "$task_file")
+elif [ -n "$task_text" ]; then
+  init_args+=(--task-text "$task_text")
+fi
+# Stable task-local front door for every checklist command. It exists before
+# the harness writes the mark shim that routes through it.
+"$script_dir/create-harness-runner" "$task_dir" >/dev/null
+
+if "$script_dir/template-command" "$harness" "${init_args[@]}" >/dev/null; then
+  :
+else
+  init_status=$?
+  if [ "$created_task_dir" = "true" ]; then rm -rf "$task_dir"; fi
+  exit "$init_status"
+fi
+
+
+if [ "$prepare" = "true" ]; then
+  "$script_dir/prepare-sandbox" "$task_dir" --platform "$platform"
+fi
+
+printf '%s\n' "$out"

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+task_dir="${1:?usage: acceptance-cli <task-dir> <command> [args...]}"
+shift
+
+harness="$("$script_dir/resolve-harness" "$task_dir" --verify-only)"
+cli="$(node -p 'require.resolve("@farmslot/agent-runtime/scripts/acceptance-cli.cjs", { paths: [require("fs").realpathSync(process.argv[1])] })' "$harness")"
+exec node "$cli" "$@" --task-dir "$task_dir"

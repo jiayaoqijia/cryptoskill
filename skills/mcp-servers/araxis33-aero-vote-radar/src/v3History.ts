@@ -38,6 +38,8 @@ export interface V3HistoryFile {
 export interface V3Pick {
   pool: string;
   per10k: number;
+  /** Rebuilt once from the history for windows before picks were saved (28.10). */
+  rebuilt?: boolean;
 }
 
 /** The pool the page ranks first for 10,000 sAERO, the same figures as its table. */

@@ -6,7 +6,7 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-3572-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-552-f59e0b)]() [![Official](https://img.shields.io/badge/official-1447-22c55e)]() [![Categories](https://img.shields.io/badge/categories-14-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-3579-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-552-f59e0b)]() [![Official](https://img.shields.io/badge/official-1454-22c55e)]() [![Categories](https://img.shields.io/badge/categories-14-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
 
@@ -23,9 +23,9 @@ A developer building a crypto AI agent today has to hunt through Binance's repo,
 
 CryptoSkill is the crypto-native answer:
 
-- **3572 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
+- **3579 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
 - **552 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
-- **1447 official skills** according to the recorded source classification (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
+- **1454 official skills** according to the recorded source classification (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
 - **Quality scored** -- every skill rated 0-100 across documentation, security, and depth
 - **Security-scanned** -- credential detection (160+ patterns), code safety, permission analysis
 - **Auto-updated** -- a scheduled workflow refreshes recorded sources every 6 hours, rescores skills, and reports failed or blocked updates
@@ -43,7 +43,7 @@ CryptoSkill is the crypto-native answer:
 | Chains | 198 |
 | Dev Tools | 189 |
 | Analytics | 145 |
-| Wallets | 131 |
+| Wallets | 138 |
 | Prediction Markets | 75 |
 | Identity | 37 |
 | Social | 15 |
@@ -66,11 +66,11 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 | Grade | Score | Skills | Meaning |
 |-------|-------|--------|---------|
 | **A** | 80-100 | 20 | Production-ready, well-documented, secure |
-| **B** | 60-79 | 849 | Good quality, minor gaps |
-| **C** | 40-59 | 2698 | Usable but significant gaps |
+| **B** | 60-79 | 853 | Good quality, minor gaps |
+| **C** | 40-59 | 2701 | Usable but significant gaps |
 | **D** | 20-39 | 5 | Minimal quality, use with caution |
 
-**Risk Gate**: 99% pass (3545/3572). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
+**Risk Gate**: 99% pass (3552/3579). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
 
 ## MCP Servers
 

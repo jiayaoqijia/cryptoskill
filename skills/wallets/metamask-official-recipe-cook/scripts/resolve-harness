@@ -1,0 +1,390 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=harness-package-policy
+source "$script_dir/harness-package-policy"
+
+task_dir="${1:-}"
+[ -n "$task_dir" ] || { echo "usage: resolve-harness <task-dir> [--choice 1|2] [--verify-only]" >&2; exit 2; }
+shift
+choice=""
+verify_only=false
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --choice) choice="${2:-}"; shift 2 ;;
+    --verify-only) verify_only=true; shift ;;
+    *) echo "resolve-harness: unknown argument: $1" >&2; exit 2 ;;
+  esac
+done
+case "$choice" in ""|1|2) ;; *) echo "resolve-harness: --choice must be 1 or 2" >&2; exit 2 ;; esac
+
+if [ "$choice" = "2" ]; then
+  echo "resolve-harness: stopped without installing." >&2
+  exit 1
+fi
+
+task_dir="$(cd "$task_dir" && pwd)"
+artifacts="$task_dir/artifacts"
+receipt="$artifacts/harness-provenance.json"
+prefix="$task_dir/.mm-harness"
+mkdir -p "$artifacts"
+
+# Hosted receipts identify the task CLI; the selected runtime is a separate retained input.
+if [ -f "$receipt" ] && [ "$(node -e 'process.stdout.write(JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")).source?.kind || "")' "$receipt")" = task-retained ]; then
+  exec node "$script_dir/verify-harness.mjs" "$task_dir" --runtime
+fi
+
+inspect_executable() {
+  node - "$1" "$HARNESS_PACKAGE_NAME" "${2:-}" "$receipt" <<'NODE'
+const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
+const { createRequire } = require('node:module');
+const { spawnSync } = require('node:child_process');
+
+const [candidate, expectedName, expectedVersion, receiptPath] = process.argv.slice(2);
+let executable;
+try {
+  executable = fs.realpathSync(candidate);
+  fs.accessSync(executable, fs.constants.X_OK);
+} catch {
+  console.error(`resolve-harness: candidate is not executable: ${candidate}`);
+  process.exit(1);
+}
+
+let packageRoot = path.dirname(executable);
+let packageJson;
+while (true) {
+  const packagePath = path.join(packageRoot, 'package.json');
+  try {
+    const candidatePackage = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+    if (candidatePackage.name === expectedName) {
+      packageJson = candidatePackage;
+      break;
+    }
+  } catch {}
+  const parent = path.dirname(packageRoot);
+  if (parent === packageRoot) break;
+  packageRoot = parent;
+}
+
+if (!packageJson) {
+  const identity = packageJson ? `${packageJson.name}@${packageJson.version ?? 'unknown'}` : 'unknown package';
+  const supported = expectedVersion ? `${expectedName}@${expectedVersion}` : expectedName;
+  console.error(`resolve-harness: refused ${identity}; expected ${supported}.`);
+  process.exit(1);
+}
+if (expectedVersion && packageJson.version !== expectedVersion) {
+  console.error(`resolve-harness: recommended harness ${expectedVersion}; using ${packageJson.version}.`);
+}
+
+// External runner bookkeeping is mutable state, not shipped harness implementation.
+const isRunnerState = (name) => name === '.omc' || name === '.omx';
+const treeHash = crypto.createHash('sha256');
+const addTreeEntry = (absolute, relative) => {
+  let stat;
+  try {
+    stat = fs.lstatSync(absolute);
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      treeHash.update(`missing\0${relative}\0`);
+      return;
+    }
+    throw error;
+  }
+  if (stat.isDirectory()) {
+    treeHash.update(`directory\0${relative}\0`);
+    for (const name of fs.readdirSync(absolute).sort()) {
+      if (isRunnerState(name)) continue;
+      addTreeEntry(path.join(absolute, name), `${relative}/${name}`);
+    }
+  } else if (stat.isSymbolicLink()) {
+    treeHash.update(`symlink\0${relative}\0${fs.readlinkSync(absolute)}\0`);
+  } else if (stat.isFile()) {
+    treeHash.update(`file\0${relative}\0${stat.mode & 0o111 ? 'x' : '-'}\0${stat.size}\0`);
+    treeHash.update(fs.readFileSync(absolute));
+    treeHash.update('\0');
+  } else {
+    treeHash.update(`other\0${relative}\0${stat.mode}\0`);
+  }
+};
+for (const relative of ['package.json', 'bin', 'dist', 'adapters', 'library']) {
+  addTreeEntry(path.join(packageRoot, relative), relative);
+}
+
+const visitedRuntimePackages = new Set();
+const findPackageRoot = (entry, expectedName) => {
+  let dir = path.dirname(fs.realpathSync(entry));
+  while (dir !== path.dirname(dir)) {
+    try {
+      const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
+      if (manifest.name === expectedName) return dir;
+    } catch {}
+    dir = path.dirname(dir);
+  }
+  throw new Error(`resolve-harness: could not locate runtime package ${expectedName}`);
+};
+const addRuntimePackage = (runtimeRoot) => {
+  const realRoot = fs.realpathSync(runtimeRoot);
+  if (visitedRuntimePackages.has(realRoot)) return;
+  visitedRuntimePackages.add(realRoot);
+  const manifest = JSON.parse(fs.readFileSync(path.join(realRoot, 'package.json'), 'utf8'));
+  const label = `${manifest.name}@${manifest.version ?? 'unknown'}`;
+  const addRuntimeEntry = (absolute, relative) => {
+    const stat = fs.lstatSync(absolute);
+    if (stat.isDirectory()) {
+      treeHash.update(`runtime-directory\0${label}\0${relative}\0`);
+      for (const name of fs.readdirSync(absolute).sort()) {
+        if (name === 'node_modules' || name === '.git' || isRunnerState(name)) continue;
+        addRuntimeEntry(path.join(absolute, name), relative ? `${relative}/${name}` : name);
+      }
+    } else if (stat.isSymbolicLink()) {
+      treeHash.update(`runtime-symlink\0${label}\0${relative}\0${fs.readlinkSync(absolute)}\0`);
+    } else if (stat.isFile()) {
+      treeHash.update(`runtime-file\0${label}\0${relative}\0${stat.mode & 0o111 ? 'x' : '-'}\0${stat.size}\0`);
+      treeHash.update(fs.readFileSync(absolute));
+      treeHash.update('\0');
+    }
+  };
+  addRuntimeEntry(realRoot, '');
+  const requireFromPackage = createRequire(path.join(realRoot, 'package.json'));
+  for (const dependency of Object.keys(manifest.dependencies ?? {}).sort()) {
+    const entry = requireFromPackage.resolve(dependency);
+    addRuntimePackage(findPackageRoot(entry, dependency));
+  }
+};
+try {
+  const requireFromHarness = createRequire(path.join(packageRoot, 'package.json'));
+  addRuntimePackage(findPackageRoot(requireFromHarness.resolve('@farmslot/recipe-cli'), '@farmslot/recipe-cli'));
+} catch (error) {
+  console.error(`resolve-harness: could not lock the recipe validator runtime: ${error.message}`);
+  process.exit(1);
+}
+const packageTreeSha256 = treeHash.digest('hex');
+
+const topLevelResult = spawnSync('git', ['-C', packageRoot, 'rev-parse', '--show-toplevel'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+const isPackageCheckout = topLevelResult.status === 0 && fs.realpathSync(topLevelResult.stdout.trim()) === fs.realpathSync(packageRoot);
+let checkout;
+if (isPackageCheckout) {
+  const receiptRelative = path.relative(packageRoot, path.resolve(receiptPath)).split(path.sep).join('/');
+  const pathspec = ['--', '.', ':(glob,exclude)**/.omc/**', ':(glob,exclude)**/.omx/**'];
+  if (receiptRelative && !receiptRelative.startsWith('../')) pathspec.push(`:(exclude)${receiptRelative}`);
+  const revisionResult = spawnSync('git', ['-C', packageRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  const statusResult = spawnSync('git', ['-C', packageRoot, 'status', '--porcelain=v1', '-z', '--untracked-files=all', ...pathspec], { stdio: ['ignore', 'pipe', 'ignore'] });
+  const diffResult = spawnSync('git', ['-C', packageRoot, 'diff', '--binary', 'HEAD', ...pathspec], { stdio: ['ignore', 'pipe', 'ignore'] });
+  const untrackedResult = spawnSync('git', ['-C', packageRoot, 'ls-files', '--others', '--exclude-standard', '-z', ...pathspec], { stdio: ['ignore', 'pipe', 'ignore'] });
+  if (revisionResult.status !== 0 || statusResult.status !== 0 || diffResult.status !== 0 || untrackedResult.status !== 0) {
+    console.error(`resolve-harness: could not inspect checkout provenance: ${packageRoot}`);
+    process.exit(1);
+  }
+  const workingTreeHash = crypto.createHash('sha256');
+  workingTreeHash.update(statusResult.stdout);
+  workingTreeHash.update(diffResult.stdout);
+  for (const relative of untrackedResult.stdout.toString('utf8').split('\0').filter(Boolean).sort()) {
+    workingTreeHash.update(`untracked\0${relative}\0`);
+    const absolute = path.join(packageRoot, relative);
+    const stat = fs.lstatSync(absolute);
+    workingTreeHash.update(stat.isSymbolicLink() ? fs.readlinkSync(absolute) : fs.readFileSync(absolute));
+    workingTreeHash.update('\0');
+  }
+  workingTreeHash.update(packageTreeSha256);
+  checkout = {
+    revision: revisionResult.stdout.trim(),
+    dirty: statusResult.stdout.length > 0,
+    workingTreeSha256: workingTreeHash.digest('hex'),
+  };
+}
+
+const repository = typeof packageJson.repository === 'string' ? packageJson.repository : packageJson.repository?.url;
+process.stdout.write(JSON.stringify({
+  package: { name: packageJson.name, version: packageJson.version },
+  packageRoot,
+  repository: repository ?? null,
+  resolvedExecutable: executable,
+  entrySha256: crypto.createHash('sha256').update(fs.readFileSync(executable)).digest('hex'),
+  packageTreeSha256,
+  checkout: checkout ?? null,
+}));
+NODE
+}
+
+receipt_executable() {
+  local candidate recorded_version inspection source_kind
+  candidate="${MM_HARNESS_BIN:-$(node -e 'try { process.stdout.write(require(process.argv[1]).resolvedExecutable) } catch { process.exit(1) }' "$receipt")}" || return 1
+  recorded_version="$(node -e 'try { const j=require(process.argv[1]); if(typeof j.package?.version!=="string" || !j.package.version) process.exit(1); process.stdout.write(j.package.version) } catch { process.exit(1) }' "$receipt")" || return 1
+  inspection="$(inspect_executable "$candidate" "$recorded_version")" || return 1
+  if node - "$receipt" "$inspection" <<'NODE'
+const fs = require('node:fs');
+const receipt = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+const current = JSON.parse(process.argv[3]);
+process.exit(receipt.package?.version !== current.package.version || receipt.resolvedExecutable !== current.resolvedExecutable ? 0 : 1);
+NODE
+  then
+    if [ "$verify_only" = true ]; then
+      node -e 'process.stdout.write(JSON.parse(process.argv[1]).resolvedExecutable)' "$inspection"
+      return
+    fi
+    source_kind="$(node -e 'process.stdout.write(require(process.argv[1]).source.kind)' "$receipt")"
+    [ -z "${MM_HARNESS_BIN:-}" ] || source_kind="MM_HARNESS_BIN"
+    record_executable "$candidate" "$source_kind" "" "" "" "$recorded_version"
+    return
+  fi
+  node - "$receipt" "$inspection" <<'NODE'
+const fs = require('node:fs');
+const [receiptPath, inspectionJson] = process.argv.slice(2);
+try {
+  const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+  const current = JSON.parse(inspectionJson);
+  const checkoutMatches = current.checkout
+    ? receipt.source?.revision === current.checkout.revision
+      && receipt.source?.dirty === current.checkout.dirty
+      && receipt.source?.workingTreeSha256 === current.checkout.workingTreeSha256
+    : receipt.source?.revision === undefined
+      && receipt.source?.dirty === undefined
+      && receipt.source?.workingTreeSha256 === undefined;
+  if (receipt.package?.name !== current.package.name
+      || receipt.package?.version !== current.package.version
+      || fs.realpathSync(receipt.source?.packageRoot) !== current.packageRoot
+      || receipt.resolvedExecutable !== current.resolvedExecutable
+      || receipt.entrySha256 !== current.entrySha256
+      || receipt.packageTreeSha256 !== current.packageTreeSha256
+      || !checkoutMatches) process.exit(1);
+  process.stdout.write(current.resolvedExecutable);
+} catch {
+  process.exit(1);
+}
+NODE
+}
+
+record_executable() {
+  local executable="$1"
+  local source_kind="$2"
+  local integrity="${3:-}"
+  local registry_source="${4:-}"
+  local requested_spec="${5:-}"
+  local expected_version="${6:-}"
+  local inspection
+  inspection="$(inspect_executable "$executable" "$expected_version")" || return 1
+  node - "$inspection" "$receipt" "$source_kind" "$integrity" "$registry_source" "$requested_spec" <<'NODE'
+const fs = require('node:fs');
+const path = require('node:path');
+const [inspectionJson, receiptPath, sourceKind, integrity, registrySource, requestedSpec] = process.argv.slice(2);
+const inspection = JSON.parse(inspectionJson);
+const source = { kind: sourceKind, packageRoot: inspection.packageRoot };
+if (inspection.repository) source.repository = inspection.repository;
+if (inspection.checkout) Object.assign(source, inspection.checkout);
+if (registrySource) source.registry = registrySource;
+if (integrity) source.integrity = integrity;
+if (requestedSpec) source.requested = requestedSpec;
+
+const value = {
+  schemaVersion: 1,
+  package: inspection.package,
+  source,
+  resolvedExecutable: inspection.resolvedExecutable,
+  entrySha256: inspection.entrySha256,
+  packageTreeSha256: inspection.packageTreeSha256,
+  recordedAt: new Date().toISOString(),
+};
+fs.mkdirSync(path.dirname(receiptPath), { recursive: true });
+const temporary = `${receiptPath}.${process.pid}.tmp`;
+fs.writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 });
+fs.renameSync(temporary, receiptPath);
+process.stdout.write(inspection.resolvedExecutable);
+NODE
+}
+
+
+if [ "$verify_only" = true ]; then
+  if [ -f "$receipt" ] && resolved="$(receipt_executable)"; then
+    printf '%s\n' "$resolved"
+    exit 0
+  fi
+  echo "resolve-harness: harness provenance is missing, stale, or invalid." >&2
+  exit 1
+fi
+
+if [ -f "$receipt" ]; then
+  if resolved="$(receipt_executable)"; then
+    printf '%s\n' "$resolved"
+    exit 0
+  fi
+  echo "resolve-harness: existing harness provenance is stale or invalid; resolving again." >&2
+fi
+
+if [ -n "${MM_HARNESS_BIN:-}" ]; then
+  if [ ! -x "$MM_HARNESS_BIN" ]; then
+    echo "resolve-harness: MM_HARNESS_BIN is not executable: $MM_HARNESS_BIN" >&2
+  elif resolved="$(record_executable "$MM_HARNESS_BIN" "MM_HARNESS_BIN")"; then
+    printf '%s\n' "$resolved"
+    exit 0
+  fi
+fi
+
+# An explicit --choice 1 asks for the pinned task-local install even when PATH has a harness.
+if [ "$choice" != "1" ] && candidate="$(command -v mm-harness 2>/dev/null)"; then
+  if resolved="$(record_executable "$candidate" "PATH")"; then
+    printf '%s\n' "$resolved"
+    exit 0
+  fi
+fi
+
+if [ "$choice" = "1" ]; then
+  command -v npm >/dev/null 2>&1 || { echo "resolve-harness: npm is required for the supported task-local install." >&2; exit 1; }
+  mkdir -p "$prefix"
+  if [ ! -f "$prefix/package.json" ]; then
+    node -e 'require("fs").writeFileSync(process.argv[1], "{\"private\":true}\n", { mode: 0o600 })' "$prefix/package.json"
+  fi
+  npm install --prefix "$prefix" --save-exact --ignore-scripts --package-lock=true --prefer-online --fund=false --audit=false "$HARNESS_PACKAGE_SPEC" >&2
+  installed="$prefix/node_modules/.bin/mm-harness"
+  [ -x "$installed" ] || { echo "resolve-harness: task-local install did not provide an executable mm-harness." >&2; exit 1; }
+  metadata="$(node - "$prefix/package.json" "$prefix/package-lock.json" "$HARNESS_PACKAGE_NAME" <<'NODE'
+const fs = require('node:fs');
+const [manifestPath, lockPath, packageName] = process.argv.slice(2);
+let item = {};
+try {
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
+  const manifestVersion = manifest.dependencies?.[packageName];
+  if (typeof manifestVersion === 'string' && manifestVersion) {
+    if (lock.packages && typeof lock.packages === 'object') {
+      const suffix = `node_modules/${packageName}`;
+      const lockVersion = lock.packages['']?.dependencies?.[packageName];
+      const candidates = Object.entries(lock.packages)
+        .filter(([key, value]) => (key === suffix || key.endsWith(`/${suffix}`)) && value?.version === lockVersion)
+        .map(([, value]) => value);
+      if (lockVersion === manifestVersion && candidates.length === 1) item = candidates[0];
+    } else {
+      const legacy = lock.dependencies?.[packageName];
+      if (legacy?.version === manifestVersion) item = legacy;
+    }
+    let resolvedUrl;
+    try { resolvedUrl = new URL(item.resolved); } catch {}
+    if (item.version !== manifestVersion
+        || !resolvedUrl
+        || !['http:', 'https:'].includes(resolvedUrl.protocol)
+        || typeof item.integrity !== 'string'
+        || !/^[a-z0-9]+-[A-Za-z0-9+/]+={0,2}$/u.test(item.integrity)) item = {};
+  }
+} catch {}
+process.stdout.write(`${item.version ?? ''}\n${item.integrity ?? ''}\n${item.resolved ?? ''}`);
+NODE
+)"
+  installed_version="$(printf '%s\n' "$metadata" | sed -n '1p')"
+  integrity="$(printf '%s\n' "$metadata" | sed -n '2p')"
+  registry_source="$(printf '%s\n' "$metadata" | sed -n '3p')"
+  if [ -z "$installed_version" ] || [ -z "$integrity" ] || [ -z "$registry_source" ]; then
+    echo "resolve-harness: task-local pinned install lacks exact version, resolved URL, or integrity in package-lock.json." >&2
+    exit 1
+  fi
+  resolved="$(record_executable "$installed" "task-local-npm" "$integrity" "$registry_source" "$HARNESS_PACKAGE_SPEC" "$installed_version")"
+  printf '%s\n' "$resolved"
+  exit 0
+fi
+
+echo "resolve-harness: no supported mm-harness is available." >&2
+echo "1. Install $HARNESS_PACKAGE_SPEC inside this task only, lock its exact resolution, and continue." >&2
+echo "2. Stop without installing." >&2
+echo "Reply with 1 or 2." >&2
+exit 1

@@ -707,15 +707,20 @@ function arRenderTop(amount) {
 }
 
 const AR_HEADS = [...document.querySelectorAll("#arTable thead th")].map((th) => th.textContent);
-// Open track record: every 47 h back from the last scan, the pool the radar put
+// Open track record: the last three finished 47 h windows on a fixed grid from the
+// first saved pick (AR_RECORD_FROM), so a row changes only when a new window
+// ends, not every hourly scan. Each row: the pool the radar put
 // first for 10,000 sAERO, the daily figure it showed then (times 47/24), and what
 // that pool actually paid over those 47 h. History samples are fees over the
 // trailing 24 h plus incentives, per day for 10,000 sAERO after dilution, so the
 // sample 24 h after the pick covers the first day and the one 47 h after covers
 // the last 23 h. "A typical pool" is the median of the same figure over every
 // pool in the history at the time of the pick. Picks before they were recorded
-// (28.10) are rebuilt from the history the way the radar ranks: the average of
-// the samples 0, 24, 48 and 72 h before, standing in for its 96 h of fees.
+// (28.10) were rebuilt once from the history the way the radar ranks (the average
+// of the samples 0, 24, 48 and 72 h before, standing in for its 96 h of fees) and
+// saved into picks with rebuilt: true, since the history keeps only 7 days and a
+// rebuild done later would drift. The rebuild below stays as a fallback.
+const AR_RECORD_FROM = Date.parse("2026-10-28T22:47:15.785Z");
 function arRenderRecord(h) {
   const at = h.at.map((t) => Date.parse(t)), H = 3600000;
   const near = (t) => {
@@ -729,8 +734,9 @@ function arRenderRecord(h) {
   body.innerHTML = "";
   const heads = [...document.querySelectorAll("#arRecord thead th")].map((th) => th.textContent);
   let rebuilt = false, rows = 0;
+  const done = Math.floor((at[at.length - 1] - AR_RECORD_FROM) / (47 * H));
   for (let n = 1; n <= 3; n++) {
-    const t0 = at[at.length - 1] - 47 * n * H;
+    const t0 = AR_RECORD_FROM + 47 * (done - n) * H;
     const i0 = near(t0), i24 = near(t0 + 24 * H), i47 = near(t0 + 47 * H);
     if (i0 === null || i24 === null || i47 === null) continue;
     let pick = h.picks && h.picks[i0];
@@ -741,8 +747,8 @@ function arRenderRecord(h) {
         const avg = back.reduce((a, i) => a + col[i], 0) / back.length;
         if (!pick || avg > pick.per10k) pick = { pool: k, per10k: avg, rebuilt: true };
       }
-      rebuilt = rebuilt || !!pick;
     }
+    rebuilt = rebuilt || !!(pick && pick.rebuilt);
     const got = pick && paid(pick.pool, i24, i47);
     if (got == null) continue;
     const all = Object.keys(h.pools).filter((k) => h.pools[k][i0] != null).map((k) => paid(k, i24, i47)).filter((x) => x != null).sort((a, b) => a - b);

@@ -14,18 +14,18 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Mystenlabs Accessing Data - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="How to read data from the Sui network. Use when choosing or implementing a data access strategy — queries for on-chain state, indexing pipelines, historical loo">
+  <meta name="description" content="Explains how to read data from Sui and which surface to use — gRPC, GraphQL RPC, the Archival Store, a custom sui-indexer-alt pipeline, or Walrus. Use when the ">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/chains/mystenlabs-accessing-data.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Mystenlabs Accessing Data - CryptoSkill">
-  <meta property="og:description" content="How to read data from the Sui network. Use when choosing or implementing a data access strategy — queries for on-chain state, indexing pipelines, historical loo">
+  <meta property="og:description" content="Explains how to read data from Sui and which surface to use — gRPC, GraphQL RPC, the Archival Store, a custom sui-indexer-alt pipeline, or Walrus. Use when the ">
   <meta property="og:url" content="https://cryptoskill.org/skills/chains/mystenlabs-accessing-data.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mystenlabs Accessing Data - CryptoSkill">
-  <meta name="twitter:description" content="How to read data from the Sui network. Use when choosing or implementing a data access strategy — queries for on-chain state, indexing pipelines, historical loo">
+  <meta name="twitter:description" content="Explains how to read data from Sui and which surface to use — gRPC, GraphQL RPC, the Archival Store, a custom sui-indexer-alt pipeline, or Walrus. Use when the ">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Accessing Data", "description": "How to read data from the Sui network. Use when choosing or implementing a data access strategy — queries for on-chain state, indexing pipelines, historical lookups, event subscriptions, cross-chain reads, or off-chain blob storage. Covers the two live Sui APIs (gRPC and GraphQL RPC), the Archival Store, the General-Purpose Indexer, the `sui-indexer-alt` custom indexing framework, and Walrus for off-chain blobs.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-accessing-data.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Accessing Data", "description": "Explains how to read data from Sui and which surface to use — gRPC, GraphQL RPC, the Archival Store, a custom sui-indexer-alt pipeline, or Walrus. Use when the user asks how to fetch a balance, owned objects, coins, NFTs, transactions or events; subscribe to on-chain activity in real time; read a historical or pruned object version; build a leaderboard, explorer, dashboard or analytics pipeline; where to store an image, video or multi-MB file \"on Sui\"; what the storage fund is; or how to fix code using SuiClient, getFullnodeUrl, JSON-RPC, getBalance, getOwnedObjects or getTransactionBlock. Also use when the request mentions SuiGrpcClient, SuiGraphQLClient, sui-indexer-alt, Archival Store, or Walrus.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-accessing-data.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -65,11 +65,11 @@
       <span class="skill-badge">Chains</span>
       <span>by @mystenlabs</span>
       <span>v1.0.0</span>
-      <span class="skill-badge" style="background:rgba(234,179,8,0.12);color:#eab308">C</span>
+      <span class="skill-badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">B</span>
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-some" title="2 true, 1 unknown of 11 capability flags">2 flags</span>
     </div>
-    <p class="skill-page-desc">How to read data from the Sui network. Use when choosing or implementing a data access strategy — queries for on-chain state, indexing pipelines, historical lookups, event subscriptions, cross-chain reads, or off-chain blob storage. Covers the two live Sui APIs (gRPC and GraphQL RPC), the Archival Store, the General-Purpose Indexer, the `sui-indexer-alt` custom indexing framework, and Walrus for off-chain blobs.</p>
+    <p class="skill-page-desc">Explains how to read data from Sui and which surface to use — gRPC, GraphQL RPC, the Archival Store, a custom sui-indexer-alt pipeline, or Walrus. Use when the user asks how to fetch a balance, owned objects, coins, NFTs, transactions or events; subscribe to on-chain activity in real time; read a historical or pruned object version; build a leaderboard, explorer, dashboard or analytics pipeline; where to store an image, video or multi-MB file &quot;on Sui&quot;; what the storage fund is; or how to fix code using SuiClient, getFullnodeUrl, JSON-RPC, getBalance, getOwnedObjects or getTransactionBlock. Also use when the request mentions SuiGrpcClient, SuiGraphQLClient, sui-indexer-alt, Archival Store, or Walrus.</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/chains/mystenlabs-accessing-data .claude/skills/</code></div>
@@ -84,8 +84,8 @@
 
     <h2>Quality Score</h2>
     <div class="skill-meta" style="margin-top:8px">
-      <span>Score: <strong>58/100</strong></span>
-      <span>Grade: <strong>C</strong></span>
+      <span>Score: <strong>68/100</strong></span>
+      <span>Grade: <strong>B</strong></span>
       <span>Risk Gate: <strong>PASS</strong></span>
     </div>
 

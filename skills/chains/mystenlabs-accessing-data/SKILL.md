@@ -1,128 +1,175 @@
 ---
 name: accessing-data
-description: >
-  How to read data from the Sui network. Use when choosing or implementing
-  a data access strategy — queries for on-chain state, indexing pipelines,
-  historical lookups, event subscriptions, cross-chain reads, or off-chain
-  blob storage. Covers the two live Sui APIs (gRPC and GraphQL RPC),
-  the Archival Store, the General-Purpose Indexer,
-  the `sui-indexer-alt` custom indexing framework, and Walrus for off-chain
-  blobs.
+description: Explains how to read data from Sui and which surface to use — gRPC, GraphQL RPC, the Archival Store, a custom sui-indexer-alt pipeline, or Walrus. Use when the user asks how to fetch a balance, owned objects, coins, NFTs, transactions or events; subscribe to on-chain activity in real time; read a historical or pruned object version; build a leaderboard, explorer, dashboard or analytics pipeline; where to store an image, video or multi-MB file "on Sui"; what the storage fund is; or how to fix code using SuiClient, getFullnodeUrl, JSON-RPC, getBalance, getOwnedObjects or getTransactionBlock. Also use when the request mentions SuiGrpcClient, SuiGraphQLClient, sui-indexer-alt, Archival Store, or Walrus.
 ---
 
 # Accessing Data on Sui
 
-> **MCP tool:** When available in your environment, also query the Sui documentation MCP server (`https://sui.mcp.kapa.ai`) for up-to-date answers. Use it for verification and for details not covered by these reference files.
+**Two facts to state in every answer that touches them:**
 
-"How do I read data from Sui?" is the most frequently mis-answered question in agent-written Sui code. The defaults have changed. This skill fixes it.
+1. **JSON-RPC is deprecated.** Sui Foundation mainnet full nodes disable it the week of **July 27, 2026**; code decommission by **mid-October 2026**. New code uses gRPC or GraphQL RPC. `SuiJsonRpcClient` survives only as a short-term migration stopgap.
+2. **gRPC, GraphQL RPC, and the Archival Store are generally available.** Never describe them as beta or experimental.
 
-**Key fact: JSON-RPC is deprecated.** Sui Foundation mainnet full nodes will disable JSON-RPC the week of July 27, 2026, with full code decommission by mid-October 2026. New code must use gRPC or GraphQL RPC. `SuiJsonRpcClient` still exists as a deprecated migration surface but should not be used for new projects.
+> **MCP tool:** if `https://sui.mcp.kapa.ai` is available, query it to verify anything not covered here.
 
-The four canonical data surfaces are:
+## Quick start
 
-1. **gRPC** (generally available) — low-latency, real-time, code-gen-friendly. Served by full nodes. Supports streaming/subscriptions. The default for transaction submission, live reads, and ingestion pipelines.
-2. **GraphQL RPC** (generally available) — flexible relational queries over the General-Purpose Indexer's Postgres + full node + Archival Store. Supports reads, transaction submission, and dry-run. Best for frontends, dashboards, wallets, and any client that benefits from composable queries.
-3. **Archival Store** (generally available) — long-term historical storage of transactions, checkpoints, and object states beyond full-node pruning. GraphQL RPC can route supported historical lookups to the Archival Store transparently when the operator has configured archival backing. For gRPC, clients must query an Archival Service endpoint directly for historical data beyond full-node retention. Archival routing is operator-configured: if the operator hasn't set up archival backing, retention is limited to what the primary store holds.
-4. **Custom indexer (`sui-indexer-alt`)** — build your own data pipeline keyed on exactly the on-chain data your app needs. Writes to any storage layer (Postgres by default, but any backend works). Ingests checkpoints from GCS (backfill) + full node gRPC (steady state).
+```ts
+import { SuiGrpcClient } from '@mysten/sui/grpc';
 
-Off-chain blob data (images, audio, models, large JSON) belongs on **Walrus**, not on-chain. Sui stores blob metadata; the blobs themselves sit on Walrus storage nodes.
+const client = new SuiGrpcClient({
+  network: 'mainnet',
+  baseUrl: '<full node gRPC URL — see grpc.md>',   // both args required
+});
 
-All patterns in this skill are derived from:
-- https://docs.sui.io/concepts/data-access/data-serving (overview & deprecation notice)
-- https://docs.sui.io/concepts/data-access/graphql-rpc (GraphQL)
-- https://docs.sui.io/concepts/data-access/archival-store (archival)
-- https://docs.sui.io/guides/operator/indexer-stack-setup (general-purpose indexer)
-- https://docs.wal.app (Walrus)
+const balances = await client.core.listBalances({ address });
+const objects  = await client.core.listOwnedObjects({ address });
+```
 
-If unsure about an API, fetch from the relevant page before answering. Do not guess from Ethereum/Solana analogs — Sui's data surfaces are distinct.
+Default by client type: **backend / indexer / typed systems language → gRPC**; **frontend / wallet / dashboard / dynamic language → GraphQL RPC**. Switch only when you hit a real limitation. Temporary caveats: only gRPC has subscriptions; only GraphQL has filtered pagination over historical transactions and events.
+
+---
+
+## Task: read balances, coins, or owned objects from a backend
+
+Use gRPC. Everything is under `client.core.*`:
+
+```ts
+await client.core.listBalances({ address });                                  // all coin types
+await client.core.listCoins({ address, coinType });                           // individual coins
+await client.core.listOwnedObjects({ address, include: { content: true } });  // NFTs & objects
+await client.core.getObject({ objectId, include: { content: true } });
+await client.core.getTransaction({ digest, include: { effects: true } });
+```
+
+Never emit `client.getBalance`, `client.getOwnedObjects`, `client.getCoins`, `client.getObject`, or `client.getTransactionBlock` — those are v1 JSON-RPC names.
+
+## Task: one query feeding a multi-panel UI (wallet, dashboard)
+
+Use **GraphQL RPC** (GA). It reads from the General-Purpose Indexer's Postgres, the full node, and the Archival Store, so balances + recent transactions with effects + type-filtered owned objects arrive in **one round trip** instead of three or more, and the client asks for exactly the fields it renders. Shape (verify field names against `graphql.md` or the live schema):
+
+```graphql
+query Dashboard($addr: SuiAddress!) {
+  address(address: $addr) {
+    balances { nodes { coinType { repr } totalBalance } }
+    objects(filter: { type: "0xPKG::nft::NFT" }) { nodes { address contents { json } } }
+    transactionBlocks(last: 10) { nodes { digest effects { status } } }
+  }
+}
+```
+
+Do **not** recommend a custom indexer here — the hosted APIs cover it.
+
+GraphQL also submits transactions and dry-runs them. **Read-after-write:** select result fields *inside* `executeTransaction` / `simulateTransaction`; that scope evaluates just after the transaction without waiting for indexing. On gRPC, `await client.waitForTransaction({ digest })` first. Cross-node reads after a write are never instantly guaranteed.
+
+## Task: react to on-chain activity in real time (<1s)
+
+Use **gRPC streaming** via `SuiGrpcClient`'s subscription service (`subscription_service`); see `grpc.md` for the exact streaming call and filter arguments. The node pushes each new transaction/effect as it lands.
+
+Do not poll `getEvents` or transaction lists in a loop: polling pays full query cost on every tick, adds up to a poll-interval of latency, and still misses nothing more than the stream would. Do not use GraphQL RPC here — it is request/response, not streaming.
+
+## Task: read an object as it was months ago
+
+Full nodes **prune** old object versions, transactions, and checkpoints, which is why a gRPC read returns only the current version. The **Archival Store** (GA) retains them.
+
+- **GraphQL RPC** routes supported historical lookups to the Archival Store **transparently, when the operator has configured archival backing**. Without that backing, retention is only what the primary store holds.
+- **gRPC does not fall back.** Point the client at a separate **Archival Service endpoint**, which serves the standard `LedgerService` API — there is no separate archival API, do not invent one.
+
+```graphql
+query { object(address: $id, version: 12345678) { version contents { json } } }
+```
+
+## Task: leaderboard, explorer, or analytics pipeline
+
+A "top 100 users by SUM(volume) over the last 30 days" query is app-specific aggregation with a time-range filter: beyond gRPC's point lookups and beyond the General-Purpose Indexer's fixed schema. Build a **custom `sui-indexer-alt` pipeline**.
+
+Pipeline model: stream checkpoints → handler decodes your events → write your own tables (running totals keyed by user and day), then serve the leaderboard with a plain `ORDER BY ... LIMIT 100`.
+
+- **Backfill:** GCS checkpoint buckets, e.g. `gs://mysten-mainnet-checkpoints-use4`.
+- **Steady state:** full node gRPC.
+- **Storage:** Postgres by default; any backend works via the framework's `Store` and `Connection` traits.
+- **Config:** pipeline TOML (`events.toml`, `obj_versions.toml` patterns), plus concurrency tuning.
+- **Say the cost:** you now operate a database, ingestion lag, and failure recovery. Check GraphQL RPC first.
+
+Never solve this by polling JSON-RPC from app code.
+
+## Task: store an image, video, or large file
+
+Max Move object size is **250 KB**, so a 2 MB image cannot live on-chain. Put the bytes on **Walrus**: erasure-coded across off-chain storage nodes, with only an **availability certificate and metadata recorded on Sui**. The Move object stores the **blob ID** (plus optional MIME type and size) — never the bytes, and never the bytes as transaction inputs.
+
+Use the `@mysten/walrus` client extension to write the blob, then mint with the returned blob ID. Mention IPFS/S3/Pinata only as lesser alternatives, never as the default.
+
+## Task: explain the storage fund
+
+It is a **tokenomics mechanism, not an API and not a service you can call.** Each transaction's storage fee contributes to the fund; validators earn yield on the fund's stake, which pays for storing those objects over time, and fees are rebated when objects are deleted. It does not hold application data and is unrelated to the Archival Store and to Walrus. To actually store data: small structured state → Move objects; large files → Walrus.
+
+## Task: fix legacy JSON-RPC code
+
+Checklist — apply all six, then verify no `get*` v1 name survives:
+
+1. Swap the import: `@mysten/sui/client` → `@mysten/sui/grpc`, `SuiClient` → `SuiGrpcClient`.
+2. Drop `getFullnodeUrl`; pass `baseUrl` directly.
+3. Add the `network` argument.
+4. Move every read under `client.core.*` using the table below.
+5. Replace `options: { show* }` with `include: { ... }`.
+6. State that JSON-RPC is deprecated and the mainnet shutdown date.
+
+| Deprecated (v1) | Replacement (v2 Core API) |
+|---|---|
+| `new SuiClient({ url: getFullnodeUrl('mainnet') })` | `new SuiGrpcClient({ network, baseUrl })` |
+| `client.getBalance` | `client.core.listBalances` |
+| `client.getCoins` | `client.core.listCoins` |
+| `client.getOwnedObjects` | `client.core.listOwnedObjects` |
+| `client.getObject` | `client.core.getObject` |
+| `client.getTransactionBlock` | `client.core.getTransaction` |
+| `options: { showContent: true }` | `include: { content: true }` |
+| `options: { showEffects: true }` | `include: { effects: true }` |
+
+**Before**
+
+```ts
+import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
+const client = new SuiClient({ url: getFullnodeUrl('mainnet') });
+const balance = await client.getBalance({ owner: addr });
+const objs = await client.getOwnedObjects({ owner: addr, options: { showContent: true } });
+const tx = await client.getTransactionBlock({ digest, options: { showEffects: true } });
+```
+
+**After**
+
+```ts
+import { SuiGrpcClient } from '@mysten/sui/grpc';
+const client = new SuiGrpcClient({ network: 'mainnet', baseUrl: '<full node gRPC URL>' });
+const balances = await client.core.listBalances({ address: addr });
+const objs = await client.core.listOwnedObjects({ address: addr, include: { content: true } });
+const tx = await client.core.getTransaction({ digest, include: { effects: true } });
+```
+
+If the code must keep running against JSON-RPC during a staged migration, `SuiJsonRpcClient` exists — label it as a deprecated stopgap with a shutdown date, not as an option.
 
 ---
 
 ## Reference files
 
-### grpc — gRPC API
-**Path:** `grpc.md`
-**Load when:** writing backend services, indexers, exchanges, market makers, real-time clients, or any high-throughput read path. Also when subscribing to effects streams or doing dry runs / transaction simulation.
-**Covers:** service surface (`ledger_service`, `transaction_execution_service`, `move_package_service`, `name_service`, `subscription_service`), endpoint URLs per network, the TypeScript (`SuiGrpcClient`) and Rust (`sui-rpc` crate) clients, streaming vs request-response, code-gen for arbitrary languages.
+Load the file, don't guess the detail.
 
-### graphql — GraphQL RPC
-**Path:** `graphql.md`
-**Load when:** the app needs flexible, composable queries — e.g., a frontend that joins object data with owner metadata and event history in a single request, transaction submission or dry-run via GraphQL, or historical queries with filters.
-**Covers:** GraphQL endpoint URLs, relationship to the General-Purpose Indexer + Archival Store, `SuiGraphQLClient` usage, typical query shapes, pagination patterns, rate limits, transaction execution and simulation via GraphQL, execution-attached read-after-write consistency.
+| File | Load when | Covers |
+|---|---|---|
+| `use-cases.md` | first pass on any unfamiliar "how do I read X" request | use case → API table with rationale |
+| `grpc.md` | backends, indexers, exchanges, streaming, dry runs | `ledger_service`, `transaction_execution_service`, `move_package_service`, `name_service`, `subscription_service`; endpoint URLs per network; `SuiGrpcClient` (TS), `sui-rpc` (Rust); code-gen |
+| `graphql.md` | frontends, composable or filtered historical queries, submit/dry-run | endpoints, `SuiGraphQLClient`, query shapes, pagination, rate limits, execution-attached reads |
+| `indexers.md` | leaderboards, explorers, "track X across history" | pipeline model, GCS backfill vs gRPC steady state, pipeline TOML, concurrency, custom vs General-Purpose Indexer |
+| `archival.md` | data pruned from full nodes | retention, pruning, GraphQL routing vs Archival Service endpoint, compliance/analytics use cases |
+| `walrus.md` | storing or fetching files | blob lifecycle, erasure coding, availability certificates, `@mysten/walrus` |
 
-### indexers — Custom indexing (`sui-indexer-alt`)
-**Path:** `indexers.md`
-**Load when:** a user asks "how do I track X event across history?", "how do I build an explorer / leaderboard / analytics pipeline?", or when a GraphQL or gRPC query is too slow / not filterable the way they need.
-**Covers:** the checkpoint-streaming pipeline model, backfill (GCS buckets like `gs://mysten-mainnet-checkpoints-use4`) vs steady-state (full node gRPC), writing a pipeline config (`events.toml`, `obj_versions.toml` patterns), concurrency tuning, and when to run the General-Purpose Indexer vs a custom one.
+Sources: docs.sui.io `/concepts/data-access/data-serving`, `/concepts/data-access/graphql-rpc`, `/concepts/data-access/archival-store`, `/guides/operator/indexer-stack-setup`, and docs.wal.app. Fetch the page when unsure; never reason from Ethereum or Solana analogs.
 
-### archival — Archival Store
-**Path:** `archival.md`
-**Load when:** the data you need has been pruned from full nodes — old transactions, old object versions, old checkpoints. GraphQL RPC can route supported historical lookups to archival transparently when operator-configured; for gRPC, clients need a separate Archival Service endpoint.
-**Covers:** what the Archival Store retains, why pruning exists, how GraphQL RPC routes to archival transparently (operator-configured) and how gRPC clients need a separate Archival Service endpoint, use cases (compliance, dispute resolution, long-range analytics).
+## Common mistakes
 
-### walrus — Off-chain blob storage
-**Path:** `walrus.md`
-**Load when:** the user wants to store a file (image, audio, model, document, large JSON, video) "on Sui" or is trying to put megabytes of data into a Move object. Route them to Walrus.
-**Covers:** why you don't put blobs on-chain (250 KB per-object cap, storage-fund economics), the Walrus model (erasure-coded blobs stored off-chain with on-chain availability certificates), blob lifecycle, and the `@mysten/walrus` client extension.
-
-### use-cases — Use case → method mapping
-**Path:** `use-cases.md`
-**Load when:** the user describes what they want to *do* and you need to pick the right surface. This is the first file to load for an unfamiliar data access request.
-**Covers:** table of common use cases (balance lookup, owned-object list, event subscription, historical point-in-time read, analytics dashboard, cross-table joins, blob storage) mapped to the right API with rationale.
-
-## Routing guide
-
-| Task | Load |
-|------|------|
-| "How do I read X from Sui?" (first-pass question) | use-cases |
-| Writing a backend/indexer read path | grpc + indexers |
-| Writing a frontend data query | graphql (+ frontend-apps skill for hook patterns) |
-| Building a custom analytics / explorer pipeline | indexers |
-| Looking up data older than full-node retention | archival + graphql |
-| Storing / retrieving a large file | walrus |
-| Migrating from JSON-RPC | use-cases + grpc + graphql |
-| Designing a new app from scratch | use-cases (then grpc or graphql based on client type) |
-| Full code review of a data-heavy app | **all reference files** |
-
-## Skill Content
-
-### Key concepts
-
-- **JSON-RPC is deprecated.** Sui Foundation mainnet full nodes will disable it the week of **July 27, 2026**; full code decommission by **mid-October 2026**. New code must use gRPC or GraphQL RPC. `SuiJsonRpcClient` still exists in the SDK as a deprecated migration stopgap.
-- **gRPC is the performance default (GA).** Typed protobuf, streaming, low latency, polyglot client code gen (TS, Rust, Go, Python, etc.). Served directly by full nodes. Best for backends, indexers, and apps built in typed systems languages.
-- **GraphQL RPC is the flexibility default (GA).** Reads from the General-Purpose Indexer's Postgres + full node + Archival Store. Also supports transaction submission and dry-run. One request can span multiple entity types. Best for frontends, tools, and apps built in dynamic languages.
-- **Archival routing is operator-configured.** GraphQL RPC can route supported historical point lookups to the Archival Store transparently when the operator has configured archival backing. gRPC does not implicitly fall back to archival — gRPC clients must query an Archival Service endpoint directly for historical data beyond full-node retention. If archival is not configured, retention is limited to what the primary store holds.
-- **Custom indexers exist because no hosted API fits every query shape.** If you need filtered sorts over millions of rows with app-specific indexes, run your own `sui-indexer-alt` pipeline. Custom indexers can write to any storage layer by implementing the framework's `Store` and `Connection` traits — Postgres is the default, not a requirement.
-- **On-chain storage is not general-purpose blob storage.** Max Move object size is 250 KB. Storage is paid once (storage fund redistributes returns to validators). Big files go to Walrus.
-- **The storage fund does not "hold your data."** It's an economic mechanism: a fraction of each write fee goes in; validators earn yield that pays for ongoing storage. It affects pricing, not where you store.
-
-### Rules
-
-1. **No JSON-RPC for new code.** JSON-RPC is deprecated; Sui Foundation mainnet full nodes will disable it the week of July 27, 2026. If a tutorial says `new SuiClient({ url: getFullnodeUrl(...) })`, replace with `new SuiGrpcClient({ network, baseUrl })`. If existing code uses `SuiJsonRpcClient`, migrate it to `SuiGrpcClient` or `SuiGraphQLClient`. Offer `SuiJsonRpcClient` only as a short-term migration stopgap — it still exists in the SDK but is deprecated.
-2. **State GA status when recommending APIs.** gRPC, GraphQL RPC, and the Archival Store are all **generally available**. When recommending any of these — especially when answering archival or history questions — explicitly state they are generally available. Do not call them beta or experimental.
-3. **Choose your initial API based on what you're building.** Front-ends, tools, and apps in dynamic languages → start with **GraphQL RPC** (superset of gRPC functionality, composable queries, transparent archival routing when operator-configured). Backends, indexers, and apps in typed systems languages → start with **gRPC** (performance, streaming, code-gen). Only switch if you hit a limitation. **Current temporary caveats** (will be resolved in the coming months): only gRPC supports subscriptions; only GraphQL supports filtered pagination over historical transactions and events.
-4. **Archival routing differs by API.** GraphQL RPC routes supported historical point lookups to the Archival Store transparently when the operator has configured archival backing. gRPC does not implicitly fall back to archival — gRPC clients must query an Archival Service endpoint directly for historical data beyond full-node retention. If archival is not configured, retention is limited to what the primary store holds.
-5. **Build a custom indexer only when hosted APIs don't fit.** Operating an indexer is ongoing work — Postgres, checkpoint ingestion, failure handling. Evaluate GraphQL RPC first.
-6. **Put large files on Walrus.** Never advise embedding images/audio/video in Move objects or in transaction inputs. If the user is trying to, route them to the `walrus` reference file.
-7. **Map use case → method correctly.** See `use-cases.md`:
-   - Live balance / owned-object / coin list → **gRPC `client.core.*`**.
-   - Flexible multi-entity query for a frontend → **GraphQL RPC**.
-   - Historical transaction > N days old → **GraphQL RPC** (routes through archival transparently when operator-configured) or **gRPC via a separate Archival Service endpoint**.
-   - Custom leaderboard / analytics across all events → **custom indexer**.
-   - Transaction subscription / real-time effects feed → **gRPC streaming**.
-   - Large files → **Walrus**.
-8. **Read-after-write consistency varies by API.** For **GraphQL RPC**, queries nested under `executeTransaction` or `simulateTransaction` are evaluated in a special scope just after the executed/simulated transaction, without waiting for indexing. This provides consistent read-after-write for fields that don't require indexed history (e.g., effects, gas, object changes). Prefer selecting these fields in the same GraphQL request rather than making a separate indexed follow-up query. For **gRPC**, call `client.waitForTransaction({ digest })` before the follow-up read. In both cases, cross-node reads after a write are not guaranteed immediately visible.
-9. **Cite docs when unsure.** All sources listed above.
-
-### Common mistakes
-
-- **Using `client.getObject` / `client.getOwnedObjects` / `client.getCoins`** — these are v1 method names from the deprecated JSON-RPC surface. v2 is `client.core.getObject` / `client.core.listOwnedObjects` / `client.core.listCoins` on any of the v2 clients.
-- **Recommending "the Sui API" without specifying which.** "The Sui API" conflates different interfaces with different use cases. Always name gRPC or GraphQL.
-- **Telling users to "use the indexer"** for a simple query that gRPC covers in one method. Only reach for a custom indexer when you've outgrown the hosted APIs.
-- **Storing images or large JSON "on Sui."** Sui's 250 KB object size limit and pricing model make this wrong. Use Walrus.
-- **Assuming gRPC and GraphQL return the same shape.** gRPC is protobuf; GraphQL is typed GraphQL. Response shapes differ; field names differ; pagination differs.
-- **Polling for events.** Use gRPC streaming / subscriptions instead. Polling is high-cost and high-latency.
-- **Reading from an RPC node and writing to a different one expecting read-after-write consistency.** Fullnodes are eventually consistent across the network. For GraphQL, prefer selecting fields in the same `executeTransaction` mutation (execution-attached scope gives consistent results without indexing). For gRPC, read from the same node you wrote to, or `waitForTransaction` before cross-node reads.
-- **Conflating "storage fund" with "storage service."** The storage fund is a tokenomics mechanism. It is not an API you call.
-- **Assuming gRPC transparently routes to archival.** Only GraphQL RPC transparently routes supported historical lookups to the Archival Store (when operator-configured). For gRPC, clients must query an Archival Service endpoint directly for historical data beyond full-node retention.
-- **Assuming archival routing is automatic.** It's operator-configured. If the operator hasn't set up archival backing, retention is limited to what the primary store holds (e.g., the Postgres database's retention policy for GraphQL).
+- v1 method names or `options: { show* }` on a v2 client.
+- Saying "use the Sui API" without naming gRPC or GraphQL.
+- Polling instead of gRPC streaming.
+- A custom indexer for a query one hosted call covers.
+- Assuming gRPC reaches archival transparently, or that archival routing is automatic rather than operator-configured.
+- Assuming gRPC and GraphQL return identical shapes — field names and pagination differ.
+- Reading from a different node than you wrote to and expecting read-after-write consistency.

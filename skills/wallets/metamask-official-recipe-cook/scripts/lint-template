@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+skill_dir="$(cd "$script_dir/.." && pwd)"
+target="${1:-$skill_dir/references/templates}"
+harness="${MM_HARNESS_BIN:-}"
+if [ -z "$harness" ]; then harness="$(command -v mm-harness || true)"; fi
+[ -x "$harness" ] || {
+  echo "lint-template: mm-harness is required (set MM_HARNESS_BIN or install it on PATH)" >&2
+  exit 1
+}
+
+exec "$harness" execution-template lint "$target"

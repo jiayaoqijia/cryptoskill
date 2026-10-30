@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
+  echo "Usage: find-package-symbol <package> <symbol> [checkout]" >&2
+  exit 2
+fi
+
+package="$1"
+symbol="$2"
+checkout="${3:-$PWD}"
+
+segment='[a-z0-9][a-z0-9._~-]*'
+if [ "${#package}" -gt 214 ] || [[ ! "$package" =~ ^($segment|@$segment/$segment)$ ]]; then
+  echo "Invalid npm package name: expected name or @scope/name using lowercase npm-safe characters." >&2
+  exit 2
+fi
+
+root="$checkout/node_modules/$package"
+
+if [ ! -d "$root" ]; then
+  echo "Package not installed: $root" >&2
+  exit 1
+fi
+
+matches="$(rg -F -n --no-ignore --max-count 3 \
+  --glob '*.d.ts' --glob '*.d.mts' --glob '*.d.cts' \
+  --glob '*.ts' --glob '*.mts' --glob '*.cts' \
+  --glob '!*.map' -- "$symbol" "$root")" || { status=$?; [ "$status" -eq 1 ] || exit "$status"; }
+printf '%s\n' "$matches" | awk 'NR <= 40'

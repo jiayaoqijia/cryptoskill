@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# Setup check for recipe-backed work. `mm-harness doctor` is the verdict and, from
+# harness 0.55.0, also reports update availability and the installed skill dirs;
+# this script prints doctor's findings and next command verbatim and adds only the
+# comparison against the skill set this repo expects (a warning, never a blocker).
+set -uo pipefail
+
+REQUIRED_SKILLS="mms-recipe-harness mms-recipe-cook mms-recipe-dev mms-recipe-fix-bug mms-recipe-qa mms-recipe-pretty-pr mms-recipe-setup"
+RETIRED_SKILLS="mms-recipe-pr-qa-review mms-recipe-evidence mms-recipe-fixbug mms-recipe-quality"
+
+first_fail=""
+ok()  { printf '%s %s\n' "✓" "$1"; }
+bad() { printf '%s %s\n' "✗" "$1"; [[ -n "$first_fail" ]] || first_fail="$2"; }
+# Warnings never block: the harness works without the skills.
+warnings=""
+warn() { printf '%s %s\n' "!" "$1"; warnings="$warnings $2"; }
+
+# Read one value out of a harness --json payload on stdin. $1 is a JS expression over `j`.
+jvalue() {
+  node -e '
+    let s = "";
+    process.stdin.on("data", d => s += d).on("end", () => {
+      let j;
+      try { j = JSON.parse(s); } catch { process.exit(1); }
+      const v = new Function("j", "return (" + process.argv[1] + ");")(j);
+      process.stdout.write(v == null ? "" : String(v));
+    });' "$1" 2>/dev/null
+}
+
+# The skill installs before the harness does, so a missing binary is step one.
+if ! command -v mm-harness >/dev/null 2>&1; then
+  bad "harness: mm-harness is not on PATH" harness
+  echo "SETUP INCOMPLETE: harness"
+  exit 1
+fi
+
+doctor=$(mm-harness doctor --json 2>/dev/null)
+doctor_status=$(printf '%s' "$doctor" | jvalue 'j.status')
+# A doctor refusal is reported in its own words.
+doctor_error=$(printf '%s' "$doctor" | jvalue 'j.error && (j.error.message + (j.error.userAction ? " — " + j.error.userAction : ""))')
+[[ -n "$doctor_error" ]] && printf '  %s\n' "$doctor_error"
+if [[ "$doctor_status" == "pass" ]]; then
+  ok "doctor pass (mm-harness $(printf '%s' "$doctor" | jvalue 'j.runner && j.runner.version'), $(printf '%s' "$doctor" | jvalue 'j.adapter'))"
+else
+  bad "doctor ${doctor_status:-unavailable}" doctor
+fi
+
+# Doctor's own words — findings and next command, never paraphrased.
+findings=$(printf '%s' "$doctor" | jvalue '(j.checks || []).filter(c => c.status !== "pass").map(c => "  " + c.id + " (" + (c.required ? "required" : "advisory") + "): " + c.message + (c.detail ? " — " + c.detail : "")).join("\n")')
+[[ -n "$findings" ]] && printf '%s\n' "$findings"
+next=$(printf '%s' "$doctor" | jvalue 'j.next')
+[[ -n "$next" ]] && printf '  next: %s\n' "$next"
+
+# Doctor already reports the wallet fixture; read its verdict rather than re-running fixtures.
+fixture_state=$(printf '%s' "$doctor" | jvalue 'j.fixture && j.fixture.status')
+if [[ "$fixture_state" == "ready" ]]; then
+  ok "fixture ready"
+else
+  bad "fixture ${fixture_state:-missing}" fixture
+fi
+
+# Doctor's update verdict (harness >= 0.55.0); older harnesses only get the hint.
+update_line=$(printf '%s' "$doctor" | jvalue '(u => !u ? "" : !u.checked ? "update: not checked" : u.updateAvailable ? "update: " + u.current + " → " + u.latest + " available (mm-harness update)" : u.latest && u.latest !== u.current ? "update: " + u.current + " ahead of registry " + u.latest : "update: " + u.current + " is latest")(j.update)')
+ok "${update_line:-update: not reported by this harness (mm-harness update)}"
+
+# Installed skill dirs as doctor sees them (harness >= 0.55.0); older harnesses: look on disk.
+doctor_skills=$(printf '%s' "$doctor" | jvalue '(j.skills && j.skills.installed || []).join(" ")')
+installed() {
+  if [[ -n "$doctor_skills" ]]; then [[ " $doctor_skills " == *" $1 "* ]]
+  else [[ -d ".claude/skills/$1" || -d ".agents/skills/$1" ]]; fi
+}
+present=0 total=0 missing="" stale=""
+for skill in $REQUIRED_SKILLS; do
+  total=$((total + 1))
+  if installed "$skill"; then present=$((present + 1)); else missing="$missing $skill"; fi
+done
+for skill in $RETIRED_SKILLS; do
+  installed "$skill" && stale="$stale $skill"
+done
+if [[ -z "$missing" && -z "$stale" ]]; then
+  ok "skills $present/$total"
+else
+  warn "skills $present/$total${missing:+ — missing:$missing}${stale:+ — retired:$stale} (yarn skills)" skills
+fi
+
+if [[ -n "$first_fail" ]]; then
+  echo "SETUP INCOMPLETE: $first_fail"
+  exit 1
+fi
+echo "SETUP OK${warnings:+ (warnings:$warnings)}"

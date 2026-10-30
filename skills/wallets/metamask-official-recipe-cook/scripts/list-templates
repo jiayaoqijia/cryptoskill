@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage: list-templates [--task-kind dev|fix-bug|review-pr|qa] [--platform mobile|extension|core] [--domain name] [--templates-dir path] [--json]
+
+Lists compatible recipe-cook execution-template IDs.
+Uses the bundled catalog when mm-harness is not installed.
+Platform defaults to auto-detection from the current checkout.
+USAGE
+}
+
+platform=""
+task_kind=""
+domain=""
+json=false
+extra_sources=()
+extra_source_count=0
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --platform) platform="${2:-}"; shift 2 ;;
+    --task-kind) task_kind="${2:-}"; shift 2 ;;
+    --domain) domain="${2:-}"; shift 2 ;;
+    --templates-dir) extra_sources+=(--dir "${2:-}"); extra_source_count=$((extra_source_count + 1)); shift 2 ;;
+    --json) json=true; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Unknown arg: $1" >&2; usage; exit 2 ;;
+  esac
+done
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -z "$platform" ]; then
+  platform="$("$script_dir/detect-platform")" || {
+    echo "list-templates: pass --platform mobile|extension|core (auto-detect failed)" >&2
+    exit 2
+  }
+fi
+case "$platform" in mobile|extension|core) ;; *) echo "--platform must be mobile, extension, or core" >&2; exit 2 ;; esac
+case "$task_kind" in ""|dev|fix-bug|review-pr|qa) ;; *) echo "--task-kind must be dev, fix-bug, review-pr, or qa" >&2; exit 2 ;; esac
+
+harness="${MM_HARNESS_BIN:-}"
+if [ -z "$harness" ]; then harness="$(command -v mm-harness || true)"; fi
+if [ -n "${MM_HARNESS_BIN:-}" ] && [ ! -x "$harness" ]; then
+  echo "list-templates: mm-harness is required (set MM_HARNESS_BIN or install it on PATH)" >&2
+  exit 1
+fi
+
+if [ -x "$harness" ]; then
+  command_args=(list --platform "$platform" --json)
+  [ -z "$task_kind" ] || command_args+=(--flow "$task_kind")
+  [ -z "$domain" ] || command_args+=(--domain "$domain")
+  if [ "$extra_source_count" -gt 0 ]; then
+    command_args+=("${extra_sources[@]}")
+  fi
+  result="$("$script_dir/template-command" "$harness" "${command_args[@]}")"
+else
+  if [ "$extra_source_count" -gt 0 ] ||
+    [ -n "${RECIPE_COOK_TEMPLATES_DIRS:-}" ] ||
+    [ -n "${RECIPE_LIBRARY_PATH:-}" ]; then
+    echo "list-templates: mm-harness is required to discover external template sources" >&2
+    exit 1
+  fi
+  templates_dir="$(cd "$script_dir/../references/templates" && pwd)"
+  result="$(node - "$templates_dir" "$platform" "$task_kind" <<'NODE'
+const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
+const [root, platform, requestedFlow] = process.argv.slice(2);
+const templates = [];
+for (const flow of fs.readdirSync(root).sort()) {
+  const flowRoot = path.join(root, flow);
+  if (!fs.statSync(flowRoot).isDirectory() || (requestedFlow && flow !== requestedFlow)) continue;
+  for (const file of fs.readdirSync(flowRoot).filter((name) => name.endsWith('.md')).sort()) {
+    const text = fs.readFileSync(path.join(flowRoot, file), 'utf8');
+    const stem = file.slice(0, -3);
+    const platforms = text.match(/^platforms:\s*\[([^\]]+)\]/mu)?.[1]
+      .split(',')
+      .map((item) => item.trim()) ?? ['*'];
+    if (!platforms.includes('*') && !platforms.includes(platform)) continue;
+    templates.push({
+      id: `${flow}/${stem}`,
+      title: text.match(/^#\s+(.+)$/mu)?.[1] ?? stem,
+      description: text.match(/^description:\s*(.+)$/mu)?.[1]?.trim(),
+      flow,
+      platforms,
+      labels: [],
+      relativePath: `${flow}/${file}`,
+      sourceId: 'package:consensys-recipe-cook',
+      sourceKind: 'package',
+      sha256: crypto.createHash('sha256').update(text).digest('hex'),
+    });
+  }
+}
+process.stdout.write(JSON.stringify({ templates }));
+NODE
+)"
+fi
+
+if [ "$json" = true ]; then
+  printf '%s\n' "$result"
+  exit 0
+fi
+
+template_count="$(printf '%s' "$result" | node -e '
+let input = "";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", (chunk) => { input += chunk; });
+process.stdin.on("end", () => {
+  const templates = JSON.parse(input).templates ?? [];
+  process.stdout.write(String(templates.filter((item) => !item.shadowedBy).length));
+});
+')"
+printf '%s' "$result" | node -e '
+let input = "";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", (chunk) => { input += chunk; });
+process.stdin.on("end", () => {
+  const templates = JSON.parse(input).templates ?? [];
+  templates.forEach((item, index) => {
+    const platforms = item.platforms.join(",");
+    const shadow = item.shadowedBy ? `; shadowed by ${item.shadowedBy}` : "";
+    process.stdout.write(`${index + 1}. ${item.id} — ${item.title} (${platforms}; ${item.sourceId}${shadow})\n`);
+    if (item.description) process.stdout.write(`   ${item.description}\n`);
+  });
+  if (templates.length === 0) process.stdout.write("No compatible templates.\n");
+});
+'
+if [ "$template_count" -gt 0 ]; then
+  default_id=""
+  winner_source=""
+  if [ "$task_kind" = "qa" ]; then
+    default_id="qa/default"
+  elif [ "$task_kind" != "review-pr" ]; then
+    # An unscoped request (no PR, range, window or bug) is dev work on this checkout.
+    default_id="${task_kind:-dev}/${platform}"
+  fi
+  if [ -n "$default_id" ]; then
+    winner_source="$(printf '%s' "$result" | node -e '
+let input = "";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", (chunk) => { input += chunk; });
+process.stdin.on("end", () => {
+  const [defaultId] = process.argv.slice(1);
+  const templates = JSON.parse(input).templates ?? [];
+  const winner = templates.find((item) => !item.shadowedBy && item.id === defaultId);
+  if (winner) process.stdout.write(winner.sourceId);
+});
+' "$default_id")"
+  fi
+  if [ -n "$winner_source" ]; then
+    printf '\nSELECT: %s from %s. Other listed ids are opt-in with --template <id>.\n' "$default_id" "$winner_source"
+  else
+    printf '\nSTOP: recommend one exact template ID from this list, then wait for a new human reply. Do not inspect template bodies or initialize work before confirmation.\n'
+  fi
+fi
