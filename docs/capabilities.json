@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T00:56:25.795777+00:00",
+  "generated_at": "2026-10-30T06:45:00.029753+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -882,7 +882,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -1747,7 +1747,7 @@
     },
     "ai-crypto/chaingpt-org-official-scheduled-autonomy": {
       "name": "scheduled-autonomy",
-      "execution_model": "router_orchestrator",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -1775,7 +1775,7 @@
           "source": "extracted"
         },
         "can_spawn_subagents": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -1785,7 +1785,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -222679,8 +222679,8 @@
     "processed": 3579,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2591,
-      "router_orchestrator": 147,
+      "read_only": 2592,
+      "router_orchestrator": 146,
       "unknown": 342,
       "analysis_only": 218,
       "unsigned_tx_builder": 115,
@@ -222690,13 +222690,13 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1233,
+      "can_execute_shell": 1232,
       "can_install_code": 556,
       "can_write_files": 181,
       "can_browse_web": 250,
-      "can_spawn_subagents": 265,
+      "can_spawn_subagents": 264,
       "can_move_funds": 301,
-      "requires_private_key": 501,
+      "requires_private_key": 502,
       "requires_hosted_operator": 342,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 556

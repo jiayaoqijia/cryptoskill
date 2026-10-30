@@ -70,7 +70,7 @@ Each follow-up will use `chaingpt_aa_userop_hash` + `chaingpt_aa_estimate_userop
    → null until bundled, then the full receipt with tx hash + status.
 ```
 
-## Why we don't ship `eth_sendUserOperation` (yet)
+## Signed user-operation submission
 
 Submitting a signed userop is the irreversible step. We deliberately leave it to the user's existing bundler-client code path so the plugin doesn't become the broadcast vector. The hash and the estimate are read-only. The receipt is read-only. The signed-submission stays in user code where it's already audited.
 
@@ -95,7 +95,7 @@ Pass the full URL to `bundlerUrl`. The plugin does not store it.
 ## What this skill does NOT do (yet)
 
 - **Sign anything.** The plugin returns the hash; you sign elsewhere.
-- **Submit `eth_sendUserOperation`.** Done in user code with the signed UserOp.
+- **Submit signed operations.** `chaingpt_aa_submit_userop` is shipped; the account owner signs externally.
 - **Per-provider session-key issuance.** Safe / Kernel / Biconomy / Alchemy Smart Wallet are follow-up PRs that build on this foundation.
 - **Paymaster sponsorship issuance.** The `paymaster*` fields are accepted as inputs; sponsoring a paymaster (calling Pimlico's `pm_sponsorUserOperation` or equivalent) is a follow-up.
 - **EIP-7702 (delegated EOAs).** Different scheme; out of scope for v0.7.
@@ -103,5 +103,5 @@ Pass the full URL to `bundlerUrl`. The plugin does not store it.
 ## Reference
 
 - `mcp-server/src/lib/erc4337.ts` — primitives (uses viem v2.20+ audited AA module).
-- `mcp-server/src/tools/aa.ts` — tool surface (4 tools).
+- `mcp-server/src/tools/aa.ts` — tool surface (5 foundation tools).
 - `mcp-server/src/__tests__/aa.test.ts` — 30 cases including the custody-free invariant test.

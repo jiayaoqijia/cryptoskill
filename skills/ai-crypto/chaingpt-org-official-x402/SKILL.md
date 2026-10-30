@@ -45,3 +45,5 @@ facilitator (`chaingpt_x402_facilitator`).
 Known EIP-3009 tokens: USDC on `base` and `base-sepolia`. For other tokens pass
 full `PaymentRequirements` (with `asset` + `extra.name`/`extra.version`).
 0 ChainGPT credits.
+
+Signature assembly requires the exact original authorization (nonce and validity unchanged). A mismatched signature is refused. Facilitator settlement requires human confirmation.

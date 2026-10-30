@@ -35,9 +35,9 @@ These planner tools are read-only, so they don't refuse — but the executing to
 ## What this skill does NOT do
 
 - **Custody.** Plans are returned; user signs every step externally.
-- **Truly autonomous execution.** No daemon, no cron loop, no auto-rebalancing. Each step is a separate user-signed transaction.
-- **ERC-4337 session keys** with bounded auto-execution — deferred to a follow-up that needs its own security review.
-- **Strategy persistence.** Plans aren't stored; each call recomputes. For long-running strategies, save the plan output to your own data layer.
+- **Scheduling.** See `skills/scheduled-autonomy/SKILL.md`; keep human confirmation and durable claims.
+- **ERC-4337.** Session-key support exists in beta; see `skills/agent-wallet/SKILL.md`.
+- **Persistence.** Save plans with `chaingpt_strategy_save_plan`; claim due steps before execution.
 - **Live order-management.** Cancellation + replacement is the user's responsibility; planner doesn't track open orders.
 
 ## Backtesting caveats
