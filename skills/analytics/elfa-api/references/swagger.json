@@ -1059,6 +1059,11 @@
 						"type": "boolean",
 						"description": "Set `true` to receive `data.sources`: the links the research behind the\nanswer read. Omitted or `false` leaves the response unchanged.",
 						"default": false
+					},
+					"useMemory": {
+						"type": "boolean",
+						"description": "Set `true` to let this request use the saved memory of the Elfa account\nthat owns the API key: the answer can draw on notes from that account's\nearlier chats, and this chat can add to them. Omitted or `false`, the\nrequest neither reads nor writes saved memory. Has no effect when memory\nis turned off in the account's chat settings. Leave it off when one key\nserves many end users, so one user's notes never shape another's answer.",
+						"default": false
 					}
 				},
 				"type": "object",
@@ -2391,7 +2396,7 @@
 			"ApiKeyGetExecutionResponse": {
 				"$ref": "#/components/schemas/ApiKeyAutoExecution"
 			},
-			"Pick_ChatRequestBodyV2.Exclude_keyofChatRequestBodyV2.speed__": {
+			"Pick_ChatRequestBodyV2.Exclude_keyofChatRequestBodyV2.speed-or-useMemory__": {
 				"properties": {
 					"message": {
 						"type": "string",
@@ -2427,14 +2432,14 @@
 				"type": "object",
 				"description": "From T, pick a set of properties whose keys are in the union K"
 			},
-			"Omit_ChatRequestBodyV2.speed_": {
-				"$ref": "#/components/schemas/Pick_ChatRequestBodyV2.Exclude_keyofChatRequestBodyV2.speed__",
+			"Omit_ChatRequestBodyV2.speed-or-useMemory_": {
+				"$ref": "#/components/schemas/Pick_ChatRequestBodyV2.Exclude_keyofChatRequestBodyV2.speed-or-useMemory__",
 				"description": "Construct a type with the properties of T except for those in type K."
 			},
 			"X402ChatRequestBody": {
 				"allOf": [
 					{
-						"$ref": "#/components/schemas/Omit_ChatRequestBodyV2.speed_"
+						"$ref": "#/components/schemas/Omit_ChatRequestBodyV2.speed-or-useMemory_"
 					},
 					{
 						"properties": {
@@ -2449,7 +2454,7 @@
 						"type": "object"
 					}
 				],
-				"description": "Same shape as `/v2/chat`; `speed` excludes `adaptive` on x402 (see `X402_CONFIG.ADAPTIVE_SPEED_ENABLED`)."
+				"description": "Same shape as `/v2/chat`; `speed` excludes `adaptive` on x402 (see `X402_CONFIG.ADAPTIVE_SPEED_ENABLED`), and there is no `useMemory` (an x402 payer has no account)."
 			},
 			"AutoChatResponse": {
 				"properties": {
@@ -4809,6 +4814,7 @@
 			"PlanV3": {
 				"type": "string",
 				"enum": [
+					"free",
 					"payg",
 					"grow",
 					"enterprise"
@@ -4817,14 +4823,16 @@
 			"KeyStatusV3": {
 				"properties": {
 					"plan": {
-						"$ref": "#/components/schemas/PlanV3"
+						"$ref": "#/components/schemas/PlanV3",
+						"example": "payg"
 					},
 					"billingMode": {
 						"type": "string",
 						"enum": [
 							"deposit",
 							"arrears"
-						]
+						],
+						"example": "deposit"
 					},
 					"owner": {
 						"type": "string",
@@ -4899,7 +4907,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "3.2.0",
+		"version": "3.4.2",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -6070,7 +6078,7 @@
 						"description": "Unauthorized"
 					}
 				},
-				"description": "Send a message to the Elfa AI and receive a complete response.\nSuited for agents and integrations that do not support server-sent events (SSE).\n\n**Session management:** omit `sessionId` to start a new conversation.\nThe response includes a `sessionId` — pass it in subsequent requests to continue the same conversation.\n\n**Analysis types and required fields:**\n- `chat` (default) — general conversation. Requires `message`.\n- `macro` — macro market overview. No `message` needed.\n- `summary` — quick market summary. No `message` needed.\n- `tokenIntro` — token introduction. Requires `assetMetadata` with `symbol`, or `chain` + `contractAddress`.\n- `tokenAnalysis` — token trade setup analysis. Same `assetMetadata` requirements as `tokenIntro`.\n- `accountAnalysis` — Twitter/X account analysis. Requires `assetMetadata.username`.\n\n`message` is only used for `analysisType: \"chat\"` and is ignored for other\nanalysis types.\n\n**Sources (opt-in):** send `includeSources: true` to receive `data.sources`,\nthe links the research behind the answer read (X posts, news, DEX and\nexplorer pages, prediction markets), each with a `kind`. Links only: page\nand post content is not returned. A source was read, not necessarily cited\nin `message`. Without the flag the response is unchanged.\n\n**`assetMetadata` fields (when applicable):**\n- `symbol` — token ticker symbol (e.g. `\"BTC\"`, `\"$ETH\"`)\n- `chain` — blockchain name (e.g. `\"ethereum\"`, `\"solana\"`)\n- `contractAddress` — token contract address\n- `username` — Twitter/X username for account analysis",
+				"description": "Send a message to the Elfa AI and receive a complete response.\nSuited for agents and integrations that do not support server-sent events (SSE).\n\n**Session management:** omit `sessionId` to start a new conversation.\nThe response includes a `sessionId` — pass it in subsequent requests to continue the same conversation.\n\n**Analysis types and required fields:**\n- `chat` (default) — general conversation. Requires `message`.\n- `macro` — macro market overview. No `message` needed.\n- `summary` — quick market summary. No `message` needed.\n- `tokenIntro` — token introduction. Requires `assetMetadata` with `symbol`, or `chain` + `contractAddress`.\n- `tokenAnalysis` — token trade setup analysis. Same `assetMetadata` requirements as `tokenIntro`.\n- `accountAnalysis` — Twitter/X account analysis. Requires `assetMetadata.username`.\n\n`message` is only used for `analysisType: \"chat\"` and is ignored for other\nanalysis types.\n\n**Sources (opt-in):** send `includeSources: true` to receive `data.sources`,\nthe links the research behind the answer read (X posts, news, DEX and\nexplorer pages, prediction markets), each with a `kind`. Links only: page\nand post content is not returned. A source was read, not necessarily cited\nin `message`. Without the flag the response is unchanged.\n\n**Memory (opt-in):** requests don't use saved memory unless you send\n`useMemory: true`. With it, the answer can draw on notes from earlier\nchats on the Elfa account that owns the API key, and the chat can add to\nthem. Leave it off when one key serves many end users.\n\n**`assetMetadata` fields (when applicable):**\n- `symbol` — token ticker symbol (e.g. `\"BTC\"`, `\"$ETH\"`)\n- `chain` — blockchain name (e.g. `\"ethereum\"`, `\"solana\"`)\n- `contractAddress` — token contract address\n- `username` — Twitter/X username for account analysis",
 				"summary": "AI chat",
 				"tags": [
 					"v2 Chat"
@@ -6117,10 +6125,10 @@
 						"description": "Unauthorized"
 					},
 					"403": {
-						"description": "PAYG or Enterprise plan required"
+						"description": "PAYG, Grow or Enterprise plan required"
 					}
 				},
-				"description": "Stream a response from Elfa AI using Server-Sent Events (SSE).\n\nUse this when your client can consume incremental events. Use\n`POST /v2/chat` instead when your integration needs a complete JSON\nresponse.\n\n**Access:** PAYG and Enterprise API keys.\n\n**Response format:** `text/event-stream`.\n\nCommon `data:` event payloads include:\n- `session_info` with `sessionId` and `analysisType`\n- `title` with a generated session or analysis title\n- `text` with incremental Markdown content\n- `text_complete` when incremental text has finished\n- `status` with progress updates\n- `credits` with consumed credits\n- `complete` with final `sessionId`, `success`, and `creditsConsumed`; with\n  `includeSources: true` in the request it also carries `sources` (the\n  links the research read; same shape as `POST /v2/chat`)\n- `invalid_request` when a query is rejected by safety checks\n- `error` for stream failures\n\nA `: keep-alive` comment may be sent during long gaps. The stream ends\nwith `data: [DONE]`.\n\nRequest-body semantics match `POST /v2/chat`: `message` is required only\nfor `analysisType: \"chat\"`; token and account modes use `assetMetadata`.",
+				"description": "Stream a response from Elfa AI using Server-Sent Events (SSE).\n\nUse this when your client can consume incremental events. Use\n`POST /v2/chat` instead when your integration needs a complete JSON\nresponse.\n\n**Access:** PAYG, Grow and Enterprise API keys.\n\n**Response format:** `text/event-stream`.\n\nCommon `data:` event payloads include:\n- `session_info` with `sessionId` and `analysisType`\n- `title` with a generated session or analysis title\n- `text` with incremental Markdown content\n- `text_complete` when incremental text has finished\n- `status` with progress updates\n- `credits` with consumed credits\n- `complete` with final `sessionId`, `success`, and `creditsConsumed`; with\n  `includeSources: true` in the request it also carries `sources` (the\n  links the research read; same shape as `POST /v2/chat`)\n- `invalid_request` when a query is rejected by safety checks\n- `error` for stream failures\n\nA `: keep-alive` comment may be sent during long gaps. The stream ends\nwith `data: [DONE]`.\n\nRequest-body semantics match `POST /v2/chat`: `message` is required only\nfor `analysisType: \"chat\"`; token and account modes use `assetMetadata`.",
 				"summary": "AI chat stream",
 				"tags": [
 					"v2 Chat"
@@ -9698,6 +9706,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -9709,7 +9727,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -9729,7 +9747,7 @@
 						}
 					}
 				},
-				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: free until 31 October 2026. Requires `x-elfa-api-key`.",
+				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: from 1 November 2026, 1 credit, plus 1 per event not already billed to the\naccount within 8 days of its `analyzedAt`. A `q` search adds nothing for now. Errors\ncost nothing. `x-elfa-credits` reports what a call cost and `x-elfa-credits-detail`\nhow it adds up. Requires `x-elfa-api-key`.",
 				"summary": "Events",
 				"tags": [
 					"v3 Events"
@@ -10005,6 +10023,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -10016,7 +10044,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10036,7 +10064,7 @@
 						}
 					}
 				},
-				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: free until 31 October 2026.",
+				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: from 1 November 2026, 1 credit, plus 2 per storyline not already billed to the\naccount that UTC day. A `q` search adds nothing for now. Errors cost nothing.",
 				"summary": "Storylines",
 				"tags": [
 					"v3 Events"
@@ -10207,6 +10235,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -10218,7 +10256,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10238,7 +10276,7 @@
 						}
 					}
 				},
-				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: free until 31 October 2026.",
+				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: from 1 November 2026, 1 credit, plus 2 per arc not already billed to the account\nthat UTC day. A `q` search adds nothing for now. Errors cost nothing.",
 				"summary": "Arcs",
 				"tags": [
 					"v3 Events"
@@ -10410,6 +10448,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -10421,7 +10469,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10431,7 +10479,7 @@
 						}
 					}
 				},
-				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: free until 31 October 2026.",
+				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: from 1 November 2026, 1 credit, matches or not. Errors cost nothing.",
 				"summary": "Entities",
 				"tags": [
 					"v3 Entities"
@@ -10544,6 +10592,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -10555,7 +10613,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10565,7 +10623,7 @@
 						}
 					}
 				},
-				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: free until 31 October 2026.",
+				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: from 1 November 2026, 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
 				"summary": "Crypto call book",
 				"tags": [
 					"v3 Market"
@@ -10689,6 +10747,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -10700,7 +10768,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10710,7 +10778,7 @@
 						}
 					}
 				},
-				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: free until 31 October 2026.",
+				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: from 1 November 2026, 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
 				"summary": "Equity call book",
 				"tags": [
 					"v3 Market"
@@ -10829,6 +10897,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -10840,7 +10918,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10850,7 +10928,7 @@
 						}
 					}
 				},
-				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: free until 31 October 2026.",
+				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: from 1 November 2026, 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
 				"summary": "Crypto mindshare",
 				"tags": [
 					"v3 Market"
@@ -10959,6 +11037,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -10970,7 +11058,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10980,7 +11068,7 @@
 						}
 					}
 				},
-				"description": "The same board over equities.\n\nCost: free until 31 October 2026.",
+				"description": "The same board over equities.\n\nCost: from 1 November 2026, 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
 				"summary": "Equity mindshare",
 				"tags": [
 					"v3 Market"
@@ -11087,6 +11175,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -11098,7 +11196,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11108,7 +11206,7 @@
 						}
 					}
 				},
-				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: free until 31 October 2026.",
+				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: from 1 November 2026, 5 credits for `limit` up to 50, 10 up to 200, plus 5 when\nthe range is over 24 hours. Errors cost nothing.",
 				"summary": "Trending contracts",
 				"tags": [
 					"v3 Market"
@@ -11234,6 +11332,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -11245,7 +11353,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11255,7 +11363,7 @@
 						}
 					}
 				},
-				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: free until 31 October 2026.",
+				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: from 1 November 2026, 1 credit, plus 1 per call not already billed to the account\nin the last 24 hours. Errors cost nothing.",
 				"summary": "Calls",
 				"tags": [
 					"v3 Calls"
@@ -11437,6 +11545,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -11448,7 +11566,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11458,7 +11576,7 @@
 						}
 					}
 				},
-				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: free until 31 October 2026.",
+				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: from 1 November 2026, 1 credit, plus 2 per position not already billed to the\naccount in its current status in the last 90 days, so a position bills again once\nwhen it closes. Errors cost nothing.",
 				"summary": "Call episodes",
 				"tags": [
 					"v3 Calls"
@@ -11631,6 +11749,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -11642,7 +11770,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11652,7 +11780,7 @@
 						}
 					}
 				},
-				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: free until 31 October 2026.",
+				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: from 1 November 2026, 2 credits. Errors cost nothing.",
 				"summary": "Positioning",
 				"tags": [
 					"v3 Calls"
@@ -11735,6 +11863,16 @@
 							}
 						}
 					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
 						"content": {
@@ -11746,7 +11884,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11756,7 +11894,7 @@
 						}
 					}
 				},
-				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: free until 31 October 2026.",
+				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: from 1 November 2026, for `metric=standing`, 5 credits for `limit` up to 50 and\n10 up to 200; for `alphaScore`, `hitRate` and `avgReturn`, 25 and 50. Errors cost\nnothing.",
 				"summary": "Top accounts",
 				"tags": [
 					"v3 People"

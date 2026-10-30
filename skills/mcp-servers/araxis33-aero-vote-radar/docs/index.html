@@ -292,6 +292,11 @@
   .ar-bar { height: 8px; border-radius: 4px; background: var(--aero); }
   .ar-old { margin-top: 40px; padding-top: 6px; border-top: 1px solid var(--line); }
   @media (max-width: 600px) { .ar-controls { grid-template-columns: 1fr; } }
+  /* The radar is hidden until the scan loads; it fades in instead of popping into place. */
+  @media (prefers-reduced-motion: no-preference) {
+    #aeroRadar:not([hidden]) { animation: ar-in 0.3s ease-out; }
+  }
+  @keyframes ar-in { from { opacity: 0; transform: translateY(6px); } }
 </style>
 </head>
 <body>
@@ -770,6 +775,25 @@ function arRenderRecord(h) {
     (rebuilt ? " * Rebuilt from the hourly history; newer rows use the pick the radar saved at the time." : "");
 }
 
+// The daily figure counts to its new value as the amount is typed, so the change reads as a change.
+let arPaysNow = null, arPaysRaf = 0;
+const arStill = matchMedia("(prefers-reduced-motion: reduce)");
+function arCountTo(el, to) {
+  cancelAnimationFrame(arPaysRaf);
+  const from = arPaysNow;
+  if (from === null || from === to || arStill.matches) { arPaysNow = to; el.textContent = usd(to) + " a day"; return; }
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / 300);
+    arPaysNow = from + (to - from) * (1 - (1 - k) ** 3);
+    el.textContent = usd(k < 1 ? arPaysNow : to) + " a day";
+    if (k < 1) arPaysRaf = requestAnimationFrame(step);
+    else arPaysNow = to;
+  };
+  el.textContent = usd(from) + " a day";
+  arPaysRaf = requestAnimationFrame(step);
+}
+
 function arRender() {
   if (!arData) return;
   const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
@@ -791,12 +815,15 @@ function arRender() {
     where.append(" on " + nets.join(" and "));
     const pays = document.createElement("div");
     pays.className = "ar-hero-pay";
-    pays.append("about ", b(usd(splitPays) + " a day"));
+    const paysB = b("");
+    pays.append("about ", paysB);
+    arCountTo(paysB, splitPays);
     const note = document.createElement("small");
     note.textContent = " at today's rates";
     pays.append(note);
     answer.append(where, pays);
   } else {
+    arPaysNow = null;
     answer.textContent = amount > 0 ? "No pool is paying right now." : "Type how much sAERO you have.";
   }
 

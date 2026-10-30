@@ -43,6 +43,11 @@ No API keys, no wallet connection, no signatures: it reads, you allocate.
 - **Reads your wallet.** Your stakes, where each one is allocated on every
   network, its 47 h timer there, and what your current split pays a day
   against the suggested one.
+- **Shows where the best allocators are pointed.** The 10 sAERO positions
+  (10,000+) that earned the most per sAERO over the last 7 days
+  ([dromos.kitchen](https://dromos.kitchen)'s ranking), with each one's current
+  split read live from the LeafVoters — on the web page, under "What the top
+  allocators hold now".
 
 ## How the figures are made
 
@@ -158,6 +163,7 @@ src/
   v3-cli.ts       hourly scan of all 7 networks -> docs/data/v3.json + docs/llms.txt
   v3History.ts    hourly samples and the steady-pool rule
   v3Llms.ts       docs/llms.txt for AI assistants
+  topAllocators.ts  dromos.kitchen's top sAERO positions and their live splits
   prices.ts       DefiLlama prices
 docs/             the web page, its data and llms.txt (GitHub Pages)
 ```
