@@ -6,7 +6,7 @@
 
 Before the App Store, iPhone developers distributed apps through ad hoc channels. Before npm, JavaScript developers emailed zip files. Every platform ecosystem goes through the same phase transition: fragmented distribution, then a registry, then an explosion of building. Crypto AI agents are at the registry moment.
 
-[![Skills](https://img.shields.io/badge/skills-3590-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-552-f59e0b)]() [![Official](https://img.shields.io/badge/official-1454-22c55e)]() [![Categories](https://img.shields.io/badge/categories-14-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
+[![Skills](https://img.shields.io/badge/skills-3591-6366f1)]() [![MCP Servers](https://img.shields.io/badge/MCP%20servers-553-f59e0b)]() [![Official](https://img.shields.io/badge/official-1454-22c55e)]() [![Categories](https://img.shields.io/badge/categories-14-22d3ee)]() [![License](https://img.shields.io/badge/license-AGPL--3.0-green)]()
 
 [Website](https://cryptoskill.org) · [Browse Skills](#skills-overview) · [MCP Servers](#mcp-servers) · [Quality Scores](#quality-scores) · [Contributing](CONTRIBUTING.md)
 
@@ -23,8 +23,8 @@ A developer building a crypto AI agent today has to hunt through Binance's repo,
 
 CryptoSkill is the crypto-native answer:
 
-- **3590 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
-- **552 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
+- **3591 skills** covering the full crypto stack -- exchanges, DeFi, wallets, analytics, trading, identity, payments
+- **553 MCP servers** for direct protocol integration with Claude, Cursor, Codex, and other AI tools
 - **1454 official skills** according to the recorded source classification (Kraken, Binance, OKX, Uniswap, Coinbase, MoonPay, Nethermind, and more)
 - **Quality scored** -- every skill rated 0-100 across documentation, security, and depth
 - **Security-scanned** -- credential detection (160+ patterns), code safety, permission analysis
@@ -35,7 +35,7 @@ CryptoSkill is the crypto-native answer:
 | Category | Skills |
 |---|---:|
 | Payments | 1136 |
-| MCP Servers | 552 |
+| MCP Servers | 553 |
 | DeFi | 311 |
 | Trading | 266 |
 | AI x Crypto | 261 |
@@ -66,15 +66,15 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 | Grade | Score | Skills | Meaning |
 |-------|-------|--------|---------|
 | **A** | 80-100 | 20 | Production-ready, well-documented, secure |
-| **B** | 60-79 | 857 | Good quality, minor gaps |
-| **C** | 40-59 | 2708 | Usable but significant gaps |
+| **B** | 60-79 | 856 | Good quality, minor gaps |
+| **C** | 40-59 | 2710 | Usable but significant gaps |
 | **D** | 20-39 | 5 | Minimal quality, use with caution |
 
-**Risk Gate**: 99% pass (3563/3590). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
+**Risk Gate**: 99% pass (3564/3591). Optional LLM evaluation scripts follow the [crypto-skill-benchmark](https://github.com/Minara-AI/crypto-skill-benchmark) methodology; they are separate from the scheduled heuristic scoring run. See [EVALUATION.md](docs/EVALUATION.md) for the full framework.
 
 ## MCP Servers
 
-**552 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
+**553 MCP servers** for crypto -- the largest curated collection focused on the crypto ecosystem.
 
 ### Official MCP Servers
 
@@ -159,7 +159,7 @@ npm i -g clawhub && clawhub install binance-spot-api
 | [Dune Analytics](https://dune.com/) | [duneanalytics/skills](https://github.com/duneanalytics/skills) |
 | [Bybit](https://www.bybit.com/) | [bybit-exchange/skills](https://github.com/bybit-exchange/skills) |
 
-Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, Reown, Bitget Wallet, ChainGPT, SpoonOS, AIBTC, AElf ecosystem (TomorrowDAO, AelfScan, Portkey, Awaken), ICP/dfinity, Hedera, Injective, Flow, XMTP, OpenOcean, and [552 MCP servers](#mcp-servers).
+Plus: Alchemy, Virtual Protocol, Privy, OpenSea, Minara, Heurist, Towns, Elsa, Venus, Lightning Labs, SushiSwap, Tenderly, Reown, Bitget Wallet, ChainGPT, SpoonOS, AIBTC, AElf ecosystem (TomorrowDAO, AelfScan, Portkey, Awaken), ICP/dfinity, Hedera, Injective, Flow, XMTP, OpenOcean, and [553 MCP servers](#mcp-servers).
 
 ## Submit a Skill
 

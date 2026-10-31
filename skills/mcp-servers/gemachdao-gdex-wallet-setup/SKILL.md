@@ -137,7 +137,7 @@ const signInPayload = buildGdexSignInComputedData({
 await skill.signInWithComputedData({
   computedData: signInPayload.computedData,
   chainId: 1,  // EVM
-});
+}, { sessionPrivateKey }); // keeps the gdex_session cookie and signs /v1/user
 
 // ✅ User is now authenticated and can trade
 // The backend has provisioned Solana + other chain wallets automatically

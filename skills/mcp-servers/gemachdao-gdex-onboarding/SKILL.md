@@ -166,7 +166,7 @@ npm install @gemachdao/gdex-skill
 ## MCP Server
 
 For AI clients that support [Model Context Protocol](https://modelcontextprotocol.io),
-the GDEX MCP server exposes **154 tools** covering the full SDK surface — spot and
+the GDEX MCP server exposes **155 tools** covering the full SDK surface — spot and
 perp trading, HyperLiquid funding, limit orders, copy trading, bridging, portfolio
 and token data, transfers/social, and Hyperliquid HIP-4 outcome markets (e.g.
 `buy_token`, `open_perp_position`, `place_perp_order`, `hl_create_outcome_order`,
@@ -240,7 +240,7 @@ const sig = await wallet.signMessage(msg);
 const payload = buildGdexSignInComputedData({
   apiKey: GDEX_API_KEY_PRIMARY, userId: wallet.address, sessionKey, nonce, signature: sig,
 });
-await skill.signInWithComputedData({ computedData: payload.computedData, chainId: 1 });
+await skill.signInWithComputedData({ computedData: payload.computedData, chainId: 1 }, { sessionPrivateKey });
 ```
 
 ### 4. Key Rules for Autonomous Operation

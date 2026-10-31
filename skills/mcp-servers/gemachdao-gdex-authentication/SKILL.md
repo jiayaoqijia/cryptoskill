@@ -98,7 +98,7 @@ const signInPayload = buildGdexSignInComputedData({
 const signInResult = await skill.signInWithComputedData({
   computedData: signInPayload.computedData,
   chainId: 1, // 1 for EVM / HyperLiquid, 622112261 for Solana (see "ChainId for Sign-In Matters")
-});
+}, { sessionPrivateKey }); // keeps the gdex_session cookie and signs /v1/user (see "Browser Session")
 
 // Step 5: Resolve user profile / check managed wallet
 const userData = buildGdexUserSessionData(sessionKey, apiKey);
@@ -117,6 +117,29 @@ Nonces are **client-generated** (not fetched from the server):
 ```typescript
 const nonce = String(Math.floor(Date.now() / 1000) + Math.floor(Math.random() * 1000));
 ```
+
+### Browser Session (required since 2026-10-28)
+
+The backend now treats every client as a browser session (backend PR #382). The SDK (5.2.0+)
+handles it; older SDKs fail every sign-in and trade with **403 `SESSION_ORIGIN_DENIED`**.
+
+- Every login, write and private read must send `X-Gdex-Client: web` and an allow-listed
+  `Origin` (default `https://gdex.pro`, override with `new GdexSkill({ origin })`).
+- Sign-in sets an HttpOnly `gdex_session` cookie. The SDK captures it and sends it on every
+  later call. It is bound to that sign-in's session key, **idles out after 30 minutes unused**
+  and expires 8 hours after login. Signing in again replaces the session key and the cookie.
+- `GET /v1/user` and private `/v1/agents/*` routes also need a nonce signed with the session
+  private key. Pass `{ sessionPrivateKey }` to `signInWithComputedData` (or call
+  `skill.setSessionSigningKey(sessionPrivateKey)`); the key never leaves the process.
+
+**Saving a session for another process** (an hourly watcher, a separate trade script): store
+`skill.getBrowserSession()` next to the session key, both as secrets, and restore with
+`skill.setBrowserSession(saved)` + `skill.setSessionSigningKey(sessionPrivateKey)`. If more
+than ~25 minutes have passed, or a call returns 401 `SESSION_INVALID`, sign in again instead.
+A session key alone, saved from before 2026-10-28, no longer works.
+
+The MCP server does this automatically: `gdex_connect` stores the cookie with the account and
+re-signs in when it is stale.
 
 ## 3. Encryption Details (AES-256-CBC)
 
@@ -262,6 +285,14 @@ HTTP headers MUST include a browser User-Agent (e.g., Chrome/91) — non-browser
 - API key not set or expired — call `skill.loginWithApiKey(apiKey)` first
 - Session expired — re-authenticate
 
+### 403 `SESSION_ORIGIN_DENIED` ("Request origin denied")
+- SDK older than 5.2.0: it does not send `X-Gdex-Client: web` / `Origin`. Upgrade, then sign in again.
+- Raw HTTP callers must send both headers on `/v1/sign_in` and every private call.
+
+### 401 `SESSION_INVALID` ("Please sign in again")
+- The `gdex_session` cookie is missing, idled out (30 min) or expired (8 h), or a newer sign-in
+  rotated the session key. Sign in again; for a separate process, restore the cookie (see "Browser Session").
+
 ### 403 Forbidden
 - Non-browser User-Agent header — the SDK handles this automatically
 - Using `X-API-Key` instead of `Authorization: Bearer`
@@ -316,7 +347,7 @@ const signInPayload = buildGdexSignInComputedData({
 await skill.signInWithComputedData({
   computedData: signInPayload.computedData,
   chainId: 1,  // EVM for HL/perps, 622112261 for Solana spot
-});
+}, { sessionPrivateKey });
 
 // 3. Resolve managed wallet
 const data = buildGdexUserSessionData(sessionKey, GDEX_API_KEY_PRIMARY);

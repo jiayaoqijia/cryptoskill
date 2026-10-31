@@ -360,7 +360,7 @@ const sig = await wallet.signMessage(msg);
 const payload = buildGdexSignInComputedData({
   apiKey, userId: wallet.address, sessionKey, nonce, signature: sig,
 });
-await skill.signInWithComputedData({ computedData: payload.computedData, chainId: 1 });
+await skill.signInWithComputedData({ computedData: payload.computedData, chainId: 1 }, { sessionPrivateKey });
 const data = buildGdexUserSessionData(sessionKey, apiKey);
 const userId = wallet.address.toLowerCase();
 

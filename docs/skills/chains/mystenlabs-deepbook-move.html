@@ -14,18 +14,18 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Mystenlabs Deepbook Move - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="DeepBook V3 Move smart contract integration. Use when writing, reviewing, or debugging Move code that integrates with DeepBook pools — placing orders from on-ch">
+  <meta name="description" content="Guides writing, reviewing, and debugging Move smart contracts that call DeepBook V3: placing limit or market orders on-chain, creating pools, swapping without a">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/chains/mystenlabs-deepbook-move.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Mystenlabs Deepbook Move - CryptoSkill">
-  <meta property="og:description" content="DeepBook V3 Move smart contract integration. Use when writing, reviewing, or debugging Move code that integrates with DeepBook pools — placing orders from on-ch">
+  <meta property="og:description" content="Guides writing, reviewing, and debugging Move smart contracts that call DeepBook V3: placing limit or market orders on-chain, creating pools, swapping without a">
   <meta property="og:url" content="https://cryptoskill.org/skills/chains/mystenlabs-deepbook-move.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mystenlabs Deepbook Move - CryptoSkill">
-  <meta name="twitter:description" content="DeepBook V3 Move smart contract integration. Use when writing, reviewing, or debugging Move code that integrates with DeepBook pools — placing orders from on-ch">
+  <meta name="twitter:description" content="Guides writing, reviewing, and debugging Move smart contracts that call DeepBook V3: placing limit or market orders on-chain, creating pools, swapping without a">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Deepbook Move", "description": "DeepBook V3 Move smart contract integration. Use when writing, reviewing, or debugging Move code that integrates with DeepBook pools — placing orders from on-chain contracts, creating pools, using flash loans, accessing BalanceManager from Move, or composing DeepBook operations in programmable transaction blocks.\nFor DeepBook architecture and contract addresses, see the `deepbook-overview` skill. For TypeScript SDK usage, see the `deepbook-sdk` skill.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-deepbook-move.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Deepbook Move", "description": "Guides writing, reviewing, and debugging Move smart contracts that call DeepBook V3: placing limit or market orders on-chain, creating pools, swapping without a BalanceManager, flash loans, BalanceManager/TradeCap authorization, and composing DeepBook calls in programmable transaction blocks. Use when the user asks about deepbook::pool, place_limit_order, swap_exact_base_for_quote, borrow_flashloan_base, FlashLoan hot potato, TradeProof, TradeCap/DepositCap/WithdrawCap, or adding `deepbook = { mvr = \"@deepbook/core\" }` to Move.toml.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-deepbook-move.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -69,8 +69,7 @@
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="0 true, 1 unknown of 11 capability flags">0 known &middot; 1 unknown</span>
     </div>
-    <p class="skill-page-desc">DeepBook V3 Move smart contract integration. Use when writing, reviewing, or debugging Move code that integrates with DeepBook pools — placing orders from on-chain contracts, creating pools, using flash loans, accessing BalanceManager from Move, or composing DeepBook operations in programmable transaction blocks.
-For DeepBook architecture and contract addresses, see the `deepbook-overview` skill. For TypeScript SDK usage, see the `deepbook-sdk` skill.</p>
+    <p class="skill-page-desc">Guides writing, reviewing, and debugging Move smart contracts that call DeepBook V3: placing limit or market orders on-chain, creating pools, swapping without a BalanceManager, flash loans, BalanceManager/TradeCap authorization, and composing DeepBook calls in programmable transaction blocks. Use when the user asks about deepbook::pool, place_limit_order, swap_exact_base_for_quote, borrow_flashloan_base, FlashLoan hot potato, TradeProof, TradeCap/DepositCap/WithdrawCap, or adding `deepbook = { mvr = &quot;@deepbook/core&quot; }` to Move.toml.</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/chains/mystenlabs-deepbook-move .claude/skills/</code></div>
@@ -85,7 +84,7 @@ For DeepBook architecture and contract addresses, see the `deepbook-overview` sk
 
     <h2>Quality Score</h2>
     <div class="skill-meta" style="margin-top:8px">
-      <span>Score: <strong>54/100</strong></span>
+      <span>Score: <strong>57/100</strong></span>
       <span>Grade: <strong>C</strong></span>
       <span>Risk Gate: <strong>PASS</strong></span>
     </div>

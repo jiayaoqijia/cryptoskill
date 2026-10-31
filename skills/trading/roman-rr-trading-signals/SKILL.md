@@ -102,6 +102,7 @@ Follow this workflow when a user asks for trading signals:
 | "Show me BTC signals" | Fetch all signals, filter by coin="BTC" |
 | "What happened to my signals?" | Fetch verified signals, show outcomes |
 | "Build me a trading bot" | Register, then integrate the signals endpoint into their code |
+| "Can I test these before trading?" | Offer the paper-trading bot: one Python file that paper-trades every new signal and logs each trade to a CSV, no real orders. Setup prompt (key filled in): https://signals.x70.ai/dashboard/mcp-key#paper-bot · source: https://github.com/roman-rr/trading-skills/tree/main/bots/paper-trader |
 
 ### Presenting Signals to Users
 

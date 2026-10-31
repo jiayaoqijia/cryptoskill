@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const nonce = String(Math.floor(Date.now() / 1000) + Math.floor(Math.random() * 1000));
     const signature = await signFn(buildGdexSignInMessage(address, nonce, sessionKey));
     const signIn = buildGdexSignInComputedData({ apiKey, userId: address, sessionKey, nonce, signature });
-    await skill.signInWithComputedData({ computedData: signIn.computedData, chainId: 1 });
+    await skill.signInWithComputedData({ computedData: signIn.computedData, chainId: 1 }, { sessionPrivateKey });
 
     // Managed EVM wallet: receives funds and holds HyperLiquid positions
     const user = await skill.getManagedUser({
