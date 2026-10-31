@@ -166,7 +166,7 @@ npm install @gemachdao/gdex-skill
 ## MCP Server
 
 For AI clients that support [Model Context Protocol](https://modelcontextprotocol.io),
-the GDEX MCP server exposes **155 tools** covering the full SDK surface — spot and
+the GDEX MCP server exposes **157 tools** covering the full SDK surface — spot and
 perp trading, HyperLiquid funding, limit orders, copy trading, bridging, portfolio
 and token data, transfers/social, and Hyperliquid HIP-4 outcome markets (e.g.
 `buy_token`, `open_perp_position`, `place_perp_order`, `hl_create_outcome_order`,
