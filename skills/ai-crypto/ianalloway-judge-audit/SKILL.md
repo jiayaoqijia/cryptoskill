@@ -4,25 +4,35 @@ description: "Audit an LLM-as-judge with juryrig — position bias, verbosity bi
 homepage: https://github.com/ianalloway/juryrig
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "⚖️",
-        "requires": { "bins": ["python3", "pip"] },
-        "credentials": [],
-        "install":
-          [
-            {
-              "id": "juryrig-pip",
-              "kind": "shell",
-              "command": "pip install juryrig",
-              "bins": ["juryrig"],
-              "label": "Install juryrig (Python)",
-            },
-          ],
+    "openclaw": {
+      "emoji": "⚖️",
+      "requires": {
+        "bins": ["juryrig"]
       },
+      "envVars": [
+        {
+          "name": "OPENAI_API_KEY",
+          "required": false,
+          "description": "Only for --provider openai / OpenAIJudge audits."
+        },
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "required": false,
+          "description": "Only for --provider anthropic / AnthropicJudge audits."
+        }
+      ],
+      "install": [
+        {
+          "id": "juryrig-uv",
+          "kind": "uv",
+          "package": "juryrig",
+          "bins": ["juryrig"],
+          "label": "Install juryrig (uv)"
+        }
+      ]
+    }
   }
 ---
-
 # Judge Audit (juryrig)
 
 Audit an **LLM-as-judge** before you trust its scores. Uses the zero-dependency

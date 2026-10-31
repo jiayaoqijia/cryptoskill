@@ -4,15 +4,31 @@ description: "Scan code and dependencies for security vulnerabilities. Check npm
 homepage: https://github.com/ianalloway/openclaw-skills
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🔒",
-        "requires": { "bins": ["npm", "pip", "grep"] },
-        "credentials": [],
+    "openclaw": {
+      "emoji": "🔒",
+      "requires": {
+        "bins": ["grep", "jq"],
+        "anyBins": ["npm", "pip-audit", "pip"]
       },
+      "install": [
+        {
+          "id": "pip-audit-uv",
+          "kind": "uv",
+          "package": "pip-audit",
+          "bins": ["pip-audit"],
+          "label": "Install pip-audit (uv)"
+        },
+        {
+          "id": "jq-brew",
+          "kind": "brew",
+          "formula": "jq",
+          "bins": ["jq"],
+          "label": "Install jq (brew)"
+        }
+      ]
+    }
   }
 ---
-
 # Security Scanner
 
 Scan your projects for security vulnerabilities in dependencies and common code issues.

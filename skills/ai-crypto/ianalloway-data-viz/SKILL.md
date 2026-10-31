@@ -4,31 +4,45 @@ description: "Create data visualizations from the command line. Generate charts,
 homepage: https://github.com/red-data-tools/YouPlot
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "📊",
-        "requires": { "bins": ["curl"] },
-        "install":
-          [
-            {
-              "id": "uplot-gem",
-              "kind": "shell",
-              "command": "gem install youplot",
-              "bins": ["uplot"],
-              "label": "Install YouPlot (Ruby gem)",
-            },
-            {
-              "id": "termgraph-pip",
-              "kind": "shell", 
-              "command": "pip install termgraph",
-              "bins": ["termgraph"],
-              "label": "Install termgraph (Python)",
-            },
-          ],
+    "openclaw": {
+      "emoji": "📊",
+      "requires": {
+        "bins": ["curl", "jq"],
+        "anyBins": ["uplot", "termgraph", "gnuplot"]
       },
+      "install": [
+        {
+          "id": "youplot-brew",
+          "kind": "brew",
+          "formula": "youplot",
+          "bins": ["uplot"],
+          "label": "Install YouPlot (brew)"
+        },
+        {
+          "id": "termgraph-uv",
+          "kind": "uv",
+          "package": "termgraph",
+          "bins": ["termgraph"],
+          "label": "Install termgraph (uv)"
+        },
+        {
+          "id": "gnuplot-brew",
+          "kind": "brew",
+          "formula": "gnuplot",
+          "bins": ["gnuplot"],
+          "label": "Install gnuplot (brew)"
+        },
+        {
+          "id": "jq-brew",
+          "kind": "brew",
+          "formula": "jq",
+          "bins": ["jq"],
+          "label": "Install jq (brew)"
+        }
+      ]
+    }
   }
 ---
-
 # Data Visualization
 
 Create terminal-based charts and visualizations from CSV, JSON, or piped data.

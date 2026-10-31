@@ -4,23 +4,32 @@ description: "Track NFT collection prices, floor prices, and sales data. Support
 homepage: https://docs.opensea.io/reference/api-overview
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🖼️",
-        "requires": { "bins": ["curl", "jq"] },
-        "credentials":
-          [
-            {
-              "id": "opensea-api-key",
-              "name": "OpenSea API Key",
-              "description": "API key from https://docs.opensea.io/reference/api-keys",
-              "env": "OPENSEA_API_KEY",
-            },
-          ],
+    "openclaw": {
+      "emoji": "🖼️",
+      "requires": {
+        "bins": ["curl", "jq"],
+        "env": ["OPENSEA_API_KEY"]
       },
+      "primaryEnv": "OPENSEA_API_KEY",
+      "envVars": [
+        {
+          "name": "OPENSEA_API_KEY",
+          "required": true,
+          "description": "API key from https://docs.opensea.io/reference/api-keys"
+        }
+      ],
+      "install": [
+        {
+          "id": "jq-brew",
+          "kind": "brew",
+          "formula": "jq",
+          "bins": ["jq"],
+          "label": "Install jq (brew)"
+        }
+      ]
+    }
   }
 ---
-
 # NFT Price Tracker
 
 Track NFT collection stats, floor prices, and recent sales using the OpenSea API.

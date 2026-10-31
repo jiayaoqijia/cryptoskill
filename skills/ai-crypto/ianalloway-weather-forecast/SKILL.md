@@ -4,12 +4,21 @@ description: "Get current weather conditions and forecasts for any location"
 homepage: https://github.com/chubin/wttr.in
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🌤️",
-        "requires": { "bins": ["curl", "jq"] },
-        "credentials": [],
+    "openclaw": {
+      "emoji": "🌤️",
+      "requires": {
+        "bins": ["curl", "jq"]
       },
+      "install": [
+        {
+          "id": "jq-brew",
+          "kind": "brew",
+          "formula": "jq",
+          "bins": ["jq"],
+          "label": "Install jq (brew)"
+        }
+      ]
+    }
   }
 ---
 # Weather Forecast

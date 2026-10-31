@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T12:32:02.989680+00:00",
+  "generated_at": "2026-10-31T18:34:38.986019+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -5469,7 +5469,7 @@
     },
     "ai-crypto/ianalloway-data-viz": {
       "name": "data-viz",
-      "execution_model": "unknown",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -5482,7 +5482,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -5522,7 +5522,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -223487,9 +223487,9 @@
     "processed": 3592,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2594,
+      "read_only": 2595,
       "router_orchestrator": 147,
-      "unknown": 351,
+      "unknown": 350,
       "analysis_only": 219,
       "unsigned_tx_builder": 115,
       "local_executor": 103,
@@ -223499,7 +223499,7 @@
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 1243,
-      "can_install_code": 566,
+      "can_install_code": 565,
       "can_write_files": 188,
       "can_browse_web": 252,
       "can_spawn_subagents": 266,
@@ -223507,7 +223507,7 @@
       "requires_private_key": 507,
       "requires_hosted_operator": 343,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 566
+      "mutable_remote_runtime": 565
     }
   }
 }

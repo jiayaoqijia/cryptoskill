@@ -4,15 +4,14 @@ description: "Build optimal Daily Fantasy Sports lineups for DraftKings and FanD
 homepage: https://github.com/ianalloway/openclaw-skills
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🏆",
-        "requires": { "bins": ["python3"] },
-        "credentials": [],
-      },
+    "openclaw": {
+      "emoji": "🏆",
+      "requires": {
+        "bins": ["python3"]
+      }
+    }
   }
 ---
-
 # DFS Lineup Optimizer
 
 Build mathematically optimal Daily Fantasy Sports lineups. Uses a greedy salary-cap optimizer to maximize projected fantasy points under DraftKings/FanDuel roster constraints. No paid API needed — paste your own projections or use the built-in samples.

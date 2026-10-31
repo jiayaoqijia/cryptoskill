@@ -4,15 +4,14 @@ description: "Analyze market sentiment for stocks and crypto using Reddit, news 
 homepage: https://github.com/ianalloway/openclaw-skills
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "📡",
-        "requires": { "bins": ["python3", "curl"] },
-        "credentials": [],
-      },
+    "openclaw": {
+      "emoji": "📡",
+      "requires": {
+        "bins": ["python3", "curl"]
+      }
+    }
   }
 ---
-
 # Market Sentiment Analyzer
 
 Read the crowd before you trade. Pulls sentiment signals from Reddit mentions, news headline tone, and the Fear & Greed Index to give you a directional bias for stocks and crypto.

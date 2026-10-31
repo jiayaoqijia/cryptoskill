@@ -4,12 +4,21 @@ description: "Get real-time cryptocurrency prices, market data, and portfolio tr
 homepage: https://docs.coingecko.com/
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "💰",
-        "requires": { "bins": ["curl", "jq"] },
-        "credentials": [],
+    "openclaw": {
+      "emoji": "💰",
+      "requires": {
+        "bins": ["curl", "jq"]
       },
+      "install": [
+        {
+          "id": "jq-brew",
+          "kind": "brew",
+          "formula": "jq",
+          "bins": ["jq"],
+          "label": "Install jq (brew)"
+        }
+      ]
+    }
   }
 ---
 # Crypto Price Tracker

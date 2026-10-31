@@ -4,12 +4,9 @@ description: "Delegate coding tasks to Devin AI agent. Create PRs, fix bugs, bui
 homepage: https://github.com/ianalloway/openclaw-skills
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🤖",
-        "requires": { "bins": ["curl", "jq"] },
-        "credentials": [],
-      },
+    "openclaw": {
+      "emoji": "🤖"
+    }
   }
 ---
 # Devin Integration

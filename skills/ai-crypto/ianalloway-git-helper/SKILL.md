@@ -4,12 +4,12 @@ description: "Common git commands, workflows, and troubleshooting for everyday d
 homepage: https://github.com/ianalloway/openclaw-skills
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🔀",
-        "requires": { "bins": ["git"] },
-        "credentials": [],
-      },
+    "openclaw": {
+      "emoji": "🔀",
+      "requires": {
+        "bins": ["git"]
+      }
+    }
   }
 ---
 # Git Helper

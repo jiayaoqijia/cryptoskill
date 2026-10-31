@@ -4,15 +4,14 @@ description: "Track hot and cold streaks for sports teams and players. Identify 
 homepage: https://github.com/ianalloway/openclaw-skills
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🔥",
-        "requires": { "bins": ["python3"] },
-        "credentials": [],
-      },
+    "openclaw": {
+      "emoji": "🔥",
+      "requires": {
+        "bins": ["python3"]
+      }
+    }
   }
 ---
-
 # Streak Tracker
 
 Momentum matters in sports betting. This skill helps you identify hot/cold streaks, ATS trends, and over/under patterns to find teams due for regression — or continuation.

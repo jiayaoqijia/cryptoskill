@@ -4,15 +4,14 @@ description: "Track your sports bets in a local CSV journal. Calculate ROI, CLV,
 homepage: https://github.com/ianalloway/openclaw-skills
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "📒",
-        "requires": { "bins": ["python3"] },
-        "credentials": [],
-      },
+    "openclaw": {
+      "emoji": "📒",
+      "requires": {
+        "bins": ["python3"]
+      }
+    }
   }
 ---
-
 # Bet Journal
 
 The most important edge in sports betting isn't picking winners — it's *tracking* your bets to learn where your edge is real vs. imagined. This skill creates and analyzes a local CSV bet journal.

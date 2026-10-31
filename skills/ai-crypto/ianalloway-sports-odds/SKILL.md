@@ -4,23 +4,32 @@ description: "Get live sports betting odds and compare lines across sportsbooks.
 homepage: https://the-odds-api.com/
 metadata:
   {
-    "openclaw":
-      {
-        "emoji": "🏈",
-        "requires": { "bins": ["curl", "jq"] },
-        "credentials":
-          [
-            {
-              "id": "odds-api-key",
-              "name": "The Odds API Key",
-              "description": "Free API key from https://the-odds-api.com/",
-              "env": "ODDS_API_KEY",
-            },
-          ],
+    "openclaw": {
+      "emoji": "🏈",
+      "requires": {
+        "bins": ["curl", "jq"],
+        "env": ["ODDS_API_KEY"]
       },
+      "primaryEnv": "ODDS_API_KEY",
+      "envVars": [
+        {
+          "name": "ODDS_API_KEY",
+          "required": true,
+          "description": "Free API key from https://the-odds-api.com/"
+        }
+      ],
+      "install": [
+        {
+          "id": "jq-brew",
+          "kind": "brew",
+          "formula": "jq",
+          "bins": ["jq"],
+          "label": "Install jq (brew)"
+        }
+      ]
+    }
   }
 ---
-
 # Sports Betting Odds
 
 Get live betting odds from multiple sportsbooks using The Odds API. Free tier includes 500 requests/month.
