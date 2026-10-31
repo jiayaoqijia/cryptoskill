@@ -6,6 +6,7 @@ import {
   readFeesCollected,
   readGaugePoint,
   readIncentivePrograms,
+  readPoolMeta,
   readV3Gauges,
   v3GaugeYield,
   V3_PRECISION,
@@ -80,6 +81,64 @@ test("gauges: walked from the registry, empty before launch", async () => {
     "0xR|gaugeToTarget|0xG": "0xP",
   });
   assert.deepEqual(await readV3Gauges(after, "0xR"), { leafVoter: "0xV", gauges: [{ gauge: "0xG", pool: "0xP", rewards: "0xM" }] });
+});
+
+test("pool meta: a Slipstream pool's kind is CL<tickSpacing>; token symbols are cached across pools", async () => {
+  const symbols = new Map<string, string>();
+  const c = fake({
+    "0xPool1|token0": "0xTokenA",
+    "0xPool1|token1": "0xTokenB",
+    "0xPool1|tickSpacing": 100,
+    "0xTokenA|symbol": "WETH",
+    "0xTokenB|symbol": "USDC",
+    "0xPool2|token0": "0xTokenA",
+    "0xPool2|token1": "0xTokenC",
+    "0xPool2|tickSpacing": 50,
+    "0xTokenC|symbol": "AERO",
+  });
+  let tokenACalls = 0;
+  const counting: V3Client = {
+    ...c,
+    readContract: async (args) => {
+      if (args.address === "0xTokenA" && args.functionName === "symbol") tokenACalls++;
+      return c.readContract(args);
+    },
+  };
+  assert.deepEqual(await readPoolMeta(counting, "0xPool1", symbols), { symbol0: "WETH", symbol1: "USDC", kind: "CL100" });
+  assert.deepEqual(await readPoolMeta(counting, "0xPool2", symbols), { symbol0: "WETH", symbol1: "AERO", kind: "CL50" });
+  assert.equal(tokenACalls, 1, "a token symbol already seen must not be read again");
+});
+
+test("pool meta: basic pools with no tickSpacing() fall back to symbol() to tell sAMM from vAMM", async () => {
+  const symbols = new Map<string, string>();
+  const c = fake({
+    "0xPoolS|token0": "0xTokenA",
+    "0xPoolS|token1": "0xTokenB",
+    "0xPoolS|symbol": "sAMM-USDC/USDT",
+    "0xTokenA|symbol": "USDC",
+    "0xTokenB|symbol": "USDT",
+    "0xPoolV|token0": "0xTokenA",
+    "0xPoolV|token1": "0xTokenC",
+    "0xPoolV|symbol": "vAMMV2-AERO/WETH",
+    "0xTokenC|symbol": "AERO",
+  });
+  assert.equal((await readPoolMeta(c, "0xPoolS", symbols))?.kind, "sAMM");
+  assert.equal((await readPoolMeta(c, "0xPoolV", symbols))?.kind, "vAMM");
+});
+
+test("pool meta: a token symbol that fails to read is \"?\" rather than failing the whole pool; a pool that answers like neither kind is undefined", async () => {
+  const symbols = new Map<string, string>();
+  const c = fake({
+    "0xPool|token0": "0xTokenX",
+    "0xPool|token1": "0xTokenY",
+    "0xPool|symbol": "vAMM-X/Y",
+    "0xTokenY|symbol": "Y",
+    // 0xTokenX's symbol() is missing from the answers, so it throws like an unreadable token.
+  });
+  assert.deepEqual(await readPoolMeta(c, "0xPool", symbols), { symbol0: "?", symbol1: "Y", kind: "vAMM" });
+
+  const bad = fake({ "0xBad|token1": "0xTokenB" }); // token0() missing -> throws
+  assert.equal(await readPoolMeta(bad, "0xBad", new Map()), undefined);
 });
 
 test("gauge point: pulled out of the Point struct at the end of gaugeStates' nine-field return", async () => {

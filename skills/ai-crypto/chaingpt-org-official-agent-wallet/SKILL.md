@@ -5,6 +5,8 @@ description: "Use the optional encrypted EVM, Solana and Tron agent wallet with 
 
 # Agent wallet
 
+**Currently disabled.** The `chaingpt_agent_wallet_*` tools are not available unless the operator set `CHAINGPT_AGENT_WALLET_ENABLED=true` in the MCP server launch environment. If they are missing, tell the user the agent wallet is disabled and offer an unsigned transaction they sign in their own wallet instead. Never suggest enabling it through a `.env` file or shell edits made by the agent.
+
 Read `docs/wallet-safety.md` before setup or migration. First-run signing is disabled.
 The administrator explicitly enables the intended chains and configures native and token limits.
 Keep only the working capital intended for this separate hot wallet.

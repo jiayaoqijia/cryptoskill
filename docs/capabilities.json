@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T06:33:49.620729+00:00",
+  "generated_at": "2026-10-31T12:32:02.989680+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -68312,6 +68312,68 @@
         },
         "can_execute_shell": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/s0yabean-macro-data-query": {
+      "name": "macro-data-query",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -223421,11 +223483,11 @@
     }
   },
   "summary": {
-    "discovered": 3591,
-    "processed": 3591,
+    "discovered": 3592,
+    "processed": 3592,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2593,
+      "read_only": 2594,
       "router_orchestrator": 147,
       "unknown": 351,
       "analysis_only": 219,
@@ -223436,7 +223498,7 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1242,
+      "can_execute_shell": 1243,
       "can_install_code": 566,
       "can_write_files": 188,
       "can_browse_web": 252,
