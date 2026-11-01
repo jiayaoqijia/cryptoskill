@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-01T08:47:16.890Z",
+ "checkedAt": "2026-11-01T16:47:20.858Z",
  "source": "dromos.kitchen",
  "boardAsOf": "2026-11-01T05:55:48.310047Z",
  "positions": [
@@ -30,11 +30,11 @@
    "earned7d": 163.74,
    "apr7d": 0.5268,
    "moves7d": 1,
-   "lastMoved": 1793011043,
+   "lastMoved": 1793535245,
    "split": [
     {
-     "chain": "ethereum",
-     "gauge": "0xeebdc9a01bfd04bfbc8cddeba91071f93b96b9df",
+     "chain": "optimism",
+     "gauge": "0x988511ea49a3cc7e0d6ef36f500b0f72f6a30df7",
      "share": 1
     }
    ]
@@ -174,41 +174,40 @@
    "earned7d": 46.3,
    "apr7d": 0.3909,
    "moves7d": 2,
-   "lastMoved": 1793213817,
-   "split": [
-    {
-     "chain": "base",
-     "gauge": "0xb41eac5becd6c09ec40294185bcde208fb3c6b7b",
-     "share": 1
-    }
-   ]
+   "lastMoved": 1793551525,
+   "split": []
   }
  ],
  "together": [
   {
    "chain": "ethereum",
    "gauge": "0xeebdc9a01bfd04bfbc8cddeba91071f93b96b9df",
-   "share": 0.5
-  },
-  {
-   "chain": "base",
-   "gauge": "0xb41eac5becd6c09ec40294185bcde208fb3c6b7b",
-   "share": 0.2
+   "share": 0.4444444444444444
   },
   {
    "chain": "base",
    "gauge": "0xb3b8d636d59b71eab86cd36ab4c94c1c2dfbce70",
-   "share": 0.1
+   "share": 0.1111111111111111
+  },
+  {
+   "chain": "optimism",
+   "gauge": "0x988511ea49a3cc7e0d6ef36f500b0f72f6a30df7",
+   "share": 0.1111111111111111
+  },
+  {
+   "chain": "base",
+   "gauge": "0xb41eac5becd6c09ec40294185bcde208fb3c6b7b",
+   "share": 0.1111111111111111
   },
   {
    "chain": "ethereum",
    "gauge": "0x2c56bc4ea8035b5dddf8a41ffbf5f5cd0a2f7a6c",
-   "share": 0.1
+   "share": 0.1111111111111111
   },
   {
    "chain": "base",
    "gauge": "0xaa3b00f22de3c2a4a2485a9bdcfe56c185b49b88",
-   "share": 0.1
+   "share": 0.1111111111111111
   }
  ]
 }

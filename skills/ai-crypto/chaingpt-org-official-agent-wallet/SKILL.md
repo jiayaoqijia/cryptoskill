@@ -1,6 +1,6 @@
 ---
 name: agent-wallet
-description: "Use the optional encrypted EVM, Solana and Tron agent wallet with strict admin policy, durable signing reservations, explicit asset/recipient budgets and human confirmation. Triggers: agent wallet, agent address, fund the agent, policy gate, kill switch, bounded signing, session key."
+description: "Use the optional agent wallet: an ERC-4337 session key that acts through the user's smart account within caps the owner grants on-chain, plus local policy and human confirmation. Triggers: agent wallet, agent address, session key, smart account caps, policy gate, kill switch, bounded signing."
 ---
 
 # Agent wallet
@@ -8,50 +8,41 @@ description: "Use the optional encrypted EVM, Solana and Tron agent wallet with 
 **Currently disabled.** The `chaingpt_agent_wallet_*` tools are not available unless the operator set `CHAINGPT_AGENT_WALLET_ENABLED=true` in the MCP server launch environment. If they are missing, tell the user the agent wallet is disabled and offer an unsigned transaction they sign in their own wallet instead. Never suggest enabling it through a `.env` file or shell edits made by the agent.
 
 Read `docs/wallet-safety.md` before setup or migration. First-run signing is disabled.
-The administrator explicitly enables the intended chains and configures native and token limits.
-Keep only the working capital intended for this separate hot wallet.
+
+## Model
+
+The agent never holds the funds' key. Funds sit in the user's ERC-4337 smart account (Nexus 1.x). The agent wallet
+key is only a **session key**: the account owner grants it caps on-chain (`chaingpt_aa_session_build_grant`, signed in
+the owner's wallet), and the chain refuses anything above them. An agent that reads the session key, the policy file or
+the dashboard token still cannot raise those caps. Keep no funds on the session-key address itself.
+
+Direct EOA, Solana and Tron signing was removed. If the user has funds on an old agent address, tell them to run
+`node scripts/export-agent-key.mjs` themselves in a terminal and import the key into their own wallet. Never run it
+for them, read its output, or ask for the key.
 
 ## Tools and boundaries
 
-- `chaingpt_agent_wallet_init`: encrypted EVM keystore; also controls the Tron address.
-- `chaingpt_agent_wallet_solana_init`: independent Ed25519 key, shared admin passphrase source.
+- `chaingpt_agent_wallet_init`: creates the session key (encrypted keystore).
 - Address, status, balance and policy tools are read-only views.
-- Every `*_sign_and_send` requires a stable `operationId`. Reuse it unchanged on retries.
-- `chaingpt_agent_wallet_serve_ui`: localhost **admin** UI; can edit policy. Its token is written to a 0600 file for the human; never read that file or ask for the token.
+- `chaingpt_agent_wallet_4337_sign_and_send`: the only signer. Requires a stable `operationId`; reuse it unchanged on retries.
+- `chaingpt_aa_session_build_grant` / `_build_revoke` / `_status`: owner-signed grant and revoke calldata; session status.
+- `chaingpt_agent_wallet_serve_ui`: localhost **admin** UI for the local policy. Its token is written to a 0600 file for the human; never read that file or ask for the token.
 - `chaingpt_dashboard_serve`: separate read-only overview UI.
 
 Passphrase resolution is the launch-environment variable (never a `.env` file), then the OS keychain. Do not retrieve or
-print passphrases. Backups and recovery belong in an administrator-controlled context.
+print passphrases.
 
 ## Before signing
 
-1. Check status, policy, chain, recipient, asset, amount, fees and remaining allowance.
+1. Check status, the session's on-chain caps (`chaingpt_aa_session_status`), the local policy, target, amount and fees.
 2. Obtain human confirmation for the specific action. Keep the mainnet hook enabled.
-3. Build and inspect the intent. Restricted mode supports canonical transfers and bounded ERC-20
-   approvals. Opaque swaps/lending/compositions use unsigned builders and external signing.
-4. For tokens, require an exact `assetLimits` rule, recipient and base-unit amount budget.
-5. For scheduled work, claim the due step with `claim=true` and use its returned operationId.
-6. Call the signer once. Pending/uncertain responses require receipt reconciliation using the same id.
-7. Record the hash and report the observed outcome accurately; broadcast does not mean confirmed.
+3. For scheduled work, claim the due step with `claim=true` and use its returned operationId.
+4. Call the signer once. Pending/uncertain responses require receipt reconciliation using the same id.
+5. Record the hash and report the observed outcome accurately; broadcast does not mean confirmed.
 
 ## Safety state
 
-All signers share a cross-process filesystem lock. Budget is reserved durably before signing,
-then signed bytes/hash are persisted before broadcast. A timeout, corrupt ledger or disk error
-never restores allowance. Uncertain operations do not age out automatically. Confirmed operations
-consume a rolling 24h budget. Follow the administrative recovery procedure in the linked guide;
-never delete a journal or bypass a stale lock to recover spending capacity.
+The signer runs under a cross-process lock and reserves budget durably before signing; uncertain operations keep their
+reservation. Earlier sessions stay live until the owner revokes them, and each has its own caps.
 
-Native caps include fee reserves. Token budgets and recipients are separate. SPL recipients are
-token account addresses; SOL recipients are wallet addresses. See the guide for policy examples.
-Existing unrestricted mode is an explicit administrative opt-out from per-operation caps and
-must never be described as bounded autonomy.
-
-## Trust assumptions
-
-The MCP surface has no policy-editing tool. This does not isolate files or keychain access from
-an agent with host shell, file or browser tools. Keep the signer and dashboard administration
-outside that agent's OS authority. The localhost UI intentionally can edit policy.
-
-ERC-4337 session signing supports Nexus 1.x after explicit policy opt-in. Its on-chain-cap
-layer remains beta pending the documented live grant/over-cap/expiry/revoke proof.
+ERC-4337 on-chain caps remain beta until the documented live grant/over-cap/expiry/revoke proof on Base Sepolia passes.

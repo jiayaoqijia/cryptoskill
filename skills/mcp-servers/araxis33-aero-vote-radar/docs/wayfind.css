@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@400;500;800&display=swap");
+/* Aero Vote Radar in the deftools look, 31.10.2026 (Hallmark, theme Wayfind), the same
+   as deftools.xyz/wayfind.css but pointed at this page's own tokens (--panel, --line,
+   --accent...). Loaded after the page's <style>; theme.js picks light or dark before
+   the first paint. Light is Wayfind "platform", dark its "night"; cobalt is the action
+   and Aero's blue in both. The page's rules are untouched; only what read wrong on
+   light paper is fixed at the bottom. */
+:root, :root[data-theme="light"]{
+  color-scheme:light;
+  --bg:oklch(95.5% 0.006 250); --panel:oklch(99.5% 0.005 250); --panel-2:oklch(91% 0.009 250);
+  --line:oklch(80% 0.011 250); --line-soft:oklch(87% 0.009 250); --frame:oklch(16% 0.014 262);
+  --text:oklch(16% 0.014 262); --muted:oklch(42% 0.016 260); --dim:oklch(47% 0.016 260);
+  --accent:oklch(45% 0.22 264); --aero:oklch(51% 0.22 264); --aero-soft:oklch(45% 0.22 264);
+  --good:oklch(48% 0.15 150); --warn:oklch(55% 0.15 65); --bad:oklch(53% 0.2 25);
+  --amber:oklch(78% 0.16 70); --amber-ink:oklch(20% 0.04 70);
+  --radius:0px;
+  --font-board:"Chivo Mono", ui-monospace, monospace;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:oklch(15% 0.012 262); --panel:oklch(19% 0.014 262); --panel-2:oklch(23% 0.014 262);
+  --line:oklch(31% 0.014 262); --line-soft:oklch(26% 0.014 262); --frame:oklch(96% 0.005 250);
+  --text:oklch(96% 0.005 250); --muted:oklch(76% 0.012 255); --dim:oklch(70% 0.012 255);
+  --accent:oklch(74% 0.14 264); --aero:oklch(62% 0.2 264); --aero-soft:oklch(80% 0.1 264);
+  --good:oklch(76% 0.15 150); --warn:oklch(80% 0.14 75); --bad:oklch(70% 0.17 25);
+  --amber:oklch(78% 0.16 70); --amber-ink:oklch(20% 0.04 70);
+}
+html, body{overflow-x:clip;}
+body, button, input, select, textarea{font-family:var(--font-board); font-variant-numeric:tabular-nums;}
+body{background:var(--bg);}
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+h1, h2, h3{letter-spacing:-0.03em; font-weight:800;}
+.panel, .scroll, .trust, .stat, .ar-hero, .ar-answer, .ar-callout, .ar-guide > div{border:2px solid var(--frame) !important; border-radius:0 !important;}
+button, input, select, a.primary{border-radius:0 !important;}
+.sup-btn{background:var(--amber) !important; border-color:var(--amber) !important; color:var(--amber-ink) !important; font-weight:800 !important; border-radius:999px !important;}
+.theme-btn{border:2px solid var(--frame) !important; background:transparent !important; color:var(--text) !important; padding:5px 12px; border-radius:999px !important;
+  font:inherit; font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; margin-left:12px; align-self:center;}
+.theme-btn:hover{background:var(--panel-2) !important;}
+/* Light paper: the note's text was a pale cream meant for a dark ground. */
+:root[data-theme="light"] .note{color:var(--text);}
+/* Chivo Mono runs wider than the old sans: tables a step smaller so the last column
+   (Held up, Trend) stays inside the 1040px column. */
+.scroll table, table{font-size:12.5px;}
+.scroll th, .scroll td{padding-left:8px; padding-right:8px; letter-spacing:-0.02em;}
+/* The radar's header has no nav: the button sits right, beside Support; on a phone it
+   pins under Support so the title and its line keep their width. */
+header{position:relative;}
+.theme-btn{margin-left:auto;}
+@media (max-width:640px){ .theme-btn{position:absolute; top:48px; right:0; margin:0; padding:4px 10px;} }
+.theme-btn + .sup-btn{margin-left:8px !important;}
+@media (min-width:641px){ .theme-btn{align-self:flex-start;} }
+/* Light paper: the purple badge text was a pastel for the dark ground. */
+:root[data-theme="light"] .badge.c{color:oklch(45% 0.15 300) !important;}

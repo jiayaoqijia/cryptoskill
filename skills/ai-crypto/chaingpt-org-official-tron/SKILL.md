@@ -1,16 +1,16 @@
 ---
 name: tron
-description: "Tron (TVM) support via the ChainGPT plugin — at parity with the EVM + Solana surfaces. Read balances/resources/tx, research (DexScreener), risk (GoPlus), build UNSIGNED native TRX + TRC-20 transfers (custody-free), SunSwap quotes, JustLend lending, and autonomous agent-wallet signing behind a deterministic policy gate. The agent's Tron account uses the SAME key as the EVM agent wallet. Triggers: tron, TRX, TRC-20, USDT on tron, sun swap, sunswap, justlend, tronscan, send TRX, tron balance, tron wallet."
+description: "Tron (TVM) support via the ChainGPT plugin — at parity with the EVM + Solana surfaces. Read balances/resources/tx, research (DexScreener), risk (GoPlus), build UNSIGNED native TRX + TRC-20 transfers (custody-free), SunSwap quotes, and JustLend lending. Every Tron transaction is unsigned and signed by the user (there is no autonomous Tron signer). Triggers: tron, TRX, TRC-20, USDT on tron, sun swap, sunswap, justlend, tronscan, send TRX, tron balance, tron wallet."
 ---
 
 # ChainGPT Tron Skill
 
 You operate on **Tron**, a non-EVM chain (TVM). It is bytecode-compatible with the EVM but the account, address, fee, and transaction layers differ. Key facts:
 
-- **Addresses** are base58 `T…` (34 chars). The same secp256k1 key controls both an ETH EOA and a Tron account; only the encoding differs (`0x41` + Base58Check). So the agent's Tron address is derived from its existing EVM agent wallet — there is no separate `_init`.
+- **Addresses** are base58 `T…` (34 chars). The same secp256k1 key can control both an ETH EOA and a Tron account; only the encoding differs (`0x41` + Base58Check).
 - **Units:** 1 TRX = 1,000,000 SUN (6 decimals). Contract calls burn **Energy** (capped by `fee_limit`); transactions burn **Bandwidth**. Sending to a never-activated address costs ~1.1 TRX.
 - **No OpenOcean/1inch on Tron** — DEX routing uses **SunSwap**; lending uses **JustLend**.
-- **Custody-free by default:** builders return an UNSIGNED tx (sign in TronLink or via the agent wallet). Mainnet builders require `acknowledgeMainnet: true`.
+- **Custody-free by default:** builders return an UNSIGNED tx to sign in TronLink. Mainnet builders require `acknowledgeMainnet: true`.
 
 ## Tools
 
@@ -28,8 +28,6 @@ You operate on **Tron**, a non-EVM chain (TVM). It is bytecode-compatible with t
 | `chaingpt_tron_dex_sunswap_quote` | SunSwap swap quote (read) |
 | `chaingpt_tron_lend_justlend_account` | JustLend liquidity + per-market balances |
 | `chaingpt_tron_lend_justlend_build_tx` | Unsigned JustLend approve/supply/withdraw/borrow/repay |
-| `chaingpt_agent_wallet_tron_address` | Agent's Tron address + TRX balance |
-| `chaingpt_agent_wallet_tron_sign_and_send` | Build + sign + broadcast under the `tron` policy |
 
 ## Pipelines
 
@@ -37,12 +35,6 @@ You operate on **Tron**, a non-EVM chain (TVM). It is bytecode-compatible with t
 ```text
 chaingpt_tron_risk_token (optional gate) → chaingpt_tron_build_trc20_transfer_tx (acknowledgeMainnet:true) → sign in TronLink
 ```
-
-**Autonomous send (agent wallet):**
-```text
-chaingpt_agent_wallet_tron_address (fund it) → chaingpt_agent_wallet_tron_sign_and_send { kind:"trc20_transfer", token:"USDT", to, amount, memo }
-```
-The deterministic `tron` policy gate enforces the destination allowlist, per-tx + rolling-24h SUN caps, the `fee_limit` cap, and a memo before signing. Tron signing requires `"tron": { "enabled": true }` in the policy (fail-closed for policy files that predate Tron). No MCP tool can relax the policy.
 
 **Lend on JustLend:**
 ```text
@@ -52,7 +44,7 @@ chaingpt_tron_lend_justlend_account → build approve (TRC-20 markets) → build
 ## Environment
 
 - `TRON_PRO_API_KEY` — TronGrid key (mainnet keyless is throttled).
-- `TRON_RPC_URL` — override the node host. Agent-wallet signing refuses a non-TronGrid host.
+- `TRON_RPC_URL` — override the node host (launch environment only; a project `.env` cannot set it).
 
 ## Rules
 

@@ -30,7 +30,7 @@ You can also call the tool directly:
 | Panel | What it shows | Source |
 |---|---|---|
 | Overview | Plugin / MCP / marketplace versions; skill count; agent-wallet init state; docs link | `.claude-plugin/*.json`, `mcp-server/package.json`, `~/.chaingpt-mcp/agent-wallet/keystore.json` |
-| Wallet | Agent EOA address (copy button); policy summary (kill switch, unrestricted mode, allowed chains, allowed/blocked address counts, max tx value, max gas, memo requirement, policy digest); tracked-token + custom-chain counts; signed-tx count; CTA to launch the full Wallet Admin UI (port 8787) for editing. Read-only — reads the public address from the keystore, never decrypts. | `~/.chaingpt-mcp/agent-wallet/{keystore,policy,tracked-tokens,custom-chains}.json` |
+| Wallet | Agent EOA address (copy button); policy summary (kill switch, unrestricted mode, allowed chains, allowed/blocked address counts, max tx value, max gas, memo requirement, policy digest); tracked-token + custom-chain counts; signed-tx count; CTA to launch the full Wallet Admin UI (port 8787) for editing — only available when the agent wallet is enabled (`CHAINGPT_AGENT_WALLET_ENABLED=true`). Read-only — reads the public address from the keystore, never decrypts. | `~/.chaingpt-mcp/agent-wallet/{keystore,policy,tracked-tokens,custom-chains}.json` |
 | Skills | One card per skill in `skills/` with name + description from its SKILL.md frontmatter | `skills/*/SKILL.md` |
 | Activity | Most recent signed transactions (newest first) | `~/.chaingpt-mcp/agent-wallet/activity.jsonl` (empty if you haven't signed yet) |
 | Health | Presence (not value) of CHAINGPT_API_KEY, agent-wallet passphrase, Etherscan/Moralis/GoPlus keys; Node runtime; key paths | `process.env`, filesystem |

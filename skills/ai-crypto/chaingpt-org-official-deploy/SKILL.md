@@ -24,7 +24,10 @@ chaingpt_deploy_compile          ← solc 0.8.x, returns bytecode + ABI
 chaingpt_deploy_estimate         ← gas + USD cost on the chosen mainnet
        │
        ▼
-chaingpt_deploy_build_tx         ← MAINNET REFUSES unless acknowledgeMainnet: true
+chaingpt_deploy_build_tx         ← MAINNET REFUSES unless acknowledgeMainnet: true AND the bytecode came from
+                                   chaingpt_deploy_compile of source audited by chaingpt_audit_contract this session
+                                   (else acknowledgeUnaudited: true, only after the user explicitly accepts it).
+                                   The default audit only (no custom auditInstructions); flatten imports first.
        │
        ▼
 [user signs externally + broadcasts]

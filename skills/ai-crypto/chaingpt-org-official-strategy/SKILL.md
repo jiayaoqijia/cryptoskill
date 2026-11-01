@@ -36,7 +36,7 @@ These planner tools are read-only, so they don't refuse — but the executing to
 
 - **Custody.** Plans are returned; user signs every step externally.
 - **Scheduling.** See `skills/scheduled-autonomy/SKILL.md`; keep human confirmation and durable claims.
-- **ERC-4337.** Session-key support exists in beta; see `skills/agent-wallet/SKILL.md`.
+- **ERC-4337.** Session-key support exists in beta; see `skills/agent-wallet/SKILL.md`. Agent-wallet signing is off by default.
 - **Persistence.** Save plans with `chaingpt_strategy_save_plan`; claim due steps before execution.
 - **Live order-management.** Cancellation + replacement is the user's responsibility; planner doesn't track open orders.
 

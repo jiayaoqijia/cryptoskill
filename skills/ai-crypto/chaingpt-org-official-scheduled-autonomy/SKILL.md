@@ -11,7 +11,7 @@ create spending authority or guarantee exactly-once execution of arbitrary exter
 1. Generate a strategy plan and review its assets, chain, sizes and timing.
 2. Save it with `chaingpt_strategy_save_plan`.
 3. Prefer scheduled research/unsigned preparation with a human confirming and executing transfers.
-4. For an explicitly authorized agent-wallet action, call `chaingpt_strategy_due_steps claim=true`.
+4. For an explicitly authorized agent-wallet action, call `chaingpt_strategy_due_steps claim=true`. The agent wallet is disabled by default; `chaingpt_agent_wallet_*` tools exist only if the operator set `CHAINGPT_AGENT_WALLET_ENABLED=true`. If they are missing, use the unsigned builders and have the user sign.
    Pass the returned operationId unchanged to the signer. Keep the confirmation hook enabled.
 5. Re-run risk/quote/health checks as appropriate. Restricted signers reject opaque protocol calls;
    use the unsigned builder and external wallet for those operations.
