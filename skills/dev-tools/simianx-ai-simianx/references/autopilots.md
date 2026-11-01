@@ -41,11 +41,22 @@ external fill. Use the event cursor to resume processing and check `expires_at`,
 - `tier` picks a model per agent (`fast | standard | frontier`); `models` `{agent: model_id}` overrides per agent (paid
   plans; ids from `GET /v1/models`, `live.crypto` / `live.stock` lists; an unknown id is 400 `invalid_parameter` with
   `data.allowed`). `PATCH /v1/autopilots/{id}` with `models` or `tier` changes them for the next cycles.
-- `intervals` are seconds per agent (≥ 60). Without them the account's saved defaults apply.
+- `intervals` are seconds per agent (≥ 30; fundamental ≥ 1800; ≤ 86400, out-of-range values are clamped). Without them the account's saved defaults apply.
 - `ai_position_control` (default true): the decision agent opens, moves and closes a paper position; `position.changed`
   events follow. `webhook` here is the engine's own per-autopilot notification channel (HMAC-signed
   `X-SimianX-Signature: sha256=…` over `"<ts>.<body>"` when `secret` is set); account-wide webhooks that carry every
   update of every run are `POST /v1/webhooks` (`references/developers.md`).
+- `timing_gate` (crypto, default false): while the autopilot holds no position and no resting order, our timing-gate
+  model scores each decision candle before the indicator and decision agents run. Gated timeframes are the ones the
+  active model has a threshold for (now 1m, 5m, 15m); others run as usual. Below the threshold both agents skip that
+  candle without a model call:
+  - the decision answers `analysis.completed` with `skipped: "timing_gate"`, `model` (the gate model, `SX-1`; a
+    retrained model becomes `SX-2`, …), `conclusion.gate` (`passed: false`, `score`, `threshold`, `candle_close`,
+    `timeframe`, `model_name`; `score` / `threshold` may be null) and `points`: 0.05 the first time the candle is
+    skipped, 0 when a manual `run` hits the same candle again (one charge per candle);
+  - the indicator answers `analysis.completed` with `skipped: "timing_gate"` and no new report: the latest
+    indicator report stays the current one.
+  A manual `run` goes through the gate too; breaking-news decisions are not gated.
 - Answer: `data.autopilot` (id, session_id, status, models, intervals…), `data.cursor` (start reading events here), `data.events_url`,
   `data.next_step` (keep following). Ask the human before starting one that manages a paper position.
 - Limits: running autopilots per plan (Free 1, Starter 2, Plus 3, Pro 10) and `ai_concurrency`; 429 `autopilot_limit` / `ai_concurrency` when full.
@@ -73,6 +84,8 @@ Cursors are stable for 7 days (the stream holds the recent tail; older cursors a
 ## History
 
 - `GET /v1/autopilots/{id}/analyses?agent=decision&limit=20&before=<timestamp>&include=text`
+  (rows with `agent: "gate"` are decision candles the timing gate skipped; `?agent=decision` lists them with the
+  decisions. `gate` is not a filter value of its own: `?agent=gate` is 400 `invalid_parameter`)
 - `GET /v1/autopilots/{id}/positions?status=open|closed&limit=20` (positions with their operations)
 - `GET /v1/autopilots/{id}/logs`
 
@@ -117,7 +130,8 @@ the run is queued and its result arrives in the event log as `analysis.completed
 schedule continues from that completion). 409 `run_in_progress` while that agent is queued or running, 429
 `run_too_soon` (with `Retry-After`) within 60 s of its last result, 409 `state_conflict` while the owner has the live
 page open on the same session (it runs the agents itself). On a stock autopilot outside market hours the indicator
-and decision agents answer `analysis.completed` with `skipped: market_closed`.
+and decision agents answer `analysis.completed` with `skipped: market_closed`. With `timing_gate` on, the indicator and
+decision agents answer `analysis.completed` with `skipped: timing_gate` on a candle the gate skips (see Start).
 
 ## Control
 

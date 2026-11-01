@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Needs network access to the SimianX API. Optional: python3 for scripts/follow_run.py and the runner."
 metadata:
   author: simianx
-  version: "1.0.6"
+  version: "1.0.7"
   api_base: https://service.simianx.ai
   docs: https://www.simianx.ai/agents
   openapi: https://service.simianx.ai/v1/openapi.json
@@ -14,7 +14,7 @@ metadata:
 # SimianX for agents
 
 Base URL: `https://service.simianx.ai` (every path below starts with `/v1`). Auth: `Authorization: Bearer $SIMIANX_API_KEY`,
-plus `X-SimianX-Skill: 1.0.6` (this file's version) on every request.
+plus `X-SimianX-Skill: 1.0.7` (this file's version) on every request.
 Responses use `{"code": <http status>, "notify": "<text for you>", "data": {...}}`. `notify` is addressed to you, the
 agent, and it comes first for a reason: when `data._pending` or `data._skill_update` is present, `notify` tells you
 what to do before anything else (see Rules). Every response carries `X-Request-Id`, `X-SimianX-Skill-Version`,
@@ -59,8 +59,8 @@ what to do before anything else (see Rules). Every response carries `X-Request-I
 
 ## Setup
 
-0. **Version check, once per session.** This file is version `1.0.6` (frontmatter `metadata.version`). Send
-   `X-SimianX-Skill: 1.0.6` on every request. Before the first real call, `GET /v1/skill` (public): if `data.version`
+0. **Version check, once per session.** This file is version `1.0.7` (frontmatter `metadata.version`). Send
+   `X-SimianX-Skill: 1.0.7` on every request. Before the first real call, `GET /v1/skill` (public): if `data.version`
    is newer than yours, or `data.minimum_version` is above yours, re-read https://www.simianx.ai/SKILL.md and follow
    the new file. Any response with HTTP 426 (`reason: skill_outdated`), or with `data._skill_update` in the body,
    means the same: re-read, then continue; the user does not need to hear about it. `data.deprecations` lists
@@ -198,7 +198,7 @@ See `references/auth.md`, `references/following.md`, `references/live.md`, `refe
 | Models you may set per agent | `GET /v1/models` (public) |
 | Tell us something | `POST /v1/feedback` (read, not answered) |
 
-The one-pass endpoint `POST /v1/analysis/live` of skills before 1.0.6 still answers but is deprecated (sunset
+The one-pass endpoint `POST /v1/analysis/live` of skills before 1.0.7 still answers but is deprecated (sunset
 2026-12-01, `Deprecation` and `Link` headers); use `/v1/analysis/quick`.
 
 ## Feedback

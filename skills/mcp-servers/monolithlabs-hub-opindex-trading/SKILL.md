@@ -131,6 +131,10 @@ Three more habits worth having:
   list: `basis` then contains `jupiter_verified`. That is verification meeting
   the age condition only. Liquidity and LP conditions still apply, it forgives
   no risk factor, and wrapped or bridged tokens (WBTC, ETH, ...) stay `risky`.
+  Beside `lp_largest_holder_pct`, `lp_largest_holder.kind` says who holds that
+  share: `wallet` means one key can pull it, `program_account` means the
+  program in `program` decides (the service does not vouch for it), and
+  `no_account` is a PDA or empty address.
 - **`unknown` outranks `caution`.** An unnamed gap can hide anything, so treat
   it as worse than a named mild finding, never better.
 - **A null is not a small number.** `null` means the service could not measure
@@ -237,7 +241,10 @@ routes") that you can recompute.
   them. Do not compare them.
 - `safety_changes_24h` is the part to read first when you already hold the
   token: an authority set, a transfer hook added or LP supply returned in the
-  last day is the cheapest warning this service has.
+  last day is the cheapest warning this service has. A `primary_pool` change
+  on its own only says which pool the numbers now come from (the service's
+  choice of primary pool moved); check liquidity and exit cost before reading
+  it as a warning.
 - `screen` lists tokens that met *your* conditions, and each item says which
   (`why_included`). A condition whose value was `null` was not met.
 
