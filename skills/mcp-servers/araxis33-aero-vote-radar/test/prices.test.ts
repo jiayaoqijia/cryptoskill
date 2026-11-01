@@ -1,6 +1,6 @@
 import { test, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { getTokenPrices, toUsd, countUnpricedTokens } from "../src/prices.js";
+import { getTokenPrices, toUsd, countUnpricedTokens, priceOrFallback } from "../src/prices.js";
 import { DEFILLAMA_TIMEOUT_MS, DEFILLAMA_RETRY_COUNT, PRICE_CACHE_TTL_MS, PRICE_FAILURE_CACHE_TTL_MS } from "../src/constants.js";
 
 const DEFILLAMA_ATTEMPTS = DEFILLAMA_RETRY_COUNT + 1;
@@ -157,6 +157,31 @@ test("toUsd returns 0 for a token with no price info or an explicit price of 0",
   const prices = new Map([["0xeee1", { price: 0, decimals: 18 }]]);
   assert.equal(toUsd(1_000_000n, "0xeee1", prices), 0);
   assert.equal(toUsd(1_000_000n, "0xnotpriced", prices), 0);
+});
+
+test("priceOrFallback prefers the token's own price once it has one, over the fallback", () => {
+  const prices = new Map([
+    ["0xnew", { price: 0.64, decimals: 18 }],
+    ["0xold", { price: 0.80, decimals: 18 }],
+  ]);
+  assert.deepEqual(priceOrFallback(prices, "0xnew", "0xold"), { price: 0.64, decimals: 18 });
+});
+
+test("priceOrFallback uses the fallback while the token itself has no price yet", () => {
+  const prices = new Map([["0xold", { price: 0.80, decimals: 18 }]]);
+  assert.deepEqual(priceOrFallback(prices, "0xnew", "0xold"), { price: 0.80, decimals: 18 });
+});
+
+test("priceOrFallback treats a $0 price (unpriced or failed lookup) as no price, same as missing", () => {
+  const prices = new Map([
+    ["0xnew", { price: 0, decimals: 18 }],
+    ["0xold", { price: 0.80, decimals: 18 }],
+  ]);
+  assert.deepEqual(priceOrFallback(prices, "0xnew", "0xold"), { price: 0.80, decimals: 18 });
+});
+
+test("priceOrFallback returns undefined when neither the token nor the fallback has a usable price", () => {
+  assert.equal(priceOrFallback(new Map(), "0xnew", "0xold"), undefined);
 });
 
 test("getTokenPrices splits a large token list into multiple batched requests", async () => {

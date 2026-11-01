@@ -57,7 +57,7 @@ Surface the post-borrow estimated health factor before asking for confirmation. 
 ## The "stake ETH on Lido" pipeline
 
 ```text
-chaingpt_research_token symbol="ETH"   # current price for USD context
+chaingpt_research_token query="ETH"   # current price for USD context
 chaingpt_defi_lido_stake_tx amountEth="X" from="0x…"  # requires acknowledgeMainnet
 [user signs + broadcasts]
 ```

@@ -29,9 +29,9 @@ the header; it never holds a key.
 
 Fast path — one tool drives the loop:
 
-1. `chaingpt_x402_fetch url=<resource> from=<payer>` → on 402 you get the decoded price/payee AND the unsigned EIP-3009 typed data.
+1. `chaingpt_x402_fetch url=<resource> from=<payer> maxAtomicAmount=<budget>` → on 402 you get the decoded price/payee AND, if the price is within budget, the unsigned EIP-3009 typed data. Confirm the price with the user before setting the budget.
 2. Sign the typed data in the payer's wallet.
-3. `chaingpt_x402_build_payment from=<payer> requirements=<from step 1> signature=0x…` → the `X-PAYMENT` header.
+3. `chaingpt_x402_build_payment from=<payer> requirements=<from step 1> authorization=<from step 1> signature=0x…` → the `X-PAYMENT` header.
 4. `chaingpt_x402_fetch url=<resource> xPaymentHeader=<header>` → the paid response.
 
 Manual path (same primitives, finer control): `_decode` → `_build_payment` → sign → `_build_payment +signature` → retry yourself.

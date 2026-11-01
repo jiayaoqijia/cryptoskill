@@ -138,3 +138,24 @@ export function toUsd(amount: bigint, token: string, prices: Map<string, TokenPr
   if (!info || info.price === 0) return 0;
   return (Number(amount) / 10 ** info.decimals) * info.price;
 }
+
+/**
+ * `token`'s own price, falling back to `fallback`'s price only while DefiLlama
+ * has none for `token` itself yet.
+ *
+ * Written for src/v3-cli.ts's new-AERO/old-AERO handling: the new AERO had no
+ * DefiLlama price on Aero's 2026-10-22 launch day and upgrades 1:1 from the old
+ * AERO, so pricing it as the old token was the only option at launch. But that
+ * fallback was wired in unconditionally, with nothing to turn it off again —
+ * and DefiLlama did start pricing the new token directly within two weeks (confirmed
+ * 2026-11-01, both tokens priced independently and no longer identical). Deferring
+ * to the old token forever would have kept every pool's AERO-denominated fees and
+ * incentives priced off a token that is free to diverge from the one actually paid,
+ * instead of switching back to AERO's own live price the moment DefiLlama has one.
+ */
+export function priceOrFallback(prices: ReadonlyMap<string, TokenPrice>, token: string, fallback: string): TokenPrice | undefined {
+  const direct = prices.get(token);
+  if (direct && direct.price > 0) return direct;
+  const fb = prices.get(fallback);
+  return fb && fb.price > 0 ? fb : undefined;
+}

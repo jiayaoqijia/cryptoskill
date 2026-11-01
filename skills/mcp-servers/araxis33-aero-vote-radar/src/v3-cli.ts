@@ -4,7 +4,7 @@ import { createPublicClient, http, type Chain } from "viem";
 import { arbitrum, base, mainnet, optimism } from "viem/chains";
 import { client } from "./chain.js";
 import { V3_LOGS_RPC_URL } from "./constants.js";
-import { getTokenPrices } from "./prices.js";
+import { getTokenPrices, priceOrFallback } from "./prices.js";
 import { formatError } from "./util.js";
 import { registryFromDeployment, scanV3, type V3ScanFile, type V3ScanGauge, type V3Client } from "./v3.js";
 import { appendV3Sample, poolKey, steadiness, windowStart, type V3HistoryFile } from "./v3History.js";
@@ -38,8 +38,10 @@ const CHAINS: Record<string, { registry: string; rpc: string; logs: string; step
 };
 const VIEM_CHAINS: Record<string, Chain> = { base, ethereum: mainnet, optimism, arbitrum };
 
-// The new AERO (app.aero.xyz/docs/security) has no DefiLlama price yet on launch
-// day; it upgrades 1:1 from the old AERO, so on Base it is priced as the old one.
+// The new AERO (app.aero.xyz/docs/security) had no DefiLlama price on launch day
+// and upgrades 1:1 from the old AERO, so it was priced as the old one on Base —
+// but only until DefiLlama prices it directly (priceOrFallback, src/prices.ts),
+// since the two tokens are free to trade apart once that happens.
 const NEW_AERO = "0x3f5bf3edac59d650d8fdf9657a71f2f904a3a4ee";
 const OLD_AERO = "0x940181a94a35a4569e4529a3cdfb74e38fd98631";
 
@@ -81,7 +83,7 @@ async function scanChain(name: string, now: Date): Promise<V3ScanFile> {
         const prices = await getTokenPrices([...tokens, ...extra], name);
         return (t) => {
           const k = t.toLowerCase();
-          const p = prices.get(name === "base" && k === NEW_AERO ? OLD_AERO : k);
+          const p = name === "base" && k === NEW_AERO ? priceOrFallback(prices, k, OLD_AERO) : prices.get(k);
           return p && p.price > 0 ? { decimals: p.decimals, priceUsd: p.price } : undefined;
         };
       },
