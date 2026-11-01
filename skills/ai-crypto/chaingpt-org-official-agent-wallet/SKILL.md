@@ -17,10 +17,10 @@ Keep only the working capital intended for this separate hot wallet.
 - `chaingpt_agent_wallet_solana_init`: independent Ed25519 key, shared admin passphrase source.
 - Address, status, balance and policy tools are read-only views.
 - Every `*_sign_and_send` requires a stable `operationId`. Reuse it unchanged on retries.
-- `chaingpt_agent_wallet_serve_ui`: localhost **admin** UI; can edit policy. Its token is privileged.
+- `chaingpt_agent_wallet_serve_ui`: localhost **admin** UI; can edit policy. Its token is written to a 0600 file for the human; never read that file or ask for the token.
 - `chaingpt_dashboard_serve`: separate read-only overview UI.
 
-Passphrase resolution is explicit environment variable, then the OS keychain. Do not retrieve or
+Passphrase resolution is the launch-environment variable (never a `.env` file), then the OS keychain. Do not retrieve or
 print passphrases. Backups and recovery belong in an administrator-controlled context.
 
 ## Before signing
