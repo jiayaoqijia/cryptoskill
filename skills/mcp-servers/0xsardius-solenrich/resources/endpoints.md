@@ -71,6 +71,7 @@ Test fixtures used throughout SolEnrich's own tests:
 | `trenches-scan` | $0.08 | none | Velocity × smart money × attention, ranked, HIGH_CONFLUENCE / MODERATE / SINGLE_SIGNAL |
 | `trenches-check` | $0.03 | `mint` | The three legs pointed at one token, with verdict, reasoning, `transfer_tax` |
 | `exit-signal` | $0.04 | `mint` (`entry_price_usd`) | EXIT / DERISK / HOLD, 0–1 exit score, whale flow, `position.net_pnl_after_exit_tax_pct` |
+| `audace-intent-check` | $0.05 | `category`, `tokenInMint`, `tokenOutMint`, `amountIn` (`seasonEndsAt`, `network`) | AudaceFi league: PROCEED / REDUCE / HOLD for a swap intent, `suggested_fraction`, reason codes, season-end snapshot clock |
 
 ## Perps
 
