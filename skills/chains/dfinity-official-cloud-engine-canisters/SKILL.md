@@ -326,7 +326,7 @@ let ?dk : ?VetkdDeriveKeyReply = from_candid (await viaProxy("vetkd_derive_key",
 
 ## Additional References
 
-- Load `deploy-to-cloud-engine` for getting the app onto the engine: CLI identity linking, subnet-targeted deploy, console app metadata, and for **deploying and funding the proxy** this skill's Rule 4 depends on: the console flow (the engine owner deploys it, paid from the engine's balance), which balance pays for what, and the self-deployed CLI alternative.
+- Load `deploy-to-cloud-engine` for getting the app onto the engine: which route to take (the ICP MCP connector from a sandboxed chat, or the icp CLI), CLI identity linking, subnet-targeted deploy, console app metadata, and for **deploying and funding the proxy** this skill's Rule 4 depends on: the console flow (the engine owner deploys it, paid from the engine's balance), which balance pays for what, and the self-deployed CLI alternative.
 - Load `vetkeys` for what vetKD is and how its keys are used (IBE, encrypted maps, transport keys). Its call code targets a normal subnet and attaches cycles through helper libraries: on an engine, keep the concepts and replace the calls with the proxied form above.
 - Load `https-outcalls` for everything about outcalls that is not engine-specific: transform functions, `max_response_bytes`, idempotency, debugging consensus failures.
 - Load `multi-canister` for inter-canister call design, bounded vs unbounded wait semantics, and `SYS_UNKNOWN` handling.

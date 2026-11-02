@@ -1,0 +1,24 @@
+packages:
+  - '.'
+
+# Flat npm-style node_modules, as npm produced it: imports that were never declared (phantom dependencies)
+# keep resolving. Switch to the default isolated linker once the app declares everything it imports.
+nodeLinker: hoisted
+
+minimumReleaseAge: 10080 # 7 days
+minimumReleaseAgeExclude:
+  - '@pump-fun/*'
+minimumReleaseAgeStrict: true
+
+frozenLockfile: true
+
+blockExoticSubdeps: true
+
+# pnpm 11 runs no dependency build script unless it is listed here. Add packages only after review.
+allowBuilds:
+  bigint-buffer: true
+  bufferutil: true
+  utf-8-validate: true
+
+# Force safe patched versions of transitive dependencies; every override needs a reason in the PR.
+overrides: {}

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T12:34:16.270663+00:00",
+  "generated_at": "2026-11-02T18:31:46.462755+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -30931,7 +30931,7 @@
     },
     "chains/dfinity-official-deploy-to-cloud-engine": {
       "name": "deploy-to-cloud-engine",
-      "execution_model": "unknown",
+      "execution_model": "router_orchestrator",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -31303,7 +31303,7 @@
     },
     "chains/dfinity-official-icp-cli": {
       "name": "icp-cli",
-      "execution_model": "unknown",
+      "execution_model": "router_orchestrator",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -205226,6 +205226,68 @@
       },
       "hosted_operators": []
     },
+    "trading/bankrbot-official-musecourt": {
+      "name": "musecourt",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "trading/bankrbot-official-nookplot": {
       "name": "nookplot",
       "execution_model": "router_orchestrator",
@@ -223731,13 +223793,13 @@
     }
   },
   "summary": {
-    "discovered": 3596,
-    "processed": 3596,
+    "discovered": 3597,
+    "processed": 3597,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2598,
-      "router_orchestrator": 147,
-      "unknown": 351,
+      "router_orchestrator": 150,
+      "unknown": 349,
       "analysis_only": 219,
       "unsigned_tx_builder": 115,
       "local_executor": 103,
@@ -223746,13 +223808,13 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1243,
+      "can_execute_shell": 1244,
       "can_install_code": 566,
       "can_write_files": 188,
       "can_browse_web": 253,
-      "can_spawn_subagents": 266,
+      "can_spawn_subagents": 267,
       "can_move_funds": 301,
-      "requires_private_key": 509,
+      "requires_private_key": 510,
       "requires_hosted_operator": 343,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 566

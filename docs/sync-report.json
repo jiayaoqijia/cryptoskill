@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T12:26:57.053477+00:00",
+  "generated_at": "2026-11-02T18:23:06.791157+00:00",
   "dry_run": false,
   "results": [
     {
@@ -2019,7 +2019,7 @@
     },
     {
       "skill": "analytics/surf-official",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -2549,7 +2549,7 @@
     },
     {
       "skill": "chains/dfinity-official-cloud-engine-canisters",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -2564,7 +2564,7 @@
     },
     {
       "skill": "chains/dfinity-official-deploy-to-cloud-engine",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -2599,7 +2599,7 @@
     },
     {
       "skill": "chains/dfinity-official-icp-cli",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -2829,18 +2829,18 @@
     },
     {
       "skill": "chains/mystenlabs-move",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-move-objects",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-move-patterns",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-move-security",
@@ -2849,18 +2849,18 @@
     },
     {
       "skill": "chains/mystenlabs-move-setup",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-move-stdlib",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-move-syntax",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-move-unit-testing",
@@ -2904,8 +2904,8 @@
     },
     {
       "skill": "chains/mystenlabs-sui-dev",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-sui-for-ethereum",
@@ -2914,8 +2914,8 @@
     },
     {
       "skill": "chains/mystenlabs-sui-frontend",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-sui-install",
@@ -2959,8 +2959,8 @@
     },
     {
       "skill": "chains/mystenlabs-sui-ts-sdk",
-      "status": "unchanged",
-      "detail": ""
+      "status": "unresolved",
+      "detail": "recorded upstream skill removed; manual remapping required"
     },
     {
       "skill": "chains/mystenlabs-sui-ts-sdk-backend",
@@ -3124,7 +3124,7 @@
     },
     {
       "skill": "chains/sui-move",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -4194,7 +4194,7 @@
     },
     {
       "skill": "defi/openpump-solana",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -4354,17 +4354,17 @@
     },
     {
       "skill": "defi/pumpfun-official-coin-fees",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
       "skill": "defi/pumpfun-official-create-coin",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
       "skill": "defi/pumpfun-official-swap",
-      "status": "unchanged",
+      "status": "updated",
       "detail": ""
     },
     {
@@ -4454,7 +4454,7 @@
     },
     {
       "skill": "defi/rwa-oracle",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -6654,7 +6654,7 @@
     },
     {
       "skill": "exchanges/kraken-spot",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -7044,7 +7044,7 @@
     },
     {
       "skill": "identity/8004-skill",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -15874,12 +15874,12 @@
     },
     {
       "skill": "prediction-markets/polymarket-cli-trading",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
       "skill": "prediction-markets/polymarket-data-api",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -15959,7 +15959,7 @@
     },
     {
       "skill": "prediction-markets/polymarket-trading-bot",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -16109,7 +16109,7 @@
     },
     {
       "skill": "social/nostr-social",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -16229,7 +16229,7 @@
     },
     {
       "skill": "trading/bankr-official-bankr",
-      "status": "updated",
+      "status": "unchanged",
       "detail": ""
     },
     {
@@ -16710,6 +16710,11 @@
     {
       "skill": "trading/bankrbot-official-moltycash",
       "status": "unchanged",
+      "detail": ""
+    },
+    {
+      "skill": "trading/bankrbot-official-musecourt",
+      "status": "added",
       "detail": ""
     },
     {
@@ -18328,6 +18333,10 @@
       "status": "fetched",
       "revision": "223aaccbc28fae22e220643568551f8842773262"
     },
+    "hovsteder/powersun-tron-mcp": {
+      "status": "fetched",
+      "revision": "0b12b00c73af68e5275e5baef2e63e44c8d6bf77"
+    },
     "vo1ganin/nansen-skill": {
       "status": "unchanged",
       "revision": "eb580db12a4fdf4afc78a6a2bae00159e3027dff"
@@ -18336,13 +18345,13 @@
       "status": "unchanged",
       "revision": "435d7ccd814f7ae10c20160a19c500b8136f6c18"
     },
-    "hovsteder/powersun-tron-mcp": {
-      "status": "fetched",
-      "revision": "0b12b00c73af68e5275e5baef2e63e44c8d6bf77"
-    },
     "qbt-labs/openmm-mcp": {
       "status": "fetched",
       "revision": "7f1036837d3100625f750e6bd7801534641c2295"
+    },
+    "omniologynow-rgb/profitspot-mcp": {
+      "status": "fetched",
+      "revision": "e2e42df751a727da13f4cca1fb628f7d4b56980c"
     },
     "vo1ganin/solana-rpc-skill": {
       "status": "unchanged",
@@ -18351,10 +18360,6 @@
     "vo1ganin/solscan-skill": {
       "status": "unchanged",
       "revision": "4010d19382ddf902aee72e8d238f9772cd63a276"
-    },
-    "omniologynow-rgb/profitspot-mcp": {
-      "status": "fetched",
-      "revision": "e2e42df751a727da13f4cca1fb628f7d4b56980c"
     },
     "lordbasilaiassistant-sudo/thryx-launchpad": {
       "status": "unavailable",
@@ -18396,17 +18401,21 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "aicoincom/coinos-skills": {
-      "status": "fetched",
-      "revision": "2a22bd53d710be69f8533b3a4ab80e28945c9d7d"
-    },
     "smartcontractkit/chainlink-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "coinpaprika/claude-marketplace": {
+      "status": "fetched",
+      "revision": "c6e2dc7ec8d2fcbd325d446d85706dc1650e3727"
+    },
     "uzairansaruzi/robinhood-agent-skill": {
       "status": "unchanged",
       "revision": "627f2383e2c9bceb604c65b189e7d0d3dbd9820b"
+    },
+    "aicoincom/coinos-skills": {
+      "status": "fetched",
+      "revision": "2a22bd53d710be69f8533b3a4ab80e28945c9d7d"
     },
     "alt-research/crypto-intel": {
       "status": "unavailable",
@@ -18416,13 +18425,9 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "coinpaprika/claude-marketplace": {
+    "szhygulin/vaultpilot-mcp": {
       "status": "fetched",
-      "revision": "c6e2dc7ec8d2fcbd325d446d85706dc1650e3727"
-    },
-    "defillama/defillama-skills": {
-      "status": "unchanged",
-      "revision": "f286bda4498ec8da4eb57bfba8ab40c188860e8e"
+      "revision": "088b8a9d40ce1978ce8c1086472c28659cc8adc3"
     },
     "duneanalytics/skills": {
       "status": "unchanged",
@@ -18432,21 +18437,21 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "elizaos/eliza": {
+      "status": "unavailable",
+      "detail": "source exceeds download limit"
+    },
+    "defillama/defillama-skills": {
+      "status": "unchanged",
+      "revision": "f286bda4498ec8da4eb57bfba8ab40c188860e8e"
+    },
     "elfa-ai/elfa-ai-skill": {
       "status": "unchanged",
       "revision": "9c9aa288c97f419b517c67ce44e0fb4ddbf22cd5"
     },
-    "szhygulin/vaultpilot-mcp": {
-      "status": "fetched",
-      "revision": "088b8a9d40ce1978ce8c1086472c28659cc8adc3"
-    },
     "pyth-network/pyth-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "pooowell/fomo-research-skill": {
-      "status": "unchanged",
-      "revision": "3471ee3b943e94db08c25f0ec55e0de88e08cb24"
     },
     "octav-labs/octav-api-skill": {
       "status": "unchanged",
@@ -18456,12 +18461,16 @@
       "status": "unchanged",
       "revision": "7a61b760271a61876bdd5c91013c57008c5668dd"
     },
+    "pooowell/fomo-research-skill": {
+      "status": "unchanged",
+      "revision": "3471ee3b943e94db08c25f0ec55e0de88e08cb24"
+    },
     "alt-research/token-unlocks": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
     "asksurf-ai/surf-skills": {
-      "status": "fetched",
+      "status": "unchanged",
       "revision": "c588b52b7bba3046ceebd2307d6b26badf410399"
     },
     "aelfproject/aelf-skills": {
@@ -18476,10 +18485,6 @@
       "status": "fetched",
       "revision": "a1a050733a3a5207faf51ceb310e265b14898d0c"
     },
-    "ashrafiucse/security-audit-skills": {
-      "status": "unchanged",
-      "revision": "b2ada5d8052e3d204be3dbd961c5eb777b2cd506"
-    },
     "base-org/agent-starter": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
@@ -18488,49 +18493,45 @@
       "status": "fetched",
       "revision": "fdc663ede8da1a779520ec6f14a16dc71db7dcd5"
     },
+    "ashrafiucse/security-audit-skills": {
+      "status": "unchanged",
+      "revision": "b2ada5d8052e3d204be3dbd961c5eb777b2cd506"
+    },
     "bnb-chain/bnbchain-skills": {
       "status": "unchanged",
       "revision": "63b62af2b9f81de6afb1158de0eacc95e2e4a551"
-    },
-    "elizaos/eliza": {
-      "status": "unavailable",
-      "detail": "source exceeds download limit"
     },
     "base/skills": {
       "status": "fetched",
       "revision": "95b8ab284c80e0426ca264927f1abfc892c35b79"
     },
-    "cardano-foundation/cardano-dev-skills": {
-      "status": "unchanged",
-      "revision": "deab0385bc7b6bcddabab0feb363419ee4eb5a27"
+    "celo-org/agent-skills": {
+      "status": "fetched",
+      "revision": "c414cbbda56d99e2a390e0371b77b70968f65b5d"
     },
     "hashgraph/hedera-agent-kit-js": {
       "status": "unchanged",
       "revision": "f3d27aeb7040b8f592ec3038737d7229df63b0b0"
     },
-    "celo-org/agent-skills": {
-      "status": "fetched",
-      "revision": "c414cbbda56d99e2a390e0371b77b70968f65b5d"
-    },
-    "mystenlabs/sui-dev-skills": {
-      "status": "unchanged",
-      "revision": "e3657857fbe47142dae1ac0ce99114c8a3ba4caa"
-    },
     "dfinity/icskills": {
       "status": "fetched",
-      "revision": "1f78e540de3288dc854e2c23b4792f03b3267e37"
+      "revision": "1c28dd2035fd9890ac0953661eb78ae7ee603e4d"
+    },
+    "mystenlabs/sui-dev-skills": {
+      "status": "fetched",
+      "revision": "a484be30751238db0cf6d9c8bbe79a3b7209a8cd"
     },
     "mystenlabs/community-skills": {
       "status": "unchanged",
       "revision": "ca0a449b54c1970fcc9fbad729e904e85c7190c9"
     },
+    "mystenlabs/skills": {
+      "status": "fetched",
+      "revision": "31fc498766f67c2eb155e9be201729cd39025861"
+    },
     "riegan/ctf-skills": {
       "status": "unchanged",
       "revision": "a6ddb659d391c9f5a982862ea662a75937155897"
-    },
-    "mystenlabs/skills": {
-      "status": "fetched",
-      "revision": "97340218523a4c3cb0f3f34fa177b5101cf36676"
     },
     "ton-blockchain/skills": {
       "status": "unchanged",
@@ -18540,21 +18541,33 @@
       "status": "unchanged",
       "revision": "7412797497c49ea9f38fdef7938d5abda6a70b4e"
     },
-    "aave/aave-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "sendaifun/skills": {
       "status": "fetched",
       "revision": "06b36b8b420e705ffd57b29e463f01093959d8d4"
+    },
+    "aave/aave-mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "aerodrome-finance/contracts": {
       "status": "fetched",
       "revision": "1ba30815bba620f7e9faa34769ffd00c214c9b82"
     },
+    "aave/aave-v3-core": {
+      "status": "fetched",
+      "revision": "782f51917056a53a2c228701058a6c3fb233684a"
+    },
     "alienbase/base": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "cardano-foundation/cardano-dev-skills": {
+      "status": "fetched",
+      "revision": "c1b28d33a902fda15a55c01c6620df91633d92d7"
+    },
+    "smartcontractkit/chainlink": {
+      "status": "fetched",
+      "revision": "25a0a986144d375700ac1fb8acc75eba1648c391"
     },
     "zubair-trabzada/ai-crypto-claude": {
       "status": "fetched",
@@ -18564,17 +18577,13 @@
       "status": "unchanged",
       "revision": "bd71d2e92c43e9f8138ddd99bbc998618ccd3fed"
     },
-    "aave/aave-v3-core": {
-      "status": "fetched",
-      "revision": "782f51917056a53a2c228701058a6c3fb233684a"
+    "error403agent/clawford": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "compound-finance/compound-protocol": {
       "status": "fetched",
       "revision": "a3214f67b73310d547e00fc578e8355911c9d376"
-    },
-    "error403agent/clawford": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "curvefi/curve-contract": {
       "status": "fetched",
@@ -18583,10 +18592,6 @@
     "elfonius/defi-protocol-analysis": {
       "status": "unchanged",
       "revision": "017a6f36ec2e1a7e962e9e1a395e67fd8f6e8615"
-    },
-    "smartcontractkit/chainlink": {
-      "status": "fetched",
-      "revision": "8ec3103aa7ee33afacda7f27b284f7282188eed5"
     },
     "alt-research/staking-router": {
       "status": "unavailable",
@@ -18608,37 +18613,37 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "jup-ag/agent-skills": {
-      "status": "unchanged",
-      "revision": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f"
+    "gmx-io/gmx-ai": {
+      "status": "fetched",
+      "revision": "125fce8163823febc01ee37b4c8974e29182b2e8"
     },
     "jup-ag/mcp-server": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "gmx-io/gmx-ai": {
-      "status": "fetched",
-      "revision": "125fce8163823febc01ee37b4c8974e29182b2e8"
-    },
-    "layr-labs/eigenlayer-contracts": {
-      "status": "fetched",
-      "revision": "29b57bf1010366d840b55213634efe72f66b6358"
-    },
-    "lifinance/lifi-mcp-server": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "kybernetwork/kyberswap-skills": {
-      "status": "fetched",
-      "revision": "d9de43163f4cf6ddea1a674a7ec705a5a5029beb"
+    "jup-ag/agent-skills": {
+      "status": "unchanged",
+      "revision": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f"
     },
     "lidofinance/lido-dao": {
       "status": "fetched",
       "revision": "2bd532298d85cdf520169fdc0c5fb0cc9baf03c3"
     },
+    "kybernetwork/kyberswap-skills": {
+      "status": "fetched",
+      "revision": "d9de43163f4cf6ddea1a674a7ec705a5a5029beb"
+    },
+    "lifinance/lifi-mcp-server": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
     "marinade-finance/liquid-staking-program": {
       "status": "fetched",
-      "revision": "f96c0933ea233a70c431455a7e2b8e136ac0bc3f"
+      "revision": "6909edc329dbf3fefcb0e6605b852c2d5f9ca8fe"
+    },
+    "layr-labs/eigenlayer-contracts": {
+      "status": "fetched",
+      "revision": "29b57bf1010366d840b55213634efe72f66b6358"
     },
     "morpho-org/mcp-server": {
       "status": "unavailable",
@@ -18646,7 +18651,7 @@
     },
     "morpho-org/morpho-blue": {
       "status": "fetched",
-      "revision": "9cf6d5b844625ba108e36d1cf911f5d2faf7c136"
+      "revision": "f9af87f4e4f37126f59718597ab7cb02e64f9e5d"
     },
     "openocean-finance/openocean-skills": {
       "status": "unchanged",
@@ -18664,21 +18669,21 @@
       "status": "unchanged",
       "revision": "bac6d3c1e0f202982324459a011b37bc5246a25f"
     },
-    "pancakeswap/pancake-v3-contracts": {
-      "status": "fetched",
-      "revision": "986847948755cba528324d41be19480731c36c2a"
-    },
     "pancakeswap/pancakeswap-ai": {
       "status": "fetched",
       "revision": "f8d2f9da32b9a12404e921fab900648d056853a8"
     },
-    "pump-fun/pump-fun-skills": {
-      "status": "unchanged",
-      "revision": "c8aaa6a8fb766b2765d2663744515bbf88d04380"
-    },
-    "rocket-pool/skills": {
+    "pancakeswap/pancake-v3-contracts": {
       "status": "fetched",
-      "revision": "af5ed497e4d3d153f44334231909912222e14052"
+      "revision": "986847948755cba528324d41be19480731c36c2a"
+    },
+    "pump-fun/pump-fun-skills": {
+      "status": "fetched",
+      "revision": "5410f6a7d8ed2b388c74cd8d6dd5b51fd009fc5f"
+    },
+    "convex-eth/platform": {
+      "status": "unavailable",
+      "detail": "source exceeds download limit"
     },
     "marsfoundation/spark-lend": {
       "status": "unavailable",
@@ -18688,9 +18693,9 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "rocket-pool/rocketpool": {
+    "rocket-pool/skills": {
       "status": "fetched",
-      "revision": "fef41a4f7cf99d7d66313c0ba04deb8ba2dabf88"
+      "revision": "af5ed497e4d3d153f44334231909912222e14052"
     },
     "tomorrowdaoproject/tomorrowdao-skill": {
       "status": "unchanged",
@@ -18700,33 +18705,25 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "rocket-pool/rocketpool": {
+      "status": "fetched",
+      "revision": "fef41a4f7cf99d7d66313c0ba04deb8ba2dabf88"
+    },
     "uniswap/sdks": {
       "status": "fetched",
       "revision": "9c5105f8948f58b95492cac936bdd63f4ce10127"
-    },
-    "uniswap/uniswap-ai": {
-      "status": "fetched",
-      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941"
     },
     "uniswap/v4-agent-hooks": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "uniswap/uniswap-ai": {
+      "status": "fetched",
+      "revision": "805aa5763c5ec87eeafdd28133e5f57649e3e941"
+    },
     "venusprotocol/venus-agent-skills": {
       "status": "unchanged",
       "revision": "aafbe85665b877dc6764fc21bf98a98b1dfc1b47"
-    },
-    "uniswap/v4-periphery": {
-      "status": "fetched",
-      "revision": "c6e4754dab11bd38c6f08ac51c3c868569e93d64"
-    },
-    "pendle-finance/pendle-core-v2-public": {
-      "status": "fetched",
-      "revision": "87685c89d05087535e9b9647eeda0e3d297d1f06"
-    },
-    "convex-eth/platform": {
-      "status": "unavailable",
-      "detail": "source exceeds download limit"
     },
     "1sh1ro/crypto-market-skills": {
       "status": "unchanged",
@@ -18736,6 +18733,14 @@
       "status": "unchanged",
       "revision": "bfe2303ab9d93c2ff0403386681a91cf02e76b89"
     },
+    "uniswap/v4-periphery": {
+      "status": "fetched",
+      "revision": "c6e4754dab11bd38c6f08ac51c3c868569e93d64"
+    },
+    "pendle-finance/pendle-core-v2-public": {
+      "status": "fetched",
+      "revision": "87685c89d05087535e9b9647eeda0e3d297d1f06"
+    },
     "alchemyplatform/skills": {
       "status": "fetched",
       "revision": "4caf3e555c3af8dbb9e5b540aed558aef986d885"
@@ -18743,10 +18748,6 @@
     "arraysdata/arrays-skills": {
       "status": "fetched",
       "revision": "5733fcb71d4c080e45d5a9251487e443deb36777"
-    },
-    "austintgriffith/ethskills": {
-      "status": "fetched",
-      "revision": "47779e720e99c0d5014c0612a08500bdd565108f"
     },
     "bitpunklabs/market-brief": {
       "status": "unchanged",
@@ -18764,9 +18765,9 @@
       "status": "fetched",
       "revision": "d907b451ce36a510db3a6ad19e6b76c9e763175d"
     },
-    "chimera-defi/eth2-quickstart": {
+    "austintgriffith/ethskills": {
       "status": "fetched",
-      "revision": "6e4e93baed587185488c56c57058e5b3b84d06cc"
+      "revision": "47779e720e99c0d5014c0612a08500bdd565108f"
     },
     "xrene3/cryogen": {
       "status": "unavailable",
@@ -18776,10 +18777,6 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "cristallin2006/dsh-ctf-skill": {
-      "status": "unchanged",
-      "revision": "bd38db1eecf6fda89dd79e832d120ddb4b944319"
-    },
     "zachppt/crypto_agent01": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
@@ -18788,17 +18785,29 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "nicholasgriffintn/cyfrin-solskill": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "cristallin2006/dsh-ctf-skill": {
+      "status": "unchanged",
+      "revision": "bd38db1eecf6fda89dd79e832d120ddb4b944319"
+    },
+    "chimera-defi/eth2-quickstart": {
+      "status": "fetched",
+      "revision": "6e4e93baed587185488c56c57058e5b3b84d06cc"
     },
     "coinbase/agentkit": {
       "status": "fetched",
       "revision": "f2f3e8c11a91d56a17979a229a172ba6e61a85c2"
     },
+    "nicholasgriffintn/cyfrin-solskill": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
     "dalee66/crypto-chart-agent": {
       "status": "fetched",
       "revision": "b4e4f7e4573decdf3f916afc96a77ffcc2d9fd3a"
+    },
+    "drpcorg/drpc-agent-skills": {
+      "status": "fetched",
+      "revision": "e31ba876ab1a3e7fcd4f0faf933986b712a36631"
     },
     "ljagiello/ctf-skills": {
       "status": "fetched",
@@ -18808,33 +18817,21 @@
       "status": "unchanged",
       "revision": "e7f921ee8942a6b8c3519105ed303af6347fe96b"
     },
-    "drpcorg/drpc-agent-skills": {
-      "status": "fetched",
-      "revision": "e31ba876ab1a3e7fcd4f0faf933986b712a36631"
-    },
     "pokiehead/sic-crypto-kit": {
       "status": "unchanged",
       "revision": "40608e3ed0286b32596aa6c5704c63a643971cb5"
     },
     "helius-labs/core-ai": {
       "status": "fetched",
-      "revision": "80bee664d1c2e32abbb1f765e7096ce162c83482"
-    },
-    "quiknode-labs/blockchain-skills": {
-      "status": "fetched",
-      "revision": "7d76454c89ed791b9a6d4479595ca0469483f616"
-    },
-    "itrests/rehash-scout": {
-      "status": "fetched",
-      "revision": "7f0d2e6cd3d133bc92333372cddbd1977d9fb184"
+      "revision": "85c4e5a4e30e1d9bcec120bb7c0bb1e2d1822ab4"
     },
     "openzeppelin/openzeppelin-contracts": {
       "status": "fetched",
       "revision": "efaa6f78ab1dde05416246e801c0baaf4f900d49"
     },
-    "riaomike/crypto-research-agent-skills": {
-      "status": "unchanged",
-      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245"
+    "quiknode-labs/blockchain-skills": {
+      "status": "fetched",
+      "revision": "7d76454c89ed791b9a6d4479595ca0469483f616"
     },
     "s0yabean/macro-regime-data-pipeline": {
       "status": "unchanged",
@@ -18844,37 +18841,45 @@
       "status": "unchanged",
       "revision": "3890d11d53d679108bd01a660cdf190bbe85b37a"
     },
+    "simianx-ai/simianx-skills": {
+      "status": "unchanged",
+      "revision": "8623eab44f1729e53ea3faa427859eb0894a632a"
+    },
     "alt-labs/security-tools": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "simianx-ai/simianx-skills": {
-      "status": "unchanged",
-      "revision": "8623eab44f1729e53ea3faa427859eb0894a632a"
+    "itrests/rehash-scout": {
+      "status": "fetched",
+      "revision": "7f0d2e6cd3d133bc92333372cddbd1977d9fb184"
     },
     "alt-research/security-scanner": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "riaomike/crypto-research-agent-skills": {
+      "status": "unchanged",
+      "revision": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245"
+    },
     "crytic/building-secure-contracts": {
       "status": "unchanged",
       "revision": "0e679905ce336d81b1eade9cfe924011e9073339"
-    },
-    "stanleythegoat/aegis": {
-      "status": "unchanged",
-      "revision": "56e1b884df0599aaccd4bce65bd1d0f92f62f917"
     },
     "chainstack/wazuh-agent-docker": {
       "status": "fetched",
       "revision": "5b7acc824a5d0899cb43adbd310511deacd5ac78"
     },
-    "crayfish316-oss/ai-bybit-trade": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "stanleythegoat/aegis": {
+      "status": "unchanged",
+      "revision": "56e1b884df0599aaccd4bce65bd1d0f92f62f917"
     },
     "crayfish316-oss/ai-bybit-trader": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "trailofbits/skills": {
+      "status": "fetched",
+      "revision": "d016e08cc7408ecb1853a299d06d4a56e363ad5e"
     },
     "binance/mcp-server": {
       "status": "unavailable",
@@ -18884,10 +18889,6 @@
       "status": "unchanged",
       "revision": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1"
     },
-    "trailofbits/skills": {
-      "status": "fetched",
-      "revision": "2be6433b39e009cd2b6fd3be1895f6b1faa5af9a"
-    },
     "bitgetlimited/agent_hub": {
       "status": "fetched",
       "revision": "2551419578abff99baad19b018cab1a963c62306"
@@ -18896,9 +18897,9 @@
       "status": "fetched",
       "revision": "96563daf34fa5a87af5d76c2f1107d697ae7ce07"
     },
-    "bitget-wallet-ai-lab/bitget-wallet-mcp": {
-      "status": "fetched",
-      "revision": "7322eda6ab8fb30944fe52a1e89a860967ec86ea"
+    "crayfish316-oss/ai-bybit-trade": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "bybit-web3/bybit-ai-skills": {
       "status": "unavailable",
@@ -18908,29 +18909,33 @@
       "status": "unchanged",
       "revision": "9ca241e804fa8ddb0147aff0ca69d751aed6bc3b"
     },
+    "bitget-wallet-ai-lab/bitget-wallet-mcp": {
+      "status": "fetched",
+      "revision": "7322eda6ab8fb30944fe52a1e89a860967ec86ea"
+    },
     "crypto-com/cdcx-cli": {
       "status": "unchanged",
       "revision": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc"
-    },
-    "elfonius/professional-investor-analysis": {
-      "status": "unchanged",
-      "revision": "7ce25cc830b4a9bdf3f9eaca37afb3c11281f9f6"
-    },
-    "0xsl1m/cerebrus-pulse-mcp": {
-      "status": "fetched",
-      "revision": "e8c6ca207c3919e9c45195f4b7f61bf3be6004f7"
     },
     "crypto-com/crypto-agent-trading": {
       "status": "fetched",
       "revision": "92e80c5527312d0acdf769f16511ba3c6db1f2fe"
     },
-    "moner124/hyperliquid-mcp-server": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "0xsl1m/cerebrus-pulse-mcp": {
+      "status": "fetched",
+      "revision": "e8c6ca207c3919e9c45195f4b7f61bf3be6004f7"
+    },
+    "elfonius/professional-investor-analysis": {
+      "status": "unchanged",
+      "revision": "7ce25cc830b4a9bdf3f9eaca37afb3c11281f9f6"
     },
     "fere-ai/fere-skills": {
       "status": "unchanged",
       "revision": "06bb1c91e1dbf1fcbf177e2bd5f299c1208f05df"
+    },
+    "moner124/hyperliquid-mcp-server": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "kucoin/kucoin-skills-hub": {
       "status": "unchanged",
@@ -18956,10 +18961,6 @@
       "status": "unchanged",
       "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230"
     },
-    "hypurrquant/perp-cli": {
-      "status": "unchanged",
-      "revision": "24085d20101a686a2b41c511f1dfcd9160e8eaa7"
-    },
     "qianyubtc/x-aggregate-data": {
       "status": "unchanged",
       "revision": "5b7b9aa3cc15e06e86e5d866facec47f39f43333"
@@ -18967,6 +18968,10 @@
     "kevin1chun/robinhood-for-agents": {
       "status": "unchanged",
       "revision": "16b3d800e7f29e9d450f45663d054a7b5adcd4b3"
+    },
+    "hypurrquant/perp-cli": {
+      "status": "unchanged",
+      "revision": "24085d20101a686a2b41c511f1dfcd9160e8eaa7"
     },
     "azex-ai/sdks": {
       "status": "fetched",
@@ -18980,29 +18985,29 @@
       "status": "fetched",
       "revision": "73904b636a0f022dcc13b6d7a0dd2ed3b3195f25"
     },
-    "0xsardius/solenrich": {
-      "status": "unchanged",
-      "revision": "a908bbefe4651071f893181191f2a27edfe791f4"
-    },
     "worldcoin/agentkit": {
       "status": "fetched",
       "revision": "cd85b5e7a9548b0aa5ba01997bbc75634cffd754"
     },
-    "1nfernet/1nfer-agent-tools": {
+    "0xsardius/solenrich": {
       "status": "unchanged",
-      "revision": "e32c4b1bf624ffa43664309f5d087d10a4e9c158"
+      "revision": "a908bbefe4651071f893181191f2a27edfe791f4"
     },
     "senpi-ai/senpi-skills": {
       "status": "fetched",
       "revision": "7b1ecb269e82b8ccd325fa9831cc810187050e28"
     },
+    "1nfernet/1nfer-agent-tools": {
+      "status": "unchanged",
+      "revision": "e32c4b1bf624ffa43664309f5d087d10a4e9c158"
+    },
     "1inch/1inch-ai": {
       "status": "fetched",
       "revision": "11126423d43d5d67c378ac80450850f5536e2b34"
     },
-    "aibtcdev/aibtc-mcp-server": {
-      "status": "unchanged",
-      "revision": "1a122e67d3c8bb9d0c5453255dfb9f0790ca4e13"
+    "getalby/nwc-mcp-server": {
+      "status": "fetched",
+      "revision": "842f87ba199082b890eab4c6bf0bfcd1440713f6"
     },
     "alchemyplatform/alchemy-mcp-server": {
       "status": "fetched",
@@ -19012,33 +19017,33 @@
       "status": "unchanged",
       "revision": "eec5527895a0b796a792eea4c3ecb826341297ab"
     },
-    "getalby/nwc-mcp-server": {
+    "jiayaoqijia/cryptoskill": {
       "status": "fetched",
-      "revision": "842f87ba199082b890eab4c6bf0bfcd1440713f6"
+      "revision": "bd2d84ba53f4903413aaf27af7688d43db5d4ce1"
     },
     "alertio/alertio-mcp": {
       "status": "fetched",
       "revision": "94a39486e7f0355ae9cc02d5e9463cb4c06cb31b"
     },
+    "aibtcdev/aibtc-mcp-server": {
+      "status": "unchanged",
+      "revision": "1a122e67d3c8bb9d0c5453255dfb9f0790ca4e13"
+    },
     "alpacahq/alpaca-mcp-server": {
       "status": "fetched",
       "revision": "d8dac43f3e17594e8879bac3b5b333196ea69aac"
-    },
-    "tooloracle/aptoracle": {
-      "status": "fetched",
-      "revision": "7dcbd99c1bd44d35a939eec758e60856fbd40927"
     },
     "goplausible/algorand-mcp": {
       "status": "fetched",
       "revision": "4f892db8cfa760fdd40a854dc06c99892383bd27"
     },
+    "tooloracle/aptoracle": {
+      "status": "fetched",
+      "revision": "7dcbd99c1bd44d35a939eec758e60856fbd40927"
+    },
     "aptos-labs/aptos-npm-mcp": {
       "status": "fetched",
       "revision": "f8f02261a2a847a8f6a4e1e0a2f5ccf0cb719980"
-    },
-    "araxis33/aero-vote-radar": {
-      "status": "fetched",
-      "revision": "dc97f3a4e5a9ab38e97ae193aecfa1735137d641"
     },
     "arcadia-finance/mcp-server": {
       "status": "fetched",
@@ -19048,17 +19053,21 @@
       "status": "fetched",
       "revision": "c026c00b2f3fd40594e31f642d68aa92e742e013"
     },
-    "excaliber9271/asterdex-mcp-server": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "assetfare/assetfare-mcp": {
       "status": "unchanged",
       "revision": "ddf091f2a7f4b8648c98247c10e9591ea4e1a9d4"
     },
+    "excaliber9271/asterdex-mcp-server": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
     "aveetechapp/avee-skills": {
       "status": "unchanged",
       "revision": "fe4b9338c4f341043b3115ab07bf72664f0005c0"
+    },
+    "araxis33/aero-vote-radar": {
+      "status": "fetched",
+      "revision": "02f9309edd143cac5340776ce40617790d893a74"
     },
     "barkermoney/barker-mcp": {
       "status": "unchanged",
@@ -19068,10 +19077,6 @@
       "status": "fetched",
       "revision": "f81f69a14560caf3394d0aeff0395958308e4fea"
     },
-    "jiayaoqijia/cryptoskill": {
-      "status": "fetched",
-      "revision": "1b62c171d467edfc4b7536d578a81867d072d910"
-    },
     "blazephoenixxyz-crypto/blazephoenix-mcp": {
       "status": "unchanged",
       "revision": "d9d63b892d73d3c53ca762c8c3b09aadb95db4fd"
@@ -19080,17 +19085,21 @@
       "status": "fetched",
       "revision": "0bedf2053d6ac9a3d6ec3860582736fcd3589658"
     },
-    "bnb-chain/bnbchain-mcp": {
-      "status": "fetched",
-      "revision": "c4557e2fa19da46cefd463ebf87f745c00017a52"
-    },
     "bnb-chain/mcp-server": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "bnb-chain/bnbchain-mcp": {
+      "status": "fetched",
+      "revision": "c4557e2fa19da46cefd463ebf87f745c00017a52"
+    },
     "blockscout/mcp-server": {
       "status": "fetched",
       "revision": "095ef2c03f1aa3325da0baa41c8bf29aa1bbb6e6"
+    },
+    "nayshins/mcp-server-ccxt": {
+      "status": "fetched",
+      "revision": "f7ddee5eb4a335e42541e0c45c6785aa6c88591b"
     },
     "celo-org/celo-mcp": {
       "status": "unchanged",
@@ -19100,81 +19109,77 @@
       "status": "fetched",
       "revision": "c3ac94c7520d34286905fcb5df11ccee3a3c8b47"
     },
-    "nayshins/mcp-server-ccxt": {
-      "status": "fetched",
-      "revision": "f7ddee5eb4a335e42541e0c45c6785aa6c88591b"
-    },
-    "cumpsd/broker-as-a-service": {
-      "status": "unchanged",
-      "revision": "890029c51731cfed899d9216f03ef9cfcee1f3be"
-    },
     "base/base-mcp": {
       "status": "fetched",
       "revision": "979dde3e32dc63081a40a533be84e6e848be25c9"
-    },
-    "alexchenai/chenswap-mcp": {
-      "status": "unchanged",
-      "revision": "df99e1a7861004abfb0f2b0c77bdacd50d44f361"
-    },
-    "chainstacklabs/rpc-nodes-mcp": {
-      "status": "unchanged",
-      "revision": "8920ed796409e2efc32953f787cdcdfff2e6c335"
     },
     "kukapay/chainlink-feeds-mcp": {
       "status": "fetched",
       "revision": "625d2a16c33a71e0c32a766c7e12c1dc0e3f5f28"
     },
-    "coinrithm/coinrithm-agent-trading": {
+    "cumpsd/broker-as-a-service": {
       "status": "unchanged",
-      "revision": "e2d6032cfd1d4a8fdaa1df42fceca0fb0ddfe6cb"
+      "revision": "890029c51731cfed899d9216f03ef9cfcee1f3be"
+    },
+    "chainstacklabs/rpc-nodes-mcp": {
+      "status": "unchanged",
+      "revision": "8920ed796409e2efc32953f787cdcdfff2e6c335"
+    },
+    "alexchenai/chenswap-mcp": {
+      "status": "unchanged",
+      "revision": "df99e1a7861004abfb0f2b0c77bdacd50d44f361"
     },
     "coinpaprika/coinpaprika-mcp": {
       "status": "fetched",
       "revision": "c4c778350a5d8de1db58eb577309b8ddbacb4e3e"
     },
-    "menorhge3556/crypto_mcp_server": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "coinstatshq/coinstats-mcp": {
       "status": "fetched",
       "revision": "97e734c2494c09bfe40e46a8f10b688ba1f12186"
     },
-    "coingecko/coingecko-typescript": {
-      "status": "fetched",
-      "revision": "d6e855953f608d5ae5fcbbcb3ae4a4cc8565d381"
-    },
-    "cryptolir/agentglob-trader": {
-      "status": "unchanged",
-      "revision": "25c310337b155c418f7638a96eb8a6dc7abd02dc"
-    },
-    "cryptyx-ai/agents": {
-      "status": "unchanged",
-      "revision": "406a587da0ba3e192c39dbd8c266fda38b2ada8c"
+    "menorhge3556/crypto_mcp_server": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "tooloracle/cryptooracle": {
       "status": "fetched",
       "revision": "01ddb51baee8e7eb70a16fac0b7a44e5105926b8"
     },
-    "cyanheads/coingecko-mcp-server": {
+    "cryptolir/agentglob-trader": {
       "status": "unchanged",
-      "revision": "f6def4120d48d4226b24b61e1f17700a8096996d"
+      "revision": "25c310337b155c418f7638a96eb8a6dc7abd02dc"
     },
-    "danthamanvoiss/salesportl-agency-skills-suite-v01": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "coinrithm/coinrithm-agent-trading": {
+      "status": "unchanged",
+      "revision": "e2d6032cfd1d4a8fdaa1df42fceca0fb0ddfe6cb"
+    },
+    "cryptyx-ai/agents": {
+      "status": "unchanged",
+      "revision": "406a587da0ba3e192c39dbd8c266fda38b2ada8c"
     },
     "tooloracle/cryptooracle2": {
       "status": "fetched",
       "revision": "7064dace56154538109fdf1ae75bcdc309ef814c"
     },
-    "debridge-finance/debridge-mcp": {
+    "danthamanvoiss/salesportl-agency-skills-suite-v01": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "cyanheads/coingecko-mcp-server": {
+      "status": "unchanged",
+      "revision": "f6def4120d48d4226b24b61e1f17700a8096996d"
+    },
+    "coingecko/coingecko-typescript": {
       "status": "fetched",
-      "revision": "44d2382c81dca9cfb71e0fc12fac30aab1fe5129"
+      "revision": "d6e855953f608d5ae5fcbbcb3ae4a4cc8565d381"
     },
     "dcspark/mcp-server-defillama": {
       "status": "fetched",
       "revision": "fb8f82c21e7d4bc1a658f0e1efc1bd40ab9fb73c"
+    },
+    "debridge-finance/debridge-mcp": {
+      "status": "fetched",
+      "revision": "44d2382c81dca9cfb71e0fc12fac30aab1fe5129"
     },
     "opensvm/dexscreener-mcp-server": {
       "status": "fetched",
@@ -19184,21 +19189,17 @@
       "status": "fetched",
       "revision": "b681f7ed13fe93724cc921be4eb4f640feb8f526"
     },
-    "doomsday-network/doomsday": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "dexter-dao/dexter-mcp": {
       "status": "unchanged",
       "revision": "70b3d3da64ccb17881c6a3bf22de082849de1c2b"
     },
-    "edward-arinin-web-dev/dexe-mcp": {
-      "status": "unchanged",
-      "revision": "32b261430b2e6c45bf9744eca212624037aaad85"
+    "doomsday-network/doomsday": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "dfm-finance/dfm-agent": {
       "status": "fetched",
-      "revision": "125cb07e1d75ba46510b329d07c6621617baae90"
+      "revision": "ad448772935da3786792d351f1fe6186833a191f"
     },
     "kukapay/dune-analytics-mcp": {
       "status": "fetched",
@@ -19212,17 +19213,21 @@
       "status": "fetched",
       "revision": "be104be06d3eaeb35a5d8b78e32a5b0ade46f108"
     },
-    "0xyudhishthra/evm-copilot": {
-      "status": "fetched",
-      "revision": "5b4036340d31b53838042f8446df36015ca972a7"
-    },
     "bazinga640/evm-chains-mcp-server": {
       "status": "fetched",
       "revision": "012070878dc3292dc3504fc20dfd15dacb3b1a75"
     },
+    "0xyudhishthra/evm-copilot": {
+      "status": "fetched",
+      "revision": "5b4036340d31b53838042f8446df36015ca972a7"
+    },
     "farseensh/earnforge": {
       "status": "unchanged",
       "revision": "30e153f309a09481b60ffb9e3dc5810f202b14da"
+    },
+    "mcpdotdirect/evm-mcp-server": {
+      "status": "fetched",
+      "revision": "128ac3d4b1ea96084d55a9578306d017006e709d"
     },
     "fbsobreira/gotron-mcp": {
       "status": "unchanged",
@@ -19232,31 +19237,39 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "mcpdotdirect/evm-mcp-server": {
-      "status": "fetched",
-      "revision": "128ac3d4b1ea96084d55a9578306d017006e709d"
-    },
-    "onflow/flow-mcp": {
+    "edward-arinin-web-dev/dexe-mcp": {
       "status": "unchanged",
-      "revision": "2afc462130e957e3f311f27cd0d0201698cad8ce"
+      "revision": "32b261430b2e6c45bf9744eca212624037aaad85"
     },
     "menscheck/fourtrader-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "gemachdao/gdex-skill": {
+    "onflow/flow-mcp": {
       "status": "unchanged",
-      "revision": "5bcb356b37e58bb99ed2584c1fb6f800b70e1272"
+      "revision": "2afc462130e957e3f311f27cd0d0201698cad8ce"
     },
     "kukapay/funding-rates-mcp": {
       "status": "fetched",
       "revision": "c508f2e504cce6a7fe05462f2e0c268a2796fb19"
     },
-    "gentech-labs/gentech-agent-kit": {
-      "status": "unchanged",
-      "revision": "ba26e6eaed843033bb4bbeadbb974358b2edeb91"
+    "foundry-rs/foundry": {
+      "status": "fetched",
+      "revision": "6056c5845d34205a83cf7108042adb137325c9df"
+    },
+    "nirholas/free-crypto-news": {
+      "status": "fetched",
+      "revision": "024afc65b5f34a913b607a1c718bf1b647675bd7"
+    },
+    "gemachdao/gdex-skill": {
+      "status": "fetched",
+      "revision": "55477c579939538e28eaff157b371d92a9102ce2"
     },
     "hashlock-tech/hashlock-mcp-server": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "hashgraph/hedera-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
@@ -19264,37 +19277,29 @@
       "status": "unchanged",
       "revision": "262f4b8690396387c50d4c1d58e3919cf654c172"
     },
-    "hashgraph/hedera-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
+    "hesoyambusiness/1nfer-agent-tools": {
+      "status": "unchanged",
+      "revision": "e32c4b1bf624ffa43664309f5d087d10a4e9c158"
+    },
+    "gentech-labs/gentech-agent-kit": {
+      "status": "unchanged",
+      "revision": "ba26e6eaed843033bb4bbeadbb974358b2edeb91"
     },
     "tooloracle/hederaoracle": {
       "status": "fetched",
       "revision": "e8a8c5f8ac6aca6238b73d693c4faeb6f6d3f5e7"
     },
-    "dcspark/mcp-server-helius": {
+    "jiggy-cadence/realized": {
       "status": "fetched",
-      "revision": "ceef556686f32eb52afe7f062cd11fbbf92db6f1"
-    },
-    "hesoyambusiness/1nfer-agent-tools": {
-      "status": "unchanged",
-      "revision": "e32c4b1bf624ffa43664309f5d087d10a4e9c158"
-    },
-    "nirholas/free-crypto-news": {
-      "status": "fetched",
-      "revision": "024afc65b5f34a913b607a1c718bf1b647675bd7"
+      "revision": "89c07fa80e3b92e70a1df917c0b2e8722cc4a1c2"
     },
     "injectivelabs/mcp-server": {
       "status": "unchanged",
       "revision": "daa98388cdf6c472c93211b1e9059725d72bc42e"
     },
-    "foundry-rs/foundry": {
+    "dcspark/mcp-server-helius": {
       "status": "fetched",
-      "revision": "07b97410ddfc4f853f7217ad3c2b2155588d83b2"
-    },
-    "hive-intel/hive-crypto-mcp": {
-      "status": "fetched",
-      "revision": "223aaccbc28fae22e220643568551f8842773262"
+      "revision": "ceef556686f32eb52afe7f062cd11fbbf92db6f1"
     },
     "jimbob1414/web3juice-mcp": {
       "status": "unchanged",
@@ -19304,57 +19309,53 @@
       "status": "unchanged",
       "revision": "b1f22947d81be0e34a502dfed0b866024db46e6a"
     },
+    "kukapay/crypto-indicators-mcp": {
+      "status": "unchanged",
+      "revision": "2855e6692f3ebfc24774192e707ec3689183515b"
+    },
     "dcspark/mcp-server-jupiter": {
       "status": "fetched",
       "revision": "c5488c2ce061088ee4794e45534a8b23bf76a706"
     },
-    "kukapay/crypto-indicators-mcp": {
-      "status": "unchanged",
-      "revision": "2855e6692f3ebfc24774192e707ec3689183515b"
+    "hive-intel/hive-crypto-mcp": {
+      "status": "fetched",
+      "revision": "223aaccbc28fae22e220643568551f8842773262"
     },
     "kukapay/cryptopanic-mcp-server": {
       "status": "unchanged",
       "revision": "922f2e07d83e2d009b4d20518d2acec2e9e2642a"
     },
-    "jiggy-cadence/realized": {
-      "status": "fetched",
-      "revision": "89c07fa80e3b92e70a1df917c0b2e8722cc4a1c2"
-    },
     "kukapay/uniswap-trader-mcp": {
       "status": "unchanged",
       "revision": "b743a9d009491ed1132836217505ddb401d1cd1e"
-    },
-    "lidofinance/lido-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "lendwise-fi/lendwise-mcp": {
       "status": "unchanged",
       "revision": "56d9020e95ce24f800c909e8b38911340a1bdf32"
     },
-    "kukapay/hyperliquid-info-mcp": {
-      "status": "unchanged",
-      "revision": "56bd18458f6f86ce14419ac8fffdfe329334a01a"
+    "lidofinance/lido-mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "lifinance/lifi-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
+    "kukapay/hyperliquid-info-mcp": {
+      "status": "unchanged",
+      "revision": "56bd18458f6f86ce14419ac8fffdfe329334a01a"
+    },
     "abdelstark/lightning-mcp": {
       "status": "fetched",
       "revision": "7adeb2be509a557e849984413ded0ccc79e5dc80"
     },
-    "mangrovetechnologies/mangrove-agent": {
+    "xeift/meowblock": {
       "status": "fetched",
-      "revision": "772f4c16790594b7a97dbbf8734bb1f55803e8e0"
+      "revision": "e31eb0b416500b2dfcccb08bb1e8e300c70fa3ab"
     },
     "monolithlabs-hub/opindex-agent": {
       "status": "unchanged",
       "revision": "1c8690cc05f8f2b4c02c12c6241f4dc70d65a29b"
-    },
-    "xeift/meowblock": {
-      "status": "fetched",
-      "revision": "e31eb0b416500b2dfcccb08bb1e8e300c70fa3ab"
     },
     "monad-developers/monad-mcp": {
       "status": "fetched",
@@ -19364,13 +19365,17 @@
       "status": "unchanged",
       "revision": "ed34a61aa0a5c97a25394605cd5dcaf4e4f261ca"
     },
+    "nerosaa/usdt-agent-skills-lite": {
+      "status": "unchanged",
+      "revision": "63f638c2424a4b7e999b747d7ecd2aed24ce5b12"
+    },
     "nirholas/cryptocurrency.cv": {
       "status": "unchanged",
       "revision": "024afc65b5f34a913b607a1c718bf1b647675bd7"
     },
-    "nerosaa/usdt-agent-skills-lite": {
-      "status": "unchanged",
-      "revision": "63f638c2424a4b7e999b747d7ecd2aed24ce5b12"
+    "nearai/near-mcp": {
+      "status": "fetched",
+      "revision": "7d598bd9a9e46dac4bf6851f788f8e4e7a4e88a0"
     },
     "nookplot/mcp": {
       "status": "unavailable",
@@ -19379,10 +19384,6 @@
     "nirium-protocol/nirium": {
       "status": "unchanged",
       "revision": "e9462f5ca122b35289e9cec661c80401dc647f43"
-    },
-    "nearai/near-mcp": {
-      "status": "fetched",
-      "revision": "7d598bd9a9e46dac4bf6851f788f8e4e7a4e88a0"
     },
     "noditlabs/nodit-mcp-server": {
       "status": "fetched",
@@ -19400,29 +19401,33 @@
       "status": "fetched",
       "revision": "931b4e8995ad2f315fed7aced7c4e00dc2eef27a"
     },
+    "priors-agents/priors": {
+      "status": "fetched",
+      "revision": "e6a683ba2734ceee5e244818db1414a44eb4ac20"
+    },
     "desperate10/profunding-mcp": {
       "status": "fetched",
       "revision": "e7c321aea9418272048a1a1780de2a65a771cb9c"
+    },
+    "mangrovetechnologies/mangrove-agent": {
+      "status": "fetched",
+      "revision": "25b8a72c1d749d896d8c179b83ee292f37c76eb6"
     },
     "pythia-the-oracle/pythia-oracle-mcp": {
       "status": "fetched",
       "revision": "e34cea7d68f4d46a598f22597450e04b62cb6090"
     },
-    "rezearcher/greyridge-x402-tools": {
+    "rustok-org/mcp": {
       "status": "unchanged",
-      "revision": "7771b44e0f821473e4f269640f2640b7f3b8f698"
-    },
-    "priors-agents/priors": {
-      "status": "fetched",
-      "revision": "26dd7c87406d6ca4754235218d94f68d49bbec10"
+      "revision": "209d422d3e35d968955a71263ca476fb3bdbe969"
     },
     "sentioxyz/sentio-connect": {
       "status": "unchanged",
       "revision": "f1eaa331a384d7495746fc4cca4f4c787ca1a534"
     },
-    "rustok-org/mcp": {
-      "status": "unchanged",
-      "revision": "209d422d3e35d968955a71263ca476fb3bdbe969"
+    "rezearcher/greyridge-x402-tools": {
+      "status": "fetched",
+      "revision": "53f1edf3e9ef2ac5f8dfc8575d3c296bb4e5e81e"
     },
     "solana-foundation/solana-dev-mcp": {
       "status": "unavailable",
@@ -19432,49 +19437,49 @@
       "status": "fetched",
       "revision": "364ca2f54cd0a184d1961b64ada400fa397a4724"
     },
+    "solana-foundation/solana-mcp-official": {
+      "status": "fetched",
+      "revision": "8b097089f7d68700f4da116fd6ea88a13e81559c"
+    },
     "crisartgua-bot/sperax-mcp-toolkit": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "solana-foundation/solana-mcp-official": {
-      "status": "fetched",
-      "revision": "613cda97d330b742ab78fd89768d2e040157a4f5"
-    },
-    "aiagentkarl/solana-mcp-server": {
-      "status": "fetched",
-      "revision": "197b732e4ef7e447678f7d5d48173a50a3d82836"
-    },
-    "mcpdotdirect/starknet-mcp-server": {
-      "status": "fetched",
-      "revision": "8fdd1be36efb7fd0c899086e68d3b9603cf7ade4"
     },
     "sendaifun/solana-agent-kit": {
       "status": "fetched",
       "revision": "1254fe550872ee48d42f168fc8ca854c87ab6eff"
     },
-    "tooloracle/suioracle": {
-      "status": "fetched",
-      "revision": "8b9ca9d27163ee12bef2e29263a6672043d624fb"
-    },
     "expertvagabond/sui-mcp-server": {
       "status": "fetched",
       "revision": "39d0d65edc6b4415da16edb9f55318ab9f6cea07"
+    },
+    "mcpdotdirect/starknet-mcp-server": {
+      "status": "fetched",
+      "revision": "8fdd1be36efb7fd0c899086e68d3b9603cf7ade4"
+    },
+    "aiagentkarl/solana-mcp-server": {
+      "status": "fetched",
+      "revision": "197b732e4ef7e447678f7d5d48173a50a3d82836"
     },
     "tatumio/blockchain-mcp": {
       "status": "fetched",
       "revision": "07c1829b7708a77e8854710d55107c63c936691b"
     },
+    "tooloracle/suioracle": {
+      "status": "fetched",
+      "revision": "8b9ca9d27163ee12bef2e29263a6672043d624fb"
+    },
     "pinax-network/mcp-token-api": {
       "status": "fetched",
       "revision": "b5a34d2bb3146a7c55e1faf2fab3efc51cba97ae"
     },
-    "trailofbits/slither-mcp": {
-      "status": "unchanged",
-      "revision": "17755731bf7aba6e5ed4d72e116d9d394430b1e2"
-    },
     "tooloracle/tonoracle": {
       "status": "fetched",
       "revision": "2f2dab2ee04f2cdc648d38a24d5f139769f7b531"
+    },
+    "trdefi/mcp-server": {
+      "status": "fetched",
+      "revision": "b08077474acf664274b398649fe519b29bc761eb"
     },
     "tuantqse90/moltnode-mcp": {
       "status": "unchanged",
@@ -19484,25 +19489,25 @@
       "status": "unchanged",
       "revision": "fd067dd1368f26bf5f3acdecb4c7b8369c6c810d"
     },
-    "trdefi/mcp-server": {
+    "kukapay/whale-tracker-mcp": {
       "status": "fetched",
-      "revision": "b08077474acf664274b398649fe519b29bc761eb"
-    },
-    "xinyuzjj/bazz.agent": {
-      "status": "unchanged",
-      "revision": "635c5c3232967545f6a3aaec212aaebd2f0a6e78"
+      "revision": "96218364c99e6e40c2965744ef93f8ad54236ece"
     },
     "strangelove-ventures/web3-mcp": {
       "status": "fetched",
       "revision": "1b9e5ce23c855503ff2c9f5fc63a737edbd81216"
     },
+    "xinyuzjj/bazz.agent": {
+      "status": "unchanged",
+      "revision": "635c5c3232967545f6a3aaec212aaebd2f0a6e78"
+    },
     "0xklen/money-machine": {
       "status": "unchanged",
       "revision": "e30f35bf721e06b7b6b4e544201448c01ea2fa14"
     },
-    "kukapay/whale-tracker-mcp": {
-      "status": "fetched",
-      "revision": "96218364c99e6e40c2965744ef93f8ad54236ece"
+    "trailofbits/slither-mcp": {
+      "status": "unchanged",
+      "revision": "17755731bf7aba6e5ed4d72e116d9d394430b1e2"
     },
     "yeick010/agentshield-mcp": {
       "status": "unavailable",
@@ -19512,29 +19517,25 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "nirholas/agenti": {
-      "status": "fetched",
-      "revision": "7d96c896e4c648d74e9a21f49fab2487c3894890"
-    },
     "circlefin/skills": {
       "status": "fetched",
       "revision": "1f23655cbc360f7783e6881e026dbd4568c40f1d"
-    },
-    "elromevedelelyon/flash-payment-system": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "br0ski777/defi-yields-x402": {
       "status": "fetched",
       "revision": "63db0bc82ddc028941073be836707f5e422b0ca4"
     },
-    "magnetai/mcp-free-usdc-transfer": {
-      "status": "unchanged",
-      "revision": "56a773dad543cc65f81c453fc6ff39e05d187442"
+    "elromevedelelyon/flash-payment-system": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "moonpay/skills": {
       "status": "unchanged",
       "revision": "aa672ab120ce366c064b8facc4dc18bd465ac09d"
+    },
+    "magnetai/mcp-free-usdc-transfer": {
+      "status": "unchanged",
+      "revision": "56a773dad543cc65f81c453fc6ff39e05d187442"
     },
     "navsahu/x402-deploy": {
       "status": "unavailable",
@@ -19544,17 +19545,21 @@
       "status": "fetched",
       "revision": "1b924d4380b46ebfa171ac584dded642c23c540c"
     },
+    "nirholas/agenti": {
+      "status": "fetched",
+      "revision": "7d96c896e4c648d74e9a21f49fab2487c3894890"
+    },
     "kalshi/kalshi-public-docs": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "qlwy-xyz/fortune-skill": {
-      "status": "unchanged",
-      "revision": "8217ddfd5521f69b151442e2d9ede8eac41e48a2"
-    },
     "solobank-ai/package": {
       "status": "fetched",
       "revision": "71e03a4d6ede4c921cbfef6f988b1fee81b2e494"
+    },
+    "qlwy-xyz/fortune-skill": {
+      "status": "unchanged",
+      "revision": "8217ddfd5521f69b151442e2d9ede8eac41e48a2"
     },
     "dimes-fi/multiply-mcp": {
       "status": "unavailable",
@@ -19564,6 +19569,14 @@
       "status": "fetched",
       "revision": "ec9ac88248856ec8cff27374c49c0e363f0dec87"
     },
+    "toreva/kit": {
+      "status": "fetched",
+      "revision": "77ce3824bb75517569c1729e550664f8d5a52485"
+    },
+    "demwick/polymarket-agent-mcp": {
+      "status": "fetched",
+      "revision": "ebe901cf87e5388cb4d53f14254526d80e53397f"
+    },
     "polymarket/polymarket-agent-tools": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
@@ -19571,10 +19584,6 @@
     "polymarket/polymarket-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
-    },
-    "toreva/kit": {
-      "status": "fetched",
-      "revision": "77ce3824bb75517569c1729e550664f8d5a52485"
     },
     "myriadprotocol/myriad-cli": {
       "status": "fetched",
@@ -19584,17 +19593,13 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "polymarket/agent-skills": {
-      "status": "unchanged",
-      "revision": "91ee44ae113e958affd20cd505c6e9d9d6100e0b"
-    },
-    "demwick/polymarket-agent-mcp": {
-      "status": "fetched",
-      "revision": "ebe901cf87e5388cb4d53f14254526d80e53397f"
-    },
     "elfonius/crypto-portfolio-analysis": {
       "status": "unchanged",
       "revision": "27eff9988d03033b37e38ee02e63880938ef12a5"
+    },
+    "polymarket/agent-skills": {
+      "status": "unchanged",
+      "revision": "91ee44ae113e958affd20cd505c6e9d9d6100e0b"
     },
     "towns-protocol/skills": {
       "status": "unchanged",
@@ -19620,39 +19625,35 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "rawbethwebsites/gold-api-feed": {
-      "status": "unchanged",
-      "revision": "05e397b88e63a36de5e6f495224657831c8d17c5"
-    },
     "cowprotocol/contracts": {
       "status": "fetched",
       "revision": "c07a93e3596194c5e3cf331c755a3f9f0e4a17d8"
     },
     "bankrbot/skills": {
       "status": "fetched",
-      "revision": "77e0a8391c80994e0e0e2109620d0d2892354915"
+      "revision": "d28a8564c9c40d632093f09a24f7466956fd33e7"
+    },
+    "rawbethwebsites/gold-api-feed": {
+      "status": "unchanged",
+      "revision": "05e397b88e63a36de5e6f495224657831c8d17c5"
     },
     "minara-ai/skills": {
       "status": "unchanged",
       "revision": "8badf3bcaff1592b79128dcea4ea164246909580"
     },
-    "rivaldotimoty/trading-agents-lite": {
-      "status": "unchanged",
-      "revision": "b3ce8b5910ac326ecc9d53c8668fbf1e3abe0c67"
-    },
-    "hubblevision/polyhub-skills": {
-      "status": "fetched",
-      "revision": "b7890f6dbb1e47cb5cb58861d7737da8f15a181f"
-    },
-    "agentwallet/bundler": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "roman-rr/trading-skills": {
       "status": "unchanged",
       "revision": "3424b52ba84ff4654308c75f0201f71a3dea4012"
     },
-    "base-org/smart-wallet-agent": {
+    "gmgnai/gmgn-skills": {
+      "status": "fetched",
+      "revision": "6a04e1f00b5463cfc965e41003ca0c7c2db5b69f"
+    },
+    "rivaldotimoty/trading-agents-lite": {
+      "status": "unchanged",
+      "revision": "b3ce8b5910ac326ecc9d53c8668fbf1e3abe0c67"
+    },
+    "agentwallet/bundler": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
@@ -19660,9 +19661,9 @@
       "status": "unchanged",
       "revision": "3298ab03575634228b54170ec30bd40b78170ccc"
     },
-    "gmgnai/gmgn-skills": {
-      "status": "fetched",
-      "revision": "6a04e1f00b5463cfc965e41003ca0c7c2db5b69f"
+    "base-org/smart-wallet-agent": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
     },
     "coinbase/coinbase-developer-platform-mcp": {
       "status": "unavailable",
@@ -19676,31 +19677,27 @@
       "status": "unchanged",
       "revision": "70cb79c85f397fab3636ef07c8c99dc52a7c555f"
     },
-    "metamask/openclaw-skills": {
-      "status": "unchanged",
-      "revision": "a0ec29ada8d53edf5a3f24370bec058767157433"
-    },
     "bitget-wallet-ai-lab/bitget-wallet-skill": {
       "status": "fetched",
       "revision": "9175a19d9a71db24de97ef7e4b2f060af5e8fe8b"
     },
-    "portkey-wallet/ca-agent-skills": {
+    "metamask/openclaw-skills": {
       "status": "unchanged",
-      "revision": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74"
+      "revision": "a0ec29ada8d53edf5a3f24370bec058767157433"
+    },
+    "hubblevision/polyhub-skills": {
+      "status": "fetched",
+      "revision": "b7890f6dbb1e47cb5cb58861d7737da8f15a181f"
     },
     "privy-io/privy-agentic-wallets-skill": {
       "status": "unchanged",
       "revision": "7f104aa118a891aca85cfebbd68bf9f4a2cd85e7"
     },
-    "nicholasgriffintn/trust-wallet-skills": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "safe-global/safe-mcp": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "alt-research/portfolio": {
+    "nicholasgriffintn/trust-wallet-skills": {
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
@@ -19708,21 +19705,29 @@
       "status": "unavailable",
       "detail": "repository unavailable or HEAD could not be resolved"
     },
-    "walletconnect/walletconnect-mcp": {
-      "status": "unavailable",
-      "detail": "repository unavailable or HEAD could not be resolved"
-    },
     "reown-com/skills": {
       "status": "fetched",
       "revision": "919ed9b0e14ec11732a7d4b5dccae06bbae083d8"
     },
-    "leancoderkavy/tradewink-mcp": {
+    "walletconnect/walletconnect-mcp": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "alt-research/portfolio": {
+      "status": "unavailable",
+      "detail": "repository unavailable or HEAD could not be resolved"
+    },
+    "portkey-wallet/ca-agent-skills": {
       "status": "unchanged",
-      "revision": "3cf1420555cbf696e4be456d8e8d5815b36ea38e"
+      "revision": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74"
     },
     "nirholas/robinhood-mcp": {
       "status": "unchanged",
       "revision": "0459093d8cb8b4ee9af65220f50eb663918a378e"
+    },
+    "leancoderkavy/tradewink-mcp": {
+      "status": "unchanged",
+      "revision": "3cf1420555cbf696e4be456d8e8d5815b36ea38e"
     },
     "bnmbnmai/mcp-proxy": {
       "status": "unchanged",
@@ -19732,21 +19737,25 @@
       "status": "unchanged",
       "revision": "c45d4bc72e9f625000f45e3dc085c0c2cb5d8bea"
     },
-    "bybit-exchange/trading-mcp": {
-      "status": "unchanged",
-      "revision": "e2bad249b860e0da16359a4d4db056a147d64796"
-    },
-    "bybit-exchange/kaas": {
-      "status": "unchanged",
-      "revision": "41fd0d0b64d61d5ae39d5fe23e5c689179d2efa6"
+    "loomdesk-hq/agents": {
+      "status": "fetched",
+      "revision": "ac16b1d8a37acf2f3c7b39c781031d3299c5bcd0"
     },
     "safe-global/safe-core-sdk": {
       "status": "fetched",
       "revision": "feb052a6c050c490d67dbff33e50b397aa9eeb04"
     },
+    "bybit-exchange/kaas": {
+      "status": "unchanged",
+      "revision": "41fd0d0b64d61d5ae39d5fe23e5c689179d2efa6"
+    },
     "ethereum/beaconrunner": {
       "status": "unchanged",
       "revision": "04a607f072c5fbc461bc50529cdb94c21528d4e5"
+    },
+    "bybit-exchange/trading-mcp": {
+      "status": "unchanged",
+      "revision": "e2bad249b860e0da16359a4d4db056a147d64796"
     },
     "ava-labs/avalanche-telemetry": {
       "status": "unchanged",
@@ -19754,19 +19763,24 @@
     },
     "holistis/bug-bounty-intelligence-mcp": {
       "status": "fetched",
-      "revision": "d66a39922f852bb8979532848cb4f5167b6089d8"
+      "revision": "97ebacdd11c799872b79b8b56c11e2e88cd5f62b"
+    },
+    "mmxrealqq/bobai-buyburn": {
+      "status": "unavailable",
+      "detail": "source exceeds download limit"
     },
     "mystenlabs/walrus-memory": {
       "status": "fetched",
-      "revision": "4a37b98e7d5148c884533d65a4ebd48fed218324"
+      "revision": "fdb5d175a789711288d7daea14a93468a06bbdb6"
     }
   },
   "summary": {
     "listing_only": 560,
-    "unresolved": 189,
-    "unchanged": 2446,
+    "unresolved": 198,
+    "unchanged": 2442,
     "unavailable": 355,
     "blocked": 84,
-    "updated": 14
+    "updated": 9,
+    "added": 1
   }
 }

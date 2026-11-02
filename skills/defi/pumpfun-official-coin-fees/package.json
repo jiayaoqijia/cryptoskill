@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Runnable scripts for the pump-fun coin-fees Agent Skill",
   "engines": {
-    "node": ">=18"
+    "node": ">=22.13",
+    "pnpm": ">=11"
   },
   "scripts": {
     "fetch-coin": "node scripts/fetch-coin.mjs",
@@ -20,5 +21,6 @@
     "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.98.2",
     "bn.js": "^5.2.2"
-  }
+  },
+  "packageManager": "pnpm@11.28.8"
 }

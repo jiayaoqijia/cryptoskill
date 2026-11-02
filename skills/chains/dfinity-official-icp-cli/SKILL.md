@@ -475,7 +475,7 @@ Full reference: [icp-cli environment variables](https://cli.internetcomputer.org
 
 Two specialized skills cover `icp identity link web`. Load the right one for the task — both document the stdin "Press Enter" block, the browser sign-in step, and their flag-specific pitfalls:
 
-- `deploy-to-cloud-engine` — link the CLI to a cloud engine console with `--auth <console-origin>`, then deploy to the engine's subnet
+- `deploy-to-cloud-engine` — link the CLI to a cloud engine console with `--auth <console-origin>`, then deploy to the engine's subnet. It also covers deploying to an engine without the CLI, through the ICP MCP connector, which is the route for a sandboxed chat where this link cannot complete
 - `agent-web-identity` — obtain a delegation for an app-specific principal with `--app <domain>`, then make canister calls as the user
 
 ### Funding an identity for mainnet
