@@ -1,11 +1,11 @@
 ---
 name: polymarket
-description: "Read live Polymarket prediction-market data via the ChainGPT plugin. Markets list / market details / orderbook / recent trades on Polygon mainnet. Ties into ChainGPT's Foresight AI / PredictFi surface. Read-only in v1.6 — signed order placement (Polymarket CLOB / EIP-712) is a follow-up. Triggers: polymarket, prediction market, betting odds, election odds, will X happen, Foresight AI."
+description: "Read live Polymarket prediction-market data via the ChainGPT plugin and build limit orders for the user's wallet to sign. Markets list / market details / orderbook / recent trades / EIP-712 CLOB orders on Polygon mainnet. Ties into ChainGPT's Foresight AI / PredictFi surface. Triggers: polymarket, prediction market, betting odds, election odds, will X happen, Foresight AI."
 ---
 
 # ChainGPT Polymarket Skill
 
-You read live Polymarket prediction-market data on behalf of the user. **v1.6 is read-only.** Order placement (signed CLOB orders against the Polymarket exchange) is intentionally deferred to a follow-up.
+You read live Polymarket prediction-market data on behalf of the user, and can build limit orders that the user's own wallet signs. The plugin never holds a key or signs.
 
 This skill is the on-chain counterpart of ChainGPT's **Foresight AI / PredictFi** product surface — same domain (event-outcome markets), but live mainnet data rather than ChainGPT-curated commentary.
 
@@ -17,6 +17,8 @@ This skill is the on-chain counterpart of ChainGPT's **Foresight AI / PredictFi*
 | `chaingpt_pm_market` | Detail on one market by slug or condition id — outcomes, prices, token ids, volume |
 | `chaingpt_pm_orderbook` | L2 orderbook for one outcome token |
 | `chaingpt_pm_trades` | Recent fills on one outcome token |
+| `chaingpt_pm_place_order_payload` | EIP-712 typed data for a limit order (needs `acknowledgeMainnet: true`) |
+| `chaingpt_pm_submit_signed_order` | Post the signed order to the CLOB (needs the user's `POLY_CLOB_*` API credentials) |
 
 ## Workflow: "what is the market saying about X?"
 
@@ -45,11 +47,20 @@ When summarizing a market, lead with:
 
 A YES price of 75% with $50 of size at the touch and $5/day volume is meaningless. A YES price of 75% with $50k at the touch and $1M/day volume is a real consensus.
 
+## Workflow: placing an order
+
+Polymarket orders are real-money trades on Polygon mainnet. Confirm the market, the outcome token, side, price, size and wallet with the user first.
+
+1. `chaingpt_pm_place_order_payload` with `maker`, `tokenId`, `side`, `price`, `size`, `acknowledgeMainnet: true`. It reads the token's live book for the signing domain (CTF / Neg-Risk / v2 exchange), tick size and minimum size, and refuses prices off the tick.
+   - Proxy or Safe wallet: `maker` = the proxy, `signer` = the EOA, `signatureType` 1 or 2.
+   - Deposit wallet: `maker` = the deposit wallet, `signer` = its owner EOA, `signatureType` 3.
+2. The user signs the returned typed data in their wallet (`eth_signTypedData_v4`).
+3. `chaingpt_pm_submit_signed_order` with the order object exactly as returned and the signature. GTD orders also pass `orderType: "GTD"`.
+
 ## What this skill does NOT do (yet)
 
-- **Place orders** — coming in a follow-up. Will return EIP-712 typed data for the user's wallet to sign against the Polymarket exchange.
-- **Cancel orders** — same constraint.
-- **Resolve a held position** (redeem after market closes) — same constraint.
+- **Cancel orders** — use Polymarket's site or client.
+- **Resolve a held position** (redeem after market closes) — same.
 - **Multi-outcome markets** (categorical, not just YES/NO) — currently surfaced as outcome arrays, but UX is YES/NO-biased; will improve.
 
 ## When to combine with other skills

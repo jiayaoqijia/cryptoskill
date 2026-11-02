@@ -41,7 +41,7 @@ Retain that exact SHA throughout review and application. If a later command runs
 
 ## Step 3: Review the Exact Update
 
-Inspect the full diff against the recorded SHA. Pay particular attention to dependency manifests and lockfiles, `mcp-server/dist/`, the launcher, hooks, `.mcp.json`, plugin metadata, scripts and skills:
+Inspect the full diff against the recorded SHA. Pay particular attention to dependency manifests and lockfiles, `mcp-server/dist/`, the launcher, hooks, plugin metadata (including its MCP server entry), scripts and skills:
 
 ```bash
 git diff HEAD "$CHAINGPT_REVIEWED_COMMIT"
