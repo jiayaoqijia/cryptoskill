@@ -1,7 +1,12 @@
-import { test } from "node:test";
+import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { dilutedPerDay, poolName, rankPools, scanAgeHours, splitAllocation, splitToText, steadyPools, trendOf, MAX_POOLS } from "../src/radar.js";
+import { dilutedPerDay, fetchScan, poolName, rankPools, scanAgeHours, splitAllocation, splitToText, steadyPools, trendOf, MAX_POOLS } from "../src/radar.js";
 import type { V3ScanFile, V3ScanGauge } from "../src/v3.js";
+
+const originalFetch = global.fetch;
+afterEach(() => {
+  global.fetch = originalFetch;
+});
 
 const g = (sym: string, weight: number, fees: number, extra: Partial<V3ScanGauge> = {}): V3ScanGauge =>
   ({
@@ -85,4 +90,34 @@ test("splitToText names pool, type, network and percent per line", () => {
 
 test("scanAgeHours measures from checkedAt", () => {
   assert.equal(scanAgeHours({ checkedAt: "2026-10-25T16:00:00.000Z" }, Date.parse("2026-10-25T18:00:00.000Z")), 2);
+});
+
+test("fetchScan returns the parsed scan on a successful, live response", async () => {
+  const file = scan([g("AAA", 200_000, 50)]);
+  global.fetch = (async () => ({ ok: true, json: async () => file })) as unknown as typeof fetch;
+
+  assert.deepEqual(await fetchScan("https://example.test/v3.json"), file);
+});
+
+test("fetchScan throws a clear error on a non-ok HTTP response", async () => {
+  global.fetch = (async () => ({ ok: false, status: 503 })) as unknown as typeof fetch;
+
+  await assert.rejects(
+    () => fetchScan("https://example.test/v3.json"),
+    /Could not load the Aero scan from https:\/\/example\.test\/v3\.json \(HTTP 503\)/,
+  );
+});
+
+test("fetchScan throws when the scan isn't live, so a bad publish doesn't rank stale/empty data", async () => {
+  const notLive = { ...scan([g("AAA", 200_000, 50)]), status: "stale" };
+  global.fetch = (async () => ({ ok: true, json: async () => notLive })) as unknown as typeof fetch;
+
+  await assert.rejects(() => fetchScan("https://example.test/v3.json"), /has no live pools \(status: stale\)/);
+});
+
+test("fetchScan throws when the scan has no gauges", async () => {
+  const empty = { ...scan([]), status: "live" };
+  global.fetch = (async () => ({ ok: true, json: async () => empty })) as unknown as typeof fetch;
+
+  await assert.rejects(() => fetchScan("https://example.test/v3.json"), /has no live pools/);
 });

@@ -61,11 +61,14 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
   the 10 even at 0%; if you omit it, the API adds it at 0%, so at most 9 other tokens. At launch every token other
   than USDC needs `allocationBps > 0`. Name 1–24 chars (funds launched earlier keep names up to 32), symbol 1–10 chars `A-Z 0-9 _ -`; a name or symbol
   already in use is refused.
+- **Thin tokens:** before adding a token to a fund, warn your human if it has under $10K of liquidity or
+  under $5K of 24h volume (`discover_tokens` returns both). A warning, not a block: it can still be added.
 - **Season 0 cap:** every fund is capped at $1,000 of value; a deposit that would pass it is refused with the
   room that is left.
 - **XP:** never quote XP amounts or conditions from memory. `xp_status` returns the person's XP and the live
   rules: `rules.howToEarn` (each action, what it pays, what it waits for) and `rules.doesNotEarn`. XP comes from
-  deposits, a completed profile, a linked X account, launching funds that keep money in them, and referrals;
+  deposits, a completed profile, a linked X account, launching funds that keep money in them, referrals, and
+  using someone else's referral code (once, after a first deposit);
   redeeming earns nothing and never takes XP away.
 - **Fund policy:** every fund runs the same default policy; creator-set policies are coming in v2. There is
   no tool to change it.
