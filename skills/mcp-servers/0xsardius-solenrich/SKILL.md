@@ -181,7 +181,7 @@ for fees on Solana, or USDC on Base.
 **Solution**: Retry after 60 seconds.
 
 ### `holders_source: unavailable` or a leg marked FAILED in `caveats`
-**Cause**: An upstream source (RPC, DexScreener, Birdeye) timed out. Verdicts degrade instead of failing.
+**Cause**: An upstream source (RPC, DexScreener, Jupiter) timed out. Verdicts degrade instead of failing.
 **Solution**: Report the caveat with the verdict. Retry later if the missing leg matters.
 
 ## References
