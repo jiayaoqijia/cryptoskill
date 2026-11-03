@@ -151,6 +151,17 @@
   .ar-hero-pay small { font-size: 14px; color: var(--muted); font-weight: 500; }
   .ar-hero a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 11px 18px; text-decoration: none; }
   @media (max-width: 600px) { .ar-hero { padding: 16px; } .ar-hero-a { font-size: 19px; } .ar-hero-pay { font-size: 26px; } .ar-hero a.primary { align-self: stretch; text-align: center; } }
+  .ar-ap { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; margin: 0 0 18px; }
+  .ar-ap-l { font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; }
+  .ar-ap-n { font-size: 34px; font-weight: 700; line-height: 1.15; margin-top: 4px; }
+  .ar-ap-n small { font-size: 20px; color: var(--dim); font-weight: 600; }
+  .ar-ap-w { font-size: 12.5px; color: var(--dim); margin-top: 6px; }
+  .ar-bell { position: relative; }
+  .ar-bell-pop { position: absolute; right: 0; top: calc(100% + 8px); width: 330px; z-index: 5; padding: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+  .ar-bell-pop label { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 10px; font-size: 14px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--text); cursor: pointer; }
+  .ar-bell-pop input[type=checkbox] { width: 18px; height: 18px; min-height: 0; padding: 0; margin: 2px 0 0; flex: none; accent-color: var(--aero); }
+  .ar-bell-pop .hint { margin: 0; }
+  @media (max-width: 600px) { .ar-ap-n { font-size: 28px; } .ar-bell, .ar-bell > button { width: 100%; } .ar-bell-pop { position: static; width: auto; margin-top: 10px; box-shadow: none; } }
   .ar-record { margin: 0 0 18px; }
   .ar-record h3 { font-size: 15px; margin: 0 0 8px; }
   .ar-record td:nth-child(2), .ar-record th:nth-child(2) { text-align: left; }
@@ -327,6 +338,21 @@
     <label class="ar-hero-q" for="arAmount">If you hold <input id="arAmount" type="number" min="0" step="any" value="10000" inputmode="decimal"> sAERO</label>
     <div class="ar-hero-a" id="arAnswerText"></div>
     <a class="primary" href="https://app.aero.xyz/markets/allocate" target="_blank" rel="noreferrer">Allocate on Aero</a>
+  </div>
+  <div class="panel ar-ap" id="arAp" hidden>
+    <div>
+      <div class="ar-ap-l" id="arApLabel">Aero Autopilot moves next in</div>
+      <div class="ar-ap-n num" id="arApIn">&mdash;</div>
+      <div class="ar-ap-w" id="arApWhen"></div>
+    </div>
+    <div class="ar-bell">
+      <button class="primary" type="button" id="arBell" aria-expanded="false">&#128276; Notify me</button>
+      <div class="panel ar-bell-pop" id="arBellPop" hidden>
+        <label><input type="checkbox" id="arPushAp"> <span>10 min before Autopilot moves</span></label>
+        <label><input type="checkbox" id="arPushWallet"> <span>When my 47 h are up <span class="hint" id="arPushWal">(look up your wallet below first)</span></span></label>
+        <p class="hint" id="arPushMsg">Your browser shows the alert even with this tab closed. Turn off any time.</p>
+      </div>
+    </div>
   </div>
   <div class="ar-record" id="arRecord" hidden>
     <h3>Track record: what the radar said, and what it paid</h3>
@@ -997,8 +1023,133 @@ arEl("arLookup").addEventListener("click", async () => {
     msg.classList.add("err");
   }
   arRender();
+  arPushWalletShown();
+  if (arPushPrefs.wallet) arPushSync(false).catch(() => {});
 });
 arEl("arAmount").addEventListener("input", arRender);
+
+// --- Aero Autopilot countdown and browser alerts (3.11.2026) ----------------
+// Autopilot's two stakes (relays found 31.10.2026) can move again 47 h after
+// their last allocation, read from the same LeafVoter as a wallet's timer.
+// Alerts are sent by the deftools-check Worker (base-tools/check-worker/push.js)
+// to this page's service worker (sw.js); the page sends only the time a
+// wallet's 47 h end, never the address.
+const AR_AUTOPILOT_STAKES = [20365, 20366];
+const AR_PUSH_API = "https://deftools-check.araxis67.workers.dev/push/";
+const AR_VAPID = "BM4isbpzhnD995iVSo3vAWwfBPX9DYWBI_KHb6sIWWHTd99oPyBbi_Bg_DjTfP7IguLpC3ltHvk-75FGNd3M2pI";
+let arApReady = 0;
+
+async function arReadAutopilot() {
+  const cooldown = BigInt(await ethCall(AR_SEL_COOLDOWN, AR_LEAF_VOTER));
+  const times = await Promise.all(AR_AUTOPILOT_STAKES.map(async (id) => {
+    const [state, reduction] = await Promise.all([ethCall(AR_SEL_TOKEN_STATES + hexOf(id), AR_LEAF_VOTER), ethCall(AR_SEL_REDUCTION + hexOf(id), AR_LEAF_VOTER)]);
+    return Number(BigInt("0x" + state.slice(2 + 64, 2 + 128)) + cooldown - BigInt(reduction));
+  }));
+  arApReady = Math.min(...times);
+  arEl("arAp").hidden = false;
+  arApTick();
+}
+
+function arApTick() {
+  if (!arApReady) return;
+  const left = arApReady - Date.now() / 1000;
+  const d = new Date(arApReady * 1000);
+  const at = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }) + ", " + d.toISOString().slice(11, 16) + " UTC";
+  if (left > 0) {
+    const h = Math.floor(left / 3600), m = Math.floor((left % 3600) / 60), s = Math.floor(left % 60);
+    arEl("arApLabel").textContent = "Aero Autopilot moves next in";
+    arEl("arApIn").innerHTML = (h ? h + " h " : "") + m + " m <small>" + String(s).padStart(2, "0") + " s</small>";
+    arEl("arApWhen").textContent = at + " · its 47 h wait ends then, read from Aero's contract";
+  } else {
+    arEl("arApLabel").textContent = "Aero Autopilot";
+    arEl("arApIn").textContent = "Can move now";
+    arEl("arApWhen").textContent = "Its 47 h wait ended " + at + ". Aero moves it shortly; the next time shows here once it does.";
+  }
+}
+
+const arPushOk = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+let arPushPrefs = { autopilot: false, wallet: false };
+try { arPushPrefs = { ...arPushPrefs, ...JSON.parse(localStorage.getItem("arPush") || "{}") }; } catch (e) { /* defaults */ }
+if (arPushOk && Notification.permission !== "granted") arPushPrefs = { autopilot: false, wallet: false };
+const arPushSave = () => { try { localStorage.setItem("arPush", JSON.stringify(arPushPrefs)); } catch (e) { /* this visit only */ } };
+const arPost = (body) => ({ method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+
+// The earliest moment any of the wallet's stakes can move again (0: right away).
+function arWalletReady() {
+  const t = arWallet ? arWallet.stakes.flatMap((s) => Object.values(s.chains).filter((c) => c.last).map((c) => c.readyAt)) : [];
+  return t.length ? Math.min(...t) : 0;
+}
+function arPushWalletShown() {
+  const a = arEl("arAddr").value.trim();
+  arEl("arPushWal").textContent = arWallet ? "(" + a.slice(0, 6) + "…" + a.slice(-4) + ")" : "(look up your wallet below first)";
+}
+function arPushUi(note) {
+  arEl("arPushAp").checked = arPushPrefs.autopilot;
+  arEl("arPushWallet").checked = arPushPrefs.wallet;
+  arEl("arBell").innerHTML = "&#128276; " + (arPushPrefs.autopilot || arPushPrefs.wallet ? "Alerts on" : "Notify me");
+  if (note) arEl("arPushMsg").textContent = note;
+}
+
+async function arPushSync(fromClick) {
+  const reg = await navigator.serviceWorker.register("sw.js");
+  if (!arPushPrefs.autopilot && !arPushPrefs.wallet) {
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) { await fetch(AR_PUSH_API + "unsub", arPost({ endpoint: sub.endpoint })).catch(() => {}); await sub.unsubscribe(); }
+    arPushUi("Alerts are off.");
+    return;
+  }
+  if (Notification.permission !== "granted") {
+    if (!fromClick) return;
+    const answer = await Notification.requestPermission();
+    if (answer !== "granted") {
+      arPushPrefs = { autopilot: false, wallet: false };
+      arPushSave();
+      arPushUi(answer === "denied" ? "Alerts are blocked for this site in your browser's settings." : "Allow alerts when your browser asks, then tick again.");
+      return;
+    }
+  }
+  await navigator.serviceWorker.ready;
+  const key = Uint8Array.from(atob(AR_VAPID.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+  const sub = (await reg.pushManager.getSubscription()) || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key }));
+  const body = { sub: sub.toJSON(), autopilot: arPushPrefs.autopilot, wallet: arPushPrefs.wallet };
+  if (!arPushPrefs.wallet) body.ready = 0;
+  else if (arWallet) body.ready = arWalletReady();
+  const res = await fetch(AR_PUSH_API + "sub", arPost(body));
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const ready = arWallet ? arWalletReady() : 0;
+  arPushUi(arPushPrefs.wallet && arWallet && ready <= Date.now() / 1000
+    ? "Saved. Your sAERO can already move, so the 47 h alert comes after your next allocation and a new look-up here."
+    : "Saved. Your browser shows the alert even with this tab closed. Turn off any time.");
+}
+
+arEl("arBell").addEventListener("click", () => {
+  const pop = arEl("arBellPop");
+  pop.hidden = !pop.hidden;
+  arEl("arBell").setAttribute("aria-expanded", String(!pop.hidden));
+});
+document.addEventListener("click", (e) => { if (!e.target.closest(".ar-bell")) { arEl("arBellPop").hidden = true; arEl("arBell").setAttribute("aria-expanded", "false"); } });
+for (const [id, pref] of [["arPushAp", "autopilot"], ["arPushWallet", "wallet"]]) {
+  arEl(id).addEventListener("change", async (e) => {
+    if (pref === "wallet" && e.target.checked && !arWallet) {
+      e.target.checked = false;
+      arPushUi("Look up your wallet below first, then tick this.");
+      return;
+    }
+    arPushPrefs[pref] = e.target.checked;
+    arPushSave();
+    arPushUi("Saving…");
+    try { await arPushSync(true); } catch (err) { arPushUi("Could not turn alerts on (" + err.message + "). Try again in a moment."); }
+  });
+}
+if (!arPushOk) {
+  arEl("arPushAp").disabled = arEl("arPushWallet").disabled = true;
+  arEl("arPushMsg").textContent = "This browser can't show alerts. On iPhone, add the radar to your Home Screen (Share → Add to Home Screen) and open it from there.";
+} else arPushUi();
+
+arReadAutopilot().catch(() => {});
+setInterval(arApTick, 1000);
+// Picks up Autopilot's next allocation without a reload.
+setInterval(() => arReadAutopilot().catch(() => {}), 5 * 60 * 1000);
 arEl("arCopy").addEventListener("click", () => {
   const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
   const pools = arPools(amount).map((x) => x.g);

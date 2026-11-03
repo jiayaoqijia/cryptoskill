@@ -56,7 +56,7 @@ Read with fresh eyes. Common high-value areas:
 
 **Required frontmatter** — `metadata.title` and `metadata.category` are required by CI. Missing these blocks deployment.
 
-For upstream-tracked skills (`writing-motoko`, `migrating-motoko-actors`, `troubleshooting-motoko-migrations`, `reviewing-motoko`, `mops-cli`, `static-site`): read `.claude/upstream.md` carefully. Only modify icskills-owned sections freely; changes to shared content should also be filed upstream.
+For upstream-tracked skills (`writing-motoko`, `migrating-motoko-actors`, `troubleshooting-motoko-migrations`, `reviewing-motoko`, `migrating-to-moc-2`, `caffeine-app`, `mops-cli`, `static-site`): read `.claude/upstream.md` carefully. Only modify icskills-owned sections freely; changes to shared content should also be filed upstream.
 
 ## Step 4 — Apply improvements
 
@@ -176,4 +176,4 @@ The skill is ready for a PR. Include a brief summary of what changed and, if you
 
 ## Upstream-tracked skills
 
-Before editing `writing-motoko`, `migrating-motoko-actors`, `troubleshooting-motoko-migrations`, `reviewing-motoko`, `mops-cli`, or `static-site`, read `.claude/upstream.md`. It lists which sections are icskills-owned. You can freely improve owned sections. For shared content, improvements should also be filed as issues upstream so they flow back on the next sync.
+Before editing `writing-motoko`, `migrating-motoko-actors`, `troubleshooting-motoko-migrations`, `reviewing-motoko`, `migrating-to-moc-2`, `caffeine-app`, `mops-cli`, or `static-site`, read `.claude/upstream.md`. It lists which sections are icskills-owned. You can freely improve owned sections. For shared content, improvements should also be filed as issues upstream so they flow back on the next sync.

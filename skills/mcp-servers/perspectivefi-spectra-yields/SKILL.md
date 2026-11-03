@@ -16,7 +16,7 @@ Spectra splits interest-bearing tokens into a **Principal Token (PT)**, which re
 
 1. `spectra_find_yields` with `asset` (and `chain` / `product` if the user said so). Default ranking is by APY and hides thin or anomalous markets.
 2. For the top 2–3 candidates call `spectra_get_market` (or `spectra_get_metavault`) to check liquidity, maturity, the APY breakdown and flags.
-3. If the user names an amount, quote it with `spectra_prepare_pt_trade` (no receiver = quote only): the fixed APY for size can be lower than the headline rate.
+3. If the user names an amount and `spectra_prepare_pt_trade` is available (the trade endpoint), quote it without a receiver (quote only): the fixed APY for size can be lower than the headline rate. Without that tool, say so and link the market in the app.
 4. Answer with a compact table: product, asset, network, APY (fixed or variable), maturity, liquidity, link. State the `as_of` time.
 
 ## How to present numbers
@@ -34,6 +34,6 @@ Fixed APY vs the market's `variable_apy_pct` tells the user what the market expe
 
 ## Portfolio questions
 
-`spectra_get_portfolio` returns PT, YT (with claimable yield) and LP positions with USD values and suggested actions. Highlight matured PTs to redeem, claimable YT yield and positions maturing soon. For any action, hand off to the `spectra-transactions` skill.
+`spectra_get_portfolio` returns PT, YT (with claimable yield) and LP positions with USD values and suggested actions. Highlight matured PTs to redeem, claimable YT yield and positions maturing soon. For any action, hand off to the `spectra-transactions` skill if it is installed; otherwise give the app link from the result.
 
 See [references/concepts.md](references/concepts.md) for definitions and edge cases.

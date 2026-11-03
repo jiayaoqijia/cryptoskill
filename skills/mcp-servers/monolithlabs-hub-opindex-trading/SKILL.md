@@ -5,9 +5,10 @@ description: Use when trading Solana SPL tokens, or when asked whether a token i
 
 # Trading Solana tokens through opindex
 
-You have a wallet of your own and ten tools. Two are free reads, six cost USDC
-from that wallet, and two move money. This explains the order to use them in
-and the things that will cost your human money if you get them wrong.
+You have a wallet of your own and eleven tools. Two are free reads, six cost
+USDC from that wallet, two move money, and one returns rent to it. This explains
+the order to use them in and the things that will cost your human money if you
+get them wrong.
 
 ## What this service does not answer
 
@@ -59,6 +60,15 @@ Two things in its answer matter more than the balances:
   is their own wallet. It is derived from whoever funded you first. If they
   funded you from an exchange, this is the exchange's hot wallet and sending
   funds there can lose them.
+- **`lookalike_senders`.** Addresses that sent you dust while imitating
+  `return_address`: the same first and last characters, a different address.
+  It happens within a minute of funding, and it is aimed at a person copying
+  "their" address out of your history. `return_funds` is not affected. If the
+  list is not empty, tell your human never to copy an address from your
+  history.
+
+`tokens` lists every other token you hold, with `balance_base_units`. That is
+your position. Use it, not a quote, whenever a number of tokens matters.
 
 You need **no SOL to pay for answers** — the service's facilitator pays that
 network fee. You need SOL only for swaps you sign yourself.
@@ -83,17 +93,21 @@ is theirs, one you assumed is not.
 5. **Exit cost.** The most leaving may cost at the trade's size
    (`exit_cost_for_amount`) before you will not enter. `null` is unknown and
    fails this check.
-6. **When to exit a position.** A gain to take, a loss to cut, or a time after
-   which you leave anyway.
+6. **When to exit a position, and how often you check.** A gain to take, a loss
+   to cut, or a time after which you leave anyway; and how often you will look
+   (every 30 minutes is a reasonable start). Each look is a paid call.
 7. **Where candidates come from.** Only mints they give you, or also ones you
    find, and from where.
 8. **Confirmation.** Ask before each trade, or trade within these limits and
    report after.
 
 Say the answers back as one short list and keep to it. **These limits are yours
-to keep: the client enforces none of them.** The amount funded is the only limit
-anything enforces, so tell your human that too. If a trade would break a limit,
-do not make it; say which limit and ask. Changing a limit is their call.
+to keep: the client enforces none of them.** The amount funded is the only
+spending limit anything enforces, so tell your human that too. (The one check
+the client does make is on the bill, not on your choices: a paid tool never pays
+more than the price it states, and answers `price_above_stated` instead.) If a
+trade would break a limit, do not make it; say which limit and ask. Changing a
+limit is their call.
 
 ## Never trade on a free answer
 
@@ -166,6 +180,36 @@ than paying twice to arrive there.
 already allowed that level in the limits you agreed; then acknowledge and name
 the factors in your report. Either way, name the factors, not the level. "This token's LP is not burned and a transfer hook can
 still be set on it" is a sentence they can judge. "Level: caution" is not.
+
+## Holding a position: what you hold, who watches it, how you leave
+
+**Record what arrived, not what was quoted.** `build_swap`'s `out_amount` is an
+estimate. `submit_swap` answers a confirmed swap with `balance_changes`, read
+from the transaction: the token's `balance_base_units` is your position. Use it
+for `position_base_units`, and later sell exactly that. One agent recorded the
+quote, 982 units more than it received; selling it would have failed at the
+moment its stop was hit. If `balance_changes` is null, read `tokens` from
+`agent_wallet` before you record anything.
+
+**A position nobody checks has no exit.** You act only when you are given a
+turn. Saying "I will monitor it" does not make a check happen: one agent said
+so, and its scheduler skipped every run until a person noticed. Before you buy,
+set up the checks — a scheduled job in your host, at the frequency your human
+agreed — and tell your human what you set up and when it first runs. If you
+cannot schedule your own checks, say so **before** buying, and do not buy.
+
+**Watching costs money, so say how much.** Each check is a `token_indicators`
+call at $0.01. The cost of a hold is checks per hour × hours held × that price:
+every 30 minutes for 48 hours is 96 paid calls. Say that number to your human
+with the plan. A check every minute would cost thirty times more and leave
+nothing to pay for the exit.
+
+**Leaving.** `build_swap` from the token back to what you bought it with, with
+`amount` set to the `balance_base_units` you hold. After a confirmed sale of the
+whole position, turn off the scheduled checks — only then, and not when a read
+merely fails. Then call `close_empty_token_accounts`: the account the token sat
+in stays behind, empty, holding about 0.0015 SOL of rent, and closing it returns
+that to you.
 
 ## How to read `*_like`
 
@@ -259,7 +303,7 @@ routes") that you can recompute.
 | `token_indicators` (`GET /agent/v1/indicators/{mint}`) | $0.01 |
 | `screen_tokens` (`GET /agent/v1/screen`) | $0.02, an empty list included |
 | `build_swap` | $0.05, **including a `needs_acknowledgement` refusal** |
-| `submit_swap`, `return_funds` | free from the service; you pay the Solana network fee |
+| `submit_swap`, `return_funds`, `close_empty_token_accounts` | free from the service; you pay the Solana network fee |
 
 This package's wallet pays for all six paid tools itself, and every paid answer
 says what it cost in `_charged`. A `404 NO_HISTORY` or `404 NOT_WATCHED` from the
@@ -309,9 +353,13 @@ assess_token(mint, amount_usd: 500)       → $0.005: exit cost at the size you 
 build_swap(USDC → mint, amount)           → $0.05: built, or a refusal naming the risk
   (if needs_acknowledgement: tell your human the factors, then)
 build_swap(… acknowledge_risk: "caution") → $0.05: built, with a swap_id
-submit_swap(swap_id)                      → you sign and pay the network fee
+submit_swap(swap_id)                      → you sign; balance_changes says what arrived
+  (schedule the checks; tell your human the schedule and what it costs)
 token_indicators(mint, entry_price_usd,
-  position_base_units, amount_usd)        → $0.01: the position, and what leaving costs
+  position_base_units, amount_usd)        → $0.01 each check: the position, and what leaving costs
+build_swap(mint → back, balance_base_units) → $0.05: the exit, sized from what you hold
+submit_swap(swap_id)                      → confirmed: turn the checks off
+close_empty_token_accounts                → free: the emptied account's rent comes back
 ```
 
 Afterwards, report in numbers your human can check against the chain: what you
