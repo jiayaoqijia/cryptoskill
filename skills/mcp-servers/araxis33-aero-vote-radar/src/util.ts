@@ -75,34 +75,3 @@ export function padCol(value: string, width: number): string {
   return `${value.slice(0, width - 2)}…`.padEnd(width);
 }
 
-/**
- * Breaks a paragraph onto lines no longer than `width`, on spaces only.
- *
- * The CLI's own output is hand-formatted to fit a terminal, but explanatory
- * prose written once and printed in two places (here and, in a different shape,
- * on the web page) cannot carry its own line breaks without one of the two
- * surfaces wearing the other's. So the text is stored as one paragraph and
- * wrapped where it is printed.
- *
- * A word longer than `width` is left on its own line rather than cut: a broken
- * URL or contract address is worse than a long line.
- */
-export function wrapText(text: string, width: number): string {
-  const lines: string[] = [];
-  let line = "";
-
-  for (const word of text.split(/\s+/).filter(Boolean)) {
-    if (line === "") {
-      line = word;
-    } else if (line.length + 1 + word.length <= width) {
-      line += ` ${word}`;
-    } else {
-      lines.push(line);
-      line = word;
-    }
-  }
-  if (line !== "") lines.push(line);
-
-  return lines.join("\n");
-}
-

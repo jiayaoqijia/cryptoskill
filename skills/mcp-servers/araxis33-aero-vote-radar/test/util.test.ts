@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { formatError, isValidAddress, mapWithConcurrency, normalizeAddress, padCol, wrapText } from "../src/util.js";
+import { formatError, isValidAddress, mapWithConcurrency, normalizeAddress, padCol } from "../src/util.js";
 
 test("isValidAddress accepts a well-formed 0x-prefixed 40-hex-character address", () => {
   assert.equal(isValidAddress("0x1234567890abcdef1234567890ABCDEF12345678"), true);
@@ -111,30 +111,6 @@ test("formatError falls back to the plain message for a regular Error with no sh
 
 test("formatError stringifies a non-Error thrown value", () => {
   assert.equal(formatError("plain string throw"), "plain string throw");
-});
-
-test("wrapText breaks on spaces and keeps every line within the width", () => {
-  const text = "the quick brown fox jumps over the lazy dog and keeps on running";
-  const lines = wrapText(text, 20).split("\n");
-
-  for (const line of lines) assert.ok(line.length <= 20, `line too long: ${JSON.stringify(line)}`);
-  assert.equal(lines.join(" "), text, "wrapping must not add, drop or reorder words");
-});
-
-test("wrapText leaves a short paragraph on one line", () => {
-  assert.equal(wrapText("nothing to wrap here", 40), "nothing to wrap here");
-});
-
-test("wrapText leaves a word longer than the width intact rather than cutting it", () => {
-  const address = "0x28aa4F9ffe21365473B64C161b566C3CdeAD0108";
-  const lines = wrapText(`vote from ${address} now`, 12).split("\n");
-
-  assert.ok(lines.includes(address), "a long word must survive whole");
-  assert.equal(lines.join(" "), `vote from ${address} now`);
-});
-
-test("wrapText collapses the whitespace it wraps on, including newlines already present", () => {
-  assert.equal(wrapText("  two   words\nhere  ", 40), "two words here");
 });
 
 test("padCol pads a short value out to the column width", () => {
