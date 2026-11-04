@@ -79,7 +79,7 @@ Test fixtures used throughout SolEnrich's own tests:
 |---|---|---|---|
 | `perps-market-structure` | $0.012 | none | Jupiter Perps OI, utilization, borrow APR, skew, health per market |
 | `perps-trader-profile` | $0.01 | `address` | Open positions across Jupiter Perps and Adrena, leverage, PnL, classification |
-| `perps-cross-venue-funding` | $0.015 | `market` (SOL/BTC/ETH/BONK) | Funding and OI across Jupiter, Adrena, Flash, Hyperliquid, dYdX; best entry per side; arbitrage |
+| `perps-cross-venue-funding` | $0.015 | `market` (SOL/BTC/ETH/BONK) | Funding and OI across Jupiter, Adrena, Flash, Phoenix, Hyperliquid, dYdX; best entry per side; arbitrage |
 | `perps-venue-comparison` | $0.02 | `market`, `side`, `size_usd` | Slippage, fees, OI headroom, total entry cost per venue, recommendation |
 | `perps-basis-signal` | $0.015 | `asset` (`min_yield_apr_pct`) | Net-of-borrow basis yield per venue, best trade |
 

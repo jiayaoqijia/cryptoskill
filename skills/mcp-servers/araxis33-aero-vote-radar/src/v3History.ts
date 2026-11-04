@@ -42,6 +42,8 @@ export interface V3Pick {
   per10k: number;
   /** Rebuilt once from the history for windows before picks were saved (28.10). */
   rebuilt?: boolean;
+  /** Picked among steady pools (3.11.2026 on): the one whose weakest hour of the week paid most. */
+  steady?: boolean;
 }
 
 /** The pool the page ranks first for 10,000 sAERO, the same figures as its table. */
@@ -56,6 +58,25 @@ export function topPick(gauges: readonly V3ScanGauge[]): V3Pick | null {
 }
 
 export const poolKey = (g: Pick<V3ScanGauge, "chain" | "gauge">) => `${g.chain}:${g.gauge.toLowerCase()}`;
+
+/**
+ * The radar's suggestion since 3.11.2026: among pools that paid steadily over the
+ * last week, the one whose weakest hour paid most. Its hot top pick paid less than a
+ * typical pool in 2 of the 3 windows before; the page leads with this one and keeps
+ * the hot pools in its table. `null` while no pool has a week's verdict yet.
+ */
+export function steadyPick(gauges: readonly V3ScanGauge[], pools: Record<string, (number | null)[]>, from: number): V3Pick | null {
+  let best: { g: V3ScanGauge; low: number } | null = null;
+  for (const g of gauges) {
+    if (g.weight < V3_HISTORY_MIN_WEIGHT || !(g.feesUsdPerDay + g.incentivesUsdPerDay > 0)) continue;
+    const s = steadiness((pools[poolKey(g)] ?? []).slice(from));
+    if (!s || !isSteady(s)) continue;
+    if (!best || s.minPer10k > best.low) best = { g, low: s.minPer10k };
+  }
+  if (!best) return null;
+  const per10k = ((best.g.feesUsdPerDay + best.g.incentivesUsdPerDay) * PER) / (best.g.weight + PER);
+  return { pool: poolKey(best.g), per10k: Math.round(per10k * 1e4) / 1e4, steady: true };
+}
 
 /** What 10,000 sAERO would earn a day in the pool now, after diluting it. */
 export function per10kNow(g: Pick<V3ScanGauge, "fees24hUsdPerDay" | "incentivesUsdPerDay" | "weight">): number {
@@ -75,7 +96,6 @@ export function appendV3Sample(
   const picks = [...(file?.picks ?? [])];
   while (picks.length < at.length) picks.unshift(null);
   at.push(now.toISOString());
-  picks.push(topPick(gauges));
   for (const col of Object.values(pools)) col.push(null);
   for (const g of gauges) {
     if (g.weight < V3_HISTORY_MIN_WEIGHT) continue;
@@ -83,6 +103,7 @@ export function appendV3Sample(
     pools[k] ??= Array(at.length).fill(null);
     pools[k][at.length - 1] = Math.round(per10kNow(g) * 1e4) / 1e4;
   }
+  picks.push(steadyPick(gauges, pools, windowStart({ at }, now)) ?? topPick(gauges));
   const cutoff = now.getTime() - keepHours * 3_600_000;
   const drop = at.findIndex((t) => Date.parse(t) >= cutoff);
   const from = drop < 0 ? at.length : drop;

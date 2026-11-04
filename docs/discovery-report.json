@@ -64,10 +64,17 @@
       "official": false
     },
     {
-      "org": "truenorth-lj",
-      "repo": "sofinance-public",
+      "org": "nirium-protocol",
+      "repo": "nirium",
       "category": "mcp-servers",
-      "prefix": "truenorth-lj-",
+      "prefix": "nirium-protocol-",
+      "official": false
+    },
+    {
+      "org": "0xSardius",
+      "repo": "solenrich",
+      "category": "mcp-servers",
+      "prefix": "0xsardius-",
       "official": false
     },
     {
@@ -78,24 +85,17 @@
       "official": false
     },
     {
+      "org": "davidwilliam",
+      "repo": "proof_forge",
+      "category": "mcp-servers",
+      "prefix": "davidwilliam-",
+      "official": false
+    },
+    {
       "org": "araxis33",
       "repo": "aero-vote-radar",
       "category": "mcp-servers",
       "prefix": "araxis33-",
-      "official": false
-    },
-    {
-      "org": "hristovdimitri2-hub",
-      "repo": "kristo-intelligence-6",
-      "category": "mcp-servers",
-      "prefix": "hristovdimitri2-hub-",
-      "official": false
-    },
-    {
-      "org": "hypurrquant",
-      "repo": "perp-cli",
-      "category": "mcp-servers",
-      "prefix": "hypurrquant-",
       "official": false
     },
     {
@@ -170,6 +170,13 @@
     },
     {
       "org": "MystenLabs",
+      "repo": "skills",
+      "category": "chains",
+      "prefix": "mystenlabs-",
+      "official": true
+    },
+    {
+      "org": "MystenLabs",
       "repo": "walrus-memory",
       "category": "ai-crypto",
       "prefix": "mystenlabs-",
@@ -178,13 +185,6 @@
     {
       "org": "MystenLabs",
       "repo": "sui-dev-skills",
-      "category": "chains",
-      "prefix": "mystenlabs-",
-      "official": true
-    },
-    {
-      "org": "MystenLabs",
-      "repo": "skills",
       "category": "chains",
       "prefix": "mystenlabs-",
       "official": true
@@ -213,19 +213,19 @@
   ],
   "queries": [
     {
-      "query": "crypto MCP server official language:TypeScript pushed:>2026-10-27",
+      "query": "crypto MCP server official language:TypeScript pushed:>2026-10-28",
       "status": "checked"
     },
     {
-      "query": "blockchain skills agent official language:TypeScript pushed:>2026-10-27",
+      "query": "blockchain skills agent official language:TypeScript pushed:>2026-10-28",
       "status": "checked"
     },
     {
-      "query": "crypto agent skills language:Python pushed:>2026-10-27",
+      "query": "crypto agent skills language:Python pushed:>2026-10-28",
       "status": "checked"
     },
     {
-      "query": "DeFi MCP server pushed:>2026-10-27",
+      "query": "DeFi MCP server pushed:>2026-10-28",
       "status": "checked"
     },
     {

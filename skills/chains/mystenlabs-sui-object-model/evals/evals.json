@@ -24,7 +24,7 @@
       "prompt": "What are the different types of object ownership on Sui? When should I use a shared object vs an owned object?",
       "expected_output": "An explanation of all ownership types with practical guidance on when to choose each, including consensus implications.",
       "expectations": [
-        "The response describes address-owned objects and states they skip consensus (fastpath) for lowest latency",
+        "The response describes address-owned objects and states that they are referenced at a fixed version that consensus does not assign",
         "The response describes shared objects and states they require consensus ordering through Mysticeti",
         "The response describes immutable/frozen objects as permanent, unchangeable, and consensus-free",
         "The response describes wrapped objects as nested inside another object and not directly accessible by ID",
@@ -244,7 +244,7 @@
         "The response explains that versions use Lamport timestamps: new version = 1 + max(version of all input objects)",
         "The response gives a concrete example (e.g., object at version 5 + gas at version 3 produces version 6 for both)",
         "The response explains that only the most recent version is accessible to active transactions",
-        "The response distinguishes fastpath versioning (owned objects, no consensus) from consensus versioning (shared objects)",
+        "The response distinguishes owned-object versioning (fixed versions supplied by the transaction) from consensus-assigned versioning (shared and party objects)",
         "The response mentions that wrapped objects and dynamic fields also follow Lamport versioning"
       ],
       "sources": [
@@ -271,9 +271,9 @@
     {
       "id": "object-model-parallel-execution",
       "prompt": "How does parallel execution work on Sui? Why do owned objects skip consensus but shared objects don't?",
-      "expected_output": "An explanation of Sui's dual execution paths: fastpath for owned objects and consensus for shared objects.",
+      "expected_output": "An explanation that every transaction is sequenced by consensus, with owned objects referenced at fixed versions and shared objects given consensus-assigned versions.",
       "expectations": [
-        "The response explains that transactions on owned objects use a fastpath that does not require consensus ordering, because only one address can access them",
+        "The response explains that transactions on owned objects still go through consensus, and that conflicting uses of the same owned version are resolved by consensus order",
         "The response explains that shared objects require Mysticeti consensus to order transactions from multiple addresses",
         "The response states that this separation gives Sui its throughput advantage: most transactions touch only owned objects",
         "The response mentions the shared object access mode optimization: read-only access (immutable reference) allows parallel scheduling",

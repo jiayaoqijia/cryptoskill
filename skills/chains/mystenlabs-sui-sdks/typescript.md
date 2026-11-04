@@ -151,7 +151,7 @@ const vec = tx.makeMoveVec({ type: '0xpkg::m::T', elements: [tx.object('0xA')] }
 const [upgradeCap] = tx.publish({ modules, dependencies });
 ```
 
-For deeper PTB semantics (equivocation, hot-potato cliques, sponsored), load the `ptbs` skill.
+For deeper PTB semantics (owned-object version conflicts, hot-potato cliques, sponsored), load the `ptbs` skill.
 
 ## v2 Data Access
 

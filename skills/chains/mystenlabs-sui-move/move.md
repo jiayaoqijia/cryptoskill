@@ -51,7 +51,7 @@ public fun check_deadline(clock: &Clock) {
 
 The Clock is more precise than `ctx.epoch_timestamp_ms()` (which returns only the epoch start time). Use the Clock for time-sensitive logic like auctions or deadlines. Use `ctx.epoch()` for epoch-level checks like staking windows.
 
-**Important:** Because the Clock is a shared object, any transaction that reads it must go through consensus. This makes Clock access incompatible with single-owner fastpath transactions (which skip consensus for lower latency). The Clock updates approximately every 1/4 second, at the checkpoint rate. If your transaction only touches owned objects and does not need sub-epoch time precision, prefer `ctx.epoch_timestamp_ms()` to stay on the fastpath.
+**Important:** The Clock is a shared object, so a transaction that reads it has a shared-object input whose version consensus assigns. The Clock updates approximately every 1/4 second, at the checkpoint rate. If your transaction only touches owned objects and does not need sub-epoch time precision, prefer `ctx.epoch_timestamp_ms()`, which needs no extra input.
 
 ## Init functions and One-Time Witness
 

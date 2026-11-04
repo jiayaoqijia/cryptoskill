@@ -148,6 +148,7 @@
   .ar-hero-a { font-size: 22px; font-weight: 650; line-height: 1.35; }
   .ar-hero-a b { color: var(--good); }
   .ar-hero-pay { font-size: 30px; margin-top: 2px; }
+  .ar-hero-hot { font-size: 14px; font-weight: 500; color: var(--muted); margin-top: 4px; }
   .ar-hero-pay small { font-size: 14px; color: var(--muted); font-weight: 500; }
   .ar-hero a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 11px 18px; text-decoration: none; }
   @media (max-width: 600px) { .ar-hero { padding: 16px; } .ar-hero-a { font-size: 19px; } .ar-hero-pay { font-size: 26px; } .ar-hero a.primary { align-self: stretch; text-align: center; } }
@@ -568,6 +569,19 @@ const arPools = (amount) =>
     .filter((g) => arW(g) >= AR_MIN_WEIGHT && arPerDay(g) > 0 && (arChain === "all" || arChainOf(g) === arChain))
     .map((g) => ({ g, mine: dilutedPerDay(arPerDay(g), arW(g), amount) }))
     .sort((a, b) => b.mine - a.mine);
+// The suggested split since 3.11.2026: steady pools only, the ones whose weakest hour
+// of the week paid most (src/v3History.ts steadyPick), split evenly. The hot top pick paid less
+// than a typical pool in 2 of 3 windows before; hot pools stay in the table below.
+const arSteadySplit = (amount) => {
+  const steady = arPools(amount).map((x) => x.g)
+    .filter((g) => g.steady && g.steady.avgPer10k > 0 && g.steady.held >= AR_STEADY_SHARE * g.steady.of)
+    .sort((a, b) => b.steady.minPer10k - a.steady.minPer10k)
+    .slice(0, AR_MAX_POOLS);
+  if (!steady.length || !(amount > 0)) return { split: arSplit(arPools(amount).map((x) => x.g), amount), steady: false };
+  // Spread evenly (34/33/33): in the backtest the three together beat the single best.
+  const pct = steady.map((_, i) => Math.floor(100 / steady.length) + (i < 100 % steady.length ? 1 : 0));
+  return { split: steady.map((g, i) => ({ g, share: pct[i] / 100, perDay: dilutedPerDay(arPerDay(g), arW(g), amount * pct[i] / 100) })), steady: true };
+};
 
 // One button per network that has rankable pools, plus "All networks".
 function arRenderChains() {
@@ -826,7 +840,7 @@ function arRender() {
   if (!arData) return;
   const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
   const pools = arPools(amount);
-  const split = arSplit(pools.map((x) => x.g), amount);
+  const { split, steady: steadySplit } = arSteadySplit(amount);
   const splitPays = split.reduce((a, s) => a + s.perDay, 0);
   arEl("arBest").textContent = pools.length && amount > 0 ? usd(pools[0].mine) : "—";
   // The answer in one sentence at the top, so a first visit doesn't have to read the table for it.
@@ -835,7 +849,7 @@ function arRender() {
   if (split.length) {
     const b = (t) => { const e = document.createElement("b"); e.textContent = t; return e; };
     const where = document.createElement("div");
-    where.append("Put ");
+    where.append(steadySplit ? "Steady pick: put " : "Put ");
     split.forEach((s, i) => {
       where.append(i ? (i === split.length - 1 ? " and " : ", ") : "", b(Math.round(s.share * 100) + "%"), " in " + arName(s.g));
     });
@@ -850,6 +864,12 @@ function arRender() {
     note.textContent = " at today's rates";
     pays.append(note);
     answer.append(where, pays);
+    if (steadySplit) {
+      const hot = document.createElement("div");
+      hot.className = "ar-hero-hot";
+      hot.innerHTML = 'Hotter pools pay more today but jump around: they are in <a href="#arTable">the table below</a>.';
+      answer.append(hot);
+    }
   } else {
     arPaysNow = null;
     answer.textContent = amount > 0 ? "No pool is paying right now." : "Type how much sAERO you have.";
@@ -1152,8 +1172,7 @@ setInterval(arApTick, 1000);
 setInterval(() => arReadAutopilot().catch(() => {}), 5 * 60 * 1000);
 arEl("arCopy").addEventListener("click", () => {
   const amount = Math.max(0, parseFloat(arEl("arAmount").value) || 0);
-  const pools = arPools(amount).map((x) => x.g);
-  const text = arSplit(pools, amount).map((s) => arName(s.g) + " (" + (s.g.kind || "?") + ", " + (AR_CHAIN_NAMES[arChainOf(s.g)] || arChainOf(s.g)) + ") " + Math.round(s.share * 100) + "%").join("\n");
+  const text = arSteadySplit(amount).split.map((s) => arName(s.g) + " (" + (s.g.kind || "?") + ", " + (AR_CHAIN_NAMES[arChainOf(s.g)] || arChainOf(s.g)) + ") " + Math.round(s.share * 100) + "%").join("\n");
   navigator.clipboard.writeText(text).then(() => { arEl("arCopy").textContent = "Copied"; setTimeout(() => (arEl("arCopy").textContent = "Copy percentages"), 1500); });
 });
 

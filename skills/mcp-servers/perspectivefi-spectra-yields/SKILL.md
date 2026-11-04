@@ -5,7 +5,7 @@ description: Find, compare and explain Spectra fixed-rate yields, liquidity pool
 
 # Spectra yields
 
-Spectra splits interest-bearing tokens into a **Principal Token (PT)**, which redeems 1:1 for the underlying at maturity (so buying it at a discount locks a fixed rate), and a **Yield Token (YT)**, which collects the variable yield until maturity. PT/IBT pools pay LPs; **MetaVaults** are curated vaults that allocate across pools and roll maturities.
+Spectra splits interest-bearing tokens into a **Principal Token (PT)**, which trades at a discount and locks a fixed rate when held to maturity, barring negative yield in its yield source, and a **Yield Token (YT)**, which collects the variable yield until maturity. PT/IBT pools pay LPs; **MetaVaults** are curated vaults that allocate across pools and roll maturities.
 
 ## Get the data (in order of preference)
 

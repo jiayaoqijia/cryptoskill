@@ -29,8 +29,8 @@ This skill routes to focused reference files. Load only the ones relevant to the
 
 ### ownership — Ownership Types and Versioning
 **Path:** `ownership.md`
-**Load when:** asking about ownership types (address-owned, consensus-address-owned, shared, immutable, wrapped), choosing between shared and owned, parallel execution, consensus, Mysticeti, fastpath, object versioning, Lamport timestamps, or frontend access to shared objects.
-**Covers:** all five ownership types with consensus implications, consensus-address-owned objects, shared object access mode optimization, frontend PTB access pattern, wrapped object behavior, Lamport timestamp versioning, fastpath vs consensus versioning.
+**Load when:** asking about ownership types (address-owned, consensus-address-owned, shared, immutable, wrapped), choosing between shared and owned, parallel execution, consensus, Mysticeti, object versioning, Lamport timestamps, or frontend access to shared objects.
+**Covers:** all five ownership types with consensus implications, consensus-address-owned objects, shared object access mode optimization, frontend PTB access pattern, wrapped object behavior, Lamport timestamp versioning, owned vs consensus-assigned versioning.
 
 ### transfers — Transferring and Deleting Objects
 **Path:** `transfers.md`
@@ -61,7 +61,7 @@ This skill routes to focused reference files. Load only the ones relevant to the
 | What is an object / object structure | SKILL.md only |
 | Abilities: key, store, copy, drop | SKILL.md only |
 | Ownership types, shared vs owned vs consensus-address-owned | ownership |
-| Parallel execution, consensus, fastpath | ownership |
+| Parallel execution, consensus | ownership |
 | Object versioning, Lamport timestamps | ownership |
 | Wrapped objects and accessibility | ownership |
 | Frontend access to shared objects | ownership |

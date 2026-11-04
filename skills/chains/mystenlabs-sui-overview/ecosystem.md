@@ -102,8 +102,8 @@ Decentralized access control and encryption for on-chain data. Seal lets you enc
 
 Sui provides two mechanisms for time-based logic:
 
-- **Clock object (`0x6`):** A shared system object providing the current network timestamp in milliseconds. More precise than epoch timestamps. Pass it to Move functions as `&Clock`. Because the Clock is a shared object, accessing it forces the transaction through consensus, making it incompatible with single-owner fastpath transactions. The Clock updates approximately every 1/4 second at the checkpoint rate.
-- **`ctx.epoch()` / `ctx.epoch_timestamp_ms()`:** Returns the current epoch number and epoch start timestamp. Less precise but does not require an additional object parameter and keeps the transaction on the fastpath when only owned objects are involved.
+- **Clock object (`0x6`):** A shared system object providing the current network timestamp in milliseconds. More precise than epoch timestamps. Pass it to Move functions as `&Clock`. Because the Clock is a shared object, consensus assigns its version for any transaction that reads it. The Clock updates approximately every 1/4 second at the checkpoint rate.
+- **`ctx.epoch()` / `ctx.epoch_timestamp_ms()`:** Returns the current epoch number and epoch start timestamp. Less precise but does not require an additional object parameter, so a transaction that touches only owned objects stays free of shared-object inputs.
 
 **When to use:** Auctions, deadlines, vesting schedules, time-locked releases, cooldown periods.
 

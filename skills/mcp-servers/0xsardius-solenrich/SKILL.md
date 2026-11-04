@@ -1,6 +1,6 @@
 ---
 name: solenrich
-description: SolEnrich onchain intelligence API for Solana agents, pay-per-call over x402 (USDC on Solana or Base) with no API key. Use for StonkFun reward coins (gems, payout status and watchlist alerts, holder yield for one coin or 25, trade cost and payback, launch intel), wallet risk scoring, token due diligence and rug flags, smart-money and whale tracking, memecoin trenches entry and exit verdicts (runner-scan, trenches-check, exit-signal), cross-venue perps funding and venue comparison (Jupiter, Adrena, Flash, Hyperliquid, dYdX), and plain-English questions routed to the right enricher. Returns JSON or an LLM-ready briefing.
+description: SolEnrich onchain intelligence API for Solana agents, pay-per-call over x402 (USDC on Solana or Base) with no API key. Use for StonkFun reward coins (gems, payout status and watchlist alerts, holder yield for one coin or 25, trade cost and payback, launch intel), wallet risk scoring, token due diligence and rug flags, smart-money and whale tracking, memecoin trenches entry and exit verdicts (runner-scan, trenches-check, exit-signal), cross-venue perps funding and venue comparison (Jupiter, Adrena, Flash, Phoenix, Hyperliquid, dYdX), and plain-English questions routed to the right enricher. Returns JSON or an LLM-ready briefing.
 ---
 
 # SolEnrich — Solana Onchain Intelligence for Agents
@@ -61,7 +61,7 @@ so a briefing costs the same as JSON and never hallucinates.
 | Should I exit the token I hold | `exit-signal` | $0.04 |
 | Should my AudaceFi league agent send this swap intent | `audace-intent-check` | $0.05 |
 | Best venue for a SOL / BTC / ETH perp at my size | `perps-venue-comparison` | $0.02 |
-| Funding and OI across Jupiter, Adrena, Flash, Hyperliquid, dYdX | `perps-cross-venue-funding` | $0.015 |
+| Funding and OI across Jupiter, Adrena, Flash, Phoenix, Hyperliquid, dYdX | `perps-cross-venue-funding` | $0.015 |
 | Where is Hyperliquid smart money positioned | `hyperliquid-smart-money` | $0.05 |
 | Which StonkFun coins look early, real, and paying | `stonk-gems` | $0.03 |
 | Is this StonkFun coin paying holders, what does the tax cost | `stonk-reward-risk` | $0.005 |

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T18:36:56.496972+00:00",
+  "generated_at": "2026-11-04T00:44:27.397396+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -109325,6 +109325,68 @@
     },
     "mcp-servers/danthamanvoiss-website-marketing-audit": {
       "name": "website-marketing-audit",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "mcp-servers/davidwilliam-proofforge": {
+      "name": "proofforge",
       "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
@@ -224103,11 +224165,11 @@
     }
   },
   "summary": {
-    "discovered": 3602,
-    "processed": 3602,
+    "discovered": 3603,
+    "processed": 3603,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2600,
+      "read_only": 2601,
       "router_orchestrator": 151,
       "unknown": 351,
       "analysis_only": 219,

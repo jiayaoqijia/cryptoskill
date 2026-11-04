@@ -44,7 +44,7 @@ This skill routes to focused reference files. Load only the ones relevant to the
 | Topic | Skill | Load when |
 |-------|-------|-----------|
 | Object model, ownership, dynamic fields, collections, Display, transfer patterns | `object-model/` | Designing data models, choosing ownership types, using dynamic fields or collections, setting up Object Display |
-| Programmable transaction blocks, commands, equivocation | `ptbs/` | Building PTBs, composing transactions, sponsored transactions, troubleshooting transaction errors |
+| Programmable transaction blocks, commands, owned-object version conflicts | `ptbs/` | Building PTBs, composing transactions, sponsored transactions, troubleshooting transaction errors |
 | Frontend dApp development, dApp Kit, wallet connection | `frontend-apps/` | Building React/Vue frontends, wallet integration, querying onchain state from the browser |
 | Project setup, Move.toml, dependencies, publishing | `sui-move-project/` | Creating a Move project, configuring Move.toml, resolving build errors, publishing packages |
 | Move 2024 syntax, method syntax, macros | `modern-move-syntax/` | Using Move 2024 edition features like method syntax, vector literals, option/loop macros |

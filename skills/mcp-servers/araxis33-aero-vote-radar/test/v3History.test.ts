@@ -66,3 +66,19 @@ test("appendV3Sample: records the radar's pick for 10,000 sAERO, null for sample
   const g = appendV3Sample(f, [], t(2), 1);
   assert.deepEqual(g.picks, [{ pool: "base:0xc", per10k: 1 }, null]);
 });
+
+test("appendV3Sample: a week of steady samples makes the pick the steady pool whose weakest hour paid most", () => {
+  const t = (h: number) => new Date(Date.UTC(2026, 10, 1, h));
+  const n = V3_STEADY_MIN_SAMPLES;
+  // 0xB spikes once (hot, not steady); 0xC pays 2 every hour; 0xD pays 3 but dips to 1.6.
+  const f = {
+    at: Array.from({ length: n }, (_, i) => t(i).toISOString()),
+    pools: {
+      "base:0xb": [...Array(n - 1).fill(0.5), 90],
+      "base:0xc": Array(n).fill(2),
+      "base:0xd": [...Array(n - 1).fill(3), 1.6],
+    },
+  };
+  const g = appendV3Sample(f, [gauge("0xB", 490_000, 500), gauge("0xC", 490_000, 100), gauge("0xD", 490_000, 150)], t(n));
+  assert.deepEqual(g.picks!.at(-1), { pool: "base:0xc", per10k: 2, steady: true });
+});
