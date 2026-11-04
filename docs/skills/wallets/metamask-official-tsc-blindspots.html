@@ -14,18 +14,18 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Metamask Official Tsc Blindspots - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="Find the type defects `tsc` is structurally unable to report — a green build is not evidence the types are correct. Covers the two classes: (1) hand-written typ">
+  <meta name="description" content="Find type defects a green `tsc` build cannot rule out: handwritten types that disagree with an authoritative source, unchecked indexing, variance, `any` at unty">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/wallets/metamask-official-tsc-blindspots.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Metamask Official Tsc Blindspots - CryptoSkill">
-  <meta property="og:description" content="Find the type defects `tsc` is structurally unable to report — a green build is not evidence the types are correct. Covers the two classes: (1) hand-written typ">
+  <meta property="og:description" content="Find type defects a green `tsc` build cannot rule out: handwritten types that disagree with an authoritative source, unchecked indexing, variance, `any` at unty">
   <meta property="og:url" content="https://cryptoskill.org/skills/wallets/metamask-official-tsc-blindspots.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Metamask Official Tsc Blindspots - CryptoSkill">
-  <meta name="twitter:description" content="Find the type defects `tsc` is structurally unable to report — a green build is not evidence the types are correct. Covers the two classes: (1) hand-written typ">
+  <meta name="twitter:description" content="Find type defects a green `tsc` build cannot rule out: handwritten types that disagree with an authoritative source, unchecked indexing, variance, `any` at unty">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Metamask Official Tsc Blindspots", "description": "Find the type defects `tsc` is structurally unable to report — a green build is not evidence the types are correct. Covers the two classes: (1) hand-written types that restate an authoritative source and disagree with it, caught by substituting the derived type at a fixed commit and diffing `tsc` output; and (2) the standing blind spots in the language and config — unchecked array/record indexing, bivariant method parameters, covariant arrays, `any` absorption at untyped boundaries, precise signatures fed `any` at every call site, ambient `declare module` assertions that launder an `any` into a confident type, excess-property checks that only fire on fresh literals, and external data asserted rather than validated. Also audits typing edits that quietly change runtime behavior: stripped `| undefined`, deleted default parameters, literals swapped for runtime enum lookups, calls made optional so a throw becomes a silent no-op. Use when reviewing a JS→TS migration, a PR that hand-writes types for values that already have them, a \"rename-only\" refactor, or any PR claiming a change is mechanical. Triggers on /mms-tsc-blindspots, or on phrases like \"validate this TypeScript migration\", \"is this type right\", \"does this type match the real shape\", \"why didn't CI catch this type\", \"derive vs define\", and \"what can tsc not check\".", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/wallets/metamask-official-tsc-blindspots.html", "author": {"@type": "Organization", "name": "metamask"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Metamask Official Tsc Blindspots", "description": "Find type defects a green `tsc` build cannot rule out: handwritten types that disagree with an authoritative source, unchecked indexing, variance, `any` at untyped boundaries or call sites, ambient module assertions, excess-property checks, and external data asserted without validation. Substitute derived types at a fixed commit and compare `tsc` output. Audit typing edits for runtime changes: removed undefined/defaults, enum lookups, and newly optional calls. Use for JS→TS migrations, types restating existing values, rename-only refactors, or PRs claiming mechanical changes. Triggers on /mms-tsc-blindspots, \"validate this TypeScript migration\", \"is this type right\", \"does this type match the real shape\", \"why didn't CI catch this type\", \"derive vs define\", and \"what can tsc not check\". Detailed checks and examples are in the skill body and references.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/wallets/metamask-official-tsc-blindspots.html", "author": {"@type": "Organization", "name": "metamask"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -69,7 +69,7 @@
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-some" title="3 true, 1 unknown of 11 capability flags">3 flags</span>
     </div>
-    <p class="skill-page-desc">Find the type defects `tsc` is structurally unable to report — a green build is not evidence the types are correct. Covers the two classes: (1) hand-written types that restate an authoritative source and disagree with it, caught by substituting the derived type at a fixed commit and diffing `tsc` output; and (2) the standing blind spots in the language and config — unchecked array/record indexing, bivariant method parameters, covariant arrays, `any` absorption at untyped boundaries, precise signatures fed `any` at every call site, ambient `declare module` assertions that launder an `any` into a confident type, excess-property checks that only fire on fresh literals, and external data asserted rather than validated. Also audits typing edits that quietly change runtime behavior: stripped `| undefined`, deleted default parameters, literals swapped for runtime enum lookups, calls made optional so a throw becomes a silent no-op. Use when reviewing a JS→TS migration, a PR that hand-writes types for values that already have them, a &quot;rename-only&quot; refactor, or any PR claiming a change is mechanical. Triggers on /mms-tsc-blindspots, or on phrases like &quot;validate this TypeScript migration&quot;, &quot;is this type right&quot;, &quot;does this type match the real shape&quot;, &quot;why didn&#x27;t CI catch this type&quot;, &quot;derive vs define&quot;, and &quot;what can tsc not check&quot;.</p>
+    <p class="skill-page-desc">Find type defects a green `tsc` build cannot rule out: handwritten types that disagree with an authoritative source, unchecked indexing, variance, `any` at untyped boundaries or call sites, ambient module assertions, excess-property checks, and external data asserted without validation. Substitute derived types at a fixed commit and compare `tsc` output. Audit typing edits for runtime changes: removed undefined/defaults, enum lookups, and newly optional calls. Use for JS→TS migrations, types restating existing values, rename-only refactors, or PRs claiming mechanical changes. Triggers on /mms-tsc-blindspots, &quot;validate this TypeScript migration&quot;, &quot;is this type right&quot;, &quot;does this type match the real shape&quot;, &quot;why didn&#x27;t CI catch this type&quot;, &quot;derive vs define&quot;, and &quot;what can tsc not check&quot;. Detailed checks and examples are in the skill body and references.</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/wallets/metamask-official-tsc-blindspots .claude/skills/</code></div>
@@ -84,7 +84,7 @@
 
     <h2>Quality Score</h2>
     <div class="skill-meta" style="margin-top:8px">
-      <span>Score: <strong>68/100</strong></span>
+      <span>Score: <strong>70/100</strong></span>
       <span>Grade: <strong>B</strong></span>
       <span>Risk Gate: <strong>PASS</strong></span>
     </div>

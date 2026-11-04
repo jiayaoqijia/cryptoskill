@@ -1,25 +1,17 @@
 ---
 name: tsc-blindspots
 description: >-
-  Find the type defects `tsc` is structurally unable to report — a green build is
-  not evidence the types are correct. Covers the two classes: (1) hand-written
-  types that restate an authoritative source and disagree with it, caught by
-  substituting the derived type at a fixed commit and diffing `tsc` output; and
-  (2) the standing blind spots in the language and config — unchecked array/record
-  indexing, bivariant method parameters, covariant arrays, `any` absorption at
-  untyped boundaries, precise signatures fed `any` at every call site, ambient
-  `declare module` assertions that launder an `any` into a confident type,
-  excess-property checks that only fire on fresh literals, and external data
-  asserted rather than validated. Also audits typing edits that quietly change
-  runtime behavior:
-  stripped `| undefined`, deleted default parameters, literals swapped for runtime
-  enum lookups, calls made optional so a throw becomes a silent no-op. Use when
-  reviewing a JS→TS migration, a PR that hand-writes types for values that already
-  have them, a "rename-only" refactor, or any PR claiming a change is mechanical.
-  Triggers on /mms-tsc-blindspots, or on phrases like "validate this TypeScript
-  migration", "is this type right", "does this type match the real shape",
-  "why didn't CI catch this type", "derive vs define", and "what can tsc not
-  check".
+  Find type defects a green `tsc` build cannot rule out: handwritten types that
+  disagree with an authoritative source, unchecked indexing, variance, `any` at
+  untyped boundaries or call sites, ambient module assertions, excess-property
+  checks, and external data asserted without validation. Substitute derived types
+  at a fixed commit and compare `tsc` output. Audit typing edits for runtime changes:
+  removed undefined/defaults, enum lookups, and newly optional calls. Use for
+  JS→TS migrations, types restating existing values, rename-only refactors, or
+  PRs claiming mechanical changes. Triggers on /mms-tsc-blindspots, "validate this
+  TypeScript migration", "is this type right", "does this type match the real
+  shape", "why didn't CI catch this type", "derive vs define", and "what can tsc
+  not check". Detailed checks and examples are in the skill body and references.
 maturity: experimental
 ---
 
