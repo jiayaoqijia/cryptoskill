@@ -11,6 +11,8 @@ flagged entries.
 Usage
 -----
     python3 verify_bib.py refs.bib                       # Markdown report on stdout
+                                                         # (stamped with "bib-sha256: <hash of refs.bib>"
+                                                         #  so phase-gate can tell if the bib changed since)
     python3 verify_bib.py refs.bib --json report.json    # + machine-readable report
     python3 verify_bib.py refs.bib --offline             # static lint only
     python3 verify_bib.py refs.bib --only key1,key2      # re-check a few entries
@@ -39,6 +41,7 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import hashlib
 import html
 import json
 import re
@@ -385,13 +388,21 @@ def duplicate_titles(entries: list[dict]) -> dict[str, list[str]]:
     return {t: ks for t, ks in seen.items() if len(ks) > 1}
 
 
-def render(results: list[dict], dups: dict) -> str:
+def bib_sha256(text: str) -> str:
+    """Content hash of the .bib file, stamped into the report so gates can check freshness
+    without relying on file mtimes (which git checkouts reset)."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def render(results: list[dict], dups: dict, bib_sha: str | None = None) -> str:
     order = {"MISMATCH": 0, "NOT_FOUND": 1, "WEAK": 2, "UNCHECKED": 3, "VERIFIED": 4}
     counts: dict[str, int] = {}
     for r in results:
         counts[r["status"]] = counts.get(r["status"], 0) + 1
-    lines = ["# bib-verify report", "",
-             "Summary: " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items(), key=lambda kv: order[kv[0]])),
+    lines = ["# bib-verify report", ""]
+    if bib_sha:
+        lines += [f"bib-sha256: {bib_sha}", ""]
+    lines += ["Summary: " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items(), key=lambda kv: order[kv[0]])),
              "", "| status | key | score | lint | detail |", "|---|---|---|---|---|"]
     for r in sorted(results, key=lambda r: (order[r["status"]], r["key"])):
         lines.append(f"| {r['status']} | `{r['key']}` | {r['score']:.2f} | {'; '.join(r['lint'])} | "
@@ -428,6 +439,8 @@ def selftest(online: bool) -> int:
     assert surnames_from_bib(es[0]["fields"]["author"])[-1] == "izabachene"
     assert "placeholder author list ('X and others' only)" in lint(es[1])
     assert title_sim("{TFHE}: Fast Fully", "TFHE: fast fully") == 1.0
+    rep = render([{"status": "VERIFIED", "key": "k", "score": 1.0, "lint": [], "detail": "d"}], {}, bib_sha256("x"))
+    assert f"bib-sha256: {bib_sha256('x')}" in rep and "| VERIFIED | `k` |" in rep
     print("selftest (offline part): OK")
     if online:
         st = {"delay": 0.5}
@@ -459,7 +472,8 @@ def main(argv=None) -> int:
         ap.print_usage()
         return 3
     with open(a.bib, encoding="utf-8") as fh:
-        entries = parse_bib(fh.read())
+        bib_text = fh.read()
+    entries = parse_bib(bib_text)
     if a.only:
         keep = set(a.only.split(","))
         entries = [e for e in entries if e["key"] in keep]
@@ -472,7 +486,8 @@ def main(argv=None) -> int:
     if state.get("dblp_blocked"):
         print("note: DBLP served a bot challenge; title searches used Crossref only", file=sys.stderr)
     dups = duplicate_titles(entries)
-    print(render(results, dups))
+    # only a full run (no --only subset) may vouch for the whole file
+    print(render(results, dups, None if a.only else bib_sha256(bib_text)))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"results": results, "duplicates": dups}, fh, indent=2, ensure_ascii=False)

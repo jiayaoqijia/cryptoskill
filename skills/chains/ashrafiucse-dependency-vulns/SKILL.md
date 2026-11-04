@@ -50,7 +50,15 @@ npm view <name> versions --json 2>/dev/null || echo "not on public registry (goo
 ```
 With network: a `npm view` that SUCCEEDS for an internal name = **CRITICAL** (register a namespace/proxy instead). Without network: list internal-looking names for manual verification. Same check for pip (`pip index versions`) and Go private modules (`GOPRIVATE` vs proxy.golang.org reachable names).
 - **Typosquat heuristics**: dependency names at edit-distance 1 from popular packages (`reqeusts`, `lodash2`, `expresss`, `colors-2`, `-js` suffixed clones of core names) → HIGH until verified legitimate. Notable real-world families: `event-stream`, `ua-parser-js`, `node-ipc`, `coa`, `rc` hijacks — names matter less than the SHAPE: unpopular package, recently published, exact-near-famous-name.
-- **Provenance**: registry-signed provenance / lockfile integrity hashes present? (`package-lock.json` `integrity` fields; pip hashes in requirements; `--locked` usage) — absence → MEDIUM note.
+- **Provenance & lockfile INTEGRITY (Trail of Bits 25-package-manager test, 2026-10-14: blog.trailofbits.com/2026/10/14/package-managers-have-an-integrity-problem/)**: lockfile PRESENCE ≠ integrity — per-PM verification matrix vs a malicious registry/package mirror:
+  - **Verified by default**: Go (sumdb), vcpkg — nothing to flag.
+  - **Verified IFF lockfile present**: npm, pnpm, yarn, Bun, Cargo, Poetry, uv, Bundler, SwiftPM → the no-lockfile row above IS the integrity finding for these.
+  - **Lockfile + EXTRA steps**: pip, NuGet, Conda, Gradle, Pub — pip needs `--require-hashes` (or `pip-compile --generate-hashes`):
+    ```bash
+    rg -n -- "--require-hashes" requirements*.txt   # no hit + pip ecosystem → MEDIUM: integrity not enforced
+    ```
+  - **NOT verified even with lockfile**: Composer, Maven, Gem, Conan, CocoaPods, R → informational note: content integrity rests on registry TLS + review alone; prefer private verified mirrors / sigstore-style signing where available.
+- **Registry-signature verification**: only Go verifies by default; npm/Bundler/Maven/NuGet/Gradle support it with configuration — absence of verify config in CI install steps → MEDIUM note (same ToB matrix).
 
 ## Step 2.7 — Beyond CVEs: dead, dangerous, and vendored packages
 

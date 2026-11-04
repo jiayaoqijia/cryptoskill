@@ -31,7 +31,9 @@ own reading lists were drafted from memory, the verifier caught three such error
 4. For every *changed* entry, grep the paper for its key and re-read the citing sentence: a wrong reference often
    props up a wrong claim (a comparison row, a novelty statement, a parameter).
 5. Record the run in `LITERATURE.md` (date, counts) and keep `bib-verify-report.md` next to `refs.bib`; the
-   `phase-gate` script checks that the report is newer than the bib and clean.
+   `phase-gate` script checks that the report is fresh for the bib (the report's `bib-sha256:` line must
+   equal the hash of the current `refs.bib`; a `--only` run writes no hash and therefore never vouches for the
+   whole file) and clean.
 
 ## Rules
 

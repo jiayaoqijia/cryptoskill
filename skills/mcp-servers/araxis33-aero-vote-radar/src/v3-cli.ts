@@ -4,7 +4,7 @@ import { createPublicClient, http, type Chain } from "viem";
 import { arbitrum, base, mainnet, optimism } from "viem/chains";
 import { client } from "./chain.js";
 import { V3_LOGS_RPC_URL } from "./constants.js";
-import { getTokenPrices, priceOrFallback } from "./prices.js";
+import { countUnpricedTokens, getTokenPrices, priceOrFallback } from "./prices.js";
 import { formatError } from "./util.js";
 import { registryFromDeployment, scanV3, type V3ScanFile, type V3ScanGauge, type V3Client } from "./v3.js";
 import { appendV3Sample, poolKey, steadiness, windowStart, type V3HistoryFile } from "./v3History.js";
@@ -57,7 +57,8 @@ async function registryAddress(chain: string): Promise<string> {
 
 const transport = (url: string) => http(url, { retryCount: 6, retryDelay: 1500, batch: true, fetchOptions: { headers: { "user-agent": "aero-vote-radar" } } });
 
-async function scanChain(name: string, now: Date): Promise<V3ScanFile> {
+/** A chain's scan plus how many of its earned tokens (fees + incentives) came back with no usable price. */
+async function scanChain(name: string, now: Date): Promise<{ scan: V3ScanFile; unpriced: number }> {
   const cfg = CHAINS[name];
   const reads = (cfg.rpc ? createPublicClient({ chain: VIEM_CHAINS[name], transport: transport(cfg.rpc) }) : client) as unknown as V3Client & {
     getBlockNumber(): Promise<bigint>;
@@ -70,7 +71,8 @@ async function scanChain(name: string, now: Date): Promise<V3ScanFile> {
   const back = latest > 100_000n ? 100_000n : latest - 1n;
   const [a, b] = await Promise.all([reads.getBlock({ blockNumber: latest }), reads.getBlock({ blockNumber: latest - back })]);
   const blockTimeSec = Number(a.timestamp - b.timestamp) / Number(back);
-  return scanV3(
+  let unpriced = 0;
+  const scan = await scanV3(
     { readContract: reads.readContract, getBlockNumber: async () => latest, getLogs: logs.getLogs as unknown as V3Client["getLogs"] },
     (await registryAddress(name)) as `0x${string}`,
     {
@@ -81,6 +83,10 @@ async function scanChain(name: string, now: Date): Promise<V3ScanFile> {
       priceOf: async (tokens) => {
         const extra = name === "base" ? [OLD_AERO] : [];
         const prices = await getTokenPrices([...tokens, ...extra], name);
+        // Counted over the tokens this chain's gauges actually earned, not `extra`
+        // (AERO's own old-contract alias, looked up on Base regardless of whether
+        // any gauge happens to earn it this scan).
+        unpriced = countUnpricedTokens(new Map(tokens.map((t) => [t.toLowerCase(), prices.get(t.toLowerCase())!])));
         return (t) => {
           const k = t.toLowerCase();
           const p = name === "base" && k === NEW_AERO ? priceOrFallback(prices, k, OLD_AERO) : prices.get(k);
@@ -89,6 +95,7 @@ async function scanChain(name: string, now: Date): Promise<V3ScanFile> {
       },
     },
   );
+  return { scan, unpriced };
 }
 
 async function main() {
@@ -99,8 +106,9 @@ async function main() {
     names.map(async (name) => {
       const t0 = Date.now();
       try {
-        const r = await scanChain(name, now);
-        console.error(`v3 ${name}: ${r.status}, ${r.gauges.length} gauges, ${r.windowHours.toFixed(1)} h, ${((Date.now() - t0) / 1000).toFixed(0)} s`);
+        const { scan: r, unpriced } = await scanChain(name, now);
+        const unpricedNote = unpriced > 0 ? `, ${unpriced} token${unpriced === 1 ? "" : "s"} unpriced` : "";
+        console.error(`v3 ${name}: ${r.status}, ${r.gauges.length} gauges, ${r.windowHours.toFixed(1)} h, ${((Date.now() - t0) / 1000).toFixed(0)} s${unpricedNote}`);
         return { name, r };
       } catch (err) {
         console.error(`v3 ${name}: error ${formatError(err)}`);

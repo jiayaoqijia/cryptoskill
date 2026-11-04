@@ -182,7 +182,7 @@ Flag when the redirect target comes from user input with no exact-host allowlist
 rg -n "multer|multipart|form\.File|FormFile|MultipartFormDataEntry|\.originalname|file\.filename|Storage\(|upload"
 ```
 For every upload handler check:
-1. **Type allowlist** — trusting `Content-Type` or the client filename alone is bypassable (double extension `avatar.php.png`; `x.svg` = stored XSS; `.shtml`)
+1. **Type allowlist** — trusting `Content-Type` or the client filename alone is bypassable (double extension `avatar.php.png`; `x.svg` = stored XSS; `.shtml`). **Extension-derivation bypass (2 real-world WP CVEs same week, 2026-10: Contact Manager CVE-2026-109218 + SimpleForm CVE-2026-118235)**: a trailing dot (`shell.php.`) makes derivation return EMPTY so any blacklist misses, then `sanitize_file_name()`-style cleanup strips the dot and the stored name reacquires the dangerous suffix — derive from the FINAL stored filename, REJECT empty/ambiguous derivations, and allowlist (blacklist-only is the repeated failure mode; also check every validation RESULT is actually enforced before `move_uploaded_file` — Pie Register CVE-2026-84999 checked then ignored)
 2. **Storage location** — files written under webroot/static/public → served/parsed by the web server = **Critical** (parse-to-RCE chains); non-served storage → High
 3. **Filename** — user filename used verbatim (`../../` traversal, collisions) instead of CSPRNG-generated names
 4. **Caps** — no size limit / no per-entry decompression cap → zip bomb (`zipfile.extractall` unchecked) → High
