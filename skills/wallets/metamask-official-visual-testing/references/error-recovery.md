@@ -14,13 +14,7 @@
    - `home` → continue, but check for modals or blockers
    - `onboarding-*` → complete onboarding
    - `unknown` → take a screenshot and investigate
-3. Query prior runs:
-   ```bash
-   mm knowledge-search "send"
-   mm knowledge-sessions
-   mm knowledge-last
-   ```
-4. Capture `mm screenshot --name "debug"` for diagnosis
+3. Capture `mm screenshot --name "debug"` for diagnosis
 
 ## Error Codes
 
@@ -53,7 +47,7 @@
 | ------------------------------------------- | ---------------------------- | ------------------------------------------------------------- |
 | `MM_SESSION_ALREADY_RUNNING`                | Previous session not cleaned | `mm cleanup`                                                  |
 | `MM_NO_ACTIVE_SESSION`                      | No browser running           | `mm launch`                                                   |
-| Extension not loading                       | Extension not built          | `yarn build:test:webpack` then `mm launch`                    |
+| Extension not loading                       | Extension not built          | `yarn build:test` then `mm launch`                            |
 | `EADDRINUSE` port error                     | Orphan processes             | Check `.mm-server` for ports, kill orphaned process           |
 | `MM_TARGET_NOT_FOUND`                       | Element not visible          | `mm describe-screen` to check state                           |
 | `MM_WAIT_TIMEOUT`                           | Slow environment             | Increase `--timeout`, inspect screenshot                      |
@@ -65,3 +59,7 @@
 | `MM_CONTEXT_SWITCH_BLOCKED`                 | Active session               | `mm cleanup` before `mm set-context`                          |
 | Fixtures not available                      | Running in prod context      | `mm set-context e2e`                                          |
 | Stale a11yRefs after navigate               | Refs not refreshed           | `mm describe-screen` for fresh refs                           |
+| Ref clicks the wrong element                | Ref used after `--observe none` | `mm describe-screen`, or target by `--testid`              |
+| Strict mode violation on click              | Target matches more than one element | Target by `--testid` or `--selector`                  |
+| `Tool execution timed out`                  | Call cancelled after the request limit | `mm describe-screen` before retry; the action can have happened |
+| `Error: unknown command 'knowledge-...'`    | Knowledge store removed      | No replacement. Discover with `mm describe-screen`           |

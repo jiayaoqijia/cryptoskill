@@ -10,7 +10,7 @@ afterEach(() => {
 
 const g = (sym: string, weight: number, fees: number, extra: Partial<V3ScanGauge> = {}): V3ScanGauge =>
   ({
-    chain: "base", gauge: `0x${sym}`, pool: "0x2", weight, feesUsdPerDay: fees, fees24hUsdPerDay: fees, fees48hUsdPerDay: fees,
+    chain: "base", gauge: `0x${sym}`, pool: "0x2", weight, feesUsdPerDay: fees, fees24hUsdPerDay: fees,
     incentivesUsdPerDay: 0, usdPerDayPer10k: null, symbol0: sym, symbol1: "USDC", kind: "CL100", ...extra,
   }) as V3ScanGauge;
 

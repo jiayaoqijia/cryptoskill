@@ -20,7 +20,12 @@ For architecture details, see `test/e2e/playwright/llm-workflow/README.md`.
 
 ## Gotchas
 
-- `a11yRef`s (`e1`, `e2`, ...) are **ephemeral**. After `mm describe-screen`, `mm accessibility-snapshot`, or major navigation, re-describe before reusing refs.
+- `a11yRef`s (`e1`, `e2`, ...) are **ephemeral**. Always take refs from the latest response (`mm describe-screen` or the `observations` of your last action).
+- After a call with `--observe none`, refs are **not** refreshed. Target by `--testid`, or run `mm describe-screen` before you use refs again: a stale ref built from role and name can click a different element.
+- Each ref resolves to exactly one element. If a click fails with a strict mode violation, target the element by `--testid` or `--selector`.
+- Output is one line of JSON when stdout is not a terminal. Parse it as JSON. Add `--pretty` (or set `MM_PRETTY=1`) only when a human reads the output.
+- Observations carry no app state. Use `mm get-state` for the screen, account, network, or balance.
+- When a call times out (`Tool execution timed out`), it is cancelled. An action that already started can still have happened, so run `mm describe-screen` before you retry.
 - `mm type` uses Playwright `fill()` and **clears the field first**.
 - After confirm or reject in sidepanel mode, the page does **not** close. It stays open and navigates back to the home route.
 - `mm wait-for-notification` waits for the sidepanel confirmation route, not a legacy popup window.
@@ -51,7 +56,7 @@ yarn mm <command>        # or: npx mm <command>
 - `mm launch` validates the build and returns an actionable error if missing.
 
 ```bash
-yarn install && yarn build:test:webpack
+yarn install && yarn build:test        # fresh worktree: run `yarn webpack:tsc` first
 ```
 
 **Port conflicts** — if ports are stuck from a previous run, check `.mm-server` for active ports:
@@ -75,16 +80,7 @@ Available presets: `withMultipleAccounts`, `withERC20Tokens`, `withConnectedDapp
 
 Two contexts: **e2e** (default — local Anvil, fixtures, seeding) and **prod** (no fixtures, no local chain). Use `mm get-context` / `mm set-context` to switch. Cannot switch during active session.
 
-### 2. Reuse Knowledge (Mandatory)
-
-```bash
-mm knowledge-search "<flow name>"
-mm knowledge-sessions
-```
-
-Reuse discovered sequences when they exist. If none exist, proceed with discovery and let this session record the new steps.
-
-### 3. Describe Screen
+### 2. Describe Screen
 
 ```bash
 mm describe-screen
@@ -92,9 +88,18 @@ mm describe-screen
 
 Returns current screen, active tab, visible testIds, and accessibility tree with refs.
 
-**Observation efficiency:** Mutating actions (`click`, `type`, `navigate`) return compact diff-based observations after the first mutation. Use these for quick next-step targeting. Call `mm describe-screen` when you need the full a11y tree, screenshots, or to reset the baseline.
+**Observation efficiency:** Mutating actions (`click`, `type`, `navigate`) and `mm run-steps` return compact diff-based observations after the first observation. Use these for quick next-step targeting. Reads, discovery commands and `mm cdp` return no observation. Call `mm describe-screen` when you need the full a11y tree, screenshots, or to reset the baseline.
 
-### 4. Interact
+Use the global `--observe <none|diff|full>` flag to change the observation of one call:
+
+```bash
+mm click --testid unlock-submit --observe none   # chain known actions: skip the observation
+mm navigate-home --observe full                  # after navigation: get the whole screen
+```
+
+Only mutating and batch calls wait for animations before they observe. To get a settled screen after an action, let the action observe (`--observe full`) instead of running a read afterwards.
+
+### 3. Interact
 
 Use exactly **one targeting method** per call. Priority: `testId` (stable) > `a11yRef` (discovery) > `selector` (fallback).
 
@@ -149,15 +154,15 @@ Phase-specific error codes on timeout:
 
 For the full error code table, see [references/error-recovery.md](references/error-recovery.md).
 
-### 5. Verify-Fix Loop
+### 4. Verify-Fix Loop
 
 After any interaction sequence:
 
 1. `mm describe-screen` to verify expected state
-2. If wrong: `mm screenshot --name "debug-<action>"`, check `mm knowledge-search "<flow>"`, retry
+2. If wrong: `mm screenshot --name "debug-<action>"`, then retry
 3. Continue only when expected state is confirmed
 
-### 5b. Edge Case: Component Not Responding to State Changes
+### 4b. Edge Case: Component Not Responding to State Changes
 
 If you change Redux state via CDP but the target component doesn't update:
 
@@ -167,7 +172,7 @@ If you change Redux state via CDP but the target component doesn't update:
 4. Disconnect the live data feed first (prevents overwrite), then push your test data.
 5. Re-verify with `mm describe-screen`.
 
-### 6. Confirmations (Dapp Flows)
+### 5. Confirmations (Dapp Flows)
 
 ```bash
 mm navigate https://test-dapp.io     # navigate to dapp
@@ -181,7 +186,7 @@ mm switch-to-tab dapp                 # back to dapp
 
 Tab roles: `extension`, `notification`, `dapp`, `other`.
 
-### 7. Navigate
+### 6. Navigate
 
 ```bash
 mm navigate-home
@@ -189,7 +194,7 @@ mm navigate-settings
 mm navigate https://test-dapp.io
 ```
 
-### 8. Screenshots
+### 7. Screenshots
 
 ```bash
 mm screenshot --name "after-unlock"
@@ -197,7 +202,7 @@ mm screenshot --name "after-unlock"
 
 Capture before and after meaningful state changes for visual validation evidence.
 
-### 9. Cleanup (Always Required)
+### 8. Cleanup (Always Required)
 
 ```bash
 mm cleanup                 # stop browser and services
@@ -229,10 +234,11 @@ mm run-steps '{"steps":[
 Details:
 - Prefer `testId`, `a11yRef`, or `selector` in args (not `ref`)
 - Use `within` in args to scope targeting within a parent element
-- Add `batchTimeoutMs` for overall timeout
+- Add `batchTimeoutMs` (1000–30000 ms) for an overall deadline. The whole call stops after 30 s, so use a lower value (for example 20000) to get partial results, and split longer flows into several batches
+- Add a top-level `observe` (`none` / `diff` / `full`, default `diff`) to set the observation collected after the batch. `includeObservations` was removed; check `summary.ok` to react to failures
 - Tool aliases like `navigate_home` and `navigate-home` are supported
 
-Pattern: discover with `mm describe-screen` → reuse from `mm knowledge-search` → batch with `mm run-steps` → re-verify with `mm describe-screen`.
+Pattern: discover with `mm describe-screen` → batch known steps with `mm run-steps` → re-verify with `mm describe-screen`.
 
 ## Default Credentials
 

@@ -5,11 +5,12 @@ Complete command reference for the `mm` CLI. For core workflow and getting start
 ## Contents
 
 - [Syntax Rules](#syntax-rules)
+- [Global Options](#global-options)
 - [Lifecycle](#lifecycle)
 - [Interaction](#interaction)
 - [Navigation & Tabs](#navigation--tabs)
 - [Context](#context)
-- [State, Knowledge & Seeding](#state-knowledge--seeding)
+- [State & Seeding](#state--seeding)
 - [Advanced](#advanced)
 
 ## Syntax Rules
@@ -62,6 +63,26 @@ mm click --selector "#connectButton"    # CSS selector (flag)
 | Type by testId | `mm type --testid X "text"` | `mm type --testId X "text"` |
 | Type by a11y ref | `mm type e2 "text"` | `mm type --ref e2 "text"` |
 
+## Global Options
+
+These flags work with every command and can appear anywhere in the command line.
+
+| Flag | Description |
+|---|---|
+| `--project <path>` | Target a specific project directory. Overrides `MM_PROJECT` and git-based discovery |
+| `--observe <none\|diff\|full>` | Observation returned after the call. Default: `diff` for mutating commands and `run-steps`, `none` for reads, discovery and `cdp` |
+| `--pretty` | Indent JSON output. Default: one line per result when stdout is not a terminal, indented on a terminal. `MM_PRETTY=1` / `0` sets the default |
+
+| `--observe` level | Response |
+|---|---|
+| `none` | No `observations`. Fastest. Refs are **not** refreshed: run `mm describe-screen` before you use refs again |
+| `diff` | Only what changed since the previous observation |
+| `full` | The whole compacted screen (`a11y` + `testIds`). Becomes the new diff baseline |
+
+Observations contain `testIds` and `a11y` only, no app state. Use `mm get-state` for state.
+
+Every tool, `launch` and `cleanup` response includes `meta.timing` (`queueMs`, `toolMs`, `observationMs`, `totalMs`).
+
 ## Lifecycle
 
 | Command                 | Description                            |
@@ -111,20 +132,16 @@ Tab roles: `extension`, `notification`, `dapp`, `other`.
 
 Two contexts: `e2e` (default — local Anvil, fixtures, seeding) and `prod` (no fixtures, no local chain). Cannot switch during active session — run `mm cleanup` first.
 
-## State, Knowledge & Seeding
+## State & Seeding
 
-| Command                       | Description                               |
-| ----------------------------- | ----------------------------------------- |
-| `mm get-state`                | Get current extension state               |
-| `mm knowledge-search <query>` | Search steps across sessions              |
-| `mm knowledge-last`           | Get last N step records from this session |
-| `mm knowledge-sessions`       | List recent sessions with metadata        |
-| `mm knowledge-summarize`      | Generate session recipe                   |
-| `mm run-steps <json>`         | Execute multiple tools in sequence        |
-| `mm seed-contract <type>`     | Deploy a test contract                    |
-| `mm seed-contracts`           | Deploy multiple test contracts            |
-| `mm get-contract-address`     | Get deployed contract address             |
-| `mm list-contracts`           | List all deployed contracts               |
+| Command                   | Description                                                 |
+| ------------------------- | ----------------------------------------------------------- |
+| `mm get-state`            | Get current extension state (the only source of app state) |
+| `mm run-steps <json>`     | Execute multiple tools in sequence                          |
+| `mm seed-contract <type>` | Deploy a test contract                                      |
+| `mm seed-contracts`       | Deploy multiple test contracts                              |
+| `mm get-contract-address` | Get deployed contract address                               |
+| `mm list-contracts`       | List all deployed contracts                                 |
 
 ## Advanced
 
@@ -135,6 +152,8 @@ Two contexts: `e2e` (default — local Anvil, fixtures, seeding) and `prod` (no 
 | `mm mock-network list`                            | List active network mock rules                              |
 | `mm mock-network requests [--limit <n>]`          | Show recorded matched and missed mocked-origin requests     |
 | `mm cdp <method> [params-json] [--timeout <ms>]`  | Send raw Chrome DevTools Protocol command against active page|
+
+`mm cdp` returns no observation by default. If the call changed page state, add `--observe full` or run `mm describe-screen`.
 
 For mock network details, see [mock-network.md](mock-network.md).
 For CDP state manipulation, see [state-manipulation.md](state-manipulation.md).
