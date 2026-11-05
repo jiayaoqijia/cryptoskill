@@ -60,7 +60,7 @@ The most valuable navigation tests follow a **complete user journey across multi
 //    - Negative: old items are gone (queryByTestId(...).not.toBeOnTheScreen())
 //    Asserting only one side does not prove the list actually changed.
 //
-// ❌ Analytics / refetch alone is NOT enough — Golden Rule 10 still requires list
+// ❌ Analytics / refetch alone is NOT enough — the "Filter / segmentation" golden rule still requires list
 //    membership assertions. Bugbot catches this when the mock returns [] so no
 //    rows exist to check:
 // await waitFor(() => expect(listSpy.mock.calls.length).toBeGreaterThan(n));

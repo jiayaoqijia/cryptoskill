@@ -60,7 +60,7 @@ Before declaring the task done, go through this checklist for every test written
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
 | 1   | **No render scenarios** — every test has at least one `fireEvent`, `waitFor`/`findBy`, `store.dispatch`, or Engine spy                                                                                                                                       | Rewrite the test to add a user interaction or system reaction          |
 | 2   | **No selector mocking** — no `(useSelector as jest.Mock).mockImplementation(...)` anywhere in the file                                                                                                                                                       | Remove; drive behavior through state overrides instead                 |
-| 3   | **No fake timers** — no `jest.useFakeTimers()`, `jest.advanceTimersByTime()`, or `jest.useRealTimers()`                                                                                                                                                      | Remove fake timers; use `waitFor` / `findBy` for async flows           |
+| 3   | **No fake timers** — no `jest.useFakeTimers()`, `jest.advanceTimersByTime()`, or `jest.useRealTimers()`                                                                                                                                                      | Remove fake timers; move time behaviour to a unit test or serve fixtures already in the target state (*Keep time-dependent behaviour out of view tests*) |
 | 4   | **Data-completeness test exists** — if the view loads data asynchronously (API, Engine polling), there is one test that waits for the load and validates all fields of all items in the full base mock using `within()` per row                              | Add the data-completeness test                                         |
 | 5   | **Filter/segmentation tests have paired assertions** — every test that selects a filter or changes a network asserts both what appears (`findByTestId`) AND what disappears (`queryByTestId(...).not.toBeOnTheScreen()`) for each item from the previous set. Spy-only checks (refetch count / analytics) are **not** enough | Seed distinct before/after rows; add the missing negative assertions |
 | 6   | **No raw strings in `getByTestId` / `findByTestId` / `queryByTestId`** — all test IDs reference constants from the component's `ComponentName.testIds.ts`                                                                                                    | Create or update the testIds file; replace raw strings with constants  |
@@ -72,13 +72,17 @@ Before declaring the task done, go through this checklist for every test written
 | 12  | **Pull-to-refresh uses `refreshControl.props.onRefresh`** — not `fireEvent(scrollView, 'refresh')`                                                                                                                                                            | Call the prop handler inside `act`                                     |
 | 13  | **Unit→CV migrations keep assert specificity** — deleted unit payload fields (`tabId`, formatted dates, full analytics) still appear in the CV replacement                                                                                                   | Restore dropped fields in CV or KEEP a focused unit; see unit-cv-overlap |
 | 14  | **Awaits cover the asserted content, not just its container** — after `await findByTestId(CONTAINER)`, no synchronous `getBy*` asserts a value that has its own async source (child query, debounce, skeleton)                                                | Await the gated value with `findBy*` first, then re-query the container and scope the sync asserts |
-| 15  | **No nested `find*` inside `waitFor`** — no `waitFor(async () => { await findBy*(...) })`. `findBy*` already polls with the same 1s default timeout                                                                                                         | Use `await findBy*` **or** `waitFor(() => { getBy*; expect(...) })` with `{ timeout }` |
+| 15  | **No nested `find*` inside `waitFor`** — no `waitFor(async () => { await findBy*(...) })`. `findBy*` already polls with the same 1s default timeout                                                                                                         | Use `await findBy*` **or** `waitFor(() => { getBy*; expect(...) })`; any `{ timeout }` carries a comment naming its async boundary |
 | 16  | **Mock implementations are reset between tests** — `clearAllMocks()` is not enough when a case changes `mockImplementation` / `mockResolvedValue` on Engine or `controllerMessenger.call`. Use `mockReset()` or restore in `beforeEach`. | Add `mockReset` / restore for the spies this file mutates |
 | 17  | **Awaits target the assertion subject, not a sibling skeleton** — independently loaded header/actions/list regions are not proven ready by another region's loading UI                                                                                                                                | Await the control/value under test or the loading UI that owns it |
 | 18  | **Empty-state / list completeness** — loading indicator gone, then filter-specific copy; every expected row test ID present before field asserts                                                                                                                                                      | Wait for load-clear and the full row-ID set |
 | 19  | **Negative asserts wait until the positive path could have rendered** — do not `queryBy*` absence immediately after mount                                                                                                                                                                            | Await owning skeleton/load, then assert absence |
-| 20  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and all tests are green. | Fix the failing test before marking the task done |
-| 21  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
+| 20  | **Call counts start clean** — every `toHaveBeenCalledTimes` on a shared Engine / messenger mock has `mockClear()` (or `mockReset()`) on that mock in `beforeEach` | Add the clear; check with `--randomize` |
+| 21  | **No `findBy*` result held across a remount** — when the tree can remount after the `await`, the test awaits a loaded-only marker and re-queries with `getBy*` before asserting | Await the loaded marker, then re-query |
+| 22  | **No real timers raced** — countdown, debounce, and expiry behaviour lives in a unit test or in target-state fixtures, not in a widened `waitFor` | Move it to a unit test or change the fixture |
+| 23  | **A flake fix names its cause** — the cause is reproduced locally (seed or load) and the fix passes under that condition; it is not only a longer timeout | Reproduce first; see Fixing a Flake |
+| 24  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and all tests are green. | Fix the failing test before marking the task done |
+| 25  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
 
 ---
 
@@ -100,12 +104,21 @@ Before declaring the task done, go through this checklist for every test written
 | `Warning: An update was not wrapped in act(...)`                       | Async state update not awaited                                                                       | Use `await waitFor(...)`                                                                                            |
 | `No QueryClient set`                                                   | Missing provider — not in Engine mock                                                                | Add to mocks.ts or wrap with QueryClientProvider in renderer                                                        |
 | Flakey number assertions                                               | Non-deterministic exchange rates                                                                     | Add `deterministicFiat: true`                                                                                       |
-| Test passes locally, fails in CI                                       | Time-sensitive assertions, stale press under CI load, or a sync assert on content that is still loading | Use `waitFor` / `findBy`; re-query before press when the UI re-renders on a timer; await each async-gated value    |
-| `Timed out in waitFor.` with no assertion detail                       | Nested `find*` inside `waitFor` — both share the 1s default; the outer waiter expires first             | Use `await findBy*` **or** `waitFor(() => getBy*)` with `{ timeout }`; never `waitFor(async () => findBy*)`      |
+| Test passes locally, fails in CI                                       | Time-sensitive assertions, stale press under CI load, or a sync assert on content that is still loading | Use `waitFor` / `findBy`; re-query before press when the UI re-renders on a timer; await each async-gated value. Name which of these it is and follow Fixing a Flake; CI load is not a cause by itself |
+| `Timed out in waitFor.` with no assertion detail                       | Nested `find*` inside `waitFor` — both share the 1s default; the outer waiter expires first             | Use `await findBy*` **or** `waitFor(() => getBy*)`; never `waitFor(async () => findBy*)`                        |
 | Pull-to-refresh never refetches                                        | `fireEvent(scrollView, 'refresh')` did not hit the handler                                           | `await act(async () => { await scrollView.props.refreshControl.props.onRefresh(); })`                             |
-| `toHaveBeenCalledTimes(N)` passes locally but is wrong in a full suite run | Shared `Engine.controllerMessenger.call` `jest.fn()` — leftover call history or leftover `mockImplementation` | `clearAllMocks()` for call history; `mockReset()` / restore if a case changed implementations |
+| `Expected number of calls: N, Received: M`; passes alone, fails after another test | Shared Engine / `controllerMessenger.call` `jest.fn()` kept call history (or a `mockImplementation`) from an earlier test | `mockClear()` on that mock in `beforeEach`; `mockReset()` / restore if a case changed implementations |
+| `Unable to find node on an unmounted component` right after an `await` | The `findBy*` node detached when the component remounted (loading branch replaced by the loaded one) | Await a loaded-only marker, then re-query with `getBy*` |
+| `element could not be found in the element tree` after an `await` | Same remount: the held node is no longer part of the rendered tree | Await a loaded-only marker, then re-query with `getBy*`; never assert on a node held across a state change |
 | Call-count assertion is flaky: passes without the action under test    | Background prefetches (idle tab queries, cache refreshes) inflate the count in the same window       | `spy.mockClear()` immediately before the action; assert the exact call signature with `toHaveBeenCalledWith(...)` instead of comparing before/after counts |
 | Sheet / branch `testID` missing                                        | Remote feature flag off in Redux; UI routes elsewhere                                                | Override `RemoteFeatureFlagController` / preset so the gated UI mounts                                            |
+
+### Fixing a flake
+
+1. **Name the cause** — map the failure to a row above. "CI is slow" is not a cause.
+2. **Reproduce it locally first** — order leaks with `--randomize --seed=<seed from the failing run>`, timing races under CPU load (for example a parallel full-suite run).
+3. **Show the fix holds under the same condition** — re-run with the same seed or load and report the result.
+4. **A longer timeout is not a fix** — do not merge a PR whose only change is a raised budget. A `{ timeout }` that stays needs a comment naming its async boundary (*Do not nest `find*` inside `waitFor`*).
 
 ### Inspect what's rendered
 
@@ -143,11 +156,12 @@ await waitFor(() => expect(getByText('Result')).toBeOnTheScreen());
 // findBy* already waits — do not wrap it in waitFor
 expect(await findByText('Token A')).toBeOnTheScreen();
 
-// waitFor + getBy* when you need extra time or a length check
+// waitFor + getBy* for a length check
 await waitFor(
   () => {
     expect(getAllByTestId(MyViewSelectorsIDs.ROW)).toHaveLength(3);
   },
+  // Rows arrive from a second query chained on the first; name the boundary.
   { timeout: 5000 },
 );
 
@@ -285,13 +299,17 @@ await waitFor(async () => {
 });
 // ✅ One waiter: findBy* already polls
 expect(await findByText('Token A')).toBeOnTheScreen();
-// ✅ Or waitFor + synchronous getBy* when you need extra time or a count
-await waitFor(
-  () => {
-    expect(getAllByTestId(MyViewSelectorsIDs.ROW)).toHaveLength(3);
-  },
-  { timeout: 5000 },
-);
+// ✅ Or waitFor + synchronous getBy* for a count (a { timeout } needs a named boundary)
+await waitFor(() => {
+  expect(getAllByTestId(MyViewSelectorsIDs.ROW)).toHaveLength(3);
+});
+
+// ❌ Hold a findBy* result across a remount
+const title = await findByText(marketTitle);
+expect(title).toBeOnTheScreen(); // node from the loading branch; detached after remount
+// ✅ Await a loaded-only marker, then re-query
+await findByTestId(MyViewSelectorsIDs.LOADED_CONTENT);
+expect(getByText(marketTitle)).toBeOnTheScreen();
 
 // ❌ Custom nested navigator only to assert navigation occurred
 extraRoutes: [{ name: Routes.FEATURE.ROOT, Component: NestedStackProbe }];
@@ -301,7 +319,7 @@ extraRoutes: [{ name: Routes.FEATURE.ROOT }];
 // ❌ Filter/segmentation: analytics or refetch count only
 await waitFor(() => expect(listSpy.mock.calls.length).toBeGreaterThan(n));
 expect(trackFilterSpy).toHaveBeenCalled();
-// ✅ Assert both list membership sides (Golden Rule 10)
+// ✅ Assert both list membership sides ("Filter / segmentation tests must assert both sides")
 expect(await findByText('Games market')).toBeOnTheScreen();
 fireEvent.press(getByText('Props'));
 expect(await findByText('Props market')).toBeOnTheScreen();

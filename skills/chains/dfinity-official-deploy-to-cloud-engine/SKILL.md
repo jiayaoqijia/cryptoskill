@@ -75,11 +75,11 @@ You need three values: the engine's **id**, its **engine-operator canister id** 
 - Ask the user for the engine id. It is in the console URL (`/console/engines/<engine-id>/…`) and on the engine's **Settings** page.
 - `open_app` on the console origin (`https://opencloud.org`) lists the engine registry canister. Read its public `getEngineViews` query with `(vec { "<engine-id>" })`; the record carries `engine_operator_id` and `platform_domain`. Signed as the user, its `listVisibleEngines` query returns the engines they own, with the same fields.
 
-A new or renamed engine's platform domain registers in the background and can fail to resolve at first: retry later.
+A new or renamed engine's platform domain takes about ten minutes to register. Do not open or fetch it before then: a lookup that finds no record can be cached as missing for up to 30 minutes, and the domain keeps failing for you after it is live. Reach the engine through its operator's `https://<engine_operator_id>.icp.net` host instead, which works as soon as `engine_operator_id` is set. `GET https://icp.net/custom-domains/v1/<platform_domain>` answers `registration_status` `registered` once the platform domain serves: give the user that address from then on.
 
 ### M2. Open the engine and read the operator's guide
 
-1. `open_app` on `https://<platform_domain>`. The engine-operator publishes the engine's `/.well-known/ic-architecture` manifest, so it comes back as `[declared]`; that is what lets the connector call it. The connector refuses calls to any canister an app does not declare.
+1. `open_app` on `https://<engine_operator_id>.icp.net`. The engine-operator publishes the engine's `/.well-known/ic-architecture` manifest, so it comes back as `[declared]`; that is what lets the connector call it. The connector refuses calls to any canister an app does not declare. Check that the `derivation_origin` it returns is `https://<platform_domain>`. If it is the icp.net origin, the operator does not hold the engine's domain yet: wait a minute and `open_app` again before M3, or the principal you get there changes later.
 2. `get_canister_api_doc` on the operator, and read its section **"Creating a canister and installing a wasm"**.
 3. `get_canister_candid` on the operator, and check that its service has a `proxy` method. If it has none, the engine still runs an engine-operator from before the ICP MCP route existed: tell the user, and use the CLI route.
 

@@ -77,7 +77,11 @@ expect(within(positionsTab).getByText('$60')).toBeOnTheScreen();
 
 **Empty-state filters** — wait for the list loading indicator to clear, then assert description/CTA copy for the selected filter. A shared empty-state `testID` can unmount across filter re-renders.
 
-**`clearAllMocks` vs `mockReset`** — `clearAllMocks()` drops call history and keeps implementations. If a test sets `mockResolvedValue` / `mockImplementation` on Engine or `controllerMessenger.call`, reset those implementations in `beforeEach` or later tests in the shard will flake.
+**`clearAllMocks` vs `mockClear` vs `mockReset`** — `clearAllMocks()` drops call history and keeps implementations. Shared Engine and `controllerMessenger.call` mocks leak between tests in two ways. A call-count assertion counts calls from earlier tests unless that mock gets `mockClear()` in `beforeEach` (*Clear call history before asserting call counts*). A `mockResolvedValue` / `mockImplementation` set by one test stays for the next unless `mockReset()` runs in `beforeEach` (*Reset mock implementations between tests*). Both pass alone and fail after another test (`Expected number of calls: N, Received: M`); run the file with `--randomize` to surface them.
+
+**Remounts invalidate held nodes** — a `findBy*` result is valid only until the next state change. When a query resolving swaps the loading branch for the loaded one, the node you awaited detaches (`Unable to find node on an unmounted component`). Await a marker only the loaded tree renders, then re-query with `getBy*` (*A `findBy*` result is valid only until the next state change*).
+
+**Time-dependent UI** — fake timers are banned in view tests (*No fake timers*). Cover countdowns, debounces, and expiry in a unit test, where fake timers are allowed, or serve fixtures already in the target state. Never widen a `waitFor` budget to cover a timer (*Keep time-dependent behaviour out of view tests*).
 
 **Do not nest `find*` inside `waitFor`** — `findBy*` already polls (`waitFor` + `getBy`, default 1000 ms). An outer `waitFor` uses the same budget, so under CI load the outer timeout fires first with a useless `Timed out in waitFor.` Pick one waiter:
 
@@ -85,14 +89,12 @@ expect(within(positionsTab).getByText('$60')).toBeOnTheScreen();
 // ✅ findBy* already waits
 expect(await findByText('Token A')).toBeOnTheScreen();
 
-// ✅ waitFor + synchronous getBy* when you need extra time or a count
-await waitFor(
-  () => {
-    const rows = getAllByTestId(MyViewSelectorsIDs.ROW);
-    expect(rows).toHaveLength(3);
-  },
-  { timeout: 5000 },
-);
+// ✅ waitFor + synchronous getBy* for a count. Add { timeout } only with a
+// comment naming the async boundary that needs it ("Do not nest find* inside waitFor").
+await waitFor(() => {
+  const rows = getAllByTestId(MyViewSelectorsIDs.ROW);
+  expect(rows).toHaveLength(3);
+});
 
 // ❌ double polling — both timers are 1s; the outer one wins in CI
 await waitFor(async () => {
