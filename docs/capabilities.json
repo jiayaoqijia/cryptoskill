@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T00:46:28.109514+00:00",
+  "generated_at": "2026-11-05T06:36:21.214014+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -7110,6 +7110,68 @@
         },
         "can_spawn_subagents": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "ai-crypto/mystenlabs-setup": {
+      "name": "setup",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -224165,12 +224227,12 @@
     }
   },
   "summary": {
-    "discovered": 3603,
-    "processed": 3603,
+    "discovered": 3604,
+    "processed": 3604,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2601,
-      "router_orchestrator": 151,
+      "router_orchestrator": 152,
       "unknown": 351,
       "analysis_only": 219,
       "unsigned_tx_builder": 115,
@@ -224184,7 +224246,7 @@
       "can_install_code": 569,
       "can_write_files": 189,
       "can_browse_web": 253,
-      "can_spawn_subagents": 268,
+      "can_spawn_subagents": 269,
       "can_move_funds": 301,
       "requires_private_key": 512,
       "requires_hosted_operator": 343,
