@@ -5,11 +5,9 @@ description: >-
   when the user asks for a planning spec. Ask one unblocked product or
   engineering question at a time, the one that most reduces uncertainty,
   then write one English file at
-  .specs/spec-XXX-short-description.md in the MetaMask Mobile checkout. Do
-  not edit product code, and do not say that in chat. Do not write a -pt.md
-  sibling.
-base: true
-maturity: stable
+  .specs/spec-XXX-short-description.md in the MetaMask Mobile or MetaMask
+  Extension checkout. Do not edit product code, and do not say that in chat.
+maturity: experimental
 ---
 
 # Planning spec
@@ -27,7 +25,7 @@ Installed name: `mms-planning-spec`. Use it only after `mms-planning` recommends
 2. Ask when the question can be stated precisely now, even if the answer is unknown. When an in-scope area cannot be stated precisely because it depends on an open answer, keep it as not yet specified. Do not split that area into questions. When the blocking answer arrives, state any question that is now precise, then ask the unblocked one that most reduces uncertainty.
 3. Stop asking when every precise unknown is decided, explicitly deferred, or recorded as an open question, and every remaining in-scope area is not yet specified. State the direction.
 4. When the direction is ready, state it and wait. Write the file only after the engineer approves. If they do not approve, ask the next unblocked question.
-5. After approval, and before writing, use the same catalog rule as `mms-planning`. Read the installed `mms-*` catalog. Read every skill whose area the spec touches, including a partial fit. Skip a skill only when the spec has no surface for it. Run an explicit performance check. Read `mms-performance` when the change has a performance surface. The named routing list in `mms-planning` is a floor, not an allowlist. Name a matching skill that is unavailable. Do not pretend it was applied.
+5. After approval, and before writing, use the same catalog rule as `mms-planning`. Read the installed `mms-*` catalog. Assess every installed `mms-*` skill by its description. Read the body of every skill whose area the spec touches, including a partial fit. Skip a skill only when the spec has no surface for it. Follow an installed `mms-*` skill over a skill outside that catalog when both fit. Name a matching skill that is unavailable. Do not pretend it was applied.
 6. Write one English file at `.specs/spec-XXX-short-description.md` in the checkout. `.specs/` is local and not team-shared storage. Do not stage it. Sharing the file is a manual step outside this skill.
 
 Numbering is the highest existing `.specs/spec-*.md` plus one. If none exist, start at `001`. The slug is two to five kebab-case words. The H1 is `# spec-XXX: <short name>`.

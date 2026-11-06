@@ -12,9 +12,8 @@ Every confirmed violation of an applicable Perps anti-pattern is blocking and re
 
 `PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; Mobile, Extension and Terminal consume the package. Controller code must stay platform-agnostic, and app code must go through the published surface.
 
-- [ ] **Platform import in controller** — `react-native`, `Engine`, `Sentry`, `DevLogger`, browser APIs, or extension globals imported in `packages/perps-controller`. All platform services must flow through `PerpsPlatformDependencies` (DI), passed as the `infrastructure` constructor param.
+- [ ] **Platform import in controller** — `react-native`, `Engine`, `Sentry`, `DevLogger`, browser APIs, or extension globals imported in `packages/perps-controller`. All platform services must flow through `PerpsPlatformDependencies` (DI), passed as the `infrastructure` constructor param. No `__DEV__`, `window`, `chrome.*` or other host globals. When `PerpsPlatformDependencies` supplies a capability (e.g. `performance`), use it; web-standard `fetch`/`WebSocket` are allowed only where DI offers none.
 - [ ] **Deep import from app code** — app files importing controller internals by path (`@metamask/perps-controller/dist/...`, a relative path into a linked checkout) instead of the package's public exports.
-- [ ] **`__DEV__` or platform globals in controller code** — must not appear in controller files; the package has no such globals at build time.
 - [ ] **New dependency not in DI interface** — controller code reaching outside its boundary (e.g., importing a hook, React context, or an app utility). Everything the controller needs must come through `PerpsPlatformDependencies`.
 - [ ] **Breaking the publisher contract** — changing PerpsController's public API (state shape, method signatures, event names) without considering its consumers. Controller is a publisher — Mobile, Extension and Terminal consume it.
 
@@ -22,10 +21,10 @@ Every confirmed violation of an applicable Perps anti-pattern is blocking and re
 
 ## Perps Math Comes From the Controller
 
-Perps trading math (PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin, liquidation, fees, account summary) must come from `@metamask/perps-controller`. Adding, changing or porting such math in a client (Mobile, Extension or Terminal) is blocking unless the PR moves it into the controller or links the Core ticket that does (TAT-4477).
+Perps trading math (PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin, liquidation, fees, account summary) must come from `@metamask/perps-controller`. Adding, changing or porting such math in a client (Mobile, Extension or Terminal) is blocking unless the PR moves it into the controller or, only when the resolved controller version exports no equivalent, links the Core ticket that does (TAT-4477).
 
-- [ ] **Client-side trading math** — a client file computes one of these values itself instead of importing it from the controller package. Check the controller's `src/utils/` and `src/services/` first; `shared-packages.md` lists the math that must move.
-- [ ] **Copy or port of another client** — the same formula reappears in a second client, or a fix lands in one client's copy only. Copies drift (TP/SL price ↔ RoE existed three times with different results).
+- [ ] **Client-side trading math** — a client file computes one of these values itself instead of importing it from the controller package. Check the controller version the client's lockfile resolves (then core `main`) for equivalent math, pure formatters and constants. 'Equivalent' means same inputs, units and boundary behaviour; a same-named helper with different semantics is renamed, not reused. `shared-packages.md` lists the math that must move. Fee previews come from controller `calculateFees` quotes through the existing client fee hooks: `usePerpsOrderFees` on Mobile/Extension and `usePerpsCloseAllCalculations` for Mobile close-all. Paid fees come from fills through `usePerpsRecordedOrderFees`. Screens never compute rates, discounts or notional inline; close-all reuses the fee hook helpers. Controller 18+ quotes already contain the discounted `metamaskFeeRate`; never apply rewards/VIP discount twice. An older resolved controller applies it once inside the fee hook until it bumps.
+- [ ] **Copy or port of existing logic** — a formula or behavior already present in the controller, shared utilities, another client or the same diff gets a second implementation, or a fix lands in only one copy. Copies drift (TP/SL price ↔ RoE existed three times with different results).
 
 <a id="missing-numeric-data-stays-undefined"></a>
 
@@ -34,7 +33,7 @@ Perps trading math (PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin
 Missing Perps numeric data must remain `undefined` through provider adapters, controller state, selectors, hooks and calculations. Zero means an observed or computed zero from known inputs. It must never stand for missing, loading, failed or invalid data. This applies to prices, balances, PnL, fees, margin, leverage and percentages.
 
 - [ ] **Missing data converted to zero**: Reject `value ?? 0`, `value || 0`, default parameters of `0`, and parsing or arithmetic that turns absent or invalid input into zero. Check availability before conversion or calculation; if a required input is missing, the result stays `undefined`. An explicit accumulator seed for known values is valid, but must not conceal an unavailable collection or missing required member.
-- [ ] **Unknown treated as confirmed zero**: Preserve a genuine `0` with explicit availability checks. Do not use truthiness to decide whether a value exists. Keep actions that require the missing value disabled until it is available.
+- [ ] **Unknown treated as confirmed zero**: Preserve a genuine `0` with explicit availability checks. Do not use truthiness to decide whether a value exists. Keep actions that require the missing value disabled until it is available. Keep unresolved balance and other async blockers distinct from zero or absence; never substitute another account's balance. Submission requires valid selected account/token inputs and a separate unresolved-state check even when no alert is shown.
 - [ ] **Reviewer proposes a fabricated value**: Review fixes follow the same rule. A crash or type error caused by missing data requires explicit missing-state handling, never a numeric fallback. Require separate cases for absent input, invalid input and genuine zero; verify missing inputs cannot enable submission or feed financial calculations as zero.
 - [ ] **Placeholder written into numeric state**: Render missing values with display placeholders only at the formatting boundary:
   - `PERPS_CONSTANTS.FallbackPriceDisplay` (`'$---'`) — price not yet loaded
@@ -49,11 +48,9 @@ Missing Perps numeric data must remain `undefined` through provider adapters, co
 Constants live in the controller package (`core/packages/perps-controller/src/constants/perpsConfig.ts`, exported by `@metamask/perps-controller`) and in the reviewed client's UI constants module. PRs must use these — not inline literals.
 
 - [ ] **Inline timeout/delay values** — hardcoded `5000`, `10000`, `300` instead of `PERPS_CONSTANTS.WebsocketTimeout`, `PERPS_CONSTANTS.ConnectionTimeoutMs`, `PERFORMANCE_CONFIG.ValidationDebounceMs`, etc. Every timing constant has a named export.
-- [ ] **Hardcoded slippage** — using `0.03` or `300` instead of `ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps`, `DefaultTpslSlippageBps`, `DefaultLimitSlippageBps`.
 - [ ] **Hardcoded leverage fallback** — using `3` or `50` instead of `PERPS_CONSTANTS.DefaultMaxLeverage` or `MARGIN_ADJUSTMENT_CONFIG.FallbackMaxLeverage`.
 - [ ] **Hardcoded precision** — using `6`, `2`, `5` for decimal places instead of `DECIMAL_PRECISION_CONFIG.MaxPriceDecimals`, `MaxSignificantFigures`, `FallbackSizeDecimals`, or `CLOSE_POSITION_CONFIG.UsdDecimalPlaces`.
 - [ ] **Hardcoded API URLs** — inline `'https://perps.api...'` instead of `DATA_LAKE_API_CONFIG.OrdersEndpoint`.
-- [ ] **Hardcoded provider name** — `'hyperliquid'` string instead of `PROVIDER_CONFIG.DefaultProvider`.
 - [ ] **Hardcoded validation thresholds** — `20` for high leverage warning, `0.1` for price deviation, instead of `VALIDATION_THRESHOLDS.HighLeverageWarning`, `VALIDATION_THRESHOLDS.PriceDeviation`.
 - [ ] **Hardcoded cache durations** — inline `5 * 60 * 1000` instead of `PERFORMANCE_CONFIG.MarketDataCacheDurationMs`, `FeeDiscountCacheDurationMs`, etc.
 
@@ -61,17 +58,17 @@ Constants live in the controller package (`core/packages/perps-controller/src/co
 
 ## Protocol Abstraction
 
-- [ ] **Execution identity inferred from display fields**: Preserve the venue's documented identity at the provider boundary and expose a stable opaque ID shared by REST and WebSocket paths. Equal order ID, time, size and price need not identify one fill. Do not deduplicate without that guarantee or key navigable history by array position. Check prepend stability and tied timestamps.
+- [ ] **Execution identity inferred from display fields**: Preserve the venue's documented identity at the provider boundary and expose a stable opaque ID shared by REST and WebSocket paths. Equal order ID, time, size and price need not identify one fill. Do not deduplicate without that guarantee or key navigable history by array position. Check prepend stability and tied timestamps. Equality checks that suppress a snapshot or stream update must include the stable entity ID and every field a consumer reads (trigger price, order type, reduce-only). A valid empty snapshot replaces the cache. Test an ID-only replacement, a trigger-only change and populated-to-empty.
 
-- [ ] **Provider identity lost during transformation**: Preserve provider identity through fill aggregation and apply provider-specific classification at the normalization boundary. Adding a provider must retain existing providers and cover equivalent inputs with different provider semantics.
+- [ ] **Entity ownership lost in transit**: Carry the entity's `providerId`, and any requested `accountId` or network, through transforms, fill aggregation, mutation params, batch partitioning, follow-up writes (edit, cancel, post-open TP/SL), cache keys and subscription params. Never fall back to the default provider or selected account when the entity names its owner. Apply provider-specific classification at the normalization boundary. Test two providers with a colliding symbol or order ID, and an explicit non-selected account.
 
 All provider access must go through `AggregatedPerpsProvider` → `ProviderRouter`. HyperLiquid is primary; Lighter is feature-flagged (`perpsLighterProviderEnabled`).
 
 - [ ] **Hardcoded provider** — uses a provider's API directly instead of going through `AggregatedPerpsProvider` / `ProviderRouter`. All operations must route through the abstraction.
-- [ ] **Provider-specific branching in UI** — `if (provider === 'hyperliquid')` in components or hooks. Provider differences must be normalized in the aggregation layer, not leaked to the view.
-- [ ] **Provider-specific error handling** — catches errors from one provider but not others. All providers must have consistent error boundaries via the aggregated layer.
+- [ ] **Provider identity or capability hardcoded in client code**: no provider literal, venue-specific limit or request shape in components, hooks or feature code. Read provider and network from the entity (`market.providerId`, active network) and feature availability or limits from controller capabilities. Never compare against a provider literal or `PROVIDER_CONFIG.DefaultProvider` to decide ownership or support; `DefaultProvider` is only the routing default for an entity with no owner. Test a non-default provider and a changed default.
+- [ ] **Provider-specific error handling** — catches errors from one provider but not others. All providers must have consistent error boundaries via the aggregated layer. Map controller `errorCode`, never message prose, to copy through the client's code table covering every exported code. Classify venue prose only at the provider boundary. Grep UI for regexes on error messages and raw `result.error` rendering.
 - [ ] **Hardcoded market symbols** — string literals `"BTC"` or `"ETH"` instead of market config constants. Breaks when new markets or providers are added.
-- [ ] **Hardcoded decimals/precision** — using provider-native decimal formats without normalization. Providers use different precision for prices, sizes, and leverage. Must go through `MarketDataFormatters` (DI).
+- [ ] **Executable precision differs from what the user confirms**: Round executable prices and sizes with the controller's provider-precision helpers and market `szDecimals`, never `toFixed(n)`, `Math.trunc` or raw float division. Any value the user confirms (input, preview, review dialog) equals the normalized value submitted. Read-only labels may use the `MarketDataFormatters` documented display rounding. Test a sub-cent price (0.0000123), a float-noise size (0.58×0.5 at szDecimals 2) and a 6+ significant-figure mid.
 - [ ] **`detailedOrderType` rendered directly in UI** — `detailedOrderType` is provider-native text, not an enum. HyperLiquid returns, e.g., `Limit`, `Market`, `Stop Limit`, `Stop Market`, `Take Profit Limit`, `Take Profit Market`. Any UI that renders `detailedOrderType` directly is provider-dependent by construction. **Grep for `detailedOrderType` in any PR touching order display** — it should be mapped through a locale string or normalized constant, not rendered raw.
 
 <a id="pro-mode-ui-gating"></a>
@@ -117,11 +114,10 @@ A single `PerpsAlwaysOnProvider` at the wallet root owns connect/disconnect; `Pe
 
 - [ ] **A second lifecycle owner** — a provider, hook, or screen that calls connect/disconnect itself (or a `PerpsConnectionProvider` variant that tries to) creates reference-count bugs. Only `PerpsAlwaysOnProvider` manages the lifecycle.
 - [ ] **Unthrottled WS → setState** — every WS tick triggers state update. Must use `useLivePrices` with appropriate `throttleMs` (100ms for charts, 2s for lists, 10s for order forms).
-- [ ] **Per-component WS subscription** — creating a new WebSocket connection per component instead of using `PerpsStreamManager` shared subscriptions with reference counting.
+- [ ] **Per-consumer subscription bypasses the shared channel**: a hook or component subscribes directly to the controller or a transport instead of the client's ref-counted stream channel (`PerpsStreamManager` on Mobile/Extension). Flag it whether or not sockets multiply; claim extra connections only after showing two concurrent production consumers open separate sockets.
 - [ ] **WS subscription leak** — subscribing on mount without unsubscribing on unmount or market switch. `PerpsStreamManager` handles ref counting but custom subscriptions must clean up.
-- [ ] **Stale data after async gap** — reading position/order state, awaiting something, then using the stale read. WS updates change state between awaits. Re-read after async boundaries.
+- [ ] **Stale data after async gap** — reading position/order state, awaiting something, then using the stale read. WS updates change state between awaits. Re-read after async boundaries. After submitting an order, wait for its transaction receipt or poll with backoff rather than reading order state before WebSocket confirmation.
 - [ ] **Static WebView work coupled to live ticks** — a payload containing both `currentPrice` and static overlays can resend teardown/recreate work on every tick. Compare the static subset before mutating chart lines, do not force autoscale on a no-op update, and cover skip/clear behavior with executable helper tests rather than source-string assertions.
-- [ ] **Missing cache invalidation** — after trade/withdrawal/position change, not calling `PerpsCacheInvalidator.invalidate()` for affected cache types (`positions`, `accountState`). Standalone queries on token detail pages show stale data.
 
 <a id="data-flow-state"></a>
 
@@ -133,7 +129,6 @@ A single `PerpsAlwaysOnProvider` at the wallet root owns connect/disconnect; `Pe
 - [ ] **React persistence mistaken for WebView synchronization**: Inline and fullscreen charts can remain mounted together. Prove the handoff updates each chart's local range/state, including subsequent stream updates.
 
 - [ ] **Old context remains actionable**: On account, provider or network change, clear or re-key committed display/action state immediately. A generation guard against late writes does not invalidate data already shown. Test with the next request held open.
-- [ ] **Unknown balance treated as usable balance**: Keep unresolved distinct from zero; never substitute a balance from another account. Verify the committing CTA remains disabled until the selected account/token inputs are valid.
 - [ ] **Late defaults overwrite a user choice**: Typing, percent and MAX controls must all mark a value as user-edited. Hold metadata resolution until after each interaction and confirm the chosen value remains. Apply authoritative limit changes explicitly; a delayed persistence acknowledgment is not a new limit.
 
 Controller → Redux → Hooks → Components. Standalone mode for lightweight queries without full init.
@@ -141,49 +136,34 @@ Controller → Redux → Hooks → Components. Standalone mode for lightweight q
 - [ ] **Direct controller call from component** — components calling `PerpsController.method()` directly instead of going through hooks (`usePerpsTrading`, `usePerpsAccount`, etc.).
 - [ ] **Missing `accountState` check** — accessing positions/orders/balances without verifying accountState is loaded. Causes undefined errors on first load or account switch.
 - [ ] **Derived flag promoted to structural state without its own lifecycle** — define initialization, every set condition, and every clear condition independently of the old string or transient value that first produced the flag. Test both set and clear paths.
-- [ ] **Unknown async value treated as an absent blocker** — an alert may correctly stay hidden while balance or market data is unresolved, but the CTA must remain disabled through a separate unresolved-state check. Missing alert copy is not permission to submit.
-- [ ] **Async flow loses ownership of cleanup** — fire-and-forget timers and navigation listeners need a generation guard plus `dispose()` on retry, unmount, and failure. Treat nested confirmation routes as part of the same flow so cleanup does not fire while the user is still inside it.
+- [ ] **Async flow loses ownership of cleanup** — fire-and-forget timers and navigation listeners need a generation guard plus `dispose()` on retry, unmount, and failure. Treat nested confirmation routes as part of the same flow so cleanup does not fire while the user is still inside it. A lookup added before startup, unlock or deeplink navigation needs a short explicit deadline that falls back to the prior offline result; test with the request held pending.
 - [ ] **One in-flight mutation lock replaces earlier accepted outcomes** — serialize active requests separately from post-success reconciliation. Keep each accepted result keyed by provider and stable entity ID until an authoritative read or stream confirms it; clear the set when account, provider, network, or connection generation changes. Test sequential successes followed by a partial terminal update.
-- [ ] **Stale position after close** — position in UI after close because local state not cleared or WS update not processed. Must refresh via `PerpsCacheInvalidator`.
 - [ ] **Preload data not seeded** — new hook not using `getPreloadedData()` lazy initializer. First render shows skeleton instead of cached data from the 5-minute preload cycle.
-- [ ] **Order state race** — submitting order and immediately reading order state. WS confirmation hasn't arrived. Use transaction receipt or poll with backoff.
 - [ ] **Leverage/validation bypass** — allowing values outside market's `maxLeverage` or skipping pre-trade checks (balance, market open, position limit).
 
 <a id="trade-flow-order-execution"></a>
 
 ## Trade Flow & Order Execution
 
-- [ ] **Signed bounds collapsed into magnitudes**: A gain-side and loss-side RoE are different inputs. Preserve direction through clamps and conversions; test long and short positions at the accepted boundary, not only typical positive values.
+- [ ] **Numeric meaning changes in transit**: Preserve each value's unit (coin vs USD, notional vs margin), price source (mark vs oracle vs mid) and sign/direction (long vs short, gain-side vs loss-side RoE) through adapters, conversions, clamps and labels. Test a short beside a long at the accepted boundary, leverage > 1 so notional ≠ margin, and mark ≠ oracle/mid.
 
 Order submission runs the shared pre-trade checks, carries the user's slippage, and refreshes state after confirmation.
 
 - [ ] **Pre-trade checks missing** — submitting trade without verifying: sufficient balance, market open, position limit, leverage within bounds, slippage tolerance set.
-- [ ] **Post-trade state not refreshed** — after trade confirmation, not triggering refresh of balances, positions, orders. User sees stale data until next WS tick.
-- [ ] **Missing slippage in order params** — creating order without slippage tolerance, or hardcoding slippage instead of user preference.
-
-<a id="locale-coverage-orphaned-keys"></a>
-
-## Locale Coverage & Orphaned Keys
-
-- [ ] **Duplicate JSON keys shadow new copy**: Verify the containing locale object has one definition and search rendered copy across every test layer. A test accommodating duplicate labels may hide an ambiguous product label.
-
-Removing a `strings(...)` call or deleting a helper that wrapped locale keys is a regression risk that is cheap to catch during review.
-
-- [ ] **Source-language translations** — keep user-facing copy behind translation helpers and update only the source-language file (`locales/languages/en.json` on Mobile; `app/_locales/en/messages.json` on Extension). The translation pipeline fills other locales; missing non-English strings are never a finding.
-- [ ] **Orphaned locale keys** — when a PR deletes a function that called `strings(...)`, grep for the keys it used (e.g. `rg 'order_card\.(take_profit|stop|open_limit|close_limit)' app`). Dead keys accumulate silently and bloat the translation pipeline; flag them even when runtime is unaffected.
-- [ ] **Test revert-sensitivity for locale keys** — mocked `strings` implementations that fall back to `|| key` render the raw key when a key goes stale, so an exact `getByText` assertion still fails on revert. Confirm that fallback exists before accepting a test as regression-proof; do not assume it.
+- [ ] **Post-trade state not refreshed** — after a confirmed trade, withdrawal or position change, refresh balances, positions and orders through `PerpsCacheInvalidator.invalidate()` for affected cache types (`positions`, `accountState`), including standalone token-detail queries. A closed position must clear from local or WebSocket-fed state. Branch on per-item results/`failureCount` before `success` (Core sets `success: true` on partial batches). Keep post-success refresh outside the mutation's catch so a failed read never reports a failed, retryable write. Test 2-of-3 partial and a throwing refetch after success.
+- [ ] **Missing or hardcoded slippage**: Every market leg (open, close, flip/reverse, TP/SL trigger) sends `maxSlippageBps` resolved from the saved user preference, falling back to `ORDER_SLIPPAGE_CONFIG` only when none is saved; never an inline literal. Test a strict saved value and an unset preference per action.
 
 <a id="test-layer-coverage"></a>
 
 ## Test Layer Coverage
 
 - [ ] **Degenerate fixtures hide formula errors**: Choose values where competing calculations differ, such as a deeper order-book row with size unequal to cumulative total. Exercise each changed numerator, denominator or branch independently. Simulations must use real call-site inputs and the producer's quantization grid.
-- [ ] **Clock control changes the test mechanism**: Pin the clock the component reads without disabling timers needed by asynchronous view assertions. Restore spies in shared teardown, including failure paths; cover active-to-terminal transitions as well as static states.
 - [ ] **Numeric control units change partially**: A percent-domain conversion must preserve caller units, step, accessibility increments and echo suppression. Exercise changing bounds during a gesture; remounting on streaming values can reset input even when accessibility metadata is correct.
 
-- [ ] **Assertions miss the behavior under review**: For order, visibility, size or color claims, assert the rendered outcome rather than component presence or arguments passed to a mocked hook. Confirm the assertion fails when that behavior is removed.
+Mobile and Extension use their owning testing skill for the following two generic checks; clients without an applicable testing owner apply these fallback checks here:
 
-Choose the test layer that exercises the changed behavior with real state and dependencies. Preserve regression coverage when moving tests; use focused unit tests for isolated logic and contract tests. Client-specific file conventions and test tooling belong to the client overlay.
+- [ ] **Clock control changes the test mechanism**: Pin the clock the component reads without disabling timers needed by asynchronous view assertions. Restore spies in shared teardown, including failure paths; cover active-to-terminal transitions as well as static states.
+- [ ] **Assertions miss the behavior under review**: For order, visibility, size or color claims, assert the rendered outcome rather than component presence or arguments passed to a mocked hook. Confirm the assertion fails when that behavior is removed.
 
 <a id="embedded-signer-boundaries"></a>
 

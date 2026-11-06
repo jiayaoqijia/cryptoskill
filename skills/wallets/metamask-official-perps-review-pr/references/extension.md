@@ -73,7 +73,6 @@ A backend route or provider endpoint change updates the preload and cache-prime 
 A TP/SL sign or percent toggle transforms the existing value, and the submitted order params equal what the form displays.
 
 - [ ] **TP/SL sign or percent toggle drops value** — toggles should transform existing state, not reset it unexpectedly.
-- [ ] **Displayed value differs from submit params** — submitted order must match what user sees.
 
 <a id="charts-and-ctas-need-feature-parity-evidence"></a>
 
@@ -96,7 +95,7 @@ Sibling batch-action handlers (`handleCloseAllPositions`, `handleCancelAllOrders
 
 - [ ] **Asymmetric catch blocks across sibling handlers** — if one batch-action handler emits `PerpsError` + `trackPerpsErrorScreenViewed` on transport throw, every parallel handler in the same component must do the same. Diff all `catch` branches in the file before declaring analytics parity.
 - [ ] **Soft-failure branch without error-screen-view** — a `{ success: false }` (or equivalent `result?.success` check) branch that fires `batchActionError` but not an error-screen-view event is incomplete. Before signing off on error analytics, grep sibling components that own the same `{ success: boolean }` shape and verify their soft-failure branches are symmetric (`git grep -l 'success.*boolean\|{ success:' -- '*.tsx' '*.ts'`).
-- [ ] **New analytics branch ships without a test** — every new `catch` block or `if (!result?.success)` branch that emits an analytics event must have a corresponding unit test covering that branch. Missing coverage surfaces as a hard gate failure later; add the test in the same commit as the analytics change.
+- [ ] **New analytics branch ships without a test** — every new `catch` block or `if (!result?.success)` branch that emits an analytics event must have a corresponding test covering that branch in the layer selected by the delegated testing skill. Missing coverage surfaces as a hard gate failure later; add the test in the same commit as the analytics change.
 
 <a id="cdp-e2e-proof-surfaces"></a>
 
@@ -111,9 +110,3 @@ A Perps tab screenshot proves market data only when a non-zero price or position
 ## Evidence Expected Before Extension Perps Review
 
 The PR carries a controller package version and contract compatibility note, a state-flow matrix for the selectors and hooks touched, a market data source matrix across stream, detail, order, chart and fallback paths, recordings for order form toggles and submitted params, and, for backend-routing changes, the preload cache and reconnect fallback paths explicitly addressed.
-
-<a id="extension-test-layers"></a>
-
-## Extension Test Layers
-
-- [ ] **Component-view behavior tested as a unit test**: A test under `ui/pages/perps/**/index.test.tsx` that renders a whole page and asserts UI behavior belongs in the client's component-view framework as `*.view.test.tsx`. Exercise real hooks and state wiring; preserve the same scenarios when moving tests, or document why a focused unit test remains necessary.

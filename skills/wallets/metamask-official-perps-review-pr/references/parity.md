@@ -39,7 +39,7 @@ Extension adds: `usePerpsLiveMarketData`, `usePerpsStreamManager`, `usePerpsView
 
 | Mobile | Extension |
 |---|---|
-| `usePerpsOrderForm` + `usePerpsOrderFees` + `usePerpsOrderValidation` + `usePerpsOrderExecution` | `usePerpsOrderForm` (single) |
+| `usePerpsOrderForm` + `usePerpsOrderFees` + `usePerpsOrderValidation` + `usePerpsOrderExecution` | `usePerpsOrderForm` + `usePerpsOrderFees` |
 | `usePerpsClosePosition` + `usePerpsClosePositionValidation` | Inline in `close-position-modal.tsx` |
 | `usePerpsTPSLForm` + `usePerpsTPSLUpdate` | Inline in `auto-close-section.tsx` |
 | `usePerpsMarginAdjustment` + `usePerpsAdjustMarginData` | `usePerpsMarginCalculations` |
@@ -77,7 +77,7 @@ Identical or near-identical between codebases:
 | `getPositionDirection` | YES |
 | `formatOrderType` / `formatStatus` | YES |
 | `filterMarketsByQuery` | YES |
-| `isHip3Market` / `isCryptoMarket` | YES |
+| `isHip3Market` / `isCryptoMarket` | YES for `isCryptoMarket`; Extension's allowlist `isHip3Market` is a different operation, so rename it (`isAllowedHip3Market`) instead of consolidating. |
 | `groupTransactionsByDate` | Near-identical |
 
 **Rule**: When modifying any of these on extension, check the mobile equivalent first.

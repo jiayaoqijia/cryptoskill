@@ -75,24 +75,24 @@ When a session is already active, `mm launch` rejects with `MM_SESSION_ALREADY_R
 
 When attaching to Metro (`--metro-port`), the workflow is **attach-only** — it never spawns Metro. If the app is already running and healthily attached to Metro (Hermes target found at `/json`), `mm launch` connects without relaunching. If the app is not healthily attached, it terminates and re-launches via the deep link. On a fresh-booted simulator, a one-time relaunch ensures the accessibility tree is valid. Release/prod builds have no Hermes inspector; Metro attach requires a dev build.
 
-### 2. Reuse Knowledge
-
-```bash
-yarn mm knowledge-search "<flow name>"
-yarn mm knowledge-sessions
-```
-
-Reuse a known successful sequence when available. Otherwise discover the flow and let the session record it.
-
-### 3. Observe Before Acting
+### 2. Observe Before Acting
 
 ```bash
 yarn mm describe-screen
 ```
 
-Use fresh output after navigation. Accessibility refs (`e1`, `e2`, ...) are ephemeral.
+Use fresh output after navigation. Accessibility refs (`e1`, `e2`, ...) are ephemeral: always take refs from the latest response (`describe-screen` or the `observations` of your last action).
 
-### 4. Interact
+**Observation efficiency:** mutating actions (`click`, `type`, ...) and `run-steps` return a compact diff of what changed. Reads, discovery commands and `mm cdp` return no observation. Use the global `--observe <none|diff|full>` flag to change the observation of one call:
+
+```bash
+yarn mm click --testid log-in-button --observe none   # chain known actions: skip the observation
+yarn mm click e5 --observe full                        # after navigation: get the whole screen
+```
+
+Only mutating and batch calls wait for animations before they observe. To get a settled screen after an action, let the action observe (`--observe full`) instead of running a read afterwards.
+
+### 3. Interact
 
 Two targeting methods work on both iOS and Android: **test IDs** and **accessibility refs**. Use one per command; prefer a stable test ID, fall back to a fresh a11y ref from `describe-screen`. On Android, a test ID matches the element's `resource-id` / content-description / text (fuzzy, case-insensitive); on iOS it matches the accessibility identifier/label.
 
@@ -110,7 +110,7 @@ yarn mm type e2 "text"
 
 The CLI flag is `--testid` (all lowercase); `--testId` is silently mis-parsed as a positional target and hits the wrong element. `mm type` clears the field before typing (iOS: idb `cmd+a` → delete → type; Android: the backend clears via adb before `input text`).
 
-### 5. Verify and Capture Evidence
+### 4. Verify and Capture Evidence
 
 After a mutating sequence:
 
@@ -122,9 +122,9 @@ After a mutating sequence:
 yarn mm screenshot --name "after-action"
 ```
 
-If the state is wrong, capture a debug screenshot, search knowledge, and retry from fresh refs.
+If the state is wrong, capture a debug screenshot and retry from fresh refs.
 
-### 6. Cleanup
+### 5. Cleanup
 
 ```bash
 yarn mm cleanup
@@ -152,17 +152,20 @@ The Android device backend captures the hierarchy with `uiautomator dump`. But `
 ERROR: could not get idle state.
 ```
 
-To handle this, `@metamask/device-mcp` **ships a small self-instrumenting snapshot-helper APK** (`node_modules/@metamask/device-mcp/dist/android/device-mcp-android-snapshot-helper-<version>.apk`, package `io.metamask.devicemcp.snapshothelper`). The helper captures the hierarchy **without** waiting for idle and streams it back over `am instrument`. It is a `testOnly` APK installed on demand with `adb install -t`, reused across the session, and its signing certificate is cryptographically verified before use (fails **closed** on a signer mismatch rather than silently falling back). The helper is a **separate app** from MetaMask: it shares the `io.metamask` prefix but is a distinct package, and the backend resolves it by exact package name (`pm list packages`/`pm path` on the full `io.metamask.devicemcp.snapshothelper`), so it never collides with the wallet's `io.metamask` package or with `mm open-app`/`close-app`/`cdp --app-id`.
+To handle this, `@metamask/device-mcp` (0.7.0 in MetaMask Mobile) **ships a small self-instrumenting snapshot-helper APK** (`node_modules/@metamask/device-mcp/dist/android/device-mcp-android-snapshot-helper-<version>.apk`, package `io.metamask.devicemcp.snapshothelper`). The helper captures the hierarchy **without** waiting for idle and streams it back over `am instrument`. It is a `testOnly` APK installed on demand with `adb install -t`, reused across the session, and its signing certificate is cryptographically verified before use (fails **closed** on a signer mismatch rather than silently falling back). The helper is a **separate app** from MetaMask: it shares the `io.metamask` prefix but is a distinct package, and the backend resolves it by exact package name (`pm list packages`/`pm path` on the full `io.metamask.devicemcp.snapshothelper`), so it never collides with the wallet's `io.metamask` package or with `mm open-app`/`close-app`/`cdp --app-id`.
 
 Behavior is controlled by the `DEVICE_MCP_ADB_SNAPSHOT` env var on the device backend (`@metamask/device-mcp`, which the `mm` CLI drives on Android):
 
-- **`auto`** (default) — fast `uiautomator dump` first (wins instantly on idle screens), then the bundled helper if the dump produced no hierarchy, then remaining dump retries as a last resort.
-- **`instrument`** — use the bundled helper only. **Use this when snapshots repeatedly fail with `could not get idle state`** on a churny screen (e.g. loading balances, animated onboarding, a live dapp page).
+- **`helper-first`** (default since `@metamask/device-mcp` 0.6.0) — the bundled helper first (fast on busy screens, and a fuller tree than the dump, including WebView content), then one `uiautomator dump` attempt (three if the helper never ran) for non-trust helper failures only.
+- **`auto`** — fast `uiautomator dump` first, then the bundled helper, then remaining dump retries. Sticky per session: once the helper wins, later snapshots skip the quick dump.
+- **`instrument`** — use the bundled helper only, with no dump fallback (fully fail-closed).
 - **`dump`** — stock `uiautomator dump` only; the helper APK is never installed.
+
+The first helper snapshot of a session can take longer, because it can install the helper (its own timeout, up to 60 s).
 
 Operational guidance when a snapshot fails to capture:
 
-1. If you see `could not get idle state`, the screen is redrawing — retry; in `auto` the helper kicks in automatically.
+1. If you see `could not get idle state` or `Capture did not stabilize within 500ms`, the screen is redrawing or in transition — retry; the backend already retries the helper before any dump fallback.
 2. If it still fails, restart the session with `DEVICE_MCP_ADB_SNAPSHOT=instrument` in the environment to force the helper path.
 3. If snapshots fail **closed with a trust/signer error**, a different app is squatting the helper's package name — uninstall it (`adb uninstall io.metamask.devicemcp.snapshothelper`) so the bundled, correctly-signed helper can install, or fall back to `DEVICE_MCP_ADB_SNAPSHOT=dump`.
 4. As a last resort, use `mm screenshot` (always works) plus `mm tap-coordinates` from the image, or drive web content via the WebView CDP path.
@@ -207,6 +210,11 @@ yarn mm run-steps '{"steps":[
 
 The input must be an object containing `steps`, not a bare array.
 
+- Add `batchTimeoutMs` (1000–30000 ms) for an overall deadline. The whole call stops after 30 s, so use a lower value (for example 20000) to get partial results, and split longer flows into several batches.
+- Add a top-level `observe` (`none` / `diff` / `full`, default `diff`) to set the observation collected after the batch. `includeObservations` was removed; check `summary.ok` to react to failures.
+
+Pattern: discover with `yarn mm describe-screen` → batch known steps with `yarn mm run-steps` → re-verify with `yarn mm describe-screen`.
+
 ## Mobile Limitations and Gotchas
 
 - **Only `--testid` and a11y refs target elements.** `--selector` throws (`CSS selectors are not supported on mobile`) and `--within` throws (`Scoped element search (within) is not supported on mobile`) at the driver on both iOS and Android, even though the shared CLI parses both flags. Do not use them.
@@ -216,9 +224,18 @@ The input must be an object containing `steps`, not a bare array.
 - No `mm build`; build/install separately.
 - No URL navigation, tab switching, browser notification pages, or browser clipboard APIs.
 - `navigate-home` and `navigate-settings` are not implemented; navigate through visible UI elements.
-- `mm cdp` requires Metro.
+- `mm cdp` requires Metro. It does not reuse the launch's `--metro-port`, so pass `--metro-port <port>` on each `cdp` / `hermes-targets` call when Metro is not on 8081.
 - One Metro process per worktree is recommended.
-- Mutating commands can return compact observations; request a full `describe-screen` whenever refs or state are uncertain.
+- Mutating commands return compact diff observations; request a full `describe-screen` whenever refs or state are uncertain.
+- **After a call with `--observe none`, refs are not refreshed.** Target by `--testid`, or run `describe-screen` before you use refs again: a stale ref can tap a different element.
+- **Output is one line of JSON** when stdout is not a terminal. Parse it as JSON. Add `--pretty` (or set `MM_PRETTY=1`) only when a human reads the output.
+- **Observations carry no app state**, and `mm get-state` on mobile only reports whether the app is loaded (`source: "stub"`). Identify the screen from `describe-screen` test IDs (`login-password-input` = unlock, `wallet-screen` = wallet home). Read wallet state (account, network, balance) from the screen or through `mm cdp`.
+- **The keyboard can cover the submit button.** After `mm type` into the unlock field, the iOS keyboard covers **Unlock**. On iOS, `mm dismiss-keyboard` fails (`idb ui key RETURN` is rejected by idb), so tap the keyboard's return key instead: `mm click --testid Done` (it also submits the unlock form). On Android, `mm press-button back` hides the keyboard, then `mm click --testid log-in-button`.
+- **A navigation can finish after the observation.** The mobile observation retries for at most about 2 s, so after a tap that opens a slow screen (for example the first **Send** of a session) `observations` can still show the previous screen. Confirm with `mm wait-for --testid <id on the new screen>` before the next step.
+- **iOS wallet home actions (Buy / Swap / Send / Receive) are not in the tree.** On iOS 18+ the snapshot reads the `axbridge` tree, where the balance hero and the action row are one unlabelled container, so `wallet-send-button` and the other action test IDs are missing and `click --testid wallet-send-button` times out. Take the button position from `mm screenshot` and use `mm tap-coordinates <x> <y>` (points). The next screens (for example Send, with `send-navbar-back-button`) are in the tree again.
+- **`--testid` matches a substring, not the exact ID.** The tap goes to the first element in tree order whose test ID *contains* the value, and an a11y ref resolves to the same test ID query. On the Android wallet home, `click --testid account-picker` (or its ref) taps `account-picker-avatar` inside `profile-button` and opens the profile screen ("Create profile"). If the screen after a tap is not the expected one, check `list-testids` for longer IDs that contain your value, and use `mm tap-coordinates` at the center of the element's `bounds` from `describe-screen` (Android: pixels; for `account-picker`, `384 136`).
+- **Timed-out calls are cancelled.** On `Tool execution timed out`, an action that already started can still have happened, so run `describe-screen` before you retry.
+- Call `node_modules/.bin/mm` directly to skip the Yarn startup (about 0.4–0.5 s per call) when running many commands.
 - Never assume wallet credentials, balances, networks, or onboarding state. Inspect the installed app and obtain needed credentials from the user/environment.
 
 ## Error Recovery

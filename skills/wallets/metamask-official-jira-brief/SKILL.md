@@ -6,8 +6,7 @@ description: >-
   .briefs/<ISSUE-KEY>.md with the Goal, Decisions Already Made, Open
   Decisions, and Code Surfaces sections. Name the path in chat. Do not paste the
   file or write to Jira. Do not edit product code, and do not say that in chat.
-base: true
-maturity: stable
+maturity: experimental
 ---
 
 # Jira brief
@@ -33,4 +32,4 @@ Installed name: `mms-jira-brief`. `mms-planning` calls it for ticket identificat
 10. Do not copy secrets, tokens, credentials, or customer data into the file.
 11. In chat, name the path. Do not paste the file. Do not write to Jira. Do not say that code will not change.
 
-`A Jira ticket would improve this context.` belongs to `mms-planning`. That skill adds the line only when no brief was actually read and the change stops for a brief. A revert does not get that line. This skill does not add that line.
+When `mms-planning` delegates and no ticket is identified, return no ticket identified and stop. Do not ask for a ticket. Do not suggest creating one. `mms-planning` then continues. A revert does not call this skill.

@@ -23,16 +23,8 @@ For in-app failures:
 
 1. Run `yarn mm describe-screen`.
 2. Identify the current screen and visible blockers. If the screen is unknown, capture a screenshot.
-3. Query prior successful runs:
-
-   ```bash
-   yarn mm knowledge-search "<flow name>"
-   yarn mm knowledge-sessions
-   yarn mm knowledge-last
-   ```
-
-4. Capture evidence with `yarn mm screenshot --name "debug"`.
-5. Retry only after obtaining fresh accessibility references.
+3. Capture evidence with `yarn mm screenshot --name "debug"`.
+4. Retry only after obtaining fresh accessibility references.
 
 ## Error Codes
 
@@ -51,7 +43,7 @@ Launch errors use the core `ErrorCode` set. `@metamask/client-mcp-core` only pre
 | `MM_GETTEXT_FAILED` | The target detached or does not expose text. Re-describe and re-target. |
 | `MM_GETTEXT_TIMEOUT` | Text retrieval exceeded the deadline. Retry with a fresh target or larger `--timeout`. |
 | `MM_PAGE_CLOSED` | The target closed during the action. This can be expected for transitions; inspect current state. |
-| `MM_BATCH_TIMEOUT` | `run-steps` exceeded `batchTimeoutMs`. Reduce the batch or increase its deadline. |
+| `MM_BATCH_TIMEOUT` | `run-steps` exceeded `batchTimeoutMs`. Split the batch; the deadline is capped at 30000 ms. |
 
 ### Session and Launch Errors
 
@@ -97,6 +89,8 @@ Launch errors use the core `ErrorCode` set. `@metamask/client-mcp-core` only pre
 | `idb` not installed | Missing iOS Debug Bridge dependency (`MM_DEPENDENCIES_MISSING`) | Run `yarn mm:doctor`, then `brew tap facebook/fb && brew install idb-companion && pip3 install fb-idb` |
 | Empty or failed screen snapshot | Splash screen, animation, app transition, or crash | Wait briefly, describe again, and capture a screenshot |
 | Stale accessibility references | Screen changed after the references were generated | Run `yarn mm describe-screen` and use fresh references |
+| Ref taps the wrong element | Ref used after a call with `--observe none` | Run `yarn mm describe-screen`, or target by `--testid` |
+| `Tool execution timed out` | Call cancelled after the request limit | Run `yarn mm describe-screen` before retrying; the action can have happened |
 | Interaction timeout | Animation, overlay, or stale/ambiguous target | Re-`describe-screen`, target by a unique test ID or fresh a11y ref (no `--within` on mobile), and increase `--timeout` only when appropriate |
 | `--testId` times out | Incorrect capitalization | Use `--testid` in lowercase |
 | Daemon address already in use | Stale daemon state (`MM_PORT_IN_USE`) | Run `yarn mm stop --force`, then `yarn mm launch` |

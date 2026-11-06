@@ -3,13 +3,9 @@
 
 Companion to `parity.md`. Tracks what's shared, what should be, and what can't be.
 
-## Already Shared via @metamask/perps-controller
-
-**Utils** (`src/utils/`) and **Services** (`src/services/`) of `@metamask/perps-controller`: check them on core `main` before adding a client-side copy.
-
 ## Perps math that must come from the controller
 
-Reference for the blocking rule *Perps Math Comes From the Controller* in `antipatterns.md`. These Mobile utilities hold perps trading math; until each one is exported by `@metamask/perps-controller` (TAT-4477), a client PR that adds, changes or ports the same math is blocking unless it moves the math into the controller or links the Core ticket that does.
+Reference data for *Perps Math Comes From the Controller* and *Copy or port of existing logic* in `antipatterns.md`, not separate review checks. Use the resolved-version equivalence check there for these Mobile utility paths.
 
 | Utility | Mobile Path | What It Does |
 |---|---|---|
@@ -24,13 +20,15 @@ Reference for the blocking rule *Perps Math Comes From the Controller* in `antip
 
 ## Priority 2 -- Exact Duplicates to Consolidate
 
+Reference candidates for the same shared reuse checks; compare semantics before consolidation.
+
 | Function | Mobile | Extension | Identical? |
 |---|---|---|---|
 | `getDisplayName`/`getDisplaySymbol` | controller `marketUtils.ts` | `ui/components/app/perps/utils.ts` | YES |
 | `getPositionDirection` | `UI/Perps/utils/` | `ui/components/app/perps/utils.ts` | YES |
 | `formatOrderType`/`formatStatus` | `UI/Perps/utils/` | `ui/components/app/perps/utils.ts` | YES |
 | `filterMarketsByQuery` | `UI/Perps/utils/filterAndSortMarkets.ts` | `ui/components/app/perps/utils.ts` | YES |
-| `isHip3Market`/`isCryptoMarket` | `UI/Perps/utils/` | `ui/components/app/perps/utils.ts` | YES |
+| `isHip3Market`/`isCryptoMarket` | `UI/Perps/utils/` | `ui/components/app/perps/utils.ts` | YES for `isCryptoMarket`; Extension's allowlist `isHip3Market` is a different operation, so rename it (`isAllowedHip3Market`) instead of consolidating. |
 | `groupTransactionsByDate` | `UI/Perps/utils/transactionTransforms.ts` | `ui/components/app/perps/utils/transactionTransforms.ts` | Near-identical |
 
 ## Can't Share (platform-bound)
@@ -44,6 +42,8 @@ Reference for the blocking rule *Perps Math Comes From the Controller* in `antip
 | `tokenIconUtils.ts` | Mobile-specific image handling |
 
 ## Sync Mechanism
+
+Reference steps for the same shared public-package requirement, not a separate check.
 
 The controller lives in Core (`packages/perps-controller`) and Mobile, Extension and Terminal consume the published `@metamask/perps-controller`; there is no in-repo copy or sync script any more.
 

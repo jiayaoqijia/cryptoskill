@@ -5,4 +5,4 @@ parent: planning-spec
 
 # Planning spec — MetaMask Mobile
 
-This skill installs only for MetaMask Mobile.
+This skill installs for MetaMask Mobile and MetaMask Extension.

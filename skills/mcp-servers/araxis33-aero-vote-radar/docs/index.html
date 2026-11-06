@@ -1020,6 +1020,7 @@ async function arReadWallet(addr) {
 }
 
 arEl("arLookup").addEventListener("click", async () => {
+  arEv("radar_stakes");
   const addr = arEl("arAddr").value.trim();
   const msg = arEl("arMsg");
   msg.className = "lookup-msg";
@@ -1056,6 +1057,7 @@ arEl("arAmount").addEventListener("input", arRender);
 // wallet's 47 h end, never the address.
 const AR_AUTOPILOT_STAKES = [20365, 20366];
 const AR_PUSH_API = "https://deftools-check.araxis67.workers.dev/push/";
+const arEv = (n) => { try { navigator.sendBeacon("https://deftools-check.araxis67.workers.dev/ev", n); } catch (e) { /* a counter never gets in the way */ } };
 const AR_VAPID = "BM4isbpzhnD995iVSo3vAWwfBPX9DYWBI_KHb6sIWWHTd99oPyBbi_Bg_DjTfP7IguLpC3ltHvk-75FGNd3M2pI";
 let arApReady = 0;
 
@@ -1143,6 +1145,7 @@ async function arPushSync(fromClick) {
 }
 
 arEl("arBell").addEventListener("click", () => {
+  arEv("radar_notify");
   const pop = arEl("arBellPop");
   pop.hidden = !pop.hidden;
   arEl("arBell").setAttribute("aria-expanded", String(!pop.hidden));

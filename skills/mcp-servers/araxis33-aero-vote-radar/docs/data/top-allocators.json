@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-06T11:47:18.123Z",
+ "checkedAt": "2026-11-06T16:47:18.319Z",
  "source": "dromos.kitchen",
  "boardAsOf": "2026-11-06T11:37:37.318653Z",
  "positions": [
@@ -234,22 +234,22 @@
    "earned7d": 271.7,
    "apr7d": 0.2994,
    "moves7d": 4,
-   "lastMoved": 1793795456,
+   "lastMoved": 1793969553,
    "split": [
     {
-     "chain": "robinhood",
-     "gauge": "0x09334d493ddd2be406895b6d8e511413601dcfe6",
+     "chain": "base",
+     "gauge": "0xfcb69fa140fb835169bc6c74ee9363f752edcb7a",
      "share": 0.5
     },
     {
-     "chain": "base",
-     "gauge": "0xaa63309011db42ab09331f1c86298d6194c4e551",
-     "share": 0.39999999999999997
+     "chain": "optimism",
+     "gauge": "0xff7ba47015c308e793a5521fba385c103ba3ad7e",
+     "share": 0.3
     },
     {
-     "chain": "base",
-     "gauge": "0x4a870ac2a047909c1ab791f8d7176d33bc2d60eb",
-     "share": 0.09999999999999999
+     "chain": "optimism",
+     "gauge": "0x77eaf4905d8afca133529ed95a933fc37755fe21",
+     "share": 0.19999999999999998
     }
    ]
   }
@@ -263,7 +263,7 @@
   {
    "chain": "robinhood",
    "gauge": "0x09334d493ddd2be406895b6d8e511413601dcfe6",
-   "share": 0.15000000000000002
+   "share": 0.1
   },
   {
    "chain": "base",
@@ -287,13 +287,13 @@
   },
   {
    "chain": "base",
-   "gauge": "0x97b12fee6d05649f24daf83186985c16c4bc524e",
-   "share": 0.0414241694
+   "gauge": "0xfcb69fa140fb835169bc6c74ee9363f752edcb7a",
+   "share": 0.05
   },
   {
    "chain": "base",
-   "gauge": "0xaa63309011db42ab09331f1c86298d6194c4e551",
-   "share": 0.039999999999999994
+   "gauge": "0x97b12fee6d05649f24daf83186985c16c4bc524e",
+   "share": 0.0414241694
   },
   {
    "chain": "base",
@@ -304,6 +304,11 @@
    "chain": "base",
    "gauge": "0x4e054a8542d5b772ab1bda187f14208274c9867a",
    "share": 0.0328596301
+  },
+  {
+   "chain": "optimism",
+   "gauge": "0xff7ba47015c308e793a5521fba385c103ba3ad7e",
+   "share": 0.03
   },
   {
    "chain": "robinhood",
@@ -326,6 +331,11 @@
    "share": 0.025
   },
   {
+   "chain": "optimism",
+   "gauge": "0x77eaf4905d8afca133529ed95a933fc37755fe21",
+   "share": 0.019999999999999997
+  },
+  {
    "chain": "base",
    "gauge": "0x0447f6b35d61c93fbebca2155a55a1e206898891",
    "share": 0.015836366600000002
@@ -344,11 +354,6 @@
    "chain": "base",
    "gauge": "0x5110e5b8eb9a57795210b0e46252b1505a12bbf4",
    "share": 0.010330763437431282
-  },
-  {
-   "chain": "base",
-   "gauge": "0x4a870ac2a047909c1ab791f8d7176d33bc2d60eb",
-   "share": 0.009999999999999998
   },
   {
    "chain": "base",

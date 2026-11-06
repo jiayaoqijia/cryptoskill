@@ -30,3 +30,7 @@ Keep the repository's `skill.md` plus `repos/` convention. Replace Perps knowled
 Write rules from observed failures. State what to inspect, where it applies and what would contradict the claim. Put client-specific APIs and tooling in that client's rules. Preserve useful examples; avoid duplicating a shared rule across clients.
 
 A family checkbox is navigation, not blanket approval. Each applicable rule needs its own outcome. Read source and tests before calling a rule passed; missing runtime evidence stays a gap. Feed a retrospective back into the canonical rules only when it changes a future review decision.
+
+Canonical `> Delegate: Run ...` entries become complete checklist actions, not summaries. Each names its owning skill and says to skip the call when Perps runs under `pr-workflow/review-pr`. Delegation-only sections do not create empty criterion rows.
+
+`review/report-template.md` owns the compact posted-review format and verdict policy. The generator copies it into `references/`; the full rule ledger is a separate run artifact.

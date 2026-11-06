@@ -5,12 +5,12 @@ Command reference for the prod-only MetaMask Mobile consumer. The generic core C
 ## Contents
 
 - [Syntax Rules](#syntax-rules)
+- [Global Options](#global-options)
 - [Lifecycle](#lifecycle)
 - [Destructive Launch Flags](#destructive-launch-flags)
 - [Installed State](#installed-state)
 - [Interaction](#interaction)
 - [Discovery](#discovery)
-- [Knowledge Store](#knowledge-store)
 - [Batching](#batching)
 - [Hermes CDP](#hermes-cdp)
 - [Simulator Selection](#simulator-selection)
@@ -61,6 +61,28 @@ Use exactly one targeting method per command: a positional accessibility referen
 - **Matching is fuzzy and case-insensitive.** idb matches accessibility label/identifier by substring, so `--testid Confirm` can match `Confirm Transaction`. Use exact, unique test IDs to disambiguate; there is no `--within` scoping fallback on mobile.
 - **`--testid` is lowercase.** `--testId` is not recognized as a flag and its value is treated as a positional target.
 
+## Global Options
+
+These flags work with every command and can appear anywhere in the command line.
+
+| Flag | Description |
+| --- | --- |
+| `--project <path>` | Target a specific project directory. Overrides `MM_PROJECT` and git-based discovery |
+| `--observe <none\|diff\|full>` | Observation returned after the call. Default: `diff` for mutating commands and `run-steps`, `none` for reads, discovery and `cdp` |
+| `--pretty` | Indent JSON output. Default: one line per result when stdout is not a terminal, indented on a terminal. `MM_PRETTY=1` / `0` sets the default |
+
+| `--observe` level | Response |
+| --- | --- |
+| `none` | No `observations`. Fastest. Refs are **not** refreshed: run `yarn mm describe-screen` before you use refs again |
+| `diff` | Only what changed since the previous observation |
+| `full` | The whole compacted screen (`a11y` + `testIds`). Becomes the new diff baseline |
+
+Observations contain `testIds` and `a11y` only, no app state. The mobile a11y tree is flat: layout-only nodes, the status bar, the navigation bar and the React Native dev overlay are filtered out.
+
+Every tool, `launch` and `cleanup` response includes `meta.timing` (`queueMs`, `toolMs`, `observationMs`, `totalMs`).
+
+Agents that run many commands can call `node_modules/.bin/mm <command>` directly. It takes the same arguments as `yarn mm <command>` and skips the Yarn startup (about 0.4–0.5 s per call).
+
 ## Lifecycle
 
 | Command | Description |
@@ -82,9 +104,9 @@ The locally installed core CLI parser exposes these launch flags that are meanin
 | `--device-id <UDID>` | Select an iOS Simulator by UDID |
 | `--app-bundle <path>` | Install a specific `.app` bundle before launching (for example `ios/build/MetaMask.app`). Required before any destructive flag |
 | `--metro-port <port>` | Attach to a running Metro bundler on the given port. Equivalent to `MM_METRO_PORT`; the flag wins when both are set |
-| `--goal <text>` | Record the session goal in knowledge metadata |
-| `--flow-tags <tags>` | Record comma-separated flow tags |
 | `--force` | Replace an existing active session |
+
+The `--goal` and `--flow-tags` launch flags were removed in `@metamask/client-mcp-core` 0.13.0. Session metadata is written to `test-artifacts/<sessionId>/session.json`.
 
 Launch timeout is 120 seconds. The project CLI does not build MetaMask. Install the intended app on the simulator before launching, or pass `--app-bundle <path>` to install a specific build.
 
@@ -143,23 +165,16 @@ All interaction commands accept on iOS:
 
 | Command | Description |
 | --- | --- |
-| `yarn mm describe-screen` | Return app state, visible test IDs, accessibility tree, and prior knowledge |
+| `yarn mm describe-screen` | Return the current screen, visible test IDs, and the accessibility tree with refs |
 | `yarn mm screenshot [--name <name>]` | Capture the current simulator screen |
 | `yarn mm accessibility-snapshot` | Return a trimmed accessibility tree (the shared `--root <selector>` flag is ignored on iOS; the full tree is always returned) |
 | `yarn mm list-testids [--limit <n>]` | List visible test IDs |
-| `yarn mm get-state` | Return the current app-state snapshot |
+| `yarn mm get-state` | Return a partial app-state snapshot: `isLoaded`, `extensionId` (the bundle ID / package) and `source: "stub"`. There is no `currentScreen`, and wallet fields (unlock, account, network, balance) are omitted, not guessed. Identify the screen from `describe-screen` test IDs (for example `login-password-input` = unlock, `wallet-screen` = wallet home) |
 | `yarn mm get-context` | Report the static prod environment and available mobile capabilities |
 
-Mutating tools return observations with fresh references. Later actions may return compact differences from the prior observation. Use `describe-screen` whenever a complete tree or refreshed baseline is needed.
+Mutating tools (`click`, `type`, ...) and `run-steps` return observations with fresh references, as a compact diff from the prior observation by default. Reads, discovery commands and `cdp` return no observation. Use `describe-screen` whenever a complete tree or refreshed baseline is needed.
 
-## Knowledge Store
-
-| Command | Description |
-| --- | --- |
-| `yarn mm knowledge-search <query>` | Search recorded steps |
-| `yarn mm knowledge-last` | Return recent steps from the current session |
-| `yarn mm knowledge-sessions` | List recorded sessions and metadata |
-| `yarn mm knowledge-summarize [--session <id>]` | Generate a session recipe |
+Only mutating and batch calls wait for animations before they observe. To get a settled screen after an action, let the action observe (`--observe full`) instead of running a read afterwards.
 
 ## Batching
 
@@ -178,8 +193,8 @@ yarn mm run-steps '{"steps":[
 | --- | --- |
 | `steps` | Required array of `{tool, args}` objects |
 | `stopOnError` | Stop after the first failure; defaults to `false` (remaining steps still run). Set `true` to abort on the first error |
-| `includeObservations` | `'all'`, `'none'`, or `'failures'` |
-| `batchTimeoutMs` | Overall deadline; remaining steps are skipped after expiry |
+| `observe` | `none`, `diff` (default) or `full`: the observation collected after the batch. Replaces `includeObservations`, which was removed; check `summary.ok` to react to failures |
+| `batchTimeoutMs` | Overall deadline, 1000–30000 ms; remaining steps are skipped after expiry. The whole call stops after 30 s, so use a lower value (for example 20000) to get partial results, and split longer flows into several batches |
 
 Each step is independently checked for mobile platform support. Do not put browser-only commands in a mobile batch.
 
@@ -222,7 +237,9 @@ yarn mm launch --metro-port 8081
 MM_METRO_PORT=8081 yarn mm launch
 ```
 
-On Node 20, add `NODE_OPTIONS="--experimental-websocket"` when launching. Run `yarn mm describe-screen` after runtime mutation to resynchronize observations.
+`yarn mm cdp` and `yarn mm hermes-targets` do not reuse the launch's `--metro-port`: they use the daemon's `HERMES_METRO_PORT` or 8081. When Metro runs on another port, pass `--metro-port <port>` on every `cdp` / `hermes-targets` call, or the call fails with `HERMES_CONNECTION_FAILED`.
+
+On Node 20, add `NODE_OPTIONS="--experimental-websocket"` when launching. `yarn mm cdp` returns no observation by default. After runtime mutation, add `--observe full` or run `yarn mm describe-screen` to resynchronize observations.
 
 ## Simulator Selection
 
@@ -259,7 +276,6 @@ This consumer always reports the static `prod` environment and provides no local
 | Command | Mobile behavior or alternative |
 | --- | --- |
 | `yarn mm set-context` | Environment switching is unavailable; the mobile consumer is always `prod` |
-| `yarn mm get-state` | E2E fixture/state snapshot; use `yarn mm describe-screen` for live UI state |
 | `yarn mm seed-contract` | Contract seeding needs the e2e chain, which this consumer does not run |
 | `yarn mm seed-contracts` | Contract seeding needs the e2e chain, which this consumer does not run |
 | `yarn mm get-contract-address` | Depends on seeded e2e contracts that do not exist here |
