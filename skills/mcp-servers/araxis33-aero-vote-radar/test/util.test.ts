@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { formatError, isValidAddress, mapWithConcurrency, normalizeAddress, padCol } from "../src/util.js";
+import { formatError, isValidAddress, mapWithConcurrency, padCol } from "../src/util.js";
 
 test("isValidAddress accepts a well-formed 0x-prefixed 40-hex-character address", () => {
   assert.equal(isValidAddress("0x1234567890abcdef1234567890ABCDEF12345678"), true);
@@ -17,28 +17,6 @@ test("isValidAddress rejects the wrong length", () => {
 
 test("isValidAddress rejects non-hex characters", () => {
   assert.equal(isValidAddress("0xzzzz567890abcdef1234567890abcdef12345678"), false);
-});
-
-test("normalizeAddress checksums an all-lowercase address", () => {
-  assert.equal(
-    normalizeAddress("0x28aa4f9ffe21365473b64c161b566c3cdead0108"),
-    "0x28aa4F9ffe21365473B64C161b566C3CdeAD0108",
-  );
-});
-
-test("normalizeAddress checksums an all-uppercase address to the same result", () => {
-  // isValidAddress (format-only, per this project's own usage error text) accepts this,
-  // but viem's contract calls reject a mixed-case address that isn't exactly checksummed
-  // — this is the normalization that keeps such an address from crashing an on-chain call.
-  assert.equal(
-    normalizeAddress("0x28AA4F9FFE21365473B64C161B566C3CDEAD0108"),
-    "0x28aa4F9ffe21365473B64C161b566C3CdeAD0108",
-  );
-});
-
-test("normalizeAddress is idempotent on an already-checksummed address", () => {
-  const checksummed = "0x28aa4F9ffe21365473B64C161b566C3CdeAD0108";
-  assert.equal(normalizeAddress(checksummed), checksummed);
 });
 
 test("mapWithConcurrency preserves input order regardless of completion order", async () => {

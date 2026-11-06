@@ -1,5 +1,3 @@
-import { getAddress } from "viem";
-
 /** Runs `fn` over `items` with at most `concurrency` in flight at once, preserving input order in the result. */
 export async function mapWithConcurrency<T, R>(
   items: T[],
@@ -24,21 +22,6 @@ export async function mapWithConcurrency<T, R>(
 /** Validates that a string looks like an EVM address: `0x` followed by exactly 40 hex characters. */
 export function isValidAddress(address: string): boolean {
   return /^0x[a-fA-F0-9]{40}$/.test(address);
-}
-
-/**
- * Normalizes a syntactically valid address (any letter case) to its canonical
- * EIP-55 checksum casing. viem's own contract calls validate that a mixed-case
- * address matches its checksum and throw a raw "Address ... is invalid" error
- * otherwise — so an address that merely *looks* valid per `isValidAddress`
- * (e.g. typed or pasted in all-uppercase, or any case that isn't the exact
- * checksum) would pass this project's own validation and then crash deep
- * inside viem instead of returning a clean result. Callers should validate with
- * `isValidAddress` first (this assumes that already holds) and normalize with
- * this before the address reaches any on-chain call.
- */
-export function normalizeAddress(address: string): `0x${string}` {
-  return getAddress(address);
 }
 
 /**
