@@ -82,6 +82,7 @@ Test fixtures used throughout SolEnrich's own tests:
 | `perps-cross-venue-funding` | $0.015 | `market` (SOL/BTC/ETH/BONK) | Funding and OI across Jupiter, Adrena, Flash, Phoenix, Hyperliquid, dYdX; best entry per side; arbitrage |
 | `perps-venue-comparison` | $0.02 | `market`, `side`, `size_usd` | Slippage, fees, OI headroom, total entry cost per venue, recommendation |
 | `perps-basis-signal` | $0.015 | `asset` (`min_yield_apr_pct`) | Net-of-borrow basis yield per venue, best trade |
+| `xstock-basis` | $0.015 | `symbol` (`size_usd`) | xStock vs Phoenix stock perp: funding APR, round-trip cost at size, breakeven days, TRADE / MARGINAL / NO_TRADE / TOO_THIN |
 
 ## StonkFun reward coins (Token-2022 transfer-tax coins paired to xStocks, pre-stocks, ZEC)
 

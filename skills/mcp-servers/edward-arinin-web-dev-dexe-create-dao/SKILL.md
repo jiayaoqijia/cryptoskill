@@ -161,6 +161,17 @@ SIMPLE fields. The coherence guards still run. Key rules for hand-built params:
 - [ ] `sum(amounts) ≤ mintedTotal`, and `cap ≥ mintedTotal > 0` (never cap=0)?
 - [ ] validating on testnet (97) first, or the user explicitly asked for mainnet?
 
+## Variant — a treasury run by AI agents (`dexe_agent_treasury_create`)
+
+For "a DAO my agents run, with humans able to veto", use
+`dexe_agent_treasury_create` (profile `agents`: `DEXE_TOOLSETS=core,agents`)
+instead of hand-tuning recipients and validators. Pass `agents` (2..9
+`{address, role}`), `approvalsNeeded` (k), and `humanValidators` (1..5). It
+sizes equal agent shares so k agents reach quorum and k−1 do not, seats the
+validators at deploy, and previews the guarantees, including the testnet-97
+turnout caveat. The preview/confirm flow is the same as above. Details:
+docs/AGENT-TREASURY.md.
+
 ## After deploy
 
 The result includes `predictedGovPool` — the DAO's GovPool address once the tx

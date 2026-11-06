@@ -7,7 +7,7 @@ description: SolEnrich onchain intelligence API for Solana agents, pay-per-call 
 
 SolEnrich turns raw Solana data into verdicts an agent can act on: SAFE / CAUTION / RISKY for a token,
 EXIT / DERISK / HOLD for a position you hold, GEM / WATCH / NOISE for a StonkFun coin, best venue for a
-perp at your size. 51 paid endpoints plus one free, $0.001 to $0.25 per call, settled over x402. No
+perp at your size. 52 paid endpoints plus one free, $0.001 to $0.25 per call, settled over x402. No
 account, no API key: the agent pays USDC per request from its own wallet.
 
 Base URL: `https://api.solenrich.com`
@@ -62,6 +62,7 @@ so a briefing costs the same as JSON and never hallucinates.
 | Should my AudaceFi league agent send this swap intent | `audace-intent-check` | $0.05 |
 | Best venue for a SOL / BTC / ETH perp at my size | `perps-venue-comparison` | $0.02 |
 | Funding and OI across Jupiter, Adrena, Flash, Phoenix, Hyperliquid, dYdX | `perps-cross-venue-funding` | $0.015 |
+| Is the xStock vs Phoenix perp basis trade worth it at my size (NVDA, SPY, QQQ, …) | `xstock-basis` | $0.015 |
 | Where is Hyperliquid smart money positioned | `hyperliquid-smart-money` | $0.05 |
 | Which StonkFun coins look early, real, and paying | `stonk-gems` | $0.03 |
 | Is this StonkFun coin paying holders, what does the tax cost | `stonk-reward-risk` | $0.005 |

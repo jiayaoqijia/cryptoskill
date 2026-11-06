@@ -38,5 +38,12 @@
   ],
   "core": [
     "packages/perps-controller/**"
+  ],
+  "terminal": [
+    "src/features/perpetuals/**",
+    "src/app/order/**",
+    "src/server/perps/**",
+    "electron/services/mm-perps-*",
+    "electron/services/hyperliquid-*"
   ]
 }

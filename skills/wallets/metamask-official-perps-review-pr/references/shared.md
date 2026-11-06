@@ -10,13 +10,22 @@ Every confirmed violation of an applicable Perps anti-pattern is blocking and re
 
 ## Controller Portability (Core)
 
-`PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; mobile and extension both consume the package. Controller code must stay platform-agnostic, and app code must go through the published surface.
+`PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; Mobile, Extension and Terminal consume the package. Controller code must stay platform-agnostic, and app code must go through the published surface.
 
 - [ ] **Platform import in controller** — `react-native`, `Engine`, `Sentry`, `DevLogger`, browser APIs, or extension globals imported in `packages/perps-controller`. All platform services must flow through `PerpsPlatformDependencies` (DI), passed as the `infrastructure` constructor param.
 - [ ] **Deep import from app code** — app files importing controller internals by path (`@metamask/perps-controller/dist/...`, a relative path into a linked checkout) instead of the package's public exports.
 - [ ] **`__DEV__` or platform globals in controller code** — must not appear in controller files; the package has no such globals at build time.
 - [ ] **New dependency not in DI interface** — controller code reaching outside its boundary (e.g., importing a hook, React context, or an app utility). Everything the controller needs must come through `PerpsPlatformDependencies`.
-- [ ] **Breaking the publisher contract** — changing PerpsController's public API (state shape, method signatures, event names) without considering both consumers. Controller is a publisher — mobile and extension both consume it.
+- [ ] **Breaking the publisher contract** — changing PerpsController's public API (state shape, method signatures, event names) without considering its consumers. Controller is a publisher — Mobile, Extension and Terminal consume it.
+
+<a id="perps-math-comes-from-the-controller"></a>
+
+## Perps Math Comes From the Controller
+
+Perps trading math (PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin, liquidation, fees, account summary) must come from `@metamask/perps-controller`. Adding, changing or porting such math in a client (Mobile, Extension or Terminal) is blocking unless the PR moves it into the controller or links the Core ticket that does (TAT-4477).
+
+- [ ] **Client-side trading math** — a client file computes one of these values itself instead of importing it from the controller package. Check the controller's `src/utils/` and `src/services/` first; `shared-packages.md` lists the math that must move.
+- [ ] **Copy or port of another client** — the same formula reappears in a second client, or a fix lands in one client's copy only. Copies drift (TP/SL price ↔ RoE existed three times with different results).
 
 <a id="missing-numeric-data-stays-undefined"></a>
 

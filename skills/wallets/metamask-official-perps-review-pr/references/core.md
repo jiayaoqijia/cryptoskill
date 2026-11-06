@@ -6,7 +6,7 @@
 
 A change to controller state shape, method signatures, event names or payloads, or package exports ships with a client migration plan and package-level consumer-style tests.
 
-- [ ] **State shape changes without client migration** — Mobile/Extension selectors and hooks may break.
+- [ ] **State shape changes without client migration** — Mobile, Extension and Terminal selectors and hooks may break.
 - [ ] **Method signature changes without compatibility plan** — exported controller methods need backward compatibility or coordinated client changes.
 - [ ] **Event name/payload drift** — clients and metrics rely on stable events.
 - [ ] **Package export changes without package-level tests** — changing exports must include consumer-style assertions.
@@ -82,4 +82,4 @@ reads. A missing public export is a contract defect even when internal tests pas
 
 ## Evidence Expected Before Core Perps Review
 
-The PR carries a contract impact matrix (state, methods, events, exports, constants), a Mobile/Extension compatibility note or paired PR links, provider abstraction and fallback tests, and grep evidence that no client import or environment global entered the package.
+The PR carries a contract impact matrix (state, methods, events, exports, constants), a Mobile, Extension and Terminal compatibility note or paired PR links, provider abstraction and fallback tests, and grep evidence that no client import or environment global entered the package.

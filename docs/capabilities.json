@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T18:31:01.232774+00:00",
+  "generated_at": "2026-11-06T00:47:04.427973+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -113105,6 +113105,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/gemachdao-gdex-trade-replay": {
+      "name": "gdex-trade-replay",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/gemachdao-gdex-transfers": {
       "name": "gdex-transfers",
       "execution_model": "unsigned_tx_builder",
@@ -224227,13 +224289,13 @@
     }
   },
   "summary": {
-    "discovered": 3604,
-    "processed": 3604,
+    "discovered": 3605,
+    "processed": 3605,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2601,
       "router_orchestrator": 152,
-      "unknown": 351,
+      "unknown": 352,
       "analysis_only": 219,
       "unsigned_tx_builder": 115,
       "local_executor": 103,
@@ -224243,7 +224305,7 @@
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 1247,
-      "can_install_code": 569,
+      "can_install_code": 570,
       "can_write_files": 189,
       "can_browse_web": 253,
       "can_spawn_subagents": 269,
@@ -224251,7 +224313,7 @@
       "requires_private_key": 512,
       "requires_hosted_operator": 343,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 569
+      "mutable_remote_runtime": 570
     }
   }
 }

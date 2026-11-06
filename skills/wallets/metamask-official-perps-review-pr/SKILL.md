@@ -7,7 +7,7 @@ maturity: stable
 
 # Perps static review
 
-Generated from the canonical Perps review rules @ cc1fe2d29937273f1ba3c142d5ef7b1ba9762120. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
+Generated from the canonical Perps review rules @ c8198dd6289791efdf975aff3339faf46ff9fe4d. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
 
 Run only on explicit invocation by name or an explicitly selected workflow. Review source and diff only: no app launch, no product change, no publish, no workspace cleanup. The criteria below are review criteria, not instructions to perform the fixes, releases or migrations they describe.
 
@@ -35,7 +35,8 @@ For maintaining or adapting this skill to another team, see references/maintaini
 Check applicability against the frozen diff and its affected callers. Open each applicable family and examine every rule in it; a family checkbox is complete only when its individual outcomes are recorded.
 
 - [ ] Blocking review checks: Every confirmed violation of an applicable Perps anti-pattern is blocking and requires `REQUEST_CHANGES`; never downgrade it to a non-blocking nit. See references/shared.md#blocking-review-checks
-- [ ] Controller Portability (Core): `PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; mobile and extension both consume the package. See references/shared.md#controller-portability-core
+- [ ] Controller Portability (Core): `PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; Mobile, Extension and Terminal consume the package. See references/shared.md#controller-portability-core
+- [ ] Perps Math Comes From the Controller: Perps trading math (PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin, liquidation, fees, account summary) must come from `@metamask/perps-controller`. See references/shared.md#perps-math-comes-from-the-controller
 - [ ] Missing numeric data stays undefined: Missing Perps numeric data must remain `undefined` through provider adapters, controller state, selectors, hooks and calculations. See references/shared.md#missing-numeric-data-stays-undefined
 - [ ] Magic Strings, Magic Numbers & Placeholder Values: Constants live in the controller package (`core/packages/perps-controller/src/constants/perpsConfig.ts`, exported by `@metamask/perps-controller`) and in the reviewed client's UI constants module. See references/shared.md#magic-strings-magic-numbers-placeholder-values
 - [ ] Protocol Abstraction: Execution identity inferred from display fields: Preserve the venue's documented identity at the provider boundary and expose a stable opaque ID shared by REST and WebSocket paths. See references/shared.md#protocol-abstraction
@@ -51,5 +52,5 @@ Check applicability against the frozen diff and its affected callers. Open each 
 
 ## Cross-repository conformity
 
-- [ ] When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map in references/parity.md. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Read consumers from the Mobile, Extension and Core reference checkouts supplied with the task and cite the revision you read; an unavailable checkout is NOT_CHECKED, not verified by this review.
-- [ ] When controller state, methods, events, exports or package versions change, inspect Core and both consumers at recorded revisions, using references/shared-packages.md for the shared surface and references/owned-paths.json for the paths this review covers. Check public imports, compatibility and migrations. Report evidence gaps; do not claim that clients compile from source inspection.
+- [ ] When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map in references/parity.md. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Read consumers from the Mobile, Extension, Terminal and Core reference checkouts supplied with the task and cite the revision you read; an unavailable checkout is NOT_CHECKED, not verified by this review.
+- [ ] When controller state, methods, events, exports or package versions change, inspect Core and its consumers at recorded revisions, using references/shared-packages.md for the shared surface and references/owned-paths.json for the paths this review covers. Check public imports, compatibility and migrations. Report evidence gaps; do not claim that clients compile from source inspection.

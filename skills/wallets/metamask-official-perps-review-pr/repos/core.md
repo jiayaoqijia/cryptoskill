@@ -12,7 +12,7 @@ Required for changes to the controller package or its public contract, in additi
 - [ ] `#ensureUnifiedAccountEnabled` — Retry vs Permanent-Failure Cache Semantics: An attempted unified-account setup that fails either sets the retry flag (`#unifiedAccountSetupNeedsRetry`, transient) or caches `{ attempted: true, enabled: false }` in `TradingReadinessCache`… See references/core.md#ensureunifiedaccountenabled-retry-vs-permanent-failure-cache-semantics
 - [ ] Metered Benefits Need a Strict Improvement: A winning fee source and an actual reduction in the charged fee are separate conditions. See references/core.md#metered-benefits-need-a-strict-improvement
 - [ ] Read-only Account Guards Cover Every Write: Inventory exchange calls, transfers, cancellation, withdrawals and registered venue-key paths before claiming an account is read-only. See references/core.md#read-only-account-guards-cover-every-write
-- [ ] Evidence Expected Before Core Perps Review: The PR carries a contract impact matrix (state, methods, events, exports, constants), a Mobile/Extension compatibility note or paired PR links, provider abstraction and fallback tests, and grep… See references/core.md#evidence-expected-before-core-perps-review
+- [ ] Evidence Expected Before Core Perps Review: The PR carries a contract impact matrix (state, methods, events, exports, constants), a Mobile, Extension and Terminal compatibility note or paired PR links, provider abstraction and fallback tests,… See references/core.md#evidence-expected-before-core-perps-review
 
 ## Verdict and handoff
 

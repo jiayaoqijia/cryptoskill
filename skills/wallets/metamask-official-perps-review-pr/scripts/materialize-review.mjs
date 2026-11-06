@@ -14,8 +14,9 @@ const CLIENTS = {
   mobile: { repo: 'metamask-mobile' },
   extension: { repo: 'metamask-extension' },
   core: { repo: 'core' },
+  terminal: { repo: 'va-mmcx-terminal' },
 };
-const USAGE = 'Usage: materialize-review.mjs --library <perps-library> [--out <skill-directory>] [--analyzer-out <file> --client <mobile|extension|core>] [--check]';
+const USAGE = 'Usage: materialize-review.mjs --library <perps-library> [--out <skill-directory>] [--analyzer-out <file> --client <mobile|extension|core|terminal>] [--check]';
 
 const args = process.argv.slice(2);
 const options = {};
@@ -33,7 +34,7 @@ if (options.client && !CLIENTS[options.client]) throw new Error(`Unknown client:
 
 const library = path.resolve(options.library);
 const out = path.resolve(options.out ?? path.join(path.dirname(fileURLToPath(import.meta.url)), '..'));
-const files = ['review/antipatterns.md', 'review/antipatterns.mobile.md', 'review/antipatterns.extension.md', 'review/antipatterns.core.md', 'review/parity.md', 'review/shared-packages.md', 'owned-paths.json'];
+const files = ['review/antipatterns.md', 'review/antipatterns.mobile.md', 'review/antipatterns.extension.md', 'review/antipatterns.core.md', 'review/antipatterns.terminal.md', 'review/parity.md', 'review/shared-packages.md', 'owned-paths.json'];
 const documents = Object.fromEntries(files.map(file => [file, fs.readFileSync(path.join(library, file), 'utf8')]));
 const revision = execFileSync('git', ['-C', library, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const dirty = execFileSync('git', ['-C', library, 'status', '--porcelain', '--', ...files], { encoding: 'utf8' }).trim();
@@ -72,6 +73,7 @@ const perps = sections('review/antipatterns.md');
 const mobile = sections('review/antipatterns.mobile.md');
 const extension = sections('review/antipatterns.extension.md');
 const core = sections('review/antipatterns.core.md');
+const terminal = sections('review/antipatterns.terminal.md');
 
 // `inline` builds the self-contained analyzer copy: a shell-less analyzer cannot open
 // a reference file, so it receives the full family text under its own row instead.
@@ -109,8 +111,8 @@ function baseBody(inline) {
     'Check applicability against the frozen diff and its affected callers. Open each applicable family and examine every rule in it; a family checkbox is complete only when its individual outcomes are recorded.', '',
     ...rows('shared', perps, inline),
     '## Cross-repository conformity', '',
-    `- [ ] When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map${inline ? ' below' : ' in references/parity.md'}. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Read consumers from the Mobile, Extension and Core reference checkouts supplied with the task and cite the revision you read; an unavailable checkout is NOT_CHECKED, not verified by this review.`,
-    `- [ ] When controller state, methods, events, exports or package versions change, inspect Core and both consumers at recorded revisions${inline ? '' : ', using references/shared-packages.md for the shared surface and references/owned-paths.json for the paths this review covers'}. Check public imports, compatibility and migrations. Report evidence gaps; do not claim that clients compile from source inspection.`, '',
+    `- [ ] When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map${inline ? ' below' : ' in references/parity.md'}. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Read consumers from the Mobile, Extension, Terminal and Core reference checkouts supplied with the task and cite the revision you read; an unavailable checkout is NOT_CHECKED, not verified by this review.`,
+    `- [ ] When controller state, methods, events, exports or package versions change, inspect Core and its consumers at recorded revisions${inline ? '' : ', using references/shared-packages.md for the shared surface and references/owned-paths.json for the paths this review covers'}. Check public imports, compatibility and migrations. Report evidence gaps; do not claim that clients compile from source inspection.`, '',
     ...(inline
       ? [documents['review/parity.md'].replace(/^#/gm, '##').trim(), '',
          documents['review/shared-packages.md'].replace(/^#/gm, '##').trim(), '',
@@ -137,18 +139,20 @@ function overlayBody(client, inline) {
       ...verdict,
     ].join('\n').trim();
   }
-  const [family, list, condition] = client === 'extension'
-    ? ['extension', extension, 'Required for Extension changes, in addition to the Perps families above.']
-    : ['core', core, 'Required for changes to the controller package or its public contract, in addition to the Perps families above.'];
+  const [family, list, condition, heading] = {
+    extension: ['extension', extension, 'Required for Extension changes, in addition to the Perps families above.', 'Extension'],
+    terminal: ['terminal', terminal, 'Required for Terminal changes, in addition to the Perps families above.', 'Terminal'],
+    core: ['core', core, 'Required for changes to the controller package or its public contract, in addition to the Perps families above.', 'Core'],
+  }[client];
   return [
-    `## ${client === 'extension' ? 'Extension' : 'Core'} criteria`, '',
+    `## ${heading} criteria`, '',
     condition, '',
     ...rows(family, list, inline),
     ...verdict,
   ].join('\n').trim();
 }
 
-const criteriaFiles = Object.entries({ shared: perps, mobile, extension, core }).map(([client, list]) => [
+const criteriaFiles = Object.entries({ shared: perps, mobile, extension, core, terminal }).map(([client, list]) => [
   path.join(out, `references/${client}.md`),
   `# ${client === 'shared' ? 'Shared Perps' : CLIENTS[client].repo} review rules\n\n` +
     list.map(({ title, slug, body }) => `<a id="${slug}"></a>\n\n## ${title}\n\n${body.replace(/^[-*] /gm, '- [ ] ')}\n`).join('\n'),

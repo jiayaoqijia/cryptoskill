@@ -7,7 +7,9 @@ Companion to `parity.md`. Tracks what's shared, what should be, and what can't b
 
 **Utils** (`src/utils/`) and **Services** (`src/services/`) of `@metamask/perps-controller`: check them on core `main` before adding a client-side copy.
 
-## Priority 1 -- Move to Controller (pure TS, no React deps)
+## Perps math that must come from the controller
+
+Reference for the blocking rule *Perps Math Comes From the Controller* in `antipatterns.md`. These Mobile utilities hold perps trading math; until each one is exported by `@metamask/perps-controller` (TAT-4477), a client PR that adds, changes or ports the same math is blocking unless it moves the math into the controller or links the Core ticket that does.
 
 | Utility | Mobile Path | What It Does |
 |---|---|---|
@@ -19,8 +21,6 @@ Companion to `parity.md`. Tracks what's shared, what should be, and what can't b
 | `orderBookGrouping.ts` | `UI/Perps/utils/` | Order book aggregation |
 | `tpslValidation.ts` | `UI/Perps/utils/` | TP/SL validation |
 | `amountConversion.ts` | `UI/Perps/utils/` | USD <-> size conversions |
-
-Once in controller, extension imports directly instead of reimplementing.
 
 ## Priority 2 -- Exact Duplicates to Consolidate
 
@@ -45,10 +45,10 @@ Once in controller, extension imports directly instead of reimplementing.
 
 ## Sync Mechanism
 
-The controller lives in Core (`packages/perps-controller`) and both clients consume the published `@metamask/perps-controller`; there is no in-repo copy or sync script any more.
+The controller lives in Core (`packages/perps-controller`) and Mobile, Extension and Terminal consume the published `@metamask/perps-controller`; there is no in-repo copy or sync script any more.
 
-**Steps for each Priority 1 item:**
+**Steps for each utility in *Perps math that must come from the controller*:**
 1. Move the utility from `app/components/UI/Perps/utils/X.ts` into `core/packages/perps-controller/src/utils/X.ts` and export it
 2. Publish the controller package
-3. Bump `@metamask/perps-controller` in mobile and extension and import from the package
-4. Delete both clients' duplicates
+3. Bump `@metamask/perps-controller` in Mobile, Extension and Terminal and import from the package
+4. Delete the clients' duplicates
