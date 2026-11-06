@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-05T23:47:19.944Z",
+ "checkedAt": "2026-11-06T02:47:21.258Z",
  "source": "dromos.kitchen",
  "boardAsOf": "2026-11-05T23:40:39.81527Z",
  "positions": [
@@ -145,13 +145,13 @@
    "lastMoved": 1793238407,
    "split": [
     {
-     "chain": "ethereum",
-     "gauge": "0x9ce6331e5d7a42db5876a9e5b1205e07502fce06",
+     "chain": "robinhood",
+     "gauge": "0x6647f0897e26c41715699c65be8ff1d670c07757",
      "share": 0.25
     },
     {
-     "chain": "robinhood",
-     "gauge": "0x6647f0897e26c41715699c65be8ff1d670c07757",
+     "chain": "ethereum",
+     "gauge": "0x9ce6331e5d7a42db5876a9e5b1205e07502fce06",
      "share": 0.25
     },
     {
@@ -193,12 +193,17 @@
    "earned7d": 90.83,
    "apr7d": 0.3099,
    "moves7d": 1,
-   "lastMoved": 1793322345,
+   "lastMoved": 1793927478,
    "split": [
     {
      "chain": "base",
-     "gauge": "0x79fc4cbd860e3528f092bd7d9261e0cd141a4803",
-     "share": 1
+     "gauge": "0x25750d650f3ff6876ba80f9eae47618a3db95113",
+     "share": 0.6714036990000001
+    },
+    {
+     "chain": "base",
+     "gauge": "0x4e054a8542d5b772ab1bda187f14208274c9867a",
+     "share": 0.32859630100000004
     }
    ]
   },
@@ -242,11 +247,6 @@
  "together": [
   {
    "chain": "base",
-   "gauge": "0x79fc4cbd860e3528f092bd7d9261e0cd141a4803",
-   "share": 0.2
-  },
-  {
-   "chain": "base",
    "gauge": "0x77bf070d246c5b2823c9c8059d0e26b88b614c91",
    "share": 0.125
   },
@@ -267,6 +267,11 @@
   },
   {
    "chain": "base",
+   "gauge": "0x79fc4cbd860e3528f092bd7d9261e0cd141a4803",
+   "share": 0.1
+  },
+  {
+   "chain": "base",
    "gauge": "0x75d8f2fe351b97771348b1ff4c3f8f388d506158",
    "share": 0.1
   },
@@ -274,6 +279,11 @@
    "chain": "base",
    "gauge": "0x1b9a4cbe66635cef9288bc2218734c2fb5e0a1e7",
    "share": 0.0704821661719849
+  },
+  {
+   "chain": "base",
+   "gauge": "0x25750d650f3ff6876ba80f9eae47618a3db95113",
+   "share": 0.06714036990000001
   },
   {
    "chain": "base",
@@ -286,13 +296,18 @@
    "share": 0.0344604766
   },
   {
-   "chain": "ethereum",
-   "gauge": "0x9ce6331e5d7a42db5876a9e5b1205e07502fce06",
-   "share": 0.025
+   "chain": "base",
+   "gauge": "0x4e054a8542d5b772ab1bda187f14208274c9867a",
+   "share": 0.0328596301
   },
   {
    "chain": "robinhood",
    "gauge": "0x6647f0897e26c41715699c65be8ff1d670c07757",
+   "share": 0.025
+  },
+  {
+   "chain": "ethereum",
+   "gauge": "0x9ce6331e5d7a42db5876a9e5b1205e07502fce06",
    "share": 0.025
   },
   {
