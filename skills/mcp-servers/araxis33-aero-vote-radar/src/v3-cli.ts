@@ -27,8 +27,8 @@ const RAW = "https://raw.githubusercontent.com/dromos-labs/metadex-public/main/d
 // eth_getLogs back to launch (publicnode refuses history on Base, Optimism,
 // Arbitrum and Robinhood). `step` is the block span tried first; refused calls
 // are split further in readFeesCollected.
-const CHAINS: Record<string, { registry: string; rpc: string; logs: string; step: bigint }> = {
-  base: { registry: "0x7b2A2c12dC5Ea2a31455952a05031C3E4BB28F3E", rpc: "", logs: V3_LOGS_RPC_URL, step: 1_000n },
+const CHAINS: Record<string, { registry: string; rpc: string; logs: string; step: bigint; logsByEvent?: boolean }> = {
+  base: { registry: "0x7b2A2c12dC5Ea2a31455952a05031C3E4BB28F3E", rpc: "", logs: V3_LOGS_RPC_URL, step: 1_000n, logsByEvent: true },
   ethereum: { registry: "0xdd1705e23762F4D6e44D8C31BD8Ea80c54612239", rpc: "https://ethereum-rpc.publicnode.com", logs: "https://mainnet.gateway.tenderly.co", step: 1_000n },
   optimism: { registry: "0xb6F9705A631CC1C0E8570FFde48882C95E2Df408", rpc: "https://optimism-rpc.publicnode.com", logs: "https://mainnet.optimism.io", step: 10_000n },
   arbitrum: { registry: "0x9E635b2c689fC52201DF7eF1C9FA607c2F58f666", rpc: "https://arb1.arbitrum.io/rpc", logs: "https://arb1.arbitrum.io/rpc", step: 100_000n },
@@ -65,21 +65,16 @@ async function scanChain(name: string, now: Date): Promise<{ scan: V3ScanFile; u
     getBlock(a: { blockNumber: bigint }): Promise<{ timestamp: bigint }>;
   };
   const logs = createPublicClient({ chain: VIEM_CHAINS[name], transport: http(cfg.logs, { retryCount: 3, retryDelay: 1000 }) });
-  // Block time measured over the last 100,000 blocks (or what the chain has), so the
-  // 96 h fee window maps to the right block range on 0.1 s and 12 s chains alike.
   const latest = await reads.getBlockNumber();
-  const back = latest > 100_000n ? 100_000n : latest - 1n;
-  const [a, b] = await Promise.all([reads.getBlock({ blockNumber: latest }), reads.getBlock({ blockNumber: latest - back })]);
-  const blockTimeSec = Number(a.timestamp - b.timestamp) / Number(back);
   let unpriced = 0;
   const scan = await scanV3(
-    { readContract: reads.readContract, getBlockNumber: async () => latest, getLogs: logs.getLogs as unknown as V3Client["getLogs"] },
+    { readContract: reads.readContract, getBlockNumber: async () => latest, getBlock: reads.getBlock, getLogs: logs.getLogs as unknown as V3Client["getLogs"] },
     (await registryAddress(name)) as `0x${string}`,
     {
       chain: name,
       now,
-      blockTimeSec,
       logStep: cfg.step,
+      logsByEvent: cfg.logsByEvent,
       priceOf: async (tokens) => {
         const extra = name === "base" ? [OLD_AERO] : [];
         const prices = await getTokenPrices([...tokens, ...extra], name);

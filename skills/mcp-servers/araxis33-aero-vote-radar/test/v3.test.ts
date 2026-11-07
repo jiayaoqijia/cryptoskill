@@ -14,6 +14,8 @@ import {
   registryFromDeployment,
   scanV3,
   type V3Client,
+  firstBlockAtOrAfter,
+  readFeesByEvent,
 } from "../src/v3.js";
 
 const e18 = 10n ** 18n;
@@ -207,9 +209,55 @@ test("deployment file: factoryRegistry found by name, any case; absent or malfor
   assert.equal(registryFromDeployment({ voter: "0x" + "b".repeat(40) }), undefined);
 });
 
+test("fees by event: keeps only known emitters, splits a refused range, covers every range once", async () => {
+  const seen: [bigint, bigint][] = [];
+  const c = {
+    readContract: async () => { throw new Error("unused"); },
+    getLogs: async ({ fromBlock, toBlock }: { fromBlock: bigint; toBlock: bigint }) => {
+      if (toBlock - fromBlock + 1n > 500n) throw new Error("range too large");
+      seen.push([fromBlock, toBlock]);
+      return fromBlock === 0n
+        ? [
+            { address: "0xAA", blockNumber: 1n, args: { _gauge: "0xG", _token: "0xT", _amount: 5n } },
+            { address: "0xBAD", blockNumber: 2n, args: { _gauge: "0xG", _token: "0xT", _amount: 999n } },
+          ]
+        : [];
+    },
+  };
+  const out = await readFeesByEvent(c as never, ["0xaa" as never], 0n, 1_999n, 1_000n);
+  assert.deepEqual(out.map((x) => x.amount), [5n]);
+  seen.sort((a, b) => Number(a[0] - b[0]));
+  assert.equal(seen[0][0], 0n);
+  assert.equal(seen[seen.length - 1][1], 1_999n);
+  for (let i = 1; i < seen.length; i++) assert.equal(seen[i][0], seen[i - 1][1] + 1n);
+});
+
+test("first block at a time: holds when the block time changes mid-chain", async () => {
+  // 2 s blocks up to block 1,000, 0.2 s after it: what Base did on 5.11.2026
+  const ts = (n: bigint) => (n <= 1_000n ? n * 2n : 2_000n + ((n - 1_000n) * 2n) / 10n);
+  const c = { getBlock: async ({ blockNumber }: { blockNumber: bigint }) => ({ timestamp: ts(blockNumber) }) };
+  const latest = 11_000n; // 2,000 s after the change, at t = 4,000
+  assert.equal(await firstBlockAtOrAfter(c, 3_000, latest), 6_000n); // inside the fast part
+  assert.equal(await firstBlockAtOrAfter(c, 1_000, latest), 500n); // back in the slow part
+  assert.equal(await firstBlockAtOrAfter(c, 0, latest), 0n);
+  assert.equal(await firstBlockAtOrAfter(c, 9_999, latest), latest); // never past the head
+});
+
+test("first block at a time: never asks for blocks far older than the answer", async () => {
+  const latest = 50_000_000n;
+  let oldest = latest;
+  const c = { getBlock: async ({ blockNumber }: { blockNumber: bigint }) => {
+    if (blockNumber < oldest) oldest = blockNumber;
+    return { timestamp: blockNumber };
+  } };
+  assert.equal(await firstBlockAtOrAfter(c, 49_990_000, latest), 49_990_000n);
+  assert.ok(oldest > 49_900_000n, `read back to ${oldest}`);
+});
+
 test("scan: a registry with no voter yet is not live and reads nothing else", async () => {
   const c = Object.assign(fake({ "0xR|leafVoter": "0x0000000000000000000000000000000000000000", "0xR|gaugeFactories": [] }), {
     getBlockNumber: async () => { throw new Error("must not be called"); },
+    getBlock: async () => { throw new Error("must not be called"); },
   });
   const r = await scanV3(c, "0xR", { chain: "base", now: new Date(AERO_LAUNCH_TS * 1000 + 3600_000), priceOf: async () => () => undefined });
   assert.equal(r.status, "not-live");
@@ -240,7 +288,7 @@ test("scan: fee window cut at launch, gauges ranked by per-10k, fees matched to 
         { address: "0xM2", args: { _gauge: "0xG2", _token: "0xUSDC", _amount: 20_000_000n } }, // $20 in a day
       ],
     ),
-    { getBlockNumber: async () => 1_000_000n },
+    { getBlockNumber: async () => 1_000_000n, getBlock: async ({ blockNumber }: { blockNumber: bigint }) => ({ timestamp: BigInt(nowSec) - (1_000_000n - blockNumber) * 2n }) },
   );
   // the fake answers every getLogs call with the same logs; hand them out on the first chunk only
   const getLogs = c.getLogs.bind(c);

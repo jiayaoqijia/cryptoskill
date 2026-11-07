@@ -1,4 +1,5 @@
 import { parseAbi, parseAbiItem, type Address } from "viem";
+import { mapWithConcurrency } from "./util.js";
 
 /**
  * Reader for Aero (MetaDEX v3) — the system that replaced weekly veAERO
@@ -152,7 +153,7 @@ export function v3GaugeYield(input: {
 /** The part of a viem public client this module uses, so tests can pass a fake. */
 export interface V3Client {
   readContract(args: { address: Address; abi: readonly unknown[]; functionName: string; args?: readonly unknown[] }): Promise<unknown>;
-  getLogs(args: { address: Address | Address[]; event: typeof FEES_COLLECTED; fromBlock: bigint; toBlock: bigint }): Promise<
+  getLogs(args: { address?: Address | Address[]; event: typeof FEES_COLLECTED; fromBlock: bigint; toBlock: bigint }): Promise<
     readonly { address?: Address; blockNumber?: bigint | null; args: { _gauge?: Address; _token?: Address; _amount?: bigint } }[]
   >;
 }
@@ -232,10 +233,12 @@ export async function readIncentivePrograms(c: V3Client, rewards: Address): Prom
 export const AERO_LAUNCH_TS = Date.UTC(2026, 9, 22) / 1000;
 /** Fee window, the same 96 h the per-day fee figure uses (src/feeRate.ts). */
 export const V3_WINDOW_HOURS = 96;
-/** Base produces a block every 2 s; used to turn the fee window into a block range. */
-export const BASE_BLOCK_TIME_SEC = 2;
 /** Rewards contracts per getLogs filter, so a public RPC is not handed hundreds of addresses at once. */
 export const V3_LOG_ADDRESS_CHUNK = 100;
+/** Address chunks read at once: 96 h of 0.2 s blocks is 1,700+ getLogs calls per chunk. */
+export const V3_LOG_CHUNK_CONCURRENCY = 4;
+/** Block ranges read at once by event alone: the logs node allows about 10 calls a second. */
+export const V3_LOG_RANGE_CONCURRENCY = 1;
 /** Gauges whose per-gauge reads run together. */
 export const V3_READ_GROUP = 10;
 /** Blocks per getLogs call: the cap of the logs RPC (V3_LOGS_RPC_URL). */
@@ -297,17 +300,48 @@ const ZERO = /^0x0*$/;
  * streaming now, and the fees swept to its allocators over the last
  * V3_WINDOW_HOURS (cut at launch). Sorted by what 10,000 sAERO would earn a day.
  */
+/**
+ * The first block at or after `targetSec`, found from block timestamps. Never
+ * work this out from a block time: Base went from 2 s to 0.2 s blocks on
+ * 5.11.2026, and a block count measured after that reached back to launch while
+ * the fees were still divided by 96 h, tripling every Base figure.
+ */
+export async function firstBlockAtOrAfter(
+  c: { getBlock(a: { blockNumber: bigint }): Promise<{ timestamp: bigint }> },
+  targetSec: number,
+  latest: bigint,
+): Promise<bigint> {
+  const before = async (n: bigint) => Number((await c.getBlock({ blockNumber: n })).timestamp) < targetSec;
+  // Walk back from the head first: public nodes refuse blocks older than they keep.
+  let hi = latest;
+  let lo = 0n;
+  for (let step = 1_000n; hi > 0n; step *= 2n) {
+    const probe = hi > step ? hi - step : 0n;
+    if (await before(probe)) {
+      lo = probe + 1n;
+      break;
+    }
+    hi = probe;
+  }
+  while (lo < hi) {
+    const mid = (lo + hi) / 2n;
+    if (await before(mid)) lo = mid + 1n;
+    else hi = mid;
+  }
+  return lo;
+}
+
 export async function scanV3(
-  c: V3Client & { getBlockNumber(): Promise<bigint> },
+  c: V3Client & { getBlockNumber(): Promise<bigint>; getBlock(a: { blockNumber: bigint }): Promise<{ timestamp: bigint }> },
   registry: Address,
   opts: {
     chain: string;
     now: Date;
     priceOf: (tokens: string[]) => Promise<(token: string) => TokenPrice | undefined>;
-    /** Seconds per block on this chain (Base 2, Arbitrum ~0.27, Robinhood ~0.1, Ethereum 12). */
-    blockTimeSec?: number;
     /** Blocks per getLogs call to start from; refused calls are split further. */
     logStep?: bigint;
+    /** The logs node takes a query by event alone: one call per range instead of one per address chunk. */
+    logsByEvent?: boolean;
   },
 ): Promise<V3ScanFile> {
   const base = { checkedAt: opts.now.toISOString(), chain: opts.chain, registry };
@@ -317,14 +351,20 @@ export async function scanV3(
   const nowSec = Math.floor(opts.now.getTime() / 1000);
   const windowSec = Math.max(0, Math.min(V3_WINDOW_HOURS * 3600, nowSec - AERO_LAUNCH_TS));
   const latest = await c.getBlockNumber();
-  const blockTime = opts.blockTimeSec ?? BASE_BLOCK_TIME_SEC;
-  const span = BigInt(Math.ceil(windowSec / blockTime));
-  const dayBlocks = BigInt(Math.ceil(86_400 / blockTime));
+  const windowStartBlock = windowSec > 0 ? await firstBlockAtOrAfter(c, nowSec - windowSec, latest) : latest;
+  const dayStart = await firstBlockAtOrAfter(c, nowSec - Math.min(86_400, windowSec), latest);
   const fees: Awaited<ReturnType<typeof readFeesCollected>> = [];
   if (windowSec > 0) {
     const rewards = gauges.map((g) => g.rewards);
-    for (let i = 0; i < rewards.length; i += V3_LOG_ADDRESS_CHUNK) {
-      fees.push(...(await readFeesCollected(c, rewards.slice(i, i + V3_LOG_ADDRESS_CHUNK), latest > span ? latest - span : 0n, latest, opts.logStep ?? V3_LOG_BLOCK_STEP)));
+    if (opts.logsByEvent) {
+      fees.push(...(await readFeesByEvent(c, rewards, windowStartBlock, latest, opts.logStep ?? V3_LOG_BLOCK_STEP)));
+    } else {
+      const chunks: Address[][] = [];
+      for (let i = 0; i < rewards.length; i += V3_LOG_ADDRESS_CHUNK) chunks.push(rewards.slice(i, i + V3_LOG_ADDRESS_CHUNK));
+      const parts = await mapWithConcurrency(chunks, V3_LOG_CHUNK_CONCURRENCY, (chunk) =>
+        readFeesCollected(c, chunk, windowStartBlock, latest, opts.logStep ?? V3_LOG_BLOCK_STEP),
+      );
+      fees.push(...parts.flat());
     }
   }
 
@@ -346,7 +386,6 @@ export async function scanV3(
   const tokens = [...fees.map((f) => f.token), ...rows.flatMap((r) => r.programs.map((p) => p.token))];
   const priceOf = await opts.priceOf(tokens);
 
-  const dayStart = latest > dayBlocks ? latest - dayBlocks : 0n;
   const out: V3ScanGauge[] = rows.map(({ g, point, programs, meta }) => {
     const weight = gaugeWeightAt(point, nowSec);
     const mine = fees.filter((f) => f.gauge.toLowerCase() === g.gauge.toLowerCase());
@@ -371,6 +410,46 @@ export async function scanV3(
   });
   out.sort((a, b) => (b.usdPerDayPer10k ?? -1) - (a.usdPerDayPer10k ?? -1));
   return { ...base, status: "live", leafVoter, windowHours: windowSec / 3600, gauges: out };
+}
+
+/**
+ * `FeesCollected` by event alone, kept only from the given rewards contracts: anyone
+ * can emit an event of this name, so the emitter is what counts. At 0.2 s blocks a
+ * 96 h window is 1,700+ ranges, far too many to ask once per address chunk.
+ */
+export async function readFeesByEvent(
+  c: V3Client,
+  rewards: readonly Address[],
+  fromBlock: bigint,
+  toBlock: bigint,
+  step = 1_000n,
+): Promise<{ rewards: Address; gauge: Address; token: Address; amount: bigint; block?: bigint }[]> {
+  const known = new Set(rewards.map((r) => r.toLowerCase()));
+  const get = async (from: bigint, to: bigint): Promise<Awaited<ReturnType<V3Client["getLogs"]>>> => {
+    try {
+      return await c.getLogs({ event: FEES_COLLECTED, fromBlock: from, toBlock: to });
+    } catch (err) {
+      if (to - from + 1n <= V3_LOG_MIN_BLOCKS) throw err;
+      const mid = from + (to - from) / 2n;
+      return [...(await get(from, mid)), ...(await get(mid + 1n, to))];
+    }
+  };
+  const ranges: [bigint, bigint][] = [];
+  for (let from = fromBlock; from <= toBlock; from += step) ranges.push([from, from + step - 1n < toBlock ? from + step - 1n : toBlock]);
+  const parts = await mapWithConcurrency(ranges, V3_LOG_RANGE_CONCURRENCY, ([from, to]) => get(from, to));
+  const out: { rewards: Address; gauge: Address; token: Address; amount: bigint; block?: bigint }[] = [];
+  for (const l of parts.flat()) {
+    if (!l.address || !known.has(l.address.toLowerCase())) continue;
+    if (!l.args._gauge || !l.args._token || l.args._amount === undefined) continue;
+    out.push({
+      rewards: l.address,
+      gauge: l.args._gauge,
+      token: l.args._token,
+      amount: l.args._amount,
+      ...(l.blockNumber != null ? { block: l.blockNumber } : {}),
+    });
+  }
+  return out;
 }
 
 /** `FeesCollected` from the given rewards contracts over a block range, in chunks of `step` blocks. */
