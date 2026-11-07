@@ -1,4 +1,5 @@
 import { CHAIN_NAMES, chainOf, perDay } from "./radar.js";
+import { mapWithConcurrency } from "./util.js";
 import type { V3ScanFile } from "./v3.js";
 
 /**
@@ -23,6 +24,10 @@ const SEL_ALLOCATION = "0x1c3a964f"; // allocations(uint256,address) -> uint128
 
 export const MAX_STAKES = 20;
 export const RPC_TIMEOUT_MS = 8000;
+/** How many stakes' id/power lookups run at once. Each costs two serial round trips, so reading
+ * all MAX_STAKES one at a time could mean up to 40 sequential RPC calls before a wallet with many
+ * stakes gets to its per-network reads (which already run in parallel, below). */
+export const STAKE_READ_CONCURRENCY = 5;
 
 /** Tried in order; the first that answers wins. BASE_RPC_URL, when set, goes first. */
 export const CHAIN_RPCS: Record<string, string[]> = {
@@ -106,12 +111,12 @@ export async function readStakeOn(chain: string, id: bigint, cooldown: number): 
 
 export async function readWalletStakes(address: string): Promise<WalletStakes> {
   const count = Number(big(await ethCall("base", VOTING_ESCROW, SEL_BALANCE_OF + word(address))));
-  const stakes: Stake[] = [];
-  for (let i = 0; i < Math.min(count, MAX_STAKES); i++) {
+  const indices = Array.from({ length: Math.min(count, MAX_STAKES) }, (_, i) => i);
+  const stakes: Stake[] = await mapWithConcurrency(indices, STAKE_READ_CONCURRENCY, async (i) => {
     const id = big(await ethCall("base", VOTING_ESCROW, SEL_TOKEN_OF_OWNER + word(address) + hexOf(i)));
     const sAero = Number(big(await ethCall("base", VOTING_ESCROW, SEL_POWER_OF + hexOf(id)))) / 1e18;
-    stakes.push({ id, sAero, chains: {} });
-  }
+    return { id, sAero, chains: {} };
+  });
   // Networks are read in parallel; one that doesn't answer is reported, not fatal.
   const failed: string[] = [];
   if (stakes.length) {
