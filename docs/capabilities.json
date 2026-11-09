@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T00:50:19.255579+00:00",
+  "generated_at": "2026-11-09T06:44:04.122737+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -24150,7 +24150,7 @@
       "hosted_operators": []
     },
     "analytics/subgraph-registry": {
-      "name": "subgraph-registry",
+      "name": "subgraph-registry-mcp",
       "execution_model": "router_orchestrator",
       "capabilities": {
         "auto_invocable": {
@@ -24189,7 +24189,7 @@
           "source": "extracted"
         },
         "requires_private_key": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -224876,7 +224876,7 @@
       "can_browse_web": 254,
       "can_spawn_subagents": 272,
       "can_move_funds": 301,
-      "requires_private_key": 514,
+      "requires_private_key": 515,
       "requires_hosted_operator": 347,
       "uses_remote_install_script": 43,
       "mutable_remote_runtime": 571
