@@ -1,6 +1,6 @@
 ---
 name: arcadia-finance
-version: 1.4.0
+version: 1.5.0
 description: "DeFi liquidity management on Uniswap and Aero, live on Base, Optimism, Unichain and Robinhood. Deploy concentrated liquidity positions with automated rebalancing, compounding, yield optimization, and leverage, or provide single-sided liquidity to lending pools."
 metadata:
   openclaw:
@@ -36,7 +36,7 @@ Requires: `curl`, `jq`. No other dependencies.
 # Account details (health factor, collateral, debt, positions)
 {baseDir}/arcadia.sh read_account_info '{"account_address":"0x..."}'
 
-# Featured LP strategies with APY
+# Featured LP strategies with APY (last 24 hours at the featured range width)
 {baseDir}/arcadia.sh read_strategy_list '{"featured_only":true}'
 
 # Lending pools (TVL, APY, utilization)
@@ -81,6 +81,8 @@ All write tools return unsigned transactions `{ to, data, value, chainId }`. Sig
 {baseDir}/arcadia.sh read_asset_manager_intents '{"account_address":"0x...","chain_id":8453}'
 {baseDir}/arcadia.sh write_account_automations '{"account_address":"0x...","position_id":12345,"intents":[{"kind":"compound_fees"},{"kind":"rebalance"}],"chain_id":8453}'
 ```
+
+If `write_account_add_liquidity` returns price warnings and no transaction, show the warnings to the user. Call it again with `accept_price_checks` set to the returned list only after the user explicitly confirms. New warnings on a rebuild need a new confirmation.
 
 ## Configuration
 

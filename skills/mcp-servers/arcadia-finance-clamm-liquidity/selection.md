@@ -7,7 +7,7 @@ Use this guide to evaluate whether a strategy makes sense and how to configure i
 ## 1. Pool / Strategy Selection
 
 ```
-read_strategy_list(chain_id: 8453)           // browse all LP strategies + fee APY
+read_strategy_list(chain_id: 8453)           // browse all LP strategies + fee APY (7-day average at the default range)
 read_pool_list(chain_id: 8453)        // check borrow cost for leveraged strategies
 ```
 
@@ -32,7 +32,7 @@ Must be positive to justify the leverage cost. Higher leverage amplifies both si
 
 - Fee tier: higher fee tier (0.3%, 1%) = more fee per trade, better for volatile pairs
 - Volume + TVL: high volume/TVL ratio = fees are being earned actively
-- Active Merkl rewards: extra yield on top, check `read_strategy_list` APY breakdown
+- Active Merkl rewards: extra yield on top of the fee APY
 
 **`numeraire` — context-dependent meaning:**
 
@@ -45,7 +45,7 @@ Must be positive to justify the leverage cost. Higher leverage amplifies both si
 
 Range width is the central tradeoff in any LP strategy. It is set in the Arcadia platform after enabling the rebalancer. Understanding the full tradeoff is essential for choosing parameters — a simple fee APY comparison is not enough.
 
-**Core principle:** The `strategy_apy` from `read_strategy_list` (list view) is the 7-day average APY computed for that strategy's **default range width** (configured per strategy: e.g. very narrow for stables, ±7.5% / balanced for most volatile pairs). It is sampled every ~3 hours and averaged over 7d. It already reflects a concentrated range: NOT a full-range / pool-level number. Choosing a different range width changes your actual yield: narrower = higher fee capture but more rebalancing cost/risk, wider = lower fees but fewer rebalances. Call `read_strategy_list(strategy_id: <id>)` to see APY broken down by range width (very_narrow, narrow, balanced, wide, very_wide, full_range). The net return after rebalancing costs, IL, and gas determines the optimal width: see the model below.
+**Core principle:** The `strategy_apy` from `read_strategy_list` (list view) is the 7-day average APY computed for that strategy's **default range width** (configured per strategy: e.g. very narrow for stables, ±7.5% / balanced for most volatile pairs). It is sampled every ~3 hours and averaged over 7d. It already reflects a concentrated range: NOT a full-range / pool-level number. Choosing a different range width changes your actual yield: narrower = higher fee capture but more rebalancing cost/risk, wider = lower fees but fewer rebalances. Call `read_strategy_info(strategy_id: <id>)` to see APY over the last 24 hours broken down by range width (very_narrow, narrow, balanced, wide, very_wide). The net return after rebalancing costs, IL, and gas determines the optimal width: see the model below.
 
 ### The full tradeoff
 
@@ -173,7 +173,7 @@ Monitor periodically with `read_account_info` and `read_account_pnl`. Exit or ad
 ## 6. Quick Checklist Before Opening a Position
 
 ```
-[ ] read_strategy_list → fee_APY noted (7d avg for default range; call with strategy_id for per-range APY)
+[ ] read_strategy_list → fee_APY noted (7d avg for default range; read_strategy_info for 24h per-range APY)
 [ ] read_pool_list → borrow_APY noted (if leveraged)
 [ ] net_APY = fee_APY - (leverage-1) × borrow_APY > 0
 [ ] Pair type matches strategy (volatile/stable for delta neutral)

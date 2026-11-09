@@ -1,158 +1,103 @@
-# Order Types
+# Order types with GmxApiSdk
 
-Detailed reference for all GMX V2 order types, trigger conditions, and execution behavior.
+Use string `kind` / `orderType` values in `prepareOrder()`. The API builds the contract enum and calldata. This reference targets `@gmx-io/sdk@2.2.1`; see [request types](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/utils/orderTransactions/api.ts) and [official examples](https://docs.gmx.io/docs/sdk/v2/examples/).
 
-## OrderType Enum
+## Request mapping and triggers
 
-```typescript
-enum OrderType {
-  MarketSwap = 0,       // Swap at current oracle price
-  LimitSwap = 1,        // Swap when min output amount is achievable
-  MarketIncrease = 2,   // Open/increase position at market price
-  LimitIncrease = 3,    // Open/increase position when trigger price reached
-  MarketDecrease = 4,   // Close/decrease position at market price
-  LimitDecrease = 5,    // Close/decrease position when trigger price reached (take-profit)
-  StopLossDecrease = 6, // Close/decrease position to limit losses
-  Liquidation = 7,      // System-triggered forced closure
-  StopIncrease = 8,     // Open position when price moves past trigger (breakout)
-}
-```
+| Intent | `kind` | `orderType` | Long trigger | Short trigger |
+|--------|--------|-------------|--------------|---------------|
+| Open/add now | `increase` | `market` | Current oracle execution | Current oracle execution |
+| Limit entry | `increase` | `limit` | Price <= trigger | Price >= trigger |
+| Breakout entry | `increase` | `stop-market` | Price >= trigger | Price <= trigger |
+| Close/reduce now | `decrease` | `market` | Current oracle execution | Current oracle execution |
+| Take profit | `decrease` | `take-profit` | Price >= trigger | Price <= trigger |
+| Stop loss | `decrease` | `stop-loss` | Price <= trigger | Price >= trigger |
+| Swap now | `swap` | `market` | Output minimum must be met | Not directional |
+| Scheduled parts | `increase` or `decrease` | `twap` | Per-part schedule/constraints | Per-part schedule/constraints |
 
-## Market Orders (0, 2, 4)
+Only market swaps work through the API today: `limit` and `twap` swaps pass request validation but fail preparation with `NO_SWAP_PATH`. `Liquidation` is not a user-creatable API order.
 
-Execute immediately at the current oracle price.
+For reference, the contract `OrderType` enum is `MarketSwap=0`, `LimitSwap=1`, `MarketIncrease=2`, `LimitIncrease=3`, `MarketDecrease=4`, `LimitDecrease=5`, `StopLossDecrease=6`, `Liquidation=7`, `StopIncrease=8`. A take-profit is a `LimitDecrease` on-chain.
 
-- **MarketSwap (0):** Swap tokens at oracle price. Cancelled if `minOutputAmount` not met.
-- **MarketIncrease (2):** Open or add to a position at market price. Cancelled if `acceptablePrice` not met.
-- **MarketDecrease (4):** Close or reduce a position at market price. Cancelled if `acceptablePrice` not met.
+## Units
 
-Execution happens within 1–5 seconds after the keeper picks up the order with fresh oracle prices.
+| Field | Unit |
+|-------|------|
+| Increase/decrease `size`, `tpsl[].size`, edit `newSize` | USD, 30 decimals |
+| Position `triggerPrice` / edit `newTriggerPrice` | USD price, 30 decimals |
+| `collateralToPay.amount` (also the swap input) | Input token decimals |
+| Collateral operation `amount` | Position collateral token decimals |
+| `slippage`, `executionFeeBufferBps` | Numeric basis points, 10,000 = 100% |
+| `twapConfig.duration` | Seconds |
 
-## Limit Orders (1, 3, 5)
+Use `parseUnits()` and bigint arithmetic. `triggerPrice` and `acceptablePrice` on `fetchOrders()` results are contract prices (`price30 / 10**indexTokenDecimals`), not USD30; swap orders store a raw ratio. Convert a kept perpetual order price with `parseContractPrice(price, indexTokenDecimals)` from `@gmx-io/sdk/utils/tokens` before passing it back to the API. See [editing](sdk-reference.md#edit-cancel-or-change-collateral).
 
-Execute when the oracle price reaches a specified trigger price.
+## TP/SL at entry
 
-### LimitSwap (1)
-Swap executes when the oracle price allows `minOutputAmount` to be achieved.
-
-### LimitIncrease (3)
-Open a position at a better price than current market.
-
-**Trigger conditions:**
-| Direction | Trigger |
-|-----------|---------|
-| Long | Oracle price **<=** trigger price (buy the dip) |
-| Short | Oracle price **>=** trigger price (sell the rally) |
-
-### LimitDecrease (5) — Take-Profit
-Close a position when price moves in your favor.
-
-**Trigger conditions:**
-| Direction | Trigger |
-|-----------|---------|
-| Long Take-Profit | Oracle price **>=** trigger price |
-| Short Take-Profit | Oracle price **<=** trigger price |
-
-## Stop Orders (6, 8)
-
-### StopLossDecrease (6)
-Automatically close a position to limit losses when price moves against you.
-
-**Trigger conditions:**
-| Direction | Trigger |
-|-----------|---------|
-| Long Stop-Loss | Oracle price **<=** trigger price |
-| Short Stop-Loss | Oracle price **>=** trigger price |
-
-### StopIncrease (8)
-Open a position when price breaks past a level (breakout entry / momentum trade).
-
-**Trigger conditions:**
-| Direction | Trigger |
-|-----------|---------|
-| Long Stop-Increase | Oracle price **>=** trigger price |
-| Short Stop-Increase | Oracle price **<=** trigger price |
-
-## Liquidation (7)
-
-System-triggered when a position's collateral falls below the maintenance margin. Not user-creatable. The keeper automatically liquidates positions that breach the threshold.
-
-## Auto-Cancel Orders
-
-Stop-loss and take-profit orders attached to a position are **auto-cancelled** when the position is fully closed.
-
-**Maximum concurrent auto-cancel orders per position:**
-| Chain | Limit |
-|-------|-------|
-| Arbitrum | 11 |
-| Avalanche | 6 |
-| Botanix | 6 |
-
-Use `sdk.positions.getMaxAutoCancelOrders()` to check the current limit and remaining capacity.
-
-## Sidecar Orders (SL/TP)
-
-Sidecar orders allow attaching stop-loss and take-profit orders to a position increase in a single transaction.
-
-### Creating with Increase Order
-
-The `createIncreaseOrder()` method accepts:
-- `createSltpEntries` — New SL/TP orders to create alongside the position
-- `cancelSltpEntries` — Existing SL/TP orders to cancel
-- `updateSltpEntries` — Existing SL/TP orders to modify
+`prepareOrder()` accepts up to 10 `tpsl` entries with an increase of type `market`, `limit` or `stop-market`. Prices and sizes below illustrate a user-selected strategy, not recommended levels. Reuse the resolved market/token and account from [SDK reference](sdk-reference.md).
 
 ```typescript
-type SidecarSlTpOrderEntryValid = {
-  id: string;
-  price: { input: string; value: bigint | null; error: string | null };
-  sizeUsd: { input: string; value: bigint | null; error: string | null };
-  percentage: { input: string; value: bigint | null; error: string | null };
-  txnType: OrderTxnType | null;
-  mode: "keepSize" | "keepPercentage" | "fitPercentage";
-  order: PositionOrderInfo | null;
-  decreaseAmounts: DecreasePositionAmounts;
-};
+const withProtection = await sdk.prepareOrder({
+  kind: "increase",
+  symbol: market.symbol,
+  direction: "long",
+  orderType: "limit",
+  size: parseUnits("500", 30),
+  triggerPrice: parseUnits("3000", 30),
+  collateralToken: usdc.symbol,
+  collateralToPay: { amount: parseUnits("100", usdc.decimals), token: usdc.symbol },
+  tpsl: [
+    { type: "take-profit", triggerPrice: parseUnits("3300", 30), size: parseUnits("250", 30) },
+    { type: "stop-loss", triggerPrice: parseUnits("2850", 30) },
+  ],
+  mode: "express",
+  from: account,
+});
 ```
 
-### Typical Usage Pattern
+Omitting a TP/SL `size` uses the increase `size`, not the resulting position, so a TP/SL added to an existing position covers only the added size. Attached TP/SL orders get no acceptable price (0 for longs, `maxUint256` for shorts); the trigger is their only price guard. Review the resulting batch. Existing pending TP/SL orders also matter; an additional batch can overlap their size. Use `fetchPositionsInfo({ address, includeRelatedOrders: true })` and `fetchOrders()` to inspect them.
 
-When opening a position with SL/TP:
-1. Calculate decrease amounts for the SL and TP levels
-2. Pass entries via `createSltpEntries` in `createIncreaseOrder()`
-3. The SDK multicalls the increase order + SL/TP orders in one transaction
+Auto-cancellation is an order property, not a promise for every conditional order. Check the returned `autoCancel` and current contract constraints rather than hardcoding per-chain maximums. TP/SL creation does not prove that an entry filled or that every attached trigger will later execute.
 
-## TWAP Orders
-
-Time-Weighted Average Price orders split a large trade into smaller parts executed over a duration.
-
-**Configuration:**
-- **Number of parts:** 2–30 (default varies)
-- **Duration:** Configurable hours and minutes
-- **Activation:** Parts activate at staggered intervals (`duration / numberOfParts`)
-
-### Utility Functions
-
-Available from `@gmx-io/sdk/utils/twap`:
+## Swaps
 
 ```typescript
-// Validate TWAP parameters
-getIsValidTwapParams(duration: TwapDuration, numberOfParts: number): boolean
-
-// Calculate total duration in seconds
-getTwapDurationInSeconds(duration: TwapDuration): number
-
-// Get activation time for a specific part
-getTwapValidFromTime(duration: TwapDuration, numberOfParts: number, partIndex: number): bigint
-
-// Create a reusable getter for part activation times
-makeTwapValidFromTimeGetter(duration: TwapDuration, numberOfParts: number): (part: number) => bigint
+const swap = await sdk.prepareOrder({
+  kind: "swap",
+  orderType: "market",
+  collateralToPay: { amount: parseUnits("25", usdc.decimals), token: usdc.symbol },
+  receiveToken: "ETH",
+  slippage: 30,
+  mode: "express",
+  from: account,
+});
 ```
 
-**Note:** Full TWAP order creation is only available via the GMX frontend UI. The SDK exports utility functions but does not provide a `createTwapOrder()` method.
+The input amount comes from `collateralToPay.amount`; swaps need no `symbol` or `size`. Resolve the receive token on the chosen chain first. Inspect the prepared route, fees and minimum output. `manualSwapPath`, when supplied, contains market addresses, not token addresses. Native and wrapped tokens have different funding/receipt behavior. Existing swap orders cannot be edited.
 
-## Execution Risks
+## TWAP
 
-- **Price skipping:** Volatile markets may skip past trigger prices. A stop-loss at $3000 may execute at $2950 if the oracle price jumps from $3010 to $2950 between updates.
-- **Insufficient liquidity:** Orders may fail if the pool lacks sufficient liquidity for the trade size.
-- **Execution delay:** Orders are not instant. The keeper must pick up and execute the order, typically 1–5 seconds.
-- **Acceptable price:** All orders include an `acceptablePrice` parameter. If the execution price is worse than acceptable, the order is cancelled rather than executed at a bad price.
+TWAP creation is available through the API SDK; it is no longer frontend-only. `twapConfig` requires a positive duration and a safe-integer `parts` between 2 and 30. It cannot be combined with `tpsl`.
+
+```typescript
+const twap = await sdk.prepareOrder({
+  kind: "increase",
+  symbol: market.symbol,
+  direction: "long",
+  orderType: "twap",
+  size: parseUnits("1000", 30),
+  collateralToken: usdc.symbol,
+  collateralToPay: { amount: parseUnits("200", usdc.decimals), token: usdc.symbol },
+  twapConfig: { duration: 600, parts: 2 },
+  mode: "express",
+  from: account,
+});
+```
+
+The size/input is the total to split, not the per-part amount. Check per-part minimums and aggregate fees. For a near-full decrease, inspect the effective `estimates.sizeDeltaUsd` before division. Track every returned order key through execution or cancellation; a single part's receipt is not completion of the TWAP. To change a TWAP, cancel its parts instead of editing them: an edit resets `validFromTime`, so the edited part becomes executable immediately.
+
+## Execution outcomes
+
+Market orders still require keeper execution after creation. A price trigger becoming true does not guarantee a fill: oracle updates, available liquidity, acceptable price, execution fees and position validity can prevent it. Conditional orders can remain pending/frozen when execution constraints fail; market requests may be cancelled. Inspect status and cancellation/error data rather than promising a fixed execution time or guaranteed stop price.
+
+Use the bounded polling flow in [SDK reference](sdk-reference.md). For limit/stop placement, `created` is the expected initial success state. Do not retry placement simply because it has not reached `executed`.

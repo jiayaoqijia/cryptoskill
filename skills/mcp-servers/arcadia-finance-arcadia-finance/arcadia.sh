@@ -29,7 +29,7 @@ if [[ -z "$TOOL_NAME" ]]; then
 fi
 
 # Request metadata MCP 2026-07-28 requires on every call.
-META='{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{},"io.modelcontextprotocol/clientInfo":{"name":"arcadia-openclaw","version":"1.4.0"}}'
+META='{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{},"io.modelcontextprotocol/clientInfo":{"name":"arcadia-openclaw","version":"1.5.0"}}'
 
 # POST one request; the body is plain JSON or a single SSE data: line.
 mcp_post() {

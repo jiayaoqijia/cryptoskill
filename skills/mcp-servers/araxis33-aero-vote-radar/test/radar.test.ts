@@ -1,6 +1,6 @@
 import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { dilutedPerDay, fetchScan, poolName, rankPools, scanAgeHours, splitAllocation, splitToText, steadyPools, trendOf, MAX_POOLS } from "../src/radar.js";
+import { dilutedPerDay, fetchScan, poolName, poolToJson, rankPools, scanAgeHours, splitAllocation, splitToText, steadyPools, trendOf, MAX_POOLS } from "../src/radar.js";
 import type { V3ScanFile, V3ScanGauge } from "../src/v3.js";
 
 const originalFetch = global.fetch;
@@ -120,4 +120,30 @@ test("fetchScan throws when the scan has no gauges", async () => {
   global.fetch = (async () => ({ ok: true, json: async () => empty })) as unknown as typeof fetch;
 
   await assert.rejects(() => fetchScan("https://example.test/v3.json"), /has no live pools/);
+});
+
+test("poolToJson: shapes the pool for the CLI's --json and the MCP tools, trend and steady included", () => {
+  const steady = g("CALM", 190_000, 40, { incentivesUsdPerDay: 10, fees24hUsdPerDay: 55, steady: { held: 25, of: 30, avgPer10k: 5, minPer10k: 3 } });
+  assert.deepEqual(poolToJson(steady, 66, 10_000), {
+    pool: "CALM/USDC",
+    kind: "CL100",
+    chain: "base",
+    poolAddress: "0x2",
+    gauge: "0xCALM",
+    yourUsdPerDay: dilutedPerDay(50, 190_000, 10_000),
+    poolFeesUsdPerDay: 40,
+    poolFees24hUsdPerDay: 55,
+    poolIncentivesUsdPerDay: 10,
+    allocatedSAero: 190_000,
+    trend: "rising",
+    trendChange: 55 / 40 - 1,
+    steady: { held: 25, of: 30, avgPer10k: 5, minPer10k: 3 },
+  });
+});
+
+test("poolToJson: a missing kind is null rather than undefined; a pool without a week of history has no steady", () => {
+  const bare = g("BARE", 190_000, 10, { kind: undefined });
+  const json = poolToJson(bare, 66, 10_000);
+  assert.equal(json.kind, null);
+  assert.equal(json.steady, null);
 });

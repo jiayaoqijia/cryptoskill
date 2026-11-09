@@ -1,22 +1,36 @@
-# Contract Addresses
+# Contract addresses
 
-Deployed GMX V2 Synthetics contracts per chain. Addresses sourced from [`sdk/src/configs/contracts.ts`](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/configs/contracts.ts) in the gmx-interface repository.
+Snapshot checked on 2026-10-13 against `@gmx-io/sdk@2.2.1` and the [GMX interface release registry](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/configs/contracts.ts). Protocol deployment versions (such as v2.2c) and npm SDK versions are different version schemes.
 
-> **Note:** Most contract addresses may change on upgrades. `DataStore` and `EventEmitter` are permanent.
+Resolve addresses with the installed SDK and recheck the [official deployment list](https://docs.gmx.io/docs/api/contracts/addresses/) before writes after an upgrade. Do not combine a new address with an old ABI or copy an address from another chain. Compare addresses with viem `isAddressEqual` after an `isAddress` guard, not with `===`: registry casing is not uniform (Avalanche `ReferralStorage` is lowercase).
+
+```typescript
+import { getContract } from "@gmx-io/sdk/configs/contracts";
+
+const chainId = 42161;
+const exchangeRouter = getContract(chainId, "ExchangeRouter");
+const approvalSpender = getContract(chainId, "SyntheticsRouter");
+const glvRouter = getContract(chainId, "GlvRouter");
+```
+
+`SyntheticsRouter` is the ERC-20 approval spender for these standard wallet flows. `ExchangeRouter` and `GlvRouter` are transaction entry points. The Solidity `Router` / `Reader` names appear in SDK configuration as `SyntheticsRouter` / `SyntheticsReader`. Never use the bare names: they type-check but resolve elsewhere. `getContract(42161, "Reader")` returns the V1 Reader, `"Router"` throws on Arbitrum and Avalanche, and on MegaETH both return the zero address without throwing.
+
+The retained `GelatoRelayRouter` contract name does not mean the current API uses the Gelato relay service: Express orders are submitted through GMX Relay. `SubaccountRouter` is legacy for order execution; use the API's subaccount flow rather than constructing new delegated trades through it.
 
 ## Arbitrum (42161)
 
-### Core Synthetics
+### Core
 
 | Contract | Address |
 |----------|---------|
 | DataStore | `0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8` |
 | EventEmitter | `0xC8ee91A54287DB53897056e12D9819156D3822Fb` |
-| ExchangeRouter | `0x1C3fa76e6E1088bCE750f23a5BFcffa1efEF6A41` |
+| ExchangeRouter | `0x7dE39FF2e232A2203196788d37e234cF8F1b83f1` |
 | SyntheticsRouter | `0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6` |
-| SyntheticsReader | `0x470fbC46bcC0f16532691Df360A07d8Bf5ee0789` |
+| SyntheticsReader | `0xfA26cBb46e2614609406de08CA1Dc7f70a684184` |
+| SimulationRouter | `0xaD3051cB1aE3a86b335f12A9a41BD4d995a137ea` |
 
-### Vaults
+### Request vaults and GLV
 
 | Contract | Address |
 |----------|---------|
@@ -24,54 +38,48 @@ Deployed GMX V2 Synthetics contracts per chain. Addresses sourced from [`sdk/src
 | WithdrawalVault | `0x0628D46b5D145f183AdB6Ef1f2c97eD1C4701C55` |
 | OrderVault | `0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5` |
 | ShiftVault | `0xfe99609C4AA83ff6816b64563Bdffd7fa68753Ab` |
-
-### Relay & Subaccounts
-
-| Contract | Address |
-|----------|---------|
-| SubaccountRouter | `0xdD00F639725E19a209880A44962Bc93b51B1B161` |
-| GelatoRelayRouter | `0xa9090E2fd6cD8Ee397cF3106189A7E1CFAE6C59C` |
-| SubaccountGelatoRelayRouter | `0x517602BaC704B72993997820981603f5E4901273` |
-
-### GLV (Liquidity Vaults)
-
-| Contract | Address |
-|----------|---------|
-| GlvReader | `0x2C670A23f1E798184647288072e84054938B5497` |
-| GlvRouter | `0x7EAdEE2ca1b4D06a0d82fDF03D715550c26AA12F` |
+| GlvReader | `0x85fcBD684D08053f1efAB302dCb04F22E20E65B1` |
+| GlvRouter | `0x167540D2DFF14120365CfDDF2F86e3045D4fa712` |
 | GlvVault | `0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9` |
 
-### Multichain (GMX Account)
+### Relay and GMX Account
 
 | Contract | Address |
 |----------|---------|
-| MultichainOrderRouter | `0xD38111f8aF1A7Cd809457C8A2303e15aE2170724` |
+| SubaccountRouter | `0x9c05880A2AaD7530c69e18e342eDC9E06cc757db` |
+| GelatoRelayRouter | `0x5503b99308dB6923758F9A22d118207D633c4e87` |
+| SubaccountGelatoRelayRouter | `0xfD0596f708d9D950E0eF7b5d191e5F8e55b8a67f` |
+| MultichainOrderRouter | `0xABFC734f7CFc9352AED7a97b1F6a236eae831e8A` |
+| MultichainSubaccountRouter | `0xAb3EDf0f3eed6804BAe1bD9bF90109ccadFD262e` |
+| MultichainGmRouter | `0xFd26a7E3c4A9b75Bd0dce495290Fa33af2bb4b00` |
+| MultichainGlvRouter | `0xA0Ef0Ace6E437458BB4b5F72A7c7bB43a1CdDa8d` |
+| MultichainClaimsRouter | `0x946CC490DFedd6016645F5ce555E0036D116f50e` |
+| MultichainTransferRouter | `0x3f6772B95423fC03264adf90Efb8A9922B6C8c6e` |
 | MultichainVault | `0xCeaadFAf6A8C489B250e407987877c5fDfcDBE6E` |
-| LayerZeroProvider | `0xB6DE222dAef5029f31b8fABE498D34f3c491Ef85` |
+| LayerZeroProvider | `0x0B33EBA531e5a5A331a3Ff9F418B8205F01C2869` |
 
 ### Other
 
 | Contract | Address |
 |----------|---------|
-| ReferralStorage | `0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d` |
+| ReferralStorage | `0xe6fab3F0c7199b0d34d7FbE83394fc0e0D06e99d` |
 | Multicall | `0xe79118d6D92a4b23369ba356C90b9A7ABf1CB961` |
-| NATIVE_TOKEN (WETH) | `0x82aF49447D8a07e3bd95BD0d56f35241523fBab1` |
-
----
+| NATIVE_TOKEN | `0x82aF49447D8a07e3bd95BD0d56f35241523fBab1` |
 
 ## Avalanche (43114)
 
-### Core Synthetics
+### Core
 
 | Contract | Address |
 |----------|---------|
 | DataStore | `0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6` |
 | EventEmitter | `0xDb17B211c34240B014ab6d61d4A31FA0C0e20c26` |
-| ExchangeRouter | `0x8f550E53DFe96C055D5Bdb267c21F268fCAF63B2` |
+| ExchangeRouter | `0xc002Db96E682FFF6675966F959677285a0C45Efa` |
 | SyntheticsRouter | `0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68` |
-| SyntheticsReader | `0x62Cb8740E6986B29dC671B2EB596676f60590A5B` |
+| SyntheticsReader | `0xa34320a507493C71Fe35E982e496F7C5d1a7fa02` |
+| SimulationRouter | `0xaB409fCaCc14Dd4234f6f86a2547f04ACC90a55e` |
 
-### Vaults
+### Request vaults and GLV
 
 | Contract | Address |
 |----------|---------|
@@ -79,30 +87,25 @@ Deployed GMX V2 Synthetics contracts per chain. Addresses sourced from [`sdk/src
 | WithdrawalVault | `0xf5F30B10141E1F63FC11eD772931A8294a591996` |
 | OrderVault | `0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C` |
 | ShiftVault | `0x7fC46CCb386e9bbBFB49A2639002734C3Ec52b39` |
-
-### Relay & Subaccounts
-
-| Contract | Address |
-|----------|---------|
-| SubaccountRouter | `0xf43F559774d2cF7882e6E846fCb87BDe183a6Da7` |
-| GelatoRelayRouter | `0xEE2d3339CbcE7A42573C96ACc1298A79a5C996Df` |
-| SubaccountGelatoRelayRouter | `0xfaBEb65bB877600be3A2C2a03aA56a95F9f845B9` |
-
-### GLV (Liquidity Vaults)
-
-| Contract | Address |
-|----------|---------|
-| GlvReader | `0x5C6905A3002f989E1625910ba1793d40a031f947` |
-| GlvRouter | `0x7E425c47b2Ff0bE67228c842B9C792D0BCe58ae6` |
+| GlvReader | `0x321EB66dD95ad33715ee615AAb8dAC6394E7b3F9` |
+| GlvRouter | `0x603B3D3aB077CA433b888c05fa59c777d5b6dCAD` |
 | GlvVault | `0x527FB0bCfF63C47761039bB386cFE181A92a4701` |
 
-### Multichain (GMX Account)
+### Relay and GMX Account
 
 | Contract | Address |
 |----------|---------|
-| MultichainOrderRouter | `0xd099565957046a2d2CF41B0CC9F95e14a8afD13b` |
+| SubaccountRouter | `0xAda708aFf0f1D784D28cd8Ff4d6D977fF9599e5D` |
+| GelatoRelayRouter | `0x51fe0b7919e1208a717E9B16a097C1C3D70eFbf6` |
+| SubaccountGelatoRelayRouter | `0xa62BD1cFE2066c5bF4180b4125BBb5116eEA26c9` |
+| MultichainOrderRouter | `0x204CC947Fddd11c90e302db2A5ac3865021D1618` |
+| MultichainSubaccountRouter | `0x4A2826cAee8FF70d9392B171eaF398E0a2B55047` |
+| MultichainGmRouter | `0x00205f26BCc52537D12fA9b0eFA5Fcc58F03ab76` |
+| MultichainGlvRouter | `0x206B582F309724dAd259058Bc3289Ca3519F34B1` |
+| MultichainClaimsRouter | `0xa664B7E894ad5777f3419C2883911Af3692a4569` |
+| MultichainTransferRouter | `0xd4F6C2332b36D1Ccb22C7ac479b270fa0cA26a41` |
 | MultichainVault | `0x6D5F3c723002847B009D07Fe8e17d6958F153E4e` |
-| LayerZeroProvider | `0xF85Fd576bBe22Bce785B68922C1c9849d62737c0` |
+| LayerZeroProvider | `0x74eECe8cC29b3d549db97F566a4445F48ed62a0d` |
 
 ### Other
 
@@ -110,74 +113,57 @@ Deployed GMX V2 Synthetics contracts per chain. Addresses sourced from [`sdk/src
 |----------|---------|
 | ReferralStorage | `0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8` |
 | Multicall | `0x50474CAe810B316c294111807F94F9f48527e7F8` |
-| NATIVE_TOKEN (WAVAX) | `0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7` |
+| NATIVE_TOKEN | `0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7` |
 
----
+## MegaETH (4326)
 
-## Botanix (3637)
-
-### Core Synthetics
+### Core
 
 | Contract | Address |
 |----------|---------|
-| DataStore | `0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d` |
+| DataStore | `0xE43C7B694f6b652a9F4A0f275C008d18758Dce35` |
 | EventEmitter | `0xAf2E131d483cedE068e21a9228aD91E623a989C2` |
-| ExchangeRouter | `0xBCB5eA3a84886Ce45FBBf09eBF0e883071cB2Dc8` |
-| SyntheticsRouter | `0x3d472afcd66F954Fe4909EEcDd5c940e9a99290c` |
-| SyntheticsReader | `0x922766ca6234cD49A483b5ee8D86cA3590D0Fb0E` |
+| ExchangeRouter | `0xF68560cA917717639be497BF6283aC08C9Bf0264` |
+| SyntheticsRouter | `0x1eAfB14236C489C28845EC04F78DECA5Fb9879Aa` |
+| SyntheticsReader | `0x51fe0b7919e1208a717E9B16a097C1C3D70eFbf6` |
+| SimulationRouter | `0x321EB66dD95ad33715ee615AAb8dAC6394E7b3F9` |
 
-### Vaults
-
-| Contract | Address |
-|----------|---------|
-| DepositVault | `0x4D12C3D3e750e051e87a2F3f7750fBd94767742c` |
-| WithdrawalVault | `0x46BAeAEdbF90Ce46310173A04942e2B3B781Bf0e` |
-| OrderVault | `0xe52B3700D17B45dE9de7205DEe4685B4B9EC612D` |
-| ShiftVault | `0xa7EE2737249e0099906cB079BCEe85f0bbd837d4` |
-
-### Relay & Subaccounts
+### Request vaults and GLV
 
 | Contract | Address |
 |----------|---------|
-| SubaccountRouter | `0xa1793126B6Dc2f7F254a6c0E2F8013D2180C0D10` |
-| GelatoRelayRouter | `0x98e86155abf8bCbA566b4a909be8cF4e3F227FAf` |
-| SubaccountGelatoRelayRouter | `0xd6b16f5ceE328310B1cf6d8C0401C23dCd3c40d4` |
+| DepositVault | `0x8231A60862F9b0bA93fFA050c0E94AC902D901d2` |
+| WithdrawalVault | `0x0Ec53dda9676219dE63eC703212219b07811F33C` |
+| OrderVault | `0xD5AE04762E2afb1506695b3F36286EBE7B0E6772` |
+| ShiftVault | `0xC255c70b50623054CADbAD9A02E1CFE73d286666` |
+| GlvReader | `0x804f206a2ec78F505FD5D397450EAB9E7CBD1b21` |
+| GlvRouter | `0xef1BA2A3fcf0244361d63FCAe0c4772586Cd1925` |
+| GlvVault | `0x52e4875EB5603d21912d30A1dBA6B0B97192459A` |
 
-### GLV (Liquidity Vaults)
-
-| Contract | Address |
-|----------|---------|
-| GlvReader | `0x955Aa50d2ecCeffa59084BE5e875eb676FfAFa98` |
-| GlvRouter | `0xC92741F0a0D20A95529873cBB3480b1f8c228d9F` |
-| GlvVault | `0xd336087512BeF8Df32AF605b492f452Fd6436CD8` |
-
-### Multichain (GMX Account)
+### Relay and GMX Account
 
 | Contract | Address |
 |----------|---------|
-| MultichainOrderRouter | `0xbC074fF8b85f9b66884E1EdDcE3410fde96bd798` |
-| MultichainVault | `0x9a535f9343434D96c4a39fF1d90cC685A4F6Fb20` |
-| LayerZeroProvider | `0x9E721ef9b908B4814Aa18502692E4c5666d1942e` |
-
-### Botanix-Specific Tokens
-
-| Token | Address |
-|-------|---------|
-| NATIVE_TOKEN (PBTC) | `0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56` |
-| StBTC | `0xF4586028FFdA7Eca636864F80f8a3f2589E33795` |
+| SubaccountRouter | `0x03B59961bF30b973fBd793A6C8ad57dA38D4D0a6` |
+| GelatoRelayRouter | `0xbAAA3a693191e2e3E0973DE641C879D1aDD84e04` |
+| SubaccountGelatoRelayRouter | `0x603B3D3aB077CA433b888c05fa59c777d5b6dCAD` |
+| MultichainOrderRouter | `0x00205f26BCc52537D12fA9b0eFA5Fcc58F03ab76` |
+| MultichainSubaccountRouter | `0xDB8906520812840b9835E3B84dE62C826249e20B` |
+| MultichainGmRouter | `0x5CCD0b91Cfe6B0FBA1c98290dc39E71ff806d9bF` |
+| MultichainGlvRouter | `0x5F65a3B91923840cD5254489A57c873427bA3A91` |
+| MultichainClaimsRouter | `0x6614E9eAfE2FE583049333C03a2D6f9D7F252121` |
+| MultichainTransferRouter | `0x62B1691B067278E5B1167d0443d4c957473611D2` |
+| MultichainVault | `0xd6922E889cE4CF14e59427F20e7d857ff81A5A9D` |
+| LayerZeroProvider | `0x8A959d38216ad67AEBBF31F46Cb3cA4D7fe584c8` |
 
 ### Other
 
 | Contract | Address |
 |----------|---------|
-| Multicall | `0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b` |
+| ReferralStorage | `0xAd917849372eaEF498E982F90bA6459a43ecbd31` |
+| Multicall | `0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52` |
+| NATIVE_TOKEN | `0x4200000000000000000000000000000000000006` |
 
----
+## Tokens, markets, and GLVs
 
-## Source
-
-For the latest addresses, check these files in the [gmx-interface](https://github.com/gmx-io/gmx-interface/tree/release) repository:
-
-- **Contract addresses**: [`sdk/src/configs/contracts.ts`](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/configs/contracts.ts)
-- **Token addresses**: [`sdk/src/configs/tokens.ts`](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/configs/tokens.ts)
-- **Market addresses**: [`sdk/src/configs/markets.ts`](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/configs/markets.ts)
+Discover token and GM market addresses with `fetchTokens()` and `fetchMarkets()`. Discover GLV tokens and constituent markets with `GlvReader.getGlvInfoList(DataStore, start, end)` / `getGlvInfo(DataStore, glv)`. `GlvVault` above is a request custody contract, not the GLV share token to buy or approve. `NATIVE_TOKEN` is the wrapped native ERC-20 address, not the native-coin sentinel.
