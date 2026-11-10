@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T12:32:02.724020+00:00",
+  "generated_at": "2026-11-10T00:44:06.906781+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -5170,7 +5170,7 @@
           "source": "extracted"
         },
         "can_install_code": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -5180,7 +5180,7 @@
           "source": "extracted"
         },
         "can_browse_web": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -5210,7 +5210,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -187208,7 +187208,7 @@
     },
     "payments/agentpay-sdk": {
       "name": "agentpay-sdk",
-      "execution_model": "router_orchestrator",
+      "execution_model": "installer_bootstrap",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -187236,7 +187236,7 @@
           "source": "extracted"
         },
         "can_spawn_subagents": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -224922,26 +224922,26 @@
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2606,
-      "router_orchestrator": 152,
+      "router_orchestrator": 151,
       "unknown": 353,
       "analysis_only": 222,
       "unsigned_tx_builder": 114,
       "local_executor": 105,
-      "installer_bootstrap": 44,
+      "installer_bootstrap": 45,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
       "can_execute_shell": 1252,
-      "can_install_code": 572,
+      "can_install_code": 573,
       "can_write_files": 193,
-      "can_browse_web": 255,
-      "can_spawn_subagents": 272,
+      "can_browse_web": 254,
+      "can_spawn_subagents": 271,
       "can_move_funds": 301,
       "requires_private_key": 517,
       "requires_hosted_operator": 347,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 572
+      "mutable_remote_runtime": 573
     }
   }
 }
