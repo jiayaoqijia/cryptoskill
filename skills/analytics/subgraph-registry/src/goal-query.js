@@ -59,8 +59,8 @@ export const CONCEPTS = [
   { key: "vault", words: /\bvaults?\b/, entities: ["Vault", /vault$/i], type: "vault", fields: ["name", "symbol", "totalValueLockedUSD", "pricePerShare", "createdTimestamp"], order: "metric" },
   { key: "market", words: /\b(lending )?markets?\b/, entities: ["Market", /market$/i], fields: ["name", "totalValueLockedUSD", "totalDepositBalanceUSD", "totalBorrowBalanceUSD", "inputTokenPriceUSD", "createdTimestamp"], order: "metric" },
   { key: "pool_manager", words: /\bpool ?managers?\b/, entities: ["PoolManager", /poolmanager/i], fields: ["poolCount", "txCount", "totalVolumeUSD", "totalFeesUSD", "totalValueLockedUSD"], order: "metric" },
-  { key: "pool", words: /\b(pools?|pairs?|liquidity pools?|amm pools?)\b/, entities: ["Pool", "Pair", "LiquidityPool", /^pool$/i, /liquiditypool$/i], type: "liquidity_pool", fields: ["feeTier", "liquidity", "totalValueLockedUSD", "volumeUSD", "txCount", "createdAtTimestamp", "token0Price", "token1Price"], relations: ["token0", "token1"], order: "metric" },
-  { key: "token", words: /\b(tokens?|erc-?20s?|token symbols?)\b/, entities: ["Token", /^token$/i], type: "token", fields: ["symbol", "name", "decimals", "totalSupply", "volumeUSD", "totalValueLockedUSD"], order: "metric" },
+  { key: "pool", words: /\b(pools?|pairs?|liquidity pools?|amm pools?)\b/, entities: ["Pool", "Pair", "LiquidityPool", /^pool$/i, /liquiditypool$/i], type: "liquidity_pool", fields: ["totalValueLockedUSD", "volumeUSD", "txCount", "feeTier", "liquidity", "createdAtTimestamp", "token0Price", "token1Price"], relations: ["token0", "token1"], order: "metric" },
+  { key: "token", words: /\b(tokens?|erc-?20s?|token symbols?)\b/, entities: ["Token", /^token$/i], type: "token", fields: ["symbol", "name", "volumeUSD", "totalValueLockedUSD", "txCount", "decimals", "totalSupply"], order: "metric" },
   { key: "account", words: /\b(accounts?|users?|holders?|wallets?)\b/, entities: ["Account", "User", "Holder", /account$/i, /^user$/i], type: "account", fields: ["balance", "createdAt", "txCount"], order: "metric" },
 ];
 
@@ -168,7 +168,7 @@ function literal(value) { return typeof value === "number" ? String(value) : JSO
 
 function render({ collection, args, fields }) {
   const argText = args.map(([k, v]) => `${k}: ${v}`).join(", ");
-  const sel = fields.map((f) => (typeof f === "string" ? `    ${f}` : `    ${f.name} { id }`)).join("\n");
+  const sel = fields.map((f) => (typeof f === "string" ? `    ${f}` : `    ${f.name} { ${(f.sub || ["id"]).join(" ")} }`)).join("\n");
   const source = `{\n  _meta { block { number timestamp } }\n  ${collection}(${argText}) {\n${sel}\n  }\n}`;
   return print(parse(source, { noLocation: true, maxTokens: 800 }));
 }
@@ -240,6 +240,8 @@ export function schemaProbeQuery(entityName) {
   o: __type(name: "${entityName}_orderBy") { enumValues { name } }
   f: __type(name: "${entityName}_filter") { inputFields { name type { ...T } } }
   i: __type(name: "Aggregation_interval") { enumValues { name } }
+  t: __type(name: "Token") { name fields { name type { ...T } } }
+  m: _meta { block { number timestamp } hasIndexingErrors deployment }
 }
 fragment T on __Type { kind name ofType { kind name ofType { kind name ofType { kind name } } } }`;
 }
@@ -270,8 +272,16 @@ export function planWithSchema({ intent, entity, probe, first }) {
   if (!leaf.has("id")) errors.push("entity has no id field");
   if (!intent.ids_only) {
     const want = [...(concept?.fields || []), ...[...leaf.keys()].filter((n) => intent.field_hints.some((h) => n.toLowerCase().includes(h)))];
-    for (const n of want) if (leaf.has(n) && !fields.includes(n) && fields.length < MAX_GOAL_FIELDS) fields.push(n);
-    for (const r of concept?.relations || []) if (objects.has(r) && fields.length < MAX_GOAL_FIELDS) fields.push({ name: r });
+    // Reserve room for single relations (pool token0/token1) so token symbols
+    // can be shown and checked for spam.
+    const rels = (concept?.relations || []).filter((r) => objects.has(r));
+    for (const n of want) if (leaf.has(n) && !fields.includes(n) && fields.length < MAX_GOAL_FIELDS - rels.length) fields.push(n);
+    const tokenLeaves = new Set((probe?.t?.fields || []).filter((f) => ["SCALAR", "ENUM"].includes(unwrap(f.type).kind)).map((f) => f.name));
+    for (const r of rels) {
+      if (fields.length >= MAX_GOAL_FIELDS) break;
+      const sub = objects.get(r)?.name === "Token" ? ["id", ...["symbol", "name"].filter((n) => tokenLeaves.has(n))] : ["id"];
+      fields.push({ name: r, sub });
+    }
     for (const n of leaf.keys()) if (fields.length < 4 && !fields.includes(n)) fields.push(n);
     rationale.push("fields chosen from live entity fields relevant to the goal (scalars; single relations as { id })");
   }
@@ -319,5 +329,18 @@ export function planWithSchema({ intent, entity, probe, first }) {
   for (const f of fields) if (!(typeof f === "string" ? leaf.has(f) : objects.has(f.name))) errors.push(`field ${typeof f === "string" ? f : f.name} not on ${entity.name}`);
   if (order?.field && !orderEnum.has(order.field)) errors.push(`orderBy ${order.field} not in ${entity.name}_orderBy`);
   if (errors.length) return { errors, unmet, rationale };
-  return { query: render({ collection, args, fields }), collection, fields: fields.map((f) => (typeof f === "string" ? f : `${f.name} { id }`)), order: order?.field ? order : null, where: Object.fromEntries(where.map(([k, v, j]) => [k, j ?? JSON.parse(v)])), unmet, blocking_unmet: blocking, rationale, errors: [], field_source: "live_introspection" };
+  return { query: render({ collection, args, fields }), collection, fields: fields.map((f) => (typeof f === "string" ? f : `${f.name} { ${(f.sub || ["id"]).join(" ")} }`)), order: order?.field ? order : null, where: Object.fromEntries(where.map(([k, v, j]) => [k, j ?? JSON.parse(v)])), unmet, blocking_unmet: blocking, rationale, errors: [], field_source: "live_introspection" };
+}
+
+// Serving/freshness signal from the probe's `_meta` (no extra request).
+export const STALE_INDEXING_SECONDS = 2 * 3600;
+export function probeHealth(meta, now = Math.floor(Date.now() / 1000)) {
+  const ts = meta?.block?.timestamp;
+  if (!Number.isSafeInteger(meta?.block?.number)) return { status: "unknown", indexed_block_number: null, indexed_block_timestamp: null, lag_seconds: null, has_indexing_errors: null };
+  const lag = Number.isSafeInteger(ts) && ts > 0 ? Math.max(0, now - ts) : null;
+  return {
+    status: lag !== null && lag > STALE_INDEXING_SECONDS ? "stale" : meta.hasIndexingErrors === true ? "serving_with_indexing_errors" : "serving",
+    indexed_block_number: meta.block.number, indexed_block_timestamp: Number.isSafeInteger(ts) ? ts : null, lag_seconds: lag,
+    has_indexing_errors: typeof meta.hasIndexingErrors === "boolean" ? meta.hasIndexingErrors : null,
+  };
 }

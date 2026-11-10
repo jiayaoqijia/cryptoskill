@@ -23,14 +23,15 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import Database from "better-sqlite3";
-import { boundedStarter, findContractDeployments, freshness, healthObservation, HEALTH_QUERY } from "./agent-discovery.js";
-import { parseGoal, rankEntities, planKeyless, planWithSchema, schemaProbeQuery } from "./goal-query.js";
+import { boundedStarter, findContractDeployments, freshness, healthObservation, HEALTH_QUERY, HEALTH_STALE_SECONDS } from "./agent-discovery.js";
+import { parseGoal, rankEntities, planKeyless, planWithSchema, schemaProbeQuery, probeHealth, STALE_INDEXING_SECONDS } from "./goal-query.js";
+import { applyTokenQuality, normalizeTrusted, SPAM_HANDLING } from "./token-quality.js";
 import express from "express";
 import { fileURLToPath, pathToFileURL } from "url";
 import { basename, dirname, join } from "path";
 import { existsSync, mkdirSync, readFileSync, realpathSync, unlinkSync, writeFileSync } from "fs";
 import { get as httpsGet } from "https";
-import { createHash } from "crypto";
+import { createHash, timingSafeEqual } from "crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,6 +40,11 @@ const __dirname = dirname(__filename);
 // drifted to "0.8.20" while the package shipped 0.8.31 — eleven releases of
 // every MCP client being told the wrong server version, which is the kind of
 // thing that only surfaces when someone is debugging something else.
+// Literal, exact-version npx spec used in generated config examples. Bumped
+// with package.json at release time; test/scanner-hygiene.test.mjs asserts the
+// two agree, so a stale pin fails CI instead of shipping.
+export const PINNED_NPX_PACKAGE = "subgraph-registry-mcp@0.13.2";
+
 const PKG_VERSION = (() => {
   try {
     return JSON.parse(
@@ -55,7 +61,15 @@ const OPENAPI_JSON_PATH = join(DATA_DIR, "openapi.json");
 // Bundled with the npm package so runtime semantic search has zero
 // network dependency. Same model fastembed uses at crawl time
 // (Xenova/all-MiniLM-L6-v2) — vectors are bitwise-comparable.
-const EMBEDDING_MODEL_DIR = join(DATA_DIR, "models", "Xenova", "all-MiniLM-L6-v2");
+let EMBEDDING_MODEL_ROOT = join(DATA_DIR, "models");
+let EMBEDDING_MODEL_DIR = join(EMBEDDING_MODEL_ROOT, "Xenova", "all-MiniLM-L6-v2");
+// Test hook: point the embedder at another model root (e.g. an empty dir to
+// exercise the fail-closed path). Not read from the environment.
+export function setEmbeddingModelRootForTests(root) {
+  EMBEDDING_MODEL_ROOT = root || join(DATA_DIR, "models");
+  EMBEDDING_MODEL_DIR = join(EMBEDDING_MODEL_ROOT, "Xenova", "all-MiniLM-L6-v2");
+  _embedderPromise = null;
+}
 const GITHUB_DB_URL =
   "https://github.com/PaulieB14/subgraph-registry/raw/main/python/data/registry.db";
 
@@ -196,8 +210,16 @@ async function ensureDb() {
     verifyDbOrThrow(DB_PATH);
     return;
   }
+  // The npm package and the git repo both ship data/registry.db, so this path
+  // only runs on a damaged install. Fail closed unless explicitly opted in.
+  if (process.env.SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD !== "1") {
+    throw new Error(
+      `registry.db not found at ${DB_PATH}. Reinstall ${PINNED_NPX_PACKAGE} (it bundles the database). ` +
+      "To fetch it from GitHub instead (hash-verified), set SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD=1.",
+    );
+  }
   mkdirSync(DATA_DIR, { recursive: true });
-  console.error("Registry not found locally. Downloading from GitHub...");
+  console.error("Registry not found locally. Downloading from GitHub (SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD=1)...");
   await downloadFile(GITHUB_DB_URL, DB_PATH);
   console.error("Downloaded registry.db — verifying SHA-256...");
   verifyDbOrThrow(DB_PATH);
@@ -381,13 +403,13 @@ const VOLUME_INTENT_RE =
 // it as a filter returned HOPR Nodes on gnosis instead of Safe.
 const CHAIN_PREP_RE = /\b(on|in|at|for|across)\s+$/;
 
-function queryTerms(query) {
+function queryTerms(query, limit = 5) {
   return query
     .trim()
     .toLowerCase()
     .split(/\s+/)
     .filter((w) => (w.length > 2 || VERSION_TOKEN_RE.test(w)) && !STOPWORDS.has(w))
-    .slice(0, 5);
+    .slice(0, limit);
 }
 
 // Re-rank candidates on WORD boundaries, which SQL LIKE cannot express.
@@ -594,7 +616,7 @@ function keyOnboarding(request) {
       "Restart this MCP server; execute-capable tools then appear in tools/list",
       "Call query_for_goal again with validate_schema:true and execute:true",
     ],
-    mcp_config_example: { mcpServers: { "subgraph-registry": { command: "npx", args: ["-y", `subgraph-registry-mcp@${PKG_VERSION}`],
+    mcp_config_example: { mcpServers: { "subgraph-registry": { command: "npx", args: ["-y", PINNED_NPX_PACKAGE],
       env: { THE_GRAPH_STUDIO_API_KEY: "<set from your host's secret manager>" } } } },
     ...(request ? { curl_example: `curl -sS -X POST '${request.query_url}' -H 'Content-Type: application/json' -H "Authorization: Bearer $THE_GRAPH_STUDIO_API_KEY" --data '${JSON.stringify(request.body).replace(/'/g, "'\\''")}'` } : {}),
     alternatives: "Without a key, discovery and query preparation still work. x402 is a separate, explicitly paid route; this server never signs or auto-pays it.",
@@ -941,7 +963,10 @@ function recommendSubgraph(args = {}) {
   // words out of the scoring terms and use them the way the `chain` parameter
   // is used, so "on ethereum" narrows the network instead of flattering any
   // subgraph that happens to be called something-Ethereum.
-  const allWords = queryTerms(goalLower);
+  // Scan EVERY term for chain words before truncating search terms to five:
+  // "top Uniswap v3 tokens by volume on Base" has five terms before "base",
+  // so the chain used to be cut off and the answer came from Ethereum.
+  const allWords = queryTerms(goalLower, 50);
   // A scale question ("highest volume", "most TVL") is inherently a question
   // ABOUT a category on a chain, so any chain word in it is routing.
   const volumeIntent = VOLUME_INTENT_RE.test(goalLower);
@@ -976,6 +1001,7 @@ function recommendSubgraph(args = {}) {
     }
     words.push(w);
   }
+  words.splice(5);
 
   // Which tokens actually identify a protocol? Version tokens (v2/v3/v4) and
   // category nouns (pool, dex, marketplace…) MODIFY a request; on their own they
@@ -1103,9 +1129,14 @@ function recommendSubgraph(args = {}) {
   // De-dup first so we batch the stability lookup over the trimmed set.
   const seenIpfs = new Set();
   const keep = [];
+  const skippedUnhealthy = [];
   for (const r of rows) {
     if (r.ipfs_hash && seenIpfs.has(r.ipfs_hash)) continue;
     if (r.ipfs_hash) seenIpfs.add(r.ipfs_hash);
+    // A deployment this process recently saw fail to serve (or fall far
+    // behind) yields its slot to the next healthy match, and is reported.
+    const bad = knownBadHealth(r);
+    if (bad) { skippedUnhealthy.push({ id: r.id, display_name: r.display_name, network: r.network, ...bad }); continue; }
     keep.push(r);
     if (keep.length >= 5) break;
   }
@@ -1139,6 +1170,7 @@ function recommendSubgraph(args = {}) {
       schema_changed_at: stab.schema_changed_at,
       schema_stable_days: stab.schema_stable_days,
       freshness: freshnessFor(r),
+      health: healthSummary(r),
       ...buildQueryEndpoints(r.id),
     };
   });
@@ -1154,6 +1186,7 @@ function recommendSubgraph(args = {}) {
     total_matches: recommendations.length,
     next_action: executionNextAction(recommendations.length > 0),
     allocation_caveat: ALLOCATION_CAVEAT,
+    ...(skippedUnhealthy.length ? { skipped_unhealthy: skippedUnhealthy, health_note: "Skipped deployments recently failed to serve or were far behind in this process (process-local, expires after 300 seconds). Indexing-reward or curation status is not used for this." } : {}),
     ...(!recommendations.length ? { discovery_hint: "No recommendation survived snapshot filters; use search_subgraphs with an explicit network and inspect diagnostics. Zero allocations or rewards is not proof of unavailable queries." } : {}),
     recommendations,
   };
@@ -1340,6 +1373,12 @@ function listRegistryStats() {
 
 let _embedderPromise = null;
 
+export const BUNDLED_MODEL_FILES = ["config.json", "tokenizer.json", "tokenizer_config.json", "onnx/model_quantized.onnx"];
+
+export function missingBundledModelFiles(dir = EMBEDDING_MODEL_DIR) {
+  return BUNDLED_MODEL_FILES.filter((f) => !existsSync(join(dir, f)));
+}
+
 async function getEmbedder() {
   // Lazy single-load; ~23 MB ONNX. First call latency ~1-2s on cold
   // start, subsequent calls are ~5-20ms per query embed.
@@ -1348,15 +1387,20 @@ async function getEmbedder() {
       // Dynamic import keeps the cold-start cost off the critical
       // path of tools that don't need embeddings (search_subgraphs,
       // get_subgraph_detail, list_registry_stats).
-      const { pipeline, env } = await import("@xenova/transformers");
-      // Prefer the locally-bundled model so the package works offline
-      // and at zero-egress hosting. Falls back to the HF hub if the
-      // bundled dir is missing (e.g. running from a git checkout
-      // before the model stage step has run).
-      if (existsSync(EMBEDDING_MODEL_DIR)) {
-        env.localModelPath = join(DATA_DIR, "models");
-        env.allowRemoteModels = false;
+      // Bundled model only (0.13.2+). Remote model downloads are disabled
+      // unconditionally; if the bundled files are missing we fail closed and
+      // semantic_search_subgraphs falls back to keyword search.
+      const missing = missingBundledModelFiles();
+      if (missing.length) {
+        const err = new Error(`Bundled embedding model missing (${missing.join(", ")}); remote model downloads are disabled.`);
+        err.code = "BUNDLED_MODEL_MISSING";
+        throw err;
       }
+      const { pipeline, env } = await import("@xenova/transformers");
+      env.localModelPath = EMBEDDING_MODEL_ROOT;
+      env.allowLocalModels = true;
+      env.allowRemoteModels = false;
+      env.useBrowserCache = false;
       const extractor = await pipeline(
         "feature-extraction",
         "Xenova/all-MiniLM-L6-v2",
@@ -1412,7 +1456,27 @@ async function semanticSearchSubgraphs(args = {}) {
     protocol_type = "", min_reliability = 0,
   } = args;
 
-  const qvec = await embedQuery(query);
+  let qvec;
+  try {
+    qvec = await embedQuery(query);
+  } catch (err) {
+    _embedderPromise = null;
+    if (err?.code !== "BUNDLED_MODEL_MISSING") throw err;
+    // Fail closed: never download a model. Answer with keyword search and say so.
+    const kw = searchSubgraphs({
+      query, limit, include_unserved, include_denied, include_testnets, domain, network,
+      protocol_type, min_reliability,
+    });
+    return {
+      ...kw,
+      search_mode: "keyword_fallback",
+      semantic_unavailable: {
+        reason: "bundled_model_missing",
+        detail: err.message,
+        fix: "Reinstall the exact published package (npx -y " + PINNED_NPX_PACKAGE + "), which bundles the model. No download is attempted.",
+      },
+    };
+  }
 
   // SQL pre-filter shaves ~14k → <1k rows for narrow queries (e.g.
   // "lending positions on Arbitrum"). Cosine math runs only on the
@@ -1841,7 +1905,7 @@ const INTROSPECTION_QUERY = `{
   }
 }`;
 
-async function postGateway({ url, key, query, variables }) {
+async function postGateway({ url, key, query, variables, timeoutMs = GATEWAY_TIMEOUT_MS }) {
   if (process.env.SUBGRAPH_REGISTRY_MOCK_GATEWAY === "1") {
     return {
       http_status: 200,
@@ -1868,7 +1932,7 @@ async function postGateway({ url, key, query, variables }) {
       redirect: "error",
       headers,
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(GATEWAY_TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     });
     const text = await res.text();
     // Cap what a single tool call can return. The body was read and spread
@@ -1901,7 +1965,7 @@ async function postGateway({ url, key, query, variables }) {
       http_status: null,
       body: null,
       network_error: timedOut
-        ? `gateway timed out after ${GATEWAY_TIMEOUT_MS}ms`
+        ? `gateway timed out after ${timeoutMs}ms`
         : String(err?.message || err),
     };
   }
@@ -2066,13 +2130,53 @@ function healthKey(row) { return row?.ipfs_hash || row?.id; }
 function freshnessFor(row) {
   return freshness(row, healthObservations.get(healthKey(row)));
 }
-function rememberHealth(row, result) {
+function rememberHealth(row, result, extra = {}) {
   const key = healthKey(row);
   healthObservations.delete(key);
-  healthObservations.set(key, healthObservation(result));
+  healthObservations.set(key, { ...healthObservation(result), ...extra });
   if (healthObservations.size > 500) {
     healthObservations.delete(healthObservations.keys().next().value);
   }
+}
+
+// Classify a failed gateway response. Only "serving" failures justify moving to
+// another deployment: auth/quota/payment problems would fail everywhere, and
+// query errors are about the query, not the deployment.
+function classifyGatewayFailure(shape) {
+  const text = [shape?.error, shape?.message, ...(shape?.errors || []).map((e) => e?.message || e)].filter(Boolean).join(" | ");
+  if (shape?.auth_error || [401, 402, 403, 429].includes(shape?.http_status) ||
+      /\b(quota|billing|payment|insufficient funds|rate limit|too many requests|api key)\b/i.test(text)) return "auth_or_quota";
+  if (shape?.error === "gateway_error" || shape?.error === "invalid_gateway_response" ||
+      (shape?.error === "gateway_http_error" && (shape?.http_status ?? 500) >= 500) ||
+      /bad indexers|indexing_error|no indexers|not (yet )?available|unavailable|no allocations?|subgraph not found|deployment not found|not synced|timed out|timeout|store error|indexer.*error/i.test(text)) return "serving";
+  return "query_error";
+}
+
+function failureEvidence(shape) {
+  const msg = shape?.message || shape?.errors?.[0]?.message || shape?.error || "unknown";
+  return String(msg).slice(0, 240);
+}
+
+// Process-local health memory: skip a deployment that recently failed to serve
+// or was far behind. Never derived from rewards/curation (denied_at) or from a
+// chain lacking indexing rewards; those say nothing about query availability.
+function knownBadHealth(row, now = Math.floor(Date.now() / 1000)) {
+  const obs = healthObservations.get(healthKey(row));
+  if (!obs || now - obs.observed_at > HEALTH_STALE_SECONDS) return null;
+  if (obs.status === "query_failed" && obs.failure_class === "serving") return { reason: "not_serving", evidence: obs.evidence || "recent gateway failure", observed_at: obs.observed_at };
+  if (obs.status === "query_failed" && obs.failure_class === "stale") return { reason: "stale_indexing", evidence: obs.evidence, observed_at: obs.observed_at };
+  if (obs.indexed_block_timestamp && obs.observed_at - obs.indexed_block_timestamp > STALE_INDEXING_SECONDS) {
+    return { reason: "stale_indexing", evidence: `indexed block ${obs.observed_at - obs.indexed_block_timestamp}s behind observation`, observed_at: obs.observed_at };
+  }
+  return null;
+}
+
+function healthSummary(row) {
+  const obs = healthObservations.get(healthKey(row));
+  if (!obs) return { status: "not_observed" };
+  const age = Math.max(0, Math.floor(Date.now() / 1000) - obs.observed_at);
+  return { status: obs.failure_class && obs.status === "query_failed" ? `query_failed_${obs.failure_class}` : obs.status, observed_seconds_ago: age, stale_observation: age > HEALTH_STALE_SECONDS,
+    ...(obs.indexed_block_timestamp ? { indexed_block_timestamp: obs.indexed_block_timestamp } : {}) };
 }
 
 function findByContract({ address, chain, limit = 3 } = {}) {
@@ -2188,7 +2292,12 @@ function selectedSummary(r) {
     protocol_type: r.protocol_type, reliability_score: r.reliability_score, query_volume_30d: r.query_volume_30d };
 }
 
-async function queryForGoal({ goal, chain, first, execute = false, validate_schema = false, include_denied = false, include_unserved = false } = {}) {
+const MAX_GOAL_GATEWAY_REQUESTS = 6;
+const MAX_GOAL_DEPLOYMENT_ATTEMPTS = 3;
+const GOAL_PROBE_TIMEOUT_MS = 12_000;
+
+async function queryForGoal({ goal, chain, first, execute = false, validate_schema = false, include_denied = false, include_unserved = false,
+  spam_handling = "flag_and_push_down", trusted_tokens } = {}) {
   if (typeof goal !== "string" || !goal.trim() || goal.length > 1000) {
     return { error: "goal must be a non-empty string of at most 1000 characters" };
   }
@@ -2199,6 +2308,9 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
       (first !== undefined && (!Number.isInteger(first) || first < 1 || first > 10))) {
     return { error: "execute, validate_schema, include_denied and include_unserved must be boolean; first must be an integer from 1 to 10" };
   }
+  if (!SPAM_HANDLING.includes(spam_handling)) return { error: `spam_handling must be one of ${SPAM_HANDLING.join(", ")}` };
+  const trusted = normalizeTrusted(trusted_tokens);
+  if (!trusted.ok) return { error: trusted.error };
   const discovery = recommendSubgraph({ goal: goal.trim(), chain: chain || "" });
   if (discovery.error) return { error: discovery.error, execution_attempted: false, executed: false };
   const intent = parseGoal(goal.trim(), { isChain: isChainWord });
@@ -2208,6 +2320,15 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
 
   let selected, query = null, target, mapping, schemaValidation = "not_checked", liveErrors;
   let gatewayRequests = 0;
+  let chosen = null; // { cand, plan, health, result? }
+  const skippedDeployments = [];
+  let stopReason = null;
+  const tokenKind = intent.primary === "token" ? "token" : intent.primary === "pool" ? "pool" : null;
+  // Rankings by TVL/volume are where spam/manipulated rows surface; fetch a
+  // little more so pushing flagged rows down still leaves `first` usable rows.
+  // Only when the caller did not set `first` explicitly.
+  const overFetch = first === undefined && tokenKind && !intent.ids_only && spam_handling === "flag_and_push_down" && (intent.ordering === "top" || !intent.ordering) ? Math.min(10, rows * 2) : rows;
+
   if (!intent.primary) {
     // No entity intent recognised: keep the stored starter, labelled generic.
     for (const candidate of discovery.recommendations) {
@@ -2225,8 +2346,9 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
       id: c.rec.id, display_name: c.rec.display_name, network: c.rec.network, entity: e.name, entity_score: Number(e.score.toFixed(2)), reason: e.reason, deployment_score: c.score,
     }))).slice(0, 8);
     const minScore = validate_schema && key ? 0.6 : 0.75;
+    const eligible = scored.filter((c) => c.ranked[0].score >= minScore);
     selected = best ? best.rec : discovery.recommendations[0];
-    if (!best || best.ranked[0].score < minScore) {
+    if (!eligible.length) {
       mapping = { intent, confidence: best ? "low" : "none", goal_specific: false,
         rationale: [best ? `Best entity ${best.ranked[0].name} only matched by ${best.ranked[0].reason}` : `No candidate deployment has an entity matching "${intent.primary}"`],
         unmet: ["No confident entity mapping; inspect alternatives or use get_subgraph_detail / get_schema before writing a query."],
@@ -2241,32 +2363,111 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
         }
       }
     } else {
-      const entity = best.ranked[0];
-      const entityNames = best.entities.map((e) => e.name);
-      let plan = planKeyless({ intent, entity, starter: best.example_query, first: rows, allEntityNames: entityNames });
-      target = resolveQueryTarget(best.rec.ipfs_hash ? { ipfs_hash: best.rec.ipfs_hash } : { subgraph_id: best.rec.id });
-      if (target.error) return { ...target, executed: false };
-      let confidence = "medium";
-      if (validate_schema && key) {
+      const skip = (cand, reason, evidence, extra = {}) => {
+        if (!skippedDeployments.some((d) => d.id === cand.rec.id)) skippedDeployments.push({ id: cand.rec.id, display_name: cand.rec.display_name, network: cand.rec.network, reason, evidence, ...extra });
+      };
+      // recommend_subgraph already dropped recently-unhealthy deployments; keep them visible.
+      for (const u of discovery.skipped_unhealthy || []) skippedDeployments.push({ id: u.id, display_name: u.display_name, network: u.network, reason: u.reason, evidence: u.evidence, source: "process_local_observation", observed_at: u.observed_at });
+      let attempts = 0, staleFallback = null, lastFailure = null;
+      for (const cand of eligible) {
+        if (attempts >= MAX_GOAL_DEPLOYMENT_ATTEMPTS) break;
+        const bad = knownBadHealth(cand.rec);
+        if (bad) { skip(cand, bad.reason, bad.evidence, { source: "process_local_observation", observed_at: bad.observed_at }); continue; }
+        const entity = cand.ranked[0];
+        const candTarget = resolveQueryTarget(cand.rec.ipfs_hash ? { ipfs_hash: cand.rec.ipfs_hash } : { subgraph_id: cand.rec.id });
+        if (candTarget.error) { skip(cand, "no_query_target", candTarget.error); continue; }
+        let plan = planKeyless({ intent, entity, starter: cand.example_query, first: overFetch, allEntityNames: cand.entities.map((e) => e.name) });
+        let health = null, candValidation = validate_schema ? (key ? "not_checked" : "not_checked_no_key") : "not_checked";
+        attempts++;
+        if (validate_schema && key) {
+          if (gatewayRequests >= MAX_GOAL_GATEWAY_REQUESTS) { stopReason = "request_budget_exhausted"; break; }
+          gatewayRequests++;
+          const posted = await postGateway({ url: candTarget.query_url, key, query: schemaProbeQuery(entity.name), timeoutMs: GOAL_PROBE_TIMEOUT_MS });
+          const shape = gatewayResultShape(posted, candTarget);
+          if (shape.error || shape.errors?.length || !shape.data) {
+            const cls = classifyGatewayFailure(shape);
+            const errs = [{ http_status: shape.http_status, error: shape.error ?? null, message: shape.message ?? null, errors: shape.errors, auth_error: shape.auth_error, failure_class: cls }];
+            if (cls === "auth_or_quota") { lastFailure = { cand, target: candTarget, errs }; stopReason = "auth_or_quota"; break; }
+            rememberHealth(cand.rec, { http_status: shape.http_status, error: shape.error || "query_failed", errors: shape.errors }, { failure_class: cls === "serving" ? "serving" : "query", evidence: failureEvidence(shape) });
+            skip(cand, cls === "serving" ? "not_serving" : "schema_probe_failed", failureEvidence(shape), { source: "live_probe" });
+            lastFailure = { cand, target: candTarget, errs };
+            continue;
+          }
+          health = probeHealth(shape.data.m);
+          if (shape.data.m) rememberHealth(cand.rec, { http_status: 200, data: { _meta: shape.data.m } });
+          const live = planWithSchema({ intent, entity, probe: shape.data, first: overFetch });
+          if (live.errors?.length) {
+            skip(cand, "schema_does_not_fit_goal", live.errors.join("; ").slice(0, 240), { source: "live_probe" });
+            lastFailure = { cand, target: candTarget, errs: live.errors };
+            continue;
+          }
+          plan = live; candValidation = "validated_fields_and_arguments";
+          if (health.status === "stale") {
+            skip(cand, "stale_indexing", `indexed block is ${health.lag_seconds}s behind now`, { source: "live_probe", health });
+            staleFallback ||= { cand, plan, health, target: candTarget, validation: candValidation };
+            continue;
+          }
+        }
+        const attempt = { cand, plan, health, target: candTarget, validation: candValidation };
+        const willExecute = execute && key && plan?.query && !(plan.blocking_unmet?.length);
+        if (!willExecute) { chosen = attempt; break; }
+        if (gatewayRequests >= MAX_GOAL_GATEWAY_REQUESTS) { chosen = attempt; stopReason = "request_budget_exhausted"; break; }
         gatewayRequests++;
-        const posted = await postGateway({ url: target.query_url, key, query: schemaProbeQuery(entity.name) });
-        const shape = gatewayResultShape(posted, target);
-        const live = shape.error || shape.errors?.length || !shape.data ? null : planWithSchema({ intent, entity, probe: shape.data, first: rows });
-        if (!live || live.errors?.length) {
-          schemaValidation = "failed";
-          liveErrors = live?.errors?.length ? live.errors : [{ http_status: shape.http_status, error: shape.error ?? null, errors: shape.errors, auth_error: shape.auth_error }];
-          plan = null;
-        } else { plan = live; schemaValidation = "validated_fields_and_arguments"; confidence = entity.score >= 0.75 && !live.blocking_unmet?.length ? "high" : "medium"; }
-      } else if (validate_schema) {
-        schemaValidation = "not_checked_no_key";
+        const result = await executeQuery({ ipfs_hash: cand.rec.ipfs_hash, subgraph_id: cand.rec.id, query: plan.query });
+        const ok = result.http_status >= 200 && result.http_status < 300 && !result.error && !result.errors?.length && result.data != null;
+        if (!ok) {
+          const cls = classifyGatewayFailure(result);
+          rememberHealth(cand.rec, result, { failure_class: cls === "serving" ? "serving" : "query", evidence: failureEvidence(result) });
+          if (cls === "serving" && eligible.indexOf(cand) < eligible.length - 1 && gatewayRequests < MAX_GOAL_GATEWAY_REQUESTS) {
+            skip(cand, "not_serving", failureEvidence(result), { source: "execution" });
+            continue;
+          }
+        } else if (result.data?._meta) {
+          rememberHealth(cand.rec, result);
+          const h = probeHealth(result.data._meta);
+          attempt.health = attempt.health || h;
+        }
+        attempt.result = result;
+        chosen = attempt;
+        break;
       }
+      if (!chosen && staleFallback && stopReason !== "auth_or_quota") {
+        chosen = staleFallback;
+        chosen.stale_fallback = true;
+        // Execute the stale-but-serving deployment only if nothing healthier exists.
+        if (execute && key && chosen.plan?.query && !chosen.plan.blocking_unmet?.length && gatewayRequests < MAX_GOAL_GATEWAY_REQUESTS) {
+          gatewayRequests++;
+          chosen.result = await executeQuery({ ipfs_hash: chosen.cand.rec.ipfs_hash, subgraph_id: chosen.cand.rec.id, query: chosen.plan.query });
+        }
+      }
+      const pick = chosen || lastFailure || { cand: eligible[0] };
+      const entity = pick.cand.ranked[0];
+      selected = pick.cand.rec;
+      target = pick.target || resolveQueryTarget(selected.ipfs_hash ? { ipfs_hash: selected.ipfs_hash } : { subgraph_id: selected.id });
+      if (target.error) return { ...target, executed: false };
+      const plan = chosen?.plan || null;
+      if (chosen) schemaValidation = chosen.validation;
+      else if (validate_schema && key) { schemaValidation = "failed"; liveErrors = lastFailure?.errs || [{ error: stopReason || "no_deployment_attempted" }]; }
+      else if (validate_schema) schemaValidation = "not_checked_no_key";
       query = plan?.query ?? null;
+      let confidence = "medium";
+      if (chosen && schemaValidation === "validated_fields_and_arguments") confidence = entity.score >= 0.75 && !plan.blocking_unmet?.length ? "high" : "medium";
+      if (chosen?.stale_fallback) confidence = "medium";
+      const firstSkip = skippedDeployments[0];
       mapping = { intent, confidence: plan ? confidence : "low", goal_specific: Boolean(plan),
         entity: entity.name, entity_score: Number(entity.score.toFixed(2)), collection: plan?.collection ?? null,
         fields: plan?.fields ?? null, order: plan?.order ?? null, where: plan?.where ?? null, field_source: plan?.field_source ?? null,
-        rationale: [`Selected ${best.rec.display_name} (${best.rec.network}) because entity ${entity.name}: ${entity.reason}; protocol text match ${best.text_match}${best.from_recommendation ? "" : "; found by entity-aware candidate search"}`, ...(plan?.rationale || [])],
-        unmet: plan?.unmet || [], filters_not_applied: plan?.blocking_unmet || [], alternatives, schema_source: plan?.field_source === "live_introspection" ? "live_introspection" : "registry_entity_names" };
+        rationale: [`Selected ${selected.display_name} (${selected.network}) because entity ${entity.name}: ${entity.reason}; protocol text match ${pick.cand.text_match}${pick.cand.from_recommendation ? "" : "; found by entity-aware candidate search"}`,
+          ...(chosen && firstSkip ? [`Fell back from ${firstSkip.display_name} (${firstSkip.id}): ${firstSkip.reason}`] : []),
+          ...(plan?.rationale || [])],
+        unmet: [...(plan?.unmet || []), ...(chosen?.stale_fallback ? ["All fitting deployments that answered were stale; returned the stale one with a warning"] : [])],
+        filters_not_applied: plan?.blocking_unmet || [], alternatives, schema_source: plan?.field_source === "live_introspection" ? "live_introspection" : "registry_entity_names",
+        skipped_deployments: skippedDeployments, fallback_used: Boolean(chosen && skippedDeployments.length),
+        health_policy: "Fallback uses serving signals only (gateway failures, timeouts, indexer errors, stale _meta). Indexing-reward denial, curation and chains without rewards are not treated as unhealthy." };
+      if (stopReason) mapping.stop_reason = stopReason;
       if (liveErrors) mapping.live_schema_errors = liveErrors;
+      if (overFetch !== rows && plan) mapping.first_fetched = overFetch;
+      if (chosen?.health) mapping.deployment_health = chosen.health;
     }
   }
   if (selected && !target) {
@@ -2291,29 +2492,47 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
     request,
     freshness: row ? freshnessFor(row) : null,
   };
+  if (tokenKind && query) {
+    out.token_quality_plan = { applies: true, handling: spam_handling, kind: tokenKind,
+      note: spam_handling === "off" ? "Spam heuristics disabled by spam_handling:\"off\"." : "Returned rows are checked for likely spam/scam tokens and flagged in token_quality; with flag_and_push_down, flagged rows are moved after the others. Nothing is removed." };
+  }
   if (!key) out.onboarding = keyOnboarding(request);
   else if (query && !execute && !(schemaValidation === "validated_fields_and_arguments" && mapping.filters_not_applied?.length)) {
     out.next_action.execute_call = { name: "query_for_goal", arguments: { goal, ...(chain ? { chain } : {}), first: rows, validate_schema: true, execute: true },
-      cost: "Uses up to two gateway queries from your own Studio allowance (schema check + execution); never x402." };
+      cost: "Uses up to two gateway queries from your own Studio allowance (schema check + execution), more only if a deployment fails and a healthy alternative is tried (hard cap 6); never x402." };
   }
   if (!execute) return out;
   // Explicit execution opt-in is necessary even when the process has a key.
   if (!key) return { ...out, ...credentialsRequired(target || resolveQueryTarget({ subgraph_id: selected.id })), onboarding: keyOnboarding(request) };
-  if (!query) return { ...out, execution_skipped: "no_confident_goal_query" };
+  if (!query) return { ...out, execution_skipped: mapping.stop_reason === "auth_or_quota" ? "auth_or_quota_error" : schemaValidation === "failed" ? "live_schema_validation_failed" : "no_confident_goal_query" };
   if (schemaValidation === "failed") return { ...out, execution_skipped: "live_schema_validation_failed" };
   // Never run a query that silently drops a filter the goal asked for (address
   // or time range): the rows would look relevant but not answer the goal.
   if (mapping.filters_not_applied?.length) return { ...out, execution_skipped: "requested_filter_not_applied" };
-  const result = await executeQuery({ ipfs_hash: selected.ipfs_hash, subgraph_id: selected.id, query });
-  out.gateway_requests = gatewayRequests + 1;
+  let result = chosen?.result;
+  if (!result) {
+    if (!intent.primary) {
+      if (gatewayRequests >= MAX_GOAL_GATEWAY_REQUESTS) return { ...out, execution_skipped: "request_budget_exhausted" };
+      result = await executeQuery({ ipfs_hash: selected.ipfs_hash, subgraph_id: selected.id, query });
+      out.gateway_requests = ++gatewayRequests;
+      if (result.data?._meta) rememberHealth(row, result);
+      else if (result.error || result.errors?.length) { const cls = classifyGatewayFailure(result); rememberHealth(row, result, { failure_class: cls === "serving" ? "serving" : "query", evidence: failureEvidence(result) }); }
+    } else {
+      return { ...out, execution_skipped: mapping.stop_reason || "not_executed" };
+    }
+  }
   out.execution_attempted = true;
-  out.result = result;
   out.validation.gateway_execution = result.http_status >= 200 && result.http_status < 300 &&
     !result.error && !result.errors?.length && result.data != null ? "succeeded" : "failed";
   out.executed = out.validation.gateway_execution === "succeeded";
-  if (result.data?._meta || out.validation.gateway_execution === "failed") {
-    rememberHealth(row, result);
+  if (out.executed && tokenKind && mapping.collection && Array.isArray(result.data?.[mapping.collection])) {
+    const tq = applyTokenQuality(result.data[mapping.collection], { network: selected.network, trusted: trusted.set, handling: spam_handling, kind: tokenKind, collection: mapping.collection });
+    if (tq.report) {
+      result = { ...result, data: { ...result.data, [mapping.collection]: tq.rows } };
+      out.token_quality = tq.report;
+    }
   }
+  out.result = result;
   out.freshness = freshnessFor(row);
   return out;
 }
@@ -2448,7 +2667,7 @@ const TOOLS = [
   },
   {
     name: "query_for_goal",
-    description: "Turn a goal into a bounded, goal-specific GraphQL query: maps intent (pool ids, swaps, candles/OHLCV, daily/hourly data, positions, liquidations, tokens, addresses, time ranges, latest/top) to a deployment entity from the registry's crawled entity names, with rationale, confidence, unmet parts and ranked alternatives. Returns query:null instead of a misleading query when no entity maps confidently; goals without entity intent get the stored starter labelled generic. Keyless default makes NO network call. validate_schema=true (your own Studio key) adds ONE scoped introspection request to confirm fields/arguments and add typed ordering/filters; execute=true adds ONE gateway POST. No x402 payment, retries or fallbacks. Without a key, onboarding explains the human-operator key setup.",
+    description: "Turn a goal into a bounded, goal-specific GraphQL query: maps intent (pool ids, swaps, candles/OHLCV, daily/hourly data, positions, liquidations, tokens, addresses, time ranges, latest/top) to a deployment entity from the registry's crawled entity names, with rationale, confidence, unmet parts and ranked alternatives. Returns query:null instead of a misleading query when no entity maps confidently; goals without entity intent get the stored starter labelled generic. Keyless default makes NO network call. validate_schema=true (your own Studio key) adds ONE scoped introspection request per deployment to confirm fields/arguments, typed ordering/filters and serving freshness; execute=true adds ONE gateway POST. If the chosen deployment times out, has failing indexers or is stale, it is skipped (reported in goal_mapping.skipped_deployments) and the next deployment that fits the goal is tried: at most 3 deployments and 6 gateway requests, never x402. Reward/curation status is not treated as unhealthy. Token/pool results are checked for likely spam (URL/lure names, implausible TVL, TVL without volume, low activity): flagged rows are reported in token_quality and, by default, moved after the others; nothing is removed. Without a key, onboarding explains the human-operator key setup.",
     inputSchema: { type: "object", additionalProperties: false, required: ["goal"], properties: {
       goal: { type: "string", minLength: 1, maxLength: 1000 },
       chain: { type: "string" },
@@ -2457,6 +2676,8 @@ const TOOLS = [
       validate_schema: { type: "boolean", default: false, description: "Opt-in: with your own Studio key, one scoped live introspection request validates the generated fields/arguments before any execution" },
       include_denied: { type: "boolean", default: false, description: "Also consider deployments with denied indexing rewards (not proof of unavailability) for entity matching" },
       include_unserved: { type: "boolean", default: false, description: "Also consider deployments with zero active allocations in the snapshot (not a queryability test)" },
+      spam_handling: { type: "string", enum: ["flag_and_push_down", "flag_only", "off"], default: "flag_and_push_down", description: "Token/pool rows: flag likely spam and move flagged rows last (default), only flag, or disable. Rows are never removed." },
+      trusted_tokens: { type: "array", maxItems: 50, items: { type: "string", pattern: "^0x[0-9a-fA-F]{40}$" }, description: "Extra known-good token addresses never flagged as spam (adds to a small built-in per-chain allowlist)" },
     } },
   },
   {
@@ -2833,9 +3054,82 @@ function createServer() {
 }
 
 // ── SSE/HTTP Transport (OpenClaw + remote agents) ──────────
+//
+// Security model (0.13.1+):
+// - Binds 127.0.0.1 unless MCP_HTTP_HOST says otherwise.
+// - A non-loopback bind is REFUSED unless SUBGRAPH_REGISTRY_HTTP_TOKEN is set
+//   (at least 24 characters). Then every route except /health requires
+//   `Authorization: Bearer <token>` (constant-time compare) or gets 401, so no
+//   unauthenticated remote caller can reach a tool that spends the operator's
+//   Studio key.
+// - Without a token, requests are also rejected unless they arrive from a
+//   loopback socket with a loopback Host header (blocks DNS rebinding from a
+//   browser page).
+// The token is never logged or echoed.
 
-function startHttpTransport(port) {
+export const HTTP_TOKEN_ENV = "SUBGRAPH_REGISTRY_HTTP_TOKEN";
+export const MIN_HTTP_TOKEN_LENGTH = 24;
+
+export function isLoopbackHost(host) {
+  const h = String(host || "").trim().toLowerCase().replace(/^\[|\]$/g, "");
+  return h === "localhost" || h === "::1" || /^127(\.\d{1,3}){3}$/.test(h) || /^::ffff:127(\.\d{1,3}){3}$/.test(h);
+}
+
+function hostHeaderName(value) {
+  const v = String(value || "").trim().toLowerCase();
+  if (v.startsWith("[")) return v.slice(1, v.indexOf("]"));
+  return v.replace(/:\d+$/, "");
+}
+
+export function resolveHttpSecurity(env = process.env) {
+  const host = (env.MCP_HTTP_HOST || "127.0.0.1").trim();
+  const rawToken = env[HTTP_TOKEN_ENV];
+  const token = typeof rawToken === "string" && rawToken.trim() ? rawToken.trim() : null;
+  const loopback = isLoopbackHost(host);
+  if (token && token.length < MIN_HTTP_TOKEN_LENGTH) {
+    return { ok: false, host, loopback, error: `${HTTP_TOKEN_ENV} must be at least ${MIN_HTTP_TOKEN_LENGTH} characters.` };
+  }
+  if (!loopback && !token) {
+    return {
+      ok: false, host, loopback,
+      error: `Refusing to bind HTTP transport to non-loopback host ${host} without ${HTTP_TOKEN_ENV}. ` +
+        `Set ${HTTP_TOKEN_ENV} to a long random secret (clients send Authorization: Bearer <token>), ` +
+        "or unset MCP_HTTP_HOST to bind 127.0.0.1 only.",
+    };
+  }
+  return { ok: true, host, loopback, token, auth: token ? "bearer_token" : "loopback_only" };
+}
+
+function tokenMatches(expected, header) {
+  const m = /^Bearer\s+(\S+)\s*$/i.exec(String(header || ""));
+  if (!m) return false;
+  // Hash both sides so lengths match and the compare is constant-time.
+  const a = createHash("sha256").update(expected).digest();
+  const b = createHash("sha256").update(m[1]).digest();
+  return timingSafeEqual(a, b);
+}
+
+export function httpAuthMiddleware(security) {
+  return (req, res, next) => {
+    if (req.path === "/health") return next();
+    if (security.token) {
+      if (tokenMatches(security.token, req.headers.authorization)) return next();
+      res.set("WWW-Authenticate", 'Bearer realm="subgraph-registry"');
+      res.status(401).json({ error: "unauthorized", hint: "Send Authorization: Bearer <token>." });
+      return;
+    }
+    // No token configured: loopback callers only, with a loopback Host header.
+    if (isLoopbackHost(req.socket?.remoteAddress) && isLoopbackHost(hostHeaderName(req.headers.host))) return next();
+    res.set("WWW-Authenticate", 'Bearer realm="subgraph-registry"');
+    res.status(401).json({ error: "unauthorized", hint: `Loopback only. Set ${HTTP_TOKEN_ENV} to allow authenticated remote access.` });
+  };
+}
+
+export function createHttpApp(security = resolveHttpSecurity()) {
+  if (!security.ok) throw new Error(security.error);
   const app = express();
+  app.disable("x-powered-by");
+  app.use(httpAuthMiddleware(security));
   const sessions = new Map();
 
   app.get("/sse", async (req, res) => {
@@ -2991,32 +3285,25 @@ function startHttpTransport(port) {
     });
   });
 
-  // Bind loopback unless told otherwise.
-  //
-  // This used to be `app.listen(port, cb)` with no host, which binds ALL
-  // interfaces — while the very next line printed "localhost". Verified:
-  // the log said localhost:3903 and lsof said *:3903. That gap is the whole
-  // problem, because since v0.9.13 the process can hold a Studio API key, and
-  // /sse and /messages have no authentication. Anyone on the LAN could open a
-  // session and spend the operator's Graph quota, with the startup message
-  // reassuring them it was local-only.
-  //
-  // Discovery over HTTP is still fine to expose deliberately — set
-  // MCP_HTTP_HOST=0.0.0.0 — but that is now a decision rather than a default,
-  // and the log reports what was actually bound.
-  const host = process.env.MCP_HTTP_HOST || "127.0.0.1";
+  return app;
+}
+
+function startHttpTransport(port) {
+  // History: this once bound all interfaces while logging "localhost", and
+  // /sse and /messages had no authentication, so anyone on the LAN could
+  // spend the operator's Graph quota. Now loopback is the default and a
+  // non-loopback bind requires a bearer token (see resolveHttpSecurity).
+  const security = resolveHttpSecurity();
+  if (!security.ok) {
+    console.error(`Fatal: ${security.error}`);
+    process.exit(1);
+  }
+  const app = createHttpApp(security);
+  const host = security.host;
   app.listen(port, host, () => {
     const shown = host === "0.0.0.0" || host === "::" ? `<this-host>:${port}` : `${host}:${port}`;
-    console.error(`SSE transport listening on http://${shown}/sse (bound to ${host})`);
+    console.error(`SSE transport listening on http://${shown}/sse (bound to ${host}; auth: ${security.auth})`);
     console.error(`Well-known manifest at http://${shown}/.well-known/subgraph/{id}.jsonld`);
-    if (host !== "127.0.0.1" && host !== "localhost" && studioApiKey()) {
-      console.error(
-        "WARNING: bound to a non-loopback interface with a Studio API key set. " +
-        "/sse and /messages are unauthenticated, so anyone who can reach this port " +
-        "can execute queries billed to that key. Put it behind a proxy that authenticates, " +
-        "or unset the key to serve discovery only.",
-      );
-    }
   });
 }
 
@@ -3104,6 +3391,8 @@ export const REST_ROUTES = [
 ];
 
 export { TOOLS, HANDLERS };
+// Test-only: clear process-local health observations between test cases.
+export function resetHealthObservationsForTests() { healthObservations.clear(); }
 
 // Only auto-start when invoked as the entry point — importing the
 // module for tooling (scripts/gen-openapi.js, tests) MUST NOT spawn

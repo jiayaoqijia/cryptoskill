@@ -5,181 +5,43 @@ parent: content-guidelines
 
 # MetaMask Content Design Guidelines — Mobile
 
-> Source of truth: MetaMask Content Design Style Guide (internal). This skill encodes the decisions from that guide for AI-assisted development. For component-specific copy rules, read the relevant component README in MetaMask/metamask-design-system via Storybook MCP.
+Shared rules are in the content-guidelines skill. This overlay is MetaMask Mobile only: where strings live, and drafts that apply to this client. If the two seem to disagree, follow the shared skill.
 
----
+## Where strings live
 
-## Capitalization
+- English source: `locales/languages/en.json`. Feature-first nested keys (`perps.order.validation.please_set_a_limit_price`).
+- UI reads them with `strings(name, params)` from `locales/i18n.js`. Placeholders are `{{name}}` only.
+- Edit the English source. Do not hand-edit the other files in `locales/languages/` to keep them in sync. Translation owns those files.
+- Judge the string a person sees, not the key. `transaction.gas_fee`, `swaps.gas_fee`, and `activity_details.gas_token_fee` already display "Network fee".
 
-**Default: sentence case.** Capitalize only the first word of a string and any words that qualify as exceptions below.
+The generated skill under `.claude/skills/mms-content-guidelines/`, `.cursor/rules/mms-content-guidelines/`, and `.agents/skills/mms-content-guidelines/` is overwritten on the next sync. Change this overlay or the shared skill, then sync.
 
-### ✅ Title case is correct for
+On mobile, do not say "clicking" in a consent line. "Tap to…" is allowed in this client. It is not allowed in the extension. Say tap, not click. The Apple Pay side button stays "double-click" (`card.apple_pay_confirmation.instructions`). Drop "Simply". Keep "double-click" only because that is the platform's name for that control.
 
-| Category | Examples |
-|----------|---------|
-| Special terms | Secret Recovery Phrase, Private Key |
-| MetaMask product names | MetaMask, MetaMask Card, Metal Card, Virtual Card, Snaps, Perps, Predictions, Rewards (the product) |
-| Other proper nouns | Ethereum, OpenSea, Ledger, Apple, Google, Consensys |
-| Network names | Ethereum Mainnet, Polygon Mainnet, Arbitrum One |
-| Abbreviations | NFT, API, DAO, DeFi, ETH, BTC, SOL |
+## Predictions labels
 
-### ❌ Title case is wrong for
-
-Everything else — including titles, subtitles, button labels, menu items, settings labels, section headers, screen headers, tags, and feature names that are not trademarked.
+Market-type and group labels we write are sentence case. Keep team names and league names as proper nouns.
 
 ```
-❌ "Turn on Device Authentication"
-✅ "Turn on device authentication"
+❌ "Exact Score" (`predict.sports_market_types.exact_score`)
+✅ "Exact score"
 
-❌ "Enable NFT Autodetection"
-✅ "Turn on NFT autodetection"   ← NFT stays caps; "autodetection" does not
+❌ "1st Half Team Totals" (`predict.sports_market_types.soccer_first_half_team_totals`)
+✅ "1st half team totals"
 
-❌ "Sample Banner Alert Title"
-✅ "Sample banner alert title"
-
-❌ "Start Trading"
-✅ "Start trading"
+❌ "Both Teams Slay Baron Nashor"
+✅ "Both teams slay Baron Nashor"
 ```
 
----
+Those labels are our strings: `predict.sports_market_types.*`, `predict.outcome_groups.*`, and `predict.market_groups.*` in `locales/languages/en.json`.
 
-## Punctuation
+The question on a market card is not one of those strings. `PolymarketProvider` copies Polymarket's `question`, `groupItemTitle`, and event `title`, with light formatting only. Do not sentence-case that feed text. Team and league names inside it stay as the feed sent them.
 
-### Periods
+Developer-only strings (`app_settings.developer_options.*`, debug screens) are out of scope. The shared skill states that rule.
 
-Use a period when the string is a **complete sentence**. Do not use a period on labels, headings, button text, tags, tab labels, or any string that is not a complete sentence.
+## PROPOSED
 
-```
-✅ "Your transaction couldn't be completed, so it was canceled."  ← body copy, complete sentence
-✅ "Network fee"                                                      ← label, no period
-✅ "Turn on notifications"                                            ← button, no period
-❌ "Network fee."
-❌ "Turn on notifications."
-❌ "Incorrect password. Try again"  ← second sentence needs a period too
-✅ "Incorrect password. Try again."
-```
+Drafts. Do not enforce them until content design confirms them.
 
-**Never** use a period after "Learn more" as a link label.
-
-### Exclamation points
-
-Use sparingly — only for genuinely exciting moments (new feature announcements). Never in errors, alerts, or confirmations.
-
-```
-❌ "Done!"   ❌ "Complete!"   ❌ "Error!"
-✅ "The Ethereum Merge is here!"  ← rare, high-impact
-```
-
-### Ellipsis
-
-Only in address abbreviations (`0x0000...0000`) and loading/in-progress states. Do not use to trail off a sentence.
-
-```
-✅ "Turning on notifications..."   ← loading state
-✅ "0x0000...0000"                 ← address format
-❌ "Are you sure you want to proceed…"
-```
-
-### Ampersands
-
-Never use `&` when "and" works. Never use `+` in place of either.
-
-```
-❌ "Security & privacy"
-✅ "Security and privacy"
-```
-
-### Commas
-
-Use the serial (Oxford) comma in lists of three or more.
-
-```
-✅ "Tokens, NFTs, and DeFi"
-❌ "Tokens, NFTs and DeFi"
-```
-
-### Colons
-
-Do not use colons in labels or headings. Use sparingly in body copy.
-
----
-
-## Voice and tone
-
-### Active voice
-
-```
-✅ "We're investigating the problem."
-❌ "The problem is being investigated."
-```
-
-### Point of view
-
-- User's things: **your** (never "my")
-- MetaMask: **we / our**
-- Never first-person singular (I, me, my) for MetaMask
-
-```
-✅ "Connect your accounts"   ✅ "We're here to help"
-❌ "Connect my accounts"     ❌ "I need help"
-```
-
-### Contractions
-
-Use them. They feel more human.
-
-```
-✅ "We're here to help"   ✅ "Don't worry, you can edit this later"
-❌ "We are here to help"    ❌ "Do not worry"
-```
-
-### Words to avoid
-
-| Avoid | Reason | Instead |
-|-------|--------|---------|
-| "successfully" | The success state is the success | "File uploaded" |
-| "please" | UI isn't asking a favor | "Enter a name" |
-| "click here" / "tap to…" | Directional, not descriptive | Name the destination |
-| "!" in errors or system copy | Reads as alarm | Remove it |
-| "fiat" | Confusing to general users | "local currency" |
-| "gas fee" / "gas fees" | Deprecated term | "network fee" / "network fees" |
-| "dapp" | Jargon | "site" (unless technical context) |
-| "native currency" | Technical | "network currency" |
-| "token allowance" | Technical | "spending cap" |
-| "cryptocurrency" | Unnecessary | "crypto" |
-| "coins" | Imprecise | "tokens" |
-| "delete wallet" | Alarming | "reset wallet" |
-
----
-
-## Terminology reference
-
-| Use | Not |
-|-----|-----|
-| Secret Recovery Phrase | seed phrase, SRP (never abbreviate in product) |
-| network fee | gas fee, gas fees |
-| network currency | native currency |
-| spending cap | token allowance |
-| site | dapp (unless writing for technical audience) |
-| crypto | cryptocurrency |
-| tokens | coins |
-| reset wallet | delete wallet, erase wallet |
-| local currency | fiat |
-| smart account | smart contract account |
-| back up (verb) / backup (noun) | — |
-| MetaMask Card | MetaMask card |
-| card (lowercase) | Card (when referring to the physical/virtual card, not the product name) |
-| Snaps | snaps, SNAPS, dApps (when referring to the MetaMask Snaps platform) |
-| Perps (product) / perps (generic) | — |
-| Predictions (product) / predictions (generic) | — |
-| Rewards (product) / rewards (generic) | — |
-
-### Date and number formatting
-
-- Dates: `Jun 16 at 5:55 p.m.` — never ordinals (no "16th"), never 24-hour time
-- Day abbreviations: Mon, Tue, Wed, Thu, Fri, Sat, Sun
-- Month abbreviations: Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
-- Large amounts: `$500K`, `$20M`, `$100B` — always uppercase letter
-- Number ranges: `1-20` (hyphen, no spaces)
-- Addresses: `0x0000...0000`
-- Decimals: comma as separator (`100,000`) — localization handles regional variants
+1. **Locale file.** If a person can read it, it belongs in `locales/languages/en.json`. That includes accessibility labels and empty states. Hardcoded examples to move when you touch them: "Date of Birth" in `app/components/UI/Card/components/Onboarding/PersonalDetails.tsx`, "Games couldn't be loaded." / "No games available." / "Retry" in `FeedPreviewSection.tsx`, and "Unable to load price history" in `PredictGameChartContent.tsx`.
+2. **Do not run `toSentenceCase` on product copy.** `app/util/string/index.ts` lowercases everything after the first character. Bridge quote UI calls it on `bridge.network_fee`. It will also lowercase "NFT" and "Secret Recovery Phrase".

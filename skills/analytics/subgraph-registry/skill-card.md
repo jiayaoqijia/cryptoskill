@@ -14,7 +14,7 @@ MIT
 
 ## Use Case:
 
-Developers and agents use this MCP skill to discover and compare The Graph subgraphs, inspect deployment details, and prepare bounded GraphQL queries for a specific goal. Live schema checks and query execution are opt-in and use an operator-managed Studio key.
+Developers use this MCP server to find relevant subgraphs on The Graph and prepare bounded GraphQL queries from a goal. With an operator-configured Studio API key, they can separately opt in to schema validation, health checks, and query execution.
 
 ### Deployment Geography for Use:
 
@@ -22,37 +22,29 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Flexible dependency ranges and unpinned setup commands can make installations vary over time.
+Risk: ClawScan reported a benign verdict with medium confidence, but only 7 of 11 components were fully inspected and static tool-misuse analysis was degraded.
 
-Mitigation: Use the documented version-pinned 0.12.0 install command and review dependency changes before deployment.
-
-Risk: The security scan inspected only part of the release, so its benign verdict has limited coverage.
-
-Mitigation: Review the release and its dependencies before installation, especially if the deployment has elevated access.
-
-Risk: Live query execution uses the operator’s Graph Studio quota, and an external x402 client can incur a payment.
-
-Mitigation: Keep execution opt-in; require explicit approval for any x402 payment and never share Studio keys in chat.
+Mitigation: Review the partially inspected components, any unpinned npx references, and host environment and network permissions before installation. Use the reviewed pinned release and keep API keys in the MCP host's secret store.
 
 ## Reference(s):
 
-- [Subgraph Registry project homepage](https://github.com/PaulieB14/subgraph-registry)
-- [The Graph supported networks](https://thegraph.com/docs/en/supported-networks/)
-- [GraphOps subgraph MCP reference](https://github.com/graphops/subgraph-mcp)
+- [Project repository (Clawdis homepage metadata)](https://github.com/PaulieB14/subgraph-registry)
+- [The Graph supported networks documentation](https://thegraph.com/docs/en/supported-networks/)
+- [ClawHub release page](https://clawhub.ai/paulieb14/skills/subgraph-registry)
 
 ## Skill Output:
 
-**Output Type(s):** [JSON, Code, Guidance]
+**Output Type(s):** [JSON, GraphQL query text, Guidance]
 
-**Output Format:** [Structured JSON tool responses with GraphQL query text and setup guidance]
+**Output Format:** [Structured MCP tool responses, including discovery results and query text]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Responses can include discovery results, bounded query proposals, confidence and limitations; execution is opt-in.]
+**Other Properties Related to Output:** [Discovery uses snapshot data; schema and execution tools are separate opt-in actions requiring an operator-configured Studio API key.]
 
 ## Skill Version(s):
 
-0.12.0 (source: package.json and server-resolved release)
+0.13.2 (source: server-resolved release, package.json)
 
 ## Ethical Considerations:
 

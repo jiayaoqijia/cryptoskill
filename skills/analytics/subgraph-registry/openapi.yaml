@@ -5,7 +5,7 @@ openapi: "3.1.0"
 info:
   title: "Subgraph Registry"
   description: "Agent-friendly subgraph discovery on The Graph Network. 15,330 classified subgraphs with semantic search, reliability scoring, 30-day query volume and schema-evolution tracking. Discovery only: returns subgraph ids and starter queries, which you run with a Graph Studio API key (Authorization: Bearer) or over x402 ($0.01 USDC on Base, no key)."
-  version: "0.12.0"
+  version: "0.13.2"
   license:
     name: "MIT"
   contact:
@@ -13,7 +13,7 @@ info:
     url: "https://github.com/PaulieB14/subgraph-registry"
 servers:
   - url: "http://localhost:3848"
-    description: "Local MCP HTTP transport (default port)"
+    description: "Local MCP HTTP transport (default port). Binds 127.0.0.1 by default; a non-loopback bind requires SUBGRAPH_REGISTRY_HTTP_TOKEN and then every route except /health needs Authorization: Bearer <token> (401 otherwise)."
 paths:
   "/mcp/tools/find_by_contract":
     post:
@@ -100,7 +100,7 @@ paths:
     post:
       operationId: "tool_query_for_goal"
       summary: "Turn a goal into a bounded, goal-specific GraphQL query: maps intent (pool ids, swaps, candles/OHLCV, daily/hourly…"
-      description: "Turn a goal into a bounded, goal-specific GraphQL query: maps intent (pool ids, swaps, candles/OHLCV, daily/hourly data, positions, liquidations, tokens, addresses, time ranges, latest/top) to a deployment entity from the registry's crawled entity names, with rationale, confidence, unmet parts and ranked alternatives. Returns query:null instead of a misleading query when no entity maps confidently; goals without entity intent get the stored starter labelled generic. Keyless default makes NO network call. validate_schema=true (your own Studio key) adds ONE scoped introspection request to confirm fields/arguments and add typed ordering/filters; execute=true adds ONE gateway POST. No x402 payment, retries or fallbacks. Without a key, onboarding explains the human-operator key setup."
+      description: "Turn a goal into a bounded, goal-specific GraphQL query: maps intent (pool ids, swaps, candles/OHLCV, daily/hourly data, positions, liquidations, tokens, addresses, time ranges, latest/top) to a deployment entity from the registry's crawled entity names, with rationale, confidence, unmet parts and ranked alternatives. Returns query:null instead of a misleading query when no entity maps confidently; goals without entity intent get the stored starter labelled generic. Keyless default makes NO network call. validate_schema=true (your own Studio key) adds ONE scoped introspection request per deployment to confirm fields/arguments, typed ordering/filters and serving freshness; execute=true adds ONE gateway POST. If the chosen deployment times out, has failing indexers or is stale, it is skipped (reported in goal_mapping.skipped_deployments) and the next deployment that fits the goal is tried: at most 3 deployments and 6 gateway requests, never x402. Reward/curation status is not treated as unhealthy. Token/pool results are checked for likely spam (URL/lure names, implausible TVL, TVL without volume, low activity): flagged rows are reported in token_quality and, by default, moved after the others; nothing is removed. Without a key, onboarding explains the human-operator key setup."
       tags:
         - "mcp-tools"
       requestBody:
@@ -140,6 +140,21 @@ paths:
                   type: "boolean"
                   default: false
                   description: "Also consider deployments with zero active allocations in the snapshot (not a queryability test)"
+                spam_handling:
+                  type: "string"
+                  enum:
+                    - "flag_and_push_down"
+                    - "flag_only"
+                    - "off"
+                  default: "flag_and_push_down"
+                  description: "Token/pool rows: flag likely spam and move flagged rows last (default), only flag, or disable. Rows are never removed."
+                trusted_tokens:
+                  type: "array"
+                  maxItems: 50
+                  items:
+                    type: "string"
+                    pattern: "^0x[0-9a-fA-F]{40}$"
+                  description: "Extra known-good token addresses never flagged as spam (adds to a small built-in per-chain allowlist)"
       responses:
         "200":
           description: "Tool result (JSON-encoded)"
@@ -969,6 +984,11 @@ paths:
               schema:
                 "$ref": "#/components/schemas/ToolError"
 components:
+  securitySchemes:
+    httpToken:
+      type: "http"
+      scheme: "bearer"
+      description: "Required when the server is started with SUBGRAPH_REGISTRY_HTTP_TOKEN (mandatory for non-loopback binds). This is the server access token, not a Studio API key."
   schemas:
     ToolError:
       type: "object"

@@ -15,13 +15,13 @@ Share the canonical [SKILL.md](SKILL.md) for the complete agent workflow.
 1. **Connect a pinned, published release** (Node 20 is CI-tested):
 
    ```json
-   {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"]}}}
+   {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"]}}}
    ```
 
-   Inspect `tools/list`: Node 0.12.0 exposes **10 tools without a key**, or **19
+   Inspect `tools/list`: Node 0.13.2 exposes **10 tools without a key**, or **19
    total with a Studio key**. A hosted connector can mount a different subset or
    corpus; installing npm does not update or restart it.
-2. **Discover explicitly.** Tool-call parameters below work with published 0.12.0:
+2. **Discover explicitly.** Tool-call parameters below work with published 0.13.2:
 
    ```json
    {"name":"search_subgraphs","arguments":{"query":"uniswap v3","network":"ethereum","limit":3}}
@@ -60,9 +60,32 @@ Share the canonical [SKILL.md](SKILL.md) for the complete agent workflow.
    Read GraphQL `errors` and partial `data` even on HTTP 200. On missing
    credentials/quota, stop and resolve that issue; never silently switch to x402.
 
-### What 0.12.0 adds
+### What 0.13.2 adds
 
-**npm/ClawHub 0.12.0** adds goal-specific `query_for_goal` planning (entity
+**npm/ClawHub 0.13.2** hardens installation and network behaviour: dependencies
+are pinned to exact versions, semantic search uses only the bundled model (never
+a download; if it is missing the tool answers with keyword search and says so),
+and a missing `registry.db` is an error unless
+`SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD=1` is set. Generated config examples use the
+literal pinned package `subgraph-registry-mcp@0.13.2`.
+
+**0.13.1** secured the optional HTTP/SSE transport. It binds
+`127.0.0.1` by default and refuses a non-loopback bind unless
+`SUBGRAPH_REGISTRY_HTTP_TOKEN` is set; then every route except `/health` needs
+`Authorization: Bearer <token>` (401 otherwise). See
+[HTTP transport security](#http-transport-security). Stdio (the default) is
+unchanged.
+
+**0.13.0** made `query_for_goal` skip deployments that time out,
+have failing indexers or are more than 2 hours behind, and fall back to the next
+deployment that fits the goal. Skips are reported in
+`goal_mapping.skipped_deployments`, and `recommend_subgraph` also drops recently
+failed deployments. Token and pool results carry `token_quality` spam flags
+(`spam_handling`, `trusted_tokens`); flagged rows move last by default and are
+never removed. A chain named late in a long goal is no longer ignored. The
+bundled registry database is unchanged.
+
+**0.12.0** added goal-specific `query_for_goal` planning (entity
 mapping, confidence, `unmet`/`filters_not_applied`, alternatives, optional
 `validate_schema`) and human-handoff bring-your-own-key onboarding. It also ships
 the discovery fixes merged after 0.11.0: chain-only inference, empty-result
@@ -186,8 +209,31 @@ How it maps a goal:
    time filter cannot be applied, it is listed in
    `goal_mapping.filters_not_applied` and execution is skipped
    (`requested_filter_not_applied`) rather than returning unfiltered rows. Probe
-   errors (including auth/quota bodies on HTTP 200) mark validation `failed`,
-   return `query:null` and block execution.
+   errors caused by auth, quota or payment mark validation `failed`, return
+   `query:null` and block execution, with no fallback.
+   **Healthy-alternative fallback (0.13.0+).** The probe also reads `_meta`. If a
+   deployment times out, returns indexer errors (`bad indexers`,
+   `indexing_error`, unavailable) or is more than 2 hours behind, it is skipped
+   and the next deployment whose entities fit the goal is tried: at most 3
+   deployments and 6 gateway requests per call. Every skip is listed in
+   `goal_mapping.skipped_deployments` with its reason and evidence, plus
+   `fallback_used` and `deployment_health`. Failures are remembered in the
+   process for 5 minutes, so `recommend_subgraph` also drops the deployment
+   and lists it in `skipped_unhealthy`. If every fitting deployment that
+   answered is stale, the freshest stale one is used with a warning.
+   Reward-denial, curation and chains without indexing rewards (such as Arc)
+   are never treated as unhealthy.
+   **Spam-token flags (0.13.0+).** Token and pool results are checked for
+   likely spam: URL or lure words (claim, visit, airdrop…) in a symbol or name,
+   TVL above $100B, TVL with almost no volume, and very low activity. Pool
+   queries select `token0`/`token1 { id symbol name }` so the token side can be
+   checked. A small per-chain known-good list (WETH, USDC, USDT, DAI, WBTC…)
+   plus `trusted_tokens` is never flagged. `token_quality` lists flagged rows,
+   reasons and original positions. With `spam_handling:"flag_and_push_down"`
+   (the default), flagged rows move after the others; `flag_only` keeps the
+   gateway order and `off` disables the check. Rows are never removed. When
+   `first` is not given for a top-N token or pool goal, up to twice as many rows
+   are fetched (`goal_mapping.first_fetched`) so good rows remain after push-down.
 5. **No confident mapping** returns `query:null`, `confidence` `low`/`none`, and
    ranked `alternatives`. Matching deployments hidden by default filters appear
    in `hidden_candidates`; `include_denied` / `include_unserved` opt them in
@@ -223,13 +269,13 @@ Cursor (`~/.cursor/mcp.json` or `.cursor/mcp.json`; `${env:NAME}` resolves from
 the environment Cursor was started with):
 
 ```json
-{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${env:THE_GRAPH_STUDIO_API_KEY}"}}}}
+{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${env:THE_GRAPH_STUDIO_API_KEY}"}}}}
 ```
 
 Claude Code (`.mcp.json` supports `${VAR}` expansion):
 
 ```json
-{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${THE_GRAPH_STUDIO_API_KEY}"}}}}
+{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${THE_GRAPH_STUDIO_API_KEY}"}}}}
 ```
 
 Claude Desktop and other stdio hosts use the same `mcpServers` shape. Without
@@ -237,7 +283,7 @@ interpolation, the `env` value is plain text in that local file — use it only 
 a machine you control and keep the file out of version control:
 
 ```json
-{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"],"env":{"THE_GRAPH_STUDIO_API_KEY":"<your Studio API key>"}}}}
+{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"<your Studio API key>"}}}}
 ```
 
 Goal-specific planning requires 0.12.0 or later.
@@ -497,7 +543,7 @@ free discovery source instead of paying for a network-subgraph query. Run the
 registry's HTTP transport and point payql at it:
 
 ```bash
-npx subgraph-registry-mcp@0.12.0 --http-only          # serves :3848
+npx -y subgraph-registry-mcp@0.13.2 --http-only          # serves :3848
 PAYQL_REGISTRY_URL=http://127.0.0.1:3848/graphql npx -y payql@0.1.5
 ```
 
@@ -529,7 +575,7 @@ Every search/recommend hit carries the snapshot's `query_volume_30d`, so a
 separate registry counts call is usually unnecessary. It is historical demand,
 not current serving health; no live volume measurement is performed by discovery.
 
-> The shipped server is the Node implementation in [`src/index.js`](src/index.js); that's what `npx subgraph-registry-mcp` runs and what's published to npm. A Python equivalent in [`python/mcp_server.py`](python/mcp_server.py) is kept for local development against the same SQLite database — bug fixes and new tools should land in the Node version first.
+> The shipped server is the Node implementation in [`src/index.js`](src/index.js); that's what `npx -y subgraph-registry-mcp@0.13.2` runs and what's published to npm. A Python equivalent in [`python/mcp_server.py`](python/mcp_server.py) is kept for local development against the same SQLite database — bug fixes and new tools should land in the Node version first.
 
 **Ten keyless discovery/preparation tools** (inspect `tools/list` on your actual host; no automatic GraphQL execution or live schema introspection):
 - **search_subgraphs** — filter by domain, network, protocol type, entity, or keyword. Ranked by matched terms, reliability and real `query_volume_30d`.
@@ -556,7 +602,7 @@ Node 20 is CI-tested. Pin a reviewed release rather than floating to latest.
 Claude Code:
 
 ```bash
-claude mcp add subgraph-registry -- npx subgraph-registry-mcp@0.12.0
+claude mcp add subgraph-registry -- npx -y subgraph-registry-mcp@0.13.2
 ```
 
 A JSON MCP host configuration (keyless discovery):
@@ -566,20 +612,48 @@ A JSON MCP host configuration (keyless discovery):
   "mcpServers": {
     "subgraph-registry": {
       "command": "npx",
-      "args": ["subgraph-registry-mcp@0.12.0"]
+      "args": ["-y", "subgraph-registry-mcp@0.13.2"]
     }
   }
 }
 ```
 
-For a trusted local HTTP/SSE client:
+For a local HTTP/SSE client:
 
 ```bash
-npx subgraph-registry-mcp@0.12.0 --http-only
-# Connect to http://localhost:3848/sse; keep the listener firewalled/trusted.
+npx -y subgraph-registry-mcp@0.13.2 --http-only
+# Listens on http://127.0.0.1:3848/sse (loopback only).
 ```
 
-The npm package bundles the SQLite registry and offline model. The server downloads the registry from GitHub only if the bundled file is missing, and verifies its pinned hash. The example configuration is keyless; see [host configuration](#bring-your-own-key-host-configuration) to add your own Studio key for opt-in execution.
+### HTTP transport security
+
+The default transport is stdio, with no listener. `--http`, `--http-only` or
+`MCP_HTTP_PORT` start an HTTP/SSE listener (0.13.1+):
+
+- **Loopback by default.** It binds `127.0.0.1`. Without a token, requests are
+  accepted only from a loopback socket with a loopback `Host` header, which
+  blocks DNS-rebinding requests from browser pages.
+- **Remote binds need a token.** If `MCP_HTTP_HOST` is anything other than a
+  loopback address (for example `0.0.0.0`), the server refuses to start unless
+  `SUBGRAPH_REGISTRY_HTTP_TOKEN` is set to a random secret of at least 24
+  characters.
+- **Bearer auth.** With a token set, every route except `/health` (`/sse`,
+  `/messages`, `/graphql`, OpenAPI and JSON-LD) requires
+  `Authorization: Bearer <token>`. The token is compared in constant time;
+  anything else gets `401`. The token is never logged or echoed.
+- No unauthenticated remote caller can reach a tool, so none can spend the
+  operator's Studio key. The access token is separate from the Studio key;
+  never reuse the Studio key as the token.
+
+```bash
+SUBGRAPH_REGISTRY_HTTP_TOKEN="$(openssl rand -hex 32)" MCP_HTTP_HOST=0.0.0.0 \
+  npx -y subgraph-registry-mcp@0.13.2 --http-only
+curl -H "Authorization: Bearer $SUBGRAPH_REGISTRY_HTTP_TOKEN" http://<host>:3848/.well-known/openapi.json
+```
+
+Prefer TLS (a reverse proxy) for any non-local network.
+
+The npm package bundles the SQLite registry and offline model. Nothing is downloaded at runtime by default. If the bundled registry is missing the server stops with an error; set `SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD=1` to fetch it from GitHub instead (hash-verified). The example configuration is keyless; see [host configuration](#bring-your-own-key-host-configuration) to add your own Studio key for opt-in execution.
 
 ---
 
@@ -597,7 +671,7 @@ Each manifest includes classification, parsed entities, contract addresses (from
 
 ```bash
 # Start the HTTP transport
-npx subgraph-registry-mcp@0.12.0 --http-only
+npx -y subgraph-registry-mcp@0.13.2 --http-only
 
 # Fetch the manifest for Uniswap V3 Mainnet
 curl http://localhost:3848/.well-known/subgraph/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV.jsonld
@@ -623,10 +697,11 @@ Use it when:
 
 Python crawl-time (`fastembed`) and JS runtime (`@xenova/transformers`) use the
 same model architecture. Float32 versus quantized ONNX inference is **not
-bitwise-identical**, and scores/rankings can differ. If the bundled model is
-missing, the runtime can download from Hugging Face; a normal published package
-bundles it. Do not invoke semantic search in a strictly offline checkout without
-confirming the model files exist.
+bitwise-identical**, and scores/rankings can differ. Semantic search uses only
+the bundled model and never downloads one (remote model loading is disabled). If
+the bundled files are missing, `semantic_search_subgraphs` returns keyword-search
+results with `search_mode: "keyword_fallback"` and a `semantic_unavailable`
+explanation.
 
 Embeddings and the model increase package size; inspect the actual tarball rather
 than treating historical size estimates as a current download guarantee.

@@ -1,8 +1,10 @@
 ---
 name: subgraph-registry-mcp
 description: Use to discover The Graph subgraphs by chain, protocol, entity or contract and turn a goal into a bounded GraphQL query. Bring-your-own Studio key (set up by a human operator) for execution; discovery never executes queries or signs payments, and x402 is an explicitly paid external option.
+compatibility: "Node.js 20+ via npx -y subgraph-registry-mcp@0.13.2 (stdio, no listener). Network: discovery tools make no network calls (bundled SQLite). Opt-in execute/validate tools POST only to https://gateway.thegraph.com and only when the operator set THE_GRAPH_STUDIO_API_KEY. Semantic search uses only the bundled model and never downloads one. The optional HTTP listener binds 127.0.0.1; a non-loopback bind requires SUBGRAPH_REGISTRY_HTTP_TOKEN."
+allowed-tools: "Bash(npx -y subgraph-registry-mcp@0.13.2) Bash(curl -sS -X POST https://gateway.thegraph.com/api/subgraphs/id/*) mcp__subgraph-registry__*"
 metadata:
-  {"openclaw": {"requires": {"bins": ["node"]}, "homepage": "https://github.com/PaulieB14/subgraph-registry"}}
+  {"openclaw": {"requires": {"bins": ["node", "npx"]}, "primaryEnv": "THE_GRAPH_STUDIO_API_KEY", "envVars": [{"name": "THE_GRAPH_STUDIO_API_KEY", "required": false, "sensitive": true, "description": "Optional Studio API key set by a human operator in the MCP host secret store; enables opt-in execute, live schema and health tools against gateway.thegraph.com. Never put it in tool arguments, files or logs."}, {"name": "GATEWAY_API_KEY", "required": false, "sensitive": true, "description": "Optional alias for THE_GRAPH_STUDIO_API_KEY."}, {"name": "GRAPH_STUDIO_API_KEY", "required": false, "sensitive": true, "description": "Optional alias for THE_GRAPH_STUDIO_API_KEY."}, {"name": "SUBGRAPH_REGISTRY_HTTP_TOKEN", "required": false, "sensitive": true, "description": "Bearer token for the optional HTTP/SSE listener; required for any non-loopback bind."}, {"name": "MCP_HTTP_HOST", "required": false, "description": "HTTP listener bind address; default 127.0.0.1."}, {"name": "MCP_HTTP_PORT", "required": false, "description": "Starts the HTTP listener on this port (default 3848 with --http/--http-only)."}, {"name": "SUBGRAPH_REGISTRY_BASE_URL", "required": false, "description": "Public origin used in JSON-LD @id links."}, {"name": "GATEWAY_MAX_BODY_BYTES", "required": false, "description": "Optional cap on gateway response size read by execute tools."}, {"name": "SUBGRAPH_REGISTRY_LIST_ALL_TOOLS", "required": false, "description": "Set to 1 to list execute-capable tools even without a key (they still return credentials_required)."}, {"name": "SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD", "required": false, "description": "Set to 1 to allow fetching a missing registry.db from GitHub (hash-verified). Off by default; the package bundles the database."}, {"name": "SUBGRAPH_REGISTRY_SKIP_VERIFY", "required": false, "description": "Maintainers only: skip the registry.db hash check for a locally rebuilt database. Never set in agent runtimes."}, {"name": "SUBGRAPH_REGISTRY_MOCK_GATEWAY", "required": false, "description": "Test only: return mock gateway responses without any network request."}], "network": {"default": "none", "optional": ["https://gateway.thegraph.com (opt-in execute/validate tools, only with an operator-set Studio key)", "https://github.com/PaulieB14/subgraph-registry (missing registry.db only, when SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD=1; hash-verified)"], "never": ["model downloads (semantic search is bundled-model only)", "x402 payments (never signed or sent by this server)"]}, "homepage": "https://github.com/PaulieB14/subgraph-registry"}}
 ---
 
 # Subgraph Registry
@@ -16,10 +18,10 @@ Same abilities as [graphops/subgraph-mcp](https://github.com/graphops/subgraph-m
    For a stdio MCP host, start with this keyless configuration:
 
    ```json
-   {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"]}}}
+   {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"]}}}
    ```
 
-   Inspect `tools/list` before calling a tool. Keyless 0.12.0 advertises 10
+   Inspect `tools/list` before calling a tool. Keyless 0.13.2 advertises 10
    discovery/preparation tools; execution/schema/health tools are advertised only
    when a Studio key is configured. A mounted connector can use another runtime
    or corpus: do not assume installing a release updates an existing connector.
@@ -69,6 +71,16 @@ Same abilities as [graphops/subgraph-mcp](https://github.com/graphops/subgraph-m
      If a requested address/time filter cannot be applied it appears in
      `filters_not_applied` and execution is skipped instead of returning
      unfiltered rows.
+   - A deployment that times out, has failing indexers or is over 2 hours
+     behind is skipped for the next deployment that fits the goal (at most 3
+     deployments and 6 requests). Read `goal_mapping.skipped_deployments` and
+     `fallback_used`. Reward or curation status is never treated as unhealthy.
+     Auth/quota errors stop without fallback.
+   - Token/pool results carry `token_quality`: likely spam rows (URL or lure
+     names, implausible TVL, TVL without volume, low activity) are flagged
+     and, by default, moved last. Nothing is removed. Use
+     `spam_handling:"flag_only"`/`"off"` and `trusted_tokens` to adjust; still
+     verify contract addresses.
    - `query:null` with `confidence` `low`/`none` means no entity mapped
      confidently: pick from `alternatives` or inspect `get_subgraph_detail`.
      `hidden_candidates` lists matching deployments excluded by default filters;
@@ -125,15 +137,15 @@ now includes `execute_query` (19 tools instead of 10).
   resolved from the environment Cursor was launched with):
 
   ```json
-  {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${env:THE_GRAPH_STUDIO_API_KEY}"}}}}
+  {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${env:THE_GRAPH_STUDIO_API_KEY}"}}}}
   ```
 
 - **Claude Code** (`.mcp.json` supports `${VAR}` expansion; or
-  `claude mcp add --env THE_GRAPH_STUDIO_API_KEY="$THE_GRAPH_STUDIO_API_KEY" --transport stdio subgraph-registry -- npx -y subgraph-registry-mcp@0.12.0`,
+  `claude mcp add --env THE_GRAPH_STUDIO_API_KEY="$THE_GRAPH_STUDIO_API_KEY" --transport stdio subgraph-registry -- npx -y subgraph-registry-mcp@0.13.2`,
   which stores the expanded value in `~/.claude.json`):
 
   ```json
-  {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${THE_GRAPH_STUDIO_API_KEY}"}}}}
+  {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${THE_GRAPH_STUDIO_API_KEY}"}}}}
   ```
 
 - **Claude Desktop and other stdio hosts** use the same `mcpServers` shape. If the
@@ -142,7 +154,7 @@ now includes `execute_query` (19 tools instead of 10).
   keep the file out of version control.
 
   ```json
-  {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.12.0"],"env":{"THE_GRAPH_STUDIO_API_KEY":"<your Studio API key>"}}}}
+  {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"<your Studio API key>"}}}}
   ```
 
 Direct HTTP, with the key taken from the environment (never inline it):
@@ -162,7 +174,7 @@ curl -sS -X POST "https://gateway.thegraph.com/api/subgraphs/id/<SUBGRAPH_ID>" \
 - **recommend_subgraph** — Natural language goal like "find DEX trades on Arbitrum" returns the best matching subgraphs
 - **get_subgraph_detail** — Full classification, crawled `contract_addresses`, entities, reliability, both query URLs
 - **list_registry_stats** — Registry overview with available domains, networks, and protocol types
-- **semantic_search_subgraphs** — Embedding-based natural-language search. Uses a bundled ONNX model via `@xenova/transformers`; **if the bundled model is missing it downloads it once from Hugging Face** (see Network & Data Behavior). Skip this tool for a strictly offline runtime.
+- **semantic_search_subgraphs** — Embedding-based natural-language search. Uses only the bundled ONNX model via `@xenova/transformers` and never downloads a model. If the bundled files are missing it returns keyword-search results with `search_mode: "keyword_fallback"` and `semantic_unavailable`.
 - **get_schema_changes** — Report schema/entity changes for a subgraph across indexed versions
 
 ### Official-name tools (swap-in for graphops/subgraph-mcp)
@@ -194,34 +206,35 @@ Pin a known-good version. Audit the source on GitHub before installing if you
 plan to ship this in an autonomous-agent runtime.
 
 ```bash
-# Pin to a published version, do not run unpinned (`npx subgraph-registry-mcp`
-# without @VERSION will pull whatever's latest at the moment).
-npx subgraph-registry-mcp@0.12.0
+# Always pin the exact published version; an unpinned package name would
+# resolve to whatever is newest at install time.
+npx -y subgraph-registry-mcp@0.13.2
 ```
 
 ## Network & Data Behavior
 
-- The `registry.db` (SQLite) is **bundled inside the npm package** — no download and no API key needed for read-only use. (If it's ever missing, e.g. a bare source checkout, the server falls back to downloading it from the [GitHub repository](https://github.com/PaulieB14/subgraph-registry).)
-- The downloaded file's SHA-256 is **verified against a hash pinned in the npm package** before loading — see "Verifying the registry" below. A mismatched file is deleted and the server refuses to start.
+- The `registry.db` (SQLite) is **bundled inside the npm package** — no download and no API key needed for read-only use. If it is ever missing, the server stops with an error rather than downloading; set `SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD=1` to fetch it from the [GitHub repository](https://github.com/PaulieB14/subgraph-registry) instead.
+- The database file's SHA-256 is **verified against a hash pinned in the npm package** before loading — see "Verifying the registry" below. A mismatched file is deleted and the server refuses to start.
 - Discovery tools (`search_subgraphs`, `recommend_subgraph`, `get_subgraph_detail`, `list_registry_stats`, `get_schema_changes`, `get_top_subgraph_deployments`, `find_by_contract`, `get_deployment_30day_query_counts`) run entirely against the local database — no external API calls at query time.
-- **Exception — `semantic_search_subgraphs`:** it loads a bundled ONNX embedding model via `@xenova/transformers`. If that bundled model is not present, the runtime downloads it **once** from Hugging Face (`huggingface.co`), then caches it.
+- **`semantic_search_subgraphs`** loads only the bundled ONNX embedding model via `@xenova/transformers`; remote model loading is disabled, so it makes no network calls. A missing model degrades to keyword search.
 - **Exception — opt-in execute / live schema:** `execute_query*`, `check_subgraph_health`, `query_for_goal` with explicit `validate_schema:true` or `execute:true`, and live `__schema` on `get_schema*` POST to `gateway.thegraph.com` **only when** `THE_GRAPH_STUDIO_API_KEY` (or `GATEWAY_API_KEY`) is set AND the caller invoked that tool. Without a key they return `credentials_required` with both URLs and do not touch the network. Discovery tools never take this path.
-- **Optional local HTTP/SSE server:** default transport is **stdio** (no listener). Passing `--http` or `--http-only` starts a local HTTP/SSE server on port 3848 (`MCP_HTTP_PORT` to change), exposing `/messages`, health, and OpenAPI/manifest endpoints. It is off unless you pass those flags — bind only to trusted/firewalled environments.
+- **Optional local HTTP/SSE server:** default transport is **stdio** (no listener). `--http`, `--http-only` or `MCP_HTTP_PORT` start an HTTP/SSE server on port 3848 bound to **127.0.0.1**. Without a token it accepts only loopback sockets with a loopback `Host` header. A non-loopback `MCP_HTTP_HOST` is **refused** unless `SUBGRAPH_REGISTRY_HTTP_TOKEN` (24+ chars) is set; then every route except `/health` requires `Authorization: Bearer <token>` (constant-time compare, `401` otherwise), so no unauthenticated remote caller can use the operator's Studio key. Do not reuse the Studio key as the token.
+- **Tool scope:** this skill uses only this server's MCP tools, `npx -y subgraph-registry-mcp@0.13.2` to start it, and, if the operator chooses, a `curl` POST to `gateway.thegraph.com`. It does not write files, sign payments or install other packages. x402 is never automatic: it is a separately paid option the human must choose and fund.
 
 ## Verifying the registry
 
-The npm package version `0.12.0` ships with this expected hash:
+The npm package version `0.13.2` ships with this expected hash:
 
 ```
 SHA-256(registry.db) = 672afa2f0d405483af5fb4c403e515fb0f1342c7eeb31968e78a53d5f6ebdd6b
 ```
 
 This hash is hard-coded in `src/index.js` (`EXPECTED_DB_SHA256`). On every run,
-the server checks the cached or freshly-downloaded `registry.db` against it. If
+the server checks the bundled (or explicitly downloaded) `registry.db` against it. If
 the hashes don't match — which would happen if the GitHub-hosted file were
 swapped, or your local cache were tampered with — the server **refuses to load
-the database** and exits with an error. The bad file is deleted so the next run
-attempts a fresh download.
+the database** and exits with an error. The bad file is deleted; reinstall the pinned package
+to restore it.
 
 Verify manually:
 

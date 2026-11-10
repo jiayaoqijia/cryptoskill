@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T12:34:35.416263+00:00",
+  "generated_at": "2026-11-10T18:28:18.518174+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -24160,8 +24160,8 @@
         },
         "can_execute_shell": {
           "value": true,
-          "confidence": "medium",
-          "source": "extracted"
+          "confidence": "high",
+          "source": "declared"
         },
         "can_install_code": {
           "value": true,
@@ -24169,19 +24169,19 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": true,
-          "confidence": "medium",
-          "source": "extracted"
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
         },
         "can_browse_web": {
-          "value": true,
-          "confidence": "medium",
-          "source": "extracted"
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
         },
         "can_spawn_subagents": {
-          "value": true,
-          "confidence": "medium",
-          "source": "extracted"
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
         },
         "can_move_funds": {
           "value": false,
@@ -225306,9 +225306,9 @@
       "auto_invocable": 3,
       "can_execute_shell": 1253,
       "can_install_code": 573,
-      "can_write_files": 193,
-      "can_browse_web": 254,
-      "can_spawn_subagents": 271,
+      "can_write_files": 192,
+      "can_browse_web": 253,
+      "can_spawn_subagents": 270,
       "can_move_funds": 301,
       "requires_private_key": 519,
       "requires_hosted_operator": 347,
