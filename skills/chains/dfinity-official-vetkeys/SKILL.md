@@ -1,6 +1,6 @@
 ---
 name: vetkeys
-description: "Build vetKeys cryptography on the Internet Computer via the vetKD system API and the ic-vetkeys (Rust, Motoko) and @icp-sdk/vetkeys (frontend) libraries: identity-based encryption (IBE), threshold BLS signatures, timelock encryption, symmetric key derivation, and offline public-key derivation. Use when implementing IBE, encrypting to a principal, BLS signing, sealed-bid or timelock schemes, deriving encryption keys on-chain, transport keys, or calling vetkd_public_key / vetkd_derive_key. For access-controlled encrypted key-value storage (password managers, encrypted notes), use the encrypted-maps skill instead. Not for authentication — use internet-identity."
+description: "Build vetKeys cryptography on the Internet Computer via the vetKD system API and the ic-vetkeys (Rust, Motoko) and @icp-sdk/vetkeys (frontend) libraries: identity-based encryption (IBE), threshold BLS signatures, timelock encryption, symmetric key derivation, and offline public-key derivation. Use when implementing IBE, encrypting to a principal, BLS signing, sealed-bid or timelock schemes, deriving encryption keys on-chain, transport keys, or calling vetkd_public_key / vetkd_derive_key. For access-controlled encrypted key-value storage (password managers, encrypted notes), use the encrypted-maps skill instead. Not for authentication — use user-sign-in."
 license: Apache-2.0
 compatibility: "icp-cli >= 0.2.2"
 metadata:
@@ -37,7 +37,7 @@ Also required: Rust `ic-cdk = "0.20"` + `ic-cdk-management-canister = "0.1"` (an
 | Derive a per-user/per-resource symmetric (AES) key | **Symmetric derivation** → this file |
 | Encrypt to a principal without any canister call | **Offline public-key derivation** → this file |
 | Produce on-chain verifiable randomness | **Verifiable randomness (VRF)** → this file |
-| Authenticate users / logins | not vetKeys — use the **`internet-identity` skill** |
+| Authenticate users / logins | not vetKeys — use the **`user-sign-in` skill** |
 
 ## Core concepts
 

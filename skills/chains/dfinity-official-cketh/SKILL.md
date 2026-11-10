@@ -45,7 +45,7 @@ Mainnet tokens on 2026-11-02: ckUSDC `xevnm-gaaaa-aaaar-qafnq-cai` (6 decimals),
 
 The minter credits and debits ICRC accounts `{ owner; subaccount }`. Choose one of two models:
 
-- **Non-custodial (frontend calls the minter directly).** The user's identity (Internet Identity, or an ICRC signer: see `internet-identity` / `wallet-integration`) calls `deposit_erc20`/`deposit_eth`, `icrc2_approve` and `withdraw_*`. The tokens belong to the user's own principal. This needs no backend.
+- **Non-custodial (frontend calls the minter directly).** The user's identity (Internet Identity, or an ICRC signer: see `user-sign-in` / `wallet-integration`) calls `deposit_erc20`/`deposit_eth`, `icrc2_approve` and `withdraw_*`. The tokens belong to the user's own principal. This needs no backend.
 - **Custodial (your canister calls the minter).** The canister is the owner and keeps one 32-byte subaccount per user. All calls come from the canister's principal (see [references/backend.md](references/backend.md)).
 
 `deposit_erc20` and `deposit_eth` have **no `owner` argument**: the account is always `caller + subaccount`. A backend cannot register a deposit address for a user-owned account. Only the owner can arm its own address.

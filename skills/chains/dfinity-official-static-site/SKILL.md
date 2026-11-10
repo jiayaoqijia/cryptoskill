@@ -243,7 +243,7 @@ canisters:
 
 Variables available to `presync`: `ICP_CLI_CID` (this canister), `ICP_CLI_CID_<NAME>` (each project canister — name upper-cased, non-alphanumerics → `_`, e.g. `backend` → `ICP_CLI_CID_BACKEND`), `ICP_CLI_NETWORK`, `ICP_CLI_ENVIRONMENT`.
 
-Alternatively, read canister IDs at **runtime** in the browser from the `ic_env` cookie the canister sets on every HTML response (works both locally and on mainnet with no environment branching) — see the `internet-identity` and `icp-cli` skills for the `safeGetCanisterEnv()` pattern. Prefer the cookie over `fetchRootKey()`.
+Alternatively, read canister IDs at **runtime** in the browser from the `ic_env` cookie the canister sets on every HTML response (works both locally and on mainnet with no environment branching) — see the `user-sign-in` and `icp-cli` skills for the `safeGetCanisterEnv()` pattern. Prefer the cookie over `fetchRootKey()`.
 
 ## What You Get Automatically
 
@@ -331,5 +331,5 @@ icp canister call <canister-id> state_hash '()' -n ic -o hex | tail -c 65
 
 - Load `icp-cli` for the recipe system, `icp.yaml` structure, canister-ID injection, and the `ic_env` cookie / `safeGetCanisterEnv()` pattern.
 - Load `custom-domains` for DNS records, ACME challenge, and TLS provisioning of a custom domain.
-- Load `internet-identity` for reading the root key and canister IDs from `ic_env` in a frontend.
+- Load `user-sign-in` for reading the root key and canister IDs from `ic_env` in a frontend.
 - Full upstream user docs: [certified-assets docs](https://github.com/dfinity/certified-assets/blob/v0.4.0/docs/overview.md).

@@ -1,6 +1,6 @@
 ---
 name: service-discoverability
-description: "Make a canister app discoverable to an AI agent from just its URL, including through ICP MCP. Covers publishing a /.well-known/ic-architecture manifest of your canisters — generated at deploy time from real canister IDs via the static-site recipe's presync hook and envsubst — plus exposing candid:service (interface), a getApiDoc query method (behavior), an optional OQL schema/execute data surface, and a /.well-known/ii-derivation-origin file (identity). Publishing that manifest opts the app into ICP MCP and is itself the operator's acceptance of the ICP MCP App Operator Terms, so confirm with the app's operator before deploying it. Use when making an app agent-ready or available through ICP MCP, for agent/service discovery, the well-known ic-architecture manifest, or generating that manifest at deploy time. Do NOT use for the sign-in flows that consume the derivation origin: use agent-web-identity for the agent/CLI web-identity link, or internet-identity for adding II login to a frontend."
+description: "Make a canister app discoverable to an AI agent from just its URL, including through ICP MCP. Covers publishing a /.well-known/ic-architecture manifest of your canisters — generated at deploy time from real canister IDs via the static-site recipe's presync hook and envsubst — plus exposing candid:service (interface), a getApiDoc query method (behavior), an optional OQL schema/execute data surface, and a /.well-known/ii-derivation-origin file (identity). Publishing that manifest opts the app into ICP MCP and is itself the operator's acceptance of the ICP MCP App Operator Terms, so confirm with the app's operator before deploying it. Use when making an app agent-ready or available through ICP MCP, for agent/service discovery, the well-known ic-architecture manifest, or generating that manifest at deploy time. Do NOT use for the sign-in flows that consume the derivation origin: use agent-web-identity for the agent/CLI web-identity link, or user-sign-in for adding II login to a frontend."
 license: Apache-2.0
 compatibility: "icp-cli >= 0.3.0 with the @dfinity/static-site recipe; envsubst (gettext) for templating"
 metadata:
@@ -261,7 +261,7 @@ https://hcv4s-uaaaa-aaabq-qaaba-cai.icp.net
 
 - If the derivation origin is just the app's own visible origin, you may omit the file; its absence means "derive for the visible / requested origin itself."
 - Generate it at deploy time with the same `presync` pattern when the origin is a per-network canister URL; for a custom domain it is a one-line static file (e.g. `public/.well-known/ii-derivation-origin`).
-- **Do not confuse it with `ii-alternative-origins`.** A custom origin is enabled by two coupled files: the app pins `derivationOrigin` in its II configuration, and the derivation origin itself publishes `/.well-known/ii-alternative-origins` listing the origins allowed to derive against it. That list is the inverse relation — "who may point here," not "where does this app point" (Pitfall 8). On the default `*.icp0.io` / `ic0.app` canister origins, do **not** set a custom `derivationOrigin` at all (the `internet-identity` skill's Mistake #8 explains why it breaks auth); a custom one goes hand in hand with a custom domain — see the `custom-domains` skill.
+- **Do not confuse it with `ii-alternative-origins`.** A custom origin is enabled by two coupled files: the app pins `derivationOrigin` in its II configuration, and the derivation origin itself publishes `/.well-known/ii-alternative-origins` listing the origins allowed to derive against it. That list is the inverse relation — "who may point here," not "where does this app point" (Pitfall 8). On the default `*.icp0.io` / `ic0.app` canister origins, do **not** set a custom `derivationOrigin` at all (see "Your app's identity is its primary origin" in the `user-sign-in` skill); a custom one goes hand in hand with a custom domain — see the `custom-domains` skill.
 
 ## How an Agent Traverses This
 
@@ -345,7 +345,7 @@ Locally, the static-site recipe serves the same paths — e.g. `curl http://fron
 
 - Load `static-site` for the `@dfinity/static-site` recipe: `presync`/`build`, `_redirects`/`_headers`, `.well-known/` auto-upload, and canister-ID injection.
 - Load `agent-web-identity` for the agent/CLI side that *consumes* the derivation origin (`icp identity link web --app <domain>`).
-- Load `internet-identity` for adding II sign-in to a frontend (it also explains when *not* to set `derivationOrigin`).
+- Load `user-sign-in` for adding II sign-in to a frontend (it also explains when *not* to set `derivationOrigin`).
 - Load `custom-domains` for serving from your own domain, which then becomes your derivation origin.
 - Load `icp-cli` for `icp.yaml` / `canister.yaml`, environments, and the recipe system.
 - Load `canister-security` for access control on the methods agents call.

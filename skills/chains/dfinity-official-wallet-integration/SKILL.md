@@ -1,6 +1,6 @@
 ---
 name: wallet-integration
-description: "Integrate an external wallet (signer) into an IC dapp with @icp-sdk/signer — the relying-party side of the ICRC signer standards. Covers picking a transport (popup via ICRC-29 / top-level redirect via ICRC-167 / browser extension via ICRC-94) then negotiating capabilities, the permission and account lifecycle, and executing canister calls the user approves through SignerAgent (ICRC-49). Uses OISY as the worked example but applies to any ICRC-25 signer. Do NOT use for Internet Identity login (use the internet-identity skill) or for implementing a wallet yourself. Use when the developer mentions wallet integration or OISY or @icp-sdk/signer or approving a transaction in a wallet popup."
+description: "Integrate an external wallet (signer) into an IC dapp with @icp-sdk/signer — the relying-party side of the ICRC signer standards. Covers picking a transport (popup via ICRC-29 / top-level redirect via ICRC-167 / browser extension via ICRC-94) then negotiating capabilities, the permission and account lifecycle, and executing canister calls the user approves through SignerAgent (ICRC-49). Uses OISY as the worked example but applies to any ICRC-25 signer. Do NOT use for Internet Identity login (use the user-sign-in skill) or for implementing a wallet yourself. Use when the developer mentions wallet integration or OISY or @icp-sdk/signer or approving a transaction in a wallet popup."
 license: Apache-2.0
 compatibility: "Node.js >= 22, a browser (secure context: HTTPS, localhost, or 127.0.0.1)"
 metadata:
@@ -35,8 +35,8 @@ That is the whole shape, and it is what makes wallet integration appropriate for
 
 ### When NOT to use this skill
 
-- **A session — sign in once, then act many times.** That is authentication, not wallet integration: a delegation is scoped and issued by an identity provider. Use the **internet-identity** skill. ICRC-34 exists, but it is an auth mechanism and out of scope here.
-- **Internet Identity sign-in** → the **internet-identity** skill. II is an identity provider, not an ICRC-25 signer.
+- **A session — sign in once, then act many times.** That is authentication, not wallet integration: a delegation is scoped and issued by an identity provider. Use the **user-sign-in** skill. ICRC-34 exists, but it is an auth mechanism and out of scope here.
+- **Internet Identity sign-in** → the **user-sign-in** skill. II is an identity provider, not an ICRC-25 signer.
 - **Letting an agent or CLI act as the user** → the **agent-web-identity** skill.
 - **Building a wallet** → out of scope, as above.
 
@@ -425,7 +425,7 @@ Two failures do not arrive as the class you would expect, and they call for oppo
       Access-Control-Allow-Origin: *
     ```
 
-    Validation fails closed — undeclared, unreadable, or not matching exactly, and the response never comes back. See the **internet-identity** skill, which documents the same file for redirect sign-in.
+    Validation fails closed — undeclared, unreadable, or not matching exactly, and the response never comes back. See the **user-sign-in** skill, which documents the same file for redirect sign-in.
 
 10. **Top-level `await` in wallet code.** Every call here is async, and with `PostMessageTransport` a module-load `await` opens the popup outside a user gesture, which the transport rejects — pitfall 1. Wrap those calls in functions the UI invokes. `UrlTransport` is the exception, and the reverse: it navigates the top level rather than opening a popup, has no gesture check, and its flow *must* re-run on the callback-route load so the journal can replay — requiring a click there would break it. Either way, do not rely on the build to catch a stray top-level `await`: Vite ≤5 defaulted to `es2020` and rejected it outright, while Vite 6+ defaults to `baseline-widely-available` and allows it.
 
@@ -462,7 +462,7 @@ Set `host: 'https://icp-api.io'` on the agent even when serving from `localhost`
 
 ## Additional References
 
-- **internet-identity** — II sign-in, and the place to go if you need a session rather than per-action approval
+- **user-sign-in** — II sign-in, and the place to go if you need a session rather than per-action approval
 - **agent-web-identity** — letting an agent or CLI act as the user in an II app
 - **icp-cli** — `@icp-sdk/bindgen` actors to call your own canister through a `SignerAgent`
 - **canister-security** — verifying `msg.caller` on the backend once calls arrive

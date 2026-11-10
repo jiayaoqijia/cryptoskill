@@ -42,7 +42,7 @@ Custom domains work at the boundary node level — they map a domain to any cani
 
 8. **Setting `HttpAgent`'s `host` to your custom domain.** `host` is the **API endpoint** canister calls go to, not the domain your frontend is served from. Your custom domain is the HTTP gateway — it does not serve `/api/v2`, so pointing `host` at it (or at `window.location.origin`) makes calls fail. You do not need to set `host`: a recent `@icp-sdk/core` `HttpAgent` resolves an omitted `host` to `https://icp-api.io` (the mainnet API boundary nodes) on a custom domain. Leave it unset, or set it explicitly to `https://icp-api.io` — never the gateway domain.
 
-9. **Adding a custom domain to an app that already has users.** II principals are per-origin, so the new domain hands every returning user a brand-new account. Pin a derivation origin — the canister address, which a custom domain can never displace — and list the domain in `.well-known/ii-alternative-origins` **before** the domain goes live. A domain that has already collected sign-ins cannot be repointed without orphaning those accounts. See the `internet-identity` skill.
+9. **Adding a custom domain to an app that already has users.** II principals are per-origin, so the new domain hands every returning user a brand-new account. Pin a derivation origin — the canister address, which a custom domain can never displace — and list the domain in `.well-known/ii-alternative-origins` **before** the domain goes live. A domain that has already collected sign-ins cannot be repointed without orphaning those accounts. See the `user-sign-in` skill.
 
 ## Implementation
 

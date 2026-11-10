@@ -83,10 +83,10 @@ preserve setup needed for authenticated reads. A missing public export is a cont
 
 ## One Formatter Surface in the Controller
 
-Display formatting lives in `src/utils/perpsFormatters.ts` as a few reusable formatters configured by an options object (ranges, decimals, sign, locale, fallback), not one exported function per screen or value. Provider wire formatting (`formatHyperLiquidPrice`, `formatHyperLiquidSize`) stays in its adapter.
+Display formatting lives in `src/utils/perpsFormatters.ts` as a few reusable formatters configured by an options object, not one exported function per screen or value. Options cover ranges, decimals, sign and fallback. New locale formatting uses client-utils `createFormatters` in the client, with no new controller `Intl` or client-utils import; existing `locale` options stay until migrated. Provider wire formatting (`formatHyperLiquidPrice`, `formatHyperLiquidSize`) stays in its adapter.
 
 - [ ] **Duplicate formatting logic** — new or changed controller code repeats rounding, significant-digit, range, sign or fallback logic that `perpsFormatters.ts` already has, instead of calling it.
-- [ ] **Variant function instead of an option** — a new export that differs from an existing formatter only in precision, sign, locale or fallback; add an option to the existing formatter. New parameters go in an options object, not more positional arguments.
+- [ ] **Variant function instead of an option** — a new export that differs from an existing formatter only in precision, sign or fallback; add an option instead, in an options object rather than positional arguments.
 
 <a id="evidence-expected-before-core-perps-review"></a>
 

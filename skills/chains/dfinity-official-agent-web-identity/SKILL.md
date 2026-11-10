@@ -1,6 +1,6 @@
 ---
 name: agent-web-identity
-description: "Lets an AI agent or CLI session sign in to Internet Identity and act as a user's app-specific principal (e.g. for oisy.com or nns.ic0.app) via `icp identity link web`. Use when the user asks an agent to log in to an II-powered app, obtain a delegation, or make authorized canister calls on their behalf. Do NOT use for adding II sign-in to a frontend — use the internet-identity skill instead."
+description: "Lets an AI agent or CLI session sign in to Internet Identity and act as a user's app-specific principal (e.g. for oisy.com or nns.ic0.app) via `icp identity link web`. Use when the user asks an agent to log in to an II-powered app, obtain a delegation, or make authorized canister calls on their behalf. Do NOT use for adding II sign-in to a frontend — use the user-sign-in skill instead."
 license: Apache-2.0
 compatibility: "icp-cli >= 0.3.0, browser on the same machine"
 metadata:
