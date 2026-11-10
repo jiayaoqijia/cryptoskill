@@ -1,6 +1,6 @@
 ## Description:
 
-Helps agents list, create, update, toggle, and delete Nansen Smart Alerts for token flows, transfers, and contract interactions.
+Manage smart alerts — list, create, update, toggle, delete. Use when setting up or managing token flow alerts, smart money alerts, or notification rules.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,40 +14,36 @@ MIT-0
 
 ## Use Case:
 
-Nansen account holders and their agents use this skill to manage alert rules for smart-money flows, token transfers, and contract calls, with notifications sent to configured channels.
+Developers and Nansen account users use this skill to create and manage smart-alert rules for token flows, token transfers, and smart-contract calls, including configuring notification channels.
 
 ### Deployment Geography for Use:
 
-Global, subject to Nansen account eligibility and geographic checks.
+Global
 
 ## Known Risks and Mitigations:
 
-Risk: Creating, updating, toggling, or deleting alerts may change account notifications unexpectedly.
+Risk: Webhook URLs and signing secrets can grant access to notification channels, and passing a webhook secret as a command-line argument can expose it in shell history, process lists, or transcripts.
 
-Mitigation: Review alert-management commands and their target alert IDs before execution.
-
-Risk: Webhook destinations and secrets may expose alert data or credentials if misconfigured.
-
-Mitigation: Check destination URLs and handle webhook secrets carefully; prefer a scoped Nansen API key where possible.
+Mitigation: Keep credentials out of shared output, retain the documented redaction, and provide webhook secrets through --webhook-secret-stdin or NANSEN_WEBHOOK_SECRET instead of --webhook-secret.
 
 ## Reference(s):
 
-- [Nansen Smart Alerts skill on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-smart-alerts)
-- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
+- [ClawHub skill release](https://clawhub.ai/nansen-devops/skills/nansen-smart-alerts)
+- [Browser login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Shell commands, Guidance]
+**Output Type(s):** [Guidance, Shell commands, Configuration instructions]
 
-**Output Format:** [Text with Nansen CLI commands]
+**Output Format:** [Markdown with inline shell command examples]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Alert configuration and management depend on the user's Nansen account permissions.]
+**Other Properties Related to Output:** [Commands require the Nansen CLI and an authorized account session or API key.]
 
 ## Skill Version(s):
 
-0.1.3 (source: ClawHub release metadata)
+0.1.4 (source: server-resolved release metadata)
 
 ## Ethical Considerations:
 

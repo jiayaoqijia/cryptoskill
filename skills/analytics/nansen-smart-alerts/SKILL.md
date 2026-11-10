@@ -15,7 +15,7 @@ allowed-tools: Bash(nansen:*)
 ---
 ## Authentication
 
-Nansen account API calls accept a selected `nansen:api` browser session or conventional API key with the same permissions. `NANSEN_API_KEY` takes precedence; optional `primaryEnv` preserves configured-key injection. Run `nansen auth status` for offline selection. Cached access expiry alone permits automatic renewal during an authorized task. Stop on anonymous selection, invalid state, blocked/uncertain renewal or actual auth failure; never drop a credential or fall back to anonymous x402 payment. Browser login does not grant wallet signing, privileged service identity or a persistent MCP integration key. Preserve all confirmation, signing, sanctions and geographic checks below. Browser login is available in CLI 2.0.0 within the [macOS arm64 preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope).
+Nansen account API calls accept a selected `nansen:api` browser session or conventional API key with the same permissions. `NANSEN_API_KEY` takes precedence; optional `primaryEnv` preserves configured-key injection. Run `nansen auth status` for offline selection. Cached access expiry alone permits automatic renewal during an authorized task. Stop on anonymous selection, invalid state, blocked/uncertain renewal or actual auth failure; never drop a credential or fall back to anonymous x402 payment. Browser login does not grant wallet signing, privileged service identity or a persistent MCP integration key. Preserve all confirmation, signing, sanctions and geographic checks below. Browser login is enabled in production within the [documented platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope).
 
 
 
@@ -45,7 +45,8 @@ nansen alerts delete <id>
 | `--slack` | webhook URL | optional | | |
 | `--discord` | webhook URL | optional | | |
 | `--webhook` | endpoint URL | optional | optional | |
-| `--webhook-secret` | optional (webhook only) | optional | | |
+| `--webhook-secret-stdin` | optional (webhook only) | optional | | |
+| `--webhook-secret` | optional (webhook only; prefer `--webhook-secret-stdin`) | optional | | |
 | `--description` | optional | optional | | |
 | `--enabled` | | flag | flag | |
 | `--disabled` | flag | flag | flag | |
@@ -138,6 +139,8 @@ nansen alerts create \
 - Chain aliases: Hyperliquid = `hyperevm`, BSC = `bnb`.
 - Multiple channels can be combined: `--telegram 123 --slack https://... --webhook https://...`
 - `--webhook <url>` sends a POST request with the alert payload to any HTTP/HTTPS endpoint. Useful for server deployments, Zapier, n8n, or custom integrations. The endpoint must be publicly reachable and return a 2xx response.
+- Alert output redacts channel credentials (Slack/Discord/webhook URLs and webhook signing secrets), e.g. `https://hooks.slack.com/services/T000/****`. Webhook URLs grant post access to the channel, so keep them out of shared output; pass `--reveal` only when the full value is needed. Never pass a redacted value back to `--slack`/`--discord`/`--webhook`; the CLI rejects it.
+- Webhook signing secret (minimum 16 characters): pipe it with `--webhook-secret-stdin < secret.txt` or set `NANSEN_WEBHOOK_SECRET` (read only when `--webhook` is given). `--webhook-secret <secret>` still works but puts the secret in shell history, the process list and agent transcripts, so do not use it from an agent. `--webhook-secret` and `--webhook-secret-stdin` cannot be combined; either one overrides `NANSEN_WEBHOOK_SECRET`.
 - `--data '<json>'` merges raw JSON on top of named flags (escape hatch for fields without named flags).
 - Alert endpoints retain their normal ownership, plan and quota checks for both selected credentials.
 - Use single quotes for names with `$` or special characters: `--name 'SM >$1M'`

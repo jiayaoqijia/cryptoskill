@@ -7,7 +7,7 @@ maturity: stable
 
 # Perps static review
 
-Generated from the canonical Perps review rules @ 85ab3b95f228eff750055ae1df5b0d052b5a87aa. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
+Generated from the canonical Perps review rules @ 9e7edacf5c98db9c0e499af4231d777bd906eac5. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
 
 Run only on explicit invocation by name or an explicitly selected workflow. Review source, diff and recorded evidence only: no tests, builds, recipes, installs, probes, app launch, product change, publish or workspace cleanup. Delegated skills inherit this static, read-only boundary. The criteria below are review criteria, not instructions to perform the fixes, releases or migrations they describe.
 
@@ -37,6 +37,7 @@ Check applicability against the frozen diff and its affected callers. Open each 
 - [ ] Blocking review checks: Every confirmed violation of an applicable Perps anti-pattern is blocking and requires `REQUEST_CHANGES`; never downgrade it to a non-blocking nit. See references/shared.md#blocking-review-checks
 - [ ] Controller Portability (Core): `PerpsController` lives in `core/packages/perps-controller` and is published as `@metamask/perps-controller`; Mobile, Extension and Terminal consume the package. See references/shared.md#controller-portability-core
 - [ ] Perps Math Comes From the Controller: Perps trading math (PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin, liquidation, fees, account summary) must come from `@metamask/perps-controller`. See references/shared.md#perps-math-comes-from-the-controller
+- [ ] Shared Formatting & Display Precision: Displayed Perps numbers and their precision come from `@metamask/perps-controller` formatters and constants; formatting is shared logic, not display-only. See references/shared.md#shared-formatting-display-precision
 - [ ] Missing numeric data stays undefined: Missing Perps numeric data must remain `undefined` through provider adapters, controller state, selectors, hooks and calculations. See references/shared.md#missing-numeric-data-stays-undefined
 - [ ] Magic Strings, Magic Numbers & Placeholder Values: Constants live in the controller package (`core/packages/perps-controller/src/constants/perpsConfig.ts`, exported by `@metamask/perps-controller`) and in the reviewed client's UI constants module. See references/shared.md#magic-strings-magic-numbers-placeholder-values
 - [ ] Protocol Abstraction: Execution identity inferred from display fields: Preserve the venue's documented identity at the provider boundary and expose a stable opaque ID shared by REST and WebSocket paths. See references/shared.md#protocol-abstraction

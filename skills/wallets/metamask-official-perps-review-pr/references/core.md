@@ -79,6 +79,15 @@ write boundary before local side effects and revalidate the captured account and
 lifecycle after asynchronous signing, immediately before transport dispatch;
 preserve setup needed for authenticated reads. A missing public export is a contract defect even when internal tests pass.
 
+<a id="one-formatter-surface-in-the-controller"></a>
+
+## One Formatter Surface in the Controller
+
+Display formatting lives in `src/utils/perpsFormatters.ts` as a few reusable formatters configured by an options object (ranges, decimals, sign, locale, fallback), not one exported function per screen or value. Provider wire formatting (`formatHyperLiquidPrice`, `formatHyperLiquidSize`) stays in its adapter.
+
+- [ ] **Duplicate formatting logic** — new or changed controller code repeats rounding, significant-digit, range, sign or fallback logic that `perpsFormatters.ts` already has, instead of calling it.
+- [ ] **Variant function instead of an option** — a new export that differs from an existing formatter only in precision, sign, locale or fallback; add an option to the existing formatter. New parameters go in an options object, not more positional arguments.
+
 <a id="evidence-expected-before-core-perps-review"></a>
 
 ## Evidence Expected Before Core Perps Review

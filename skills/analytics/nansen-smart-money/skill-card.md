@@ -1,6 +1,6 @@
 ## Description:
 
-Helps agents research smart-money token flows, trades, holdings, and perpetual trades with the Nansen CLI.
+Smart money tracking — netflow, trades, holdings, perp trades. Use when finding what smart money wallets are buying/selling or tracking whale activity.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Analysts and developers use this skill to inspect smart-money wallet activity, including netflows, spot trades, portfolio holdings, and Hyperliquid perpetual trades.
+Developers and analysts use this skill to query Nansen Smart Money netflows, spot trades, token holdings, and Hyperliquid perpetual trades to inspect wallet activity.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,28 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Repeated research calls may consume paid API credits or trigger wallet payments.
+Risk: Research calls can incur automatic x402 payments from the configured wallet; repeated calls in loops may multiply charges.
 
-Mitigation: Confirm the selected credentials and payment limits before research; avoid broad loops without explicit cost approval.
-
-Risk: An expired or invalid login could lead to unintended anonymous paid access if authentication is bypassed.
-
-Mitigation: Check authentication status and stop on failures; do not switch to anonymous access to retry.
+Mitigation: Review wallet authorization and spending limits before research, and bound repeated calls.
 
 ## Reference(s):
 
-- [Nansen Smart Money Tracker on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-smart-money-tracker)
-- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
+- [Browser login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
+- [ClawHub skill release](https://clawhub.ai/nansen-devops/skills/nansen-smart-money-tracker)
 
 ## Skill Output:
 
-**Output Type(s):** [Shell commands, Guidance]
+**Output Type(s):** [Analysis, Text, Shell commands]
 
-**Output Format:** [Markdown with bash examples]
+**Output Format:** [CLI research results as text, tables, or CSV, with shell commands for queries]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Provides filters for chain, trader label, result limit, sorting, and CSV or table output.]
+**Other Properties Related to Output:** [Results depend on the selected chain, labels, filters, and account entitlements.]
 
 ## Skill Version(s):
 
-0.1.2 (source: ClawHub release metadata)
+0.1.3 (source: ClawHub release evidence)
 
 ## Ethical Considerations:
 

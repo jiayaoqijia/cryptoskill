@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T00:44:06.906781+00:00",
+  "generated_at": "2026-11-10T06:35:20.665442+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -222616,6 +222616,68 @@
       },
       "hosted_operators": []
     },
+    "wallets/metamask-official-recipe-library-audit": {
+      "name": "recipe-library-audit",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/metamask-official-recipe-performance": {
       "name": "recipe-performance",
       "execution_model": "unknown",
@@ -224917,11 +224979,11 @@
     }
   },
   "summary": {
-    "discovered": 3615,
-    "processed": 3615,
+    "discovered": 3616,
+    "processed": 3616,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2606,
+      "read_only": 2607,
       "router_orchestrator": 151,
       "unknown": 353,
       "analysis_only": 222,

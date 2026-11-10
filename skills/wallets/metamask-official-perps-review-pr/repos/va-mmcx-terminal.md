@@ -9,6 +9,7 @@ Required for Terminal changes, in addition to the Perps families above.
 - [ ] Provider-Agnostic Perps Code: Hyperliquid-specific logic stays behind the `@metamask/perps-controller` provider interface, never in UI or feature code. See references/terminal.md#provider-agnostic-perps-code
 - [ ] Mobile Parity: Before implementation, MetaMask Mobile's matching flow, validation, copy and controller use are checked and matched unless the ticket explicitly requires a difference, which the PR explains. See references/terminal.md#mobile-parity
 - [ ] Reuse and Types: Controller and shared utilities, and Mobile's controller selectors, actions and state shape, are reused with no parallel state or copied logic. See references/terminal.md#reuse-and-types
+- [ ] Legacy Local Formatters: Terminal's `formatFee`, `formatPercentage`, `formatSize`, `formatTablePrice` and `formatUsd` (`src/features/perpetuals/utils/`) are legacy copies: a PR that uses, extends or calls one migrates that… See references/terminal.md#legacy-local-formatters
 
 ## Verdict and handoff
 

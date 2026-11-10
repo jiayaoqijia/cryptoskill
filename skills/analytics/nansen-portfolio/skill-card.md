@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Wallet analysts and developers use Nansen CLI to compare historical token balances with a current wallet snapshot and review per-token trading performance.
+Developers and wallet analysts use this skill to review a wallet's historical balances, current holdings, and per-token profit and loss across a selected chain.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,32 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Research calls and loops can consume Nansen credits or trigger authorized x402 wallet payments.
+Risk: Research calls can incur x402 payments from the configured wallet, and repeated calls in loops can add charges.
 
-Mitigation: Review account entitlements, wallet authorization, payment policy, and spending limits before running calls; limit the number of calls.
+Mitigation: Review payment authorization and spending limits before running calls; bound loops to the intended number of requests.
 
-Risk: An untrusted CLI package or unverified authentication may expose credentials or lead to unintended access.
+Risk: The selected API key or browser session provides account API access for research requests.
 
-Mitigation: Trust the Nansen CLI package before installing it, select an authorized API key or browser session, and check authentication status before research.
+Mitigation: Use an explicitly selected credential and stop if authentication or session renewal fails; follow the CLI's troubleshooting guidance.
 
 ## Reference(s):
 
-- [Nansen Portfolio Tracker on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-portfolio-tracker)
-- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
+- [ClawHub release page](https://clawhub.ai/nansen-devops/skills/nansen-portfolio-tracker)
+- [Nansen CLI browser login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Text, Markdown, Shell commands, Guidance]
+**Output Type(s):** [Analysis, Shell commands, Guidance]
 
-**Output Format:** [Markdown with bash commands and portfolio analysis]
+**Output Format:** [Markdown with inline shell commands and structured CLI results]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Historical balances, current holdings, and per-token PnL depend on the selected wallet, chain, and time window.]
+**Other Properties Related to Output:** [Wallet and chain specific; can include current balances, historical balances, and realized PnL.]
 
 ## Skill Version(s):
 
-0.1.2 (source: ClawHub release metadata)
+0.1.3 (source: server-resolved release metadata)
 
 ## Ethical Considerations:
 

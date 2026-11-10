@@ -1,6 +1,6 @@
 ## Description:
 
-Discover trending tokens through screening, smart-money holdings, Nansen indicators, and flow intelligence for deeper research.
+Discover trending tokens — screener, SM holdings, Nansen indicators, and flow intelligence for promising finds. Use when scanning for new tokens or screening what's hot.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Token researchers use Nansen CLI queries to shortlist trending tokens, review smart-money holdings and indicator signals, and check flows for promising candidates.
+Crypto researchers and developers use this skill to screen tokens, review smart money holdings and Nansen indicators, and inspect token flows when deciding which assets merit further research.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,36 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Authenticated research grants the CLI account-level API access.
+Risk: The security review was partial because two local paths referenced by the skill were not included in the scan.
 
-Mitigation: Use only an explicitly selected key or approved browser session; check authentication before research and stop if it fails.
+Mitigation: Check whether the omitted local paths affect your use before installing.
 
-Risk: Repeated, paginated, or flow-intelligence queries may consume credits or trigger wallet payments.
+Risk: Research calls can incur x402 payments from the configured wallet, including calls made in loops.
 
-Mitigation: Review payment limits before use, restrict batch sizes, and reserve flow-intelligence calls for shortlisted tokens.
+Mitigation: Review wallet authorization, payment policy, and spending limits before running calls; keep flow intelligence to promising candidates.
+
+Risk: Token scores and market indicators can be mistaken for investment recommendations, and some indicator data may be missing or stale.
+
+Mitigation: Use scores as screening signals, inspect individual indicators and their dates, and verify candidates independently before making financial decisions.
 
 ## Reference(s):
 
+- [Nansen CLI browser login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 - [Nansen Token Screener on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-token-screener)
-- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Guidance, Shell commands, Analysis]
+**Output Type(s):** [Analysis, API Calls, Shell commands, Guidance]
 
-**Output Format:** [Markdown with bash commands and token-research summaries]
+**Output Format:** [Markdown guidance with inline shell commands and structured research results]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Results depend on selected chain, timeframe, available entitlements, and queried tokens.]
+**Other Properties Related to Output:** [Results depend on selected chain, timeframe, filters, account entitlements, and available indicator data.]
 
 ## Skill Version(s):
 
-0.1.4 (source: ClawHub release metadata)
+0.1.5 (source: server-resolved release evidence)
 
 ## Ethical Considerations:
 

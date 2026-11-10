@@ -1,6 +1,6 @@
 ## Description:
 
-Tracks crypto fund and venture capital holdings across Ethereum and Solana and compares their net accumulation signals.
+What are crypto funds and VCs holding right now? Cross-chain fund portfolios and net accumulation signals.
 
 This skill is ready for commercial/non-commercial use.
 
@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Crypto researchers and investors use this skill to compare fund token holdings and net flows across Ethereum and Solana.
+Crypto researchers and portfolio analysts use this skill to review fund and VC holdings and compare net accumulation across supported chains, including Ethereum and Solana.
 
 ### Deployment Geography for Use:
 
@@ -22,32 +22,28 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Research calls, including repeated calls, may consume credits or trigger authorized wallet payments.
+Risk: A supported HTTP 402 response can trigger a payment from the configured wallet for each research call, including calls repeated in loops.
 
-Mitigation: Review credits, wallet authorization, and spending limits before running research commands or loops.
-
-Risk: A missing or failed account session may prevent research calls.
-
-Mitigation: Select an API key or saved browser session, check authentication status, and stop if authentication fails rather than switching to anonymous paid access.
+Mitigation: Confirm wallet authorization, payment policy, and spending limits, and review the number of calls before running research. Do not switch to anonymous access to retry after an authentication failure.
 
 ## Reference(s):
 
+- [Browser login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 - [Nansen Fund Tracker on ClawHub](https://clawhub.ai/nansen-devops/skills/nansen-fund-tracker)
-- [Nansen CLI browser login preview scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 
 ## Skill Output:
 
-**Output Type(s):** [Text, Markdown, Shell commands, Guidance]
+**Output Type(s):** [Analysis, Shell commands, Text]
 
-**Output Format:** [Markdown with bash commands and fund holdings and net-flow analysis]
+**Output Format:** [Markdown with shell command examples and portfolio metrics returned by the CLI]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Uses Nansen CLI research results for Ethereum and Solana; results depend on current account access and available data.]
+**Other Properties Related to Output:** [Holdings and netflow results depend on available Nansen account access, entitlements, and data.]
 
 ## Skill Version(s):
 
-0.1.2 (source: ClawHub release metadata)
+0.1.3 (source: server-resolved release metadata)
 
 ## Ethical Considerations:
 
