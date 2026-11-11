@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T12:35:25.825385+00:00",
+  "generated_at": "2026-11-11T18:27:41.493249+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -59883,6 +59883,1310 @@
       },
       "hosted_operators": []
     },
+    "dev-tools/abhay2008-browser-testing-with-devtools": {
+      "name": "browser-testing-with-devtools",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-ai-ml": {
+      "name": "ctf-ai-ml",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-api-hunt": {
+      "name": "ctf-api-hunt",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-cloud": {
+      "name": "ctf-cloud",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-forensics": {
+      "name": "ctf-forensics",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": [
+        "etherscan.io"
+      ]
+    },
+    "dev-tools/abhay2008-ctf-hardware": {
+      "name": "ctf-hardware",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-input-sanitize": {
+      "name": "ctf-input-sanitize",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-jail": {
+      "name": "ctf-jail",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-malware": {
+      "name": "ctf-malware",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-misc": {
+      "name": "ctf-misc",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-osint": {
+      "name": "ctf-osint",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-pwn": {
+      "name": "ctf-pwn",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-re-bridge": {
+      "name": "ctf-re-bridge",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-reverse": {
+      "name": "ctf-reverse",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-router": {
+      "name": "ctf-router",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-similar-search": {
+      "name": "ctf-similar-search",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-stego": {
+      "name": "ctf-stego",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-web-devtools": {
+      "name": "ctf-web-devtools",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-ctf-writeup": {
+      "name": "ctf-writeup",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-osint-ctf-databases": {
+      "name": "osint-ctf-databases",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "dev-tools/abhay2008-solve-challenge": {
+      "name": "solve-challenge",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "high",
+          "source": "declared"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "dev-tools/acprk-abstract-craft": {
       "name": "abstract-craft",
       "execution_model": "read_only",
@@ -118713,6 +120017,68 @@
         "nansen.ai",
         "thegraph.com"
       ]
+    },
+    "mcp-servers/nirholas-bnb-chain-tools": {
+      "name": "bnb-chain-tools",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
     },
     "mcp-servers/nirholas-coin-research": {
       "name": "coin-research",
@@ -187641,8 +189007,8 @@
       "hosted_operators": []
     },
     "payments/agenti": {
-      "name": "agenti",
-      "execution_model": "read_only",
+      "name": "agent-wallet-mcp",
+      "execution_model": "unknown",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -187650,12 +189016,12 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
         "can_install_code": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -187670,7 +189036,7 @@
           "source": "extracted"
         },
         "can_spawn_subagents": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -187695,7 +189061,7 @@
           "source": "extracted"
         },
         "mutable_remote_runtime": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -225475,13 +226841,13 @@
     }
   },
   "summary": {
-    "discovered": 3624,
-    "processed": 3624,
+    "discovered": 3646,
+    "processed": 3646,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2612,
-      "router_orchestrator": 151,
-      "unknown": 356,
+      "router_orchestrator": 164,
+      "unknown": 365,
       "analysis_only": 222,
       "unsigned_tx_builder": 114,
       "local_executor": 105,
@@ -225490,16 +226856,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1256,
-      "can_install_code": 576,
-      "can_write_files": 193,
-      "can_browse_web": 253,
-      "can_spawn_subagents": 271,
-      "can_move_funds": 301,
-      "requires_private_key": 520,
-      "requires_hosted_operator": 347,
+      "can_execute_shell": 1277,
+      "can_install_code": 590,
+      "can_write_files": 213,
+      "can_browse_web": 271,
+      "can_spawn_subagents": 291,
+      "can_move_funds": 304,
+      "requires_private_key": 526,
+      "requires_hosted_operator": 348,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 576
+      "mutable_remote_runtime": 590
     }
   }
 }

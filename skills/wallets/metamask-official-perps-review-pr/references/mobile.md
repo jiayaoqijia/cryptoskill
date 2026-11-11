@@ -11,13 +11,23 @@ PRs that touch UI components must include testIDs so agentic recipes and E2E tes
 - [ ] **testID missing from the element that holds the value** — adding testID to a wrapper View instead of the `TextInput` or Text that actually contains the value. CDP fiber-walk reads `value` from the React element with the matching testID — the testID must be on the element that owns the state.
 - [ ] **TP/SL price inputs without testID** — the trigger price `TextInput` components in `PerpsTPSLView` (and similar order-form screens) frequently lack testIDs, making stable value assertions harder. Any PR touching these screens must add `testID` to both the Take Profit and Stop Loss price inputs.
 
-<a id="navigation-exit-parity"></a>
+<a id="android-back-paths"></a>
 
-## Navigation Exit Parity
+## Android Back Paths
 
-A navigation fix must cover every way the user can leave the screen.
+The shared *Navigation Entry and Exit Parity* check applies; on Mobile it includes Android hardware back.
 
-- [ ] **Only the header back action is fixed**: Apply the same history/fallback policy to header back, Android hardware back and native gestures. Preserve entry/history provenance through push, replace and reset paths. Runtime QA must name any gesture path it cannot prove. Android hardware back includes every native `Modal` (`onRequestClose`) and `react-native-modal` (`onBackButtonPress`), in every layout.
+- [ ] **Modal back handler missed**: Android hardware back includes every native `Modal` (`onRequestClose`) and `react-native-modal` (`onBackButtonPress`), in every layout.
+
+<a id="mobile-ui-structure"></a>
+
+## Mobile UI Structure
+
+Perps components render; their logic lives in hooks and shared helpers.
+
+- [ ] **Logic in the component body** — move it into the component's hook, one hook per component.
+- [ ] **Oversized component file** — split a file over ~600 lines into sub-components.
+- [ ] **Inline metrics or error handling** — emit events through `usePerpsEventTracking` and handle errors through `perpsErrorHandler.ts`, never inline in the component.
 
 <a id="native-modal-layout"></a>
 

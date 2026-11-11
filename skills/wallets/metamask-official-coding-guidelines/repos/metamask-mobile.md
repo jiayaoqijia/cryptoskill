@@ -67,3 +67,5 @@ ComponentName/
 **Testing**: CV default for views → integration for app-to-controller flows → unit for allowed fallback → Appium for justified device journeys. Install `mobile-testing` and follow testing domain `knowledge/testing-layers.md`.
 
 **Forbidden**: ❌ npm/npx commands
+
+**Lint**: No new `eslint-disable`; fix the violation, or state in the same comment why it is unavoidable.

@@ -29,3 +29,11 @@ Controller and shared utilities, and Mobile's controller selectors, actions and 
 ## Legacy Local Formatters
 
 Terminal's `formatFee`, `formatPercentage`, `formatSize`, `formatTablePrice` and `formatUsd` (`src/features/perpetuals/utils/`) are legacy copies: a PR that uses, extends or calls one migrates that call site. They copy the controller's perps formatters; the shared *Shared Formatting & Display Precision* check applies.
+
+<a id="forced-testnet"></a>
+
+## Forced Testnet
+
+`config.hyperliquid.forceTestnet` (`src/features/perpetuals/config/hyperliquid.config.ts`) is authoritative: code that reads network state respects it (for example `client-factory.ts`, `account-balances.ts`).
+
+- [ ] **Mainnet fallback** — a default, catch or missing-config branch that resolves to mainnet. Never add one.

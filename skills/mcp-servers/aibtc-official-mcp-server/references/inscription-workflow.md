@@ -190,7 +190,7 @@ echo -n '{"type":"brc-20","tick":"ordi"}' | base64
 
 **Symptom**: "Wallet not unlocked" error
 
-**Solution**: Run `wallet_unlock` with your password before inscribing
+**Solution**: Run `wallet_unlock` before inscribing (omit `password` if the server reads it from `AIBTC_WALLET_PASSWORD_FILE` / `AIBTC_WALLET_PASSWORD`)
 
 ## Taproot Address Usage
 

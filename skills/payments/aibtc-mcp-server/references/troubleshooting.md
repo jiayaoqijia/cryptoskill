@@ -8,7 +8,7 @@ Common issues and solutions when using the Bitcoin wallet tools.
 
 **Symptom**: Transaction fails with unlock error.
 
-**Solution**: Run `wallet_unlock` with your password before sending transactions.
+**Solution**: Run `wallet_unlock` before sending transactions (omit `password` if the server reads it from `AIBTC_WALLET_PASSWORD_FILE` / `AIBTC_WALLET_PASSWORD`).
 
 ```
 "Unlock my wallet"

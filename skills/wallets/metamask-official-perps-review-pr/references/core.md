@@ -88,6 +88,15 @@ Display formatting lives in `src/utils/perpsFormatters.ts` as a few reusable for
 - [ ] **Duplicate formatting logic** — new or changed controller code repeats rounding, significant-digit, range, sign or fallback logic that `perpsFormatters.ts` already has, instead of calling it.
 - [ ] **Variant function instead of an option** — a new export that differs from an existing formatter only in precision, sign or fallback; add an option instead, in an options object rather than positional arguments.
 
+<a id="provider-rejections-have-two-shapes"></a>
+
+## Provider Rejections Have Two Shapes
+
+A venue call fails either by throwing or by returning a non-`ok` status result that the caller wraps. A fix to API response handling handles and tests both shapes, and a fix in shared code covers every provider path (today `HyperLiquidProvider` and `LighterProvider`).
+
+- [ ] **One rejection shape handled** — the thrown exception is caught but the wrapped non-`ok` result is not, or the reverse. Test both paths.
+- [ ] **Shared fix proven on one provider** — a change in shared code checked against only one provider's path.
+
 <a id="evidence-expected-before-core-perps-review"></a>
 
 ## Evidence Expected Before Core Perps Review

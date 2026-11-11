@@ -673,6 +673,7 @@ Before adding a package:
 
 - Use consistent formatting via the repo's lint commands
 - Follow ESLint rules configured in the project
+- No new `eslint-disable`; fix the violation, or state in the same comment why it is unavoidable
 - Keep functions small and focused
 - Avoid deep nesting (max 3-4 levels)
 - Use early returns to reduce nesting

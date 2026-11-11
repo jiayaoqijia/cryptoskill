@@ -1,0 +1,801 @@
+{
+  "version": 1,
+  "source": "Published CTF writeups, 2023-2026 (see url per case)",
+  "cases": [
+    {
+      "id": "web-corctf-challenge-dev",
+      "name": "corctf-challenge-dev",
+      "event": "corCTF 2024",
+      "expected": "ctf-web",
+      "artifacts": "blog app + admin bot + custom Chrome extension",
+      "url": "https://cor.team/posts/corctf-2024-corctf-challenge-dev",
+      "router_groups": [
+        [
+          "(?i)browser extension|chrome extension"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)declarativeNetRequest|chrome\\.extension|extension"
+        ],
+        [
+          "(?i)service worker|CSP|XSS"
+        ]
+      ],
+      "notes": "Extension-injected declarativeNetRequest removes CSP then XSS."
+    },
+    {
+      "id": "web-in-the-shadows",
+      "name": "in-the-shadows",
+      "event": "Google CTF 2024",
+      "expected": "ctf-web",
+      "artifacts": "reportable HTML/CSS message rendered in Shadow DOM",
+      "url": "https://adragos.ro/google-ctf-2024",
+      "router_groups": [
+        [
+          "(?i)URL|HTML|web"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)shadow|:host-context"
+        ],
+        [
+          "(?i)CSS exfil|CSS injection|CSS"
+        ]
+      ],
+      "notes": "CSS selectors crossing Shadow DOM boundary."
+    },
+    {
+      "id": "web-htmlsandbox",
+      "name": "htmlsandbox",
+      "event": "SekaiCTF 2024",
+      "expected": "ctf-web",
+      "artifacts": "uploaded HTML file checked for CSP meta tag",
+      "url": "https://blog.ankursundara.com/htmlsandbox-writeup/",
+      "router_groups": [
+        [
+          "(?i)URL|HTML|web"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)CSP"
+        ],
+        [
+          "(?i)parsing differential|encoding|charset"
+        ]
+      ],
+      "notes": "Parsing/encoding differential corrupts CSP before UTF-8 switch."
+    },
+    {
+      "id": "web-private-browsing-plus",
+      "name": "Private Browsing+",
+      "event": "HITCON CTF 2024",
+      "expected": "ctf-web",
+      "artifacts": "reverse-proxy URL fetcher + bot visit",
+      "url": "https://blog.huli.tw/2024/09/23/en/hitconctf-corctf-sekaictf-2024-writeup",
+      "router_groups": [
+        [
+          "(?i)service worker|bfcache|back-forward"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)service worker"
+        ],
+        [
+          "(?i)bfcache|back-forward cache"
+        ]
+      ],
+      "notes": "bfcache bypass + response splitting to register service worker."
+    },
+    {
+      "id": "web-postviewer-v3",
+      "name": "Postviewer v3",
+      "event": "Google CTF 2024",
+      "expected": "ctf-web",
+      "artifacts": "file upload/preview in hash-derived sandboxed iframe",
+      "url": "https://blog.huli.tw/2024/06/28/en/google-ctf-2024-writeup",
+      "router_groups": [
+        [
+          "(?i)iframe|sandbox"
+        ],
+        [
+          "(?i)race|web"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)iframe sandbox|sandbox origin"
+        ],
+        [
+          "(?i)race"
+        ]
+      ],
+      "notes": "Race async preview/hash flow to forge sandbox origin."
+    },
+    {
+      "id": "pwn-wknote",
+      "name": "WkNote",
+      "event": "SECCON CTF 2023 International Finals",
+      "expected": "ctf-pwn",
+      "artifacts": "Windows VM + challenge driver with alloc/read/write/free",
+      "url": "https://ctftime.org/writeup/38357",
+      "router_groups": [
+        [
+          "(?i)windows|kernel driver|\\.exe"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)token steal|token stealing"
+        ],
+        [
+          "(?i)double free|double-free"
+        ]
+      ],
+      "notes": "Uninitialized ptr + unchecked read/free -> double-free -> token steal."
+    },
+    {
+      "id": "pwn-extended-ebpf",
+      "name": "extended-eBPF",
+      "event": "UofTCTF 2026",
+      "expected": "ctf-pwn",
+      "artifacts": "custom kernel image + verifier patch + initramfs + QEMU",
+      "url": "https://havce.it/writeups/extended-ebpf-uoftctf-2026/",
+      "router_groups": [
+        [
+          "(?i)eBPF|bpf"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)eBPF"
+        ],
+        [
+          "(?i)verifier"
+        ]
+      ],
+      "notes": "eBPF verifier range-tracking bug -> OOB kernel access."
+    },
+    {
+      "id": "pwn-baby-bear-blockchain",
+      "name": "baby-bear-blockchain",
+      "event": "Amateurs CTF 2024",
+      "expected": "ctf-pwn",
+      "artifacts": "remote service executing Firedancer/Solana-style VM instructions",
+      "url": "https://gerrardtai.com/coding/baby-bear-blockchain",
+      "router_groups": [
+        [
+          "(?i)Solana|firedancer|blockchain VM"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)Solana|firedancer|blockchain VM"
+        ],
+        [
+          "(?i)out-of-bounds|OOB|side channel"
+        ]
+      ],
+      "notes": "VM memory-boundary + register-index bugs + side channel."
+    },
+    {
+      "id": "crypto-blessed",
+      "name": "Blessed",
+      "event": "HTB Business CTF 2024",
+      "expected": "ctf-crypto",
+      "artifacts": "Python server source + remote command-driven service",
+      "url": "https://7rocky.github.io/en/ctf/htb-challenges/crypto/blessed/",
+      "router_groups": [
+        [
+          "(?i)ECDSA|signature|BLS|ZKP|crypto"
+        ],
+        [
+          "(?i)crypto"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)rogue key|BLS"
+        ],
+        [
+          "(?i)lattice|ZKP"
+        ]
+      ],
+      "notes": "EC-LCG via lattice reduction + rogue-key BLS forgery."
+    },
+    {
+      "id": "crypto-filtermaze",
+      "name": "FILTERMAZE",
+      "event": "Google CTF 2025",
+      "expected": "ctf-crypto",
+      "artifacts": "remote graph/path puzzle + public LWE data",
+      "url": "https://exploiitm.github.io/blog/writeups/GoogleCTF2025/Filtermaze",
+      "router_groups": [
+        [
+          "(?i)LWE|lattice"
+        ],
+        [
+          "(?i)crypto"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)LWE"
+        ],
+        [
+          "(?i)lattice"
+        ]
+      ],
+      "notes": "Hamilton path reveals error magnitudes; solve LWE."
+    },
+    {
+      "id": "forensics-enduring-echo",
+      "name": "The Enduring Echo",
+      "event": "HTB Holmes CTF 2025",
+      "expected": "ctf-forensics",
+      "artifacts": "Windows disk image with EVTX/registry/scheduled tasks/PS history",
+      "url": "https://klefz.se/2025/09/26/the-enduring-echo-htb-holmes-ctf-2025-writeup",
+      "router_groups": [
+        [
+          "(?i)EVTX|event log|disk image"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)EVTX"
+        ],
+        [
+          "(?i)registry"
+        ]
+      ],
+      "notes": "Correlate EVTX process-creation/logon with persistence."
+    },
+    {
+      "id": "forensics-mem-search",
+      "name": "mem_search",
+      "event": "WaniCTF 2024",
+      "expected": "ctf-forensics",
+      "artifacts": "~2GB memory dump",
+      "url": "https://infosecwriteups.com/wanictf-2024-forensic-challenges-43d5ba370d98",
+      "router_groups": [
+        [
+          "(?i)memory dump|\\.raw"
+        ],
+        [
+          "(?i)volatility"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)volatility"
+        ],
+        [
+          "(?i)PowerShell"
+        ]
+      ],
+      "notes": "Volatility 3 -> suspicious files -> decode PowerShell."
+    },
+    {
+      "id": "forensics-arecibo",
+      "name": "Arecibo message",
+      "event": "Nexus CTF 2024",
+      "expected": "ctf-forensics",
+      "artifacts": "WAV recording presented as space message",
+      "url": "https://warlocksmurf.github.io/posts/nexusctf2024",
+      "router_groups": [
+        [
+          "(?i)SSTV|audio"
+        ],
+        [
+          "(?i)decode|signal"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)SSTV"
+        ],
+        [
+          "(?i)WAV|audio"
+        ]
+      ],
+      "notes": "Decode SSTV (Martin 2) transmission into an image."
+    },
+    {
+      "id": "stego-insignificant",
+      "name": "Insignificant?",
+      "event": "Nexus CTF 2024",
+      "expected": "ctf-stego",
+      "artifacts": "WAV audio file (no extension)",
+      "url": "https://warlocksmurf.github.io/posts/nexusctf2024",
+      "router_groups": [
+        [
+          "(?i)LSB|audio"
+        ],
+        [
+          "(?i)stego"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)audio.*LSB|LSB.*audio|2-bit"
+        ],
+        [
+          "(?i)spectrogram|LSB"
+        ]
+      ],
+      "notes": "Extract hidden data from 2 LSBs of audio samples."
+    },
+    {
+      "id": "stego-chug-jug",
+      "name": "Drop me a chug jug!",
+      "event": "CTF@CIT 2024",
+      "expected": "ctf-stego",
+      "artifacts": "WAV audio file",
+      "url": "https://warlocksmurf.github.io/posts/ctf@cit2024/",
+      "router_groups": [
+        [
+          "(?i)spectrogram|audio"
+        ],
+        [
+          "(?i)stego"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)spectrogram"
+        ]
+      ],
+      "notes": "Spectrogram reveals hidden flag."
+    },
+    {
+      "id": "stego-zero-hidden-knight",
+      "name": "Zero Hidden Knight in Space",
+      "event": "Nexus CTF 2024",
+      "expected": "ctf-stego",
+      "artifacts": "suspicious ciphertext decoding to BMP link",
+      "url": "https://warlocksmurf.github.io/posts/nexusctf2024",
+      "router_groups": [
+        [
+          "(?i)zero-width|unicode|stego"
+        ],
+        [
+          "(?i)image|BMP"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)zero-width"
+        ],
+        [
+          "(?i)BMP|image"
+        ]
+      ],
+      "notes": "Decode zero-width Unicode -> link -> inspect image."
+    },
+    {
+      "id": "jail-pyjail",
+      "name": "Pyjail",
+      "event": "HeroCTF v5 2023",
+      "expected": "ctf-jail",
+      "artifacts": "remote Python prompt with filtering",
+      "url": "https://ctftime.org/writeup/37010",
+      "router_groups": [
+        [
+          "(?i)jail|eval|exec|sandbox"
+        ],
+        [
+          "(?i)python"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)subclass"
+        ],
+        [
+          "(?i)builtins"
+        ]
+      ],
+      "notes": "Traverse Python subclasses to reach os."
+    },
+    {
+      "id": "jail-onlyecho",
+      "name": "onlyecho",
+      "event": "Google CTF 2024",
+      "expected": "ctf-jail",
+      "artifacts": "Bash interface permitting only echo",
+      "url": "https://ribombalt.github.io/ctf-writeup/2024/06/24/GoogleCTF2024",
+      "router_groups": [
+        [
+          "(?i)bash.*jail|jail"
+        ],
+        [
+          "(?i)echo|restricted shell"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)bash"
+        ],
+        [
+          "(?i)AST|parser|command substitution"
+        ]
+      ],
+      "notes": "Parser/AST differential hides substitution in arithmetic."
+    },
+    {
+      "id": "misc-gissningslek",
+      "name": "Gissningslek",
+      "event": "Hack.lu CTF 2025",
+      "expected": "ctf-misc",
+      "artifacts": "containerized Bash guessing game (1000 random values)",
+      "url": "https://medium.com/@ranachouchen4/misc-hack-lu-ctf-2025-gissningslek-926cb6af06f4",
+      "router_groups": [
+        [
+          "(?i)bash|guessing|game"
+        ],
+        [
+          "(?i)misc"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)bareword|arithmetic"
+        ],
+        [
+          "(?i)rand"
+        ]
+      ],
+      "notes": "Bareword `rand` resolves as variable in arithmetic."
+    },
+    {
+      "id": "misc-satellite",
+      "name": "Satellite Challenge (SFSAT-01)",
+      "event": "Security Fest 2025",
+      "expected": "ctf-hardware",
+      "artifacts": "433.5 MHz downlink clue + TLE + RTL-SDR",
+      "url": "https://www.assured.se/posts/writeup-satellite-challenge-at-securityfest-2025",
+      "router_groups": [
+        [
+          "(?i)SDR|RTL-SDR|satellite"
+        ],
+        [
+          "(?i)RF|signal"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)SDR"
+        ],
+        [
+          "(?i)IQ|TLE|satellite"
+        ]
+      ],
+      "notes": "Track passes, record, decode SDR signals."
+    },
+    {
+      "id": "forensics-dns-exfil",
+      "name": "DNS Exfiltration",
+      "event": "Dewald Roode Cybersecurity Hackathon 2025",
+      "expected": "ctf-forensics",
+      "artifacts": "PCAP of DNS traffic from suspected exfiltration host",
+      "url": "https://vinolago.github.io/blog/tunneling",
+      "router_groups": [
+        [
+          "(?i)DNS|pcap"
+        ],
+        [
+          "(?i)exfil|network"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)DNS"
+        ],
+        [
+          "(?i)Base64|subdomain"
+        ]
+      ],
+      "notes": "Extract Base64 from DNS subdomains, decode."
+    },
+    {
+      "id": "osint-hip-with-youth",
+      "name": "Hip With the Youth",
+      "event": "UIUCTF 2024",
+      "expected": "ctf-osint",
+      "artifacts": "prompt to find flag via Long Island Subway Authority Instagram",
+      "url": "https://warlocksmurf.github.io/posts/uiuctf2024",
+      "router_groups": [
+        [
+          "(?i)Instagram|social media|OSINT"
+        ],
+        [
+          "(?i)find who|where"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)Instagram|Threads"
+        ],
+        [
+          "(?i)social"
+        ]
+      ],
+      "notes": "Follow org social links to Threads post with flag."
+    },
+    {
+      "id": "osint-sevastopol",
+      "name": "Sevastopol's Silence",
+      "event": "IMF CTF 2025",
+      "expected": "ctf-osint",
+      "artifacts": "login page revealing username TaylorArtX",
+      "url": "https://mburu-karanja.github.io/Bl09/posts/2025/Imfctf_2025/index.html",
+      "router_groups": [
+        [
+          "(?i)GitHub|commit|OSINT"
+        ],
+        [
+          "(?i)find who|where"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)GitHub"
+        ],
+        [
+          "(?i)email|commit"
+        ]
+      ],
+      "notes": "Find GitHub account, enumerate exposed commit email."
+    },
+    {
+      "id": "misc-srdnlen-audio",
+      "name": "Audio misc challenge",
+      "event": "Srdnlen CTF 2023",
+      "expected": "ctf-misc",
+      "artifacts": "audio file described as incomprehensible recording",
+      "url": "https://ctftime.org/writeup/38091",
+      "router_groups": [
+        [
+          "(?i)SSTV|audio"
+        ],
+        [
+          "(?i)misc"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)SSTV"
+        ],
+        [
+          "(?i)RAR|password"
+        ]
+      ],
+      "notes": "Decode SSTV in WAV; use recovered text as RAR password."
+    },
+    {
+      "id": "ai-ml-trynasob",
+      "name": "TrynaSob Ransomware",
+      "event": "HTB Operation Blackout 2025",
+      "expected": "ctf-ai-ml",
+      "artifacts": "ransomware payment portal with AI negotiator",
+      "url": "https://github.com/hackthebox/business-ctf-2025/tree/master/aiml/TrynaSob%20Ransomware",
+      "router_groups": [
+        [
+          "(?i)prompt injection|LLM|chatbot|AI"
+        ],
+        [
+          "(?i)AI"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)prompt injection"
+        ]
+      ],
+      "notes": "Prompt injection reveals promo code and key."
+    },
+    {
+      "id": "ai-ml-doctrine-studio",
+      "name": "Doctrine Studio",
+      "event": "HTB Operation Blackout 2025",
+      "expected": "ctf-ai-ml",
+      "artifacts": "AI news app + source for fetch_news",
+      "url": "https://github.com/hackthebox/business-ctf-2025/tree/master/aiml/Doctrine%20Studio",
+      "router_groups": [
+        [
+          "(?i)agent|tool call|LLM|AI"
+        ],
+        [
+          "(?i)AI"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)file://"
+        ],
+        [
+          "(?i)tool call|SSRF"
+        ]
+      ],
+      "notes": "Prompt injection steers agent into vulnerable tool with file://."
+    },
+    {
+      "id": "cloud-perimeter-leak",
+      "name": "Perimeter Leak",
+      "event": "Wiz Cloud Security Championship June 2025",
+      "expected": "ctf-cloud",
+      "artifacts": "terminal + Spring Boot Actuator URL on AWS",
+      "url": "https://unicrons.cloud/en/2025/07/01/writeup-cloud-security-championship-1---perimeter-leak",
+      "router_groups": [
+        [
+          "(?i)IMDS|metadata|169\\.254"
+        ],
+        [
+          "(?i)cloud|SSRF"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)169\\.254\\.169\\.254"
+        ],
+        [
+          "(?i)presigned|IAM"
+        ]
+      ],
+      "notes": "Abuse proxy to reach IMDSv2 -> IAM -> presigned S3."
+    },
+    {
+      "id": "cloud-contain-me",
+      "name": "Contain Me If You Can",
+      "event": "Wiz Cloud Security Championship July 2025",
+      "expected": "ctf-cloud",
+      "artifacts": "shell in container, flag on host filesystem",
+      "url": "https://www.skybound.link/2025/08/wiz-cloud-security-championship-july-2025",
+      "router_groups": [
+        [
+          "(?i)container escape|docker"
+        ],
+        [
+          "(?i)cloud"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)container escape"
+        ],
+        [
+          "(?i)COPY FROM PROGRAM|host disk"
+        ]
+      ],
+      "notes": "Sniff PG creds, COPY FROM PROGRAM, mount host disk."
+    },
+    {
+      "id": "hardware-an4lyz3-1t",
+      "name": "An4lyz3_1t",
+      "event": "ACSC 2024",
+      "expected": "ctf-hardware",
+      "artifacts": "Saleae logic-analyzer capture (.sal)",
+      "url": "https://zenn.dev/rex/articles/d9eb8852aa8ce7",
+      "router_groups": [
+        [
+          "(?i)\\.sal|logic analy|saleae"
+        ],
+        [
+          "(?i)hardware"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)\\.sal|logic analy"
+        ],
+        [
+          "(?i)UART|decoder|async"
+        ]
+      ],
+      "notes": "Configure UART decoder, recover message."
+    },
+    {
+      "id": "hardware-ecu-d-jtag",
+      "name": "[ECU D] JTAG",
+      "event": "Automotive CTF Japan 2024",
+      "expected": "ctf-hardware",
+      "artifacts": "RAMN device, flag in ECU D RAM",
+      "url": "https://blog.hamayanhamayan.com/entry/2024/09/14/112907",
+      "router_groups": [
+        [
+          "(?i)JTAG|OpenOCD"
+        ],
+        [
+          "(?i)hardware"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)JTAG"
+        ],
+        [
+          "(?i)OpenOCD|dump"
+        ]
+      ],
+      "notes": "Wire JTAG, OpenOCD, dump RAM, decode flag."
+    },
+    {
+      "id": "forensics-interstellar-c2",
+      "name": "Interstellar C2",
+      "event": "HTB Cyber Apocalypse 2023",
+      "expected": "ctf-forensics",
+      "artifacts": "PCAPNG of suspected C2 infection",
+      "url": "https://scavengersecurity.com/posts/htbcyberapocalypse-interestelar_c2",
+      "router_groups": [
+        [
+          "(?i)C2|pcap|implant"
+        ],
+        [
+          "(?i)forensics|malware"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)C2"
+        ],
+        [
+          "(?i)PowerShell|\\.NET"
+        ]
+      ],
+      "notes": "Extract/decrypt PowerShell .NET implant traffic."
+    },
+    {
+      "id": "reverse-malware-busters",
+      "name": "Malware Busters!",
+      "event": "Wiz Cloud Security Championship Nov 2025",
+      "expected": "ctf-reverse",
+      "artifacts": "odd binary + compromised environment",
+      "url": "https://nerdymark.com/malware-busters-ctf-writeup",
+      "router_groups": [
+        [
+          "(?i)UPX|malware|Go binary"
+        ],
+        [
+          "(?i)reverse"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)UPX"
+        ],
+        [
+          "(?i)Go binary|AES"
+        ]
+      ],
+      "notes": "Repair UPX, unpack, reverse Go binary, decrypt C2."
+    },
+    {
+      "id": "web-ramp-frontend",
+      "name": "Ramp Frontend Challenge",
+      "event": "Ramp hiring CTF 2026",
+      "expected": "ctf-web",
+      "artifacts": "HTML page with nested DOM attrs hiding a URL",
+      "url": "https://wgg522pwivhvi5gqsn675gth3q0otdja.lambda-url.us-east-1.on.aws/666f75",
+      "router_groups": [
+        [
+          "(?i)URL|HTML|DOM"
+        ],
+        [
+          "(?i)web"
+        ]
+      ],
+      "skill_groups": [
+        [
+          "(?i)DOM|HTML"
+        ],
+        [
+          "(?i)read.*HTML|inline script"
+        ]
+      ],
+      "notes": "Parse DOM tree (section->article->div->b.ramp.ref) to recover URL."
+    }
+  ]
+}

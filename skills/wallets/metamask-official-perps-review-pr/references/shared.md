@@ -165,6 +165,14 @@ Order submission runs the shared pre-trade checks, carries the user's slippage, 
 - [ ] **Post-trade state not refreshed** — after a confirmed trade, withdrawal or position change, refresh balances, positions and orders through `PerpsCacheInvalidator.invalidate()` for affected cache types (`positions`, `accountState`), including standalone token-detail queries. A closed position must clear from local or WebSocket-fed state. Branch on per-item results/`failureCount` before `success` (Core sets `success: true` on partial batches). Keep post-success refresh outside the mutation's catch so a failed read never reports a failed, retryable write. Test 2-of-3 partial and a throwing refetch after success.
 - [ ] **Missing or hardcoded slippage**: Every market leg (open, close, flip/reverse, TP/SL trigger) sends `maxSlippageBps` resolved from the saved user preference, falling back to `ORDER_SLIPPAGE_CONFIG` only when none is saved; never an inline literal. Test a strict saved value and an unset preference per action.
 
+<a id="navigation-entry-and-exit-parity"></a>
+
+## Navigation Entry and Exit Parity
+
+A navigation or history fix covers every way the user enters and leaves the screen.
+
+- [ ] **Only one path is fixed**: Before patching, trace every entry (entry hook or action) and exit (header back, hardware or browser back, native gestures, cancel/close handler, auto-exit route), then apply the same history/fallback policy to each. Preserve entry/history provenance through push, replace and reset; a push/replace asymmetry leaves phantom history entries. Runtime QA must name any path it cannot prove.
+
 <a id="test-layer-coverage"></a>
 
 ## Test Layer Coverage

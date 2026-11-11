@@ -35,6 +35,7 @@ rg -n "Experiment Viewed|ExperimentViewed" app shared ui
    - Use a threshold-array remote flag value for production defaults.
    - Keep reused variants or metadata centralized in a config module when
      multiple files need the same definitions.
+   - Reuse the shared `ABTestVariant` names; no per-feature control/treatment constants.
    - Use the same experiment key format as mobile:
      `{teamName}{ticketId}Abtest{TestName}`.
 3. Implement the assignment logic correctly.
@@ -77,6 +78,7 @@ const activeABTests = experiment.isActive
    - Use test overrides such as `manifestFlags.remoteFeatureFlags` or
      `FixtureBuilder.withRemoteFeatureFlags(...)` when a test needs
      deterministic assignment.
+   - When an E2E fixture seeds a non-default remote flag, override the `/v1/flags` mock from the same constant; the background refresh overwrites the seed.
    - If the change is copy-only or config-only, you may skip new tests with a brief rationale.
 7. Run the A/B compliance checker using the repository's current supported
    invocation and report the result.
