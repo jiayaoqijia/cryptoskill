@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T18:28:18.518174+00:00",
+  "generated_at": "2026-11-11T00:46:28.483059+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -118962,6 +118962,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/nirholas-operate-hood-oracle": {
+      "name": "operate-hood-oracle",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/nirholas-rug-pull-news-check": {
       "name": "rug-pull-news-check",
       "execution_model": "read_only",
@@ -119206,6 +119268,68 @@
         },
         "mutable_remote_runtime": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "mcp-servers/nirholas-uniswap-v4-hooks": {
+      "name": "uniswap-v4-hooks",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -225289,13 +225413,13 @@
     }
   },
   "summary": {
-    "discovered": 3621,
-    "processed": 3621,
+    "discovered": 3623,
+    "processed": 3623,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2612,
       "router_orchestrator": 151,
-      "unknown": 353,
+      "unknown": 355,
       "analysis_only": 222,
       "unsigned_tx_builder": 114,
       "local_executor": 105,
@@ -225304,8 +225428,8 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1253,
-      "can_install_code": 573,
+      "can_execute_shell": 1255,
+      "can_install_code": 575,
       "can_write_files": 192,
       "can_browse_web": 253,
       "can_spawn_subagents": 270,
@@ -225313,7 +225437,7 @@
       "requires_private_key": 519,
       "requires_hosted_operator": 347,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 573
+      "mutable_remote_runtime": 575
     }
   }
 }
