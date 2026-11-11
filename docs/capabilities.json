@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T06:36:09.183405+00:00",
+  "generated_at": "2026-11-11T12:35:25.825385+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -116529,6 +116529,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/imal1ice-evm-contract-control-audit": {
+      "name": "evm-contract-control-audit",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/injective-mcp-server": {
       "name": "injective-mcp-server",
       "execution_model": "read_only",
@@ -224186,7 +224248,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -225413,13 +225475,13 @@
     }
   },
   "summary": {
-    "discovered": 3623,
-    "processed": 3623,
+    "discovered": 3624,
+    "processed": 3624,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2612,
       "router_orchestrator": 151,
-      "unknown": 355,
+      "unknown": 356,
       "analysis_only": 222,
       "unsigned_tx_builder": 114,
       "local_executor": 105,
@@ -225428,16 +225490,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1255,
-      "can_install_code": 575,
-      "can_write_files": 192,
+      "can_execute_shell": 1256,
+      "can_install_code": 576,
+      "can_write_files": 193,
       "can_browse_web": 253,
-      "can_spawn_subagents": 270,
+      "can_spawn_subagents": 271,
       "can_move_funds": 301,
-      "requires_private_key": 519,
+      "requires_private_key": 520,
       "requires_hosted_operator": 347,
       "uses_remote_install_script": 43,
-      "mutable_remote_runtime": 575
+      "mutable_remote_runtime": 576
     }
   }
 }

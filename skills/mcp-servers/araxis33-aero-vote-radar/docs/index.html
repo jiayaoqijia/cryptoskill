@@ -167,6 +167,9 @@
   .ar-record h3 { font-size: 15px; margin: 0 0 8px; }
   .ar-record td:nth-child(2), .ar-record th:nth-child(2) { text-align: left; }
   .ar-record .hint { margin: 8px 0 0; }
+  .ar-record-sum { margin: 0 0 10px; font-size: 15px; }
+  .ar-record:not(.ar-all) tr.ar-old { display: none !important; }
+  #arRecordMore { margin-top: 10px; }
   .ar-answer { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(53, 208, 127, 0.45); background: rgba(53, 208, 127, 0.07); border-radius: 10px; font-size: 15px; }
   .ar-answer b { color: var(--good); }
   .ar-answer a.primary { background: var(--aero); border: 1px solid var(--aero); color: #fff; font-weight: 600; border-radius: 8px; padding: 10px 14px; text-decoration: none; white-space: nowrap; }
@@ -357,10 +360,12 @@
   </div>
   <div class="ar-record" id="arRecord" hidden>
     <h3>Track record: what the radar said, and what it paid</h3>
+    <p class="ar-record-sum" id="arRecordSum"></p>
     <div class="scroll cards"><table>
       <thead><tr><th>When</th><th>Radar said</th><th class="num">It showed</th><th class="num">It paid</th><th class="num">A typical pool paid</th></tr></thead>
       <tbody id="arRecordBody"></tbody>
     </table></div>
+    <button type="button" id="arRecordMore" aria-expanded="false" hidden></button>
     <p class="hint" id="arRecordNote"></p>
   </div>
   <div class="ar-guide" id="guide">
@@ -754,7 +759,8 @@ function arRenderTop(amount) {
 }
 
 const AR_HEADS = [...document.querySelectorAll("#arTable thead th")].map((th) => th.textContent);
-// Open track record: the last three finished 47 h windows on a fixed grid from the
+// Open track record: every finished 47 h window the history still covers (30 days), newest
+// first, three shown until "Show all" is pressed, with a running total on top. Fixed grid from the
 // first saved pick (AR_RECORD_FROM), so a row changes only when a new window
 // ends, not every hourly scan. Each row: the pool the radar put
 // first for 10,000 sAERO, the daily figure it showed then (times 47/24), and what
@@ -780,9 +786,9 @@ function arRenderRecord(h) {
   const body = arEl("arRecordBody");
   body.innerHTML = "";
   const heads = [...document.querySelectorAll("#arRecord thead th")].map((th) => th.textContent);
-  let rebuilt = false, rows = 0;
+  let rebuilt = false, rows = 0, sumGot = 0, sumTyp = 0, wins = 0, first = null;
   const done = Math.floor((at[at.length - 1] - AR_RECORD_FROM) / (47 * H));
-  for (let n = 1; n <= 3; n++) {
+  for (let n = 1; n <= done; n++) {
     const t0 = AR_RECORD_FROM + 47 * (done - n) * H;
     const i0 = near(t0), i24 = near(t0 + 24 * H), i47 = near(t0 + 47 * H);
     if (i0 === null || i24 === null || i47 === null) continue;
@@ -809,10 +815,27 @@ function arRenderRecord(h) {
     cell(usd(got), "num " + (got > typical ? "c-good" : "c-bad"));
     cell(usd(typical), "num");
     tr.querySelectorAll("td").forEach((td, i) => { td.dataset.label = heads[i]; });
+    if (rows >= 3) tr.className = "ar-old";
     body.append(tr);
     rows++;
+    sumGot += got; sumTyp += typical; if (got > typical) wins++;
+    first = at[i0];
   }
   arEl("arRecord").hidden = rows === 0;
+  const sum = arEl("arRecordSum");
+  sum.innerHTML = "";
+  if (rows) {
+    const b = (t, cls) => { const e = document.createElement("b"); e.textContent = t; if (cls) e.className = cls; return e; };
+    const since = new Date(first).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+    sum.append("Following the radar's pick every window since " + since + ": ", b(usd(sumGot), sumGot > sumTyp ? "c-good" : "c-bad"),
+      " on 10,000 sAERO. A typical pool paid ", b(usd(sumTyp)), " over the same " + rows + (rows === 1 ? " window" : " windows") +
+      ". The pick beat it in " + wins + " of " + rows + ".");
+  }
+  const more = arEl("arRecordMore"), rec = arEl("arRecord");
+  more.hidden = rows <= 3;
+  const label = () => { const all = rec.classList.contains("ar-all"); more.textContent = all ? "Show the last 3" : "Show all " + rows + " windows"; more.setAttribute("aria-expanded", all); };
+  more.onclick = () => { rec.classList.toggle("ar-all"); label(); };
+  label();
   arEl("arRecordNote").textContent = "On 10,000 sAERO, over the 47 h a stake stays put. \"It showed\" is the radar's figure at that moment: pools cool once others pile in, so read it as a ceiling, not a promise." +
     (rebuilt ? " * Rebuilt from the hourly history; newer rows use the pick the radar saved at the time." : "");
 }

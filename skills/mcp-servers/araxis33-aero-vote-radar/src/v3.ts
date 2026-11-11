@@ -231,7 +231,7 @@ export async function readIncentivePrograms(c: V3Client, rewards: Address): Prom
 
 /** Aero goes live at 2026-10-22 00:00 UTC; no allocator fees exist before it, so the fee window starts no earlier. */
 export const AERO_LAUNCH_TS = Date.UTC(2026, 9, 22) / 1000;
-/** Fee window, the same 96 h the per-day fee figure uses (src/feeRate.ts). */
+/** Fee window: fees collected over this many hours are turned into the per-day figure (v3GaugeYield, below). */
 export const V3_WINDOW_HOURS = 96;
 /** Rewards contracts per getLogs filter, so a public RPC is not handed hundreds of addresses at once. */
 export const V3_LOG_ADDRESS_CHUNK = 100;
