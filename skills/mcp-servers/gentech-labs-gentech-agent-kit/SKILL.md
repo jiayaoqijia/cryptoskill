@@ -38,5 +38,7 @@ Four cron jobs (Evolution, Critic, Verifier, Gardener) make the agent measurably
 - CMC_API_KEY
 
 ## Payment Rails
-- x402 Solana micropayments (Pay wallet: pX1FTLyXAskfD4y8pRwx7Go58GpM9t2PtGZGj6Lq2hR)
+- x402 Solana micropayments — **no payout address ships here, and nothing in this repo reads one.** Configure
+  your own x402 client before enabling the payment skill. An address written into a skill is a default, and a
+  default wallet sends your money to whoever wrote the file.
 - Q402 gasless stablecoin (USDC/USDT on 12 chains, BNB trial)

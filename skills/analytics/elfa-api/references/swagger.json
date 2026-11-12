@@ -201,7 +201,7 @@
 							"type": "string"
 						},
 						"type": "array",
-						"description": "Effective scopes for this key, including any enterprise overlay.\n\nScopes gate the `/v2` data and chat endpoints only. They are NOT a\ncomplete access map: `/v2/auto/*` is not scope-gated, so its reachability\ncannot be inferred from this array."
+						"description": "Effective scopes for this key, including any enterprise overlay.\n\nScopes gate the `/v2` data and chat endpoints and every `/v3` endpoint\nexcept `/v3/key-status`. They are NOT a complete access map: `/v2/auto/*`\nis not scope-gated, so its reachability cannot be inferred from this array."
 					},
 					"tier": {
 						"type": "string"
@@ -1198,6 +1198,10 @@
 					"contractAddress": {
 						"type": "string"
 					},
+					"symbol": {
+						"type": "string",
+						"description": "Ticker of the token or stock. A stock has an empty `chain` and `contractAddress`."
+					},
 					"title": {
 						"type": "string"
 					},
@@ -1257,6 +1261,7 @@
 				"required": [
 					"chain",
 					"contractAddress",
+					"symbol",
 					"title",
 					"description",
 					"sentiment",
@@ -1928,11 +1933,90 @@
 				],
 				"type": "object"
 			},
+			"ApiKeyAutoFeedSubject": {
+				"description": "What a kalshi, polymarket or mindshare condition watches, recorded when the\nplan was created. Kalshi: title, yesSubTitle, noSubTitle, eventTicker,\ncloseTime. Polymarket: question, outcome, eventSlug, url, endDate.\nMindshare: name, symbol.",
+				"properties": {},
+				"type": "object",
+				"additionalProperties": {
+					"type": "string"
+				}
+			},
+			"ApiKeyAutoFeedContextValue": {
+				"anyOf": [
+					{
+						"type": "string"
+					},
+					{
+						"type": "number",
+						"format": "double"
+					},
+					{
+						"type": "boolean"
+					},
+					{
+						"items": {
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "number",
+									"format": "double"
+								}
+							]
+						},
+						"type": "array"
+					}
+				],
+				"description": "One fact from the message that fired a feed condition"
+			},
+			"ApiKeyAutoFeedContext": {
+				"description": "Public facts from the message that fired a feed condition (kalshi,\npolymarket, sec, mindshare, fear_greed, funding, liquidation)",
+				"properties": {
+					"topic": {
+						"type": "string",
+						"description": "Which feed the message came from, e.g. `filings.sec`, `trades.kalshi` or `markets.kalshi`"
+					},
+					"sourceRecordId": {
+						"type": "string",
+						"description": "The message's id in that feed, e.g. an SEC accession number"
+					},
+					"fields": {
+						"properties": {},
+						"additionalProperties": {
+							"$ref": "#/components/schemas/ApiKeyAutoFeedContextValue"
+						},
+						"type": "object",
+						"description": "The message's public fields by name, e.g. companyName, form, items and filingIndexUrl for an SEC filing, or yesPrice and takerOutcomeSide for a Kalshi trade. A field the message lacks is left out."
+					},
+					"truncated": {
+						"type": "boolean",
+						"description": "True when some fields were cut short or left out to fit the size limit"
+					}
+				},
+				"required": [
+					"topic",
+					"fields"
+				],
+				"type": "object"
+			},
 			"ApiKeyAutoTriggerMatch": {
 				"properties": {
 					"observedValue": {
 						"$ref": "#/components/schemas/ApiKeyAutoConditionValue",
 						"description": "Numeric/string/boolean value observed when the trigger fired"
+					},
+					"observedLabel": {
+						"type": "string",
+						"description": "Feed conditions: an enum or boolean reading as written, e.g. \"8-K\" or \"Fear\"; observedValue then holds the number the feed sent"
+					},
+					"subject": {
+						"$ref": "#/components/schemas/ApiKeyAutoFeedSubject",
+						"description": "Feed conditions: what the condition watches. Absent for sources without one and for plans created before it was recorded."
+					},
+					"context": {
+						"$ref": "#/components/schemas/ApiKeyAutoFeedContext",
+						"description": "Feed conditions: public facts from the message that fired the condition"
 					},
 					"url": {
 						"type": "string",
@@ -3630,6 +3714,147 @@
 				],
 				"type": "object"
 			},
+			"RelatedKindV3": {
+				"type": "string",
+				"enum": [
+					"event",
+					"storyline",
+					"arc"
+				]
+			},
+			"PredictionMarketProviderV3": {
+				"type": "string",
+				"enum": [
+					"polymarket",
+					"kalshi"
+				]
+			},
+			"PredictionMarketMoveV3": {
+				"description": "The odds of one outcome an hour before and an hour after a story's first post: of the\nmarket's outcomes priced between 3% and 97% before the story, the one whose move was\nmost unusual. For a storyline or an arc, across all of its stories.",
+				"properties": {
+					"eventId": {
+						"type": "string",
+						"description": "The story the move is measured around: one of the market's `eventIds`."
+					},
+					"outcomeId": {
+						"type": "string",
+						"description": "The outcome's id on its provider: a Polymarket market id or a Kalshi market ticker."
+					},
+					"outcome": {
+						"type": "string",
+						"nullable": true,
+						"description": "The outcome's question. Null for Kalshi outcomes, and when the name is not known."
+					},
+					"before": {
+						"type": "number",
+						"format": "double",
+						"description": "Probability an hour before the story's first post, 0 to 1."
+					},
+					"after": {
+						"type": "number",
+						"format": "double",
+						"description": "Probability an hour after the story's first post, 0 to 1."
+					},
+					"unusual": {
+						"type": "boolean",
+						"description": "True when the move is in the top tenth of this market's moves at that time of day over the week before."
+					}
+				},
+				"required": [
+					"eventId",
+					"outcomeId",
+					"outcome",
+					"before",
+					"after",
+					"unusual"
+				],
+				"type": "object"
+			},
+			"PredictionMarketV3": {
+				"properties": {
+					"provider": {
+						"$ref": "#/components/schemas/PredictionMarketProviderV3"
+					},
+					"marketId": {
+						"type": "string",
+						"description": "The market's id on its provider: a Polymarket event id or a Kalshi event ticker. Unique with `provider`."
+					},
+					"title": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					},
+					"closesAt": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Unix seconds. Null when the provider sets no end, or its date has passed while the market still trades."
+					},
+					"eventIds": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array",
+						"description": "The item's events that link this market, oldest first."
+					},
+					"move": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/PredictionMarketMoveV3"
+							}
+						],
+						"nullable": true,
+						"description": "How the odds moved around one of those stories. Null when none was measured."
+					}
+				},
+				"required": [
+					"provider",
+					"marketId",
+					"title",
+					"url",
+					"closesAt",
+					"eventIds",
+					"move"
+				],
+				"type": "object"
+			},
+			"RelatedPredictionMarketsV3": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"kind": {
+						"$ref": "#/components/schemas/RelatedKindV3"
+					},
+					"markets": {
+						"items": {
+							"$ref": "#/components/schemas/PredictionMarketV3"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"kind",
+					"markets"
+				],
+				"type": "object"
+			},
+			"PredictionMarketsResponseV3": {
+				"properties": {
+					"related": {
+						"items": {
+							"$ref": "#/components/schemas/RelatedPredictionMarketsV3"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"related"
+				],
+				"type": "object"
+			},
 			"MatchedOnV3": {
 				"type": "string",
 				"enum": [
@@ -4907,7 +5132,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "3.4.2",
+		"version": "3.7.0",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -5182,7 +5407,7 @@
 					}
 				},
 				"description": "Retrieve smart stats given username",
-				"summary": "Smart stats of accounts (legacy, removed 28 Oct 2026)",
+				"summary": "Smart stats of accounts (deprecated)",
 				"tags": [
 					"v2 Account"
 				],
@@ -5203,7 +5428,7 @@
 						}
 					}
 				],
-				"x-deprecated-description": "**Legacy — scheduled for removal on 28 October 2026.** This endpoint returns raw account metrics, not a reputation score, and is being retired rather than extended. Plan migrations before that date."
+				"x-deprecated-description": "**Deprecated and not maintained.** This endpoint returns raw account metrics, not a reputation score. To rank accounts, use `/v3/people/accounts`."
 			}
 		},
 		"/v2/data/top-mentions": {
@@ -6411,7 +6636,7 @@
 						}
 					}
 				},
-				"description": "Validate EQL syntax and get a cost estimate without creating a query.\nReturns simulation-based cost details when the query is valid.\n\n### Required Sequence (Enforced)\n\n`POST /v2/auto/queries/validate` must be called before\n`POST /v2/auto/queries`.\n\nLifecycle sequencing after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is\n   `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only after status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k so I can review the breakout setup.\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"valid\": true,\n  \"errors\": [],\n  \"warnings\": [],\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": { \"fast\": 1, \"expert\": 0, \"adaptive\": 0 },\n    \"actionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 },\n    \"autoActionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 }\n  },\n  \"estimatedCredits\": 30\n}\n```\n\n`tweetAccounts` lists the X account behind each `tweet.semantic`\ncondition and whether it is `included` or billed `per_post`; join on\n`path`. `followAccounts` does the same for the accounts `x_follow_made`\nand `x_follow_overlap` conditions watch, `included` or billed `per_day`;\njoin on `path` and `username`.\n\n> Best practice: always validate before create to catch schema issues and\n> preview estimated cost.",
+				"description": "Validate EQL syntax and get a cost estimate without creating a query.\nReturns simulation-based cost details when the query is valid.\n\n### Call Order\n\nCall `POST /v2/auto/queries/validate` before `POST /v2/auto/queries`.\nCreate does not require it and runs the same checks, but validate returns\nthe errors and the cost estimate without creating anything.\n\nLifecycle sequencing after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is\n   `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only after status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k so I can review the breakout setup.\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"valid\": true,\n  \"errors\": [],\n  \"warnings\": [],\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": { \"fast\": 1, \"expert\": 0, \"adaptive\": 0 },\n    \"actionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 },\n    \"autoActionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 }\n  },\n  \"estimatedCredits\": 30\n}\n```\n\n`tweetAccounts` lists the X account behind each `tweet.semantic`\ncondition and whether it is `included` or billed `per_post`; join on\n`path`. `followAccounts` does the same for the accounts `x_follow_made`\nand `x_follow_overlap` conditions watch, `included` or billed `per_day`;\njoin on `path` and `username`.\n\n> Best practice: always validate before create to catch schema issues and\n> preview estimated cost.",
 				"summary": "Validate Query",
 				"tags": [
 					"v2 Auto"
@@ -6571,7 +6796,7 @@
 						}
 					}
 				},
-				"description": "Create and activate a conditional query.\n\n### Required Sequence (Enforced)\n\nCall `POST /v2/auto/queries/validate` immediately before create.\n\nLifecycle after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only when status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n**Allowed action types (API key mode):**\n`webhook`, `notify`, `telegram_bot`, `llm`.\n\n### Cost\n\nSimulation-driven estimate (reference values):\n- baseline: `5 credits` (`$0.0725`)\n- fast call: `+5 credits` (`+$0.0725`)\n- expert call: `+18 credits` (`+$0.261`)\n\nPer-post X accounts (`tweetAccounts[].billing` `per_post`) add\n`creditsPerPost` per post while the query runs. Per-day follow accounts\n(`followAccounts[].billing` `per_day`) add `creditsPerDay` for each UTC\nday their follows are read.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\"\n}\n```\n\n### Response Example (201)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"active\",\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\",\n  \"createdAt\": \"2026-04-01T12:00:00.000Z\",\n  \"expiresAt\": \"2026-04-02T12:00:00.000Z\",\n  \"evaluationType\": \"price_driven\",\n  \"timeframe\": null,\n  \"preview\": {\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \">\",\n        \"isMet\": false,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": false,\n    \"matchingConditions\": 0\n  },\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": {\"fast\": 1, \"expert\": 0, \"adaptive\": 0},\n    \"actionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0},\n    \"autoActionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0}\n  },\n  \"estimatedCredits\": 116\n}\n```\n\nUse `id` for poll, stream, cancel and delete.\n\n> Best practice: call validate first, then create. After creation, wire\n> notifications (`webhook`, `telegram_bot`, or SSE) to a background runner.",
+				"description": "Create and activate a conditional query.\n\n### Call Order\n\nCall `POST /v2/auto/queries/validate` before create. Create does not\nrequire it and runs the same checks, but validate returns the errors and\nthe cost estimate without creating anything.\n\nLifecycle after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only when status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n**Allowed action types (API key mode):**\n`webhook`, `notify`, `telegram_bot`, `llm`.\n\n### Cost\n\n`5` credits to create, plus one charge when the query has a `text`\ncondition. Each `llm` condition check and `llm` action run is charged when\nit runs, and a `text` condition on `tweet`, `news`, `telegram` or `events`\nis charged for each post that clears its first relevance filter, usually\n1 credit.\n`estimatedCredits` (on validate and create) estimates the `llm` checks and\nruns over the query's life; it leaves out the 5 credits and the charges below.\n\nPer-post X accounts (`tweetAccounts[].billing` `per_post`) add\n`creditsPerPost` per post while the query runs. Per-day follow accounts\n(`followAccounts[].billing` `per_day`) add `creditsPerDay` for each UTC\nday their follows are read.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\"\n}\n```\n\n### Response Example (201)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"active\",\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\",\n  \"createdAt\": \"2026-04-01T12:00:00.000Z\",\n  \"expiresAt\": \"2026-04-02T12:00:00.000Z\",\n  \"evaluationType\": \"price_driven\",\n  \"timeframe\": null,\n  \"preview\": {\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \">\",\n        \"isMet\": false,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": false,\n    \"matchingConditions\": 0\n  },\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": {\"fast\": 1, \"expert\": 0, \"adaptive\": 0},\n    \"actionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0},\n    \"autoActionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0}\n  },\n  \"estimatedCredits\": 116\n}\n```\n\nUse `id` for poll, stream, cancel and delete.\n\n> Best practice: call validate first, then create. After creation, wire\n> notifications (`webhook`, `telegram_bot`, or SSE) to a background runner.",
 				"summary": "Create Query",
 				"tags": [
 					"v2 Auto"
@@ -6955,7 +7180,7 @@
 						}
 					}
 				},
-				"description": "Stream notifications for a single query via Server-Sent Events (SSE).\n\nTo follow every query you own over one connection instead, use\n`/queries/stream` — see *Stream Notifications For All Queries*.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Format (SSE)\n\n```\nid: <outbox-event-uuid>\nevent: notification\ndata: {\"status\":\"triggered\",\"title\":\"...\",\"body\":\"...\",\"queryId\":\"<uuid>\",\"timestamp\":1743379200000}\n```\n\n`status` is one of `triggered`, `stopped`, `ended`, or `update`. The payload also\ncarries the query's execution context when present (`executionId`, `triggerTime`,\n`conditionsMet`, `autoDetails`). `id` is the notification outbox event UUID.\n\nA `: keep-alive` comment is sent every 15s. Events are live-only — there is no\nreplay, and `Last-Event-ID` is ignored.\n\n### Lifecycle\n\nThe request returns `410` when the query is already terminal and its notifications\nhave drained. Once the query reaches a terminal state (`triggered`, `failed`,\n`expired`, `cancelled`) and its notifications have been delivered, the stream emits\nand then closes:\n\n```\nevent: end\ndata: {\"code\":\"QUERY_STREAM_CLOSED\",\"status\":\"<terminalStatus>\",\"queryId\":\"<uuid>\"}\n```\n\nA `recurring` query is not terminal — its stream stays open across triggers.\n\n> Best practice: deduplicate SSE events by event id and process with a\n> queue-backed worker for reliable agent execution.",
+				"description": "Stream notifications for a single query via Server-Sent Events (SSE).\n\nTo follow every query you own over one connection instead, use\n`/queries/stream` — see *Stream Notifications For All Queries*.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Format (SSE)\n\n```\nid: <outbox-event-uuid>\nevent: notification\ndata: {\"status\":\"triggered\",\"title\":\"...\",\"body\":\"...\",\"queryId\":\"<uuid>\",\"timestamp\":1743379200000}\n```\n\n`status` is one of `triggered`, `stopped`, `ended`, or `update`. The payload also\ncarries the query's execution context when present (`executionId`, `triggerTime`,\n`conditionsMet`, `autoDetails`). `id` is the notification outbox event UUID.\n\nA `: keep-alive` comment is sent every 15s. Events are live-only — there is no\nreplay, and `Last-Event-ID` is ignored.\n\n### Lifecycle\n\nThe request returns `410` when the query is already terminal and its notifications\nhave drained. Once the query reaches a terminal state (`triggered`, `failed`,\n`expired`, `cancelled`) and its notifications have been delivered, the stream emits\nand then closes:\n\n```\nevent: end\ndata: {\"code\":\"QUERY_STREAM_CLOSED\",\"status\":\"<terminalStatus>\",\"queryId\":\"<uuid>\"}\n```\n\nA query with `repeat` or a recurring `cron` condition stays `active` across\ntriggers, so its stream stays open.\n\n> Best practice: deduplicate SSE events by event id and process with a\n> queue-backed worker for reliable agent execution.",
 				"summary": "Stream Notifications",
 				"tags": [
 					"v2 Auto"
@@ -7651,7 +7876,7 @@
 						}
 					}
 				},
-				"description": "Convert a draft into an active query.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```",
+				"description": "Convert a draft into an active query.\n\n### Cost\n\n`5` credits to convert. After that it is billed like a query created with\n`POST /v2/auto/queries`.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```",
 				"summary": "Convert Query Draft",
 				"tags": [
 					"v2 Auto"
@@ -7890,6 +8115,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "This experimental endpoint is under active development and its behavior may change without notice.\nUse with caution in production environments.\n\nRetrieve trending tokens based on highest mentions count,\nfiltered by a minimum mention threshold over a specified time period.\n\nNote: You must provide EITHER timeWindow OR both from and to parameters.\nIf both timeWindow and from/to are provided, from/to takes priority.\n\n**Cost:** 1 credit ($0.0145). Requires x402 payment.",
@@ -8000,7 +8228,7 @@
 					}
 				},
 				"description": "Retrieve smart stats given username\n\n**Cost:** 1 credit ($0.0145). Requires x402 payment.",
-				"summary": "Smart stats of accounts (legacy, removed 28 Oct 2026)",
+				"summary": "Smart stats of accounts (deprecated)",
 				"tags": [
 					"x402 Account"
 				],
@@ -8017,7 +8245,7 @@
 						}
 					}
 				],
-				"x-deprecated-description": "**Legacy — scheduled for removal on 28 October 2026.** This endpoint returns raw account metrics, not a reputation score, and is being retired rather than extended. Plan migrations before that date."
+				"x-deprecated-description": "**Deprecated and not maintained.** This endpoint returns raw account metrics, not a reputation score. To rank accounts, use `/v3/people/accounts` (API key)."
 			}
 		},
 		"/x402/v2/data/top-mentions": {
@@ -8070,6 +8298,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "Returns the most significant mentions for a given ticker symbol, ranked by\nengagement (viewCount → mentionedAt → relevance) within a specified time\nwindow.\n\n**Response shape.** The response envelope is `{ success, data, metadata }`.\n`data` is a flat array of mentions; pagination state lives in `metadata`\n(`total`, `page`, `pageSize`) — never merged into the top level.\n\n**No tweet content.** V2 does not return raw tweet text. Use the `link`\nfield to fetch the original tweet via the Twitter/X API if needed.\n\n**No account object.** Unlike `/x402/v2/data/keyword-mentions`, this\nendpoint does not return an `account` object per mention.\n\n**Field notes.** `mentionedAt` is an ISO 8601 string (not a unix\ntimestamp). `repostBreakdown.smart` counts reposts by smart accounts;\n`repostBreakdown.ct` counts reposts by crypto-Twitter accounts.\n\n**Cost:** 1 credit ($0.0145). Requires x402 payment.",
@@ -8200,6 +8431,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "Search mentions by keywords OR account name within a time period. Either\n`keywords` or `accountName` (or both) must be provided.\n\n**Response shape.** The response envelope is `{ success, data, metadata }`.\n`data` is a flat array of mentions; pagination state lives in `metadata`.\n\n**Cursor pagination.** Unlike `/x402/v2/data/top-mentions` (which uses\n`page`/`pageSize`), this endpoint is cursor-paginated.\n`metadata.cursor` is a millisecond timestamp (number). To fetch the next\npage, pass its value back as the `cursor` query param. Page until `data`\nis empty; `metadata.cursor` is only omitted on that empty page.\n`metadata.total` is the complete matching result set, not the remainder\nafter the cursor, and may be capped at 10000 for performance.\n\n**No tweet content.** V2 does not return raw tweet text. Use the `link`\nfield to fetch the original tweet via the Twitter/X API if needed.\n\n**Account info.** Each mention includes a minimal `account` object with\nonly `username` and `isVerified`. No id, display name, follower count, or\nbio is returned.\n\n**Field notes.** `mentionedAt` is an ISO 8601 string (not a unix\ntimestamp). `repostBreakdown.smart` counts reposts by smart accounts;\n`repostBreakdown.ct` counts reposts by crypto-Twitter accounts.\n\n**Cost:** 1 credit ($0.0145). Requires x402 payment.",
@@ -8336,6 +8570,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "Generate event summaries based on keyword mentions within a time period.\n\n**Cost:** 5 credits ($0.0725). Requires x402 payment.",
@@ -8443,6 +8680,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "Get trending narratives based on Twitter mentions analysis.\n\n**Cost:** 5 credits ($0.0725). Requires x402 payment.",
@@ -8537,6 +8777,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "Retrieve token-related news mentions.\n\nResults are X (Twitter) posts from accounts tagged as news sources, not\narticles published by news outlets.\n\n**Cost:** 1 credit ($0.0145). Requires x402 payment.",
@@ -8655,6 +8898,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "Get trending contract addresses mentioned on Twitter/X. Returns contract addresses with mention counts.\n\nNote: You must provide EITHER timeWindow OR both from and to parameters.\nIf both timeWindow and from/to are provided, from/to takes priority.\n\n**Cost:** 1 credit ($0.0145). Requires x402 payment.",
@@ -8766,6 +9012,9 @@
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: nothing matched the request. The payment is not settled, so the call is free. Each wallet gets a limited number of free empty answers per hour; past that an empty match returns 200 with an empty list and is charged."
 					}
 				},
 				"description": "Get trending contract addresses mentioned on Telegram. Returns contract addresses with mention counts.\n\nNote: You must provide EITHER timeWindow OR both from and to parameters.\nIf both timeWindow and from/to are provided, from/to takes priority.\n\n**Cost:** 1 credit ($0.0145). Requires x402 payment.",
@@ -9747,7 +9996,7 @@
 						}
 					}
 				},
-				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: from 1 November 2026, 1 credit, plus 1 per event not already billed to the\naccount within 8 days of its `analyzedAt`. A `q` search adds nothing for now. Errors\ncost nothing. `x-elfa-credits` reports what a call cost and `x-elfa-credits-detail`\nhow it adds up. Requires `x-elfa-api-key`.",
+				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: 1 credit, plus 1 per event not already billed to the\naccount within 8 days of its `analyzedAt`. A `q` search adds nothing for now. Errors\ncost nothing. `x-elfa-credits` reports what a call cost and `x-elfa-credits-detail`\nhow it adds up. Requires `x-elfa-api-key`.",
 				"summary": "Events",
 				"tags": [
 					"v3 Events"
@@ -10064,7 +10313,7 @@
 						}
 					}
 				},
-				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: from 1 November 2026, 1 credit, plus 2 per storyline not already billed to the\naccount that UTC day. A `q` search adds nothing for now. Errors cost nothing.",
+				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: 1 credit, plus 2 per storyline not already billed to the\naccount that UTC day. A `q` search adds nothing for now. Errors cost nothing.",
 				"summary": "Storylines",
 				"tags": [
 					"v3 Events"
@@ -10276,7 +10525,7 @@
 						}
 					}
 				},
-				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: from 1 November 2026, 1 credit, plus 2 per arc not already billed to the account\nthat UTC day. A `q` search adds nothing for now. Errors cost nothing.",
+				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: 1 credit, plus 2 per arc not already billed to the account\nthat UTC day. A `q` search adds nothing for now. Errors cost nothing.",
 				"summary": "Arcs",
 				"tags": [
 					"v3 Events"
@@ -10389,6 +10638,130 @@
 				]
 			}
 		},
+		"/v3/events/prediction-markets": {
+			"get": {
+				"operationId": "prediction-markets-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PredictionMarketsResponseV3"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"related": [
+												{
+													"id": "string",
+													"kind": "event",
+													"markets": [
+														{
+															"provider": "polymarket",
+															"marketId": "string",
+															"title": "string",
+															"url": "string",
+															"closesAt": 1,
+															"eventIds": [
+																"string"
+															],
+															"move": {
+																"eventId": null,
+																"outcomeId": null,
+																"outcome": null,
+																"before": null,
+																"after": null,
+																"unusual": null
+															}
+														}
+													]
+												}
+											]
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "Rate limit exceeded",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "The open Polymarket and Kalshi markets an event, a storyline or an arc bears on: the\nodds this news can move. Send the ids you hold, of any of the three kinds and mixed\nif you like; each comes back with `kind`, saying which it is.\n\nAn event carries its own links. A storyline carries its events' links and an arc its\nstorylines' events', with `eventIds` naming which of them point at each market. Only\nmarkets the news most likely bears on directly are served, most relevant first, and\nonly while they are open. A question re-listed by date comes back as its busiest open\nlisting, else the open listing that closes soonest. A market can still trade past the\ndate its provider set; its `closesAt` is then null.\n\nMost events have no market: about one in eight do. Links come only from events within\nthe plan's history.\n\n`move` is how one outcome's odds moved from an hour before to an hour after a story's\nfirst post, and whether that was unusual for the market: the most unusual move among\nthe market's outcomes and, for a storyline or an arc, its stories. It is null when no\nmove was measured, for example when the story is under an hour old, the market opened\nafter it, the move was measured on an earlier listing of a question re-listed by date,\nor every outcome was priced under 3% or over 97% beforehand.\n\nCost: no credits for now.",
+				"summary": "Prediction markets",
+				"tags": [
+					"v3 Events"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Up to 30 event, storyline or arc ids. An id we do not hold is skipped.",
+						"in": "query",
+						"name": "ids",
+						"required": true,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "Markets per id. Default 10, maximum 30.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
 		"/v3/entities": {
 			"get": {
 				"operationId": "entities-list-v3",
@@ -10479,7 +10852,7 @@
 						}
 					}
 				},
-				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: from 1 November 2026, 1 credit, matches or not. Errors cost nothing.",
+				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: 1 credit, matches or not. Errors cost nothing.",
 				"summary": "Entities",
 				"tags": [
 					"v3 Entities"
@@ -10623,7 +10996,7 @@
 						}
 					}
 				},
-				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: from 1 November 2026, 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
+				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
 				"summary": "Crypto call book",
 				"tags": [
 					"v3 Market"
@@ -10778,7 +11151,7 @@
 						}
 					}
 				},
-				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: from 1 November 2026, 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
+				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
 				"summary": "Equity call book",
 				"tags": [
 					"v3 Market"
@@ -10928,7 +11301,7 @@
 						}
 					}
 				},
-				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: from 1 November 2026, 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
+				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
 				"summary": "Crypto mindshare",
 				"tags": [
 					"v3 Market"
@@ -11068,7 +11441,7 @@
 						}
 					}
 				},
-				"description": "The same board over equities.\n\nCost: from 1 November 2026, 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
+				"description": "The same board over equities.\n\nCost: 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
 				"summary": "Equity mindshare",
 				"tags": [
 					"v3 Market"
@@ -11206,7 +11579,7 @@
 						}
 					}
 				},
-				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: from 1 November 2026, 5 credits for `limit` up to 50, 10 up to 200, plus 5 when\nthe range is over 24 hours. Errors cost nothing.",
+				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: 5 credits for `limit` up to 50, 10 up to 200, plus 5 when\nthe range is over 24 hours. Errors cost nothing.",
 				"summary": "Trending contracts",
 				"tags": [
 					"v3 Market"
@@ -11363,7 +11736,7 @@
 						}
 					}
 				},
-				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: from 1 November 2026, 1 credit, plus 1 per call not already billed to the account\nin the last 24 hours. Errors cost nothing.",
+				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: 1 credit, plus 1 per call not already billed to the account\nin the last 24 hours. Errors cost nothing.",
 				"summary": "Calls",
 				"tags": [
 					"v3 Calls"
@@ -11576,7 +11949,7 @@
 						}
 					}
 				},
-				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: from 1 November 2026, 1 credit, plus 2 per position not already billed to the\naccount in its current status in the last 90 days, so a position bills again once\nwhen it closes. Errors cost nothing.",
+				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: 1 credit, plus 2 per position not already billed to the\naccount in its current status in the last 90 days, so a position bills again once\nwhen it closes. Errors cost nothing.",
 				"summary": "Call episodes",
 				"tags": [
 					"v3 Calls"
@@ -11780,7 +12153,7 @@
 						}
 					}
 				},
-				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: from 1 November 2026, 2 credits. Errors cost nothing.",
+				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: 2 credits. Errors cost nothing.",
 				"summary": "Positioning",
 				"tags": [
 					"v3 Calls"
@@ -11894,7 +12267,7 @@
 						}
 					}
 				},
-				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: from 1 November 2026, for `metric=standing`, 5 credits for `limit` up to 50 and\n10 up to 200; for `alphaScore`, `hitRate` and `avgReturn`, 25 and 50. Errors cost\nnothing.",
+				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: for `metric=standing`, 5 credits for `limit` up to 50 and\n10 up to 200; for `alphaScore`, `hitRate` and `avgReturn`, 25 and 50. Errors cost\nnothing.",
 				"summary": "Top accounts",
 				"tags": [
 					"v3 People"

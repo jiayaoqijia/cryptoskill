@@ -10,7 +10,17 @@
 [![Q402](https://img.shields.io/badge/gasless-Q402-00D4AA?style=flat)](https://q402.quackai.ai)
 [![Self-Evolution](https://img.shields.io/badge/evolve-harness-FF6B9D?style=flat)](https://github.com/erenciracioglu-dotcom/hermes-self-evolution)
 
-The GenTech Agent Kit packages the entire GenTech stack into a single installable MCP server. One command gives any AI agent real-time market data, DeFi intelligence, payment rails, agent identity infrastructure, and self-evolution capabilities.
+The GenTech Agent Kit packages the GenTech stack into a single installable MCP server.
+
+**It has two layers, and you only need the first one to start:**
+
+| Layer | What it is | Who it's for |
+|---|---|---|
+| **Core — runs any agent better** | memory tiering, context-cycle discipline, the handoff mesh (how agents hand work to each other and prove it landed), brain maintenance, the personal-assistant digest pattern, model-routing by task, and a self-evolution harness | **every agent.** No wallet, no chain, no API key. |
+| **Money layer — optional** | x402 pay-per-call rails, a catalogue of what we sell and what it costs, gasless settlement (Q402), and the receipts/error-code rules that make a payment provable | agents that **buy or sell** capabilities. Skip it entirely if that isn't you. |
+
+**If DeFi and payments are not your job, stop reading at the Core layer — that is the half that makes an agent
+measurably better at its own work, and none of it requires a wallet.**
 
 ```bash
 uvx --from git+https://github.com/Gentech-Labs/genTech-agent-kit.git gentech-kit
@@ -58,7 +68,7 @@ npx skills add Gentech-Labs/genTech-agent-kit --skill desktop-mesh
 | Component | What It Does | Status |
 |-----------|-------------|--------|
 | **x402-payments** | Solana micropayments via x402 gateway — pay-per-call API access | Live |
-| **Q402 Gasless** | Gasless USDC/USDT on 12 chains via EIP-7702 (trial on BNB) | Live |
+| **Q402 Gasless** | Gasless USDC/USDT via EIP-7702 (trial on BNB) — chain list varies by trial; do not treat a count as a capability | Live (trial) |
 | **Pay Wallet** | Solana wallet for x402 income collection | Live |
 
 ### Self-Evolution (Harness)
@@ -153,8 +163,11 @@ GITHUB_TOKEN=your-github-token
 
 | Asset | Address |
 |-------|---------|
-| Pay Wallet (Solana) | pX1FTLyXAskfD4y8pRwx7Go58GpM9t2PtGZGj6Lq2hR |
+| **Your pay wallet** | **none ships** — this kit contains no default address and no code that reads one |
 | TREASURY Token | 0x56D03C0f4167cC2c26B781dE47E608d660F13ba3 |
+
+> **No payout address ships with this kit.** A wallet written into a repo becomes a default, and a payment
+> skill that runs without configuration sends funds to whoever wrote the file. Configure your own x402 client.
 
 ---
 
