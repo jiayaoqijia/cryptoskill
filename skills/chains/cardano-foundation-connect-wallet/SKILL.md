@@ -272,8 +272,8 @@ Once connected (via SDK or raw API):
 const networkId = await api.getNetworkId();     // 0 = testnet, 1 = mainnet
 const balance = await api.getBalance();          // CBOR-encoded Value
 const utxos = await api.getUtxos();              // Array of CBOR-encoded UTxOs
-const usedAddresses = await api.getUsedAddresses(); // Array of CBOR addresses
-const changeAddress = await api.getChangeAddress();  // CBOR address
+const usedAddresses = await api.getUsedAddresses(); // Array of hex-encoded address bytes (not CBOR)
+const changeAddress = await api.getChangeAddress();  // Hex-encoded address bytes
 
 // Using Mesh SDK (already decoded)
 const balance = await wallet.getBalance();       // Array of { unit, quantity }
@@ -349,7 +349,7 @@ Wallets can sign arbitrary data — not just transactions — to prove the user 
 const { signature, key } = await api.signData(addressHex, payloadHex);
 ```
 
-Evolution SDK exposes this as `client.signMessage(payload)` on a CIP-30 client, and ships `COSE.SignData.verifyData(...)` to verify a signature server-side (see `wallets/message-signing.mdx` in the bundled docs). Always verify server-side — a signature proves key ownership only once you check it against the claimed address.
+Evolution SDK exposes this as `client.signMessage(address, payload)` on a CIP-30 client, where `address` is an SDK address object rather than the CIP-30 hex string (signature in `../../docs/sources/evolution-sdk/modules/sdk/wallet/Wallet.mdx`), and ships `COSE.SignData.verifyData(...)` to verify a signature server-side (see `../../docs/sources/evolution-sdk/wallets/message-signing.mdx`). When the signature grants access on your server, verify it there: a signature proves key ownership only once you check it against the claimed address.
 
 ### Step 8: CIP-95 governance extensions
 
@@ -361,7 +361,13 @@ const api = await window.cardano[walletName].enable({
   extensions: [{ cip: 95 }]
 });
 
-// CIP-95 methods (if supported by wallet)
+// Wallets are not expected to fail enable() on an unsupported extension,
+// so check what was actually enabled before calling api.cip95.*
+const extensions = await api.getExtensions();
+if (!extensions.some((e) => e.cip === 95)) {
+  throw new Error("CIP-95 was not enabled for this connection");
+}
+
 const pubDRepKey = await api.cip95.getPubDRepKey();
 const registeredPubStakeKeys = await api.cip95.getRegisteredPubStakeKeys();
 const unregisteredPubStakeKeys = await api.cip95.getUnregisteredPubStakeKeys();
@@ -374,7 +380,9 @@ Not all wallets support CIP-95 yet. Check wallet compatibility before relying on
 | Issue | Cause | Solution |
 |---|---|---|
 | `window.cardano` is undefined | No wallet installed, or SSR | Check for `window` existence; use dynamic imports in Next.js |
-| `enable()` throws error | User rejected connection | Show friendly message, allow retry |
+| `enable()` throws error | User did not grant access, or the wallet failed (`enable()` throws `APIError`) | Show friendly message, allow retry |
+| Calls fail with `APIError` -4 | User switched accounts in the wallet | Call `enable()` again (no new confirmation expected) and reload wallet state |
+| Error message is empty | `APIError`, `TxSignError`, `TxSendError` and `DataSignError` are specified as `{ code, info }` with no `message` field (`PaginateError` is `{ maxSize }`) | Read `info` and interpret `code` by the method that threw (see the reference's error table) |
 | Wrong network | Wallet on different network | Check `getNetworkId()` and show warning |
 | `signTx()` fails | Invalid transaction CBOR | Validate tx before sending to wallet; check collateral |
 | UTxOs empty after tx | Node not synced | Wait a block, re-query; some providers lag |

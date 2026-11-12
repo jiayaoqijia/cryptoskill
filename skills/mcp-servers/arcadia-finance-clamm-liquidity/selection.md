@@ -1,6 +1,6 @@
 # Strategy Selection & Parameterization
 
-Use this guide to evaluate whether a strategy makes sense and how to configure it. Apply to any LP strategy — not just the delta neutral example in strategies.md.
+Use this guide to evaluate whether a strategy makes sense and how to configure it. Apply to any LP strategy, not just the delta neutral example in strategies.md.
 
 ---
 
@@ -34,16 +34,13 @@ Must be positive to justify the leverage cost. Higher leverage amplifies both si
 - Volume + TVL: high volume/TVL ratio = fees are being earned actively
 - Active Merkl rewards: extra yield on top of the fee APY
 
-**`numeraire` — context-dependent meaning:**
-
-- **`write_account_add_liquidity`**: `numeraire` = account base currency (typically the stable side, e.g. USDC for a WETH/USDC position). The backend uses it to denominate calculations and determine the optimal swap ratio. For WETH/USDC: `numeraire = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` (USDC).
-- **`write_account_deleverage`**: `numeraire` = the debt token you're repaying (e.g. WETH address when repaying WETH debt). This differs from the add liquidity usage.
+**`numeraire`**: `write_account_add_liquidity` detects the account's numeraire itself. In `write_account_deleverage`, `numeraire` is the debt token you repay (e.g. the WETH address when repaying WETH debt).
 
 ---
 
 ## 2. Range Width
 
-Range width is the central tradeoff in any LP strategy. It is set in the Arcadia platform after enabling the rebalancer. Understanding the full tradeoff is essential for choosing parameters — a simple fee APY comparison is not enough.
+Range width is the central tradeoff in any LP strategy. You choose it when opening the position, by passing `tick_lower` and `tick_upper` for each position in `write_account_add_liquidity`. Understanding the full tradeoff is essential for choosing parameters: a simple fee APY comparison is not enough.
 
 **Core principle:** The `strategy_apy` from `read_strategy_list` (list view) is the 7-day average APY computed for that strategy's **default range width** (configured per strategy: e.g. very narrow for stables, ±7.5% / balanced for most volatile pairs). It is sampled every ~3 hours and averaged over 7d. It already reflects a concentrated range: NOT a full-range / pool-level number. Choosing a different range width changes your actual yield: narrower = higher fee capture but more rebalancing cost/risk, wider = lower fees but fewer rebalances. Call `read_strategy_info(strategy_id: <id>)` to see APY over the last 24 hours broken down by range width (very_narrow, narrow, balanced, wide, very_wide). The net return after rebalancing costs, IL, and gas determines the optimal width: see the model below.
 
@@ -51,9 +48,9 @@ Range width is the central tradeoff in any LP strategy. It is set in the Arcadia
 
 **Narrower range → higher fee capture, but three compounding costs:**
 
-1. **Delta risk:** A narrow position changes composition rapidly as price moves. A WETH/USDC position that was 50/50 quickly becomes 100% WETH or 100% USDC when price moves even slightly. Your net exposure to the volatile asset fluctuates heavily — you are not truly delta neutral across the range.
+1. **Delta risk:** A narrow position changes composition rapidly as price moves. A WETH/USDC position that was 50/50 quickly becomes 100% WETH or 100% USDC when price moves even slightly. Your net exposure to the volatile asset fluctuates heavily; you are not truly delta neutral across the range.
 
-2. **IL crystallized per rebalance:** Every rebalance permanently locks in accumulated impermanent loss. It doesn't disappear by rebalancing — it gets realized. More frequent rebalancing means more IL crystallized over time.
+2. **IL crystallized per rebalance:** Every rebalance permanently locks in accumulated impermanent loss. It doesn't disappear by rebalancing; it gets realized. More frequent rebalancing means more IL crystallized over time.
 
 3. **Rebalancing costs:** Each rebalance incurs gas costs plus swap slippage (the rebalancer must swap tokens to re-establish the target ratio for the new range). For small or low-fee positions, rebalancing costs can easily exceed earned fees.
 
@@ -108,9 +105,9 @@ Leverage multiplies both fee income and liquidation risk.
 | ----------------------------- | ------------------------------------------- | ------------------------- | ---------------------- |
 | 1× (no borrow, `leverage: 0`) | Safe LP, no liquidation risk                | N/A                       | 1.0 (no debt)          |
 | 2×                            | Classic delta neutral, volatile/stable pair | ~1.5–2×                   | ~0.5–0.7               |
-| 3×+                           | Aggressive yield, only in stable conditions | < 1.5× — watch carefully  | < 0.5 — watch closely  |
+| 3×+                           | Aggressive yield, only in stable conditions | < 1.5×, watch carefully   | < 0.5, watch closely   |
 
-**Minimum margin and small positions:** Each lending pool enforces a fixed minimum margin denominated in the pool's numeraire (e.g. WETH, USDC, cbBTC), typically a few dollars in value. This gets added to the debt in the health factor formula: `used_margin = open_debt + minimum_margin`. It ensures liquidations remain profitable (gas costs) and prevents dust attacks. For small positions, this fixed overhead dominates used margin, pushing health factor lower than the leverage ratio alone would suggest — e.g. 2× leverage normally targets HF ~0.5–0.7, but a small position might start at HF ~0.3. Increase position size for a healthier starting HF.
+**Minimum margin and small positions:** Each lending pool enforces a fixed minimum margin denominated in the pool's numeraire (e.g. WETH, USDC, cbBTC), typically a few dollars in value. This gets added to the debt in the health factor formula: `used_margin = open_debt + minimum_margin`. It ensures liquidations remain profitable (gas costs) and prevents dust attacks. For small positions, this fixed overhead dominates used margin, pushing health factor lower than the leverage ratio alone would suggest, e.g. 2× leverage normally targets HF ~0.5–0.7, but a small position might start at HF ~0.3. Increase position size for a healthier starting HF.
 
 **Profitability check:**
 
@@ -118,11 +115,11 @@ Leverage multiplies both fee income and liquidation risk.
 borrow_APY × (leverage - 1) < fee_APY × leverage   → leverage is profitable
 ```
 
-**Two safety metrics — collateral ratio vs health factor:**
+**Two safety metrics, collateral ratio vs health factor:**
 
 The API returns `health_factor = 1 - (used_margin / liquidation_value)`. This is between 0 and 1: higher is safer. `1` = no debt, `0` = liquidation threshold. See SKILL.md Key Constraints.
 
-A useful complementary metric is the **collateral ratio** — a rough estimate of how much buffer you have:
+A useful complementary metric is the **collateral ratio**, a rough estimate of how much buffer you have:
 
 ```
 collateral_value × collateral_factor
@@ -130,27 +127,27 @@ collateral_value × collateral_factor
          debt_value
 ```
 
-Target collateral ratio ≥ 1.5 at entry (≈ health factor ~0.5+). Never open below 1.3 (≈ health factor ~0.3).
+Target collateral ratio ≥ 1.5 at entry (health factor about 0.5 or higher). Never open below 1.3 (health factor about 0.3).
 
 **When to use less leverage:**
 
 - Borrow APY rising (utilization climbing in lending pool)
 - Market showing high volatility (gap risk)
-- Position already near support/resistance — a breakout would spike debt fast
+- Position already near support/resistance: a breakout would spike debt fast
 - Health factor dropping toward 0.5 (check with `read_account_info`)
 
 ---
 
 ## 4. Combining Automation
 
-| Combination                       | Compatible   | Notes                                                                                                                       |
-| --------------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| `rebalance` + `compound_fees`     | ✅ Yes       | Rebalance compounds at rebalance time; compound_fees adds compounding between rebalances.                                   |
-| `rebalance` + `claim_rewards`     | ✅ Yes       | Claims yield between rebalances. Order is handled by the keeper's claim-before guard.                                       |
-| `rebalance` + `claim_merkl`       | ✅ Yes       | Always combine when the pool has Merkl incentives. Zero conflict.                                                           |
-| `compound_fees` + `claim_merkl`   | ✅ Yes       | Merkl rewards are claimed separately from trading fees.                                                                     |
-| `compound_fees` + `claim_rewards` | ⚠️ Per token | Valid only as a partition: each yielding token must go to exactly one of the two, and every yielding token must be covered. |
-| `add_to_lp` + anything            | ✅ Yes       | Independent fold. Only constraint: a folded token cannot be a convert `buy_token`.                                          |
+| Combination                       | Compatible | Notes                                                                                                                       |
+| --------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `rebalance` + `compound_fees`     | Yes        | Rebalance compounds at rebalance time; compound_fees adds compounding between rebalances.                                   |
+| `rebalance` + `claim_rewards`     | Yes        | Claims yield between rebalances. Order is handled by the keeper's claim-before guard.                                       |
+| `rebalance` + `claim_merkl`       | Yes        | Always combine when the pool has Merkl incentives. Zero conflict.                                                           |
+| `compound_fees` + `claim_merkl`   | Yes        | Merkl rewards are claimed separately from trading fees.                                                                     |
+| `compound_fees` + `claim_rewards` | Per token  | Valid only as a partition: each yielding token must go to exactly one of the two, and every yielding token must be covered. |
+| `add_to_lp` + anything            | Yes        | Independent fold. Only constraint: a folded token cannot be a convert `buy_token`.                                          |
 
 ---
 
@@ -160,7 +157,7 @@ Monitor periodically with `read_account_info` and `read_account_pnl`. Exit or ad
 
 | Signal                           | Threshold                | Action                                |
 | -------------------------------- | ------------------------ | ------------------------------------- |
-| Borrow APY > fee APY             | Persists 3+ checks       | Exit strategy — no longer profitable  |
+| Borrow APY > fee APY             | Persists 3+ checks       | Exit strategy, no longer profitable   |
 | Health factor falling            | < 0.5                    | Add collateral or reduce debt         |
 | Health factor critical           | < 0.2                    | Immediate action required             |
 | Position out-of-range repeatedly | Bot can't keep up        | Widen range or reduce leverage        |

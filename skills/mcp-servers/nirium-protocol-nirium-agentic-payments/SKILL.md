@@ -23,10 +23,12 @@ on Stellar - a TypeScript/Python SDK, a scaffolding CLI, and an MCP
 server. `x402Serve()`, the function these scaffold around, runs on
 **your own server**: Nirium doesn't operate, host, or route through
 anything in that path, and never sees your end users' requests. It's
-not a demo - Nirium's own mainnet endpoint, running the identical
-function, has been billing real USDC over x402 since 9 July 2026. A
-mainnet settlement from that day, verifiable on Stellar Expert:
-[`3134a51c…7558bc`](https://stellar.expert/explorer/public/tx/3134a51c66091fd7fbd85b38a4a6ec6cd432bb92c2450eac84ea7855cb7558bc).
+not a demo - Nirium's own mainnet endpoint runs the identical
+function. Its first mainnet settlement, 9 July 2026, is verifiable on
+Stellar Expert:
+[`8a2487b8…d73170`](https://stellar.expert/explorer/public/tx/8a2487b8545e02324ced5d902fa350f0f5d8c2d5d2210272506a320b36d73170).
+Those settlements came from our own test wallets and an integration
+partner's tests, not paying customers; the most recent was 29 September 2026.
 
 **You're responsible for your own compliance.** `x402Serve()` is a
 general-purpose library, not a service Nirium provides to your end

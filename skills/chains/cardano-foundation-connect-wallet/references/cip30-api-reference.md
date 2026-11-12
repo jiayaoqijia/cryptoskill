@@ -51,7 +51,7 @@ const api = await window.cardano.eternl.enable({
 
 **Returns**: `Promise<API>` -- the wallet API object
 
-**Throws**: If user rejects the connection request
+**Throws**: `APIError` (see Error Handling), e.g. when the user does not grant access
 
 **Notes**:
 - Shows a popup in the wallet asking the user to connect
@@ -114,13 +114,13 @@ Returns addresses that have been used (have appeared in transactions).
 
 ```javascript
 const addresses = await api.getUsedAddresses();
-// Returns array of CBOR hex-encoded addresses
+// Returns array of hex-encoded raw address bytes (not CBOR)
 ```
 
 **Parameters**:
 - `paginate` (optional): `{ page: number, limit: number }`
 
-**Returns**: `Promise<string[]>` -- Array of CBOR hex-encoded addresses
+**Returns**: `Promise<string[]>` -- Array of hex-encoded raw address bytes
 
 ### `api.getUnusedAddresses()`
 
@@ -130,7 +130,7 @@ Returns addresses that have not been used yet.
 const addresses = await api.getUnusedAddresses();
 ```
 
-**Returns**: `Promise<string[]>` -- Array of CBOR hex-encoded addresses
+**Returns**: `Promise<string[]>` -- Array of hex-encoded raw address bytes
 
 ### `api.getChangeAddress()`
 
@@ -138,10 +138,10 @@ Returns an address to use for transaction change output.
 
 ```javascript
 const changeAddress = await api.getChangeAddress();
-// CBOR hex-encoded address
+// Hex-encoded raw address bytes (not CBOR)
 ```
 
-**Returns**: `Promise<string>` -- CBOR hex-encoded address
+**Returns**: `Promise<string>` -- Hex-encoded raw address bytes
 
 ### `api.getRewardAddresses()`
 
@@ -151,7 +151,7 @@ Returns the wallet's reward/staking addresses.
 const rewardAddresses = await api.getRewardAddresses();
 ```
 
-**Returns**: `Promise<string[]>` -- Array of CBOR hex-encoded reward addresses
+**Returns**: `Promise<string[]>` -- Array of hex-encoded raw reward address bytes
 
 ### `api.signTx(tx, partialSign?)`
 
@@ -176,7 +176,7 @@ const witnessSet = await api.signTx(unsignedTxCbor, true);
 **Notes**:
 - Shows transaction details to user for review
 - User must explicitly approve
-- The wallet adds its witness to the transaction
+- The wallet returns its witnesses, the dApp adds them to the transaction before `submitTx()`
 - For multi-sig flows, set `partialSign: true`
 
 ### `api.submitTx(tx)`
@@ -205,12 +205,12 @@ const txHash = await api.submitTx(signedTxCbor);
 Signs arbitrary data with the wallet's key (CIP-8 message signing).
 
 ```javascript
-const signature = await api.signData(addressCbor, payloadHex);
+const signature = await api.signData(addressHex, payloadHex);
 // Returns { signature, key }
 ```
 
 **Parameters**:
-- `addr`: CBOR hex-encoded address (used to select signing key)
+- `addr`: Address as hex-encoded raw bytes or bech32 (used to select signing key)
 - `payload`: Hex-encoded data to sign
 
 **Returns**: `Promise<{ signature: string, key: string }>` -- COSE_Sign1 signature and COSE_Key
@@ -244,7 +244,7 @@ const collateral = await api.getCollateral({ amount: cborCoin });
 
 ## CIP-95 Extensions (Governance)
 
-CIP-95 extends CIP-30 with governance-specific methods. Available when enabled with `extensions: [{ cip: 95 }]`.
+CIP-95 extends CIP-30 with governance-specific methods. Request them with `enable({ extensions: [{ cip: 95 }] })`, then confirm the wallet enabled them (see "Check that the extension was enabled" below).
 
 ### `api.cip95.getPubDRepKey()`
 
@@ -277,19 +277,38 @@ const unregisteredKeys = await api.cip95.getUnregisteredPubStakeKeys();
 
 **Returns**: `Promise<string[]>` -- Array of hex-encoded public keys
 
+### `api.cip95.signData(addr, payload)`
+
+Same as `api.signData()`, but `addr` may also be a DRep ID, so the wallet signs with the DRep key. A DRep ID here is the hex-encoded Blake2b-224 hash of the DRep public key. Errors are `APIError` and `DataSignError`.
+
 ### Governance transactions via CIP-95
 
-CIP-95 does not add new signing methods. Instead, governance transactions (DRep registration, voting, delegation) are built as regular transactions containing the appropriate certificates and voting procedures, then signed with `api.signTx()`.
+Governance transactions (DRep registration, voting, delegation) are built as regular transactions containing the appropriate certificates and voting procedures, then signed with `api.signTx()`. The wallet returns whichever payment, stake or DRep key witnesses the transaction requires, for example payment and stake keys for a vote delegation, payment and DRep keys for a DRep registration. The dApp adds them to the transaction before submitting.
 
-The wallet uses the DRep key and stake keys internally when signing governance certificates.
+CIP-95 extends the CIP-30 errors:
+
+- `TxSignError` code 3 `DeprecatedCertificate`: returned regardless of user consent when the transaction contains a certificate deprecated in Conway (`genesis_key_delegation` or `move_instantaneous_rewards_cert`).
+- `TxSignError` code 1 `ProofGeneration` and `DataSignError` code 1 `ProofGeneration` also cover a missing DRep secret key.
+- `APIError` code -3 `Refused` also covers the extension no longer being enabled.
+
+### Check that the extension was enabled
+
+Wallets are not expected to fail `enable()` when they do not support a requested extension. They enable what they can and report it in `api.getExtensions()`. Check before calling any `api.cip95.*` method:
+
+```javascript
+const extensions = await api.getExtensions();
+if (!extensions.some((e) => e.cip === 95)) {
+  // CIP-95 was not enabled for this connection: hide governance features or ask the user to switch wallets
+}
+```
 
 ## Data Encoding Notes
 
-CIP-30 uses CBOR hex encoding for most data types:
+CIP-30 uses CBOR hex encoding for most data types. Addresses are the exception:
 
 | Data type | Encoding | Decode with |
 |---|---|---|
-| Address | CBOR hex | SDK or `@emurgo/cardano-serialization-lib` |
+| Address | Hex-encoded raw address bytes (not CBOR). Wallets return hex and accept hex or bech32 as input | SDK or `@emurgo/cardano-serialization-lib` |
 | UTxO | CBOR hex | SDK or serialization library |
 | Value (balance) | CBOR hex | SDK or serialization library |
 | Transaction | CBOR hex | SDK or serialization library |
@@ -303,13 +322,20 @@ Common error scenarios:
 
 | Error | Cause | Handling |
 |---|---|---|
-| `APIError` (code: -1) | Wallet internal error | Retry or show error message |
-| `APIError` (code: -2) | Invalid request | Check parameters |
-| `APIError` (code: -3) | Refused by user | Show friendly message, allow retry |
-| `APIError` (code: -4) | Account not set | User needs to configure wallet |
-| `enable()` rejected | User clicked "Cancel" | Show connect button again |
-| `signTx()` rejected | User rejected signing | Inform user tx was not signed |
-| `submitTx()` failed | Invalid tx / network issue | Show error details, check tx validity |
+| `APIError` (code: -1) `InvalidRequest` | Inputs do not conform to the spec or are otherwise invalid | Check parameters |
+| `APIError` (code: -2) `InternalError` | Wallet failed while executing the call | Retry or show error message |
+| `APIError` (code: -3) `Refused` | No access, e.g. the wallet disconnected | Show connect button again |
+| `APIError` (code: -4) `AccountChange` | The user switched accounts in the wallet | Call `enable()` again (the wallet should not ask for confirmation) and reload wallet state |
+| `TxSignError` (code: 1) `ProofGeneration` | User approved, but the wallet lacks a key the tx needs (with `partialSign` false) | Check required signers, or pass `partialSign: true` if other parties sign too |
+| `TxSignError` (code: 2) `UserDeclined` | User rejected signing | Inform user tx was not signed |
+| `TxSendError` (code: 1) `Refused` | Wallet refused to submit, e.g. rate limiting | Retry later |
+| `TxSendError` (code: 2) `Failure` | Wallet could not send the tx | Show `info` |
+| `TxSignError` (code: 3) `DeprecatedCertificate` | CIP-95 only: tx contains a certificate deprecated in Conway | Remove the certificate and rebuild |
+| `DataSignError` (code: 1) `ProofGeneration` | Wallet lacks the key for `addr` | Pass an address the wallet controls |
+| `DataSignError` (code: 2) `AddressNotPK` | `addr` is not a P2PK address (no secret key behind it), e.g. a script address | Sign with a payment or stake key address |
+| `DataSignError` (code: 3) `UserDeclined` | User rejected `signData()` | Show friendly message, allow retry |
+
+The same number means different things per method: code 2 is a user decline from `signTx()`, a submit failure from `submitTx()` and `AddressNotPK` from `signData()`. Code 3 is a user decline from `signData()` but `DeprecatedCertificate` from a CIP-95 `signTx()`. Code 1 is `ProofGeneration` from the signing calls but `Refused` from `submitTx()`. Wrap each wallet call in its own `try` and interpret the code by the method that threw. `APIError`, `TxSignError`, `TxSendError` and `DataSignError` are specified as `{ code, info }` objects with no `message` field, so read `info`. `PaginateError`, which `getUtxos()` can throw, has the shape `{ maxSize }` instead.
 
 ## Browser Compatibility
 

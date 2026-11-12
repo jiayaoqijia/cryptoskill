@@ -83,3 +83,27 @@ test("pools with an unknown network exits 1", async () => {
   assert.equal(r.code, 1);
   assert.match(r.stderr, /--chain must be one of: base, ethereum/);
 });
+
+test("my-stakes without an address exits 1", async () => {
+  const r = await runCli(["my-stakes"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /my-stakes needs a 0x… wallet address/);
+});
+
+test("my-stakes with a malformed address exits 1", async () => {
+  const r = await runCli(["my-stakes", "notanaddress"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /my-stakes needs a 0x… wallet address/);
+});
+
+test("recommend with both --amount and --address exits 1", async () => {
+  const r = await runCli(["recommend", "--amount", "100", "--address", "0x1234567890123456789012345678901234567890"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /Pass either --amount or --address, not both/);
+});
+
+test("recommend with a malformed --address exits 1", async () => {
+  const r = await runCli(["recommend", "--address", "bad"]);
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /--address must be a 0x… wallet address/);
+});

@@ -157,7 +157,7 @@ standard for dApp-wallet interaction in browsers.
 **Developer impact:**
 - `window.cardano.<walletName>` exposes the wallet API
 - `enable()` returns an API object with methods for address, UTxO, and signing operations
-- All data is CBOR-encoded — SDKs handle serialization
+- Most data is CBOR-encoded (addresses are raw hex bytes), SDKs handle serialization
 - Wallets: Begin, Eternl, GeroWallet, Lace, NuFi, RayWallet, Yoroi all implement CIP-30
 
 **Key API methods:**
@@ -233,7 +233,7 @@ governance era (Voltaire). Enables dApps to interact with DRep registration, vot
 governance actions.
 
 **Developer impact:**
-- Adds `cip95` methods accessible after `enable({ extensions: [{ cip: 95 }] })`
+- Adds `cip95` methods, requested with `enable({ extensions: [{ cip: 95 }] })`. Wallets may skip the extension instead of failing, so check `api.getExtensions()` before calling them
 - `getPubDRepKey()` — get the wallet's DRep public key
 - `getRegisteredPubStakeKeys()` — get registered stake keys
 - `getUnregisteredPubStakeKeys()` — get unregistered stake keys
