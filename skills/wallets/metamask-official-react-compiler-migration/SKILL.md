@@ -30,6 +30,17 @@ npx -y react-compiler-marker@latest \
   app/path/to/containing/dir
 ```
 
+On a checkout whose `.npmrc` sets `offline = true` (metamask-mobile does), `npx -y` fails with `ENOTCACHED`. Install the marker outside the repo and invoke it from there, pinned to the version the epic standardizes on (ASSETS-4316 uses 0.2.0):
+
+```bash
+npm install react-compiler-marker@0.2.0 --offline=false --no-fund --no-audit --prefix /tmp/rcm
+node /tmp/rcm/node_modules/react-compiler-marker/bin/cli.js \
+  --babel-plugin-path <repo>/node_modules/babel-plugin-react-compiler \
+  app/path/to/containing/dir
+```
+
+The 0.2.0 entry point is `bin/cli.js`; `dist/cli.js` does not exist and fails with `MODULE_NOT_FOUND`.
+
 Record the failing lines for the target file. If the file does not appear in the failures, there is nothing to do — say so and stop.
 
 Capture the same run with `--format json ... 2>/dev/null` now if you intend to report before/after memo metrics (step 4). A failing file has no `success` entry to compare against later, and reconstructing a baseline afterwards means stashing your work in a dirty tree — not worth it.
@@ -50,6 +61,7 @@ Look up the failure in [references/patterns.md](references/patterns.md). Each en
 
 - **Test files.** `*.test.tsx` shows up in reports and gains nothing — the compiler is off under Jest, so migrating a test optimizes code that never runs compiled. They are also the files most likely to show pruned memo blocks. Skip them.
 - **False positives.** Some diagnostics name a rule of React rather than a syntax the compiler cannot lower. Establish the code actually breaks the rule before restructuring anything — `Hooks may not be referenced as normal values` fires on any `use[A-Z]` identifier, including a plain boolean prop.
+- **Stale findings.** A row in a scan report can outlive the code it names: the file may already compile. Before editing, re-run the marker on the file's directory (see Baseline for the offline-checkout invocation). If the target file has zero failures and is unchanged since the scan commit, do not edit it and do not open a PR — first confirm the marker still flags a known-bad sibling in the same directory, then leave a comment on the ticket with the CompileSuccess counts and move it to Blocked for a human to cancel or rescan (ASSETS-4320 / `ResourceRing.tsx`).
 - **Fixes that live outside the file.** If the only real fix is renaming an export, changing a shared hook, or editing another team's module, stop and report it with the suggested change. A local workaround for a non-local cause is worse than the bail-out.
 
 Report these as findings with the reason and the suggested owner, and move to the next file.

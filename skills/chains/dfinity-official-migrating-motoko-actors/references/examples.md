@@ -38,7 +38,6 @@ module {
     { var taxPayers; var taxPayerId = old.taxPayerId };
   };
 };
-
 ```
 
 List every other stable field (e.g. `var taxPayerId`) in both `OldActor` and `NewActor` even when the body just copies them through.
@@ -91,7 +90,6 @@ module {
     { var todos; var nextTaskId = old.nextTaskId };
   };
 };
-
 ```
 
 ---

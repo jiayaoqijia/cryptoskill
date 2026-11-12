@@ -22,7 +22,7 @@ For architecture details, see `test/e2e/playwright/llm-workflow/README.md`.
 
 - `a11yRef`s (`e1`, `e2`, ...) are **ephemeral**. Always take refs from the latest response (`mm describe-screen` or the `observations` of your last action).
 - After a call with `--observe none`, refs are **not** refreshed. Target by `--testid`, or run `mm describe-screen` before you use refs again: a stale ref built from role and name can click a different element.
-- Each ref resolves to exactly one element. If a click fails with a strict mode violation, target the element by `--testid` or `--selector`.
+- Each ref resolves to exactly one element. If a click fails with a strict mode violation, target the element by `--testid` or `--selector`, and scope it with `--within` when the selector or testId matches several elements (for example two stacked modals with a Close button).
 - Output is one line of JSON when stdout is not a terminal. Parse it as JSON. Add `--pretty` (or set `MM_PRETTY=1`) only when a human reads the output.
 - Observations carry no app state. Use `mm get-state` for the screen, account, network, or balance.
 - When a call times out (`Tool execution timed out`), it is cancelled. An action that already started can still have happened, so run `mm describe-screen` before you retry.
@@ -184,7 +184,7 @@ mm describe-screen                    # verify return to home
 mm switch-to-tab dapp                 # back to dapp
 ```
 
-Tab roles: `extension`, `notification`, `dapp`, `other`.
+Tab roles: `extension`, `notification`, `dapp`, `other`. To close a tab, pass `--role` or `--url` (`mm close-tab --role dapp`); `mm close-tab dapp` is a usage error. When several tabs share a role, use `--url`.
 
 ### 6. Navigate
 
@@ -201,6 +201,8 @@ mm screenshot --name "after-unlock"
 ```
 
 Capture before and after meaningful state changes for visual validation evidence.
+
+`mm screenshot` accepts only `--name` and captures the full page. For one element or the viewport, use a `run-steps` screenshot step with `selector` or `"fullPage": false`. See [Element and viewport screenshots](references/cli-reference.md#element-and-viewport-screenshots).
 
 ### 8. Cleanup (Always Required)
 

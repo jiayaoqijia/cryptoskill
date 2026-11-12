@@ -68,7 +68,7 @@ The runtime allows the upgrade if the new program is compatible with the old. No
 
 Use when the new state shape or types are not a simple compatible extension of the old.
 
-Add a NEW timestamped file to `src/backend/migrations/`; the chain replays automatically.
+Extend the pending migration if there is one; otherwise add a new timestamped file to `src/backend/migrations/`. The chain replays automatically.
 
 **Rules:**
 
@@ -105,7 +105,7 @@ module {
 
 Stable vars are declared with types, no initial values. Transient let/var fields use initializers as usual.
 
-> This no-initializer rule applies to enhanced-migration projects (this skill's subject), where the migration chain owns initial values. In a plain project without the enhanced-migration chain, stable fields are initialized with inline values in the actor body as usual (e.g. `persistent actor { let m = Map.empty<Nat, Text>(); }`).
+> This no-initializer rule applies to enhanced-migration projects (this skill's subject), where the migration chain owns initial values. In a plain project without the enhanced-migration chain, stable fields are initialized with inline values in the actor body as usual (e.g. `actor { let m = Map.empty<Nat, Text>(); }`).
 
 ```motoko
 actor {
@@ -225,7 +225,6 @@ module {
     { var newState = old.state.toFloat() };
   };
 };
-
 ```
 
 ### Drop a field intentionally
@@ -251,7 +250,7 @@ To derive `OldActor` deterministically: your `OldActor` equals the `NewActor` of
 
 ## Checklist for Upgrades
 
-- [ ] Decide: implicit (compatible change) vs explicit (new migration file)
+- [ ] Decide: implicit (compatible change) vs explicit (migration file)
 - [ ] **At most ONE pending migration file per build.** Before creating a file, check `src/backend/migrations/` — if a migration is already pending, edit it instead of adding a second
 - [ ] If explicit: pick a bare UTC-timestamp filename (`YYYYMMDD_HHMMSS.mo`, no suffix) that sorts after every existing file; do not encode the change in the name
 - [ ] Set `OldActor` to the `NewActor` of the file that precedes yours in `src/backend/migrations/` (lex-order), or `{}` if yours is the first file in a project that started out with a chain. Never from current `main.mo`. Never the file's own `NewActor`.

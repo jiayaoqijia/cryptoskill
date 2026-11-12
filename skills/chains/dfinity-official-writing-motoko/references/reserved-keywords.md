@@ -13,8 +13,10 @@ mixin        module       not          null         object
 or           persistent   private      public       query
 return       shared       stable       switch       system
 throw        to_candid    transient    true         try
-type         var          while        with
+type         var          weak         while        with
 ```
+
+`flexible` is reserved on moc 1 only — moc 2 made it an ordinary identifier — but avoid it so the code builds on both.
 
 `async*`, `await*`, and `await?` are also reserved. They cannot collide with an identifier anyway, since `*` and `?` are not identifier characters.
 
@@ -23,6 +25,8 @@ Using a reserved word as an identifier is a parse error at the declaration:
 ```text
 syntax error [M0001], unexpected token '<name>', expected one of token or <phrase> sequence: ...
 ```
+
+moc 2 reports it as `M0274` instead, naming the keyword.
 
 Rename the colliding term rather than relying on position or inferred meaning — there is no escaping or quoting mechanism. Conventional renames: `query` → `request` / `searchTerm`, `label` → `caption` / `tag`, `type` → `kind` / `category`, `object` → `item` / `entity`, `class` → `group` / `kind`.
 

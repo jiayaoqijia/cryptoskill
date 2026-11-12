@@ -2,7 +2,7 @@
 name: caffeine-app
 description: "Scaffold and build a complete Caffeine app (caffeine.ai) from scratch — the project layout, the caffeine.toml workspace + canister manifests, the mops.toml for the single Motoko `backend` canister, the React/Vite frontend, and the caffeine CLI build loop (auth login, doctor, install, check --fix, preview --build). Use whenever the user wants to create, scaffold, set up, or build a Caffeine app or a caffeine.ai project, asks about caffeine.toml or mops.toml structure, or needs the caffeine CLI workflow — even if they do not say the words 'from scratch'. Always pair it with the `writing-motoko` skill for the backend code. Do NOT use it for Motoko language syntax or compiler errors (use the `writing-motoko` skill), and do NOT use it for generic Internet Computer / dfx / icp deployment (use the `icp-cli` skill)."
 license: Apache-2.0
-compatibility: "@caffeineai/cli (the `caffeine` command), Node.js >= 18.17, pnpm, network access + a caffeine.ai account"
+compatibility: "@caffeineai/cli (the `caffeine` command), Node.js >= 20.19, pnpm, mops >= 3.0.0, network access + a caffeine.ai account"
 metadata:
   title: "Caffeine App (build from scratch)"
   category: Integration
@@ -35,7 +35,9 @@ CLI and the caffeine.ai web app, **not** through `dfx`.
 
 - **There is no `caffeine init` / `caffeine new`.** "From scratch" means you create the
   files in this skill by hand, then run the build loop. (`caffeine projects clone <id>`
-  only downloads an *existing* cloud project — it is not a greenfield scaffold.)
+  only downloads an *existing* cloud project, and `caffeine projects import <zip>` only
+  unpacks a project archive such as one made by `caffeine export`; neither is a
+  greenfield scaffold.)
 - **Exactly one backend canister, and it must be named `backend`.** `mops.toml` declares
   a single `[canisters.backend]`.
 - **The frontend↔backend binding files are generated, never hand-written.**
@@ -51,23 +53,28 @@ CLI and the caffeine.ai web app, **not** through `dfx`.
 # Install the CLI (public npm package). The binary is `caffeine`.
 npm install -g @caffeineai/cli
 
-# Authenticate against caffeine.ai (opens a browser; use --device on headless hosts).
+# Authenticate against caffeine.ai. Opens a browser; without one (or with --device) it
+# uses the device flow. On a host with no OS keychain (headless Linux, containers), add
+# --insecure-storage to keep the token in ~/.caffeine/tokens.json (mode 0600) instead.
 caffeine auth login
 caffeine auth status
 
 # Check the environment: Node, pnpm, mops, caffeine-bindgen, that you are logged in,
-# and that the Caffeine API is reachable (installs/repairs what it can).
+# and that the Caffeine API is reachable (installs what it can).
 caffeine doctor --fix
 ```
 
 If a global install is undesirable or fails, run every `caffeine` command through an
 `npx -y @caffeineai/cli@latest` prefix instead — e.g. `npx -y @caffeineai/cli@latest auth status`.
 
-`caffeine doctor --fix` checks Node.js, pnpm, mops, and caffeine-bindgen, confirms you
-are logged in, and verifies the Caffeine API is reachable — installing or repairing what
-it can. It does **not** install the Motoko compiler (`moc`) or linter (`lintoko`): mops
-fetches those automatically from the `[toolchain]` pins in `mops.toml` on the first
-`mops install` / build. `dfx` is not part of the Caffeine build.
+`caffeine doctor` requires Node.js 20 or later (the template's `engines` field asks for
+`>=20.19.0`) and checks pnpm, mops (2.13.0 or later), `caffeine-bindgen`, your login,
+and whether the Caffeine API is reachable. With `--fix` it installs a missing pnpm, a
+missing or outdated mops (`ic-mops`), and a missing `caffeine-bindgen`
+(`@caffeineai/bindgen`) with `npm install -g`; it does not install Node.js. It does
+**not** install the Motoko compiler (`moc`) or linter (`lintoko`): mops fetches those
+automatically from the `[toolchain]` pins in `mops.toml`. On Windows, compiling Motoko
+requires WSL. `dfx` is not part of the Caffeine build.
 
 ## Project shape
 
@@ -88,7 +95,7 @@ my-app/
     │   ├── caffeine.toml        #   canister manifest: type = "motoko"
     │   ├── main.mo              #   actor entry point (write with the `writing-motoko` skill)
     │   └── migrations/          #   enhanced-migration chain (see the `mops.toml` notes)
-    │       └── 00000000.mo      #   the no-op first migration
+    │       └── 00000000_000000.mo #   first migration: initializes the actor's stable state
     └── frontend/               # the assets canister (React + Vite)
         ├── caffeine.toml        #   canister manifest: type = "assets"
         ├── package.json         #   frontend deps + scripts (see references/frontend-template.md)
@@ -99,6 +106,7 @@ my-app/
         ├── postcss.config.js    #   (see references/frontend-template.md)
         ├── index.html
         ├── env.json             #   runtime config — copied into dist/ on build
+        ├── public/              #   static files served as-is (for example favicon.ico)
         └── src/
             ├── main.tsx          #   React entry (providers)
             ├── App.tsx
@@ -127,8 +135,9 @@ manifest_version = "0.1.0"
 
 [project]
 name = "My App"
-# id is assigned by the cloud after your first `caffeine preview`/create — omit it for
-# a brand-new local project; the CLI fills it in.
+# id is the cloud project id, a UUID. Omit it for a brand-new local project; once
+# `caffeine projects create` reports one, set it here (or pass --project-id to preview).
+# A placeholder such as "my-app" makes `caffeine preview` refuse to upload.
 
 [workspace]
 include = [ "src/**" ]
@@ -214,7 +223,7 @@ main = "src/backend/main.mo"
 path = ".old/src/backend/dist/backend.most"
 
 [toolchain]
-moc = "2.0.0"
+moc = "2.1.0"
 lintoko = "0.12.0"
 
 [lint]
@@ -231,7 +240,8 @@ args = [
 
 [dependencies]
 core = "2.6.1"
-ic = "4.2.0"
+ic = "5.0.0"
+caffeineai-authorization = "1.0.0"
 caffeineai-lints = "0.1.0"
 caffeineai-oql = "0.8.0"
 
@@ -246,8 +256,11 @@ Notes:
   `persistent` keyword only triggers warning M0217. Older guides add
   `--default-persistent-actors` or `--generate-view-queries` to `[moc] args`: those are
   moc 1.x flags that moc 2.0 removed, and passing them fails every compile with
-  `unknown option`. Projects cloned from before the switch may still pin moc 1.x and keep
-  `--default-persistent-actors`; leave such a project on its pinned version.
+  `unknown option`. Projects cloned from before the switch may still pin moc 1.x
+  (the template's moc 1 variant is `moc = "1.16.0"` with `--default-persistent-actors`
+  first in `[moc] args`); leave such a project on its pinned version, or move it with the
+  `migrating-to-moc-2` skill:
+  <https://github.com/caffeinelabs/skills/tree/main/skills/migrating-to-moc-2>.
 - **`check-stable`** points at `.old/src/backend/dist/backend.most`, the stable-signature
   snapshot of the last deployed backend. `caffeine check` compares your stable state
   against it, and `caffeine projects clone` restores it from the cloud. Do not delete
@@ -262,29 +275,55 @@ Notes:
 
   Do not set `skipIfMissing = true` instead: mops deprecated it, and `caffeine preview`
   rejects it because a skipped check only fails later, at deploy.
-- **`[canisters.backend.migrations]`** turns on enhanced migration: every `.mo` file in
+- **`[canisters.backend.migrations]`** turns on enhanced migration (mops adds
+  `--enhanced-migration` itself; do not put it in `[moc] args`). Every `.mo` file in
   `src/backend/migrations/`, in name order, is one step that maps the previous stable
-  state to the next. A new project starts with the no-op `00000000.mo`, which sorts before
-  the `YYYYMMDD_HHMMSS.mo` files the `writing-motoko` skill writes:
+  state to the next. Stable fields in the actor have **no initializers**; their initial
+  values come from the chain. A new project starts with `00000000_000000.mo`, which
+  creates the state the starting `main.mo` declares (below) and sorts before the
+  `YYYYMMDD_HHMMSS.mo` files later migrations use:
 
   ```motoko
+  import AccessControl "mo:caffeineai-authorization/access-control";
+
   module {
     public type OldActor = {};
-    public type NewActor = {};
+    public type NewActor = { accessControlState : AccessControl.AccessControlState };
 
     public func migration(_ : OldActor) : NewActor {
-      {};
+      { accessControlState = AccessControl.initState() };
     };
   };
   ```
 
-  Never edit or delete a migration after it is deployed.
+  `check-limit = 1` allows **one pending (not yet deployed) migration**. Against the seeded
+  empty baseline, `00000000_000000.mo` is itself pending, so until the first deploy you add
+  new stable fields by editing that file, not by adding a second one; a second file fails
+  `caffeine check` with `too many pending migrations for check-limit=1`. Never edit,
+  rename, or delete a migration after it is deployed. The rules for writing migrations
+  are in the `migrating-motoko-actors` skill:
+  <https://github.com/caffeinelabs/skills/tree/main/skills/migrating-motoko-actors>.
 - **`core`** is the `mo:core` standard library. Use `mo:core`, never the deprecated
   `mo:base` — see the `writing-motoko` skill. **`caffeineai-oql`** provides the `Expose` mixin the
   starting `main.mo` includes (below).
+- **`caffeineai-authorization`** provides Internet Identity sign-in and roles
+  (`MixinAuthorization`, `AccessControl`). It also ships a lint rule that fails
+  `caffeine check` unless `main.mo` includes `MixinAuthorization`. To use custom
+  authentication instead before the first deploy, remove the package
+  (`mops remove caffeineai-authorization`) together with its imports, include, state
+  field, and migration line — see the `extension-authorization` skill:
+  <https://github.com/caffeinelabs/skills/tree/main/skills/extension-authorization>.
+  After a deploy, the applied first migration imports the package, so removing it
+  breaks the build: keep the package and `MixinAuthorization`, and add custom checks
+  alongside them.
+- **`[lint] extends = true`** runs the lint rules that dependencies ship (such as the one
+  above) with the `lintoko` pinned in `[toolchain]`, as part of `mops check`.
 - **`ic`** provides the IC management canister's types and calls (`mo:ic/Types`,
   `mo:ic/Call`). Use it instead of `import ... "ic:aaaaa-aa"`, which only resolves with an
-  `--actor-idl` directory of `.did` files that Caffeine projects no longer have.
+  `--actor-idl` flag that the template no longer passes.
+- **Add a package** with `mops add <name>` (one package per command) rather than by
+  editing `[dependencies]`, so `mops.lock` stays in sync. The `mops-cli` skill covers the
+  mops commands: <https://github.com/caffeinelabs/skills/tree/main/skills/mops-cli>.
 
 > **Versions and dependencies drift.** The `[toolchain]` versions, the `[moc]`
 > `-E`/`-W`/`-A` codes, and the frontend dependency set are template-managed and change
@@ -304,7 +343,7 @@ invoked by the backend canister's `[build]` step (`pnpm bindgen`).
   "name": "@caffeine/template-app",
   "type": "module",
   "engines": {
-    "node": ">=18.17.0",
+    "node": ">=20.19.0",
     "pnpm": ">=7.0.0",
     "npm": "please use pnpm"
   },
@@ -316,18 +355,31 @@ invoked by the backend canister's `[build]` step (`pnpm bindgen`).
     "bindgen": "caffeine-bindgen --did-file ./src/backend/dist/backend.did --out-dir ./src/frontend/src --actor-interface-file --force"
   },
   "devDependencies": {
+    "@icp-sdk/core": "^5.3.0",
     "sharp": "^0.34.4"
   }
 }
 ```
 
+The Caffeine template also pins pnpm with a `packageManager` field and adds
+`@dfinity/pic` for its hosted backend tests; a local project needs neither.
+
 ### `pnpm-workspace.yaml`
+
+pnpm 10 reads `onlyBuiltDependencies`; pnpm 11 and later read only `allowBuilds`. Keep
+both so either version runs the packages' install scripts.
 
 ```yaml
 packages:
   - src/**/*
+allowBuilds:
+  '@biomejs/biome': true
+  esbuild: true
+  sharp: true
 onlyBuiltDependencies:
+  - '@biomejs/biome'
   - esbuild
+  - sharp
 ```
 
 ### `tsconfig.json` (root)
@@ -339,7 +391,8 @@ onlyBuiltDependencies:
     "target": "ES2020",
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "allowJs": true,
     "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
   }
@@ -348,18 +401,27 @@ onlyBuiltDependencies:
 
 ### `src/backend/main.mo` — the starting backend
 
-The canonical template's starting `main.mo` includes the **`Expose` mixin** from
-`caffeineai-oql`, which publishes the backend's query interface. The actor has no stable
-state yet, which is why the first migration maps `{}` to `{}`. Add your own functions
-inside the actor, following the **`writing-motoko` skill**.
+The canonical template's starting `main.mo` includes two mixins: **`MixinAuthorization`**
+from `caffeineai-authorization`, which provides Internet Identity sign-in and roles (the
+first user to sign in becomes admin), and **`Expose`** from `caffeineai-oql`, which
+publishes the backend's query interface. `accessControlState` is a stable field with no
+initializer; `00000000_000000.mo` gives it its value. Add your own functions inside the
+actor, following the **`writing-motoko` skill**.
 
 ```motoko
+import AccessControl "mo:caffeineai-authorization/access-control";
+import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import Expose "mo:caffeineai-oql/Expose";
 
 actor {
+  let accessControlState : AccessControl.AccessControlState;
+  include MixinAuthorization(accessControlState, null);
   include Expose({ entities = [] });
 };
 ```
+
+To guard methods by role, store user profiles, or capture verified names and emails at
+sign-in, follow the `extension-authorization` skill.
 
 Do not write more Motoko than this without loading
 the `writing-motoko` skill — it covers persistent actors, stable types, `mo:core`, and the
@@ -384,10 +446,16 @@ configs, `main.tsx`, and the worked `useActor(createActor)` backend call. The es
   the auth provider used in `main.tsx`); you do **not** hand-write the actor/config/storage
   glue. See the worked example in
   [`references/frontend-template.md`](references/frontend-template.md).
+- Sign-in uses `useInternetIdentity()` from the same package (`login()` from a button's
+  `onClick`, `clear()`, `isAuthenticated`, and Google, Microsoft, or company SSO
+  variants). `useActor` re-creates the actor with the signed-in identity. The hook's full
+  API and the sign-in UI rules are in the `extension-core-infrastructure` skill:
+  <https://github.com/caffeinelabs/skills/tree/main/skills/extension-core-infrastructure>.
 - `env.json` holds runtime config placeholders (`backend_host`, `backend_canister_id`,
   `project_id`, `ii_derivation_origin`, `storage_gateway_url`), all `"undefined"` locally;
-  the frontend `build` script copies it into `dist/` (`cp env.json dist/`). Caffeine
-  injects real values when it serves the app. Keep `env.json` and the `copy:env` step.
+  the frontend `build` script copies it into `dist/` (`cp env.json dist/`), and
+  `@caffeineai/core-infrastructure` fetches it at runtime. Caffeine injects real values
+  when it serves the app. Keep `env.json` and the `copy:env` step.
 
 ## The build loop
 
@@ -419,9 +487,19 @@ caffeine projects create                 # reports a new project id
 caffeine preview --build --project-id <id>
 ```
 
+`caffeine preview` refuses to upload when sources changed since the last `caffeine build`;
+`--build` rebuilds first. It also checks the `mops.toml` structure described above and
+needs `src/backend/dist/backend.wasm` and `src/frontend/dist/index.html`. Do not
+`caffeine projects clone` a project you just created: it has no code yet, so the clone
+fails with `No committed draft found`.
+
 Set `CAFFEINE_VERBOSE=1` to stream complete subprocess output from `caffeine install`,
 `caffeine build`, and `caffeine check`. This is equivalent to passing `--verbose` to
 each command. `--json` continues to suppress streamed output.
+
+Without a TTY (an agent's shell, CI, piped output) progress and results print as plain
+lines. Add `--json` to any command for a machine-readable `{ "ok": true, "data": ... }` or
+`{ "ok": false, "error": ... }` envelope.
 
 **Generation ordering.** `src/frontend/src/backend.ts` does not exist until a build runs
 `pnpm bindgen`. So if your frontend imports from `./backend`, you must run `caffeine build`
@@ -430,16 +508,48 @@ at least once before `caffeine check` can typecheck the frontend. A brand-new ap
 
 **Going live.** `caffeine preview --build` (with a `project.id`) produces a *draft* and
 returns its URL. Promote a draft to a live URL in the caffeine.ai web app (open it with
-`caffeine chat open` or visit caffeine.ai). There is no CLI deploy command. Use
-`caffeine projects show <id>` to see draft and live URLs, including a ready custom domain when one is assigned.
+`caffeine chat open` or visit caffeine.ai), or with the `caffeine_go_live` tool of the
+Caffeine MCP connector. There is no CLI deploy command. Use
+`caffeine projects show <id>` to see draft and live URLs, and any custom domains.
 
 ### Alternative: let Caffeine's own AI build it
 
 If you cannot run the CLI locally (no shell, no toolchain), drive Caffeine's hosted AI
-instead: describe the app in natural language with `caffeine chat send "<prompt>"` (or
-the caffeine.ai web chat). Caffeine's hosted AI then scaffolds, builds, and deploys it
-server-side — `chat send` only submits the prompt, so this does not contradict the CLI
-having no deploy command. This skill is for the **local, hand-authored** path.
+instead: create a cloud project with `caffeine projects create`, then describe the app in
+natural language with `caffeine chat send --project-id <id> "<prompt>"` (or use the
+caffeine.ai web chat). Caffeine's hosted AI then scaffolds, builds, and deploys it
+server-side. `chat send` only sends the prompt and follows the AI's progress (or returns
+at once with `--detach`), so this does not contradict the CLI having no deploy command.
+This skill is for the **local, hand-authored** path.
+
+## Component skills
+
+Caffeine ships ready-made components for sign-in and roles, file storage, payments,
+email, invite links, and third-party connectors (Google, Slack, Twilio, and more). Each is
+a mops package (`caffeineai-*`), often an npm package (`@caffeineai/*`), and a skill that
+shows how to wire them. Before building one of those features, read its skill and use the
+component instead of writing it yourself.
+
+- **A cloned project** lists its component skills in `skills-lock.json`. Restore them into
+  `.agents/skills/` from the project root:
+
+  ```bash
+  npx skills experimental_install -y
+  ```
+
+- **A project you scaffold by hand** has no lock file. Fetch the skill you need from
+  <https://github.com/caffeinelabs/skills>: one `skills/<name>/SKILL.md` per component, listed
+  in its README.
+
+## Using the app from Claude or another AI assistant
+
+A deployed Caffeine app already works with DFINITY's ICP MCP connector,
+`https://mcp.internetcomputer.org/mcp`. The user adds it to their assistant as a custom
+connector, signs in with Internet Identity, and asks it to open the app by its web address;
+the assistant then calls the app's backend methods as that user. Do **not** build an MCP
+server, an HTTP endpoint, or a secret link into the app for this. Clear backend method names
+and Candid types are what the assistant reads, so a capability it should have is an
+ordinary backend method.
 
 ## Common Pitfalls
 
@@ -452,7 +562,7 @@ having no deploy command. This skill is for the **local, hand-authored** path.
 3. **Hand-writing or editing `src/frontend/src/backend.ts` or `declarations/`.** These
    are generated by `caffeine-bindgen` and overwritten on every build. Add backend
    methods in `main.mo`, rebuild, and the client regenerates. The generated header says
-   "do NOT make any changes in this file"; it is also excluded from Biome.
+   "You should NOT make any changes in this file"; it is also excluded from Biome.
 4. **Importing `./backend` before the first build.** The binding module is created by
    the build's `pnpm bindgen` step. Run `caffeine preview --build` (or `caffeine build`)
    once before relying on `import { createActor } from "./backend"`.
@@ -483,12 +593,33 @@ having no deploy command. This skill is for the **local, hand-authored** path.
     a draft needs a cloud project. Run `caffeine projects create` to get an id, set it in
     `[project] id` (or pass `--project-id <id>`), then preview. `caffeine build` alone
     needs no id and is enough to verify the app compiles.
+13. **`too many pending migrations for check-limit=1`.** Only one migration can be pending
+    at a time, and on a never-deployed project `00000000_000000.mo` already is. Fold the
+    new state into that pending file instead of adding another.
+14. **`include-authorization` lint error, or `M0169` "stable variable `accessControlState`
+    … cannot be implicitly discarded".** `main.mo` dropped `MixinAuthorization` or its
+    `accessControlState` field while the package and the first migration still provide
+    them. Keep the starting `main.mo` lines, or remove authorization completely as the
+    `extension-authorization` skill describes.
 
 ## Related skills
 
 - **`writing-motoko`** — REQUIRED companion. Authoritative for all backend Motoko code:
   <https://skills.internetcomputer.org/skills/writing-motoko/SKILL.md>. Always load it before
   editing `src/backend/main.mo`.
+- **`migrating-motoko-actors`** — load before changing the actor's stable state: how to
+  write and fold migrations in `src/backend/migrations/`.
+  <https://github.com/caffeinelabs/skills/tree/main/skills/migrating-motoko-actors>
+- **`extension-core-infrastructure`** — `InternetIdentityProvider`, `useInternetIdentity`,
+  and `useActor` on the frontend.
+  <https://github.com/caffeinelabs/skills/tree/main/skills/extension-core-infrastructure>
+- **`extension-authorization`** — roles, guards, user profiles, and the sign-in screen
+  built on `caffeineai-authorization`.
+  <https://github.com/caffeinelabs/skills/tree/main/skills/extension-authorization>
+- **`mops-cli`** — mops commands: `mops add`, `mops check`, toolchain pins.
+  <https://github.com/caffeinelabs/skills/tree/main/skills/mops-cli>
+- **`migrating-to-moc-2`** — moving a cloned moc 1 project to moc 2.
+  <https://github.com/caffeinelabs/skills/tree/main/skills/migrating-to-moc-2>
 - **`icp-cli`** — for raw Internet Computer / `dfx` / `icp` projects. Not used by
   Caffeine; reach for it only when the user is *not* building a Caffeine app.
 

@@ -3,11 +3,11 @@
 The frontend of a Caffeine app is a React + Vite + Tailwind project served as an
 "assets" canister. The files below are the **canonical Caffeine frontend starter**,
 reproduced from the build template and **verified** — a from-scratch app using them
-passed `caffeine build` and deployed a draft.
+passed `caffeine build` and `caffeine check`.
 
 > **These dependency versions drift.** They are a current snapshot of the Caffeine
 > template, which bumps them over time (e.g. the `@dfinity/*` → `@icp-sdk/*` migration,
-> and `@caffeineai/core-infrastructure` 0.x → 1.x). For the latest, scaffold via Caffeine
+> `@caffeineai/core-infrastructure` 1.x → 2.x, and Vite 8 with TypeScript 7). For the latest, scaffold via Caffeine
 > or `caffeine projects clone` a recent project and copy its `src/frontend/package.json`.
 > The stable part is the *shape*: Vite + Tailwind + Biome, the
 > `@caffeineai/core-infrastructure` integration, and the `useActor(createActor)` call
@@ -16,8 +16,9 @@ passed `caffeine build` and deployed a draft.
 `index.css` and `App.tsx` here are deliberately **minimal** so a from-scratch app builds
 immediately. The full template additionally ships a richer `index.css` (the `oklch` color
 tokens and the `--font-*` / `--radius` variables that `tailwind.config.js` references),
-a `src/components/ui/` set of shadcn-style components, and a `lib/utils.ts`. Layer those
-in as the app grows; the minimal versions below render with stock Tailwind.
+a `src/components/ui/` set of shadcn-style components with their `components.json`, a
+`lib/utils.ts`, and a `public/favicon.ico`. Layer those in as the app grows; the minimal
+versions below render with stock Tailwind.
 
 All files live under `src/frontend/` (relative paths are noted per file).
 
@@ -47,80 +48,81 @@ deps once the app works). Verified to install with pnpm and build with Vite.
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/typography": "0.5.10",
     "@types/node": "^20.9.0",
     "@types/react": "~19.1.0",
     "@types/react-dom": "~19.1.0",
     "@types/three": "0.176.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.5.0",
     "dotenv-cli": "^8.0.0",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.17",
-    "@tailwindcss/typography": "0.5.10",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.8.3",
-    "vite": "^5.4.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
     "vite-plugin-environment": "^1.1.3"
   },
   "dependencies": {
-    "@caffeineai/core-infrastructure": "^1.0.0",
-    "@icp-sdk/auth": "^7.1.0",
+    "@caffeineai/core-infrastructure": "^2.0.0",
+    "@caffeineai/object-storage": "^1.1.1",
+    "@icp-sdk/auth": "^9.0.0",
     "@icp-sdk/core": "^5.3.0",
+    "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-alert-dialog": "^1.1.2",
+    "@radix-ui/react-aspect-ratio": "^1.1.0",
+    "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-checkbox": "^1.1.1",
+    "@radix-ui/react-collapsible": "^1.1.0",
+    "@radix-ui/react-context-menu": "^2.2.15",
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-hover-card": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-menubar": "^1.1.1",
+    "@radix-ui/react-navigation-menu": "^1.2.0",
+    "@radix-ui/react-popover": "^1.1.1",
+    "@radix-ui/react-progress": "^1.1.0",
+    "@radix-ui/react-radio-group": "^1.2.0",
+    "@radix-ui/react-scroll-area": "^1.2.0",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slider": "^1.2.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.1",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toggle": "^1.1.0",
+    "@radix-ui/react-toggle-group": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.2",
     "@react-three/cannon": "~6.6.0",
     "@react-three/drei": "~10.0.8",
     "@react-three/fiber": "~9.1.2",
     "@tanstack/react-query": "^5.24.0",
     "@tanstack/react-router": "~1.131.8",
-    "lucide-react": "0.511.0",
-    "react-icons": "^5.4.0",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-dialog": "^1.1.1",
-    "@radix-ui/react-dropdown-menu": "^2.1.1",
-    "@radix-ui/react-label": "^2.1.0",
-    "@radix-ui/react-select": "^2.1.2",
-    "@radix-ui/react-tabs": "^1.1.0",
-    "@radix-ui/react-tooltip": "^1.1.2",
-    "@radix-ui/react-scroll-area": "^1.2.0",
-    "@radix-ui/react-popover": "^1.1.1",
-    "@radix-ui/react-checkbox": "^1.1.1",
-    "@radix-ui/react-switch": "^1.1.1",
-    "@radix-ui/react-separator": "^1.1.0",
-    "@radix-ui/react-avatar": "^1.1.0",
-    "@radix-ui/react-accordion": "^1.1.2",
-    "@radix-ui/react-alert-dialog": "^1.1.2",
-    "@radix-ui/react-aspect-ratio": "^1.1.0",
-    "@radix-ui/react-hover-card": "^1.1.2",
-    "@radix-ui/react-menubar": "^1.1.1",
-    "@radix-ui/react-navigation-menu": "^1.2.0",
-    "@radix-ui/react-progress": "^1.1.0",
-    "@radix-ui/react-radio-group": "^1.2.0",
-    "@radix-ui/react-slider": "^1.2.0",
-    "@radix-ui/react-toggle": "^1.1.0",
-    "@radix-ui/react-toggle-group": "^1.1.0",
-    "@radix-ui/react-collapsible": "^1.1.0",
-    "@radix-ui/react-context-menu": "^2.2.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^2.5.2",
-    "react-day-picker": "^9.5.0",
+    "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.2.1",
-    "recharts": "^2.15.1",
-    "cmdk": "^1.0.0",
-    "vaul": "^1.1.2",
-    "react-hook-form": "^7.53.0",
     "input-otp": "^1.4.1",
-    "react-resizable-panels": "^2.1.7",
-    "sonner": "^1.7.4",
+    "lucide-react": "0.511.0",
+    "motion": "^12.34.3",
     "next-themes": "~0.4.6",
     "react": "~19.1.0",
-    "react-use": "~17.6.0",
+    "react-day-picker": "^9.5.0",
     "react-dom": "~19.1.0",
+    "react-hook-form": "^7.53.0",
+    "react-icons": "^5.4.0",
     "react-quill-new": "3.4.6",
+    "react-resizable-panels": "^2.1.7",
+    "react-use": "~17.6.0",
+    "recharts": "^2.15.1",
+    "sonner": "^1.7.4",
+    "tailwind-merge": "^2.5.2",
     "three": "^0.176.0",
-    "zustand": "~5.0.5",
-    "motion": "^12.34.3"
+    "vaul": "^1.1.2",
+    "zustand": "~5.0.5"
   }
 }
 ```
@@ -143,24 +145,20 @@ const ii_url =
     : `https://id.ai/authorize`;
 
 process.env.II_URL = process.env.II_URL || ii_url;
-process.env.STORAGE_GATEWAY_URL =
-  process.env.STORAGE_GATEWAY_URL || "https://blob.caffeine.ai";
 
 export default defineConfig({
   logLevel: "error",
+  define: {
+    global: "globalThis",
+  },
   build: {
     emptyOutDir: true,
     sourcemap: false,
     minify: false,
   },
-  css: {
-    postcss: "./postcss.config.js",
-  },
   optimizeDeps: {
-    esbuildOptions: {
-      define: {
-        global: "globalThis",
-      },
+    rolldownOptions: {
+      transform: { define: { global: "globalThis" } },
     },
   },
   server: {
@@ -175,7 +173,6 @@ export default defineConfig({
     environment("all", { prefix: "CANISTER_" }),
     environment("all", { prefix: "DFX_" }),
     environment(["II_URL"]),
-    environment(["STORAGE_GATEWAY_URL"]),
     react(),
   ],
   resolve: {
@@ -204,7 +201,6 @@ export default defineConfig({
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noImplicitAny": false,
@@ -288,6 +284,10 @@ Note the `files.ignore` entries for the generated `backend.ts` / `backend.d.ts` 
 
 ## `src/frontend/postcss.config.js`
 
+Vite loads this file automatically. The template's version wraps the same two plugins
+with a helper that names `tailwind.config.js` when that file fails to load; this minimal
+form builds the same CSS.
+
 ```javascript
 export default {
   plugins: {
@@ -356,6 +356,23 @@ export default {
           DEFAULT: "oklch(var(--card))",
           foreground: "oklch(var(--card-foreground))",
         },
+        chart: {
+          1: "oklch(var(--chart-1))",
+          2: "oklch(var(--chart-2))",
+          3: "oklch(var(--chart-3))",
+          4: "oklch(var(--chart-4))",
+          5: "oklch(var(--chart-5))",
+        },
+        sidebar: {
+          DEFAULT: "oklch(var(--sidebar))",
+          foreground: "oklch(var(--sidebar-foreground))",
+          primary: "oklch(var(--sidebar-primary))",
+          "primary-foreground": "oklch(var(--sidebar-primary-foreground))",
+          accent: "oklch(var(--sidebar-accent))",
+          "accent-foreground": "oklch(var(--sidebar-accent-foreground))",
+          border: "oklch(var(--sidebar-border))",
+          ring: "oklch(var(--sidebar-ring))",
+        },
       },
       fontFamily: {
         display: ["var(--font-display)", "serif"],
@@ -366,6 +383,9 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        xs: "0 1px 2px 0 rgba(0,0,0,0.05)",
       },
       keyframes: {
         "accordion-down": {
@@ -482,7 +502,9 @@ export default function App() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white text-gray-900">
       <h1 className="text-4xl font-bold">Hello from Caffeine</h1>
-      <p className="text-gray-600">Edit src/frontend/src/App.tsx to build your app.</p>
+      <p className="text-gray-600">
+        Edit src/frontend/src/App.tsx to build your app.
+      </p>
     </div>
   );
 }
@@ -503,6 +525,10 @@ You pass the **generated** `createActor` (from `./backend`) into `useActor` /
 `createActorWithConfig`; they supply the canister id (from `env.json`), the HTTP agent, and
 the `uploadFile`/`downloadFile` blob handlers internally. That is why you never call the
 generated `createActor` yourself or work out its `_uploadFile`/`_downloadFile` params.
+The blob handlers come from `@caffeineai/object-storage`, a peer dependency of
+core-infrastructure, so keep both packages in `package.json`. For sign-in UI and the
+full hook API, follow the `extension-core-infrastructure` skill:
+<https://github.com/caffeinelabs/skills/tree/main/skills/extension-core-infrastructure>.
 
 The generated client signature, for reference only (do not call it directly, do not edit
 the file):
@@ -517,14 +543,20 @@ export function createActor(
 ): Backend; // Backend exposes one method per public function in main.mo
 ```
 
-**Worked example** (validated end-to-end: a button that calls a backend query and shows
-the result). Backend — write it with the **`writing-motoko` skill**:
+**Worked example** (verified with `caffeine build` and `caffeine check`: a button that
+calls a backend query and shows the result). Backend — the starting `main.mo` plus one
+query; write your own with the **`writing-motoko` skill**. The query adds no stable
+state, so the first migration stays as it is:
 
 ```motoko
+import AccessControl "mo:caffeineai-authorization/access-control";
+import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import Expose "mo:caffeineai-oql/Expose";
 import Time "mo:core/Time";
 
 actor {
+  let accessControlState : AccessControl.AccessControlState;
+  include MixinAuthorization(accessControlState, null);
   include Expose({ entities = [] });
 
   public query func getCurrentTime() : async Int {
@@ -545,7 +577,11 @@ import { createActor } from "./backend";
 export default function App() {
   const [requested, setRequested] = useState(false);
   const { actor, isFetching } = useActor(createActor);
-  const { data, refetch, isFetching: querying } = useQuery({
+  const {
+    data,
+    refetch,
+    isFetching: querying,
+  } = useQuery({
     queryKey: ["currentTime"],
     queryFn: async () => {
       if (!actor) throw new Error("Actor not ready");
@@ -585,9 +621,12 @@ Notes:
 - **Candid `Int`/`Nat` deserialize to `bigint`** (hence `data / 1_000_000n`); the
   `BigInt.prototype.toJSON` shim in `main.tsx` keeps them JSON-serializable.
 - At local `caffeine build` time the `backend_canister_id` in `env.json` is still
-  `"undefined"` — that is fine, because `caffeine build` only typechecks and bundles.
+  `"undefined"` — that is fine, because `caffeine build` only compiles and bundles.
   Caffeine injects the real canister id when it serves the deployed draft, so the call
   resolves there (or against a local replica).
 - `index.html` references `/favicon.ico`; drop a `favicon.ico` in `src/frontend/public/`
   or remove the `<link rel="icon">` line (a missing favicon is a 404 at runtime, not a
   build error).
+- The Caffeine template's `index.html` also carries `og:image` and `twitter:image` tags
+  pointing at an absolute `https://` share image. Keep `og:title` equal to `<title>` and
+  `og:description` equal to the `description` meta tag when you edit them.

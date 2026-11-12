@@ -265,6 +265,28 @@ The result should be a diff of substitutions: `throw new Error(x)` to `failReque
 
 The three diagnostics surface in sequence, so the value-block error usually appears only once the `finally` and `throw` errors are gone, and a stale dep array often follows. Not always, though — a file with one `finally` and no other rejected syntax is genuinely done after one edit. Let the marker decide when you are finished rather than digging for a cascade the skill led you to expect.
 
+Validated on `useOpenPositionForAsset.ts` (ASSETS-4331, PR 39600): the file bailed on `traderId ?? ''` written as an argument inside the `try`, while the same function's `catch` kept its ternary and `&&` test untouched — value blocks in the `catch` are not a bailout; leave them. The fix that cleared the file moved the `try` expressions into a module-level helper **called from inside the `try`** (calls are allowed, and the protected span is unchanged): CompileSuccess, memoBlocks 7, memoValues 7, pruned 0/0, directory failed files 2 → 1. Do not hoist the expression above the `try` instead — that moves the read outside the `catch`'s protection. And do not rewrite the `catch` into nested `if`s when the marker is already clean.
+
+---
+
+## `This value cannot be modified`
+
+Reanimated shared values are objects, and the compiler refuses to treat them as assignable. A `.value =` write inside a callback or a `'worklet'` bails; route those writes through the accessor API:
+
+```tsx
+// Before — bails inside useCallback / 'worklet'
+sharedValue.value = withTiming(target, { duration: 300 });
+
+// After
+sharedValue.set(withTiming(target, { duration: 300 }));
+```
+
+Reads pair with `sharedValue.get()` where a worklet needs the current value.
+
+An effect-scoped write is a different case. On compiler 1.0.0, `sharedValue.value = withTiming(...)` written directly in a `useEffect` body is **not** a bailout: `ResourceRing.tsx` reached CompileSuccess with the effect write in place, and the effect write in `TokenDetailsStickyFooter.tsx` is absent from that file's failure list while its callback and worklet writes (lines 323, 352, 359, 371) bail. Run the marker instead of assuming either way — do not rewrite an effect-only `.value =` when `react-compiler-marker@0.2.0` plus the workspace `babel-plugin-react-compiler` already reports zero failures.
+
+Verified on `ResourceRing.tsx` and `TokenDetailsStickyFooter.tsx` (ASSETS-4320): effect-scoped write left as `.value =`, callback/worklet writes converted to `set()`/`get()`, CompileSuccess.
+
 ---
 
 ## `Cannot reassign variables declared outside of the component/hook`

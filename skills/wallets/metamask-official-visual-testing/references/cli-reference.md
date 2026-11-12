@@ -100,7 +100,7 @@ Every tool, `launch` and `cleanup` response includes `meta.timing` (`queueMs`, `
 | `mm type <ref> <text>`       | Type text into element (uses `fill()`, clears first) |
 | `mm get-text <ref>`          | Read text content of element                         |
 | `mm describe-screen`         | Combined state + activeTab + testIds + a11y snapshot |
-| `mm screenshot [--name <n>]` | Take and save screenshot                             |
+| `mm screenshot [--name <n>]` | Take and save a full-page screenshot                 |
 | `mm wait-for <ref>`          | Wait for element to be visible                       |
 | `mm wait-for-notification`   | Wait for sidepanel confirmation route, set as active |
 | `mm accessibility-snapshot`  | Get trimmed a11y tree with refs                      |
@@ -109,19 +109,53 @@ Every tool, `launch` and `cleanup` response includes `meta.timing` (`queueMs`, `
 
 All interaction commands accept `--timeout <ms>` (default 15000). This is a **single deadline budget** covering visibility wait + action combined — not a per-phase timeout.
 
+### Element and viewport screenshots
+
+`mm screenshot` accepts only `--name` and always captures the full page. Other flags such as `--testid` or `--selector` are ignored without an error. To capture one element or only the viewport, use a `run-steps` screenshot step:
+
+```bash
+# One element (CSS selector; quote attribute values)
+mm run-steps '{"steps":[{"tool":"screenshot","args":{"name":"side-nav","selector":"[data-testid=\"side-nav\"]"}}],"observe":"none"}'
+
+# Viewport only
+mm run-steps '{"steps":[{"tool":"screenshot","args":{"name":"viewport","fullPage":false}}],"observe":"none"}'
+```
+
+The result has the file `path`, `width` and `height`. A selector that matches nothing waits until the request times out (about 30 s), so check that the element exists first.
+
+### Several matches
+
+When a selector or testId matches more than one element, the click fails with a strict mode violation. Scope it with `--within` (an a11yRef, `testid:<id>` or `selector:<css>`). For example, with a modal open over the page, `button[aria-label='Close']` can match two buttons:
+
+```bash
+mm click --selector "button[aria-label='Close']" --within "selector:[role=dialog]"
+```
+
+### Keyboard keys
+
+There is no browser key command (`mm press-button` is for mobile). Send a key with CDP. For example, Escape closes a component-library modal:
+
+```bash
+mm cdp Input.dispatchKeyEvent '{"type":"keyDown","key":"Escape","code":"Escape","windowsVirtualKeyCode":27}'
+mm cdp Input.dispatchKeyEvent '{"type":"keyUp","key":"Escape","code":"Escape","windowsVirtualKeyCode":27}'
+```
+
 ## Navigation & Tabs
 
-| Command                   | Description                                   |
-| ------------------------- | --------------------------------------------- |
-| `mm navigate <url>`       | Navigate to a specific URL                    |
-| `mm navigate-home`        | Navigate to the extension home                |
-| `mm navigate-settings`    | Navigate to the extension settings            |
-| `mm switch-to-tab <role>` | Switch active page to a different tab by role |
-| `mm close-tab <role>`     | Close a tab                                   |
+| Command                                      | Description                                   |
+| -------------------------------------------- | --------------------------------------------- |
+| `mm navigate <url>`                          | Navigate to a specific URL                    |
+| `mm navigate-home`                           | Navigate to the extension home                |
+| `mm navigate-settings`                       | Navigate to the extension settings            |
+| `mm switch-to-tab <role>` / `--role <role>`  | Switch active page to a different tab by role |
+| `mm switch-to-tab --url <url>`               | Switch to the tab with this URL               |
+| `mm close-tab --role <role>` / `--url <url>` | Close a tab                                   |
 
 Tab roles: `extension`, `notification`, `dapp`, `other`.
 
-`mm switch-to-tab dapp` is equivalent to `mm switch-to-tab --role dapp`.
+`mm switch-to-tab dapp` is equivalent to `mm switch-to-tab --role dapp`. `mm close-tab` has no positional form: `mm close-tab dapp` prints a usage error, so pass `--role` or `--url`.
+
+When several tabs share a role (for example two dapp tabs, or a new tab opened by a link), `--role` may pick the wrong one. Use `--url` to choose the exact tab.
 
 ## Context
 

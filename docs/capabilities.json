@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-12T12:32:39.289210+00:00",
+  "generated_at": "2026-11-12T18:29:53.094934+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -32045,6 +32045,68 @@
       },
       "hosted_operators": []
     },
+    "chains/dfinity-official-migrating-to-moc-2": {
+      "name": "migrating-to-moc-2",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "chains/dfinity-official-mops-cli": {
       "name": "mops-cli",
       "execution_model": "read_only",
@@ -33101,7 +33163,7 @@
     },
     "chains/dfinity-official-writing-motoko": {
       "name": "writing-motoko",
-      "execution_model": "unknown",
+      "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -33119,7 +33181,7 @@
           "source": "extracted"
         },
         "can_write_files": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -226905,13 +226967,13 @@
     }
   },
   "summary": {
-    "discovered": 3647,
-    "processed": 3647,
+    "discovered": 3648,
+    "processed": 3648,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2612,
+      "read_only": 2614,
       "router_orchestrator": 164,
-      "unknown": 365,
+      "unknown": 364,
       "analysis_only": 223,
       "unsigned_tx_builder": 114,
       "local_executor": 105,
@@ -226922,7 +226984,7 @@
       "auto_invocable": 3,
       "can_execute_shell": 1278,
       "can_install_code": 590,
-      "can_write_files": 213,
+      "can_write_files": 212,
       "can_browse_web": 271,
       "can_spawn_subagents": 291,
       "can_move_funds": 304,

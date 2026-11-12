@@ -60,7 +60,6 @@ actor {
     result;
   };
 };
-
 ```
 
 ## Principled Architecture Example
@@ -109,7 +108,6 @@ module {
   };
 
 };
-
 ```
 
 ### lib/User.mo
@@ -148,7 +146,6 @@ module {
     { id = self.id; username = self.username; bio = self.bio; isActive = self.isActive };
   };
 };
-
 ```
 
 ### lib/Post.mo
@@ -191,7 +188,6 @@ module {
     };
   };
 };
-
 ```
 
 ### mixins/Auth.mo
@@ -236,7 +232,6 @@ mixin (users : List.List<Types.User>) {
     };
   };
 };
-
 ```
 
 ### mixins/Blog.mo
@@ -282,7 +277,6 @@ mixin (
     posts.values().map(func(p) { p.toView() }).toArray();
   };
 };
-
 ```
 
 ### mixins/Admin.mo
@@ -328,7 +322,6 @@ mixin (users : List.List<Types.User>, posts : List.List<Types.Post>) {
     };
   };
 };
-
 ```
 
 ### main.mo
@@ -350,7 +343,6 @@ actor Main {
   include BlogMixin(users, posts, state);
   include AdminMixin(users, posts);
 };
-
 ```
 
 ### migrations/20260101_000000.mo
@@ -442,7 +434,6 @@ actor {
     output;
   };
 };
-
 ```
 
 ### Custom Iterator
@@ -477,7 +468,6 @@ actor {
     fibonacci(10).toArray();
   };
 };
-
 ```
 
 ## Map Examples
@@ -519,7 +509,6 @@ actor {
     pointMap.entries().toArray();
   };
 };
-
 ```
 
 ### Map Transformation
@@ -567,7 +556,6 @@ actor {
     scores.entries().map(func((name, score)) { { name; score = score * 2 } }).toArray();
   };
 };
-
 ```
 
 ### Safe Division Pattern
@@ -576,7 +564,6 @@ actor {
 
 ```motoko
 import Runtime "mo:core/Runtime";
-import someModule "../lib/someModule";
 
 actor {
   public func safeDivide(a : Nat, b : Nat) : async Nat {
@@ -584,16 +571,6 @@ actor {
       Runtime.trap("Division by zero is not defined");
     } else {
       (a / b);
-    };
-  };
-
-  // Inter-canister calls that trap will cause the entire function to trap
-  public func callOtherCanister() : async Text {
-    try {
-      // If someModule.method() traps, this will trap too, so you need to wrap it in try catch
-      let result = await someModule.method();
-    } catch (error) {
-      "Canister call failed. ";
     };
   };
 };
@@ -640,7 +617,6 @@ actor {
     logs.toArray();
   };
 };
-
 ```
 
 These examples demonstrate real-world Motoko patterns and can be adapted for various use cases.
@@ -701,7 +677,6 @@ actor Main {
     };
   };
 };
-
 ```
 
 ### Migration (src/backend/migrations/20260101_000000.mo)

@@ -18,10 +18,10 @@ let value = map.get(key) ?? Runtime.trap("Key not found");
 // Nested options — chain instead of nested switches
 let start = event.start.dateTime ?? event.start.date ?? "";
 
-// RHS may be a block (parsed as a block, not a record)
-let n = opt ?? { let x = 1; x };
+// A block on the RHS needs `do`
+let n = opt ?? do { let x = 1; x };
 
-// Bare record literal on the RHS needs extra braces or parens
+// A record literal on the RHS needs parens
 let rec = opt ?? ({ x = 0 });
 ```
 

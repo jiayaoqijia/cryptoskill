@@ -31,7 +31,7 @@ How you sign depends on your setup:
 - **MPC wallet** (Fireblocks, Dfns, Turnkey): pass the unsigned tx to your provider's signing API
 - **Smart account** (Safe, Biconomy): wrap the tx as a UserOperation or Safe transaction
 - **Embedded wallet** (Privy, Dynamic): use the provider's `sendTransaction` method
-- **Direct private key** (development only): use the built-in `dev_send` tool, which the server lists only when `PK` is set in a `.env` file or the MCP client config, or viem/ethers `sendTransaction` with a local signer
+- **Direct private key** (development only): viem/ethers `sendTransaction` with a local signer
 
 Example with viem:
 
@@ -103,12 +103,6 @@ These tools batch multiple operations into ONE atomic transaction. Always prefer
 | `write_pool_redeem`               | **Lender exit.** Burn tranche shares and redeem the underlying asset, including accrued interest. Pass the owner's share balance (or a partial amount) in `shares`.                                                                                                                                                                                                       |
 | `write_account_aero_upgrade`      | Upgrade an account to Aero (MetadexCL V1): its Slipstream positions move to Aero CL and its old AERO becomes the new AERO, in one flashAction. Returns the plan (items, reasons, pool options) and the transaction. Check first with `read_account_aero_upgrade`; wallet VELO on Optimism goes through `write_wallet_upgrade_velo`. See strategies.md, "Upgrade to Aero". |
 | `write_account_automations_delta` | Change one automation without restating the rest: `enable` takes intents, `disable` takes asset-manager addresses from `read_asset_manager_current`. Prefer `write_account_automations` when setting the full desired state. See automation.md.                                                                                                                           |
-
-### Dev Tools (only available when `PK` env var is set)
-
-| Tool       | When to use                                                                                                                                                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dev_send` | Sign and broadcast an unsigned transaction using a local private key. Pass the `{ to, data, value, chainId }` from any `write_*` tool. **Not for production**: use a dedicated wallet MCP server (Fireblocks, Safe, Turnkey, etc.) instead. |
 
 ## Shared Addresses
 

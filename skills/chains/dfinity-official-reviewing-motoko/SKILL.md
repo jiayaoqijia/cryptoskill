@@ -27,7 +27,7 @@ Four questions decide a review, in this order — the first three because each c
 mops check --fix
 ```
 
-Its style auto-fixes (M0236 dot notation, M0237 redundant implicits, M0223 redundant instantiation) only fire where `[moc] args` enables `-W` for them; `writing-motoko`'s `references/project-setup.md` has the setup. Where they are off, the **Conventions** findings below are all yours to make by hand.
+Its style auto-fixes (M0236 dot notation, M0237 redundant implicits, M0223 redundant instantiation) only fire where they are enabled: M0236 is on by default from moc 2, and the rest need `-W` in `[moc] args`. `writing-motoko`'s `references/project-setup.md` has the setup. Where they are off, the **Conventions** findings below are all yours to make by hand.
 
 Then read in this order — outside in, because a misplaced file makes every type inside it suspect:
 
@@ -148,13 +148,13 @@ An identity migration body is a **Warning** — the change was stable-compatible
 
 Layers, with dependencies pointing one way only: `main.mo` → `mixins/` → `lib/` → `types.mo`.
 
-| File            | Holds                                                 | Must not hold                          |
-| --------------- | ----------------------------------------------------- | -------------------------------------- |
-| `types.mo`      | Type declarations; small pure helpers on those types  | State, endpoints, business rules       |
-| `lib/*.mo`      | Domain logic as stateless modules, state as parameters | Public endpoints, actor fields         |
-| `mixins/*.mo`   | Public endpoints: authorize, delegate, map to a view  | Domain logic, stable state             |
-| `main.mo`       | State declarations and `include`s                     | **Any public method**, any logic       |
-| `migrations/`   | The frozen chain, one module per file                 | Project imports                        |
+| File          | Holds                                                                         | Must not hold                    |
+| ------------- | ----------------------------------------------------------------------------- | -------------------------------- |
+| `types.mo`    | Type declarations; small pure helpers on those types                          | State, endpoints, business rules |
+| `lib/*.mo`    | Domain logic as stateless modules, state as parameters                        | Public endpoints, actor fields   |
+| `mixins/*.mo` | Public endpoints: authorize, delegate, map to a view                          | Domain logic, stable state       |
+| `main.mo`     | State declarations and `include`s                                             | **Any public method**, any logic |
+| `migrations/` | Applied (frozen) history plus at most one pending module, one module per file | Project imports                  |
 
 - **A1 — Blocker/Warning:** a public method in `main.mo`. Move it to a mixin.
 - **A2 — Warning:** a monolithic file. One `.mo` holding types, state, logic, and endpoints together.
@@ -180,7 +180,7 @@ Least consequential of the four axes, and `mops check --fix` fixes most of it wh
 
 - **C1 — Note:** a module-function call where the function takes `self` — `List.add(list, x)`, `Principal.toText(p)`. M0236, auto-fixed.
 - **C2 — Note:** an implicit passed explicitly (`map.add(Text.compare, k, v)`), or a type instantiation inference already resolved. M0237 / M0223, auto-fixed.
-- **C3 — Warning:** type annotations on an inline `func` passed as a **call argument** — `xs.filter(func(x : Nat) : Bool { x > 1 })`. No diagnostic catches this, so it is the reviewer's job: the call already fixes both types, and the annotation duplicates them so they can drift. Write `xs.filter(func x = x > 1)`. Instantiate the *call* (`map<In, Out>`) when M0098 demands it — never the lambda. One exception: `: async ()` on an async callback is load-bearing.
+- **C3 — Warning:** type annotations on an inline `func` passed as a **call argument** — `xs.filter(func(x : Nat) : Bool { x > 1 })`. No diagnostic catches this, so it is the reviewer's job: the call already fixes both types, and the annotation duplicates them so they can drift. Write `xs.filter(func x = x > 1)`. Instantiate the *call* (`map<In, Out>`) when M0098 demands it — never the lambda. One exception: `: async ()` on an async callback is load-bearing on moc 1, so keep it while the code must build on both majors.
 - **C4 — Blocker:** a `class`, or any object holding functions, used as actor state. Functions are not stable, so it fails with M0131 (`declared stable but has non-stable type`). Outside state a class still is not the idiom here — a module taking `self` plus dot notation gets the same call sites and stays stable.
 
 ## Refactoring

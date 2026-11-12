@@ -2,7 +2,7 @@
 name: writing-motoko
 description: "Motoko language pitfalls, modern syntax, and architecture patterns for the Internet Computer. Covers persistent actors, stable types, mo:core standard library, dot notation, mixins, and common compilation errors. Use when writing Motoko canister code, fixing Motoko compiler errors, or generating Motoko actors. Do NOT use for deployment, icp.yaml, or CLI commands; for design review or audit of existing Motoko code, load reviewing-motoko instead."
 license: Apache-2.0
-compatibility: "moc >= 1.12.0, core >= 2.6.0, mops >= 3.0.0"
+compatibility: "moc >= 1.16.0, core >= 2.6.0, mops >= 3.0.0"
 metadata:
   title: Writing Motoko
   category: Motoko
@@ -18,7 +18,7 @@ Motoko is an under-represented language for the Internet Computer Protocol, so y
 
 - `stable` keyword -- Not needed in enhanced orthogonal persistence mode
 - `mo:base` library -- Deprecated. Use `mo:core` instead
-- `.vals()` -- The deprecated `mo:base` iterator name. Always `.values()`. On arrays `.vals()` still compiles, so nothing flags it; on core collections it fails with M0072
+- `.vals()` -- The deprecated `mo:base` iterator name. Always `.values()`. On arrays `.vals()` still compiles with deprecation warning M0269 (from moc 1.16); on core collections it fails with M0072
 - `system func preupgrade/postupgrade` -- Not needed with enhanced orthogonal persistence
 - `(with migration = ...)` actor-attached migration syntax -- Use the mops-managed migration chain in `migrations/`
 - Inline initializers on stable actor fields -- Initial values come from the migration chain (see `migrating-motoko-actors`)
@@ -27,14 +27,14 @@ Motoko is an under-represented language for the Internet Computer Protocol, so y
 - Single-file monolithic actors -- Use the multi-file architecture: types.mo, lib/, mixins/, main.mo
 - Stable state in a `mixin` block -- a bare `let`/`var` is silently stable and traps at runtime (`IC0503`). Pass state in as a parameter and keep constants in a module
 - Any Motoko reserved keyword as a declared identifier -- Before writing, check parameter, variable, function, type, field, and label names against the full list in [references/reserved-keywords.md](references/reserved-keywords.md). `query` and `label` are reserved and must never be identifiers. Rename a colliding domain term instead of relying on its position or inferred meaning.
-- Type annotations on an inline `func` passed as a **call argument** -- write `xs.filter(func x = x > 1)`, not `xs.filter(func(x : Nat) : Bool { x > 1 })`. The call supplies the types. If a generic cannot be inferred, instantiate the call (`map<In, Out>`), never the lambda. This applies only in argument position — named declarations still carry full signatures. **One exception:** keep `: async ()` on an async callback (`func() : async () { ... }`) — it is what makes the body async, and removing it fails with M0096
+- Type annotations on an inline `func` passed as a **call argument** -- write `xs.filter(func x = x > 1)`, not `xs.filter(func(x : Nat) : Bool { x > 1 })`. The call supplies the types. If a generic cannot be inferred, instantiate the call (`map<In, Out>`), never the lambda. This applies only in argument position — named declarations still carry full signatures. **One exception:** keep `: async ()` on an async callback (`func() : async () { ... }`) — on moc 1 it is what makes the body async, and removing it fails to compile
 
 **ALWAYS use:**
 
 - `mo:core` library version 2.6.0+ (compiler `moc` 1.11.2+)
 - Contextual dot notation -- `list.add(item)`, `map.get(key)`
 - An import of the key type's module in every file that operates on a `Map`/`Set` -- the implicit `compare` is resolved from the imported module (`import Nat "mo:core/Nat"` for a `Map.Map<Nat, _>`), never from the type alone. A missing key-module import is the usual cause of M0230; a record or variant key needs its own module with a `compare` (see Implicit Parameters)
-- Null coalesce `??` for unwrap-or-default and unwrap-or-trap (`opt ?? default`, `opt ?? Runtime.trap(...)`) -- prefer over a two-arm `switch` on `?T` (requires `moc >= 1.7.0`)
+- Null coalesce `??`, spaced on both sides, for unwrap-or-default and unwrap-or-trap (`opt ?? default`, `opt ?? Runtime.trap(...)`) -- prefer over a two-arm `switch` on `?T` (requires `moc >= 1.7.0`)
 - Plain `break` / `continue` to exit or skip a loop iteration -- they work inside `for`, `while`, and `loop` just like in other languages
 - Enhanced orthogonal persistence (state persists without `stable` keyword)
 - Principled Motoko Architecture -- `types.mo` (types), `lib/` (domain logic), `mixins/` (API endpoints), `main.mo` (composition root, NO public methods)
@@ -42,7 +42,7 @@ Motoko is an under-represented language for the Internet Computer Protocol, so y
 
 **When encountering compilation errors:** Re-check [api-reference.md](references/api-reference.md) for exact method signatures.
 
-**Before changing actor state shape, introducing new stable fields, or upgrading canisters:** load `migrating-motoko-actors`. This guidance assumes the **mops-managed migration chain** — when a change requires a migration, it goes in a NEW file in `src/backend/migrations/`. Introducing stable state for the first time always needs one (no inline initializers); trivial stable-compatible upgrades do not. See the skill. If a migration or compatibility diagnostic still does not match what the source says, or a migration file cannot be written, load `troubleshooting-motoko-migrations`.
+**Before changing actor state shape, introducing new stable fields, or upgrading canisters:** load `migrating-motoko-actors`. This guidance assumes the **mops-managed migration chain** — when a change requires a migration, it goes in the pending migration file, or a new one in `src/backend/migrations/` if none is pending. Introducing stable state for the first time always needs one (no inline initializers); trivial stable-compatible upgrades do not. See the skill. If a migration or compatibility diagnostic still does not match what the source says, or a migration file cannot be written, load `troubleshooting-motoko-migrations`.
 
 ## Toolchain (mops)
 
@@ -66,6 +66,18 @@ All configuration is in `mops.toml`. Load the `mops-cli` skill for `mops.toml` c
 - **`mops build`** (slow — run ONCE at the end) — Produces the compiled `.wasm` and the candid interface file `.did`. Use only as final verification after `mops check --fix` passes; never put `mops build` inside the fix loop. The `.did` file drives generated client bindings — never edit it manually.
 
 If `mops check --fix` fails: read stderr first. Do NOT call `moc` directly. Fix `.mo` source and rerun the check.
+
+### moc 1 and moc 2
+
+`[toolchain] moc` pins either major, and every example in this skill compiles with both. Keep to these forms whichever one the project pins:
+
+- Parenthesized heads: `if (c)`, `while (c)`, `for (x in xs.values())`, `switch (e)`. A bare branch after the condition is separated by a space: `if (c) -1 else 1`.
+- Parenthesized `case` patterns, every case ending in `;`: `case (#tag(p)) { ... };`.
+- A space on both sides of `??`.
+- A block body for an async function, never `= async { ... }`.
+- A bare `actor`, with no `persistent` or `stable` keyword.
+
+moc 2 accepts shorter forms that moc 1 rejects — unparenthesized heads and patterns, cases without `;`, unannotated async callbacks — so do not write them. It also turns moc 1 warnings into errors (M0145, M0215, M0222, M0242, among others): treat every warning as an error.
 
 ## Modern Motoko Features
 
@@ -108,12 +120,12 @@ import Nat "mo:core/Nat";
 import Text "mo:core/Text";
 
 func conversions(caller : Principal, myNat : Nat) {
-  ignore caller.toText();            // CORRECT
-  ignore myNat.toText();             // CORRECT
-  ignore "42".toNat();               // CORRECT (defined by Nat, imported above)
-  ignore "hello".concat(" world");   // CORRECT
-  ignore Principal.toText(caller);   // WRONG (M0236)
-  ignore Nat.toText(myNat);          // WRONG (M0236)
+  ignore caller.toText(); // CORRECT
+  ignore myNat.toText(); // CORRECT
+  ignore "42".toNat(); // CORRECT (defined by Nat, imported above)
+  ignore "hello".concat(" world"); // CORRECT
+  ignore Principal.toText(caller); // WRONG (M0236)
+  ignore Nat.toText(myNat); // WRONG (M0236)
 };
 ```
 
@@ -218,8 +230,8 @@ let user = users.find(func u = u.id == caller)
 // Nested options — chain instead of nested switches
 let start = event.start.dateTime ?? event.start.date ?? "";
 
-// RHS is lazy; may be a block. Bare record literals need extra braces/parens:
-let n = opt ?? { let x = 1; x };
+// RHS is lazy. A block needs `do`; a record literal needs parens:
+let n = opt ?? do { let x = 1; x };
 let rec = opt ?? ({ x = 0 });
 ```
 
@@ -233,8 +245,8 @@ switch (users.get(caller)) {
 };
 
 switch (result) {
-  case (#ok value) { value };
-  case (#err e) { Runtime.trap(e) };
+  case (#ok(value)) { value };
+  case (#err(e)) { Runtime.trap(e) };
 };
 ```
 
@@ -461,7 +473,7 @@ photos.map<PhotoInternal, Photo>(func p = { ... });       // when M0098 demands 
 
 Add `<In, Out>` only when the compiler actually reports M0098; adding it when inference already succeeded is M0223 (redundant type instantiation).
 
-The one exception is a callback that must return `async`. There `: async ()` is load-bearing — it is what makes the body async, and there is no unannotated form (`func() = async { ... }` does not work either). Without it the lambda infers `() -> ()` and the call fails with M0096:
+The one exception is a callback that must return `async`. There `: async ()` is load-bearing on moc 1 — it is what makes the body async, and there is no unannotated form (`func() = async { ... }` does not work either). Without it moc 1 infers `() -> ()` and the call fails with M0096. moc 2 infers the async callback, but keep the annotation so the code builds on both:
 
 ```motoko
 Timer.recurringTimer<system>(#seconds(3600), func() : async () { cleanup() });
@@ -633,11 +645,11 @@ for (tag in tags.values()) {
 let matches = titleMatches or tagMatches;
 ```
 
-Every `switch` case must be separated with a semicolon before the next `case`, even in compact one-line switches:
+Every `switch` case must be separated with a semicolon before the next `case`, even in compact one-line switches. moc 2 makes the `;` optional, but moc 1 rejects a case without it:
 
 ```motoko
 switch (pricing) { case (#free) { true }; case (#paid(_)) { false }; } // CORRECT
-switch (pricing) { case (#free) { true } case (#paid(_)) { false } } // WRONG
+switch (pricing) { case (#free) { true } case (#paid(_)) { false } } // WRONG: moc 1 syntax error
 ```
 
 ### Declaration Terminators
@@ -707,7 +719,7 @@ public shared ({ caller }) func book(roomId : Nat, at : Time.Time) : async Resul
 
 **Never launder an error into `Text`.** `Result<Booking, Text>` forces every caller — including the frontend — to string-match to tell "slot taken" from "not authorized". Make `Err` a variant; put the data each failure needs inside its own tag. A `Text` payload is fine *inside* a tag when it is a message for a human, not a discriminator.
 
-**Do not trap on caller error.** A trap rolls back the whole message and reaches the frontend as an opaque reject — the caller cannot branch on it and the user gets no actionable message. Reserve traps for "this cannot happen" (see `?? Runtime.trap(...)` above).
+**Do not trap on caller error.** A trap rolls back the message's uncommitted state changes and reaches the frontend as an opaque reject — the caller cannot branch on it and the user gets no actionable message. Reserve traps for "this cannot happen" (see `?? Runtime.trap(...)` above).
 
 **Chain, do not nest.** `mapOk`, `mapErr`, and `chain` take `self`, so they are dot notation like every other self-parameter API and a pipeline stays flat. `Result.fromOption` has no `self` — it is the module-call bridge from `?T` at the edge where absence becomes a caller-visible error.
 
@@ -736,6 +748,57 @@ actor {
 
 Use `switch` on `#ok` / `#err` when the arms do different work; do not write `isOk`/`isErr` followed by an unwrap — that discards the payload the type was carrying.
 
+## Error Handling: `try` / `catch`
+
+`try` catches a reject: a `throw`, or an `await` / `await*` whose call fails, such as a call to another canister, or a library call that throws. Whether and when a call throws is part of its API: check the package's own skill. It cannot catch a trap. A trap ends the message and rolls back the state changes made since the last commit point, which is the last `await` (an `await*` commits only if its body awaits). A trap in the callee's own message (another canister, or an `async` function) is different: it reaches the caller as a reject. An `async*` callee runs in the caller's message, so its trap cannot be caught. Code with no `await` and no `throw` needs no `try`.
+
+A reject rolls nothing back. State the function changed before the failing call stays changed, and trapping in the `catch` arm is no reliable way to undo it: once the call has suspended, that state is committed. Undoing it is the most common reason to catch.
+
+**Read the callee's return type first.** A callee that returns `Result` or `?T` reports failure in its value and does not throw for it. Switch on the value. `try { ignore await f() } catch _ {}` drops the real `#err` and catches nothing it can act on.
+
+**Catch only when the `catch` arm does work that a propagated reject cannot:**
+
+| Need                                                  | `catch` arm                                       |
+| ----------------------------------------------------- | ------------------------------------------------- |
+| Undo state changed before the `await`                 | Remove the reservation, mark the job failed       |
+| Give the caller a failure it can act on               | `return #err(...)` with a variant tag             |
+| Recover                                               | Retry, or fall back to another source             |
+| Keep a loop or background job going past one failure  | Skip the item and continue                        |
+
+Otherwise, let the reject propagate. An empty `catch _ {}` belongs only around a side effect that nothing depends on. A `catch` arm that handles only some errors rethrows the rest with `throw e`, which keeps the original error. Trapping there instead ends the message: nothing in it can catch the trap, and a caller in another message gets an opaque reject in place of the original error.
+
+```motoko project=try-catch filepath=src/backend/main.mo
+import Error "mo:core/Error";
+import Map "mo:core/Map";
+import Nat "mo:core/Nat";
+import Result "mo:core/Result";
+
+actor {
+  type Quote = { price : Nat };
+  type HoldError = { #taken; #quoteFailed : Text };
+
+  let holds : Map.Map<Nat, Principal>;
+
+  // Stands in for any call that can reject.
+  func fetchQuote(seat : Nat) : async* Quote {
+    if (seat == 0) throw Error.reject("HTTP 503");
+    { price = 100 };
+  };
+
+  public shared ({ caller }) func hold(seat : Nat) : async Result.Result<Quote, HoldError> {
+    if (holds.containsKey(seat)) return #err(#taken);
+    holds.add(seat, caller);
+    try {
+      #ok(await* fetchQuote(seat));
+    } catch e {
+      // A reject keeps the hold, so release the seat here.
+      holds.remove(seat);
+      #err(#quoteFailed(e.message()));
+    };
+  };
+};
+```
+
 ## Common Patterns
 
 ### Module with Self Pattern
@@ -755,7 +818,7 @@ module {
 
 ### Record Spread with `with`
 
-**RULE:** Use record spread for immutable records. Never use record spread on a record type that contains `var` fields; Motoko rejects that with `base has non-aliasable var field`.
+**RULE:** Use record spread for immutable records. Never use record spread on a record type that contains `var` fields: moc 1 rejects it with `base has non-aliasable var field` (M0179), and moc 2 copies the `var` fields into new cells, so mutating the result never reaches the original.
 
 ```motoko
 { self with newField = "" }; // CORRECT for immutable records
@@ -870,13 +933,21 @@ Attaching cycles to an inter-canister call (`await (with cycles = ...) <call>`) 
 | M0038 misplaced await + M0188 send capability (paired) | `await <call>` inside a plain `query func` | Make it a `composite query func` (queries) or a plain update func (updates) |
 | `M0187` send capability in a composite query           | calling/awaiting an update from a `composite query func` | Make it a plain update func                |
 | `M0186` composite send capability required             | calling a `composite query func` from a non-composite func | Only ingress calls initiate composite queries; call it from the frontend, or make the callee a plain `query` |
-| `unexpected token '<name>'` at an identifier declaration | Reserved word used as an identifier | Rename it consistently across its contract and callers; see [references/reserved-keywords.md](references/reserved-keywords.md) |
+| `unexpected token '<name>'` (`M0274` on moc 2) at an identifier declaration | Reserved word used as an identifier | Rename it consistently across its contract and callers; see [references/reserved-keywords.md](references/reserved-keywords.md) |
 | `unexpected token 'public'` after a function           | Missing declaration `;`      | End function declarations with `};`         |
-| `M0219` implicitly transient                           | Actor not persistent         | Write `persistent actor`; see [references/project-setup.md](references/project-setup.md) |
-| `M0220` actor should be declared `persistent`          | Actor not persistent         | Write `persistent actor`; see [references/project-setup.md](references/project-setup.md) |
+| `M0219` / `M0220` actor should be declared `persistent` | moc 1 without `--default-persistent-actors` | See [references/project-setup.md](references/project-setup.md) |
+| `M0217` redundant `persistent` keyword                 | Actors are already persistent (moc 2, or the moc 1 flag) | Remove `persistent`                  |
 | `M0218` redundant `stable` keyword                     | `stable` under EOP           | Remove `stable` — a plain `let`/`var` is already stable |
 | `M0064` misplaced `'!'`                                | `!` outside an option block  | Wrap in `do ? { ... }`                      |
-| `M0145` `does not cover value`                         | Non-exhaustive switch        | Add the missing cases or a `case _`         |
+| `M0145` `does not cover value`                         | Non-exhaustive `switch` or `let` pattern | Add the missing cases or a `case _`; `let ... else { ... }` for a `let` |
+| `M0242` implicit oneway function                       | `public func` without a return type | `: async ()`, or `: ()` for an intended oneway |
+| `M0215` field provided but not expected                | A record field the expected type drops, usually a typo | Fix the field name, or drop the field |
+| `M0277` redundant `async`                              | `= async { ... }` function body (moc 2) | Write the body as a block: `func f() : async T { ... }` |
+| `M0273` braces enclose a record literal                | A block after `??` (moc 2)   | `opt ?? do { ... }`                         |
+| `M0275` expected a block                               | A branch glued to its condition (moc 2) | `if (c) -1 else 1` — space before a bare branch, or brace the branches |
+| `M0272` record field in block position                 | A record literal as a `case` or function body | Nest it as the block's result: `case null { { x = 0 } };` |
+| `M0116` pattern cannot consume / `M0050` literal does not have expected type | A variant tag or signed literal the scrutinee's type cannot hold | Fix the tag; to match a wider type, annotate the scrutinee: `switch (n : Int)` |
+| `M0074` / `M0081` / `M0101` inconsistent types         | Array elements or branches with nothing in common | Make them agree, or annotate `: Any`  |
 | `M0060` operator not defined for `{#tag : T}`          | Unparenthesized variant tag  | `#tag(x)`, never `#tag x`                   |
 | `M0060` operator not defined, on `==`                  | `==` on a record with a `var` field (not shared) | Use an `equal` function instead |
 | `M0230` cannot determine implicit argument `compare`   | Key type's module not in scope | Usually a missing import: `import` the key type's module (`Nat`, `Text`, …) in that file. For a record/variant key, add `compare` to the type's own module |
@@ -894,7 +965,7 @@ Attaching cycles to an inter-canister call (`await (with cycles = ...) <call>`) 
 
 **Basic Types:** `Nat` `Int` `Text` `Bool` `Principal` `?T` `[T]` `[var T]` `Blob` `Float` — `Time.now()` returns `Int` (nanoseconds)
 
-**Common Operations:** `debug_show(value)` → Text | `assert condition` | `# "text"` concatenation | `break` / `continue` inside `for`, `while`, `loop`
+**Common Operations:** `debug_show value` → Text | `assert condition` | `# "text"` concatenation | `break` / `continue` inside `for`, `while`, `loop`
 
 | Structure | Use Case         | Key Operations     | Complexity  |
 | --------- | ---------------- | ------------------ | ----------- |
@@ -918,6 +989,7 @@ Attaching cycles to an inter-canister call (`await (with cycles = ...) <call>`) 
 9. Record spread `{ self with ... }` for immutable records; mutate or rebuild records that contain `var` fields
 10. No inline initializers on stable actor fields — initial values come from the migration chain
 11. Inline `func` arguments carry no type annotations (except `: async ()` on async callbacks); instantiate the call instead, and only when the compiler reports M0098
+12. `try` only around an `await` that can reject, and only when the `catch` arm undoes state, returns a typed `#err`, recovers, skips an item, or guards a best-effort side effect; read a returned `Result`'s failure by switching on it, not with `try`
 
 ## Additional References
 
