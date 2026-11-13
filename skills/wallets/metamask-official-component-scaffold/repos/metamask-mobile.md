@@ -5,8 +5,6 @@ parent: component-scaffold
 
 # Component Scaffold — MetaMask Mobile
 
----
-
 ## 1. Where to put the component
 
 | Scope | Location |
@@ -46,11 +44,11 @@ Optional situational files:
 
 ## 3. Design system: which layer to use
 
-Two systems coexist in the repo:
+Choose from three layers, in this order:
 
 ### Layer 1 — `@metamask/design-system-react-native` (MMDS, npm package) ✅ Always use first
 
-The only correct choice for new component primitives. Exports `Box`, `Text`, `BottomSheet`, `BottomSheetHeader`, `BottomSheetFooter`, `ButtonBase`, `ButtonIcon`, `HeaderStandard`, `Icon`, `Skeleton`, `Tag`, and more.
+The only correct choice for new component primitives: layout, text, buttons, icons, list items, sheets, and more. Look each one up by name in the [React Native components manifest](https://metamask.github.io/metamask-design-system/react-native/manifests/components.json) as described in `ui-development`, then confirm it in the installed exports.
 
 Before writing any UI, verify what the installed version actually exports — the package changes frequently:
 
@@ -58,30 +56,28 @@ Before writing any UI, verify what the installed version actually exports — th
 node_modules/@metamask/design-system-react-native/dist/components/index.d.cts
 ```
 
-If the file layout differs, also try:
+The installed package is the source of truth, not this skill's examples. Read props from `dist/components/<Component>/<Component>.types.d.cts`. For behavior and examples, read the component README on GitHub at the release tag (READMEs are not in the npm package):
+
 ```
-node_modules/@metamask/design-system-react-native/dist/components/index.d.ts
-node_modules/@metamask/design-system-react-native/src/components/index.ts
+https://github.com/MetaMask/metamask-design-system/blob/@metamask/design-system-react-native@<installed version>/packages/design-system-react-native/src/components/<Component>/README.md
 ```
 
-The installed package is the source of truth, not this skill's examples.
+Take `<installed version>` from `node_modules/@metamask/design-system-react-native/package.json`. When a README and the types disagree, the types win. No MCP server is needed.
 
-For local visual testing of a component in isolation, see `docs/readme/storybook.md`.
+For anything marked `@deprecated`, follow the Deprecated APIs rule in `ui-development`.
 
-### Layer 2 — `app/component-library/components/`
+### Layer 2 — Existing app-level components
 
-Valid second choice **only** when `@metamask/design-system-react-native` does not export an equivalent (e.g. Tabs, MetaMask-specific modal wrappers not yet migrated to MMDS).
-
-Do not use any component in this library that carries a `@deprecated` JSDoc annotation — those have MMDS equivalents and must be replaced. For everything else in this library, prefer MMDS first; use `app/component-library` only when no MMDS primitive covers the need.
+Use an existing app-level component only when `@metamask/design-system-react-native` has no equivalent. Search the repo for one that already covers the need, and apply the same deprecation rule to it. Prefer MMDS first.
 
 ### Layer 3 — Feature-specific composites
 
 Build from MMDS primitives when no primitive covers the use case.
 
-### Never use
-- Raw `View` from `react-native` — use `Box`
-- Raw `Text` from `react-native` without variants — use `Text` with `TextVariant`
-- `StyleSheet.create()` — use `twClassName` or Box layout props
+### Defaults
+- `Box` is the default for layout. Using it makes code easier to move between Mobile and Extension.
+- Use the MMDS `Text` component for text, with a variant from its installed types.
+- Do not add `StyleSheet.create()`. Use `twClassName` or `Box` utility props.
 
 ---
 
@@ -95,45 +91,32 @@ Build from MMDS primitives when no primitive covers the use case.
 
 Use for: width/height, borders, rounded corners, shadows, opacity, overflow, z-index, absolute positioning, background colours via semantic tokens (`bg-default`, `bg-muted`, `bg-pressed`).
 
-### Box layout enum props — preferred for flexbox
+### `Box` utility props
 
-```tsx
-<Box
-  flexDirection={BoxFlexDirection.Row}
-  alignItems={BoxAlignItems.Center}
-  justifyContent={BoxJustifyContent.Between}
-  gap={2}
-  padding={4}
-/>
-```
-
-Type-safe, prevents class-string typos. Spacing units: each unit = 4px (`padding={4}` = 16px, max `12` = 48px).
+Either `Box` utility props or `twClassName` is fine. The utility props exist only on `Box`, they only apply Tailwind class names, and they are easier to share between Mobile and Extension. Read the prop names from `Box`'s installed types. Numeric spacing props use the 4px scale (`4` = 16px).
 
 ### Enum constants for props
 
-Import from `@metamask/design-system-react-native` — never use raw strings:
-
-```tsx
-import {
-  TextVariant,
-  TextColor,
-  FontWeight,
-  ButtonBaseSize,
-  BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
-  BoxBackgroundColor,
-} from '@metamask/design-system-react-native';
-```
+Import enums from `@metamask/design-system-react-native` — never pass raw strings where the type expects an enum. Read enum names and members from the installed types; do not copy them from this skill or from another platform.
 
 ### Interactive / pressed state
+
+Use the design-system Button for actions. Confirm its export name and props in the installed package. Use the design-system base button, or a `Pressable`, only when Button cannot express the design.
+
+When you do use the base button, it takes pressed styling through a `twClassName` function that receives the pressed flag. Its `style` prop is a plain style, so a `style={({ pressed }) => ...}` function does not type-check:
+
+```tsx
+twClassName={(pressed) => `w-full ${pressed ? 'bg-pressed' : 'bg-default'}`}
+```
+
+For a `Pressable`, use `tw.style()`:
 
 ```tsx
 import { useTailwind } from '@metamask/design-system-twrnc-preset';
 
 const tw = useTailwind();
 
-<ButtonBase
+<Pressable
   style={({ pressed }) =>
     tw.style('w-full flex-row items-center', pressed && 'bg-pressed')
   }
@@ -144,17 +127,9 @@ const tw = useTailwind();
 
 ## 5. Bottom sheet specifics
 
-1. Apply `useElevatedSurface()` to the `BottomSheet`'s `twClassName` — required for pure-black theme support:
+1. Use the design-system bottom sheet with its header and footer parts. Look them up in the installed exports or the manifest, and read their props from the installed types. The sheet already sets its surface token, so do not add a surface class unless the design puts the sheet on a different surface (then pass a semantic token class through `twClassName`).
 
-```tsx
-import { useElevatedSurface } from '../../../../util/theme/themeUtils'; // adjust depth
-
-const surfaceClass = useElevatedSurface();
-
-<BottomSheet twClassName={surfaceClass}>
-```
-
-2. `ScrollView` inside a `BottomSheet` must come from `react-native-gesture-handler` — the standard React Native `ScrollView` will not scroll on Android inside a gesture-managed bottom sheet:
+2. `ScrollView` inside a design-system bottom sheet must come from `react-native-gesture-handler` — the standard React Native `ScrollView` will not scroll on Android inside a gesture-managed bottom sheet:
 
 ```tsx
 // ✅ correct
@@ -176,7 +151,7 @@ import { strings } from '../../../../locales/i18n'; // adjust depth to file loca
 {strings('namespace.key')}
 ```
 
-Add new keys to `app/locales/languages/en.json` only. Crowdin picks up new English strings automatically after the PR merges — do not edit other language files manually.
+Add new keys to `locales/languages/en.json` (repo root) only. Crowdin picks up new English strings automatically after the PR merges — do not edit other language files manually.
 
 ---
 
@@ -184,10 +159,11 @@ Add new keys to `app/locales/languages/en.json` only. Crowdin picks up new Engli
 
 `tsconfig.json` defines no `@components` or `@app` path aliases. All imports are relative. Compute the correct `../` depth based on the file's actual location.
 
-Example from `app/components/UI/Compliance/AccessRestrictedModal/AccessRestrictedModal.tsx`:
+Example, adjusting `../` to the file:
+
 ```tsx
-import { strings } from '../../../../../locales/i18n';
-import { useElevatedSurface } from '../../../../util/theme/themeUtils';
+import { strings } from '../../../../locales/i18n';
+import type { FooProps } from './Foo.types';
 ```
 
 ---
@@ -200,7 +176,7 @@ import { useElevatedSurface } from '../../../../util/theme/themeUtils';
 | `app/util/number/index.js` | `app/util/number/bigint` |
 | Sibling feature directories (route-isolation zones) | Only import from your own feature or shared `app/components/UI/` |
 
-- One allowed `eslint-disable`: `// eslint-disable-next-line @typescript-eslint/no-require-imports` inside a `jest.mock` factory that uses `require('react-native')`
+- The only allowed `eslint-disable`: `// eslint-disable-next-line @typescript-eslint/no-require-imports` inside a `jest.mock` factory that uses `require('react-native')`. The templates below need none.
 
 ---
 
@@ -211,15 +187,17 @@ Replace `Foo` with the `PascalCase` component name and `foo` with its `kebab-cas
 ### `Foo.types.ts`
 
 ```ts
+import type { ReactNode } from 'react';
+
 export interface FooProps {
   /**
-   * Whether the component is visible.
+   * Content rendered inside the component.
    */
-  isVisible: boolean;
+  children?: ReactNode;
   /**
-   * Callback fired when the user dismisses the component.
+   * Additional Tailwind classes applied to the component.
    */
-  onClose: () => void;
+  twClassName?: string;
   /**
    * Optional test ID for the root element.
    */
@@ -232,7 +210,6 @@ export interface FooProps {
 ```ts
 export const FooSelectorsIDs = {
   CONTAINER: 'foo',
-  TITLE: 'foo-title',
 } as const;
 ```
 
@@ -252,52 +229,26 @@ testID={`${FooSelectorsIDs.ITEM}-${item.id}`}
 
 ### `Foo.tsx`
 
+A minimal container, in the shape of the [MMDS create-component template](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react-native/scripts/create-component/ComponentName/ComponentName.tsx): it renders `children` and passes `twClassName` and `testID` through `Box`.
+
 ```tsx
 import React from 'react';
-import {
-  Box,
-  ButtonBase,
-  Text,
-  TextColor,
-  TextVariant,
-} from '@metamask/design-system-react-native';
-import { useTailwind } from '@metamask/design-system-twrnc-preset';
-import { strings } from '../../../../locales/i18n'; // adjust depth
-import { FooProps } from './Foo.types';
+import { Box } from '@metamask/design-system-react-native';
+import type { FooProps } from './Foo.types';
 import { FooSelectorsIDs } from './Foo.testIds';
 
 const Foo: React.FC<FooProps> = ({
-  isVisible,
-  onClose,
+  children,
+  twClassName,
   testID = FooSelectorsIDs.CONTAINER,
-}) => {
-  const tw = useTailwind();
-
-  if (!isVisible) return null;
-
-  return (
-    <ButtonBase
-      onPress={onClose}
-      testID={testID}
-      style={({ pressed }) =>
-        tw.style('px-4 pb-6', pressed && 'bg-pressed')
-      }
-    >
-      <Text
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextAlternative}
-        testID={FooSelectorsIDs.TITLE}
-      >
-        {strings('foo.title')}
-      </Text>
-    </ButtonBase>
-  );
-};
+}) => (
+  <Box twClassName={twClassName} testID={testID}>
+    {children}
+  </Box>
+);
 
 export default Foo;
 ```
-
-> For a bottom sheet, add `useElevatedSurface()` — see Section 5.
 
 ### `index.ts`
 
@@ -311,41 +262,50 @@ export { FooSelectorsIDs } from './Foo.testIds';
 
 ```tsx
 import React from 'react';
-import { fireEvent } from '@testing-library/react-native';
-import renderWithProvider from '../../../../util/test/renderWithProvider'; // adjust depth
+import { Text } from '@metamask/design-system-react-native';
+import { render, renderHook } from '@testing-library/react-native';
+import { useTailwind } from '@metamask/design-system-twrnc-preset';
 import Foo from './Foo';
 import { FooSelectorsIDs } from './Foo.testIds';
 
 describe('Foo', () => {
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing when isVisible is false', () => {
-    const { queryByTestId } = renderWithProvider(
-      <Foo {...defaultProps} isVisible={false} />,
+  it('renders children', () => {
+    const { getByText } = render(
+      <Foo>
+        <Text>Hello, World!</Text>
+      </Foo>,
     );
 
-    expect(queryByTestId(FooSelectorsIDs.CONTAINER)).toBeNull();
+    expect(getByText('Hello, World!')).toBeOnTheScreen();
   });
 
-  it('renders the title when visible', () => {
-    const { getByTestId } = renderWithProvider(<Foo {...defaultProps} />);
+  it('applies twClassName', () => {
+    const { result } = renderHook(() => useTailwind());
+    const tw = result.current;
 
-    expect(getByTestId(FooSelectorsIDs.TITLE)).toBeOnTheScreen();
+    const { getByTestId } = render(
+      <Foo twClassName="bg-default" testID={FooSelectorsIDs.CONTAINER}>
+        <Text>Styled Content</Text>
+      </Foo>,
+    );
+
+    expect(getByTestId(FooSelectorsIDs.CONTAINER)).toHaveStyle(
+      tw.style('bg-default'),
+    );
   });
 
-  it('calls onClose when dismissed', () => {
-    const { getByTestId } = renderWithProvider(<Foo {...defaultProps} />);
+  it('accepts testID', () => {
+    const { getByTestId } = render(
+      <Foo testID={FooSelectorsIDs.CONTAINER}>
+        <Text>Test Content</Text>
+      </Foo>,
+    );
 
-    fireEvent.press(getByTestId(FooSelectorsIDs.CONTAINER));
-
-    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
+    expect(getByTestId(FooSelectorsIDs.CONTAINER)).toBeOnTheScreen();
   });
 });
 ```
@@ -378,13 +338,14 @@ Re-exports point at the component's own `index.ts` (`./Foo`), not directly at th
 ## 11. Scaffold checklist
 
 - [ ] Directory with `PascalCase` name in the correct location (Section 1)
-- [ ] `Foo.types.ts` — recommended; `FooProps` interface with JSDoc per prop, optional `testID?: string`; inline interface acceptable only for trivial components with 1–2 props
+- [ ] `Foo.types.ts` — recommended; `FooProps` interface with JSDoc per prop (`children?`, `twClassName?`, `testID?`); inline interface acceptable only for trivial components with 1–2 props
 - [ ] `Foo.testIds.ts` — recommended; `FooSelectorsIDs as const`, `SCREAMING_SNAKE` keys, `dash-case` values prefixed with kebab component name; skip only when the component has no testable elements
-- [ ] `Foo.tsx` — primitives from `@metamask/design-system-react-native` (or `app/component-library` for MetaMask-specific components with no MMDS equivalent and no `@deprecated` annotation); no `View`, no `StyleSheet`; `strings()` for all user-visible copy; every asserted element has `testID` wired from the testIds constant
+- [ ] `Foo.tsx` — primitives from `@metamask/design-system-react-native`, or an existing app-level component when MMDS has no equivalent; `Box` for layout and the MMDS `Text` component for text; no `StyleSheet`; `strings()` for all user-visible copy; every asserted element has `testID` wired from the testIds constant
 - [ ] `index.ts` — exports `default`, `type FooProps`, and `FooSelectorsIDs`
 - [ ] `Foo.test.tsx` — colocated (not in `__tests__/`); testIds via constant (never raw strings); `toBeOnTheScreen()` for presence, `.toBeNull()` for absence; `beforeEach(jest.clearAllMocks)`
-- [ ] ESLint and TypeScript pass: no `any`, no `eslint-disable`, no import fence violations
+- [ ] ESLint and TypeScript pass: no `any`, no import fence violations, and no `eslint-disable` except the `jest.mock` one in Section 8
 - [ ] If consumed outside the folder: parent feature `index.ts` updated (Section 10)
-- [ ] If bottom sheet: `useElevatedSurface()` applied; `ScrollView` from `react-native-gesture-handler`
+- [ ] If bottom sheet: the design-system bottom sheet parts, no extra surface class unless the design needs one; `ScrollView` from `react-native-gesture-handler`
+- [ ] The `ui-development` Deprecated APIs rule holds. Actions use the design-system Button; use the base button or `Pressable` only when Button cannot express the design, with pressed styles via `twClassName={(pressed) => ...}` or `Pressable` + `tw.style()`
 - [ ] All user-visible strings use `strings()` — no hardcoded copy
 

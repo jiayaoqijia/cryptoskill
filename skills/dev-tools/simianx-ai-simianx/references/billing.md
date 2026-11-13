@@ -45,7 +45,7 @@ same case.
 
 ## 426
 
-`{"code": 426, "data": {"reason": "skill_outdated", "minimum_version": "1.0.7", "current_version": "1.0.7", "skill_url": "https://www.simianx.ai/SKILL.md"}}`
+`{"code": 426, "data": {"reason": "skill_outdated", "minimum_version": "1.0.8", "current_version": "1.0.8", "skill_url": "https://www.simianx.ai/SKILL.md"}}`
 
 Your cached skill is older than the API allows. Re-read `skill_url`, then retry the request with the new version in
 `X-SimianX-Skill`. `GET /v1/skill` always answers (it is the update path) and lists the changelog and deprecations.

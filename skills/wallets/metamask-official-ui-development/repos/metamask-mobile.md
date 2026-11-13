@@ -3,433 +3,140 @@ repo: metamask-mobile
 parent: ui-development
 ---
 
+# MetaMask Mobile overlay
 
-# MetaMask Mobile React Native UI Development Guidelines
+Platform rules for React Native UI in `metamask-mobile`. The base above covers
+sources, component choice, foundations, typography, migration, and the shared
+accessibility rules.
 
-## Core Principle
+## Packages and paths
 
-Always prioritize @metamask/design-system-react-native components and Tailwind CSS patterns over custom implementations.
+- Components and enums: `@metamask/design-system-react-native`. Do not import
+  enums from `@metamask/design-system-shared`, and never import MMDS through a
+  repository-relative path.
+- Tailwind: `@metamask/design-system-twrnc-preset`, through `useTailwind()`.
+- Inventory: the
+  [React Native components manifest](https://metamask.github.io/metamask-design-system/react-native/manifests/components.json),
+  confirmed against `node_modules/@metamask/design-system-react-native/dist/components/index.d.cts`.
+- Deprecation: follow the base Deprecated APIs rule, searching
+  `node_modules/@metamask/design-system-react-native/dist/components/<Name>/`.
+- README: read the component README on GitHub at the release tag (READMEs
+  are not in the npm package). Take `<installed version>` from
+  `node_modules/@metamask/design-system-react-native/package.json`:
+  `https://github.com/MetaMask/metamask-design-system/blob/@metamask/design-system-react-native@<installed version>/packages/design-system-react-native/src/components/<Component>/README.md`
+- Existing app-level components: use one only when
+  `@metamask/design-system-react-native` has no equivalent. Search the repo
+  for a component that already covers the need, and apply the base
+  Deprecated APIs rule to it. Prefer MMDS first.
+- Search the repo for existing MMDS usage before building custom UI.
 
-## Component Hierarchy (STRICT ORDER)
+Do not apply React web guidance (`className`, HTML tags, `aria-*` props) to
+Mobile.
 
-### The Rule: Check Design System First
-**Before writing any new component or choosing what to use, ask: "Does @metamask/design-system-react-native have this?"**
+## Styling surface
 
-1. **FIRST**: Use `@metamask/design-system-react-native` components
-   - **Availability is dynamic**: read the installed package export index before deciding a component is unavailable.
-   - **Rule**: If the installed package exports the component, you MUST use it.
-   - **Common examples**: Box/BoxRow/BoxColumn, Text, Button/ButtonBase/ButtonIcon/TextButton, Icon, Checkbox, Avatar variants, Badge variants, BottomSheet components, HeaderBase/HeaderRoot/HeaderSearch/HeaderStandard, Input/TextField/TextFieldSearch/Label, ListItem, Skeleton, Tag, Toast.
-
-2. **SECOND**: Use `app/component-library` ONLY if design system lacks it
-   - **Use for**: MetaMask-specific or not-yet-migrated components such as Tabs and feature-owned modal wrappers
-   - **Rule**: These are MetaMask-specific implementations not (yet) in the design system
-   - **Important**: component-library components should themselves use design system primitives internally
-
-3. **THIRD**: Feature-specific components
-   - **Use for**: Complex, domain-specific UI that combines multiple design system/component-library components
-   - **Examples**: `BridgeInputSelector`, `StakeInputView`, `NFTDetailsModal`
-   - **Rule**: Must be built using Box, Text, and other design system primitives - NO raw View/Text or StyleSheet
-   - **Reuse**: Search for existing feature components before building new ones to avoid duplication
-
-4. **LAST RESORT**: Custom components with StyleSheet
-   - **Only when**: Highly specialized one-off needs with no design system equivalent AND no component-library equivalent
-   - **Requires**: Strong justification why design system primitives can't be composed
-
-### Decision Tree
-```
-Need a component?
-  ├─ Does the installed @metamask/design-system-react-native package export it?
-  │  └─ YES → Use @metamask/design-system-react-native [STOP]
-  │
-  ├─ Is it Tabs or a MetaMask-specific component that is not exported by @metamask/design-system-react-native?
-  │  └─ YES → Use app/component-library [STOP]
-  │
-  ├─ Is it feature-specific UI (e.g., BridgeInputSelector, StakeInputView)?
-  │  ├─ Does it already exist? (search codebase for similar components)
-  │  │  ├─ YES → Reuse existing component [STOP]
-  │  │  └─ NO → Build new component using design system primitives [STOP]
-  │  └─
-  │
-  └─ Can I compose it from Box + Text + other primitives?
-     ├─ YES → Compose from design system [STOP]
-     └─ NO → Consider if custom implementation is truly necessary
-```
-
-### Why This Hierarchy Matters
-- **Consistency**: Design system ensures consistent look, feel, and behavior
-- **Maintenance**: Centralized updates benefit all consumers
-- **Accessibility**: Design system components include a11y best practices
-- **Performance**: Optimized implementations tested at scale
-- **Type Safety**: Full TypeScript support with JSDoc documentation
-
-## Required Availability Check
-
-Before choosing `app/component-library` or building custom UI, inspect the consumer repo's installed package. Do not rely on this skill's examples as a complete component list.
-
-1. Check `node_modules/@metamask/design-system-react-native/dist/components/index.d.cts` for exported components and enums.
-2. If the package uses a different build layout, inspect `node_modules/@metamask/design-system-react-native/dist/components/index.d.ts` or `node_modules/@metamask/design-system-react-native/src/components/index.ts`.
-3. Read the matching component type file before writing usage, for example `dist/components/<Component>/<Component>.types.d.cts`.
-4. If `node_modules` is unavailable, check `package.json`/lockfile for the installed package version and inspect the package source only as a fallback.
-
-This lookup costs a few file reads, but it prevents stale skill guidance from overriding the version actually installed in Mobile. The package version is the source of truth.
-
-## Required Imports for React Native
+- Use `const tw = useTailwind();`. Never `import tw from 'twrnc'`.
+- `Box` is the default for layout. Using it makes code easier to move between
+  Mobile and Extension. Use the MMDS `Text` component for text.
+- Either `Box` utility props or `twClassName` is fine. The utility props exist
+  only on `Box`, they only apply Tailwind class names, and they are easier to
+  share across platforms. Read which props exist from `Box`'s installed types.
+  When a style has no utility prop (radius, for example), use a class such as
+  `twClassName="rounded-xl"`.
+- Outside Tailwind, read a semantic token in JS from the installed `@metamask/design-tokens` package, through the app theme. How Mobile reads one is in the README at `https://github.com/MetaMask/metamask-design-system/blob/@metamask/design-tokens@<installed version>/packages/design-tokens/README.md` (version from `node_modules/@metamask/design-tokens/package.json`).
+- No `StyleSheet.create()` and no new `.styles.ts` files. Inline style objects
+  only for truly dynamic values.
+- When you change a component that uses `useStyles` with a `*.styles.ts`
+  file, move its styles to `Box` utility props or `twClassName`, then delete
+  the styles file and the `useStyles` call.
+- Pressed state: the design-system base button takes a function in
+  `twClassName` that receives the pressed flag. Its `style` prop is a plain
+  style, so a `style={({ pressed }) => ...}` function does not type-check.
+  Look the base button up in the installed exports. For a custom `Pressable`,
+  use `tw.style()` in its style function.
 
 ```tsx
-// ALWAYS prefer these imports
-import { useTailwind } from '@metamask/design-system-twrnc-preset';
-import {
-  Box,
-  Text,
-  Button,
-  ButtonBase,
-  ButtonFilter,
-  ButtonHero,
-  ButtonIcon,
-  ButtonSemantic,
-  BottomSheet,
-  BottomSheetDialog,
-  BottomSheetHeader,
-  BottomSheetFooter,
-  BottomSheetOverlay,
-  ButtonsAlignment,
-  HeaderBase,
-  HeaderRoot,
-  HeaderSearch,
-  HeaderStandard,
-  Icon,
-  IconAlert,
-  MainActionButton,
-  TabEmptyState,
-  TextVariant,
-  FontWeight,
-  ButtonBaseSize,
-  TitleHub,
-  TitleStandard,
-  TitleSubpage,
-  BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
-  // ... other design system components
-} from '@metamask/design-system-react-native';
-```
+// On the design-system base button:
+twClassName={(pressed) => `w-full ${pressed ? 'bg-pressed' : 'bg-default'}`}
 
-## Component Documentation Access
-
-### Type Definitions & JSDoc Comments
-All @metamask/design-system-react-native components have comprehensive TypeScript definitions with JSDoc comments:
-
-- **Box**: `/node_modules/@metamask/design-system-react-native/dist/components/Box/Box.types.d.cts`
-- **Text**: `/node_modules/@metamask/design-system-react-native/dist/components/Text/Text.types.d.cts`
-- **Button**: `/node_modules/@metamask/design-system-react-native/dist/components/Button/Button.types.d.cts`
-- **BottomSheet**: `/node_modules/@metamask/design-system-react-native/dist/components/BottomSheet/BottomSheet.types.d.cts`
-- **BottomSheetDialog**: `/node_modules/@metamask/design-system-react-native/dist/components/BottomSheetDialog/BottomSheetDialog.types.d.cts`
-- **BottomSheetHeader**: `/node_modules/@metamask/design-system-react-native/dist/components/BottomSheetHeader/BottomSheetHeader.types.d.cts`
-- **BottomSheetFooter**: `/node_modules/@metamask/design-system-react-native/dist/components/BottomSheetFooter/BottomSheetFooter.types.d.cts`
-- **HeaderBase**: `/node_modules/@metamask/design-system-react-native/dist/components/HeaderBase/HeaderBase.types.d.cts`
-- **HeaderSearch**: `/node_modules/@metamask/design-system-react-native/dist/components/HeaderSearch/HeaderSearch.types.d.cts`
-- **HeaderStandard**: `/node_modules/@metamask/design-system-react-native/dist/components/HeaderStandard/HeaderStandard.types.d.cts`
-
-When unsure about component APIs:
-1. Read the `.types.d.cts` files for complete prop documentation
-2. Reference `app/component-library/components/design-system.stories.tsx` for usage examples
-3. Check GitHub source: https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react-native/src/components
-
-### Box Component Quick Reference
-- **Spacing**: Use `gap`, `padding*`, `margin*` props with values 0-12 (maps to 0px-48px)
-- **Flexbox**: Use `flexDirection`, `alignItems`, `justifyContent` enum props
-- **Colors**: Use `backgroundColor` and `borderColor` with semantic tokens
-- **Tailwind**: Use `twClassName` for utilities not covered by props
-
-## Styling Rules (ENFORCE STRICTLY)
-
-### ✅ ALWAYS DO:
-
-- Use `const tw = useTailwind();` hook instead of importing twrnc directly
-- Use `Box` component instead of `View`
-- Use `Text` component with variants instead of raw Text with styles
-- Use `twClassName` prop for static styles
-- Use `tw.style()` function for interactive/dynamic styles
-- Use design system color tokens: `bg-default`, `text-primary`, `border-muted`
-- Use component props first: `variant`, `color`, `size`, etc.
-
-### ❌ NEVER SUGGEST:
-
-- `import tw from 'twrnc'` (use useTailwind hook instead)
-- `StyleSheet.create()` (use Tailwind classes)
-- Raw `View` or `Text` components (use Box/Text from design system)
-- Arbitrary color values like `bg-[#3B82F6]` or `text-[#000000]`
-- Inline style objects unless for dynamic values
-- Mixing multiple styling approaches unnecessarily
-
-## Code Pattern Templates
-
-### Basic Container:
-
-```tsx
-const MyComponent = () => {
-  const tw = useTailwind();
-
-  return (
-    <Box twClassName="w-full bg-default p-4">
-      <Text variant={TextVariant.HeadingMd}>Title</Text>
-    </Box>
-  );
-};
-```
-
-### Flex Layout:
-
-```tsx
-<Box
-  flexDirection={BoxFlexDirection.Row}
-  alignItems={BoxAlignItems.Center}
-  justifyContent={BoxJustifyContent.Between}
-  twClassName="gap-3"
->
-```
-
-### Interactive Element:
-
-```tsx
-<ButtonBase
-  twClassName="h-20 flex-1 rounded-lg bg-muted px-0 py-4"
-  style={({ pressed }) =>
-    tw.style(
-      'w-full flex-row items-center justify-center',
-      pressed && 'bg-pressed',
-    )
-  }
->
-  <Text fontWeight={FontWeight.Medium}>Button Text</Text>
-</ButtonBase>
-```
-
-### Pressable with Tailwind:
-
-```tsx
+// On a custom Pressable:
 <Pressable
-  style={({ pressed }) =>
-    tw.style(
-      'w-full flex-row items-center justify-between px-4 py-2',
-      pressed && 'bg-pressed',
-    )
-  }
->
+  style={({ pressed }) => tw.style('w-full flex-row', pressed && 'bg-pressed')}
+/>
 ```
 
-### Bottom Sheet:
+- Interactive list rows: when the design-system list item component exposes
+  an interactive mode, it applies the pressed background itself, so do not add
+  `bg-pressed` again. Read the mode from its installed types. Keep the row's
+  own horizontal padding; do not add an outer pad that double-indents it.
+
+## Sheets
+
+- Use the design-system bottom sheet and its header and footer parts. Look
+  them up in the installed exports or the manifest. The sheet already sets its
+  surface token; override it only when the design puts the sheet on another
+  surface.
+- A `ScrollView` inside a design-system bottom sheet must come from
+  `react-native-gesture-handler`. The React Native `ScrollView` does not scroll
+  inside the sheet on Android.
+- Use the full sheet composition (overlay, container, header, footer, safe
+  areas, drag, keyboard, accessibility). In nested sheet flows, keep the
+  container stable, move content directionally, use back for the child and
+  close for the whole flow, and avoid two systems fighting over height or drag.
+- Mobile mounts a single design-system toaster at the app root; search the
+  repo for it. Show toasts through the API that toaster exposes (look it up
+  in the installed exports); do not mount another toaster.
+
+## Mobile accessibility mechanics
+
+- Custom pressables set `accessibilityRole`, `accessibilityState` (`disabled`,
+  `selected`, `checked`, `busy`, `expanded`), and an `accessibilityLabel` or
+  `accessibilityHint` when visible text is not enough. Prefer design-system
+  controls over a `View` with `onPress`.
+- Headings pass `accessibilityRole="header"`. Check the default role on the
+  MMDS `Text` component's installed types instead of assuming one. A
+  tappable heading is a button.
+- Tabs use `accessibilityRole="tab"` with `accessibilityState={{ selected }}`.
+- Announce async errors and status with
+  `AccessibilityInfo.announceForAccessibility` (iOS VoiceOver ignores
+  `accessibilityLiveRegion`), and give inline error text
+  `accessibilityRole="alert"`.
+- Touch targets are about 44×44 (minimum 24×24). Use `hitSlop` or padding when
+  the visible control is smaller.
+- Support Dynamic Type: no fixed-height text boxes or absolute layouts that
+  clip or overlap as text grows.
+- Wire skeletons and other motion to `useReducedMotion()` so they stop when
+  Reduce Motion is on.
+
+## Incremental migration paths
+
+Legacy app-level components have no single barrel. Each is a default export
+from its own folder. Search the repo for the existing import. Apply the base
+`Legacy*` rule to a default export whose name MMDS also exports, and to named
+enums whose names are identical in both. Similar but different names do not
+clash, so do not alias them. Check the installed MMDS exports to decide.
+Adjust the `../` depth to the file.
 
 ```tsx
-import {
-  BottomSheet,
-  BottomSheetFooter,
-  BottomSheetHeader,
-  ButtonsAlignment,
-} from '@metamask/design-system-react-native';
-
-<BottomSheet ref={sheetRef} goBack={navigation.goBack}>
-  <BottomSheetHeader onClose={handleClose}>Title</BottomSheetHeader>
-  <Box twClassName="px-4 py-3">
-    <Text variant={TextVariant.BodyMd}>Content</Text>
-  </Box>
-  <BottomSheetFooter
-    buttonsAlignment={ButtonsAlignment.Horizontal}
-    primaryButtonProps={{ children: 'Confirm', onPress: handleConfirm }}
-    secondaryButtonProps={{ children: 'Cancel', onPress: handleClose }}
-  />
-</BottomSheet>
+// Do: MMDS keeps the plain names. Legacy gets the prefix.
+// `Component` and `EnumName` stand for names the file imports from both places.
+import { Component, EnumName } from '@metamask/design-system-react-native';
+import LegacyComponent, {
+  EnumName as LegacyEnumName,
+} from '../../../<existing-app-component>';
 ```
 
-## Box Component Best Practices
+Prop mapping from legacy to MMDS components is in `MIGRATION.md` at the installed tag. Take `<installed version>` from `node_modules/@metamask/design-system-react-native/package.json`:
+`https://github.com/MetaMask/metamask-design-system/blob/@metamask/design-system-react-native@<installed version>/packages/design-system-react-native/MIGRATION.md`
 
-### Prefer Props Over twClassName for Layout
-✅ **DO** - Use typed props for type safety and consistency:
-```tsx
-<Box
-  flexDirection={BoxFlexDirection.Row}
-  alignItems={BoxAlignItems.Center}
-  justifyContent={BoxJustifyContent.Between}
-  gap={3}
-  padding={4}
-  margin={2}
->
-```
+## Mobile checklist
 
-❌ **DON'T** - Use twClassName for properties that have dedicated props:
-```tsx
-<Box twClassName="flex-row items-center justify-between gap-3 p-4 m-2">
-```
-
-### When to Use twClassName
-Use `twClassName` for:
-- Width and height: `w-full`, `h-20`, `w-[337px]`
-- Complex positioning: `absolute`, `relative`, `top-0`, `left-0`
-- Borders (partial): `rounded-lg`, `border-t`
-- Shadows and opacity: `shadow-lg`, `opacity-50`
-- Utilities not covered by props: `overflow-hidden`, `z-10`
-
-### Spacing System
-- Use numeric props (0-12) for spacing: `padding={4}` = 16px
-- Each unit = 4px (so 12 = 48px max)
-- For custom spacing beyond 48px, use twClassName: `twClassName="p-20"`
-
-### Color Tokens
-Always use semantic color tokens:
-```tsx
-// ✅ Semantic tokens
-<Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
-<Box backgroundColor={BoxBackgroundColor.PrimaryDefault}>
-<Box backgroundColor={BoxBackgroundColor.ErrorMuted}>
-
-// ❌ Arbitrary colors
-<Box twClassName="bg-[#3B82F6]">
-<Box style={{ backgroundColor: '#FF0000' }}>
-```
-
-## Component Conversion Guide
-
-| DON'T Use                            | USE Instead                            |
-| ------------------------------------ | -------------------------------------- |
-| `<View>`                             | `<Box>`                                |
-| `<Text style={...}>`                 | `<Text variant={TextVariant.BodyMd}>`  |
-| `app/component-library` BottomSheets | `@metamask/design-system-react-native` BottomSheet components |
-| `StyleSheet.create()`                | `twClassName="..."`                    |
-| `style={{ backgroundColor: 'red' }}` | `twClassName="bg-error-default"`       |
-| `flexDirection: 'row'`               | `flexDirection={BoxFlexDirection.Row}` |
-| Manual padding/margin                | `twClassName="p-4 m-2"`                |
-
-## Platform-Specific Gotchas
-
-### ScrollView Inside BottomSheet
-When using a `ScrollView` inside a `BottomSheet`, you **MUST** import `ScrollView` from `react-native-gesture-handler`, not from `react-native`. The standard React Native `ScrollView` will not scroll on Android within a gesture-handler-managed `BottomSheet`.
-
-```tsx
-// ✅ CORRECT - works on both iOS and Android
-import { ScrollView } from 'react-native-gesture-handler';
-
-// ❌ WRONG - will not scroll on Android inside BottomSheet
-import { ScrollView } from 'react-native';
-```
-
-## Legacy Code Migration Guidelines
-
-### Identifying Legacy Patterns
-🚫 **Anti-patterns to refactor when encountered:**
-- Files using `StyleSheet.create()`
-- Separate `.styles.ts` or `.styles.tsx` files
-- Raw `View` components instead of `Box`
-- Raw `Text` components with custom styles instead of design system `Text` with variants
-- Inline style objects for static styles
-
-### Migration Priority
-1. **High Priority**: Components being actively modified
-2. **Medium Priority**: Frequently used shared components in `app/component-library`
-3. **Low Priority**: Stable legacy components with no active development
-
-### Migration Steps
-1. Replace `View` → `Box` from design system
-2. Replace `Text` → `Text` with appropriate `TextVariant`
-3. Replace migrated component-library imports with design system exports when available
-4. Convert `StyleSheet.create()` styles → `twClassName` props or `tw.style()`
-5. Convert arbitrary colors → design system color tokens
-6. Delete `.styles.ts` files after migration
-7. Test thoroughly - layout can shift during migration
-
-### Example Migration
-
-**Before:**
-```tsx
-import { View, Text, StyleSheet } from 'react-native';
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#ffffff',
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#000000',
-  },
-});
-
-<View style={styles.container}>
-  <Text style={styles.title}>Title</Text>
-</View>
-```
-
-**After:**
-```tsx
-import { useTailwind } from '@metamask/design-system-twrnc-preset';
-import { Box, Text, TextVariant, BoxFlexDirection, BoxAlignItems, FontWeight } from '@metamask/design-system-react-native';
-
-const tw = useTailwind();
-
-<Box
-  flexDirection={BoxFlexDirection.Row}
-  alignItems={BoxAlignItems.Center}
-  twClassName="p-4 bg-default"
->
-  <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-    Title
-  </Text>
-</Box>
-```
-
-## Error Prevention & Code Review Checklist
-
-### Before Committing Code, Verify:
-- [ ] No `import tw from 'twrnc'` (must use `useTailwind()` hook)
-- [ ] No raw `View` components (use `Box`)
-- [ ] No raw `Text` without variants (use `Text` with `TextVariant`)
-- [ ] No component-library BottomSheet imports when design system exports cover the use case
-- [ ] No `StyleSheet.create()` (use `twClassName` or `tw.style()`)
-- [ ] No arbitrary color values (use design system tokens)
-- [ ] No separate `.styles.ts` files for new components
-- [ ] Component props used before `twClassName` for layout
-- [ ] Interactive styles use `tw.style()` with state functions
-- [ ] `ScrollView` inside `BottomSheet` imported from `react-native-gesture-handler` (not `react-native`)
-
-### When You See These Patterns, IMMEDIATELY Suggest Alternatives:
-- Any `import tw from 'twrnc'` → `import { useTailwind } from '@metamask/design-system-twrnc-preset'`
-- Any `View` component → `Box` from design system
-- Any `app/component-library/components/BottomSheets/*` import → equivalent `@metamask/design-system-react-native` BottomSheet export
-- Any `StyleSheet` usage → Tailwind classes
-- Any arbitrary color values → Design system tokens
-- Any manual flex properties → Box component props + twClassName
-
-### AI Agent Guidelines
-When suggesting code changes:
-1. ALWAYS read component type definitions first for accurate API usage
-2. ALWAYS check `design-system.stories.tsx` for real-world patterns
-3. ALWAYS search for existing feature-specific components before building new ones (use Glob/Grep to find similar components in feature directories)
-4. REJECT any suggestions that violate the hierarchy
-5. SUGGEST migrations when encountering legacy patterns
-6. EXPLAIN why design system approach is preferred
-
-## Design System Priority
-
-Before suggesting any UI solution:
-
-1. Check if `@metamask/design-system-react-native` has the component
-2. Use component's built-in props (variant, color, size)
-3. Add layout/spacing with `twClassName`
-4. Add interactions with `tw.style()`
-5. Only suggest component-library or custom components if design system lacks it
-
-## Reference Examples
-
-Always reference the patterns from `app/component-library/components/design-system.stories.tsx` for proper usage examples.
-
-## Enforcement
-
-- REJECT any code suggestions that use StyleSheet.create()
-- REJECT raw View/Text usage when Box/Text components exist
-- REQUIRE useTailwind hook for all Tailwind usage
-- REQUIRE design system components as first choice
-- ENFORCE design token usage over arbitrary values
-
-@app/component-library/components/design-system.stories.tsx
+- [ ] `useTailwind()`; no `twrnc` import, `StyleSheet.create()`, or new
+      `.styles.ts`.
+- [ ] `Box` for layout and the MMDS `Text` component for text.
+- [ ] Pressed styles via the base button's `twClassName={(pressed) => ...}` or
+      `Pressable` + `tw.style()`.
+- [ ] `ScrollView` inside a design-system bottom sheet comes from
+      `react-native-gesture-handler`.
+- [ ] Controls, headings, and tabs expose roles and state; errors are
+      announced; touch targets are large enough.

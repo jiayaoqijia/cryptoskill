@@ -1,7 +1,7 @@
 # Deep research (the 8-agent committee)
 
-Analysts (fundamentals, market, news, timing for stocks / derivatives for coins), bull and bear researchers, a research
-manager who runs a debate, and a risk manager who writes the verdict and the plan. About ten minutes on our workers;
+Analysts (fundamentals, market, news, and positioning for stocks / derivatives for coins), bull and bear researchers, a
+research manager who runs a debate, and a risk manager who writes the verdict and the plan. About ten minutes on our workers;
 you follow it and tell the user every step as it lands. A PDF report closes the run; the user also receives it by
 email, which you need not mention.
 
@@ -34,7 +34,7 @@ The order, and the one line you say at each step (the server's `say`; paraphrase
 | Event | Update kind | Say |
 |---|---|---|
 | `run` | `deep.started` | "The committee started on NVDA: 4 analysts are working in parallel." |
-| `step_done` for `agent:fundamentals`, `agent:market`, `agent:news`, `agent:timing` (crypto: `agent:derivatives`) | `deep.analyst_done` | "Fundamentals analyst finished: bullish (confidence 72/100) — data-centre revenue still accelerating." |
+| `step_done` for `agent:fundamentals`, `agent:market`, `agent:news`, `agent:positioning` (crypto: `agent:derivatives`) | `deep.analyst_done` | "Fundamentals analyst finished: bullish (confidence 72/100) — data-centre revenue still accelerating." |
 | `step_done` for `agent:bull_researcher`, `agent:bear_researcher` | `deep.researcher_done` | "Bear researcher finished: bearish (confidence 61/100) — valuation leaves no room for a miss." |
 | `step_start` for `disc:topic:0`, `disc:topic:1`, … (`topic`, `index`) | `deep.debate_start` | "Debate 1 of 3 opens: 'Is the data-centre growth already priced in?' — Bull researcher vs Bear researcher." |
 | `topic_done` (`index`, `result`) | `deep.debate_done` | "Debate 1 closed: the bull side prevailed. Guidance history outweighs the multiple." |

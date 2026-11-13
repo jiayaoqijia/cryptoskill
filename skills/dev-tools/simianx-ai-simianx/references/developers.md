@@ -100,7 +100,7 @@ paper books, `/autopilots/{id}/actions`) are simulated.
 - `429` carries `Retry-After`; paginated lists return `next_cursor`; every time is ISO 8601 UTC.
 - Breaking changes never edit a path in place: a new path or field is added, the old one gets `Deprecation`, `Sunset`
   and `Link: <…>; rel="successor-version"` headers and a `deprecations` entry in `GET /v1/skill`.
-- Send `X-SimianX-Skill: 1.0.7` (or your client's own version string) so `_skill_update` and `426` work as designed;
+- Send `X-SimianX-Skill: 1.0.8` (or your client's own version string) so `_skill_update` and `426` work as designed;
   a client that never sends it is never refused.
 
 ## Minimal clients
@@ -111,7 +111,7 @@ Python (`pip install requests websockets`):
 import asyncio, json, os, requests, websockets
 
 API = "https://service.simianx.ai"; KEY = os.environ["SIMIANX_API_KEY"]
-H = {"Authorization": f"Bearer {KEY}", "X-SimianX-Skill": "1.0.7", "Content-Type": "application/json"}
+H = {"Authorization": f"Bearer {KEY}", "X-SimianX-Skill": "1.0.8", "Content-Type": "application/json"}
 
 s = requests.post(f"{API}/v1/live/sessions", headers={**H, "Idempotency-Key": "live-btc-15m-1"},
                   json={"asset": "crypto", "symbol": "BTC", "timeframe": "15m"}).json()["data"]
@@ -136,7 +136,7 @@ JavaScript (Node 18+, `npm i ws`):
 ```js
 import WebSocket from "ws";
 const API = "https://service.simianx.ai", KEY = process.env.SIMIANX_API_KEY;
-const H = { Authorization: `Bearer ${KEY}`, "X-SimianX-Skill": "1.0.7", "Content-Type": "application/json" };
+const H = { Authorization: `Bearer ${KEY}`, "X-SimianX-Skill": "1.0.8", "Content-Type": "application/json" };
 
 const { data: s } = await (await fetch(`${API}/v1/live/sessions`, { method: "POST",
   headers: { ...H, "Idempotency-Key": "live-btc-15m-1" },

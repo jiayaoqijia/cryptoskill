@@ -3,157 +3,112 @@ repo: metamask-extension
 parent: ui-development
 ---
 
-# MetaMask Extension Product UI — MMDS Guidance
+# MetaMask Extension overlay
 
-Strategy: [Agentic Design System Strategy](../../../knowledge/agentic-design-system-strategy.md)
-([Google Doc](https://docs.google.com/document/d/1wwvEJxom097q-ehSJAfqKvWb01ZW-kmlpy7BQW5In40/edit))
+Platform rules for React web UI in `metamask-extension`. The base above covers
+sources, component choice, foundations, typography, migration, and the shared
+accessibility rules.
 
-For Extension UI, the MetaMask Design System (MMDS) is the default source for
-components, tokens, and documented patterns. Align new and changed UI with MMDS
-wherever it supports the need, using current Storybook documentation as the
-source of truth. Custom UI remains valid when it serves an intentional product
-need that MMDS does not cover, but the rationale should be recorded.
+## Packages and paths
 
-This is a consumer gateway, not a second MMDS knowledge base. Do not add static
-component inventories, release-specific API lists, or copied component
-documentation here. Storybook MCP and the installed package provide current
-knowledge; this skill provides the Extension workflow and durable constraints.
+- Components and enums: `@metamask/design-system-react`. Do not import enums
+  from `@metamask/design-system-shared`; that package is listed in the Tailwind
+  `content` globs only so its classes are generated.
+- Inventory: the
+  [React components manifest](https://metamask.github.io/metamask-design-system/manifests/components.json),
+  confirmed against `node_modules/@metamask/design-system-react/dist/components/index.d.cts`.
+- Deprecation: follow the base Deprecated APIs rule, searching
+  `node_modules/@metamask/design-system-react/dist/components/<Name>/`.
+- README: read the component README on GitHub at the release tag (READMEs
+  are not in the npm package). Take `<installed version>` from
+  `node_modules/@metamask/design-system-react/package.json`:
+  `https://github.com/MetaMask/metamask-design-system/blob/@metamask/design-system-react@<installed version>/packages/design-system-react/src/components/<Component>/README.mdx`
+- Legacy component library: being deprecated in favor of MMDS. Search the
+  repo for the existing legacy import. Do not add new usage where MMDS covers
+  the need.
+- Existing app-level components: use one only when
+  `@metamask/design-system-react` has no equivalent. Search the repo for a
+  component that already covers the need, and apply the base Deprecated APIs
+  rule to it. Prefer MMDS first.
+- Search the repo for existing MMDS usage before building custom UI.
 
-## When to Use
+Do not apply React Native guidance or APIs (`twClassName`, twrnc,
+`accessibilityRole`, or React Native-only components) to Extension.
 
-Use this guidance when creating, changing, or reviewing Extension UI, including
-components, screens, stories, styles, tokens, themes, and UI behavior.
+## Styling surface
 
-This skill owns MMDS alignment for product UI. Generic TypeScript and React
-quality, component file scaffolding, and PR process remain separate concerns and
-may be used alongside it. If a repository-specific scaffolding skill is
-available, use it for file and test setup; do not duplicate its templates here.
+- `tailwind.config.js` uses `@metamask/design-system-tailwind-preset` and
+  removes the default palette and font sizes. Use only
+  classes that configuration generates. If a class is in doubt, check the
+  preset source or the built CSS; do not invent one or add a safelist entry.
+- Outside Tailwind, read a semantic token as a CSS variable from the installed `@metamask/design-tokens` package. How Extension reads one is in the README at `https://github.com/MetaMask/metamask-design-system/blob/@metamask/design-tokens@<installed version>/packages/design-tokens/README.md` (version from `node_modules/@metamask/design-tokens/package.json`).
+- `Box` is the default for layout. Using it makes code easier to move between
+  Mobile and Extension. Either `Box` utility props or `className` is fine.
+  The utility props exist only on `Box`, they only apply Tailwind class names,
+  and they are easier to share across platforms. Read `Box`'s props from the
+  installed types.
+- Do not add SASS or SCSS. Deleting SCSS rules, files, and `@import` lines
+  that your change makes unused is expected.
+- Set type with the MMDS `Text` component's variants. Font-size utilities do
+  not exist in this config, so `text-[14px]` and similar are always wrong.
 
-## Create Workflow
+## Extension accessibility mechanics
 
-1. Query current MMDS guidance before choosing a component, pattern, API, token,
-   or interaction.
-2. Use `@metamask/design-system-react` when it supports the need.
-3. Search the Extension codebase and reuse suitable existing UI, including UI
-   that is not yet in MMDS or is intentionally feature-specific.
-4. Use Tailwind classes and the repository's design-token configuration for
-   styling and layout not provided by MMDS.
-5. Build new feature UI only when no suitable MMDS or existing Extension UI can
-   be reused.
-6. If no suitable component or documented pattern exists, record the
-   documentation or system gap and make the custom decision explicit. Do not
-   guess an API or silently substitute another platform's component.
+- Icon-only controls need an accessible name. Search fields need an input
+  label. Look each control up by name in the installed exports and use the
+  accessible-name or label prop declared on its types.
+- Announce async errors and status with `role="alert"` or
+  `aria-live="polite"` on a container that is already mounted before its text
+  changes.
+- Expandable controls expose `aria-expanded`; toggles and tabs expose their
+  selected or pressed state.
+- Follow accessible web practices for anything clickable: a native
+  `<button type="button">` for actions and `<a>` for navigation (for example
+  through `Box`'s `asChild`), with preset state classes such as
+  `hover:bg-hover active:bg-pressed`. Never put `onClick` on a `div` or `span`.
+- Preserve the keyboard behavior documented in the component README and
+  stories, including focus order and how popovers and modals close.
 
-## Review Workflow
+## Incremental migration paths
 
-When reviewing a UI diff, perform an MMDS-specific sub-review. Do not duplicate
-general code-review etiquette or decide PR status; report the design-system
-evidence and leave PR mechanics to the relevant workflow.
+Search the repo for the existing legacy imports. Legacy components and legacy
+enums often come from different modules. Apply the base `Legacy*` rule to any
+legacy component or enum whose name MMDS also exports when the file imports
+both. Check the installed MMDS exports to decide. Names MMDS does not export
+keep their names. Adjust the `../` depth to the file.
 
-1. Identify changed UI files, components, stories, styles, tokens, themes, and
-   renderable behavior.
-2. Query current Storybook guidance for each changed MMDS building block and
-   relevant pattern, using the Extension React/web documentation first.
-3. Check that the implementation uses documented or story-proven props,
-   variants, tokens, composition, and behavior.
-4. Check component and pattern choice, existing-UI reuse, styling/token usage,
-   accessibility, localization, keyboard behavior, and platform fit.
-5. Check for new use of APIs or components marked `@deprecated` in current
-   package metadata or documentation. Do not maintain a deprecated-name list in
-   this skill; read the current replacement guidance and report a finding when
-   no replacement is documented.
-6. Identify custom UI and overrides. Treat them as findings when their product
-   rationale or exception record is missing, not as automatic failures.
-7. Separate deterministic issues from judgment findings, and report each finding
-   with its file/line, evidence, current source, and recommended action.
+```tsx
+// Do: MMDS keeps the plain names. Legacy gets the prefix.
+// `Component` and `EnumName` stand for names the file imports from both places.
+// `LegacyOnlyEnum` stands for an enum MMDS does not export.
+import { Component, EnumName } from '@metamask/design-system-react';
+import { Component as LegacyComponent } from '../../<legacy-component-module>';
+import {
+  LegacyOnlyEnum,
+  EnumName as LegacyEnumName,
+} from '../../../<legacy-enum-module>';
 
-Component or pattern choice, custom UI, and missing documentation are
-design-system findings that generally need human judgment. Deterministic
-repository checks may enforce token or deprecated-usage rules separately.
+// Don't: prefix the MMDS import, or leave both on the plain name.
+import { Component as LegacyComponent } from '@metamask/design-system-react';
+import { Component } from '../../<legacy-component-module>';
+```
 
-## Required Storybook MCP Workflow
+Prop mapping from legacy to MMDS components is in `MIGRATION.md` at the installed tag. Take `<installed version>` from `node_modules/@metamask/design-system-react/package.json`:
+`https://github.com/MetaMask/metamask-design-system/blob/@metamask/design-system-react@<installed version>/packages/design-system-react/MIGRATION.md`
 
-Before creating, changing, or reviewing UI:
+## Exceptions
 
-1. Start by querying `storybook-broker-mcp` with `list-all-documentation` so the
-   available guidance reflects the current MMDS release.
-2. Find the relevant Extension pattern documentation in the React/web Storybook.
-3. Query `get-documentation` for the selected pattern and each UI building block.
-4. Query `get-documentation-for-story` when documentation does not answer the
-   question or a story is needed to establish real usage.
-5. Use only props, variants, tokens, composition, and behavior explicitly
-   documented or demonstrated by a story.
+When custom UI is necessary, use the repository's existing exception
+documentation. Do not invent a new annotation format.
 
-The Context Forge-provided `storybook-broker-mcp` is expected to be
-preconfigured by the agent environment. Do not install, configure, authenticate,
-or invent an endpoint for it from this skill. If the server or a required tool
-is unavailable, or a call fails, state that the broker could not be reached and
-use the fallback below.
+## Extension checklist
 
-Never infer an API from a name, a previous implementation, another platform, or
-another UI library. If the required guidance is absent, record the gap and use
-the fallback process below rather than guessing.
-
-Do not apply guidance from another platform without an Extension mapping
-documented in Storybook. If no mapping exists, treat it as a documentation gap.
-
-## Fallback When Storybook MCP Is Unavailable
-
-Use these sources in order:
-
-1. The installed `@metamask/design-system-react` package and its type
-   definitions under `node_modules`.
-2. The installed Extension-facing MMDS styling surfaces:
-   `@metamask/design-system-tailwind-preset` for Tailwind CSS v3, or the
-   `@metamask/design-tokens/tailwind/theme.css` export for Tailwind CSS v4.
-   Use `@metamask/design-tokens` for the installed token exports and styles.
-3. The Extension's current Tailwind configuration and package configuration.
-   Check the installed Tailwind version, preset or theme import, content
-   globs, plugins, and safelist. Use only class names generated by that
-   configuration and the installed MMDS preset or theme. If availability is
-   unclear, verify the generated CSS or build output instead of inventing a
-   class. Do not use default Tailwind colors, arbitrary values, or a manual
-   safelist as a substitute for an MMDS token.
-4. Current Extension usage and stories found by searching the repository for
-   the installed component or token. Treat examples as usage evidence, not as
-   a replacement for the installed package contract.
-5. A generated MMDS release manifest or repository-provided release guidance.
-6. The MMDS source repository as a last resort.
-
-`@metamask/design-system-shared` may be relevant to Tailwind content scanning
-when required by the installed MMDS configuration, but it is not a source for
-Extension component APIs. Do not use React Native or TWRNC packages for
-Extension UI.
-
-The installed package version is the source of truth for the code being
-changed. Read the matching exports and type definitions before writing or
-reviewing usage. Do not restore a static inventory or copy undocumented APIs
-into this skill to compensate for missing MCP.
-
-## Durable Extension Constraints
-
-- Prefer `@metamask/design-system-react` components.
-- Reuse suitable existing Extension UI before creating new feature UI.
-- Use Tailwind class names instead of SCSS for styling and layout.
-- Do not create or modify SASS or SCSS files.
-- Reuse an existing feature-level solution when the documented pattern calls
-  for one; otherwise compose the smallest supported solution.
-- Preserve accessibility, localization, and keyboard interaction requirements
-  shown in the relevant Storybook documentation and stories.
-- Use repository-approved exception documentation when custom UI is necessary;
-  do not invent a new annotation format in this skill.
-
-## Create and Review Checklist
-
-- [ ] Current Storybook pattern and building-block guidance was queried, or the
-      MCP fallback, Tailwind configuration checks, and any documentation gap
-      were recorded.
-- [ ] MMDS was used wherever it supports the need, and suitable existing
-      Extension UI was considered.
-- [ ] Only documented, story-proven, or installed-package-typed APIs are used.
-- [ ] No new deprecated API or component usage was introduced.
-- [ ] No undocumented platform substitution was made.
-- [ ] Custom UI has an intentional product rationale and exception record when
-      required by repository practice.
-- [ ] Accessibility, localization, and keyboard behavior were preserved.
-- [ ] No SASS or SCSS files were created or modified.
+- [ ] Only classes generated by the Extension Tailwind config; no default
+      palette, arbitrary values, or safelist workarounds.
+- [ ] `Box` for layout and the MMDS `Text` component for text.
+- [ ] No SASS or SCSS added; SCSS made unused by the change is deleted.
+- [ ] No new usage of the legacy component library where MMDS covers the
+      need; clashing legacy imports are aliased `Legacy*`.
+- [ ] Clickable elements are native buttons or links; icon-only controls and
+      search fields have accessible names; status changes are announced;
+      keyboard behavior still works.
