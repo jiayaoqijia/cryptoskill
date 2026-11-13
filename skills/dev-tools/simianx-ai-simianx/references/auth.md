@@ -16,7 +16,7 @@ POST /v1/auth/link
  "key": {"name": "Claude Code on my laptop", "scopes": ["data:read", "analysis:run", "automation:manage"],
          "daily_points_budget": 50}}
 → 201 {"link_id": "…", "user_code": "K7MP-4R2X", "url": "https://www.simianx.ai/link/K7MP-4R2X",
-        "expires_in": 1800, "interval": 3}
+        "expires_in": 86400, "interval": 3}
 ```
 
 Give the user `url` (and the code, in case they type it) in one short message, then **poll at once, without
@@ -27,18 +27,19 @@ yours is quiet, tell it you approved." Poll:
 
 ```
 GET /v1/auth/link/{link_id}?wait=30        # long-poll: returns at once on a decision, else after `wait` seconds
-→ {"status": "pending", "user_code": "…", "url": "…", "expires_in": 1742}
+→ {"status": "pending", "user_code": "…", "url": "…", "expires_in": 86342}
 → {"status": "approved", "token": "simx_live_…", "key": {…}, "account": {…}, "points": {…}, "limits": {…}, "web": {…}}
 → {"status": "denied"} · {"status": "expired"}
 ```
 
 `approved` is answered once: the token is deleted the moment you read it. `expired` also covers an unknown link id
-and a result that was already collected. A link lives **30 minutes**, and an approved key that you have not collected
-yet waits **30 minutes** too, so a user who approves and comes back to you later still gets through. Keep calling
+and a result that was already collected. A link lives **24 hours**, and an approved key that you have not collected
+yet waits **24 hours** too, so a user who approves and comes back to you later still gets through: keep the
+`link_id` and poll the same link again on their next message; do not create a new one. Keep calling
 `?wait=30` back to back until the status is decided; each call's `notify` tells you what to do next. If your platform
 ends your turn when you reply, write in the same message "approve it, then tell me 'approved'", and poll as soon as
 the next message arrives, whatever it says. Once approved, say one sentence (signed in, which plan) and go on with
-what the user asked; never read out the balance or the budgets.
+what the user asked.
 
 ## 2. Email code (no browser needed)
 
@@ -93,17 +94,28 @@ or send them to `actions.change_plan.url`. The ticket lives 10 minutes.
 | Field | Meaning |
 |---|---|
 | `name` | Label shown on the site (default: the framework) |
-| `scopes` | Subset of `data:read`, `analysis:run`, `automation:manage`, `keys:manage` (default: all four). `billing:manage` is refused with 403 `insufficient_scope` |
+| `scopes` | Subset of `data:read`, `analysis:run`, `automation:manage`, `keys:manage` (default: all four). Analyses need `analysis:run`; autopilots, news watches and sector follows need `automation:manage`. `billing:manage` is refused with 403 `insufficient_scope` |
 | `daily_points_budget`, `monthly_points_budget`, `max_points_per_call` | Points; the key stops at the budget, the account does not |
 | `expires_at` | ISO 8601 |
 | `ip_whitelist` | Up to 50 addresses that may use the key |
 | `replace_key_id` | Revoke this key first (full plans) |
 
+## 3. OAuth (MCP apps sign the user in themselves)
+
+An app connected to `https://service.simianx.ai/v1/mcp` that speaks OAuth (Claude, ChatGPT, Cursor, VS Code, Codex,
+Gemini CLI) needs none of the above. A tool call without a key answers HTTP 401 with
+`WWW-Authenticate: Bearer resource_metadata="https://service.simianx.ai/.well-known/oauth-protected-resource/v1/mcp"`;
+the app reads the metadata, registers itself (a Client ID Metadata Document, or `POST /v1/oauth/register`), opens
+`/v1/oauth/authorize` (PKCE S256), and the user lands on the same approval page as the browser link. After approval
+the app exchanges its code at `POST /v1/oauth/token`. What it holds is an ordinary agent key (same scopes, budgets,
+listing and revocation at https://www.simianx.ai/#api) plus a refresh token that rotates the key's token. The agent
+inside the app never sees the key and has nothing to store.
+
 ## After sign-in
 
 Store `token` where this agent reads its environment: the shell profile, a git-ignored `.env`, or the agent's own
 secret store. Say which file you wrote and show only the prefix (`simx_live_abc123…`). Never commit it, never log it,
-never paste it into a prompt. Then continue with `GET /v1/me` as in SKILL.md, and keep the points to yourself.
+never paste it into a prompt. Then continue with `GET /v1/me` as in SKILL.md.
 
 ## Why no cookie
 

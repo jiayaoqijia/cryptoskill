@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-13T00:47:38.225857+00:00",
+  "generated_at": "2026-11-13T06:35:18.273521+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -30619,6 +30619,68 @@
       },
       "hosted_operators": []
     },
+    "chains/dfinity-official-canister-audit": {
+      "name": "canister-audit",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "chains/dfinity-official-canister-security": {
       "name": "canister-security",
       "execution_model": "read_only",
@@ -30939,7 +31001,7 @@
           "source": "unknown"
         },
         "can_execute_shell": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -31543,6 +31605,68 @@
         },
         "mutable_remote_runtime": {
           "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/dfinity-official-icp-deploy-check": {
+      "name": "icp-deploy-check",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         }
@@ -70971,7 +71095,7 @@
     },
     "dev-tools/simianx-ai-simianx": {
       "name": "simianx",
-      "execution_model": "unsigned_tx_builder",
+      "execution_model": "unknown",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -71004,7 +71128,7 @@
           "source": "extracted"
         },
         "can_move_funds": {
-          "value": true,
+          "value": false,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -226967,27 +227091,27 @@
     }
   },
   "summary": {
-    "discovered": 3648,
-    "processed": 3648,
+    "discovered": 3650,
+    "processed": 3650,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2614,
+      "read_only": 2616,
       "router_orchestrator": 164,
-      "unknown": 364,
+      "unknown": 365,
       "analysis_only": 223,
-      "unsigned_tx_builder": 114,
+      "unsigned_tx_builder": 113,
       "local_executor": 105,
       "installer_bootstrap": 45,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1278,
+      "can_execute_shell": 1281,
       "can_install_code": 590,
       "can_write_files": 212,
       "can_browse_web": 271,
       "can_spawn_subagents": 291,
-      "can_move_funds": 304,
+      "can_move_funds": 303,
       "requires_private_key": 526,
       "requires_hosted_operator": 349,
       "uses_remote_install_script": 43,

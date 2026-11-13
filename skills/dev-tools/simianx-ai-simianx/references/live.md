@@ -3,8 +3,9 @@
 A live session puts the four live agents (indicator, intelligence, fundamental, decision) on one symbol and one
 timeframe and runs them **at every candle close, for as long as you stay connected**: the same engine as the live
 analysis room on the website. Each agent's result and each decision reach you the moment they land, as updates with
-a `say` sentence; a `next_run` update tells you when the next analysis is. When the user says "watch BTC", "live
-analysis", "keep analysing", "盯着", this is what you start. No position is opened: the decision is analysis, and after
+a `say` sentence; a `next_run` update tells you when the next analysis is. When the user asks for a symbol to be
+watched live ("watch BTC on the 15m", "keep analysing NVDA", "盯着 BTC"), this is what you start; if the symbol or the
+timeframe is unclear, ask first. No position is opened: the decision is analysis, and after
 each one you ask whether to connect the user's exchange or broker to act on it.
 
 An autopilot is the same engine running server side without you (`references/autopilots.md`); a quick read is one pass
@@ -32,7 +33,7 @@ An autopilot is the same engine running server side without you (`references/aut
 - `status` is `waiting` until the socket connects, `running` while it is connected (or within the grace window),
   `ended` afterwards (`ended_reason`: `stopped`, `agent_left`, `error`).
 - `GET /v1/live/sessions` lists the key's sessions (`?status=running`), `GET /v1/live/sessions/{id}` one of them,
-  `DELETE /v1/live/sessions/{id}` stops it (also stops the analysis; the socket receives `session_end`).
+  `DELETE /v1/live/sessions/{id}` (on request) stops it (also stops the analysis; the socket receives `session_end`).
 
 ## Connect
 
@@ -40,7 +41,7 @@ Open `ws_url` with the same key the session was created with:
 
 ```
 Authorization: Bearer simx_live_…        (header; no Origin header is needed for a key)
-X-SimianX-Skill: 1.0.8
+X-SimianX-Skill: 1.0.11
 ```
 
 A reconnect needs no cursor: the session's unacked frames come first (`data.replay: true`). Every frame is JSON:
@@ -103,9 +104,11 @@ open for presence. `scripts/follow_run.py live <id>` is the HTTP fallback (`refe
 
 ## What to say
 
-- On start: "Live analysis on BTC (15m) is running; I will report each agent and each decision as they land."
+- On start: "Live analysis on BTC (15m) is running at every candle close until you stop it; I will report each agent
+  and each decision as they land."
 - On each `*_done`: the `say` line.
 - On `decision`: the full plan, "analysis, not investment advice", the next run time, then the `ask`. If the user
   declines the exchange / broker connection for this symbol, do not ask again this session.
 - On `session_end`: the `say` line; if the reason is `agent_left`, offer an autopilot.
-- Never: points, costs, balances.
+- If the user asks what the session uses: it runs the four agents at every candle close until stopped; `GET /v1/usage`
+  has the points so far.

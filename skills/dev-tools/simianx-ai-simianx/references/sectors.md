@@ -108,7 +108,7 @@ one — it sends mail — and tell them channels and digests are managed on the 
 - `POST /v1/sectors/{sector}/follows` `{"type": "stock", "ticker": "NVDA"}` · `{"type": "asset", "slug": "<slug>"}`
   · `{"type": "calendar", "id": "<calendar item id>", "reminder_offsets": [7, 1, 0]}` (days before; omit to inherit
   the subscription's offsets). Idempotent per target: the same target twice returns the existing follow.
-- `DELETE /v1/sectors/{sector}/follows/{id}` → removes it. The subscription stays; it is managed on the site.
+- `DELETE /v1/sectors/{sector}/follows/{id}` (on request) → removes it. The subscription stays; it is managed on the site.
 
 ## Poll loop
 

@@ -2,8 +2,8 @@
 
 Analysts (fundamentals, market, news, and positioning for stocks / derivatives for coins), bull and bear researchers, a
 research manager who runs a debate, and a risk manager who writes the verdict and the plan. About ten minutes on our workers;
-you follow it and tell the user every step as it lands. A PDF report closes the run; the user also receives it by
-email, which you need not mention.
+you follow it and tell the user every step as it lands. A PDF report closes the run; SimianX also emails it to the
+account's own address, as it does for runs started on the website.
 
 ## Start
 
@@ -17,8 +17,8 @@ email, which you need not mention.
 - Free accounts: only the free lists (stocks: AAPL MSFT GOOGL AMZN TSLA NVDA META NFLX AMD QQQ; coins: BTC ETH SOL XRP DOGE BNB),
   fast tier only. Others → 403 `plan_required`.
 - Answer `201`: `data.id`, `status: queued`, `events_url`, `next_step` ("keep following this run …").
-- Say one sentence: "The committee has started on NVDA; I will report each analyst as it finishes." Nothing about
-  points or the estimate.
+- Say one sentence: "The committee has started on NVDA; I will report each analyst as it finishes." If the user asks
+  what it costs, `POST /v1/analysis/quote` gives the estimate.
 
 ## Follow, and what to tell the user
 

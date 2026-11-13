@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "80a3800bcfea5e7c17a4c696f34271d8abc05e8c",
+      "revision": "25b76b485160d357abd124e0eb891a011fdbdeaa",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3680,19 +3680,21 @@
     "exchanges/okx-official-cex-bot": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-bot/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "42c2f8eff4fc8afec45bed69fb80dc9f2187fb7dbd92ae39df3cfb73e490f275",
+        "SKILL.md": "6b982bb679aca20d4a0aa6c5dda7de5abd6122ebf63c835982ce0be21fe94707",
         "references/dca-commands.md": "62586176f7df406318ba09d40b54bc4d90102a0b1695b970c55d919d61a7b0ed",
         "references/grid-commands.md": "4db3bd814a692cdb52c9045e62920993bb3a72eb663181c877ab0d48b5b66c4d",
+        "references/recurring-commands.md": "0e203f71cbe23a8256ab33629e35858a2cf89f9e100d486f67af72db56c94d91",
         "references/smart-portfolio-commands.md": "cd0ef06e890d7f870e1dd9e45ad4d97668cd68afd691e8d4a4c6df74004859c9",
-        "references/workflows.md": "cd3367bc8e378512dbd9a846e0f419cf035fb21689596609698d9173ad99e806",
+        "references/workflows.md": "a3d02ae1db060dcc0f5bbf0ff033739d6a7e1dbb386db3029b03c82b7e4574db",
         "LICENSE": "556e49cb4da10df28ca7b8069145a71ac4f20d44c158dc38f487c075927401a1"
       },
       "modes": {
         "SKILL.md": 420,
         "references/dca-commands.md": 420,
         "references/grid-commands.md": 420,
+        "references/recurring-commands.md": 420,
         "references/smart-portfolio-commands.md": 420,
         "references/workflows.md": 420,
         "LICENSE": 420
@@ -3701,9 +3703,9 @@
     "exchanges/okx-official-cex-earn": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-earn/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "3c34f4a952cb8dbd03aae1b0e42bde2e3c817cc384aa9bab674f7b3599f2773d",
+        "SKILL.md": "8934f2608084de1e54fcff57eb0c4ea7cd1b747a06686ca2ebb82fcf2b255ab2",
         "references/autoearn-commands.md": "353cd77b73553adf595749eb5b8188e19d0711ba4cafb248c18819035bfa849c",
         "references/dcd-commands.md": "cf03e3ec9a05d1058cdb483868f6fa2bbe16a61d5d23c01d5f66e940b13043d2",
         "references/flash-earn-commands.md": "c4a3e42678da9a8d699c94643a9f023822f2d44ffbf1febf65db1d514a5003a2",
@@ -3728,14 +3730,14 @@
     "exchanges/okx-official-cex-market": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-market/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "3d920e4bd3550b6ec5da53ca38624d8df0f31f9cb8ad1390f2adf46922b3343e",
+        "SKILL.md": "4c4b7ff2c089564164df83cbe98062912949482e85219d2f318769b3a46349b4",
         "references/derivatives-commands.md": "1a1698408e56bb869e8aaedd2b370c0c2022e9e61d8cbaeb18c18f3dc7b24ae2",
-        "references/indicator-commands.md": "5d0a7ba8ea7c36fc8418ecaa13c6575c4db806ab6096c24d76f3263713b2501d",
+        "references/indicator-commands.md": "6d3036374bf53e8118ec73ca987fd7011db7b05adf4eb87cad2dbeae512d8d72",
         "references/instrument-commands.md": "5854da12fdd79a4aa702faf07629c15d24df499b8132f56a3ff8299288a98d5d",
-        "references/price-data-commands.md": "d30d5f401fdfadb4c38c0158cfceccc14d31558a00a6a43264657309bd5f6733",
-        "references/workflows.md": "a6e1b2989bf44c90cfdb68f62f08e99310892c3415d927567fabde987cb21788",
+        "references/price-data-commands.md": "f22abee73058d438b44ceb5795f98a1fb8893b5b7bca6cf0c05946e0850ebf83",
+        "references/workflows.md": "995a4f638147c4d07893984afe4e70c72d00ab4e960ac8de7746811f9fc0ca0a",
         "LICENSE": "556e49cb4da10df28ca7b8069145a71ac4f20d44c158dc38f487c075927401a1"
       },
       "modes": {
@@ -3751,9 +3753,9 @@
     "exchanges/okx-official-cex-portfolio": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-portfolio/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "de547e6b2256bcd6480c32088eaa544bd6b8d62128ca1515c507e664f6a8d3da",
+        "SKILL.md": "dc53cb9866d6f6cc14f71b8b0683135c0f1b97a79bc6f717a4dbccc6dfa2e264",
         "LICENSE": "556e49cb4da10df28ca7b8069145a71ac4f20d44c158dc38f487c075927401a1"
       },
       "modes": {
@@ -3764,9 +3766,9 @@
     "exchanges/okx-official-earn-hunter": {
       "repo": "okx/agent-skills",
       "path": "skills/earn-hunter/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "eff516b7b0310a5dccaeba40ecec676299f32ef4d522e6d4a0ee79f02158d7f1",
+        "SKILL.md": "0e8986c0bc2484510a341e678984a4f53b39b7d9648203789073c3da1198001e",
         "config/claude-code.default.json": "e64ff74c1bf305bef9b785a5218449f5bf48bf5cadc752e98549b43f9af7e18e",
         "config/default.json": "d8207e7648ab9f576188e9360bf804d8f669a8ec05f4b362eb75077cf6a63854",
         "config/openclaw.default.json": "dddf48c74ea8748ae207f1ab8c2e1ddbbbacafb3cf2513ba321880788bfab734",
@@ -3807,9 +3809,9 @@
     "exchanges/okx-official-okx-cex-auth": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-auth/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "528265c64f0b28cacc784ab191df4100352b25ea11c1ac19e3a0315de24be418",
+        "SKILL.md": "90cda163f8f8f242e5c6e9463275ccd491446eac87800182ddc1d03b9e313269",
         "LICENSE": "556e49cb4da10df28ca7b8069145a71ac4f20d44c158dc38f487c075927401a1"
       },
       "modes": {
@@ -3820,9 +3822,9 @@
     "exchanges/okx-official-okx-cex-skill-mp": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-skill-mp/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "71e9ef52e7a64e2bfd84382371241d46e9d2618f05eb10cf34d6a87ca25980b4",
+        "SKILL.md": "cae1afb95b70256231fb9687d6fe293415c4795c77f32bbd5d1122dcdc04a230",
         "LICENSE": "556e49cb4da10df28ca7b8069145a71ac4f20d44c158dc38f487c075927401a1"
       },
       "modes": {
@@ -3833,9 +3835,9 @@
     "exchanges/okx-official-okx-cex-smartmoney": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-smartmoney/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "b457db9e2014711362497538c892471bd420a8c8dd3c3b2898fd916a47383f8b",
+        "SKILL.md": "83fca6920569e08dbaaf02cfc10dc7450d0e95b5a0639c93ae484f7f46f4a654",
         "references/signal-commands.md": "537ea755bbeec9087082e1df472d52c40214dc9d50f1e4a32f39611a5b3f30b8",
         "references/templates.md": "efd85edadd3a35fe3120987a5f19ad48b0ca5abc123b3e4713d6ac0ddbc9adeb",
         "references/trader-commands.md": "0295cfebd770624ab2192cc044805070484e13a04f69b9e2f6363ede249a4ff6",
@@ -3854,9 +3856,9 @@
     "exchanges/okx-official-okx-sentiment-tracker": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-sentiment-tracker/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "16f26d9d3d2b307e4399026509430640119cb0ab3cdf4f5ba71624bec7e2e271",
+        "SKILL.md": "91c70e7747b9c6417638bfd9df4f5fefe116ced0203a9aed0a555b84f40c84a4",
         "references/workflows.md": "05989b72fe08ccbc9f8d8594b0da52d0fd0e49ebb9964712a8e5cf9888022e9a",
         "LICENSE": "556e49cb4da10df28ca7b8069145a71ac4f20d44c158dc38f487c075927401a1"
       },
@@ -6711,11 +6713,11 @@
     "analytics/nansen-token-research": {
       "repo": null,
       "path": "SKILL.md",
-      "revision": "0.1.3",
+      "revision": "0.1.4",
       "files": {
-        "skill-card.md": "a4e0c8a8d7ad58aa9c9258b91c7ee03e51352b749a7f4ebb06b049b485af171e",
-        "SKILL.md": "7e8cc354ac808fd94a837868aa81bc1a8bb66d1c046e56e7d1c7849cd24be30c",
-        "_meta.json": "7029e84c2848cbcee4c98e56e9eda38be22a9831e148e6c8e8ab5f8a5ce55da1"
+        "skill-card.md": "3911d4a6884c9cbc80fffc7b3a521d7cf62208d724385bdaf6328224ae0c26df",
+        "SKILL.md": "110536f4a6045ae798263795baaed0ebc2c841959238b303742a75bb9125bf27",
+        "_meta.json": "e5f25ef35034aaeffeec1689e7e601ef1b8c112cd7f5b1759c0e629abc3ce3f4"
       },
       "modes": {
         "skill-card.md": 420,
@@ -12484,7 +12486,7 @@
     "chains/dfinity-official-agent-web-identity": {
       "repo": "dfinity/icskills",
       "path": "skills/agent-web-identity/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "122b8c74b0cbc4228e8fc6aa2c7eeb135607970c89c8dd9278fa6fc490510fa9",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12497,7 +12499,7 @@
     "chains/dfinity-official-autosync-ic-skills": {
       "repo": "dfinity/icskills",
       "path": "skills/autosync-ic-skills/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "2f5360afb0900c55c6ec7aa60b5bfd8cf82ba30334929413a8081f955879048f",
         "scripts/sync-ic-skills.sh": "3f9a83ccacb1c8585c116518ab5530e321f359ec23478727f36e19e662a3fb8d",
@@ -12512,7 +12514,7 @@
     "chains/dfinity-official-caffeine-app": {
       "repo": "dfinity/icskills",
       "path": "skills/caffeine-app/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "bd209098eb36d3b6dbb951060e6a50c9b5fa11884c1a1baf3320926db7b35c9a",
         "references/frontend-template.md": "f4950e5eed41199ae2412027b46e6734fdf93632ba7290065b2b1d5873e5472b",
@@ -12527,7 +12529,7 @@
     "chains/dfinity-official-canhelp": {
       "repo": "dfinity/icskills",
       "path": "skills/canhelp/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "ac6fa1112b62aa04f6ead45767aa43dca0a42604b106c0e53e56dd07b73a3857",
         "scripts/fetch-candid.sh": "80f58a3eadbc9e450ebd5e49e2124da3414a727644ad8ba83d10fde6ee3e14fc",
@@ -12544,7 +12546,7 @@
     "chains/dfinity-official-certified-variables": {
       "repo": "dfinity/icskills",
       "path": "skills/certified-variables/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "5c84bafc545e3564b61d268cf0be8628e4873e1f6402faafd264e3cef40077d1",
         "references/http-certification.md": "3d67b8f21ad0bc01aaf2d61813c3dc565f66dea9f7486d48f8044dd8a504dbef",
@@ -12559,7 +12561,7 @@
     "chains/dfinity-official-ckbtc": {
       "repo": "dfinity/icskills",
       "path": "skills/ckbtc/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "cfe034f600e0d83aa4774d7ac9d9b346be8e70bca18fbbf223c5a00922aae97d",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12572,7 +12574,7 @@
     "chains/dfinity-official-encrypted-maps": {
       "repo": "dfinity/icskills",
       "path": "skills/encrypted-maps/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "9082159b0437b07a3b36fc99a1ce4931f581d82ac1889c2ee153935cec805ee3",
         "references/metadata.md": "65ac629096ab1c2fe299bc050d3df53b7bbc01b75e52a7d910ebdbbd616754fe",
@@ -12587,7 +12589,7 @@
     "chains/dfinity-official-ic-dashboard": {
       "repo": "dfinity/icskills",
       "path": "skills/ic-dashboard/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "8e4e23da99f9acf1484a84e338ed2ebda42de36dcd4d9603c4b7cca030908e92",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12600,7 +12602,7 @@
     "chains/dfinity-official-icp-brand-design": {
       "repo": "dfinity/icskills",
       "path": ".brand/icp-brand-design/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "abae2d33b1604b69bdd1038582b340567601e4acad125aa3ff858494d10a3288",
         "assets/tokens.css": "02a8f3e1f73a6bd6e679364e9dbd1d1087e0f726811e35c798ae65f7f706347b",
@@ -12615,7 +12617,7 @@
     "chains/dfinity-official-icp-brand-voice": {
       "repo": "dfinity/icskills",
       "path": ".brand/icp-brand-voice/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "56539f831c9af3b1b1c21545d77d39fbd84c881c22b2904491f94894cb13b7e1",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12628,7 +12630,7 @@
     "chains/dfinity-official-icp-cli": {
       "repo": "dfinity/icskills",
       "path": "skills/icp-cli/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "8ef6cd24bb22a6c87a1c81dc09b7ae0d0c5fcc7681da69741d71032aab9d0214",
         "references/binding-generation.md": "7c58e1b2c302c6bc4cb4c97b3582435af1c7cefb7693a5cadd5e48f1beed1808",
@@ -12651,7 +12653,7 @@
     "chains/dfinity-official-icrc-ledger": {
       "repo": "dfinity/icskills",
       "path": "skills/icrc-ledger/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "4f8cdf9cbd6cbbc289ae2700ba99c3469b4ad0a626b4879960ecfc95802a3d6b",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12664,7 +12666,7 @@
     "chains/dfinity-official-mops-cli": {
       "repo": "dfinity/icskills",
       "path": "skills/mops-cli/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "c9ea00c09a43ce10ff3e7db54471079028cbbec9a4282bb6d3b720f32c63d0fc",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12677,7 +12679,7 @@
     "chains/dfinity-official-multi-canister": {
       "repo": "dfinity/icskills",
       "path": "skills/multi-canister/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "178e11578e993ba13ea72ef3bb572d63f7f103cb4dc5b25dda80320d07cb6688",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12690,7 +12692,7 @@
     "chains/dfinity-official-reviewing-motoko": {
       "repo": "dfinity/icskills",
       "path": "skills/reviewing-motoko/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "5f338e1841c5e5efc8666fda1b2c53f391c904ec15d8a3c90dfa65345e0eb1e7",
         "references/state-and-persistence.md": "d2408d7b36b0827eed65c0ec9669a63ba7b6e17c8e9bb0f7f02ca3e1658ff9d7",
@@ -12707,7 +12709,7 @@
     "chains/dfinity-official-service-discoverability": {
       "repo": "dfinity/icskills",
       "path": "skills/service-discoverability/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "dda3888f7095c3c03647b7e2d860285ce52d6a748c62aa611c7962ce46d3c5a3",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12720,7 +12722,7 @@
     "chains/dfinity-official-sns-launch": {
       "repo": "dfinity/icskills",
       "path": "skills/sns-launch/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "3f018e10c9082b2e03c307137bc5a147125334aff02db63b6f0ee1e53e47ee08",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12733,7 +12735,7 @@
     "chains/dfinity-official-troubleshooting-motoko-migrations": {
       "repo": "dfinity/icskills",
       "path": "skills/troubleshooting-motoko-migrations/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "637d3f6d42f9e0dd9549d17d6cbacc08851c2b20698b5bc18d5a5ddd894d2e7a",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -12746,7 +12748,7 @@
     "chains/dfinity-official-vetkeys": {
       "repo": "dfinity/icskills",
       "path": "skills/vetkeys/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "beb71be985de26037628bc7a7fedbb7fcb157e12a806edda5a2f89be2103a414",
         "references/bls-signing.md": "1cec9c2ca986506ccadd0df8ab537b6c04e489f3695ff4e3362cd198df4961fd",
@@ -12763,7 +12765,7 @@
     "chains/dfinity-official-wallet-integration": {
       "repo": "dfinity/icskills",
       "path": "skills/wallet-integration/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "f1ad38c708c82f26ed10f3478ea4ed657b9c82373995342714d6955a3d4cd25d",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -16933,7 +16935,7 @@
     "chains/dfinity-official-improve-ic-skill": {
       "repo": "dfinity/icskills",
       "path": ".agents/skills/improve-ic-skill/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "77b490a1e2e864a3f1f8f2ef7d9fc79bc5adf79f4cc9aff6b4b15c7146a1f743",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -16946,7 +16948,7 @@
     "chains/dfinity-official-skill-creator": {
       "repo": "dfinity/icskills",
       "path": ".agents/skills/skill-creator/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "LICENSE.txt": "bc6b3af2f331cbc7fb0da1344efb2cbe5877a31498b4d70dbc7000f3405a1362",
         "PATCHES.md": "f31e8abb3e8fac2ba94df246a525edb64671dde7f69cde74572db3333cdee2a1",
@@ -16995,7 +16997,7 @@
     "chains/dfinity-official-canister-security": {
       "repo": "dfinity/icskills",
       "path": "skills/canister-security/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "a22daeb650cdc37ef6b3dc4a1f5cdcc35842a795459ac2953eff2412bcc4a022",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -17008,9 +17010,9 @@
     "chains/dfinity-official-cloud-engine-canisters": {
       "repo": "dfinity/icskills",
       "path": "skills/cloud-engine-canisters/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
-        "SKILL.md": "c9c3b71ec0edd4a426b9d2e807e1dab05f6e88ce6a823ce0a413762801cca0c0",
+        "SKILL.md": "01dacae3c01326198a4abdab3201af6e590411739bd9138ab2e0b077954daf3f",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
       },
       "modes": {
@@ -17021,7 +17023,7 @@
     "chains/dfinity-official-custom-domains": {
       "repo": "dfinity/icskills",
       "path": "skills/custom-domains/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "5d11244646de2598d95ac2d3802d7af2a5d46173ed1319aa8e9ec1789be0a7c4",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -17034,7 +17036,7 @@
     "chains/dfinity-official-cycles-management": {
       "repo": "dfinity/icskills",
       "path": "skills/cycles-management/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "4d2fbc72547d83b22f8d237dda684e0b3f683a4b54a9b457844484f1e31ae13f",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -17047,7 +17049,7 @@
     "chains/dfinity-official-deploy-to-cloud-engine": {
       "repo": "dfinity/icskills",
       "path": "skills/deploy-to-cloud-engine/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "3d06e809ee8dde3d900d22a238f330c734a2494395127ef6b4ecfd14e5973e9c",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -17060,7 +17062,7 @@
     "chains/dfinity-official-https-outcalls": {
       "repo": "dfinity/icskills",
       "path": "skills/https-outcalls/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "87baae331ed3c06861f2d4021064dab75a4d043dba85f67e9ce1a0e720b3ac82",
         "references/flexible-outcalls.md": "0e90b259a0e01b7cafa47020efd17d3a20c71d9a7965fcd31828535d6f338380",
@@ -17092,7 +17094,7 @@
     "chains/dfinity-official-migrating-motoko-actors": {
       "repo": "dfinity/icskills",
       "path": "skills/migrating-motoko-actors/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "81d27ae7ceae734906dddb906c24b69262615b98a4c65a64602dbe62d9ccd4bc",
         "references/examples.md": "ca4a527e632cc12f0e5f8b7135c9d090c10fee1854025eda658bce04ca06fd21",
@@ -17107,7 +17109,7 @@
     "chains/dfinity-official-stable-memory": {
       "repo": "dfinity/icskills",
       "path": "skills/stable-memory/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "1b7b7efe308aaa54fe8d29d253942a9daba90e893e46d7b26759158e93ecbc57",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -17120,7 +17122,7 @@
     "chains/dfinity-official-static-site": {
       "repo": "dfinity/icskills",
       "path": "skills/static-site/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "f3aca7f42968be4614c7e4ff761be0ba424ffc0e28fcbe1c6524eaa80fcc0073",
         "references/legacy-asset-canister.md": "6afc5e5b9dfe8cb2a85d87a79b463585434af92f9d0b6c343575e9267e49dd73",
@@ -17137,7 +17139,7 @@
     "chains/dfinity-official-writing-motoko": {
       "repo": "dfinity/icskills",
       "path": "skills/writing-motoko/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "baee653ea00f262c7bfa96ca5308124e2cbf5a514484dd7645876d536e034832",
         "references/api-reference.md": "649096399d9402c28d94f324d4ade1969b026caa2e249e1d166fc615421961b7",
@@ -17499,9 +17501,9 @@
     "exchanges/okx-official-cex-trade": {
       "repo": "okx/agent-skills",
       "path": "skills/okx-cex-trade/SKILL.md",
-      "revision": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+      "revision": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
       "files": {
-        "SKILL.md": "98cead6e2c5648eb857668e3d61e14bfa5448c7d71c84d295c36d5b2e763b2b7",
+        "SKILL.md": "14141cce06522e2c179537e025032564dec48f5a7dcd642d7fa35d6e90a968bf",
         "references/event-commands.md": "b005ad1087d98ef24dd68ec27de09b6ef80e9ac14b7f64c3b5a162811c4c45e2",
         "references/event-workflows.md": "8cef0c2350db6d3778daa91c18b7cc0556061379c58a6abf3c4b56494d9f8c27",
         "references/futures-commands.md": "4f0a5525dc9c4181050ad89415008b8bd853e36c4e5e27c4047f94ba2bfec5a1",
@@ -23072,7 +23074,7 @@
     "chains/dfinity-official-autoupgrade-icp-cli": {
       "repo": "dfinity/icskills",
       "path": "skills/autoupgrade-icp-cli/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "09defc3d792a7c2a2bcbe082fff554ce80b12b745e54af014c877f302b127ee1",
         "scripts/upgrade-icp-cli.sh": "f26ebb091f0ea7134330f6f9a30713ec9c7b916899586e1bc979612163b90ff2",
@@ -23636,7 +23638,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "fbf3c3d70c14364c0be86e39aa7f84e1dd3e3c8c",
+      "revision": "086af5e98c77b2d7e2ab74e995a3b0c065fedac6",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/v3.yml": "69328df330f33f515c8b4d91d8d1b0516f701606ca268595968151cb0c005cb8",
@@ -23647,11 +23649,11 @@
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/card-v3.png": "205a0f531821805ca398dfc322cc923d124be52e50d2b9d341d3a82d90ec7740",
         "docs/card.png": "f5c9652f9ce62ba9ae88ffa37d103af19b9ea7e619d303c94b92aa94f8bc424f",
-        "docs/data/top-allocators.json": "6eb086ca4091fdfecf8efe322dbbd97fe2e4a871ac7cec0545ae5aa07b0d004d",
-        "docs/data/v3-history.json": "e105e5f84c2ae6f0250e47fc73b6493f8d0b99870587520f4a855c9100963fb8",
-        "docs/data/v3.json": "9d4051a5629d6e46517f36fd51ec7e7af68e7700effb7df4bdb0da90a70e47ef",
+        "docs/data/top-allocators.json": "285a2648f15969d93d8c1f338bd0a6a7b277b92a6e84d0e70a69ced85dd8f154",
+        "docs/data/v3-history.json": "74499f6823eb676d44f98a4162533cec149172da0831f3aa16ad61aa485e449c",
+        "docs/data/v3.json": "9fee8a7ae37601e8f5ce9683ca81d500bc6aac3f6f7ea92a0c918da1336c2e29",
         "docs/index.html": "6e8b860a4b10df60f5f5bfb98cf309703b496123a5dd9e6d2b0919fb7a3c4e70",
-        "docs/llms.txt": "f84f190e97dd53067b5497546293ad4bb56d67d10d7a2aee18ad75a4a4c6994d",
+        "docs/llms.txt": "4203f99cdc9d610999a2b1af3eb8375f960640b30f09ce13febe89bb8aa18d58",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "a5274eac2ea6e3cfcf36b9b31f4e6d36836bedfebef4ebde3e65d0acb1fe4168",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -44528,7 +44530,7 @@
     "chains/dfinity-official-buy-cycles": {
       "repo": "dfinity/icskills",
       "path": "skills/buy-cycles/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "31a1620a954e23b1dc5ef2502c868db612ee850e39ddbbe526f15236bb15133a",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -44554,21 +44556,21 @@
     "dev-tools/simianx-ai-simianx": {
       "repo": "simianx-ai/simianx-skills",
       "path": "skills/simianx/SKILL.md",
-      "revision": "32ee28e4aaa4272172d113e1040549b5c8b9bb93",
+      "revision": "ed93ff0bf5a5f9a928cc8136efaa3f42389f0b33",
       "files": {
-        "SKILL.md": "3a1bc156ef7be5c5e74f7055829ea2f438e6ec848d31732564bca618dcdcb4da",
-        "agents/openai.yaml": "9c6433239994e91afc7986de3dc184af41d21762627805f865d3f4dbb3ef4de1",
-        "references/auth.md": "e71ce5f9ad01586d93f13307461a4b97769b0ff60fa7e9cb1118c3c09299297c",
-        "references/autopilots.md": "be4d85b637779c639bf4bfa755f624b8e2b89da432bb71f21a8dd07bec12fb98",
-        "references/billing.md": "63396cfc7bf070e7cf55f6d9780fa4a973a4426e2bdcab178b54a221ce737477",
+        "SKILL.md": "ab2d0de415c09e43bb6c18eca1ddbb267f1c1ea693104f8764fbd58331276870",
+        "agents/openai.yaml": "12d99f3a148e720fb263cd64ba41aa4016de721e47fd42cee4bab4ca38001b05",
+        "references/auth.md": "3fb091150a2b99d77641ab4d85591ef971b87a46a374adca71f02876e183304f",
+        "references/autopilots.md": "5b356650c22ed1b29981852b44cb2ae79440393596e1f96e0f37c0ee9b91841b",
+        "references/billing.md": "8747ff464cd4b533ed8261660a9574cb1ba265fdaa13486ee1a583c5a9b0e0a5",
         "references/data.md": "c815c7b472f820468a3cfa323b7e9d601159528cd526b63c04d8e830601b3815",
-        "references/deep.md": "d67010e4a48970781de7c2e7af37580677b268dd687e5df23b652253ce4e09c4",
-        "references/developers.md": "2c7e24dba854a0c968e240af37fe3562a81cac48919941dab6744c42c28bfc0f",
+        "references/deep.md": "ebdd0c3bd070a17e9be2612c925f4268406cc2f10d6a3799554cb8c5947901f5",
+        "references/developers.md": "ff823e06a5d167ed64991bcc47e2ec791ccf068c7014ca20e79928ee3577186a",
         "references/following.md": "df93491ace2d798c6bcb65e29d2256b864253832e481df973e75479726f13fc6",
-        "references/live.md": "bb03af987a63da83b656f477395a1b365927acc9387551c4cd3a0b0dff0cf2f2",
-        "references/news.md": "657fbec91104659077742f2215ee7133a276fb727a7be8c98837bcf389cb7c04",
-        "references/quick.md": "4d3a57d81a928db561bc04bc7f327fff1d6a86261aec6c65098f862bd392bddb",
-        "references/sectors.md": "3fd8c627c83f07685ef25f51776ce4f880922fe011671e70bd3f24b0a80e6413",
+        "references/live.md": "9290c3776c0e64ccf706572791dda796a0cc36e6763cd0836a0c0c8ee1c48bc0",
+        "references/news.md": "011b7f958f6e983176482e8bd71cf79e57a2532be72dd6575d755fa8625b6687",
+        "references/quick.md": "029d716d27f0698f5e929d47510332a3f885f0f79d58adbfe37e1327ea4b5945",
+        "references/sectors.md": "d172b46951b5147d7c57d801a62413b6f164ce03797342339908551f01e97d0c",
         "LICENSE": "3dafffe8dd157a122f7e8201b451426aff8a5af6b893ab074b74135a9d7a67b0"
       },
       "modes": {
@@ -45760,7 +45762,7 @@
     "chains/dfinity-official-smtp-gateway": {
       "repo": "dfinity/icskills",
       "path": "skills/smtp-gateway/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "9bfbb5393a63d595a6ebe8b4beab7acd8ee87bb2df42323a8ff037715a5e20a7",
         "references/chunked-upload.md": "859323819b5a6d896daca68836ad9aa069d5849db22a04bf9cac9ab52955d46e",
@@ -46539,7 +46541,7 @@
     "chains/dfinity-official-cketh": {
       "repo": "dfinity/icskills",
       "path": "skills/cketh/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "69318bb1abf201cd3f1f6f45e98bbeee7776c84866d019ac74a0210f96f18e41",
         "references/backend.md": "71cc641a0da7c42aec532aef6031a5d4b4f1612adab8f0cca7c797db05208b8b",
@@ -46556,7 +46558,7 @@
     "chains/dfinity-official-cksol": {
       "repo": "dfinity/icskills",
       "path": "skills/cksol/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "a97679263c66e170f9e6efde6f41ed6588f9b5c54343c6abf5cc808931f6fc08",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -46898,7 +46900,7 @@
     "chains/dfinity-official-organization-sign-in": {
       "repo": "dfinity/icskills",
       "path": "skills/organization-sign-in/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "619f43ef325e0ebd008ea4be81fa3884202a7726adb30b4a42bc4c4c64614ca6",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -46911,7 +46913,7 @@
     "chains/dfinity-official-single-sign-in": {
       "repo": "dfinity/icskills",
       "path": "skills/single-sign-in/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "eb39c57c442bc3d99fa124bb44cbb708072eee4d34649205106d0e2b7fc42768",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -46924,7 +46926,7 @@
     "chains/dfinity-official-user-attributes": {
       "repo": "dfinity/icskills",
       "path": "skills/user-attributes/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "5f1b740912b7e3f507aeb0ba432fb57f3184abcfa75a95e0cdf0927e12d2a385",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -46937,7 +46939,7 @@
     "chains/dfinity-official-user-notifications": {
       "repo": "dfinity/icskills",
       "path": "skills/user-notifications/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "74cabd26565de37ac25fbc46fa1600d1df63f8ec8c23441f4c483c0e9e53cd38",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -46950,7 +46952,7 @@
     "chains/dfinity-official-user-sign-in": {
       "repo": "dfinity/icskills",
       "path": "skills/user-sign-in/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "9470ac95633769f91259ee8f6e18fcf7e8007820fcea6886267baced28aaa376",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
@@ -47614,9 +47616,35 @@
     "chains/dfinity-official-migrating-to-moc-2": {
       "repo": "dfinity/icskills",
       "path": "skills/migrating-to-moc-2/SKILL.md",
-      "revision": "580f70e39623138150284c9ab4cf096636c19b1d",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
       "files": {
         "SKILL.md": "bfc07e617d616cd1c6d0ca33de22b89f8f4eae301063a24a8fe37a7d5b325572",
+        "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "chains/dfinity-official-canister-audit": {
+      "repo": "dfinity/icskills",
+      "path": "skills/canister-audit/SKILL.md",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
+      "files": {
+        "SKILL.md": "f8b7c20d7a92ec51035e26664a8fcf5e75862d4e74b50c54767041fc529a1517",
+        "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "chains/dfinity-official-icp-deploy-check": {
+      "repo": "dfinity/icskills",
+      "path": "skills/icp-deploy-check/SKILL.md",
+      "revision": "ad2900d88ddb931d2f75c188a2d037d32f501bbd",
+      "files": {
+        "SKILL.md": "1647d90daa553f2df0c3638146385152bc436d69417481cefd5a4d4ce55a7fdb",
         "LICENSE": "da3a1730b16cd3437d830f3890091a8c2084df6320c25ed5ef3bd93a64263628"
       },
       "modes": {
@@ -47656,11 +47684,11 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "8e6351b7a454020ec1b1fcd24a3f27d1d6fd27be",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "80a3800bcfea5e7c17a4c696f34271d8abc05e8c",
+    "jiayaoqijia/cryptoskill": "25b76b485160d357abd124e0eb891a011fdbdeaa",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
-    "okx/agent-skills": "f299d194d36c626a9a1d9a50245c8e1640b62230",
+    "okx/agent-skills": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
     "hypurrquant/perp-cli": "b4634349c596b4f724d758d3a4fbd1cdf03a6c22",
     "aibtcdev/aibtc-mcp-server": "b4714b00851428688c4e8950e457e5297ad72ba4",
     "cumpsd/broker-as-a-service": "890029c51731cfed899d9216f03ef9cfcee1f3be",
@@ -47691,10 +47719,10 @@
     "portkey-wallet/ca-agent-skills": "c0c982a5b5eff5ecfb8ca616fe2db85272519a74",
     "bitget-ai/agent-mcp": "486a7c5b2769e452bc7d3b39337cb6d3f9b1a0d3",
     "bnmbnmai/mcp-proxy": "0a6b33472293fe1e2771faf375f0215d045dbc6e",
-    "scutuatua-crypto/whaletrucker-ecosystem": "4d9b6f5f7b8d29d84bee7f3c716364d108d779f2",
+    "scutuatua-crypto/whaletrucker-ecosystem": "0751112b91dcca8486155be4bea1ffd8d80f3622",
     "eschatological-cpi959/finance-mcp": "c0f17fc3a76367ffbee3a1b037d58bdbf396adf1",
     "fibrous-finance/fibx": "6cdf3bf3ed76b6636825a17dccba99b01f16837f",
-    "danny-397/rl-for-crypto-and-stocks-": "9bc4f1c4408a1d91a1c5bafac3c8c8b0fa77f439",
+    "danny-397/rl-for-crypto-and-stocks-": "401f9b494412589c7916a32d16b6c664d70ba6b5",
     "jup-ag/agent-skills": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f",
     "metamask/openclaw-skills": "a0ec29ada8d53edf5a3f24370bec058767157433",
     "bybit-exchange/kaas": "41fd0d0b64d61d5ae39d5fe23e5c689179d2efa6",
@@ -47740,7 +47768,7 @@
     "nirholas/ucai": "a2b8e7557ffc70e08ad849993371c6746b2a9be1",
     "nirholas/lyra-tool-discovery": "511393a5d386fa913a803f1a398c5000669c7681",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "fbf3c3d70c14364c0be86e39aa7f84e1dd3e3c8c",
+    "araxis33/aero-vote-radar": "086af5e98c77b2d7e2ab74e995a3b0c065fedac6",
     "paulf280-ui/cabal-hunter-mcp": "9d0de91567593976367d1bdd5ef1696b90e92bd7",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "e1be678c3f5b2c9e7d01834deeeb2edb2819eb97",
@@ -47820,7 +47848,7 @@
     "covennetwork/mcp": "808d3c671586d2afe36298aa05abed3b4e34a1fb",
     "gentech-labs/gentech-agent-kit": "2bf211824f9773d75b69f41c90460870929d2ede",
     "lpsignals/lpsignal-mcp": "a9cd4b4f9eab4853519667d46fb214c352fe0990",
-    "simianx-ai/simianx-skills": "32ee28e4aaa4272172d113e1040549b5c8b9bb93",
+    "simianx-ai/simianx-skills": "ed93ff0bf5a5f9a928cc8136efaa3f42389f0b33",
     "tuantqse90/moltnode-mcp": "c671e7493e2301a63a8ad24ae259e053363880fb",
     "sentioxyz/sentio-connect": "3e78d91ff1e254d353a591e8327a9724a4b5984f",
     "cristallin2006/dsh-ctf-skill": "bd38db1eecf6fda89dd79e832d120ddb4b944319",
@@ -47839,7 +47867,7 @@
     "dalee66/crypto-chart-agent": "9bf7c901a2d5ac629abedaba6e2f19b7aa824d2c",
     "nirium-protocol/nirium": "917855097f5aee907f78a6a259ca55d24a73708d",
     "rezearcher/greyridge-x402-tools": "8d4c8396a589a4e5c926171cf8e52ddadec80a59",
-    "cp0x-org/cp0x-mcp": "d9aa3d248f13e15d78fb0b23e3c26ad947eebc67",
+    "cp0x-org/cp0x-mcp": "455b14e5538a081f8afa0b2763e4dc66bc9c7228",
     "wickedapi/wicked-mcp": "1a9c6079dfd571b55e6c5114f94005dbd22a19d8",
     "cryptyx-ai/agents": "406a587da0ba3e192c39dbd8c266fda38b2ada8c",
     "dingyining2007/poolsentry": "a85bb68d31451e994db2f260b46e040ee8a528ef",

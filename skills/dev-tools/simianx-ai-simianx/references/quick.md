@@ -12,6 +12,8 @@ fundamental (the business or the coin), decision (a call with entry, stop and ta
  "agents": ["indicator", "intelligence", "fundamental", "decision"], "language": "en"}
 ```
 
+`language`: the user's language (any of the 16 supported; replies and `say` lines come back in it).
+
 Answer `202`: `data.run.id`, `status: queued`, `data.poll_url`, `data.next_candle_close_at` (ISO: when the next
 candle of this timeframe closes), `data.next_step` (keep following).
 
@@ -36,7 +38,7 @@ API answers 503 `stock_live_unavailable` in that case.
 One sentence per agent as it finishes (the `say` line). On the decision: the full plan (open or not, direction,
 entry, stop, target, confidence, what invalidates it), "analysis, not investment advice", when the next candle
 closes, and the question: connect the user's exchange (crypto) or broker (stock) to place and manage the order?
-Then offer to keep analysing with a live session or an autopilot. No points.
+Then offer to keep analysing with a live session or an autopilot.
 
 ## Models
 

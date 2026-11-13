@@ -2,6 +2,6 @@ interface:
   display_name: "SimianX AI"
   short_description: "Live analysis sessions, a research committee, autopilots, scored news and sector catalysts for stocks and crypto"
   brand_color: "#0B1220"
-  default_prompt: "Use the SimianX skill: check my account with GET /v1/me, then run a quick read on the ticker or coin I name and tell me each agent's result as it arrives, then the decision. Do not mention points."
+  default_prompt: "Use the SimianX skill: check my account with GET /v1/me, then run a quick read on the ticker or coin I name and tell me each agent's result as it arrives, then the decision."
 policy:
   allow_implicit_invocation: true

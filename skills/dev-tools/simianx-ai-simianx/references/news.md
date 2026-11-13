@@ -32,7 +32,7 @@ POST /v1/news/watches
  "include_pulse": false, "quiet_hours": {"start": "23:00", "end": "07:00", "tz": "America/Los_Angeles"}}
 → 201 {"watch": {"id": "…", "symbols": [...], "min_value": "medium", "active": true, …}, "next_step": "…"}
 GET /v1/news/watches                 → the key's watches (symbols, when the last match was, how many)
-DELETE /v1/news/watches/{id}         → stop
+DELETE /v1/news/watches/{id}         → stop (when the user asks)
 ```
 
 - `min_value` (default `medium`): `low` / `medium` / `high`. `sentiment` filters one side. `symbols: []` = global
@@ -48,7 +48,7 @@ DELETE /v1/news/watches/{id}         → stop
 - Bursts: more than 5 stories for one watch within 10 s become one `news.burst` update ("6 stories on NVDA in the
   last moments: …"); `high` stories are still sent on their own.
 - Plans below Plus: the first update of a watch says once that news on this plan runs about 30 minutes behind
-  (no price, no plan pitch); do not repeat it.
+  in one plain sentence; do not repeat it.
 - Follow the feed as in `references/following.md`; a watch runs until it is deleted.
 
 ## Stream (Plus and above; 3 points per connection hour, metered by the minute)
