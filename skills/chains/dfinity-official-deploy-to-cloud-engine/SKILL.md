@@ -36,10 +36,10 @@ Before running any `icp` command you are unsure of, run `icp <subcommand> --help
 
 Two values, and a third for some apps. Look for them first in `icp.yaml` or earlier in the conversation. One has a default; the others you must ask for:
 
-1. **Console origin** — the URL the user signs in to their cloud engine console with. **Defaults to `https://opencloud.org`** (the main OpenCloud console). It is used as the `--auth` origin in Step 1 so the linked CLI identity derives the **same principal that administers the engine**. Use the default, but say so and give the user a chance to override before linking:
+1. **Console origin** — the URL the user signs in to their cloud engine console with. **Defaults to `https://opencloud.org`** (the main OpenCloud console). Its host is the `--app` value in Step 1, so the linked CLI identity derives the **same principal that administers the engine**. Use the default, but say so and give the user a chance to override before linking:
    - Say: "I'll link the CLI against `https://opencloud.org`, the default console. If you sign in to your engine console at a different URL, tell me now."
-   - Only use a different origin when the user names one — never substitute another URL on your own; the `--auth` origin determines the derived principal (see Pitfall 2).
-   - On the ICP MCP route there is no `--auth`; the console origin is where you look the engine up and where the owner confirms access (M1, M3).
+   - Only use a different origin when the user names one — never substitute another URL on your own; the `--app` domain determines the derived principal (see Pitfall 2).
+   - On the ICP MCP route there is no `--app`; the console origin is where you look the engine up and where the owner confirms access (M1, M3).
 2. **Subnet id** (CLI route): the subnet the engine deploys to, required by `icp deploy --subnet`. There is **no default**; never guess it. The user finds it on the engine's **Settings** page in the console (under the engine's identifiers), or copies it from the console's command palette. If absent, **ask and do not proceed without it**:
    - Ask: "What is your engine's subnet id? It is on your engine's Settings page in the console."
    - On the ICP MCP route you need the **engine id** instead (M1). The operator creates canisters on its own engine, so there is no subnet to pass.
@@ -212,7 +212,7 @@ When in doubt, probe before linking: `curl -sI https://<console-origin>` failing
 
    It prints the session **public** key as a PEM to stdout. Give that PEM block to the user. (If the default `--storage keyring` fails in a headless sandbox, retry with `--storage plaintext`.)
 
-2. **On the user's machine** — the user links there if not already linked (`icp identity link web <local-name> --auth <console-origin>` — the normal flow works locally), saves the PEM to a file, and signs a delegation to it:
+2. **On the user's machine** — the user links there if not already linked (`icp identity link web <local-name> --app <console-domain>` — the normal flow works locally), saves the PEM to a file, and signs a delegation to it:
 
    ```bash
    icp identity delegation sign --identity <local-name> --key-pem session-key.pem --duration 8h > delegation.json
@@ -235,13 +235,13 @@ Treat `delegation.json` as a **time-limited credential**: whoever holds the sand
 If the CLI shell cannot reach the network, the user's real terminal is the deploy machine — and because their terminal and browser share a loopback there, the **normal** link flow works; no delegation handoff is needed. Your job shifts to preparation:
 
 1. Get the built project into a directory the user's terminal can reach.
-2. Write one script at the project root that does the whole network-bound sequence — adapt this template (fill in the real identity name, console origin, and subnet id; do not leave placeholders):
+2. Write one script at the project root that does the whole network-bound sequence — adapt this template (fill in the real identity name, console domain, and subnet id; do not leave placeholders):
 
    ```bash
    #!/usr/bin/env bash
    set -euo pipefail
    icp --version
-   icp identity list | grep -E '^\*? *<your-identity-name> ' >/dev/null || icp identity link web <your-identity-name> --auth <console-origin>
+   icp identity list | grep -E '^\*? *<your-identity-name> ' >/dev/null || icp identity link web <your-identity-name> --app <console-domain>
    icp identity default <your-identity-name>
    icp deploy -e ic --subnet <subnet-id>
    ```
@@ -266,19 +266,22 @@ The list does **not** show which console (if any) an identity was linked against
 To link, run this, substituting a name the user picks — `<your-identity-name>` is any local label, not a fixed value (do not hardcode something like `my-engine-admin`); reuse the **same** name in every command below:
 
 ```bash
-icp identity link web <your-identity-name> --auth <console-origin>
+icp identity link web <your-identity-name> --app <console-domain>
 ```
 
-- Use `https://opencloud.org` as `<console-origin>` unless the user named a different console. Never omit `--auth`: the flag has a built-in default (`https://id.ai`) that is **not** your console and silently derives the wrong principal.
+- `<console-domain>` is the host of the console origin, with no scheme, port or path: `opencloud.org` for the default console, `beta.opencloud.org` for `https://beta.opencloud.org`. The console derives its principal from the host it serves, so this is the domain to name. Do not take it from `/.well-known/ii-derivation-origin`: that file serves the ICP MCP route and can name another host.
+- Never omit `--app`. Without it, Internet Identity derives the principal for `cli.id.ai`, which is **not** your console, and the engine rejects every deploy as unauthorized.
+- Do not use `--auth <console-origin>` for the OpenCloud console. It reaches the same principal, but through the console's own `/cli` page, so the user signs in on two screens instead of one. Use `--auth <console-origin>` (no `--app`) only when the user says their console signs in with its own Internet Identity rather than `id.ai`, as a test deployment does.
 - The command first waits at a **"Press Enter to log in"** prompt before anything happens. Run it interactively when you can; in a non-interactive shell (e.g. a background process) pipe a real newline:
 
   ```bash
-  printf '\n' | icp identity link web <your-identity-name> --auth <console-origin>
+  printf '\n' | icp identity link web <your-identity-name> --app <console-domain>
   ```
 
   Do **not** redirect stdin from `/dev/null` — the bare EOF does not satisfy the prompt, and the command sits on "Press Enter to log in" indefinitely with no browser ever opening.
 - After Enter it opens a **browser tab**. The **user** completes the Internet Identity sign-in there. Wait for them to confirm before continuing — you cannot complete the sign-in for them.
-- `--auth` must be the **exact** console origin (scheme + host), e.g. `https://opencloud.org`. A mismatched origin derives a *different* principal, and the engine will reject the deploy as unauthorized.
+- On first use, id.ai can stop at a **"CLI access disabled"** screen. That is the expected first run, not an error. Tell the user to turn on **CLI access** for their identity in the Internet Identity settings, then run the link command again from the start: the old sign-in URL is single-use. See the `agent-web-identity` skill, Pitfall 1.
+- `--app` must be the **exact** console host, e.g. `opencloud.org`. Another domain derives a *different* principal, and the engine will reject the deploy as unauthorized.
 - This is a **one-time, per-machine** step.
 
 Then make it the active identity and verify:
@@ -553,10 +556,10 @@ A cloud engine runs on a **`CloudEngine` subnet** with protocol-level call rules
 ## Common Pitfalls
 
 1. **Sign-in not completed.** Running `icp identity link web …` but not finishing the Internet Identity sign-in in the browser leaves the CLI unlinked; later commands fail with authorization errors. Re-run and wait for the user to confirm the browser flow finished. If no browser ever opened, the command is stalled at the "Press Enter to log in" prompt — relaunch with a piped newline, `printf '\n' | icp identity link web …`, never `< /dev/null` (see Step 1). If the CLI runs in a remote sandbox, re-running can never complete — see Pitfall 10 and the delegation handoff in Step 1.0.
-2. **Wrong `--auth` origin.** Using any URL other than the console origin the user signs in with derives a different principal, and the engine rejects the deploy as not authorized. Relink with the exact console URL. If the deploy is rejected as unauthorized after linking against the default `https://opencloud.org`, ask the user for the exact URL they sign in with and relink.
+2. **Wrong or missing `--app` domain.** Any domain other than the console host, or no `--app` at all, derives a different principal, and the engine rejects the deploy as not authorized. Relink with the exact domain (Step 1). If the deploy is rejected as unauthorized after linking with the default `--app opencloud.org`, ask the user for the exact URL they sign in with and relink with its host.
 3. **Guessing the subnet id.** Never invent it: the deploy fails or targets the wrong subnet. It is on the engine's **Settings** page in the console; ask the user.
 4. **Deploying with the anonymous identity.** The default local identity is anonymous and is not the engine admin. You must link and `icp identity default <your-identity-name>` first.
-5. **Using `dfx`.** This ecosystem uses `icp`, never `dfx`. The correct sequence is `icp identity link web <name> --auth <console-origin>` (Step 1), then `icp deploy -e ic --subnet <subnet-id>` (Step 3). See the `icp-cli` skill.
+5. **Using `dfx`.** This ecosystem uses `icp`, never `dfx`. The correct sequence is `icp identity link web <name> --app <console-domain>` (Step 1), then `icp deploy -e ic --subnet <subnet-id>` (Step 3). See the `icp-cli` skill.
 6. **Skipping the app metadata.** Without `__META_PROJECT` (Step 2), the canisters still deploy and work but render as bare, unnamed principal rows in the console. Setting `__META_*` is what produces a named app with labelled canisters and an "Open" button.
 7. **Wrong `__META_MAIN_CANISTER` value.** It is matched as the exact string `"true"`. A boolean, `"True"`, or marking more than one canister means no (or the wrong) "Open" button. Mark exactly one entry-point canister.
 8. **Inventing an icon variable.** The icon variable is `__META_ICON_PATH` (a path resolved against `__META_BASE_URL`). Do not guess `__META_ICON`, `__META_LOGO`, or `__META_ICON_LINK` — they are ignored, so the icon silently never appears.
