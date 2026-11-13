@@ -310,7 +310,7 @@ On the ICP MCP route there is no project config: set the same variables with `up
 # frontend/canister.yaml
 name: frontend
 recipe:
-  type: "@dfinity/static-site@v0.4.0"
+  type: "@dfinity/static-site@v0.4.3"
   configuration:
     build:
       - npm install
@@ -582,6 +582,7 @@ A cloud engine runs on a **`CloudEngine` subnet** with protocol-level call rules
 25. **Creating a canister without listing the engine-operator as a controller.** `create_canister` through `proxy` always adds you, but the operator only when you list it in `settings.controllers`. Without it, `proxy` can no longer reach the canister (no install, no settings), and the owner cannot remove it with `deleteCanisters` either. List the operator in the create call (M5, step 1).
 26. **Textual Candid in `proxy`'s `args`.** `args` is a `blob` holding the **binary** Candid encoding of the management method's argument (bytes starting with `DIDL`), and `result` comes back the same way. Passing the textual `(record { … })` as `args` makes the management canister fail to decode the argument. Encode it with a Candid library first (M5).
 27. **Expecting the connector to finish a deploy that needs calls into the new canister.** The connector calls only canisters an app declares, and the engine's manifest declares only its operator. It can install your wasm through `proxy`, but it cannot call the canister you installed, so it cannot upload an asset canister's files. Ship configuration in the init argument or environment variables, or use the CLI route for such an app.
+28. **Serving a custom domain from certified-assets older than 0.4.3.** For each app canister with a custom domain, the engine writes `/.well-known/ic-domains` (the HTTP gateway needs it to serve the domain) and `/.well-known/ii-alternative-origins` (Internet Identity needs it to accept the domain). It writes them with certified-assets' `upload_asset`, which arrived in 0.4.3. On an older canister the console warns that the engine can't write these files, and the domain does not work. Pin `@dfinity/static-site@v0.4.3` or newer. To fix an app that is already deployed, bump the recipe and run `icp deploy -e ic`. If the sync then stops with `assets canister version mismatch`, run `icp canister install <frontend> --mode upgrade -e ic` (v0.4.x to v0.4.3 is a patch, so the state stays), then `icp deploy -e ic` again. From v0.3.x the bump is breaking: see the `static-site` skill, pitfall 11. The engine replaces whatever the app ships at these two paths, so do not build them into `dir`. List both in a `_preserve` file at the root of `dir`: without it, every deploy deletes them until the engine writes them again (within 10 minutes).
 
 ## Additional References
 

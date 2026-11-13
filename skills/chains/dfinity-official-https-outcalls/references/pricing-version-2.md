@@ -4,9 +4,10 @@ Version 2 is selected per call by the `pricing_version` field of `http_request`.
 the replica default and is deprecated. `flexible_http_request` has no such field and is always
 priced with version 2.
 
-**Rust only for now.** `ic-cdk-management-canister` 0.2.0's `HttpRequest` builder always selects
-version 2. The Motoko `ic` package (4.x) prices with version 1 and has no version 2 path, which
-needs a `moc` carrying the new cost primitive.
+**Both languages, on current dependencies.** `ic-cdk-management-canister` 0.2.0's `HttpRequest`
+builder always selects version 2, and so does the `Call.httpRequest` builder in the Motoko `ic`
+package from 6.0.0, which needs `moc` 2.1.0 for the `costHttpRequestV2` primitive it calls. An
+older `ic` (4.x or 5.x) prices with version 1.
 
 ## What it charges
 
@@ -284,8 +285,10 @@ So a bogus value surfaces as a funding problem rather than a validation one:
   whole `max_response_bytes` charge immediately:
   `"http_request request sent with <X> cycles, but <Y> cycles are required."` [CanisterReject]
 
-Let one wrapper own both. `HttpRequest::send()` pairs version 2 with `cost_http_request_v2`;
-Motoko's `Call.httpRequest` pairs version 1 with `cost_http_request`.
+Let one builder own both. `HttpRequest::send()` pairs version 2 with `cost_http_request_v2`, and
+so does Motoko's `Call.httpRequest` on `ic` 6.x; on `ic` 4.x or 5.x it pairs version 1 with
+`cost_http_request` instead. Either way the pairing is the builder's, not yours: both overwrite
+`pricing_version` even when you start from arguments you assembled.
 
 ## Migrating
 

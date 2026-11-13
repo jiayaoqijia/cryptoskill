@@ -1,0 +1,244 @@
+{
+  "fetched_at": "2026-11-13T23:55:40+07:00",
+  "tz": "Asia/Bangkok",
+  "window_start": "2026-11-13T00:00:00+07:00",
+  "coins": [
+    "BTC",
+    "ETH"
+  ],
+  "prices": {
+    "OKX_BTC": 68631.9,
+    "OKX_ETH": 1926.75,
+    "BN_BTC": 68629.9,
+    "BN_ETH": 1926.8
+  },
+  "conditions": {
+    "account_ratio": {
+      "BTC": {
+        "status": "none",
+        "okx": 3.1,
+        "okx_status": "none",
+        "okx_ts": "2026-11-13T23:50:00+07:00",
+        "binance": 3.0601,
+        "binance_status": "none",
+        "binance_ts": "2026-11-13T23:50:00+07:00",
+        "combined_ratio": 3.1,
+        "primary": "OKX, conservative max(OKX, Binance) for combined status"
+      },
+      "ETH": {
+        "status": "none",
+        "okx": 3.35,
+        "okx_status": "none",
+        "okx_ts": "2026-11-13T23:50:00+07:00",
+        "binance": 3.6598,
+        "binance_status": "none",
+        "binance_ts": "2026-11-13T23:50:00+07:00",
+        "combined_ratio": 3.6598,
+        "primary": "OKX, conservative max(OKX, Binance) for combined status"
+      }
+    },
+    "oi_drop": {
+      "BTC": {
+        "status": "none",
+        "okx": {
+          "current": 34406.76020000014,
+          "current_ts": "2026-11-13T23:50:00+07:00",
+          "high": 37411.551400000164,
+          "high_ts": "2026-11-13T06:00:00+07:00",
+          "drop": 0.08031720384629674,
+          "status": "none"
+        },
+        "binance": {
+          "current": 98855.431,
+          "current_ts": "2026-11-13T23:55:00+07:00",
+          "high": 101975.924,
+          "high_ts": "2026-11-13T11:30:00+07:00",
+          "drop": 0.03060029149625555,
+          "status": "none"
+        },
+        "combined_rule": "met/near if either venue hits the threshold (max drop)"
+      },
+      "ETH": {
+        "status": "none",
+        "okx": {
+          "current": 700107.7390000013,
+          "current_ts": "2026-11-13T23:50:00+07:00",
+          "high": 720477.9780000016,
+          "high_ts": "2026-11-13T16:55:00+07:00",
+          "drop": 0.0282732291923019,
+          "status": "none"
+        },
+        "binance": {
+          "current": 2334204.93,
+          "current_ts": "2026-11-13T23:50:00+07:00",
+          "high": 2355411.821,
+          "high_ts": "2026-11-13T17:30:00+07:00",
+          "drop": 0.0090034748110402,
+          "status": "none"
+        },
+        "combined_rule": "met/near if either venue hits the threshold (max drop)"
+      }
+    },
+    "top_trader_position": {
+      "BTC": {
+        "status": "none",
+        "okx": 0.8890211216521318,
+        "okx_ts": "2026-11-13T23:55:00+07:00",
+        "binance": 2.0746,
+        "binance_ts": "2026-11-13T23:50:00+07:00",
+        "binance_flag_below_1_5": false
+      },
+      "ETH": {
+        "status": "none",
+        "okx": 0.8512567179262815,
+        "okx_ts": "2026-11-13T23:55:00+07:00",
+        "binance": 1.932,
+        "binance_ts": "2026-11-13T23:55:00+07:00",
+        "binance_flag_below_1_5": false
+      }
+    },
+    "short_liquidations": {
+      "BTC": {
+        "status": "none",
+        "h1": {
+          "long_usd": 954201.98,
+          "short_usd": 17581.77,
+          "n_long": 60,
+          "n_short": 10
+        },
+        "h2": {
+          "long_usd": 3849038.45,
+          "short_usd": 1552872.22,
+          "n_long": 555,
+          "n_short": 127
+        },
+        "prev_h1": {
+          "long_usd": 2894836.47,
+          "short_usd": 1535290.45,
+          "n_long": 495,
+          "n_short": 117
+        },
+        "short_to_long": 0.40344419526388464,
+        "short_to_long_inf": false,
+        "short_rising": false,
+        "latest_ts": 1794588164872,
+        "latest_iso": "2026-11-13T23:42:44+07:00",
+        "n_fetched": 700,
+        "n_in_window": 682,
+        "pages": 7,
+        "oldest_fetched": "2026-11-13T21:50:39+07:00",
+        "note": "Binance allForceOrders is not public; only OKX filled liquidation-orders are used"
+      },
+      "ETH": {
+        "status": "none",
+        "h1": {
+          "long_usd": 297698.08,
+          "short_usd": 88676.29,
+          "n_long": 88,
+          "n_short": 32
+        },
+        "h2": {
+          "long_usd": 7575174.86,
+          "short_usd": 797128.53,
+          "n_long": 674,
+          "n_short": 121
+        },
+        "prev_h1": {
+          "long_usd": 7277476.78,
+          "short_usd": 708452.24,
+          "n_long": 586,
+          "n_short": 89
+        },
+        "short_to_long": 0.10522906001934852,
+        "short_to_long_inf": false,
+        "short_rising": false,
+        "latest_ts": 1794588365477,
+        "latest_iso": "2026-11-13T23:46:05+07:00",
+        "n_fetched": 800,
+        "n_in_window": 795,
+        "pages": 8,
+        "oldest_fetched": "2026-11-13T21:50:46+07:00",
+        "note": "Binance allForceOrders is not public; only OKX filled liquidation-orders are used"
+      }
+    }
+  },
+  "status": {
+    "account_ratio": {
+      "BTC": "none",
+      "ETH": "none"
+    },
+    "oi_drop": {
+      "BTC": "none",
+      "ETH": "none"
+    },
+    "top_trader_position": {
+      "BTC": "none",
+      "ETH": "none"
+    },
+    "short_liquidations": {
+      "BTC": "none",
+      "ETH": "none"
+    }
+  },
+  "prev_status": {
+    "account_ratio": {
+      "BTC": "none",
+      "ETH": "none"
+    },
+    "oi_drop": {
+      "BTC": "none",
+      "ETH": "none"
+    },
+    "top_trader_position": {
+      "BTC": "none",
+      "ETH": "none"
+    },
+    "short_liquidations": {
+      "BTC": "none",
+      "ETH": "none"
+    }
+  },
+  "changes": [],
+  "notify": [],
+  "notify_rule": "notify only when a condition upgrades (none→near/met, near→met) or falls from met",
+  "possibly_mostly_flushed": {
+    "per_asset": {
+      "BTC": false,
+      "ETH": false
+    },
+    "met_counts": {
+      "BTC": 0,
+      "ETH": 0
+    },
+    "any": false,
+    "flag": null,
+    "flag_zh": null,
+    "rule": "flag when 3 or more of the 4 conditions are met for the same asset"
+  },
+  "context": {
+    "funding": {
+      "OKX_BTC": 7.25973462697e-05,
+      "BN_BTC": 6.264e-05,
+      "OKX_ETH": -7.9667084257e-06,
+      "BN_ETH": 4.22e-05
+    },
+    "funding_note": "Funding is context only, not a scored condition. A common bottom reading is funding still negative while price stops making new lows.",
+    "binance_host_note": null,
+    "binance_liquidations_note": "Binance allForceOrders is not public.",
+    "oi_note": "Long OI always equals short OI. Judge positioning with account and top-trader ratios, not a 'long share of OI'. If top traders are flat or net short by notional while OI rises, the new longs are coming from retail."
+  },
+  "thresholds": {
+    "account_near": 2.3,
+    "account_met": 2.0,
+    "oi_near": 0.15,
+    "oi_met": 0.2,
+    "okx_top_near": 0.95,
+    "okx_top_met": 1.0,
+    "bn_top_flag": 1.5,
+    "liq_near": 0.5,
+    "liq_met": 1.0
+  },
+  "errors": [],
+  "disclaimer": "以上只是信息整理，不构成投资建议",
+  "state_path": "./state.json"
+}

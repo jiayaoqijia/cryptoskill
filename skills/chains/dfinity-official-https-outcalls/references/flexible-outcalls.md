@@ -8,9 +8,9 @@ Use it when the data changes faster than the nodes could ever agree on it, so re
 fail consensus. The tradeoff is cost against trust: a committee of three costs less than one of 13
 and is correspondingly easier for a single node to skew.
 
-**Rust only.** Requires `ic-cdk-management-canister >= 0.2.0` and `ic-cdk >= 0.20.3`. The Motoko
-`ic` package has no equivalent, which needs a `moc` carrying the `subnetSelfNodeCount` primitive.
-Always priced with version 2; there is no `pricing_version` field.
+**Both languages.** Rust requires `ic-cdk-management-canister >= 0.2.0` and `ic-cdk >= 0.20.3`;
+Motoko requires the `ic` mops package >= 6.0.0, which needs `moc` 2.1.0. Always priced with
+version 2; there is no `pricing_version` field.
 
 ## Replication counts
 
@@ -34,11 +34,17 @@ let total_requests = subnet_self_node_count().min(5);
 let min_responses = total_requests / 2 + 1;   // a strict majority of the committee
 ```
 
-There is no Motoko equivalent of `subnet_self_node_count` until a `moc` exposing the
-`subnetSelfNodeCount` primitive ships.
+In Motoko the same count comes from `Prim.subnetSelfNodeCount() : Nat32` (via
+`import Prim "mo:⛔"`), and the builder is `Call.flexibleHttpRequest(url)` with
+`.withReplication({ total_requests; min_responses; max_responses })`.
 
 Leaving `replication` unset uses the endpoint's own defaults: `floor(2 * N / 3) + 1` for
 `min_responses`, and `N` for both `max_responses` and `total_requests`.
+
+In Motoko, set `replication` anyway. `ic` 6.0.0 does not read the subnet size: calling
+`ic0.subnet_self_node_count` from `Call` would make every canister that imports it
+require a replica with that system API. So with `replication` unset, its reservation
+assumes full-size responses. The surplus is refunded, but it is held while the call runs.
 
 ## Working example
 

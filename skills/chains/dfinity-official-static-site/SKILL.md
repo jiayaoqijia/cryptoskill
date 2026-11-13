@@ -40,7 +40,7 @@ Static-site canisters are created per-project — there is no global canister ID
 canisters:
   - name: frontend
     recipe:
-      type: "@dfinity/static-site@v0.4.0"
+      type: "@dfinity/static-site@v0.4.3"
       configuration:
         build:
           - npm ci
@@ -81,7 +81,7 @@ The recipe takes four configuration fields:
 
 10. **Switching an existing project from the legacy asset canister to static-site.** Repointing `recipe:` at `@dfinity/static-site` and running a plain `icp deploy` **fails before anything is installed**: these are two unrelated canisters with unrelated Candid interfaces, so icp-cli's pre-install check aborts with `Candid interface compatibility check failed: '<canister>' … You are making a BREAKING change`. Run **`icp deploy --mode reinstall`** instead. That replaces the wasm with the certified-assets canister, **discards the old stable memory** — every legacy asset, permission, and `.ic-assets.json5`-derived setting is gone — and leaves the canister with empty state, after which the sync plugin uploads your whole `dir` from scratch. Deploying static-site as a brand-new canister avoids the question entirely. Do **not** silence the check with `--yes`: that pushes the in-place upgrade through onto stable memory certified-assets cannot read, leaving a live canister that serves nothing. See the migration reference.
 
-11. **Assuming a recipe version bump re-installs itself.** Moving between certified-assets' **own** releases is gentler than the legacy switch above — the Candid interface is stable across a release series, so nothing blocks the deploy — but a breaking bump still needs a reinstall **you run yourself**. The canister and plugin are version-locked, so after bumping the recipe `icp deploy` upgrades in place and the sync plugin then refuses, reporting `assets canister version mismatch: canister is X, this plugin is Y` plus the fix: `icp canister install --mode upgrade` for a **patch** bump (state preserved) or `icp canister install --mode reinstall` for a **breaking** (pre-1.0 minor, post-1.0 major) bump, which wipes state so the next sync re-uploads every asset and redirect rule. (**`v0.3.x` → `v0.4.0` is breaking**: reinstall, then `icp deploy`.) A failed sync right after a version bump is expected — this, not a bug.
+11. **Assuming a recipe version bump re-installs itself.** Moving between certified-assets' **own** releases is gentler than the legacy switch above — the Candid interface is stable across a release series, so nothing blocks the deploy — but a breaking bump still needs a reinstall **you run yourself**. The canister and plugin are version-locked, so after bumping the recipe `icp deploy` upgrades in place and the sync plugin then refuses, reporting `assets canister version mismatch: canister is X, this plugin is Y` plus the fix: `icp canister install --mode upgrade` for a **patch** bump (state preserved) or `icp canister install --mode reinstall` for a **breaking** (pre-1.0 minor, post-1.0 major) bump, which wipes state so the next sync re-uploads every asset and redirect rule. (**`v0.3.x` → `v0.4.0` is breaking**: reinstall, then `icp deploy`. `v0.4.x` → `v0.4.3` is a patch: upgrade, then `icp deploy`.) A failed sync right after a version bump is expected — this, not a bug.
 
 12. **`.well-known/` is uploaded automatically — no config needed.** The plugin skips dotfiles and dot-directories *except* `.well-known/`, which it traverses normally. So `dir/.well-known/ic-domains` is served at `/.well-known/ic-domains` with no extra setting. (This is the opposite of the legacy canister, which needed an explicit `.ic-assets.json5` un-ignore rule.)
 
@@ -205,7 +205,7 @@ icp canister call frontend issue_token '(record { label = "owner"; ttl_secs = 31
 
 Always pass the argument explicitly — `'()'` for the methods that take none. Called with no argument, `icp canister call` opens an interactive prompt instead of sending an empty one.
 
-This is **access gating, not confidentiality**: node operators can read asset bytes and the token store, there is no rate-limiting, and it relies on the honest-replica/honest-gateway assumption. The gate runs canister-side on every hostname, but its redirect and login page are only verified through a verifying gateway, so never send people to a `raw` URL of a protected app (Pitfall 14). Use high-entropy random tokens for share links; enable *before* the first sync for a new private app (Pitfall 13). Full details in the [certified-assets access-protection docs](https://github.com/dfinity/certified-assets/blob/v0.4.0/docs/access-protection.md).
+This is **access gating, not confidentiality**: node operators can read asset bytes and the token store, there is no rate-limiting, and it relies on the honest-replica/honest-gateway assumption. The gate runs canister-side on every hostname, but its redirect and login page are only verified through a verifying gateway, so never send people to a `raw` URL of a protected app (Pitfall 14). Use high-entropy random tokens for share links; enable *before* the first sync for a new private app (Pitfall 13). Full details in the [certified-assets access-protection docs](https://github.com/dfinity/certified-assets/blob/v0.4.3/docs/access-protection.md).
 
 ## Authorizing Uploaders
 
@@ -232,7 +232,7 @@ icp canister call frontend deauthorize '(principal "<principal-id>")'
 canisters:
   - name: frontend
     recipe:
-      type: "@dfinity/static-site@v0.4.0"
+      type: "@dfinity/static-site@v0.4.3"
       configuration:
         dir: dist
         presync:
@@ -307,8 +307,8 @@ Certification proves responses match what the canister committed to; the **state
 #    Not published as a binary or on crates.io. --locked is required: Cargo.lock pins the
 #    compressor builds whose output bytes the hash covers; without it the hash differs.
 icp canister call <canister-id> version '()' -n ic --query
-# (record { major = 0 : nat32; minor = 4 : nat32; patch = 0 : nat32 })
-cargo install --git https://github.com/dfinity/certified-assets --tag v0.4.0 --locked state-hash-cli
+# (record { major = 0 : nat32; minor = 4 : nat32; patch = 3 : nat32 })
+cargo install --git https://github.com/dfinity/certified-assets --tag v0.4.3 --locked state-hash-cli
 
 # 3. Compute the hash locally (prints 64 hex chars)
 state-hash ./dist
@@ -332,4 +332,4 @@ icp canister call <canister-id> state_hash '()' -n ic -o hex | tail -c 65
 - Load `icp-cli` for the recipe system, `icp.yaml` structure, canister-ID injection, and the `ic_env` cookie / `safeGetCanisterEnv()` pattern.
 - Load `custom-domains` for DNS records, ACME challenge, and TLS provisioning of a custom domain.
 - Load `user-sign-in` for reading the root key and canister IDs from `ic_env` in a frontend.
-- Full upstream user docs: [certified-assets docs](https://github.com/dfinity/certified-assets/blob/v0.4.0/docs/overview.md).
+- Full upstream user docs: [certified-assets docs](https://github.com/dfinity/certified-assets/blob/v0.4.3/docs/overview.md).

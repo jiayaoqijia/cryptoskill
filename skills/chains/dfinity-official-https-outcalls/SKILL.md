@@ -2,7 +2,7 @@
 name: https-outcalls
 description: "Make HTTPS requests from canisters to external web APIs. Covers replicated, non-replicated and flexible outcalls, transform functions for consensus, both cycle pricing versions (legacy and pay-as-you-go via ic0.cost_http_request_v2), response size limits, and idempotency patterns. Use when a canister needs to call an external API, fetch data from the web, make HTTP requests, choose a pricing_version, or use flexible_http_request. Do NOT use for EVM/Ethereum calls — use evm-rpc instead."
 license: Apache-2.0
-compatibility: "icp-cli >= 0.2.2; pricing version 2 and flexible outcalls need ic-cdk >= 0.20.3 with ic-cdk-management-canister >= 0.2.0 (Rust only)"
+compatibility: "icp-cli >= 0.2.2; pricing version 2 and flexible outcalls need ic-cdk >= 0.20.3 with ic-cdk-management-canister >= 0.2.0 (Rust), or the ic mops package >= 6.0.0 with moc >= 2.1.0 (Motoko)"
 metadata:
   title: HTTPS Outcalls
   category: Integration
@@ -20,14 +20,14 @@ Two other modes avoid that agreement step: **non-replicated** (`is_replicated = 
 
 | | Rust | Motoko |
 |---|---|---|
-| Package | `ic-cdk` **0.20.3+** with `ic-cdk-management-canister` **0.2+** | `ic` **4.x** (mops), which requires `core` **2.5.0+** and `moc` **1.4.0+** |
-| Entry point | `HttpRequest::new(url)` builder, `.send()` | `Call.httpRequest(args)` |
-| Pricing version 1 (legacy) | only by pinning `ic-cdk-management-canister` **0.1**, or calling `aaaaa-aa` directly with `ic_cdk::api::cost_http_request` | **yes**, this is what `Call.httpRequest` does |
-| Pricing version 2 (pay-as-you-go) | **yes**, the builder always selects it | — (**not available**, needs an unreleased `moc`) |
-| `flexible_http_request` | **yes**, `FlexibleHttpRequest::new(url)` | — (**not available**, same reason) |
-| `subnet_self_node_count` | `ic_cdk::api::subnet_self_node_count()` | — (**not available**, same reason) |
+| Package | `ic-cdk` **0.20.3+** with `ic-cdk-management-canister` **0.2+** | `ic` **6.x** (mops), which requires `core` **2.5.0+** and `moc` **2.1.0+** |
+| Entry point | `HttpRequest::new(url)` builder, `.send()` | `Call.httpRequest(url)` builder, `.send()` |
+| Pricing version 1 (legacy) | only by pinning `ic-cdk-management-canister` **0.1**, or calling `aaaaa-aa` directly with `ic_cdk::api::cost_http_request` | only by pinning `ic` **4.x** or **5.x**, or calling `aaaaa-aa` directly with `Prim.costHttpRequest` |
+| Pricing version 2 (pay-as-you-go) | **yes**, the builder always selects it | **yes**, the builder always selects it |
+| `flexible_http_request` | **yes**, `FlexibleHttpRequest::new(url)` | **yes**, `Call.flexibleHttpRequest(url)` |
+| `subnet_self_node_count` | `ic_cdk::api::subnet_self_node_count()` | `Prim.subnetSelfNodeCount()` (via `import Prim "mo:⛔"`) |
 
-Read this before writing code; what is available depends on the language and the dependency versions in the project. **Motoko code today is version 1 only**, and consistently so. The published `ic` 4.x `HttpRequestArgs` has no `pricing_version` field, Candid omits the absent optional, and the replica reads it as version 1 — which is exactly what `Call.httpRequest` funds. Nothing to work around; just do not expect version 2 economics from Motoko yet.
+Read this before writing code; what is available depends on the language and the dependency versions in the project. Both languages reach the same outcall surface, through a builder that selects version 2 and computes the cycles to attach, but only on recent dependencies. On `ic` **4.x** or **5.x** Motoko is still version 1: 4.x `HttpRequestArgs` has no `pricing_version` field at all, Candid omits the absent optional, and the replica reads it as version 1, which is exactly what that `Call.httpRequest` funds. The builder and `flexible_http_request` arrive in **6.0.0**, which requires `moc` **2.1.0** for the `costHttpRequestV2` primitive it calls.
 
 For Rust the right code depends on which of three worlds the project is in. `ic-cdk` 0.19 has `ic_cdk::management_canister::http_request(&args)` (version 1; the module was removed in 0.20). `ic-cdk` 0.20 with `ic-cdk-management-canister` 0.1 has `ic_cdk_management_canister::http_request(&args)` (version 1). `ic-cdk` 0.20.3+ with `ic-cdk-management-canister` 0.2 has the builders, and is **version 2 only**: 0.2.0 removed the free `http_request` and the builder hard-codes `pricing_version: Some(2)` with no opt-out, so upgrading the crate *is* the migration. Rust also needs `serde_json` for JSON parsing.
 
@@ -47,7 +47,7 @@ You do not deploy anything extra. The management canister is built into every su
 
 1. **Forgetting the transform function.** In **replicated** mode, without a transform the raw HTTP response often differs between replicas (different headers, different ordering in JSON fields, timestamps). Consensus fails and the call is rejected. ALWAYS provide one there. In **non-replicated** and **flexible** mode it is optional *for consensus*, because each node's own response is delivered. Whether to set one there is a tradeoff. **No transform reserves nothing for it** (the instruction term defaults to 0, not to the query limit), which is the cheapest configuration available. Adding one defaults that term to the full query limit, so you must also declare `with_expected_transform_instructions`. What it buys back is the delivery fee, charged per byte on the **transformed** size: every byte stripped lowers the bill, so what decides it is how much there is worth stripping (bulky headers yes, a response that is already mostly payload no). The reservation floors that term at about 1 KB, so `get_cost()` understates the saving on a small response. Two non-cycle reasons can decide it anyway: in flexible mode the combined 2 MiB budget is measured after the transform, so smaller responses mean fewer get dropped, and reconciling is impossible if per-node noise makes every response distinct.
 
-2. **Not attaching cycles to the call.** On a normal Application subnet, HTTPS outcalls are not free — the calling canister must attach cycles to cover the cost, and attaching zero fails the call. Both Motoko and Rust have wrappers that compute and attach the required cycles automatically: in Motoko, use `await Call.httpRequest(args)` from the `ic` mops package (`import Call "mo:ic/Call"`); in Rust, use the `HttpRequest` builder's `.send()` from `ic-cdk-management-canister` 0.2. Which pricing version you get depends on the wrapper: Motoko's `Call.httpRequest` prices version 1 with `ic0.cost_http_request(request_size, max_response_bytes)`, while Rust's `HttpRequest::send()` prices version 2 with `ic0.cost_http_request_v2`. Both are cost-schedule aware, so the same wrapper attaches the correct amount on any subnet type. **Under version 2 the up-front check is against the base fee only**, so an under-sized attachment is *not* rejected at call time: the call runs with tighter per-node limits and can fail partway, after the remote server was already contacted. See `references/pricing-version-2.md`. On a **cloud engine** (`CloudEngine` subnet), that amount is always 0 by design; do not "fix" a working outcall by attaching a hardcoded non-zero fee there — see the `cloud-engine-canisters` skill.
+2. **Not attaching cycles to the call.** On a normal Application subnet, HTTPS outcalls are not free — the calling canister must attach cycles to cover the cost, and attaching zero fails the call. Both Motoko and Rust have builders that compute and attach the required cycles automatically: in Motoko, `Call.httpRequest(url)....send()` from the `ic` mops package (`import Call "mo:ic/Call"`); in Rust, the `HttpRequest` builder's `.send()` from `ic-cdk-management-canister` 0.2. On current versions both price version 2 with `ic0.cost_http_request_v2`; an older `ic` (4.x or 5.x) prices version 1 with `ic0.cost_http_request` instead. Both are cost-schedule aware, so the same wrapper attaches the correct amount on any subnet type. **Under version 2 the up-front check is against the base fee only**, so an under-sized attachment is *not* rejected at call time: the call runs with tighter per-node limits and can fail partway, after the remote server was already contacted. See `references/pricing-version-2.md`. On a **cloud engine** (`CloudEngine` subnet), that amount is always 0 by design; do not "fix" a working outcall by attaching a hardcoded non-zero fee there — see the `cloud-engine-canisters` skill.
 
 3. **Using HTTP instead of HTTPS.** The IC only supports HTTPS outcalls. Plain HTTP URLs are rejected. The target server must have a valid TLS certificate.
 
@@ -73,7 +73,7 @@ You do not deploy anything extra. The management canister is built into every su
 
 13. **Expecting to reach version 1 through `ic-cdk-management-canister` 0.2.** You cannot. The builder is the only path the crate offers, it hard-codes `pricing_version: Some(2)`, and there is no `with_pricing_version`. `HttpRequest::from_args` looks like the escape hatch and is not: it is the documented way to migrate an existing call site, and it **silently overwrites `pricing_version` with 2**, so args that deliberately set 1 change version when you pass them through it. To stay on version 1, pin `ic-cdk-management-canister` 0.1, or call `aaaaa-aa` directly and price with `ic_cdk::api::cost_http_request`, which is still present in 0.20.3.
 
-14. **Setting `pricing_version` by hand and funding it with the wrong cost function.** The field and the attachment have to agree. Set `pricing_version = 2` while attaching a `cost_http_request` (version 1) amount and the call is *accepted*, because the up-front check is only the base fee — it then runs on a smaller per-node allowance than version 2 intended and can fail partway. The reverse, a version 1 call funded with a `cost_http_request_v2` amount, is rejected outright with `http_request request sent with <X> cycles, but <Y> cycles are required.`, because version 1 wants the whole `max_response_bytes` up front. Let the wrapper set both: Rust's `HttpRequest::send()` pairs version 2 with `cost_http_request_v2`, and Motoko's `Call.httpRequest` pairs version 1 with `cost_http_request`. Note also that the replica *filters* an unrecognised version to version 1 with no error, so a bogus value fails as a funding mismatch rather than as a validation error.
+14. **Setting `pricing_version` by hand and funding it with the wrong cost function.** The field and the attachment have to agree. Set `pricing_version = 2` while attaching a `cost_http_request` (version 1) amount and the call is *accepted*, because the up-front check is only the base fee — it then runs on a smaller per-node allowance than version 2 intended and can fail partway. The reverse, a version 1 call funded with a `cost_http_request_v2` amount, is rejected outright with `http_request request sent with <X> cycles, but <Y> cycles are required.`, because version 1 wants the whole `max_response_bytes` up front. Let the builder set both: in either language it pairs version 2 with `cost_http_request_v2`, and overwrites `pricing_version` even when you start from arguments you assembled yourself (`httpRequestFromArgs`, `HttpRequest::from_args`), so the field and the amount cannot drift apart. Note also that the replica *filters* an unrecognised version to version 1 with no error, so a bogus value fails as a funding mismatch rather than as a validation error.
 
 15. **Hardcoding `total_requests` for a flexible outcall.** `total_requests` must not exceed the subnet size, which differs per subnet (13 or 34 on mainnet). Derive it:
     ```rust
@@ -106,9 +106,9 @@ Use replicated when you need the integrity guarantee consensus gives, non-replic
 
 ### Motoko
 
-Import both the wrapper and the types from the `ic` mops package: `import Call "mo:ic/Call"` and `import IC "mo:ic/Types"`. `Call.httpRequest` computes and attaches the required cycles.
+Import both the builder and the types from the `ic` mops package: `import Call "mo:ic/Call"` and `import IC "mo:ic/Types"`. `Call.httpRequest(url)` starts a request and `.send()` computes and attaches the required cycles.
 
-**This is pricing version 1.** Motoko has no version 2 path and no flexible outcalls yet (see the support matrix). Everything below is correct and supported; it is simply the legacy pricing model.
+**This is pricing version 2**, on `ic` 6.x. On `ic` 4.x or 5.x the entry point is `Call.httpRequest(args)` taking the whole record, and it prices version 1; see the support matrix.
 
 ```motoko
 import Blob "mo:core/Blob";
@@ -134,26 +134,22 @@ persistent actor {
   public func getIcpPriceUsd() : async Text {
     let url = "https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd";
 
-    let request : IC.HttpRequestArgs = {
-      url = url;
-      // Always set — omitting defaults to 2MB and charges accordingly.
-      // Budget for response headers + body: the cap covers both, and the
-      // transform cannot bring an oversized response back under it.
-      max_response_bytes = ?(10_000 : Nat64);
-      headers = [
-        { name = "User-Agent"; value = "ic-canister" },
-      ];
-      body = null;
-      method = #get;
-      transform = ?{
-        function = transform;
-        context = Blob.fromArray([]);
-      };
-      is_replicated = null;
-    };
-
-    // Call.httpRequest computes and attaches the required cycles automatically
-    let response = await Call.httpRequest(request);
+    // send() computes and attaches the cycles the call may need.
+    let response = await Call.httpRequest(url)
+      // Bounds the response; a larger one fails the call. The cap covers
+      // headers and body together, and the transform cannot bring an
+      // oversized response back under it. Under version 2 it no longer sets
+      // the price, because only the bytes that arrive are charged.
+      .withMaxResponseBytes(10_000)
+      .withHeader("User-Agent", "ic-canister")
+      .withTransform({ function = transform; context = Blob.fromArray([]) })
+      // Unset expectations reserve the worst case: 60 seconds of round trip,
+      // and a transform running to the full query instruction limit.
+      // Declaring what the call expects holds far fewer cycles while it runs;
+      // the charge is unchanged, because only what is used is billed.
+      .withExpectedRoundtripTimeMs(10_000)
+      .withExpectedTransformInstructions(1_000_000)
+      .send();
 
     switch (Text.decodeUtf8(response.body)) {
       case (?text) { text };
@@ -178,26 +174,19 @@ persistent actor {
   public func postData(jsonPayload : Text) : async Text {
     let url = "https://httpbin.org/post";
 
-    let request : IC.HttpRequestArgs = {
-      url = url;
-      max_response_bytes = ?(50_000 : Nat64);
-      headers = [
-        { name = "Content-Type"; value = "application/json" },
-        { name = "User-Agent"; value = "ic-canister" },
-        // Idempotency key: prevents duplicate processing if multiple replicas hit the endpoint
-        { name = "Idempotency-Key"; value = "unique-request-id-12345" },
-      ];
-      body = ?Text.encodeUtf8(jsonPayload);
-      method = #post;
-      transform = ?{
-        function = transformPost;
-        context = Blob.fromArray([]);
-      };
-      is_replicated = null;
-    };
-
-    // Call.httpRequest computes and attaches the required cycles automatically
-    let response = await Call.httpRequest(request);
+    // send() computes and attaches the cycles the call may need.
+    let response = await Call.httpRequest(url)
+      .withMethod(#post)
+      .withMaxResponseBytes(50_000)
+      .withHeader("Content-Type", "application/json")
+      .withHeader("User-Agent", "ic-canister")
+      // Idempotency key: prevents duplicate processing if multiple replicas hit the endpoint
+      .withHeader("Idempotency-Key", "unique-request-id-12345")
+      .withBody(Text.encodeUtf8(jsonPayload))
+      .withTransform({ function = transformPost; context = Blob.fromArray([]) })
+      .withExpectedRoundtripTimeMs(10_000)
+      .withExpectedTransformInstructions(1_000_000)
+      .send();
 
     if (response.status == 200) {
       "POST successful (status 200)";
@@ -334,9 +323,9 @@ async fn post_data(json_payload: String) -> String {
 
 ### Cycle Cost Estimation
 
-There are two pricing versions. Version 1 is the replica default and is deprecated; version 2 ("pay-as-you-go") charges for the resources a call consumes instead of the bytes it reserves. **Motoko is version 1 only; Rust with `ic-cdk-management-canister` 0.2 is version 2 only.** Version 1, which follows, is still the replica default; for version 2 in full, including the reservation mechanics and its distinct failure modes, read `references/pricing-version-2.md`.
+There are two pricing versions. Version 1 is the replica default and is deprecated; version 2 ("pay-as-you-go") charges for the resources a call consumes instead of the bytes it reserves. **The current builders in both languages are version 2 only**, so a project on `ic-cdk-management-canister` 0.2 or `ic` 6.x is already on it. Version 1, which follows, is still the replica default and is what older dependencies attach; for version 2 in full, including the reservation mechanics and its distinct failure modes, read `references/pricing-version-2.md`.
 
-The `ic0.cost_http_request` system API computes the exact cycle cost at runtime, so canisters do not need to hard-code the formula. `Call.httpRequest` from the `ic` mops package (Motoko) calls it internally and attaches the required cycles automatically; on the Rust side the same is true of the free `http_request` in `ic-cdk-management-canister` 0.1, or `ic_cdk::management_canister::http_request` on ic-cdk 0.19. For manual use: in Motoko, `Prim.costHttpRequest(requestSize, maxResponseBytes)` (via `import Prim "mo:⛔"`); in Rust, `ic_cdk::api::cost_http_request(request_size, max_res_bytes)`.
+The `ic0.cost_http_request` system API computes the exact cycle cost at runtime, so canisters do not need to hard-code the formula. `Call.httpRequest` on `ic` 4.x or 5.x (Motoko) calls it internally and attaches the required cycles automatically; on the Rust side the same is true of the free `http_request` in `ic-cdk-management-canister` 0.1, or `ic_cdk::management_canister::http_request` on ic-cdk 0.19. For manual use: in Motoko, `Prim.costHttpRequest(requestSize, maxResponseBytes)` (via `import Prim "mo:⛔"`); in Rust, `ic_cdk::api::cost_http_request(request_size, max_res_bytes)`.
 
 `request_size` is the sum of byte lengths of the URL, all header names and values, the body, the transform function name, and the transform context.
 
