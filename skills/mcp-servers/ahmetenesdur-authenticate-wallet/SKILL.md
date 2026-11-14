@@ -22,7 +22,7 @@ Manage authentication sessions for the StarkFi CLI. StarkFi uses a remote Auth S
 
 ## Prerequisites
 
-- The StarkFi Auth Server (`starkfi-server`) must be running and accessible.
+- A running StarkFi Auth Server (`starkfi-server`). **The hosted default (`https://starkfi-production.up.railway.app`) is currently offline**, so the user must run their own from the `server/` directory of https://github.com/ahmetenesdur/starkfi and set `STARKFI_API_URL` to its URL in the environment the CLI runs in, before logging in. Guide: https://docs.starkfi.app/docs/authentication#self-hosting-the-auth-server
 - An email address the user has access to (for receiving OTP codes).
 
 ## Authentication Flow
@@ -104,12 +104,12 @@ npx starkfi@latest auth logout
 
 ## Error Handling
 
-| Error                  | Action                                                                      |
-| ---------------------- | --------------------------------------------------------------------------- |
-| `Invalid OTP code`     | Ask the user to check their email and retry `auth verify`.                  |
-| `Session expired`      | Restart from `auth login`.                                                  |
-| `Server unreachable`   | Ensure `starkfi-server` is running at the configured URL.                   |
-| `Rate limit`           | Wait 60 seconds before retrying.                                            |
+| Error                                 | Action                                                                                                                                                                    |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Invalid OTP code`                    | Ask the user to check their email and retry `auth verify`.                                                                                                                |
+| `Session expired` / `Session revoked` | Restart from `auth login`.                                                                                                                                                |
+| `StarkFi auth server unavailable`     | Do not retry. Tell the user the auth server is down (the hosted one is offline); they must start their own `server/` and set `STARKFI_API_URL`, then log in again.        |
+| `Rate limit`                          | Wait 60 seconds before retrying.                                                                                                                                          |
 | `Deployment failed`    | Check balance — send ETH/STRK to the address, or enable gasfree mode first. |
 | `Insufficient balance` | For deploy: `npx starkfi@latest config set-gasfree on` to bypass gas costs. |
 

@@ -33,6 +33,7 @@ Privacy-preserving token transfers using ZK proofs on Starknet. Amounts are hidd
 - Active session required. If not authenticated, run `authenticate-wallet` skill first.
 - Tongo credentials configured (`conf-setup`). Must be done once before any other confidential command.
 - Sufficient public token balance for `conf-fund` operations.
+- StarkFi v0.8.0 or later. In v0.7.2 and earlier every confidential command except `conf-setup` fails with a `… is not a constructor` error (the package shipped without the Tongo SDK). If you see that error, tell the user to update StarkFi; do not retry.
 
 ## Rules
 

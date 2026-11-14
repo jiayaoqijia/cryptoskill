@@ -22,6 +22,12 @@ test("pickTop: ranked positions only, best rank first, cut to n", () => {
   assert.deepEqual(pickTop(board, 2).map((p) => p.id), ["1", "2"]);
 });
 
+test("pickTop: a position with no `p` field at all (untrusted JSON) is excluded, not a crash", () => {
+  const noP = { id: "4", owner: "0x" + "4".padStart(40, "0"), contract: false, size: 20_000 } as unknown as DromosBoard["positions"][number];
+  const board: DromosBoard = { asOf: "", minSize: 10_000, positions: [pos("1", 1), noP] };
+  assert.deepEqual(pickTop(board).map((p) => p.id), ["1"]);
+});
+
 test("splitOf: shares of what is placed across networks, gauges lower-cased, largest first", () => {
   const s = splitOf({ base: on(1, ["0xAA", 30], ["0xBB", 10]), arbitrum: on(2, ["0xCC", 60]), ink: on(0) });
   assert.deepEqual(s, [

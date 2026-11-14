@@ -60,10 +60,19 @@ export interface TopAllocatorsFile {
   together: TopSlice[];
 }
 
-/** The `n` best-ranked positions over the last 7 days. */
+/**
+ * The `n` best-ranked positions over the last 7 days.
+ *
+ * `p.p` is typed as always present, but it's untrusted JSON from dromos.kitchen
+ * — a position with no recorded 7-day window yet (brand new, or a leaderboard
+ * format change) can arrive with no `p` field at all, not just a missing `"7d"`
+ * key. `p.p["7d"]` would throw on that rather than filter it out, taking down
+ * the whole scan instead of just excluding that one position — the same
+ * failure mode prices.ts already guards against for malformed DefiLlama rows.
+ */
 export function pickTop(board: DromosBoard, n = TOP_ALLOCATORS): DromosBoard["positions"] {
   return board.positions
-    .filter((p) => p.p["7d"]?.[0] != null)
+    .filter((p) => p.p?.["7d"]?.[0] != null)
     .sort((a, b) => (a.p["7d"][0] as number) - (b.p["7d"][0] as number))
     .slice(0, n);
 }

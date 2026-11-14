@@ -38,11 +38,12 @@ Manage lending and borrowing positions on Vesu V2 protocol on Starknet. Supply a
 
 1. BEFORE any lending action, run `npx starkfi@latest lend-pools` to discover available pools and tokens. Use `lend-pools <name>` for detailed pool info including APY rates.
 2. Pool can be specified by **name** (e.g. `Prime`, `Genesis`) or by **contract address** (`0x...`).
-3. BEFORE borrowing, run `npx starkfi@latest lend-status` to check existing positions, or with `--pool` and `--collateral-token` for Health Factor:
+3. BEFORE borrowing, run `npx starkfi@latest lend-status` to check existing positions, or with `--pool` and `--collateral-token` for Health Factor. Health Factor = collateral value × the pair's max LTV / debt value (shown as `maxLtv`); **below 1.0 Vesu can liquidate the position**.
     - Health Factor **> 2.0** → Safe to borrow.
     - Health Factor **1.5 – 2.0** → WARN the user about increasing risk.
     - Health Factor **< 1.5** → STRONGLY advise against borrowing. Suggest repaying instead.
     - Health Factor **< 1.1** → DO NOT proceed without explicit double-confirmation from the user.
+    - Health Factor **< 1.0** → The position can be liquidated now. Tell the user immediately and suggest `lend-auto --simulate`.
 4. AFTER any transactional operation, verify with `tx-status`.
 5. When using `--use-supplied`, the borrow is backed by the user's existing earn positions (supplied positions) rather than transferring from wallet.
 6. When the user asks about health, risk, or liquidation — use `lend-monitor` first for a comprehensive overview with 4-level risk classification (SAFE/WARNING/DANGER/CRITICAL).
@@ -193,12 +194,14 @@ Run without arguments to **scan all pools**. Or specify `--pool` + `--collateral
 
 **Risk Levels:**
 
-| Level        | Health Factor | Meaning                               |
-| ------------ | ------------- | ------------------------------------- |
-| **SAFE**     | > 1.3         | No action needed                      |
-| **WARNING**  | 1.1 – 1.3    | Monitor closely                       |
-| **DANGER**   | 1.05 – 1.1   | Repay debt or add collateral          |
-| **CRITICAL** | ≤ 1.05        | Imminent liquidation risk             |
+Health Factor = collateral value × the pair's max LTV / debt value. 1.0 is the liquidation point.
+
+| Level        | Health Factor | Meaning                                            |
+| ------------ | ------------- | -------------------------------------------------- |
+| **SAFE**     | > 1.3         | No action needed                                   |
+| **WARNING**  | 1.1 – 1.3     | Monitor closely                                    |
+| **DANGER**   | 1.05 – 1.1    | Repay debt or add collateral                       |
+| **CRITICAL** | ≤ 1.05        | Liquidation imminent; below 1.0 it can happen now  |
 
 ### lend-auto
 
