@@ -1,0 +1,22 @@
+{
+  "name": "Donchian 55/20 breakout",
+  "side": "long",
+  "entry": "close > shift(highest(high, {entry_n}), 1)",
+  "exit": "close < shift(lowest(low, {exit_n}), 1)",
+  "stop": {
+    "type": "atr",
+    "mult": 2,
+    "n": 20
+  },
+  "sizing": {
+    "type": "risk",
+    "risk_pct": 1.0
+  },
+  "max_positions": 6,
+  "rank_by": "roc(126)",
+  "params": {
+    "entry_n": 55,
+    "exit_n": 20
+  },
+  "_about": "Turtle-style trend following: buy new 55-day highs, exit on 20-day lows, 2 ATR initial stop."
+}

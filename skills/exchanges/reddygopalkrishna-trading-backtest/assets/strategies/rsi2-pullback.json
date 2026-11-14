@@ -1,0 +1,22 @@
+{
+  "name": "RSI-2 pullback in uptrend",
+  "side": "long",
+  "entry": "close > sma(200) and rsi(2) < {oversold}",
+  "exit": "close > sma(5)",
+  "stop": {
+    "type": "atr",
+    "mult": 2.5,
+    "n": 14
+  },
+  "max_bars": 10,
+  "sizing": {
+    "type": "risk",
+    "risk_pct": 1.0
+  },
+  "max_positions": 5,
+  "rank_by": "-rsi(2)",
+  "params": {
+    "oversold": 10
+  },
+  "_about": "Connors-style mean reversion: buy short-term washouts inside long-term uptrends, exit on the first bounce."
+}

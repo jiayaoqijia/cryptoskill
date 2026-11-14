@@ -1,0 +1,19 @@
+{
+  "name": "Bollinger band mean reversion",
+  "side": "long",
+  "entry": "close < bb_lower(20, 2) and rsi(14) < 30 and close > sma(200)",
+  "exit": "close > bb_mid(20, 2)",
+  "stop": {
+    "type": "atr",
+    "mult": 3,
+    "n": 14
+  },
+  "max_bars": 15,
+  "sizing": {
+    "type": "risk",
+    "risk_pct": 0.75
+  },
+  "max_positions": 5,
+  "rank_by": "-rsi(14)",
+  "_about": "Buy closes below the lower band in long-term uptrends, exit at the middle band."
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Golden cross trend filter",
+  "side": "long",
+  "entry": "cross_above(sma(50), sma(200))",
+  "exit": "cross_below(sma(50), sma(200))",
+  "stop": {
+    "type": "none"
+  },
+  "sizing": {
+    "type": "percent",
+    "pct": 95
+  },
+  "max_positions": 1,
+  "_about": "Classic 50/200 moving-average crossover. Fully invested in uptrends, in cash otherwise."
+}

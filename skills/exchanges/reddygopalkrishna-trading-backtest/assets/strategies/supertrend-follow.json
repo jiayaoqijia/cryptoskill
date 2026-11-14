@@ -1,0 +1,20 @@
+{
+  "name": "Supertrend trend follower",
+  "side": "long",
+  "entry": "supertrend_dir({n}, {mult}) == 1 and shift(supertrend_dir({n}, {mult}), 1) == -1 and adx(14) > 20",
+  "exit": "supertrend_dir({n}, {mult}) == -1",
+  "stop": {
+    "type": "expr",
+    "value": "supertrend({n}, {mult})"
+  },
+  "sizing": {
+    "type": "risk",
+    "risk_pct": 1.0
+  },
+  "max_positions": 5,
+  "params": {
+    "n": 10,
+    "mult": 3
+  },
+  "_about": "Enter when Supertrend flips up with ADX confirming a trend; exit when it flips down. Stop at the Supertrend line."
+}

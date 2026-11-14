@@ -1,0 +1,25 @@
+{
+  "name": "Trend-template breakout",
+  "side": "long",
+  "entry": "close > sma(150) and sma(150) > sma(200) and sma(50) > sma(150) and pct_from_high(252) >= -25 and close > shift(highest(high, 20), 1) and rel_volume(50) >= 1.4 and percentile(atr_pct(14), 60) <= 50",
+  "stop": {
+    "type": "pct",
+    "value": 7
+  },
+  "target": {
+    "type": "r",
+    "value": 3
+  },
+  "trail": {
+    "type": "atr",
+    "mult": 3,
+    "n": 14
+  },
+  "sizing": {
+    "type": "risk",
+    "risk_pct": 0.75
+  },
+  "max_positions": 8,
+  "rank_by": "roc(126)",
+  "_about": "Minervini/O'Neil-style: stage-2 trend, quiet base (low ATR percentile), breakout on volume. 7% max stop, 3R target, ATR trail."
+}
