@@ -10,12 +10,12 @@ account's own address, as it does for runs started on the website.
 `POST /v1/analysis/deep` (scope `analysis:run`, metered)
 
 ```json
-{"asset": "stock", "symbol": "NVDA", "horizon": "swing", "tier": "fast", "language": "en"}
+{"asset": "stock", "symbol": "NVDA", "horizon": "swing", "language": "en"}
 ```
 
 - `horizon`: `short | swing | long`. `agents`: optional subset (the manager and risk manager are always seated).
 - Free accounts: only the free lists (stocks: AAPL MSFT GOOGL AMZN TSLA NVDA META NFLX AMD QQQ; coins: BTC ETH SOL XRP DOGE BNB),
-  fast tier only. Others → 403 `plan_required`.
+  on the free model. Others → 403 `plan_required`.
 - Answer `201`: `data.id`, `status: queued`, `events_url`, `next_step` ("keep following this run …").
 - Say one sentence: "The committee has started on NVDA; I will report each analyst as it finishes." If the user asks
   what it costs, `POST /v1/analysis/quote` gives the estimate.
@@ -69,6 +69,8 @@ Never collapse these into one message at the end; never wait to be asked.
 
 ## Models
 
-`tier` or `models` `{"<committee agent>": "<id>"}` (paid plans) choose the committee's models; the agent names are in
+The committee runs on the user's saved seats (`GET /v1/settings` → `<asset>.deep.models`; change them for good with
+`PATCH /v1/settings` `{"asset": "stock", "deep": {"models": {...}}}`). `models` `{"<committee agent>": "<id>"}` (paid plans)
+overrides seats for one run only; the agent names are in
 `GET /v1/models` (`deep.agents.stock` / `deep.agents.crypto`) and the ids in `deep.models`. An unknown id is 400
 `invalid_parameter` (`parameter: models`).

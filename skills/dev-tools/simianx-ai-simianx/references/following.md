@@ -74,7 +74,7 @@ Semantics:
 |---|---|---|---|---|
 | Deep research | `/v1/updates`, or `GET /v1/analysis/deep/{id}/events?after=<cursor>&wait=30` | call again the moment a call returns; no long-poll available → **every 10 s exactly** | 30 min (about 10 in practice) | `deep.report` (or `deep.stopped` / `deep.error` / `deep.paused`) |
 | Quick read | `/v1/updates`, or `GET /v1/analysis/quick/{id}?wait=30` | same | 10 min (1–2 in practice) | status `done` / `partial` / `failed` |
-| Live session | WebSocket frames; `/v1/updates` to catch up | WebSocket as frames arrive; HTTP fallback every 10 s exactly | until stopped | `session_end` |
+| Live session | WebSocket frames (it runs only while the socket is open); `/v1/updates` to catch up after a cut | as frames arrive | until stopped | `session_end` |
 | Autopilot | `/v1/updates`, or `GET /v1/autopilots/{id}/events?after=…&wait=30` | same | until stopped | `autopilot.stopped` / `autopilot.paused` |
 | News watch | `/v1/updates` | same | until deleted | the watch is deleted |
 
@@ -99,7 +99,7 @@ export SIMIANX_API_KEY=simx_live_…
 python3 follow_run.py updates --ack <last id>        # the feed: all runs of this key
 python3 follow_run.py deep <id>                      # one deep run, by its events
 python3 follow_run.py quick <id>                     # one quick read
-python3 follow_run.py live <id>                      # one live session (HTTP fallback)
+python3 follow_run.py live <id>                      # catch up on a live session's rows (the socket must stay open)
 python3 follow_run.py autopilot <id>                 # one autopilot
 ```
 

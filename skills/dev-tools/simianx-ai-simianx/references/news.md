@@ -12,6 +12,8 @@ delay (free also without value and sentiment); Plus and above are live and may o
 - `since`: ISO 8601; return only rows that became readable after it, oldest first (poll with the `newest` value of the previous answer; a story can repeat, dedupe by `id`).
 - `cursor`: the `next_cursor` of the previous page for older rows.
 - Items: id, title, summary, url, source, asset, image_url, published_at, symbols[], is_global, value_score, sentiment.
+- Free plan: up to 10 items per call (`limit` in the answer says what applied), stories 30 minutes after publication,
+  and `value_score` / `sentiment` withheld (so `min_value` / `sentiment` filters are ignored there).
 
 ## One article (0.2 points)
 
@@ -19,7 +21,8 @@ delay (free also without value and sentiment); Plus and above are live and may o
 
 ## Translate titles (1 point per call, ≤ 20 titles)
 
-`POST /v1/news/translate {"titles": ["…"], "language": "ja"}`
+`POST /v1/news/translate {"titles": ["…"], "language": "ja"}` (when the translator fails the titles come back
+unchanged with `translated: 0`, at no cost)
 
 ## News watch (server side; keeps matching while you are away)
 
@@ -34,6 +37,8 @@ POST /v1/news/watches
 GET /v1/news/watches                 → the key's watches (symbols, when the last match was, how many)
 DELETE /v1/news/watches/{id}         → stop (when the user asks)
 ```
+
+`language` is the language of the user who asked: `"zh-CN"` for "帮我盯 NVDA 的新闻", `"en"` for the English request.
 
 - `min_value` (default `medium`): `low` / `medium` / `high`. `sentiment` filters one side. `symbols: []` = global
   stories only. `include_pulse` is accepted and stored for a coming release; today a watch delivers news only.

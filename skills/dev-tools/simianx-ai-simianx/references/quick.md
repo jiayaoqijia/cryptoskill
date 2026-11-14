@@ -8,7 +8,7 @@ fundamental (the business or the coin), decision (a call with entry, stop and ta
 `POST /v1/analysis/quick` (scope `analysis:run`, metered)
 
 ```json
-{"asset": "crypto", "symbol": "SOL", "timeframe": "1H", "tier": "fast",
+{"asset": "crypto", "symbol": "SOL",
  "agents": ["indicator", "intelligence", "fundamental", "decision"], "language": "en"}
 ```
 
@@ -42,12 +42,13 @@ Then offer to keep analysing with a live session or an autopilot.
 
 ## Models
 
-`tier` (`fast | standard | frontier`) picks one model for every agent; `models` `{"indicator": "<id>", "decision": "<id>"}`
-overrides per agent on paid plans. Ids and prices come from `GET /v1/models` (`live.crypto`, `live.stock`); an id
+Without `models` and `timeframe` the run uses the user's saved setup for that market (`GET /v1/settings`, the same as
+the website); change it for good with `PATCH /v1/settings`. `models` `{"indicator": "<id>", "decision": "<id>"}`
+overrides per agent for this run on paid plans. Ids and prices come from `GET /v1/models` (`live.crypto`, `live.stock`); an id
 outside the catalogue for that market is refused with 400 and `data.allowed`. Free accounts run every agent on
 `free_model`, whatever they send.
 
 ## The old path
 
 `POST /v1/analysis/live` and `GET /v1/analysis/live/{id}` (skills ≤ 1.0.5) still answer the same run, with
-`Deprecation`, `Sunset: 2026-12-01` and `Link: …; rel="successor-version"` headers. Use `/v1/analysis/quick`.
+`Deprecation`, `Sunset: 2027-06-01` and `Link: …; rel="successor-version"` headers. Use `/v1/analysis/quick`.

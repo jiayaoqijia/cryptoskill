@@ -16,7 +16,7 @@ An autopilot is the same engine running server side without you (`references/aut
 `POST /v1/live/sessions` (scope `analysis:run`, metered per analysis like the website)
 
 ```json
-{"asset": "crypto", "symbol": "BTC", "timeframe": "15m", "tier": "fast",
+{"asset": "crypto", "symbol": "BTC",
  "agents": ["indicator", "intelligence", "fundamental", "decision"], "language": "en"}
 ```
 
@@ -29,9 +29,11 @@ An autopilot is the same engine running server side without you (`references/aut
           "next_step": "Connect ws_url with the bearer header and stay connected; relay each frame …"}}
 ```
 
-- `asset`, `symbol`, `timeframe`, `tier`, `models`, `agents`, `language`: as for a quick read.
+- `asset`, `symbol`, `timeframe`, `models`, `agents`, `language`: as for a quick read (models and timeframe default to the saved setup).
 - `status` is `waiting` until the socket connects, `running` while it is connected (or within the grace window),
   `ended` afterwards (`ended_reason`: `stopped`, `agent_left`, `error`).
+- `PATCH /v1/live/sessions/{id}` `{"models": {"decision": "<id>"}}` switches models while it runs (paid plans; the next
+  analysis uses them; the saved setup in `GET /v1/settings` stays as it is).
 - `GET /v1/live/sessions` lists the key's sessions (`?status=running`), `GET /v1/live/sessions/{id}` one of them,
   `DELETE /v1/live/sessions/{id}` (on request) stops it (also stops the analysis; the socket receives `session_end`).
 
@@ -41,7 +43,7 @@ Open `ws_url` with the same key the session was created with:
 
 ```
 Authorization: Bearer simx_live_…        (header; no Origin header is needed for a key)
-X-SimianX-Skill: 1.0.11
+X-SimianX-Skill: 1.0.12
 ```
 
 A reconnect needs no cursor: the session's unacked frames come first (`data.replay: true`). Every frame is JSON:

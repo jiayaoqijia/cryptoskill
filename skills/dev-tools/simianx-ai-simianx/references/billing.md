@@ -7,9 +7,9 @@ ran out and give the links. Code clients read everything here from the headers a
 
 ## How points work
 
-- The account has one balance: the points of its plan (Free 25 a day; Starter, Plus and Pro monthly). Keys spend from it.
+- The account has one balance: the points of its plan (Free 20 a day; Starter, Plus and Pro monthly). Keys spend from it.
 - `GET /v1/models` lists every model with its price in points per million tokens and the typical points of one call per
-  live agent; `GET /v1/pricing` has the per-tier typical cost of a whole cycle or run.
+  live agent; `POST /v1/analysis/quote` gives the cost of a whole cycle or run on the user's own models.
 - Flat endpoints charge per request (see `GET /v1/pricing`, `endpoints[].points`). AI endpoints are metered on the models
   actually used, like the web app; `pricing.typical` and `POST /v1/analysis/quote` give code clients the usual cost.
 - Streams charge per connection hour, counted by the minute.
@@ -38,14 +38,14 @@ same case.
 
 | Plan | req/min | req/day | heavy/min | points/min | analyses at once | streams | news streams | keys | news delay |
 |---|---|---|---|---|---|---|---|---|---|
-| Free | 30 | 1,000 | 10 | 5 | 1 | 1 | 0 | 1 | 30 min |
+| Free | 60 | 1,000 | 10 | 5 | 1 | 1 | 0 | 1 | 30 min |
 | Starter | 120 | 20,000 | 30 | 30 | 2 | 2 | 0 | 3 | 30 min |
 | Plus | 300 | 100,000 | 90 | 80 | 3 | 5 | 1 | 10 | live |
 | Pro | 600 | 500,000 | 180 | 300 | 10 | 10 | 3 | 50 | live |
 
 ## 426
 
-`{"code": 426, "data": {"reason": "skill_outdated", "minimum_version": "1.0.11", "current_version": "1.0.11", "skill_url": "https://www.simianx.ai/SKILL.md"}}`
+`{"code": 426, "data": {"reason": "skill_outdated", "minimum_version": "1.0.12", "current_version": "1.0.12", "skill_url": "https://www.simianx.ai/SKILL.md"}}`
 
 Your cached skill is older than the API allows. Re-read `skill_url`, then retry the request with the new version in
 `X-SimianX-Skill`. `GET /v1/skill` always answers (it is the update path) and lists the changelog and deprecations.
@@ -62,6 +62,8 @@ https://www.simianx.ai/SKILL.md and tell the user in one line that the skill was
 - `GET /v1/keys`, `GET /v1/keys/{id}` (with 30-day usage), `PATCH /v1/keys/{id}` (name, budgets, scopes, expires_at,
   ip_whitelist), `DELETE /v1/keys/{id}` (revoke, on request). The token is returned once at creation.
 - `GET /v1/usage?days=7` → requests and points by key, endpoint and day.
-- Send `Idempotency-Key` on POST / PATCH / DELETE to make retries safe (24 h replay, `X-Idempotent-Replay: true`;
-  a replayed key creation never repeats the token). Details in `references/developers.md`.
+- Send `Idempotency-Key` on POST / PATCH / DELETE to make retries safe (24 h replay, `X-Idempotent-Replay: true`,
+  never charged again; a replayed key creation never repeats the token, a webhook its secret). A retry that arrives
+  while the first call still runs answers 409 `request_in_progress` (`Retry-After: 3`). Over MCP, pass
+  `idempotency_key` in the tool arguments. Details in `references/developers.md`.
 - `webhook_endpoints` (Free 0, Starter 2, Plus 5, Pro 10) caps `POST /v1/webhooks`.

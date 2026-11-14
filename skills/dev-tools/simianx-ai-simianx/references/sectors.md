@@ -46,7 +46,8 @@ exists, `title_en` is always the English original. All sector endpoints need sco
 
 - `min_severity`: 1–4. `types`: comma list of `event_type`. `stock`: ticker; `asset`: slug.
 - `since`: ISO 8601; return only newer rows (poll with the `newest` value of the previous answer).
-- `cursor`: the `next_cursor` of the previous page for older rows. Newest first.
+- `cursor`: the `next_cursor` of the previous page for older rows. Newest first; with `since`, oldest first and
+  `more: true` when the page is full (call again with the new `newest`).
 - Items: id, slug, event_type, severity, direction (`up` | `down` | `neutral`), title, title_en, ai_summary,
   source_kind, source_url, source_filed_at (when the source published it; `created_at` is when we saw it),
   confidence, stock{ticker, name, market_cap, cap_tier}, asset{slug, name}, calendar_item (id of the dated item it
@@ -103,7 +104,8 @@ first follow in a sector creates a subscription for the account with an email ch
 push instant alerts for events of severity 2 and above and reminders before dated items. Ask the human before creating
 one — it sends mail — and tell them channels and digests are managed on the sector page of the site.
 
-- `GET /v1/sectors/{sector}/follows` → `follows[]` (id, type, key, reminder_offsets, stock | asset | calendar, created_at)
+- `GET /v1/sectors/{sector}/follows` → `items[]` (id, type, key, reminder_offsets, stock | asset | calendar, created_at)
+  and `keys[]` (the followed target keys). Following a target again returns the existing follow (offsets kept unless sent).
   and `subscription` (channels, min_severity, reminder_offsets, weekly_digest, timezone, send_time, is_active).
 - `POST /v1/sectors/{sector}/follows` `{"type": "stock", "ticker": "NVDA"}` · `{"type": "asset", "slug": "<slug>"}`
   · `{"type": "calendar", "id": "<calendar item id>", "reminder_offsets": [7, 1, 0]}` (days before; omit to inherit

@@ -16,8 +16,11 @@ Create keys by hand at https://www.simianx.ai/#api or let a CLI sign the user in
 
 Send `Idempotency-Key: <your unique string>` on any `POST`, `PATCH` or `DELETE`. For 24 hours the same key on the
 same endpoint from the same API key returns the stored answer (`X-Idempotent-Replay: true`) without running the call
-again: a retry after a network cut cannot start a second session, a second deep run or a second charge. A replayed
-key-creation answer never repeats the token (it was shown once). Use one Idempotency-Key per logical operation: the
+again and without charging again: a retry after a network cut cannot start a second session, a second deep run or a
+second charge. A retry that arrives while the first call is still running answers `409 request_in_progress` with
+`Retry-After: 3`; call again then to get the stored answer. MCP tools that change something take the same key as an
+`idempotency_key` argument. A replayed key-creation answer never repeats the token (it was shown once), nor a
+webhook's generated secret. Use one Idempotency-Key per logical operation: the
 same key sent with a different method, path or body answers `422 idempotency_mismatch` rather than the other call's result.
 
 ## Delivery: four ways to the same updates
@@ -100,7 +103,7 @@ paper books, `/autopilots/{id}/actions`) are simulated.
 - `429` carries `Retry-After`; paginated lists return `next_cursor`; every time is ISO 8601 UTC.
 - Breaking changes never edit a path in place: a new path or field is added, the old one gets `Deprecation`, `Sunset`
   and `Link: <…>; rel="successor-version"` headers and a `deprecations` entry in `GET /v1/skill`.
-- Send `X-SimianX-Skill: 1.0.11` (or your client's own version string) so `_skill_update` and `426` work as designed;
+- Send `X-SimianX-Skill: 1.0.12` (or your client's own version string) so `_skill_update` and `426` work as designed;
   a client that never sends it is never refused.
 
 ## Minimal clients
@@ -111,7 +114,7 @@ Python (`pip install requests websockets`):
 import asyncio, json, os, requests, websockets
 
 API = "https://service.simianx.ai"; KEY = os.environ["SIMIANX_API_KEY"]
-H = {"Authorization": f"Bearer {KEY}", "X-SimianX-Skill": "1.0.11", "Content-Type": "application/json"}
+H = {"Authorization": f"Bearer {KEY}", "X-SimianX-Skill": "1.0.12", "Content-Type": "application/json"}
 
 s = requests.post(f"{API}/v1/live/sessions", headers={**H, "Idempotency-Key": "live-btc-15m-1"},
                   json={"asset": "crypto", "symbol": "BTC", "timeframe": "15m"}).json()["data"]
@@ -137,7 +140,7 @@ JavaScript (Node 18+, `npm i ws`):
 ```js
 import WebSocket from "ws";
 const API = "https://service.simianx.ai", KEY = process.env.SIMIANX_API_KEY;
-const H = { Authorization: `Bearer ${KEY}`, "X-SimianX-Skill": "1.0.11", "Content-Type": "application/json" };
+const H = { Authorization: `Bearer ${KEY}`, "X-SimianX-Skill": "1.0.12", "Content-Type": "application/json" };
 
 const { data: s } = await (await fetch(`${API}/v1/live/sessions`, { method: "POST",
   headers: { ...H, "Idempotency-Key": "live-btc-15m-1" },
