@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-15T00:49:06.037690+00:00",
+  "generated_at": "2026-11-15T06:34:55.452985+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -80356,6 +80356,70 @@
       },
       "hosted_operators": [
         "anthropic.com"
+      ]
+    },
+    "exchanges/anoscranel-ac-model-fine-tuning": {
+      "name": "ac-model-fine-tuning",
+      "execution_model": "analysis_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": [
+        "openai.com"
       ]
     },
     "exchanges/anoscranel-ac-money-arithmetic": {
@@ -246371,14 +246435,14 @@
     }
   },
   "summary": {
-    "discovered": 3960,
-    "processed": 3960,
+    "discovered": 3961,
+    "processed": 3961,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2851,
       "router_orchestrator": 168,
       "unknown": 410,
-      "analysis_only": 242,
+      "analysis_only": 243,
       "unsigned_tx_builder": 119,
       "local_executor": 105,
       "installer_bootstrap": 46,
@@ -246393,7 +246457,7 @@
       "can_spawn_subagents": 298,
       "can_move_funds": 309,
       "requires_private_key": 532,
-      "requires_hosted_operator": 370,
+      "requires_hosted_operator": 371,
       "uses_remote_install_script": 45,
       "mutable_remote_runtime": 643
     }
