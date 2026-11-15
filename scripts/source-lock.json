@@ -2105,7 +2105,7 @@
     "dev-tools/cryptoskill": {
       "repo": "jiayaoqijia/cryptoskill",
       "path": "skills/dev-tools/cryptoskill/SKILL.md",
-      "revision": "30c1c7f693f22a89e070ef385e18a2c435e3b6ff",
+      "revision": "35e6202023ba483b6d6da4b725023b8f409c0b15",
       "files": {
         "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
         "SKILL.md": "b223e8b776e4317922ac3a8c41f32be0d8a996bb435491a5e438df046714af26"
@@ -3464,12 +3464,12 @@
     "exchanges/perp-cli": {
       "repo": "hypurrquant/perp-cli",
       "path": "skills/perp-cli/SKILL.md",
-      "revision": "b4634349c596b4f724d758d3a4fbd1cdf03a6c22",
+      "revision": "c1a5e1964a904fe2df2c3dc1a3684a93ff68994e",
       "files": {
-        "SKILL.md": "dc6d618e65d3c493ab33d7797add7f1444a7ccb902a79a3b758eb8c714739d04",
+        "SKILL.md": "53a2a1e87b9599f1025f03f2979775e478e29db2743074a520b514a5aafda2d2",
         "package.json": "7561215f986d51c6d6be1f2f3799974a800899aa7e15425f30c4e4774a37f604",
         "references/agent-operations.md": "5c09e34e678e3972fcb6f283edd13d2cd8e91dc70a1e057e46b41ef56cc6edea",
-        "references/commands.md": "8a406a9f55208684f565946c2acb5842d1977ab440deb7dd62df1a8ba2d60da4",
+        "references/commands.md": "47d0ed063e6cd0cd8c3d4bccd9c79b2189945fef3c21a750769d279963a46457",
         "references/strategies.md": "81cabf4ef536e22e58be11e5fe1799e44536081f69a2915db515150148a4f379",
         "references/ws-library.md": "2ec97cd987de87570ed3886282cec36852e90c7b7422b0ea13da94a66326bb5c",
         "scripts/arb-monitor.sh": "0ce941a54eb5c550e41345ac2937af7d19f2ed7a75c226c73c69c11bc7918751",
@@ -5121,7 +5121,7 @@
     "trading/bankr-official-0xwork": {
       "repo": "bankrbot/skills",
       "path": "0xwork/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "2ad467846eb8ef76f657cf072029d20576b18e2912bda12e9847d9fc834e3550",
         "catalog.json": "5d0afeea15a5f2018518a4091c5da4396573ffb751b8c20804b11584095a398c",
@@ -5136,18 +5136,18 @@
     "trading/bankr-official-bankr": {
       "repo": "bankrbot/skills",
       "path": "bankr/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
-        "SKILL.md": "50211eba2d8ecf6c623e701912688d097208669f07a4152c5407135b2d486416",
+        "SKILL.md": "b16bc69637e997c937dd0ca65d1dd4095c09b91c0c58275bed2c95235371682c",
         "catalog.json": "52cd3b573fefb199e5b739158d05a95bf03126be70b1228649694ed3fb41001a",
         "references/agent-api.md": "ff413fd7f43d47fee1a1ee77ecf7e7dd4e23f73016ebfae365ab3e9ac68f77e5",
-        "references/arbitrary-transaction.md": "e58c5f3fee50c736c8dcaa4a66a21903056e41c93b46fa25732da12a82cd8ff0",
-        "references/automation.md": "2df61191074bbf8c903d1ff5719e490dae7de2efb1c3e544ba5a663a290a5313",
+        "references/arbitrary-transaction.md": "e8ebd269cbfebae3b4899db541f3823aa27349db967e0740cf473c5e8ad8a388",
+        "references/automation.md": "0821f8d10bf84d0f34b3c84de0f9059ef420e3fd9e55611b037a587002ddd5b2",
         "references/error-handling.md": "b4009b25b07ec6a60ad269d53fdff39fe39ff09e6dda3ec15b7ae38343246707",
         "references/files.md": "4360cf951324b5417a95a05564feeec4b377b207bf932262ce51fbcdc67ce8a9",
         "references/hyperliquid.md": "e549cd929a2548eee507d3636c616172d48289276e67fd76fe88346bdda38f7d",
         "references/leverage-trading.md": "c86ff70f55ad8bf2e107cb079c08b94c41b41917c4cb455f2c8a8f62c6418936",
-        "references/llm-gateway.md": "7ecac270a835e86076b0d7b9935aae26aa7dc9de78901f5fe032bd9ee336a7af",
+        "references/llm-gateway.md": "9cd0cd0661a9e76b9ece1c821d3a853de18a5d4c51124083ce65ae47f303ab34",
         "references/market-research.md": "97f99a8498700c28ea055de5718856643702ef227368d48923d21f9816ad5388",
         "references/nft-operations.md": "7c3d4f61265a4440658cd29f2c7b862553ad2c724bd23da759e59ffed9ddc848",
         "references/polymarket.md": "f8333185b3d2e86770ac65db9c12d69eea563ceece10701ecf15e5baac2433ba",
@@ -5189,7 +5189,7 @@
     "trading/bankr-official-bankr-signals": {
       "repo": "bankrbot/skills",
       "path": "signals/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "HEARTBEAT.md": "f80401546743f822afd70d8e06547778a192f15926e595bcfeaeb400f7fa61cd",
         "SKILL.md": "6dd67b874036addb7ef4a6e8601fcf1de810fc8578e5a7e74058dba182777a45",
@@ -5208,7 +5208,7 @@
     "trading/bankr-official-base": {
       "repo": "bankrbot/skills",
       "path": "base/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "cce3c15b0fd6f9b87bbaccfc552cb67aeb26c46ea2f958e1f7cc367848f74a07",
         "catalog.json": "9fd2bcaaa206079e43985273ca06fd20a4faf92905e78e9d08d2b3ad67a186ab"
@@ -5221,7 +5221,7 @@
     "trading/bankr-official-botchan": {
       "repo": "bankrbot/skills",
       "path": "botchan/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "bb63ea26846c1b1a400a60a215a1974b6352be6244941532bf2208003060a0d1",
         "catalog.json": "3387943873e8d5f6c8c8475257a8e389285a341bc8a5fc5a9ceaa01e4de14fec"
@@ -5234,7 +5234,7 @@
     "trading/bankr-official-clanker": {
       "repo": "bankrbot/skills",
       "path": "clanker/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "54dba8d688cdf7dc2ec07281058d517cc5b272a1f9656d81d5d26f928b897b23",
         "catalog.json": "0919f1938c0928a73809bddde58bba045aa49c97882db9b2e35e5623b22b7cec",
@@ -5259,7 +5259,7 @@
     "trading/bankr-official-ens-primary-name": {
       "repo": "bankrbot/skills",
       "path": "ens-primary-name/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "047f5094266678435c74b16fcec6a9e49f832e144bfa86ae977550b317cbffef",
         "catalog.json": "9becaf53bba6a74f8ab07de1c5c480081de6a53f3f7d623d8e9a73d0e34b252f",
@@ -5278,7 +5278,7 @@
     "trading/bankr-official-erc-8004": {
       "repo": "bankrbot/skills",
       "path": "erc-8004/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "e90b1b17c77ac01e7db5a888bf751d6f4b9830ce1b6d5ba506690ac49fa740ee",
         "catalog.json": "458c5d0edcfbe25f93ba07bee023c1cf390f2af3cf478972e5faef39623dd152",
@@ -5309,7 +5309,7 @@
     "trading/bankr-official-helixa": {
       "repo": "bankrbot/skills",
       "path": "helixa/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6a35f204955b48b266fd63f6f51fe4354f0be7d24bfe80db1e5ee837828ea869",
         "catalog.json": "06c2837fa5e84cc2b61b5b38d83817f3c1d683cc139da625d7837ed73142faa4",
@@ -5360,7 +5360,7 @@
     "trading/bankr-official-hydrex": {
       "repo": "bankrbot/skills",
       "path": "hydrex/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "20dfb422aff901dd0d68f188a5050faa1998db74b7bbaa014ac0ec3d923044e6",
         "catalog.json": "662ae50ef10daae4f7b722d96d3bbf75ab47b9db3b260ec9a3f3e4e5e9ca1d72",
@@ -5381,7 +5381,7 @@
     "trading/bankr-official-neynar": {
       "repo": "bankrbot/skills",
       "path": "neynar/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "1e96fae4d84f3fb099216f77e6ac1be61b6591a879219e6a128e3fd6f66fd08e",
         "catalog.json": "939b2039fa697d27f56793984ef82b222ba690a82ace4e77b5d6bd6ea6002e79",
@@ -5396,7 +5396,7 @@
     "trading/bankr-official-qrcoin": {
       "repo": "bankrbot/skills",
       "path": "qrcoin/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "2866b9092c54e96b5010275efc8ff214b54e89ad095639fd5033194d70cf87d9",
         "catalog.json": "c570e690c85b987761f66197da5021d0371a9690bae59f333a2fb85bfdcbdd07"
@@ -5409,7 +5409,7 @@
     "trading/bankr-official-siwa": {
       "repo": "bankrbot/skills",
       "path": "siwa/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "2ab8f24bb01ea5b24222bdff88ca576e6b74c91ded31fadbc333e1ea4503c4c1",
         "catalog.json": "46baca30994c6f5cee2be15cc4b1dd556a0aaa3da1ddc551158df10cf63ff15d",
@@ -5426,7 +5426,7 @@
     "trading/bankr-official-trails": {
       "repo": "bankrbot/skills",
       "path": "trails/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "970889572e3b05920ceecfe1f2e86531c188af42e34bdb9870044858c12019b0",
         "catalog.json": "9c2e870f4194bcce7101fe89ae20d0fa96e836020dd8497d24a6dbdeb14aa9a0",
@@ -5441,7 +5441,7 @@
     "trading/bankr-official-veil": {
       "repo": "bankrbot/skills",
       "path": "veil/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "README.md": "e5680b0bdc49fc4d5a8bed02b33c2170e2cb752fcfc61712d459d813c6a3493c",
         "SKILL.md": "54c502ff13073b9712ba7c0775a634d9e69b7f092239978a520dd870b00d1d6e",
@@ -5492,7 +5492,7 @@
     "trading/bankr-official-yoink": {
       "repo": "bankrbot/skills",
       "path": "yoink/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "e84ca789803084a93606736db081a293c9f8415f42799fdf569565cfbbe5ec10",
         "catalog.json": "513c80e53485f53fa458246d1ce335b51cde23d424d4042047c2f7a40f634d57"
@@ -5505,7 +5505,7 @@
     "trading/bankr-official-zapper": {
       "repo": "bankrbot/skills",
       "path": "zapper/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "5faa84f05dd6fa388c65751f4f5a2a2930c327752b1b9d193e57500b916dbc31",
         "catalog.json": "26f6fac1de87940446d1d7469b070db133fd038d57318963adeb58449dc4c200"
@@ -10880,7 +10880,7 @@
     "trading/bankrbot-official-1claw": {
       "repo": "bankrbot/skills",
       "path": "1claw/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6a048fde363b8f6053cc5f0a001afc0a6939c09aedfb0633d1f72e557d931998",
         "catalog.json": "2494e99453e4006663596c62927e6a7e83981d88e04383870bca119cbe7bcad9",
@@ -10897,7 +10897,7 @@
     "trading/bankrbot-official-Indexing": {
       "repo": "bankrbot/skills",
       "path": "ethskills-indexing/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "62bde3239264fcd4129d78bbb5b26f14d81e3b0c7e30780b1d2ab074245e0df2",
         "catalog.json": "0031961cc70581a2227457e90017aac2eacbabb93081b1a760ea41f6e0da39d4",
@@ -10912,7 +10912,7 @@
     "trading/bankrbot-official-Orchestration": {
       "repo": "bankrbot/skills",
       "path": "ethskills-orchestration/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "4f1e6d20d3d1e56d942f57edb0240c0303c044870ec8338f5bd9afbb1b080965",
         "catalog.json": "2c7c99943502d627b6a1067ae165e144a027ff95f8b8b62633d4aba262730d47",
@@ -10927,7 +10927,7 @@
     "trading/bankrbot-official-Security": {
       "repo": "bankrbot/skills",
       "path": "ethskills-security/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "fe19de9dbf0bcd04787b58a2c3d8b97cf706b517c7521852fd84b1a75e3382e9",
         "catalog.json": "2b00bbf72679d139e17805f69dfb8266ab58a08431966f65cef57b449f3cb3e2",
@@ -10942,7 +10942,7 @@
     "trading/bankrbot-official-Standards": {
       "repo": "bankrbot/skills",
       "path": "ethskills-standards/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "cdb2d2554ddb96bc14859fa194c589385325416a43d439cb536f18446a8d2e7f",
         "catalog.json": "00035dbaa9e3b979370bbdaa2f0989e90c1d8932d9812b5ce0dfc3b0ce2381bf",
@@ -10957,7 +10957,7 @@
     "trading/bankrbot-official-Testing": {
       "repo": "bankrbot/skills",
       "path": "ethskills-testing/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "c63a42bdf93afdc69cf189d441b9d4daa53ea7bb5b4f885ef4f7d1adbcce52e6",
         "catalog.json": "617105cfd00818d58bf9113bd8663c9a1d7cd8032d3425b6a93053bf98120087",
@@ -10972,7 +10972,7 @@
     "trading/bankrbot-official-Tools": {
       "repo": "bankrbot/skills",
       "path": "ethskills-tools/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "9035ecaa8efbbe3d4ae2d74dc9ea349bd4652bc64f3b3195318161f517b42829",
         "catalog.json": "0455dec8b66755599c6ec2dbe0bc602d448c981784eb4079c2eaa6287071e5f6",
@@ -10987,7 +10987,7 @@
     "trading/bankrbot-official-Wallets": {
       "repo": "bankrbot/skills",
       "path": "ethskills-wallets/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "7bf8413b69693b554aec977c9383aeab77854fc6393e3c8d7039eb134ac6d667",
         "catalog.json": "2a86101b0cab036642b0e7b2f106ec09cb82f40529bdfb9e7953d9657cd83860",
@@ -11002,7 +11002,7 @@
     "trading/bankrbot-official-aeon-autoresearch": {
       "repo": "bankrbot/skills",
       "path": "aeon-autoresearch/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "b3003d23529454d047887c53bf8d5c8eb65937ffb805f67fbc2bc89eec19ae08",
         "catalog.json": "5ddbbaf959596a343f52926668303fcf79bb60045a656f59b0bfc775959ab38c"
@@ -11015,7 +11015,7 @@
     "trading/bankrbot-official-aeon-deal-flow": {
       "repo": "bankrbot/skills",
       "path": "aeon-deal-flow/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "7d775d633903cf2f0d48a80c196987271c31f4edf9d6d5775bcaee4d7a39b930",
         "catalog.json": "152f22ab70ccf50cd8a7316ba6abfac88caf64646e3c0dec69a431ee0a26075e"
@@ -11028,7 +11028,7 @@
     "trading/bankrbot-official-aeon-deep-research": {
       "repo": "bankrbot/skills",
       "path": "aeon-deep-research/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "157901b3f27c93989dc1320a52f52362d26659abbb00be3b9d66964e35d6bfe4",
         "aeon-deep-research.png": "d290575245a8fb0c354f2349f02d025348bd28ac7dc29fe102deaf69b2ae4299",
@@ -11043,7 +11043,7 @@
     "trading/bankrbot-official-aeon-defi-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-defi-monitor/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "0fa84e6c20003f9046422411884abd7617aa5cf4cc6038e63e03d6e6eb4b134e",
         "catalog.json": "1e723409ba95f27cfff3ef9d81de7ad8021c2bdf6bcec66de728a4322608de24"
@@ -11056,7 +11056,7 @@
     "trading/bankrbot-official-aeon-defi-overview": {
       "repo": "bankrbot/skills",
       "path": "aeon-defi-overview/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "3b7344283e2318d3319dd734a95b6ae14ba530e0913e37d8d2ea200092ebbe2a",
         "catalog.json": "d286a81ab39fbb30ad0017946204843840285357644658726ef0d40b23ebf0eb"
@@ -11069,7 +11069,7 @@
     "trading/bankrbot-official-aeon-distribute-tokens": {
       "repo": "bankrbot/skills",
       "path": "aeon-distribute-tokens/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "2867ef3dadf4c5ec6ec3b6a2eca12b48c37ce95b830906001213d0aeb968ac34",
         "catalog.json": "db473b10635964deb057e183f118db387d2106228d8afd48b1dec4bc691b8e3e"
@@ -11082,7 +11082,7 @@
     "trading/bankrbot-official-aeon-hacker-news-digest": {
       "repo": "bankrbot/skills",
       "path": "aeon-hacker-news-digest/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "ed7dcdeebbafc87f16c108f19dc1618ab6b54bd0641570e619a40812d4d8fafb",
         "catalog.json": "2055000d65b23f1bc4bb7fb5a64b4fd7cf0437afeb97b3008ed4122ba2c05287"
@@ -11095,7 +11095,7 @@
     "trading/bankrbot-official-aeon-huggingface-trending": {
       "repo": "bankrbot/skills",
       "path": "aeon-huggingface-trending/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "3ab8867027a3bf03501760611e261ce207555ee60ea1f66731e512e36d6129e6",
         "catalog.json": "0e7b914792a5459f0a15689fb55765dbfdc18c0199c7bf2b930f5ad27c7b84fd"
@@ -11108,7 +11108,7 @@
     "trading/bankrbot-official-aeon-last30": {
       "repo": "bankrbot/skills",
       "path": "aeon-last30/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "4e962b5c49300e7f38bf8ab3467ede14cac5edfb7da5078482860b3beba01ee3",
         "catalog.json": "17d58623dd3364d0e3cafd592b3525660f782d2b0df5354649db6763d2ffa75b"
@@ -11121,7 +11121,7 @@
     "trading/bankrbot-official-aeon-monitor-kalshi": {
       "repo": "bankrbot/skills",
       "path": "aeon-monitor-kalshi/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "b26747c6ece3d3f8b4b14538c53f1b673f1cfff633ff44a3f631378b5d3ee22c",
         "catalog.json": "a64f3bd537be2c06ae134e70a7fa8c0806d1760f6ccde8f3628f61f8f757815e"
@@ -11134,7 +11134,7 @@
     "trading/bankrbot-official-aeon-monitor-polymarket": {
       "repo": "bankrbot/skills",
       "path": "aeon-monitor-polymarket/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6915ca0acb7f64ffcb9b30a0a596f38b9363bb59a1e814992b2d8e5cf31ec2ce",
         "catalog.json": "6312ad92bcdd2a239acc385d0243e42fb72866eff78aab64ac6785ff5e606519"
@@ -11147,7 +11147,7 @@
     "trading/bankrbot-official-aeon-monitor-runners": {
       "repo": "bankrbot/skills",
       "path": "aeon-monitor-runners/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "d52b7907241ac89a1b080cbb82bbe761addb922e3c4dc9682e870fa4dfbe48a5",
         "catalog.json": "aeb1af678a1715f60d6b9800b95987c2db609578b25e2f665e80aa3f21ae3ee5"
@@ -11160,7 +11160,7 @@
     "trading/bankrbot-official-aeon-narrative-tracker": {
       "repo": "bankrbot/skills",
       "path": "aeon-narrative-tracker/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "867d6822fee11cf9e67a05bc728c4f953216de6f8f55e7354c9b846d86863c52",
         "catalog.json": "58a0894ac5ac612680811942af6c29194115db95e9fb198dccef3098f90f2814"
@@ -11173,7 +11173,7 @@
     "trading/bankrbot-official-aeon-on-chain-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-on-chain-monitor/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "ac237e3d0d7ca10cb08498401d419dd6bc8a5d941480cf136ff6ea1fdd526c81",
         "catalog.json": "48db600244a7b170e0f891e9a7ef55777755b6041fcf5aaebec08ffbbf86987e"
@@ -11186,7 +11186,7 @@
     "trading/bankrbot-official-aeon-paper-pick": {
       "repo": "bankrbot/skills",
       "path": "aeon-paper-pick/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "e6552098f8bd7517e70d00e3894c816830662f383fa0f5941e5311fac1ef2360",
         "catalog.json": "aada992d5b922ae146b1088205068c72bf27e5b9ef2f45855c8fbe8ad7ad5b3d"
@@ -11199,7 +11199,7 @@
     "trading/bankrbot-official-aeon-reg-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-reg-monitor/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "f72295cf0cc5c61fe6982176478b0832453ea698d841d048e54aa234aec2b6ab",
         "catalog.json": "946e7fb594f306040d55b8e5fce1df6a9c411c21d551ecdaf0c98d9d31625ff9"
@@ -11212,7 +11212,7 @@
     "trading/bankrbot-official-aeon-rss-digest": {
       "repo": "bankrbot/skills",
       "path": "aeon-rss-digest/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "eea6614b629dfa64cfef064acca084c647d2f8ca2f8238844b7db8fd67fb29d5",
         "catalog.json": "157f89c63071690dc0655814338dea4b468d38ba7ed27b6573cf5412368cb46d"
@@ -11225,7 +11225,7 @@
     "trading/bankrbot-official-aeon-skill-evals": {
       "repo": "bankrbot/skills",
       "path": "aeon-skill-evals/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "fcaf52e5a151491ad4b9f601636fa6dd93dbc6e965030d7826a427238aaaf642",
         "catalog.json": "0a06368396db1c2086d3c6165fef5c53d6091defd11a17a66e6c349296d4e4cb"
@@ -11238,7 +11238,7 @@
     "trading/bankrbot-official-aeon-skill-repair": {
       "repo": "bankrbot/skills",
       "path": "aeon-skill-repair/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "7973c50e79c7bccdb4df23639f177e30e3564e3dff10455e4b800865534be3c9",
         "catalog.json": "51f1b2485db1d1bb158212438cce4373bec695ed7d7e59cf5d95561870dafb68"
@@ -11251,7 +11251,7 @@
     "trading/bankrbot-official-aeon-skill-security-scan": {
       "repo": "bankrbot/skills",
       "path": "aeon-skill-security-scan/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "fa25e09ae3453f183d7503733d66a2cd02d9dc8b81adfcbed19e7e898d6ac506",
         "catalog.json": "8b1b70a9663d4827d37131591a94a49b696e58a101f252ce8d73ec76c157172f"
@@ -11264,7 +11264,7 @@
     "trading/bankrbot-official-aeon-token-movers": {
       "repo": "bankrbot/skills",
       "path": "aeon-token-movers/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "83ab802524c5c8779acf2e3e96bf6ec243837eaf820adbf019835f00c3a37101",
         "catalog.json": "127fc0daf72556690779f2bb827157c138ad0e62f51ed705b58b3f505fd35544"
@@ -11277,7 +11277,7 @@
     "trading/bankrbot-official-aeon-token-pick": {
       "repo": "bankrbot/skills",
       "path": "aeon-token-pick/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "c87684d2fe5a1465514da514107ba62c5b8aa9488531b365ffe3a4e020901ca9",
         "catalog.json": "47badf5e5d1ece2ac49237cccde86276fa86b4379c572a5517955e424d19416a"
@@ -11290,7 +11290,7 @@
     "trading/bankrbot-official-aeon-unlock-monitor": {
       "repo": "bankrbot/skills",
       "path": "aeon-unlock-monitor/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "3ad8a9383acfbe0fbbe482c55cda0b6f88641302be7152ecf2c027d46497a1a7",
         "catalog.json": "e88e7be21c1ef02cc540a766b98df48da9b619b02ebdb644b7418f335a930adb"
@@ -11303,7 +11303,7 @@
     "trading/bankrbot-official-aeon-vuln-scanner": {
       "repo": "bankrbot/skills",
       "path": "aeon-vuln-scanner/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "7cf22ee13c170f90ddc66acd0b69f65d9badc45d08214845a01b278ce87ff12f",
         "catalog.json": "c9884bd5e2d47f58eee63a31c1927d61a42913a9e8a21fd979a59eba5d4a5ff0"
@@ -11316,7 +11316,7 @@
     "trading/bankrbot-official-agent-wormhole": {
       "repo": "bankrbot/skills",
       "path": "agent-wormhole/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "03994f0eec37e363d8904a93682a3174d351d319d666d74809c4f379d8341768",
         "catalog.json": "6a4ec887ae7fce6adbd28901ce9f2754f4a6a1dbfeee48bf548b1cb185518667"
@@ -11329,7 +11329,7 @@
     "trading/bankrbot-official-agenticbets": {
       "repo": "bankrbot/skills",
       "path": "agenticbets/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "fac9e5063d2859e89562cd1aada1c84fe7d060c8bfa2dc997096ac11a514da27",
         "catalog.json": "1f96ea87ba4551ad92d8d437986cf0f7caf3cbbc9e99568eccde42b280f137ff",
@@ -11346,7 +11346,7 @@
     "trading/bankrbot-official-ai2human-task-router": {
       "repo": "bankrbot/skills",
       "path": "ai2human-task-router/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "README.md": "117470a79ebf7df7d48b5b54aff526cac06467fe3d0a335c7686388fd120574b",
         "SKILL.md": "e826f994921bedec651621039e925748cceb9ad1b6dc61d0f3c0999799e32e86",
@@ -11371,7 +11371,7 @@
     "trading/bankrbot-official-autoboy": {
       "repo": "bankrbot/skills",
       "path": "autoboy/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "62376a98388a0ec0151840fd39debeec54d7d626cf516f520d673b1721f0456f",
         "catalog.json": "fcdbc471bb0626c7aef29f1d3b034d87c26debd3debc7c58e51cd6dd1321e30d",
@@ -11390,7 +11390,7 @@
     "trading/bankrbot-official-b20-console": {
       "repo": "bankrbot/skills",
       "path": "b20-console/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "bf1f64592e0624c983c41083d3026f4df1f59591a45f690538066223e263e554",
         "catalog.json": "baaf20cba9befb814cd9d55932be0c3a8f76b5f0624f6b0ec85ac6bd38feb409",
@@ -11411,7 +11411,7 @@
     "trading/bankrbot-official-bankr-communities": {
       "repo": "bankrbot/skills",
       "path": "bankr-communities/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "AGENT-WALLETS.md": "75b4aa59ccdc5a8687dbc668832a949d644e2dd67bbe292437ba6c0b50a14391",
         "BANKR-PROJECT-FALLBACK.md": "25f1676b7931acc77947bd19b001d64fa032005714feb1488a7f4a165dacbac3",
@@ -11504,7 +11504,7 @@
     "trading/bankrbot-official-bankr-shopify": {
       "repo": "bankrbot/skills",
       "path": "bankr-shopify/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "4d1d006db18c90f30ff386dce938913412f87453d05fbfe65c09332e715ac242",
         "catalog.json": "5945cdcdcfee10b4cc57d4a3849dbf06b3c574f92e3fd82d5c76a3babc87f818"
@@ -11517,7 +11517,7 @@
     "trading/bankrbot-official-blueagent-x402": {
       "repo": "bankrbot/skills",
       "path": "blueagent/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "61817c7800aa2b484e67890abdd4598bd185372310f3858f59752e5265e0e7c3",
         "catalog.json": "22f1ced78649a7f33c063832f254bdd230d9d83c42383a0bf88e35d6d578ad63"
@@ -11530,7 +11530,7 @@
     "trading/bankrbot-official-botcoin-miner": {
       "repo": "bankrbot/skills",
       "path": "BOTCOIN/skill.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "catalog.json": "376f1ecb2250115e84eef90407968ae1e1b63ccfa0ed7af761bdc2f1438a2e15",
         "SKILL.md": "a7a03a4187c0b6374e33732eff225c3be601d6e82fb0ef5b2632507a70382631"
@@ -11543,7 +11543,7 @@
     "trading/bankrbot-official-checkr": {
       "repo": "bankrbot/skills",
       "path": "checkr/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "a179c6bed4c68ff7b062613e092547c40f110737348fe5f6136f80df1786c3be",
         "catalog.json": "5ecf3c26fa7a57f272be81e7808dc2b20ebd1e88e2c7def7ca8858003b851e2a",
@@ -11560,7 +11560,7 @@
     "trading/bankrbot-official-codegrid": {
       "repo": "bankrbot/skills",
       "path": "codegrid/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "e0aa7ad1013cc482c67a96abbe1de423d2604454feb7ae214882614d1d56c4c4",
         "catalog.json": "cf420b8a17ef876af5557ae59e676aa507c53edbdd2e8692dc85da48c68b5488",
@@ -11577,7 +11577,7 @@
     "trading/bankrbot-official-coinhero": {
       "repo": "bankrbot/skills",
       "path": "coinhero/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "b318ea6c261b71546f55cad64f0174db9d0e1010886f13b8c9bb00cf2d8d707f",
         "catalog.json": "a83358db24ebc2c5dd16caf3871298d2e764fa44596472af2efe710e160f6016",
@@ -11592,7 +11592,7 @@
     "trading/bankrbot-official-cortx": {
       "repo": "bankrbot/skills",
       "path": "cortx/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "32abebff04e32040579979d38908133f8a263b7a233e71d82601b045e3b11e09",
         "catalog.json": "dee4e91c4b5928d88299d529eb9fffcc38fb6b4ad6d8a763b9ecd47c4ac5afad",
@@ -11607,7 +11607,7 @@
     "trading/bankrbot-official-darksol-random-oracle": {
       "repo": "bankrbot/skills",
       "path": "darksol-random-oracle/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "44f2036efb399db52c9111a9390524330323ee52c6b0dd117dd31511a929f674",
         "catalog.json": "d3f622347decc7d73336685127267443acba05979c0c923c38390157e9a57833"
@@ -11620,7 +11620,7 @@
     "trading/bankrbot-official-delu-oracle": {
       "repo": "bankrbot/skills",
       "path": "delu-oracle/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "f78fc5886206efe0a6531a29ba93b4ee6d78fdb64c1fa8d8e8c94ed73bf6f62d",
         "catalog.json": "1b9a750dd25c55279fc72c2f42447073ac03cc9df2e1adeb7a5389eadffb3369",
@@ -11645,7 +11645,7 @@
     "trading/bankrbot-official-gem-miner": {
       "repo": "bankrbot/skills",
       "path": "gem-miner/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "8d5c20401384b88ac97080541bf329ff52b68b7072494d525ab94ea13891185e",
         "catalog.json": "65ee63e820a33f2c4d5b9dcb15de9ac3e011e4ce58f4b0ba93b8ab346abdbd64"
@@ -11658,7 +11658,7 @@
     "trading/bankrbot-official-github-vesting": {
       "repo": "bankrbot/skills",
       "path": "github-vesting/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "1f8625e33d414a8b8636169d443bce00c0fec1438cd006e6a6e5813f322d7f70",
         "catalog.json": "3aa4eea7cbc7ed1ef7e645dc5f2860fd874820898bb19f7ab05cf80d183d0f6f",
@@ -11693,7 +11693,7 @@
     "trading/bankrbot-official-gitlawb": {
       "repo": "bankrbot/skills",
       "path": "gitlawb/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "61e387bae39f3fb9e0fbcf95defe61ccfba5451d6384e42eb4a2428c2bb3e67b",
         "catalog.json": "cacf9845d7a0a8806a906792b2fc7216d23a06ca3455305f117850e928c19eb1",
@@ -11710,7 +11710,7 @@
     "trading/bankrbot-official-gmfarcaster": {
       "repo": "bankrbot/skills",
       "path": "gmfarcaster/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6cb9fca069b9e5f16a247f1ecbbfab0fb319a023f6654e96aa473cb6dbe8cf3c",
         "catalog.json": "3b96fb65e8c440bec5f039c526112198923893d6f25e9b76ffd11bc0597432e5",
@@ -11729,7 +11729,7 @@
     "trading/bankrbot-official-harness-collaboration": {
       "repo": "bankrbot/skills",
       "path": "harness-collaboration/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "c0cbc4df5e08ed4e5d21dfe01c367141b3348da9683d297577294d473eeafcff",
         "catalog.json": "ed36733970135b24e3fcd3183d58fe176b908f0ea711d141f314cb8da710205e",
@@ -11744,7 +11744,7 @@
     "trading/bankrbot-official-harness-venice": {
       "repo": "bankrbot/skills",
       "path": "harness-venice/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "1b67508bd548087e7ce9058b5d9f54e3e223179d5d4220315089a0ed283b81bf",
         "catalog.json": "be0d480eb72d782d5eb5cfe24e29d7da31daf916df160942816bfc0be36eaef3"
@@ -11757,7 +11757,7 @@
     "trading/bankrbot-official-hermesone": {
       "repo": "bankrbot/skills",
       "path": "hermesone/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6a7f288b44addfc5e01506531190ba55446e73479af351c032fa52e3f56cc8ac",
         "catalog.json": "f0547937b0b16996afe39c3e96e7f63aae8d863739a5fb01fcd5abc42da33e8e",
@@ -11772,7 +11772,7 @@
     "trading/bankrbot-official-hoodmarkets": {
       "repo": "bankrbot/skills",
       "path": "hoodmarkets/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "README.md": "9b46bf3999538883d01835effce6ca0318413c368ac83e56c70e6e38eb6201ee",
         "SKILL.md": "32d886503ed37020ff2754fb7479baebf862f04737810cf80e90700b6bd4c455",
@@ -11817,7 +11817,7 @@
     "trading/bankrbot-official-hunch": {
       "repo": "bankrbot/skills",
       "path": "hunch/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6c1b90884684dc801c5a4c8604104486fce559dc62b9cc61b5071216ff8e0bf1",
         "catalog.json": "03bf92a8f3b0ffe2fd51b8b2beecbd692ed87251375557a00c42c38a7f9cb4de",
@@ -11832,7 +11832,7 @@
     "trading/bankrbot-official-litcoin-miner": {
       "repo": "bankrbot/skills",
       "path": "litcoin/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "README.md": "cb3491e92186b81989b05de73bbe362898b1423235b774b82d0be563ae770ed6",
         "SKILL.md": "a89f439ac635b7948970ff730e1dbb81b157c4472c97d3b436143e4d27f3582f",
@@ -11851,7 +11851,7 @@
     "trading/bankrbot-official-lonestaroracle-data": {
       "repo": "bankrbot/skills",
       "path": "lonestaroracle-data/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "a0f245245c6465f43a4c960939bc2f2674e819f21b4ab307f016721a7dad9c21",
         "catalog.json": "590f82830112baf78fe48c4d7d9be63c92ccee7db5ade918ae7a6a48dfa4a9eb",
@@ -11866,7 +11866,7 @@
     "trading/bankrbot-official-metr-merchant-payments": {
       "repo": "bankrbot/skills",
       "path": "metr-merchant-payments/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "2e4b2160012af45de169dc98390ca15f328497757a72599ff690109d61922a31",
         "catalog.json": "47341dc07f84bbd001fd37aa094f7340d51061cba700b4b811c8c4e2461743ac"
@@ -11879,7 +11879,7 @@
     "trading/bankrbot-official-moltycash": {
       "repo": "bankrbot/skills",
       "path": "moltycash/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "edefa815cbb80cf6bd6ca8433084a73d9c29ec2fb85bf9c3b51a92e866e6f75e",
         "catalog.json": "88003ae21266aabaaca7f78f83961bb6650992aa9d71b7accb08429ec08ea0b4"
@@ -11892,7 +11892,7 @@
     "trading/bankrbot-official-onair-shoutout": {
       "repo": "bankrbot/skills",
       "path": "onair-shoutout/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "dab2e456a559b91bd1caca18f89a10845c7436e160b74cecf53a4c59d4f903bf",
         "catalog.json": "a75addb536c35e115cb2eea9762821b8ea9cd1448b0b63be89a8e77ef53eec15",
@@ -11911,7 +11911,7 @@
     "trading/bankrbot-official-opensea-api": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-api/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "10052eca22f137bcfec28f984f1da51072b502c65a094a9f4533a2fffc56604a",
         "references/rest-api.md": "c7fcfd10dc26f9c8d9ff16baf7bfff1f260c14b19ccfd981b8db3529a6b2b220",
@@ -11976,7 +11976,7 @@
     "trading/bankrbot-official-opensea-swaps": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-swaps/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "349c3a7c09422d6222b25dfc133fb3079ae3873de2112bdfea59dab8d278c76c",
         "references/token-swaps.md": "6c21a3bcd015064ea47ed8bf4e0d1f480c6b50a3052f234be3ed379dfacb6066",
@@ -11991,7 +11991,7 @@
     "trading/bankrbot-official-opensea-tool-sdk": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-tool-sdk/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "70bb8d7a782733b117b2de121da0cb0b434dad1eaf1a1953740785f243d48cc7",
         "references/known-predicates.md": "60da1bc39f06c7310acffe599cddd24734f64be542ab1816c69d433507f6b519",
@@ -12008,7 +12008,7 @@
     "trading/bankrbot-official-opensea-wallet": {
       "repo": "bankrbot/skills",
       "path": "opensea/opensea-wallet/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "1525dbe2a270055fa00b5ddaadcff10ca791c3cdd0c5f90acb57086704fa61b2",
         "references/wallet-funding.md": "8f549506a438a07627b72a50ce19739e2f3a835447c9c1869b260abaeb4b62a1",
@@ -12025,7 +12025,7 @@
     "trading/bankrbot-official-orlix": {
       "repo": "bankrbot/skills",
       "path": "orlix/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "14ce10853b6ac6a75b0ee1a8b1be710ec9b47645f3854bfd21ddbc15e86a1f11",
         "catalog.json": "ff4b07ae2986f10c662291512922a43c8202ec36bd7eab999aec055cc769804c",
@@ -12044,7 +12044,7 @@
     "trading/bankrbot-official-productclank-campaigns": {
       "repo": "bankrbot/skills",
       "path": "productclank/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "094d031557e1f74c474cc91b410a01df15fdb3274714b768b92a6a0abbf7ab44",
         "catalog.json": "6c977daa737079dd093215a621424eb1919b97e5b74f503c7a0efd1f2200a577",
@@ -12067,7 +12067,7 @@
     "trading/bankrbot-official-rider-battle": {
       "repo": "bankrbot/skills",
       "path": "rider-battle/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "349e07f9a2c0ba597523b69901f0abe020ade0a6f59db07b9a874e90ca3cae3f",
         "catalog.json": "d1a52146c72525947bde6dbd177906e511b6d4cf29c5cef51cd13b9e02a04134",
@@ -12096,7 +12096,7 @@
     "trading/bankrbot-official-signa": {
       "repo": "bankrbot/skills",
       "path": "signa/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "e75e0c841966e6eec84eed0cddf1ee1b09a9b54c4254629b97bf3d81d6bb5b4b",
         "catalog.json": "27907b38b3bb3c0f7252a66383daf99918173cd80ed3253f78bedc38690cbb4d"
@@ -12109,7 +12109,7 @@
     "trading/bankrbot-official-skopos": {
       "repo": "bankrbot/skills",
       "path": "skopos/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "40694e73e424e37a871cd2ea1a48d187804436464ea787610cc353689a9f9e0e",
         "catalog.json": "6a1c70b447fb7aecf0fd22df9924e8bf021d709fd5f7e9bac0c5fdd0a21924ae",
@@ -12124,7 +12124,7 @@
     "trading/bankrbot-official-sleuth-ai": {
       "repo": "bankrbot/skills",
       "path": "sleuth-ai/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6e1ef44392d1ba34325404805ad9517ca7ccf7dbd33c7bec764a00897703ca4c",
         "catalog.json": "8e3015effe7ca9434b3c1d971a09ee3d0c836e0dcb79c8e400c3158a45f74ca5",
@@ -12141,7 +12141,7 @@
     "trading/bankrbot-official-splits": {
       "repo": "bankrbot/skills",
       "path": "splits/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "b0d3af7b2a9a8372a9105612ac9d66d1504e13c05dd0236b3fbe3f4218907937",
         "catalog.json": "7b71cf3c7f6f18f6fa57fcee6a2d800af924840b8844af4d868192a336d24393",
@@ -12166,7 +12166,7 @@
     "trading/bankrbot-official-stakr-protocol": {
       "repo": "bankrbot/skills",
       "path": "stakr/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "66f7c2eabc40b3a81f96820d58aa0ce625be58a4a4e3e96ca4b48f235fb19aad",
         "catalog.json": "e4138454db3e8c2ae86e6f5b0979eadf7782f8d3f2d2cdd467af9af3b3617237",
@@ -12181,7 +12181,7 @@
     "trading/bankrbot-official-suwappu-dex": {
       "repo": "bankrbot/skills",
       "path": "suwappu-dex/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "d71852aa5bc314a13187a845c5d31ab6006b9d38f4d76d517c2b8748a05e16db",
         "catalog.json": "46058aeb6eaec2b4ac1f0f69c0fb901c46f7c51bb409b6315ba677624529fe12"
@@ -12194,7 +12194,7 @@
     "trading/bankrbot-official-symbiosis": {
       "repo": "bankrbot/skills",
       "path": "symbiosis/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "add5f6ebe67e86b3c7e071eb57aeed8a5d5b2fe5b1754cfdc10b4730fb2d7c94",
         "catalog.json": "c5d23157c4a1194b8becba59ce0762cbd5189d8f36002bcd22df5d1a5f34583a",
@@ -12215,7 +12215,7 @@
     "trading/bankrbot-official-token-scam-analysis": {
       "repo": "bankrbot/skills",
       "path": "bankr-token-scam-analysis/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "91ec6366decd7b5b0cd6b56ea98021c3d7152203e4fe93adb47ba09b843be475",
         "catalog.json": "2910faedb69679be6326056b201a3002d7383bc03acdf9edefddfeec282b718b"
@@ -12228,7 +12228,7 @@
     "trading/bankrbot-official-trustlayer-sybil-scanner": {
       "repo": "bankrbot/skills",
       "path": "trustlayer-sybil-scanner/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "0edbcd31158c111be8d659ad9c2cd3a56d71984550c738571017a8cbfb2182b0",
         "catalog.json": "b031549b43b6bd1bf122f8892ca3f99371f9bf6297d188bb290deed2d92461d3"
@@ -12241,7 +12241,7 @@
     "trading/bankrbot-official-twitter-agent": {
       "repo": "bankrbot/skills",
       "path": "bankr-twitter-agent/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "8a7e684f35d13f539b4a111a03f2b78ff82d3114d73e0501f16901d49d292cb1",
         "bankr-twitter-agent.png": "57d996916905796431da24cbcd1d5c88d4ae67f86a33cb5f187c25fdbe358d19",
@@ -12256,7 +12256,7 @@
     "trading/bankrbot-official-urizen": {
       "repo": "bankrbot/skills",
       "path": "urizen/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "677f3fea8691098645bbda329f1879ab78a4be6296b920b5cae98dc495e89944",
         "catalog.json": "fa096c9f7bdc0a8e8319a984e77c4a75ce969c891134996a7d4e1c2081e968f0",
@@ -12271,7 +12271,7 @@
     "trading/bankrbot-official-versa-deploy": {
       "repo": "bankrbot/skills",
       "path": "versa/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "23d1b11f75d468d0c1a800d702238f494be8e83909302924170e5d11a62ada0e",
         "catalog.json": "edb66ae8a93a7486b570729ee2ef4d11628528783d795aa2a5a06f33c0abf918",
@@ -12292,7 +12292,7 @@
     "trading/bankrbot-official-wake-token-spotter-analysis": {
       "repo": "bankrbot/skills",
       "path": "wake-token-spotter-analysis/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "3b5a54bd8ac3557c347817faaae6b76751035f8b206fe286d82c4aed5773f10c",
         "catalog.json": "949a90cc6309c9bb0444e99a0405656bf8ee24e85446dccc575771313207d641",
@@ -12309,7 +12309,7 @@
     "trading/bankrbot-official-zerion": {
       "repo": "bankrbot/skills",
       "path": "zerion/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "29d3169ad68849df0a55a35bc48c153a50c60fcf122c2ad0a9a82a70b0c75587",
         "catalog.json": "e2a4eaa3383913d07cd84c5e3f19a7792d778e0c672220b6bcf3fd607ad85843",
@@ -12330,7 +12330,7 @@
     "trading/bankrbot-official-zyfai": {
       "repo": "bankrbot/skills",
       "path": "zyfai/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "98475444f494c0201c5e937d9b69c3e0f393b48a79d5b2647de15931b9b9b3f2",
         "catalog.json": "1b991cdccebaf93774b6756b46a648ce5129d3a19016cf149f1d45a3a99d04f6"
@@ -18400,7 +18400,7 @@
     "trading/bankrbot-official-based-mining": {
       "repo": "bankrbot/skills",
       "path": "based-mining/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "a7cf76c6dd129fb5764323c986585f88374708fa4a612fcf572503e5690ba032",
         "catalog.json": "f1db08db33597343093822431c0db7e079ce563f6e36c4e68335428ef88c96e5"
@@ -18413,7 +18413,7 @@
     "trading/bankrbot-official-berry-juicer": {
       "repo": "bankrbot/skills",
       "path": "berry-juicer/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "ce46c3e1e6046a7a000bf17ad1e3642009d4fc6abed98bb6f60bdf5195effdab",
         "catalog.json": "cf221845f62ed6c1d1511a717faacea06f23d1e3ef7bacf1cb417fa814bed638",
@@ -18428,7 +18428,7 @@
     "trading/bankrbot-official-cattown": {
       "repo": "bankrbot/skills",
       "path": "cattown/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "README.md": "ea107f485a2e0775390fe2f2b61ffcd8e4a48d6be8b6fea50f9517fc62b58662",
         "SKILL.md": "7b76dd1ca8f5d064d301241144d60c6ae2acb9c5108f15e8ec09807559ae5c95",
@@ -18471,7 +18471,7 @@
     "trading/bankrbot-official-grantr": {
       "repo": "bankrbot/skills",
       "path": "grantr/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "a7b5164e5e968dcb64df6c9dfe6b30f005856ca3dbb935f80f73619b9cf625f8",
         "catalog.json": "8700f0b0d5f4c1eb17b76ad144f5bf22c03eeb23e95cd91ddd8eed3e3a295a01",
@@ -18488,7 +18488,7 @@
     "trading/bankrbot-official-harness": {
       "repo": "bankrbot/skills",
       "path": "harness/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "1530919f6330c9c26a41272bcb6053aa62983c98782396f430f6304139d81b73",
         "catalog.json": "ebd8cee0c5efe8f55e68c422bfca574dbb837e1ce78f6682d0e42253a44e6cfc",
@@ -18503,7 +18503,7 @@
     "trading/bankrbot-official-nookplot": {
       "repo": "bankrbot/skills",
       "path": "nookplot/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "afb6b7c328357f848fc11410095a98a3685d5109cccf21c4d44ffc0bef12f5db",
         "catalog.json": "87b1ddd7101eb172cac4543ad85f95c25de446639b78900419da18092833ab63",
@@ -18576,7 +18576,7 @@
     "trading/bankrbot-official-pantheon-staking": {
       "repo": "bankrbot/skills",
       "path": "pantheon-staking/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "ca294f210cc7aff1751ffa424da735f572b9df59d26cf890e1bc9c506507bfb8",
         "catalog.json": "eb86195a0fec28e25e88b35a20aa342157ec8a2c75cb0b0cb1d29895d03936cb",
@@ -18595,7 +18595,7 @@
     "trading/bankrbot-official-rhagent": {
       "repo": "bankrbot/skills",
       "path": "rhagent/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "HEARTBEAT.md": "c68f69178c1b5046b7d6be8a0a2c30c7664d65fe00abbc0c088c35c20e82c065",
         "SKILL.md": "c9984fae1f83a861dc99b81fc5c3c906c73776c850a3a03e4975317b7cfb3380",
@@ -18672,7 +18672,7 @@
     "trading/bankrbot-official-bankr-twitter-agent": {
       "repo": "bankrbot/skills",
       "path": "skills/bankr-twitter-agent/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "c9f3c8385c328cc0948e932b7fcde1314da14b23393f11a1009147b6045810a4"
       },
@@ -18683,7 +18683,7 @@
     "trading/bankrbot-official-waybackclaw": {
       "repo": "bankrbot/skills",
       "path": "waybackclaw/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "1f15d1bdf7db4c8e17863763c1ec4a9aaaa4227c8ec3c787a2ae582a3228c9ac",
         "catalog.json": "d165ad04e7ddb1d2ac7bb4a9b4a19012925a59e00cb59620fd08742bd97d778b",
@@ -21632,7 +21632,7 @@
     "trading/bankrbot-official-defi-native": {
       "repo": "bankrbot/skills",
       "path": "defi-native/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "AGENTS.md": "ecaaa7a625a0e34d87acb83e38aa73d1c402b7a83c694299956e3d1ea5cfebc8",
         "CHANGELOG.md": "f1e818fa4264a6eb13221c9743eb5b067d5ef8c1b7a734eb0324cb1bea5b6845",
@@ -22106,7 +22106,7 @@
     "trading/bankrbot-official-lienfi": {
       "repo": "bankrbot/skills",
       "path": "lienfi/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "2d7b9abe3c69f253e27039ae84768f9969f43e6c7ba8d1d69f688af7c2e5708e",
         "catalog.json": "1a2102d674c732b1044049fff55cc0a9ec048cd234d97422eee9369de31910f3",
@@ -23638,7 +23638,7 @@
     "mcp-servers/araxis33-aero-vote-radar": {
       "repo": "araxis33/aero-vote-radar",
       "path": "SKILL.md",
-      "revision": "f368548a81227964a66432c9cc65e21c29242e1e",
+      "revision": "0a7d7229ca9bbe1c88f45566b763533c29948779",
       "files": {
         ".github/workflows/ci.yml": "3703d4e4f7553f360cd9b4a654a4ef68f80e9455a7ee2169669a734f4e6adebb",
         ".github/workflows/v3.yml": "69328df330f33f515c8b4d91d8d1b0516f701606ca268595968151cb0c005cb8",
@@ -23649,11 +23649,11 @@
         "docs/CNAME": "b2d39adde634f1b24b58ddd566b6b79fea6e5f072bfeb107a8c4c5f3e0f8d117",
         "docs/card-v3.png": "205a0f531821805ca398dfc322cc923d124be52e50d2b9d341d3a82d90ec7740",
         "docs/card.png": "f5c9652f9ce62ba9ae88ffa37d103af19b9ea7e619d303c94b92aa94f8bc424f",
-        "docs/data/top-allocators.json": "f503aafd2fdb3f5a82b4f3751f3a79c35056be7284b21ce11d62bbdada0db49a",
-        "docs/data/v3-history.json": "d57729e67887ce0fc610767f6ee7c10d9f123d1a3a31ba3415e1295cfe85e2e5",
-        "docs/data/v3.json": "4db8fca93508acafbb78a3e483ad54df44722026bec740e8318288a62a442dae",
+        "docs/data/top-allocators.json": "5ff89cbb29c2caab7c4ef31bd5c8ddbd231ae21e4eedd38dc6ca03956aa6d2f9",
+        "docs/data/v3-history.json": "81c694c843e3a5aebdc591d8b57366e6ef2591f6715573100ec4fe0b5730c909",
+        "docs/data/v3.json": "4733aeea8df367cd2f5831d9e6a66db8ae4593f98a8b070f7408ad019890e97e",
         "docs/index.html": "6e8b860a4b10df60f5f5bfb98cf309703b496123a5dd9e6d2b0919fb7a3c4e70",
-        "docs/llms.txt": "b7b52bcb982a9960502b4bd9209d93385ffba3262dffa3444db835167e9286d7",
+        "docs/llms.txt": "9d7e9b7c6627209c4856f31d3b90c9f0cb2e15272f5a8cd73e181eff3687bd58",
         "docs/robots.txt": "96444cb495c6b40cec18f3b21e93c3faebcb9f2c6ce960887bdf595c882bba8a",
         "docs/screenshot.png": "a5274eac2ea6e3cfcf36b9b31f4e6d36836bedfebef4ebde3e65d0acb1fe4168",
         "docs/sitemap.xml": "5e29f7f51eb4d8a5bd4205c44bc8316b695ef17fa938047648b726ed0a1b6ebe",
@@ -23681,7 +23681,7 @@
         "test/prices.test.ts": "39603cd2e277a5b01f72dfa4e896f2db3eafc5e224221f28104adb01aa50d609",
         "test/radar.test.ts": "4a4c59dc3340e2a8749e054616877faee2b2e5cd6e233e9ae93bf54c46401dee",
         "test/stakes.test.ts": "6d80ff3c2d137409fb3725987ff2ada673a48e7784012bc15fc8b6340f7e6c3b",
-        "test/topAllocators.test.ts": "bf70df60d9b4a4fd15da95e95d0c6b1cae2991d579f797171e6a2116430cb7ea",
+        "test/topAllocators.test.ts": "7ea812f8dc2baafdee2f62fb1680d504f246c51c3e4eec6a17c4b5fa0e75c0f4",
         "test/util.test.ts": "913d2330c6dd8c9d975e1375a5d5a0dae2d15c167ee425174a9ab0967c2499df",
         "test/v3.test.ts": "c07a62bcbcc5392f3bee2a7469db2d2d3c0c9657559c9b2ca7ba4ff5a4bcc835",
         "test/v3History.test.ts": "2182235ef208feb4e0a6069b7da4a31a6debeaecedaee361913dce734e8632a4",
@@ -23932,7 +23932,7 @@
     "trading/bankrbot-official-hunch-bazaar": {
       "repo": "bankrbot/skills",
       "path": "hunch-bazaar/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "2fa3d2201be7d993bec172223643e3233d0a949a94011573e5caef05fbbab96a",
         "catalog.json": "31cd28b1b1767575c3cea86ac324b7e94d2d337d72337d7fe3389a6d4b38ba12",
@@ -23947,7 +23947,7 @@
     "trading/bankrbot-official-pi-fire-science": {
       "repo": "bankrbot/skills",
       "path": "pi-fire-science/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "bf7e69081974a86b49c0b2d0bf8f4d499302e9d15d16253ad4ceeda370416dd3",
         "catalog.json": "c23f2c34c8920e6b3d893381bc972d797f92296b19a528f7e4874b64d7543ca8",
@@ -28595,7 +28595,7 @@
     "mcp-servers/0xsardius-solenrich": {
       "repo": "0xsardius/solenrich",
       "path": "skills/solenrich/SKILL.md",
-      "revision": "ee4eae7bc1d0f9ce333cb76399dace905da06d9f",
+      "revision": "a77cc7aa546dee76027c9eaaf77ae6da022148e6",
       "files": {
         "SKILL.md": "a4758b4e0a05e901e57f551fea5ef6953bc29ee3292e58dc395d66c31a34a2dd",
         "examples/trade-lifecycle.md": "1d2628363bae1a9b1f5bea6bb21adf81d2a1faa483674267e8ff59bc9e1b6d30",
@@ -29921,7 +29921,7 @@
     "trading/bankrbot-official-steer": {
       "repo": "bankrbot/skills",
       "path": "steer/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "6296cdadb4cc7f7502617f3a42d94f675f7ec8f30396d83801efa857f0e7d25e",
         "catalog.json": "198dd8a54573aac3056607ecdce7011e725db9f44853caa4ff49f2e8f027f89e",
@@ -44166,7 +44166,7 @@
     "trading/bankrbot-official-papertrade": {
       "repo": "bankrbot/skills",
       "path": "papertrade/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "1ba30044a391a10fb1340272edcbdfb704ac4259cfed8819e707539e5f6c0380",
         "catalog.json": "ead0417b711f7fe66820bf773b11cfcc219d4d7fd9b3934a0d23f2e3d755b5ff",
@@ -45564,7 +45564,7 @@
     "mcp-servers/nirium-protocol-nirium-agentic-payments": {
       "repo": "nirium-protocol/nirium",
       "path": "skills/nirium-agentic-payments/SKILL.md",
-      "revision": "845b9aadee2f3cd755d9ee9245c8012bbf0c647f",
+      "revision": "73b0ce7b87b2e757effaf50091eb8bd40e1e21c7",
       "files": {
         "SKILL.md": "d0f00b599dc5dbf71caf5b7856941e6559deb08389e10c9858b110b7797d8ea6",
         "LICENSE": "eefa4093982bd17f64b7f288ec8d2eb5616aa36e948524bb9d3aa409963a7fc9"
@@ -46513,7 +46513,7 @@
     "trading/bankrbot-official-musecourt": {
       "repo": "bankrbot/skills",
       "path": "musecourt/SKILL.md",
-      "revision": "b440a49efee0c0b4cab6f6967232657a69810858",
+      "revision": "528cb7229c0bc34a7db7203ee0c087234a95abd0",
       "files": {
         "SKILL.md": "e2a64de26f2e9f42f449efa2dce2e835fb10fe87487454c0c75cba79cc42e184",
         "catalog.json": "db7ef1cc2fab7c3e452ea931242e6743b8fa7a9e69fce5a9a2186ef768b393dd",
@@ -47739,7 +47739,7 @@
     "exchanges/anoscranel-ac-academic-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-academic-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5639229f652bb65e69216a8fe61c3eaf0f029846399f477be653adf2097af45d",
         "subskills/academic-papers.md": "4b81c8471f86f950069e19dd0ec25531c28335a44f62e3a0d210ff7716947552",
@@ -47756,7 +47756,7 @@
     "exchanges/anoscranel-ac-adversarial-corpus-challenge": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-adversarial-corpus-challenge/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e6d80f4467befe66787cb17a84c77d8dba41b34fab6807f82d4b948584ce22b3",
         "subskills/breaker-selection.md": "41747f44c924311e5e2e9ef5b1da1c76c1e489b0cc05412e1ceb00a097ad2e9e",
@@ -47781,7 +47781,7 @@
     "exchanges/anoscranel-ac-agent-coding-governance": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-agent-coding-governance/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b43acfd0923e0aac5f85b26bcc62ee3fbab64c71445570c71f1f2a568bae7ba3",
         "subskills/agent-context.md": "a455f57236258a3d3c6df062ef6873fbb65df6748ced2daac1a17a44c4fbbf66",
@@ -47798,7 +47798,7 @@
     "exchanges/anoscranel-ac-alternative-data": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-alternative-data/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8c301b857e2be3339a50c7f23d37a453200827aa74a9e562a919231ca80a79ff",
         "subskills/coverage-and-representativeness.md": "d2bd6ff2526ad1261462a3023a0a6685ce4d61aa1021fbccb6ce9fae10c14c95",
@@ -47825,7 +47825,7 @@
     "exchanges/anoscranel-ac-alternatives-and-real-assets": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-alternatives-and-real-assets/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "cc9ee9346d3f23a9af91c8df01295f530f26be714f763a2871bf1053c81935ad",
         "subskills/alternatives-in-portfolio.md": "8869ebc5eadfb0d3955500699d8f090a503095d52607308ce89bc82fdb170bac",
@@ -47852,7 +47852,7 @@
     "exchanges/anoscranel-ac-analytical-data-modeling": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-analytical-data-modeling/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "ef57e7dd20997937b7bf1b60fb5a21fa5529cfa97c5f11a0b45802621594115a",
         "subskills/aggregates-and-summaries.md": "58db4ed7fa3c6a51bd42d62637e419a146d2a565ff4cb97a913c8205ff109595",
@@ -47881,7 +47881,7 @@
     "exchanges/anoscranel-ac-api-design": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-api-design/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "91fe5df0fbfdda7d8635ada5a4ec640712893453f67b1eef1e7086cd9a79e910",
         "subskills/api-design.md": "0337298ff1244fc0eaa444e56a319174fd91583865c13561d0437564dcdf549d",
@@ -47898,7 +47898,7 @@
     "exchanges/anoscranel-ac-api-limit-operations": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-api-limit-operations/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "45083ebff97aad486c3b125819efed1eb020f7cdd4b3e23243d79d858b783fb8",
         "subskills/client-side-budgeting.md": "5de3920d1acbfdad622ced0acfef08b7ea958e197cc1c8126e30ec943885ee83",
@@ -47925,7 +47925,7 @@
     "exchanges/anoscranel-ac-architecture-survey": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-architecture-survey/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "733669c697e428de6f3c4891e96e73143ab781036d71adcf2b06d281d902eacb",
         "subskills/candidate-formation.md": "9956666b922d41168848e5b21032193b776cdbf339f1903bd21ace34de5e582e",
@@ -47952,7 +47952,7 @@
     "exchanges/anoscranel-ac-architecture": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-architecture/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "65c7565cc45acabe564d3e743f66e34797d3fa7d41ff525f9d5b447047a0800b",
         "subskills/adr.md": "8985fb4806506825f1f00749d65ee8a10a02aa84914f81c58a8b69d7b0f03594",
@@ -47971,7 +47971,7 @@
     "exchanges/anoscranel-ac-async-and-concurrency": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-async-and-concurrency/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1c1d71bdf19c627d5380ae05a5fabafd6d9809b89707688b769f816816759f92",
         "subskills/async-api-design.md": "38f222c58d6c7c91326e8e56198e8e7ddc1e94e4d28312f5feae145e786f9b76",
@@ -48000,7 +48000,7 @@
     "exchanges/anoscranel-ac-audit-logging": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-audit-logging/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "6be2105f4cc78bf1043158ea544795de63eafbaff9934be98b3c76467932c929",
         "subskills/append-only-storage.md": "ff06c3f527775afd9e64274fdfee9a78ef2e20bc078e68a5a9721d9ecbe98a79",
@@ -48027,7 +48027,7 @@
     "exchanges/anoscranel-ac-backtest-integrity": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-backtest-integrity/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a8ac4312e99581663a634fe1a372c5033f2cff3aac73915b74ed9a948f8c01b2",
         "subskills/cost-and-execution.md": "627894a7d2772a3b2ef023befa1dfb85247577f99c50f1ba1a3a3088106232dd",
@@ -48054,7 +48054,7 @@
     "exchanges/anoscranel-ac-bank-and-credit-analysis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-bank-and-credit-analysis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8374460c788c4ae6e9254750fd699814d7a9f4cda99974aef3300c6f8225148b",
         "subskills/bank-balance-sheet.md": "b6441a0343a58a405c5743bf901b6310d13d2ae46fdc12d181b1a30737da2370",
@@ -48081,7 +48081,7 @@
     "exchanges/anoscranel-ac-behavioral-investing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-behavioral-investing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "6e4b49b727f791b1c5368b1741b48c95c0b4ffd3ff93c4f44a0b521305a41a7a",
         "subskills/behavioural-review.md": "26844ac87598cecaf6436849bad6d316b3bd71d88f2fcd9e4cac0adf5337e499",
@@ -48108,7 +48108,7 @@
     "exchanges/anoscranel-ac-binary-formats": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-binary-formats/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "462861786772d2f2371fb6bb3381c4b1b8320ac1de41746f4c62d082b9d6875e",
         "subskills/checksums-and-magic.md": "cf20ff232e684df68a0b7e6ec170c625e26f11497e79142126b389cdc8eb2023",
@@ -48135,7 +48135,7 @@
     "exchanges/anoscranel-ac-brand-guidelines": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-brand-guidelines/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a1289163cc31a773b31b33ba9b5360dc94ee63131b18bce2b0b2a73afb78d0ae",
         "subskills/brand-specification.md": "02d4b7aabc3cfc53cbfefce5efb5da0c93b474a743c0b6d009ab9304101db88f",
@@ -48162,7 +48162,7 @@
     "exchanges/anoscranel-ac-broker-and-custody-selection": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-broker-and-custody-selection/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b7f134ade5bcd362dae3f5e57d0b61bb9998faf54814278e3b834aa6c383da2a",
         "subskills/access-and-transfer.md": "6059e17b67974dec4af3745a93cbdda2d9fe2daef8964e6fcc4a351ef4c682e0",
@@ -48189,7 +48189,7 @@
     "exchanges/anoscranel-ac-business-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-business-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "52f0a2260beba071433293e8c5cb277f9dbb8c811a2fe0a9d5ebce7849cafd82",
         "subskills/email.md": "e8c90b55b8452b4c97acd20276e280ec0e7c4527bf70ec3d30abaf18a72642d5",
@@ -48206,7 +48206,7 @@
     "exchanges/anoscranel-ac-byzantine-consensus": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-byzantine-consensus/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "05bcc36687cff1dcb72c534fbc86bc354079c763abc6ee6b721b7af8ffab3fc2",
         "subskills/byzantine-record.md": "e8d42270c4535a6ceb161059d23c678b49a493d22ec9cfbe414349669a33a269",
@@ -48233,7 +48233,7 @@
     "exchanges/anoscranel-ac-caching-and-invalidation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-caching-and-invalidation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "ebc93ab26d542f4e09771b8b68d6c6e254216ed932c7c77ea4d99857b086ca5a",
         "subskills/cache-patterns.md": "ea21986d86fd5d079dd84a9184e03c4f908495be4ceeba28635f2651cf883b8a",
@@ -48260,7 +48260,7 @@
     "exchanges/anoscranel-ac-capital-return-policy": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-capital-return-policy/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8b7bf40568ca27ccb73f414c520397c30c356c51cbcbc148be9d02dda3517b6a",
         "subskills/accelerated-repurchases.md": "35a5a20a5814223ddc2761f21f5b0d83ce3be4e1b94b80f59e87636f5dfbb75a",
@@ -48287,7 +48287,7 @@
     "exchanges/anoscranel-ac-cascade-forensics": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-cascade-forensics/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e2651d02de453ffe481a1b2799bc96581387362c57744965dd936bdd9a90555e",
         "subskills/branching-ratio.md": "f3445bb38be068aa9b851c9ce77c85430a4a8db53171aedaa5f5ccb5c60b70a6",
@@ -48314,7 +48314,7 @@
     "exchanges/anoscranel-ac-chaos-and-capacity-testing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-chaos-and-capacity-testing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5a397ffe210318a6fa71226a7baa6b88d879b281d2b8390f6ff66aece53a9bee",
         "subskills/capacity-headroom.md": "7e54719396cdbe0ca36d8762e59ff61c27dd57b999ab58304a66203b4a1061a7",
@@ -48341,7 +48341,7 @@
     "exchanges/anoscranel-ac-ci-and-release": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-ci-and-release/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fa101510df9345a9f22da6fa29d2c15e2dda2500b77eebe005e3e5a2448527a9",
         "subskills/ci-pipeline.md": "6b1747e39a242b718f7bab0c97a0a7c3a4c047af66fcdf31974f7b23067e2b5c",
@@ -48364,7 +48364,7 @@
     "exchanges/anoscranel-ac-cli-and-tool-design": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-cli-and-tool-design/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e9efc77120dbcce55f52c45bb112edbfca1b34b8f12787208ca346ad93164eda",
         "subskills/cli-record.md": "f326024529743aee76499211d6bf0e87a189b7075426ea03aac35451118560dd",
@@ -48391,7 +48391,7 @@
     "exchanges/anoscranel-ac-client-state-and-interaction": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-client-state-and-interaction/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "dbf78c44be78056c716190c636ad7929aecb85f6f23d928e9fc76eaa03caea55",
         "subskills/client-state-record.md": "df3904dc4308378ba284d3a4e8b4f42b67abf59bcdc9a8895d4d0a281600deea",
@@ -48418,7 +48418,7 @@
     "exchanges/anoscranel-ac-climate-and-transition-risk": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-climate-and-transition-risk/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "487f80ebd46f1149a2cd8d2344994729635f8326ce4219d05055b73550c0b698",
         "subskills/climate-record.md": "91af0e64597e30ee69f2c08a18ce516aef7f8292b2e29312d0bf3a6b7e4f8507",
@@ -48445,7 +48445,7 @@
     "exchanges/anoscranel-ac-code-construction": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-code-construction/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c5bbf740ed420cf5df5ea758a121bea5a31a0076dce9dee8c2888756252bd65b",
         "subskills/code-docs.md": "cedc47fa70465643de3b547b78cd525035bc90862331b8c17d51a665998a3c1c",
@@ -48466,7 +48466,7 @@
     "exchanges/anoscranel-ac-code-generation-and-apis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-code-generation-and-apis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3338d58c0143d6233dcb0b357acea20ecb448c8fb0cfc4139f849d0d05e833ad",
         "subskills/client-generation.md": "84e08a3642bc7d20c955516339b3f93f0fc3c91632f15646b369632096cfd82c",
@@ -48493,7 +48493,7 @@
     "exchanges/anoscranel-ac-code-review": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-code-review/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3eba95945f65957675f605672750507133d0ad0496eee76720f0820054707fde",
         "subskills/code-review.md": "fbf89433bb8220533379e403fa1c80837a0054743f14482a37ef27757f80ae7c",
@@ -48510,7 +48510,7 @@
     "exchanges/anoscranel-ac-codebase-maintenance": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-codebase-maintenance/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f36cb8e79257a36f3f556a5fee6980bc90d41cc5f8c14aa8876f075c38b72a38",
         "subskills/dependency-management.md": "7f75586c32d987fa427937f7c8d42f665ff384967f05eb468d1ab60839daa6fd",
@@ -48533,7 +48533,7 @@
     "exchanges/anoscranel-ac-commodities-trading": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-commodities-trading/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "ed280f59342626f695978ef95904f55da907e7834b298a0e2d7eae3da19faaf8",
         "subskills/commodities-trading-record.md": "23d92922488e042c9da79223aaf83971349db861bbc5bc91cf4ea34f77d83661",
@@ -48560,7 +48560,7 @@
     "exchanges/anoscranel-ac-commodity-options": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-commodity-options/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fdda0015075e02ceddd0237a1b0062d9b00584b27051564fe2b7754c7107eee0",
         "subskills/american-exercise.md": "3ffb48d14918d39e6ce188ce0f4f05b17a4af4c841229fcdaad6732444f059cd",
@@ -48587,7 +48587,7 @@
     "exchanges/anoscranel-ac-compilers-and-abis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-compilers-and-abis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "37e0fdd7dcb70936801f5f5063f07d8ba98cb6009ac4ec3ff5cce5b76fab5edc",
         "subskills/abi-as-contract.md": "18365794e0c805b18957b5e71c882912839756bfc3df562e292d48836580ba2e",
@@ -48614,7 +48614,7 @@
     "exchanges/anoscranel-ac-consensus-protocols": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-consensus-protocols/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1c9c39718755406909bc33459002df4a8c2ed34b5500bd626da0e9abe94d5989",
         "subskills/consensus-record.md": "775f29ab3d74e25e88f38790be1bbe1ab05e7de1e881ff9748cd08b297b0283a",
@@ -48643,7 +48643,7 @@
     "exchanges/anoscranel-ac-content-addressed-storage": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-content-addressed-storage/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "cde0bd5a4b525f19a8aa6b646adfad2c4ff0e235b728f8ecce0e9efed785b92f",
         "subskills/addressing-model.md": "e0380188d5646cece9fbbb71ecddc8f112693d271618644eb5292e1ae79f55bf",
@@ -48670,7 +48670,7 @@
     "exchanges/anoscranel-ac-content-moderation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-content-moderation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1f2cff4cc0447f6c9bbb728dfff1f60198e668118fae4f271decc4e22090ffc0",
         "subskills/appeals-and-error-correction.md": "7216324ebc1523f028cec70e565dafbcefcb7d98ab0923059019dc76ee40246a",
@@ -48699,7 +48699,7 @@
     "exchanges/anoscranel-ac-convertible-and-hybrid-capital": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-convertible-and-hybrid-capital/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "26e3613ded87e21c60411cc77afddacd8a7c8fb05861e8e51ade0ae92f3e9f89",
         "subskills/bond-floor-and-credit.md": "f83ab39881ab26086cbf3311594a65bfd124e35744aaf8e6b226af8b7b98c03e",
@@ -48726,7 +48726,7 @@
     "exchanges/anoscranel-ac-corporate-actions": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-corporate-actions/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "714bfc5065335afa133e4e2e1e1a41c02000f6a0a617b48d5fb3a52f4065946f",
         "subskills/corporate-action-accounting.md": "1e29b7767230a7663f5558ac7498af74b56d78fdd191e29b8773a8a4d3e97ed3",
@@ -48753,7 +48753,7 @@
     "exchanges/anoscranel-ac-corporate-treasury": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-corporate-treasury/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fc8144520c85ba534133d6fa6773f8b1fb063d671143f97ed43df2bc1a12831d",
         "subskills/counterparty-limits.md": "aba6e5cb6b67f7ee28e413f4738a90eb726d672afa70a038b8535df029f98a10",
@@ -48780,7 +48780,7 @@
     "exchanges/anoscranel-ac-cost-aware-engineering": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-cost-aware-engineering/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "d170c3bf1b78f9ef3767ecfff1def65efc3f25f275a7b6ceca641c1c7f29e526",
         "subskills/budget-alarms.md": "a3265337757905b47fd21968c4b7282dbbf525a09b59f609f5698f8c3bc393db",
@@ -48807,7 +48807,7 @@
     "exchanges/anoscranel-ac-credit-curve": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-credit-curve/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5c5e2668a631146c4b437d6335f2069d5817df547bf50e7a752cb30778ef9c9a",
         "subskills/credit-curve-record.md": "1a2d2c30f259a4d43b779af56c1f131111df0d2bcf5561f767674942642ec451",
@@ -48834,7 +48834,7 @@
     "exchanges/anoscranel-ac-credit-derivatives": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-credit-derivatives/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "9c7df7ab0cac5f21f49fa0011b24bd7ac9e89d7b9eef50fc68a1f3d93a4508db",
         "subskills/cds-bond-basis.md": "0f6a403c2e39019d2da92d060aa87ce5309a48cbdca284d579c4f1df1f6cc317",
@@ -48861,7 +48861,7 @@
     "exchanges/anoscranel-ac-credit-options": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-credit-options/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "18f396f02d30132f96897d0356399bb7eaa218105b45f6482c14e85afa1415e5",
         "subskills/cds-options-mechanics.md": "2472b1de4396e11ce462b308cf48d5a1d948d103fd96b47fd486fd6185d5063b",
@@ -48888,7 +48888,7 @@
     "exchanges/anoscranel-ac-credit-rating-mechanics": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-credit-rating-mechanics/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "76b6298a7097fd4dfce90458137368306ebdd12de4610fc2733af74bca380cae",
         "subskills/agency-methodologies.md": "13abd6919f30cc17009b7f8bff68e632928765a2d43862b51a5aed415cc62d76",
@@ -48915,7 +48915,7 @@
     "exchanges/anoscranel-ac-crypto-options": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-crypto-options/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fa1eb636f5178160e173ac840ff3972c7156fcaff8339637b6bd619732d44a6f",
         "subskills/crypto-expiry-and-settlement.md": "a53ef2ec12ee22acf879d2a620a6f726e4dc5c2a776c9d1e1293ee4e4fac69be",
@@ -48942,7 +48942,7 @@
     "exchanges/anoscranel-ac-crypto-trading-discipline": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-crypto-trading-discipline/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "221ba9f00e9e9555f9c4893acb782782e23476becbf5e6435ddd6c1a9530b760",
         "subskills/behavioral-rails.md": "44ce2aecceef5fa8f80e767687edbe1e0d8819476e031f2f21994eedbcdac4cb",
@@ -48969,7 +48969,7 @@
     "exchanges/anoscranel-ac-currency-and-fx-risk": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-currency-and-fx-risk/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "6fc5bcabe99b1764afde89f9bbfb2de6d92d8bb5b4157920541f84a75e9f2f52",
         "subskills/carry-and-differentials.md": "e32b6caec56c06c7644a1ccca6ac91b3a8e60846baa4be0185559df13e28a20e",
@@ -48996,7 +48996,7 @@
     "exchanges/anoscranel-ac-data-contracts": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-data-contracts/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1aeb630cad0c750629a83b79d628c374874f860f598e6b3b73b4098ba1c65298",
         "subskills/contract-enforcement.md": "7adff3637d4741e790e9b582ed6b079ac8e3df461561323bbcbb2ef8108ec7fc",
@@ -49023,7 +49023,7 @@
     "exchanges/anoscranel-ac-data-migration-cutover": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-data-migration-cutover/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8b9cbee72bc4b959dae1d5027c1f23a6f714136cf45107e0fcd85c930a5b4404",
         "subskills/backfill-ordering.md": "f81160ef0658d93dd0c11e472bb0e740e3aaf20ef06ff2a1554347ed59235ba1",
@@ -49050,7 +49050,7 @@
     "exchanges/anoscranel-ac-data-pipeline-orchestration": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-data-pipeline-orchestration/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "0db06461fc18120e58d8bdd990618d6a019a117060a68d304da1c21ec2714177",
         "subskills/backfills.md": "bad552270f2822f5892126f5bac936e3722a09ea7522414f15f32c02f86a1315",
@@ -49079,7 +49079,7 @@
     "exchanges/anoscranel-ac-database-changes": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-database-changes/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "d8065ec24d07696b2c0e5f7fe92a2fc3ded1f0b0f37c8d0b05997c96ee205bd6",
         "subskills/data-modeling.md": "89a160167ec16b7ed34c1ec4284422438f7e2ccc74175fd68b78d6050fb048a7",
@@ -49096,7 +49096,7 @@
     "exchanges/anoscranel-ac-database-engine-internals": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-database-engine-internals/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "38a198690c4033c0b55feb6077783f8a6f8d7964b47284eefc98e012ab0feb58",
         "subskills/amp-analysis.md": "1f93036a3e21e0b6fc868ed2d9a028918a2fc53a3eddc4f80bb243d2d731ae3d",
@@ -49125,7 +49125,7 @@
     "exchanges/anoscranel-ac-dataviz": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-dataviz/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "32e9048ddc37c33babdcf34af32b803846e5237225c0d628c25e5bf60b24efea",
         "subskills/annotation-and-labels.md": "1a55292035ec7e28e7b42496adc4c3496f710e13b7b1c033c7e63bb47aee41fe",
@@ -49154,7 +49154,7 @@
     "exchanges/anoscranel-ac-debugging": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-debugging/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "ff00ae389049e55ff90021442d324cf04bb6820c325c9cc6cff13aa7db847de3",
         "subskills/build-failures.md": "65b38f69018c44c24671fde3399ca782ae57802df4b0e6f4d65a7f4aec58449a",
@@ -49173,7 +49173,7 @@
     "exchanges/anoscranel-ac-deep-researcher": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-deep-researcher/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "205f4b8199e1268c7d5ac1d4dffa199879fa92a9cf761b7315aeebdcf8d1de9b",
         "subskills/adversarial-pass.md": "1fabd67d580bedf8c6220387170cc640d706f902a9d0789cec743e37cebb7b42",
@@ -49212,7 +49212,7 @@
     "exchanges/anoscranel-ac-derivatives-instrument-selection": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-derivatives-instrument-selection/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e56b675afc54326cafa4308462c8a145dd39f630ca05d9810d453413fb9a97f1",
         "subskills/collateral-and-margin-fit.md": "6e7263ace1a9ad18fe6ea3aaeed63e0a588911434f698238785942094fe328ef",
@@ -49239,7 +49239,7 @@
     "exchanges/anoscranel-ac-design-taste": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-design-taste/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "28a79aba2150dad4166bc04d16f965e78fd1a95726a054a3bed189c1bf9e1914",
         "subskills/ai-slop-anti-patterns.md": "1d130de352b88e9f39c50458044c4ec4146277176d76ca545da220d2048b2e8d",
@@ -49268,7 +49268,7 @@
     "exchanges/anoscranel-ac-direct-real-estate": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-direct-real-estate/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "6c461c584281a43a67e8ef912d5b820dd4dd0379a8d4fa824994e5a2259373c8",
         "subskills/appraisal-and-market-value.md": "4d38e64b36e384c8b3a742d33712b3dbd558261d8dddb4622642741ce28fcdc6",
@@ -49295,7 +49295,7 @@
     "exchanges/anoscranel-ac-distressed-and-restructuring": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-distressed-and-restructuring/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "6d733ea850e3bea41efd9b8690765226eaafd053df087002a57d54eb6621845b",
         "subskills/automatic-stay-and-counterparties.md": "161f336ee8e929cbced5c9a54b3fac1f66be014a0d9a6a6565d06287abbc974b",
@@ -49324,7 +49324,7 @@
     "exchanges/anoscranel-ac-distributed-state-and-replication": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-distributed-state-and-replication/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "872abe400ce3344e23582cff60a62374be15da1698d61c538d5f9a43786921ed",
         "subskills/crdts-and-merge.md": "d80aa698a77b00da0bc3d7d47a64f5a7480c7704e41ce27b3cebacdd5b548350",
@@ -49353,7 +49353,7 @@
     "exchanges/anoscranel-ac-doc-coauthoring": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-doc-coauthoring/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "aa6f4bc03ce9869c27328d4a585b10a5af932d66c0c22121a7f758f05eeb6799",
         "subskills/context-gathering.md": "c40dc0908e858287a8558eb734a7d248d14a6791d309fb92e10ab6c9ca69ea51",
@@ -49380,7 +49380,7 @@
     "exchanges/anoscranel-ac-domain-modeling": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-domain-modeling/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "2b79c8bcb556426f971ee17cd3b5d78c450d4f4a3ec68c7cae73bad2a4db938f",
         "subskills/aggregates-and-consistency.md": "95cf5b881ab91c7d8714bc17fd40bcf6e78be78f6f9580b398e1ec7d1ad6fda6",
@@ -49407,7 +49407,7 @@
     "exchanges/anoscranel-ac-drafting": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-drafting/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "19ef7f17cb22354721048d620939edf9f34161c8e327e778f87d4b1efaf457e0",
         "subskills/brief.md": "467fbd940e027c55e9b826ead77b97436ea630d551bc6a6c10ca312eff652e00",
@@ -49426,7 +49426,7 @@
     "exchanges/anoscranel-ac-durable-execution": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-durable-execution/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "23797d1b0ddecdab49c09290d3d6bab776a9afc5f8ab01d0e3829473a8b11a3b",
         "subskills/activity-timeouts-and-heartbeats.md": "72dcbc27b62ff1c142cfbbc6b5b5884d475dc83b67faa9f715f8edac501531e6",
@@ -49453,7 +49453,7 @@
     "exchanges/anoscranel-ac-earnings-quality": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-earnings-quality/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "abb9d39e8f5f64ea7b83cc848e4972f14000113aa6e148306ae4a4896f560683",
         "subskills/accruals-and-cash-flow.md": "2820a583cfdc9e6f1e531f7eac4810b16154dea697f9f5aee1af5bdf7c5b0883",
@@ -49480,7 +49480,7 @@
     "exchanges/anoscranel-ac-editing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-editing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3bf93af6654b9a372528c470db4c80dc4f775ff31bcc983ff62c66a49ddabc86",
         "subskills/ai-assisted-writing.md": "aa04a8040b2258a3ed47567505cc20d21d792f40f533000ee24a8789d4594d76",
@@ -49505,7 +49505,7 @@
     "exchanges/anoscranel-ac-email-deliverability": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-email-deliverability/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "9bc5fe7fd71373127abc7e29cc972ca599a5be1ba8dc57c65bab42c5eda95bf9",
         "subskills/bounce-and-complaint-loops.md": "db06d32384ddb061b9470eeda5a7808eb72ecbd8225ccf49dfd0e8cf5fb4b19b",
@@ -49532,7 +49532,7 @@
     "exchanges/anoscranel-ac-emerging-market-access": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-emerging-market-access/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f7d4c7dac79e29195d90596aeea10721eb9c60dac724e9bcb109b17ed70a3809",
         "subskills/capital-controls-and-repatriation.md": "42b7a388ab1a8e771b70cdd4d9567b7e6160adbb46ee861fccd33954637f8397",
@@ -49559,7 +49559,7 @@
     "exchanges/anoscranel-ac-equity-capital-markets": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-equity-capital-markets/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "586f8eddfb29b93d376eb2f804c4aa13552cd08473c558e7c12e6cf0d4759877",
         "subskills/bookbuilding-and-allocation.md": "6799bcc837b37aaec2b1bda061b5ed481f621d2229616086451d04ff8d82f979",
@@ -49586,7 +49586,7 @@
     "exchanges/anoscranel-ac-equity-index-futures": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-equity-index-futures/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "67068345290d70d29db89debf3fed2c0771f69dbf29568968918c945154b6be7",
         "subskills/fair-value-and-basis.md": "cd0ad4548fd7dd134e3e905c7889e91b5768767f7d7363148c7121f65fb81746",
@@ -49613,7 +49613,7 @@
     "exchanges/anoscranel-ac-equity-market-structure": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-equity-market-structure/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "87dce8e468b33ea9a42633d213ab4a0ef095782dd947aa788cd73d0a63660c49",
         "subskills/auctions-and-halts.md": "e61eb1d561d2c2cb0820779d6a0eaec8bb22af1f0cd85fe6807e354752faa818",
@@ -49640,7 +49640,7 @@
     "exchanges/anoscranel-ac-equity-options": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-equity-options/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "89960636544b82ade3421200e1dad83eb4c530ff8d9fdfe983bf9f75ff1d2b6f",
         "subskills/borrow-and-put-parity.md": "f3430f0faedf63900543cb0094d52e10505e406da77a6720aa26719e69503700",
@@ -49667,7 +49667,7 @@
     "exchanges/anoscranel-ac-equity-research": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-equity-research/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "2e301f10f4349b5ba0a66164949c692d077ad63eed8f35854eaf4e03e749887f",
         "subskills/equity-diligence-record.md": "1609c5fd777a622d9822cae99f5b56df3d775d8b316defb75715d49153e9288e",
@@ -49694,7 +49694,7 @@
     "exchanges/anoscranel-ac-estate-and-succession": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-estate-and-succession/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "ecb29ca2a287d489a478c75cca9cf54918caeb03d9d26b0808ddef9edff63886",
         "subskills/account-succession.md": "06ebb5748166d6d4c5fa8bcf6f5ad22987b039c8db037c267b224374cbd89362",
@@ -49719,7 +49719,7 @@
     "exchanges/anoscranel-ac-event-driven-architecture": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-event-driven-architecture/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f936341968ee32f761be382044bc4997a7be7cbe6c8d64d1d9b681e1cf282c1d",
         "subskills/backpressure-and-lag.md": "7e75eb603708dddd8ad2101951142ee5430ee25da1d1b13f9db5454ed196123f",
@@ -49746,7 +49746,7 @@
     "exchanges/anoscranel-ac-evidence-and-citation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-evidence-and-citation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "0b5b4eca1f51f8f2c10b56b24c9f0732f3d65b6419a59a3eca2ca91158ec04b2",
         "subskills/citation-grounding.md": "d922f4b9379144f2300539e8b8426f3c9237d42da78c94b37e4ed7f61ae3c03c",
@@ -49763,7 +49763,7 @@
     "exchanges/anoscranel-ac-exchange-account-security": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-exchange-account-security/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a110acff4a967fec7de6975128c5817c214706db8270a83beb75f8b090e461c8",
         "subskills/account-security-record.md": "a82143fec52c6fc2e5dfe6df628ce265b7e64d24800c567a9b03869baad14c7f",
@@ -49790,7 +49790,7 @@
     "exchanges/anoscranel-ac-factor-investing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-factor-investing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "d7ce76113042334e023fa659ba160fe06d929dfd03fcfff62e42bc147ce236a2",
         "subskills/capacity-and-crowding.md": "2d3d420aecbb1e55c31bea94d0d76c8f42367bb9afe79da0051da57e44603b8e",
@@ -49817,7 +49817,7 @@
     "exchanges/anoscranel-ac-fixed-income-and-rates": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-fixed-income-and-rates/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "cab81d70cb2a5e1a8786d83378c6339024e67106f911d6b0d4ce96818e710815",
         "subskills/credit-spreads.md": "bbbe08b3d09c0541e0dc512c1abca4d607f717109eefab8d28cf2ace7c0ea181",
@@ -49844,7 +49844,7 @@
     "exchanges/anoscranel-ac-forensic-accounting": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-forensic-accounting/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "da3f068c0a846334151c6fef5f51890dd8196d631cfed7e34b192ac7b72631d6",
         "subskills/capitalised-costs.md": "ef39c445961f16b6ccc808b3d9702648737f7e853dd4b865aab54ade68ad71cf",
@@ -49871,7 +49871,7 @@
     "exchanges/anoscranel-ac-forex-trading": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-forex-trading/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8bd01eb4b34169f34014cb8c93908749fe11b4d0c8a95f619e1de4e9f4bf723b",
         "subskills/fx-leverage-and-margin.md": "b6a1d7e371114dc38e4e4b2244ce547c442b994d7b477bd9d0620e1f39263326",
@@ -49898,7 +49898,7 @@
     "exchanges/anoscranel-ac-frontend-bundling": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-frontend-bundling/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "adeca15e7f395049481d11264c117870e24a743de3e98c8fbd0f3f7fe3ad64fb",
         "subskills/asset-graphs-and-hashing.md": "3596d8578b6be18a917701e74a97ad1d28bf94f7f42d9cd2e4fd32f7805f73ba",
@@ -49925,7 +49925,7 @@
     "exchanges/anoscranel-ac-frontend-ui": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-frontend-ui/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c368a344daa48e15ec1c2363649f6aaeb2230a97750b29c18c8f783f965795e1",
         "subskills/accessibility.md": "483c01ba08ead008b057ce0354b2a6b168e3ec6434107381ed95f0c93ad245b2",
@@ -49942,7 +49942,7 @@
     "exchanges/anoscranel-ac-fund-reporting-and-metrics": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-fund-reporting-and-metrics/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "cd48ef5d0e91f170dd352a3173bbad392b4ec894542027a607f1b4e57d18dd54",
         "subskills/dry-powder-and-commitments.md": "cb2dd545bbf22b49d84d20a9341e01139b495d2c6d6ad8bb6f6a4b2f8500a9bb",
@@ -49967,7 +49967,7 @@
     "exchanges/anoscranel-ac-fund-selection": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-fund-selection/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4f1789b50eff46a28d3b1f54336d44286b64441776c5afbce2481a8fac7a36f7",
         "subskills/cost-stack.md": "f2f20f7aed35585d071f68c030959e2fc28aa9ad6a7ea2ffa5040b8da41c98eb",
@@ -49994,7 +49994,7 @@
     "exchanges/anoscranel-ac-fund-structures-and-wrappers": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-fund-structures-and-wrappers/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e4ba57d0f7c830ecb2ae93374435be3e534e9435bfcdd4779ac679789c6382e9",
         "subskills/bdc-and-listed-vehicles.md": "8e885373409e42c4afeb97f7fa3594a999c1d78d8477af47f9b8ab0f1d896081",
@@ -50021,7 +50021,7 @@
     "exchanges/anoscranel-ac-funding-and-basis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-funding-and-basis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5707dc2ad34930d5b07c5c874d1447451d62b3121ce27bf1c150d2829050efd2",
         "subskills/basis-trade.md": "d5d8c61e797b3ebdddda184da7a4e053cb41ca7a604ef40aa5e441ece510aef3",
@@ -50048,7 +50048,7 @@
     "exchanges/anoscranel-ac-fx-options": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-fx-options/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "2f839ad2ed551a6b6991ab836fe08b1bf204639a0cbc3a58db3218e63c114fc4",
         "subskills/fx-barriers-and-digitals.md": "84436013bf8bfd35d26aba297a32cb4883f3e7d2485368be77ddd455b38d30e7",
@@ -50075,7 +50075,7 @@
     "exchanges/anoscranel-ac-geospatial-data": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-geospatial-data/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fe710108f66e0e8e8e8b906ae9e9c9a5b40341b6dc816ac5c9d1693b05642aa2",
         "subskills/bounding-boxes-and-filters.md": "24cf2d12802940fbf0e077e352d1fda87cc328f47155a5df2b0aa84fc4df6481",
@@ -50102,7 +50102,7 @@
     "exchanges/anoscranel-ac-git-workflow": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-git-workflow/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "7d306ba7f2a464ceab28d3b7d22cc1bd5beb067c65e6a2766282e5360f2464d1",
         "subskills/commits-history.md": "b0e2bc98980ee9dbbe748feb0e9c8bc673d2b7d78e1f93a2a463b76d562c02e6",
@@ -50119,7 +50119,7 @@
     "exchanges/anoscranel-ac-gpu-and-parallel-compute": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-gpu-and-parallel-compute/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b45dd2fae755a1b0415bcdfee9d571892d006f4867ba73ffe882307dbfab095f",
         "subskills/accelerator-record.md": "97c8171008551a801d3e388fd814bbba9e02fac00b88b210d0a01f7ddd208adf",
@@ -50148,7 +50148,7 @@
     "exchanges/anoscranel-ac-graphql-and-streaming-apis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-graphql-and-streaming-apis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8bd1cdf34d4c6d384e601a965dea6c9e93b887be520b4ab32cd71ae60d236766",
         "subskills/cursor-pagination.md": "529feaea442ca992e446def82aee08d7b5f5b3dec7c5a45a5f4e20512c59cd73",
@@ -50175,7 +50175,7 @@
     "exchanges/anoscranel-ac-handoff": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-handoff/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f5696521fb998e4effd584d8617829599a4e97fa3af84b55545e7e398e2c90cb",
         "subskills/constraints-verbatim.md": "5eda0a83160565345a111a9e546936bcda2ac454976239d001296c09ab816e54",
@@ -50202,7 +50202,7 @@
     "exchanges/anoscranel-ac-i18n-and-localisation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-i18n-and-localisation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3fa79c2d2f4a3c471469355ff960a87f53f4d77776f0f9c2e4b36998cea5fad0",
         "subskills/collation-and-search.md": "7afef1c119050a0cb5ab30f7ce2807f164c2137524dd7fd8cbe6576da248570f",
@@ -50229,7 +50229,7 @@
     "exchanges/anoscranel-ac-ideation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-ideation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b5b97337c33b16d58f72a5fdbcc6ca0c437fd0709c84d5b121879b439a2ce396",
         "subskills/convergence-scoring.md": "9313bb760b1a8969b6ad8a2297cbca626314cebd064f112e52fbf0f1006d754d",
@@ -50256,7 +50256,7 @@
     "exchanges/anoscranel-ac-inbound-triage": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-inbound-triage/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "9820b0f3d8aa64dd67f36416b785b8c06d7a12dfbdb14bc6709b6da2e5dab53e",
         "subskills/batching-wip.md": "af9e527b1c6e2a2d2b8b2c658b7b78ee24cddaac0ba59c0df940873bb9f4c94e",
@@ -50283,7 +50283,7 @@
     "exchanges/anoscranel-ac-index-methodology-design": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-index-methodology-design/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8c5f04c3293eeff2bcaace36982d94a45b0b28b15f7fbb40c8a61093643712f2",
         "subskills/concentration-caps.md": "f1b3911dddb0bba9cf20d78ee7fde3f0179a4459d93c322d1bf3098dc280c2b2",
@@ -50310,7 +50310,7 @@
     "exchanges/anoscranel-ac-infrastructure-and-project-finance": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-infrastructure-and-project-finance/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8cb83d20e407a99e3816544bd0a93272a1b6a26aea0086fc32d3148da3f946f8",
         "subskills/availability-versus-demand.md": "be670684a9d26c2c3ff05f1c0f0c9b79d3b0d3ee773864133ddc81004c3e68ae",
@@ -50337,7 +50337,7 @@
     "exchanges/anoscranel-ac-institutional-operations": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-institutional-operations/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "dd85d599a32e4f534d15d4ddcedac3200deaadd11dfecf382e47406ca6612b1c",
         "subskills/clearing-and-ccps.md": "fb159995619c784bc3a650091dba83ecd6038b14d8b09d79d6693b5bc112c09a",
@@ -50366,7 +50366,7 @@
     "exchanges/anoscranel-ac-institutional-order-flow": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-institutional-order-flow/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "0035686dfb6f8e808aa9e68a929bb0ebe80bd85dadb55bf246ac382a6d0adc46",
         "subskills/auction-and-rebalance-flows.md": "3112d43016cc5ac54e06101cd780affaf2fccdd75e0708d9186acfcdf3a54756",
@@ -50393,7 +50393,7 @@
     "exchanges/anoscranel-ac-institutional-positioning": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-institutional-positioning/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "52bdcefe53f0aed225b76c0b62492a60c65c25274c36dbe46ff1401efff2832c",
         "subskills/blocks-and-activist-stakes.md": "1fcb3925d828813966bdf14862c7aa208946121a3c1035176d09d0b4fdd6225f",
@@ -50420,7 +50420,7 @@
     "exchanges/anoscranel-ac-insurance-and-risk-transfer": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-insurance-and-risk-transfer/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "29e502a51c15413d2d0f69ba136fd9ee56506dd285326554d3636c12d9e4a20a",
         "subskills/claims-and-records.md": "9a854737bc2abfef24bf2932360c8eaac2fe5ff349474671c30126bff7a4c6f2",
@@ -50447,7 +50447,7 @@
     "exchanges/anoscranel-ac-insurance-linked-securities": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-insurance-linked-securities/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "102e34977db7d2d062afa2399230d2c3da1a27ffd8966a8e23930706d6839eed",
         "subskills/collateral-and-spv.md": "3f397e115c40fea78ab5a680d4e14e4ccbbc59c80cb5bfbdd4dc027898594f63",
@@ -50474,7 +50474,7 @@
     "exchanges/anoscranel-ac-interrogation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-interrogation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "d2acc2faa4c79c933851972d5094c0109bb77f259c1bb8a710e7c669ff7e17ea",
         "subskills/alternative-forcing.md": "365d2ae61eae314f72da6038264be848ed26cd24ef9c37f5e861d43f62ddf991",
@@ -50503,7 +50503,7 @@
     "exchanges/anoscranel-ac-investment-oversight-and-ocio": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-investment-oversight-and-ocio/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e8ba538336f0482ade645eb15f3df10a09908f173e4c1cbbca9533d83ede88f4",
         "subskills/board-reporting.md": "de60d06a1f426df6e475a8f87aeb5207c60ece2d4b024eb440e00e31fdb8e576",
@@ -50530,7 +50530,7 @@
     "exchanges/anoscranel-ac-investment-policy-statement": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-investment-policy-statement/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "70bd336c161d1bfe5eec42a64df2d1183c1d435efa0cfac6d30baf39389a8066",
         "subskills/asset-allocation-policy.md": "1d97ee2ba71c733a23f2cdc3908d2f00bdf4fb51f71005be455dae486c726de2",
@@ -50557,7 +50557,7 @@
     "exchanges/anoscranel-ac-lexical-search-engineering": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-lexical-search-engineering/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4dfb92ad2da22aaaecf8c24eb59309cb9c60c25078a0ce4c77c741d6c32715e9",
         "subskills/analysis-chain.md": "9fd8059407baf5b6191b71908392148e03e4f2a54ba4df92a27fd1b410371781",
@@ -50586,7 +50586,7 @@
     "exchanges/anoscranel-ac-liability-driven-investing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-liability-driven-investing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "03f7d3f8bac55ceb3daa8c79b1f61f2c41503a5a37efb9a624bd9907554c0c48",
         "subskills/contribution-and-benefit-policy.md": "cab34be7eba25df9f898d019a80ed0b76e23f507c4b572cc1cb3fe3fa95b4f11",
@@ -50613,7 +50613,7 @@
     "exchanges/anoscranel-ac-liquidation-hunt-analysis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-liquidation-hunt-analysis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4408b2abf43ced07baa640e7c98ecf756886ad1fd978c05907b6e67fde76cfea",
         "subskills/cascade-anatomy.md": "b874991849fd237a90290a841a12e2f32dca087749430d8dbc026c57e78ab819",
@@ -50640,7 +50640,7 @@
     "exchanges/anoscranel-ac-liquidation-risk-management": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-liquidation-risk-management/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "d6c500858b50195aae0d92ea97e00086e91cc7df7cb57a25e61dbbffd01a5b3f",
         "subskills/cascade-exposure.md": "04f0ded59b528e7166a09a7abbc9d8c0396b4a03336a6a57790abbfd669b29a2",
@@ -50667,7 +50667,7 @@
     "exchanges/anoscranel-ac-liquidity-risk": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-liquidity-risk/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "62551423d19d785457dc1c6f23a69f073ab43ca23e9bfc255cf7d970754996a6",
         "subskills/days-to-liquidate.md": "456cc0cc852977bc8df57eb459545ecc37f329f7c6bae77657b2a58ca8808de2",
@@ -50694,7 +50694,7 @@
     "exchanges/anoscranel-ac-llm-api-integration": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-llm-api-integration/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "64759d109e29fe2aa8e9a17b92e0b8442f2c8e32867ffbf71ea00a15ecd5735a",
         "subskills/caching-and-batching.md": "feb3d28e8b6124baaea1fb38d15677086fb97fba2619c664833281ef63b35287",
@@ -50721,7 +50721,7 @@
     "exchanges/anoscranel-ac-low-level-io-and-syscalls": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-low-level-io-and-syscalls/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "44cbe633aa8c9d8dd6fe5147a910ad5b1f0c21b2bb32eef5f9b72945c00b6542",
         "subskills/blocking-and-nonblocking.md": "280bcdcee3805cf50edb562756c7e620a092f34d2ff2640d2185c42659ef1b3f",
@@ -50750,7 +50750,7 @@
     "exchanges/anoscranel-ac-ma-transaction-execution": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-ma-transaction-execution/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "57be268eb4bf65e9795fb98219368ceed80c997c1c6cf8538929dd2218db35e6",
         "subskills/accretion-dilution.md": "80db0a90a0b9ed3959393889cb69c3873cfa3452ed68727cc49b1a31ce9391a9",
@@ -50779,7 +50779,7 @@
     "exchanges/anoscranel-ac-macro-and-policy-reading": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-macro-and-policy-reading/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "76eaf48e387e5ab6279e23d98b8e860ad34f37653389b13918c195e2c02cc922",
         "subskills/central-bank-communication.md": "f28dd43d3535b3cd8f7a176af1ed8207860fcd641f0008becfbb5d55e8d3aa29",
@@ -50806,7 +50806,7 @@
     "exchanges/anoscranel-ac-manager-and-vehicle-diligence": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-manager-and-vehicle-diligence/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "423b52b3ea6974f5d9c09f06b44b51f179914b3c1db77bdf93f636d09e5581f7",
         "subskills/due-diligence-questionnaire.md": "eded8bba2bfd4d97348b55b82ce83cde0b480923c105b766ae0848fac382125f",
@@ -50835,7 +50835,7 @@
     "exchanges/anoscranel-ac-market-data-collection": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-market-data-collection/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a9551dbe33db6ed813e77602424aa69e19b94d5fe5b00bd9ee003a737a47b980",
         "subskills/collector-design.md": "00128cc708ec02f5bffdec99e1806ddd258198c50f6e297cb5e48c1734b1bb3b",
@@ -50862,7 +50862,7 @@
     "exchanges/anoscranel-ac-mcp-authoring": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-mcp-authoring/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f2cb57e6023109d19e465fb395016da54a378a065963a32faa69a19f108bf5ed",
         "subskills/protocol-model.md": "8547607fc180ddce00003d2430d004e6a66e34a75712f4fa68d1c17aa6c42c37",
@@ -50889,7 +50889,7 @@
     "exchanges/anoscranel-ac-media-pipelines": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-media-pipelines/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f961e33e49b412a3980375c29d738e8c2a1fa753f606ca2c8c4a514a0942439f",
         "subskills/async-processing-jobs.md": "2b9a4bd13f88bcf1af7e35ce1a52aff53b3e9a4a6817e94e96e1577358a37cca",
@@ -50918,7 +50918,7 @@
     "exchanges/anoscranel-ac-memory-layout-and-caches": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-memory-layout-and-caches/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a7b137f5759e581334603047376e9a73a42ebf8fe9d128b89baf65e0c9e39a61",
         "subskills/alignment-and-unaligned-access.md": "21cae2d57a7fcd29a091b6cfa486bbf79592e2fea87a5e8939db624637203336",
@@ -50947,7 +50947,7 @@
     "exchanges/anoscranel-ac-message-queues": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-message-queues/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a53f9a21dc1df1ad0b20e58bace78bfb1290c11f83571824758095d8e759761d",
         "subskills/ack-and-redelivery.md": "d4f1ce092076f25ce505724855f71bd08ee4df729f9586be0efb7297d53e7d76",
@@ -50974,7 +50974,7 @@
     "exchanges/anoscranel-ac-meta-analysis-and-synthesis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-meta-analysis-and-synthesis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4f8b45745e185fcd1c95bd01b6e0c296f0ad43f79a7ec15e4e5b8fec39722c01",
         "subskills/certainty-and-sensitivity.md": "ec58e6c39650e24b34f08750f73c8dae099a92150e6d3ada03ec5c6004c63bd9",
@@ -51005,7 +51005,7 @@
     "exchanges/anoscranel-ac-ml-systems-practice": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-ml-systems-practice/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b795af2877c5550f65b4cb8da7f773fa07e498266e40fbe3516f18279060e135",
         "subskills/artefacts-and-versioning.md": "b3a687c5f2f4d8ee0d2683fe5e044569bcb2e89b0b0f3036f550929470645dd2",
@@ -51034,7 +51034,7 @@
     "exchanges/anoscranel-ac-mobile-client-engineering": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-mobile-client-engineering/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f8c654aa0d7b632720a91af5021f6c56fe5286f969b2cdf8d7fdca9c1a241872",
         "subskills/fragmentation-and-devices.md": "8b37398204e0445ca7420d83e654e503f249af0e6e1384da1596396a94b7c590",
@@ -51061,7 +51061,7 @@
     "exchanges/anoscranel-ac-model-evaluation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-model-evaluation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "02d03f61688cf44395c496295b857dc4429754b9c2a784395edab319ef7f5820",
         "subskills/case-construction.md": "47d3b61a4edc6b28d1ba33e3f673db71a3152174eacbc3a50ab7dbc33b744a0c",
@@ -51090,7 +51090,7 @@
     "exchanges/anoscranel-ac-money-arithmetic": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-money-arithmetic/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "554a8e55e85935763f995bebe5c64f4afe9b29b01ff5b0c6c2af793be7e8016d",
         "subskills/accrual-and-daycount.md": "af5bd0155b441421926b23d1f6a5dd3a8160f95c493b5954568907593769a4f0",
@@ -51117,7 +51117,7 @@
     "exchanges/anoscranel-ac-monorepo-and-build-systems": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-monorepo-and-build-systems/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "81feff2ff32c5d9cc842e0964d0b6775f307dd2c90e528852bdad015585c0e9b",
         "subskills/affected-target-selection.md": "46bb3a04d73be6f4062a268eca8f2fcc4bc559274355075035ed74a35653443a",
@@ -51144,7 +51144,7 @@
     "exchanges/anoscranel-ac-multi-agent-orchestration": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-multi-agent-orchestration/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4aac1f8fdfdff5bd104792edb4b0f14a1801c433e6cbbf23321ab5e92f0e2a2d",
         "subskills/context-budget.md": "f1867fc41fb009edc8bbd05500a61ee04b77c5a66d0d3f9bbfc6721b11329b5e",
@@ -51171,7 +51171,7 @@
     "exchanges/anoscranel-ac-multitenancy-and-isolation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-multitenancy-and-isolation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "03370eeee81fcadd4e01389922198712674bd99980b3ee0b472248c5523167da",
         "subskills/isolation-levels.md": "28479192bcdc18c614e3cfe959a3cb6488470b6f8b5245caca71303010609570",
@@ -51198,7 +51198,7 @@
     "exchanges/anoscranel-ac-municipal-bonds": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-municipal-bonds/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5fc64e9ac2c135272ad2d54eaf61b178e170f498168fd528b05b024ea4b20fe9",
         "subskills/calls-and-refunding.md": "3d1a2efa7011cabf93e2444469f9dae09e9c4b9cb1a7519ff38364d526e3cdcb",
@@ -51225,7 +51225,7 @@
     "exchanges/anoscranel-ac-narrative-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-narrative-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f36864b74a67e41bbd3168130b062359301ab3cbeb969b98eee679195f9b4451",
         "subskills/narrative-nonfiction.md": "4e743436b3838bfe84bb65ab8e556433f1227512854f3d8e10a7264a897a5a13",
@@ -51242,7 +51242,7 @@
     "exchanges/anoscranel-ac-network-edge-and-delivery": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-network-edge-and-delivery/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e8c3aa04cbf09a2cf63a3f477abc7d32778d03bd51214dca554cfac846333d99",
         "subskills/cdn-cache-keys.md": "a447f7bc535de144c5d60f9f991108ebba3197279a1e027c2151b58fafa499a2",
@@ -51269,7 +51269,7 @@
     "exchanges/anoscranel-ac-news-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-news-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "78acad8aa8b1e94f3cabf8ba1b19e492d0de2c32814475d34401a3b6e9365bff",
         "subskills/journalism.md": "e7277a9666158b99cdf2fee6a70980e1de90d86393182cc72d71e62861075ac6",
@@ -51286,7 +51286,7 @@
     "exchanges/anoscranel-ac-notification-systems": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-notification-systems/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3a498a77c6a0068b584611c89148bebfc6621d65acd59b34589441882aa3f9a0",
         "subskills/anatomy-and-events.md": "2bc608839cac028e3d94691de8221666fe1681cf29a7dbd726142053fa2430ac",
@@ -51313,7 +51313,7 @@
     "exchanges/anoscranel-ac-onchain-flow-analysis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-onchain-flow-analysis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "884be7a5079d4ae7b0356c551d893694556eab79748034feebb8fc1d83a9b57c",
         "subskills/data-sources-and-labels.md": "35f9d21cf56f8d2e4b0a077c930186788ee8c825a1c5cf23996e2d513eff7bcb",
@@ -51340,7 +51340,7 @@
     "exchanges/anoscranel-ac-online-experiments": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-online-experiments/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "57c4e532cdf2efbfbb1bdb0fddb6ac597ffdf9c17ba25a8386a5530f1aeae056",
         "subskills/experiment-as-decision.md": "2cc65593efc2d937a08dc2fbb49595d475fa4df4047787c08ccd31a5643a0ec2",
@@ -51369,7 +51369,7 @@
     "exchanges/anoscranel-ac-options-and-volatility": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-options-and-volatility/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5a6ac4897e7ac4199954bf818ec966503c46585049b8c4a47a28d5f0d42566a9",
         "subskills/hedging-with-options.md": "36008c04d1d9f11745fdd930166470d4669bfabb4f5edce5b5eae42afd0a2458",
@@ -51396,7 +51396,7 @@
     "exchanges/anoscranel-ac-order-execution": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-order-execution/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "df85a2ec95c77f2edd6dadd42ffc5e4aa13522380df05bafb4e3abecc7ea1416",
         "subskills/execution-failure-modes.md": "fd4a790ed7abe32a4978223020ff2e60796a799e2ed0398a5dbce92bf0da2270",
@@ -51423,7 +51423,7 @@
     "exchanges/anoscranel-ac-payments-and-billing-engineering": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-payments-and-billing-engineering/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b93c5907aed0bd3a09ccd33cd211efd37923a28e66f0749f171bf4bc4ae092e1",
         "subskills/authorization-and-capture.md": "9b7932a78f8200c1f8e749676bc8a0d36afb1e110fd89cfed9286915656ca315",
@@ -51458,7 +51458,7 @@
     "exchanges/anoscranel-ac-pension-risk-transfer": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-pension-risk-transfer/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "eb060b4c36a93c6837790a7081fcba28fa47f0596281dc26cc47f2e523159431",
         "subskills/buy-in-versus-buy-out.md": "6fb13f33785e9537b2c255a9e949cc96086ac3c48d79cb387b5e80e0350cdd31",
@@ -51485,7 +51485,7 @@
     "exchanges/anoscranel-ac-performance-measurement": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-performance-measurement/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "2c2f1c0a268a8fdcc02d85071051eb11cd6a86b23feff79f51b08bcf52f68b7d",
         "subskills/benchmark-selection.md": "942d2936ab6ff69b343b724e074cebc9ee72b8a8a09e1f15700df3a69eddf929",
@@ -51512,7 +51512,7 @@
     "exchanges/anoscranel-ac-performance": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-performance/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c674046474186e5140efdb196f85bc2ab0815080b651264c68c78cf75d70fb23",
         "subskills/benchmarking.md": "82a6728977219a92d156a7f5f62286a87ff3ec83fea24806fac3e2eb13214d41",
@@ -51539,7 +51539,7 @@
     "exchanges/anoscranel-ac-perp-venue-diligence": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-perp-venue-diligence/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c38b3fb5ba08cd0dbe62a72ec882ba86e79db78018f270ffc4d3bf8cf78cb551",
         "subskills/backstop-and-continuity.md": "2a1aedda279729716862e16dc552565bbe0a4fa475081ce3285b974cc293b0e9",
@@ -51566,7 +51566,7 @@
     "exchanges/anoscranel-ac-persuasive-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-persuasive-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4e13f3bb3affef3e6cce581d39d1661cd944dbed09755386f4f554a6d1185301",
         "subskills/argument.md": "3563393e5329325f7883737eacbaff9b226015b9cdde9bcd2e9bc91418dedac2",
@@ -51591,7 +51591,7 @@
     "exchanges/anoscranel-ac-plain-language": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-plain-language/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3711c9ea14b769ada693aa4b266cdeca1887d7c8a76ac65ab88d795cdfb5526f",
         "subskills/inclusive-accessible.md": "3e18339fb23bafa647f94c6f9163a4faaec25f4adea4bf14727ad7aa7070c228",
@@ -51610,7 +51610,7 @@
     "exchanges/anoscranel-ac-platform-engineering": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-platform-engineering/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b0b0d1b2b558a506da7949b8060fc6343a6013cf914b78ba14ee25a636d0a055",
         "subskills/developer-experience-metrics.md": "c9db5fb3e5e9ff237160afb0c84ac6ddd38e53e8d5667fc836e41c4344952286",
@@ -51637,7 +51637,7 @@
     "exchanges/anoscranel-ac-portfolio-construction": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-portfolio-construction/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c09bada5edba16df7a476bb6bc80294dfafcf95f5b0980a3b5b0b51102d4d1e1",
         "subskills/capital-allocation.md": "7919f705fcc69054307e1d2e5ee3daac5d3eb6e46a926d16a4146bfd9b5272fa",
@@ -51664,7 +51664,7 @@
     "exchanges/anoscranel-ac-portfolio-financing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-portfolio-financing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "44af94abd4a84a5b17d4b3e0b552a6fb4f3c91140f66da1e15d25152a4d008b2",
         "subskills/continuation-conflicts.md": "955f96c4680afe05d4dd47b48de1afba733bf1045641c8526c1b6425a2de4eaa",
@@ -51691,7 +51691,7 @@
     "exchanges/anoscranel-ac-portfolio-leverage": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-portfolio-leverage/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8c94185f8794c0c58e2a2d9f6479ae056e55b0d54fad96689e5f2044e10d456a",
         "subskills/cost-of-leverage.md": "19a4212c301c953dd5d658caf39d624ae5c831fd15e4810ed9183744afd3956e",
@@ -51718,7 +51718,7 @@
     "exchanges/anoscranel-ac-privacy-engineering": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-privacy-engineering/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1600eb35994745858de7ea384227eac5bd2a5ff68687fe6a28551d84a2fc8c2c",
         "subskills/data-inventory-and-purpose.md": "0638a911c602fd76dd5679025001622879509d02db0aa974e8c209c31de4739a",
@@ -51745,7 +51745,7 @@
     "exchanges/anoscranel-ac-private-credit": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-private-credit/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "da201b0e529ef4955b62f1be4f907bdbc5a10df448eaa7dc0e2aed443972a92d",
         "subskills/covenants-and-protection.md": "42d9af54e87dfdb4992261d0c30a19d4bf056ea8fc295e62eef37a2390d914f4",
@@ -51772,7 +51772,7 @@
     "exchanges/anoscranel-ac-production-debugging": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-production-debugging/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "dde66e4f88e2b4445d879991ae68517c96b5184336b6f01dbe39401c29e9c980",
         "subskills/correlation-across-services.md": "430479b5175855b0f9ec84c4e787411377147b36562931533eb52d14ada2b6d4",
@@ -51799,7 +51799,7 @@
     "exchanges/anoscranel-ac-prompt-engineer": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-prompt-engineer/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "2b12e1a5193789aaac9e300c7eadacfcd3dccb52541e28d2ba8e65198bd12627",
         "subskills/agent-harness.md": "89080c8e01493feeee8e32f4aa92f273160356388329eac9c43628dd66d44369",
@@ -51836,7 +51836,7 @@
     "exchanges/anoscranel-ac-proposal-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-proposal-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "0f59cc59427e0418694c08e7d5a8dc6e5f380676fe48a322ed25f09313f82f66",
         "subskills/applications.md": "f5cf42af0ac562ec75c9ce723efd477e54df8e97e3181ee66a0dbc2683c65225",
@@ -51855,7 +51855,7 @@
     "exchanges/anoscranel-ac-qualitative-synthesis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-qualitative-synthesis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e6016a622ed6b8bc825ba647c2f5be33d33cd711761dd0aa180387488c794166",
         "subskills/appraising-quality.md": "7955dbd4a368ba477098f2f5232a45b33c28ac932c23c1264b676e80fe1d48fb",
@@ -51886,7 +51886,7 @@
     "exchanges/anoscranel-ac-quality-verification": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-quality-verification/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fedd79580fafb6cc6110ff298ecebc799126485233130757b7feb61330b5af5c",
         "subskills/quality-vv.md": "b19dbee46b864dda0ad8b1add28122f9d965bf1809c50a9665ae3b8e326c7e09",
@@ -51903,7 +51903,7 @@
     "exchanges/anoscranel-ac-quantitative-methods-for-trading": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-quantitative-methods-for-trading/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "904f46d5335ed163eb67878ca3a4ce56f28bbf0e8d05d101e46923c2f6a8aff9",
         "subskills/cointegration-testing.md": "d73bc66aa0a1821c1cadd56cb195a35342483f687134f4f78ce35c523af1844b",
@@ -51932,7 +51932,7 @@
     "exchanges/anoscranel-ac-query-and-index-design": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-query-and-index-design/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "7d4aecbe3d7e8268f89db04ffcd76d914aad8752b52eafea93f5a9d6a776e2cd",
         "subskills/access-paths.md": "ededc5ebbbb55a9b37c3f92bcd0e50d8f9233aac363c21605c469f8569e33c25",
@@ -51959,7 +51959,7 @@
     "exchanges/anoscranel-ac-rates-options": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-rates-options/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c5383fa8d13791a5d1ee7a13bdca5b767a411602e7e7d762b304ccd837566361",
         "subskills/exercise-styles.md": "12c98ad03d2889f4dccf653b7afb3bcfbbbf18b13339620410c596ca7b77e974",
@@ -51986,7 +51986,7 @@
     "exchanges/anoscranel-ac-rates-trading": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-rates-trading/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "d609e5cb248526d841b38fa3c17949b68a30be227da14f358555603cf2ec2313",
         "subskills/bond-futures-basics.md": "66b95815bb197f4250e93d0b51c4ca66271f452689b9b57216a51872d6611cbf",
@@ -52013,7 +52013,7 @@
     "exchanges/anoscranel-ac-realtime-media-transport": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-realtime-media-transport/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "9ba6d7625d0a3bd3fb8ac9c2f99095b73f38f4e461cdfbf1545a371dc5863a36",
         "subskills/data-channels.md": "b28ef9918fc9557552cd11378a53db2deba2030fc464103ff23c5f2ed07c64fa",
@@ -52040,7 +52040,7 @@
     "exchanges/anoscranel-ac-recommendation-systems": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-recommendation-systems/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "bde92075a78ab7619a1febac08792747d153d287421a98f6488f317b960e9601",
         "subskills/bias-and-correction.md": "876871f41c237e28a22952e6cddfe877e1a8a68cfbd0ec1103d81638ec5382d7",
@@ -52071,7 +52071,7 @@
     "exchanges/anoscranel-ac-release-publish": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-release-publish/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5189e5eb255a12963017f1ab947b283850999dc741c39a60e8d7793c4ff3aad7",
         "subskills/claim-files.md": "d20616314e03027dc0d97c30a46f83e9ef016cc44566cfcc8c8933b305c5bc9a",
@@ -52098,7 +52098,7 @@
     "exchanges/anoscranel-ac-reliability": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-reliability/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e49b340a08a44a48005ec5f6168d4b7cb33b4f6893b3b2b2bc9f7b15484e89b3",
         "subskills/incident-response.md": "d443daec4907055c799820c939a9aea3c482c81cca84c4305009d06daf5febcd",
@@ -52117,7 +52117,7 @@
     "exchanges/anoscranel-ac-resilience-budgets": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-resilience-budgets/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c66de4d82b2691e62353e7ef5892f2abcd6a0158dc9bf4293298e2fe9d0cb646",
         "subskills/backoff-and-jitter.md": "4b343adde72236d5b0f8621043fa6698feb84b6db6a88a14a5f5c0b2cc45f943",
@@ -52144,7 +52144,7 @@
     "exchanges/anoscranel-ac-resource-exhaustion-diagnosis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-resource-exhaustion-diagnosis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fbe903d7314d3c143fef020cf58aab80ed99761876ddd4959810838e979db876",
         "subskills/connection-and-cursor-leaks.md": "506943618c9c7ccd7790de20bf63576b9c02d1d5df5c31ede70445fbaef66f0a",
@@ -52171,7 +52171,7 @@
     "exchanges/anoscranel-ac-retirement-and-drawdown": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-retirement-and-drawdown/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c525eceeff263bad5131876c470b4922d93749a728de61e4f2509a92150006c9",
         "subskills/account-ordering.md": "24d3f1106bde578835121d9bda22586f73e2aca9e6f8ebcbcb7629ee6e3f81fc",
@@ -52198,7 +52198,7 @@
     "exchanges/anoscranel-ac-retrieval-and-vector-systems": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-retrieval-and-vector-systems/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "017467bb08cfd58800758fca6fc4683236e1eff9ba3cda5b9d789eaf036f4904",
         "subskills/chunking-strategy.md": "d95e44e267b575d41e1ad9fdb0d27ae5093fffea54b9c8dab09077809b5f3387",
@@ -52225,7 +52225,7 @@
     "exchanges/anoscranel-ac-saas-tax-and-geography": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-saas-tax-and-geography/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e47d74798bec604d859932e1d9890b312d0df7496c6df3c744b90e5a48543b39",
         "subskills/invoicing-compliance.md": "f14a17ca639aa420396880921bb010117b89e71c8ff7eea9e3fb68d1c5f0d163",
@@ -52254,7 +52254,7 @@
     "exchanges/anoscranel-ac-scenario-and-stress-testing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-scenario-and-stress-testing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "ed613f5eaac7b6b8a3cebcfefe9720569cd145e7ca6ce01e352f3c892f8b9018",
         "subskills/correlation-breakdown.md": "7f0483a02f5040d13ec6542f3af1b60a0b01298f2f61703ed2162487cdc1d02c",
@@ -52281,7 +52281,7 @@
     "exchanges/anoscranel-ac-scheduled-jobs": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-scheduled-jobs/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3f7527a3d54da20c0dea659be49bbb27bcfce126b4af242579be294393c13d5c",
         "subskills/catchup-and-backfill.md": "d476bd9ddcca168da5d6441d68bde154c7d2da8784058c5618b947914f03c071",
@@ -52308,7 +52308,7 @@
     "exchanges/anoscranel-ac-sdk-and-client-library-design": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-sdk-and-client-library-design/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "9a8e62ad1ed58ee49746611473b3fedc1315a9dd84ea3275ddbf27ce3b855f71",
         "subskills/configuration-and-credentials.md": "7f2a65c22f4bb5ce2783ca44fbb7d15202a5ed0ac7f0242ac30e7a1958a1b73f",
@@ -52335,7 +52335,7 @@
     "exchanges/anoscranel-ac-securities-litigation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-securities-litigation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f2745f1d2d69a0e7f760f3a88e458eab7c2660262740d1260e97241cd4f9114a",
         "subskills/claims-and-settlement-funds.md": "f955e4b2c99e41939a4c2baae5f8bebcfe615b6fcf36637fb1c03f9b37b9414d",
@@ -52362,7 +52362,7 @@
     "exchanges/anoscranel-ac-securitisation-and-tranches": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-securitisation-and-tranches/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "7a3c47aaa3a30bb28c33b9201cbfc10b1a56c528f4dda66cbebc99c910ae0708",
         "subskills/credit-enhancement.md": "a10d5d1cb56c736019bc9b992dcc5c4554eb9e3f3a13d975ba62d6d423927034",
@@ -52391,7 +52391,7 @@
     "exchanges/anoscranel-ac-security-engineer": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-security-engineer/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "0194f8f16da328e1ae10b124923548403cec483bcdf5ca2511679fa84f8d4ce9",
         "subskills/00-rsi.md": "054633f6901b1544691b12ef59771777dba7f78271a2098cc44d6c152ce2eff4",
@@ -52462,7 +52462,7 @@
     "exchanges/anoscranel-ac-security-operations": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-security-operations/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "93862c06fa2d2fadea607bd8cff9dfdf1c3407ba5643c75cb13e884360011082",
         "subskills/alert-triage-and-soc.md": "9fcd8521a0e52cb464d216400cc50b4e45b8b21f3c3c9a3edb4e3b5645688491",
@@ -52491,7 +52491,7 @@
     "exchanges/anoscranel-ac-security-standards": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-security-standards/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "df5605ad9bf8df401383740b11f0a4b55b99a2ab58fa199e9ad1e23d31b205b8",
         "subskills/done-criteria.md": "6a53a5b5cb3ed977bb6bf9f5d9f448443caa9dd708c96dc8eed7e6ff7e70504d",
@@ -52508,7 +52508,7 @@
     "exchanges/anoscranel-ac-service-lifecycle": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-service-lifecycle/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "bad5ee5858d5f265a44dbd8c7eda3dff1cd13156f020e52d59448fd0a8a31936",
         "subskills/configuration-load.md": "331a59e53cff12c08dfb53c3c0f4320f4951403ee2ea89b1a07d34be8f0a7b79",
@@ -52535,7 +52535,7 @@
     "exchanges/anoscranel-ac-sharding-and-placement": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-sharding-and-placement/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "9ced34fe2c7a35895189420590fc9bb1c933cd4e964f1ce56cc09b07dd5ffe3e",
         "subskills/consistent-hashing.md": "474f5fb5233545c1748e114a881b039f96952d4f2238aa900c924e7c67c671ad",
@@ -52564,7 +52564,7 @@
     "exchanges/anoscranel-ac-share-based-compensation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-share-based-compensation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "d61480ab9c58110809a8ca72ba99892a6a4f92b1af273c4deaf20b63f0f78c59",
         "subskills/buyback-offset-arithmetic.md": "ad29ff755ce19da50f41fe3aa1f016cb1adc54d57e6c86eff8a54f0d0d79c473",
@@ -52591,7 +52591,7 @@
     "exchanges/anoscranel-ac-shareholder-activism": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-shareholder-activism/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "67227d7478bcb121ac542d2305a8503b501abe0b3e60b81b20218b079987ae5f",
         "subskills/campaign-archetypes.md": "41b223cd5b02d7fcb108ebeef1c95e78798000d8e883c3b1e77dd5a47ba496be",
@@ -52618,7 +52618,7 @@
     "exchanges/anoscranel-ac-single-request-value": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-single-request-value/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "260fe29222ccb1634474d08f0aaba379fc2e7295648b2d2281fc0df282eec7d3",
         "subskills/batching-sub-questions.md": "bbab1440b238ef7c09c2c0c3f14e4fd1f47846b74b6f81b601b267ec629186f0",
@@ -52647,7 +52647,7 @@
     "exchanges/anoscranel-ac-skill-adoption": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-skill-adoption/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "23738e2c0f625d5cfa935e8593bed114f80f2473186ba2d7262fe6e1a3177435",
         "subskills/build-vs-adopt.md": "04d3fae2da149c44664f19ae2a7c841d6c7fc4703c70562f3196369329ab54a2",
@@ -52674,7 +52674,7 @@
     "exchanges/anoscranel-ac-slide-decks": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-slide-decks/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a9fb2f0e6e922a0f71601c6a26a5ffb2a327118c19bbcf5c1dd1a541a0ccf50f",
         "subskills/accessibility.md": "e1d5381b25f120483ccd41cae7e0645184a99b0bc7dd031d7d02167d506b52c6",
@@ -52703,7 +52703,7 @@
     "exchanges/anoscranel-ac-software-engineering-standards": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-software-engineering-standards/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f6ba2a5e1183ff30bc308315b012bb173b667706cbb9d323c1eb0ec6967581ff",
         "subskills/definition-of-done.md": "9cd520da5017c2404531802c6be433e181329b383f14a65f9428404b0b5614db",
@@ -52722,7 +52722,7 @@
     "exchanges/anoscranel-ac-software-supply-chain": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-software-supply-chain/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "071a8baa2c201d60b66b07ef8f516a44dfcbda9599c424bb1546f99c92587552",
         "subskills/dependency-risk-and-updates.md": "e684f5bb686ec28a4d72d65a3785fbaafa337f577f085f72e506b42e8ccfc895",
@@ -52749,7 +52749,7 @@
     "exchanges/anoscranel-ac-sovereign-debt": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-sovereign-debt/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1e5797e41c9ef4e0a5e56e695c5586e9fa988f5d513ec8771cfc8ce5aad7ffa5",
         "subskills/collective-action-clauses.md": "a1cdf0129471c6d1aeb5a943b9f43f5007b4ab542b436ef3e105188dbe57157e",
@@ -52776,7 +52776,7 @@
     "exchanges/anoscranel-ac-spec-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-spec-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e2c2ac3e203255809c589d8ba2177be623afa4ce9d7ca409ad1b50e2b8f1624a",
         "subskills/requirements.md": "98339688c98c38c1dd017169cd2211b8cd09b82b4ee5392155465a152e097bfc",
@@ -52793,7 +52793,7 @@
     "exchanges/anoscranel-ac-special-situations": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-special-situations/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "fbf5c60ae21dd5200930c70bb9a23afc29aab51bed25988766e13befb8943186",
         "subskills/deal-timeline-and-risk.md": "a590252a18d8f3df7bb38b32c5af0d9e56a25b254864ab067ecfebe282c40d7f",
@@ -52820,7 +52820,7 @@
     "exchanges/anoscranel-ac-stablecoin-collateral-risk": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-stablecoin-collateral-risk/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5d8e0218c86a8d6b2c633e899dd592f4b4ea7c003c980ea6db5d4cc033b40a66",
         "subskills/collateral-monitoring.md": "45e5fe3f9d12a445550f412f0ecfc114c93dbafe74e8bb1ddb553e08e226e383",
@@ -52847,7 +52847,7 @@
     "exchanges/anoscranel-ac-static-analysis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-static-analysis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "3e3cd769821112de9a86ecd9ffcc5ceff686b1378e76b9f3945aa512dc29ee41",
         "subskills/adopting-onto-existing-code.md": "7f613ed49c33414662dbba645f7a281195dd92163af7211d6f045e94b96f1b8d",
@@ -52874,7 +52874,7 @@
     "exchanges/anoscranel-ac-stock-trading": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-stock-trading/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f56040b2fe44d47e3189e43741669665452cc68158a9846d6573b2e31dc8087c",
         "subskills/borrow-and-short-constraints.md": "8e50f41d73c91e9475c137ff8a52ae1c9ad7f40f62b4190a876ad2fcf9d1aa66",
@@ -52901,7 +52901,7 @@
     "exchanges/anoscranel-ac-stream-processing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-stream-processing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "65750adffc996ca44c8d4a984802c48fad864d327e93fa7853338d58c82ea74e",
         "subskills/event-versus-processing-time.md": "182299e523116c3e15d1d9b72cf3bb0c55b9c8d65ba9117fa67a3d0f65757efb",
@@ -52928,7 +52928,7 @@
     "exchanges/anoscranel-ac-structured-products": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-structured-products/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4a78985a342be04003fa1d4e1c4e81227aadad45127977aab1e86d08de7c6462",
         "subskills/autocalls-and-reverse-convertibles.md": "e4054dba6facb767d74f6d8ac3c93f3f2b883133ba3a9104fb91348e70488056",
@@ -52955,7 +52955,7 @@
     "exchanges/anoscranel-ac-subskills-author": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-subskills-author/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f49a1b9ef78a54244bda1479b3cb3a7e5b36f23215dbd1ebdc8ecd41f06df8b9",
         "scripts/lint_tree.py": "977394b7505e9bb55e062b1099dcc5e9e7c524d65f34c97d1dfcbc9ffc9e63aa",
@@ -52965,7 +52965,7 @@
         "subskills/00-rsi.md": "39b71738389663516c96f579b9e3199eb9649538cf0779abf3739ec662a0d8ec",
         "subskills/audit-skill.md": "701417b4e5bc1d64f763d6f567795dfa296b82b5ada1ffe0678a4b745c287117",
         "subskills/domain-map.md": "3bd73c7533975ccc6f6c071cc128928a18a900b9add77f4ebff7e70db85c477b",
-        "subskills/domain-vocabulary.md": "6694b752557d7266147776be0c6ac7a3ba26e5c592669f7aa896bdb26b93d3f0",
+        "subskills/domain-vocabulary.md": "496c516502dbe5d219683d5c47caef17a37c790e5d290edec7dbf54f450f499b",
         "subskills/emit-tree.md": "fcdf2a75bc187cb362d36a636f59a539bb42389b109e4232c0642c1b8aa07cb5",
         "subskills/flat-or-nest.md": "6085b8f0b85821d5c19ac5df6d1698dc2f9443cf1be4e0485a84bd330f2e7633",
         "subskills/lint-tree.md": "c772b9bd1aa7b98f90b5e4069f6f855a37dbc7c68d6ce9e3b05f6851c4c836af",
@@ -52996,7 +52996,7 @@
     "exchanges/anoscranel-ac-systematic-review-conduct": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-systematic-review-conduct/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "dd2b7be66655a142ddf2f6120db589112c5af181c940a77225ddf81b1c92c33a",
         "subskills/conduct-record.md": "e32cc45232026c0f248f07cba70dddd7e94e7fe84c62f17b02cea5e498696e00",
@@ -53027,7 +53027,7 @@
     "exchanges/anoscranel-ac-task-planning": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-task-planning/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "473a50a485f40a9e5941addb5788fce61a0ddf7a08df625dacab90cdf6423df9",
         "subskills/planning.md": "3d397cac5ef7dc1be8bcaf06d0bbb475efaa7d81cad9fd6a693fd57f00fbb03b",
@@ -53044,7 +53044,7 @@
     "exchanges/anoscranel-ac-tax-aware-investing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-tax-aware-investing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "f5d5ece7b3bd6cd7d7b1884319ec548d9254f5bd1ce0d55ca97c69c7f3aa4fab",
         "subskills/asset-location.md": "89e9d8e8d699cb5ac437fba7e3e4925a315d5d6a4b4dbde820c4cb43760e0ddf",
@@ -53071,7 +53071,7 @@
     "exchanges/anoscranel-ac-technical-writing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-technical-writing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b91dcc34f63cacabd97962ebc51e38b3bd0dc080c5789ab2955d164bfe1bd94a",
         "subskills/procedures-sops.md": "0b5b19399dcbc496aa889d295611132cc6fa8835d118de2188294b472295080a",
@@ -53090,7 +53090,7 @@
     "exchanges/anoscranel-ac-test-environments": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-test-environments/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1b02e973711158f74f876f001cf469c13c8d827aac1952b14e610395238d450e",
         "subskills/concurrent-execution.md": "6f6d3dc486e62a3df8e9be03ec42442c0837574fbadf976e76f52fd3aa5b9ccf",
@@ -53117,7 +53117,7 @@
     "exchanges/anoscranel-ac-testing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-testing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "a861dce109bf72aef4ee56be18e1bb638a6e82b58a5cf34654070b45b778fbf6",
         "subskills/browser-e2e-testing.md": "e2287a0db185d60735f8a8875adf84bdca0ebaf7d93c0d028dfdc16d2dc987da",
@@ -53142,7 +53142,7 @@
     "exchanges/anoscranel-ac-text-encoding": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-text-encoding/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b240476a778fc3db22bafc6c2cdb771b99d260ed3074b91dc88bcaccdcf97f12",
         "subskills/encoding-boundaries.md": "e2ca986af808ff3a8014b04237152ec7da75b2669d9034c201acf3eceabc3d06",
@@ -53169,7 +53169,7 @@
     "exchanges/anoscranel-ac-time-and-clocks": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-time-and-clocks/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "7eaed9123c5c011e84e8e3c5b102250decea218e764d3324ef29d78567961f80",
         "subskills/clock-skew.md": "a906a29bfdc980932b22e353c5936019da770f1ab2c0de1c72a02fb71e608aec",
@@ -53196,7 +53196,7 @@
     "exchanges/anoscranel-ac-time-series-storage": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-time-series-storage/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "4adb0b94af9da86398703cf08ad489d061637eb216c4651b2061f546e546b4fa",
         "subskills/chunking-and-compaction.md": "edb770afda522ea0c1062b49c0e227e8c18270fa5058697edfa5a620dd863e55",
@@ -53223,7 +53223,7 @@
     "exchanges/anoscranel-ac-token-cost-optimization": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-token-cost-optimization/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "e251f31a6664c2ea4ef14397b5301a386ca63e6a6df092feb9a4b29dc6084bcc",
         "subskills/batch-discounts.md": "10dc0c082834ffbbb3298724b6b0c3950dc33b1e0cbfd940223ce4c3f3c780c0",
@@ -53252,7 +53252,7 @@
     "exchanges/anoscranel-ac-token-diligence": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-token-diligence/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "75cbcba90540e8ac74cc92035736ad08a04156b0a27b6df753dd96aae4132c02",
         "subskills/diligence-record.md": "15cd09b8fddf2f5bc80687f01c5e562a8595ff189611581a1d71dbfec230625b",
@@ -53279,7 +53279,7 @@
     "exchanges/anoscranel-ac-trade-finance": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-trade-finance/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "2aefda294bd0571b011f3e25dae0e7b0b36cfb6201a0826e92b94dd37f57bc39",
         "subskills/documentary-collections.md": "6c22923c4a6528d8e60ec7c40ad3ac13a718eb8d5d1d8bb27d6832377e31d70f",
@@ -53306,7 +53306,7 @@
     "exchanges/anoscranel-ac-trade-policy-and-restrictions": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-trade-policy-and-restrictions/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "579f50a7d0114e8a05a50d627294714e4a924434c1b26148944647f01516ed67",
         "subskills/export-controls.md": "60f584517aff96e85ff6ad022097a3b33a79f4f0d00f30eb86ba8dd806b83fc6",
@@ -53333,7 +53333,7 @@
     "exchanges/anoscranel-ac-trading-agent-desk": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-trading-agent-desk/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "da21d15194156941d87eb906cc42477b5871f71d8d2fef57df9d56a9575df85b",
         "subskills/agent-failure-modes.md": "10410771f69406878d7aea865bdf0baa0ca29bf8be5180f52b71344158a54bfe",
@@ -53360,7 +53360,7 @@
     "exchanges/anoscranel-ac-trading-operations-runbook": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-trading-operations-runbook/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "5b849c5c980b5bed1b36606a0e14785e45a2a6d1152eb58dc4d90d7d33db74b6",
         "subskills/automation-safety.md": "a6c205697a628e2fd44c4a610e8ddee1441e1363e1a86c0af573d9e357a4d68c",
@@ -53387,7 +53387,7 @@
     "exchanges/anoscranel-ac-trading-records-and-tax": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-trading-records-and-tax/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "cdfad3caae5a1e84ac5b4ca0a30c952be6a7d69211cc27d73c1a345d98bd0b72",
         "subskills/cost-basis-methods.md": "70313ef1ab9becd508e7bcbead60c04840e1e48a8db4b4fedfceb083ec46c7c5",
@@ -53414,7 +53414,7 @@
     "exchanges/anoscranel-ac-transaction-cost-analysis": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-transaction-cost-analysis/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "76394e1764ea4890495cb39d1eda1d8cbc7826c215ec24233ef442bf546044cc",
         "subskills/broker-scorecards.md": "8eadacadc60b28de9d82f81e0db38c28d535094e53ea0c38d9a1925bef05033b",
@@ -53441,7 +53441,7 @@
     "exchanges/anoscranel-ac-transaction-isolation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-transaction-isolation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "05f62f47dcbcd66974268c1cf7c18121cd48b0687173b10854ed1f7e31fa14ab",
         "subskills/explicit-locking.md": "cab36997fb140c1d48c9ec69ae5cf6c3f6b02edbd45215525a40ec6aa2420231",
@@ -53468,7 +53468,7 @@
     "exchanges/anoscranel-ac-valuation": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-valuation/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "0fc1bfddb0f89b2349917648c8156d2d6d07ccc084828478e04ebce4bf1f84ff",
         "subskills/dcf-construction.md": "966cf26c8e4beb8c3c20a4ccaa92e3fe0bf5bd5ab7799111619e78110fa1c192",
@@ -53495,7 +53495,7 @@
     "exchanges/anoscranel-ac-venture-financing": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-venture-financing/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "8debc3a294cadc6e6b60bb696e4d39d5e2ba4b4e348faa91aab66293e539bad5",
         "subskills/anti-dilution-and-ratchets.md": "927d5be4214d763f9aa9daabbed00664bfabd7bbc3440d6c1cbe483176750c70",
@@ -53526,7 +53526,7 @@
     "exchanges/anoscranel-ac-voice-and-style": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-voice-and-style/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "04dc949437535f820c18eb93af2cebe4501cfcebda4f2f250d4c0cd7b43bc9e4",
         "subskills/de-slop.md": "6af18f6dcfeab54cd7ad011970ffd50539192b0c5a7a58a2d1860f9c6bc575e2",
@@ -53547,7 +53547,7 @@
     "exchanges/anoscranel-ac-wasm-and-sandboxes": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-wasm-and-sandboxes/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "7f7a05690def251570e2ffbc83edf90d5b04cbda8aecaa3cf1e7a6d557cb1ea3",
         "subskills/capability-scoping.md": "73754a4c4d9b616f2a1bf4420f70ceb7e510550d12e5bbc37936bc06ac0a58bd",
@@ -53574,7 +53574,7 @@
     "exchanges/anoscranel-ac-webhook-and-async-delivery": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-webhook-and-async-delivery/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "9d524344b323212df749f2fce2e849157132fbe5b29be032d1dc3e9a0305b170",
         "subskills/at-least-once-and-dedup.md": "b2d0bce13090b3cb567a20fc421e2b5f1daa2f7567f317977d7106ed1d1e0e58",
@@ -53601,7 +53601,7 @@
     "exchanges/anoscranel-ac-writing-standards": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-writing-standards/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "0b61eb98f9ef0cdea76bb942421639b488a22087df22341f90db1d9c1d09c525",
         "subskills/definition-of-done.md": "d1f674c7198ea7ab8adc14508f3c80052295856c4564089cc93f1a89a0f491ba",
@@ -53618,7 +53618,7 @@
     "exchanges/anoscranel-ac-agent-memory-and-recall": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-agent-memory-and-recall/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c0bd86bc588a7db9761d8fbd8fc487cc2d375f18b3f20175d0ab6c6155209b57",
         "subskills/knowledge-manage.md": "5499169c07432d9b1a282e65bd09fd19793b7c459984b7fc2b73f0a64a966e30",
@@ -53647,7 +53647,7 @@
     "exchanges/anoscranel-ac-agent-run-observability": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-agent-run-observability/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "552da98d96e00e8c184cbe6814baddb99742b2b1c4d3327681377adf1243f83f",
         "subskills/agent-dashboards.md": "bb36eaf47f842ffc302a1b7455c38364ef0aa3eeefa5f3526e699294aea1185c",
@@ -53676,7 +53676,7 @@
     "exchanges/anoscranel-ac-agent-tool-design": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-agent-tool-design/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b58ff2b6e1cfda92ffa3d2c3438b2101f2a3bdb92cb5868620ebc2744e8f235c",
         "subskills/choosing-parameters.md": "6e2881a8042bb3e830367645f13c5f96d48d8f0ce459b694c7b855ddb12f6649",
@@ -53703,7 +53703,7 @@
     "exchanges/anoscranel-ac-compliance-program-engineering": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-compliance-program-engineering/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "6dd81702992d515fde7ca625e1294fa1fa3bf0870e83d96fdfd679efc3577e26",
         "subskills/compliance-record.md": "c8f6f7ad23749794b369a169c4130ba1987a29164d43a5c736f72ba5469cfb75",
@@ -53730,7 +53730,7 @@
     "exchanges/anoscranel-ac-inference-serving": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-inference-serving/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "b15f7a28c1b397c66d2250a81bd93593ace24c999e64bcccc0774f93d8d5163d",
         "subskills/batching-strategies.md": "e30be5f261a95a9c95c8d29d5cf828993450f49ebe65604de46e00e60b8bed49",
@@ -53757,7 +53757,7 @@
     "exchanges/anoscranel-ac-rag-systems": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-rag-systems/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "1ff13d6c2e8cfadeecf804e2d3a2d007c338dbdbdc630f9679b58fc876595e68",
         "subskills/citation-binding.md": "b49c9df8c845d48b59a8ab1d3b4246dc5ab526954fd89b02140aa536dc11338e",
@@ -56373,7 +56373,7 @@
     "exchanges/anoscranel-ac-model-fine-tuning": {
       "repo": "anoscranel/agent-skills-subskills",
       "path": "skills/ac-model-fine-tuning/SKILL.md",
-      "revision": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
       "files": {
         "SKILL.md": "c4582a82138733349d7f776106e28d8b1b06fa387f15636cd4f2c963c980fb79",
         "subskills/evaluating-during-training.md": "419027b778e6dc495c61101a64f149945c0ec41556063c81453c2a7250051321",
@@ -56396,6 +56396,33 @@
         "subskills/supervised-finetuning.md": 420,
         "subskills/training-data-craft.md": 420,
         "subskills/whether-to-finetune.md": 420,
+        "LICENSE": 420
+      }
+    },
+    "exchanges/anoscranel-ac-product-analytics-instrumentation": {
+      "repo": "anoscranel/agent-skills-subskills",
+      "path": "skills/ac-product-analytics-instrumentation/SKILL.md",
+      "revision": "fe2a792a76714b0145392ab25d32aad07174e14a",
+      "files": {
+        "SKILL.md": "03280acbaf7b594e0c45014a2efbbf33cc2306a772db14d3f9b3c3d9a12bd331",
+        "subskills/client-delivery-realities.md": "92b1c3e1a7a2d975cceba4a02aa85d2a1c36eb5b79a3e07b0d68e2cc2bdb4fc0",
+        "subskills/event-naming-and-actions.md": "23c139a116a76898ed751f5d0ebd77327651cbbf7d74fbe2f05d41969e24c5cd",
+        "subskills/event-record.md": "08c71bc42d50acbb9570107cbd045ff6cc30d826b8954c6883374f8cd864c8f2",
+        "subskills/identity-stitching.md": "cbc63aac854e8a6fa2be363fba52922d479d941f359adccd4f17476faaf8ff6e",
+        "subskills/properties-and-types.md": "a5d03be1a37f1388e69e8a1d7541d51a66beed4ba45b5650ca8e14e6d4f62192",
+        "subskills/the-event-plan.md": "42e73e4f65d7ffbaba379684a0519df19751cc12d7a1f905935a57fb732d49c4",
+        "subskills/the-event-taxonomy.md": "a1d173eb7edfc370afec89c60273c8b35221ac411ade4225df47884c216a72ff",
+        "LICENSE": "082b2a142369dd63e1976dd1c03a0e0244ede844dbb7685bda45efadaa6fcc51"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "subskills/client-delivery-realities.md": 420,
+        "subskills/event-naming-and-actions.md": 420,
+        "subskills/event-record.md": 420,
+        "subskills/identity-stitching.md": 420,
+        "subskills/properties-and-types.md": 420,
+        "subskills/the-event-plan.md": 420,
+        "subskills/the-event-taxonomy.md": 420,
         "LICENSE": 420
       }
     }
@@ -56431,12 +56458,12 @@
     "foreztgump/apify-crypto-skill": "327de7c8e4a5335898bc3e0b957a739ce28ed4a1",
     "bybit-exchange/skills": "8e6351b7a454020ec1b1fcd24a3f27d1d6fd27be",
     "crypto-com/cdcx-cli": "4d1112e86b061f8bdd8a6d92c3fd9aeb55b3b7bc",
-    "jiayaoqijia/cryptoskill": "30c1c7f693f22a89e070ef385e18a2c435e3b6ff",
+    "jiayaoqijia/cryptoskill": "35e6202023ba483b6d6da4b725023b8f409c0b15",
     "kucoin/kucoin-skills-hub": "a9bda62ce7f6cbf1d848b48eb489781fe874f962",
     "mshehzadkhan93-web/trade-forensics-agent": "c0225990a99e4d0a02bc9e46a4356c201cbee790",
     "chimera-defi/eth2-quickstart": "66a0be4249ef6686abe7c8413a0985ddb236ec11",
     "okx/agent-skills": "3cff92b6a5ced87422fbfe0ce4d7237c026589f9",
-    "hypurrquant/perp-cli": "b4634349c596b4f724d758d3a4fbd1cdf03a6c22",
+    "hypurrquant/perp-cli": "c1a5e1964a904fe2df2c3dc1a3684a93ff68994e",
     "aibtcdev/aibtc-mcp-server": "b4714b00851428688c4e8950e457e5297ad72ba4",
     "cumpsd/broker-as-a-service": "890029c51731cfed899d9216f03ef9cfcee1f3be",
     "chainstacklabs/rpc-nodes-mcp": "8920ed796409e2efc32953f787cdcdfff2e6c335",
@@ -56479,7 +56506,7 @@
     "ton-blockchain/skills": "35ddd7f67836e18b9bbce265e82a281980ecb920",
     "ton-blockchain/ton-triage-skill": "7412797497c49ea9f38fdef7938d5abda6a70b4e",
     "ethereum/beaconrunner": "04a607f072c5fbc461bc50529cdb94c21528d4e5",
-    "0xsardius/solenrich": "ee4eae7bc1d0f9ce333cb76399dace905da06d9f",
+    "0xsardius/solenrich": "a77cc7aa546dee76027c9eaaf77ae6da022148e6",
     "riaomike/crypto-research-agent-skills": "8c1f2e42ed16d5db2de5f6d8a8ea46272c55a245",
     "udotcash/agents": "fd067dd1368f26bf5f3acdecb4c7b8369c6c810d",
     "farseensh/earnforge": "30e153f309a09481b60ffb9e3dc5810f202b14da",
@@ -56515,7 +56542,7 @@
     "nirholas/ucai": "a2b8e7557ffc70e08ad849993371c6746b2a9be1",
     "nirholas/lyra-tool-discovery": "511393a5d386fa913a803f1a398c5000669c7681",
     "caiovicentino/polymarket-mcp-server": "21f65f319ff0fc4250ea1e5094581761906839e1",
-    "araxis33/aero-vote-radar": "f368548a81227964a66432c9cc65e21c29242e1e",
+    "araxis33/aero-vote-radar": "0a7d7229ca9bbe1c88f45566b763533c29948779",
     "paulf280-ui/cabal-hunter-mcp": "9d0de91567593976367d1bdd5ef1696b90e92bd7",
     "raphael-queiroz/analista-cripto-spot": "bfadc356cbd05b130426ea9c4ed0d9b33ec69413",
     "barkermoney/barker-mcp": "e1be678c3f5b2c9e7d01834deeeb2edb2819eb97",
@@ -56559,7 +56586,7 @@
     "priors-agents/priors": "2c56380c156d352798d6b82c15680da78c6b9538",
     "ox31461/gasless-anygas-robyn-relay": "b2ac270d6f7e55a685db3efa987684e2e2913f04",
     "pokiehead/sic-crypto-kit": "40608e3ed0286b32596aa6c5704c63a643971cb5",
-    "hristovdimitri2-hub/kristo-intelligence-6": "2ab0f7382079711d56d934f73c7f69e51f03ad9a",
+    "hristovdimitri2-hub/kristo-intelligence-6": "12227c2926afcf1eb3676d70fa1770d386cd2e40",
     "loomdesk-hq/agents": "ac16b1d8a37acf2f3c7b39c781031d3299c5bcd0",
     "abhi15724/quantforge-ai": "bcae9b2d00ece4449d5ccdf202300cb49ee92973",
     "aveetechapp/avee-skills": "fe4b9338c4f341043b3115ab07bf72664f0005c0",
@@ -56578,7 +56605,7 @@
     "sajanmelcher/plumbline-mcp": "9ba469df6139395ecd8478dca71bf4494083d874",
     "nirholas/perpad": "566266107bf9ee286510b0f5d0d60776100d70fc",
     "nirholas/boosty": "429b537a4a9d8b28fffb4ecdf6069821b9fe077d",
-    "truenorth-lj/sofinance-public": "1b3f1c996273509140120faa977473da4131912b",
+    "truenorth-lj/sofinance-public": "c3e5fb29d506a2bfc8c61f8028b6c1d21be3cb82",
     "bitpunklabs/market-brief": "7a5edc8952291a684fb57ff849477d2c8272a6bd",
     "altoninelli/selfpaid-mcp": "4aef4c2adb2a95dbb9466dc520539d3f8b4c9316",
     "rustok-org/mcp": "209d422d3e35d968955a71263ca476fb3bdbe969",
@@ -56612,7 +56639,7 @@
     "lendwise-fi/lendwise-mcp": "56d9020e95ce24f800c909e8b38911340a1bdf32",
     "warden-protocol/warden-mcp": "0bef3a17482780aab8b0f6ca2a70283642d55747",
     "dalee66/crypto-chart-agent": "9bf7c901a2d5ac629abedaba6e2f19b7aa824d2c",
-    "nirium-protocol/nirium": "845b9aadee2f3cd755d9ee9245c8012bbf0c647f",
+    "nirium-protocol/nirium": "73b0ce7b87b2e757effaf50091eb8bd40e1e21c7",
     "rezearcher/greyridge-x402-tools": "5f9f19c2bfe5f85b8da7d463d705c449e7a82a9f",
     "cp0x-org/cp0x-mcp": "aaded2bb51020626568dd70de9a34a9e0c7b5afc",
     "wickedapi/wicked-mcp": "1a9c6079dfd571b55e6c5114f94005dbd22a19d8",
@@ -56664,8 +56691,8 @@
     "tradelord223/solguard-mcp": "5a7876960a4ccf547597b44ecfae65034682d1a2",
     "koinju/agent-skill": "a8d372eae2f76a877421aaec9a1617a954ffcf60",
     "apexliqradar/apexliqradar-mcp": "178f2db18971ea8a28120209e00797827161cb50",
-    "ericchengech/xynaptic-catalog": "e0a08e9788c799f422857f43c2f11ce6ee795a17",
-    "anoscranel/agent-skills-subskills": "ded2e62fa240086e487366e2ab3e94a2f766ed65",
+    "ericchengech/xynaptic-catalog": "60e5ec6860bcd150bd4c249daa2acba3e1bbaa91",
+    "anoscranel/agent-skills-subskills": "fe2a792a76714b0145392ab25d32aad07174e14a",
     "tljooo1130-lab/crypto-deleverage-watch": "061570630718d88e0391cb6b06fe84998eae5304",
     "jerryliu369/awesome-quant-skills": "b191d2747a1c89347096c4181d1bceecb74006f3",
     "ahmetenesdur/starkfi": "3d952c7fbcaa9adb3936e4df08e802d8caa206d3",
