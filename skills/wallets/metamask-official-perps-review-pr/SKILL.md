@@ -79,6 +79,6 @@ Check applicability against the frozen diff and its affected callers. Open each 
 ## Cross-repository conformity
 
 - [ ] Compare client counterparts for parity
-  When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map in references/parity.md. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Read consumers from the Mobile, Extension, Terminal and Core reference checkouts supplied with the task and cite the revision you read; an unavailable checkout is NOT_CHECKED, not verified by this review.
+  When screens, hooks, formatters or shared behavior change, compare the affected client counterparts using the parity map in references/parity.md. Mobile is the reference implementation; do not copy Extension divergence back into Mobile. Read consumers only from the Mobile, Extension, Terminal and Core reference checkouts listed in the task inputs (never search the host for other checkouts) and cite the revision you read; an unavailable checkout is NOT_CHECKED, not verified by this review.
 - [ ] Inspect Core and its consumers
   When controller state, methods, events, exports or package versions change, inspect Core and its consumers at recorded revisions, using references/shared-packages.md for the shared surface and references/owned-paths.json for the paths this review covers. Check public imports, compatibility and migrations. Report evidence gaps; do not claim that clients compile from source inspection.

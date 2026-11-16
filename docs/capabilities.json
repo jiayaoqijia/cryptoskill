@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T06:48:41.620110+00:00",
+  "generated_at": "2026-11-16T12:41:27.091649+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -72294,6 +72294,68 @@
         },
         "can_write_files": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "exchanges/anoscranel-ac-agent-guardrails": {
+      "name": "ac-agent-guardrails",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -246807,13 +246869,13 @@
     }
   },
   "summary": {
-    "discovered": 3967,
-    "processed": 3967,
+    "discovered": 3968,
+    "processed": 3968,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2856,
       "router_orchestrator": 168,
-      "unknown": 411,
+      "unknown": 412,
       "analysis_only": 243,
       "unsigned_tx_builder": 119,
       "local_executor": 105,
@@ -246824,7 +246886,7 @@
       "auto_invocable": 3,
       "can_execute_shell": 1337,
       "can_install_code": 644,
-      "can_write_files": 238,
+      "can_write_files": 239,
       "can_browse_web": 298,
       "can_spawn_subagents": 298,
       "can_move_funds": 309,
