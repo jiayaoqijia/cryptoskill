@@ -1,7 +1,7 @@
 {
- "checkedAt": "2026-11-15T20:47:20.603Z",
+ "checkedAt": "2026-11-16T03:47:15.444Z",
  "source": "dromos.kitchen",
- "boardAsOf": "2026-11-15T17:47:01.207291Z",
+ "boardAsOf": "2026-11-15T23:41:35.445657Z",
  "positions": [
   {
    "rank": 1,
@@ -9,8 +9,8 @@
    "owner": "0xfaeaad01421b3acfd3bdcbface76d5038f4ce665",
    "contract": false,
    "sAero": 11416,
-   "earned7d": 61.1,
-   "apr7d": 0.5648,
+   "earned7d": 61.35,
+   "apr7d": 0.5501,
    "moves7d": 4,
    "lastMoved": 1794654313,
    "split": [
@@ -32,8 +32,8 @@
    "owner": "0xd77d800e235f2bf44e57e3f5caea9770ed76886d",
    "contract": true,
    "sAero": 36477,
-   "earned7d": 191.61,
-   "apr7d": 0.5543,
+   "earned7d": 192.03,
+   "apr7d": 0.5389,
    "moves7d": 0,
    "lastMoved": 1793548877,
    "split": [
@@ -46,30 +46,12 @@
   },
   {
    "rank": 3,
-   "id": "10850",
-   "owner": "0x08210aeeed3b17bb8dc1087201ba23af1f262daa",
-   "contract": false,
-   "sAero": 30363,
-   "earned7d": 157.36,
-   "apr7d": 0.5469,
-   "moves7d": 0,
-   "lastMoved": 1794162323,
-   "split": [
-    {
-     "chain": "ethereum",
-     "gauge": "0x839fffbc1935b6add150d08403970d240ed13a86",
-     "share": 1
-    }
-   ]
-  },
-  {
-   "rank": 4,
    "id": "2304",
    "owner": "0x1b08bc49accb4fb813bc9cb7f3a1f7f93510010e",
    "contract": false,
    "sAero": 17723,
-   "earned7d": 91.85,
-   "apr7d": 0.5469,
+   "earned7d": 91.87,
+   "apr7d": 0.5306,
    "moves7d": 0,
    "lastMoved": 1794131687,
    "split": [
@@ -82,14 +64,14 @@
   },
   {
    "rank": 4,
-   "id": "992",
-   "owner": "0x8cef2972940110e27b60923cab7313a5ba86b05d",
+   "id": "10850",
+   "owner": "0x08210aeeed3b17bb8dc1087201ba23af1f262daa",
    "contract": false,
-   "sAero": 11699,
-   "earned7d": 60.63,
-   "apr7d": 0.5469,
+   "sAero": 30363,
+   "earned7d": 157.39,
+   "apr7d": 0.5306,
    "moves7d": 0,
-   "lastMoved": 1794023483,
+   "lastMoved": 1794162323,
    "split": [
     {
      "chain": "ethereum",
@@ -99,13 +81,13 @@
    ]
   },
   {
-   "rank": 6,
+   "rank": 4,
    "id": "11040",
    "owner": "0x08210aeeed3b17bb8dc1087201ba23af1f262daa",
    "contract": false,
    "sAero": 18562,
-   "earned7d": 96.2,
-   "apr7d": 0.5469,
+   "earned7d": 96.22,
+   "apr7d": 0.5306,
    "moves7d": 0,
    "lastMoved": 1794162371,
    "split": [
@@ -117,13 +99,49 @@
    ]
   },
   {
+   "rank": 6,
+   "id": "992",
+   "owner": "0x8cef2972940110e27b60923cab7313a5ba86b05d",
+   "contract": false,
+   "sAero": 11699,
+   "earned7d": 60.64,
+   "apr7d": 0.5306,
+   "moves7d": 0,
+   "lastMoved": 1794023483,
+   "split": [
+    {
+     "chain": "ethereum",
+     "gauge": "0x839fffbc1935b6add150d08403970d240ed13a86",
+     "share": 1
+    }
+   ]
+  },
+  {
    "rank": 7,
+   "id": "8887",
+   "owner": "0x4edf64d443e1f44bead50e2f882095265e72cc7a",
+   "contract": true,
+   "sAero": 40713,
+   "earned7d": 208.27,
+   "apr7d": 0.5236,
+   "moves7d": 4,
+   "lastMoved": 1794720427,
+   "split": [
+    {
+     "chain": "base",
+     "gauge": "0x9b83239a7bb691b6f408baaf1208f2fec6efbc36",
+     "share": 1
+    }
+   ]
+  },
+  {
+   "rank": 8,
    "id": "7206",
    "owner": "0x8ae27a7bb1618cf3ea8f1d80531be3538abbbf63",
    "contract": true,
    "sAero": 10289,
-   "earned7d": 49.89,
-   "apr7d": 0.5117,
+   "earned7d": 50.41,
+   "apr7d": 0.5015,
    "moves7d": 3,
    "lastMoved": 1794600687,
    "split": [
@@ -140,31 +158,13 @@
    ]
   },
   {
-   "rank": 8,
-   "id": "8887",
-   "owner": "0x4edf64d443e1f44bead50e2f882095265e72cc7a",
-   "contract": true,
-   "sAero": 40713,
-   "earned7d": 195.35,
-   "apr7d": 0.5063,
-   "moves7d": 4,
-   "lastMoved": 1794720427,
-   "split": [
-    {
-     "chain": "base",
-     "gauge": "0x9b83239a7bb691b6f408baaf1208f2fec6efbc36",
-     "share": 1
-    }
-   ]
-  },
-  {
    "rank": 9,
    "id": "3511",
    "owner": "0x1b2e71d5e309b9d53f63fab7c6977e1c9f094846",
    "contract": true,
    "sAero": 10467,
-   "earned7d": 48.23,
-   "apr7d": 0.4862,
+   "earned7d": 49.05,
+   "apr7d": 0.4797,
    "moves7d": 1,
    "lastMoved": 1794311765,
    "split": [
@@ -181,8 +181,8 @@
    "owner": "0xcb6268657100b639ea1d5835de2d67ea27ffc313",
    "contract": false,
    "sAero": 11313,
-   "earned7d": 51.6,
-   "apr7d": 0.4813,
+   "earned7d": 52.26,
+   "apr7d": 0.4729,
    "moves7d": 0,
    "lastMoved": 1793469704,
    "split": [
