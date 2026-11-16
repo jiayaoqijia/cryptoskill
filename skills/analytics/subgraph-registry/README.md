@@ -15,13 +15,13 @@ Share the canonical [SKILL.md](SKILL.md) for the complete agent workflow.
 1. **Connect a pinned, published release** (Node 20 is CI-tested):
 
    ```json
-   {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"]}}}
+   {"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.6"]}}}
    ```
 
-   Inspect `tools/list`: Node 0.13.2 exposes **10 tools without a key**, or **19
+   Inspect `tools/list`: Node 0.13.6 exposes **10 tools without a key**, or **19
    total with a Studio key**. A hosted connector can mount a different subset or
    corpus; installing npm does not update or restart it.
-2. **Discover explicitly.** Tool-call parameters below work with published 0.13.2:
+2. **Discover explicitly.** Tool-call parameters below work with published 0.13.6:
 
    ```json
    {"name":"search_subgraphs","arguments":{"query":"uniswap v3","network":"ethereum","limit":3}}
@@ -60,6 +60,38 @@ Share the canonical [SKILL.md](SKILL.md) for the complete agent workflow.
    Read GraphQL `errors` and partial `data` even on HTTP 200. On missing
    credentials/quota, stop and resolve that issue; never silently switch to x402.
 
+### What 0.13.6 adds
+
+`npm test` now passes a `test/*.test.mjs` glob. Node 22 rejects `node --test test/`
+(a bare directory), which also broke the scheduled-update test gate on its first
+dry run. No runtime behaviour changed.
+
+### What 0.13.5 adds
+
+`query_for_goal` fixes found by the weekly health check:
+
+- **No chain is hidden by snapshot signals.** Zero active allocations or denied
+  indexing rewards only *rank* a deployment lower; they never exclude it
+  (Arc is queryable without rewards). Unserved deployments are planned after
+  served ones, annotated `snapshot_note`, and with `validate_schema:true` a
+  deployment the gateway rejects ("no allocations", validation failure) is skipped
+  and the next-ranked one is tried.
+- **"pools containing WETH/ETH/USDC…"** maps to a `token0`/`token1` filter
+  (`where: {or: [...]}`) using per-chain addresses for the major tokens
+  (WETH, WBTC, USDC, USDT, DAI, ...). Unknown symbols are reported as unmet, not
+  silently dropped; pass an address instead.
+- **More spam signals** (never delete rows): TVL-per-transaction and
+  volume-to-TVL sanity, implausible `totalSupply`, an absolute TVL cap. If every
+  row is flagged, another deployment is tried, otherwise rows are ordered by
+  `volumeUSD` and reported with `all_flagged`.
+- **Keyless plans are no longer id-only** for Uniswap v3/v4-family swaps, pools
+  and positions: they come from a bundled schema-family catalog (labelled
+  `field_source: "bundled_family_catalog"`, not live-validated) with
+  newest-first/TVL ordering. A key with `validate_schema:true` still confirms
+  fields live.
+- The scheduled registry update now also re-pins the literal npx package in
+  `src/index.js` and README, so the pinned config example matches the release.
+
 ### What 0.13.2 adds
 
 **npm/ClawHub 0.13.2** hardens installation and network behaviour: dependencies
@@ -67,7 +99,7 @@ are pinned to exact versions, semantic search uses only the bundled model (never
 a download; if it is missing the tool answers with keyword search and says so),
 and a missing `registry.db` is an error unless
 `SUBGRAPH_REGISTRY_ALLOW_DB_DOWNLOAD=1` is set. Generated config examples use the
-literal pinned package `subgraph-registry-mcp@0.13.2`.
+literal pinned package `subgraph-registry-mcp@0.13.6`.
 
 **0.13.1** secured the optional HTTP/SSE transport. It binds
 `127.0.0.1` by default and refuses a non-loopback bind unless
@@ -269,13 +301,13 @@ Cursor (`~/.cursor/mcp.json` or `.cursor/mcp.json`; `${env:NAME}` resolves from
 the environment Cursor was started with):
 
 ```json
-{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${env:THE_GRAPH_STUDIO_API_KEY}"}}}}
+{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.6"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${env:THE_GRAPH_STUDIO_API_KEY}"}}}}
 ```
 
 Claude Code (`.mcp.json` supports `${VAR}` expansion):
 
 ```json
-{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${THE_GRAPH_STUDIO_API_KEY}"}}}}
+{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.6"],"env":{"THE_GRAPH_STUDIO_API_KEY":"${THE_GRAPH_STUDIO_API_KEY}"}}}}
 ```
 
 Claude Desktop and other stdio hosts use the same `mcpServers` shape. Without
@@ -283,7 +315,7 @@ interpolation, the `env` value is plain text in that local file — use it only 
 a machine you control and keep the file out of version control:
 
 ```json
-{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.2"],"env":{"THE_GRAPH_STUDIO_API_KEY":"<your Studio API key>"}}}}
+{"mcpServers":{"subgraph-registry":{"command":"npx","args":["-y","subgraph-registry-mcp@0.13.6"],"env":{"THE_GRAPH_STUDIO_API_KEY":"<your Studio API key>"}}}}
 ```
 
 Goal-specific planning requires 0.12.0 or later.
@@ -543,7 +575,7 @@ free discovery source instead of paying for a network-subgraph query. Run the
 registry's HTTP transport and point payql at it:
 
 ```bash
-npx -y subgraph-registry-mcp@0.13.2 --http-only          # serves :3848
+npx -y subgraph-registry-mcp@0.13.6 --http-only          # serves :3848
 PAYQL_REGISTRY_URL=http://127.0.0.1:3848/graphql npx -y payql@0.1.5
 ```
 
@@ -575,7 +607,7 @@ Every search/recommend hit carries the snapshot's `query_volume_30d`, so a
 separate registry counts call is usually unnecessary. It is historical demand,
 not current serving health; no live volume measurement is performed by discovery.
 
-> The shipped server is the Node implementation in [`src/index.js`](src/index.js); that's what `npx -y subgraph-registry-mcp@0.13.2` runs and what's published to npm. A Python equivalent in [`python/mcp_server.py`](python/mcp_server.py) is kept for local development against the same SQLite database — bug fixes and new tools should land in the Node version first.
+> The shipped server is the Node implementation in [`src/index.js`](src/index.js); that's what `npx -y subgraph-registry-mcp@0.13.6` runs and what's published to npm. A Python equivalent in [`python/mcp_server.py`](python/mcp_server.py) is kept for local development against the same SQLite database — bug fixes and new tools should land in the Node version first.
 
 **Ten keyless discovery/preparation tools** (inspect `tools/list` on your actual host; no automatic GraphQL execution or live schema introspection):
 - **search_subgraphs** — filter by domain, network, protocol type, entity, or keyword. Ranked by matched terms, reliability and real `query_volume_30d`.
@@ -602,7 +634,7 @@ Node 20 is CI-tested. Pin a reviewed release rather than floating to latest.
 Claude Code:
 
 ```bash
-claude mcp add subgraph-registry -- npx -y subgraph-registry-mcp@0.13.2
+claude mcp add subgraph-registry -- npx -y subgraph-registry-mcp@0.13.6
 ```
 
 A JSON MCP host configuration (keyless discovery):
@@ -612,7 +644,7 @@ A JSON MCP host configuration (keyless discovery):
   "mcpServers": {
     "subgraph-registry": {
       "command": "npx",
-      "args": ["-y", "subgraph-registry-mcp@0.13.2"]
+      "args": ["-y", "subgraph-registry-mcp@0.13.6"]
     }
   }
 }
@@ -621,7 +653,7 @@ A JSON MCP host configuration (keyless discovery):
 For a local HTTP/SSE client:
 
 ```bash
-npx -y subgraph-registry-mcp@0.13.2 --http-only
+npx -y subgraph-registry-mcp@0.13.6 --http-only
 # Listens on http://127.0.0.1:3848/sse (loopback only).
 ```
 
@@ -647,7 +679,7 @@ The default transport is stdio, with no listener. `--http`, `--http-only` or
 
 ```bash
 SUBGRAPH_REGISTRY_HTTP_TOKEN="$(openssl rand -hex 32)" MCP_HTTP_HOST=0.0.0.0 \
-  npx -y subgraph-registry-mcp@0.13.2 --http-only
+  npx -y subgraph-registry-mcp@0.13.6 --http-only
 curl -H "Authorization: Bearer $SUBGRAPH_REGISTRY_HTTP_TOKEN" http://<host>:3848/.well-known/openapi.json
 ```
 
@@ -671,7 +703,7 @@ Each manifest includes classification, parsed entities, contract addresses (from
 
 ```bash
 # Start the HTTP transport
-npx -y subgraph-registry-mcp@0.13.2 --http-only
+npx -y subgraph-registry-mcp@0.13.6 --http-only
 
 # Fetch the manifest for Uniswap V3 Mainnet
 curl http://localhost:3848/.well-known/subgraph/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV.jsonld

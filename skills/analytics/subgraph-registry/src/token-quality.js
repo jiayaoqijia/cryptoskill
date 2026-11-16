@@ -34,13 +34,73 @@ export const KNOWN_GOOD_TOKENS = {
   },
 };
 
+// Major tokens by symbol per network (lowercase addresses), used to resolve
+// "pools containing WETH" to an address filter. Also never flagged as spam.
+export const COMMON_TOKENS = {
+  mainnet: {
+    WETH: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", USDC: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    USDT: "0xdac17f958d2ee523a2206206994597c13d831ec7", DAI: "0x6b175474e89094c44da98b954eedeac495271d0f",
+    WBTC: "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+  },
+  base: {
+    WETH: "0x4200000000000000000000000000000000000006", USDC: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+    DAI: "0x50c5725949a6f0c72e6c4a641f24049a917db0cb", CBBTC: "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+  },
+  "arbitrum-one": {
+    WETH: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1", USDC: "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+    USDT: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", DAI: "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+    WBTC: "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+  },
+  optimism: {
+    WETH: "0x4200000000000000000000000000000000000006", USDC: "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+    USDT: "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58", DAI: "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+    WBTC: "0x68f180fcce6836688e9084f035309e29bf0a2095",
+  },
+  matic: {
+    WMATIC: "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270", WETH: "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+    USDC: "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359", USDT: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+    DAI: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", WBTC: "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
+  },
+};
+for (const [net, map] of Object.entries(COMMON_TOKENS)) {
+  KNOWN_GOOD_TOKENS[net] ||= {};
+  for (const [sym, addr] of Object.entries(map)) KNOWN_GOOD_TOKENS[net][addr] ||= sym;
+}
+
+// Symbols a goal may name. ETH means the chain's wrapped ether (pools hold WETH).
+const SYMBOL_ALIASES = { ETH: "WETH", ETHER: "WETH", BITCOIN: "WBTC", BTC: "WBTC" };
+export const RESOLVABLE_SYMBOLS = new Set([...Object.values(COMMON_TOKENS).flatMap((m) => Object.keys(m)), ...Object.keys(SYMBOL_ALIASES)]);
+export function canonicalSymbol(word) {
+  const u = String(word || "").toUpperCase();
+  return SYMBOL_ALIASES[u] || u;
+}
+// -> { address } | { error }
+export function resolveTokenSymbol(symbol, network) {
+  const sym = canonicalSymbol(symbol);
+  const map = COMMON_TOKENS[network];
+  if (!map) return { error: `no built-in token addresses for network ${network || "unknown"}` };
+  // MATIC/POL only exist as wrapped native on matic; ETH on matic is the bridged WETH.
+  const address = map[sym];
+  return address ? { symbol: sym, address } : { error: `${sym} has no built-in address on ${network}` };
+}
+
 export const SPAM_HANDLING = ["flag_and_push_down", "flag_only", "off"];
 export const THRESHOLDS = {
   // No single token's or pool's DEX TVL is plausibly above this (USD).
-  implausible_tvl_usd: 1e11,
+  // The largest real Uniswap pool or token holds a few $B, so $10B per row is
+  // already far outside anything real.
+  implausible_tvl_usd: 1e10,
   // TVL claimed without matching trading: volume below this fraction of TVL.
-  tvl_without_volume_ratio: 1e-5,
-  tvl_without_volume_min_tvl_usd: 1e6,
+  tvl_without_volume_ratio: 1e-4,
+  tvl_without_volume_min_tvl_usd: 1e5,
+  // TVL per transaction: a large TVL built from a handful of transactions.
+  tvl_per_tx_usd: 1e8,
+  tvl_per_tx_min_tvl_usd: 1e6,
+  // A pool holding this much TVL while one side is not a known major token.
+  // Real pools beyond $1B do not exist on a long-tail pair.
+  extreme_tvl_unlisted_pair_usd: 1e9,
+  // totalSupply / 10^decimals above this many whole tokens (SHIB ~ 6e14).
+  implausible_supply_tokens: 1e15,
   low_activity_tx_count: 25,
   low_activity_volume_usd: 1000,
   long_symbol: 15,
@@ -68,6 +128,17 @@ function textReasons(prefix, tok) {
   return out;
 }
 
+// Whole-token supply from raw totalSupply and decimals (BigInt-safe strings).
+function supplyTokens(row) {
+  const raw = row?.totalSupply;
+  if (raw === null || raw === undefined || raw === "") return null;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const dec = num(row.decimals);
+  const d = dec !== null && dec >= 0 && dec <= 36 ? dec : 18;
+  return n / 10 ** d;
+}
+
 function metricReasons(row) {
   const out = [];
   const tvl = num(row.totalValueLockedUSD ?? row.tvlUSD);
@@ -77,6 +148,9 @@ function metricReasons(row) {
   if (tvl !== null && vol !== null && tvl > THRESHOLDS.tvl_without_volume_min_tvl_usd && vol < tvl * THRESHOLDS.tvl_without_volume_ratio) {
     out.push("tvl_without_trading_volume");
   }
+  if (tvl !== null && tx !== null && tx > 0 && tvl > THRESHOLDS.tvl_per_tx_min_tvl_usd && tvl / tx > THRESHOLDS.tvl_per_tx_usd) out.push("tvl_per_transaction_implausible");
+  const supply = supplyTokens(row);
+  if (supply !== null && supply > THRESHOLDS.implausible_supply_tokens) out.push("implausible_total_supply");
   if (tx !== null && tx < THRESHOLDS.low_activity_tx_count && (vol === null || vol < THRESHOLDS.low_activity_volume_usd)) out.push("low_activity");
   return out;
 }
@@ -114,6 +188,10 @@ export function assessRows(rows, { network, trusted = new Set(), kind = "token" 
       if (t0 && !ok0) reasons.push(...textReasons("token0_", t0));
       if (t1 && !ok1) reasons.push(...textReasons("token1_", t1));
       if (!allowlisted) reasons.push(...metricReasons(row));
+      const poolTvl = num(row.totalValueLockedUSD ?? row.tvlUSD);
+      if (!allowlisted && (ok0 || ok1) && poolTvl !== null && poolTvl > THRESHOLDS.extreme_tvl_unlisted_pair_usd && !reasons.includes("implausible_tvl_usd")) {
+        reasons.push("extreme_tvl_with_unlisted_token");
+      }
     }
     const label = row.symbol ?? (row.token0?.symbol && row.token1?.symbol ? `${row.token0.symbol}/${row.token1.symbol}` : undefined);
     return { index, id, ...(label ? { label: String(label).slice(0, 40) } : {}), flagged: reasons.length > 0, reasons, ...(allowlisted ? { allowlisted: true } : {}) };
@@ -127,7 +205,16 @@ export function applyTokenQuality(rows, { network, trusted, handling = "flag_and
   const flagged = checks.filter((c) => c.flagged);
   let out = rows;
   let reordered = false;
-  if (handling === "flag_and_push_down" && flagged.length && flagged.length < rows.length) {
+  let reorderedBy = null;
+  const allFlagged = rows.length > 1 && flagged.length === rows.length;
+  if (handling === "flag_and_push_down" && allFlagged && rows.every((r) => num(r?.volumeUSD ?? r?.totalVolumeUSD) !== null)) {
+    // Nothing trustworthy to rank first: order by traded volume, which is
+    // harder to fake than TVL. Rows are still all returned.
+    const vol = (r) => num(r.volumeUSD ?? r.totalVolumeUSD);
+    out = [...rows].sort((a, b) => vol(b) - vol(a));
+    reordered = out.some((r, i) => r !== rows[i]);
+    reorderedBy = "volumeUSD";
+  } else if (handling === "flag_and_push_down" && flagged.length && flagged.length < rows.length) {
     const good = checks.filter((c) => !c.flagged).map((c) => rows[c.index]);
     const bad = flagged.map((c) => rows[c.index]);
     out = [...good, ...bad];
@@ -139,8 +226,9 @@ export function applyTokenQuality(rows, { network, trusted, handling = "flag_and
       collection, kind, handling, checked: rows.length, flagged_count: flagged.length,
       flagged: flagged.map(({ index, id, label, reasons }) => ({ original_index: index, id, ...(label ? { label } : {}), reasons })),
       allowlisted: checks.filter((c) => c.allowlisted).map((c) => c.id),
-      reordered,
-      ...(reordered ? { order_note: "Flagged rows were moved after unflagged rows (stable order within each group). Nothing was removed; use spam_handling:\"flag_only\" to keep the gateway order." } : {}),
+      reordered, all_flagged: allFlagged,
+      ...(reorderedBy ? { reordered_by: reorderedBy, order_note: "Every row was flagged, so rows were ordered by volumeUSD (harder to fake than TVL). Nothing was removed; this deployment's data looks unreliable, consider another deployment." } : {}),
+      ...(reordered && !reorderedBy ? { order_note: "Flagged rows were moved after unflagged rows (stable order within each group). Nothing was removed; use spam_handling:\"flag_only\" to keep the gateway order." } : {}),
       caveat: "Heuristic flags (URL/lure words in symbol or name, implausible TVL, TVL without trading volume, very low activity). They can be wrong in both directions; verify contract addresses independently. Known-good allowlist is small and per network; extend with trusted_tokens.",
       thresholds: THRESHOLDS,
     },

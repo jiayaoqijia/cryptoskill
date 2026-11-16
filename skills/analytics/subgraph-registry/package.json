@@ -1,6 +1,6 @@
 {
   "name": "subgraph-registry-mcp",
-  "version": "0.13.2",
+  "version": "0.13.6",
   "mcpName": "io.github.PaulieB14/subgraph-registry-mcp",
   "description": "MCP server for agent-friendly subgraph discovery and opt-in querying on The Graph Network. Better search than official subgraph-MCP, real 30-day query volume, contract-first lookup, plus opt-in schema and execute_query. Search/recommend stay discovery and never auto-query. No private key in the package.",
   "type": "module",
@@ -18,7 +18,7 @@
     "start": "node src/index.js",
     "start:http": "node src/index.js --http",
     "start:http-only": "node src/index.js --http-only",
-    "test": "node --test test/",
+    "test": "node --test test/*.test.mjs",
     "sync:server": "node scripts/sync-server-json.js",
     "version": "node scripts/sync-server-json.js && node scripts/gen-openapi.js && git add server.json openapi.yaml data/openapi.json",
     "smoke": "node scripts/smoke-bin.mjs",

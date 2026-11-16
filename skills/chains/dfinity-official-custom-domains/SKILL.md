@@ -1,6 +1,6 @@
 ---
 name: custom-domains
-description: "Register and manage custom domains for IC canisters via the HTTP gateway custom domain service. Covers DNS record configuration (CNAME, TXT, ACME challenge), the .well-known/ic-domains file, domain registration/validation/update/deletion via the REST API, TLS certificate provisioning, and HttpAgent host configuration. Use when the user wants to serve a canister under a custom domain, configure DNS for IC, register a domain with boundary nodes, troubleshoot custom domain issues, or update/remove a custom domain. Do NOT use for general frontend hosting or asset/static-site canister configuration without custom domains — use static-site instead."
+description: "Register and manage custom domains for IC canisters via the HTTP gateway custom domain service. Covers DNS record configuration (CNAME, TXT, ACME challenge), the .well-known/ic-domains file, domain registration/validation/update/deletion via the REST API, TLS certificate provisioning, and HttpAgent host configuration. Use when the user wants to serve a canister under a custom domain, configure DNS for IC, register a domain with boundary nodes, troubleshoot custom domain issues (including a cloud engine console warning that the engine can't write /.well-known/ic-domains), or update/remove a custom domain. Do NOT use for general frontend hosting or asset/static-site canister configuration without custom domains — use static-site instead."
 license: Apache-2.0
 compatibility: "curl, DNS registrar access, deployed canister"
 metadata:
@@ -20,7 +20,7 @@ Custom domains work at the boundary node level — they map a domain to any cani
 
 - A registered domain from any registrar (e.g., Namecheap, GoDaddy, Cloudflare)
 - Access to edit DNS records for that domain
-- A deployed canister that serves `/.well-known/ic-domains` over HTTP (asset canisters, Juno satellites, or any canister implementing `http_request`)
+- A deployed canister that serves `/.well-known/ic-domains` over HTTP (asset canisters, Juno satellites, or any canister implementing `http_request`). On a cloud engine (OpenCloud) the engine writes that file, and the frontend canister must run certified-assets 0.4.3 or newer (`@dfinity/static-site@v0.4.3`): see pitfall 10
 - `curl` for the registration API calls
 - `jq` (optional, for formatting JSON responses)
 
@@ -43,6 +43,8 @@ Custom domains work at the boundary node level — they map a domain to any cani
 8. **Setting `HttpAgent`'s `host` to your custom domain.** `host` is the **API endpoint** canister calls go to, not the domain your frontend is served from. Your custom domain is the HTTP gateway — it does not serve `/api/v2`, so pointing `host` at it (or at `window.location.origin`) makes calls fail. You do not need to set `host`: a recent `@icp-sdk/core` `HttpAgent` resolves an omitted `host` to `https://icp-api.io` (the mainnet API boundary nodes) on a custom domain. Leave it unset, or set it explicitly to `https://icp-api.io` — never the gateway domain.
 
 9. **Adding a custom domain to an app that already has users.** II principals are per-origin, so the new domain hands every returning user a brand-new account. Pin a derivation origin — the canister address, which a custom domain can never displace — and list the domain in `.well-known/ii-alternative-origins` **before** the domain goes live. A domain that has already collected sign-ins cannot be repointed without orphaning those accounts. See the `user-sign-in` skill.
+
+10. **Shipping your own `ic-domains` file on a cloud engine, or a frontend older than certified-assets 0.4.3 there.** On a cloud engine (OpenCloud), the engine writes `/.well-known/ic-domains` (the HTTP gateway checks the domain against it) and `/.well-known/ii-alternative-origins` (Internet Identity reads it) into the app's frontend canister with certified-assets' `upload_asset`, which arrived in 0.4.3. Its copy replaces whatever the app ships at those two paths, so a domain listed only in the app's own `ic-domains` file disappears at the engine's next write. Add the domain in the engine console instead (Step 2). On a canister older than 0.4.3 the console warns `The engine can't write this app's /.well-known/ic-domains and /.well-known/ii-alternative-origins: its canister doesn't run certified-assets 0.4.3 or newer`, and the domain does not work. Fix: pin `@dfinity/static-site@v0.4.3` or newer and run `icp deploy -e ic`. If the sync then stops with `assets canister version mismatch`, run `icp canister install <frontend> --mode upgrade -e ic` (v0.4.x to v0.4.3 is a patch, so the state stays), then `icp deploy -e ic` again. Never `--mode reinstall` for that bump; from v0.3.x the bump is breaking (see the `static-site` skill, pitfall 11). Then list both paths in `_preserve` (Step 2).
 
 ## Implementation
 
@@ -75,6 +77,16 @@ www.example.com
 **Frontend canister users:** place `.well-known/` inside your `public/` directory (Vite projects) or alongside your source files so it ends up in your `dir`. With the recommended `@dfinity/static-site` recipe, `.well-known/` is uploaded automatically (no config needed). With the legacy `@dfinity/asset-canister` recipe, ensure `.ic-assets.json5` includes `{ "match": ".well-known", "ignore": false }` so the hidden directory gets deployed. See the `static-site` skill for details on file placement.
 
 **Custom `http_request` canisters:** serve the file contents at `/.well-known/ic-domains` directly from your HTTP request handler.
+
+**Apps on a cloud engine (OpenCloud):** do not create this file. In the engine console, open the app's domains, choose **Add a domain** → **A domain you own**, and enter it. The engine then writes `/.well-known/ic-domains` and `/.well-known/ii-alternative-origins` into the frontend canister itself, with no redeploy. This needs `@dfinity/static-site@v0.4.3` or newer (pitfall 10). Keep both files out of `dir`: the engine overwrites them anyway. A deploy deletes every file that is not in `dir`, so list both paths in a `_preserve` file at the root of `dir`:
+
+```text
+# Written by the engine with upload_asset; this build doesn't ship them.
+/.well-known/ic-domains
+/.well-known/ii-alternative-origins
+```
+
+Without `_preserve`, every deploy deletes both files until the engine writes them again (within 10 minutes). You still add the three DNS records (Step 1) and register the domain: the console's **Check** button registers it with the HTTP gateway, or run Steps 4–6.
 
 ### Step 3: Deploy
 
@@ -110,8 +122,8 @@ If validation fails, common errors and fixes:
 | Missing DNS TXT record | Add the `_canister-id` TXT record with your canister ID |
 | Invalid DNS TXT record | Ensure the TXT value is a valid canister ID |
 | More than one DNS TXT record | Remove duplicate `_canister-id` TXT records, keep one |
-| Failed to retrieve known domains | Ensure `.well-known/ic-domains` is deployed and served by the canister |
-| Domain missing from list | Add the domain to the `ic-domains` file and redeploy |
+| Failed to retrieve known domains | Ensure `.well-known/ic-domains` is deployed and served by the canister. On a cloud engine, check the console's domain page for a warning that the engine can't write the file (pitfall 10) |
+| Domain missing from list | Add the domain to the `ic-domains` file and redeploy. On a cloud engine, add it in the console instead (Step 2) |
 
 ### Step 5: Register
 

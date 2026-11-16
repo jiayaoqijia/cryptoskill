@@ -24,8 +24,8 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import Database from "better-sqlite3";
 import { boundedStarter, findContractDeployments, freshness, healthObservation, HEALTH_QUERY, HEALTH_STALE_SECONDS } from "./agent-discovery.js";
-import { parseGoal, rankEntities, planKeyless, planWithSchema, schemaProbeQuery, probeHealth, STALE_INDEXING_SECONDS } from "./goal-query.js";
-import { applyTokenQuality, normalizeTrusted, SPAM_HANDLING } from "./token-quality.js";
+import { parseGoal, rankEntities, planKeyless, planWithSchema, schemaProbeQuery, probeHealth, STALE_INDEXING_SECONDS, planFromBundledCatalog } from "./goal-query.js";
+import { applyTokenQuality, normalizeTrusted, resolveTokenSymbol, SPAM_HANDLING } from "./token-quality.js";
 import express from "express";
 import { fileURLToPath, pathToFileURL } from "url";
 import { basename, dirname, join } from "path";
@@ -43,7 +43,7 @@ const __dirname = dirname(__filename);
 // Literal, exact-version npx spec used in generated config examples. Bumped
 // with package.json at release time; test/scanner-hygiene.test.mjs asserts the
 // two agree, so a stale pin fails CI instead of shipping.
-export const PINNED_NPX_PACKAGE = "subgraph-registry-mcp@0.13.2";
+export const PINNED_NPX_PACKAGE = "subgraph-registry-mcp@0.13.6";
 
 const PKG_VERSION = (() => {
   try {
@@ -83,7 +83,7 @@ const GITHUB_DB_URL =
 //   3. Paste the new hash here and bump package.json version
 //   4. Update SKILL.md "Verifying the registry" section
 const EXPECTED_DB_SHA256 =
-  "672afa2f0d405483af5fb4c403e515fb0f1342c7eeb31968e78a53d5f6ebdd6b";
+  "9e2f608003fc403f9143417f40300f4a5769275dcc8f1982f60473b05ff23dce";
 // Skip-verification escape hatch (set to "1" only if you're rebuilding the DB
 // locally and know what you're doing — never set in agent-runtime defaults).
 const SKIP_VERIFY = process.env.SUBGRAPH_REGISTRY_SKIP_VERIFY === "1";
@@ -727,7 +727,10 @@ function searchSubgraphs(args = {}) {
   const scopeWhere = scopeConditions.length ? `WHERE ${scopeConditions.join(" AND ")}` : "";
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   // Over-fetch to allow dedup by IPFS hash (same deployment, different subgraph IDs)
-  const fetchLimit = limit * 3;
+  // The pool must be large enough that a short query such as "ens" (a substring
+  // of "tokens") cannot push the exact-name hit out before the word-boundary
+  // re-rank sees it: reliability drifts with each crawl.
+  const fetchLimit = Math.max(limit * 3, 100);
   const sql = `
     SELECT ${SEARCH_COLS}, (${matchExpr}) AS matched_terms
     FROM subgraphs
@@ -976,7 +979,12 @@ function recommendSubgraph(args = {}) {
   };
   const chainWords = [];
   const words = [];
+  const otherChainWord = allWords.some((o) => o !== "eth" && isChainish(o));
   for (const w of allWords) {
+    // "ETH" is both a chain alias and a token symbol. As the object of
+    // "containing/with/of ETH", or next to a different chain word, it is the
+    // token ("pools containing ETH on Base"), not routing.
+    if (w === "eth" && (otherChainWord || /\b(containing|contains?|with|involving|includes?|including|holding|paired with|of|for)\s+eth\b/.test(goalLower))) continue;
     // Only treat it as a chain if it resolves to a network the corpus has —
     // otherwise a protocol genuinely called "Base" or "Mode" would vanish.
     if (isChainish(w)) {
@@ -2245,12 +2253,18 @@ function isChainWord(w) {
 // Extra candidates for entity-specific goals: recommend_subgraph ranks by
 // protocol text and traction, so a deployment that actually has the requested
 // entity (e.g. an OHLCV subgraph) can be missing from its top five.
-function goalCandidateRows(intent, network, { include_denied = false, include_unserved = false } = {}) {
+function goalCandidateRows(intent, network, { include_denied = false, include_unserved = false, only_hidden = false } = {}) {
   const terms = intent.protocol_terms.filter((w) => w.length > 1 && !/^v\d+$/.test(w));
   if (!terms.length && !network) return [];
   const conditions = [];
-  if (!include_unserved) conditions.push("active_allocation_count > 0");
-  if (!include_denied) conditions.push("denied_at = 0");
+  // only_hidden: deployments the default snapshot filters hide (no active
+  // allocation, or denied indexing rewards). Neither says anything about
+  // whether the gateway can serve them, so they are tried AFTER the visible ones.
+  if (only_hidden) conditions.push("(active_allocation_count = 0 OR denied_at != 0)");
+  else {
+    if (!include_unserved) conditions.push("active_allocation_count > 0");
+    if (!include_denied) conditions.push("denied_at = 0");
+  }
   const params = [];
   if (network) { conditions.push("network = ?"); params.push(network); }
   if (shouldExcludeTestnets({ include_testnets: false, network })) conditions.push(`(${NOT_TESTNET_SQL})`);
@@ -2259,7 +2273,7 @@ function goalCandidateRows(intent, network, { include_denied = false, include_un
     params.push(...terms.map((t) => `%${t}%`));
   }
   return getDb().prepare(`SELECT id, display_name, domain, protocol_type, network, reliability_score, query_volume_30d, ipfs_hash, example_query, all_entities, updated_at, active_allocation_count, denied_at
-    FROM subgraphs WHERE ${conditions.join(" AND ")} ORDER BY reliability_score DESC LIMIT 40`).all(...params);
+    FROM subgraphs WHERE ${conditions.join(" AND ")} ORDER BY reliability_score DESC LIMIT ${only_hidden ? 15 : 40}`).all(...params);
 }
 
 function parseEntities(raw) {
@@ -2271,6 +2285,13 @@ function chooseGoalTarget(intent, discovery, opts = {}) {
   const byId = new Map();
   if (!opts.only_extra) discovery.recommendations.forEach((r, idx) => byId.set(r.id, { rec: r, idx }));
   for (const row of goalCandidateRows(intent, network, opts)) if (!byId.has(row.id)) byId.set(row.id, { rec: row, idx: null });
+  const demote = (rec) => (Boolean(rec.denied_at) && !opts.include_denied) || (rec.active_allocation_count === 0 && !opts.include_unserved);
+  // Reward/curation/allocation snapshots decide ORDER here, never eligibility:
+  // a queryable deployment on a chain without rewards (Arc, any new chain) must
+  // still get a plan. Hidden rows come after every visible one.
+  if (!opts.only_extra && !(opts.include_denied && opts.include_unserved)) {
+    for (const row of goalCandidateRows(intent, network, { only_hidden: true })) if (!byId.has(row.id)) byId.set(row.id, { rec: row, idx: null });
+  }
   const terms = intent.protocol_terms;
   const scored = [];
   for (const { rec, idx } of byId.values()) {
@@ -2282,9 +2303,9 @@ function chooseGoalTarget(intent, discovery, opts = {}) {
     const name = String(rec.display_name || "").toLowerCase().replace(/[-_]/g, " ");
     const text = terms.length ? terms.filter((t) => name.includes(t)).length / terms.length : 0;
     const score = ranked[0].score + 0.3 * text + (idx === null ? 0 : 0.1 * (5 - idx) / 5) + 0.05 * (rec.reliability_score || 0);
-    scored.push({ rec, entities, ranked, example_query: row.example_query ?? rec.example_query, score: Number(score.toFixed(4)), text_match: Number(text.toFixed(2)), from_recommendation: idx !== null });
+    scored.push({ rec, entities, ranked, example_query: row.example_query ?? rec.example_query, score: Number(score.toFixed(4)), text_match: Number(text.toFixed(2)), from_recommendation: idx !== null, unverified_snapshot: opts.only_extra ? false : demote(rec) });
   }
-  return scored.sort((a, b) => b.score - a.score);
+  return scored.sort((a, b) => (Number(a.unverified_snapshot) - Number(b.unverified_snapshot)) || b.score - a.score);
 }
 
 function selectedSummary(r) {
@@ -2315,6 +2336,18 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
   if (discovery.error) return { error: discovery.error, execution_attempted: false, executed: false };
   const intent = parseGoal(goal.trim(), { isChain: isChainWord });
   const rows = first ?? Math.min(intent.first_from_goal || 5, 10);
+  // "pools containing WETH": resolve named major tokens to per-chain addresses so
+  // the planner emits a token0/token1 filter instead of an unfiltered list.
+  const unresolvedSymbols = [];
+  const resolvedSymbols = [];
+  if (intent.primary && intent.token_symbols?.length) {
+    const net = discovery.inferred_chain || (chain ? normalizeNetwork(chain) : null);
+    for (const sym of intent.token_symbols) {
+      const r = net ? resolveTokenSymbol(sym, net) : { error: "no chain given, so the symbol cannot be resolved to an address" };
+      if (r.address) { intent.addresses.push({ address: r.address, context: "token", symbol: r.symbol }); resolvedSymbols.push({ symbol: r.symbol, address: r.address, network: net }); }
+      else unresolvedSymbols.push({ symbol: sym, reason: r.error });
+    }
+  }
   const skipped = [];
   const key = studioApiKey();
 
@@ -2368,7 +2401,15 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
       };
       // recommend_subgraph already dropped recently-unhealthy deployments; keep them visible.
       for (const u of discovery.skipped_unhealthy || []) skippedDeployments.push({ id: u.id, display_name: u.display_name, network: u.network, reason: u.reason, evidence: u.evidence, source: "process_local_observation", observed_at: u.observed_at });
-      let attempts = 0, staleFallback = null, lastFailure = null;
+      let attempts = 0, staleFallback = null, partialFallback = null, allFlaggedFallback = null, lastFailure = null;
+      const withSymbolGaps = (pl) => {
+        if (!pl || !unresolvedSymbols.length) return pl;
+        for (const u of unresolvedSymbols) {
+          pl.unmet = [...(pl.unmet || []), `token ${u.symbol}: ${u.reason}; pass the token address in the goal`];
+          pl.blocking_unmet = [...(pl.blocking_unmet || []), `token ${u.symbol}`];
+        }
+        return pl;
+      };
       for (const cand of eligible) {
         if (attempts >= MAX_GOAL_DEPLOYMENT_ATTEMPTS) break;
         const bad = knownBadHealth(cand.rec);
@@ -2376,7 +2417,8 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
         const entity = cand.ranked[0];
         const candTarget = resolveQueryTarget(cand.rec.ipfs_hash ? { ipfs_hash: cand.rec.ipfs_hash } : { subgraph_id: cand.rec.id });
         if (candTarget.error) { skip(cand, "no_query_target", candTarget.error); continue; }
-        let plan = planKeyless({ intent, entity, starter: cand.example_query, first: overFetch, allEntityNames: cand.entities.map((e) => e.name) });
+        let plan = withSymbolGaps(planFromBundledCatalog({ intent, entity, entities: cand.entities, first: overFetch })
+          || planKeyless({ intent, entity, starter: cand.example_query, first: overFetch, allEntityNames: cand.entities.map((e) => e.name) }));
         let health = null, candValidation = validate_schema ? (key ? "not_checked" : "not_checked_no_key") : "not_checked";
         attempts++;
         if (validate_schema && key) {
@@ -2401,10 +2443,17 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
             lastFailure = { cand, target: candTarget, errs: live.errors };
             continue;
           }
-          plan = live; candValidation = "validated_fields_and_arguments";
+          plan = withSymbolGaps(live); candValidation = "validated_fields_and_arguments";
           if (health.status === "stale") {
             skip(cand, "stale_indexing", `indexed block is ${health.lag_seconds}s behind now`, { source: "live_probe", health });
             staleFallback ||= { cand, plan, health, target: candTarget, validation: candValidation };
+            continue;
+          }
+          // A requested "top"/"latest" the schema cannot order is not an answer to
+          // the goal; prefer another deployment, keep this one as a last resort.
+          if (intent.ordering && !plan.order && plan.unmet?.some((u) => /^ordering:/.test(u)) && eligible.indexOf(cand) < eligible.length - 1) {
+            skip(cand, "ordering_unsupported", plan.unmet.find((u) => /^ordering:/.test(u)), { source: "live_probe" });
+            partialFallback ||= { cand, plan, health, target: candTarget, validation: candValidation, partial_fallback: "ordering_unsupported" };
             continue;
           }
         }
@@ -2428,13 +2477,37 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
           attempt.health = attempt.health || h;
         }
         attempt.result = result;
+        // Spam checks run here so a deployment whose every row is flagged (bogus
+        // TVL data) can fall back to the next one instead of being returned.
+        if (ok && tokenKind && plan.collection && Array.isArray(result.data?.[plan.collection])) {
+          const tq = applyTokenQuality(result.data[plan.collection], { network: cand.rec.network, trusted: trusted.set, handling: spam_handling, kind: tokenKind, collection: plan.collection });
+          if (tq.report) {
+            attempt.quality = tq;
+            const room = gatewayRequests + (validate_schema && key ? 2 : 1) <= MAX_GOAL_GATEWAY_REQUESTS;
+            if (tq.report.all_flagged && eligible.indexOf(cand) < eligible.length - 1 && attempts < MAX_GOAL_DEPLOYMENT_ATTEMPTS && room) {
+              skip(cand, "all_rows_flagged_as_spam", `all ${tq.report.checked} returned rows were flagged: ${[...new Set(tq.report.flagged.flatMap((f) => f.reasons))].slice(0, 4).join(", ")}`, { source: "execution" });
+              allFlaggedFallback ||= attempt;
+              continue;
+            }
+          }
+        }
         chosen = attempt;
         break;
       }
-      if (!chosen && staleFallback && stopReason !== "auth_or_quota") {
-        chosen = staleFallback;
-        chosen.stale_fallback = true;
-        // Execute the stale-but-serving deployment only if nothing healthier exists.
+      // A later deployment that only yields bare ids is a worse answer than the
+      // flagged-but-informative rows already fetched (those carry reasons).
+      if (chosen && allFlaggedFallback && chosen !== allFlaggedFallback && chosen.plan?.field_source === "id_only") {
+        chosen = allFlaggedFallback;
+        chosen.all_flagged_fallback = true;
+      }
+      if (!chosen && allFlaggedFallback && stopReason !== "auth_or_quota") {
+        chosen = allFlaggedFallback;
+        chosen.all_flagged_fallback = true;
+      }
+      if (!chosen && (staleFallback || partialFallback) && stopReason !== "auth_or_quota") {
+        chosen = staleFallback || partialFallback;
+        if (chosen === staleFallback) chosen.stale_fallback = true;
+        // Execute the soft-fallback deployment only if nothing better exists.
         if (execute && key && chosen.plan?.query && !chosen.plan.blocking_unmet?.length && gatewayRequests < MAX_GOAL_GATEWAY_REQUESTS) {
           gatewayRequests++;
           chosen.result = await executeQuery({ ipfs_hash: chosen.cand.rec.ipfs_hash, subgraph_id: chosen.cand.rec.id, query: chosen.plan.query });
@@ -2460,13 +2533,21 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
         rationale: [`Selected ${selected.display_name} (${selected.network}) because entity ${entity.name}: ${entity.reason}; protocol text match ${pick.cand.text_match}${pick.cand.from_recommendation ? "" : "; found by entity-aware candidate search"}`,
           ...(chosen && firstSkip ? [`Fell back from ${firstSkip.display_name} (${firstSkip.id}): ${firstSkip.reason}`] : []),
           ...(plan?.rationale || [])],
-        unmet: [...(plan?.unmet || []), ...(chosen?.stale_fallback ? ["All fitting deployments that answered were stale; returned the stale one with a warning"] : [])],
-        filters_not_applied: plan?.blocking_unmet || [], alternatives, schema_source: plan?.field_source === "live_introspection" ? "live_introspection" : "registry_entity_names",
+        unmet: [...(plan?.unmet || []),
+          ...(chosen?.stale_fallback ? ["All fitting deployments that answered were stale; returned the stale one with a warning"] : []),
+          ...(chosen?.partial_fallback ? ["No fitting deployment supports the requested ordering; returned the best remaining one unordered"] : []),
+          ...(chosen?.all_flagged_fallback ? ["Every fitting deployment returned only spam-flagged rows; returned the first one (rows ordered by volumeUSD when available). Treat these rows as unreliable"] : []),
+          ...(pick.cand.unverified_snapshot ? ["Snapshot shows no active allocation and/or denied indexing rewards for this deployment. That is not a health signal and does not exclude it, but queryability is unverified: use validate_schema:true or check_subgraph_health"] : [])],
+        filters_not_applied: plan?.blocking_unmet || [], alternatives, schema_source: plan?.field_source === "live_introspection" ? "live_introspection" : plan?.field_source === "bundled_family_catalog" ? "bundled_family_catalog" : "registry_entity_names",
         skipped_deployments: skippedDeployments, fallback_used: Boolean(chosen && skippedDeployments.length),
         health_policy: "Fallback uses serving signals only (gateway failures, timeouts, indexer errors, stale _meta). Indexing-reward denial, curation and chains without rewards are not treated as unhealthy." };
       if (stopReason) mapping.stop_reason = stopReason;
       if (liveErrors) mapping.live_schema_errors = liveErrors;
       if (overFetch !== rows && plan) mapping.first_fetched = overFetch;
+      if (resolvedSymbols.length) mapping.resolved_tokens = resolvedSymbols;
+      if (unresolvedSymbols.length) mapping.unresolved_tokens = unresolvedSymbols;
+      if (plan?.family) mapping.schema_family = plan.family;
+      if (pick.cand.unverified_snapshot) mapping.snapshot_note = "no_active_allocation_or_denied_rewards_not_a_health_signal";
       if (chosen?.health) mapping.deployment_health = chosen.health;
     }
   }
@@ -2526,7 +2607,7 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
     !result.error && !result.errors?.length && result.data != null ? "succeeded" : "failed";
   out.executed = out.validation.gateway_execution === "succeeded";
   if (out.executed && tokenKind && mapping.collection && Array.isArray(result.data?.[mapping.collection])) {
-    const tq = applyTokenQuality(result.data[mapping.collection], { network: selected.network, trusted: trusted.set, handling: spam_handling, kind: tokenKind, collection: mapping.collection });
+    const tq = chosen?.quality || applyTokenQuality(result.data[mapping.collection], { network: selected.network, trusted: trusted.set, handling: spam_handling, kind: tokenKind, collection: mapping.collection });
     if (tq.report) {
       result = { ...result, data: { ...result.data, [mapping.collection]: tq.rows } };
       out.token_quality = tq.report;

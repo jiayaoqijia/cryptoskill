@@ -10,6 +10,7 @@
 //     an explicit opt-in (validate_schema) using the caller's own Studio key.
 // Every plan reports what it could not satisfy instead of guessing.
 import { parse, print, Kind } from "graphql";
+import { RESOLVABLE_SYMBOLS, canonicalSymbol } from "./token-quality.js";
 
 const NAME_RE = /^[_A-Za-z][_0-9A-Za-z]*$/;
 const ADDRESS_RE = /0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/g;
@@ -64,7 +65,7 @@ export const CONCEPTS = [
   { key: "account", words: /\b(accounts?|users?|holders?|wallets?)\b/, entities: ["Account", "User", "Holder", /account$/i, /^user$/i], type: "account", fields: ["balance", "createdAt", "txCount"], order: "metric" },
 ];
 
-const FILLER = new Set(["on", "for", "the", "of", "and", "in", "with", "a", "an", "to", "by", "from", "data", "get", "show", "list", "find", "all", "me", "latest", "recent", "newest", "top", "largest", "biggest", "highest", "most", "oldest", "first", "last", "ids", "id", "per", "over", "past", "since", "between", "names", "name", "symbols", "symbol", "volume", "volumes", "tvl", "counters", "counts", "metadata", "amount", "amounts", "hourly", "daily", "day", "hour", "days", "hours", "weeks", "week", "every", "each", "chain", "network", "mainnet"]);
+const FILLER = new Set(["on", "for", "the", "of", "and", "in", "with", "a", "an", "to", "by", "from", "data", "get", "show", "list", "find", "all", "me", "latest", "recent", "newest", "top", "largest", "biggest", "highest", "most", "oldest", "first", "last", "ids", "id", "per", "over", "past", "since", "between", "names", "name", "symbols", "symbol", "volume", "volumes", "tvl", "counters", "counts", "metadata", "amount", "amounts", "hourly", "daily", "day", "hour", "days", "hours", "weeks", "week", "every", "each", "chain", "network", "mainnet", "containing", "contain", "contains", "involving", "include", "includes", "including", "holding", "paired", "pairing"]);
 
 function words(goal) { return goal.toLowerCase().match(/[a-z0-9]+/g) || []; }
 
@@ -102,12 +103,16 @@ export function parseGoal(goal, { now = Math.floor(Date.now() / 1000), isChain =
   }
   const topN = lower.match(/\b(?:top|first|latest|largest|biggest)\s+(\d{1,3})\b(?!\s*(?:hours?|h|days?|d|weeks?|w)\b)/);
   const conceptWords = new Set(concepts.flatMap((c) => [...lower.matchAll(new RegExp(c.words.source, "g"))].flatMap((m) => words(m[0]))));
-  const protocolTerms = words(goal).filter((w) => !FILLER.has(w) && !conceptWords.has(w) && !/^0x/.test(w) && !/^\d+$/.test(w) && !isChain(w));
+  // Major token symbols named in the goal ("pools containing WETH"). They are
+  // resolved to per-chain addresses by the caller, and are never protocol names.
+  const tokenSymbols = [...new Set(words(goal).filter((w) => RESOLVABLE_SYMBOLS.has(w.toUpperCase())).map((w) => canonicalSymbol(w)))];
+  const symbolWords = new Set(words(goal).filter((w) => RESOLVABLE_SYMBOLS.has(w.toUpperCase())));
+  const protocolTerms = words(goal).filter((w) => !FILLER.has(w) && !conceptWords.has(w) && !symbolWords.has(w) && !/^0x/.test(w) && !/^\d+$/.test(w) && !isChain(w));
   const fieldHints = words(goal).filter((w) => /^(symbols?|names?|decimals|prices?|fees?|volumes?|tvl|liquidity|supply|owners?|timestamps?|amounts?|counts?|holders?)$/.test(w))
     .map((w) => w.replace(/s$/, ""));
   return {
     concepts: concepts.map((c) => c.key), primary: primary?.key || null, secondary,
-    ordering, metric_hint: metricHint, ids_only: idsOnly, addresses, time_range: timeRange,
+    ordering, metric_hint: metricHint, ids_only: idsOnly, addresses, token_symbols: tokenSymbols, time_range: timeRange,
     first_from_goal: topN ? Number(topN[1]) : null, protocol_terms: protocolTerms, field_hints: fieldHints,
   };
 }
@@ -343,4 +348,85 @@ export function probeHealth(meta, now = Math.floor(Date.now() / 1000)) {
     indexed_block_number: meta.block.number, indexed_block_timestamp: Number.isSafeInteger(ts) ? ts : null, lag_seconds: lag,
     has_indexing_errors: typeof meta.hasIndexingErrors === "boolean" ? meta.hasIndexingErrors : null,
   };
+}
+
+
+// ── Bundled family catalog (keyless plans) ─────────────────────────────────
+// The bundled registry stores entity names and field COUNTS, not field names.
+// For well-known schema families whose field names were verified against live
+// introspection (Uniswap V3 and V4 and their forks: Pool, Swap, Token, ...),
+// keyless planning can still produce goal-relevant fields, a time/metric order
+// and token filters. The plan reuses planWithSchema over a synthetic probe, is
+// labelled `bundled_family_catalog`, and is never reported as live-validated.
+const SC = (name) => ({ kind: "SCALAR", name });
+const OBJ = (name) => ({ kind: "OBJECT", name });
+const NUMERIC = new Set(["BigInt", "BigDecimal", "Int", "Int8"]);
+const UNI_COMMON = {
+  Pool: { leaf: { id: "ID", createdAtTimestamp: "BigInt", feeTier: "BigInt", liquidity: "BigInt", token0Price: "BigDecimal", token1Price: "BigDecimal", volumeUSD: "BigDecimal", feesUSD: "BigDecimal", txCount: "BigInt", totalValueLockedUSD: "BigDecimal" }, rel: { token0: "Token", token1: "Token" } },
+  Swap: { leaf: { id: "ID", timestamp: "BigInt", amountUSD: "BigDecimal", amount0: "BigDecimal", amount1: "BigDecimal", sender: "Bytes", origin: "Bytes", sqrtPriceX96: "BigInt", tick: "BigInt", logIndex: "BigInt" }, rel: { pool: "Pool", token0: "Token", token1: "Token" } },
+  Token: { leaf: { id: "ID", symbol: "String", name: "String", decimals: "BigInt", totalSupply: "BigInt", volumeUSD: "BigDecimal", feesUSD: "BigDecimal", txCount: "BigInt", poolCount: "BigInt", totalValueLockedUSD: "BigDecimal" }, rel: {} },
+  PoolDayData: { leaf: { id: "ID", date: "Int", tvlUSD: "BigDecimal", volumeUSD: "BigDecimal", feesUSD: "BigDecimal", txCount: "BigInt", open: "BigDecimal", high: "BigDecimal", low: "BigDecimal", close: "BigDecimal" }, rel: { pool: "Pool" } },
+  PoolHourData: { leaf: { id: "ID", periodStartUnix: "Int", tvlUSD: "BigDecimal", volumeUSD: "BigDecimal", feesUSD: "BigDecimal", txCount: "BigInt", open: "BigDecimal", high: "BigDecimal", low: "BigDecimal", close: "BigDecimal" }, rel: { pool: "Pool" } },
+  TokenDayData: { leaf: { id: "ID", date: "Int", volumeUSD: "BigDecimal", totalValueLockedUSD: "BigDecimal", priceUSD: "BigDecimal", feesUSD: "BigDecimal", open: "BigDecimal", high: "BigDecimal", low: "BigDecimal", close: "BigDecimal" }, rel: { token: "Token" } },
+};
+const FAMILIES = {
+  uniswap_v3: { ...UNI_COMMON,
+    Position: { leaf: { id: "ID", owner: "Bytes", liquidity: "BigInt", depositedToken0: "BigDecimal", depositedToken1: "BigDecimal", withdrawnToken0: "BigDecimal", withdrawnToken1: "BigDecimal" }, rel: { pool: "Pool", token0: "Token", token1: "Token" } },
+    Mint: { leaf: { id: "ID", timestamp: "BigInt", owner: "Bytes", sender: "Bytes", origin: "Bytes", amount: "BigInt", amount0: "BigDecimal", amount1: "BigDecimal", amountUSD: "BigDecimal" }, rel: { pool: "Pool", token0: "Token", token1: "Token" } },
+    Burn: { leaf: { id: "ID", timestamp: "BigInt", owner: "Bytes", origin: "Bytes", amount: "BigInt", amount0: "BigDecimal", amount1: "BigDecimal", amountUSD: "BigDecimal" }, rel: { pool: "Pool", token0: "Token", token1: "Token" } },
+    Factory: { leaf: { id: "ID", poolCount: "BigInt", txCount: "BigInt", totalVolumeUSD: "BigDecimal", totalFeesUSD: "BigDecimal", totalValueLockedUSD: "BigDecimal" }, rel: {} },
+  },
+  uniswap_v4: { ...UNI_COMMON,
+    Position: { leaf: { id: "ID", tokenId: "BigInt", owner: "String", origin: "String", createdAtTimestamp: "BigInt" }, rel: {} },
+    ModifyLiquidity: { leaf: { id: "ID", timestamp: "BigInt", sender: "Bytes", origin: "Bytes", amount: "BigInt", amount0: "BigDecimal", amount1: "BigDecimal", amountUSD: "BigDecimal" }, rel: { pool: "Pool", token0: "Token", token1: "Token" } },
+    PoolManager: { leaf: { id: "ID", poolCount: "BigInt", txCount: "BigInt", totalVolumeUSD: "BigDecimal", totalFeesUSD: "BigDecimal", totalValueLockedUSD: "BigDecimal" }, rel: {} },
+  },
+};
+
+// entities: [{name, fields}] from the registry. null when not a known family.
+export function detectFamily(entities) {
+  const list = Array.isArray(entities) ? entities : [];
+  const by = new Map(list.map((e) => [e.name, e]));
+  if (!["Pool", "Token", "Swap", "Transaction"].every((n) => by.has(n))) return null;
+  if (!(by.get("Pool").fields >= 20 && by.get("Swap").fields >= 10)) return null;
+  if (by.has("PoolManager")) return "uniswap_v4";
+  if (by.has("Factory") || by.has("Bundle")) return "uniswap_v3";
+  return null;
+}
+
+function syntheticProbe(spec, entityName) {
+  const list = (t) => ({ kind: "NON_NULL", ofType: { kind: "LIST", ofType: { kind: "NON_NULL", ofType: OBJ(entityName) } } });
+  const eFields = [
+    ...Object.entries(spec.leaf).map(([name, type]) => ({ name, type: SC(type) })),
+    ...Object.entries(spec.rel).map(([name, type]) => ({ name, type: OBJ(type) })),
+  ];
+  const filter = [{ name: "or", type: { kind: "LIST", ofType: { kind: "INPUT_OBJECT", name: `${entityName}_filter` } } }, { name: "and", type: { kind: "LIST", ofType: { kind: "INPUT_OBJECT", name: `${entityName}_filter` } } }];
+  for (const [name, type] of Object.entries(spec.leaf)) {
+    filter.push({ name, type: SC(type) });
+    if (NUMERIC.has(type)) for (const op of ["gt", "gte", "lt", "lte"]) filter.push({ name: `${name}_${op}`, type: SC(type) });
+  }
+  for (const name of Object.keys(spec.rel)) filter.push({ name, type: SC("String") });
+  return {
+    q: { fields: [{ name: collectionName(entityName), args: [], type: list() }] },
+    e: { name: entityName, fields: eFields },
+    o: { enumValues: eFields.map((f) => ({ name: f.name })) },
+    f: { inputFields: filter },
+    t: { name: "Token", fields: Object.entries(UNI_COMMON.Token.leaf).map(([name, type]) => ({ name, type: SC(type) })) },
+    i: null, m: null,
+  };
+}
+
+// -> plan (same shape as planWithSchema) or null when no verified family fits.
+export function planFromBundledCatalog({ intent, entity, entities, first }) {
+  const family = detectFamily(entities);
+  const spec = family && FAMILIES[family][entity.name];
+  if (!spec) return null;
+  const plan = planWithSchema({ intent, entity, probe: syntheticProbe(spec, entity.name), first });
+  if (plan.errors?.length) return null;
+  plan.family = family;
+  plan.field_source = "bundled_family_catalog";
+  plan.rationale = plan.rationale.map((r) => r.replace("confirmed by live introspection", `taken from the bundled ${family} schema catalog (not live-checked)`));
+  plan.rationale.push(`fields, order and filters come from the bundled ${family} catalog (verified against live Uniswap deployments), selected by entity names and field counts in the registry`);
+  plan.unmet = [...(plan.unmet || []), "Keyless plan uses the bundled schema-family catalog; field names are not live-checked for this deployment. validate_schema:true (your own Studio key) confirms them."];
+  return plan;
 }

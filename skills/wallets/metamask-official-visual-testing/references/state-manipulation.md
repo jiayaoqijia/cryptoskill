@@ -417,5 +417,6 @@ Then read the state again to confirm that no injected items remain.
 | Inspect / traverse DOM                        | `DOM.getDocument`, `DOM.querySelector`                    |
 | Capture network traffic                       | `Network.enable`                                          |
 | Inject cookies or storage                     | `Network.setCookie`, `Storage.setLocalStorage*`           |
-| Low-level input beyond `mm click` / `mm type` | `Input.dispatchKeyEvent`, `Input.dispatchMouseEvent`      |
+| Key presses beyond `mm click` / `mm type`     | `Input.dispatchKeyEvent`                                  |
+| Hover, pointer or viewport                    | Use `mm hover` / `mm unhover` / `mm set-viewport` / `mm reset-viewport` instead of `Input.dispatchMouseEvent` or `Emulation.setDeviceMetricsOverride` |
 | Inject data into non-Redux in-memory sources   | Fiber walk + `pushData()` (see [operation 5](#5-inject-into-in-memory-data-sources-react-fiber-walk)) |
