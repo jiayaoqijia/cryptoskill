@@ -1,80 +1,130 @@
 ---
 name: move-security
 description: >
-  Move smart contract security on Sui. Use when reviewing Move code for security
-  vulnerabilities, designing access control patterns, handling capabilities safely,
-  securing randomness usage, validating invariants, planning upgrade governance,
-  managing keys, or auditing privileged operations. Also use when the user asks
-  about UpgradeCap security, capability revocation, shared object authorization,
-  onchain randomness restrictions, oracle data validation, emergency controls,
-  or frontend transaction signing safety.
+  Audits and hardens Move smart contracts on Sui: access control, capability
+  objects, randomness, upgrade governance, emergency controls, and key custody.
+  Use when the user asks to review or audit Move code for security issues or
+  vulnerabilities, mentions AdminCap, MinterCap, UpgradeCap, capability
+  revocation or rotation, tx_context::sender authorization, shared object
+  access, onchain randomness or RandomGenerator, oracle or offchain data
+  validation, emergency pause or rate limiting, multisig and private key
+  custody, or frontend transaction signing safety.
 
-  For Move language fundamentals, see the `sui-move` skill.
-  For object model and ownership, see the `object-model` skill.
-  For publishing and upgrading packages, see the `sui-publish` skill.
+  Related skills: `sui-move` (language), `object-model` (ownership),
+  `sui-publish` (upgrades).
 ---
 
 # Move Smart Contract Security
 
-> **MCP tool:** When available in your environment, also query the Sui documentation MCP server (`https://sui.mcp.kapa.ai`) for up-to-date answers. Use it for verification and for details not covered by these reference files.
+Source of truth: [docs.sui.io/develop/security/best-practices](https://docs.sui.io/develop/security/best-practices) only. If the Sui docs MCP server (`https://sui.mcp.kapa.ai`) is available, use it to verify details.
 
-> **Source constraint:** All information in this skill is sourced exclusively from [docs.sui.io/develop/security/best-practices](https://docs.sui.io/develop/security/best-practices). When extending or updating this skill, only pull from this source. Do not use third-party blogs, tutorials, or unofficial documentation.
+## Quick start
 
-This skill covers security best practices for Move smart contracts on Sui, including package auditing, upgrade governance, access control patterns, randomness security, key management, and operational security. It routes to focused reference files based on the task.
+- **Authorizing a privileged function?** Take a capability object as the second parameter. Never rely on `tx_context::sender()` alone.
+- **Consuming randomness?** The function must be private `entry`, and `RandomGenerator` must be created inside it, never passed in.
+- **Holding an admin capability?** Multisig or dedicated custody, plus a revocation mechanism designed before publishing.
 
----
-
-## Reference files
-
-### best-practices -- Security Best Practices
-**Path:** `best-practices.md`
-**Load when:** auditing a package, reviewing upgrade policies, verifying dependencies, validating invariants, emitting events for privileged actions, using onchain randomness, handling oracle data, designing emergency controls, reviewing frontend signing flows, or managing keys.
-**Covers:** package auditing and immutability, upgrade governance and UpgradeCap protection, dependency verification, Move language guarantees and limitations, invariant and relationship validation, event emission for privileged actions, onchain randomness security (post-random restrictions, private entry, RandomGenerator, gas path balance, commit-reveal), oracle and offchain data validation, emergency controls (pause, rate-limiting), frontend transaction signing safety, package ID verification, key management (private key protection, privileged key custody, role separation, recovery and rotation).
-
-### access-control -- Access Control Patterns
-**Path:** `access-control.md`
-**Load when:** choosing between capability objects and address allowlists, designing admin capabilities, implementing capability revocation, validating capability-object relationships, authorizing shared object access, or reviewing uses of `tx_context::sender()`.
-**Covers:** capability objects vs address allowlists, address allowlist management, pitfalls of `tx_context::sender()` alone, explicit capability requirements and parameter placement, admin capability protection and custody, capability revocation mechanisms (registries, versioning, destruction), capability-object relationship validation, shared object authorization.
+Reference files: `access-control.md` (capabilities, allowlists, revocation, shared object authorization) and `best-practices.md` (package auditing, upgrades, dependencies, invariants, events, randomness, oracles, emergency controls, frontend signing, key management). Load one when you need detail beyond the sections below.
 
 ---
 
-## Routing guide
+## Task: review a Move module for security issues
 
-| Task | Load |
-|------|------|
-| Reviewing a contract for security issues | best-practices + access-control |
-| Auditing package identity or upgrade policy | best-practices |
-| Verifying dependencies onchain | best-practices |
-| Validating invariants and object relationships | best-practices |
-| Adding event emission for privileged actions | best-practices |
-| Using onchain randomness safely | best-practices |
-| Handling oracle or offchain data | best-practices |
-| Designing emergency pause or rate-limit | best-practices |
-| Reviewing frontend signing flow | best-practices |
-| Managing keys for deploy/admin/operations | best-practices |
-| Choosing capability objects vs allowlists | access-control |
-| Designing admin capability protection | access-control |
-| Implementing capability revocation | access-control |
-| Authorizing access to shared objects | access-control |
-| Reviewing `tx_context::sender()` usage | access-control |
-| Full security audit of a Move package | best-practices + access-control |
+Walk this checklist, then report findings in severity order with the fix for each.
 
-## Rules
+1. **Authorization mechanism.** Does each privileged function take a capability, or does it compare `ctx.sender()` to a stored address? Sender-only checks tie the function to a single signer and break composability — another contract cannot call it on behalf of a user. Recommend a capability object.
+2. **Shared state.** Anyone can submit a transaction referencing a shared object, so access is never restricted by sharing alone; every function touching shared state must check authorization internally.
+3. **Capability–object relationship.** Assert the capability belongs to the object being modified (store and compare the object ID).
+4. **Events.** Every privileged action — admin change, allowlist update, mint/burn, denylist, config change, oracle update, pause — must emit an event so offchain monitoring can detect misuse.
+5. **Revocation.** Is there a way to invalidate a leaked capability? Packages are immutable, so this must exist before publishing.
+6. **Randomness.** See the randomness section below.
+7. **Invariants and external data.** Assert invariants after state changes; validate oracle/offchain data for staleness, bounds, and source.
+8. **Emergency controls.** Value-moving paths should have a pause or rate limit.
+9. **Package identity.** `Move.toml` names are arbitrary strings, not unique. Verify the onchain package ID; an upgrade publishes a new package at a new address.
 
-- Sui packages are immutable once published. During a package upgrade, a new package with a new address is published. Verify package IDs directly onchain rather than relying on names or frontend constants.
-- Treat `UpgradeCap` with the same rigor as admin capabilities since holders can modify package behavior.
-- Mark randomness-consuming functions as private `entry` only. The Move compiler lints against `public` functions that take `Random` or `RandomGenerator`.
-- Never accept `RandomGenerator` as a `public` function parameter. Passing it to `public(package)` or private functions is acceptable for testing and in-package logic.
-- Emit events for all privileged actions: admin changes, allowlist updates, mint/burn operations, denylist actions, configuration changes, oracle updates, emergency pauses.
-- Require relevant capabilities as parameters for all privileged functions. Do not rely on `tx_context::sender()` alone for authorization.
-- Anyone can submit a transaction referencing a shared object. Never assume shared object access is restricted.
-- Design capability revocation before publishing the package. Without it, a leaked capability remains valid for the life of the package.
+### Example finding and fix
 
-## Common mistakes
+A shared `Vault` storing `admin: address` and checking `ctx.sender() == vault.admin`:
 
-- **Trusting package names instead of onchain IDs.** Move package names (the `name` field in `Move.toml`) are arbitrary strings chosen by the developer and are not unique. Always verify the exact onchain package ID (the object address).
-- **Using `tx_context::sender()` as the sole authorization check.** This ties functions to single signers and breaks composability. Other contracts cannot call the function on behalf of users.
-- **Forgetting that shared objects are accessible to anyone.** Every privileged function touching shared state must validate authorization internally.
-- **Accepting `RandomGenerator` as a `public` function parameter.** This allows callers to manipulate the generator. Create it within the entry function via `r.new_generator(ctx)` and pass only to `public(package)` or private helpers.
-- **Not planning capability revocation before publishing.** Once published, the package is immutable. A leaked capability without a revocation mechanism remains valid forever.
-- **Holding admin capabilities in single hot wallets.** Use multisig addresses, hardware wallets, or dedicated custody for privileged keys.
+> **High — sender-only authorization.** `withdraw` and `change_admin` authorize by comparing `ctx.sender()` to a stored address. This binds the function to a single signer and breaks composability; no other contract can act for the admin. The `Vault` is shared, so anyone can reference it — the internal check is the only barrier.
+> **Medium — no events.** Neither `withdraw` nor `change_admin` emits an event, leaving privileged actions invisible to offchain monitoring.
+> **Medium — no revocation path.** If the admin key is compromised, nothing invalidates it for the life of the immutable package.
+
+Fix:
+
+```move
+public struct AdminCap has key, store { id: UID, vault_id: ID }
+
+public struct Withdrawn has copy, drop { vault: ID, amount: u64 }
+
+public fun withdraw(
+    vault: &mut Vault,          // object first
+    cap: &AdminCap,             // capability second: keeps method associativity
+    amount: u64,
+    ctx: &mut TxContext,
+): Coin<SUI> {
+    assert!(cap.vault_id == object::id(vault), ENotAuthorized);
+    event::emit(Withdrawn { vault: object::id(vault), amount });
+    coin::take(&mut vault.balance, amount, ctx)
+}
+```
+
+---
+
+## Task: capability object vs address allowlist
+
+**Default: the capability object.** Capabilities compose — another protocol can hold a `MinterCap` on behalf of a user, which an allowlist keyed on `tx_context::sender()` cannot support. Require the capability as a parameter, placed **second** (after the object acted on) so method associativity still works.
+
+**Escape hatch — allowlist:** if the authorized set must be mutable from a single admin action, store it in a well-defined object, restrict who may update it, and emit an event on every change. Even then, authorization still needs an explicit check inside each function, because the holding object is shared.
+
+Design the revocation mechanism before publishing either way (next section).
+
+---
+
+## Task: protect, revoke, and rotate an admin capability
+
+**Custody.** Hold `AdminCap`/`UpgradeCap` in a multisig address, hardware wallet, or dedicated custody — never a single hot wallet. Treat `UpgradeCap` as seriously as an admin capability: its holder can change package behavior. Each transfer grants full privileges, so do not transfer casually. Separate deploy, admin, and operations keys.
+
+**If a capability leaks and no revocation exists, it remains valid for the life of the package** — the package is immutable and cannot be patched to ignore it.
+
+Revocation options, chosen before publishing:
+
+| Mechanism | How it works | Needs holder cooperation? |
+|---|---|---|
+| Onchain registry of valid capability IDs | Each privileged function checks the capability ID against the registry; admins remove compromised IDs | No |
+| Version / epoch field | Capability carries a version; functions reject versions below the current one, so bumping invalidates older capabilities | No |
+| Destruction function | Holder calls a function that deletes the capability | Yes |
+
+Pair any of these with a documented rotation path: mint the replacement capability, move it to the new custody, then invalidate the old ID or bump the version.
+
+---
+
+## Task: audit randomness usage
+
+Checklist for any function consuming `Random`:
+
+- [ ] The function is **private `entry`** — not `public`. The Move compiler lints against `public` functions that take `Random` or `RandomGenerator`.
+- [ ] Private entry is what prevents other modules from composing randomness calls into larger attacks (e.g. aborting on an unfavorable draw).
+- [ ] `RandomGenerator` is **never a parameter**. Create it inside the entry function with `r.new_generator(ctx)` and pass it only to `public(package)` or private helpers.
+- [ ] Gas paths are balanced: the favorable outcome consumes equal or more gas than the unfavorable one, so a caller cannot force an abort on bad draws.
+- [ ] For high-stakes applications, consider commit-reveal instead of a single-transaction draw.
+
+So `public fun draw_winner(lottery: &mut Lottery, rng: &mut RandomGenerator, ...)` is unsafe on two counts — it is `public`, and it accepts the generator. Correct shape:
+
+```move
+entry fun draw_winner(lottery: &mut Lottery, r: &Random, ctx: &mut TxContext) {
+    let mut gen = r.new_generator(ctx);
+    // use gen here, or pass to public(package)/private helpers
+}
+```
+
+---
+
+## Other checks
+
+- **Upgrades:** restrict or burn `UpgradeCap` per the intended policy; verify dependency package IDs onchain, not by name.
+- **Oracles/offchain data:** validate staleness, bounds, and source before acting on it.
+- **Emergency controls:** pause flags and rate limits on value-moving paths, each emitting an event.
+- **Frontend signing:** verify the package ID the transaction targets and show users what they are signing.
+
+Details for all four are in `best-practices.md`.

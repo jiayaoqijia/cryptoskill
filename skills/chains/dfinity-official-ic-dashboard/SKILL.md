@@ -5,6 +5,8 @@ license: Apache-2.0
 metadata:
   title: IC Dashboard APIs
   category: Integration
+  summary: "Query the public IC Dashboard REST APIs for canister, token and network data."
+  keywords: "dashboard, REST API, network stats, metrics, explorer, canister info, token data, SNS data, ICP ledger, analytics, off-chain"
 ---
 
 # IC Dashboard APIs

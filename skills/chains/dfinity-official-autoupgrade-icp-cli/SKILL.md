@@ -6,6 +6,8 @@ compatibility: "curl, bash; network access to github.com (and formulae.brew.sh f
 metadata:
   title: Automatically Upgrade the ICP CLI
   category: Infrastructure
+  summary: "Install a hook that keeps the icp CLI and ic-wasm on the latest release."
+  keywords: "upgrade icp, update CLI, icp version, ic-wasm, outdated CLI, install icp-cli, Homebrew, npm, SessionStart hook, toolchain update"
 ---
 
 # Set up automatic `icp` CLI upgrades

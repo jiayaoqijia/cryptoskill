@@ -6,6 +6,8 @@ compatibility: "ICP MCP route: the ICP MCP connector (native in ChatGPT and Clau
 metadata:
   title: Deploy to Cloud Engine
   category: CloudEngine
+  summary: "Deploy a built ICP project to a cloud engine (OpenCloud)."
+  keywords: "deploy, cloud engine, OpenCloud, ship, publish, hosting, MCP, engine subnet, icp deploy, console app, proxy canister"
 ---
 
 # Deploy to Cloud Engine

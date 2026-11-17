@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.3.0, browser on the same machine"
 metadata:
   title: Agent Web Identity Sign-In
   category: Auth
+  summary: "Let an AI agent sign in to Internet Identity and call canisters as the user."
+  keywords: "agent login, AI agent, delegation, act on behalf of user, icp identity link web, authenticate agent, CLI sign in, OISY, NNS app, principal, Internet Identity"
 ---
 
 # Agent Web Identity Sign-In

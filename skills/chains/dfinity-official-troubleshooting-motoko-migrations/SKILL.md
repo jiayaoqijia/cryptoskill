@@ -6,6 +6,8 @@ compatibility: "moc >= 1.15.0, core >= 2.5.0"
 metadata:
   title: Troubleshooting Motoko Migrations
   category: Motoko
+  summary: "Fix Motoko migration-chain errors the regular migration rules don't explain."
+  keywords: "Motoko, migration error, upgrade failed, compatibility error, frozen migration, OldActor, stable compatibility, debugging, troubleshooting"
 ---
 
 # Troubleshooting Motoko Migrations

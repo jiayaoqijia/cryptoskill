@@ -12,11 +12,11 @@ Use the `sui::display_registry` module (not the legacy `sui::display`). There ar
 
 ### Publisher path — `new_with_publisher`
 
-Requires a `Publisher` object, which is obtained during the module's `init` function using `package::claim(otw, ctx)`. Use this when you already have a Publisher and are setting up Display at publish time.
+Requires a `Publisher` object, which is obtained during the module's `init` function using `package::claim(otw, ctx)`. The `DisplayRegistry` is a shared object, and `init` cannot take one as an argument, so claim the Publisher in `init` and create the display in a function that receives the registry.
 
 ```move
-use sui::display_registry;
-use sui::package;
+use sui::display_registry::{Self, DisplayRegistry};
+use sui::package::{Self, Publisher};
 
 public struct MY_NFT has drop {}
 
@@ -27,22 +27,26 @@ public struct GameItem has key, store {
     rarity: String,
 }
 
+// `init` claims the Publisher. The registry is the shared DisplayRegistry
+// at 0xd, which `init` cannot take as an argument, so the display is
+// created in a separate call that receives it.
 fun init(otw: MY_NFT, ctx: &mut TxContext) {
     let publisher = package::claim(otw, ctx);
+    transfer::public_transfer(publisher, ctx.sender());
+}
 
-    // registry is the shared DisplayRegistry at 0xd
-    let (mut d, cap) = display_registry::new_with_publisher<GameItem>(
-        registry,
-        &publisher,
-        ctx,
-    );
+public fun setup_display(
+    registry: &mut DisplayRegistry,
+    publisher: &mut Publisher,
+    ctx: &mut TxContext,
+) {
+    let (mut d, cap) = display_registry::new_with_publisher<GameItem>(registry, publisher, ctx);
     display_registry::set(&mut d, &cap, b"name".to_string(), b"{name}".to_string());
     display_registry::set(&mut d, &cap, b"description".to_string(), b"A {rarity} game item".to_string());
     display_registry::set(&mut d, &cap, b"image_url".to_string(), b"https://example.com/items/{image_id}.png".to_string());
     display_registry::share(d);
 
     transfer::public_transfer(cap, ctx.sender());
-    transfer::public_transfer(publisher, ctx.sender());
 }
 ```
 
@@ -51,8 +55,8 @@ fun init(otw: MY_NFT, ctx: &mut TxContext) {
 Uses `internal::Permit<T>` instead of a Publisher. Simpler because it does not require a One-Time Witness or a Publisher object — it works in any function, not just `init`.
 
 ```move
-use sui::display_registry;
-use sui::internal;
+use sui::display_registry::{Self, DisplayRegistry};
+use std::internal;
 
 public struct GameItem has key, store {
     id: UID,

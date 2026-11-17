@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2, moc >= 1.7.0 for the Motoko examples (dot nota
 metadata:
   title: "Stable Memory & Upgrades"
   category: Core
+  summary: "Keep canister data across upgrades with stable memory and persistence."
+  keywords: "stable memory, upgrades, persistence, data loss, StableBTreeMap, MemoryManager, pre_upgrade, post_upgrade, store data, storage, database, save data"
 ---
 
 # Stable Memory & Canister Upgrades

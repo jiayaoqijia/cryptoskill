@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2"
 metadata:
   title: Encrypted Maps
   category: Security
+  summary: "End-to-end encrypted, shareable key-value storage with vetKeys EncryptedMaps."
+  keywords: "encryption, encrypted storage, password manager, encrypted notes, secure vault, privacy, secrets, vetKeys, sharing, access rights, end-to-end"
 ---
 
 # Encrypted Maps (vetKeys)

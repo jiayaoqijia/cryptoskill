@@ -6,6 +6,8 @@ compatibility: "moc >= 1.6.0, ic-cdk >= 0.20.1"
 metadata:
   title: User Attributes
   category: Auth
+  summary: "Get a signed-in user's verified name, email or organization in a canister."
+  keywords: "user profile, email, name, attributes, identity claims, verified email, Internet Identity, allowlist, user info, KYC"
 ---
 
 # User Attributes

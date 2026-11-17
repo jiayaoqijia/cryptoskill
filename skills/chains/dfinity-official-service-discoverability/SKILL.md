@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.3.0 with the @dfinity/static-site recipe; envsubst 
 metadata:
   title: Service Discoverability
   category: Frontend
+  summary: "Make a canister app discoverable to AI agents and ICP MCP from its URL."
+  keywords: "AI agents, MCP, discoverability, agent-ready, ic-architecture, manifest, getApiDoc, candid:service, OQL, machine-readable, LLM"
 ---
 
 # Service Discoverability

@@ -6,6 +6,8 @@ compatibility: "@caffeineai/cli (the `caffeine` command), Node.js >= 20.19, pnpm
 metadata:
   title: "Caffeine App (build from scratch)"
   category: Integration
+  summary: "Scaffold and build a complete Caffeine (caffeine.ai) app with its CLI."
+  keywords: "caffeine.ai, caffeine.toml, scaffold, new project, React, Vite, app builder, caffeine CLI, full-stack app, template"
 ---
 
 # Caffeine App (build from scratch)

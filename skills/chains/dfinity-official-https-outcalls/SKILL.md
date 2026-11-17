@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2; pricing version 2 and flexible outcalls need i
 metadata:
   title: HTTPS Outcalls
   category: Integration
+  summary: "Call external web APIs from a canister with HTTPS outcalls."
+  keywords: "HTTP request, external API, fetch, REST, web2, oracle, outcalls, transform, http_request, call API from canister, internet access"
 ---
 
 # HTTPS Outcalls

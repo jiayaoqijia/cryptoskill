@@ -8,6 +8,8 @@ argument-hint: <canister-id-or-name>
 metadata:
    title: Canister Help
    category: Infrastructure
+   summary: "Summarize a mainnet canister's Candid interface, like --help for canisters."
+   keywords: "candid, interface, methods, canister API, describe canister, inspect canister, did file, canister ID lookup, what does this canister do"
 ---
 
 Given a canister ID or name in `$ARGUMENTS`, fetch and summarize its Candid interface.

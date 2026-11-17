@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2"
 metadata:
   title: Certified Variables
   category: Security
+  summary: "Make query responses verifiable with certified data and Merkle trees."
+  keywords: "certification, certified data, Merkle tree, BLS signature, verify query, response authenticity, http certification, tamper proof, witness"
 ---
 
 # Certified Variables

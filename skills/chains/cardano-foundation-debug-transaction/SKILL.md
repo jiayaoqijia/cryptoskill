@@ -89,6 +89,7 @@ Classify the error into one of these categories:
 | Datum errors | `NotAllowedSupplementalDatums` | Datum provided but not referenced |
 | Signer errors | `MissingVKeyWitnessesUTXOW` | Required signature not included |
 | Validity errors | `OutsideValidityIntervalUTxO` | Transaction time range does not match current slot |
+| Provider errors | `ENOTFOUND` on `*.gomaestro-api.org`, "Maestro is no longer supported" | The provider is gone, not a transaction fault |
 
 Search `../../docs/sources/` or see `references/common-errors.md` for
 detailed error explanations.
@@ -161,6 +162,13 @@ For each error category, follow these diagnostic steps:
 3. For Plutus scripts that check time: ensure `validity_range` is tight
    enough for the script's `must_be_before` / `must_be_after` checks
 4. Account for slot-to-POSIX-time conversion
+
+#### Provider Errors
+
+A DNS failure or `ENOTFOUND` on `*.gomaestro-api.org`, or a "Maestro is no longer
+supported" error, means the provider itself is gone. Maestro's Cardano API shut
+down, so the transaction is not at fault. Switch to another provider such as
+Blockfrost, Koios or Kupmios.
 
 ### Step 5: Apply the Fix
 

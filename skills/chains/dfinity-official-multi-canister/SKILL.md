@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2"
 metadata:
   title: Multi-Canister Architecture
   category: Core
+  summary: "Design apps that span several canisters and call each other."
+  keywords: "inter-canister calls, cross-canister, architecture, scaling, canister factory, bounded wait, async, microservices, payload limit, call another canister"
 ---
 
 # Multi-Canister Architecture

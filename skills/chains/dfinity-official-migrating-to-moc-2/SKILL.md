@@ -6,6 +6,8 @@ compatibility: "moc >= 2.0.0, mops >= 3.0.0"
 metadata:
   title: Migrating to moc 2
   category: Motoko
+  summary: "Upgrade a Motoko project from moc 1 to moc 2 and fix every new error."
+  keywords: "moc 2, Motoko compiler, upgrade compiler, toolchain bump, breaking changes, compile errors, new version, migration guide"
 ---
 
 # Migrating to moc 2

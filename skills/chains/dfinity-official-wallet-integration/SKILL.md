@@ -6,6 +6,8 @@ compatibility: "Node.js >= 22, a browser (secure context: HTTPS, localhost, or 1
 metadata:
   title: Wallet Integration
   category: DeFi
+  summary: "Connect external wallets like OISY to an IC dapp via the ICRC signer standards."
+  keywords: "wallet, OISY, connect wallet, signer, ICRC-25, ICRC-49, transaction approval, @icp-sdk/signer, browser extension, payments"
 ---
 
 # Wallet Integration

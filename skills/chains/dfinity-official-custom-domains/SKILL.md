@@ -6,6 +6,8 @@ compatibility: "curl, DNS registrar access, deployed canister"
 metadata:
   title: "Custom Domains"
   category: Frontend
+  summary: "Serve a canister under your own domain name with DNS and TLS."
+  keywords: "custom domain, domain name, DNS, CNAME, TXT record, TLS, SSL, HTTPS certificate, ic-domains, boundary node, own domain, website address, vanity URL"
 ---
 
 # Custom Domains

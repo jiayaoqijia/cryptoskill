@@ -5,6 +5,8 @@ license: Apache-2.0
 metadata:
   title: Canister Security
   category: Security
+  summary: "Secure canister patterns: access control, reentrancy, async safety and upgrades."
+  keywords: "security, access control, authorization, anonymous principal, reentrancy, CallerGuard, saga, cycle drain, DoS, trap, permissions, admin"
 ---
 
 # Canister Security

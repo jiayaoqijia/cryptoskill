@@ -14,18 +14,18 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Mystenlabs Naming Conventions - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="Use when writing or reviewing Move smart contracts on Sui. Applies to naming structs, error constants, regular constants, events, getter functions, capability t">
+  <meta name="description" content="Naming rules for Move smart contracts on Sui - error constants, regular constants, events, capability structs, getter functions, hot potatoes, and dynamic field">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/chains/mystenlabs-naming-conventions.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Mystenlabs Naming Conventions - CryptoSkill">
-  <meta property="og:description" content="Use when writing or reviewing Move smart contracts on Sui. Applies to naming structs, error constants, regular constants, events, getter functions, capability t">
+  <meta property="og:description" content="Naming rules for Move smart contracts on Sui - error constants, regular constants, events, capability structs, getter functions, hot potatoes, and dynamic field">
   <meta property="og:url" content="https://cryptoskill.org/skills/chains/mystenlabs-naming-conventions.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mystenlabs Naming Conventions - CryptoSkill">
-  <meta name="twitter:description" content="Use when writing or reviewing Move smart contracts on Sui. Applies to naming structs, error constants, regular constants, events, getter functions, capability t">
+  <meta name="twitter:description" content="Naming rules for Move smart contracts on Sui - error constants, regular constants, events, capability structs, getter functions, hot potatoes, and dynamic field">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Naming Conventions", "description": "Use when writing or reviewing Move smart contracts on Sui. Applies to naming structs, error constants, regular constants, events, getter functions, capability types, hot potato types, and dynamic field keys. Use whenever creating new types, functions, or constants in Move code.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-naming-conventions.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Naming Conventions", "description": "Naming rules for Move smart contracts on Sui - error constants, regular constants, events, capability structs, getter functions, hot potatoes, and dynamic field keys. Use when the user asks to write, scaffold, or review a Move module or Sui smart contract (AMM, liquidity pool, NFT, game profile, inventory, access control, roles, registry), or mentions Move structs, events, error codes, capabilities, getters, or dynamic object fields.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-naming-conventions.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -69,7 +69,7 @@
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-mostly-unknown" title="0 true, 1 unknown of 11 capability flags">0 known &middot; 1 unknown</span>
     </div>
-    <p class="skill-page-desc">Use when writing or reviewing Move smart contracts on Sui. Applies to naming structs, error constants, regular constants, events, getter functions, capability types, hot potato types, and dynamic field keys. Use whenever creating new types, functions, or constants in Move code.</p>
+    <p class="skill-page-desc">Naming rules for Move smart contracts on Sui - error constants, regular constants, events, capability structs, getter functions, hot potatoes, and dynamic field keys. Use when the user asks to write, scaffold, or review a Move module or Sui smart contract (AMM, liquidity pool, NFT, game profile, inventory, access control, roles, registry), or mentions Move structs, events, error codes, capabilities, getters, or dynamic object fields.</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/chains/mystenlabs-naming-conventions .claude/skills/</code></div>
@@ -84,7 +84,7 @@
 
     <h2>Quality Score</h2>
     <div class="skill-meta" style="margin-top:8px">
-      <span>Score: <strong>56/100</strong></span>
+      <span>Score: <strong>57/100</strong></span>
       <span>Grade: <strong>C</strong></span>
       <span>Risk Gate: <strong>PASS</strong></span>
     </div>
@@ -114,7 +114,7 @@
       <p class="trust-foot">Auto-generated by cryptoskill/extract-capabilities/0.3.1 &middot; hosted-service list version 2026-09-06 &middot; <a href="../../TRUST.md" target="_blank" rel="noopener">how this is computed</a></p>
     </div>
 
-    <section class="related-strip"><h2>Other by @mystenlabs</h2><div class="related-strip-list"><a class="related-strip-card" href="../chains/mystenlabs-accessing-data.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Accessing Data</span></a><a class="related-strip-card" href="../chains/mystenlabs-sui-ts-sdk.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Sui Ts Sdk</span></a><a class="related-strip-card" href="../chains/mystenlabs-sui-publish.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Sui Publish</span></a><a class="related-strip-card" href="../chains/mystenlabs-sui-move-project.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Sui Move Project</span></a><a class="related-strip-card" href="../ai-crypto/mystenlabs-setup.html"><span class="related-strip-icon" aria-hidden="true">🤖</span><span class="related-strip-name">Mystenlabs Setup</span></a><a class="related-strip-card" href="../chains/mystenlabs-sui-frontend.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Sui Frontend</span></a></div></section>
+    <section class="related-strip"><h2>Other by @mystenlabs</h2><div class="related-strip-list"><a class="related-strip-card" href="../chains/mystenlabs-accessing-data.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Accessing Data</span></a><a class="related-strip-card" href="../chains/mystenlabs-sui-ts-sdk.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Sui Ts Sdk</span></a><a class="related-strip-card" href="../chains/mystenlabs-sui-publish.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Sui Publish</span></a><a class="related-strip-card" href="../chains/mystenlabs-sui-move-project.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Sui Move Project</span></a><a class="related-strip-card" href="../chains/mystenlabs-frontend-apps.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Mystenlabs Frontend Apps</span></a><a class="related-strip-card" href="../ai-crypto/mystenlabs-setup.html"><span class="related-strip-icon" aria-hidden="true">🤖</span><span class="related-strip-name">Mystenlabs Setup</span></a></div></section>
 <section class="related-strip"><h2>Other in Chains</h2><div class="related-strip-list"><a class="related-strip-card" href="../chains/dfinity-official-https-outcalls.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Dfinity Official Https Outcalls</span></a><a class="related-strip-card" href="../chains/dfinity-official-skill-creator.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Dfinity Official Skill Creator</span></a><a class="related-strip-card" href="../chains/cardano-foundation-build-transaction.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Cardano Foundation Build Transaction</span></a><a class="related-strip-card" href="../chains/base-official-vibenet.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Base Official Vibenet</span></a><a class="related-strip-card" href="../chains/cardano-foundation-query-chain.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">Cardano Foundation Query Chain</span></a><a class="related-strip-card" href="../chains/near.html"><span class="related-strip-icon" aria-hidden="true">⛓️</span><span class="related-strip-name">NEAR Intents 1click Api</span></a></div></section>
 
     <h2>Source</h2>

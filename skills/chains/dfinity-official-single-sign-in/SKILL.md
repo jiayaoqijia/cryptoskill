@@ -6,6 +6,8 @@ compatibility: "@icp-sdk/auth >= 11.0.0"
 metadata:
   title: Single Sign-In
   category: Auth
+  summary: "Sign in once across a suite of apps on sibling subdomains."
+  keywords: "single sign-in, SSO, shared session, subdomains, multiple apps, reauth, sign out everywhere, session, Internet Identity, cookie"
 ---
 
 # Single Sign-In

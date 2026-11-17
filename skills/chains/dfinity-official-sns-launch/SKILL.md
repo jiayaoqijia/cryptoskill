@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2, dfx with sns extension"
 metadata:
   title: SNS DAO Launch
   category: Governance
+  summary: "Configure and launch an SNS DAO to decentralize your app."
+  keywords: "SNS, DAO, decentralize, governance, tokenomics, token launch, swap, NNS proposal, community ownership"
 ---
 
 # SNS DAO Launch

@@ -5,6 +5,8 @@ license: Apache-2.0
 metadata:
   title: Automatically Sync Latest IC Skills
   category: Infrastructure
+  summary: "Install a Claude Code hook that keeps ICP skills up to date every session."
+  keywords: "auto update skills, sync skills, install skills, Claude Code, SessionStart hook, setup, bootstrap, latest skills, agent skills"
 ---
 
 # Set up self-updating Internet Computer skills

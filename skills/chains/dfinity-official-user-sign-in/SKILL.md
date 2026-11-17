@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.4, Node.js >= 22"
 metadata:
   title: User Sign-In
   category: Auth
+  summary: "Add Internet Identity sign-in (passkeys, Google, Apple) to an app."
+  keywords: "login, sign in, authentication, auth, Internet Identity, passkey, Google login, Apple login, OpenID, derivationOrigin, @icp-sdk/auth, II"
 ---
 
 # User Sign-In

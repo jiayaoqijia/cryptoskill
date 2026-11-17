@@ -6,11 +6,11 @@
       "https://docs.sui.io/develop/transactions/ptbs/building-ptb",
       "https://sdk.mystenlabs.com/sui/transactions/basics"
     ],
-    "expected_output": "A TypeScript snippet that imports Transaction from '@mysten/sui/transactions', creates a Transaction, splits the specified amount off tx.gas (not a separately-fetched coin), transfers that new coin to the recipient address, and hands the Transaction off to the wallet via signTransaction/signAndExecuteTransaction. Should not call setGasBudget / setGasPrice / setGasPayment (let the wallet handle gas). Should use typed pure helpers (tx.pure.u64, tx.pure.address).",
+    "expected_output": "A TypeScript snippet that imports Transaction, transfers 100 MIST to the requested recipient using a supported coin/balance construction, and hands the Transaction to the wallet. Either a gas split followed by transferObjects, tx.coin with transferObjects, or tx.balance with balance::send_funds is valid. It does not pre-build or force gas settings in a wallet-managed flow.",
     "expectations": [
       "Imports from '@mysten/sui/transactions'",
-      "Uses tx.splitCoins(tx.gas, [tx.pure.u64(100)]) to derive an owned coin from the gas coin rather than fetching a separate Coin<SUI> object",
-      "Uses tx.transferObjects with tx.pure.address(recipient) — not a raw string argument",
+      "Uses a supported 100-MIST SUI transfer: gas split plus transferObjects, tx.coin plus transferObjects, or tx.balance plus balance::send_funds.",
+      "Sends the 100 MIST to the requested recipient. Uses tx.pure.address(recipient) for balance::send_funds; transferObjects accepts that helper or the supported address-string shortcut.",
       "Does NOT call tx.setGasBudget / tx.setGasPrice / tx.setGasPayment for a wallet-signed flow",
       "Does NOT call tx.build() before handing to the wallet (uses tx.serialize() or passes the Transaction instance directly)",
       "Mentions checking the execution result status (e.g., effects.status) or warns that transactions can fail at the Move level even if accepted"
@@ -122,6 +122,50 @@
       "Notes the pool must be passed as mutable: true (not read-only) to be consumed",
       "Mentions that consuming a shared object by value permanently marks the clique as hot, which blocks subsequent non-public entry calls on entangled values",
       "Does NOT falsely claim shared objects are immutable or that they cannot be deleted"
+    ]
+  },
+  {
+    "id": "ptbs-monetary-gas-budget",
+    "prompt": "My sender-paid PTB calls setGasBudget(10_000_000) and setGasPrice(1_000). Its only non-gas command transfers an existing non-SUI coin. Eligible SUI gas coins total 20_000_000 MIST. A review says I need budget times price, or 10 SUI, and should lower the budget to fit. Is that arithmetic right? This is a funding calculation only, not proof that execution will succeed.",
+    "sources": [
+      "https://sdk.mystenlabs.com/sui/transactions/offline",
+      "https://docs.sui.io/develop/transaction-payment/gas-in-sui"
+    ],
+    "expected_output": "Corrects the units and distinguishes funding the signed budget from proving its execution sufficiency.",
+    "expectations": [
+      "States the monetary budget is 0.01 SUI and 0.02 SUI of eligible gas funds covers that budget.",
+      "Does not multiply the monetary budget by gas price or recommend shrinking it simply to fit funds.",
+      "Does not claim this funding arithmetic proves the transaction will execute successfully."
+    ]
+  },
+  {
+    "id": "ptbs-address-balance-gas",
+    "prompt": "A backend uses @mysten/sui v2 on a network supporting address-balance gas. The gas payer has no Coin<SUI> objects but has 1 SUI in addressBalance. The gas budget is 50,000,000 MIST and the program withdraws another 0.2 SUI from that same address balance. Must we create a gas coin? Explain configuration and offline-build requirements without submitting anything. Also explain why a different wallet with 1 SUI only in coin objects and zero addressBalance cannot fund the same explicit empty-payment form from its total balance alone.",
+    "sources": [
+      "https://sdk.mystenlabs.com/sui/transactions/offline",
+      "https://sdk.mystenlabs.com/sui/clients/querying"
+    ],
+    "expected_output": "Address-balance gas does not require a versioned gas coin. The first payer has enough for 0.05+0.2=0.25 SUI, subject to other validation and concurrency. Use empty gas payment and proper validity metadata; coin-only funds do not become address balance automatically.",
+    "expectations": [
+      "Recognizes address-balance payment via setGasPayment([]) and says no gas coin needs to be created for the stated payer.",
+      "Uses the gas owner's addressBalance and accounts for the full 0.05 SUI budget plus the 0.2 SUI withdrawal.",
+      "Explains that offline address-paid builds need appropriate chain/validity/nonce metadata, while a supported online build resolves it.",
+      "Does not treat coinBalance or total balance as sufficient addressBalance and does not claim setGasPayment([]) converts coins."
+    ]
+  },
+  {
+    "id": "ptbs-balance-helper-arguments",
+    "prompt": "In @mysten/sui v2, is tx.balance({ coinType: SUI_TYPE, owner: sender }) the way to query a balance or select address-balance gas? Show the correct basic helper arguments for supplying 1,000,000 MIST to a Move call, and distinguish it from the query and gas-payment APIs. Do not sign or submit.",
+    "sources": [
+      "https://sdk.mystenlabs.com/sui/transactions/basics",
+      "https://sdk.mystenlabs.com/sui/transactions/offline",
+      "https://sdk.mystenlabs.com/sui/clients/querying"
+    ],
+    "expected_output": "The PTB helper creates a Balance value for program spending; it is not a query or gas selector. It takes balance and optional type/useGasCoin, while client.getBalance reads and setGasPayment([]) selects address-balance gas.",
+    "expectations": [
+      "Uses tx.balance({ balance: 1_000_000n, type: SUI_TYPE }) or equivalent supported arguments, not coinType/owner.",
+      "Distinguishes client.getBalance from tx.balance and from tx.setGasPayment([]).",
+      "Does not treat offline construction as proof of sufficient real funds."
     ]
   }
 ]

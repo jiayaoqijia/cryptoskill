@@ -14,18 +14,18 @@
        even if `'unsafe-inline'` allows inline ones. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://api.cryptoskill.org; font-src 'self'; base-uri 'self'; form-action 'self';">
   <title>Mystenlabs Frontend Apps - CryptoSkill | Crypto AI Agent Skill</title>
-  <meta name="description" content="Sui frontend / dApp development with @mysten/dapp-kit-react (React) and @mysten/dapp-kit-core (Vue, vanilla JS, Svelte, Web Components, other frameworks). Use w">
+  <meta name="description" content="Builds Sui browser dApps with @mysten/dapp-kit-react (React, Next.js) and @mysten/dapp-kit-core (Vue, Svelte, vanilla JS, Web Components). Use when the user ask">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cryptoskill.org/skills/chains/mystenlabs-frontend-apps.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Mystenlabs Frontend Apps - CryptoSkill">
-  <meta property="og:description" content="Sui frontend / dApp development with @mysten/dapp-kit-react (React) and @mysten/dapp-kit-core (Vue, vanilla JS, Svelte, Web Components, other frameworks). Use w">
+  <meta property="og:description" content="Builds Sui browser dApps with @mysten/dapp-kit-react (React, Next.js) and @mysten/dapp-kit-core (Vue, Svelte, vanilla JS, Web Components). Use when the user ask">
   <meta property="og:url" content="https://cryptoskill.org/skills/chains/mystenlabs-frontend-apps.html">
   <meta property="og:site_name" content="CryptoSkill">
   <meta property="og:image" content="https://cryptoskill.org/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mystenlabs Frontend Apps - CryptoSkill">
-  <meta name="twitter:description" content="Sui frontend / dApp development with @mysten/dapp-kit-react (React) and @mysten/dapp-kit-core (Vue, vanilla JS, Svelte, Web Components, other frameworks). Use w">
+  <meta name="twitter:description" content="Builds Sui browser dApps with @mysten/dapp-kit-react (React, Next.js) and @mysten/dapp-kit-core (Vue, Svelte, vanilla JS, Web Components). Use when the user ask">
   <meta name="twitter:site" content="@cryptaborgs">
   <meta name="twitter:image" content="https://cryptoskill.org/og-image.png">
   <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../styles.css?v=1d7d1559">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VP1G7H67L"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-3VP1G7H67L');</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Frontend Apps", "description": "Sui frontend / dApp development with @mysten/dapp-kit-react (React) and @mysten/dapp-kit-core (Vue, vanilla JS, Svelte, Web Components, other frameworks). Use when building browser apps that connect Sui wallets, query on-chain state, or submit transactions. Covers wallet connection, network switching, transaction execution, query patterns with TanStack React Query, and the specific pitfalls of browser + wallet + async-indexer environments. Pair with the `sui-sdks` skill for @mysten/sui Transaction construction patterns and the `ptbs` skill for PTB semantics.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-frontend-apps.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Mystenlabs Frontend Apps", "description": "Builds Sui browser dApps with @mysten/dapp-kit-react (React, Next.js) and @mysten/dapp-kit-core (Vue, Svelte, vanilla JS, Web Components). Use when the user asks how to connect a Sui wallet, add a ConnectButton, set up createDAppKit or DAppKitProvider, read a balance or owned objects/NFTs in a frontend, sign and execute a transaction from a React or Vue component, sponsor gas from a backend, fix a UI that is stale after a transaction, handle Next.js App Router 'use client' / SSR for Sui, migrate off the deprecated @mysten/dapp-kit package or removed hooks (useSuiClientQuery, useSuiClient, useSignAndExecuteTransaction, useConnectWallet), or review Sui frontend code. Pair with the `sui-sdks` skill for @mysten/sui Transaction construction and the `ptbs` skill for PTB semantics.", "applicationCategory": "DeveloperApplication", "url": "https://cryptoskill.org/skills/chains/mystenlabs-frontend-apps.html", "author": {"@type": "Organization", "name": "mystenlabs"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 </head>
 <body>
   <nav class="navbar"><div class="container">
@@ -65,11 +65,11 @@
       <span class="skill-badge">Chains</span>
       <span>by @mystenlabs</span>
       <span>v1.0.0</span>
-      <span class="skill-badge" style="background:rgba(234,179,8,0.12);color:#eab308">C</span>
+      <span class="skill-badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">B</span>
       <span class="skill-badge" style="background:rgba(34,197,94,0.12);color:#22c55e">PASS</span>
       <span class="skill-badge trust-flag-badge trust-flag-some" title="4 true, 1 unknown of 11 capability flags">4 flags</span>
     </div>
-    <p class="skill-page-desc">Sui frontend / dApp development with @mysten/dapp-kit-react (React) and @mysten/dapp-kit-core (Vue, vanilla JS, Svelte, Web Components, other frameworks). Use when building browser apps that connect Sui wallets, query on-chain state, or submit transactions. Covers wallet connection, network switching, transaction execution, query patterns with TanStack React Query, and the specific pitfalls of browser + wallet + async-indexer environments. Pair with the `sui-sdks` skill for @mysten/sui Transaction construction patterns and the `ptbs` skill for PTB semantics.</p>
+    <p class="skill-page-desc">Builds Sui browser dApps with @mysten/dapp-kit-react (React, Next.js) and @mysten/dapp-kit-core (Vue, Svelte, vanilla JS, Web Components). Use when the user asks how to connect a Sui wallet, add a ConnectButton, set up createDAppKit or DAppKitProvider, read a balance or owned objects/NFTs in a frontend, sign and execute a transaction from a React or Vue component, sponsor gas from a backend, fix a UI that is stale after a transaction, handle Next.js App Router &#x27;use client&#x27; / SSR for Sui, migrate off the deprecated @mysten/dapp-kit package or removed hooks (useSuiClientQuery, useSuiClient, useSignAndExecuteTransaction, useConnectWallet), or review Sui frontend code. Pair with the `sui-sdks` skill for @mysten/sui Transaction construction and the `ptbs` skill for PTB semantics.</p>
 
     <h2>Install</h2>
     <div class="install-cmd"><span class="prompt">$</span> <code>cp -r cryptoskill/skills/chains/mystenlabs-frontend-apps .claude/skills/</code></div>
@@ -84,8 +84,8 @@
 
     <h2>Quality Score</h2>
     <div class="skill-meta" style="margin-top:8px">
-      <span>Score: <strong>54/100</strong></span>
-      <span>Grade: <strong>C</strong></span>
+      <span>Score: <strong>62/100</strong></span>
+      <span>Grade: <strong>B</strong></span>
       <span>Risk Gate: <strong>PASS</strong></span>
     </div>
 

@@ -132,7 +132,10 @@ const bytes = await client.walrus.readBlob({ blobId });
 Store the blob ID in a struct field, then use the Walrus aggregator URL in the Display template to make wallets and explorers render the image directly:
 
 ```move
-use sui::display_registry;
+use sui::display_registry::{Self, DisplayRegistry};
+use sui::package::{Self, Publisher};
+
+public struct MY_NFT has drop {}
 
 public struct NFT has key, store {
     id: UID,
@@ -140,14 +143,20 @@ public struct NFT has key, store {
     walrus_blob_id: String,
 }
 
+// `init` claims the Publisher. The DisplayRegistry is a shared object at
+// 0xd, which `init` cannot take as an argument, so the display is created
+// in a separate call that receives it.
 fun init(otw: MY_NFT, ctx: &mut TxContext) {
     let publisher = package::claim(otw, ctx);
+    transfer::public_transfer(publisher, ctx.sender());
+}
 
-    let (mut d, cap) = display_registry::new_with_publisher<NFT>(
-        &mut display_registry::borrow_mut(),
-        &mut publisher,
-        ctx,
-    );
+public fun setup_display(
+    registry: &mut DisplayRegistry,
+    publisher: &mut Publisher,
+    ctx: &mut TxContext,
+) {
+    let (mut d, cap) = display_registry::new_with_publisher<NFT>(registry, publisher, ctx);
     display_registry::set(&mut d, &cap,
         b"name".to_string(), b"{name}".to_string());
     display_registry::set(&mut d, &cap,
@@ -156,7 +165,6 @@ fun init(otw: MY_NFT, ctx: &mut TxContext) {
     display_registry::share(d);
 
     transfer::public_transfer(cap, ctx.sender());
-    transfer::public_transfer(publisher, ctx.sender());
 }
 ```
 

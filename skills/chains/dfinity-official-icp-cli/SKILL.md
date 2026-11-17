@@ -5,6 +5,8 @@ license: Apache-2.0
 metadata:
   title: ICP CLI
   category: Infrastructure
+  summary: "Build, deploy and manage IC projects with the icp CLI and icp.yaml."
+  keywords: "icp, dfx, command line, deploy, icp.yaml, local network, project setup, canister, environment, identity, recipes, bundle, getting started"
 ---
 
 # ICP CLI

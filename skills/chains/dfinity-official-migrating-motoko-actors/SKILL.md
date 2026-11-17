@@ -6,6 +6,8 @@ compatibility: "moc >= 1.11.2, core >= 2.5.0"
 metadata:
   title: Motoko Actor Migrations
   category: Motoko
+  summary: "Evolve Motoko actor state across upgrades with the mops migration chain."
+  keywords: "Motoko, migration, upgrade, schema change, stable fields, data migration, rename field, change type, migrations directory, persistent actor"
 ---
 
 # Motoko Actor Migrations

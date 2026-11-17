@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2, Node.js >= 22 for frontend code"
 metadata:
   title: ckETH and ckERC20 (chain-key Ethereum)
   category: DeFi
+  summary: "Deposit and withdraw ETH and ERC-20 tokens as ckETH and ckERC20."
+  keywords: "Ethereum, ETH, ERC-20, USDC, USDT, stablecoin, ckUSDC, ckUSDT, bridge, deposit, withdraw, minter, chain-key"
 ---
 
 # ckETH and ckERC20 Integration

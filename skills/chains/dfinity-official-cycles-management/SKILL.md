@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2"
 metadata:
   title: Cycles Management
   category: Infrastructure
+  summary: "Check, top up and convert cycles, and keep canisters from freezing."
+  keywords: "cycles, top up, balance, freezing threshold, frozen canister, out of cycles, gas, fees, CMC, ICP to cycles, canister creation, costs"
 ---
 
 # Cycles & Canister Management

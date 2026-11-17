@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2; Rust examples: ic-cdk 0.20 with ic-smtp-gatewa
 metadata:
   title: SMTP Gateway (Inbound Email)
   category: Integration
+  summary: "Receive inbound email in a canister through the SMTP gateway."
+  keywords: "email, receive email, inbound mail, SMTP, mailbox, MIME, mail server, inbox, smtp_request"
 ---
 
 # SMTP Gateway (Inbound Email)

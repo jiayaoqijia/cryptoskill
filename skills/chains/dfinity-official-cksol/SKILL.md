@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2, Node.js >= 22 for frontend code"
 metadata:
   title: ckSOL (chain-key SOL)
   category: DeFi
+  summary: "Deposit and withdraw Solana SOL as ckSOL on ICP."
+  keywords: "Solana, SOL, deposit, withdraw, bridge, minter, chain-key, deposit address"
 ---
 
 # ckSOL Integration

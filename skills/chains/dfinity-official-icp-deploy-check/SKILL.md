@@ -6,6 +6,8 @@ compatibility: "a local Rust canister repo (ic-cdk >= 0.18); ripgrep; no network
 metadata:
   title: ICP Deploy Check
   category: Security
+  summary: "Pre-deploy safety checklist for a Rust canister before going to mainnet."
+  keywords: "mainnet, pre-deploy, checklist, safety gate, ready for production, CI check, fetch_root_key, controllers, anonymous principal, launch readiness"
 ---
 
 # ICP deploy check

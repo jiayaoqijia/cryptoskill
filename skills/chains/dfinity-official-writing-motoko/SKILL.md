@@ -6,6 +6,8 @@ compatibility: "moc >= 1.16.0, core >= 2.6.0, mops >= 3.0.0"
 metadata:
   title: Writing Motoko
   category: Motoko
+  summary: "Write correct modern Motoko: syntax, mo:core, persistent actors and pitfalls."
+  keywords: "Motoko, programming language, syntax, compiler errors, mo:core, standard library, actor, smart contract, backend, persistent actor, types"
 ---
 
 # Writing Motoko

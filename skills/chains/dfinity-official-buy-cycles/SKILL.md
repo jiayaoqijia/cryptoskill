@@ -6,6 +6,8 @@ compatibility: "icp-cli with `icp cycles buy` (dfinity/icp-cli#815; `icp cycles 
 metadata:
   title: Buy Cycles With a Card
   category: Infrastructure
+  summary: "Buy cycles with a credit card when you have no ICP to pay for deployment."
+  keywords: "credit card, fiat, USD, Stripe, CyclePay, pay for cycles, purchase cycles, out of cycles, no ICP, icp cycles buy, funding"
 ---
 
 # Buy Cycles With a Card

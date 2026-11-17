@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2"
 metadata:
   title: ckBTC (chain-key Bitcoin)
   category: DeFi
+  summary: "Accept, send and withdraw Bitcoin as ckBTC from a canister."
+  keywords: "Bitcoin, BTC, deposit, withdraw, minter, UTXO, payments, wrapped bitcoin, chain-key, subaccount"
 ---
 
 # Chain-Key Bitcoin (ckBTC) Integration

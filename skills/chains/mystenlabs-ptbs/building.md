@@ -125,8 +125,8 @@ tx.publish({ modules: number[][], dependencies: string[] })
 tx.upgrade({ modules, dependencies, packageId, ticket })
 //   returns: UpgradeReceipt
 
-tx.balance({ coinType?: string, owner?: string })
-//   returns: a Balance value resolved at build time
+tx.balance({ balance, type?: string, useGasCoin?: boolean })
+//   creates a Balance<T> for program spending; not a balance query or gas-payment setting
 
 tx.coin({ balance, type?: string })
 //   wraps a Balance into a Coin object
@@ -168,19 +168,44 @@ tx.moveCall({ target: '0x123::hero::equip_sword', arguments: [hero, sword] });
 tx.setSender(senderAddress);        // required if building offline or sending kind-only
 tx.setGasPrice(gasPrice);           // default: network reference gas price
 tx.setGasBudget(gasBudgetMist);     // default: auto (SDK dry-runs and picks)
-tx.setGasPayment([                  // default: auto (all coins at sender not used as inputs)
+tx.setGasPayment([                  // explicit coin-payment mode; [] selects address balance
   { objectId, version, digest },
   ...
 ]);
 tx.setGasOwner(sponsorAddress);     // for sponsored txs — gas coins owned by someone else
 ```
 
+### Paying gas from address balance
+
+On supported networks, `setGasPayment([])` pays gas from the gas owner's SUI
+address balance. Example typechecked with `@mysten/sui` 2.23.1 and 2.38.0:
+
+```ts
+// Backend: tx already contains the intended commands.
+tx.setSender(senderAddress);
+tx.setGasPayment([]);
+const bytes = await tx.build({ client }); // Unsigned bytes; no submission.
+```
+
+`client.getBalance({ owner: gasOwner })` returns `{ balance }`; check
+`balance.addressBalance`.
+It must cover the full gas budget plus any SUI withdrawn from that same balance.
+The gas owner defaults to the sender. An empty payment list does not convert
+coin objects into address balance.
+
+An online build supplies expiration metadata. Offline builds need `ValidDuring`
+with the chain, validity bounds, and a nonce unique within the validity window,
+including across restarts. See [offline construction](https://sdk.mystenlabs.com/sui/transactions/offline).
+
+For wallet-managed flows, let the wallet build and choose payment. Address-paid
+gas avoids a versioned gas coin; other owned inputs can still conflict.
+
 ### Defaults — leave them alone when a wallet signs
 
 The SDK:
 - Sets `gas price` to the network's reference gas price.
 - **Dry-runs the PTB** to auto-derive `gas budget`.
-- Selects gas payment coins (all SUI coins at the sender not used as inputs). Multiple coins get merged into the 0-index coin during execution; the others are deleted.
+- Can select sufficiently funded address-balance gas when supported. In coin-payment mode it selects eligible SUI coins; multiple payment coins are merged into the first coin during execution.
 
 For user-signed transactions in apps, **don't set these** — let the wallet handle it. See "App ↔ wallet handoff" below.
 

@@ -209,7 +209,7 @@ When answering from a Yaci Store analytics store:
 
 #### Evolution SDK (TypeScript client over providers)
 
-Not a provider — a TypeScript library that wraps Blockfrost, Kupmios, Maestro, and Koios behind one query interface, so the provider becomes a config choice rather than a code rewrite. For read-only work, build a **provider-only client** (no wallet attached):
+Not a provider — a TypeScript library that wraps Blockfrost, Kupmios, and Koios behind one query interface, so the provider becomes a config choice rather than a code rewrite. For read-only work, build a **provider-only client** (no wallet attached):
 
 ```typescript
 import { Address, Client, preprod } from "@evolution-sdk/evolution"
@@ -217,7 +217,7 @@ import { Address, Client, preprod } from "@evolution-sdk/evolution"
 const client = Client.make(preprod).withBlockfrost({
   baseUrl: "https://cardano-preprod.blockfrost.io/api/v0",
   projectId: process.env.BLOCKFROST_PROJECT_ID!,
-}) // or .withKupmios(...) / .withMaestro(...) / .withKoios(...) — same query API
+}) // or .withKupmios(...) / .withKoios(...) — same query API
 
 const utxos   = await client.getUtxos(Address.fromBech32("addr_test1..."))
 const nftUtxo = await client.getUtxoByUnit(unit)          // the one UTxO holding an NFT

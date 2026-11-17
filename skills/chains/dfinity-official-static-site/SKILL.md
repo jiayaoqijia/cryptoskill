@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 1.0.0, Node.js >= 22"
 metadata:
   title: Static Site (Certified Assets)
   category: Frontend
+  summary: "Host a frontend or static website on the IC with the certified-assets canister."
+  keywords: "frontend, website, hosting, static site, asset canister, React, Vite, SPA, routing, _redirects, _headers, CSP, deploy website, HTML"
 ---
 
 # Static Site (Certified Assets)

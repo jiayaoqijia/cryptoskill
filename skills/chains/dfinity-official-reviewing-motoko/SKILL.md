@@ -6,6 +6,8 @@ compatibility: "moc >= 1.12.0, core >= 2.6.0, mops >= 3.0.0"
 metadata:
   title: Reviewing Motoko
   category: Motoko
+  summary: "Design review of existing Motoko code, with severity-ranked findings."
+  keywords: "Motoko, code review, review, audit, refactor, design, best practices, critique, code quality"
 ---
 
 # Reviewing Motoko

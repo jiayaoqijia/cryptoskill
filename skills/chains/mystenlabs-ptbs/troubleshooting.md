@@ -27,12 +27,17 @@ Source: https://docs.sui.io/develop/testing-debugging/common-errors · https://d
 
 ## `"No valid gas coins found for the transaction."`
 
-**Cause:** the sender has no `Coin<SUI>` sufficient to cover `gas_budget × gas_price`, or all their SUI coins are already used as non-gas inputs.
+**Cause:** the builder could not select a usable gas-payment source. Coin selection can fail when no eligible SUI coins remain, including when those coins are already ordinary transaction inputs.
+
+`gas_budget` / `setGasBudget` is already in **MIST**. Do not multiply it by gas price again. Check the gas owner's funds; a sponsor can be the gas owner.
 
 **Fix:**
-- Fund the address.
-- Don't pass your only SUI coin as a `tx.object(...)` input — use `tx.gas` for gas and split from it.
-- Lower `setGasBudget` if artificially high.
+- Check the gas owner's SUI address balance as well as eligible coin objects. Having no `Coin<SUI>` objects does not necessarily prevent gas payment.
+- For a backend using a supported SDK/network, `tx.setGasPayment([])` selects address-balance gas. That balance must cover the budget and any SUI withdrawn from it. See [address-balance gas](building.md#paying-gas-from-address-balance).
+- Do not use the same coin as both gas payment and an ordinary object input. Splitting from `tx.gas` is an option for sender-paid spending; with sponsorship, it spends the sponsor's funds.
+- Lower an excessive budget only after checking the transaction still fits. Do not shrink a required budget merely to fit available funds.
+
+Sources: [gas budgets](https://docs.sui.io/develop/transaction-payment/gas-in-sui), [gas-payment configuration](https://sdk.mystenlabs.com/sui/transactions/offline).
 
 ## `ServerError(-32002)`
 

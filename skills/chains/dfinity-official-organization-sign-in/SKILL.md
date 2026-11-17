@@ -6,6 +6,8 @@ compatibility: "an OIDC provider (Okta, Entra ID, Google Workspace or Auth0), HT
 metadata:
   title: Organization Sign-In
   category: Auth
+  summary: "Let staff sign in to Internet Identity apps with the organization's own SSO."
+  keywords: "SSO, single sign-on, enterprise, Okta, Entra ID, Azure AD, Google Workspace, Auth0, OIDC, OpenID, company login, employees"
 ---
 
 # Organization Sign-In

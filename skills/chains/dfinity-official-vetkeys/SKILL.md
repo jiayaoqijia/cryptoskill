@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2"
 metadata:
   title: vetKeys
   category: Security
+  summary: "Build vetKeys cryptography: IBE, BLS signatures, timelock and key derivation."
+  keywords: "encryption, cryptography, identity-based encryption, IBE, BLS, threshold signature, timelock, sealed bid, key derivation, vetKD, randomness"
 ---
 
 # vetKeys (Verifiable Encrypted Threshold Keys)

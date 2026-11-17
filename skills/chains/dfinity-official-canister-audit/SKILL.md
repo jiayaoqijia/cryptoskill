@@ -6,6 +6,8 @@ compatibility: "a Rust ic-cdk canister repo (ic-cdk >= 0.18); cargo + the wasm32
 metadata:
   title: Canister Audit
   category: Security
+  summary: "Audit a Rust canister you didn't write and prove findings with a PocketIC exploit."
+  keywords: "security audit, vulnerability, exploit, PocketIC, penetration test, code review, Rust, ic-cdk, proof of concept, bug bounty"
 ---
 
 # Canister Audit

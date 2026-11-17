@@ -6,6 +6,8 @@ compatibility: "@icp-sdk/auth >= 11.1.0, moc >= 2.0.0"
 metadata:
   title: User Notifications
   category: Integration
+  summary: "Send push notifications to your app's users through Internet Identity."
+  keywords: "notifications, push notifications, web push, alerts, notify users, messages, reminders, background notifications"
 ---
 
 # User Notifications

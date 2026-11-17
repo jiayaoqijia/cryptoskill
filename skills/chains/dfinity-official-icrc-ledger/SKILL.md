@@ -6,6 +6,8 @@ compatibility: "icp-cli >= 0.2.2"
 metadata:
   title: ICRC Token Ledgers
   category: DeFi
+  summary: "Transfer tokens and use ICRC-1/ICRC-2 ledgers, including ICP itself."
+  keywords: "tokens, ICP transfer, ICRC-1, ICRC-2, balance, approve, allowance, transfer_from, fungible token, create token, ledger, payments, fees"
 ---
 
 # ICRC Ledger Standards

@@ -6,6 +6,8 @@ compatibility: "mops >= 3.3.0"
 metadata:
   title: Mops CLI
   category: Infrastructure
+  summary: "Manage Motoko packages, toolchain and builds with the mops CLI."
+  keywords: "mops, package manager, dependencies, mops.toml, install package, Motoko, moc version, lint, lintoko, build, toolchain"
 ---
 
 # Mops CLI

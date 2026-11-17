@@ -6,6 +6,8 @@ compatibility: "A cloud engine (CloudEngine subnet) to run on, plus a deployed p
 metadata:
   title: Cloud Engine Canisters
   category: CloudEngine
+  summary: "Rules for canister code running on a cloud engine (OpenCloud) subnet."
+  keywords: "cloud engine, OpenCloud, CloudEngine subnet, bounded wait, no cycles, proxy canister, IC0504, cross-subnet calls, engine canister"
 ---
 
 # Cloud Engine Canisters

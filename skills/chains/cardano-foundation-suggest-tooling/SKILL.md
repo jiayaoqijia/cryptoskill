@@ -115,7 +115,7 @@ File: skills/suggest-tooling/references/ecosystem-map.md
 | **cardano-ledger** | Haskell | Era types and Conway tx construction (`cardano-ledger-api`, `cardano-ledger-conway`, `plutus-tx` for `ToData`/`FromData`). Same types the node validates. Built with **haskell.nix** + **CHaP**, not cabal-on-system-GHC. | Production |
 | **cardano-api** | Haskell | Client façade over ledger/consensus/network. Use when you want that wrapper; not required if you already speak ledger types. | Production |
 | **Atlas** | Haskell | Higher-level PAB-style backend. Last library commit 2026-02; fails this repo's 6-month source bar. Mention only; do not start a new project on it. | Maintenance unclear |
-| **Apollo** | Go | Go backends and services: fluent tx building, pluggable chain backends (Blockfrost/Maestro/Ogmios/UTxORPC) | Production |
+| **Apollo** | Go | Go backends and services: fluent tx building, pluggable chain backends (Blockfrost/Ogmios/UTxORPC) | Production |
 | **gOuroboros** | Go | Low-level building blocks: mini-protocol implementations, ledger types, CBOR codecs (Go counterpart to Pallas) | Production |
 
 **Default recommendation by language**:
