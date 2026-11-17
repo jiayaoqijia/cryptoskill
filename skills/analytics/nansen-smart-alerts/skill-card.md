@@ -14,7 +14,7 @@ MIT-0
 
 ## Use Case:
 
-Developers and Nansen account users use this skill to create and manage smart-alert rules for token flows, token transfers, and smart-contract calls, including configuring notification channels.
+External users and developers can use Nansen smart alerts to monitor smart-money token flows and token transfers, configure notification rules, and manage existing alerts through the Nansen CLI.
 
 ### Deployment Geography for Use:
 
@@ -22,28 +22,29 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Webhook URLs and signing secrets can grant access to notification channels, and passing a webhook secret as a command-line argument can expose it in shell history, process lists, or transcripts.
+Risk: Webhook URLs and signing secrets can be exposed in shared output or agent transcripts.
 
-Mitigation: Keep credentials out of shared output, retain the documented redaction, and provide webhook secrets through --webhook-secret-stdin or NANSEN_WEBHOOK_SECRET instead of --webhook-secret.
+Mitigation: Keep them out of shared output and transcripts; pass webhook signing secrets through stdin or the documented environment variable.
 
 ## Reference(s):
 
+- [Nansen CLI browser login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
 - [ClawHub skill release](https://clawhub.ai/nansen-devops/skills/nansen-smart-alerts)
-- [Browser login platform scope](https://github.com/nansen-ai/nansen-cli/blob/main/docs/browser-login.md#preview-platform-scope)
+- [Publisher profile](https://clawhub.ai/user/nansen-devops)
 
 ## Skill Output:
 
-**Output Type(s):** [Guidance, Shell commands, Configuration instructions]
+**Output Type(s):** [Shell commands, Text, Configuration instructions]
 
-**Output Format:** [Markdown with inline shell command examples]
+**Output Format:** [Nansen CLI commands and text or table results]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Commands require the Nansen CLI and an authorized account session or API key.]
+**Other Properties Related to Output:** [Manages smart alerts through the selected Nansen account credentials; channel credentials are redacted in output by default.]
 
 ## Skill Version(s):
 
-0.1.4 (source: server-resolved release metadata)
+0.1.5 (source: server-resolved release metadata)
 
 ## Ethical Considerations:
 
