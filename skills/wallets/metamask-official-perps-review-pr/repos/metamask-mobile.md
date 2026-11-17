@@ -17,7 +17,7 @@ Apply these Mobile-specific families in addition to the shared checks. Compare c
 - [ ] Mobile Controller Integration Mocks
   Controller bump treated as lockfile-only — inspect changed controller `dist` call sites against Mobile's hand-written integration mocks, then run the Perps integration suites. See references/mobile.md#mobile-controller-integration-mocks
 - [ ] Mobile Trace Instrumentation
-  Use `docs/perps/perps-sentry-reference.md` for Mobile trace names and lifecycle. See references/mobile.md#mobile-trace-instrumentation
+  Use `docs/perps/instrumentation.md` for Mobile trace names and lifecycle. See references/mobile.md#mobile-trace-instrumentation
 - [ ] Mobile Reference Paths
   Mobile UI constants live in `app/components/UI/Perps/constants/perpsConfig.ts`. See references/mobile.md#mobile-reference-paths
 - [ ] Run the mobile-testing skill

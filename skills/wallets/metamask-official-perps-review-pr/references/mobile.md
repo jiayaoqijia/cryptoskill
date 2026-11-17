@@ -45,7 +45,7 @@ Perps components render; their logic lives in hooks and shared helpers.
 
 ## Mobile Trace Instrumentation
 
-Use `docs/perps/perps-sentry-reference.md` for Mobile trace names and lifecycle.
+Use `docs/perps/instrumentation.md` for Mobile trace names and lifecycle.
 
 - [ ] **New screen without `usePerpsMeasurement`** — every new view needs a Sentry performance trace with appropriate `conditions` for when data is loaded.
 - [ ] **Missing error context** — `Logger.error()` calls without `{ feature: 'perps', context: 'ClassName.method', provider, network }`. Sentry filtering depends on these fields.
@@ -58,8 +58,7 @@ Use `docs/perps/perps-sentry-reference.md` for Mobile trace names and lifecycle.
 ## Mobile Reference Paths
 
 Mobile UI constants live in `app/components/UI/Perps/constants/perpsConfig.ts`.
-Use `docs/perps/perps-metametrics-reference.md` for Mobile event definitions; controller constants remain the shared contract.
-A change to a pattern documented in `docs/perps/` updates that document in the same PR.
+Use `docs/perps/instrumentation.md` for Mobile event usage; the event set and constants are in Core `packages/perps-controller/docs/contracts/events.md`.
 
 <a id="mobile-test-layers"></a>
 

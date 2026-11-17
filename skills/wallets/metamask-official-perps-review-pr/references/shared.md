@@ -17,26 +17,33 @@ Every confirmed violation of an applicable Perps anti-pattern is blocking and re
 - [ ] **New dependency not in DI interface** — controller code reaching outside its boundary (e.g., importing a hook, React context, or an app utility). Everything the controller needs must come through `PerpsPlatformDependencies`.
 - [ ] **Breaking the publisher contract** — changing PerpsController's public API (state shape, method signatures, event names) without considering its consumers. Controller is a publisher — Mobile, Extension and Terminal consume it.
 
+Docs: Core `packages/perps-controller/docs/architecture.md` (Platform dependencies).
+
 <a id="perps-math-comes-from-the-controller"></a>
 
 ## Perps Math Comes From the Controller
 
-Perps trading math (PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin, liquidation, fees, account summary) must come from `@metamask/perps-controller`. Adding, changing or porting such math in a client (Mobile, Extension or Terminal) is blocking unless the PR moves it into the controller or, only when the resolved controller version exports no equivalent, links the Core ticket that does (TAT-4477).
+Perps trading math and advanced order logic (TWAP, chase and scale: slicing, scheduling, validation, active/history state) must come from `@metamask/perps-controller`. Trading math is PnL, RoE, TP/SL trigger ↔ RoE/percentage, leverage, margin, liquidation, fees and account summary. Adding, changing or porting that math or this advanced order logic in a client (Mobile, Extension or Terminal) is blocking unless the PR moves it into the controller or, only when the resolved controller version exports no equivalent, links the Core ticket that does (TAT-4477).
 
 - [ ] **Client-side trading math** — a client file computes one of these values itself instead of importing it from the controller package. Check the controller version the client's lockfile resolves (then core `main`) for equivalent math, pure formatters and constants. 'Equivalent' means same inputs, units and boundary behaviour; a same-named math helper with different semantics is renamed, not reused (not for formatters; see *Shared Formatting & Display Precision*). `shared-packages.md` lists the math that must move. Fee previews come from controller `calculateFees` quotes through the existing client fee hooks: `usePerpsOrderFees` on Mobile/Extension and `usePerpsCloseAllCalculations` for Mobile close-all. Paid fees come from fills through `usePerpsRecordedOrderFees`. Screens never compute rates, discounts or notional inline; close-all reuses the fee hook helpers. Controller 18+ quotes already contain the discounted `metamaskFeeRate`; never apply rewards/VIP discount twice. An older resolved controller applies it once inside the fee hook until it bumps.
 - [ ] **Copy or port of existing logic** — a formula or behavior already present in the controller, shared utilities, another client or the same diff gets a second implementation, or a fix lands in only one copy. A client copy that predates the PR is still a copy. Copies drift (TP/SL price ↔ RoE existed three times with different results).
+- [ ] **Advanced-order execution state** — slicing, scheduling, validation, or active and history state for TWAP, chase or scale written in a client. A Terminal-written TWAP scheduler is a finding even when it was not copied from the controller, another client or this diff. That state comes from `@metamask/perps-controller`.
+
+Docs: Core `packages/perps-controller/docs/architecture.md` (What the controller owns).
 
 <a id="shared-formatting-display-precision"></a>
 
 ## Shared Formatting & Display Precision
 
-Displayed Perps numbers and their precision come from `@metamask/perps-controller` formatters and constants; formatting is shared logic, not display-only. Use `formatPerpsFiat` with `PRICE_RANGES_*`, `formatPositionSize`, `formatPnl`, `formatPercentage` (percentages and position RoE), `formatFundingRate`, and `formatRoePercent` for TP/SL RoE inputs. Precision follows the decimal rules in the Mobile reference checkout's `docs/perps/perps-rules-decimals.md` (mirrored in this library's `docs/knowledge/formatting-rules.md`). Check availability before formatting: a missing value renders a `PERPS_CONSTANTS` fallback placeholder, never a formatter's zero.
+Displayed Perps numbers and their precision come from `@metamask/perps-controller` formatters and constants; formatting is shared logic, not display-only. Use `formatPerpsFiat` with `PRICE_RANGES_*`, `formatPositionSize`, `formatPnl`, `formatPercentage` (percentages and position RoE), `formatFundingRate`, and `formatRoePercent` for TP/SL RoE inputs. Precision follows the rules in Core `packages/perps-controller/docs/formatting.md`. Check availability before formatting: a missing value renders a `PERPS_CONSTANTS` fallback placeholder, never a formatter's zero.
 
 - [ ] **Local formatter copy** — a client formatter for a value a controller formatter covers, whatever its name, signature or options, is a legacy copy, even when it predates the PR. A PR that uses, extends or adds a call to it migrates that call site to the controller formatter. Extension's `shared/lib/perps-formatters.ts` (temporary copy, TAT-2990) counts as the controller formatter until it is deleted.
 - [ ] **Missing shared capability** — a rule, range or precision the controller lacks is added in Core with a linked ticket, never kept or extended in a local copy; locale comes from client-utils (below).
 - [ ] **Precision divergence** — a displayed value follows the documented decimal rules and matches Mobile's precision for the same field, through the shared controller formatter or constant. A different precision (`.toFixed`, `maximumFractionDigits`, a client or Core constant used by one client only) is blocking; "the ticket asked" or "the PR states the divergence" is not an exemption, and changing the precision means changing it for every client in Core.
 - [ ] **Intl built per call** — `new Intl.NumberFormat` or `toLocaleString` per call or render; reuse one cached formatter per locale and options.
 - [ ] **Locale formatting not reused** — clients build locale formatting (and `marketDataFormatters`) on client-utils `createFormatters` with controller ranges and precision; that is not a legacy copy.
+
+Docs: Core `packages/perps-controller/docs/formatting.md`.
 
 <a id="missing-numeric-data-stays-undefined"></a>
 
@@ -53,6 +60,8 @@ Missing Perps numeric data must remain `undefined` through provider adapters, co
   - `PERPS_CONSTANTS.FallbackDataDisplay` (`'--'`) — generic data not yet loaded
   - `PERPS_CONSTANTS.ZeroAmountDisplay` (`'$0'`) / `ZeroAmountDetailedDisplay` (`'$0.00'`) — ONLY for actual confirmed zero values (e.g., no volume), never for "loading" or "unavailable"
 
+Docs: Core `packages/perps-controller/docs/formatting.md` (Missing value or real zero) and `architecture.md` (Balance contract on AccountState).
+
 <a id="magic-strings-magic-numbers-placeholder-values"></a>
 
 ## Magic Strings, Magic Numbers & Placeholder Values
@@ -65,6 +74,8 @@ Constants live in the controller package (`core/packages/perps-controller/src/co
 - [ ] **Hardcoded API URLs** — inline `'https://perps.api...'` instead of `DATA_LAKE_API_CONFIG.OrdersEndpoint`.
 - [ ] **Hardcoded validation thresholds** — `20` for high leverage warning, `0.1` for price deviation, instead of `VALIDATION_THRESHOLDS.HighLeverageWarning`, `VALIDATION_THRESHOLDS.PriceDeviation`.
 - [ ] **Hardcoded cache durations** — inline `5 * 60 * 1000` instead of `PERFORMANCE_CONFIG.MarketDataCacheDurationMs`, `FeeDiscountCacheDurationMs`, etc.
+
+Docs: Core `packages/perps-controller/docs/architecture.md` (What the controller owns).
 
 <a id="protocol-abstraction"></a>
 
@@ -83,6 +94,8 @@ All provider access must go through `AggregatedPerpsProvider` → `ProviderRoute
 - [ ] **Executable precision differs from what the user confirms**: Round executable prices and sizes with the controller's provider-precision helpers and market `szDecimals`, never `toFixed(n)`, `Math.trunc` or raw float division. Any value the user confirms (input, preview, review dialog) equals the normalized value submitted. Read-only labels may use the `MarketDataFormatters` documented display rounding. Test a sub-cent price (0.0000123), a float-noise size (0.58×0.5 at szDecimals 2) and a 6+ significant-figure mid.
 - [ ] **`detailedOrderType` rendered directly in UI** — `detailedOrderType` is provider-native text, not an enum. HyperLiquid returns, e.g., `Limit`, `Market`, `Stop Limit`, `Stop Market`, `Take Profit Limit`, `Take Profit Market`. Any UI that renders `detailedOrderType` directly is provider-dependent by construction. **Grep for `detailedOrderType` in any PR touching order display** — it should be mapped through a locale string or normalized constant, not rendered raw.
 
+Docs: Core `packages/perps-controller/docs/architecture.md` (Providers) and `venues/`.
+
 <a id="pro-mode-ui-gating"></a>
 
 ## Pro Mode UI Gating
@@ -98,15 +111,18 @@ Pro market UI renders only when the remote flag (`selectPerpsProModeEnabledFlag`
 
 ## MetaMetrics Events
 
-Every perps event uses one of the eight consolidated events and their typed property constants; no new event names or untyped properties.
+Perps sends a fixed set of events, the `PerpsAnalyticsEvent` values in `@metamask/perps-controller`; a new tracking need adds a property, or a value of an existing property, to one of those events and never adds an event. Every property and value comes from the controller's typed constants and means the same thing on every event and every client.
 
 - [ ] **Magic string event properties** — using `'status'`, `'asset'`, `'direction'` instead of `PERPS_EVENT_PROPERTY.STATUS`, `PERPS_EVENT_PROPERTY.ASSET`, etc. from `@metamask/perps-controller`.
 - [ ] **Magic string event values** — using `'executed'`, `'long'`, `'market'` instead of `PERPS_EVENT_VALUE.STATUS.EXECUTED`, `PERPS_EVENT_VALUE.DIRECTION.LONG`, `PERPS_EVENT_VALUE.ORDER_TYPE.MARKET`.
-- [ ] **New event instead of property** — creating a 9th event when the change should be a new `screen_type`, `interaction_type`, or `action_type` value on an existing event. The 8-event model is intentional (Segment cost optimization).
+- [ ] **New event instead of property** — a new `PerpsAnalyticsEvent` member, or a client-side `Perp *` event, when the need fits a new value of `screen_type`, `interaction_type`, `action_type` or another existing property. A new event needs a product decision linked in the PR; without one it is blocking.
+- [ ] **Same meaning, two properties** — a new property or value that duplicates an existing one under another name, or reuses a name with a different meaning on another event or client.
 - [ ] **Missing `source` on screen view** — `PERPS_SCREEN_VIEWED` without `source` property loses navigation flow tracking. Source = current screen, not earlier in the chain.
 - [ ] **Hardcoded source in reusable component** — reusable components (`PerpsMarketTypeSection`, `PerpsWatchlistMarkets`, `PerpsCard`) must receive `source` as a prop from the parent screen, not set it implicitly.
 - [ ] **New screen/view without tracking** — adding a new view without `PERPS_SCREEN_VIEWED` event and a trace through the reviewed client's instrumentation.
 - [ ] **Missing `completion_duration` on transaction events** — all transaction events (`PERPS_TRADE_TRANSACTION`, `PERPS_POSITION_CLOSE_TRANSACTION`, etc.) require duration tracking.
+
+Docs: Core `packages/perps-controller/docs/contracts/events.md`, plus the client's `docs/perps/` instrumentation doc.
 
 <a id="sentry-tracing"></a>
 
@@ -115,6 +131,8 @@ Every perps event uses one of the eight consolidated events and their typed prop
 - [ ] **Unbounded background trace volume**: For unlock, polling, reconnect or fan-out instrumentation, estimate added spans at normal and retry load. Record sampling/deduplication and expected baseline impact before enabling the trace. Reuse an existing trace when it already measures the work.
 
 Every async flow that affects perceived performance carries a named Sentry trace from the reviewed client's trace reference; no ad hoc trace names or missing end calls.
+
+Docs: Core `packages/perps-controller/docs/contracts/traces.md`, plus the client's `docs/perps/` instrumentation doc.
 
 <a id="connection-websocket-architecture"></a>
 
@@ -130,6 +148,9 @@ A single `PerpsAlwaysOnProvider` at the wallet root owns connect/disconnect; `Pe
 - [ ] **WS subscription leak** — subscribing on mount without unsubscribing on unmount or market switch. `PerpsStreamManager` handles ref counting but custom subscriptions must clean up.
 - [ ] **Stale data after async gap** — reading position/order state, awaiting something, then using the stale read. WS updates change state between awaits. Re-read after async boundaries. After submitting an order, wait for its transaction receipt or poll with backoff rather than reading order state before WebSocket confirmation.
 - [ ] **Static WebView work coupled to live ticks** — a payload containing both `currentPrice` and static overlays can resend teardown/recreate work on every tick. Compare the static subset before mutating chart lines, do not force autoscale on a no-op update, and cover skip/clear behavior with executable helper tests rather than source-string assertions.
+- [ ] **Account change without reconnect** — the controller refreshes preload on an account change but does not reconnect the provider; the client's connection owner reconnects when the new account needs live data.
+
+Docs: Core `packages/perps-controller/docs/architecture.md` (Connection, What a client must do), plus the client's `docs/perps/connection-architecture.md`.
 
 <a id="data-flow-state"></a>
 
@@ -146,12 +167,14 @@ A single `PerpsAlwaysOnProvider` at the wallet root owns connect/disconnect; `Pe
 Controller → Redux → Hooks → Components. Standalone mode for lightweight queries without full init.
 
 - [ ] **Direct controller call from component** — components calling `PerpsController.method()` directly instead of going through hooks (`usePerpsTrading`, `usePerpsAccount`, etc.).
-- [ ] **Missing `accountState` check** — accessing positions/orders/balances without verifying accountState is loaded. Causes undefined errors on first load or account switch.
+- [ ] **Missing `accountState` check** — accessing positions/orders/balances without verifying accountState is loaded, or calling controller data methods while `initializationState` is not ready; show the loading or failed state instead. Causes undefined errors on first load or account switch.
 - [ ] **Derived flag promoted to structural state without its own lifecycle** — define initialization, every set condition, and every clear condition independently of the old string or transient value that first produced the flag. Pending trading prerequisites belong to the shared operation lifetime, so a form remount cannot re-enable submission before setup settles. Test set, clear and remount with setup still pending.
 - [ ] **Async flow loses ownership of cleanup** — fire-and-forget timers and navigation listeners need a generation guard plus `dispose()` on retry, unmount, and failure. Treat nested confirmation routes as part of the same flow so cleanup does not fire while the user is still inside it. A lookup added before startup, unlock or deeplink navigation needs a short explicit deadline that falls back to the prior offline result; test with the request held pending.
 - [ ] **One in-flight mutation lock replaces earlier accepted outcomes** — serialize active requests separately from post-success reconciliation. Keep each accepted result keyed by provider and stable entity ID until an authoritative read or stream confirms it; clear the set when account, provider, network, or connection generation changes. Test sequential successes followed by a partial terminal update.
 - [ ] **Preload data not seeded** — new hook not using `getPreloadedData()` lazy initializer. First render shows skeleton instead of cached data from the 5-minute preload cycle.
 - [ ] **Leverage/validation bypass** — allowing values outside market's `maxLeverage` or skipping pre-trade checks (balance, market open, position limit).
+
+Docs: Core `packages/perps-controller/docs/architecture.md` (State, caches and persistence), plus the client's `docs/perps/` caching doc.
 
 <a id="trade-flow-order-execution"></a>
 
@@ -164,6 +187,8 @@ Order submission runs the shared pre-trade checks, carries the user's slippage, 
 - [ ] **Pre-trade checks missing** — submitting trade without verifying: sufficient balance, market open, position limit, leverage within bounds, slippage tolerance set.
 - [ ] **Post-trade state not refreshed** — after a confirmed trade, withdrawal or position change, refresh balances, positions and orders through `PerpsCacheInvalidator.invalidate()` for affected cache types (`positions`, `accountState`), including standalone token-detail queries. A closed position must clear from local or WebSocket-fed state. Branch on per-item results/`failureCount` before `success` (Core sets `success: true` on partial batches). Keep post-success refresh outside the mutation's catch so a failed read never reports a failed, retryable write. Test 2-of-3 partial and a throwing refetch after success.
 - [ ] **Missing or hardcoded slippage**: Every market leg (open, close, flip/reverse, TP/SL trigger) sends `maxSlippageBps` resolved from the saved user preference, falling back to `ORDER_SLIPPAGE_CONFIG` only when none is saved; never an inline literal. Test a strict saved value and an unset preference per action.
+
+Docs: Core `packages/perps-controller/docs/tpsl.md` and `venues/`.
 
 <a id="navigation-entry-and-exit-parity"></a>
 
@@ -193,3 +218,12 @@ An embedded signer receives sensitive key material only after its communication 
 
 - [ ] **Navigation policy mistaken for network isolation**: An origin allowlist does not block fetch, XHR, WebSocket or subresource requests. Enforce and test outbound denial before handing key material to embedded code.
 - [ ] **Bridge messages trusted by assertion**: Parse messages as unknown and validate message-specific inputs/results. Missing transport and unmount must reject pending work promptly. Bound recovery retries and use one deadline across readiness and execution.
+
+<a id="architecture-docs"></a>
+
+## Architecture Docs
+
+A change is checked against the doc sections its families link: Core `packages/perps-controller/docs/` and the client's `docs/perps/`, read from the reference checkouts at the recorded revision.
+
+- [ ] **Change contradicts its doc** — the diff does something a linked doc section says the code does not do, or puts logic in a layer the doc gives to another.
+- [ ] **Documented pattern changed without its doc** — the diff changes behaviour a linked doc section describes and the PR does not update that section.

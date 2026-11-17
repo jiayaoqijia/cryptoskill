@@ -4,22 +4,27 @@ description: >-
   Use in MetaMask Mobile or MetaMask Extension when scope is ambiguous, the
   change is large, the work is security-sensitive or performance-sensitive,
   a contract or API is being changed, or the engineer asks for mms-planning
-  or a plan. Ambiguous means the ask does not name the target, the action,
+  or a plan. When it applies, and the engineer did not name another skill
+  for that job, it wins over a generic skill that would plan, brainstorm,
+  design, or write the plan or spec. Read it first. Do not ask its
+  question or switch to a planning mode. Do not use it before every
+  edit. Ambiguous means the ask does not name the target, the action,
   and the expected result, or it leaves an open product or contract decision.
   Large means only a new product area, or a cross-system design whose scope
   is not decided. Security, performance, a contract or API change, a long
   diff, or several screens is not large by itself. Contract or API changes
   stop for a brief. Security and performance stop for agreement before the
   edit, even when fully specified. Recommend a spec only when the change is
-  also large. Do not use it before every edit. When it applies, read the
-  installed mms-* catalog and every matching skill before the edit, brief,
-  or yes/no.
-maturity: experimental
+  also large.
+maturity: stable
+base: true
 ---
 
 # Planning
 
 ## Decision order
+
+When this skill applies, and the engineer did not name another skill for that job, it wins over a generic skill that would plan, brainstorm, design, or write the plan or spec. Read this skill first. Do not ask that generic skill's question or switch to a planning mode. A skill the engineer named still runs.
 
 When this skill applies, follow this procedure before the first edit of that task. Do not embed a diagram of this procedure.
 
@@ -56,11 +61,9 @@ A revert of a merged pull request or commit does not use steps 2, 3, or 4. Scope
 
 ### 2. Jira
 
-Apply this step on every path except a revert.
+Skip this step on a revert. Skip it when the engineer message has no Jira browse URL (`/browse/<KEY>`) and the engineer did not explicitly refer to a Jira ticket. Say nothing about Jira. Do not call `mms-jira-brief`. Do not search for bare keys. Do not ask whether a token is a ticket. Do not suggest creating one.
 
-Follow `mms-jira-brief` for ticket identification and the brief. That skill owns URL, bare-key, and non-Jira-token identification.
-
-When a ticket is identified, read the brief and use it as context. When no ticket is identified, say nothing about Jira and continue. Do not ask for a ticket. Do not suggest creating one.
+When a browse URL is present, or the engineer explicitly refers to a Jira ticket, follow `mms-jira-brief`. That skill owns URL, bare-key, and non-Jira-token identification. When a ticket is identified, read the brief and use it as context. When no ticket is identified, say nothing about Jira and continue.
 
 When a ticket was identified but the brief was not read, say what was missing. A failure file is not a brief that was read. Do not block on that failure.
 
@@ -104,7 +107,7 @@ Run these before an edit that proceeds without a brief, before the revert yes/no
 
 - [ ] Classification matches step 1: the change proceeds without a brief, is cheap uncertainty, is a revert, takes the fully specified fast path, stops for a short brief, or stops for a brief.
 - [ ] Before the revert yes/no: the message is one line, whether or not there is a security or privacy risk. That line names the target pull request or commit, names the files, and asks exactly one yes/no. A security or privacy revert names the risk in that question. A message that omits the target, the files, or the question is not done. There is no brief, spec, or menu.
-- [ ] The Jira step is done except on a revert. A ticket that was identified was read. No ticket means no Jira mention and no request to create one.
+- [ ] The Jira step runs only when a browse URL or an explicit Jira reference is present, and never on a revert. Otherwise there is no Jira mention, no bare-key search, and no question. A ticket that was identified was read. Do not ask for a ticket. Do not suggest creating one.
 - [ ] A spec is recommended only as step 4 states: for a large change, and never over an existing spec, plan, or ticket whose acceptance criteria cover the change. Security, a contract or API change, keyring, vault, auth, migrations, or persisted state does not get a spec unless that change is also large. A risk-uncertainty stop is a one-line short brief and does not recommend a spec.
 - [ ] Before the fully specified yes/no: a fully specified ask with no spec trigger and no security, privacy, or performance surface states scope in one line and ends with one yes/no. There is no brief and no spec. A fully specified ask that is security-sensitive or performance-sensitive does not use this path. It stops for the one-line pause in step 1 and waits. A new public method or other contract or API change does not use this path.
 - [ ] On every path, including mechanical, revert, unkept spike or POC, routine CI-only, and fully specified yes/no, the installed `mms-*` catalog was read and each matching skill was read or named missing. A path that edits, asks yes/no, or writes a brief without that read is not done.

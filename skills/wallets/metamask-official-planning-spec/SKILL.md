@@ -7,7 +7,8 @@ description: >-
   then write one English file at
   .specs/spec-XXX-short-description.md in the MetaMask Mobile or MetaMask
   Extension checkout. Do not edit product code, and do not say that in chat.
-maturity: experimental
+maturity: stable
+base: true
 ---
 
 # Planning spec

@@ -1,22 +1,27 @@
 ---
 name: jira-brief
 description: >-
-  Use when mms-planning delegates ticket identification or a brief, and
-  when the engineer asks to understand a Jira ticket. Write
+  Use when the engineer asks to understand a Jira ticket, explicitly
+  refers to one, or the message contains a Jira browse URL
+  (/browse/<KEY>). Do not hunt for a ticket, ask
+  whether a token is a ticket, or suggest creating one. Write
   .briefs/<ISSUE-KEY>.md with the Goal, Decisions Already Made, Open
-  Decisions, and Code Surfaces sections. Name the path in chat. Do not paste the
-  file or write to Jira. Do not edit product code, and do not say that in chat.
-maturity: experimental
+  Decisions, and Code Surfaces sections. Name the path in chat. Do not paste
+  the file or write to Jira. Do not edit product code, and do not say that
+  in chat.
+maturity: stable
+base: true
 ---
 
 # Jira brief
 
-Installed name: `mms-jira-brief`. `mms-planning` calls it for ticket identification. The engineer can invoke it directly. Do not edit product code, and do not say that in chat. Do not write to Jira. Do not embed a Mermaid diagram of this procedure, and do not put one in `.briefs/`.
+Installed name: `mms-jira-brief`. The engineer can invoke it directly. `mms-planning` calls it only when the message has a Jira browse URL or the engineer explicitly refers to a Jira ticket. Do not edit product code, and do not say that in chat. Do not write to Jira. Do not embed a Mermaid diagram of this procedure, and do not put one in `.briefs/`.
 
 ## When to use
 
-- `mms-planning` calls this skill.
-- The engineer asks to understand a Jira ticket.
+- The message contains a Jira browse URL (`/browse/<KEY>`).
+- The engineer asks to understand a Jira ticket, or otherwise explicitly refers to a Jira ticket.
+- `mms-planning` delegates because a browse URL or an explicit Jira reference is present.
 
 ## Workflow
 
@@ -24,7 +29,7 @@ Installed name: `mms-jira-brief`. `mms-planning` calls it for ticket identificat
 2. A browse URL whose path contains `/browse/<KEY>` is a ticket. Do not ask.
 3. A bare `<PROJECT>-<number>` token is not a ticket from the pattern alone. `MCWP` is the mobile platform project, not the only valid project. There is no project allowlist.
 4. Ignore tokens that are clearly not Jira issues, without a question. Examples: `EIP-7702`, `CAIP-19`, and `HIP-3`.
-5. A bare token is a ticket when Jira resolves it, or when the engineer confirms it. When no URL is present and a token might be a Jira issue but Jira does not resolve it, or the lookup is inconclusive, infer from surrounding words such as ticket, Jira, or issue. If still unsure, ask whether that token is a Jira issue. Yes continues the brief flow. No treats it as not a ticket.
+5. A bare token is a ticket when Jira resolves it. When the engineer invoked this skill directly, no URL is present, and a token might be a Jira issue but Jira does not resolve it or the lookup is inconclusive, infer from surrounding words such as ticket, Jira, or issue. If still unsure, ask whether that token is a Jira issue. Yes continues the brief flow. No treats it as not a ticket. When `mms-planning` delegates, do not ask. An unresolved or unsure token returns no ticket identified.
 6. Not a ticket: stop. Do not write a file.
 7. Each resolved key produces one `.briefs/<ISSUE-KEY>.md`. Several keys produce one file each. `.briefs/` is local and not team-shared storage. Do not stage it.
 8. If `.briefs/<ISSUE-KEY>.md` already exists and the engineer did not ask to regenerate it, open the issue and compare its updated time with the `Jira updated:` line in the brief. A failure file is never a fresh brief. It has no `Jira updated:` line. If the times match, read the file and do not regenerate it. If they differ, or the line is missing, regenerate the file. If the issue does not open, read the existing file and say that freshness was not checked.
