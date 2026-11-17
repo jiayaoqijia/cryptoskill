@@ -5,8 +5,8 @@ timeframe and runs them **at every candle close, for as long as you stay connect
 analysis room on the website. Each agent's result and each decision reach you the moment they land, as updates with
 a `say` sentence; a `next_run` update tells you when the next analysis is. When the user asks for a symbol to be
 watched live ("watch BTC on the 15m", "keep analysing NVDA", "盯着 BTC"), this is what you start; if the symbol or the
-timeframe is unclear, ask first. No position is opened: the decision is analysis, and after
-each one you ask whether to connect the user's exchange or broker to act on it.
+timeframe is unclear, ask first. No position is opened: the decision is analysis, which you
+relay in full.
 
 An autopilot is the same engine running server side without you (`references/autopilots.md`); a quick read is one pass
 (`references/quick.md`).
@@ -43,7 +43,7 @@ Open `ws_url` with the same key the session was created with:
 
 ```
 Authorization: Bearer simx_live_…        (header; no Origin header is needed for a key)
-X-SimianX-Skill: 1.0.12
+X-SimianX-Skill: 1.0.14
 ```
 
 A reconnect needs no cursor: the session's unacked frames come first (`data.replay: true`). Every frame is JSON:
@@ -51,7 +51,7 @@ A reconnect needs no cursor: the session's unacked frames come first (`data.repl
 ```json
 {"id": 912, "kind": "decision", "notify_user": true,
  "say": "Decision on BTC (15m): open long. Entry 61000–61200, stop 60200, target 63000, confidence 7/10. …",
- "ask": "Do you want me to connect your exchange and place or manage this order for you?",
+ "ask": null,
  "data": {"action": "open", "side": "long", "entry_low": 61000, "entry_high": 61200, "stop": 60200, "target": 63000,
           "confidence": 7, "invalidation": "…", "timeframe": "15m", "expires_at": "…", "market": "crypto", "symbol": "BTC"},
  "next_run_at": "2026-10-23T01:15:00Z", "cursor": 912, "ts": "2026-10-23T01:00:04Z"}
@@ -63,7 +63,7 @@ A reconnect needs no cursor: the session's unacked frames come first (`data.repl
 | `kind` | `session_start`, `fundamental_done`, `indicator_done`, `intelligence_done`, `decision`, `next_run`, `session_end`, `heartbeat`, `tick` |
 | `notify_user` | `true`: tell the user. `heartbeat` and `tick` are `false`: ignore them |
 | `say` | the sentence to relay, in the request language |
-| `ask` | a question for the user; a `decision` always carries the exchange / broker question |
+| `ask` | a question for the user when there is one (a high-value news item offers a quick read); empty otherwise |
 | `data` | the structured fields (`references/developers.md`) |
 | `next_run_at` | when the next analysis runs: say it in the user's time zone |
 
@@ -109,8 +109,7 @@ open for presence. `scripts/follow_run.py live <id>` is the HTTP fallback (`refe
 - On start: "Live analysis on BTC (15m) is running at every candle close until you stop it; I will report each agent
   and each decision as they land."
 - On each `*_done`: the `say` line.
-- On `decision`: the full plan, "analysis, not investment advice", the next run time, then the `ask`. If the user
-  declines the exchange / broker connection for this symbol, do not ask again this session.
+- On `decision`: the full plan, "analysis, not investment advice", and the next run time.
 - On `session_end`: the `say` line; if the reason is `agent_left`, offer an autopilot.
 - If the user asks what the session uses: it runs the four agents at every candle close until stopped; `GET /v1/usage`
   has the points so far.

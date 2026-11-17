@@ -36,9 +36,8 @@ API answers 503 `stock_live_unavailable` in that case.
 ## What to say
 
 One sentence per agent as it finishes (the `say` line). On the decision: the full plan (open or not, direction,
-entry, stop, target, confidence, what invalidates it), "analysis, not investment advice", when the next candle
-closes, and the question: connect the user's exchange (crypto) or broker (stock) to place and manage the order?
-Then offer to keep analysing with a live session or an autopilot.
+entry, stop, target, confidence, what invalidates it), "analysis, not investment advice", and when the next candle
+closes. Then offer to keep analysing with a live session or an autopilot.
 
 ## Models
 

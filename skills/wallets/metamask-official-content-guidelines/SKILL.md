@@ -8,6 +8,8 @@ description: >-
   reviewing locale files (en.json,
   messages.json), buttons, toasts, empty states, errors, confirmations, or
   the same standards in stories, constants, and README examples.
+  Also use when changing an existing user-facing string, including a
+  one-word typo or spelling fix in `en.json` or `messages.json`.
 maturity: stable
 ---
 

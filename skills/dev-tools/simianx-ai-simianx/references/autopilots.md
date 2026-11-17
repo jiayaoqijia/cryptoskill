@@ -9,19 +9,16 @@ in the updates feed and in an event log you read with a cursor.
 
 Every analysis and every decision of an autopilot started over the API is an update in `GET /v1/updates`
 (`references/following.md`), with a `say` line: `autopilot.started`, then per cycle `fundamental_done`,
-`indicator_done`, `intelligence_done` (whichever finishes first comes first), `decision` (full plan + the exchange /
-broker `ask`), `next_run` (when the next cycle runs), and `position.changed` when the simulated book moves;
+`indicator_done`, `intelligence_done` (whichever finishes first comes first), `decision` (the full plan), `next_run` (when the next cycle runs), and `position.changed` when the simulated book moves;
 `autopilot.stopped` / `autopilot.paused` at the end. Relay each as it arrives; when you were away, the feed has
 everything you missed, poll it every 10 s exactly (or `wait=30`) and catch up from the cursor. When the user asks
 "what is running?", list the autopilots (symbol, timeframe, since when, next run, last decision).
 
-## Connect your own real-trading system
+## Simulated positions
 
-You can use the API's analyses and signals to drive your own authorized trading system. Your integration reads
-the event log below and submits real orders through your broker or exchange API, using your own account and
-permissions. SimianX's position history and manual position actions remain simulations inside the platform.
-Check real order status and fills with your execution system; a simulated fill in SimianX does not confirm an
-external fill. Use the event cursor to resume processing and check `expires_at`, when present, before using a signal.
+An autopilot's positions, its position history and the manual position actions are simulations inside SimianX:
+SimianX places no real orders and has no access to exchange, broker or bank accounts. Code that reads the event log
+below resumes from the event cursor and checks `expires_at`, when present, before using a signal.
 
 ## Start
 
@@ -93,7 +90,8 @@ Cursors are stable for 7 days (the stream holds the recent tail; older cursors a
 - `GET /v1/autopilots/{id}/analyses?agent=decision&limit=20&before=<timestamp>&include=text`
   (rows with `agent: "gate"` are decision candles the timing gate skipped; `?agent=decision` lists them with the
   decisions. `gate` is not a filter value of its own: `?agent=gate` is 400 `invalid_parameter`)
-- `GET /v1/autopilots/{id}/positions?status=open|closed&limit=20` (positions with their operations)
+- `GET /v1/autopilots/{id}/positions?status=open|closed&limit=20` (positions with their operations; the AI's hold checks
+  are summed per position as `holds` and `last_hold`, `include=holds` lists them all)
 - `GET /v1/autopilots/{id}/logs`
 
 ## Act on the paper book by hand

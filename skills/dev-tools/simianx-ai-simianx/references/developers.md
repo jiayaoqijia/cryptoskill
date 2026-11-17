@@ -78,9 +78,9 @@ def verify(secret: str, header: str, body: str, tolerance: int = 300) -> bool:
 `examples/webhook_verify.py` is the same function as a script; `examples/python_client.py` and
 `examples/js_client.mjs` are complete minimal clients.
 
-## The decision, for an execution system
+## The decision, for code
 
-A `decision` update's `data` is what a broker or exchange integration reads (never the `say` text):
+A `decision` update's `data` is what code reads (never the `say` text):
 
 | field | meaning |
 |---|---|
@@ -103,7 +103,7 @@ paper books, `/autopilots/{id}/actions`) are simulated.
 - `429` carries `Retry-After`; paginated lists return `next_cursor`; every time is ISO 8601 UTC.
 - Breaking changes never edit a path in place: a new path or field is added, the old one gets `Deprecation`, `Sunset`
   and `Link: <…>; rel="successor-version"` headers and a `deprecations` entry in `GET /v1/skill`.
-- Send `X-SimianX-Skill: 1.0.12` (or your client's own version string) so `_skill_update` and `426` work as designed;
+- Send `X-SimianX-Skill: 1.0.14` (or your client's own version string) so `_skill_update` and `426` work as designed;
   a client that never sends it is never refused.
 
 ## Minimal clients
@@ -114,7 +114,7 @@ Python (`pip install requests websockets`):
 import asyncio, json, os, requests, websockets
 
 API = "https://service.simianx.ai"; KEY = os.environ["SIMIANX_API_KEY"]
-H = {"Authorization": f"Bearer {KEY}", "X-SimianX-Skill": "1.0.12", "Content-Type": "application/json"}
+H = {"Authorization": f"Bearer {KEY}", "X-SimianX-Skill": "1.0.14", "Content-Type": "application/json"}
 
 s = requests.post(f"{API}/v1/live/sessions", headers={**H, "Idempotency-Key": "live-btc-15m-1"},
                   json={"asset": "crypto", "symbol": "BTC", "timeframe": "15m"}).json()["data"]
@@ -126,8 +126,7 @@ async def follow():
             if not f.get("notify_user"):
                 continue                      # heartbeat / tick
             if f["kind"] == "decision":
-                handle_decision(f["data"])    # your code: show it; orders only through your own broker
-                                              # integration, after the user confirms each one
+                handle_decision(f["data"])    # your code: show it to the user
             await ws.send(json.dumps({"ack": f["id"]}))
             if f["kind"] == "session_end":
                 break
@@ -140,7 +139,7 @@ JavaScript (Node 18+, `npm i ws`):
 ```js
 import WebSocket from "ws";
 const API = "https://service.simianx.ai", KEY = process.env.SIMIANX_API_KEY;
-const H = { Authorization: `Bearer ${KEY}`, "X-SimianX-Skill": "1.0.12", "Content-Type": "application/json" };
+const H = { Authorization: `Bearer ${KEY}`, "X-SimianX-Skill": "1.0.14", "Content-Type": "application/json" };
 
 const { data: s } = await (await fetch(`${API}/v1/live/sessions`, { method: "POST",
   headers: { ...H, "Idempotency-Key": "live-btc-15m-1" },
@@ -150,8 +149,7 @@ const ws = new WebSocket(s.ws_url, { headers: { Authorization: H.Authorization }
 ws.on("message", (raw) => {
   const f = JSON.parse(raw);
   if (!f.notify_user) return;                        // heartbeat / tick
-  if (f.kind === "decision") handleDecision(f.data); // your code: show it; orders only through your own
-                                                     // broker integration, after the user confirms each one
+  if (f.kind === "decision") handleDecision(f.data); // your code: show it to the user
   ws.send(JSON.stringify({ ack: f.id }));
   if (f.kind === "session_end") ws.close();
 });
