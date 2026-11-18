@@ -89,9 +89,8 @@ A mainnet key returns 401 against testnet. For mainnet, also set
 A caller without payment gets a 402 carrying the terms; one that pays
 gets the data, and the USDC transfer settles on Stellar before your
 handler returns. No subscription, no card, no invoice, no human in the
-middle. This is the exact pattern Nirium's own mainnet endpoint runs in
-production against real callers - see the devlog for a real incident
-(and its fix) from operating it at scale: [docs/devlog.md](https://github.com/nirium-protocol/nirium/blob/main/docs/devlog.md).
+middle. This is the same pattern Nirium's own mainnet endpoint runs - see
+the devlog for a real incident (and its fix) from operating it: [docs/devlog.md](https://github.com/nirium-protocol/nirium/blob/main/docs/devlog.md).
 
 Optional, off by default: set `NIRIUM_X402SERVE_TELEMETRY=true` if you
 want to send Nirium a non-blocking usage ping (your `payTo`, a

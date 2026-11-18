@@ -7,7 +7,7 @@ maturity: stable
 
 # Perps static review
 
-Generated from the canonical Perps review rules @ 398decc084ed14f99858ffd7327ccd9b22b6e28b. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
+Generated from the canonical Perps review rules @ f8b96429a09da37b71e0248307c5cbfee6021807. Do not hand-edit: regenerate with scripts/materialize-review.mjs. references/review-sources.json records the source repository and every digest.
 
 Run only on explicit invocation by name or an explicitly selected workflow. Review source, diff and recorded evidence only: no tests, builds, recipes, installs, probes, app launch, product change, publish or workspace cleanup. Delegated skills inherit this static, read-only boundary. The criteria below are review criteria, not instructions to perform the fixes, releases or migrations they describe.
 

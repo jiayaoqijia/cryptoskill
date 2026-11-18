@@ -68,7 +68,7 @@ Docs: Core `packages/perps-controller/docs/formatting.md` (Missing value or real
 
 Constants live in the controller package (`core/packages/perps-controller/src/constants/perpsConfig.ts`, exported by `@metamask/perps-controller`) and in the reviewed client's UI constants module. PRs must use these — not inline literals.
 
-- [ ] **Inline timeout/delay values** — hardcoded `5000`, `10000`, `300` instead of `PERPS_CONSTANTS.WebsocketTimeout`, `PERPS_CONSTANTS.ConnectionTimeoutMs`, `PERFORMANCE_CONFIG.ValidationDebounceMs`, etc. Every timing constant has a named export.
+- [ ] **Inline timeout/delay values** — hardcoded `5000`, `10000`, `300` instead of `PERPS_CONSTANTS.WebsocketTimeout`, `PERPS_CONSTANTS.ConnectionTimeoutMs`, `PERFORMANCE_CONFIG.ValidationDebounceMs`, etc. Every timing constant has a named export. Connection timings may be overridden, but only in the client's one connection config, which defaults to `PERPS_CONSTANTS`.
 - [ ] **Hardcoded leverage fallback** — using `3` or `50` instead of `PERPS_CONSTANTS.DefaultMaxLeverage` or `MARGIN_ADJUSTMENT_CONFIG.FallbackMaxLeverage`.
 - [ ] **Hardcoded precision** — using `6`, `2`, `5` for decimal places instead of `DECIMAL_PRECISION_CONFIG.MaxPriceDecimals`, `MaxSignificantFigures`, `FallbackSizeDecimals`, or `CLOSE_POSITION_CONFIG.UsdDecimalPlaces`.
 - [ ] **Hardcoded API URLs** — inline `'https://perps.api...'` instead of `DATA_LAKE_API_CONFIG.OrdersEndpoint`.
