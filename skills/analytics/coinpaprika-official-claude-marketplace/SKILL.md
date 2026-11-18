@@ -14,7 +14,7 @@ _Source: [github.com/coinpaprika/claude-marketplace](https://github.com/coinpapr
 Official Claude Code plugins for **CoinPaprika** and **DexPaprika** — free crypto market data and DeFi analytics.
 
 - **CoinPaprika**: 12,000+ coins, 350+ exchanges, 29 MCP tools
-- **DexPaprika**: 34+ blockchains, 30M+ pools, 14 MCP tools
+- **DexPaprika**: 36 blockchains, 36M+ pools, 17 MCP tools
 
 Both APIs are free with no API key required.
 
@@ -55,8 +55,8 @@ cd claude-marketplace
 
 ### DexPaprika Plugin
 
-**14 MCP tools** for decentralized exchange data:
-- Token prices and details across 34+ blockchains
+**17 MCP tools** for decentralized exchange data:
+- Token prices and details across 36 blockchains
 - Liquidity pool discovery, filtering, and details
 - OHLCV charts for any pool
 - Pool transactions and trading activity
@@ -67,7 +67,7 @@ cd claude-marketplace
 
 **4 skills**: Token Security Analyzer, Technical Analyzer, Batch Token Price Lookup, Trending Pools Analyzer
 
-**Free tier**: 10,000 requests/day, no API key needed.
+**Free tier**: no API key needed to start. Current limits: https://dexpaprika.com/api/pricing
 
 ## Quick Test
 
@@ -103,7 +103,7 @@ claude-marketplace/
 │   │   └── README.md
 │   └── dexpaprika-claude-plugin/
 │       ├── .claude-plugin/
-│       │   └── plugin.json                 # Plugin manifest (14 MCP tools)
+│       │   └── plugin.json                 # Plugin manifest (17 MCP tools)
 │       ├── agents/
 │       │   └── defi-data-analyst.md        # DeFi security agent
 │       ├── skills/
@@ -140,7 +140,7 @@ Using DexPaprika, show me trending pools on Solana
 | API | Free Tier | Auth Required |
 |-----|-----------|---------------|
 | CoinPaprika | 20,000 calls/month | No |
-| DexPaprika | 10,000 requests/day | No |
+| DexPaprika | Free tier, see dexpaprika.com/api/pricing | No |
 
 Global rate limit: 10 requests/second per IP.
 

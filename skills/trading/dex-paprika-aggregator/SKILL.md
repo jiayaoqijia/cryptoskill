@@ -1,7 +1,7 @@
 ---
 name: dex-paprika-aggregator
-description: "Query 5M+ tokens and liquidity pools across 30+ blockchain networks for DEX analytics."
-version: 1.0.0
+description: "Query 33M+ tokens and 36M+ liquidity pools across 36 blockchain networks for DEX analytics."
+version: 1.1.0
 metadata:
   openclaw:
     tags:
@@ -12,7 +12,7 @@ metadata:
 
 # DexPaprika DEX Data
 
-Query 5M+ tokens and liquidity pools across 30+ blockchain networks for DEX analytics.
+Query 33M+ tokens and 36M+ liquidity pools across 36 blockchain networks for DEX analytics.
 
 ## Source
 

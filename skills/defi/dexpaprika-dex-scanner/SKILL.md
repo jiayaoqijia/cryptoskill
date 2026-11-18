@@ -1,7 +1,7 @@
 ---
 name: dexpaprika-dex-scanner
-description: "Multi-chain DEX pool discovery with 5M+ tokens, volume analytics, and liquidity tracking."
-version: 1.0.0
+description: "Multi-chain DEX pool discovery across 36 chains with 33M+ tokens, volume analytics, and liquidity tracking."
+version: 1.1.0
 metadata:
   openclaw:
     tags:
@@ -12,7 +12,7 @@ metadata:
 
 # DexPaprika DEX Agent
 
-Multi-chain DEX pool discovery with 5M+ tokens, volume analytics, and liquidity tracking.
+Multi-chain DEX pool discovery across 36 chains with 33M+ tokens, volume analytics, and liquidity tracking.
 
 ## Source
 
