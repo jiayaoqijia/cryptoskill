@@ -1,0 +1,6 @@
+interface:
+  display_name: "Crypto 项目与代币研究"
+  short_description: "研究项目与代币，跟踪链上变化、流动性、注意力与筹码，记录信号并复盘判断"
+  default_prompt: "使用 $crypto-research 研究这个项目或代币，核查来源、链上变化、风险和机会。"
+policy:
+  allow_implicit_invocation: true

@@ -5,6 +5,8 @@
 | Claim | Needs |
 |-------|--------|
 | Unit green | pytest / CI |
+| Verify Quick | `verify.ps1 -Profile Quick` PASS — **not** soak |
+| Verify Full | `verify.ps1 -Profile Full` PASS — **not** soak |
 | Ops-ready | READY_OPS.json ops_ready=true |
 | Short soak | hard_fails=0 |
 | 48h | approx_48h_claim_ok=true AND hard_fails=0 |

@@ -82,6 +82,7 @@ Event types: `autopilot.started`, `autopilot.stopped` (`data.reason`: requested 
 `analysis.failed`, `signal.fired` (a long/short proposal: side, confidence, entry_price, stop_loss, take_profit; `expires_at` set),
 `position.changed` (`data.operation`: open | add | reduce | close | close_and_reverse | update_sl | update_tp | update_both |
 place_order | fill_order | cancel_order…, with side, quantity, entry_price, stop_loss, take_profit, pnl, capital; `expires_at` set).
+Every field of these payloads is listed under "Field reference" below.
 
 Cursors are stable for 7 days (the stream holds the recent tail; older cursors are served from the table).
 
@@ -127,6 +128,53 @@ book is yours alone (the agent still analyses and fires `signal.fired`). Paper o
 curl -s $API/v1/autopilots/$ID/actions -H "Authorization: Bearer $SIMIANX_API_KEY" -H 'Content-Type: application/json' \
   -d '{"action":"open","side":"long","notional_usd":1000,"stop_loss":96000,"take_profit":108000}'
 ```
+
+## Field reference (paper book and events)
+
+The same fields are in `GET /v1/openapi.json` under `components.schemas` (`Position`, `Operation`, `Capital`,
+`PaperState`, `TimeframeChanged`, `Event`, `PositionChanged`, `Proposal`, `AnalysisCompleted`). Prices are USD, quantities are coins or
+shares, `null` means not set. A script can rely on these names without waiting for a first trade.
+
+**Position** (`GET …/positions` → `data.positions[]`, newest first; `data.position` / `data.pending_order` of an action)
+
+| Field | Meaning |
+|---|---|
+| `id`, `side` | `long` or `short` |
+| `status` | `placed` (entry order waiting), `open`, `closed`, `force_closed`, `cancelled`; an entry order that was cancelled or expired ends `cancelled` (crypto) or `force_closed` (stock), `close_reason` says which |
+| `quantity`, `entry_price`, `current_price`, `close_price` | size and prices; `current_price` is the monitor's last mark |
+| `stop_loss`, `take_profit` | current levels |
+| `pnl`, `pnl_percentage` | USD and percent: unrealised while open, realised once closed |
+| `position_value_usd`, `fees` | quantity x current price; simulated fees so far |
+| `order_type`, `limit_order_price` | `market`, `limit` or `stop`; the resting price of an entry order |
+| `close_reason` | `ai_decision`, `manual`, `stop_loss`, `take_profit`, `user_disabled`, `timeframe_changed`, `order_expired`, `order_cancelled`, `connection_closed`, `system_error`; stock also `market_closed`, `orphan_stop_loss`, `orphan_take_profit` (a level hit while nobody watched) |
+| `timeframe`, `opened_at`, `filled_at`, `closed_at` | |
+| `operations[]` | positions endpoint only: every change, oldest first (below); `holds` + `last_hold` sum up the AI's hold checks |
+
+**Operation**: `id`, `type` (`open`, `add`, `reduce`, `close`, `close_and_reverse`, `update_sl`, `update_tp`,
+`update_both`, `place_order`, `fill_order`, `cancel_order`, `expire_order`, `replace_order`, `wait_order` (the AI kept a
+resting order), `hold`), `execution_price`,
+`quantity_change` (+ added, − removed), `before_quantity`, `after_quantity`, `stop_loss`, `take_profit` (after the
+operation), `realized_pnl`, `fee`, `confidence` (the decision's confidence in percent, 0–100; a manual crypto action records
+100, an engine fill or cancel of a crypto entry order 0), `pnl_at_operation`, `pnl_percentage_at_operation`,
+`rationale`, `created_at`.
+
+**Capital** (`data.capital` of an action): `initial`, `realized_pnl`, `occupied` (open position + resting order),
+`available` (= initial + realized_pnl − occupied; more than this is 400 `insufficient_capital`). `set_timeframe`
+answers differently: `action`, `timeframe`, `previous` (or `unchanged: true`), `closed_position`, `cancelled_order`,
+`autopilot`, `cursor`.
+
+**Event** (`GET …/events` → `data.events[]`, then `data.cursor`): `id` (pass as `after`), `type`, `autopilot_id`, `ts`,
+`expires_at` (on `signal.fired` and `position.changed`: act before it or skip the event), `data`:
+
+- `signal.fired`: `agent`, `analysis_id`, `action` (`long`/`short`), `side`, `score`, `confidence` (0–1), `risk_level`,
+  `entry_type` (`market`/`limit`/`stop`), `entry_price`, `stop_loss`, `take_profit`, `rationale`.
+- `position.changed`: `symbol`, `market`, `operation` (an operation type above, never `hold` or `wait_order`), `operation_id`,
+  `position_id`, `side`, `status`, `execution_price`, `quantity_change`, `quantity`, `entry_price`, `position_value`,
+  `stop_loss`, `take_profit`, `pnl`, `pnl_percentage`, `pnl_at_operation`, `capital_remaining`, `capital_initial`,
+  `current_price`, `rationale`.
+- `analysis.completed`: `agent`, `analysis_id`, `timeframe`, `model`, `points`, `skipped` (`timing_gate`,
+  `extension_guard`, stock `market_closed` / `market_holiday`, or null), `signal`, `conclusion`, and for the decision agent `proposal` (the `signal.fired` fields;
+  `action` may also be `hold`, `wait` or `no_trade`).
 
 ## Run one agent now
 

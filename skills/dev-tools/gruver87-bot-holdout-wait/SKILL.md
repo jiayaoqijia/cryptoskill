@@ -8,7 +8,7 @@ license: MIT
 compatibility: absolute-trading-bot-final; cite docs/PROTOCOL_STATUS.md and docs/MEASUREMENT.md.
 metadata:
   author: dup-labs
-  version: "0.1.6"
+  version: "0.1.10"
   product: absolute-trading-bot
 ---
 

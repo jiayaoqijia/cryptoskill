@@ -43,7 +43,7 @@ Open `ws_url` with the same key the session was created with:
 
 ```
 Authorization: Bearer simx_live_…        (header; no Origin header is needed for a key)
-X-SimianX-Skill: 1.0.14
+X-SimianX-Skill: 1.0.15
 ```
 
 A reconnect needs no cursor: the session's unacked frames come first (`data.replay: true`). Every frame is JSON:

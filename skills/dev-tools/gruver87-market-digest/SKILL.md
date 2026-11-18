@@ -8,7 +8,7 @@ license: MIT
 compatibility: Best with running dup-market-radar on localhost:8787 or Telegram bot configured.
 metadata:
   author: dup-labs
-  version: "0.1.6"
+  version: "0.1.10"
   product: dup-market-radar
 ---
 

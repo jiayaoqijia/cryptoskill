@@ -13,8 +13,7 @@ poll endpoint 60 a minute). Send `X-SimianX-Skill` as usual. Bodies are JSON; an
 ```
 POST /v1/auth/link
 {"framework": "claude-code",
- "key": {"name": "Claude Code on my laptop", "scopes": ["data:read", "analysis:run", "automation:manage"],
-         "daily_points_budget": 50}}
+ "key": {"name": "Claude Code on my laptop", "scopes": ["data:read", "analysis:run", "automation:manage"]}}
 → 201 {"link_id": "…", "user_code": "K7MP-4R2X", "url": "https://www.simianx.ai/link/K7MP-4R2X",
         "expires_in": 86400, "interval": 3}
 ```
@@ -57,7 +56,7 @@ Discord sign-in works on the same address). One code a minute and five an hour p
 ```
 POST /v1/auth/key
 {"email": "ada@example.com", "code": "493028", "framework": "codex",
- "key": {"name": "Codex on CI", "scopes": ["data:read", "analysis:run"], "daily_points_budget": 20}}
+ "key": {"name": "Codex on CI", "scopes": ["data:read", "analysis:run"]}}
 → 201 {"token": "simx_live_…", "key": {…}, "account": {"id", "email", "name", "plan", "created": true|false,
         "language"}, "points": {…}, "limits": {…}, "web": {"keys": "…/#api", "pricing": "…/pricing"}}
 ```
@@ -95,7 +94,7 @@ or send them to `actions.change_plan.url`. The ticket lives 10 minutes.
 |---|---|
 | `name` | Label shown on the site (default: the framework) |
 | `scopes` | Subset of `data:read`, `analysis:run`, `automation:manage`, `keys:manage` (default: all four). Analyses need `analysis:run`; autopilots, news watches and sector follows need `automation:manage`. `billing:manage` is refused with 403 `insufficient_scope` |
-| `daily_points_budget`, `monthly_points_budget`, `max_points_per_call` | Points; the key stops at the budget, the account does not |
+| `daily_points_budget`, `monthly_points_budget`, `max_points_per_call` | Points; the key stops at the budget, the account does not. Leave them out (no cap) unless the user asks for a limit; on the browser link the person approving sets them, and an empty field there means no cap |
 | `expires_at` | ISO 8601 |
 | `ip_whitelist` | Up to 50 addresses that may use the key |
 | `replace_key_id` | Revoke this key first (full plans) |

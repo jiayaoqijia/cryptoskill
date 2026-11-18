@@ -8,7 +8,7 @@ license: MIT
 compatibility: Requires local clone of dup-market-radar for gate scripts; Windows PowerShell preferred.
 metadata:
   author: dup-labs
-  version: "0.1.6"
+  version: "0.1.10"
   product: dup-market-radar
 ---
 
@@ -33,8 +33,10 @@ metadata:
 
 ```powershell
 cd <path>\dup-market-radar
-.\scripts\test_all.ps1 -SkipBuild
-.\scripts\go_ready.ps1 -SkipBuild
+.\scripts\ops_board.ps1                 # non-soak board (prefer first)
+.\scripts\verify.ps1 -Profile Quick     # NO soak
+.\scripts\verify.ps1 -Profile Full      # NO soak
+.\scripts\go_ready.ps1 -SkipBuild       # ops-ready ≠ 48h
 ```
 
 3. Answer with the **exact** gate that passed (pytest / go_ready / soak fields).
