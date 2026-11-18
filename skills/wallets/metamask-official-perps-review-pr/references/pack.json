@@ -1,0 +1,2570 @@
+{
+  "schemaVersion": 1,
+  "id": "perps",
+  "source": {
+    "repository": "MetaMask/experimental-metamask-recipe-perps",
+    "revision": "f8b96429a09da37b71e0248307c5cbfee6021807"
+  },
+  "families": [
+    {
+      "id": "blocking-review-checks",
+      "title": "Blocking review checks",
+      "file": "references/shared.md",
+      "areas": {
+        "always": true
+      },
+      "status": "active",
+      "class": "blocking",
+      "rules": [
+        {
+          "label": "Blocking review checks",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "controller-portability-core",
+      "title": "Controller Portability (Core)",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/architecture.md` (Platform dependencies).",
+      "rules": [
+        {
+          "label": "Platform import in controller",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Deep import from app code",
+          "why": "pre-0073"
+        },
+        {
+          "label": "New dependency not in DI interface",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Breaking the publisher contract",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "perps-math-comes-from-the-controller",
+      "title": "Perps Math Comes From the Controller",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/architecture.md` (What the controller owns).",
+      "rules": [
+        {
+          "label": "Client-side trading math",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Copy or port of existing logic",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Advanced-order execution state",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "shared-formatting-display-precision",
+      "title": "Shared Formatting & Display Precision",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/formatting.md`.",
+      "rules": [
+        {
+          "label": "Local formatter copy",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing shared capability",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Precision divergence",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Intl built per call",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Locale formatting not reused",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "missing-numeric-data-stays-undefined",
+      "title": "Missing numeric data stays undefined",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/formatting.md` (Missing value or real zero) and `architecture.md` (Balance contract on AccountState).",
+      "rules": [
+        {
+          "label": "Missing data converted to zero",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Unknown treated as confirmed zero",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Reviewer proposes a fabricated value",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Placeholder written into numeric state",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "magic-strings-magic-numbers-placeholder-values",
+      "title": "Magic Strings, Magic Numbers & Placeholder Values",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/architecture.md` (What the controller owns).",
+      "rules": [
+        {
+          "label": "Inline timeout/delay values",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded leverage fallback",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded precision",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded API URLs",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded validation thresholds",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded cache durations",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "protocol-abstraction",
+      "title": "Protocol Abstraction",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/architecture.md` (Providers) and `venues/`.",
+      "rules": [
+        {
+          "label": "Execution identity inferred from display fields",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Entity ownership lost in transit",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded provider",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Provider identity or capability hardcoded in client code",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Provider-specific error handling",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded market symbols",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Executable precision differs from what the user confirms",
+          "why": "pre-0073"
+        },
+        {
+          "label": "`detailedOrderType` rendered directly in UI",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "pro-mode-ui-gating",
+      "title": "Pro Mode UI Gating",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "rules": [
+        {
+          "label": "Single-gate assumption",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Fixture starts in Lite mode",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Pro-only code tested only via live UI",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded tab index across feature gates",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "metametrics-events",
+      "title": "MetaMetrics Events",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/contracts/events.md`, plus the client's `docs/perps/` instrumentation doc.",
+      "rules": [
+        {
+          "label": "Magic string event properties",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Magic string event values",
+          "why": "pre-0073"
+        },
+        {
+          "label": "New event instead of property",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Same meaning, two properties",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing `source` on screen view",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Hardcoded source in reusable component",
+          "why": "pre-0073"
+        },
+        {
+          "label": "New screen/view without tracking",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing `completion_duration` on transaction events",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "sentry-tracing",
+      "title": "Sentry Tracing",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/contracts/traces.md`, plus the client's `docs/perps/` instrumentation doc.",
+      "rules": [
+        {
+          "label": "Unbounded background trace volume",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "connection-websocket-architecture",
+      "title": "Connection & WebSocket Architecture",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/architecture.md` (Connection, What a client must do), plus the client's `docs/perps/connection-architecture.md`.",
+      "rules": [
+        {
+          "label": "Cleanup has no owner for in-flight setup",
+          "why": "pre-0073"
+        },
+        {
+          "label": "A second lifecycle owner",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Unthrottled WS → setState",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Per-consumer subscription bypasses the shared channel",
+          "why": "pre-0073"
+        },
+        {
+          "label": "WS subscription leak",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Stale data after async gap",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Static WebView work coupled to live ticks",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Account change without reconnect",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "data-flow-state",
+      "title": "Data Flow & State",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/architecture.md` (State, caches and persistence), plus the client's `docs/perps/` caching doc.",
+      "rules": [
+        {
+          "label": "Delayed balance tracker loses its initiating context",
+          "why": "pre-0073"
+        },
+        {
+          "label": "A changed classification leaves old priority rules",
+          "why": "pre-0073"
+        },
+        {
+          "label": "State persists outside the rendered control",
+          "why": "pre-0073"
+        },
+        {
+          "label": "React persistence mistaken for WebView synchronization",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Old context remains actionable",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Late defaults overwrite a user choice",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Direct controller call from component",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing `accountState` check",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Derived flag promoted to structural state without its own lifecycle",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Async flow loses ownership of cleanup",
+          "why": "pre-0073"
+        },
+        {
+          "label": "One in-flight mutation lock replaces earlier accepted outcomes",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Preload data not seeded",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Leverage/validation bypass",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "trade-flow-order-execution",
+      "title": "Trade Flow & Order Execution",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "doc": "Core `packages/perps-controller/docs/tpsl.md` and `venues/`.",
+      "rules": [
+        {
+          "label": "Numeric meaning changes in transit",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Pre-trade checks missing",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Post-trade state not refreshed",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing or hardcoded slippage",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "navigation-entry-and-exit-parity",
+      "title": "Navigation Entry and Exit Parity",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "rules": [
+        {
+          "label": "Only one path is fixed",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "test-layer-coverage",
+      "title": "Test Layer Coverage",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "rules": [
+        {
+          "label": "Degenerate fixtures hide formula errors",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Numeric control units change partially",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Clock control changes the test mechanism",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Assertions miss the behavior under review",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "embedded-signer-boundaries",
+      "title": "Embedded Signer Boundaries",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "rules": [
+        {
+          "label": "Navigation policy mistaken for network isolation",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Bridge messages trusted by assertion",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "architecture-docs",
+      "title": "Architecture Docs",
+      "file": "references/shared.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ],
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ],
+          "core": [
+            "packages/perps-controller/**"
+          ],
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "rules": [
+        {
+          "label": "Change contradicts its doc",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Documented pattern changed without its doc",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "agentic-testability-testids",
+      "title": "Agentic Testability (testIDs)",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "Missing testID on interactive elements",
+          "why": "pre-0073"
+        },
+        {
+          "label": "testID not in `Perps.testIds.ts`",
+          "why": "pre-0073"
+        },
+        {
+          "label": "testID missing from the element that holds the value",
+          "why": "pre-0073"
+        },
+        {
+          "label": "TP/SL price inputs without testID",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "android-back-paths",
+      "title": "Android Back Paths",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "Modal back handler missed",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "mobile-ui-structure",
+      "title": "Mobile UI Structure",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "Logic in the component body",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Oversized component file",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Inline metrics or error handling",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "native-modal-layout",
+      "title": "Native Modal Layout",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "Modal wrapper omitted in width-constrained layouts",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "mobile-controller-integration-mocks",
+      "title": "Mobile Controller Integration Mocks",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "Controller bump treated as lockfile-only",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "mobile-trace-instrumentation",
+      "title": "Mobile Trace Instrumentation",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "New screen without `usePerpsMeasurement`",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing error context",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing `ensureError()` wrapper",
+          "why": "pre-0073"
+        },
+        {
+          "label": "New trace without TraceName enum",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Missing `endTrace` in finally block",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "mobile-reference-paths",
+      "title": "Mobile Reference Paths",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "Mobile Reference Paths",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "mobile-test-layers",
+      "title": "Mobile Test Layers",
+      "file": "references/mobile.md",
+      "areas": {
+        "paths": {
+          "mobile": [
+            "app/components/UI/Perps/**",
+            "app/components/Views/TrendingView/feeds/perps/**",
+            "app/components/Views/ActivityDetails/templates/Perps/**",
+            "app/components/Views/ActivityScreen/components/PerpsActivityFilterSheet/**",
+            "app/components/Views/confirmations/components/perps-confirmations/**",
+            "app/core/Engine/controllers/perps-controller/**",
+            "app/core/Engine/messengers/perps-controller-messenger/**",
+            "app/selectors/perps/**",
+            "app/images/perps/**",
+            "app/components/Views/confirmations/**/*[Pp]erps*",
+            "app/components/Views/confirmations/**/*[Pp]erps*/**",
+            "tests/**/[Pp]erps/**",
+            "tests/**/[Pp]erps*/**",
+            "tests/**/*[Pp]erps*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
+      "rules": [
+        {
+          "label": "Controller/provider flow faked with mocks",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "extension-must-consume-the-published-controller-contract",
+      "title": "Extension Must Consume the Published Controller Contract",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Client patch compensates for controller state gap",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Assumes Mobile-only initialization semantics",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Package bump without compatibility check",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Package bump proved only from manifests or `node_modules`",
+          "why": "pre-0073"
+        },
+        {
+          "label": "New constant accepted from main without contract check",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Extension-only alias keys added as inline snake_case",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "controller-mock-must-be-kept-current",
+      "title": "Controller Mock Must Be Kept Current",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "New event name / property used in product code but absent from mock",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Mock drift goes unnoticed",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "analytics-wiring-patterns",
+      "title": "Analytics Wiring Patterns",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Tracker outlives the rendered form",
+          "why": "pre-0073"
+        },
+        {
+          "label": "One-shot guards reset on remount",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Screen-view double-emission on normal+error page pairs",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Modal screen view at trigger site instead of in the modal",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Removing client `track()` calls without checking background API",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Attribution split",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "hook-import-boundaries",
+      "title": "Hook Import Boundaries",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Import shared hooks from their module, not the `hooks/perps` barrel",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Stream-module mocks are explicit whitelists",
+          "why": "pre-0073"
+        },
+        {
+          "label": "`react-compiler` forbids mutating a hook argument",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "market-data-source-and-provider-behavior-must-be-consistent-across-paths",
+      "title": "Market Data Source and Provider Behavior Must Be Consistent Across Paths",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Preferred source wired only to stream path",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Source choice hidden in unchanged params",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Fallback path lacks evidence",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "backend-routing-and-controller-preload-caches",
+      "title": "Backend Routing and Controller Preload Caches",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Preload cache not updated alongside explicit fetch path",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Reconnect fallback bypasses cache invalidation",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Cache TTL assumes a route that no longer exists",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "order-forms-must-preserve-user-input-across-toggles",
+      "title": "Order Forms Must Preserve User Input Across Toggles",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "TP/SL sign or percent toggle drops value",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "charts-and-ctas-need-feature-parity-evidence",
+      "title": "Charts and CTAs Need Feature-Parity Evidence",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Loading and loaded section order differ",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Measurements ignore rendered state",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Advanced chart drops volume or realtime signal",
+          "why": "pre-0073"
+        },
+        {
+          "label": "CTA shown for unsupported asset/context",
+          "why": "pre-0073"
+        },
+        {
+          "label": "New CTA lacks analytics",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "batch-action-and-analytics-error-path-parity",
+      "title": "Batch-Action and Analytics Error-Path Parity",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Asymmetric catch blocks across sibling handlers",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Soft-failure branch without error-screen-view",
+          "why": "pre-0073"
+        },
+        {
+          "label": "New analytics branch ships without a test",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "cdp-e2e-proof-surfaces",
+      "title": "CDP / E2E Proof Surfaces",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Perps tab screenshot treated as market-data-loaded proof",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "evidence-expected-before-extension-perps-review",
+      "title": "Evidence Expected Before Extension Perps Review",
+      "file": "references/extension.md",
+      "areas": {
+        "paths": {
+          "extension": [
+            "ui/pages/perps/**",
+            "ui/components/app/perps/**",
+            "ui/pages/confirmations/components/perps-confirmations/**",
+            "ui/hooks/perps/**",
+            "ui/ducks/perps/**",
+            "ui/providers/perps/**",
+            "ui/helpers/perps/**",
+            "ui/selectors/perps/**",
+            "ui/selectors/perps-controller*.ts",
+            "ui/__mocks__/perps/**",
+            "app/scripts/controllers/perps/**",
+            "app/scripts/messenger-client-init/perps-controller-init*.ts",
+            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
+            "shared/constants/perps*.ts",
+            "shared/lib/perps-*.ts",
+            "test/e2e/tests/perps/**",
+            "test/e2e/page-objects/pages/perps/**",
+            "ui/pages/confirmations/**/*[Pp]erps*",
+            "ui/pages/confirmations/**/*[Pp]erps*/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "extension"
+      ],
+      "rules": [
+        {
+          "label": "Evidence Expected Before Extension Perps Review",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "public-controller-contracts-must-be-versioned-and-migration-aware",
+      "title": "Public Controller Contracts Must Be Versioned and Migration-Aware",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "State shape changes without client migration",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Method signature changes without compatibility plan",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Event name/payload drift",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Package export changes without package-level tests",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "package-release-metadata-must-match-contract-impact",
+      "title": "Package Release Metadata Must Match Contract Impact",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "Public API/state change without changelog",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Breaking change released as minor/patch",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Controller package and client integration out of sync",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "hyperliquid-multi-sig-account-handling-in-hyperliquidprovider",
+      "title": "HyperLiquid Multi-Sig Account Handling in HyperLiquidProvider",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "Catch-path classifier without proactive probe",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Proactive probe without catch-path classifier",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Probe placed too early",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "ensureunifiedaccountenabled-retry-vs-permanent-failure-cache-semantics",
+      "title": "`#ensureUnifiedAccountEnabled` — Retry vs Permanent-Failure Cache Semantics",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "Permanent account-shape condition cached as retryable",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Retryable flag + permanent condition",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Deferred or skipped path treated as a failure",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "metered-benefits-need-a-strict-improvement",
+      "title": "Metered Benefits Need a Strict Improvement",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "Metered Benefits Need a Strict Improvement",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "read-only-account-guards-cover-every-write",
+      "title": "Read-only Account Guards Cover Every Write",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "Read-only Account Guards Cover Every Write",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "one-formatter-surface-in-the-controller",
+      "title": "One Formatter Surface in the Controller",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "Duplicate formatting logic",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Variant function instead of an option",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "provider-rejections-have-two-shapes",
+      "title": "Provider Rejections Have Two Shapes",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "One rejection shape handled",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Shared fix proven on one provider",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "evidence-expected-before-core-perps-review",
+      "title": "Evidence Expected Before Core Perps Review",
+      "file": "references/core.md",
+      "areas": {
+        "paths": {
+          "core": [
+            "packages/perps-controller/**"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "core"
+      ],
+      "rules": [
+        {
+          "label": "Evidence Expected Before Core Perps Review",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "provider-agnostic-perps-code",
+      "title": "Provider-Agnostic Perps Code",
+      "file": "references/terminal.md",
+      "areas": {
+        "paths": {
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "terminal"
+      ],
+      "rules": [
+        {
+          "label": "Provider-Agnostic Perps Code",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "mobile-parity",
+      "title": "Mobile Parity",
+      "file": "references/terminal.md",
+      "areas": {
+        "paths": {
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "terminal"
+      ],
+      "rules": [
+        {
+          "label": "Unexplained Mobile divergence",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Advanced order divergence",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Formatting divergence",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "reuse-and-types",
+      "title": "Reuse and Types",
+      "file": "references/terminal.md",
+      "areas": {
+        "paths": {
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "terminal"
+      ],
+      "rules": [
+        {
+          "label": "Parallel controller state",
+          "why": "pre-0073"
+        },
+        {
+          "label": "Force casts",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "legacy-local-formatters",
+      "title": "Legacy Local Formatters",
+      "file": "references/terminal.md",
+      "areas": {
+        "paths": {
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "terminal"
+      ],
+      "rules": [
+        {
+          "label": "Legacy Local Formatters",
+          "why": "pre-0073"
+        }
+      ]
+    },
+    {
+      "id": "forced-testnet",
+      "title": "Forced Testnet",
+      "file": "references/terminal.md",
+      "areas": {
+        "paths": {
+          "terminal": [
+            "src/features/perpetuals/**",
+            "src/app/order/**",
+            "src/server/perps/**",
+            "electron/services/mm-perps-*",
+            "electron/services/hyperliquid-*"
+          ]
+        }
+      },
+      "status": "active",
+      "class": "blocking",
+      "clients": [
+        "terminal"
+      ],
+      "rules": [
+        {
+          "label": "Mainnet fallback",
+          "why": "pre-0073"
+        }
+      ]
+    }
+  ]
+}

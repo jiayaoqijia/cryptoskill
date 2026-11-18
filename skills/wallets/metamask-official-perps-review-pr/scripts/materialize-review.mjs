@@ -184,6 +184,40 @@ const criteriaFiles = Object.entries({ shared: perps, mobile, extension, core, t
     list.filter(({ body }) => body).map(({ title, slug, body }) => `<a id="${slug}"></a>\n\n## ${title}\n\n${body.replace(/^[-*] /gm, '- [ ] ')}\n`).join('\n'),
 ]);
 
+// The machine-readable rule pack (ADR-0073 Amendment 1, Farmslot review rule packs): one
+// entry per criterion family, keyed by the anchor its checklist row links. A family from a
+// client file is carried only by that client's overlay, so it names that client; shared
+// families reach every client. Areas start as each client's owned paths, and every rule
+// keeps `pre-0073` as its cause until an edit records the real one. The blocking policy
+// applies to every diff, so no path gates it.
+const ALWAYS = new Set(['blocking-review-checks']);
+function ownedPaths(client) {
+  const paths = owned.repos[client];
+  if (!Array.isArray(paths) || !paths.length) throw new Error(`owned-paths.json has no paths for ${client}, which the pack needs`);
+  return paths;
+}
+const packIds = new Map();
+const packFamilies = Object.entries({ shared: perps, mobile, extension, core, terminal }).flatMap(([file, list]) =>
+  list.filter(({ body }) => body).map(({ title, slug, body }) => {
+    if (packIds.has(slug)) throw new Error(`Family anchor ${slug} appears in references/${packIds.get(slug)}.md and references/${file}.md`);
+    packIds.set(slug, file);
+    const client = file === 'shared' ? null : file;
+    const labels = [...body.matchAll(/^[-*] \*\*(.+?)\*\*/gm)].map(([, label]) => label.trim());
+    const doc = body.match(/^Docs: (.+)$/m)?.[1].trim();
+    return {
+      id: slug,
+      title,
+      file: `references/${file}.md`,
+      areas: ALWAYS.has(slug) && !client ? { always: true } : { paths: client ? { [client]: ownedPaths(client) } : Object.fromEntries(Object.keys(CLIENTS).map(name => [name, ownedPaths(name)])) },
+      status: 'active',
+      class: 'blocking',
+      ...(doc ? { doc } : {}),
+      ...(client ? { clients: [client] } : {}),
+      rules: (labels.length ? labels : [title]).map(label => ({ label, why: 'pre-0073' })),
+    };
+  }));
+const pack = { schemaVersion: 1, id: 'perps', source: { repository: 'MetaMask/experimental-metamask-recipe-perps', revision }, families: packFamilies };
+
 const skillBody = baseBody(false);
 const outputs = [
   [path.join(out, 'skill.md'), `---\nname: perps-review-pr\ndescription: Execute the Perps static review checklist when explicitly invoked by name or a selected workflow.\ndisable-model-invocation: true\nmaturity: stable\n---\n\n${skillBody}\n`],
@@ -192,6 +226,7 @@ const outputs = [
   [path.join(out, 'references/shared-packages.md'), documents['review/shared-packages.md']],
   [path.join(out, 'references/report-template.md'), documents['review/report-template.md']],
   [path.join(out, 'references/owned-paths.json'), `${JSON.stringify(owned.repos, null, 2)}\n`],
+  [path.join(out, 'references/pack.json'), `${JSON.stringify(pack, null, 2)}\n`],
   [path.join(out, 'references/review-sources.json'), `${JSON.stringify({ repository: 'MetaMask/experimental-metamask-recipe-perps', revision, files: digests }, null, 2)}\n`],
   ...criteriaFiles,
 ];

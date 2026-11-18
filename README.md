@@ -65,8 +65,8 @@ Quality Score (0-100) = Static (40) + Security (20) + Depth (40)
 
 | Grade | Score | Skills | Meaning |
 |-------|-------|--------|---------|
-| **A** | 80-100 | 19 | Production-ready, well-documented, secure |
-| **B** | 60-79 | 887 | Good quality, minor gaps |
+| **A** | 80-100 | 18 | Production-ready, well-documented, secure |
+| **B** | 60-79 | 888 | Good quality, minor gaps |
 | **C** | 40-59 | 2944 | Usable but significant gaps |
 | **D** | 20-39 | 135 | Minimal quality, use with caution |
 
