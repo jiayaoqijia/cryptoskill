@@ -27,9 +27,10 @@ Your job is to figure out whether the user needs to **write a new test**, **fix 
 Task → What do you need?
 ├─ Write new test or update after change
 │  → Read component + existing tests
+│  → Follow Rules (enforced by lint) in this file
 │  → Open component-view/writing-tests.md (use cases, coverage, renderer/preset, file structure)
 │  → If test needs navigation: also open component-view/navigation-mocking.md
-│  → After writing: run tests, then open component-view/reference.md for self-review
+│  → After writing: yarn eslint <file>, run tests, then open component-view/reference.md for self-review
 │
 ├─ Fix failing test
 │  → Run: yarn jest -c jest.config.view.js <path> --runInBand --silent --coverage=false
@@ -48,7 +49,7 @@ Do not read the full reference files until the decision tree or workflow sends y
 
 Component view tests are **integration-level** tests that test views through real Redux state — no mocked hooks or selectors. They live alongside the component as `ComponentName.view.test.tsx` and use a dedicated framework in `tests/component-view/`.
 
-Key constraint: **only Engine and allowed native modules may be mocked** (enforced at runtime by `app/util/test/testSetupView.js` and by ESLint override in `.eslintrc.js` for `**/*.view.test.*`).
+Key constraint: **only Engine and allowed native modules may be mocked** (enforced at runtime by `app/util/test/testSetupView.js` and by ESLint override in `.eslintrc.js` for `**/*.view.test.*`). The full lint list is *Rules (enforced by lint)*.
 
 
 ## The Framework at a Glance
@@ -67,7 +68,7 @@ tests/component-view/
 
 ## Workflow (summary)
 
-- **Write new test**: Read component and existing tests → list use cases and map to test patterns → check coverage and deduplicate → use or create renderer/preset → write test (use `renderScreenWithRoutes` if asserting navigation). Every test must have at least one of: `fireEvent`, `waitFor`/`findBy`, `store.dispatch`/`act`, or Engine spy (no render-only scenarios). Run tests, then run the self-review checklist in `component-view/reference.md`.
+- **Write new test**: Read component and existing tests → list use cases and map to test patterns → check coverage and deduplicate → use or create renderer/preset → write test (use `renderScreenWithRoutes` if asserting navigation). Every test must have at least one of: `fireEvent`, `waitFor`/`findBy`, `store.dispatch`/`act`, or Engine spy (no render-only scenarios). Follow *Rules (enforced by lint)*. Run `yarn eslint <file>`, run tests, then run the self-review checklist in `component-view/reference.md`.
 - **Fix failing test**: Run with `jest.config.view.js` → identify error type from the table in `component-view/reference.md` (Diagnosing Failures) → apply the fix (remove disallowed mock, add state override, add preset, wrap in `waitFor`, add `deterministicFiat`, etc.) → re-run.
 - **Update after change**: Same as write — review existing tests, extend preset/renderer if needed, update tests, run and self-review.
 
@@ -95,7 +96,124 @@ yarn test:view:coverage:folder app/components/UI/MyFeature
 For run-by-name, watch mode, or other options, see `component-view/reference.md` (Run the Tests).
 
 
+## Rules (enforced by lint)
+
+ESLint on `*.view.test.tsx` in metamask-mobile rejects this list (`no-restricted-syntax` in `.eslintrc.js`, override `**/*.view.test.*`). Arbitrary `jest.mock` is already an error. The fake-timer API is already an error ([metamask-mobile#38995](https://github.com/MetaMask/metamask-mobile/pull/38995)). The remaining rules are the ESLint PR in progress. [skills#217](https://github.com/MetaMask/skills/pull/217) is merged: the Golden Rules below and [`component-view/reference.md`](component-view/reference.md) keep the diagnosis and the failure signatures. Write the good form here, and cite those rules by name.
+
+Run lint on every new or edited CV test before finishing. A green Jest run does not cover these.
+
+```bash
+yarn eslint <path/to/Component.view.test.tsx>
+```
+
+**1. No arbitrary `jest.mock`** — a view test drives behaviour through Redux. Another mock hides that wiring. Engine and `react-native-device-info` are already mocked in `tests/component-view/mocks.ts` (*Only mock Engine and allowed native modules*).
+
+```typescript
+// ❌
+jest.mock('../../hooks/useQuote', () => ({ useQuote: jest.fn() }));
+
+// ✅ override the preset — no jest.mock in the test file
+renderMyView({ overrides: { bridge: { sourceAmount: '1' } } });
+```
+
+**2. No fake timers** — `useFakeTimers`, `advanceTimersByTime`, `runAllTimers`, `setSystemTime`, and the `*Async` variants stall real queries and flake in CI. Keep countdowns, debounces, and expiry in a unit test, or serve a fixture already in the target state (*Keep time-dependent behaviour out of view tests*). `Date.now` is real here; do not freeze it. `jest.spyOn(Date, 'now')` is allowed when timers stay real.
+
+```typescript
+// ❌
+jest.useFakeTimers();
+jest.advanceTimersByTime(1000);
+
+// ✅ no timer API — fixture already ended, or cover the countdown in a unit test
+expect(await findByTestId(MyViewSelectorsIDs.ENDED_BADGE)).toBeOnTheScreen();
+```
+
+**3. No `find*` inside `waitFor`** — `findBy*` already polls (`waitFor` + `getBy`, default 1000 ms). Nesting shares that budget, so CI fails with a bare `Timed out in waitFor.` (*Do not nest `find*` inside `waitFor`*).
+
+```typescript
+// ❌
+await waitFor(async () => {
+  expect(await findByText('Token A')).toBeOnTheScreen();
+});
+
+// ✅ findBy* already waits
+expect(await findByText('Token A')).toBeOnTheScreen();
+
+// ✅ or waitFor + a synchronous getBy* when the assert is a count
+await waitFor(() => {
+  expect(getAllByTestId(MyViewSelectorsIDs.ROW)).toHaveLength(3);
+});
+```
+
+**4. Await the subject, not a skeleton or sibling** — header, list, and actions load on their own. A sibling skeleton leaving the screen does not mean the control under test is mounted (*Do not wait on a sibling loading proxy*).
+
+```typescript
+// ❌
+await waitFor(() => {
+  expect(queryByTestId(MyViewSelectorsIDs.DETAILS_SKELETON)).toBeNull();
+});
+fireEvent.press(getByTestId(MyViewSelectorsIDs.SHARE_BUTTON));
+
+// ✅ await the subject, then re-query to press
+expect(await findByTestId(MyViewSelectorsIDs.SHARE_BUTTON)).toBeOnTheScreen();
+fireEvent.press(getByTestId(MyViewSelectorsIDs.SHARE_BUTTON));
+```
+
+**5. Re-query after a remount, then press** — a `findBy*` node detaches when the loading tree swaps for the loaded one. Pressing the held node is a no-op (`Unable to find node on an unmounted component`) (*A `findBy*` result is valid only until the next state change*).
+
+```typescript
+// ❌
+const card = await findByTestId(MyViewSelectorsIDs.CARD);
+fireEvent.press(card);
+
+// ✅ await a marker that only the loaded tree renders, then query again
+await findByTestId(MyViewSelectorsIDs.LOADED_CONTENT);
+fireEvent.press(getByTestId(MyViewSelectorsIDs.CARD));
+```
+
+**6. No `clearAllMocks` without `mockReset`** — `jest.clearAllMocks()` drops call history and keeps the last `mockImplementation` / `mockResolvedValue`. The next test flakes with `Expected number of calls: N, Received: M`. Use `mockReset()` (or restore) in `beforeEach` when a case changes an implementation; use `mockClear()` only to zero a call count (*Reset mock implementations between tests*).
+
+```typescript
+// ❌
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+// ✅
+beforeEach(() => {
+  quoteSpy.mockReset();
+});
+```
+
+**7. No fixed sleeps** — `setTimeout` of N ms races the clock the same way a widened `waitFor` does. Await the observable outcome. A zero-delay flush (`setTimeout(r, 0)`) before asserting that something did not happen is still allowed.
+
+```typescript
+// ❌
+await new Promise((resolve) => setTimeout(resolve, 50));
+expect(getByText('Quote refreshed')).toBeOnTheScreen();
+
+// ✅
+await waitFor(() => expect(getByText('Quote refreshed')).toBeOnTheScreen());
+```
+
+**8. No bare timeout bumps** — pass `{ timeout }` only with a comment that names the async boundary (a debounce, a chained query). A raised budget alone is not a fix. The default is 1000 ms (*Do not nest `find*` inside `waitFor`*, *Fix a flake at its cause*).
+
+```typescript
+// ❌ raised budget, no named boundary
+await waitFor(() => expect(getByText('Ready')).toBeOnTheScreen(), {
+  timeout: 5000,
+});
+
+// ✅
+// Quote-preview debounce; the default 1000 ms expires first.
+await waitFor(() => expect(getByText('Preview')).toBeOnTheScreen(), {
+  timeout: 5000,
+});
+```
+
+
 ## Golden Rules (Enforced)
+
+Diagnosis for *Rules (enforced by lint)*. Cite these by name, not by number.
 
 1. **Only mock Engine and allowed native modules** — no arbitrary `jest.mock()` in `*.view.test.*` files. Allowed:
    - `../../app/core/Engine`
@@ -107,7 +225,7 @@ For run-by-name, watch mode, or other options, see `component-view/reference.md`
 
 3. **Reuse presets and renderers** — never rebuild the full state manually from scratch.
 
-4. **No fake timers** — never use `jest.useFakeTimers()`, `jest.advanceTimersByTime()`, or `jest.useRealTimers()`. For time-dependent UI, see *Keep time-dependent behaviour out of view tests*.
+4. **No fake timers** — never use `jest.useFakeTimers()`, `jest.advanceTimersByTime()`, `jest.useRealTimers()`, or the rest of the fake-timer API (ESLint rejects it). For time-dependent UI, see *Keep time-dependent behaviour out of view tests*. A real `setTimeout` sleep is the same race — see *No fixed sleeps* under *Rules (enforced by lint)*.
 
 5. **Test behavior, not snapshots** — use `toBeOnTheScreen()`, `not.toBeOnTheScreen()`, interaction assertions.
 
@@ -148,6 +266,8 @@ For run-by-name, watch mode, or other options, see `component-view/reference.md`
 23. **Run the tests before declaring done** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and confirm all tests are green. A test file that has never been run is not done.
 
 24. **Run format:check before declaring done** — run `npx prettier --check <file>` (or `yarn format:check`) on the new test file and every new supporting file (renderer, preset, api-mock). Auto-fix with `npx prettier --write <file>` if needed, then re-check.
+
+25. **Run lint before declaring done** — run `yarn eslint <file>` on every new or edited `*.view.test.tsx`. See *Rules (enforced by lint)*. A green Jest run does not cover these.
 
 
 ## Reference files (when to use)

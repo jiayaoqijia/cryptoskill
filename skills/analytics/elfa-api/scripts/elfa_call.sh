@@ -36,7 +36,7 @@ Usage:
 Options:
   -q, --query <params>        Query string (e.g. 'timeWindow=24h&pageSize=10')
   -X, --method <METHOD>       HTTP method (default: GET, auto-set to POST with -d)
-  -d, --data <json>           Request body (JSON). Implies -X POST.
+  -d, --data <json>           Request body (JSON). Implies -X POST unless -X is given.
   --x402                      Use x402 keyless mode (rewrites /v2/ to /x402/v2/).
   --payment <payload>         Pre-signed x402 payment header (base64). Requires --x402.
   --agent-secret <secret>     Agent identity secret added as x-elfa-agent-secret header
@@ -61,6 +61,16 @@ Examples:
   # API v3 (API key only): resolve an entity, then read its events (from in unix seconds)
   ./elfa_call.sh /v3/entities -q 'q=btc&entityType=token&limit=1'
   ./elfa_call.sh /v3/events -q "entityIds=<id>&from=$(( $(date +%s) - 86400 ))&limit=10"
+
+  # Verify (PAYG, Grow or Enterprise): check one claim, 1 credit
+  ./elfa_call.sh /v3/verify -d '{"statement":"Binance will list HYPE for spot trading."}'
+
+  # Monitors (PAYG, Grow or Enterprise): 2 credits per started hour live; delete when done
+  ./elfa_call.sh /v3/monitors -d '{"query":"Binance announces it will delist a token","webhookUrl":"https://example.com/elfa-webhook"}'
+  ./elfa_call.sh /v3/monitors
+  ./elfa_call.sh /v3/monitors/<id>/events -q 'limit=100'
+  ./elfa_call.sh /v3/monitors/<id> -X PATCH -d '{"query":"Binance announces a token delisting"}'
+  ./elfa_call.sh /v3/monitors/<id> -X DELETE
 
   # x402 mode (pay-per-request with USDC on Base)
   ./elfa_call.sh /v2/aggregations/trending-tokens --x402 --payment '<base64-payload>'
@@ -113,6 +123,7 @@ fmt_json() {
 
 # Parse arguments
 METHOD="GET"
+METHOD_SET=false
 QUERY=""
 BODY=""
 X402=false
@@ -126,9 +137,9 @@ ENDPOINT="$1"; shift
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -X|--method)        [[ $# -lt 2 ]] && die "-X requires a value"; METHOD="$2"; shift 2 ;;
+    -X|--method)        [[ $# -lt 2 ]] && die "-X requires a value"; METHOD="$2"; METHOD_SET=true; shift 2 ;;
     -q|--query)         [[ $# -lt 2 ]] && die "-q requires a value"; QUERY="$2"; shift 2 ;;
-    -d|--data)          [[ $# -lt 2 ]] && die "-d requires a value"; BODY="$2"; METHOD="POST"; shift 2 ;;
+    -d|--data)          [[ $# -lt 2 ]] && die "-d requires a value"; BODY="$2"; [[ "$METHOD_SET" == true ]] || METHOD="POST"; shift 2 ;;
     --x402)             X402=true; shift ;;
     --payment)          [[ $# -lt 2 ]] && die "--payment requires a value"; PAYMENT="$2"; shift 2 ;;
     --agent-secret)     [[ $# -lt 2 ]] && die "--agent-secret requires a value"; AGENT_SECRET="$2"; shift 2 ;;
@@ -147,7 +158,7 @@ if [[ "$X402" == true ]]; then
   [[ "${ENDPOINT#/x402}" == /v3/* ]] && die "API v3 takes an API key only; x402 is not available on /v3. Set ELFA_API_KEY instead."
   # Rewrite /v2/ → /x402/v2/ if not already prefixed
   [[ "$ENDPOINT" == /v2/* ]] && ENDPOINT="/x402${ENDPOINT}"
-  [[ -n "$PAYMENT" ]] || die "--x402 requires --payment <payload>. See https://docs.elfa.ai/get-started/x402"
+  [[ -n "$PAYMENT" ]] || die "--x402 requires --payment <payload>. See https://docs.elfa.ai/platform/authentication#pay-per-request-with-x402"
 else
   [[ -z "${ELFA_API_KEY:-}" ]] && die "ELFA_API_KEY is not set. Get a key at https://go.elfa.ai/claude-skills"
 fi

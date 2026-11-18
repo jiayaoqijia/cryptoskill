@@ -10,6 +10,7 @@ Reference: [SKILL.md](../SKILL.md) · [Navigation & Mocking](navigation-mocking.
 
 Before writing any test, read:
 
+- [Rules (enforced by lint)](../component-view.md#rules-enforced-by-lint) — ESLint rejects that list on `*.view.test.tsx`. Run `yarn eslint <file>` before finishing.
 - The component file under test
 - Any existing `*.view.test.tsx` for the same component
 - The relevant preset(s) in `tests/component-view/presets/`

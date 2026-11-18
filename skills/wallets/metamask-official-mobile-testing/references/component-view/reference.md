@@ -1,6 +1,6 @@
 # Running Tests, Self-Review, and Diagnosing Failures
 
-Use this reference when you need to **run** component view tests, **self-review** after tests pass, or **diagnose and fix** failures. It also covers assertion patterns, deterministic fiat, and What NOT to Do.
+Use this reference when you need to **run** component view tests, **self-review** after tests pass, or **diagnose and fix** failures. It also covers assertion patterns, deterministic fiat, and What NOT to Do. Lint-enforced anti-patterns are [Rules (enforced by lint)](../component-view.md#rules-enforced-by-lint).
 
 Reference: [SKILL.md](../SKILL.md) · [Writing Tests](writing-tests.md) · [Navigation & Mocking](navigation-mocking.md)
 
@@ -48,6 +48,9 @@ yarn jest -c jest.config.view.js <file> --watch
 
 # Coverage for a feature folder (use this, not --coverage directly — avoids OOM)
 yarn test:view:coverage:folder app/components/UI/MyFeature
+
+# Lint — required before finishing. See Rules (enforced by lint).
+yarn eslint <file>
 ```
 
 ---
@@ -60,7 +63,7 @@ Before declaring the task done, go through this checklist for every test written
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
 | 1   | **No render scenarios** — every test has at least one `fireEvent`, `waitFor`/`findBy`, `store.dispatch`, or Engine spy                                                                                                                                       | Rewrite the test to add a user interaction or system reaction          |
 | 2   | **No selector mocking** — no `(useSelector as jest.Mock).mockImplementation(...)` anywhere in the file                                                                                                                                                       | Remove; drive behavior through state overrides instead                 |
-| 3   | **No fake timers** — no `jest.useFakeTimers()`, `jest.advanceTimersByTime()`, or `jest.useRealTimers()`                                                                                                                                                      | Remove fake timers; move time behaviour to a unit test or serve fixtures already in the target state (*Keep time-dependent behaviour out of view tests*) |
+| 3   | **No fake timers** — no jest fake-timer API (`useFakeTimers`, `advanceTimersByTime`, `setSystemTime`, `*Async` variants)                                                                                                                                   | Remove fake timers; move time behaviour to a unit test or serve fixtures already in the target state (*Keep time-dependent behaviour out of view tests*) |
 | 4   | **Data-completeness test exists** — if the view loads data asynchronously (API, Engine polling), there is one test that waits for the load and validates all fields of all items in the full base mock using `within()` per row                              | Add the data-completeness test                                         |
 | 5   | **Filter/segmentation tests have paired assertions** — every test that selects a filter or changes a network asserts both what appears (`findByTestId`) AND what disappears (`queryByTestId(...).not.toBeOnTheScreen()`) for each item from the previous set. Spy-only checks (refetch count / analytics) are **not** enough | Seed distinct before/after rows; add the missing negative assertions |
 | 6   | **No raw strings in `getByTestId` / `findByTestId` / `queryByTestId`** — all test IDs reference constants from the component's `ComponentName.testIds.ts`                                                                                                    | Create or update the testIds file; replace raw strings with constants  |
@@ -79,10 +82,11 @@ Before declaring the task done, go through this checklist for every test written
 | 19  | **Negative asserts wait until the positive path could have rendered** — do not `queryBy*` absence immediately after mount                                                                                                                                                                            | Await owning skeleton/load, then assert absence |
 | 20  | **Call counts start clean** — every `toHaveBeenCalledTimes` on a shared Engine / messenger mock has `mockClear()` (or `mockReset()`) on that mock in `beforeEach` | Add the clear; check with `--randomize` |
 | 21  | **No `findBy*` result held across a remount** — when the tree can remount after the `await`, the test awaits a loaded-only marker and re-queries with `getBy*` before asserting | Await the loaded marker, then re-query |
-| 22  | **No real timers raced** — countdown, debounce, and expiry behaviour lives in a unit test or in target-state fixtures, not in a widened `waitFor` | Move it to a unit test or change the fixture |
+| 22  | **No real timers raced** — countdown, debounce, and expiry behaviour lives in a unit test or in target-state fixtures, not in a widened `waitFor` or a fixed `setTimeout` sleep | Move it to a unit test, change the fixture, or `waitFor` the outcome |
 | 23  | **A flake fix names its cause** — the cause is reproduced locally (seed or load) and the fix passes under that condition; it is not only a longer timeout | Reproduce first; see Fixing a Flake |
 | 24  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and all tests are green. | Fix the failing test before marking the task done |
 | 25  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
+| 26  | **Lint is clean** — `yarn eslint <file>` passes on every new or edited `*.view.test.tsx`. See [Rules (enforced by lint)](../component-view.md#rules-enforced-by-lint). | Fix the violation. Do not disable the rule to keep a sleep, a nested `find*`, or a bare timeout. |
 
 ---
 
@@ -367,7 +371,7 @@ yarn jest -c jest.config.view.js <path> --runInBand --silent --coverage=false
 # Coverage for a feature folder
 yarn test:view:coverage:folder app/components/UI/MyFeature
 
-# Lint check
+# Lint check — required before finishing. See Rules (enforced by lint) in component-view.md.
 yarn eslint <path/to/test.tsx>
 ```
 

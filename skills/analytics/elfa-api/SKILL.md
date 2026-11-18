@@ -2,18 +2,17 @@
 name: elfa-ai
 description: >
   Use this skill for Elfa API crypto social intelligence and Auto condition-engine workflows:
-  API v3 events, positions and rankings (crypto, equities), trending tokens, narratives,
-  mentions, token news, trending contract addresses, AI market chat
-  (JSON and SSE streaming), curl/code snippets, automated alerts,
+  API v3 events, calendar, positions and rankings (crypto, equities), Verify (check a claim
+  against X, Telegram and the web), Monitors (a topic in plain words, a signed
+  webhook per match), trending tokens, narratives, mentions, token news, trending contract
+  addresses, AI market chat (JSON and SSE streaming), curl/code snippets, automated alerts,
   EQL queries, trigger pipelines, and agent workflows that react to market conditions.
   Auto can trigger on X/Twitter posts, Telegram channels, events (news), one trader's
   calls, token or stock mindshare, SEC filings, Kalshi and Polymarket prediction markets,
   funding rates, liquidation cascades, the Fear & Greed index, and X follow-graph
-  moves (new followers, new follows, accounts converging), re-fire
-  recurring plans via `repeat`, run calendar schedules via
-  `cron.schedule`, and monitor crypto plus HIP-3 assets (equities, indices, commodities, FX,
-  pre-IPO — 24/7). Supports API keys and x402 pay-per-request in USDC on Base,
-  Arbitrum, Polygon, Avalanche, BNB Smart Chain or Solana, or USDT on BNB Smart Chain.
+  moves, run recurring plans (`repeat`, `cron.schedule`), and monitor crypto plus HIP-3
+  assets (equities, indices, commodities, FX, pre-IPO — 24/7). Supports API keys and x402 pay-per-request in USDC on six networks,
+  or USDT on BNB Smart Chain.
 ---
 
 # Elfa API Skill
@@ -24,7 +23,9 @@ from Twitter/X, Telegram, and other sources, then structures sentiment, narrativ
 attention shifts into actionable trading insights. The **Market Intelligence** endpoints cover
 measurement (counts, engagement, accounts) and interpretation (chat, summaries, narratives).
 **API v3** turns news and market chatter across crypto and equities into events, positions and
-rankings.
+rankings. **Verify** checks one claim against X posts, public Telegram channels and web pages,
+and **Monitors** sends a signed webhook for each new item that matches a topic you describe in
+plain words.
 The **Auto** subsystem adds a managed condition engine and trigger pipeline — describe what to
 watch for, and Auto evaluates continuously and fires actions when conditions are met.
 
@@ -67,6 +68,12 @@ x402 wallet signing is handled client-side by `@x402/fetch` or `@x402/axios`.
 - User wants to know **what happened** in crypto or equity markets and how prices reacted,
   **who is long or short** an asset, **whose calls to trust**, **which assets get the most
   attention**, or **which prediction markets a story bears on** (API v3)
+- User wants to know **what is scheduled** — launches, unlocks, listings, earnings, rate
+  decisions (`/v3/events/calendar`)
+- User wants to **check whether a claim is true** before acting on it, or resolve a market
+  question from what X, Telegram and the web say (Verify, `POST /v3/verify`)
+- User wants to **hear about a topic as it happens** without writing rules — "tell me when
+  Binance announces a delisting" — as a webhook (Monitors, `/v3/monitors`)
 - User asks how to **integrate, call, or use the Elfa API**
 - User wants **code examples** (curl, Python, JavaScript/TypeScript) for Elfa endpoints
 - User mentions "elfa" in a crypto or trading data context
@@ -130,10 +137,10 @@ except `key-status` which is API key mode only.
 #### API v3 endpoints
 
 API v3 turns news and market chatter across crypto and equities into events, positions and
-rankings. Every endpoint is `GET` and authenticates with `x-elfa-api-key` (no x402). Every plan,
-Free included, can call every v3 endpoint. Each call but
+rankings. Every endpoint authenticates with `x-elfa-api-key` (no x402). The data endpoints in the
+first table are `GET`, and every plan, Free included, can call them. Each call but
 `/v3/key-status` and, for now, `/v3/events/prediction-markets` costs credits on Free, PAYG and
-Grow, priced per endpoint ([pricing](https://docs.elfa.ai/get-started/pricing#api-v3)); Enterprise keys are not drawn down
+Grow, priced per endpoint ([pricing](https://docs.elfa.ai/platform/pricing#api-v3)); Enterprise keys are not drawn down
 per call. See Step 2d for the rules they share.
 
 | Question | Endpoint | Returns |
@@ -143,6 +150,7 @@ per call. See Step 2d for the rules they share.
 | | `/v3/events/storylines` | One development followed over days |
 | | `/v3/events/arcs` | Storylines grouped into a larger movement |
 | Which prediction markets does it bear on? | `/v3/events/prediction-markets` | Open Polymarket and Kalshi markets for an event, storyline or arc, and how their odds moved |
+| What is scheduled? | `/v3/events/calendar` | Launches, unlocks, votes, listings, earnings, data releases, rate decisions and other dates ahead, soonest first |
 | Where is attention? | `/v3/market/crypto/mindshare`, `/v3/market/equity/mindshare` | Assets ranked by share of attention, with `hot` |
 | | `/v3/market/crypto/trending-contracts` | Contract addresses ranked by how many posts pasted them |
 | Which way does the crowd lean? | `/v3/market/crypto/call-book`, `/v3/market/equity/call-book` | The whole market's long/short lean, hour by hour |
@@ -151,6 +159,19 @@ per call. See Step 2d for the rules they share.
 | | `/v3/calls/episodes` | Each position from open to close, with prices and the author's track record |
 | Who is worth reading? | `/v3/people/accounts` | Accounts ranked by standing, or by track record with `metric` |
 | What can my key do? | `/v3/key-status` | Plan, credits, limits and how far back it reads |
+
+Verify and Monitors need a PAYG, Grow or Enterprise key; a Free key gets `403`. See
+[Step 2e](#step-2e-verify--check-a-claim) and [Step 2f](#step-2f-monitors--watch-a-topic-in-plain-words).
+
+| Endpoint | Method | Does | Credits |
+|---|---|---|---|
+| `/v3/verify` | POST | Checks one claim against X posts, public Telegram channels and web pages: a verdict, its probabilities and links to the evidence | 1, whatever the verdict; errors free |
+| `/v3/monitors` | POST | Creates a monitor from a plain-words `query` and an HTTPS `webhookUrl` | 2 per started hour a monitor is live |
+| `/v3/monitors` | GET | Lists the key's newest 100 monitors | Free |
+| `/v3/monitors/{id}` | GET | Gets one monitor, with its webhook secret | Free |
+| `/v3/monitors/{id}` | PATCH | Changes its `query`, `webhookUrl` or both | Free |
+| `/v3/monitors/{id}` | DELETE | Deletes it, so it stops sending and stops costing | Free |
+| `/v3/monitors/{id}/events` | GET | Lists the monitor's matches from the last 30 days, newest first | Free |
 
 #### Auto endpoints (Condition Engine)
 
@@ -238,7 +259,7 @@ When you need exact endpoint metadata, load these instead of walking the docs pa
 | Endpoint manifest | `https://docs.elfa.ai/agent/endpoints.manifest.json` | Method/path, docs route, required headers, payment requirement, request/response examples |
 | Docs map | `https://docs.elfa.ai/llms.txt` | Canonical page map + machine-readable links. A plain `GET https://docs.elfa.ai/` returns the same index as `text/plain` to any client that does not ask for HTML |
 | Full docs text | `https://docs.elfa.ai/llms-full.txt` | Only when deeper page context is needed |
-| OpenAPI spec | bundled at `references/swagger.json` | Exact schemas, params, and defaults. Ignore the per-operation cost lines on `/v3`; see [API v3 endpoints](#api-v3-endpoints) for what it costs |
+| OpenAPI spec | bundled at `references/swagger.json` | Exact schemas, params, and defaults. Ignore the per-operation cost lines on `/v3`; see [API v3 endpoints](#api-v3-endpoints) for what it costs. `/v3/monitors` is not in it: Step 2f has its fields |
 | Latest skill | `https://raw.githubusercontent.com/elfa-ai/skills/main/skills/elfa-ai/SKILL.md` | Re-fetch this skill when you cannot install it |
 
 The manifest URL is **stable** — earlier releases served a rotating
@@ -249,12 +270,12 @@ Install or refresh the skill with `npx skills add elfa-ai/skills`.
 If you are running inside a client that cannot execute commands, such as Claude Desktop,
 there is an MCP server that exposes the API as tools: connect the hosted server at
 `https://mcp.elfa.ai/mcp` and sign in with Elfa, or run `npx -y @elfa-ai/mcp` with an API key.
-See [docs.elfa.ai/tools/mcp](https://docs.elfa.ai/tools/mcp). Where you can run
+See [docs.elfa.ai/integrations/mcp](https://docs.elfa.ai/integrations/mcp). Where you can run
 commands, prefer this skill — it costs no context until you use it.
 
 When you are writing TypeScript or Python rather than calling the API by hand, the official
 SDKs (`@elfa-ai/sdk`, `elfa-sdk`) wrap the same surface with typed responses, retries, and SSE
-streaming. See [docs.elfa.ai/tools/sdks](https://docs.elfa.ai/tools/sdks).
+streaming. See [Integrations](https://docs.elfa.ai/integrations/overview#sdks).
 
 ## How to use this skill
 
@@ -268,6 +289,11 @@ Check whether the user wants to **make a live call**, **get code/integration hel
   unclear which endpoint fits, or the ask needs more than one call, see Step 2c.
 - If the user asks what happened to an asset, how a story developed, who is long or short,
   whose calls to trust, or what equities are getting attention → use **API v3**. See Step 2d.
+- If the user asks whether a claim is true, or wants a yes/no, a choice or a score settled from
+  what X, Telegram and the web say → use **Verify**. See Step 2e.
+- If the user wants to be told when something they describe in words happens, as a webhook,
+  with no thresholds or accounts to pick → use **Monitors**. See Step 2f. For a price, an
+  indicator, a named account, a filing or a schedule, use **Auto** (Step 3).
 - If the user says things like "how do I call the trending tokens endpoint", "give me a
   curl example", "help me integrate Elfa" → they want **code snippets**. Skip to Step 4.
 - If the user mentions **x402**, **keyless**, **pay-per-request**, or **wallet-based access**
@@ -294,7 +320,7 @@ Use the `bash_tool` to call the Elfa API via curl.
    >
    > **Option B — x402 keyless payments:** Pay per request with USDC on Base,
    > Arbitrum, Polygon, Avalanche, BNB Smart Chain or Solana, or USDT on BNB Smart Chain —
-   > no signup needed. See the [x402 docs](https://docs.elfa.ai/get-started/x402) for setup.
+   > no signup needed. See the [x402 docs](https://docs.elfa.ai/platform/authentication#pay-per-request-with-x402) for setup.
 
    Do not attempt any authenticated API calls without a key or x402 setup. Wait for the user.
 3. **Credential safety:**
@@ -324,12 +350,14 @@ Subscription plans:
 | Rate limit | 60 RPM | 120 RPM | Custom |
 | Agent Chat | ✓ | ✓ | ✓ |
 | Agent Automation | ✓ (up to 50 active plans) | ✓ (up to 100 active plans) | ✓ |
+| Verify and Monitors | ✓ | ✓ | ✓ |
 
 **What each tier unlocks:**
 - **PAYG** — core social data (trending tokens, top mentions, keyword mentions, event
   summaries, token news, trending contract addresses on Twitter and Telegram), plus API v3
   (events, calls, market data including token mindshare, and people), **trending narratives**, **Elfa Intelligence** (Agent
-  Chat and Agent Automation), and **streaming AI Chat** (Ask Elfa, `POST /v2/chat/stream`)
+  Chat and Agent Automation), **streaming AI Chat** (Ask Elfa, `POST /v2/chat/stream`),
+  **Verify** (`POST /v3/verify`) and **Monitors** (`/v3/monitors`)
 - **Grow** — everything in PAYG, with 120,000 credits a month, $0.009 per overage credit, and
   120 RPM
 - **Enterprise** — everything in Grow, plus custom credit and rate limits, dedicated support,
@@ -341,6 +369,8 @@ Gate summary for the tier-restricted endpoints:
 |---|---|
 | `/v2/chat` | Grow+ or PAYG |
 | `/v2/chat/stream` | Grow+ or PAYG |
+| `/v3/verify` | Grow+ or PAYG |
+| `/v3/monitors` and every `/v3/monitors/{id}` route | Grow+ or PAYG |
 
 On Grow, requests past the monthly credits keep working and are billed as overage, unless
 overage is turned off or a spend cap is set in the dashboard; on Free, past the 1,000 credits
@@ -396,7 +426,7 @@ ideal for agents, bots, and programmatic access.
   present even on the short shape. On the Auto endpoints, EQL validation failures return
   `{ valid, errors, warnings }` (at `422` from create, at `200` from validate, where you must read
   `valid`), and errors raised by the execution engine are passed through unchanged. A `402` is
-  the payment handshake, not a billing error. See [Error Responses](https://docs.elfa.ai/get-started/errors).
+  the payment handshake, not a billing error. See [Error Responses](https://docs.elfa.ai/platform/errors).
 - **Empty answers are not charged:** a `/x402/v2/data/*` or `/x402/v2/aggregations/*` call that
   matches nothing returns `404` with `code: "ERR_NO_RESULTS"` instead of `200` with an empty
   list. The payment is not settled, so the call is free. Treat it as an empty result and as the
@@ -404,7 +434,7 @@ ideal for agents, bots, and programmatic access.
   Each wallet gets a limited number of free empty answers per hour; past that, an empty match
   returns `200` with an empty list and is charged, so handle both. `/x402/v2/account/smart-stats`,
   `/x402/v2/chat`, the x402 Auto endpoints and the API-key `/v2` endpoints are unchanged. See
-  [Empty answers are not charged](https://docs.elfa.ai/get-started/x402#empty-answers-are-not-charged).
+  [Errors](https://docs.elfa.ai/platform/errors).
 
 | Network | Chain ID | Token Address | Facilitator |
 |---|---|---|---|
@@ -419,7 +449,7 @@ EVM signing costs no gas. On Solana the facilitator pays the transaction fee. BN
 takes Binance-Peg USDC and USDT with 18 decimals, `exact` only, and pays through Permit2: the
 wallet approves the token for Permit2 once (an onchain transaction that costs BNB gas), and the
 client must list the token in `spendControls.allowedAssets`. See
-[BNB Smart Chain](https://docs.elfa.ai/get-started/x402#bnb-smart-chain).
+[Networks and tokens](https://docs.elfa.ai/platform/authentication#networks-and-tokens).
 
 **x402 pricing (data endpoints):**
 
@@ -533,11 +563,14 @@ mistake.
 |---|---|
 | What happened to an asset and how the story developed | `/v3/events`, `/v3/events/storylines` (Step 2d) |
 | Who is long or short, and whose calls to trust | `/v3/calls/positioning`, `/v3/calls/episodes`, `/v3/people/accounts?metric=alphaScore` (Step 2d) |
+| What is scheduled: launches, unlocks, earnings, rate decisions | `/v3/events/calendar` (Step 2d) |
+| Whether a claim is true, with links to the evidence | `POST /v3/verify` (Step 2e) |
 | A market question answered in plain language | `POST /v2/chat` |
 | What is moving right now | `trending-tokens`, `trending-cas/*`, or `/v3/market/crypto/mindshare` and `/v3/market/crypto/trending-contracts` (Step 2d) |
 | Who amplified a token or keyword | `top-mentions`, `keyword-mentions` |
 | A defensible cause or theme behind a move | `token-news`, `event-summary`, `trending-narratives` |
 | Continuous watching + notify/execute on a condition | Auto (Step 3) |
+| A webhook whenever something described in plain words happens | `/v3/monitors` (Step 2f) |
 
 #### Agent playbooks (endpoint chains)
 
@@ -610,7 +643,9 @@ within a conversation, pass `sessionId` instead. `/x402/v2/chat` has no `useMemo
 | `error` | stream failure |
 
 A `: keep-alive` comment may arrive during long gaps. The stream terminates with
-`data: [DONE]`. Returns `403` if the key is not PAYG, Grow or Enterprise.
+`data: [DONE]`. Returns `403` if the key is not PAYG, Grow or Enterprise. A turn whose stream
+ends with an `error` event reports `creditsConsumed: 0` on `complete`, and only the 1-credit
+request fee is charged, as on `POST /v2/chat`.
 
 ```bash
 curl -sN -X POST "https://api.elfa.ai/v2/chat/stream" \
@@ -633,7 +668,7 @@ curl -s https://api.elfa.ai/v2/ping
 Use API v3 when the user wants to know what happened and how a story developed, which prediction
 markets it bears on, who is long or short an asset and whose calls to trust, which assets get the
 most attention, or which accounts are worth reading — across crypto and equities. Endpoints are listed in
-[API v3 endpoints](#api-v3-endpoints). Full docs: [docs.elfa.ai/api/v3/overview](https://docs.elfa.ai/api/v3/overview).
+[API v3 endpoints](#api-v3-endpoints). Full docs: [docs.elfa.ai/enrich/overview](https://docs.elfa.ai/enrich/overview).
 
 API v3 needs `ELFA_API_KEY`, on any plan (see [API v3 endpoints](#api-v3-endpoints)), and the
 Step 2a key rules apply. Without one, offer one, or fall back to `event-summary` or `chat` via
@@ -666,12 +701,12 @@ curl -s "https://api.elfa.ai/v3/calls/positioning?entityId=$ID" \
 - A person is not an account. Events filter on the person's entity id; calls and episodes take
   an X `handle`.
 
-**Rules every v3 endpoint follows:**
+**Rules every v3 data endpoint follows** (Verify and Monitors have their own, in Steps 2e and 2f):
 
 | Rule | In short |
 |---|---|
 | Times | Unix seconds, UTC, in requests and responses. Milliseconds are a `400`: divide by 1000 |
-| Time ranges | `from` is required, `to` defaults to now, both inclusive. No `from` is needed when fetching by id or searching with `q`; entities, arcs, prediction markets, positioning and top accounts take no range at all, and mindshare takes a `period` |
+| Time ranges | `from` is required, `to` defaults to now, both inclusive. No `from` is needed when fetching by id or searching with `q`; entities, arcs, prediction markets, positioning and top accounts take no range at all, and mindshare takes a `period`. The calendar reads ahead: `from` defaults to 00:00 UTC today and `to` to 30 days after `from` |
 | History | 30 days (Free, PAYG), 60 days (Grow) or 2 years (Enterprise) back. An earlier `from` is cut, and `servedFrom` says where; a `to` before it is a `400`. `/v3/key-status` returns the start as `historyFrom` |
 | Paging | Pass `nextCursor` back as `cursor`. `hasMore: false` marks the last page. No offset, no total. Change anything but `limit` and the cursor is a `400` |
 | Lists | Parameters marked a list take several values, repeated or comma-separated. At most 30 ids |
@@ -679,10 +714,10 @@ curl -s "https://api.elfa.ai/v3/calls/positioning?entityId=$ID" \
 | Errors | A bad or unknown parameter is a `400` naming the field in `details`, and an unknown id in a filter is a `400`, `Unknown id: …`. Unknown ids in an `*Ids` fetch are skipped. Nothing matching is a `200` with an empty list |
 | Responses | The list is top-level and named for what it holds (`events`, `entities`, `bars`, …), with no `data` wrapper |
 | Rate limits | Per key, shared with `/v2`. `429 ERR_RATE_LIMIT_EXCEEDED`: wait `RateLimit-Reset` seconds. `429 ERR_RATE_LIMITED`: out of credits, retrying does not help |
-| Credits | Priced per endpoint, see [pricing](https://docs.elfa.ai/get-started/pricing#api-v3). A PAYG balance that does not cover a call is `402 ERR_INSUFFICIENT_CREDITS`. Errors cost nothing. `x-elfa-credits` gives a call's cost and, on a `200`, `x-elfa-credits-detail` how it adds up |
+| Credits | Priced per endpoint, see [pricing](https://docs.elfa.ai/platform/pricing#api-v3). A PAYG balance that does not cover a call is `402 ERR_INSUFFICIENT_CREDITS`. Errors cost nothing. `x-elfa-credits` gives a call's cost and, on a `200`, `x-elfa-credits-detail` how it adds up |
 
 No v3 endpoint returns post text. Events carry a written title and summary, and link to each
-post behind them.
+post or SEC filing behind them.
 
 **What agents get wrong:**
 
@@ -693,6 +728,20 @@ post behind them.
   `impacts` is empty on most events; `movedFirst` or `marketWide` set to `true` means the move
   probably has another cause. `novelty=new` does not show each story once: keep one event per
   `storylineId` for that. A `503` with `q` means search is down: retry, or drop `q`.
+  A `citedSources` entry's `source` is `twitter`, `telegram` or `sec_edgar`; accept all three.
+  On `sec_edgar` (an 8-K, a foreign company's 6-K or a Schedule 13D), `sourceRecordId` is the
+  SEC accession number, `link` the document on sec.gov, and `handle` a company name, not a
+  social handle: the filer, or on a 13D the company whose shares are held, not the investor who
+  filed. An event can cite a filing with no post behind it.
+- **Calendar.** `/v3/events/calendar` lists dated occasions soonest first, 10 a page by default
+  and 30 at most, reaching about 400 days ahead; with no range it reads the next 30 days, so
+  send `from` to see yesterday. Filter with `entityIds`, `assetClass` (which also keeps entries
+  about no asset, such as macro dates), `category`, `status`, `confidence` and `minImportance`
+  (`80` keeps the key dates, about two a day). On a `day` entry (`precision: "day"`), read
+  `date`, which never shifts with a time zone, not `startsAt`. `status` says when a date moved,
+  was postponed or cancelled; once an entry is over, `outcome` names the event that reported it
+  happened, and `eventIds` are the events that reported the date. 1 credit plus 1 per entry not
+  already billed to your account that UTC day.
 - **Storylines.** Prices and levels in `title` and `summary` are as of `lastMaterialAt`, not now.
 - **Prediction markets.** `/v3/events/prediction-markets?ids=…` takes up to 30 event, storyline
   or arc ids, any mix, and returns `related`: each id you sent once, in order (an id it does not
@@ -723,10 +772,249 @@ post behind them.
 
 To be alerted when a new event matches your filters instead of polling, use an Auto `events`
 condition (Step 3); for one account's new calls, a `calls` condition; for an asset's mindshare
-share, rank or hot flag, a `mindshare` condition. Per-family docs: [Entities](https://docs.elfa.ai/api/v3/entities),
-[Events](https://docs.elfa.ai/api/v3/events) (with
-[Prediction Markets](https://docs.elfa.ai/api/v3/events#get-v3eventsprediction-markets)), [Market](https://docs.elfa.ai/api/v3/market),
-[Calls](https://docs.elfa.ai/api/v3/calls), [People](https://docs.elfa.ai/api/v3/people).
+share, rank or hot flag, a `mindshare` condition. Per-family docs: [Entities](https://docs.elfa.ai/enrich/entities),
+[Events](https://docs.elfa.ai/enrich/news) (with
+[Prediction Markets](https://docs.elfa.ai/enrich/prediction-markets#get-v3eventsprediction-markets)), [Calendar](https://docs.elfa.ai/enrich/calendar), [Market](https://docs.elfa.ai/enrich/mindshare),
+[Calls](https://docs.elfa.ai/enrich/calls), [People](https://docs.elfa.ai/enrich/people).
+
+### Step 2e: Verify — check a claim
+
+Use Verify before an agent acts on something it read, or to settle a market question from what X
+posts, public Telegram channels and web pages say. Send one sentence; get a verdict, a probability
+for each verdict and links to the posts and pages it judged. For a written answer instead of a
+verdict, use chat. Full docs: [docs.elfa.ai/verify/overview](https://docs.elfa.ai/verify/overview).
+
+Needs `ELFA_API_KEY` on PAYG, Grow or Enterprise; a Free key gets `403`. A call costs **1 credit,
+whatever the verdict**, even when nothing is found. A `decision` costs nothing more, and errors
+cost nothing.
+
+```bash
+curl -s -X POST "https://api.elfa.ai/v3/verify" \
+  -H "x-elfa-api-key: $ELFA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"statement":"Binance will list HYPE for spot trading."}'
+```
+
+| Body field | Rules |
+|---|---|
+| `statement` | Required. One checkable claim, up to 500 characters. Name who and what, and say when. Write a sentence, not a question: a leading "is it true that", "did", "does" or "has" and a trailing `?` are removed |
+| `asOf` | Unix seconds, default now, at most 30 days ago and 5 minutes ahead. Judges the claim as it stood then: no post after it and no web page dated after it is read, and undated pages are skipped. Use it to backtest |
+| `context` | Up to 4,000 characters of background, such as how a market resolves. The search uses `statement` only, and `context` is never treated as evidence |
+| `decision` | Optional, one per request: `{"type":"yesNo","yes":"…","no":"…"}` (both definitions optional, up to 500 characters each), `{"type":"choice","options":[{"label":"…","definition":"…"}]}` (2 to 20 options, unique labels up to 100 characters, definitions up to 500), or `{"type":"score","levels":["…"]}` (2 to 10 levels, lowest first, up to 200 characters each) |
+
+The response:
+
+```json
+{
+  "verdict": "supported",
+  "probabilities": { "supported": 0.91, "contradicted": 0.02, "notEnoughEvidence": 0.07 },
+  "decision": null,
+  "evidence": {
+    "twitter": [{ "link": "https://x.com/…", "decisiveness": 0.97, "basis": true }],
+    "telegram": [],
+    "web": [{ "link": "https://…", "decisiveness": 0.91, "basis": true }]
+  },
+  "asOf": 1794830400,
+  "searchedFrom": 1794225600,
+  "coverage": {
+    "complete": true,
+    "sources": { "twitter": "complete", "telegram": "complete", "web": "complete" },
+    "captions": "complete"
+  }
+}
+```
+
+| `verdict` | Means | Do |
+|---|---|---|
+| `supported` | The posts and pages say the claim is true | Act if `probabilities.supported` clears your own bar |
+| `contradicted` | They say it is false | Do not act on the claim |
+| `notEnoughEvidence` | They do not settle it, nothing was found, or no verdict reached 0.5 | Treat as **unknown, not false**: check again later or ask a person |
+
+- `evidence` holds up to 10 of the most decisive items, split by source, most decisive first, and
+  leaves out items under 0.2. `decisiveness` is how strongly one item settles the claim, in
+  **either** direction; `basis: true` marks the at most 3 items the verdict rests on. No item
+  carries post or page text: open `link`.
+- Verify reads posts from the 7 days before `asOf`; `searchedFrom` is the earliest post time
+  searched, shorter when `asOf` is more than 23 days ago. Web pages can be older.
+- `coverage.complete: false` means a source answered `partial` or `unavailable`, or image captions
+  were not read, so the verdict may have missed something. Check again when it matters.
+- `decision` is `null` without a request `decision`, and also when nothing was found. `yesNo`
+  returns `yes`, a probability, not a boolean: a low `yes` beside `notEnoughEvidence` means thin
+  evidence. For an explicit "unknown", use `choice` with an option for it. `choice` returns the
+  most likely label as `choice` and `probabilities` for every label. `score` returns `score`, the
+  probability-weighted mean of the level indexes (counted from 0, so it can be a fraction), and
+  `levelProbabilities` in the order you sent.
+
+| Status | Cause | Next |
+|---|---|---|
+| `400` | Invalid body; `details` names the field | Fix the body |
+| `401` | Missing or invalid key | Send a valid `x-elfa-api-key` |
+| `402` `ERR_INSUFFICIENT_CREDITS` | PAYG balance used up | Top up |
+| `403` | Free plan, or the key lacks the scope | Upgrade at [go.elfa.ai/dev](https://go.elfa.ai/dev), or email support@elfa.ai with `requestId` |
+| `429` `ERR_RATE_LIMIT_EXCEEDED` / `ERR_RATE_LIMITED` | Per-minute limit / spend cap or request limit reached | Retry after `RateLimit-Reset` / raise the cap or turn on overage |
+| `503` `ERR_SERVICE_UNAVAILABLE` | Busy, no source answered, or the check (or the `decision`) could not finish | Retry; not charged |
+
+### Step 2f: Monitors — watch a topic in plain words
+
+A monitor checks each **new** Elfa event (what `GET /v3/events` returns, so X posts and Telegram
+messages arrive as events, minutes later) against a plain-words `query`, by meaning, and also
+searches the open web for it every hour. Each match is POSTed to your webhook, signed with
+[Standard Webhooks](https://www.standardwebhooks.com/), and kept for 30 days to read back. It
+reports only items that appear after you create it: for the past, use `/v3/events`. The query is
+the whole condition: you pick no accounts, channels or sites. Full docs:
+[docs.elfa.ai/monitors/overview](https://docs.elfa.ai/monitors/overview).
+
+**Monitors or Auto?** Use Monitors when the user can say what to watch but not write it as a
+rule, wants one topic watched across every new event, or wants the watch to run past 30 days.
+Use Auto (Step 3) for a price, indicator, funding rate, named account, filing, prediction market,
+schedule or several conditions at once, for Telegram or AI-written alerts, and on a Free key.
+
+Needs `ELFA_API_KEY` on PAYG, Grow or Enterprise; a Free key gets `403`.
+
+**Pricing: 2 credits for every started hour a monitor is live**, starting with the first hour at
+create — 1,440 credits for a 30-day month. Matches, webhooks, list, get, change and delete are
+free; a create that fails is never charged, and no hour that starts after a delete is charged.
+If the key cannot pay for an hour, the monitor ends at once (`status: "ended"`). **A monitor runs
+until you delete it, so delete every monitor you no longer need**, and tell the user it bills
+hourly before you create one.
+
+| Endpoint | Body or query | Returns |
+|---|---|---|
+| `POST /v3/monitors` | `query` (3 to 500 characters after trimming), `webhookUrl` (HTTPS on a public host, up to 2,048 characters). Both required; any other field is a `400` | `201` and the monitor |
+| `GET /v3/monitors` | — | `{ "data": [monitor, …], "total": n }`: the newest 100, newest first, no paging. Live monitors and ones Elfa ended in the last 30 days; not deleted ones |
+| `GET /v3/monitors/{id}` | — | The monitor, with its `webhookSecret` |
+| `PATCH /v3/monitors/{id}` | `query`, `webhookUrl` or both, same rules as create | The updated monitor; `id` and `webhookSecret` stay, `updatedAt` moves |
+| `DELETE /v3/monitors/{id}` | — | `{ "id": "…", "deleted": true }` |
+| `GET /v3/monitors/{id}/events` | `limit` (1 to 100, default 20), `cursor` | `{ "data": [match, …], "nextCursor": "…" }`, newest first |
+
+A monitor:
+
+```json
+{
+  "id": "5b0c6f8e-2f7a-4f43-9a8e-3c1d2a9b7e10",
+  "query": "OpenAI, Google or Anthropic launches a new AI model",
+  "webhookUrl": "https://example.com/elfa-webhook",
+  "webhookSecret": "whsec_...",
+  "status": "active",
+  "createdAt": 1794981600,
+  "updatedAt": 1794981600
+}
+```
+
+- `webhookSecret` signs every webhook from this monitor. Each monitor has its own, it never
+  changes, and it cannot be rotated today. Create returns it, and `GET /v3/monitors/{id}` returns
+  it again. Treat it like a key: store it, never print it.
+- `status` is `active` or `ended` (Elfa stopped it, for example when the key could not pay for an
+  hour, or its alert was cancelled from the Auto alert list, where each monitor also appears). An
+  ended monitor sends nothing and cannot be changed: create a new one, and delete the ended one to
+  clear it from the list. After a delete, get, change and a second delete return `404`.
+- Write the query as a sentence, not search syntax or a time range:
+  `Binance announces it will delist a token`, not `Binance OR delist*`.
+- A monitor takes one change at a time: a change while an earlier one is still applying is
+  `409 ERR_CONFLICT`, so wait a minute and resend. A body equal to the stored values returns the
+  monitor unchanged. For a short time after a change, old and new versions can both match, so one
+  event can send two webhooks with different `data.id` values. A `503` on a change may still
+  apply: wait a minute, get the monitor, and resend only if it shows the old values.
+- Match paging: pass `nextCursor` back as `cursor`; it is `null` on the last page, and a cursor
+  works only with the monitor that made it.
+
+```bash
+MONITOR=$(curl -s -X POST "https://api.elfa.ai/v3/monitors" \
+  -H "x-elfa-api-key: $ELFA_API_KEY" -H "Content-Type: application/json" \
+  -d '{"query":"Binance announces it will delist a token","webhookUrl":"https://example.com/elfa-webhook"}')
+MONITOR_ID=$(echo "$MONITOR" | jq -r '.id')   # store .webhookSecret; do not print it
+
+curl -s "https://api.elfa.ai/v3/monitors/$MONITOR_ID/events?limit=100" \
+  -H "x-elfa-api-key: $ELFA_API_KEY"
+
+curl -s -X DELETE "https://api.elfa.ai/v3/monitors/$MONITOR_ID" \
+  -H "x-elfa-api-key: $ELFA_API_KEY"
+```
+
+**The webhook.** Each POST carries one match, and the match list returns the same object as
+`data`:
+
+```json
+{
+  "type": "monitor.match",
+  "timestamp": 1794985320,
+  "data": {
+    "id": "9df34377-4d82-4b3c-a016-b0ba27556aa1",
+    "monitorId": "5b0c6f8e-2f7a-4f43-9a8e-3c1d2a9b7e10",
+    "matchedAt": 1794985320,
+    "items": [
+      {
+        "source": "event",
+        "id": "<event id>",
+        "alertTitle": "OpenAI releases a new model",
+        "summary": "OpenAI announced a new model on X, available to paid users today.",
+        "analyzedAt": 1794985200,
+        "firstSeenAt": 1794985000,
+        "citedSources": [
+          { "source": "twitter", "sourceRecordId": "<post id>", "handle": "OpenAI", "link": "https://x.com/OpenAI/status/<post id>" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- `type` is always `monitor.match`; `timestamp` equals `data.matchedAt`, and a retry sends the
+  same body. `data.id` is the match id and equals the `webhook-id` header.
+- An `event` item has the event `id` (fetch the rest with `GET /v3/events?eventIds=`),
+  `alertTitle`, `summary`, `analyzedAt`, `firstSeenAt` and up to 5 `citedSources`. A `web` item,
+  from the hourly web search, has `id`, `url`, `title`, `author`, `excerpt`, `publishedAt`,
+  `publishedDayOnly` and `firstSeenAt`. Any field but `source` and `id` can be `null` or missing.
+  No item carries post or message text: link to it.
+- The first web search, about an hour after create, only records what it finds, so old articles
+  do not match.
+
+**Verify every webhook** with the monitor's `webhookSecret` before parsing the raw body. The
+headers are `webhook-id`, `webhook-timestamp` and `webhook-signature`; the signature is `v1,` and
+a base64 HMAC-SHA256 of `<webhook-id>.<webhook-timestamp>.<raw body>`. Use a Standard Webhooks
+library:
+
+```typescript
+import { Webhook } from "standardwebhooks";
+
+const wh = new Webhook(process.env.MONITOR_WEBHOOK_SECRET!); // the whsec_ value
+const body = wh.verify(rawBody, headers); // throws if the signature is wrong
+```
+
+```python
+import os
+from standardwebhooks.webhooks import Webhook
+
+wh = Webhook(os.environ["MONITOR_WEBHOOK_SECRET"])  # the whsec_ value
+body = wh.verify(raw_body, headers)  # raises if the signature is wrong
+```
+
+- `webhook-timestamp` is the time of each attempt, so a late retry still verifies; the libraries
+  reject a timestamp more than 5 minutes off.
+- Skip any `webhook-id` you already handled. Several monitors on one URL: read `data.monitorId`
+  after verifying, or give each monitor its own URL.
+- A failing endpoint is retried after 30 seconds, 2 minutes, 10 minutes, 1 hour and 6 hours, 6
+  attempts over about 7 hours. A missed webhook is still in the match list, so catch up there
+  after downtime. No webhook is sent when a monitor ends: read `status` with
+  `GET /v3/monitors/{id}`.
+
+**Limits:** 20 live monitors per key (each also counts toward the key's limit on live alert
+plans, but not the plan's Auto alert limit); 60 requests a minute per key unless the key has its
+own limit; matches, and monitors Elfa ended, are kept for 30 days.
+
+| Status | `code` | Cause | Next |
+|---|---|---|---|
+| `400` | `ERR_INVALID_PARAMETER` | Body fails validation (unknown field, query too short, empty change), `webhookUrl` not HTTPS or private, a query Elfa cannot run, or a cursor from another monitor | Read `details[].message` and fix it |
+| `401` | `ERR_UNAUTHORIZED` | Missing or invalid key | Send a valid `x-elfa-api-key` |
+| `403` | `ERR_FORBIDDEN` | Free plan, or the key's scopes do not include Monitors (a `*` scope does not) | Move to PAYG, Grow or Enterprise, or ask Elfa to add Monitors to the key |
+| `404` | `ERR_NOT_FOUND` | No monitor with this id for this key: deleted, another key's, or ended more than 30 days ago | Check the id and key |
+| `409` | `ERR_PLAN_LIMIT_EXCEEDED` | 20 live monitors, or the key's live alert-plan limit | Delete a monitor or an Auto alert |
+| `409` | `ERR_CONFLICT` | A change is still applying (retry in a minute), or the monitor has ended (create a new one) | As stated |
+| `429` | `ERR_RATE_LIMIT_EXCEEDED` | Too many requests this minute | Wait `RateLimit-Reset` seconds |
+| `503` | `ERR_SERVICE_UNAVAILABLE` | Cannot create or change it right now | Wait a minute; after a change, get the monitor before retrying |
+
+If a create returns an error but an ended monitor then appears in the list, delete it: it is not
+charged.
 
 ### Step 3: Auto — Condition Engine and Trigger Pipeline
 
@@ -772,7 +1060,7 @@ Pick the condition source by user intent **before** writing condition args:
 | Social-attention intent on one token or stock (rises above a share, enters the top N, turns hot) | `source: "mindshare"` | `method` (e.g. `share_24h`, `rank_24h`, `hot_4h`), `args.asset` (ticker, name or id) and `args.market` when known |
 | Market-wide sentiment (fear/greed regime) | `source: "fear_greed"` | `method` (`value` or `classification`), empty `args: {}` |
 | Follow-graph intent (who followed a watched account, who it followed, or a tracked set converging on one account) | `source: "x_follow_received"` / `"x_follow_made"` / `"x_follow_overlap"` | `method` per source, `args.account` (or `args.accounts` for overlap), `operator` `>` or `>=` |
-| Real-world catalyst moving an equity/index/commodity (rate decision, CPI, earnings) | the catalyst's own source (`kalshi` / `polymarket` / `events` / `price`), optionally with a HIP-3 `price` / `ta` confirmation | Pick the catalyst source, then bridge to the asset class it moves — see [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers) |
+| Real-world catalyst moving an equity/index/commodity (rate decision, CPI, earnings) | the catalyst's own source (`kalshi` / `polymarket` / `events` / `price`), optionally with a HIP-3 `price` / `ta` confirmation | Pick the catalyst source, then bridge to the asset class it moves — see [Find HIP-3 symbols](https://docs.elfa.ai/auto/sources/market-prices#hip-3-symbols) |
 | Fuzzy world-state predicate not naturally expressible as a post or event | `source: "llm"` | `method: "athena_condition"`, `args.query`, `args.period` (`>= 1h`) |
 
 When the prompt is account-anchored, **start with `tweet`** — do not route to `events` or `llm` first — unless it asks for that account's trading calls (`@user opens a long`, `@user exits BTC`), which route to `calls`. When it is Telegram-channel-anchored, start with `telegram`. When the prompt is news about a subject without a specific account, start with `events` — unless it is an official SEC filing for an issuer, which routes to `sec`. When the trigger maps to a concrete prediction market you can name (a Kalshi ticker or a Polymarket outcome-token id), use `kalshi` / `polymarket` (prefer them over `llm` for supported methods). Use `llm` (`athena_condition`) only when the predicate cannot reasonably be matched against a post, event, or named prediction market.
@@ -796,7 +1084,7 @@ When the prompt is account-anchored, **start with `tweet`** — do not route to 
 - User wants **follow-graph triggers** ("tell me when someone big follows @elfa_ai", "alert when cobie follows a new account", "notify when 3 funds I track all follow the same account") — use `source: "x_follow_received"` / `"x_follow_made"` / `"x_follow_overlap"`
 - User wants to **follow one trader's calls** ("ping me every time @3PeaksTrading opens a long", "tell me when this trader closes or is stopped out of BTC") — use **Calls** (`source: "calls"`)
 - User wants **attention triggers on a token or stock** ("alert me when SOL turns hot on mindshare", "when ETH enters the top 10 by mindshare") — use **Mindshare** (`source: "mindshare"`)
-- User wants to **watch a macro catalyst on stocks/indices/commodities** ("tell me when the market prices a Fed cut", "alert on gold if CPI runs hot") — fire on the catalyst source and reference the HIP-3 perp, which trades 24/7. See [Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers)
+- User wants to **watch a macro catalyst on stocks/indices/commodities** ("tell me when the market prices a Fed cut", "alert on gold if CPI runs hot") — fire on the catalyst source and reference the HIP-3 perp, which trades 24/7. See [Find HIP-3 symbols](https://docs.elfa.ai/auto/sources/market-prices#hip-3-symbols)
 
 #### Auto access models
 
@@ -857,10 +1145,14 @@ lists it, a prepaid `batch-settlement` channel charged only what the turn used, 
 
 | Operation | Credits | USDC Cost |
 |---|---|---|
-| Query creation — baseline | 5 | $0.0725 |
-| Per fast LLM call | +5 | +$0.0725 |
-| Per expert LLM call | +18 | +$0.261 |
+| Query creation — no `llm` action or LLM condition | 5 | $0.0725 |
+| Query creation — with `llm` work | 5, plus each run the query can make before it expires, at what similar queries' runs typically cost (a free-text `llm` action at `expert` runs about 150) | Credits × $0.0145, paid at create |
 | Validate, poll, cancel, sessions, stream | Free | Free |
+
+Validate returns the exact price as `estimatedCost.price`, and create charges that amount for the
+same query within 15 minutes. A `repeat` query is priced on the lower of `repeat.maxTriggers` and
+one run per `cooldown` until it expires, so set `maxTriggers` to the runs you want to pay for.
+Payment is not refunded when a query is cancelled or expires with runs unused.
 
 **x402 Auto example:**
 
@@ -962,6 +1254,18 @@ Response (API-key mode):
 
 `credits` carries what the turn cost — the same total as the `x-elfa-credits` header. Builder
 Chat is dynamically priced, so read it instead of assuming a flat per-call cost.
+
+**A failed turn is an error, not an empty `200`** — branch on the status, not on an empty
+`response`:
+
+| Status | Body | Means | Cost |
+|---|---|---|---|
+| `400` | `{ "error" }` | Missing `message` or unsupported `speed` | — |
+| `400` | `{ code: "ERR_BAD_REQUEST", message, errorId, requestId }` | The safety checks rejected the message | Nothing, not even the 1-credit request fee |
+| `404` | `{ "error", "sessionId" }` | The `sessionId` is not yours or does not exist | — |
+| `502` | `{ "error", "sessionId" }` | The turn ended with no answer; `sessionId` (absent if no session was opened) is the session to retry in | At most the 1-credit request fee, as for a turn you disconnect from before the reply |
+
+On x402 neither a rejected message nor a `502` is settled, so neither is paid for.
 
 The response message contains the AI's reply in Markdown. When it generates EQL, it will be
 in a JSON code block — extract, validate via `/queries/validate`, then submit via `/queries`.
@@ -1187,7 +1491,7 @@ Recommended starting points:
 | `type` | Required `params` | Optional `params` |
 |---|---|---|
 | `notify` | `message` (1–1000 chars) | — |
-| `webhook` | `url` (https only, allowlisted host) | `signingSecret` (write-only — **set this in production**), `allNotifications` (default `false`) |
+| `webhook` | `url` (https only, allowlisted host) | `signingSecret` (write-only — **set this in production**), `signingScheme` (`auto_v1` default, or `standard_webhooks`), `maxDeliveryAge` (`"Nm"` / `"Nh"`, `1m` to `7h`), `allNotifications` (default `false`) |
 | `telegram_bot` | `botToken`, `chatId` | `allNotifications` (default `false`) |
 | `llm` | `action` ∈ `chat` / `summary` / `macro` / `accountAnalysis` / `tokenDiscovery` / `tokenAnalysis` | `callback.action` for chained follow-up (a callback `webhook` also takes `includeAnalysis`), `speed` (`fast` / `expert`), per-action extras (for example `message` on `chat`) |
 
@@ -1283,7 +1587,7 @@ In the Builder Chat catalog this is the `Signal` category, **X/Twitter Post**.
 
 Rules:
 - `username` must be passed **without** `@` (e.g. `cz_binance`, not `@cz_binance`).
-- `username` can be any public X account. Validate's `tweetAccounts` says how each is billed: `included` (Elfa's real-time set) costs nothing extra; `per_post` costs `creditsPerPost` for every post while the plan runs (posts, quotes, notes and articles; not replies or reposts), matched or not, and is not in `estimatedCredits`. Tell the user before Create. A key without a paid API plan, and x402, can watch only `included` accounts; a rejected account is an `errors[]` entry (see [Validation Errors](#validation-errors--next-action-table)). Builder Chat uses an account outside the real-time set only when you name it, and never suggests one. Details: [X Accounts and Per-Post Billing](https://docs.elfa.ai/auto/signal#x-accounts-and-per-post-billing).
+- `username` can be any public X account. Validate's `tweetAccounts` says how each is billed: `included` (Elfa's real-time set) costs nothing extra; `per_post` costs `creditsPerPost` for every post while the plan runs (posts, quotes, notes and articles; not replies or reposts), matched or not, and is not in `estimatedCredits`. Tell the user before Create. A key without a paid API plan, and x402, can watch only `included` accounts; a rejected account is an `errors[]` entry (see [Validation Errors](#validation-errors--next-action-table)). Builder Chat uses an account outside the real-time set only when you name it, and never suggests one. Details: [X Accounts and Per-Post Billing](https://docs.elfa.ai/auto/sources/social-posts#x-accounts-and-per-post-billing).
 - `minConfidence` must be a JSON integer between `0` and `100`; use `80` when the user gives no threshold.
 - `method`, `operator`, and `value` are auto-filled defaults (`semantic`, `==`, `true`) — do **not** include them in the condition JSON.
 
@@ -1328,7 +1632,7 @@ Rules:
 
 In the Builder Chat catalog this is the `Signal` category, **Events**.
 
-Triggers on events: news about an asset, project, company, person, or macro — listings, hacks, regulatory decisions, macro releases, company news, large flows, bullish or bearish news. These are the events `GET /v3/events` (API v3) serves, each written up from many posts, and the condition takes that endpoint's filter values, matched the same way. Use it for news **about** a subject; use `tweet` for posts **from** an account. Not yet in the app's visual builder catalog; Builder Chat and the API both author it. Full reference: https://docs.elfa.ai/auto/events — the events themselves: https://docs.elfa.ai/api/v3/events
+Triggers on events: news about an asset, project, company, person, or macro — listings, hacks, regulatory decisions, macro releases, company news, large flows, bullish or bearish news. These are the events `GET /v3/events` (API v3) serves, each written up from many posts, and the condition takes that endpoint's filter values, matched the same way. Use it for news **about** a subject; use `tweet` for posts **from** an account. Not yet in the app's visual builder catalog; Builder Chat and the API both author it. Full reference: https://docs.elfa.ai/auto/sources/elfa-data#events — the events themselves: https://docs.elfa.ai/enrich/news
 
 | Method | Args (all optional; at least one filter or `text`) | Returns |
 |---|---|---|
@@ -1346,7 +1650,7 @@ Triggers on events: news about an asset, project, company, person, or macro — 
 - One value per argument; several assets or types → several `events` conditions under `OR`. An array is rejected with `EQL_INVALID_JSON`.
 - Shorthand only in practice: the full form takes just `operator: "=="`, `value: true`. No dynamic values.
 - Runtime: events arrive minutes to hours after the first post (to be first, watch the account with `tweet`); only events less than an hour old are matched; each event fires a plan at most once; about 1 in 9 events continues a story already reported that day. To fire once per story, add `relation: "origin"`, or use `repeat.cooldown` to space alerts out.
-- Preview before creating: `GET /v3/events` with the same filters and `from=<now - 1d>` (`entityIds=<id>` for `entity`) returns what the condition would have fired on. `q` has no counterpart: `text` checks a claim per event instead. `GET /v3/events/storylines?storylineIds=<id>` maps to `"storylineId": "<id>"`, one storyline per condition. One value per argument, no time range. The preview is billed like any v3 call: `/v3/entities` is 1 credit, and `/v3/events` is 1 credit plus 1 per event returned, except events already billed to your account within 8 days of their `analyzedAt`. Mapping: https://docs.elfa.ai/auto/events#from-v3-events
+- Preview before creating: `GET /v3/events` with the same filters and `from=<now - 1d>` (`entityIds=<id>` for `entity`) returns what the condition would have fired on. `q` has no counterpart: `text` checks a claim per event instead. `GET /v3/events/storylines?storylineIds=<id>` maps to `"storylineId": "<id>"`, one storyline per condition. One value per argument, no time range. The preview is billed like any v3 call: `/v3/entities` is 1 credit, and `/v3/events` is 1 credit plus 1 per event returned, except events already billed to your account within 8 days of their `analyzedAt`. Mapping: https://docs.elfa.ai/auto/sources/elfa-data#events
 - `match` in the trigger payload: `eventId`, `title` (the event's `alertTitle`), `eventClass`, `eventType`, `implication`, `alertAction`, `novelty`, `timeSensitivity`, `citedSourceCount`, `analyzedAt` (ISO 8601), `entities[]` (`symbol`, `name`, `entityType`; up to 10), and `confidence` when `text` was checked. No link, no summary.
 - `match.eventId` is the event's `id` in `/v3/events` — **not** the webhook delivery id (`X-Auto-Event-Id`, the one to dedupe deliveries on). `GET /v3/events?eventIds=<match.eventId>` returns the summary, cited posts with links, price impacts and `storylineId`. To be alerted once per story, filter on `relation: "origin"` rather than comparing `storylineId` values yourself; to follow the story an alert belongs to, create a condition on its `storylineId`.
 - On x402, which has no `/v3` routes, name the entity by ticker or name and read the Validate response for what it resolved to.
@@ -1360,7 +1664,7 @@ Triggers on events: news about an asset, project, company, person, or macro — 
 
 **Calls (`calls`):**
 
-Triggers on the trading calls one X account makes: each time it opens a long or short, adds to it, trims it, closes it, gets stopped out, or reverses it. These are the calls `GET /v3/calls` (API v3) serves, so a plan fires on the same call the endpoint returns, as soon as Elfa records it. Use `calls` for an account's calls, `tweet` for its posts in general, and `events` with `eventClass: "call"` for many traders calling the same asset. A `calls` condition reads the call Elfa recorded, so it needs no `text` and costs no credits. Full reference: https://docs.elfa.ai/auto/calls
+Triggers on the trading calls one X account makes: each time it opens a long or short, adds to it, trims it, closes it, gets stopped out, or reverses it. These are the calls `GET /v3/calls` (API v3) serves, so a plan fires on the same call the endpoint returns, as soon as Elfa records it. Use `calls` for an account's calls, `tweet` for its posts in general, and `events` with `eventClass: "call"` for many traders calling the same asset. A `calls` condition reads the call Elfa recorded, so it needs no `text` and costs no credits. Full reference: https://docs.elfa.ai/auto/sources/elfa-data#calls
 
 | Method | Args (`handle` required, the rest optional) | Returns |
 |---|---|---|
@@ -1469,7 +1773,7 @@ family, and the boolean methods for normalized flags (`is_late_filing` for NT no
 `is_offering` for registrations and prospectuses, `has_item_1_05` for cybersecurity
 disclosures). `sec` is event-driven like the Signal sources, so with `repeat` it re-fires on
 the next distinct filing. Full reference:
-[SEC Filings](https://docs.elfa.ai/auto/sec-filings).
+[SEC Filings](https://docs.elfa.ai/auto/sources/filings-and-prediction-markets#sec).
 
 **Prediction Markets source (`kalshi`):**
 
@@ -1532,7 +1836,7 @@ later moves to `settled` (`status`) or resolves (`result` / `settlement_value`) 
 ```
 
 Full method tables, value enums, and example automations:
-[Prediction Markets → Kalshi](https://docs.elfa.ai/auto/prediction-markets#kalshi).
+[Prediction Markets → Kalshi](https://docs.elfa.ai/auto/sources/filings-and-prediction-markets#kalshi).
 
 **Prediction Markets source (`polymarket`):**
 
@@ -1588,7 +1892,7 @@ validation.
 Standard EQL limits apply to both prediction-market sources: combinable with other sources
 inside `AND`/`OR` groups, up to depth 3 and 10 leaf conditions. Full method tables and
 example automations:
-[Prediction Markets → Polymarket](https://docs.elfa.ai/auto/prediction-markets#polymarket).
+[Prediction Markets → Polymarket](https://docs.elfa.ai/auto/sources/filings-and-prediction-markets#polymarket).
 
 **Market-structure source (`funding`) — perp funding rate:**
 
@@ -1647,7 +1951,7 @@ one-sided flush, or liquidations as a share of open interest. Same composite
 ```
 
 Full method tables, feed-quality table, and examples:
-[Funding and Liquidations](https://docs.elfa.ai/auto/funding-and-liquidations).
+[Funding and Liquidations](https://docs.elfa.ai/auto/sources/market-prices#funding).
 
 **Market-sentiment source (`fear_greed`) — Crypto Fear & Greed Index:**
 
@@ -1679,7 +1983,7 @@ asset turns hot" condition). Write the full form. A match carries the condition,
 `assetId`, the observed value, and the asset's name and the board row that fired (see
 **Market and filing conditions** under [Poll response shape](#poll-response-shape)) — **no post
 and no event**; read the board or `/v3/events` for the reason behind a move. Full reference:
-https://docs.elfa.ai/auto/mindshare
+https://docs.elfa.ai/auto/sources/elfa-data#mindshare
 
 | Method | Args | Returns | Operators | Description |
 |---|---|---|---|---|
@@ -1797,7 +2101,7 @@ once, and with `repeat` it fires once per distinct matched account (`cooldown: "
 "notify me about every one"). A matched account will not fire again while it stays inside
 `window`, and a follow condition reports no value until its first scheduled evaluation, so
 there is no preview before execution. Read
-[Follow Graph](https://docs.elfa.ai/auto/account-follows) before using these sources.
+[Follow Graph](https://docs.elfa.ai/auto/sources/social-posts#follows) before using these sources.
 
 **Supported operators:** `>`, `<`, `>=`, `<=`, `==`, `!=`, `crosses_above`, `crosses_below`
 
@@ -2282,7 +2586,7 @@ original 8-K (not an 8-K/A) the action gets the filing's press release, or the 8
 text when it has none, up to 12,000 characters. Other forms, amendments and exhibit-only 8-Ks
 have no text, so tell the action what to do then, e.g. "if the filing's text is missing, say so
 and describe it from its items". Full reference:
-[Market and filing conditions](https://docs.elfa.ai/auto/query-model#feed-trigger-context).
+[Read every time a query fired](https://docs.elfa.ai/auto/manage#read-every-time-a-query-fired).
 
 Auto Trigger Context is also included in outbound delivery payloads — so a webhook receiver can
 explain a fire without a follow-up poll.
@@ -2360,9 +2664,11 @@ An expired notification has no `executionId`.
 
 | Header | Purpose |
 |---|---|
-| `X-Auto-Event-Id` | Unique event ID for deduplication |
-| `X-Auto-Signature-Timestamp` | Unix seconds for replay-window check |
-| `X-Auto-Signature` | `v1=<hex_hmac_sha256>` — verify against raw body |
+| `X-Auto-Event-Id` | Event ID (the `executionId` when the alert has one), the same on every retry — deduplicate on it with `auto_v1`. Sent with both schemes |
+| `X-Auto-Timestamp` | The event time, fixed across retries. Sent with both schemes |
+| `X-Auto-Signature-Timestamp` | `auto_v1`: unix seconds of this attempt, for the replay-window check |
+| `X-Auto-Signature` | `auto_v1`: `v1=<hex_hmac_sha256>` — verify against raw body |
+| `webhook-id`, `webhook-timestamp`, `webhook-signature` | `standard_webhooks`: verify with any Standard Webhooks library. `webhook-id` is the same on every retry — deduplicate on it; `webhook-timestamp` is this attempt |
 
 #### SSE frame format
 
@@ -2446,7 +2752,7 @@ plus `includeAnalysis` (default `false`). Without it, the callback tells your en
 fired, not what the `llm` step wrote. Set it to `true` and the payload also carries the answer as
 `analysisText` (at most 32,000 characters) and `analysisTruncated`. Validate rejects
 `includeAnalysis` on a top-level `webhook`, and `telegram_bot` callbacks never carry the answer.
-See [LLM Analysis in a Callback Webhook](https://docs.elfa.ai/auto/notifications#llm-analysis-in-a-callback-webhook).
+See [Have AI write the alert](https://docs.elfa.ai/auto/delivery#have-ai-write-the-alert).
 
 **Which secret to use — two distinct secrets, never interchange them:**
 
@@ -2458,7 +2764,18 @@ See [LLM Analysis in a Callback Webhook](https://docs.elfa.ai/auto/notifications
 Generate a separate high-entropy secret per webhook action (`openssl rand -hex 32`). Do **not**
 reuse the API key or the x402 agent secret here.
 
-Signing inputs:
+**Pick a scheme with `signingScheme`** on the `webhook` action. It also covers lifecycle
+notifications sent to the same webhook (`allNotifications: true`) and `llm` callback webhooks.
+
+| `signingScheme` | Headers | Secret |
+|---|---|---|
+| `auto_v1` (default) | `X-Auto-Signature`, `X-Auto-Signature-Timestamp` | Any high-entropy string |
+| `standard_webhooks` | `webhook-id`, `webhook-timestamp`, `webhook-signature`, per the [Standard Webhooks](https://www.standardwebhooks.com/) spec, so any Standard Webhooks library verifies a delivery against its raw body | Required: `whsec_` followed by base64 of 24 to 64 random bytes, e.g. `echo "whsec_$(openssl rand -base64 32)"`. Never falls back to another secret: validate and create reject any other value at `actions[0].params.signingSecret` |
+
+`X-Auto-Event-Id` and `X-Auto-Timestamp` are sent with both schemes, and the execution id stays in
+the body.
+
+`auto_v1` signing inputs:
 
 ```
 expected = HMAC_SHA256(signingSecret, timestamp + "." + eventId + "." + rawBody)
@@ -2502,9 +2819,19 @@ export function verifyAutoWebhook(
 ```
 
 Operational checklist:
-- Enforce a bounded replay window on `X-Auto-Signature-Timestamp` (reject drift >30s).
-- Deduplicate by `X-Auto-Event-Id` in durable storage.
+- Enforce a bounded replay window on the attempt time: `X-Auto-Signature-Timestamp` (`auto_v1`,
+  reject drift >30s) or `webhook-timestamp` (`standard_webhooks`).
+- Deduplicate by `X-Auto-Event-Id` (`auto_v1`) or `webhook-id` (`standard_webhooks`) in durable
+  storage.
 - Return `2xx` fast, then process asynchronously (queue + worker).
+- Expect retries. A failing webhook delivery — any answer outside `2xx`, a redirect (Elfa does not
+  follow it), or no answer — is retried 30 seconds, 2 minutes, 10 minutes, 1 hour and 6 hours
+  after each failure: 6 attempts over about 7.2 hours (`telegram_bot` and `notify`: 3 attempts,
+  5 s and 15 s apart). The same delivery can arrive more than once and hours late, so do not
+  reject a retry because its event is old: `X-Auto-Timestamp` and the body's `timestamp` keep the
+  event time, while the signature timestamp is each attempt's.
+- For alerts that are useless late, such as price alerts, set `maxDeliveryAge` (`"Nm"` or `"Nh"`,
+  `1m` to `7h`): a delivery still failing at that age is dropped instead of retried.
 
 #### Telegram bot setup (for `action.type: "telegram_bot"` or relay)
 
@@ -2649,8 +2976,7 @@ RUNNER_MODE=local|cloud
 | Production | Auto webhook + queue + worker |
 | Real-time operations | Auto SSE + worker service |
 
-Full detail: [Notifications](https://docs.elfa.ai/auto/notifications) |
-[Agent Runner](https://docs.elfa.ai/auto/agent-runner)
+Full detail: [Delivery](https://docs.elfa.ai/auto/delivery)
 
 #### Notification troubleshooting
 
@@ -2659,6 +2985,8 @@ Full detail: [Notifications](https://docs.elfa.ai/auto/notifications) |
 | `400` / `401` when polling or streaming | Missing/invalid API key or auth headers | Send `x-elfa-api-key` |
 | Webhook signature mismatch | Signing wrong payload (not raw body), or hashing the secret before use | Key is the **raw** `signingSecret`, payload is `timestamp + "." + eventId + "." + rawBody`. Do not use `SHA256(secret)` as the key |
 | No signature headers on webhook deliveries | No explicit `signingSecret` set on the webhook action | Set `params.signingSecret` and recreate the query |
+| Validate or create rejects `actions[0].params.signingSecret` | `signingScheme: "standard_webhooks"` with a secret that is not `whsec_` plus base64 of 24 to 64 random bytes | Generate one with `echo "whsec_$(openssl rand -base64 32)"` |
+| The same alert arrives twice, or hours late | Webhook retries: 6 attempts over about 7.2 hours | Deduplicate on `webhook-id` or `X-Auto-Event-Id`; set `maxDeliveryAge` if late alerts are useless |
 | Duplicate downstream actions | No idempotency on event processing | Dedupe by `eventId` before enqueue/execute |
 | Event received but agent does nothing | Ingress processes inline and times out | ACK fast, push to queue, process in worker |
 | SSE disconnect/reconnect loops | No retry/backoff or unstable consumer | Add reconnect backoff + heartbeat monitoring |
@@ -2814,8 +3142,7 @@ on it. If a symbol is unsupported on the venue you picked, switch venue or symbo
 the condition on a supported pair and route follow-up work through `notify`, `webhook` or
 `telegram_bot`.
 
-Full reference: [Symbols](https://docs.elfa.ai/auto/symbols) and
-[Catalyst Triggers](https://docs.elfa.ai/auto/catalyst-triggers).
+Full reference: [Market prices](https://docs.elfa.ai/auto/sources/market-prices).
 
 #### Executions
 
@@ -2831,6 +3158,17 @@ Execution records are also embedded in the poll response (`GET /v2/auto/queries/
 under the `executions` array, but the dedicated endpoints are useful for cross-query audits
 and pagination.
 
+**Read every execution once** with the `after` cursor: call `GET /v2/auto/executions?after=start`,
+save `pagination.nextCursor` (every page has one, even an empty page), and call again later with
+`after` set to it. With `after`, executions come oldest first and each one comes once; a page's
+`pagination` is `{limit, hasMore, nextCursor}`, with no `total` or `offset`. `hasMore: false`
+means nothing new is ready yet, not the end, so poll again later. Executions from roughly the last
+30 seconds are held back until they settle, and each comes in the state it had when read, which
+can still be `pending`: fetch `GET /v2/auto/executions/{executionId}` for its final status. `after`
+cannot be combined with `offset` or `status` (`400`), and a cursor works only with the `queryId`
+and `type` it was issued for. Without `after`, executions come newest first, as before. A cursor
+call costs the same as any other executions call.
+
 Executions are API-key-mode only. Not available via x402.
 
 ### Step 4: Generating code snippets
@@ -2842,9 +3180,10 @@ See the [Elfa API documentation](https://docs.elfa.ai) for the full parameter sp
 - For `/v2`, always mention both access modes (API key and x402) so developers know their options
 - For `/v3`, the API key is the only mode (no x402). Use `from`/`to` in unix seconds (there is no
   `timeWindow`; mindshare takes `period`), page with `nextCursor` → `cursor`, and read the list at the top level of the
-  response. See Step 2d
+  response. See Step 2d. Verify (`POST /v3/verify`) and Monitors (`/v3/monitors`) need PAYG,
+  Grow or Enterprise and follow Steps 2e and 2f; a monitor's match list is wrapped in `data`
 - Include the signup link `https://go.elfa.ai/claude-skills` as a comment near the
-  API key placeholder, and link to `https://docs.elfa.ai/get-started/x402` for x402
+  API key placeholder, and link to `https://docs.elfa.ai/platform/authentication#pay-per-request-with-x402` for x402
 - Always include proper error handling
 - For API key mode: show the `x-elfa-api-key` header (use a placeholder like `YOUR_API_KEY`)
 - For x402 mode: show the `/x402/v2/` prefix and recommend `@x402/fetch` or `@x402/axios`
@@ -2939,7 +3278,9 @@ Use `$` when you want only cashtag-specific mentions. Omit `$` for a more inclus
 - Trending narratives: 5 credits ($0.0725 via x402)
 - Chat: speed-based; via x402 pay `exact` (fast $1, expert $2) or `batch-settlement` (up to fast $2, expert $6)
 - API v3: every plan; priced per endpoint on Free, PAYG and Grow
-  (https://docs.elfa.ai/get-started/pricing#api-v3). API key only
+  (https://docs.elfa.ai/platform/pricing#api-v3). API key only
+- Verify: 1 credit per call, whatever the verdict; Monitors: 2 credits per started hour a monitor
+  is live, every other monitor call free. PAYG, Grow or Enterprise
 - `/v2/ping`, `/v2/key-status`: free
 - Every `/v2/*` and `/v3/*` response to an authenticated request carries an **`x-elfa-credits`** header with
   the credits that request consumed — read it instead of diffing `/v2/key-status` around a call.
@@ -2990,8 +3331,10 @@ Use `$` when you want only cashtag-specific mentions. Omit `$` for a more inclus
 - Install/update this skill with `npx skills add elfa-ai/skills`. API keys come from the
   [Elfa Developer Portal](https://go.elfa.ai/dev).
 - x402 and API key credits are independent — they do not overlap or share balances.
-- For x402 documentation and setup, refer users to https://docs.elfa.ai/get-started/x402.
+- For x402 documentation and setup, refer users to https://docs.elfa.ai/platform/authentication#pay-per-request-with-x402.
 - For Auto documentation, refer users to https://docs.elfa.ai/auto/overview.
 - Auto x402 agent secret must be persistent — do not rotate per request.
+- A monitor bills 2 credits for every started hour until it is deleted. Delete monitors the user
+  no longer needs, and never print a monitor's `webhookSecret`.
 - For the full list of Auto capabilities, triggers, and query templates, see
-  https://docs.elfa.ai/auto/capabilities and https://docs.elfa.ai/auto/query-model.
+  https://docs.elfa.ai/auto/overview and https://docs.elfa.ai/auto/conditions.

@@ -1449,6 +1449,57 @@
 				"type": "object",
 				"additionalProperties": {}
 			},
+			"ApiKeyAutoErrorEnvelope": {
+				"description": "An error answered through the API's error handler, with a code and ids to\nquote to support. Builder chat answers a message the safety checks rejected\nwith this, as a `400` with `code: \"ERR_BAD_REQUEST\"`.",
+				"properties": {
+					"code": {
+						"type": "string",
+						"description": "Error code.",
+						"example": "ERR_BAD_REQUEST"
+					},
+					"message": {
+						"type": "string",
+						"description": "What went wrong.",
+						"example": "Your query was flagged by our safety filter and was not processed. You were not charged for it."
+					},
+					"details": {
+						"$ref": "#/components/schemas/ApiKeyAutoErrorDetails",
+						"description": "Per-field or per-condition details, when present"
+					},
+					"errorId": {
+						"type": "string",
+						"description": "Identifies this kind of error, to quote to support"
+					},
+					"requestId": {
+						"type": "string",
+						"description": "Identifies this request, to quote to support"
+					}
+				},
+				"required": [
+					"code",
+					"message",
+					"errorId"
+				],
+				"type": "object"
+			},
+			"ApiKeyAutoChatFailedResponse": {
+				"description": "A Builder chat turn that has no answer: the session was not found (`404`),\nor the turn ended without an answer (`502`).",
+				"properties": {
+					"error": {
+						"type": "string",
+						"description": "What went wrong.",
+						"example": "Session not found"
+					},
+					"sessionId": {
+						"type": "string",
+						"description": "The session of the turn, to retry in. Present on the `404` and on a `502`\nstream error; absent on the fallback `502`, which carries only `error`."
+					}
+				},
+				"required": [
+					"error"
+				],
+				"type": "object"
+			},
 			"ApiKeyAutoChatRequestBody": {
 				"properties": {
 					"message": {
@@ -2439,7 +2490,7 @@
 					"total": {
 						"type": "number",
 						"format": "double",
-						"description": "Total matching records"
+						"description": "Total matching records (offset paging only)"
 					},
 					"limit": {
 						"type": "number",
@@ -2449,11 +2500,15 @@
 					"offset": {
 						"type": "number",
 						"format": "double",
-						"description": "Offset used for the page"
+						"description": "Offset used for the page (offset paging only)"
 					},
 					"hasMore": {
 						"type": "boolean",
-						"description": "Whether another page exists"
+						"description": "Whether another page exists. With `after`: whether more executions are ready now; poll again later for newer ones."
+					},
+					"nextCursor": {
+						"type": "string",
+						"description": "With `after`: pass it back as `after` to read the executions that follow. Present on every cursor page, including an empty one."
 					}
 				},
 				"type": "object"
@@ -3249,22 +3304,25 @@
 				]
 			},
 			"EventCitedSourceV3": {
+				"description": "A post or SEC filing an event cites. Never its text.",
 				"properties": {
 					"source": {
 						"type": "string",
-						"description": "`twitter` or `telegram`."
+						"description": "`twitter`, `telegram` or `sec_edgar` (an SEC filing, an 8-K). Empty when\nthe source cannot be told."
 					},
 					"sourceRecordId": {
-						"type": "string"
+						"type": "string",
+						"description": "The post's id on X; on Telegram, a reference to a group of messages; on\n`sec_edgar`, the filing's SEC accession number (`0000104169-26-000165`)."
 					},
 					"handle": {
 						"type": "string",
-						"nullable": true
+						"nullable": true,
+						"description": "The X account, or the sender's Telegram name. On `sec_edgar`, the filer's\ncompany name as it stands on the SEC record (`Walmart Inc.`, or\n`CISCO SYSTEMS, INC.` in capitals), not a social handle."
 					},
 					"link": {
 						"type": "string",
 						"nullable": true,
-						"description": "Permalink where one exists: the X post, or the first message of a Telegram\ngroup in a public chat. Null for a private Telegram chat."
+						"description": "Permalink where one exists: the X post, or the first message of a Telegram\ngroup in a public chat. Null for a private Telegram chat. On `sec_edgar`,\nthe document on sec.gov the event was read from: the filing's press\nrelease exhibit when it has one, otherwise the 8-K itself."
 					}
 				},
 				"required": [
@@ -3362,7 +3420,7 @@
 					"originCount": {
 						"type": "number",
 						"format": "double",
-						"description": "Distinct accounts behind the event: the cited posts' accounts, plus, for\na market event, every account whose post joined the cluster and passed\nthe source gate. A market event's count is read live, so it grows after\n`analyzedAt`; a call or asset event's stays at its cited accounts."
+						"description": "Distinct accounts and filers behind the event: the cited sources', plus,\nfor a market event, every account or filer whose source joined the\ncluster and passed the source gate. A market event's count is read live,\nso it grows after `analyzedAt`; a call or asset event's stays at its cited\naccounts."
 					},
 					"impacts": {
 						"items": {
@@ -3395,7 +3453,7 @@
 							"$ref": "#/components/schemas/EventCitedSourceV3"
 						},
 						"type": "array",
-						"description": "The posts the analysis cited, first and in its order, then, for a market\nevent, later posts from other accounts that passed the source gate, one\nper account, up to the cap. Never the post text."
+						"description": "The posts and SEC filings the analysis cited, first and in its order,\nthen, for a market event, later sources from other accounts that passed\nthe source gate (posts and SEC filings), one per account or filer, up to\nthe cap. Never their text."
 					},
 					"positions": {
 						"allOf": [
@@ -3854,6 +3912,218 @@
 					"related"
 				],
 				"type": "object"
+			},
+			"CalendarCategoryV3": {
+				"type": "string",
+				"enum": [
+					"macro",
+					"earnings",
+					"unlock",
+					"governance",
+					"listing",
+					"launch",
+					"airdrop",
+					"conference",
+					"regulatory",
+					"protocolUpgrade",
+					"corporateAction",
+					"marketResolution",
+					"campaign",
+					"expiry",
+					"deadline",
+					"geopolitics",
+					"other"
+				],
+				"description": "What kind of occasion a calendar entry is."
+			},
+			"CalendarStatusV3": {
+				"type": "string",
+				"enum": [
+					"scheduled",
+					"rescheduled",
+					"postponed",
+					"cancelled",
+					"past",
+					"occurred"
+				],
+				"description": "`past` is over with nothing reporting it happened; `occurred` is over and\n`outcome` names the event that reported it."
+			},
+			"CalendarConfidenceV3": {
+				"type": "string",
+				"enum": [
+					"official",
+					"reported",
+					"rumored"
+				],
+				"description": "`official` from the project or issuer, `reported` by others, `rumored` unconfirmed."
+			},
+			"CalendarEntryV3": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"summary": {
+						"type": "string",
+						"nullable": true
+					},
+					"category": {
+						"$ref": "#/components/schemas/CalendarCategoryV3"
+					},
+					"startsAt": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. A `day` entry starts at 00:00 UTC of `date`."
+					},
+					"endsAt": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Unix seconds, or null for a single moment or day."
+					},
+					"precision": {
+						"type": "string",
+						"enum": [
+							"exact",
+							"day"
+						],
+						"description": "`exact` has a time of day; `day` names the day only."
+					},
+					"date": {
+						"type": "string",
+						"nullable": true,
+						"description": "`day` precision only: the announced day, YYYY-MM-DD, in no time zone."
+					},
+					"endDate": {
+						"type": "string",
+						"nullable": true,
+						"description": "`day` precision only: the last day of a span, inclusive."
+					},
+					"timezone": {
+						"type": "string",
+						"nullable": true,
+						"description": "IANA zone the time was announced in, e.g. `America/New_York`."
+					},
+					"status": {
+						"$ref": "#/components/schemas/CalendarStatusV3"
+					},
+					"importance": {
+						"type": "number",
+						"format": "double",
+						"description": "0 to 100: how much widely held markets plan around the date."
+					},
+					"confidence": {
+						"$ref": "#/components/schemas/CalendarConfidenceV3"
+					},
+					"entities": {
+						"items": {
+							"$ref": "#/components/schemas/EventEntityV3"
+						},
+						"type": "array",
+						"description": "What the entry is about."
+					},
+					"eventIds": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array",
+						"description": "Events within the plan's history that reported the date, oldest first. Fetch them with `/v3/events?eventIds=`."
+					},
+					"storylineIds": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array",
+						"description": "Storylines those events sit in."
+					},
+					"outcome": {
+						"properties": {
+							"implication": {
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/ImplicationV3"
+									}
+								],
+								"nullable": true
+							},
+							"eventId": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"implication",
+							"eventId"
+						],
+						"type": "object",
+						"nullable": true,
+						"description": "The event that reported it happened, once linked."
+					}
+				},
+				"required": [
+					"id",
+					"title",
+					"summary",
+					"category",
+					"startsAt",
+					"endsAt",
+					"precision",
+					"date",
+					"endDate",
+					"timezone",
+					"status",
+					"importance",
+					"confidence",
+					"entities",
+					"eventIds",
+					"storylineIds",
+					"outcome"
+				],
+				"type": "object"
+			},
+			"CalendarResponseV3": {
+				"properties": {
+					"entries": {
+						"items": {
+							"$ref": "#/components/schemas/CalendarEntryV3"
+						},
+						"type": "array"
+					},
+					"nextCursor": {
+						"type": "string",
+						"nullable": true
+					},
+					"hasMore": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"entries",
+					"nextCursor",
+					"hasMore"
+				],
+				"type": "object"
+			},
+			"ServedV3_CalendarResponseV3_": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/CalendarResponseV3"
+					},
+					{
+						"properties": {
+							"servedFrom": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"servedFrom"
+						],
+						"type": "object"
+					}
+				]
 			},
 			"MatchedOnV3": {
 				"type": "string",
@@ -5120,6 +5390,416 @@
 					"historyFrom"
 				],
 				"type": "object"
+			},
+			"VerdictV3": {
+				"type": "string",
+				"enum": [
+					"supported",
+					"contradicted",
+					"notEnoughEvidence"
+				]
+			},
+			"VerdictProbabilitiesV3": {
+				"properties": {
+					"supported": {
+						"type": "number",
+						"format": "double"
+					},
+					"contradicted": {
+						"type": "number",
+						"format": "double"
+					},
+					"notEnoughEvidence": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"supported",
+					"contradicted",
+					"notEnoughEvidence"
+				],
+				"type": "object"
+			},
+			"VerifyYesNoDecisionV3": {
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"yesNo"
+						],
+						"nullable": false
+					},
+					"yes": {
+						"type": "number",
+						"format": "double",
+						"description": "Probability the answer is yes."
+					}
+				},
+				"required": [
+					"type",
+					"yes"
+				],
+				"type": "object"
+			},
+			"Record_string.number_": {
+				"properties": {},
+				"additionalProperties": {
+					"type": "number",
+					"format": "double"
+				},
+				"type": "object",
+				"description": "Construct a type with a set of properties K of type T"
+			},
+			"VerifyChoiceDecisionV3": {
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"choice"
+						],
+						"nullable": false
+					},
+					"choice": {
+						"type": "string",
+						"description": "The most likely option's label."
+					},
+					"probabilities": {
+						"$ref": "#/components/schemas/Record_string.number_",
+						"description": "Probability of each option, keyed by label."
+					}
+				},
+				"required": [
+					"type",
+					"choice",
+					"probabilities"
+				],
+				"type": "object"
+			},
+			"VerifyScoreDecisionV3": {
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"score"
+						],
+						"nullable": false
+					},
+					"score": {
+						"type": "number",
+						"format": "double",
+						"description": "Expected level, from 0 (the lowest) to the number of levels minus 1."
+					},
+					"levelProbabilities": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array",
+						"description": "Probability of each level, in the order the levels were sent."
+					}
+				},
+				"required": [
+					"type",
+					"score",
+					"levelProbabilities"
+				],
+				"type": "object"
+			},
+			"VerifyDecisionV3": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/VerifyYesNoDecisionV3"
+					},
+					{
+						"$ref": "#/components/schemas/VerifyChoiceDecisionV3"
+					},
+					{
+						"$ref": "#/components/schemas/VerifyScoreDecisionV3"
+					}
+				]
+			},
+			"VerifyEvidenceItemV3": {
+				"description": "An X post, Telegram message or web page the verdict was judged on.",
+				"properties": {
+					"link": {
+						"type": "string",
+						"description": "Permalink to the X post, the Telegram message (`https://t.me/<username>/<messageId>`)\nor the web page."
+					},
+					"decisiveness": {
+						"type": "number",
+						"format": "double",
+						"description": "0 to 1, how strongly the item alone confirms or refutes the statement."
+					},
+					"basis": {
+						"type": "boolean",
+						"description": "One of the up to 3 items the verdict rests on."
+					}
+				},
+				"required": [
+					"link",
+					"decisiveness",
+					"basis"
+				],
+				"type": "object"
+			},
+			"VerifyEvidenceV3": {
+				"description": "The items the verdict was judged on, one list per source, keyed like `coverage.sources`.",
+				"properties": {
+					"twitter": {
+						"items": {
+							"$ref": "#/components/schemas/VerifyEvidenceItemV3"
+						},
+						"type": "array"
+					},
+					"telegram": {
+						"items": {
+							"$ref": "#/components/schemas/VerifyEvidenceItemV3"
+						},
+						"type": "array"
+					},
+					"web": {
+						"items": {
+							"$ref": "#/components/schemas/VerifyEvidenceItemV3"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"twitter",
+					"telegram",
+					"web"
+				],
+				"type": "object"
+			},
+			"VerifyCoverageStatusV3": {
+				"type": "string",
+				"enum": [
+					"complete",
+					"partial",
+					"unavailable"
+				]
+			},
+			"VerifyCoverageV3": {
+				"description": "What the search could read. A verdict reached with `complete: false` may have missed\nposts or web pages that would change it.",
+				"properties": {
+					"complete": {
+						"type": "boolean"
+					},
+					"sources": {
+						"properties": {
+							"web": {
+								"$ref": "#/components/schemas/VerifyCoverageStatusV3",
+								"description": "Web pages: `complete` or `unavailable`."
+							},
+							"telegram": {
+								"$ref": "#/components/schemas/VerifyCoverageStatusV3"
+							},
+							"twitter": {
+								"$ref": "#/components/schemas/VerifyCoverageStatusV3"
+							}
+						},
+						"required": [
+							"web",
+							"telegram",
+							"twitter"
+						],
+						"type": "object"
+					},
+					"captions": {
+						"type": "string",
+						"enum": [
+							"complete",
+							"unavailable"
+						],
+						"description": "Whether image descriptions were read for the posts judged."
+					}
+				},
+				"required": [
+					"complete",
+					"sources",
+					"captions"
+				],
+				"type": "object"
+			},
+			"VerifyResponseV3": {
+				"properties": {
+					"verdict": {
+						"$ref": "#/components/schemas/VerdictV3",
+						"description": "Also `notEnoughEvidence` when no posts or web pages were found, or when the most\nlikely verdict is under 0.5."
+					},
+					"probabilities": {
+						"$ref": "#/components/schemas/VerdictProbabilitiesV3"
+					},
+					"decision": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/VerifyDecisionV3"
+							}
+						],
+						"nullable": true,
+						"description": "The answer to `decision`. Null when none was asked, or nothing was found."
+					},
+					"evidence": {
+						"$ref": "#/components/schemas/VerifyEvidenceV3",
+						"description": "Up to 10 posts and web pages in all, each list most decisive first. Items under 0.2\ndecisiveness are left out. A source with none has an empty list."
+					},
+					"asOf": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. The moment judged; no post after it, and no web page dated after it,\nwas read."
+					},
+					"searchedFrom": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. The earliest post time searched; web pages can be older."
+					},
+					"coverage": {
+						"$ref": "#/components/schemas/VerifyCoverageV3"
+					}
+				},
+				"required": [
+					"verdict",
+					"probabilities",
+					"decision",
+					"evidence",
+					"asOf",
+					"searchedFrom",
+					"coverage"
+				],
+				"type": "object"
+			},
+			"VerifyYesNoRequestV3": {
+				"description": "What the caller wants decided beyond the verdict: a yes or no answer.",
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"yesNo"
+						],
+						"nullable": false
+					},
+					"yes": {
+						"type": "string",
+						"description": "What counts as yes, up to 500 characters."
+					},
+					"no": {
+						"type": "string",
+						"description": "What counts as no, up to 500 characters."
+					}
+				},
+				"required": [
+					"type"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VerifyChoiceOptionV3": {
+				"properties": {
+					"label": {
+						"type": "string",
+						"description": "Up to 100 characters, unique within the request."
+					},
+					"definition": {
+						"type": "string",
+						"description": "When this option applies, up to 500 characters."
+					}
+				},
+				"required": [
+					"label",
+					"definition"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VerifyChoiceRequestV3": {
+				"description": "One of the caller's options.",
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"choice"
+						],
+						"nullable": false
+					},
+					"options": {
+						"items": {
+							"$ref": "#/components/schemas/VerifyChoiceOptionV3"
+						},
+						"type": "array",
+						"description": "2 to 20 options."
+					}
+				},
+				"required": [
+					"type",
+					"options"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VerifyScoreRequestV3": {
+				"description": "A place on the caller's scale.",
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"score"
+						],
+						"nullable": false
+					},
+					"levels": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array",
+						"description": "2 to 10 levels, lowest first, each up to 200 characters."
+					}
+				},
+				"required": [
+					"type",
+					"levels"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VerifyDecisionRequestV3": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/VerifyYesNoRequestV3"
+					},
+					{
+						"$ref": "#/components/schemas/VerifyChoiceRequestV3"
+					},
+					{
+						"$ref": "#/components/schemas/VerifyScoreRequestV3"
+					}
+				]
+			},
+			"VerifyRequestV3": {
+				"properties": {
+					"statement": {
+						"type": "string",
+						"description": "The claim to check, up to 500 characters."
+					},
+					"asOf": {
+						"type": "number",
+						"format": "double",
+						"description": "Unix seconds. Judge the statement as of this moment: no post after it, and no web\npage dated after it, is read. Default now. At most 30 days ago and at most 5 minutes\nahead."
+					},
+					"context": {
+						"type": "string",
+						"description": "Background the judgement may use, up to 4,000 characters, such as how a market\nresolves. It is never treated as evidence."
+					},
+					"decision": {
+						"$ref": "#/components/schemas/VerifyDecisionRequestV3",
+						"description": "A question to answer from the same evidence."
+					}
+				},
+				"required": [
+					"statement"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {
@@ -5132,7 +5812,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "3.7.0",
+		"version": "3.13.0",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -6303,8 +6983,8 @@
 						"description": "Unauthorized"
 					}
 				},
-				"description": "Send a message to the Elfa AI and receive a complete response.\nSuited for agents and integrations that do not support server-sent events (SSE).\n\n**Session management:** omit `sessionId` to start a new conversation.\nThe response includes a `sessionId` — pass it in subsequent requests to continue the same conversation.\n\n**Analysis types and required fields:**\n- `chat` (default) — general conversation. Requires `message`.\n- `macro` — macro market overview. No `message` needed.\n- `summary` — quick market summary. No `message` needed.\n- `tokenIntro` — token introduction. Requires `assetMetadata` with `symbol`, or `chain` + `contractAddress`.\n- `tokenAnalysis` — token trade setup analysis. Same `assetMetadata` requirements as `tokenIntro`.\n- `accountAnalysis` — Twitter/X account analysis. Requires `assetMetadata.username`.\n\n`message` is only used for `analysisType: \"chat\"` and is ignored for other\nanalysis types.\n\n**Sources (opt-in):** send `includeSources: true` to receive `data.sources`,\nthe links the research behind the answer read (X posts, news, DEX and\nexplorer pages, prediction markets), each with a `kind`. Links only: page\nand post content is not returned. A source was read, not necessarily cited\nin `message`. Without the flag the response is unchanged.\n\n**Memory (opt-in):** requests don't use saved memory unless you send\n`useMemory: true`. With it, the answer can draw on notes from earlier\nchats on the Elfa account that owns the API key, and the chat can add to\nthem. Leave it off when one key serves many end users.\n\n**`assetMetadata` fields (when applicable):**\n- `symbol` — token ticker symbol (e.g. `\"BTC\"`, `\"$ETH\"`)\n- `chain` — blockchain name (e.g. `\"ethereum\"`, `\"solana\"`)\n- `contractAddress` — token contract address\n- `username` — Twitter/X username for account analysis",
-				"summary": "AI chat",
+				"description": "Returns a written answer as one JSON response. The default `chat` type needs `message`. Other types need `assetMetadata` or nothing. Free keys get `403`. Costs 1 credit plus `creditsConsumed`.",
+				"summary": "Ask a market question",
 				"tags": [
 					"v2 Chat"
 				],
@@ -6353,8 +7033,8 @@
 						"description": "PAYG, Grow or Enterprise plan required"
 					}
 				},
-				"description": "Stream a response from Elfa AI using Server-Sent Events (SSE).\n\nUse this when your client can consume incremental events. Use\n`POST /v2/chat` instead when your integration needs a complete JSON\nresponse.\n\n**Access:** PAYG, Grow and Enterprise API keys.\n\n**Response format:** `text/event-stream`.\n\nCommon `data:` event payloads include:\n- `session_info` with `sessionId` and `analysisType`\n- `title` with a generated session or analysis title\n- `text` with incremental Markdown content\n- `text_complete` when incremental text has finished\n- `status` with progress updates\n- `credits` with consumed credits\n- `complete` with final `sessionId`, `success`, and `creditsConsumed`; with\n  `includeSources: true` in the request it also carries `sources` (the\n  links the research read; same shape as `POST /v2/chat`)\n- `invalid_request` when a query is rejected by safety checks\n- `error` for stream failures\n\nA `: keep-alive` comment may be sent during long gaps. The stream ends\nwith `data: [DONE]`.\n\nRequest-body semantics match `POST /v2/chat`: `message` is required only\nfor `analysisType: \"chat\"`; token and account modes use `assetMetadata`.",
-				"summary": "AI chat stream",
+				"description": "Streams the answer as server-sent events and ends with `data: [DONE]`. The body is the same as `POST /v2/chat`. Free keys get `403`. Costs 1 credit plus `creditsConsumed`.",
+				"summary": "Stream an answer",
 				"tags": [
 					"v2 Chat"
 				],
@@ -6416,11 +7096,18 @@
 						}
 					},
 					"400": {
-						"description": "Invalid request",
+						"description": "Invalid request, or a message the safety checks rejected (`code: \"ERR_BAD_REQUEST\"`, not charged)",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ApiKeyAutoErrorResponse"
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/ApiKeyAutoErrorResponse"
+										},
+										{
+											"$ref": "#/components/schemas/ApiKeyAutoErrorEnvelope"
+										}
+									]
 								}
 							}
 						}
@@ -6444,10 +7131,30 @@
 								}
 							}
 						}
+					},
+					"404": {
+						"description": "Session not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoChatFailedResponse"
+								}
+							}
+						}
+					},
+					"502": {
+						"description": "The turn ended without an answer (no turn cost, only the per-request fee)",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoChatFailedResponse"
+								}
+							}
+						}
 					}
 				},
-				"description": "Ask the AI to help you build an EQL query.\n\nThe response message contains the AI's reply in Markdown. When it generates EQL,\nit will be in a JSON code block that you can extract, validate, and submit.\n\nUse `sessionId` in follow-up requests to maintain conversation context.\n\n### Cost\n\nAPI mode: `1 + dynamic` credits\n- base request charge: `1` credit\n- dynamic usage charge: `ceil(request_cost * 750)` credits\n\nx402 mode is quoted in USD per turn, not credits. The 402 response lists\nthe schemes it accepts and the client picks one:\n- `exact` (flat, charged in full): `fast` `$1`, `expert` `$2`\n- `batch-settlement` (Base, when listed: deposit once into a payment\n  channel; each turn is capped at `fast` `$2`, `expert` `$6` and charged\n  its actual cost)\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\nChat produces drafts only; subsequent activation goes through\n`POST /queries/drafts/{draftId}/convert`.\n\n### Request Example\n\n```json\n{\n  \"message\": \"Alert me when BTC breaks 100k\",\n  \"speed\": \"expert\",\n  \"sessionId\": \"optional-session-id\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"sessionId\": \"session-uuid\",\n  \"response\": \"I can help with that...\",\n  \"title\": \"BTC Breakout Alert\",\n  \"reasoning\": null,\n  \"planIds\": [],\n  \"credits\": 104\n}\n```\n\n`credits` is what this call cost, and carries the same total as the\n`x-elfa-credits` response header. Chat is dynamically priced, so read it\nrather than assuming a flat cost.\n\n> Best practice: persist `sessionId` and reuse it for follow-up prompts so\n> the model keeps context across turns.",
-				"summary": "Builder Chat",
+				"description": "Describe a query in plain words. Returns a Markdown reply with the query JSON in a code block, for you to validate and create. Send `sessionId` to continue. Costs 1 credit plus a usage charge. `credits` is the total.",
+				"summary": "Build a query with chat",
 				"tags": [
 					"v2 Auto"
 				],
@@ -6531,8 +7238,8 @@
 						}
 					}
 				},
-				"description": "Check whether a symbol is supported on the given exchange.\n\nUse this before submitting an EQL query based on symbols like `price` / `ta`\ntriggers. Symbols not supported return `\"false\"`.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Response Example (200)\n\n```json\n{\n  \"supported\": \"true\"\n}\n```",
-				"summary": "Validate Symbol",
+				"description": "Checks whether an exchange supports a symbol, for `price` and `ta` conditions. `supported` is the string `\"true\"` or `\"false\"`, not a boolean.",
+				"summary": "Validate a symbol",
 				"tags": [
 					"v2 Auto"
 				],
@@ -6636,8 +7343,8 @@
 						}
 					}
 				},
-				"description": "Validate EQL syntax and get a cost estimate without creating a query.\nReturns simulation-based cost details when the query is valid.\n\n### Call Order\n\nCall `POST /v2/auto/queries/validate` before `POST /v2/auto/queries`.\nCreate does not require it and runs the same checks, but validate returns\nthe errors and the cost estimate without creating anything.\n\nLifecycle sequencing after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is\n   `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only after status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k so I can review the breakout setup.\"\n}\n```\n\n### Response Example (200)\n\n```json\n{\n  \"valid\": true,\n  \"errors\": [],\n  \"warnings\": [],\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": { \"fast\": 1, \"expert\": 0, \"adaptive\": 0 },\n    \"actionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 },\n    \"autoActionCallsBySpeed\": { \"fast\": 0, \"expert\": 0, \"adaptive\": 0 }\n  },\n  \"estimatedCredits\": 30\n}\n```\n\n`tweetAccounts` lists the X account behind each `tweet.semantic`\ncondition and whether it is `included` or billed `per_post`; join on\n`path`. `followAccounts` does the same for the accounts `x_follow_made`\nand `x_follow_overlap` conditions watch, `included` or billed `per_day`;\njoin on `path` and `username`.\n\n> Best practice: always validate before create to catch schema issues and\n> preview estimated cost.",
-				"summary": "Validate Query",
+				"description": "Checks a query and estimates its credits without creating it. Returns `valid`, `errors`, `warnings` and `estimatedCredits`. Free. Recommended, not required: create runs the same checks.",
+				"summary": "Validate a query",
 				"tags": [
 					"v2 Auto"
 				],
@@ -6796,8 +7503,8 @@
 						}
 					}
 				},
-				"description": "Create and activate a conditional query.\n\n### Call Order\n\nCall `POST /v2/auto/queries/validate` before create. Create does not\nrequire it and runs the same checks, but validate returns the errors and\nthe cost estimate without creating anything.\n\nLifecycle after create:\n1. `POST /v2/auto/queries/{queryId}/cancel` while status is `active`.\n2. `DELETE /v2/auto/queries/{queryId}` only when status is terminal\n   (`triggered`, `expired`, `cancelled`, `failed`).\n\n**Allowed action types (API key mode):**\n`webhook`, `notify`, `telegram_bot`, `llm`.\n\n### Cost\n\n`5` credits to create, plus one charge when the query has a `text`\ncondition. Each `llm` condition check and `llm` action run is charged when\nit runs, and a `text` condition on `tweet`, `news`, `telegram` or `events`\nis charged for each post that clears its first relevance filter, usually\n1 credit.\n`estimatedCredits` (on validate and create) estimates the `llm` checks and\nruns over the query's life; it leaves out the 5 credits and the charges below.\n\nPer-post X accounts (`tweetAccounts[].billing` `per_post`) add\n`creditsPerPost` per post while the query runs. Per-day follow accounts\n(`followAccounts[].billing` `per_day`) add `creditsPerDay` for each UTC\nday their follows are read.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\n```json\n{\n  \"query\": {\n    \"conditions\": {\n      \"AND\": [\n        {\n          \"source\": \"price\",\n          \"method\": \"current\",\n          \"args\": { \"symbol\": \"BTC\" },\n          \"operator\": \">\",\n          \"value\": 100000\n        }\n      ]\n    },\n    \"actions\": [\n      {\n        \"stepId\": \"step_1\",\n        \"type\": \"notify\",\n        \"params\": { \"message\": \"BTC crossed target\" }\n      }\n    ],\n    \"expiresIn\": \"24h\"\n  },\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\"\n}\n```\n\n### Response Example (201)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"active\",\n  \"title\": \"BTC breakout alert\",\n  \"description\": \"Notify when BTC is above 100k\",\n  \"createdAt\": \"2026-04-01T12:00:00.000Z\",\n  \"expiresAt\": \"2026-04-02T12:00:00.000Z\",\n  \"evaluationType\": \"price_driven\",\n  \"timeframe\": null,\n  \"preview\": {\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \">\",\n        \"isMet\": false,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": false,\n    \"matchingConditions\": 0\n  },\n  \"simulationLlmCallsEstimate\": {\n    \"conditionCallsUpperBound\": 1,\n    \"actionCallsUpperBound\": 0,\n    \"conditionCallsBySpeed\": {\"fast\": 1, \"expert\": 0, \"adaptive\": 0},\n    \"actionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0},\n    \"autoActionCallsBySpeed\": {\"fast\": 0, \"expert\": 0, \"adaptive\": 0}\n  },\n  \"estimatedCredits\": 116\n}\n```\n\nUse `id` for poll, stream, cancel and delete.\n\n> Best practice: call validate first, then create. After creation, wire\n> notifications (`webhook`, `telegram_bot`, or SSE) to a background runner.",
-				"summary": "Create Query",
+				"description": "Creates and starts a query and returns its `id`. A query takes exactly one action, and an `llm` action needs `params.callback`. Costs 5 credits, plus charges while it runs for `llm` checks, `text` conditions and paid X accounts.",
+				"summary": "Create a query",
 				"tags": [
 					"v2 Auto"
 				],
@@ -6884,8 +7591,8 @@
 						}
 					}
 				},
-				"description": "List Auto queries for the authenticated API-key user.",
-				"summary": "List Queries",
+				"description": "Lists your queries. Filter by `status` or `search`, and page with `limit` and `offset`.",
+				"summary": "List queries",
 				"tags": [
 					"v2 Auto"
 				],
@@ -6998,8 +7705,8 @@
 						}
 					}
 				},
-				"description": "Check query status and execution results.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Example (200)\n\n```json\n{\n  \"queryId\": \"76e2e824-fc47-4d60-99b1-c227fbd2d3f5\",\n  \"status\": \"active\",\n  \"credits\": 0,\n  \"latestEvaluation\": {\n    \"evaluatedAt\": \"2026-04-01T12:00:00.000Z\",\n    \"conditionStates\": [\n      {\n        \"index\": 0,\n        \"source\": \"price\",\n        \"method\": \"current\",\n        \"args\": { \"symbol\": \"BTC\" },\n        \"currentValue\": 97250.5,\n        \"targetValue\": 100000,\n        \"operator\": \"<\",\n        \"isMet\": true,\n        \"lastUpdated\": \"2026-04-01T12:00:00.000Z\"\n      }\n    ],\n    \"wouldTriggerNow\": true,\n    \"matchingConditions\": 1,\n    \"totalConditions\": 1\n  },\n  \"executions\": [\n    {\n      \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n      \"queryId\": \"76e2e824-fc47-4d60-99b1-c227fbd2d3f5\",\n      \"type\": \"notification\",\n      \"status\": \"success\",\n      \"details\": { \"notification\": { \"channel\": \"webhook\" } },\n      \"triggerTime\": \"2026-04-01T12:00:00.000Z\",\n      \"conditionsMet\": 1,\n      \"trigger\": {\n        \"type\": \"price\",\n        \"time\": \"2026-04-01T12:00:00.000Z\",\n        \"matchedConditions\": [\n          {\n            \"condition\": {\n              \"source\": \"price\",\n              \"method\": \"current\",\n              \"args\": { \"symbol\": \"BTC\" },\n              \"operator\": \"<\",\n              \"value\": 100000\n            },\n            \"match\": { \"observedValue\": 97250.5 }\n          }\n        ]\n      },\n      \"createdAt\": \"2026-04-01T12:00:01.000Z\"\n    }\n  ]\n}\n```\n\n`latestEvaluation` is the latest current-state snapshot. Auto Trigger\nContext (`triggerTime`, `conditionsMet`, `trigger`) explains what fired for\nan execution and uses the same public redaction boundary as outbound\ndelivery payloads.\n\n`failure` (`code`, `message`, `source`) says why a query ended as\n`failed`.\n\n> Best practice: use polling for debugging or backfills. For production\n> delivery, prefer webhook/SSE notifications.",
-				"summary": "Poll Query",
+				"description": "Returns a query's status, its latest condition check and its executions. `failure` says why a query ended as `failed`. A draft id also works here.",
+				"summary": "Get a query",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7072,8 +7779,8 @@
 						}
 					}
 				},
-				"description": "Delete a terminal query.\n\nOnly queries in a terminal status (`triggered`, `expired`, `cancelled`,\n`failed`) can be deleted. Active queries must be cancelled first.\nDo not use this endpoint to cancel running queries; use\n`POST /v2/auto/queries/{queryId}/cancel` for active queries.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Example (200)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"deletedAt\": \"2026-04-01T12:00:00.000Z\"\n}\n```",
-				"summary": "Delete Query",
+				"description": "Deletes a query that has ended: `triggered`, `expired`, `cancelled` or `failed`. Cancel an `active` query first.",
+				"summary": "Delete a query",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7126,8 +7833,8 @@
 						}
 					}
 				},
-				"description": "Stream notifications for **all** of your queries over a single connection (SSE).\n\nUse this instead of opening one `/queries/{queryId}/stream` per query. Events for\nevery query you own arrive on one connection; correlate them with `data.queryId`.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Response Format (SSE)\n\n```\nid: <outbox-event-uuid>\nevent: notification\ndata: {\"status\":\"triggered\",\"title\":\"...\",\"body\":\"...\",\"queryId\":\"<uuid>\",\"timestamp\":1743379200000}\n```\n\nA `: keep-alive` comment is sent every 15s. Only notifications tied to a query are\ndelivered. Events are live-only — there is no replay, and `Last-Event-ID` is ignored.\n\n### Lifecycle\n\nOpen the stream *after* creating at least one query: the request returns `410` when\nyou have no active queries. Once your last query reaches a terminal state and all\nof its notifications have been delivered, the stream emits and then closes:\n\n```\nevent: end\ndata: {\"code\":\"USER_STREAM_CLOSED\"}\n```",
-				"summary": "Stream All Notifications",
+				"description": "Streams notifications for all your queries over one server-sent events connection. Returns `410` when you have no active queries. Events are live only, with no replay.",
+				"summary": "Stream all notifications",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7180,8 +7887,8 @@
 						}
 					}
 				},
-				"description": "Stream notifications for a single query via Server-Sent Events (SSE).\n\nTo follow every query you own over one connection instead, use\n`/queries/stream` — see *Stream Notifications For All Queries*.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Format (SSE)\n\n```\nid: <outbox-event-uuid>\nevent: notification\ndata: {\"status\":\"triggered\",\"title\":\"...\",\"body\":\"...\",\"queryId\":\"<uuid>\",\"timestamp\":1743379200000}\n```\n\n`status` is one of `triggered`, `stopped`, `ended`, or `update`. The payload also\ncarries the query's execution context when present (`executionId`, `triggerTime`,\n`conditionsMet`, `autoDetails`). `id` is the notification outbox event UUID.\n\nA `: keep-alive` comment is sent every 15s. Events are live-only — there is no\nreplay, and `Last-Event-ID` is ignored.\n\n### Lifecycle\n\nThe request returns `410` when the query is already terminal and its notifications\nhave drained. Once the query reaches a terminal state (`triggered`, `failed`,\n`expired`, `cancelled`) and its notifications have been delivered, the stream emits\nand then closes:\n\n```\nevent: end\ndata: {\"code\":\"QUERY_STREAM_CLOSED\",\"status\":\"<terminalStatus>\",\"queryId\":\"<uuid>\"}\n```\n\nA query with `repeat` or a recurring `cron` condition stays `active` across\ntriggers, so its stream stays open.\n\n> Best practice: deduplicate SSE events by event id and process with a\n> queue-backed worker for reliable agent execution.",
-				"summary": "Stream Notifications",
+				"description": "Streams one query's notifications as server-sent events. Returns `410` when the query has ended and its notifications were delivered. Events are live only, with no replay.",
+				"summary": "Stream a query's notifications",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7256,8 +7963,8 @@
 						}
 					}
 				},
-				"description": "Cancel an active query.\n\nOnly queries in `active` status can be cancelled. Queries\nalready in a terminal state return 409 Conflict.\nThis endpoint does not delete query records; use\n`DELETE /v2/auto/queries/{queryId}` after a terminal status when you need\nsoft-delete behavior.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Example (200)\n\n```json\n{\n  \"id\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"status\": \"cancelled\",\n  \"cancelledAt\": \"2026-04-01T12:00:00.000Z\"\n}\n```\n\n> Best practice: keep cancellation idempotent in your client workflow;\n> treat repeated cancel attempts as safe no-op behavior.",
-				"summary": "Cancel Query",
+				"description": "Stops an `active` query. A query that has already ended returns `409`. Cancel keeps the record. Delete it afterwards with `DELETE /v2/auto/queries/{queryId}`.",
+				"summary": "Cancel a query",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7328,8 +8035,8 @@
 						}
 					}
 				},
-				"description": "List LLM output sessions for a query.\nOnly relevant for queries with `actions[0].type: \"llm\"`.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameter:\n- `queryId` (string)\n\n### Response Example (200)\n\n```json\n{\n  \"queryId\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"sessions\": [\n    {\n      \"sessionId\": \"s_1\",\n      \"status\": \"completed\",\n      \"executedAt\": \"2026-04-01T12:00:00.000Z\"\n    }\n  ]\n}\n```\n\n> Best practice: store `sessionId` values from executions so you can fetch\n> full analysis records only when needed.",
-				"summary": "List LLM Sessions",
+				"description": "Lists the AI analysis sessions a query's `llm` action produced. Only queries with an `llm` action have sessions.",
+				"summary": "List LLM sessions",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7394,8 +8101,8 @@
 						}
 					}
 				},
-				"description": "Get full LLM analysis output for a specific session.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```\n\n### Request Example\n\nPath parameters:\n- `queryId` (string)\n- `sessionId` (string)\n\n### Response Example (200)\n\n```json\n{\n  \"sessionId\": \"s_1\",\n  \"queryId\": \"a12d20ff-6cb2-433e-afed-cc2e6a0380b6\",\n  \"title\": \"Token analysis\",\n  \"analysisType\": \"tokenAnalysis\",\n  \"createdAt\": \"2026-04-01T12:00:00.000Z\",\n  \"messages\": [\n    {\n      \"query\": \"Analyze BTC\",\n      \"response\": \"...\",\n      \"status\": \"completed\",\n      \"analysisType\": \"tokenAnalysis\",\n      \"timestamp\": \"2026-04-01T12:00:00.000Z\"\n    }\n  ]\n}\n```\n\n> Best practice: treat top-level and message-level fields as nullable and\n> handle partial records defensively in your parser.",
-				"summary": "LLM Session Details",
+				"description": "Returns the full AI analysis from one `llm` action session, with its messages.",
+				"summary": "Get an LLM session",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7459,8 +8166,8 @@
 						}
 					}
 				},
-				"description": "List editable query drafts.",
-				"summary": "List Query Drafts",
+				"description": "Lists your query drafts. Filter by `status` (`editable` or `converted`) or `search`.",
+				"summary": "List query drafts",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7548,8 +8255,8 @@
 						}
 					}
 				},
-				"description": "Create or update a query draft.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```",
-				"summary": "Upsert Query Draft",
+				"description": "Creates a query draft, or updates one when you send its `id`. A draft does not run until you convert it. A converted draft cannot be edited and returns `409`.",
+				"summary": "Save a query draft",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7649,8 +8356,8 @@
 						}
 					}
 				},
-				"description": "Get a specific query draft (legacy; prefer GET /queries/{queryId} which resolves query or draft).",
-				"summary": "Get Query Draft",
+				"description": "Returns one query draft. `GET /v2/auto/queries/{queryId}` also returns drafts and is preferred.",
+				"summary": "Get a query draft",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7712,8 +8419,8 @@
 						}
 					}
 				},
-				"description": "Delete a query draft.",
-				"summary": "Delete Query Draft",
+				"description": "Deletes a query draft. A converted draft cannot be deleted and returns `409`.",
+				"summary": "Delete a query draft",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7783,8 +8490,8 @@
 						}
 					}
 				},
-				"description": "Validate a stored query draft without converting it.\n\nRuns the same checks as `POST /v2/auto/queries/validate` against the draft's\ncurrent EQL: schema, semantics, action restrictions, and destination\nreachability. Returns simulation-based cost details when valid. Does not\nactivate the draft — call `POST /v2/auto/queries/drafts/{draftId}/convert`\nfor that.\n\n### Cost\n\nFree.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```",
-				"summary": "Validate Query Draft",
+				"description": "Runs the checks of `POST /v2/auto/queries/validate` on a saved draft without converting it. Returns `valid`, `errors`, `warnings` and an estimate of its `llm` calls. Free.",
+				"summary": "Validate a query draft",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7876,8 +8583,8 @@
 						}
 					}
 				},
-				"description": "Convert a draft into an active query.\n\n### Cost\n\n`5` credits to convert. After that it is billed like a query created with\n`POST /v2/auto/queries`.\n\n### Auth\n\nRequired header:\n```http\nx-elfa-api-key: <api_key>\n```",
-				"summary": "Convert Query Draft",
+				"description": "Turns a draft into an active query with the same id. A draft converts only once, and a second call returns `409`. Costs 5 credits, then bills like a query from `POST /v2/auto/queries`.",
+				"summary": "Convert a query draft",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7934,6 +8641,16 @@
 							}
 						}
 					},
+					"400": {
+						"description": "Invalid cursor, or after combined with offset or status",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoErrorResponse"
+								}
+							}
+						}
+					},
 					"401": {
 						"description": "Missing or invalid API key",
 						"content": {
@@ -7943,10 +8660,20 @@
 								}
 							}
 						}
+					},
+					"503": {
+						"description": "Cursor paging is temporarily unavailable; retry",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoErrorResponse"
+								}
+							}
+						}
 					}
 				},
-				"description": "List execution records.",
-				"summary": "List Executions",
+				"description": "Lists executions, one record for each time a query's action ran. Filter by `queryId`, `status` or `type`.",
+				"summary": "List executions",
 				"tags": [
 					"v2 Auto"
 				],
@@ -7996,6 +8723,15 @@
 						"schema": {
 							"format": "double",
 							"type": "number"
+						}
+					},
+					{
+						"description": "`start`, or `pagination.nextCursor` from the previous page.",
+						"in": "query",
+						"name": "after",
+						"required": false,
+						"schema": {
+							"type": "string"
 						}
 					}
 				]
@@ -8056,8 +8792,8 @@
 						}
 					}
 				},
-				"description": "Get a single execution record.",
-				"summary": "Get Execution",
+				"description": "Returns one execution: the record of one time a query's action ran, with its status.",
+				"summary": "Get an execution",
 				"tags": [
 					"v2 Auto"
 				],
@@ -9182,17 +9918,44 @@
 						}
 					},
 					"400": {
-						"description": "Invalid request",
+						"description": "Invalid request, or a message the safety checks rejected (`code: \"ERR_BAD_REQUEST\"`, not settled)",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/X402ErrorResponse"
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/X402ErrorResponse"
+										},
+										{
+											"$ref": "#/components/schemas/ApiKeyAutoErrorEnvelope"
+										}
+									]
 								}
 							}
 						}
 					},
 					"402": {
 						"description": "Payment required (x402)"
+					},
+					"404": {
+						"description": "Session not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoChatFailedResponse"
+								}
+							}
+						}
+					},
+					"502": {
+						"description": "The turn ended without an answer (not settled)",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiKeyAutoChatFailedResponse"
+								}
+							}
+						}
 					}
 				},
 				"description": "Ask the AI to help you build an EQL query. It can research live market data, suggest strategies, and return ready-to-use EQL JSON.\n\nThe response message contains the AI's reply in Markdown. When it generates EQL,\nit will be in a JSON code block that you can extract, validate, and submit.\n\nUse `sessionId` in follow-up requests to maintain conversation context.\n\n**Cost:** speed based. Pay a flat price per turn with the `exact` scheme\n(`fast` $1, `expert` $2). Where the 402 also lists `batch-settlement`\n(Base), you can instead deposit once into a payment channel: each turn is\nthen capped at `fast` $2 / `expert` $6 and charged only what it cost.\nRequires x402 payment.",
@@ -9388,7 +10151,7 @@
 						"description": "EQL validation failed"
 					}
 				},
-				"description": "Create and activate a conditional query that monitors market data and triggers actions when conditions are met.\n\n**Allowed action types:** `webhook`, `notify`, `telegram_bot`, `llm`.\n\n**Cost:** Dynamic. Base fee is 5 credits ($0.0725) plus simulated LLM calls:\nfast = +5 credits (+$0.0725) per call, expert = +18 credits (+$0.261) per call.\nUse the validate endpoint to preview costs.\nRequires `x-elfa-agent-secret` header.\nRequires x402 payment.",
+				"description": "Create and activate a conditional query that monitors market data and triggers actions when conditions are met.\n\n**Allowed action types:** `webhook`, `notify`, `telegram_bot`, `llm`.\n\n**Cost:** Dynamic, paid once at creation for the whole plan and not refunded when it\nis cancelled or expires with runs unused. Base fee is 5 credits ($0.0725) plus the\nmost runs the plan can make before it expires, each priced at what similar plans'\nruns typically cost. A `repeat` plan is priced on the lower of `repeat.maxTriggers`\nand one run per `cooldown`, so set `maxTriggers` to the runs you want to pay for. A\nplan with no `llm` action or LLM condition costs the base fee only. Use the validate\nendpoint to preview the exact price; create charges that amount for the same query\nwithin 15 minutes.\nRequires `x-elfa-agent-secret` header.\nRequires x402 payment.",
 				"summary": "Create Query",
 				"tags": [
 					"x402 Auto"
@@ -9996,8 +10759,8 @@
 						}
 					}
 				},
-				"description": "What happened, to what, and when. Newest first, with a cursor. Filter with\n`entityIds`: a family UUID for an asset, or an entity UUID for a person, project or\norganisation. Or fetch events you already hold with `eventIds`.\n\n`from` is required unless `eventIds` is sent, and `to` defaults to now. A range that\nstarts before the plan's history is cut, and `servedFrom` says where it started.\n\n`sort=relevant` ranks the last 24 hours by how newsworthy each event is, the order the\napp's feed shows, instead of newest first. It takes no range: `from`, `to`,\n`eventIds`, `eventClass`, `eventType`, `implication`, `novelty`, `arcId` and\n`order=asc` are refused with it, and `entityIds` must be assets. Every page is ranked\nas of the first, and `servedFrom` is null.\n\n`q` searches by topic instead: events ranked by how closely they match it, best first.\nWrite a theme or a phrase (\"stablecoin regulation in the US\", \"solana outage\"); for\neverything about one asset or company, resolve it with `/v3/entities` and pass\n`entityIds`, since a bare ticker is a poor topic. `q` takes `from` (optional, default\nthe plan's history), `to`, `entityIds`, `alertAction`, `eventType` and\n`hasStoryline`; anything else is refused with it. A search serves its first 100\nmatches that clear a minimum relevance, so a query nothing matches well returns an\nempty page, and a page can be shorter than `limit` while more follow.\n\nCost: 1 credit, plus 1 per event not already billed to the\naccount within 8 days of its `analyzedAt`. A `q` search adds nothing for now. Errors\ncost nothing. `x-elfa-credits` reports what a call cost and `x-elfa-credits-detail`\nhow it adds up. Requires `x-elfa-api-key`.",
-				"summary": "Events",
+				"description": "Returns events newest first, with a cursor. `from` is required unless you send `eventIds`. `q` and `sort=relevant` refuse some filters. Costs 1 credit, plus 1 per event not billed to you within 8 days of its `analyzedAt`.",
+				"summary": "List events",
 				"tags": [
 					"v3 Events"
 				],
@@ -10313,8 +11076,8 @@
 						}
 					}
 				},
-				"description": "What is developing over time. A storyline is many events, carries its summary and\nevery event it shows by id, and goes dormant after three quiet days.\n\n`q` searches storylines by topic, best match first, across every status unless\n`status` is sent; a more recently started storyline edges ahead of an older match of\nsimilar relevance. Its `from` and `to` bound when the title and summary were last\nrewritten (at or after `lastMaterialAt`), rather than `lastEventAt`. It takes `from`\n(optional, default the plan's history), `to`, `entityIds` and `status`, and serves the\nfirst 100 matches that clear a minimum relevance, none when nothing does;\n`storylineIds`, `relation` and `order=asc` are refused with it.\n\nCost: 1 credit, plus 2 per storyline not already billed to the\naccount that UTC day. A `q` search adds nothing for now. Errors cost nothing.",
-				"summary": "Storylines",
+				"description": "Returns storylines: events about one developing story, with a summary and event ids. `q` refuses `storylineIds`, `relation` and `order=asc`. Costs 1 credit, plus 2 per storyline not billed to you that UTC day.",
+				"summary": "List storylines",
 				"tags": [
 					"v3 Events"
 				],
@@ -10525,8 +11288,8 @@
 						}
 					}
 				},
-				"description": "Storylines belonging to the same larger movement, with a summary and every storyline\nby id. Reconciled hourly, and most storylines never join one.\n\nBy default, arcs by when they last changed. `assetClass`, `entityIds` or `sort` read\nthe app's narrative list instead: active arcs in a market or about an asset, newest\nevent first, or by how many storylines or events they hold. That list holds active\narcs only, newest first, so it cannot be combined with `arcIds`, `status=retired` or\n`order=asc`, and it starts at the plan's history on the newest event.\n\n`q` searches arcs by topic, best match first, within `status`. It serves the first 100\nmatches that clear a minimum relevance; `arcIds`, `assetClass`, `entityIds`, `sort`\nand `order=asc` are refused with it.\n\nCost: 1 credit, plus 2 per arc not already billed to the account\nthat UTC day. A `q` search adds nothing for now. Errors cost nothing.",
-				"summary": "Arcs",
+				"description": "Returns arcs: storylines in one larger movement, with a summary and storyline ids. `q` refuses `arcIds`, `assetClass`, `entityIds`, `sort` and `order=asc`. Costs 1 credit, plus 2 per arc not billed to you that UTC day.",
+				"summary": "List arcs",
 				"tags": [
 					"v3 Events"
 				],
@@ -10726,8 +11489,8 @@
 						}
 					}
 				},
-				"description": "The open Polymarket and Kalshi markets an event, a storyline or an arc bears on: the\nodds this news can move. Send the ids you hold, of any of the three kinds and mixed\nif you like; each comes back with `kind`, saying which it is.\n\nAn event carries its own links. A storyline carries its events' links and an arc its\nstorylines' events', with `eventIds` naming which of them point at each market. Only\nmarkets the news most likely bears on directly are served, most relevant first, and\nonly while they are open. A question re-listed by date comes back as its busiest open\nlisting, else the open listing that closes soonest. A market can still trade past the\ndate its provider set; its `closesAt` is then null.\n\nMost events have no market: about one in eight do. Links come only from events within\nthe plan's history.\n\n`move` is how one outcome's odds moved from an hour before to an hour after a story's\nfirst post, and whether that was unusual for the market: the most unusual move among\nthe market's outcomes and, for a storyline or an arc, its stories. It is null when no\nmove was measured, for example when the story is under an hour old, the market opened\nafter it, the move was measured on an earlier listing of a question re-listed by date,\nor every outcome was priced under 3% or over 97% beforehand.\n\nCost: no credits for now.",
-				"summary": "Prediction markets",
+				"description": "Returns the open Polymarket and Kalshi markets that events, storylines or arcs bear on. `ids` is required and takes any mix of the three. About one event in eight has a market. Free for now.",
+				"summary": "List prediction markets",
 				"tags": [
 					"v3 Events"
 				],
@@ -10757,6 +11520,253 @@
 						"schema": {
 							"format": "double",
 							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/v3/events/calendar": {
+			"get": {
+				"operationId": "calendar-list-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServedV3_CalendarResponseV3_"
+								},
+								"examples": {
+									"success": {
+										"summary": "Example successful response",
+										"value": {
+											"entries": [
+												{
+													"id": "string",
+													"title": "string",
+													"summary": "string",
+													"category": "macro",
+													"startsAt": 1,
+													"endsAt": 1,
+													"precision": "exact",
+													"date": "string",
+													"endDate": "string",
+													"timezone": "string",
+													"status": "scheduled",
+													"importance": 1,
+													"confidence": "official",
+													"entities": [
+														{
+															"id": "string",
+															"symbol": "string",
+															"name": "string",
+															"entityType": null
+														}
+													],
+													"eventIds": [
+														"string"
+													],
+													"storylineIds": [
+														"string"
+													],
+													"outcome": {
+														"implication": {},
+														"eventId": "string"
+													}
+												}
+											],
+											"nextCursor": "string",
+											"hasMore": true,
+											"servedFrom": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid parameter, or an id we do not hold",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "What is scheduled: launches, unlocks, votes, listings, earnings, data releases, rate\ndecisions, hearings, conferences and deadlines, across crypto, equities and macro.\nSoonest first, with a cursor. Each entry keeps its schedule: `status` says when it was\nmoved, postponed or cancelled, and once it is over, `outcome` names the event that\nreported it happened. `eventIds` are the events within the plan's history that\nreported the date.\n\nUnlike the other lists, the default range reads ahead: `from` defaults to 00:00 UTC\ntoday (or 30 days before `to` when `to` is earlier), and `to` to 30 days after\n`from`. Both are inclusive, and an entry that started earlier but is still running at\n`from` is listed too. A range that starts before the plan's history is cut, and\n`servedFrom` says where it started. Entries reach about 400 days ahead.\n\nA `day` entry names a day, not a moment: read `date`, which never shifts with a time\nzone. `importance` scores how much widely held markets (BTC, ETH, large caps, rates,\nFX) plan around the date. 80 and up, unless postponed or cancelled, is what the Elfa\napp calls Key: about two a day.\n\nCost: 1 credit, plus 1 per entry not already billed to the account that UTC day.\nErrors cost nothing.",
+				"summary": "Calendar",
+				"tags": [
+					"v3 Events"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Unix seconds. Default 00:00 UTC today.",
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Unix seconds. Default 30 days after `from`.",
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Up to 30 family or entity UUIDs. Matches entries about any of them.",
+						"in": "query",
+						"name": "entityIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"description": "Entries about an asset in this market, plus entries about no asset (macro, conferences).",
+						"in": "query",
+						"name": "assetClass",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"crypto",
+								"equity"
+							]
+						}
+					},
+					{
+						"description": "Repeatable, or comma separated.",
+						"in": "query",
+						"name": "category",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/CalendarCategoryV3"
+							}
+						}
+					},
+					{
+						"description": "Repeatable, or comma separated. Default every status.",
+						"in": "query",
+						"name": "status",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/CalendarStatusV3"
+							}
+						}
+					},
+					{
+						"description": "Repeatable, or comma separated.",
+						"in": "query",
+						"name": "confidence",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/CalendarConfidenceV3"
+							}
+						}
+					},
+					{
+						"description": "0 to 100. `80` keeps Key entries; postponed or cancelled ones keep their score.",
+						"in": "query",
+						"name": "minImportance",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Default `asc`, soonest first.",
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"asc",
+								"desc"
+							]
+						}
+					},
+					{
+						"description": "Default 10, maximum 30.",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "`nextCursor` from the previous response.",
+						"in": "query",
+						"name": "cursor",
+						"required": false,
+						"schema": {
+							"type": "string"
 						}
 					}
 				]
@@ -10852,8 +11862,8 @@
 						}
 					}
 				},
-				"description": "Turns what a caller holds into the id every other v3 endpoint takes. Asset results\nare collapsed to one row per family; people, projects and organisations remain\nindividual entities. A ticker, name, X handle, contract address, CoinGecko id, FIGI\nor CIK resolves; a string naming two things returns both, scored.\n\n**Exact matches only.** `solana` and `sol` resolve Solana; `sola` resolves the token\nwhose ticker is SOLA, not a prefix of Solana; `vitalik` returns nothing where\n`vitalik buterin` or `@VitalikButerin` returns the person. A listed company also\nanswers to its name without the legal form and share class, so `tesla` resolves Tesla,\nInc. as a `name` and `coinbase` resolves Coinbase Global, Inc. as an `alias`. What the\nstring hit comes back as `matchedOn`, and `score` ranks an exact id (a contract\naddress, FIGI, CIK or `@handle`) above a symbol above a loose alias. A CoinGecko id or\na handle without its `@` scores as a symbol, since `doge` or `ai` is often another\ncoin's ticker. Ties break on how prominent the thing is, which is what puts the real\nUSDT above the other ninety-five. A contract address that several tokens share across\nchains puts the one on its home chain first and scores the rest 0.95. The home chain\nis Solana for a base58 address, and Ethereum, then Base, Arbitrum, BNB Chain, Optimism,\nPolygon and Avalanche for a 0x one.\n\nA person or a company is only here if the registry already holds it, and a handle\nresolves to the entity behind the account rather than to the account, because handles\nchange and the id does not.\n\nCost: 1 credit, matches or not. Errors cost nothing.",
-				"summary": "Entities",
+				"description": "Returns the id other v3 endpoints take for a ticker, name, X handle, contract address, CoinGecko id, FIGI or CIK. Matches are exact, not prefixes. Costs 1 credit, even with no match.",
+				"summary": "Resolve an entity",
 				"tags": [
 					"v3 Entities"
 				],
@@ -10996,8 +12006,8 @@
 						}
 					}
 				},
-				"description": "How the accounts we follow are positioned in crypto, hour by hour. `longShare` is how\nmany of the counted accounts are long, `crowdingPercentile` where that lean sits\nagainst this book's own last 28 days, and the two pulse pairs how unusual the last\nday and the last six hours are.\n\nHistory is sealed hours. On a newest-first first page the top row is a live tick, at\nmost five minutes old, and it is the only unsealed row.\n\nCost: 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
-				"summary": "Crypto call book",
+				"description": "Returns hourly rows of how followed accounts are positioned in crypto: the share long and how crowded that is. `from` is required. Costs 2 credits for `limit` up to 50, 4 up to 200.",
+				"summary": "Get the crypto call book",
 				"tags": [
 					"v3 Market"
 				],
@@ -11151,8 +12161,8 @@
 						}
 					}
 				},
-				"description": "The same book over equities. Same shape as `GET /v3/market/crypto/call-book`.\n\nCost: 2 credits for `limit` up to 50, 4 up to 200. Errors cost\nnothing.",
-				"summary": "Equity call book",
+				"description": "Returns hourly rows of how followed accounts are positioned in equities, in the same shape as the crypto call book. `from` is required. Costs 2 credits for `limit` up to 50, 4 up to 200.",
+				"summary": "Get the equity call book",
 				"tags": [
 					"v3 Market"
 				],
@@ -11301,8 +12311,8 @@
 						}
 					}
 				},
-				"description": "Crypto assets ranked by share of attention over a period, weighted by who posted.\n`hot` marks a name whose last hour is running ahead of its last four, picked from the\ntop 25; it is null on the one-hour period.\n\nCost: 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
-				"summary": "Crypto mindshare",
+				"description": "Returns crypto assets ranked by share of attention over a period, weighted by who posted. Costs 5 credits for `limit` up to 50, 10 up to 200.",
+				"summary": "Get crypto mindshare",
 				"tags": [
 					"v3 Market"
 				],
@@ -11441,8 +12451,8 @@
 						}
 					}
 				},
-				"description": "The same board over equities.\n\nCost: 5 credits for `limit` up to 50, 10 up to 200. Errors cost\nnothing.",
-				"summary": "Equity mindshare",
+				"description": "Returns equities ranked by share of attention over a period, weighted by who posted. Costs 5 credits for `limit` up to 50, 10 up to 200.",
+				"summary": "Get equity mindshare",
 				"tags": [
 					"v3 Market"
 				],
@@ -11579,8 +12589,8 @@
 						}
 					}
 				},
-				"description": "Contract addresses being pasted on X and Telegram, counted together, named where\nthe registry knows the address. An address several tokens share across chains is\nnamed for the one on its home chain, the same order `entities` ranks by, and left\nunnamed when the home chains do not pick out exactly one.\n\nCost: 5 credits for `limit` up to 50, 10 up to 200, plus 5 when\nthe range is over 24 hours. Errors cost nothing.",
-				"summary": "Trending contracts",
+				"description": "Returns contract addresses pasted on X and Telegram, named where known. `from` is required. Costs 5 credits for `limit` up to 50, 10 up to 200, plus 5 when the range is over 24 hours.",
+				"summary": "List trending contracts",
 				"tags": [
 					"v3 Market"
 				],
@@ -11736,8 +12746,8 @@
 						}
 					}
 				},
-				"description": "Every call: one post that opened, added to, trimmed, reaffirmed, reversed, closed or\nstopped out of a position, with its setup and thesis. Telegram calls show, but only\nan X handle can be filtered on until channels are mapped.\n\nCost: 1 credit, plus 1 per call not already billed to the account\nin the last 24 hours. Errors cost nothing.",
-				"summary": "Calls",
+				"description": "Returns calls: posts that open, add to, trim, reaffirm, reverse, close or stop out a position, with setup and thesis. `handle` takes X handles only. Costs 1 credit, plus 1 per call not billed in 24 hours.",
+				"summary": "List calls",
 				"tags": [
 					"v3 Calls"
 				],
@@ -11949,8 +12959,8 @@
 						}
 					}
 				},
-				"description": "One account's position on one asset, from the call that opened it to whatever closed\nit, with its calls by id. An episode is served when it was open at any point\nbetween `from` and `to`, not only when it opened in that range.\n\n`calls` lists only the calls inside the plan's history (the ones `/calls` serves when\nno `from` is given), so a position opened before it can come back with fewer calls,\nor none. Its position\nfacts (`openedAt`, `entryPrice`, `direction`, `status`, and how it closed) are kept.\n\nEach episode also carries the opening call's `setup`, `thesis` and stated target and\nstop, all null when that call is older than the plan's history, and `track`: the\nauthor's record over every position they have opened (alpha score, hit rate, average\nreturn), in every market and not cut to the plan's history.\n\nCost: 1 credit, plus 2 per position not already billed to the\naccount in its current status in the last 90 days, so a position bills again once\nwhen it closes. Errors cost nothing.",
-				"summary": "Call episodes",
+				"description": "Returns positions: one account on one asset, from opening call to close. A position open at any point in the range is served. Costs 1 credit, plus 2 per position not billed in its current status in 90 days.",
+				"summary": "List call episodes",
 				"tags": [
 					"v3 Calls"
 				],
@@ -12153,8 +13163,8 @@
 						}
 					}
 				},
-				"description": "How the open episodes on one asset are split, right now. A count of the accounts long\nand short, not a share, because a caller reading two assets wants the size of each.\n`asOf` is when the last of those episodes last moved, or when it was read if none is\nopen.\n\nCost: 2 credits. Errors cost nothing.",
-				"summary": "Positioning",
+				"description": "Returns how many open positions are long and how many are short on one asset right now. `entityId` is required. Costs 2 credits.",
+				"summary": "Get asset positioning",
 				"tags": [
 					"v3 Calls"
 				],
@@ -12267,8 +13277,8 @@
 						}
 					}
 				},
-				"description": "Who to watch. By default ranked by standing: how much other accounts reply to,\nquote and repost an account, newer engagement counting more.\n\nOr ranked by its record as a caller, the numbers in its `track`: `alphaScore`,\n`hitRate` or `avgReturn`. These rank only accounts with at least 20 scored\n(closed) positions, so a few lucky calls cannot top the list, and break ties by\nmore scored positions. They cover every position since June 2026. `avgReturn` is\nnot adjusted for the market, so it favours whoever was long in a rally;\n`alphaScore` is. Both rankings refresh daily.\n\nAn account we cannot name is left out rather than ranked blind, so ranks are dense.\n\nEach account carries its `standing` (a 0 to 1 percentile), its display name,\nfollower count and verified flag, and `track`, its record as a caller (null when\nit has never opened a position).\n\nCost: for `metric=standing`, 5 credits for `limit` up to 50 and\n10 up to 200; for `alphaScore`, `hitRate` and `avgReturn`, 25 and 50. Errors cost\nnothing.",
-				"summary": "Top accounts",
+				"description": "Returns accounts ranked by `standing`, or by caller record: `alphaScore`, `hitRate` or `avgReturn`, for accounts with at least 20 closed positions. Costs 5 or 10 credits by `limit`, and 25 or 50 for record rankings.",
+				"summary": "List top accounts",
 				"tags": [
 					"v3 People"
 				],
@@ -12376,8 +13386,8 @@
 						}
 					}
 				},
-				"description": "What this key can do: its plan, scopes, credits, and how far back its plan reaches.\n\nFree.",
-				"summary": "Key status",
+				"description": "Returns this key's plan, scopes and credits, and how far back its plan's history reaches. Free.",
+				"summary": "Get key status",
 				"tags": [
 					"v3 System"
 				],
@@ -12387,6 +13397,159 @@
 					}
 				],
 				"parameters": []
+			}
+		},
+		"/v3/verify": {
+			"post": {
+				"operationId": "verify-v3",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/VerifyResponseV3"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"verdict": "supported",
+											"probabilities": {
+												"supported": 0.91,
+												"contradicted": 0.03,
+												"notEnoughEvidence": 0.06
+											},
+											"decision": {
+												"type": "yesNo",
+												"yes": 0.9
+											},
+											"evidence": {
+												"twitter": [
+													{
+														"link": "https://x.com/SECGov/status/1986070012345678901",
+														"decisiveness": 0.95,
+														"basis": true
+													}
+												],
+												"telegram": [],
+												"web": [
+													{
+														"link": "https://www.example.com/news/sec-approves-spot-solana-etf",
+														"decisiveness": 0.88,
+														"basis": true
+													}
+												]
+											},
+											"asOf": 1794960000,
+											"searchedFrom": 1794355200,
+											"coverage": {
+												"complete": true,
+												"sources": {
+													"twitter": "complete",
+													"telegram": "complete",
+													"web": "complete"
+												},
+												"captions": "complete"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid body",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Missing or invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"402": {
+						"description": "Prepaid credit balance used up",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Key is on the Free plan, or is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"429": {
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Verify is unavailable; retry",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					}
+				},
+				"description": "Checks a statement against X posts, public Telegram channels and web pages. Returns a verdict, its probabilities and the items judged. Needs a PAYG, Grow or Enterprise plan. Costs 1 credit, whatever the verdict. Errors cost nothing.",
+				"summary": "Verify a statement",
+				"tags": [
+					"v3 Verify"
+				],
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/VerifyRequestV3"
+							},
+							"examples": {
+								"default": {
+									"summary": "Example request",
+									"value": {
+										"statement": "The SEC approved a spot Solana ETF",
+										"decision": {
+											"type": "yesNo"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	},
@@ -12442,6 +13605,10 @@
 			"description": "X accounts ranked by standing."
 		},
 		{
+			"name": "v3 Verify",
+			"description": "Check a statement against X posts, public Telegram channels and web pages."
+		},
+		{
 			"name": "v3 System",
 			"description": "API key status: plan, scopes, credits and history reach."
 		},
@@ -12466,11 +13633,6 @@
 			"description": "Pay-per-request conditional query builder and runner (x402)."
 		}
 	],
-	"tryItOutEnabled": true,
-	"supportedSubmitMethods": [
-		"get",
-		"post"
-	],
 	"x-tagGroups": [
 		{
 			"name": "API v2 (Latest)",
@@ -12491,6 +13653,7 @@
 				"v3 Market",
 				"v3 Calls",
 				"v3 People",
+				"v3 Verify",
 				"v3 System"
 			]
 		},

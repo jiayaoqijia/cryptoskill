@@ -23,7 +23,7 @@ How to present it:
 
 1. Open with the `fit_line` and each lens's state in one or two sentences.
 2. Name the two or three readings furthest from normal, in plain words, with their z-score and tag.
-3. If a reading has history, give it as history: "The last 5 times SOL's 90-day return was this stretched, the next 90 days ranged from −44% to +550%." Always include the number of episodes, the base rate and the history window. Never call it a forecast.
+3. If a reading has history, give it as history: "The last 5 times SOL's 90-day return was this extreme, the next 90 days ranged from −44% to +550%." Always include the number of episodes, the base rate and the history window. Never call it a forecast.
 4. For "what followed moves like this", go on to `get_episode_study` ([investigate](../cryptyx-investigate/SKILL.md)).
 5. Offer one next step.
 
