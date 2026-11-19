@@ -95,6 +95,8 @@ The entry is matched exactly (the full URL, no fragment), and II reads the docum
   Access-Control-Allow-Origin: *
 ```
 
+On a cloud engine (OpenCloud), an app keeps shipping the entry for its own canister address (`https://<canister-id>.icp.net/reauth`): the engine adds the same path on each custom domain it holds for the app, and removes it with the domain.
+
 Validation fails closed: undeclared, unreadable, or not exactly matching, and the sign-in never comes back. The route must also terminate locally: the response arrives in the URL fragment, and a `3xx` carrying none re-attaches it to wherever it forwards.
 
 ## 4. Pick it up on load, on every page

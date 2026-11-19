@@ -26,6 +26,10 @@ beginner-safe triage step; category skills carry the expert playbooks.
    evidence → next step, including failed approaches. Never scatter files.
 5. **Flag discipline**: every flag found is logged to `work/<event>/flags.md` with
    challenge name + timestamp before anything else happens.
+6. **CTF only**: these rules govern competitions and practice targets. Real client
+   work (authorized pentests) runs under the sibling `pentest` router — scope
+   gates, evidence discipline, findings ledger, reporting — never under these
+   looser rules.
 
 ## Workflow
 
@@ -66,6 +70,7 @@ Then category-specific dispatch:
 | `.apk`, `.ipa`, mobile emulator mention | `ctf-mobile` |
 | Own service to defend, tick-based scoring, flags rotate | `ctf-attack-defense` |
 | VM/IP range to root, HTB/THM box, scoreboard = root flags | `ctf-boot2root` |
+| Real client engagement, authorized pentest, scope/RoE, findings report (NOT a game) | `pentest` router (real-world arm) |
 | Unclear | run full triage on every file; `ctf-forensics` generics first |
 
 ## Flag hunting
@@ -100,7 +105,7 @@ readable text, XOR-with-repeated-key of `flag{` prefix.
 | `.venv` | `scripts/setup.sh` | pwntools, pycryptodome, gmpy2, sympy, requests... |
 | `scripts/ctf` | included | run any command with `.venv` on PATH |
 | `file`, `strings`, `xxd`, `openssl`, `7z`, `nmap`, `gdb` | preinstalled | triage, hex, crypto, archives, scans, debugging |
-| `podman` | preinstalled | isolation for untrusted binaries |
+| `podman` / `distrobox` | preinstalled / `sudo pacman -S distrobox` | isolation for untrusted binaries and heavy toolchains — `docs/tooling-isolation.md` |
 | binwalk / exiftool | `sudo pacman -S binwalk perl-image-exiftool` | embedded blobs, metadata |
 
 ## Deeper references in this skill

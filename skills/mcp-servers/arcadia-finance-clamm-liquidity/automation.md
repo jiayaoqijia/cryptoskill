@@ -127,7 +127,9 @@ Three success-path cases return no `transaction`, and an agent must not treat an
 
 ## Superseded managers
 
-Asset managers are redeployed over time. An account registered on an older deployment keeps working, but `read_asset_manager_current` lists those under `deprecated` (and `read_account_info` under `automation.deprecated_managers`). They should be cleared: `write_account_automations` disables them as part of a save, or pass their addresses to `write_account_automations_delta`.
+Asset managers are redeployed over time. `read_asset_manager_current` lists superseded deployments under `deprecated` (and `read_account_info` under `automation.deprecated_managers`). They should be cleared: `write_account_automations` disables them as part of a save, or pass their addresses to `write_account_automations_delta`.
+
+Old CowSwappers no longer swap. Any `write_account_automations_delta` call moves the Account to the current CowSwapper in the same transaction and keeps its auto-swap target (buy token and sell tokens). A save with `write_account_automations` turns the old one off in the same transaction, so restate its target in the intents: `claim_rewards` with `mode: convert_to`, or `compound_fees`, taking `buy_token` and, as `convert_tokens`, the `sell_tokens` from the deprecated cow_swapper's `metadata` in `read_asset_manager_current`. There is no need to disable an old CowSwapper by address.
 
 ---
 

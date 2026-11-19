@@ -22,7 +22,7 @@ Follow the [CRYPTYX router](../cryptyx/SKILL.md). Use this skill after the first
 | --- | --- | --- |
 | How has one reading behaved over time, and what followed its extremes? | `analyze_metric` *(Pro)* | Pass the reading's `metric_id`; speak in its plain label. |
 | Did several readings together lead anywhere before? | `analyze_metrics_composite` *(Pro)* | Show sample size and the range of outcomes, not only the average. Flag small samples. |
-| Where is this reading extreme across the market today? | `scan_metric_universe` *(Pro)* | One metric across 200+ assets. |
+| Where is this reading extreme across the market today? | `scan_metric_universe` *(Pro)* | One metric across every covered asset. |
 
 To test or build an idea of their own, go to [cryptyx-build-setup](../cryptyx-build-setup/SKILL.md).
 

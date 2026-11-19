@@ -42,7 +42,7 @@ Static-site canisters are created per-project — there is no global canister ID
 canisters:
   - name: frontend
     recipe:
-      type: "@dfinity/static-site@v0.4.3"
+      type: "@dfinity/static-site@v1.0.0"
       configuration:
         build:
           - npm ci
@@ -69,9 +69,9 @@ The recipe takes four configuration fields:
 
 3. **Relative asset paths in a SPA.** Link assets with **absolute** paths (`/assets/app.js`), never relative (`assets/app.js`). Under a `/*` rewrite, a relative URL resolves against the *client route*: at `/dashboard/settings` the browser requests `/dashboard/settings/assets/app.js`, which `/*` answers with the HTML shell — producing a confusing MIME-type error instead of loading your script.
 
-4. **Expecting `AssetManager` / `@icp-sdk/canisters` to work.** The certified-assets canister's upload API is `upload_chunks` + `execute_operations`, **not** the SDK asset canister's `store`/`create_batch`/`commit_batch`. `AssetManager` from `@icp-sdk/canisters/assets` targets the *legacy* canister and does **not** work against static-site. Uploads happen through the recipe's sync plugin on `icp deploy`; there is no drop-in JS `AssetManager` equivalent for this canister. (If you need programmatic uploads, you are almost certainly on the legacy canister — see the legacy reference.)
+4. **Expecting `AssetManager` / `@icp-sdk/canisters` to work.** The certified-assets canister's upload API is `upload_chunks` + `execute_operations`, **not** the SDK asset canister's `store`/`create_batch`/`commit_batch`. `AssetManager` from `@icp-sdk/canisters/assets` targets the *legacy* canister and does **not** work against static-site. Uploads happen through the recipe's sync plugin on `icp deploy`; there is no drop-in JS `AssetManager` equivalent for this canister. To add a file, put it in `dir` and deploy. The canister's own `upload_asset`/`upload_assets` methods write files outside a deploy, but they are a discouraged escape hatch, and the next deploy deletes those files unless `_preserve` names them (see [Files Written Outside a Deploy](#files-written-outside-a-deploy-upload_asset-and-_preserve)). (If you need routine programmatic uploads, you are almost certainly on the legacy canister — see the legacy reference.)
 
-5. **`_headers` / `_redirects` in the wrong place.** These two files must sit at the **root of your `dir`** (e.g. `dist/_redirects`). They are read as configuration and never served as assets. Put them in your `public/` (Vite) or `static/` folder so the build copies them into `dir` automatically — a file left at the project root but not copied into `dir` is simply absent at deploy time.
+5. **`_headers` / `_redirects` in the wrong place.** These two files (and `_preserve`, if you use it) must sit at the **root of your `dir`** (e.g. `dist/_redirects`). They are read as configuration and never served as assets. Put them in your `public/` (Vite) or `static/` folder so the build copies them into `dir` automatically — a file left at the project root but not copied into `dir` is simply absent at deploy time.
 
 6. **Setting a reserved header in `_headers`.** The sync plugin **rejects** these at deploy time with an explanatory error: `Content-Length`, `Content-Encoding`, `ETag`, `Transfer-Encoding`, `Accept-Ranges`, `Content-Range`, `IC-Certificate`, `IC-CertificateExpression`, `Location`. To set an asset's media type use the bare `Content-Type:` form (it routes to asset metadata, not a response header). To redirect, use `_redirects` — a `Location` header in `_headers` would not redirect (status stays `200`).
 
@@ -83,7 +83,7 @@ The recipe takes four configuration fields:
 
 10. **Switching an existing project from the legacy asset canister to static-site.** Repointing `recipe:` at `@dfinity/static-site` and running a plain `icp deploy` **fails before anything is installed**: these are two unrelated canisters with unrelated Candid interfaces, so icp-cli's pre-install check aborts with `Candid interface compatibility check failed: '<canister>' … You are making a BREAKING change`. Run **`icp deploy --mode reinstall`** instead. That replaces the wasm with the certified-assets canister, **discards the old stable memory** — every legacy asset, permission, and `.ic-assets.json5`-derived setting is gone — and leaves the canister with empty state, after which the sync plugin uploads your whole `dir` from scratch. Deploying static-site as a brand-new canister avoids the question entirely. Do **not** silence the check with `--yes`: that pushes the in-place upgrade through onto stable memory certified-assets cannot read, leaving a live canister that serves nothing. See the migration reference.
 
-11. **Assuming a recipe version bump re-installs itself.** Moving between certified-assets' **own** releases is gentler than the legacy switch above — the Candid interface is stable across a release series, so nothing blocks the deploy — but a breaking bump still needs a reinstall **you run yourself**. The canister and plugin are version-locked, so after bumping the recipe `icp deploy` upgrades in place and the sync plugin then refuses, reporting `assets canister version mismatch: canister is X, this plugin is Y` plus the fix: `icp canister install --mode upgrade` for a **patch** bump (state preserved) or `icp canister install --mode reinstall` for a **breaking** (pre-1.0 minor, post-1.0 major) bump, which wipes state so the next sync re-uploads every asset and redirect rule. (**`v0.3.x` → `v0.4.0` is breaking**: reinstall, then `icp deploy`. `v0.4.x` → `v0.4.3` is a patch: upgrade, then `icp deploy`.) A failed sync right after a version bump is expected — this, not a bug.
+11. **Assuming a recipe version bump re-installs itself.** Moving between certified-assets' **own** releases is gentler than the legacy switch above — the Candid interface is stable across a release series, so nothing blocks the deploy — but a breaking bump still needs a reinstall **you run yourself**. The canister and plugin are version-locked, so after bumping the recipe `icp deploy` upgrades in place and the sync plugin then refuses, reporting `assets canister version mismatch: canister is X, this plugin is Y` plus the fix: `icp canister install --mode upgrade` for a **non-breaking** bump (state preserved) or `icp canister install --mode reinstall` for a **breaking** one, which wipes state so the next sync re-uploads every asset and redirect rule. From `v1.0.0` on, a **major** bump is breaking and minor/patch bumps upgrade in place; before 1.0 a minor bump was breaking. **`v0.4.x` counts as part of the 1.x series, so `v0.4.x` → `v1.0.0` is non-breaking**: upgrade, then `icp deploy`. It keeps all canister state, so **never reinstall for it**. `v0.3.x` or older → `v1.0.0` crosses a series and is breaking: reinstall, then `icp deploy`. A reinstall wipes everything the canister holds that your `dir` doesn't re-create: access protection and its tokens, principals added with `authorize`, the governance approver, and files written with `upload_asset`/`upload_assets` or kept by `_preserve`. Note them before reinstalling. **For a protected app, run `enable_protection` on the empty reinstalled canister before `icp deploy`** — the reinstall turned the gate off, so a plain deploy would publish the gated site (Pitfall 13) — then re-issue tokens; re-create the rest after the sync. A failed sync right after a version bump is expected — this, not a bug.
 
 12. **`.well-known/` is uploaded automatically — no config needed.** The plugin skips dotfiles and dot-directories *except* `.well-known/`, which it traverses normally. So `dir/.well-known/ic-domains` is served at `/.well-known/ic-domains` with no extra setting. (This is the opposite of the legacy canister, which needed an explicit `.ic-assets.json5` un-ignore rule.)
 
@@ -207,7 +207,7 @@ icp canister call frontend issue_token '(record { label = "owner"; ttl_secs = 31
 
 Always pass the argument explicitly — `'()'` for the methods that take none. Called with no argument, `icp canister call` opens an interactive prompt instead of sending an empty one.
 
-This is **access gating, not confidentiality**: node operators can read asset bytes and the token store, there is no rate-limiting, and it relies on the honest-replica/honest-gateway assumption. The gate runs canister-side on every hostname, but its redirect and login page are only verified through a verifying gateway, so never send people to a `raw` URL of a protected app (Pitfall 14). Use high-entropy random tokens for share links; enable *before* the first sync for a new private app (Pitfall 13). Full details in the [certified-assets access-protection docs](https://github.com/dfinity/certified-assets/blob/v0.4.3/docs/access-protection.md).
+This is **access gating, not confidentiality**: node operators can read asset bytes and the token store, there is no rate-limiting, and it relies on the honest-replica/honest-gateway assumption. The gate runs canister-side on every hostname, but its redirect and login page are only verified through a verifying gateway, so never send people to a `raw` URL of a protected app (Pitfall 14). Use high-entropy random tokens for share links; enable *before* the first sync for a new private app (Pitfall 13). Full details in the [certified-assets access-protection docs](https://github.com/dfinity/certified-assets/blob/v1.0.0/docs/access-protection.md).
 
 ## Authorizing Uploaders
 
@@ -226,6 +226,48 @@ icp canister call frontend deauthorize '(principal "<principal-id>")'
 
 > **Security Warning:** `icp canister settings update frontend --add-controller <principal-id>` grants full canister control (upgrade wasm, change settings, delete, drain cycles) — not just upload access. Prefer `authorize` for deploy pipelines.
 
+## Files Written Outside a Deploy (`upload_asset` and `_preserve`)
+
+**Avoid this if you can.** A deploy makes the canister match `dir` exactly, which is what makes its state hash reproducible from source. If a file should be served, have your `build` write it into `dir`. The escape hatch below is for platforms that deploy a fixed, prebuilt bundle and must customize a file per canister afterwards (a cloud engine writing `/.well-known/ic-domains` is the main user, see the `custom-domains` skill).
+
+Any principal that can sync (a controller or an `authorize`d principal) can write files directly:
+
+```bash
+# One file
+icp canister call frontend upload_asset '(record { key = "/.well-known/ii-alternative-origins"; content_type = "application/json"; headers = vec {}; content = blob "{\"alternativeOrigins\":[\"https://example.com\"]}" })'
+
+# Several files, all or nothing (needs v1.0.0)
+icp canister call frontend upload_assets '(vec { record { key = "/a.txt"; content_type = "text/plain"; headers = vec {}; content = blob "A" }; record { key = "/b.txt"; content_type = "text/plain"; headers = vec {}; content = blob "B" } })'
+```
+
+- The whole call is one ingress message, about 2 MB in total. An error-page file (e.g. `/404.html`) must stay under 1.9 MB.
+- Stored uncompressed, and `_headers` does not apply: pass headers and the content type in the call.
+- Rejected while a deploy is in progress, and on a canister that deploys by proposal.
+- `upload_assets` rejects the whole call if any entry is invalid or a path appears twice.
+
+**The next deploy deletes these files** unless a `_preserve` file at the root of `dir` names them, one path per line (same pattern syntax as `_headers`, `#` comments allowed):
+
+```
+# Written with upload_asset; this build doesn't ship them.
+/.well-known/ii-alternative-origins
+/uploads/*
+```
+
+`_preserve` only affects files **missing** from `dir`: a listed file that is in `dir` deploys normally. Like `_redirects`/`_headers`, it is configuration, never served. A kept file can't be verified from source: `state-hash <dir>` no longer matches the canister.
+
+## Deploy by Proposal (DAO-governed apps)
+
+For a frontend controlled by an SNS, **governance mode** splits a deploy in two: an authorized developer's sync only **prepares** (content is uploaded, nothing served changes), and a governance proposal **commits** it in one message. The proposal payload is the state hash the canister will report after the commit, so voters reproduce it from source with `state-hash` before voting.
+
+- Turn it on by naming the approver, the SNS **governance** canister (not root): `icp canister call frontend set_governance '(opt principal "<sns-governance-id>")'`. Once SNS root is the only controller, this call is out of reach, so set it while you are still a controller, or pass it in the install argument of a reinstall proposal.
+- Before handing the canister to SNS root, also `authorize` your deploy principal so it can keep preparing. With icp-cli 1.7.0 or earlier, add it as a status viewer too (`icp canister settings update frontend --add-status-viewer <deploy-principal>`): their `icp sync` reads the canister status first, and an SNS cannot grant this later.
+- Register an SNS generic function with target `commit_proposed_state` and validator `validate_commit_proposed_state`.
+- Release with `icp sync frontend -e ic` (not `icp deploy`, which needs a controller), check the printed hash against `state-hash ./dist`, and propose it.
+- A prepared batch blocks further syncs. If the proposal is rejected, run `icp canister call frontend discard_proposed_state '()'`.
+- `upload_asset`/`upload_assets` and `_preserve` are refused in this mode.
+
+The full flow, including the proposal payload encoding and moving an existing canister under governance, is in the [certified-assets governance docs](https://github.com/dfinity/certified-assets/blob/v1.0.0/docs/governance.md).
+
 ## Building Against Canister IDs (`presync` vs `build`)
 
 `build` runs before the canister exists, so it can't know any canister IDs. When a client-side app must bake in the ID of a canister it calls, build it in `presync` — that runs at sync time, once IDs exist, and exports them:
@@ -234,7 +276,7 @@ icp canister call frontend deauthorize '(principal "<principal-id>")'
 canisters:
   - name: frontend
     recipe:
-      type: "@dfinity/static-site@v0.4.3"
+      type: "@dfinity/static-site@v1.0.0"
       configuration:
         dir: dist
         presync:
@@ -309,8 +351,8 @@ Certification proves responses match what the canister committed to; the **state
 #    Not published as a binary or on crates.io. --locked is required: Cargo.lock pins the
 #    compressor builds whose output bytes the hash covers; without it the hash differs.
 icp canister call <canister-id> version '()' -n ic --query
-# (record { major = 0 : nat32; minor = 4 : nat32; patch = 3 : nat32 })
-cargo install --git https://github.com/dfinity/certified-assets --tag v0.4.3 --locked state-hash-cli
+# (record { major = 1 : nat32; minor = 0 : nat32; patch = 0 : nat32 })
+cargo install --git https://github.com/dfinity/certified-assets --tag v1.0.0 --locked state-hash-cli
 
 # 3. Compute the hash locally (prints 64 hex chars)
 state-hash ./dist
@@ -322,6 +364,7 @@ icp canister call <canister-id> state_hash '()' -n ic -o hex | tail -c 65
 - Target the canister by **principal** with `-n <network>`; `-e <environment>` resolves a canister *name* from a local project, which a third-party verifier doesn't have. Pass `'()'` explicitly.
 - **32 zero bytes is not a hash**: the canister has never finished a sync, or one is in progress (a sync drops the cached hash when it starts). Re-read after the deploy completes.
 - A mismatch means content, headers, or redirects differ from the source — or the canister was prepared with non-standard compressors (platforms embedding the crates may do this; the tool only reproduces what `icp deploy` does).
+- **Files written outside a deploy** (`upload_asset`/`upload_assets`, or kept by `_preserve` while missing from `dir`) are in the canister's hash but not in your build, so the two won't match. Such a canister can't be verified from source alone.
 - **Not covered by the hash:** the `ic_env` cookie (a controller can repoint a frontend's backend canister ID via env vars with a byte-identical build) and access protection (a matching hash says the canister holds your build, not that a visitor can reach it).
 
 ## Legacy Asset Canister and Migration
@@ -334,4 +377,4 @@ icp canister call <canister-id> state_hash '()' -n ic -o hex | tail -c 65
 - Load `icp-cli` for the recipe system, `icp.yaml` structure, canister-ID injection, and the `ic_env` cookie / `safeGetCanisterEnv()` pattern.
 - Load `custom-domains` for DNS records, ACME challenge, and TLS provisioning of a custom domain.
 - Load `user-sign-in` for reading the root key and canister IDs from `ic_env` in a frontend.
-- Full upstream user docs: [certified-assets docs](https://github.com/dfinity/certified-assets/blob/v0.4.3/docs/overview.md).
+- Full upstream user docs: [certified-assets docs](https://github.com/dfinity/certified-assets/blob/v1.0.0/docs/overview.md).

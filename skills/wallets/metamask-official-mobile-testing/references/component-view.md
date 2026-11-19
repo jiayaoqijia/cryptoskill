@@ -98,7 +98,7 @@ For run-by-name, watch mode, or other options, see `component-view/reference.md`
 
 ## Rules (enforced by lint)
 
-ESLint on `*.view.test.tsx` in metamask-mobile rejects this list (`no-restricted-syntax` in `.eslintrc.js`, override `**/*.view.test.*`). Arbitrary `jest.mock` is already an error. The fake-timer API is already an error ([metamask-mobile#38995](https://github.com/MetaMask/metamask-mobile/pull/38995)). The remaining rules are the ESLint PR in progress. [skills#217](https://github.com/MetaMask/skills/pull/217) is merged: the Golden Rules below and [`component-view/reference.md`](component-view/reference.md) keep the diagnosis and the failure signatures. Write the good form here, and cite those rules by name.
+ESLint on `*.view.test.tsx` in metamask-mobile rejects this list (`no-restricted-syntax` in `.eslintrc.js`, override `**/*.view.test.*`). Arbitrary `jest.mock` and the fake-timer API are already errors ([metamask-mobile#38995](https://github.com/MetaMask/metamask-mobile/pull/38995)). The rest of this list is enforced by [metamask-mobile#39373](https://github.com/MetaMask/metamask-mobile/pull/39373). [skills#217](https://github.com/MetaMask/skills/pull/217) is merged: the Golden Rules below and [`component-view/reference.md`](component-view/reference.md) keep the diagnosis and the failure signatures. Write the good form here, and cite those rules by name.
 
 Run lint on every new or edited CV test before finishing. A green Jest run does not cover these.
 
@@ -195,18 +195,18 @@ expect(getByText('Quote refreshed')).toBeOnTheScreen();
 await waitFor(() => expect(getByText('Quote refreshed')).toBeOnTheScreen());
 ```
 
-**8. No bare timeout bumps** — pass `{ timeout }` only with a comment that names the async boundary (a debounce, a chained query). A raised budget alone is not a fix. The default is 1000 ms (*Do not nest `find*` inside `waitFor`*, *Fix a flake at its cause*).
+**8. No bare timeout bumps** — do not add a per-test `{ timeout }`. The default async wait is 5s ([metamask-mobile#40136](https://github.com/MetaMask/metamask-mobile/pull/40136)). A longer wait needs a comment that names the async boundary (a debounce, a chained query). A raised budget alone is not a fix (*Fix a flake at its cause*).
 
 ```typescript
 // ❌ raised budget, no named boundary
 await waitFor(() => expect(getByText('Ready')).toBeOnTheScreen(), {
-  timeout: 5000,
+  timeout: 10000,
 });
 
 // ✅
-// Quote-preview debounce; the default 1000 ms expires first.
+// Quote-preview debounce runs longer than the 5s default.
 await waitFor(() => expect(getByText('Preview')).toBeOnTheScreen(), {
-  timeout: 5000,
+  timeout: 10000,
 });
 ```
 

@@ -78,7 +78,7 @@ service) hand off to `ctf-pwn`.
 | `rlwrap` | `sudo pacman -S rlwrap` | usable TTY on caught shells |
 | `socat` | `sudo pacman -S socat` | full TTY upgrade, listeners |
 | `exploitdb` / `searchsploit` | `sudo pacman -S exploitdb` | offline exploit search by service/version |
-| impacket suite | `uv pip install --python .venv/bin/python impacket` → `.venv/bin/impacket-psexec`, `-smbserver`, `-GetUserSPNs`, `-secretsdump` | SMB/AD attack tooling |
-| bloodhound ingestor | `uv pip install --python .venv/bin/python bloodhound-python` → `.venv/bin/bloodhound-python` | AD collection without touching the target |
+| impacket suite | `sudo pacman -S impacket` (→ `/usr/bin/*.py`) or `uv pip install --python .venv/bin/python impacket` (→ `.venv/bin/secretsdump.py`, `psexec.py`, `smbserver.py`...) | SMB/AD attack tooling |
+| bloodhound ingestor | `uv pip install --python .venv/bin/python bloodhound` → `.venv/bin/bloodhound-python` (PyPI `bloodhound` = dirkjanm's collector; `bloodhound-python` on PyPI is an unrelated placeholder) | AD collection without touching the target |
 | linpeas / winpeas | fetch once from upstream releases into `toolbox/`, serve over HTTP | automated host enum |
 | metasploit (`msfvenom`) | `sudo pacman -S metasploit` | payload generation (MSI, staged shells) |

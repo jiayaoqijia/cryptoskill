@@ -7,9 +7,9 @@ description: CRYPTYX — Digital Asset Intelligence. Institutional-grade quant i
 
 **Sharpen your edge. Feed your agent the CRYPTYX quant engine.**
 
-Institutional-grade quant intelligence for digital assets. Scan 200+ assets on 670+ metrics, study every prior instance of a move, and build and backtest the strategies your agent runs.
+Institutional-grade quant intelligence for digital assets. Scan the market on hundreds of metrics, study every prior instance of a move, and build and backtest the strategies your agent runs.
 
-The engine: 670+ metrics across 8 factor classes (trend, trend efficiency, volatility, flows, futures positioning, order book, options, correlation) for 200+ assets, each read on 8 horizons (1, 7, 14, 30, 60, 90, 180 and 365 days), with 5+ years of daily history. Every number comes from a live database.
+The engine: hundreds of metrics across 8 factor classes (trend, trend efficiency, volatility, flows, futures positioning, order book, options, correlation) for the most-traded digital assets, each read on 8 horizons (1, 7, 14, 30, 60, 90, 180 and 365 days) and scored against the asset's own trailing year, with daily history back to 2021. Every number comes from a live database.
 
 Remote MCP: `https://mcp.cryptyx.ai/api/mcp` (OAuth sign-in through the user's client). Tools marked *free* work on free accounts, with daily limits; the rest need Pro.
 
@@ -17,7 +17,7 @@ Remote MCP: `https://mcp.cryptyx.ai/api/mcp` (OAuth sign-in through the user's c
 
 | The user wants to… | Try this first | Tools | Offer next |
 | --- | --- | --- | --- |
-| **Accumulate** with a rule, not a hunch | "My rule: add to ETH only when it's statistically oversold vs its 1-year history. Where is it now, and what followed the last times?" | `get_coin_study` *(free)* | Ask their agent to check the rule every Monday, or test it on 5+ years ([build-setup](../cryptyx-build-setup/SKILL.md)) |
+| **Accumulate** with a rule, not a hunch | "My rule: add to ETH only when it's statistically oversold vs its 1-year history. Where is it now, and what followed the last times?" | `get_coin_study` *(free)* | Ask their agent to check the rule every Monday, or test it on the full daily history ([build-setup](../cryptyx-build-setup/SKILL.md)) |
 | **Take profit** when the data says extended | "Where is BTC on the 90- and 180-day horizons against its own history, and what followed similar readings?" | `get_coin_study` *(free)* | Set their own trim rule and have their agent re-check it weekly |
 | **Trade short-term** with sharper entries and exits | "Which of ETH, SOL and DOGE have short-term momentum, and what changed this week?" | `get_coin_study` *(free)*, one call per asset | What changed since yesterday, or backtest the condition across horizons |
 | **Catch statistically significant shifts** (volatility expanding, a trend emerging, flows turning) | "Which assets just had a statistically significant volatility expansion?" | `scan_metric_universe` *(Pro)* | Re-run the scan every morning, or backtest the shift on an asset they hold |

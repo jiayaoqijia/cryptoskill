@@ -50,7 +50,7 @@ Try these the moment the port shows open — they are free wins on easy boxes.
 | SNMP 161 | community `public`/`private` | `snmpwalk -v2c -c public <target>` (pacman `net-snmp`) |
 | RDP 3389 | cred reuse from other findings | `xfreerdp /u:<user> /p:<pw> /v:<target>` |
 | MySQL 3306 | root:no-password | `mysql -h <target> -u root -p` (try empty) |
-| MSSQL 1433 | sa:no-password | `impacket-mssqlclient <user>:<pw>@<target> -windows-auth` |
+| MSSQL 1433 | sa:no-password | `mssqlclient.py <user>:<pw>@<target> -windows-auth` |
 | MongoDB 27017 | unauthenticated | `mongosh mongodb://<target>:27017` |
 | Redis 6379 | unauthenticated | `redis-cli -h <target>` then `INFO` |
 | PostgreSQL 5432 | postgres:postgres | `psql -h <target> -U postgres` |
