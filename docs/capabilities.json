@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T06:36:13.662650+00:00",
+  "generated_at": "2026-11-19T12:32:34.091703+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -72961,6 +72961,68 @@
     },
     "exchanges/anoscranel-ac-agent-coding-governance": {
       "name": "ac-agent-coding-governance",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "exchanges/anoscranel-ac-agent-eval-harness": {
+      "name": "ac-agent-eval-harness",
       "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
@@ -247929,11 +247991,11 @@
     }
   },
   "summary": {
-    "discovered": 3985,
-    "processed": 3985,
+    "discovered": 3986,
+    "processed": 3986,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2868,
+      "read_only": 2869,
       "router_orchestrator": 167,
       "unknown": 412,
       "analysis_only": 245,

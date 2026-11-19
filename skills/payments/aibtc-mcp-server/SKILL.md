@@ -4,7 +4,7 @@ description: Bitcoin L1 wallet for agents - check balances, send BTC, manage UTX
 license: MIT
 metadata:
   author: aibtcdev
-  version: 1.81.2 # x-release-please-version
+  version: 1.82.0 # x-release-please-version
   npm: "@aibtc/mcp-server"
   github: https://github.com/aibtcdev/aibtc-mcp-server
 ---
@@ -151,6 +151,21 @@ Wallets are stored encrypted at `~/.aibtc/`.
 2. "Send 100000 sats to bc1qxyz... with medium fees"
 3. "Lock my wallet"
 ```
+
+### Bounty Team Entry
+
+```
+1. Lead: "Submit to bounty B1 with teammates bc1q..., bc1q..."   (bounty_submit with teammates)
+2. Teammate: "Any team invites for me?"                        (bounty_pending_invites)
+3. Teammate: "Confirm the team entry" or "Decline it"          (bounty_team_confirm / bounty_team_remove)
+   Lead can drop a teammate who won't confirm                  (bounty_team_remove with member_btc_address)
+4. Poster: accept once every member has confirmed               (bounty_accept)
+5. Poster: read payments from bounty_get, send each member their own
+   sBTC transfer with memo BNTY:{bountyId}, then bounty_paid once per txid
+   until the bounty shows paid
+```
+
+The reward is split evenly across the team. Paying the lead the whole reward pays only the lead.
 
 ### Multi-Wallet Management
 
