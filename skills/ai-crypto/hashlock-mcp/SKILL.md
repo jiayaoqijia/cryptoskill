@@ -105,7 +105,8 @@ no wallet and must not hold their swap secret. Connecting the server signs the p
   `propose_price`, `accept_proposal` and `accept_terms`. Accept only when they are NOT the initiator: if the server
   answers that the initiator must pass a hashlock, they are the initiator — hand over the `dealUrl` instead.
 - **You never:** generate a swap secret or a hashlock, call `build_fund` / `build_claim` / `build_refund`, or
-  broadcast. Those need the person's wallet.
+  broadcast. Those need the person's wallet — connected through OAuth, the server does not even offer them, and its
+  price tools take no hashlock.
 - **Hand over the `dealUrl`** when the person is the initiator and must accept (their browser makes and keeps the
   secret), and whenever a leg must be funded, claimed or refunded. Tell them to sign in the same way they connected
   this assistant (the same account), and to finish in the browser where they accepted: the secret lives there.

@@ -36,7 +36,7 @@ Help developers, DReps, SPOs, and ADA holders understand and participate in Card
 2. **Every ADA holder can participate.** Either directly as a DRep or by delegating to one. Abstain and No-Confidence are also valid delegation choices.
 3. **The Constitution constrains governance.** All actions must be constitutional. The Constitutional Committee certifies this.
 4. **Governance actions have specific types.** Each type has its own voting thresholds and required approvals.
-5. **Tools are maturing.** GovTool, SanchoNet, and SDK support are actively developing. Check current status before advising.
+5. **Tools are maturing, and none is the official one.** Governance is open: anyone can build an interface on it. GovTool, the Cardano Foundation's Governance Voting Tool, SanchoNet, and SDK support are actively developing. Check current status before advising.
 
 ## Workflow
 
@@ -116,13 +116,13 @@ vote** with its own threshold (`Q5`, 0.51 by default per the developer portal, s
 
 1. **Register**: Submit a DRep registration certificate with a deposit of the current `dRepDeposit` protocol parameter (query it, do not hardcode it)
 2. **Set metadata (optional)**: Publish a CIP-119 metadata document (its body must contain `givenName`) to a URL and reference it as the registration anchor
-3. **Vote**: Review and vote on governance actions through GovTool or CLI
+3. **Vote**: Review and vote on governance actions through a governance web tool or the CLI
 4. **Communicate**: Share your voting rationale with delegators
 5. **Stay active**: DReps must vote or submit an update certificate within `dRepActivity` epochs, otherwise the stake delegated to them stops counting until they do (they stay registered). The ledger tracks this as an expiry epoch, see the status check below
 
 **Tools for DReps:**
-- **GovTool** (https://gov.tools): Web interface for DRep registration, voting, delegation
-- **cardano-cli**: Command-line governance operations
+- **Web tools**, for example GovTool (built by Intersect, https://gov.tools) for DRep registration, delegation and voting, or the Cardano Foundation's Governance Voting Tool (https://voting.cardanofoundation.org/) for casting votes with a rationale. Governance is open, so other web apps and wallets also support delegation and voting, and none is the official one: pick by the task
+- **cardano-cli**: Command-line governance operations, always available
 - **Preprod/Preview**: Practice governance flows with test ADA (SanchoNet only for bleeding-edge features)
 
 #### For stake pool operators
@@ -143,16 +143,18 @@ vote** with its own threshold (`Q5`, 0.51 by default per the developer portal, s
 2. **Delegate to Abstain**: Opt out of DRep voting (your stake does not count toward DRep thresholds)
 3. **Delegate to No-Confidence**: Your stake counts as `Yes` on motions of no-confidence and `No` on every other action
 4. **Become a DRep yourself**: Register and vote directly
-5. **Use GovTool**: Web interface for delegation and exploration
+5. **Use a governance web tool**: GovTool or another web app or wallet that supports delegation, for delegation and exploration
 
 ### Step 5: Tools and resources
 
-#### GovTool
+#### Web tools
 
-- Web-based governance participation tool
-- Features: DRep registration, delegation, proposal viewing, voting
-- URL: https://gov.tools
-- Supports mainnet and testnets
+Governance is open and permissionless: anyone can build an interface on it, so no web tool is the official one. Pick by the task.
+
+- **GovTool**, built by Intersect (https://gov.tools): DRep registration, delegation, proposal viewing, voting. Supports mainnet and testnets. Bundled docs: `../../docs/sources/govtool/`
+- **Governance Voting Tool**, built by the Cardano Foundation (https://voting.cardanofoundation.org/, source https://github.com/cardano-foundation/cardano-governance-voting-tool): creating, signing and submitting governance votes with a rationale
+- Other web apps and wallets also support delegation and voting
+- **cardano-cli** covers every governance operation without a web app
 
 #### Test environments
 
@@ -270,6 +272,7 @@ tx.drepRegistrationCertificate(drep.dRepIDCip105, { anchorUrl, anchorDataHash })
 - [references/cip-1694-summary.md](references/cip-1694-summary.md) -- CIP-1694 structure and voting thresholds
 - CIP-1694: https://github.com/cardano-foundation/CIPs/tree/master/CIP-1694
 - CIP-95: https://github.com/cardano-foundation/CIPs/tree/master/CIP-0095
-- GovTool: https://gov.tools
+- GovTool (Intersect): https://gov.tools
+- Governance Voting Tool (Cardano Foundation): https://voting.cardanofoundation.org/
 - SanchoNet: https://sancho.network
 - Intersect governance: https://www.intersectmbo.org

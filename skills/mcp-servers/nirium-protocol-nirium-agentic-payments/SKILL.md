@@ -28,7 +28,7 @@ function. Its first mainnet settlement, 9 July 2026, is verifiable on
 Stellar Expert:
 [`8a2487b8…d73170`](https://stellar.expert/explorer/public/tx/8a2487b8545e02324ced5d902fa350f0f5d8c2d5d2210272506a320b36d73170).
 Those settlements came from our own test wallets and an integration
-partner's tests, not paying customers; the most recent was 29 September 2026.
+partner's tests, not paying customers; the most recent was 18 November 2026.
 
 **You're responsible for your own compliance.** `x402Serve()` is a
 general-purpose library, not a service Nirium provides to your end

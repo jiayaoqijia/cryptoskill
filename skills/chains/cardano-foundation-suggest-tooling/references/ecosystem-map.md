@@ -130,7 +130,8 @@ Comprehensive map of tools, SDKs, and infrastructure in the Cardano developer ec
 
 | Name | Status | Best For |
 |---|---|---|
-| **GovTool** | Production | Web UI for DRep registration, voting, delegation. |
+| **GovTool** | Production | Intersect's web app for DRep registration, voting, delegation. |
+| **Governance Voting Tool** | In development | The Cardano Foundation's web app for creating, signing and submitting governance votes with a rationale. |
 | **cardano-cli (Conway)** | Production | CLI governance operations. |
 | **SanchoNet** | Production | Governance testnet for practice. |
 | **Intersect tools** | Production | Constitutional Committee and governance coordination. |
@@ -210,7 +211,7 @@ below carry only facts (language, license) and a project's own stated caveats.
 
 | Resource | URL | Description |
 |---|---|---|
-| Cardano Developer Portal | developers.cardano.org | Official developer docs and guides |
+| Cardano Developer Portal | developers.cardano.org | The Cardano Foundation's developer docs and guides |
 | Aiken documentation | aiken-lang.org | Smart contract language docs |
 | Cardano Docs | docs.cardano.org | Core Cardano documentation |
 | CIPs repository | github.com/cardano-foundation/CIPs | All Cardano Improvement Proposals |
