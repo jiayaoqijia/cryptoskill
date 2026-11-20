@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T12:32:23.225228+00:00",
+  "generated_at": "2026-11-20T18:29:33.953629+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -32958,6 +32958,68 @@
         },
         "requires_private_key": {
           "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "chains/dfinity-official-threshold-signatures": {
+      "name": "threshold-signatures",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -242400,6 +242462,68 @@
       },
       "hosted_operators": []
     },
+    "wallets/metamask-official-dependency-bump-audit": {
+      "name": "dependency-bump-audit",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/metamask-official-derive-types": {
       "name": "derive-types",
       "execution_model": "read_only",
@@ -248053,13 +248177,13 @@
     }
   },
   "summary": {
-    "discovered": 3987,
-    "processed": 3987,
+    "discovered": 3989,
+    "processed": 3989,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2869,
+      "read_only": 2870,
       "router_orchestrator": 167,
-      "unknown": 413,
+      "unknown": 414,
       "analysis_only": 245,
       "unsigned_tx_builder": 120,
       "local_executor": 107,
@@ -248068,16 +248192,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1341,
-      "can_install_code": 647,
+      "can_execute_shell": 1343,
+      "can_install_code": 648,
       "can_write_files": 240,
       "can_browse_web": 300,
       "can_spawn_subagents": 300,
       "can_move_funds": 311,
-      "requires_private_key": 535,
+      "requires_private_key": 536,
       "requires_hosted_operator": 373,
       "uses_remote_install_script": 46,
-      "mutable_remote_runtime": 647
+      "mutable_remote_runtime": 648
     }
   }
 }
