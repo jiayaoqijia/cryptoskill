@@ -55,7 +55,7 @@ below resumes from the event cursor and checks `expires_at`, when present, befor
   - the indicator answers `analysis.completed` with `skipped: "timing_gate"` and no new report: the latest
     indicator report stays the current one.
   A manual `run` goes through the gate too; breaking-news decisions are not gated.
-- Answer: `data.autopilot` (id, session_id, status, models, intervals…), `data.cursor` (start reading events here), `data.events_url`,
+- Answer: `data.autopilot` (id; session_id, the session it runs on: `/v1/live/sessions/{id}` answers 404 for it, use the autopilot's `id`; status, models, intervals…), `data.cursor` (start reading events here), `data.events_url`,
   `data.next_step` (keep following). Ask the human before starting one that manages a paper position.
 - Limits: running autopilots per plan (Free 0: 403 `plan_required`, Starter 2, Plus 3, Pro 10); all in use: 409
   `autopilot_limit` (stop one first; waiting does not free a slot); `ai_concurrency` 429 when analyses are running.

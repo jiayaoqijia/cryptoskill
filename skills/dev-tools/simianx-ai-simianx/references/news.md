@@ -8,7 +8,9 @@ delay (free also without value and sentiment); Plus and above are live and may o
 
 `GET /v1/news?symbols=BTC,NVDA&asset=crypto&min_value=medium&sentiment=bullish&since=<iso>&limit=50`
 
-- `symbols`: comma list (an article matches when it names one of them or is global).
+- `symbols`: comma list (an article matches when it names one of them or is global; a company contract (e.g.
+  `ANTHROPIC`, `OPENAI`, `SAMSUNG`, `SKHY`, `SKHYNIX`) also matches articles from the last 7 days that name the company; Kraken's
+  `ANTX` does not, use `ANTHROPIC`).
 - `since`: ISO 8601; return only rows that became readable after it, oldest first (poll with the `newest` value of the previous answer; a story can repeat, dedupe by `id`).
 - `cursor`: the `next_cursor` of the previous page for older rows.
 - Items: id, title, summary, url, source, asset, image_url, published_at, symbols[], is_global, value_score, sentiment.
