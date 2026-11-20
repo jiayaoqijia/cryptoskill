@@ -18,6 +18,8 @@ status: "seedling"
 - **Detectors are evidence-poor.** About 40% of US colleges use them, but Turnitin flags roughly 4% of human sentences (⚠️ vendor-domain sources). Guilt by proxy is unavailable.
 - **Disclose as the venue asks.** Caltech asks directly and says disclosure will not hurt the decision. About 68% of tracked schools have no mechanism (⚠️ vendor-domain sources).
 
+Primary sources: <https://gradpilot.com/news/do-colleges-use-ai-detectors-turnitin-truth> and <https://ainativestudent.com/blog/how-to-use-ai-college-essay>.
+
 ## Decision rules
 
 1. Freewrite first: never open the assistant before the applicant writes a word.
@@ -59,3 +61,4 @@ status: "seedling"
 ## Sources
 
 - <https://gradpilot.com/news/do-colleges-use-ai-detectors-turnitin-truth>
+- <https://ainativestudent.com/blog/how-to-use-ai-college-essay>

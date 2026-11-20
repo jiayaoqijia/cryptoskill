@@ -16,6 +16,8 @@ status: "seedling"
 - OWASP GraphQL Cheat Sheet: disable introspection and GraphiQL in production; cap query depth and amount; cost analysis, timeouts and rate limiting; watch batching attacks.
 - Standard Webhooks for inbound integrations (signature over the raw body, timestamped, deduplicated).
 
+Primary sources: <https://owasp.org/API-Security/> and <https://cheatsheetseries.owasp.org>.
+
 ## Decision rules
 
 1. API1 BOLA: per-object policy check on every ID-based access (subskills/authorization.md) — the same root cause as Top 10 A01.

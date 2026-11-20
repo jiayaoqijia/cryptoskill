@@ -17,6 +17,8 @@ Two decisions attach to a generated client. First, whether its call retry and ti
 
 Primary source: <https://www.openapis.org/>.
 
+Primary sources: <https://www.openapis.org/> and <https://www.rfc-editor.org/rfc/rfc9110>.
+
 ## Decision rules
 
 - Record what the generated client covers: all operations, or a chosen subset.
@@ -56,4 +58,4 @@ Primary source: <https://www.openapis.org/>.
 
 - OpenAPI specification: <https://www.openapis.org/>
 - HTTP method idempotency semantics: <https://www.rfc-editor.org/rfc/rfc9110>
-- SDK design practice: <https://martinfowler.com/articles/practical-guide-pact.html>
+- API and client-library design guidance (Google AIP): <https://google.aip.dev/>

@@ -4,6 +4,7 @@ description: "Third-party skill adoption and consumer governance for agent packs
 license: MIT
 metadata:
   domain: skill-authoring
+status: seedling
 ---
 
 # Skill Adoption and Consumer Governance

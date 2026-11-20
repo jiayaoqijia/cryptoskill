@@ -15,7 +15,7 @@ Measurement layer specifies the rigorous technical workflow required to collect,
 
 Building an audit-grade measurement pipeline requires structuring data ingestion into standardized time-series partitions. Because commercial heatmap vendors often gate granular historical liquidation sweeps behind expensive professional tiers (e.g., $699/mo), analysts must implement custom scraper collectors or utilize direct WebSocket feeds to capture raw liquidation events before aggregation artifacts distort the record.
 
-Primary sources for the claims here: <https://bybit-exchange.github.io/docs/linear/> and <https://hyperliquid.gitbook.io/>.
+Primary sources for the claims here: <https://bybit-exchange.github.io/docs/v5/websocket/public/all-liquidation> and <https://hyperliquid.gitbook.io/>.
 
 ## Decision rules
 
@@ -49,4 +49,4 @@ Primary sources for the claims here: <https://bybit-exchange.github.io/docs/line
 ## Sources
 
 - Hyperliquid Documentation. (2026). *API Info Endpoints and Historical Data Access*. Hyperliquid GitBook. https://hyperliquid.gitbook.io/
-- Bybit API Reference. (2026). *V5 Linear Derivative Liquidation Public Endpoints*. Bybit Fintech. https://bybit-exchange.github.io/docs/linear/
+- Bybit API Reference. (2026). *V5 Linear Derivative Liquidation Public Endpoints*. Bybit Fintech. https://bybit-exchange.github.io/docs/v5/websocket/public/all-liquidation

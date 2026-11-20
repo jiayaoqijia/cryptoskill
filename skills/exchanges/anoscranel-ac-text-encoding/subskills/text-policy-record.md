@@ -15,6 +15,8 @@ The text policy answers the questions this skill's leaves each answer locally: w
 
 The policy's value is at the boundaries, where two teams meet. A feed producer with the policy and a consumer with the policy interoperate without negotiation; without it, each assumes, and the mismatches are discovered in production data. Keeping the policy where the code lives — not in a wiki graveyard — is part of the discipline.
 
+Primary sources: <https://www.unicode.org/versions/latest/> and <https://www.unicode.org/reports/tr15/>.
+
 ## Decision rules
 
 - State the internal encoding and the normalisation form.

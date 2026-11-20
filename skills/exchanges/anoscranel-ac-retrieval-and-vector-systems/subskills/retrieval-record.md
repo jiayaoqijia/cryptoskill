@@ -61,4 +61,4 @@ The record should also note the query distribution it was tuned against, since r
 
 - Retrieval evaluation methodology: <https://www.nist.gov/>
 - Pre-registration practice for stated conditions: <https://osf.io/prereg/>
-- Information retrieval foundations: <https://nlp.stanford.edu/IR-book/>
+- Information retrieval foundations: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>

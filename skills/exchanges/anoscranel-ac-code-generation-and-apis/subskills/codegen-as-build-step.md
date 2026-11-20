@@ -17,6 +17,8 @@ The decision that matters most is ownership. A generated file has an owner (the 
 
 Primary source: <https://www.openapis.org/>.
 
+Primary sources: <https://www.openapis.org/> and <https://reproducible-builds.org/>.
+
 ## Decision rules
 
 - Record the step's inputs, its outputs, and its freshness policy.

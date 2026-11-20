@@ -11,7 +11,7 @@ status: seedling
 
 ## Standard
 
-- **Kelly, "A New Interpretation of Information Rate" (1956)**: optimal allocation is derived mathematically from edge and odds. <https://www.bell-labs.com/institute/about/history-bell-labs/bell-system-technical-journal/>
+- **Kelly, "A New Interpretation of Information Rate" (1956)**: optimal allocation is derived mathematically from edge and odds. <https://archive.org/details/bstj35-4-917>
 - **Vince, _The Mathematics of Money Management_ (1992)**: position size is a direct function of risk capital and stop distance. <https://www.wiley.com/en-us/The+Mathematics+of+Money+Management+Risk+Analysis+for+Portfolio+Decisions-p-9780471549994>
 - **Covel, _Trend Following_ (2004)**: volatility-adjusted sizing prevents high-volatility assets from dominating portfolio variance. <https://www.wiley.com/en-us/Trend+Following+%28Updated+Edition%29%3A+How+Great+Traders+Make+Millions+in+The+Up+and+Down+Markets-p-9781118016831>
 - **Eldor et al., "The Determinants of Trading Volume" (2006)**: liquidity constraints limit maximum position size to avoid slippage. <https://www.sciencedirect.com/science/article/abs/pii/S105752190500109X>
@@ -54,7 +54,7 @@ status: seedling
 
 ## Sources
 
-- Kelly, "A New Interpretation of Information Rate": <https://www.bell-labs.com/institute/about/history-bell-labs/bell-system-technical-journal/>
+- Kelly, "A New Interpretation of Information Rate": <https://archive.org/details/bstj35-4-917>
 - Vince, _The Mathematics of Money Management_: <https://www.wiley.com/en-us/The+Mathematics+of+Money+Management+Risk+Analysis+for+Portfolio+Decisions-p-9780471549994>
 - Covel, _Trend Following_: <https://www.wiley.com/en-us/Trend+Following+%28Updated+Edition%29%3A+How+Great+Traders+Make+Millions+in+The+Up+and+Down+Markets-p-9781118016831>
 

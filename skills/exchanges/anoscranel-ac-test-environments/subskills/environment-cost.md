@@ -17,6 +17,8 @@ The finite-estate designs follow from that. Preview environments get automatic t
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/bliki/DeploymentPipeline.html> and <https://docs.docker.com/>.
+
 ## Decision rules
 
 - Inventory every environment class with its size, count ceiling, and per-day cost estimate.

@@ -12,8 +12,8 @@ status: "seedling"
 ## Standard
 
 - Amend beside the claim; never rewrite the base body. The old claim stays visible beside the correction. A silent rewrite destroys the audit trail and hides whether the claim was salvageable.
-- Fix at the root, then propagate. A wrong input moves through every derived quantity (JCGM 100:2008).
-- Keep provenance traceable: each corrected figure names its source and owning file (W3C PROV-O).
+- Fix at the root, then propagate. A wrong input moves through every derived quantity (JCGM 100:2008, <https://www.bipm.org/en/publications/guides>).
+- Keep provenance traceable: each corrected figure names its source and owning file (<https://www.w3.org/TR/prov-o/>).
 - Re-verify the shipped state, not the reviewed one. Corrections can contradict a line nearby.
 
 ## Decision rules

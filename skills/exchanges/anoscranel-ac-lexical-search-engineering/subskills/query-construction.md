@@ -56,4 +56,4 @@ Primary sources: <https://elastic.co/guide/en/elasticsearch/reference/current/qu
 
 - Elasticsearch query DSL: <https://elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html>
 - Lucene project: <https://lucene.apache.org/core/corenews.html>
-- Introduction to Information Retrieval: <https://nlp.stanford.edu/IR-book/>
+- Introduction to Information Retrieval: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>

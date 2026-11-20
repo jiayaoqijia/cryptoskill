@@ -31,6 +31,8 @@ rules are measured, not folklore: appending a terse-answer suffix strips the
 citation metadata, and a minimal thinking setting strips grounding entirely.
 Never use either.
 
+Primary sources: <https://osf.io/prereg/> and <https://training.cochrane.org>.
+
 ## Decision rules
 
 - Fire when a gate condition holds; otherwise stay in the cascade.

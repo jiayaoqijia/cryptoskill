@@ -15,7 +15,7 @@ Byzantine agreement runs three rounds because each eliminates one class of disag
 
 What each round buys is the elimination of a scenario. Without prepare, a faulty primary could tell different replicas different sequence numbers. Without commit, two honest replicas could disagree about whether a later value was finalized while a view change replaced the primary mid-flight. The rounds are not redundancy; they are each doing distinct work, and the cost is the latency — three message exchanges before a client sees its reply.
 
-Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
+Primary sources: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
 
 ## Decision rules
 
@@ -56,6 +56,6 @@ A further note on the primary's checkpoint: the three rounds presuppose that the
 
 ## Sources
 
-- PBFT phases: <https://pmg.csail.mit.edu/papers/osdi99.pdf>
+- PBFT phases: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf>
 - Phase structure reference: <https://en.wikipedia.org/wiki/PBFT>
 - Distributed systems patterns: <https://martinfowler.com/articles/patterns-of-distributed-systems/>

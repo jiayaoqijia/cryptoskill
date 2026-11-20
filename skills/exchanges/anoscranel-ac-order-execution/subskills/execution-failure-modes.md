@@ -11,7 +11,7 @@ status: seedling
 
 Execution failures occur when order routing or matching engine mechanics diverge from expected parameters due to venue outages, API rejections, partial fills, stale quotes, or self-trade prevention (STP) triggers. During high-volatility events, exchanges frequently throttle API requests, reject orders due to risk limits, or trigger circuit breakers that freeze matching. Operators must maintain a robust fallback ladder to handle execution failures without panicking or exposing unhedged delta risk. Crucially, when an order execution fails or hangs, operators must never blindly resubmit identical market orders without checking open position state, as duplicate fills can instantly double unintentional risk exposure across trading accounts.
 
-Primary sources for the claims here: <https://www.coindesk.com/markets/2021/05/19/crypto-exchange-outages-risk-management/> and <https://www.usenix.org/conference/nsdi20/presentation/andersen>.
+Primary sources for the claims here: <https://www.coindesk.com/markets/2021/05/19/crypto-exchange-outages-risk-management/> and <https://sre.google/sre-book/handling-overload/>.
 
 ## Decision rules
 
@@ -44,5 +44,5 @@ Primary sources for the claims here: <https://www.coindesk.com/markets/2021/05/1
 
 ## Sources
 
-- API Error Handling and Execution Resilience in High-Frequency Trading: https://www.usenix.org/conference/nsdi20/presentation/andersen
+- Google SRE, Handling Overload (failure modes and graceful degradation): https://sre.google/sre-book/handling-overload/
 - Exchange Outage Protocols and Risk Management for Crypto Derivatives: https://www.coindesk.com/markets/2021/05/19/crypto-exchange-outages-risk-management/

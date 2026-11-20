@@ -16,6 +16,8 @@ status: "seedling"
 - **Shift-left versus shield-right**: pre-merge tooling catches known-bad patterns cheaply and misses authorisation and chained flaws, which surface at runtime or in a pentest.
 - **US driver**: EO 14028 (May 2021) drove vendor self-attestation; OMB M-26-05 (Jan 2026) replaced it with a risk-based approach.
 
+Primary sources: <https://csrc.nist.gov/pubs/sp/800/218/final> and <https://www.wiley.law/alert-OMB-Rescinds-Secure-Software-Development-Mandate-in-Favor-of-a-Risk-Based-Approach>.
+
 ## Decision rules
 
 1. One row per phase. An activity without a phase is a policy nobody runs.

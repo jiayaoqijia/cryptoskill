@@ -18,6 +18,8 @@ status: "seedling"
 - OWASP Password Storage Cheat Sheet for KDF parameters (Argon2id m=19456 KiB, t=2, p=1; scrypt N=2^17, r=8, p=1; bcrypt ≥10; PBKDF2-HMAC-SHA-256 ≥600,000 only under FIPS-140).
 - Nonce discipline: Bock et al., USENIX WOOT '16, found 184 HTTPS servers repeating GCM nonces and >70,000 using random nonces — never reuse a (key, nonce) pair.
 
+Primary sources: <https://csrc.nist.gov/pubs/fips/203/final> and <https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html>.
+
 ## Decision rules
 
 1. Never roll your own. Use vetted libraries: libsodium/NaCl, OpenSSL/BoringSSL, Go's `crypto`, Python `cryptography`, `age`.

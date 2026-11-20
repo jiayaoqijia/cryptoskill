@@ -11,8 +11,8 @@ status: "seedling"
 
 ## Standard
 
-- Separation of duties is the base control: the party that approves is not the party that produced (NIST SP 800-53 Rev. 5, AC-5).
-- A red team is authorised to attack a plan and is judged on findings that survive re-check, not on agreement with its authors (U.S. Army Red Team Handbook, ⚠️ edition unverified).
+- Separation of duties is the base control: the party that approves is not the party that produced (NIST SP 800-53 AC-5, <https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final>).
+- A red team is authorised to attack a plan and is judged on findings that survive re-check, not on agreement with its authors (U.S. Army Red Team Handbook, ⚠️ edition unverified; Popper, <https://plato.stanford.edu/entries/popper/>).
 - Lineage matters. A breaker built by the same producers, on the same model family, shares their training priors and their framing. The blind spot is in the framing.
 - Fresh context matters. The breaker reads the corpus and the charter, not the build history, the author's defence, or the earlier review threads.
 

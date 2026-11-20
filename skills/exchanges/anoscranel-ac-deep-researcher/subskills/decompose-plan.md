@@ -22,6 +22,8 @@ status: "seedling"
  and wide beats deep and fragile.
 - Search fans out; synthesis does not. Plan wide reading, single writing.
 
+Primary sources: <https://osf.io/prereg/> and <https://arxiv.org>.
+
 ## Decision rules
 
 - Split when a sub-question needs a different source family than its sibling

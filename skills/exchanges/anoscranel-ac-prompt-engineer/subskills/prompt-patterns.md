@@ -22,8 +22,10 @@ per row below.
 | Few-shot examples | Alive, but as shape exemplars | One example of the exact output beats describing it; use varied canonical examples, identical formatting (Google Vertex: include few-shot; too many overfit) |
 | Self-consistency (sample-and-vote) | Conditional | ~0.4-1.6% at 15-20x token cost on Gemini 2.5 (arXiv:2511.00751); use only far below ceiling |
 | Tree-of-thought, ReAct loops | Absorbed | Reasoning models explore internally; tool calling is native |
-| Reflection / self-critique loops | Harmful in excess | Parallel attempts beat sequential rethink by up to 20% at equal budget (NeurIPS 2025, per Deep-Dive) |
+| Reflection / self-critique loops | Harmful in excess | Extra rethink passes burn budget; keep a loop only if its lift is measured on the golden set |
 | Structured output (JSON schema) | Alive and first-choice | Schema as an API parameter, not format prose (OpenAI structured outputs guide) |
+
+Primary sources: <https://ai.google.dev/gemini-api/docs/prompting-strategies> and <https://arxiv.org/abs/2511.00751>.
 
 ## Decision rules
 
@@ -49,7 +51,7 @@ per row below.
 - Stacking five techniques on one prompt; interactions are untraceable.
 - "You are an expert..." plus "think step by step" on a reasoning model: two dead lines.
 - Ten near-duplicate few-shot examples; overfit and burn budget.
-- Reflection loops as a default; they overthink (Deep-Dive Part I).
+- Reflection loops as a default; extra passes burn budget without measured lift.
 
 ## Done checklist
 
@@ -59,4 +61,4 @@ per row below.
 
 ## Sources
 
-- Prompt-engineering corpus: <https://ai.google.dev/gemini-api/docs/prompting-strategies>; "Deep-Dive" = <https://arxiv.org/html/2511.00751v2>.
+- Prompt-engineering corpus: <https://ai.google.dev/gemini-api/docs/prompting-strategies>; self-consistency cost study: <https://arxiv.org/abs/2511.00751>.

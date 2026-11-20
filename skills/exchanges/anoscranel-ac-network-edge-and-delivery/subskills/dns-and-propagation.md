@@ -17,6 +17,8 @@ The practical sequence follows from that. Lower the TTL well before the change s
 
 Primary source: <https://www.iana.org/>.
 
+Primary sources: <https://www.iana.org/> and <https://www.rfc-editor.org/rfc/rfc1034>.
+
 ## Decision rules
 
 - Record the current TTL for each record being changed, before touching it.

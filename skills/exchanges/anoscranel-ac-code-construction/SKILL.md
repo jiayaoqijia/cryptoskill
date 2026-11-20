@@ -4,6 +4,7 @@ description: "Writing new code and delivering it in small steps: naming, error h
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Code Construction

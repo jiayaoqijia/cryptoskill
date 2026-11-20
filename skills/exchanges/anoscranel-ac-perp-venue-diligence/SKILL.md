@@ -4,6 +4,7 @@ description: "Due diligence on a perpetual-futures venue before capital is commi
 license: MIT
 metadata:
   domain: crypto-trading
+status: seedling
 ---
 
 # ac-perp-venue-diligence

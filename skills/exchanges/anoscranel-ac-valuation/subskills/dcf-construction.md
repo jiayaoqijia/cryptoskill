@@ -3,7 +3,7 @@ name: dcf-construction
 domain: investing/dcf-construction
 trigger: "Building a discounted cash-flow model with defensible assumptions."
 anti_trigger: "Not for picking the discount rate in isolation, and not for terminal-value debate."
-scope: "Forecast horizon, cash-flow definition, discount rate, and terminal value, built with assumption discipline."
+scope: "Forecast horizon, cash-flow definition, and the growth path within the horizon, built with assumption discipline; discount rate and terminal value are set in their own leaves."
 status: seedling
 ---
 

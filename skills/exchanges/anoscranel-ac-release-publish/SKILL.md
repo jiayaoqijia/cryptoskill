@@ -4,6 +4,7 @@ description: "Publish or update a small public release of an agent-written artif
 license: MIT
 metadata:
   domain: skill-authoring
+status: seedling
 ---
 
 # Release Publishing

@@ -15,7 +15,7 @@ An access is aligned when its address is a multiple of its size, and hardware hi
 
 The design consequence is a rule about ownership of layout: alignment is a property of how a structure is laid out, so whoever owns the layout owns the guarantee. A binary format that starts a field at an arbitrary offset is deciding that every reader will either copy the field or pay the unaligned cost, and a hand-written parser that casts a pointer into a byte buffer is trusting the writer's layout choice without checking it.
 
-Primary sources: <https://en.cppreference.com/w/c/language.html> and <https://en.cppreference.com/w/c/language/arith.html>.
+Primary sources: <https://en.cppreference.com/w/c/language.html> and <https://en.cppreference.com/cpp/language/usual_arithmetic_conversions>.
 
 ## Decision rules
 
@@ -55,5 +55,5 @@ Primary sources: <https://en.cppreference.com/w/c/language.html> and <https://en
 ## Sources
 
 - C language reference on types and alignment: <https://en.cppreference.com/w/c/language.html>
-- Arithmetic conversions: <https://en.cppreference.com/w/c/language/arith.html>
+- Arithmetic conversions: <https://en.cppreference.com/cpp/language/usual_arithmetic_conversions>
 - Binary layout context: <https://capnproto.org/encoding.html>

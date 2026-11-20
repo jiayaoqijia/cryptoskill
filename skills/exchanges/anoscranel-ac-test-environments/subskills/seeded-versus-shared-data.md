@@ -17,6 +17,8 @@ Aging is the failure both static sources avoid. Seed data written last year no l
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/articles/continuousIntegration.html> and <https://docs.docker.com/>.
+
 ## Decision rules
 
 - Record the source class per dataset: synthetic, masked production, or shared-mutable.

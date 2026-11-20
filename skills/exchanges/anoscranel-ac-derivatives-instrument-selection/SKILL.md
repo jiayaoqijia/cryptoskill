@@ -29,8 +29,8 @@ Market participants frequently default to perpetual futures without assessing wh
 
 ## External References and Industry Standards
 
-- Financial instrument taxonomy and derivatives clearing frameworks: [https://www.isda.org/book/isda-deriv-tracker](https://www.isda.org/book/isda-deriv-tracker)
-- Derivatives risk management and margin methodologies: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
-- Regulatory standards for derivatives market integrity: [https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf](https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf)
-- CFTC educational resources on futures and options markets: [https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm](https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm)
+- ISDA Common Domain Model (instrument and event taxonomy): <https://www.isda.org/cdm/>
+- Derivatives risk management and margin methodologies: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>
+- Regulatory standards for derivatives market integrity: <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf>
+- CFTC educational resources on futures and options markets: <https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm>

@@ -13,7 +13,7 @@ status: "seedling"
 
 - **Eisenhower matrix**: sort items on two axes, urgent and important; do urgent-and-important, schedule important, delegate urgent, drop neither. ⚠️ The attribution to Eisenhower is disputed; no primary source shows he coined the two-by-two grid. It is a widely used frame, not a law.
 - **Covey, _The 7 Habits of Highly Effective People_ (1989)**: urgency crowds out importance; the urgent-and-important quadrant is where people burn out. <https://www.franklincovey.com/the-7-habits/>
-- **Bezos, 2015 shareholder letter**: classify decisions as one-way doors or two-way doors; reversible choices can be made fast with less analysis. <https://www.aboutamazon.com/news/company-news/2015-letter-to-shareholders>
+- **Bezos, 2015 shareholder letter**: classify decisions as one-way doors or two-way doors; reversible choices can be made fast with less analysis. <https://ir.aboutamazon.com/files/doc_financials/annual/2015-Letter-to-Shareholders.PDF>
 
 ## Decision rules
 
@@ -55,4 +55,4 @@ status: "seedling"
 
 - Eisenhower matrix, attribution note: <https://en.wikipedia.org/wiki/Time_management#The_Eisenhower_Method>
 - Covey, _The 7 Habits of Highly Effective People_ (1989): <https://www.franklincovey.com/the-7-habits/>
-- Bezos, 2015 shareholder letter: <https://www.aboutamazon.com/news/company-news/2015-letter-to-shareholders>
+- Bezos, 2015 shareholder letter: <https://ir.aboutamazon.com/files/doc_financials/annual/2015-Letter-to-Shareholders.PDF>

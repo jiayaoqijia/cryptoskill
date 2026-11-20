@@ -18,6 +18,8 @@ status: "seedling"
 - **Slim bases and non-root**: distroless `:nonroot` (UID 65532) has no shell or package manager, so the CVE surface is near zero.
 - **Parity**: dev, CI and production differ in config and scale, not in shape.
 
+Primary sources: <https://github.com/hashicorp/terraform/blob/main/LICENSE> and <https://www.informit.com/store/continuous-delivery-reliable-software-releases-through-9780321670229>.
+
 ## Decision rules
 
 1. Use IaC at two or more environments, two or more people, or a resource set rebuilt more than once. Below that a runbook is cheaper.

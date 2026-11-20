@@ -4,6 +4,7 @@ description: "Software architecture and design records: system structure and sty
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Architecture

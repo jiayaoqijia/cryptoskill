@@ -4,6 +4,7 @@ description: "Starting a new document: the brief (purpose, reader, venue, succes
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Drafting

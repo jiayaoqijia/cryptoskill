@@ -15,6 +15,8 @@ A system handles one encoding internally — UTF-8, by policy — and every othe
 
 The classic violation is duct tape: a feed arrives in a legacy encoding, a function converts per-record somewhere mid-pipeline, one caller forgets to call it, and the system now contains mixed encodings that no single pass can repair. Doing conversion exactly once, at the entry, from a declared source, is the entire discipline. The same rule applies to output: a consumer that needs something else gets it at the egress, not from code scattered through the render path.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc3629> and <https://www.unicode.org/versions/latest/>.
+
 ## Decision rules
 
 - Declare the internal encoding as policy; all interchange inside it.

@@ -11,7 +11,7 @@ status: "seedling"
 
 ## Standard
 
-- **Binance Security and Incident Disclosures (2026-10-29)**: Following unauthorized hot wallet transfers (~$6.3B across ten blockchains), coverage relied upon the Secure Asset Fund for Users (SAFU, maintaining ~15,000 BTC) combined with futures insurance fund reserves and exchange treasury capitalization, resulting in partial withdrawals suspension and subsequent recovery. <https://www.binance.com/en/futures/funding-feeen/blog>
+- **Binance Security and Incident Disclosures (2026-10-29)**: Following unauthorized hot wallet transfers (~$6.3B across ten blockchains), coverage relied upon the Secure Asset Fund for Users (SAFU, maintaining ~15,000 BTC) combined with futures insurance fund reserves and exchange treasury capitalization, resulting in partial withdrawals suspension and subsequent recovery. <https://www.binance.com/en/blog>
 - **Coppola, F. (2019), "The Economics of Exchange Insurance Funds"**: Derivatives exchange backstops operate as finite shock absorbers; when open interest exceeds insurance fund capitalization by more than 100×, tail liquidation events trigger Auto-Deleveraging (ADL) or socialized losses. <https://stealthex.io/blog/binance-hack-everything-we-know-about-the-6-3b-theftcontent/>
 - ⚠️ House standard: an exchange insurance fund must be audited against current open interest in real time; any venue where open interest exceeds insurance fund reserves by >50:1 carries existential ADL risk during market dislocations.
 
@@ -25,7 +25,7 @@ status: "seedling"
 
 ## Procedure
 
-1. Inspect public insurance fund tracking pages and daily balance logs provided by the exchange (e.g., Binance futures transparency: <https://www.binance.com/en/futures/funding-feeen/futures/funding-fee>).
+1. Inspect public insurance fund tracking pages and daily balance logs provided by the exchange (e.g., Binance futures transparency: <https://www.binance.com/en/futures/insurance-fund>).
 2. Calculate the insurance-fund-to-open-interest ratio and compare against industry peers.
 3. Review exchange terms of service regarding Auto-Deleveraging triggers and socialized loss distribution mechanisms.
 4. Verify third-party Proof of Reserves attestations and Merkle tree liability audits (<https://stealthex.io/blog/binance-hack-everything-we-know-about-the-6-3b-theft> or official PoR portals).
@@ -47,8 +47,8 @@ status: "seedling"
 
 ## Sources
 
-- Binance Official Blog and Security Incident Disclosures (2026). <https://www.binance.com/en/futures/funding-feeen/blog>
-- Binance Futures Insurance Fund and Transparency Metrics. <https://www.binance.com/en/futures/funding-feeen/futures/funding-fee>
+- Binance Official Blog and Security Incident Disclosures (2026). <https://www.binance.com/en/blog>
+- Binance Futures Insurance Fund and Transparency Metrics. <https://www.binance.com/en/futures/insurance-fund>
 - Financial Times Analysis on Crypto Exchange Backstops and Market Resilience. <https://stealthex.io/blog/binance-hack-everything-we-know-about-the-6-3b-theft>
 - CFTC Guidance on Risk Management and Derivatives Clearinghouse Backstops. <https://www.cftc.gov/PressRoom/PressReleases/9241-26>
 - Open Source Exchange Transparency and Proof of Reserves Standards. <https://stealthex.io/blog/binance-hack-everything-we-know-about-the-6-3b-theft>

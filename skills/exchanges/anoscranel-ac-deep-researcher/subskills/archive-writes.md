@@ -25,6 +25,8 @@ status: "seedling"
 - Supersede, never append contradictions. When a fact changes, replace the
  stale record; stale notes are worse than none.
 
+Primary sources: <https://osf.io/prereg/> and <https://arxiv.org>.
+
 ## Decision rules
 
 - Light study: one report file plus a folder of source files. Full study:

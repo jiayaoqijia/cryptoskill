@@ -17,6 +17,8 @@ The correct review of a generated artifact asks three questions: what input prod
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://google.github.io/eng-practices/review/> and <https://reproducible-builds.org/>.
+
 ## Decision rules
 
 - Separate generated from hand-written paths in the diff before reviewing.
@@ -54,6 +56,6 @@ Primary source: <https://martinfowler.com/>.
 
 ## Sources
 
-- Code review practice: <https://martinfowler.com/articles/code-review.html>
+- Code review practice: <https://google.github.io/eng-practices/review/>
 - Reproducible artifacts and pinning: <https://reproducible-builds.org/>
 - Continuous integration discipline: <https://martinfowler.com/articles/continuousIntegration.html>

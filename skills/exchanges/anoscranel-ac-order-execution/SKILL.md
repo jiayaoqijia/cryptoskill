@@ -40,8 +40,8 @@ Operators utilize these subskills sequentially or in parallel depending on order
 
 - Binance Futures API Documentation: https://binance-docs.github.io/apidocs/futures/en/#trade-s-endpoints
 - Bybit API Documentation: https://bybit-exchange.github.io/docs/derivatives/v5/order/create-order
-- NBER Working Paper on Market Impact and Transaction Costs: https://www.nber.org/papers/w27431
-- CFA Institute Transaction Cost Analysis Standards: https://www.cfainstitute.org/en/research/foundation/2020/transaction-cost-analysis
+- Almgren & Chriss, Optimal execution of portfolio transactions (2001): https://doi.org/10.21314/JOR.2001.041
+- CFA Institute, Trading Costs and Electronic Markets (2026 curriculum): https://cfainstitute.org/insights/professional-learning/refresher-readings/2026/trading-costs-and-electronic-markets
 
 
 ## Additional Guidance

@@ -17,6 +17,8 @@ The pipeline's rule is directionality: **metadata is extracted for internal use 
 
 Metadata extraction is also an ingest win: camera, creation date, duration, and codec data belong in the pipeline record, not laboriously reconstructed from derivative headers years later. Extract once, store with the source record, and let downstream consumers read pipeline metadata instead of re-parsing files.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types> and <https://en.wikipedia.org/wiki/Exchangeable_image_file_format>.
+
 ## Decision rules
 
 - Extract metadata (orientation, timestamps, dimensions, codec, GPS) into the pipeline record at ingest.

@@ -26,6 +26,8 @@ status: "seedling"
 - The chat reply is a five-line summary plus file paths, never the report
  pasted inline. Depth lives in files.
 
+Primary sources: <https://osf.io/prereg/> and <https://arxiv.org>.
+
 ## Decision rules
 
 - The deliverable shape chosen at scoping sets the section skeleton: verdict

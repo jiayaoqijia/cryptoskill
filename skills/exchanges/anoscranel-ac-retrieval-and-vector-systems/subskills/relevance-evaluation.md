@@ -15,7 +15,7 @@ A retrieval change is a hypothesis, and testing it requires a fixed set of queri
 
 The metric should match the question. Recall at k measures whether the relevant document appears in the top k, which is the right question when a downstream model consumes the results. Precision at k measures how much of the result set is relevant, which matters when a human reads the list. Mean reciprocal rank and normalised discounted cumulative gain weight position, which matters when ordering is the product. Recording which metric was chosen and why is part of the evaluation, not a formality.
 
-Primary sources: <https://www.nist.gov/> and <https://nlp.stanford.edu/IR-book/>.
+Primary sources: <https://www.nist.gov/> and <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>.
 
 ## Decision rules
 
@@ -58,5 +58,5 @@ The set's coverage matters as much as its size: fifty queries drawn from one pro
 ## Sources
 
 - Retrieval evaluation methodology: <https://www.nist.gov/>
-- Information retrieval foundations: <https://nlp.stanford.edu/IR-book/>
+- Information retrieval foundations: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Pre-registration practice for stated tests: <https://osf.io/prereg/>

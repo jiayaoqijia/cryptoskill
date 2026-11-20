@@ -4,6 +4,7 @@ description: "Codify corporate brand standards into a testable brand specificati
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Brand Guidelines and Corpus Audit

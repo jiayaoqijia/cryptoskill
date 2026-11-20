@@ -11,7 +11,7 @@ status: seedling
 
 A liquidation cascade represents a systemic liquidity vacuum where forced margin liquidations trigger sequential stop-losses and cascading market sells across leveraged venues. During these episodes, limit orders are pulled or overrun, order books exhibit extreme thinning, and price prints gap across multiple price ticks. Academic findings and exchange forensics indicate that cascade dynamics are subcritical (branching ratio $\hat{\lambda}$ between 0.1 and 0.2), meaning cascades propagate through interconnected margin dependencies rather than infinite self-sustaining feedback loops. Consequently, market orders become catastrophic execution choices, as they sweep depleted book depth at severe adverse prices. Working limit orders or utilizing passive passive liquidity accumulation requires distinguishing between genuine price discovery and transient cascade wicks.
 
-Primary sources for the claims here: <https://www.sciencedirect.com/science/article/pii/S037843712100412X> and <https://www.arxiv.org/abs/2003.02672>.
+Primary sources for the claims here: <https://arxiv.org/abs/2607.27070> and <https://arxiv.org/abs/2608.03616>.
 
 ## Decision rules
 
@@ -44,5 +44,5 @@ Primary sources for the claims here: <https://www.sciencedirect.com/science/arti
 
 ## Sources
 
-- Flash Crash Mechanics and Liquidity Vacuums in Crypto Derivatives: https://www.arxiv.org/abs/2003.02672
-- Empirical Analysis of Liquidation Cascades on Decentralized and Centralized Exchanges: https://www.sciencedirect.com/science/article/pii/S037843712100412X
+- Garcia Seuma et al., Measuring the engine of a liquidation cascade. arXiv:2608.03616: https://arxiv.org/abs/2608.03616
+- Where does the criticality live? Early-warning signals across seven crypto-perpetual liquidation cascades (arXiv 2607.27070): https://arxiv.org/abs/2607.27070

@@ -15,6 +15,8 @@ The pipeline's first decision is the relationship between the uploaded file and 
 
 Because the source is immutable, derivatives are **fully determined** by (source, recipe). The same source and the same recipe should always produce the same derivative, which is what makes the cache key and the debug story simple — but it also means the moment a recipe is fixed, every previously-generated derivative that recipe produced either matches it or is stale. Recipes therefore need versions, and stale derivatives need a re-generation path that is not "wipe everything and re-encode the archive overnight".
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types> and <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs>.
+
 ## Decision rules
 
 - Source files are immutable after verification; derivatives carry (source-id, recipe-version, arguments) as part of their identity.

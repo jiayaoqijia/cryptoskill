@@ -15,6 +15,8 @@ status: seedling
 - **ArXiv 2608.24358, "The Handoff Tax"**: downshifting to continuation prompts requires passing more trajectory (completed work and remaining gaps) rather than fewer tokens, ensuring continuity without state loss. <https://arxiv.org/abs/2608.24358>
 - **Fault classification theory**: distinguishing transient network/tool faults from latent prompt ambiguities prevents looping futile retries on broken briefs.
 
+Primary source for the claims here: <https://arxiv.org/abs/2608.24358>.
+
 ## Decision rules
 
 1. Never discard partial work on disk when a subagent fails; inspect the checkpoint file first.
@@ -52,3 +54,4 @@ status: seedling
 
 - ArXiv 2608.24358, "The Handoff Tax": <https://arxiv.org/abs/2608.24358>
 - Internal operational playbooks for subagent recovery and checkpoint resumption.
+- Cemri et al., Why Do Multi-Agent LLM Systems Fail? (MAST failure taxonomy): <https://arxiv.org/abs/2503.13657>

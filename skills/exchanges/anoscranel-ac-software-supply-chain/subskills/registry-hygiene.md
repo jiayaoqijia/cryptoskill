@@ -17,6 +17,8 @@ The defence is scope discipline. Internal packages resolve only against an inter
 
 Primary source: <https://slsa.dev/>.
 
+Primary sources: <https://slsa.dev/> and <https://reproducible-builds.org/>.
+
 ## Decision rules
 
 - Record the resolution order: internal registry, mirror, public, and which scopes each serves.

@@ -17,6 +17,8 @@ Its second purpose is upgrade safety. A generator upgrade changes output with no
 
 Primary source: <https://www.openapis.org/>.
 
+Primary sources: <https://www.openapis.org/> and <https://reproducible-builds.org/>.
+
 ## Decision rules
 
 - List every generator with input, output targets, freshness policy, and owner.

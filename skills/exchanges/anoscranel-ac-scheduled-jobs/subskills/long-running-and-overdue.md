@@ -15,6 +15,8 @@ A job whose worst-case duration crosses its interval has stopped being a job and
 
 The design responses are the interval change, the split, or the acceptance. Raising the interval matches the job to its real duration but accepts coarser data. Splitting the job into per-partition workers turns one long run into many short ones, at the cost of a coordinator. Accepting overlap semantics is only viable for genuinely idempotent work — a warmer whose late run causes no harm — and must be written down as a decision, not an oversight.
 
+Primary sources: <https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/> and <https://learn.microsoft.com/en-us/azure/architecture/>.
+
 ## Decision rules
 
 - Measure the job's duration distribution, not just its typical time; the tail decides.

@@ -16,6 +16,8 @@ status: "seedling"
 - **Fuzzing**: coverage-guided fuzzing via AFL++, libFuzzer, Go native fuzzing (Go 1.18+), cargo-fuzz, ClusterFuzzLite; OSS-Fuzz at scale.
 - **Why**: line coverage proves reach, not assertion strength. Mutation score is the more honest signal. One study: a green suite detected 8.7% of mutants. ⚠️ Single study.
 
+Primary sources: <https://alastairreid.github.io/RelatedWork/papers/claessen:icfp:2000> and <https://beefed.ai/en/prioritize-regression-tests-impact-analysis>.
+
 ## Decision rules
 
 1. Property tests when an invariant generalises: round-trip (`decode(encode(x)) == x`), idempotence, ordering, commutativity, model equivalence, metamorphic relations.

@@ -15,6 +15,8 @@ A pool hands out a resource on request and takes it back when the borrower relea
 
 The categorical tell is the curve. A leak under steady load is a staircase: pool usage rises, never returns to baseline, and each step is a leaked instance. Saturation by contrast is a plateau that tracks load — high but flat, returning at night. The staircase demands leak-hunting in code; the plateau demands a size decision; confusing one for the other wastes a day.
 
+Primary sources: <https://learn.microsoft.com/en-us/azure/data-explorer/> and <https://docs.oracle.com/en/java/javase/jdbc/>.
+
 ## Decision rules
 
 - Sample the pool's checked-out count over time before reading any code.

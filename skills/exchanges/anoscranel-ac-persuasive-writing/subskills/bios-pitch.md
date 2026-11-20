@@ -58,6 +58,6 @@ status: "seedling"
 
 ## Sources
 
-- <https://nomixy.com/ai-pitch-deck-generators-funded-2026>
+- <https://www.ycombinator.com/library>
 - <https://blueoceansolutions.ai/blog/b2b-case-studies-that-convert-social-proof>
 - https://hub.causo.ai/guides/cold-email-vcs-2026

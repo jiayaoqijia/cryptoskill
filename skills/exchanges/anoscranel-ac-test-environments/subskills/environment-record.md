@@ -17,6 +17,8 @@ Its second purpose is the parity contract stated upfront. Each class records wha
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/bliki/DeploymentPipeline.html> and <https://martinfowler.com/articles/continuousIntegration.html>.
+
 ## Decision rules
 
 - Record each class with its definition source and provisioning method.

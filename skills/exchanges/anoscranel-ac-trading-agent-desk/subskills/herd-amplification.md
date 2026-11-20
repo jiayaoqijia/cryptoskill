@@ -8,9 +8,9 @@ status: seedling
 ---
 
 ## Standard
-Agent-driven trading systems introduce severe structural feedback loops into financial markets through herd amplification and all-or-nothing participation dynamics. Because profit-seeking autonomous agents utilize similar objective functions, data sources, and threshold triggers, they tend to synchronize their actions during volatility events. This synchronization accelerates price momentum, deepens liquidity vacuums, and amplifies market herds far beyond traditional human baseline participation.
+Agent-driven trading systems introduce severe structural feedback loops into financial markets through herd amplification and all-or-nothing participation dynamics. Because profit-seeking autonomous agents utilize similar objective functions, data sources, and threshold triggers, they tend to synchronize their actions during volatility events. This synchronization accelerates price momentum and deepens liquidity vacuums (<https://arxiv.org/abs/2608.03616>), amplifying market herds far beyond traditional human baseline participation (<https://arxiv.org/abs/2611.01799>).
 
-Conversely, professional market makers providing spread-earning liquidity must widen quotes or withdraw entirely during these herd surges to manage inventory risk, rendering visible book liquidity highly fragile (https://doi.org/10.1111/jofi.13210). Consequently, high trading volume during agent-dominated episodes does not reflect genuine depth; rather, it indicates transient, high-turnover activity masking severe structural thinness. Trading desks must account for maker fragility and avoid interpreting volume spikes as stable liquidity reserves (https://arxiv.org/abs/2308.09876).
+Conversely, professional market makers providing spread-earning liquidity must widen quotes or withdraw entirely during these herd surges to manage inventory risk, rendering visible book liquidity highly fragile (<https://arxiv.org/abs/2611.01799>). Consequently, high trading volume during agent-dominated episodes does not reflect genuine depth; rather, it indicates transient, high-turnover activity masking severe structural thinness. Trading desks must account for maker fragility and avoid interpreting volume spikes as stable liquidity reserves.
 
 ## Decision rules
 - Rule 1: Never treat high trading volume during volatile periods as stable execution liquidity; assume book depth is highly fragile.
@@ -36,9 +36,10 @@ Conversely, professional market makers providing spread-earning liquidity must w
 - [ ] Execution algorithms incorporate dynamic participation rate caps and slippage bounds.
 - [ ] Liquidity stress tests account for instantaneous maker withdrawal and spread widening.
 - [ ] Volume metrics are filtered for transient agent churn rather than structural depth.
-- [ ] Order-slicing logic prevents aggressive consumption of fragile book liquidity (https://doi.org/10.1111/jofi.13210).
-- [ ] Risk documentation details the mechanics of agent herd amplification (https://arxiv.org/abs/2308.09876).
+- [ ] Order-slicing logic prevents aggressive consumption of fragile book liquidity.
+- [ ] Risk documentation details the mechanics of agent herd amplification.
 
 ## Sources
-- Market Maker Inventory Risk and Liquidity Fragility in Electronic Markets: https://doi.org/10.1111/jofi.13210
-- Feedback Loops and Herd Dynamics in Algorithmic Trading Ecosystems: https://arxiv.org/abs/2308.09876
+
+- Aldridge, I. (2026). Learning AI Agents, Market Makers, and Stress in Automated Markets. arXiv:2611.01799: <https://arxiv.org/abs/2611.01799>
+- Garcia Seuma et al., Measuring the engine of a liquidation cascade. arXiv:2608.03616: <https://arxiv.org/abs/2608.03616>

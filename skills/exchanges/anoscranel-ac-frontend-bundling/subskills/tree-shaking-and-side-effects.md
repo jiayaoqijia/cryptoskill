@@ -17,6 +17,8 @@ That is why the side-effects field in a package manifest exists: a package that 
 
 Primary source: <https://web.dev/learn>.
 
+Primary sources: <https://web.dev/learn> and <https://nodejs.org/api/packages.html>.
+
 ## Decision rules
 
 - Record which packages declare themselves side-effect free and which do not.

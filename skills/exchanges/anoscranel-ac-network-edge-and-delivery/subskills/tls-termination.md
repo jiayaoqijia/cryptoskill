@@ -17,6 +17,8 @@ The certificate lifecycle is the part that fails in production. A certificate ha
 
 Primary source: <https://www.rfc-editor.org/>.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc8446> and <https://www.rfc-editor.org/rfc/rfc8555>.
+
 ## Decision rules
 
 - Record where TLS terminates for each public route and what network plaintext traverses.

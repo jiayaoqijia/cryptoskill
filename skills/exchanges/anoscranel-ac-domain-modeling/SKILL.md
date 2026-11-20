@@ -4,6 +4,7 @@ description: "The craft of modeling a business domain in code, domain-driven: bu
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Domain Modeling

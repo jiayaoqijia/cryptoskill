@@ -13,6 +13,8 @@ status: "seedling"
 
 Co-authoring is a staged collaborative loop between an author and an agent for building substantial structured documents. This leaf governs when to propose the co-authoring workflow rather than generating text immediately. The standard requires that whenever an author requests a complex deliverable such as a proposal, technical specification, product requirement document (PRD), design document, or Request for Comments (RFC), the agent pauses single-shot generation and offers the structured loop. Co-authoring is unnecessary for short, transient notes or single-question answers where overhead outweighs value. The goal is to align expectations and secure explicit consent before introducing multi-stage dependencies. According to Anthropic's public research on doc-coauthoring workflows, upfront alignment reduces downstream revision cycles by establishing shared intent before drafting begins.
 
+Primary sources for the claims here: <https://github.com/anthropics/skills/tree/main/skills/doc-coauthoring> and <https://www.iso.org/standard/78907.html>.
+
 ## Decision rules
 
 1. Offer co-authoring whenever a prompt requests a multi-section document, formal proposal, technical specification, or architecture record.

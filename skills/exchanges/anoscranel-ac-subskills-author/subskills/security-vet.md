@@ -22,6 +22,8 @@ Run it on every skill-with-subskills, **even when lint is clean.** It makes no i
 decision: that belongs to audit-skill.md step 7. The mechanical scan is Step 1; the
 manual checks are Step 2; both run per file and both must PASS.
 
+Primary sources: <https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/> and <https://skills.sh>.
+
 ## Decision rules
 
 | Tree type | Gate to pass (ALL required) | On PASS | On FAIL |

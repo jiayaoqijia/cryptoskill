@@ -19,6 +19,8 @@ lines/row estimate): one hop, full-read guarantee, zero second-hop selection err
 Rules 3–4 become trivially checkable because every scope claim lives in one file.
 "Reality is nested" is served by the index's *wording*, not by filesystem depth.
 
+Primary sources: <https://martinfowler.com> and <https://github.com/>.
+
 ## Decision rules
 
 - **≤60 (operator-set limit ⚠️) leaves → FLAT depth-1, preferred (lint WARNs otherwise).**

@@ -17,6 +17,8 @@ The productive use is as a sorting key, not a gate. High-complexity findings are
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/bliki/CodeSmell.html> and <https://en.wikipedia.org/wiki/Goodhart%27s_law>.
+
 ## Decision rules
 
 - Record which metrics the tool produces and what each proxies.

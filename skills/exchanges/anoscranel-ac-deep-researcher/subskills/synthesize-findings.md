@@ -24,6 +24,8 @@ status: "seedling"
  disagreement with both sides cited, never a smoothed midpoint nobody holds
  (the failure mode: here it stays a rule rather than a measurement).
 
+Primary sources: <https://doi.org/10.1136/bmj.l6890> and <https://doi.org/10.1136/bmj.n71>.
+
 ## Decision rules
 
 - Numbers on the same population merge; numbers on different populations stay

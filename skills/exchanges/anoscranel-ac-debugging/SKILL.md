@@ -4,6 +4,7 @@ description: "Scientific debugging and defect analysis: reproduce and minimise a
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Debugging

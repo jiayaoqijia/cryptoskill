@@ -41,6 +41,8 @@ The precedence rule (Rule 4) — write this sentence into every SKILL.md:
 > string is claimed by exactly one file in this tree; no leaf may widen a prohibition
 > declared by an ancestor — leaves narrow, never override upward.
 
+Primary sources: <https://json-schema.org> and <https://github.com/anoscranel/rsi-skills>.
+
 ## Decision rules
 
 The description (the only Level-1 routing signal — the loader sees only it at startup):

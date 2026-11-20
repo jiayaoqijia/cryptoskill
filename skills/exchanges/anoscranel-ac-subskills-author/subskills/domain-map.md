@@ -19,6 +19,8 @@ The map is closed and unique (Rule 4): every section of the source material maps
 exactly one leaf; no orphan content; no scope claimed twice. The domain chain root is set
 now: `<skill-domain>`; every leaf's `domain:` is a strict prefix-extension of it.
 
+Primary sources: <https://martinfowler.com> and <https://github.com/>.
+
 ## Decision rules
 
 1. **Stay in-domain** — decompose by *its own* domain's knowledge, never cross-field.

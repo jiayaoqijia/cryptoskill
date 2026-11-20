@@ -32,14 +32,13 @@ Primary sources: <https://www.anthropic.com/engineering/building-effective-agent
 | Line type | Verdict |
 |---|---|
 | Fact, constraint, or contract the model cannot know | Keep |
-| Quality adjective ("careful", "world-class expert") | Delete; zero measured lift |
+| Quality adjective ("careful", "world-class expert") | Delete; adds no information |
 | Threat, tip, or plea ("my career depends on it") | Delete; 2023-era folklore |
 | Format description in prose | Replace with one exemplar of the exact output |
 | Negative rule ("never do X") | Pair it with the positive action to take instead |
 
-Shorter beats longer for single-task prompts: in a 28K-prompt study, prompts under 50
-words scored 80.1 versus 66.9 for prompts over 300 words, and 62% of the long prompts
-held contradictory constraints (corpus study, <https://arxiv.org/html/2511.00751v2>).
+Shorter beats longer for single-task prompts: extra lines add budget cost and
+contradiction risk without adding information.
 Contradictions between a user's own sections are a leading failure cause (OpenAI,
 https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide).
 
@@ -57,8 +56,7 @@ https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide).
 
 - Kitchen-sink anticipation of rare failures; move rare content out on demand.
 - Vibe constraints ("be careful") that nothing can check.
-- Role inflation openings ("Act as a world-class expert"); zero measured lift
- (Deep-Dive, 28K corpus).
+- Role inflation openings ("Act as a world-class expert"); adds no information.
 - Buried critical rules in the middle of long prompts; restate them at the end.
 
 ## Done checklist

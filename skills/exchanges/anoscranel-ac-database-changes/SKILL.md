@@ -4,6 +4,7 @@ description: "Database schema design and zero-downtime schema change: tables, ke
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Database Changes

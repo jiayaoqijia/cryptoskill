@@ -20,6 +20,8 @@ status: "seedling"
 - Confidence on the card is capped by the source-trust ladder: a card built
  on a vendor claim says vendor rung, always.
 
+Primary sources: <https://osf.io/prereg/> and <https://www.cisa.gov>.
+
 ## Decision rules
 
 - Load-bearing means the verdict, money, law, or a named decision depends on

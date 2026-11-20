@@ -15,6 +15,8 @@ The scientific method from ac-debugging still governs production work, but the e
 
 The honest discipline is stating in advance which log pattern would disprove the hypothesis. Without it, log reading degrades into confirmation searching: a thousand lines will contain something consistent with any theory, and the absence of a pattern is only meaningful if you said beforehand what absence would look like. Record the prediction before running the search.
 
+Primary sources: <https://www.structlog.org/en/stable/> and <https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview>.
+
 ## Decision rules
 
 - State the hypothesis as a specific, falsifiable log pattern before searching.
@@ -54,6 +56,6 @@ One more distinction keeps the method honest: logs record what the code chose to
 
 ## Sources
 
-- Structured logging and its uses: <https://martinfowler.com/articles/structured-logging.html>
+- Structured logging and its uses: <https://www.structlog.org/en/stable/>
 - Log analysis practice: <https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview>
-- Hypothesis-driven debugging: <https://sre.google/sre-book/debugging-tips/>
+- Hypothesis-driven debugging: <https://sre.google/sre-book/effective-troubleshooting/>

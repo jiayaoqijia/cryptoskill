@@ -47,5 +47,5 @@ Furthermore, careful attention to this domain modeling practice prevents archite
 
 ## Sources
 
-- Evans, Eric. _Domain-Driven Design: Tackling Complexity in the Heart of Software_. Addison-Wesley, 2003. ⚠️ cited without URL.
+- Evans, Eric. _Domain-Driven Design: Tackling Complexity in the Heart of Software_. Addison-Wesley, 2003. Pearson catalog: <https://www.pearson.com/en-gb/subject-catalog/p/domain-driven-design-tackling-complexity-in-the-heart-of-software/P200000009375/9780321125217>
 - Fowler, Martin. "Value Object". MartinFowler.com. <https://martinfowler.com/bliki/ValueObject.html>

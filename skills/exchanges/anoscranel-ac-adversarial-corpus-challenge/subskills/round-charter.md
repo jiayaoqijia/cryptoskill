@@ -11,8 +11,8 @@ status: "seedling"
 
 ## Standard
 
-- A charter is a falsification test, not a search brief. Popper's criterion: a claim is testable when it forbids some observable outcome, and a test that cannot fail is not a test (Stanford Encyclopedia of Philosophy, Popper).
-- Fix the scoring before the round starts. Pre-registration exists to stop the analyst choosing the test after seeing the data (Nosek et al. 2018; Center for Open Science).
+- A charter is a falsification test, not a search brief. Popper's criterion: a claim is testable when it forbids some observable outcome, and a test that cannot fail is not a test (Popper, <https://plato.stanford.edu/entries/popper/>).
+- Fix the scoring before the round starts. Pre-registration exists to stop the analyst choosing the test after seeing the data (Nosek et al. 2018, <https://doi.org/10.1073/pnas.1708274114>).
 - ⚠️ House convention: one worker carries two mandates in one round. First attack the conclusions, then sweep the source classes for what remains after integration.
 - The charter names the corpus version and the claim set, so a later reader can tell exactly what was tested.
 

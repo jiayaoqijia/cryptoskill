@@ -13,7 +13,7 @@ Instrument selection is fundamentally bound by the temporal horizon of the tradi
 
 An intraday trader utilizing perpetual futures faces negligible cumulative funding drag, whereas a multi-month position holder in perpetuals can surrender double-digit percentages of capital to persistent funding rates. Conversely, utilizing a dated future expiring in two weeks for a multi-month macroeconomic thesis forces premature position rollover and incurs unnecessary execution slippage. Horizon matching ensures that the cash flow mechanisms, liquidity profiles, and decay characteristics of the chosen instrument reinforce the operational timeline rather than working against it.
 
-Primary sources for the claims here: <https://www.cfainstitute.org/en/membership/professional-development/refresher-readings/derivatives](https://www.cfainstitute.org/en/membership/professional-development/refresher-readings/derivatives> and <https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html>.
+Primary sources for the claims here: <https://cfainstitute.org/insights/professional-learning/refresher-readings/2026/swaps-forwards-futures-strategies> and <https://www.cmegroup.com/education/courses/introduction-to-options.html>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims here: <https://www.cfainstitute.org/en/membership
 
 ## Sources
 
-- CFA Institute Derivatives and Risk Management Curriculum: [https://www.cfainstitute.org/en/membership/professional-development/refresher-readings/derivatives](https://www.cfainstitute.org/en/membership/professional-development/refresher-readings/derivatives)
-- Derivatives Risk Management and Margin Methodologies: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
+- CFA Institute, Swaps, Forwards, and Futures Strategies (2026 curriculum): <https://cfainstitute.org/insights/professional-learning/refresher-readings/2026/swaps-forwards-futures-strategies>
+- Derivatives Risk Management and Margin Methodologies: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>

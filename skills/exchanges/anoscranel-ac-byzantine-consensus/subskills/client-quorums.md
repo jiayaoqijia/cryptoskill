@@ -15,7 +15,7 @@ A Byzantine client cannot trust a reply from one replica, because that replica m
 
 The design question is what the f+1 matching replies prove. They prove the value was committed, not merely processed, and the client's read path must respect the same discipline as its writes: forwarded tags, sequence numbers, or digests that let the client verify that the f+1 replies describe the same request. A client that skips the verification because f+1 replies agree has moved its trust to the agreement of liars, which f+1 of them can produce.
 
-Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
+Primary sources: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
 
 ## Decision rules
 
@@ -56,6 +56,6 @@ A further note: the client's retry path is part of the trust rule, since a reque
 
 ## Sources
 
-- Client interaction in PBFT: <https://pmg.csail.mit.edu/papers/osdi99.pdf>
+- Client interaction in PBFT: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf>
 - Client behaviour reference: <https://en.wikipedia.org/wiki/PBFT>
 - Patterns reference: <https://martinfowler.com/articles/patterns-of-distributed-systems/>

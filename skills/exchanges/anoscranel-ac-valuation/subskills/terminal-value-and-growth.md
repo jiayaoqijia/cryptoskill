@@ -20,7 +20,7 @@ Primary sources: <https://pages.stern.nyu.edu/~adamodar/> and <https://www.sec.g
 ## Decision rules
 
 - Terminal growth is stated as a single number with a justification tied to long-run nominal growth, never to the company's recent growth.
-- Terminal growth is below the long-run growth of the economy the business operates in; a number above it requires a written argument and a warning.
+- Terminal growth never exceeds the long-run nominal growth of the economy the business operates in; a higher number is a modelling error, not an assumption — rebuild the forecast.
 - Terminal margins are justified against the best competitor and the historical range.
 - Terminal return on capital is consistent with the competitive analysis; an above-cost-of-capital return forever implies a permanent moat.
 - Terminal value is reported as a percentage of the total; above three quarters, the model is a terminal-value model and should say so.
@@ -38,7 +38,7 @@ Primary sources: <https://pages.stern.nyu.edu/~adamodar/> and <https://www.sec.g
 ## Anti-patterns
 
 - Choosing terminal growth to make the answer match the current price.
-- Setting terminal growth above the economy's long-run rate without a written argument.
+- Setting terminal growth above the economy's long-run rate.
 - Assuming terminal margins above the best competitor's.
 - Reporting a point value without showing the terminal share.
 - Ignoring that a higher terminal growth rate and a lower discount rate both inflate the answer in the same direction.

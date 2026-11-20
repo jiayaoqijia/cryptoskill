@@ -17,7 +17,7 @@ status: "seedling"
  With no prosody and no negotiation, footing is read once and cannot be repaired (<https://doi.org/10.5040/9781350023857.0012>).
 - **Face threat sets the dose.** Brown and Levinson: every adult claims positive face (an approved self-image) and negative face (freedom from imposition).
  Requests threaten the reader's negative face, criticism their positive face, apologies your own.
- Weightiness Wx = social distance + the reader's power over you + the imposition's rank (<https://www.historicalpoliteness.net/bibliography/>).
+ Weightiness Wx = social distance + the reader's power over you + the imposition's rank (<https://doi.org/10.1037/0022-3514.59.4.719>).
  Redress runs from bald on-record through positive and negative politeness to off-record.
 - **Hedging is insurance, not a competence penalty.** Sah, Moore and MacCoun (n = 184): when wrong, confident advisors scored 2.23/5 against 2.84 for hedged (https://escholarship.org/content/qt1ww5g76g/qt1ww5g76g.pdf). When right it inverted — 4.00 versus 3.67.
 - **Warmth is the weakest axis.** No corpus dimension and no measured outcome exist for warmth. "Be warm" is advice, not a finding. Formality is corpus-anchored in Biber's Dimension 1.
@@ -58,6 +58,6 @@ status: "seedling"
 ## Sources
 
 - <https://doi.org/10.5040/9781350023857.0012>
-- <https://www.historicalpoliteness.net/bibliography/>
+- <https://doi.org/10.1037/0022-3514.59.4.719>
 - https://escholarship.org/content/qt1ww5g76g/qt1ww5g76g.pdf
 - https://arxiv.org/abs/1306.6078

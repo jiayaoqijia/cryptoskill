@@ -4,6 +4,7 @@ description: "Task breakdown and planning: slicing a spec into ordered vertical 
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Task Planning

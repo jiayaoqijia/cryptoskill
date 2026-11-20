@@ -15,6 +15,8 @@ status: seedling
 - NIST SP 800-122 defines PII as information that distinguishes or traces an identity, or is linkable to one — you cannot protect data you do not know you hold (https://csrc.nist.gov/pubs/sp/800/122/final).
 - India DPDP Rules 2025 (notified 13 Nov 2025): Rule 7 breach intimation to affected principals **without delay**, to the Board initial without delay then a **detailed report within 72 hours**; Rule 7 commences **13 May 2027** (⚠️ some advisers count 14 May).
 
+Primary sources: <https://csrc.nist.gov/privacy-framework> and <https://owasp.org/www-project-application-security-verification-standard/>.
+
 ## Decision rules
 
 1. Collect only what a shipped feature consumes; data without a named purpose is deletion cost with no benefit.

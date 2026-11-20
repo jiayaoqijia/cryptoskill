@@ -4,6 +4,7 @@ description: "Requirements and specification writing: user stories, acceptance c
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Spec Writing

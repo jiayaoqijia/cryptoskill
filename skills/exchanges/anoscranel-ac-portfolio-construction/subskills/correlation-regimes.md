@@ -13,7 +13,7 @@ status: seedling
 
 Crypto asset correlations are highly regime-dependent and increase dramatically during market stress events, liquidity contractions, and cascading liquidations. Measuring asset correlation exclusively during calm market periods severely underestimates portfolio vulnerability because tail dependence causes seemingly uncorrelated digital assets to move in tandem during systemic shocks. Portfolio construction must account for regime shifts, ensuring that diversification assumptions do not rely on historical data gathered solely during low-volatility environments. When common shocks occur across global venues, liquidation dynamics amplify cross-asset co-movement, neutralizing traditional portfolio variance reduction techniques. Understanding these structural shifts is essential for maintaining robust risk boundaries across all active trading operations.
 
-Primary sources for the claims here: <https://www.bis.org/publ/qtrpdf/r_qt2212s.htm> and <https://www.nber.org/papers/w31000>.
+Primary sources for the claims here: <https://bis.org/publications/crypto-ecosystem-key-elements-and-risks.pdf> and <https://arxiv.org/abs/2605.30442>.
 
 ## Decision rules
 
@@ -44,7 +44,7 @@ Primary sources for the claims here: <https://www.bis.org/publ/qtrpdf/r_qt2212s.
 
 ## Sources
 
-- National Bureau of Economic Research (NBER): https://www.nber.org/papers/w31000
-- Bank for International Settlements (BIS): https://www.bis.org/publ/qtrpdf/r_qt2212s.htm
+- Regime-dependent cross-asset spillovers (arXiv 2605.30442): https://arxiv.org/abs/2605.30442
+- BIS, The crypto ecosystem: key elements and risks (2023): https://bis.org/publications/crypto-ecosystem-key-elements-and-risks.pdf
 - Federal Reserve Bank of New York: https://www.newyorkfed.org/
 - European Central Bank (ECB): https://www.ecb.europa.eu/

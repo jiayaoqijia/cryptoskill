@@ -4,6 +4,7 @@ description: "Run a break-mandate round against a finished research corpus. An i
 license: MIT
 metadata:
   domain: research-operations
+status: seedling
 ---
 
 # Adversarial Corpus Challenge

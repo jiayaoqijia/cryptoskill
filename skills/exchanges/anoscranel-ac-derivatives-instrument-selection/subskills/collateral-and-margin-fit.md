@@ -13,7 +13,7 @@ Instrument selection cannot be divorced from the collateral and margin architect
 
 Cross margin pools risk across all open positions, allowing winners to support losers but threatening total account liquidation during extreme volatility cascades. Isolated margin boxes risk per position, preventing contagion but requiring active manual top-ups. Furthermore, using volatile assets as collateral introduces quanto risk, where a drop in the collateral asset's dollar value simultaneously increases margin requirements and position leverage. Instrument selection must harmonize with the available margin infrastructure.
 
-Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf](https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf>.
+Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims here: <https://www.cmegroup.com/education/courses
 
 ## Sources
 
-- IOSCO Principles for Derivatives Clearing and Margin Requirements: [https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf](https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf)
-- Derivatives Risk Management and Margin Methodologies: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
+- IOSCO Principles for Derivatives Clearing and Margin Requirements: <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf>
+- Derivatives Risk Management and Margin Methodologies: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>

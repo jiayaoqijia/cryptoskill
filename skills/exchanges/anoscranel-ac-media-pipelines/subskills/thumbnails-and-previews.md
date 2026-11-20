@@ -17,6 +17,8 @@ For video, the thumbnail problem is compounded by **time**: a poster frame must 
 
 **Preview extraction** extends the idea beyond static images: short looping previews for video, sprite thumbnails scrubbed from the timeline, or page-range thumbnails for documents. All are derivatives with recipes; all face the same constraint — the pipeline's job is to produce them once, deterministically, at ingest, rather than delegate expensive extraction to the delivery layer multiple times per request.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types> and <https://web.dev/learn/images>.
+
 ## Decision rules
 
 - Emit the full thumbnail set at ingest, in one pass, from a stated recipe.

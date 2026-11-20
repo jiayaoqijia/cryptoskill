@@ -13,6 +13,8 @@ status: "seedling"
 
 Substantive documents must carry an explicit decision trail rather than orphaned certainty. Grounded in the Architecture Decision Record (ADR) tradition, this leaf governs capturing what was decided, what alternatives were evaluated and rejected, the trade-offs accepted, and any open questions remaining at session close. The standard requires that decision rationale lives alongside the document—either in dedicated inline sections, an appended log, or linked structured records—so future reviewers understand *why* the text reads the way it does without reconstructing lost debates.
 
+Primary sources for the claims here: <https://adr.github.io> and <https://www.iso.org>.
+
 ## Decision rules
 
 1. Record every major architectural, strategic, or design choice made during the co-authoring loop immediately when finalized.

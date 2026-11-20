@@ -15,6 +15,8 @@ A single user request through a distributed system becomes many events in many l
 
 The failure mode of the pattern is propagation loss. The ID must be carried through synchronous calls, asynchronous queues, background jobs spawned later — and each place it is dropped severs the chain precisely where the interesting fan-out happens. A system with ninety percent propagation has logs that look correlated and are not, which is worse than one with no IDs at all, because a broken trail gets trusted.
 
+Primary sources: <https://opentelemetry.io/docs/concepts/signals/traces/> and <https://martinfowler.com/articles/patterns-of-distributed-systems/>.
+
 ## Decision rules
 
 - Record which entry points generate the ID and in what format.

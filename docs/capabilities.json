@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T18:29:14.498863+00:00",
+  "generated_at": "2026-11-20T00:44:21.330950+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -141228,6 +141228,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/nirholas-crypto-news-api": {
+      "name": "crypto-news-api",
+      "execution_model": "unknown",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/nirholas-crypto-news-briefing": {
       "name": "crypto-news-briefing",
       "execution_model": "read_only",
@@ -247991,13 +248053,13 @@
     }
   },
   "summary": {
-    "discovered": 3986,
-    "processed": 3986,
+    "discovered": 3987,
+    "processed": 3987,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2869,
       "router_orchestrator": 167,
-      "unknown": 412,
+      "unknown": 413,
       "analysis_only": 245,
       "unsigned_tx_builder": 120,
       "local_executor": 107,
@@ -248006,16 +248068,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1340,
-      "can_install_code": 646,
+      "can_execute_shell": 1341,
+      "can_install_code": 647,
       "can_write_files": 240,
       "can_browse_web": 300,
-      "can_spawn_subagents": 299,
+      "can_spawn_subagents": 300,
       "can_move_funds": 311,
       "requires_private_key": 534,
       "requires_hosted_operator": 373,
       "uses_remote_install_script": 46,
-      "mutable_remote_runtime": 646
+      "mutable_remote_runtime": 647
     }
   }
 }

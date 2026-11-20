@@ -12,7 +12,7 @@ status: "seedling"
 ## Standard
 
 - **Allen, _Getting Things Done_ (2001)**: the inbox decision is do it, delegate it, or defer it; anything under a small threshold of time should be done now rather than tracked. <https://gettingthingsdone.com/>
-- **Rumelt, _Good Strategy Bad Strategy_ (2011)**: a choice that does not name what it will not do is not a choice; dropping work must be explicit, not accidental. <https://www.penguinrandomhouse.com/books/205843/good-strategy-bad-strategy-by-richard-rumelt/>
+- **Rumelt, _Good Strategy Bad Strategy_ (2011)**: a choice that does not name what it will not do is not a choice; dropping work must be explicit, not accidental. <https://penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt>
 - **Scrum Guide (2020)**: a timebox caps an activity; it forces an end so the next decision can happen. <https://scrumguides.org/scrum-guide.html>
 
 ## Decision rules
@@ -53,5 +53,5 @@ status: "seedling"
 ## Sources
 
 - Allen, _Getting Things Done_ (2001): <https://gettingthingsdone.com/>
-- Rumelt, _Good Strategy Bad Strategy_ (2011): <https://www.penguinrandomhouse.com/books/205843/good-strategy-bad-strategy-by-richard-rumelt/>
+- Rumelt, _Good Strategy Bad Strategy_ (2011): <https://penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt>
 - Scrum Guide (2020): <https://scrumguides.org/scrum-guide.html>

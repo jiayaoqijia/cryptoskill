@@ -4,6 +4,7 @@ description: "Software-engineering standards reference: which standard exists an
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Software Engineering Standards

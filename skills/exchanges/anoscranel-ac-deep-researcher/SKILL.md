@@ -1,9 +1,10 @@
 ---
 name: ac-deep-researcher
 license: MIT
-description: "Runs a full deep-research study end to end. Reframes the question into falsifiable hypotheses, decomposes it into a query plan, triages sources on a trust ladder, pulls evidence through the keyless-first retrieval cascade, verifies every load-bearing claim against two or more independent source lineages with verbatim quotes archived, attacks the draft conclusions with an adversarial pass, stops on declared criteria with the reason stated, keeps a claim-to-source evidence ledger, and delivers the answer-first evidence report. Use for \"research this question\", \"map the literature\", \"verify this claim properly\", \"write the evidence report\", \"investigate before we decide\", or any question where a wrong answer costs more than the research. Not for one-hop factual lookups (what, who, when, price), single-page fetches, multi-day autonomous desk operations, or formal systematic-review protocol compliance."
+description: "Runs a full deep-research study end to end. Reframes the question into falsifiable hypotheses, decomposes it into a query plan, triages sources on a trust ladder, pulls evidence through the keyless-first retrieval cascade, verifies every load-bearing claim against two or more independent source lineages with verbatim quotes archived, attacks the draft conclusions with an adversarial pass, stops on declared criteria with the reason stated, keeps a claim-to-source evidence ledger, and delivers the answer-first evidence report. Use when asking \"research this question\", \"map the literature\", \"verify this claim properly\", \"write the evidence report\", \"investigate before we decide\", or any question where a wrong answer costs more than the research. Not for one-hop factual lookups (what, who, when, price), single-page fetches, multi-day autonomous desk operations, or formal systematic-review protocol compliance."
 metadata:
   domain: research-operations
+status: seedling
 ---
 
 # Deep Researcher — the single-study research craft

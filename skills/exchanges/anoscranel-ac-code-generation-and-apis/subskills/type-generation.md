@@ -17,6 +17,8 @@ Drift is the failure this wiring must catch. A schema can change, and unless the
 
 Primary source: <https://www.openapis.org/>.
 
+Primary sources: <https://www.openapis.org/> and <https://protobuf.dev/overview/>.
+
 ## Decision rules
 
 - Record each schema that types are derived from and the generator version used.

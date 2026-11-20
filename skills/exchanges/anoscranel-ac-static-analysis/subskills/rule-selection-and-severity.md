@@ -17,6 +17,8 @@ The selection criterion is action. A rule earns its error level when the team wi
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/articles/continuousIntegration.html> and <https://martinfowler.com/bliki/CodeSmell.html>.
+
 ## Decision rules
 
 - Assign error only to rules with unanimous fix-on-find commitment.

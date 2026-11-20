@@ -16,6 +16,8 @@ status: "seedling"
 - **Klein, "Performing a Project Premortem"** (HBR, 2007): the pre-mortem yields early warning signals; those become the kill criteria a close note records. <https://hbr.org/2007/09/performing-a-project-premortem> ⚠️ paywalled.
 - ⚠️ House convention: the anti-loop cap — two rounds over the same ground is the limit; a third pass needs a new named question.
 
+Primary sources: <https://hbr.org/2007/09/performing-a-project-premortem> and <https://plato.stanford.edu/entries/popper/>.
+
 ## Decision rules
 
 1. If new information no longer changes the decision, stop; that is criterion one.
@@ -57,3 +59,4 @@ status: "seedling"
 - Duke, _Quit_ (2022). ⚠️ cited without URL.
 - Tetlock & Gardner, _Superforecasting_ (2015). ⚠️ cited without URL.
 - Klein, "Performing a Project Premortem", HBR 2007: <https://hbr.org/2007/09/performing-a-project-premortem>
+- Stanford Encyclopedia of Philosophy, "Karl Popper": <https://plato.stanford.edu/entries/popper/>

@@ -15,6 +15,8 @@ status: seedling
 - **Brügge & Dutoit, _Object-Oriented Software Engineering_ (2009)**: architectural analysis outputs serve as inputs to design decision records, but analysis roles must not unilaterally execute implementation changes. <https://www.pearson.com/en-us/subject-catalog/p/Bruegge-Object-Oriented-Software-Engineering-Using-UML-Patterns-and-Java-3rd-Edition/P200000003319>
 - ⚠️ House convention: once the survey report is delivered and the user selects a candidate, the survey role terminates; further work requires explicit transition to a distinct architectural design or coding workflow.
 
+Primary source for the claims here: <https://www.pearson.com/en-us/subject-catalog/p/Bruegge-Object-Oriented-Software-Engineering-Using-UML-Patterns-and-Java-3rd-Edition/P200000003319>.
+
 ## Decision rules
 
 1. If the user selects a candidate from the survey shortlist, record its evidence trail and boundary specification as the handoff artifact for subsequent work.
@@ -49,3 +51,4 @@ status: seedling
 
 - Institute of Electrical and Electronics Engineers. _IEEE Std 12207-2017: Systems and software engineering — Software life cycle processes_. IEEE, 2017. ⚠️ cited without URL.
 - Brügge, Bernd, and Allen H. Dutoit. _Object-Oriented Software Engineering: Using UML, Patterns, and Java_. 3rd ed., Prentice Hall, 2009. <https://www.pearson.com/en-us/subject-catalog/p/Bruegge-Object-Oriented-Software-Engineering-Using-UML-Patterns-and-Java-3rd-Edition/P200000003319>
+- Feathers, Michael. _Working Effectively with Legacy Code_. Prentice Hall, 2004. <https://www.pearson.com/store/p/working-effectively-with-legacy-code/P100000885233>

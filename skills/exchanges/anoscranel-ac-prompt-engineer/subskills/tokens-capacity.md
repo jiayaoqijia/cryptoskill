@@ -21,7 +21,7 @@ OpenAI caches automatically above 1,024 tokens at a 50% input discount; Gemini 2
 has implicit caching on by default (per-provider specifics: <https://claude.com/blog/best-practices-for-prompt-engineering> and the Gemini prompting-strategies guide). For long-context models: Gemini guidance places context
 first and instructions last (<https://ai.google.dev/gemini-api/docs/prompting-strategies>), and production
 prompts restate load-bearing rules at the end where attention is highest ("recency
-pinning", Part II of <https://arxiv.org/html/2511.00751v2>).
+pinning").
 
 Primary sources: <https://developers.openai.com/> and <https://www.anthropic.com/engineering/building-effective-agents>.
 

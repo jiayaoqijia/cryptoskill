@@ -15,7 +15,7 @@ Crash-fault consensus assumes a failed node stops and says nothing false. Byzant
 
 This skill covers that model and the machinery built on it: why 3f+1 is the minimum, how the three-phase prepare-commit structure lets replicas converge on one order despite equivocation, how view change replaces a primary that may itself be the fault, and how a client decides a reply is trustworthy without trusting any single node. It ends at the boundary of the crash-fault family, which belongs to another skill.
 
-Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://en.wikipedia.org/wiki/Byzantine_fault>.
+Primary sources: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf> and <https://en.wikipedia.org/wiki/Byzantine_fault>.
 
 ## When to use
 

@@ -4,6 +4,7 @@ description: "Public API contracts, their first shape and their evolution: REST,
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # API Design

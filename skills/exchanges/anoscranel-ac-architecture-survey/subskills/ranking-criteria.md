@@ -15,6 +15,8 @@ status: seedling
 - **IEEE Std 1028-2008**: formal reviews must evaluate findings against standardized criteria to ensure objective ranking and resource allocation. ⚠️ cited without URL.
 - ⚠️ House convention: recurring multi-module problems always outrank isolated single-file awkwardness regardless of estimated implementation effort.
 
+Primary source for the claims here: <https://www.oreilly.com/library/view/agile-project-management/9780321605908/>.
+
 ## Decision rules
 
 1. If a candidate resolves a recurring structural smell across three or more modules, rank its impact higher than any single-file cosmetic improvement.
@@ -49,3 +51,4 @@ status: seedling
 
 - Highsmith, Jim. _Agile Project Management: Creating Innovative Products_. 2nd ed., Addison-Wesley Professional, 2009. <https://www.oreilly.com/library/view/agile-project-management/9780321605908/>
 - Institute of Electrical and Electronics Engineers. _IEEE Std 1028-2008: IEEE Standard for Software Reviews and Audits_. IEEE, 2008. ⚠️ cited without URL.
+- ISO/IEC/IEEE 29148:2018, _Requirements engineering_. ISO, 2018. <https://www.iso.org/standard/72089.html>

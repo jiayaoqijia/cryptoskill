@@ -1,9 +1,10 @@
 ---
 name: ac-security-engineer
 license: MIT
-description: "Hardens software against attack across the whole lifecycle. Use when threat-modelling a feature or system, reviewing a change for security defects, picking a verification target against OWASP ASVS, or fixing findings in input handling, injection, browser-side attacks, authentication, sessions and tokens, authorization, API security, secrets, cryptography, SSRF, file uploads or deserialization. Also covers supply-chain and CVE triage, security testing gates, LLM and agent tool security, privacy duties, abuse and rate limiting, security logging, incident first response and vulnerability disclosure. Not for writing prose documentation, building release pipelines, running infrastructure operations, or offensive penetration testing against systems the user does not own — those tasks sit outside application hardening."
+description: "Hardens software against attack across the whole lifecycle. Use when asking about threat-modelling a feature or system, reviewing a change for security defects, picking a verification target against OWASP ASVS, or fixing findings in input handling, injection, browser-side attacks, authentication, sessions and tokens, authorization, API security, secrets, cryptography, SSRF, file uploads or deserialization. Also covers supply-chain and CVE triage, security testing gates, LLM and agent tool security, privacy duties, abuse and rate limiting, security logging, incident first response and vulnerability disclosure. Not for writing prose documentation, building release pipelines, running infrastructure operations, or offensive penetration testing against systems the user does not own — those tasks sit outside application hardening."
 metadata:
   domain: security-hardening
+status: seedling
 ---
 
 # Security Engineer

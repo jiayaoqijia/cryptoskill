@@ -13,6 +13,8 @@ status: "seedling"
 
 Stage 3 executes the fresh-reader test as the final quality gate before document release. Grounded in US federal plain-language standards and ISO 24495-1 principles, this review requires evaluating the completed text from the perspective of an intelligent reader possessing zero background context from the co-authoring session. The test specifically audits for unglossed technical jargon, unstated premises, missing rationale, and logical leaps where the text raises questions and leaves them hanging. The standard mandates running this simulation cleanly, cataloging discovered comprehension gaps, and making targeted revisions before final publication.
 
+Primary sources for the claims here: <https://www.iso.org/standard/78907.html> and <https://www.plainlanguage.gov>.
+
 ## Decision rules
 
 1. Simulate a naive reader persona who has no prior participation in the co-authoring session or internal context.

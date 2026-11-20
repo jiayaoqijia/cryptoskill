@@ -16,6 +16,8 @@ status: "seedling"
 - **Not every red is the product**: 26% of non-flaky CI failures were wrong or obsolete tests; 19.3% of failed builds were fixed by editing the test (Hilton et al., FSE 2017).
 - **Merge queues** stop "green alone, red together" breaks by testing the merged result.
 
+Primary sources: <https://www.informit.com/store/continuous-delivery-reliable-software-releases-through-9780321670229> and <https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration>.
+
 ## Decision rules
 
 1. Main red → restore green within the hour. ⚠️ House target. Revert the offending commit first; fix forward only if the fix is one small obvious change.

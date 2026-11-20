@@ -1,9 +1,10 @@
 ---
 name: ac-subskills-author
-description: "Authors new self-contained Agent Skills that contain subskills, and audits skills before install (install only after a human approves, or through a fail-closed install gate the operator runs). Every emitted leaf holds its full procedure and hands no work to another skill. Use when creating a skill-with-subskills, decomposing an oversized skill into a subskills/ layout, rebuilding a skill so it depends on no other skill, vetting a third-party skills.sh skill for install, scanning a skill tree for injection or hand-off lines (scripts/skill_scan.py), linting a subskill tree against the 4 enforceable rules, or running a blind routing evaluation (does a task reach the right leaf?) on a skill's description and index. Not for writing a small flat skill with no subskills."
+description: "Authors new self-contained Agent Skills that contain subskills, and audits skills before install (install only after a human approves, or through a fail-closed install gate the operator runs). Every emitted leaf holds its full procedure and hands no work to another skill. Use when asking about creating a skill-with-subskills, decomposing an oversized skill into a subskills/ layout, rebuilding a skill so it depends on no other skill, vetting a third-party skills.sh skill for install, scanning a skill tree for injection or hand-off lines (scripts/skill_scan.py), linting a subskill tree against the 4 enforceable rules, or running a blind routing evaluation (does a task reach the right leaf?) on a skill's description and index. Not for writing a small flat skill with no subskills."
 license: MIT
 metadata:
   domain: skill-authoring
+status: seedling
 ---
 
 # Skill Author — authoring skills that contain subskills

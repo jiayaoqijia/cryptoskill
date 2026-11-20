@@ -17,6 +17,8 @@ Resolution is the build's first semantic act. A bundle is a traversal of the gra
 
 Primary source: <https://web.dev/learn>.
 
+Primary sources: <https://web.dev/learn> and <https://nodejs.org/api/modules.html>.
+
 ## Decision rules
 
 - Record the resolver's extension list and index defaults for the project.

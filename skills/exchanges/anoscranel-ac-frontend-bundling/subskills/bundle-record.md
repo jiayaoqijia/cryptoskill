@@ -17,6 +17,8 @@ Its second purpose is continuity between the people who set the budgets and the 
 
 Primary source: <https://web.dev/learn>.
 
+Primary sources: <https://web.dev/learn> and <https://osf.io/prereg/>.
+
 ## Decision rules
 
 - Record entry points, eager chunks, and split boundaries with their triggers.

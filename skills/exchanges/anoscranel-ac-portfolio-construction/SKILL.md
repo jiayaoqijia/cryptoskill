@@ -5,6 +5,7 @@ license: MIT
 metadata:
   domain: crypto-trading
   status: seedling
+status: seedling
 ---
 
 # Portfolio Construction
@@ -50,6 +51,6 @@ The correlation and drawdown claims here are structural, not measured parameters
 ## Sources & References
 
 - Basel Committee on Banking Supervision: https://www.bis.org/bcbs/publ/d589.htm
-- National Bureau of Economic Research (NBER): https://www.nber.org/papers/w31000
+- Regime-dependent cross-asset spillovers (arXiv 2605.30442): https://arxiv.org/abs/2605.30442
 - Financial Stability Board (FSB): https://www.fsb.org/work-of-the-fsb/market-and-institutional-resilience/crypto-assets/
 - International Organization of Securities Commissions (IOSCO): https://www.iosco.org/

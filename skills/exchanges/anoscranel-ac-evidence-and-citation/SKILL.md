@@ -4,6 +4,7 @@ description: "Evidence and citation craft for a document being written: finding 
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Evidence and Citation

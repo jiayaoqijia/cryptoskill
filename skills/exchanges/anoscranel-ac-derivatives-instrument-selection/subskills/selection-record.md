@@ -13,7 +13,7 @@ Instrument selection must be formalized as a rigorous written record rather than
 
 Crucially, the selection record is a decision artifact, not a trade recommendation. It captures the objective constraints and market conditions prevailing at the time of choice without predicting future price direction or guaranteeing returns. Maintaining this audit trail ensures that subsequent reviews can isolate whether performance failures stemmed from flawed instrument mechanics or unexpected macroeconomic shocks.
 
-Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf](https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf>.
+Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims here: <https://www.cmegroup.com/education/courses
 
 ## Sources
 
-- IOSCO Compliance and Operational Risk Recordkeeping Standards: [https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf](https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf)
-- Derivatives Risk Management and Margin Methodologies: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
+- IOSCO Compliance and Operational Risk Recordkeeping Standards: <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD603.pdf>
+- Derivatives Risk Management and Margin Methodologies: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>

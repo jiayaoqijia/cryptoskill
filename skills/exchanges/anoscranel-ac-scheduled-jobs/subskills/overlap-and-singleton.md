@@ -15,6 +15,8 @@ When a job's interval is shorter than its worst-case duration, two runs want to 
 
 The design question is what the second run does when the lock is held, and the same three answers apply as to missed triggers: skip this instance and record it, wait for the lock and run late, or fail loudly. Waiting is usually wrong because it stacks delay behind delay; skipping with a log is right for most work; failing loudly is right when the overlap itself signals something broken changed in the job's timing.
 
+Primary sources: <https://learn.microsoft.com/en-us/azure/architecture/> and <https://martinfowler.com/articles/patterns-of-distributed-systems/>.
+
 ## Decision rules
 
 - Record each job's worst-case duration and compare with its interval.

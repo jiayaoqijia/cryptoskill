@@ -10,7 +10,7 @@ status: seedling
 ## Standard
 The sandbox and trifecta standard enforces absolute structural isolation between three hazardous capabilities in any agentic trading infrastructure: processing untrusted external content (such as scraped news, forum posts, or API payloads), holding private credentials (such as exchange API keys, private keys, or database passwords), and possessing outbound network egress capability. The trifecta invariant dictates that no single execution context or agent session may hold more than one of these three capabilities simultaneously. 
 
-Security engineering principles for autonomous systems (https://doi.org/10.1109/SP.2019.00028) demonstrate that prompt wording and instruction-based guardrails are insufficient to prevent indirect prompt injection. Attackers embedding malicious instructions in public RSS feeds or order books can easily bypass soft constraints. Therefore, security is enforced strictly through disjoint physical or virtual sandboxes with hardware- or OS-level capability restrictions, ensuring that an agent parsing untrusted web data physically lacks access to credentials and network egress (https://arxiv.org/abs/2302.12173).
+The published Agents Rule of Two requires that an agent session satisfy no more than two of: untrusted input, sensitive-data access, state change or egress (<https://ai.meta.com/blog/practical-ai-agent-security/>); this desk enforces the stricter one-capability-per-sandbox partition. Indirect-injection research shows prompt wording and instruction-based guardrails alone cannot hold that boundary (<https://arxiv.org/abs/2302.12173>). Attackers embedding malicious instructions in public RSS feeds or order books can easily bypass soft constraints. Therefore, security is enforced strictly through disjoint physical or virtual sandboxes with hardware- or OS-level capability restrictions, ensuring that an agent parsing untrusted web data physically lacks access to credentials and network egress.
 
 ## Decision rules
 - Rule 1: Ingestion agents processing untrusted external text must execute in an isolated sandbox with zero network egress and zero access to credential stores.
@@ -37,8 +37,9 @@ Security engineering principles for autonomous systems (https://doi.org/10.1109/
 - [ ] Credential stores are isolated from all prompt-processing execution paths.
 - [ ] Inter-zone communication enforces strict schema validation and payload sanitization.
 - [ ] Security posture relies on OS/container isolation rather than prompt wording.
-- [ ] Architecture documentation and verification scripts are up to date (https://doi.org/10.1109/SP.2019.00028).
+- [ ] Architecture documentation and verification scripts are up to date.
 
 ## Sources
-- Security Boundaries and Principle of Least Privilege in Autonomous Systems: https://doi.org/10.1109/SP.2019.00028
-- Mitigating Indirect Prompt Injection in Multi-Component Agent Architectures: https://arxiv.org/abs/2302.12173
+
+- Meta AI, Agents Rule of Two: A Practical Approach to AI Agent Security: <https://ai.meta.com/blog/practical-ai-agent-security/>
+- Greshake et al., Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection: <https://arxiv.org/abs/2302.12173>

@@ -15,6 +15,8 @@ A benchmark is a comparison, not a number. Its purpose is to say whether one cod
 
 Microbenchmarks add their own traps. Runtimes optimise different parts of the code the longer they run, so a benchmark needs warmup before it measures steady state. The optimiser may remove the benchmarked computation entirely if its result is never used — the classic dead-code elimination escape. And the loop around the measured work can dominate: always measure the harness's own cost and subtract it from the claim.
 
+Primary sources: <https://docs.oracle.com/en/java/javase/21/> and <https://dl.acm.org/doi/10.1145/2725072>.
+
 ## Decision rules
 
 1. State the comparison before running: what change, what expectation, what threshold counts as a win.

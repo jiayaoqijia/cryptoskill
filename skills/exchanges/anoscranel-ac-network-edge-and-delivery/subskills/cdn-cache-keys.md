@@ -17,6 +17,8 @@ The key's other property is its cost. A key that includes everything defeats sha
 
 Primary source: <https://developer.mozilla.org/en-US/docs/Web/HTTP>.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching> and <https://www.rfc-editor.org/rfc/rfc9111>.
+
 ## Decision rules
 
 - Record the exact scheme for every route class: what the key includes and what it omits.

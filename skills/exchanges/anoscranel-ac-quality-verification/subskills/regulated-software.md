@@ -17,6 +17,8 @@ status: "seedling"
 - **AAMI TIR45:2023** is the FDA-recognized consensus guide for agile device software (no. 13-143): agile operates inside the QMS, never around it.
 - **Standards demand evidence, not sequence.** Neither names a process model; 62304 Annex B allows iteration.
 
+Primary sources: <https://meddeviceguide.com/blog/agile-vs-waterfall-medical-device-software-iec-62304-design-controls-guide> and <https://www.iec.ch/functionalsafety>.
+
 ## Decision rules
 
 1. Agile is permitted. The Definition of Done carries the evidence, or compliance debt accrues.

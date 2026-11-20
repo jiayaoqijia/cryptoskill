@@ -17,6 +17,8 @@ The job's state machine is the design's backbone: **queued → processing → do
 
 A thought-through pipeline answers three questions the moment a job fails. Can the source be reprocessed? Can the failed derivative alone be retried? Is anything downstream gated on this job's completion? Those answers exist because the pipeline treats jobs as first-class objects, not as opaque background work whose disappearance is discovered when a thumbnail URL 404s in production.
 
+Primary sources: <https://12factor.net/backing-services> and <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs>.
+
 ## Decision rules
 
 - Media work runs in an asynchronous queue; the request handler enqueues and returns a handle, never blocks.

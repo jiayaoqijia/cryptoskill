@@ -15,6 +15,8 @@ Two machines tell two different times. The disagreement, skew, is not a defect �
 
 The practical rule is to compare within tolerance where precision matters and to prefer sequence over time where it matters more. Ordering events by comparing wall timestamps across hosts will misorder anything closer than the skew; a sequence number, a logical clock, or a single authority's timestamp is the honest substitute. Where tolerance comparison is unavoidable — reconciling logs from two hosts — the tolerance must be measured, not assumed, because the true skew is almost always larger than the team's guess.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc5905> and <https://www.rfc-editor.org/rfc/rfc3339>.
+
 ## Decision rules
 
 - Never order events across hosts by wall timestamp when the gap can be within the skew.

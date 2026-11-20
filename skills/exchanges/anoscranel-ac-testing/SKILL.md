@@ -4,6 +4,7 @@ description: "Automated software testing: test strategy and portfolios, coverage
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Testing

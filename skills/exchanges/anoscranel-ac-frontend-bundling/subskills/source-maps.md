@@ -17,6 +17,8 @@ The decision is therefore an exposure decision, made per environment. The useful
 
 Primary source: <https://web.dev/learn>.
 
+Primary sources: <https://tc39.github.io/source-map-spec/> and <https://web.dev/learn>.
+
 ## Decision rules
 
 - Record which environments generate maps and where each map is stored.

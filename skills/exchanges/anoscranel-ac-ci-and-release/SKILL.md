@@ -4,6 +4,7 @@ description: "CI pipelines, deployment, release: pipeline-as-code and required c
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # CI and Release

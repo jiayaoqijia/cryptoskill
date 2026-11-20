@@ -5,6 +5,7 @@ license: MIT
 metadata:
   domain: crypto-trading
   status: seedling
+status: seedling
 ---
 
 # ac-funding-and-basis

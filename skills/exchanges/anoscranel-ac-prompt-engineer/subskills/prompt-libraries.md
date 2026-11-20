@@ -24,13 +24,18 @@ discovers the library without code changes.
 
 Primary sources: <https://modelcontextprotocol.io> and <https://github.com/>.
 
-## Meta-prompting, safely
+### Meta-prompting, safely
 
 A strong model can audit a prompt for contradictions, dead rules, and invalid tool
 calls; OpenAI's GPT-5 prompting guide recommends exactly this audit pattern
 (https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide). The audit is a draft, not a
 verdict: adopt a suggested change only after it moves the golden set (see this skill's
 eval leaf). Otherwise you have automated folklore generation.
+
+## Decision rules
+
+- Organise by task rather than by model: a prompt written for one model's quirks becomes misleading when the model changes, and the task description outlives the quirk. Filing by task is what lets an entry be re-tested rather than retired.
+- Keep a retirement rule: an entry that has never been re-tested since a model change is a record of what used to work, and a growing library of untested entries is worse than a short one that has been checked. The date of the last evaluation belongs beside the prompt.
 
 ## Procedure
 
@@ -55,10 +60,6 @@ eval leaf). Otherwise you have automated folklore generation.
 - [ ] Each prompt folder carries its own test fixtures and baseline.
 - [ ] CI blocks a merge that drops the golden-set pass rate.
 - [ ] Rollback is an alias switch, tested once per quarter.
-
-The library's organising principle should be the task rather than the model, because a prompt written for one model's quirks becomes misleading when the model changes and the task description outlives the quirk. Filing by task is what lets an entry be re-tested rather than retired.
-
-A library also needs a retirement rule, because an entry that has never been re-tested since a model change is a record of what used to work, and a growing library of untested entries is worse than a short one that has been checked. The date of the last evaluation belongs beside the prompt.
 
 ## Sources
 

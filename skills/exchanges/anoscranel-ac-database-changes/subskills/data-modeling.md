@@ -16,6 +16,8 @@ status: "seedling"
 - **Keys**: a surrogate key is stable and opaque; a natural key is readable but changes with the world.
 - **Normalisation** removes update anomalies; denormalisation buys a read. Denormalise only for a measured pattern, with the update path written down.
 
+Primary sources: <https://vetoralabs.com/system-design/concepts/trade-offs/sql-vs-nosql> and <https://www.postgresql.org/docs/current/ddl-constraints.html>.
+
 ## Decision rules
 
 1. Start relational. A single Postgres instance serves millions of rows, so "NoSQL because it scales" is premature. ⚠️ Vendor capacity figures are single-sourced.

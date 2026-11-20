@@ -1,9 +1,10 @@
 ---
 name: ac-prompt-engineer
-description: "Engineers prompts for LLMs and agents: instruction lines, structure, examples, named techniques, model and sampler choices, context budget, grounding, injection resistance, and proof that a change helped. Use when the user wants to tune a prompt or the standing instructions an agent runs under, get a model to follow a format or stop refusing, add few-shot examples, pick between reasoning and instruction models, set temperature or reasoning effort, shrink a bloated instruction set, ground answers on retrieved documents, harden a prompt against injection, organize a prompt library, rewrite an agent's tool or handoff sections, prompt image or video models, or check whether a prompt edit actually improved anything. Not for one-off chat messages, model training or fine-tuning, choosing an AI product to buy, or building attack payloads."
+description: "Engineers prompts for LLMs and agents: instruction lines, structure, examples, named techniques, model and sampler choices, context budget, grounding, injection resistance, and proof that a change helped. Use when asking to tune a prompt or the standing instructions an agent runs under, get a model to follow a format or stop refusing, add few-shot examples, pick between reasoning and instruction models, set temperature or reasoning effort, shrink a bloated instruction set, ground answers on retrieved documents, harden a prompt against injection, organize a prompt library, rewrite an agent's tool or handoff sections, prompt image or video models, or check whether a prompt edit actually improved anything. Not for one-off chat messages, model training or fine-tuning, choosing an AI product to buy, or building attack payloads."
 license: MIT
 metadata:
   domain: prompt-engineering
+status: seedling
 ---
 
 # ac-prompt-engineer — the craft of prompting models and agents

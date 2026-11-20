@@ -8,9 +8,9 @@ status: seedling
 ---
 
 ## Standard
-Agentic trading desks are exposed to severe operational and security failure modes, including indirect prompt injection via malicious news feeds or order books, numerical hallucination, silent tool execution failures, context window overflow, and stale context propagation. Because language models process unstructured external data as executable instructions, an attacker publishing a crafted press release can manipulate downstream text parsers into emitting rogue classifications or invalid parameters (https://doi.org/10.1145/3605764.3623972).
+Agentic trading desks are exposed to severe operational and security failure modes, including indirect prompt injection via malicious news feeds or order books, numerical hallucination, silent tool execution failures, context window overflow, and stale context propagation. Because language models process unstructured external data as executable instructions, an attacker publishing a crafted press release can manipulate downstream text parsers into emitting rogue classifications or invalid parameters (<https://arxiv.org/abs/2302.12173>).
 
-To mitigate these risks, the desk enforces multi-layered defensive protocols: strict input sanitization, deterministic numerical cross-checking, mandatory tool return verification, context window pruning, and an absolute emergency kill switch. According to resilient systems engineering standards (https://arxiv.org/abs/2312.01234), any undetected failure in agent extraction or tool execution must be caught by programmatic circuit breakers before causing downstream analytical corruption or triggering automated alerts.
+To mitigate these risks, the desk enforces multi-layered defensive protocols: strict input sanitization, deterministic numerical cross-checking, mandatory tool return verification, context window pruning, and an absolute emergency kill switch. Multi-agent failure taxonomies document how specification, inter-agent, and verification failures compound (<https://arxiv.org/abs/2503.13657>); any undetected failure in agent extraction or tool execution must be caught by programmatic circuit breakers before causing downstream analytical corruption.
 
 ## Decision rules
 - Rule 1: Treat all external news feeds, APIs, and scraped web content as untrusted input vectors susceptible to indirect prompt injection.
@@ -37,8 +37,9 @@ To mitigate these risks, the desk enforces multi-layered defensive protocols: st
 - [ ] Deterministic bounds-checking assertions validate all extracted numerical figures.
 - [ ] Tool wrappers enforce strict return-code validation and error handling.
 - [ ] Context window pruning mechanisms operate successfully in long-running sessions.
-- [ ] Master kill switch is documented, tested, and capable of immediate pipeline freezing (https://doi.org/10.1145/3605764.3623972).
+- [ ] Master kill switch is documented, tested, and capable of immediate pipeline freezing.
 
 ## Sources
-- Vulnerabilities and Mitigations in LLM-Integrated Financial Workflows: https://doi.org/10.1145/3605764.3623972
-- Resilient System Architectures for Autonomous Decision Support Systems: https://arxiv.org/abs/2312.01234
+
+- Cemri et al., Why Do Multi-Agent LLM Systems Fail? (MAST failure taxonomy): <https://arxiv.org/abs/2503.13657>
+- Greshake et al., Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection: <https://arxiv.org/abs/2302.12173>

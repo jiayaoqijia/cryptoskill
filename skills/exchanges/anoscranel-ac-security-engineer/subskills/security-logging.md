@@ -16,6 +16,8 @@ status: seedling
 - **CIS Control 8**: 8.9 centralise into an append-only repository — an attacker with admin rights can wipe local logs; **8.10 retain ≥90 days** (https://www.cisecurity.org/controls/audit-log-management). ASVS 5.0 **V16** verifies it.
 - IBM 2025: average breach lifecycle 241 days — 30 days of logs means the evidence of entry is gone before you learn of the breach.
 
+Primary sources: <https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html> and <https://csrc.nist.gov/pubs/sp/800/92/final>.
+
 ## Decision rules
 
 1. The replay test: if a field could authenticate (token, session ID, password), identify a person (PII), or breach a customer (secret), it does not belong in the log.

@@ -17,6 +17,8 @@ Its second purpose is the argument itself. When a rule fires and someone disagre
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/articles/continuousIntegration.html> and <https://martinfowler.com/bliki/TechnicalDebt.html>.
+
 ## Decision rules
 
 - Record every enforced rule with its intent, severity, and adoption date.

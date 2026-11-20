@@ -4,6 +4,7 @@ description: "Version-control craft: branching models and trunk-based developmen
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Git Workflow

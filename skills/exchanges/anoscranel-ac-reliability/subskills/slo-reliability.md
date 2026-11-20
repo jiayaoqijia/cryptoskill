@@ -17,6 +17,8 @@ status: "seedling"
 - **RTO and RPO** per service tier, with a ladder from backup-restore to hot standby.
 - **Budget policy** (SRE Book ch3): when the budget is exhausted, feature launches gate or freeze until reliability recovers.
 
+Primary sources: <https://stackpractices.com/guides/disaster-recovery-guide> and <https://sre.google/workbook/alerting-on-slos/>.
+
 ## Decision rules
 
 1. An SLO covers one path that matters: signup, checkout or the paid API.

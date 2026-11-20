@@ -16,6 +16,8 @@ status: "seedling"
 - Rescuing a failing claim by changing the test is the evasion Popper called conventionalist. A claim saved by moving the goalposts has not survived the test (Stanford Encyclopedia of Philosophy, Popper).
 - The owner holds context the breaker lacks: why the claim exists, what depends on it, and what the operation promised. The breaker holds evidence the owner may resist.
 
+Primary sources: <https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final> and <https://doi.org/10.1073/pnas.1708274114>.
+
 ## Decision rules
 
 The breaker may propose a disposition, supply evidence, recommend a narrowing, and flag an unrepairable row. The breaker must never decide these alone:

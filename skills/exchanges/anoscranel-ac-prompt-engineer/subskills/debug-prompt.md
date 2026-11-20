@@ -34,16 +34,6 @@ upstream of the model (<https://learn.microsoft.com/en-us/security/zero-trust/sf
 
 Primary sources: <https://www.anthropic.com/engineering/building-effective-agents> and <https://ai.google.dev/gemini-api/docs/prompting-strategies>.
 
-## Procedure
-
-1. Capture the raw input and raw output verbatim; note model, snapshot, temperature.
-2. Run the ordered checks above; stop at the first one that explains the failure.
-3. Fix exactly one thing. If two fixes tempt you, pick the higher-ranked one first.
-4. Re-run the same input three-plus times to rule out sampling luck.
-5. Add the failing input to the golden set so the fix regresses loudly if it returns.
-6. If the fix was wording, write the failing and passing outputs side by side into the
- golden set comments.
-
 ## Decision rules
 
 | Failure shape | First suspect |
@@ -53,6 +43,16 @@ Primary sources: <https://www.anthropic.com/engineering/building-effective-agent
 | Right content, wrong shape | Shape not shown and not enforced |
 | Intermittent failure | Temperature above 0, or an unseeded sampling path |
 | Sudden drop after a model update | Model drift; test before touching the prompt |
+
+## Procedure
+
+1. Capture the raw input and raw output verbatim; note model, snapshot, temperature.
+2. Run the ordered checks above; stop at the first one that explains the failure.
+3. Fix exactly one thing. If two fixes tempt you, pick the higher-ranked one first.
+4. Re-run the same input three-plus times to rule out sampling luck.
+5. Add the failing input to the golden set so the fix regresses loudly if it returns.
+6. If the fix was wording, write the failing and passing outputs side by side into the
+ golden set comments.
 
 ## Anti-patterns
 

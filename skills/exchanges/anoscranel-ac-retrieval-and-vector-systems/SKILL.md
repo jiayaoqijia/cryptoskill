@@ -15,7 +15,7 @@ Retrieval is a system with its own failure modes, and most of them are not model
 
 This skill covers that layer: how documents are split and why the split matters, what an embedding model's dimensions and training data decide, how index types trade recall against latency, where hybrid search and reranking add value, how freshness is maintained, and how relevance is evaluated against a fixed set rather than by impression. Prompting and evaluation of a model's output belong to another skill.
 
-Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://www.nist.gov/>.
+Primary sources: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval> and <https://www.nist.gov/>.
 
 ## When to use
 

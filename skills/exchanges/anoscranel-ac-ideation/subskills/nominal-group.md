@@ -12,7 +12,7 @@ status: "seedling"
 ## Standard
 
 - **Delbecq & Van de Ven (1971)**: the nominal group technique sequences silent idea-writing, round-robin listing, a clarification pass with no debate, and independent ranking, then aggregates. <https://doi.org/10.1177/002188637100700404>
-- **Delbecq, Van de Ven & Gustafson (1975)**: group techniques for program planning; the clarification-only pass keeps ranking independent of a speaker's status. <https://doi.org/10.1080/00131727509336471>
+- **Delbecq & Van de Ven (1970)**: nominal group techniques for involving clients and resource experts in program planning; the clarification-only pass keeps ranking independent of a speaker's status. <https://doi.org/10.5465/ambpp.1970.4981077>
 - Independent ranking before aggregation is what prevents first-speaker anchoring.
 
 ## Decision rules
@@ -52,4 +52,4 @@ status: "seedling"
 ## Sources
 
 - Delbecq & Van de Ven (1971): <https://doi.org/10.1177/002188637100700404>
-- Delbecq, Van de Ven & Gustafson (1975): <https://doi.org/10.1080/00131727509336471>
+- Delbecq & Van de Ven (1970), Nominal Group Techniques for Involving Clients and Resource Experts in Program Planning, Academy of Management Proceedings: <https://doi.org/10.5465/ambpp.1970.4981077>

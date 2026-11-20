@@ -15,6 +15,8 @@ After an outage, a scheduled system faces a decision its trigger semantics only 
 
 Bounded replay is the discipline: a maximum number of periods to catch up, a decision for what happens beyond it, and a record written of which periods were replayed and which were declared lost. The record matters because downstream consumers of the data need to know the gap exists — missing data that nobody knows is missing produces quietly wrong conclusions for months.
 
+Primary sources: <https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/> and <https://www.postgresql.org/docs/current/sql-insert.html>.
+
 ## Decision rules
 
 - Define the catch-up window per job: zero periods, one period, or all.

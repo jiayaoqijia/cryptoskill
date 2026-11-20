@@ -17,6 +17,8 @@ status: "seedling"
 - **Strangler fig** (Fowler 2004): build the new beside the old and move traffic over gradually.
 - Refactoring does not always improve quality attributes; effects vary (arXiv:1908.05399, 142 studies). Treat it as a targeted act.
 
+Primary sources: <https://blog.paulserban.eu/booknote/refactoring-in-practice-a-deep-dive-into-fowler-becks-timeless-engineering-classic> and <https://martinfowler.com/bliki/TechnicalDebtQuadrant.html>.
+
 ## Decision rules
 
 1. Either change behaviour or change structure. Never both in one commit.

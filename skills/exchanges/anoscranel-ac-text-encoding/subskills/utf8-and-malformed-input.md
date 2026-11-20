@@ -15,6 +15,8 @@ UTF-8 encodes each character as one to four bytes, with the leading byte announc
 
 The critical engineering rule is validation at the boundary: bytes from outside enter the system as UTF-8 or are rejected with a diagnostic, never "cleaned" by replacement characters and passed on. Replacement seems kind and is destructive: the original bytes are gone, and every later comparison, export, or round-trip carries the scar. A rejection at the entry point preserves the caller's chance to fix their encoding; a silent replacement deep in the system buries the cause.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc3629> and <https://www.unicode.org/versions/latest/>.
+
 ## Decision rules
 
 - Validate UTF-8 at every input boundary; reject with a diagnostic rather than replace.

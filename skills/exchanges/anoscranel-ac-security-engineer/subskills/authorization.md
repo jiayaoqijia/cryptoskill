@@ -17,6 +17,8 @@ status: "seedling"
 - OWASP Multi-Tenant Security Cheat Sheet: separate database per tenant, separate schema per tenant, or a shared database with Row-Level Security; run tenant-scoped paths under a non-RLS-bypassing role; long random identifiers "reduce enumeration, but they are not authorization controls".
 - NIST SP 800-162 for ABAC vocabulary. ASVS 5.0 V8 Authorization.
 
+Primary sources: <https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html> and <https://owasp.org/www-project-application-security-verification-standard/>.
+
 ## Decision rules
 
 1. Single-tenant app: one reusable `authorize(user, action, object)` call on every object access; deny by default.

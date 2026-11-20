@@ -17,6 +17,8 @@ The control is to generate against a database whose state is itself pinned: a mi
 
 Primary source: <https://www.postgresql.org/docs/>.
 
+Primary sources: <https://www.postgresql.org/docs/> and <https://sqitch.org/>.
+
 ## Decision rules
 
 - Record whether generation targets models, queries, or both.

@@ -32,6 +32,8 @@ retried limit still holds. The academic substrate's live-tested rate caps
 (PubMed 3 req/s unkeyed, OpenAlex 100k credits/day, per-engine walls) are worth
 checking before a bulk run.
 
+Primary sources: <https://training.cochrane.org> and <https://osf.io/prereg/>.
+
 ## Decision rules
 
 - Recall-critical retrieval (a missed source invalidates the study) means

@@ -4,6 +4,7 @@ description: "Preparing and judging pull requests: author side — small self-co
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Code Review

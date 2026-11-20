@@ -17,6 +17,8 @@ status: "seedling"
 - IETF **RateLimit headers** remain an Internet-Draft (`draft-ietf-httpapi-ratelimit-headers-11`, May 2026), not yet an RFC.
 - Bot economics: booter storefronts run from **$19.99/month** — capacity is purchasable by anyone, so the defence is upstream capacity and edge absorption.
 
+Primary sources: <https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html> and <https://owasp.org/Top10/>.
+
 ## Decision rules
 
 1. Limit per **account** and per **IP** — either alone is bypassed (many IPs per attacker; many accounts per NAT).

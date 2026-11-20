@@ -8,9 +8,9 @@ status: seedling
 ---
 
 ## Standard
-Regime blindness is the fundamental mathematical property established by Aldridge (2026, arXiv 2611.01799), proving that herd-dominated and arbitrage-dominated financial markets exhibit identical return distributions and turnover statistics. Consequently, no volatility metric, Value-at-Risk (VaR) model, stress-frequency indicator, or volume threshold can mathematically distinguish between market regimes without extensive observation periods. Detecting a true structural shift in market microstructure requires a minimum sample complexity of $\Theta((s/\beta)^2 \log(1/\delta))$ observations, where $s$ represents signal variance, $\beta$ represents structural drift, and $\delta$ is the confidence tolerance.
+Regime blindness is the fundamental mathematical property established by Aldridge (2026, arXiv 2611.01799), proving that herd-dominated and arbitrage-dominated financial markets exhibit identical return distributions and turnover statistics. Consequently, no volatility metric, Value-at-Risk (VaR) model, stress-frequency indicator, or volume threshold can mathematically distinguish between market regimes without extensive observation periods. Identifying the feedback sign — herd versus arbitrage — requires a minimum sample complexity of $\Theta((s/\beta)^2 \log(1/\delta))$ observations, where $\beta/s$ is the feedback-to-noise ratio and $\delta$ is the confidence tolerance.
 
-Attempting to classify market regimes in real time using short-window historical data results in severe statistical false positives, leading to erratic risk parameter adjustments. Quantitative trading desks must abandon real-time regime classification attempts and instead focus operational monitoring strictly on direct portfolio exposure, leverage ratios, and liquidity buffers (https://doi.org/10.1016/j.jfi.2023.100982). This leaf provides the rigorous mathematical backing required to reject speculative regime-detection models in favor of robust, state-independent risk management (https://arxiv.org/abs/2611.01799).
+Attempting to classify market regimes in real time using short-window historical data results in severe statistical false positives, leading to erratic risk parameter adjustments. Quantitative trading desks must abandon real-time regime classification attempts and instead focus operational monitoring strictly on direct portfolio exposure, leverage ratios, and liquidity buffers. This leaf provides the rigorous mathematical backing required to reject speculative regime-detection models in favor of robust, state-independent risk management (https://arxiv.org/abs/2611.01799).
 
 ## Decision rules
 - Rule 1: Reject any trading strategy or risk adjustment mechanism that claims to detect real-time shifts between herd and arbitrage regimes using short-window volatility or volume.
@@ -40,5 +40,6 @@ Attempting to classify market regimes in real time using short-window historical
 - [ ] Compliance documentation reflects adherence to structural regime blindness findings (https://arxiv.org/abs/2611.01799).
 
 ## Sources
-- Aldridge, I. (2026). Statistical Invariance of Return Distributions Across Market Microstructure Regimes. arXiv:2611.01799: https://arxiv.org/abs/2611.01799
-- Limits of Statistical Inference in Non-Stationary Financial Markets: https://doi.org/10.1016/j.jfi.2023.100982
+
+- Aldridge, I. (2026). Learning AI Agents, Market Makers, and Stress in Automated Markets. arXiv:2611.01799: <https://arxiv.org/abs/2611.01799>
+- Ye et al., The Alpha Illusion: Reported Alpha from LLM Trading Agents Should Not Be Treated as Deployment Evidence: <https://arxiv.org/abs/2605.16895>

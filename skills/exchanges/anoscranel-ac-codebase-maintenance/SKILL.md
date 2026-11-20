@@ -4,6 +4,7 @@ description: "Maintaining an existing codebase: simplification, dead-code remova
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Codebase Maintenance

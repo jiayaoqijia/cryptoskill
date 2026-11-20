@@ -12,8 +12,8 @@ status: "seedling"
 ## Standard
 
 - The round's yield is claims overturned and claims narrowed, not findings produced. A long report that changes no claim has produced nothing.
-- Publish the rubric with the charter. Pre-registration separates a test from a search for something to say (Nosek et al. 2018).
-- A failed attack is a result. Corroboration means the claim survived a real attempt to break it, not that it is proven (Stanford Encyclopedia of Philosophy, Popper).
+- Publish the rubric with the charter. Pre-registration separates a test from a search for something to say (Nosek et al. 2018, <https://doi.org/10.1073/pnas.1708274114>).
+- A failed attack is a result. Corroboration means the claim survived a real attempt to break it, not that it is proven (Popper, <https://plato.stanford.edu/entries/popper/>).
 - False positives are expected. A break that dissolves under re-check is logged, never quietly dropped.
 - Keep a ledger: mechanisms proposed, claims broken, narrowed, overturned, and whether the prior backlog was absorbed.
 

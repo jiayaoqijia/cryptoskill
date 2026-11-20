@@ -13,6 +13,8 @@ status: "seedling"
 
 Ending or pausing a co-authoring session requires a structured handoff artifact that allows any collaborator to resume the work instantly on a single read. Grounded in standard operational handoff practices (SBAR / I-PASS frameworks), this leaf distinguishes between document completion and session closure. The standard mandates recording per-section status (done, drafted, not started), outlining exact next steps, stamping a version marker on the draft, and securing the author's formal sign-off as the closing act. Handoffs must rely on structured summaries rather than exhaustive transcript dumps.
 
+Primary sources for the claims here: <https://www.ahrq.gov/teamstepps-program/curriculum/communication/tools/ipass.html> and <https://www.ahrq.gov/teamstepps-program/curriculum/communication/tools/sbar.html>.
+
 ## Decision rules
 
 1. Create a structured handoff summary whenever a co-authoring session is paused or completed.

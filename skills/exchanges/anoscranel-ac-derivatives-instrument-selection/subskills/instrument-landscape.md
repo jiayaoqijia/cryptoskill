@@ -13,7 +13,7 @@ Instrument selection begins with a precise understanding of financial primitives
 
 Spot holdings provide unencumbered ownership of the underlying asset with zero liquidation risk, though capital efficiency is constrained by 1x leverage. Perpetual futures eliminate expiration dates via periodic funding payments, enabling continuous directional exposure but introducing ongoing funding cash flow friction and liquidation susceptibility. Dated futures introduce a fixed maturity date, decoupling long-term holding costs from funding payments while exposing the position to basis convergence and roll risk. Options grant asymmetric payoffs with defined premium costs, offering precise tail-risk protection or leverage without linear downside, though subject to volatility surfaces and time decay. Structured products bundle these primitives into packaged yield or principal-protected notes, trading liquidity and counterparty transparency for customized payoff profiles.
 
-Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.isda.org/book/isda-deriv-tracker](https://www.isda.org/book/isda-deriv-tracker>.
+Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.isda.org/cdm/>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims here: <https://www.cmegroup.com/education/courses
 
 ## Sources
 
-- ISDA Financial Instrument Taxonomy and Derivatives Documentation: [https://www.isda.org/book/isda-deriv-tracker](https://www.isda.org/book/isda-deriv-tracker)
-- Derivatives Risk Management and Settlement Standards: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
+- ISDA Common Domain Model (instrument and event taxonomy): <https://www.isda.org/cdm/>
+- Derivatives Risk Management and Settlement Standards: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>

@@ -4,6 +4,7 @@ description: "Building web interfaces and making them accessible: component stru
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Frontend UI

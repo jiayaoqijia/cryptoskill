@@ -15,6 +15,8 @@ A thread pool has a queue discipline and a bounded size, and saturation is the s
 
 The diagnostic question is what the threads are doing, and the only honest answer comes from repeated thread dumps. A saturated pool whose stacks are all in one blocking call has a downstream problem — the pool is the symptom. A pool whose threads are all executing useful work at full speed has a capacity problem. A pool with threads waiting on each other has a deadlock or a fan-in design error that more threads will not fix.
 
+Primary sources: <https://docs.oracle.com/en/java/javase/21/troubleshoot/> and <https://docs.microsoft.com/en-us/dotnet/standard/threading/>.
+
 ## Decision rules
 
 - Capture the pool's queue depth and rejection policy as configured, not as documented.

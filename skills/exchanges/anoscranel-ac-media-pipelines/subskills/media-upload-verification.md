@@ -17,6 +17,8 @@ Verification is also where **size limits** are enforced. A media pipeline that a
 
 **Transactionality** is the third leg. A file that fails verification must leave no trace — no half-written derivatives in cold storage, no orphaned cache entries. This is why the media pipeline treats uploads the way databases treat transactions: the upload session ends with a validated source entering the pipeline's storage, or with a clean rejection and the bytes discarded; there is no third state.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types> and <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs>.
+
 ## Decision rules
 
 - Verify every upload by magic bytes before processing; never trust the declared Content-Type.

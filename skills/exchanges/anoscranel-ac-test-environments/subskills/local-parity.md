@@ -17,6 +17,8 @@ Full parity is an asymptote, and chasing it exactly is a trap. The workable targ
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/articles/continuousIntegration.html> and <https://reproducible-builds.org/>.
+
 ## Decision rules
 
 - Provision test environments from one definition, used by both local and CI.

@@ -15,6 +15,8 @@ status: seedling
 - **IEEE Std 1010-2004**: software reviews require objective evidence tied directly to artifacts rather than subjective stylistic preferences. ⚠️ cited without URL.
 - ⚠️ House convention: any finding that cannot cite a specific file path and line range or import pattern is classified as speculative and excluded from the final report.
 
+Primary source for the claims here: <https://www.oreilly.com/library/view/refactoring-improving-the/9780134757799/>.
+
 ## Decision rules
 
 1. If a critique relies on stylistic preference without demonstrating coupling, testability loss, or dependency violation, reject the critique as unsupported aesthetic opinion.
@@ -49,3 +51,4 @@ status: seedling
 
 - Fowler, Martin. _Refactoring: Improving the Design of Existing Code_. 2nd ed., Addison-Wesley Professional, 2018. <https://www.oreilly.com/library/view/refactoring-improving-the/9780134757799/>
 - Institute of Electrical and Electronics Engineers. _IEEE Std 1010-2004: IEEE Standard for Application and Management of Software Engineering Bodies of Knowledge_. IEEE, 2004. ⚠️ cited without URL.
+- ISO/IEC/IEEE 29148:2018, _Systems and software engineering — Life cycle processes — Requirements engineering_. ISO, 2018. <https://www.iso.org/standard/72089.html>

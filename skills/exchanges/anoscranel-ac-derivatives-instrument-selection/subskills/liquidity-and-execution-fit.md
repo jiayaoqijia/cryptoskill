@@ -13,7 +13,7 @@ Theoretical payoff profiles and attractive funding rates are irrelevant if an in
 
 A documented venue case demonstrates that among numerous listed perpetual contracts, only a small fraction maintain active liquidity, with quoted depth frequently misaligned with reported turnover. The depth-to-turnover test evaluates whether an order book can absorb position entry and exit without severe market impact. If execution slippage exceeds expected strategy alpha, the instrument must be eliminated from consideration regardless of its theoretical merits.
 
-Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.bis.org/publ/qtrpdf/r_qt2203e.htm](https://www.bis.org/publ/qtrpdf/r_qt2203e.htm>.
+Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.bis.org/publ/qtrpdf/r_qt2212.htm>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims here: <https://www.cmegroup.com/education/courses
 
 ## Sources
 
-- BIS Market Liquidity and Execution Structure Reports: [https://www.bis.org/publ/qtrpdf/r_qt2203e.htm](https://www.bis.org/publ/qtrpdf/r_qt2203e.htm)
-- Derivatives Risk Management and Margin Methodologies: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
+- BIS Quarterly Review, December 2022 (OTC FX and interest rate derivatives markets): <https://www.bis.org/publ/qtrpdf/r_qt2212.htm>
+- Derivatives Risk Management and Margin Methodologies: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>

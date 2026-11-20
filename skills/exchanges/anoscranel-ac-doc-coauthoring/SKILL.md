@@ -4,6 +4,7 @@ description: "Staged co-authoring workflow for structured documents (proposals, 
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Document Co-Authoring

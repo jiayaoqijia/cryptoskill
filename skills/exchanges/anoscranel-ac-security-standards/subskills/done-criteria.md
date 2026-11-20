@@ -13,7 +13,7 @@ status: "seedling"
 
 A hardening pass is done when its evidence exists, not when effort stops. The universal record:
 
-- **The verification target**: the ASVS 5.0 level chosen (L1, L2, L3) and the reason, recorded durably. Personal or payment data is not done below L2.
+- **The verification target**: the ASVS 5.0 (<https://asvs.dev>) level chosen (L1, L2, L3) and the reason, recorded durably. Personal or payment data is not done below L2.
 - **The change list**: each modification mapped to the requirement or finding it closes. An unmapped fix is an unverified fix.
 - **The evidence bundle**: test results, scan outputs, review note, kept with the change.
 - **The residual-risk statement**: findings accepted rather than fixed, each with severity, owner, and expiry or review date. ⚠️ "Accepted-risk expiry" is practice convention; no single standard mandates one.
@@ -38,7 +38,7 @@ Pick the task class below; "done" means its items plus the universal record. Whe
 
 **Logging readiness.** Done when the security events the team will alert on are listed, each maps to a log statement, and a redaction check confirms no secrets or personal data at rest in those logs.
 
-**Incident and disclosure readiness.** Done when the first-hour steps and the contact path exist in writing (a `security.txt` per RFC 9116 where the org runs one), and — for EU in-scope products — the CRA reporting clocks (24 h / 72 h from 2026-09-11) are assigned to a named owner.
+**Incident and disclosure readiness.** Done when the first-hour steps and the contact path exist in writing (a `security.txt` per <https://www.rfc-editor.org/rfc/rfc9116> where the org runs one), and — for EU in-scope products — the CRA reporting clocks (24 h / 72 h from 2026-09-11) are assigned to a named owner.
 
 **Review of one diff.** Done when the review note records: the target level, the checks run, the findings (or the explicit "none found"), and the merge verdict.
 

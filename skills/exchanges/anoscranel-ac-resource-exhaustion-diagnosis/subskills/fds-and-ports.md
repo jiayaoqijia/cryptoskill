@@ -15,6 +15,8 @@ Two hard-to-raise limits produce loud errors when hit. File descriptors: every s
 
 The port case has a characteristic accumulation: connections closed by the client linger in TIME_WAIT, holding their port for a kernel-defined period. A workload that opens, closes, and reopens rapidly to one destination multiplies TIME_WAIT sockets until the range is consumed. The distinguishable signature is in the kernel counters — and the fix paths differ: reuse flags and connection pooling for ports, leak hunting or a raised limit for descriptors.
 
+Primary sources: <https://www.kernel.org/doc/html/latest/admin-guide/sysctl/> and <https://www.rfc-editor.org/rfc/rfc9293>.
+
 ## Decision rules
 
 - Check the process's descriptor count and its ulimit before theorising; both are one command.

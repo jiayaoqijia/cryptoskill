@@ -13,7 +13,7 @@ Backtest validity is compromised by unrealistic cost and execution assumptions t
 
 Accurate execution modeling requires accounting for the square-root law of market impact, where price displacement scales with the square root of order size relative to market volume. In crypto derivative trading, ignoring funding rate payments on perpetual swaps during directional trend regimes introduces massive distortion. Similarly, assuming instantaneous fills at prevailing mid-prices ignores adverse selection, where orders are filled precisely when liquidity providers are exiting. Cost modeling must reflect tier-based exchange fee schedules and realistic order-book depth constraints.
 
-Primary sources for the claims in this section: <https://doi.org/10.1016/B978-0-444-53068-6.50005-5> and <https://arxiv.org/abs/2605.16895>.
+Primary sources for the claims in this section: <https://doi.org/10.1016/B978-012374258-2.50006-3> and <https://arxiv.org/abs/2605.16895>.
 
 ## Decision rules
 
@@ -50,5 +50,5 @@ Primary sources for the claims in this section: <https://doi.org/10.1016/B978-0-
 
 - Almgren, R., Thum, C., Hauptmann, E., & Li, H. (2005). Direct Estimation of Equity Market Impact. Risk, 18(7), 58-62. https://www.risk.net/
 - arXiv:2605.16895. Alpha Illusion: Evaluating the Limits of Quantitative Trading Strategies Across Limited Samples and Tickers. https://arxiv.org/abs/2605.16895
-- Bouchaud, J. P., Farmer, J. D., & Lillo, F. (2009). How Markets Slowly Digest Changes in Supply and Demand. Handbook of Financial Markets: Dynamics and Evolution, 57-160. https://doi.org/10.1016/B978-0-444-53068-6.50005-5
+- Bouchaud, J. P., Farmer, J. D., & Lillo, F. (2009). How Markets Slowly Digest Changes in Supply and Demand. Handbook of Financial Markets: Dynamics and Evolution, 57-160. https://doi.org/10.1016/B978-012374258-2.50006-3
 - Open Science Framework (OSF). Financial Modeling Standards and Cost Accounting. https://osf.io/prereg/

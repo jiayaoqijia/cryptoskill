@@ -16,6 +16,8 @@ status: "seedling"
 - The audit trail must let a stranger reconstruct the round: charter, returns, re-checks, amendments, stop.
 - In an illustrative round the audit trail ran longer than the findings, deliberately.
 
+Primary sources: <https://plato.stanford.edu/entries/popper/> and <https://www.cos.io/initiatives/prereg>.
+
 ## Decision rules
 
 1. Call a corpus challenged only if every claim has a disposition.
@@ -33,7 +35,6 @@ status: "seedling"
 | Self-review by producers | Free | Blind to the framing |
 | More producing rounds | Finds new material | Produces more, not better |
 | External human review | Highest judgment | Slow; unavailable unattended |
-| Re-sampling a failing criterion | The numbers look better | Manufactures a pass |
 
 **Edge cases.**
 

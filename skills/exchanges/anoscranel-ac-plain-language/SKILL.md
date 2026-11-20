@@ -4,6 +4,7 @@ description: "Plain-language rewriting for public-facing standards-bearing docum
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Plain Language

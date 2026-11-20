@@ -17,6 +17,8 @@ The practical distinction is what each stops. Signing stops substitution in tran
 
 Primary source: <https://slsa.dev/>.
 
+Primary sources: <https://slsa.dev/> and <https://in-toto.io/>.
+
 ## Decision rules
 
 - Record which artifacts in the pipeline are signed and by what key or identity.

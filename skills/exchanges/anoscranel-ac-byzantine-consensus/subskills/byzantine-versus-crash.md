@@ -56,4 +56,4 @@ Primary sources: <https://en.wikipedia.org/wiki/Byzantine_fault> and <https://ma
 
 - Byzantine fault reference: <https://en.wikipedia.org/wiki/Byzantine_fault>
 - Distributed systems patterns: <https://martinfowler.com/articles/patterns-of-distributed-systems/>
-- Original problem framing: <https://pmg.csail.mit.edu/papers/osdi99.pdf>
+- Original problem framing: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf>

@@ -17,6 +17,8 @@ The common failure is splitting by file rather than by need. A chunk split at an
 
 Primary source: <https://web.dev/learn>.
 
+Primary sources: <https://web.dev/learn> and <https://tc39.es/proposal-dynamic-import/>.
+
 ## Decision rules
 
 - Record the initial entry points and what each ships eagerly.

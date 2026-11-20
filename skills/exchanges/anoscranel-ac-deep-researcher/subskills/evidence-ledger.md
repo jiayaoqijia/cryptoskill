@@ -23,6 +23,8 @@ status: "seedling"
  states, model minutes and cost as actuals. Ledgers record actuals, never
  ceilings.
 
+Primary sources: <https://doi.org/10.1186/s13643-020-01542-z> and <https://doi.org/10.1136/bmj.n71>.
+
 ## Decision rules
 
 - Everything auditable goes in the ledger; only the answer goes in the report.

@@ -15,6 +15,8 @@ Text has three units that code confuses constantly. The byte is the storage unit
 
 Each operation has a correct unit and bugs live in the mismatches. Length limits for human display should count graphemes; wire and storage sizes count bytes; character-level logic rarely wants code points directly but gets them from a naive "length". Counting the wrong unit is invisible until an accented name, an emoji, or a non-Latin script arrives.
 
+Primary sources: <https://www.unicode.org/reports/tr29/> and <https://www.unicode.org/versions/latest/>.
+
 ## Decision rules
 
 - State the unit for every text measurement: bytes for size, graphemes for display limits.

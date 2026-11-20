@@ -8,9 +8,9 @@ status: seedling
 ---
 
 ## Standard
-The desk-cadence standard governs the operational rhythm and hardware constraints of a phone-class or resource-constrained trading desk. Real-time sub-second streaming pipelines are fundamentally incompatible with reliable mobile or edge hardware deployments, where resource contention leads to dropped heartbeats, memory exhaustion, and silent operational failures. Therefore, operations must be structured around a strict batch cadence utilizing a maximum of one dispatcher worker and no more than two concurrent sub-workers.
+The desk-cadence standard governs the operational rhythm and hardware constraints of a phone-class or resource-constrained trading desk. Real-time sub-second streaming pipelines are fundamentally incompatible with reliable mobile or edge hardware deployments, where resource contention leads to dropped heartbeats, memory exhaustion, and silent operational failures (<https://developer.android.com/topic/performance/memory/guide/process-splitting>). Therefore, operations must be structured around a strict batch cadence utilizing a maximum of one dispatcher worker and no more than two concurrent sub-workers.
 
-Operational limits are enforced to match hardware capacity: resource-intensive tasks (such as large JSON parsing, historical CSV aggregation, or LLM summarization batches) run sequentially through a managed queue. Every job incurs a recorded cost in terms of execution time, memory footprint, and token or API consumption, maintained in an immutable operational ledger (https://doi.org/10.1016/j.sysconle.2023.105542). This leaf ensures that edge-hosted or mobile-class desk operations remain stable, predictable, and fully auditable without exceeding local hardware thresholds (https://arxiv.org/abs/2305.14322).
+Operational limits are enforced to match hardware capacity: resource-intensive tasks (such as large JSON parsing, historical CSV aggregation, or LLM summarization batches) run sequentially through a managed queue. Every job incurs a recorded cost in terms of execution time, memory footprint, and token or API consumption, maintained in an immutable operational ledger. This leaf ensures that edge-hosted or mobile-class desk operations remain stable, predictable, and fully auditable without exceeding local hardware thresholds (<https://developer.android.com/guide/components/processes-and-threads>).
 
 ## Decision rules
 - Rule 1: Prohibit real-time, tick-by-tick streaming agent loops on mobile or resource-constrained node hardware; enforce scheduled batch cadences.
@@ -37,8 +37,9 @@ Operational limits are enforced to match hardware capacity: resource-intensive t
 - [ ] Concurrency is capped at one dispatcher and two workers.
 - [ ] Task queue enforces FIFO ordering, persistence, and idempotency.
 - [ ] Operational ledger successfully logs execution time, memory usage, and cost per job.
-- [ ] Memory threshold circuit breakers are tested and operational (https://doi.org/10.1016/j.sysconle.2023.105542).
+- [ ] Memory threshold circuit breakers are tested and operational.
 
 ## Sources
-- Resource Management and Scheduling Constraints in Edge Computing Nodes: https://doi.org/10.1016/j.sysconle.2023.105542
-- Architectural Patterns for Fault-Tolerant Batch Processing on Constrained Hardware: https://arxiv.org/abs/2305.14322
+
+- Android developers, Keep background work alive with a lean process: <https://developer.android.com/topic/performance/memory/guide/process-splitting>
+- Android developers, Processes and threads overview: <https://developer.android.com/guide/components/processes-and-threads>

@@ -4,6 +4,7 @@ description: "Running a service reliably: OpenTelemetry instrumentation with log
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Reliability

@@ -50,5 +50,5 @@ Additionally, rigorous adherence to this principle safeguards system modularity 
 
 ## Sources
 
-- Evans, Eric. _Domain-Driven Design: Tackling Complexity in the Heart of Software_. Addison-Wesley, 2003. ⚠️ cited without URL.
+- Evans, Eric. _Domain-Driven Design: Tackling Complexity in the Heart of Software_. Addison-Wesley, 2003. Pearson catalog: <https://www.pearson.com/en-gb/subject-catalog/p/domain-driven-design-tackling-complexity-in-the-heart-of-software/P200000009375/9780321125217>
 - Vernon, Vaughn. "Effective Aggregate Design". InformIT, 2013. <https://www.informit.com/articles/article.aspx?p=2020371>

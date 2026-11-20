@@ -16,6 +16,8 @@ status: "seedling"
 - **Flyvbjerg, "From Nobel Prize to Project Management"** (2006): reference-class forecasting — base rates from similar projects beat inside-view estimates. ⚠️ cited without URL.
 - **Duke, _Quit_ (2022)**: set failure conditions in advance; deciding when to walk away is part of the plan, not a defeat. ⚠️ cited without URL.
 
+Source: <https://hbr.org/2003/07/delusions-of-success-how-optimism-undermines-executives-decisions>.
+
 ## Decision rules
 
 1. If no pre-mortem exists, run one before any other analysis; the failure history is written in the past tense.
@@ -59,3 +61,4 @@ status: "seedling"
 - Flyvbjerg (2006). ⚠️ cited without URL.
 - Duke, _Quit_ (2022). ⚠️ cited without URL.
 - Munger, _Poor Charlie's Almanack_. ⚠️ cited without URL.
+- Delusions of Success (HBR 2003): <https://hbr.org/2003/07/delusions-of-success-how-optimism-undermines-executives-decisions>

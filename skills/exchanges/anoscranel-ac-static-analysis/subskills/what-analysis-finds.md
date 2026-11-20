@@ -17,6 +17,8 @@ The honest division of labour follows. Analysis catches the class of defect that
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://google.github.io/eng-practices/review/> and <https://martinfowler.com/bliki/CodeSmell.html>.
+
 ## Decision rules
 
 - Classify candidate rules by what they find: mechanical invariant, structural smell, or probable bug.
@@ -54,6 +56,6 @@ Primary source: <https://martinfowler.com/>.
 
 ## Sources
 
-- Static analysis practice: <https://martinfowler.com/articles/code-review.html>
+- Static analysis practice: <https://google.github.io/eng-practices/review/>
 - Linting and code quality: <https://martinfowler.com/bliki/CodeSmell.html>
 - Compiler warning research: <https://dl.acm.org/>

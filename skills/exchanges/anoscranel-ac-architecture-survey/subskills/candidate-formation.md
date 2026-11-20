@@ -15,6 +15,8 @@ status: seedling
 - **IEEE Std 1471-2000**: architectural descriptions and improvement proposals must define boundaries, interfaces, and rationale clearly. ⚠️ cited without URL.
 - ⚠️ House convention: a candidate proposal must state what it explicitly excludes to prevent scope creep during subsequent implementation phases.
 
+Primary source for the claims here: <https://www.oreilly.com/library/view/domain-driven-design-tackling/0321125215/>.
+
 ## Decision rules
 
 1. If a finding affects multiple disparate packages, split the candidate into independent module-level proposals rather than creating a monolithic refactoring task.
@@ -50,3 +52,4 @@ Description of steps for forming bounded improvement candidates:
 
 - Evans, Eric. _Domain-Driven Design: Tackling Complexity in the Heart of Software_. Addison-Wesley Professional, 2003. <https://www.oreilly.com/library/view/domain-driven-design-tackling/0321125215/>
 - Institute of Electrical and Electronics Engineers. _IEEE Std 1471-2000: IEEE Recommended Practice for Architecture Description of Software-Intensive Systems_. IEEE, 2000. ⚠️ cited without URL.
+- Brügge, Bernd, and Allen H. Dutoit. _Object-Oriented Software Engineering: Using UML, Patterns, and Java_. 3rd ed., Prentice Hall, 2009. <https://www.pearson.com/en-us/subject-catalog/p/Bruegge-Object-Oriented-Software-Engineering-Using-UML-Patterns-and-Java-3rd-Edition/P200000003319>

@@ -18,6 +18,8 @@ status: "seedling"
 - **Certainty is a judgement with eight named domains.** GRADE rates each critical outcome high, moderate, low or very low across five downgrade and three upgrade domains.
 - **Automation belongs on the mechanical side.** Flow-diagram arithmetic, per-source search completeness and registration timestamps are checkable. Eligibility adequacy, synthesis choice and every rating are judgement.
 
+Primary sources: <https://doi.org/10.1136/bmj.n71> and <https://crd.york.ac.uk/prospero/>.
+
 ## Decision rules
 
 1. State the review type at the top; a systematic claim demands the systematic machinery.

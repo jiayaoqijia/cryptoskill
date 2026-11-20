@@ -13,6 +13,8 @@ status: "seedling"
 
 Stage 2 executes document construction through disciplined, section-by-section iteration rather than monolithic dumps. The co-authoring loop requires drafting exactly one section at a time, engaging in brief brainstorming, refining prose, confirming accuracy with the author, and locking the section before moving forward. The standard prioritizes preserving the author's authentic voice over imposing standardized artificial intelligence phrasing. Disagreements are governed by strict authority boundaries: the author retains absolute ownership over substantive content, business logic, and strategic decisions, while the agent provides objective craft advice, structure tuning, and clarity edits that are flagged and explained rather than forced.
 
+Primary sources for the claims here: <https://www.iso.org/standard/78907.html> and <https://www.plainlanguage.gov>.
+
 ## Decision rules
 
 1. Build the document strictly one section at a time, never generating multiple unverified sections simultaneously.

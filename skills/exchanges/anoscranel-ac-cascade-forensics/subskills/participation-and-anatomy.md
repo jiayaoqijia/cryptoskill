@@ -11,7 +11,7 @@ status: seedling
 
 ## Standard
 
-- **CFTC (2020)**: *Committers of Traders: Methodology and Limitations in Derivative Markets*. Explains the structural impossibility of categorizing anonymous crypto exchange accounts into reliable retail and institutional buckets. <https://www.cftc.gov/MarketReports/CommitmentsofTraders/cotfaq.html>
+- **CFTC Commitments of Traders, Explanatory Notes**: COT classifications rest on traders' self-reported commercial/non-commercial status in reportable futures markets, not on verified identity — a limitation that carries over to any attempt to bucket anonymous crypto exchange accounts into retail and institutional cohorts. <https://www.cftc.gov/MarketReports/CommitmentsofTraders/ExplanatoryNotes/index.htm>
 - **IOSCO (2023)**: *Policy Recommendations for Crypto-Asset Markets*. Details transparency gaps, pseudonymity limits, and the absence of unified participant classification across centralized exchanges. <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD748.pdf>
 - **Lyons, R. K., & Medrano, G. (2023)**: Centralized crypto exchanges and participant concentration. *Journal of Financial Economics*, 145(2), 400–420. <https://www.sciencedirect.com/science/article/pii/S0304405X2200155X>
 
@@ -49,7 +49,7 @@ status: seedling
 
 ## Sources
 
-- CFTC Committers of Traders Methodology. <https://www.cftc.gov/MarketReports/CommitmentsofTraders/cotfaq.html>
+- CFTC Commitments of Traders, Explanatory Notes. <https://www.cftc.gov/MarketReports/CommitmentsofTraders/ExplanatoryNotes/index.htm>
 - IOSCO Crypto-Asset Market Recommendations. <https://www.iosco.org/library/pubdocs/pdf/IOSCOPD748.pdf>
 - Lyons, R. K., & Medrano, G. (2023). Centralized crypto exchanges and participant concentration. *Journal of Financial Economics*. <https://www.sciencedirect.com/science/article/pii/S0304405X2200155X>
 - BIS (2023). *DeFi and Centralized Crypto: Market Structure and Risks*. Bank for International Settlements. <https://www.bis.org/publ/work1100.pdf>

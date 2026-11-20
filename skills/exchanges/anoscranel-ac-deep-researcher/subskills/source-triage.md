@@ -18,12 +18,13 @@ status: "seedling"
 - Independence is counted by index lineage, not engine count.
  Bing, Yahoo and DuckDuckGo share the Bing lineage and count as one source.
  Independent web indexes are the Bing lineage, Brave, Mojeek and Marginalia.
-- Every number carries its population. Never cite a benchmark without naming
- what it measured: BrowseComp spans 20-31% on bare-model boards to ~92% on
- vendor model-plus-deep-research clusters, a 60-point gap under one name.
+- Every number carries its population and its primary source. Never cite a benchmark without naming
+ what it measured.
 - Vendor claims enter tagged, never blended with measured numbers. A vendor's
  own benchmark is the vendor's claim about itself; treat every headline number
  as its author's own.
+
+Primary sources: <https://training.cochrane.org> and <https://www.cisa.gov>.
 
 ## Decision rules
 

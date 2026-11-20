@@ -15,6 +15,8 @@ A time policy is a short written document that answers, once, the questions ever
 
 The record's test is whether a new service can be built compliant without asking anyone. If a new module can read the policy and produce timestamps that interoperate with every existing one, the policy works. If it needs tribal knowledge — what the database was "really" configured to, which services ignore the standard — the policy is incomplete and the gaps must be named.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc3339> and <https://www.rfc-editor.org/rfc/rfc5905>.
+
 ## Decision rules
 
 - State the clock rule: monotonic for durations, wall for timestamps.

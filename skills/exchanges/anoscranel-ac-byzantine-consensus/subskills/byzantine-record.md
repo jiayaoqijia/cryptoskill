@@ -15,7 +15,7 @@ The Byzantine record states the failure model and its arithmetic: the adversary 
 
 The evidence entry is the one most often missing. Byzantine tolerance is a claim about behaviour under fault, and it is testable the way crash tolerance is: kill a replica deliberately, make one refuse in a scripted way, then observe whether agreement holds and for how long. The verification event is written down as performed — the same rule every record in the pack follows: state what was verified, not what was designed.
 
-Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://osf.io/prereg/>.
+Primary sources: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf> and <https://osf.io/prereg/>.
 
 ## Decision rules
 
@@ -58,6 +58,6 @@ A one-line restatement of the arithmetic belongs at the head of the record — f
 
 ## Sources
 
-- PBFT paper: <https://pmg.csail.mit.edu/papers/osdi99.pdf>
+- PBFT paper: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf>
 - Stated conditions practice: <https://osf.io/prereg/>
 - Byzantine model reference: <https://en.wikipedia.org/wiki/Byzantine_fault>

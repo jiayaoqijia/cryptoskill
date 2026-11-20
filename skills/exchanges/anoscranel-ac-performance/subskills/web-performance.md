@@ -16,6 +16,8 @@ status: "seedling"
 - INP replaced FID on 12 March 2024.
 - **Field vs lab**: field = real users (Chrome UX Report, RUM via `web-vitals`). Lab = Lighthouse, WebPageTest, DevTools on a set device.
 
+Primary sources: <https://web.dev/articles/vitals> and <https://web.dev/learn/performance>.
+
 ## Decision rules
 
 1. The target is field p75 in the good band for each metric, on mobile first.

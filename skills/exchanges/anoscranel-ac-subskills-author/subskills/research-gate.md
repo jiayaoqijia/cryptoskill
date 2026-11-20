@@ -26,6 +26,8 @@ Three minimum-evidence checks, all must PASS:
 3. **Notes-first dedup.** A search of the operator's notes and of the installed skills directory
    confirms whether an existing skill or note already covers the domain.
 
+Primary sources: <https://github.com/> and <https://osf.io/prereg/>.
+
 ## Decision rules
 
 Check 3 routes, never blocks:

@@ -15,6 +15,8 @@ Memory profiling answers two different questions with two different tools. "What
 
 The leak-hunting method that works is the snapshot diff. Take a heap snapshot, wait or drive load, take another, and diff: a leak is a type whose count and size grow while the workload that creates it has ended. The single-snapshot approach fails because the biggest retained object is usually legitimate cache or state — the diff is what separates growth from size.
 
+Primary sources: <https://docs.oracle.com/en/java/javase/21/troubleshoot/> and <https://learn.microsoft.com/en-us/visualstudio/>.
+
 ## Decision rules
 
 1. Classify the symptom first: churn (GC pressure, pauses) → allocation profile; growth (rising floor) → snapshot diff.

@@ -17,6 +17,8 @@ Images dominate the weight of the modern web, and the format choice is the pipel
 
 **Format negotiation** connects these choices to the browser. The pipeline produces multiple modern variants of the same source, and the delivery layer negotiates via the `<picture>` element or the `Accept` header. But this means the derivative set grows — one source produces JPEG, WebP, and optionally AVIF renditions at each size, and the pipeline's total storage and processing cost is the cross-product. The record documents this trade in the open, because "serve everything in AVIF' and "serve only JPEG" are both defensible positions that fail differently.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types> and <https://web.dev/learn/images>.
+
 ## Decision rules
 
 - Choose the format per image family: photographs to JPEG/WebP/AVIF, hard-edged graphics to PNG, animations evaluated separately.

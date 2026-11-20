@@ -4,6 +4,7 @@ description: "Workplace communication: the one-ask email and its follow-up, the 
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Business Writing

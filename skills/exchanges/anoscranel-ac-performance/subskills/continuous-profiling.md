@@ -15,6 +15,8 @@ A one-off profile answers "where is it slow right now"; a continuous profiler an
 
 What a sampling profile cannot tell you is just as defined: it shows where time was spent, not why; it misses events between samples; and on optimized code, inline frames can merge (see ac-production-debugging's stack-reading rules). It also cannot tell you about wall-clock blocking — a sampling CPU profile of a thread pool stuck on locks shows nothing, because nothing was executing. For blocking, the tool is a thread dump repeated, not a CPU sample.
 
+Primary sources: <https://www.brendangregg.com/flamegraphs.html> and <https://learn.microsoft.com/en-us/azure/>.
+
 ## Decision rules
 
 1. Use a sampling profiler for always-on production profiling; bounded overhead, aggregable.

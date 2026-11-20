@@ -4,6 +4,7 @@ description: "News and announcement writing: the inverted-pyramid news story, th
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # News Writing

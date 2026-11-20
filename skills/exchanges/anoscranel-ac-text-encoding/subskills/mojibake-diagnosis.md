@@ -15,6 +15,8 @@ Mojibake — "Ã©" for "é", "ä»Š" replacing readable text with CJK noise �
 
 The diagnostic method is the reverse of the corruption: take the observed bytes, and ask which single reinterpretation produces the intended text. The replacement patterns are few and characteristic, so identification is usually quick; the important part is stopping there and fixing the boundary rather than building a repair pass that converts the mangled form back — because every such repair is a guess about content that only sometimes works!
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc3629> and <https://www.unicode.org/versions/latest/>.
+
 ## Decision rules
 
 - Identify the pattern first: Latin-1 misread, code-page loss, or double-encoding.

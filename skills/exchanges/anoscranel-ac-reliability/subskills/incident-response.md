@@ -17,6 +17,8 @@ status: "seedling"
 - **Status communication** is a three-act shape: acknowledge, update hourly while live, then resolve with a postmortem.
 - **Severity ladder**: SEV1 pages now, SEV2 major, SEV3 minor, SEV4 cosmetic. ⚠️ Numbering varies by org; write your own mapping.
 
+Primary sources: <https://sre.google> and <https://serverinspector.com/blog/incident-response-playbook-for-small-teams>.
+
 ## Decision rules
 
 1. Severity selects the response path. If two tiers trigger the same action, merge them.

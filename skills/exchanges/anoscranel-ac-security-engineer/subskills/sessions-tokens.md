@@ -17,6 +17,8 @@ status: "seedling"
 - Standard Webhooks (standardwebhooks.com): verify the signature over the raw body, `webhook-id`, `webhook-timestamp`, `webhook-signature` (`v1,<HMAC-SHA256>` over `id.timestamp.body`), 5-minute tolerance, constant-time compare, dedupe on `webhook-id`.
 - ASVS 5.0 V7 Session Management, V9 Self-contained Tokens, V10 OAuth & OIDC.
 
+Primary sources: <https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html> and <https://pages.nist.gov/800-63-3/sp800-63b.html>.
+
 ## Decision rules
 
 1. Default to opaque tokens plus a server-side lookup for browser sessions: revocation is free.

@@ -19,6 +19,8 @@ status: "seedling"
 - **Disclosure is a measured trade-off, never a permission.** Disclosure lowers brand attitude and credibility while raising recognition and resistance (Eisend et al. 2020). It lifts no compliance duty.
 - **Objection response is regular and mostly mechanical.** The academic standard is point-by-point, each comment quoted verbatim and numbered. Measured, only 6% of letters fully accommodate every suggestion.
 
+Primary sources: <https://doi.org/10.1086/209380> and <https://doi.org/10.1093/hcr/hqaf016>.
+
 ## Decision rules
 
 1. Name the reader's strongest objection before drafting; an unaddressed best objection reads as evasion.

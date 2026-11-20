@@ -4,6 +4,7 @@ description: "Quality models and verification-and-validation work: ISO/IEC 25010
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Quality Verification

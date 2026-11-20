@@ -15,6 +15,8 @@ The media pipeline record is the single place where each pipeline's design and h
 
 The record earns its existence when something regresses. A video that used to transcode in four minutes now takes twenty — the record's per-rung cost history answers whether the source mix changed, the encoder was silently re-versioned, or the ladder grew. A derivative set that used to fit in cold storage now does not — the recipe versions and their measured sizes answer whether AVIF was added, whether retention was silently extended, or whether orphaned derivatives from a dead feature still exist. Without the record, the investigation begins with guesswork about a pipeline that may no longer be reproducible.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs> and <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types>.
+
 ## Decision rules
 
 - The record holds: media families, derivative recipes with version history, storage and retention policy, queue SLAs, and the error taxonomy.

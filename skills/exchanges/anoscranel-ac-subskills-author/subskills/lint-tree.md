@@ -35,6 +35,8 @@ ships inside the tree under audit. The 4 enforceable rules plus supporting check
    `skill_scan.py` runs the same check.
 7. **Also enforced** — no symlinks or non-.md files under subskills/; every group directory holds an INDEX.md; every relative link resolves inside the skill root; SKILL.md frontmatter has `name` and `description`; with no domain-vocabulary.md beside the linter the enum check fails closed (`--no-enum` skips it with a WARN). Also: no file named SKILL.md (any case) anywhere in the tree except its root; the SKILL.md `name:` matches `^[a-z0-9][a-z0-9-]{0,63}$`; scopes are compared after NFKC, casefold and a confusables fold; a domain segment that is empty, `.`, `..` or outside `[a-z0-9-]` fails; only `00-rsi.md` with the template anti_trigger may claim `domain: rsi`; ≤60 leaves with a group directory gives an `R2 flat-preferred` WARN. Every leaf's frontmatter has `name`, `domain`, `trigger`, `anti_trigger`, `scope` and `status`, and `status` is a legal value.
 
+Primary sources: <https://martinfowler.com> and <https://github.com/>.
+
 ## Decision rules
 
 - PASS + clean manual precedence review + clean security-vet → hand to audit-skill.

@@ -10,7 +10,7 @@ status: seedling
 ## Standard
 The division of labour standard governs the absolute separation between deterministic, unbypassable mechanical code and probabilistic language model agents within a trading desk. In any autonomous or semi-autonomous trading operation, all operations touching capital, risk limits, ingestion watermarks, and cryptographic plumbing must execute via deterministic, unbypassable software routines. Language model agents are restricted strictly to tasks whose outputs can be verified mechanically in SQL or relational stores, and where no capital is at direct risk during execution. 
 
-According to financial systems governance and resilient architecture frameworks, combining probabilistic reasoning with direct capital control creates systemic vulnerability. As documented in software reliability studies (https://doi.org/10.1016/j.jss.2024.112104), deterministic state machines eliminate unauthorized drift in high-frequency data pipelines. This leaf establishes the fundamental boundary that prevents language models from exercising discretionary authority over trading books, ensuring that every financial transfer or margin adjustment is backed by hard software constraints rather than semantic prompt interpretation.
+Combining probabilistic reasoning with direct capital control creates systemic vulnerability; AI risk-management frameworks treat the deterministic boundary as a governance control, not a suggestion (<https://www.nist.gov/itl/ai-risk-management-framework>). Design patterns for securing LLM agents likewise separate untrusted reasoning from privileged actions (<https://arxiv.org/abs/2506.08837>). This leaf establishes the fundamental boundary that prevents language models from exercising discretionary authority over trading books, ensuring that every financial transfer or margin adjustment is backed by hard software constraints rather than semantic prompt interpretation.
 
 ## Decision rules
 - Rule 1: Ingestion, watermarking, gap detection, feature computation, and the hard risk gate must be implemented in deterministic code with zero LLM mediation.
@@ -37,8 +37,9 @@ According to financial systems governance and resilient architecture frameworks,
 - [ ] Agent tasks are strictly limited to text extraction, labelling, and qualitative memo generation.
 - [ ] Programmatic JSON schema validation is enforced on all agent outputs prior to database commit.
 - [ ] No capital execution pathway can be triggered by language model inference.
-- [ ] Documentation clearly records the deterministic boundary for audit verification (https://arxiv.org/abs/2405.00001).
+- [ ] Documentation clearly records the deterministic boundary for audit verification.
 
 ## Sources
-- Software Reliability and Deterministic State Machines in Financial Systems: https://doi.org/10.1016/j.jss.2024.112104
-- Architectural Boundaries for Probabilistic Components in Critical Infrastructure: https://arxiv.org/abs/2405.00001
+
+- NIST AI Risk Management Framework: <https://www.nist.gov/itl/ai-risk-management-framework>
+- Beurer-Kellner et al., Design Patterns for Securing LLM Agents against Prompt Injections: <https://arxiv.org/abs/2506.08837>

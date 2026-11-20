@@ -15,9 +15,7 @@ Risk posture establishes the disciplined operational framework that survives emp
 
 The primary objective of a surviving risk posture is survival under worst-case structural execution conditions. High leverage (e.g., 100x at 0.5% maintenance margin) places liquidation thresholds dangerously close to current entry prices, ensuring that routine intraday noise triggers compulsory closure. Conversely, structured moderation (e.g., 10x to 25x leverage bands) distances the liquidation price from immediate price fluctuations, aligning position survival with multi-day structural invalidation levels rather than minute-to-minute wick anomalies.
 
-Additional public source for the claims here: <https://arxiv.org/abs/2608.03616>.
-
-Primary public sources for the claims here: <https://arxiv.org/abs/2608.03616>.
+Primary sources: <https://arxiv.org/abs/2608.03616> and <https://arxiv.org/abs/2607.27070>.
 
 ## Decision rules
 
@@ -53,3 +51,4 @@ Primary public sources for the claims here: <https://arxiv.org/abs/2608.03616>.
 - Jorion, P. (2006). *Value at Risk: The New Benchmark for Managing Financial Risk*. McGraw-Hill Education. ⚠️ cited without URL.
 - Hull, J. C. (2017). *Risk Management and Financial Institutions*. John Wiley & Sons. ⚠️ cited without URL.
 - Reference: <https://arxiv.org/abs/2608.03616>
+- Where does the criticality live? Early-warning signals across seven crypto-perpetual liquidation cascades (arXiv 2607.27070): <https://arxiv.org/abs/2607.27070>

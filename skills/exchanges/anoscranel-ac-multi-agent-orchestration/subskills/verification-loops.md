@@ -15,6 +15,8 @@ status: seedling
 - **Producer-validator independence**: validation must be executed by an entity with no authorship stake in the artifact to prevent confirmation bias and blind spot propagation.
 - **House rule on returns**: an empty or truncated chat return is not a failure if the target file on disk is complete and passes verification checks. ⚠️ House threshold.
 
+Primary source for the claims here: <https://iso.org/standard/45171.html>.
+
 ## Decision rules
 
 1. Never accept a subagent's work based solely on its chat summary; always inspect the output file on disk.
@@ -52,3 +54,4 @@ status: seedling
 
 - ISO/IEC/IEEE 29148 Requirements Engineering: <https://iso.org/standard/45171.html>
 - Internal operational standards for independent verification and artifact acceptance.
+- Manakul et al., SelfCheckGPT (zero-resource hallucination detection): <https://arxiv.org/abs/2303.08896>

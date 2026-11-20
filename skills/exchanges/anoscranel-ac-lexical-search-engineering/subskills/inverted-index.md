@@ -15,7 +15,7 @@ The inverted index turns the question around: instead of asking each document wh
 
 The economics explain every design trade-off. The index costs disk and memory proportional to the corpus's unique terms and postings; compression keeps it tolerable because postings are sorted numbers. Query speed depends on touching few short lists: AND queries run fastest when the rarest term is evaluated first, because its postings list prunes everything downstream. Every feature added to the index — positions for phrases, norms for scoring, doc values for facets — is a separate cost decision, and knowing which structure serves which feature is the difference between designing and accumulating.
 
-Primary sources: <https://lucene.apache.org/core/corenews.html> and <https://nlp.stanford.edu/IR-book/>.
+Primary sources: <https://lucene.apache.org/core/corenews.html> and <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>.
 
 ## Decision rules
 
@@ -55,5 +55,5 @@ Primary sources: <https://lucene.apache.org/core/corenews.html> and <https://nlp
 ## Sources
 
 - Lucene project: <https://lucene.apache.org/core/corenews.html>
-- Introduction to Information Retrieval: <https://nlp.stanford.edu/IR-book/>
+- Introduction to Information Retrieval: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Elasticsearch analysis and structure: <https://elastic.co/guide/en/elasticsearch/reference/current/analysis.html>

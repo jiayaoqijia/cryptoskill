@@ -11,10 +11,8 @@ status: "seedling"
 
 ## Standard
 
-Production agents converge on one skeleton, seen across a 30-prompt audit of shipping
-products: **identity, then behavior rules, then tool usage, then output format, then
-safety last** (<https://arxiv.org/html/2511.00751v2>
-Part II). The identity line is load-bearing and goes on line one. Sections are marked
+Production prompts commonly follow one skeleton: **identity, then behavior rules, then tool usage, then output format, then
+safety last**. The identity line is load-bearing and goes on line one. Sections are marked
 with XML-style tags or Markdown headers so the model can navigate long documents.
 Negative rules ("never X") dominate agentic prompts; each is a changelog of a past bug,
 so pair every negative with the positive action to take instead. Refusals are named
@@ -52,8 +50,8 @@ Primary sources: <https://www.anthropic.com/engineering/building-effective-agent
 
 ## Anti-patterns
 
-- Kitchen-sink bloat; prompts under 50 words beat 300-plus-word prompts on quality in
- the large-corpus study (Deep-Dive).
+- Kitchen-sink bloat; extra lines add budget cost and contradiction risk without
+ adding information.
 - Tool permissions enforced by instructions only; enforce in deterministic code.
 - Transcript-summary handoffs that drop boundary markers and constraints.
 - Secrets in the instruction text; keep credentials out-of-band.

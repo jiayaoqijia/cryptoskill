@@ -17,6 +17,8 @@ Redirect chains are the quieter cost. Each hop is a round trip the user pays, an
 
 Primary source: <https://developer.mozilla.org/en-US/docs/Web/HTTP>.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/HTTP/Status> and <https://www.rfc-editor.org/rfc/rfc9110>.
+
 ## Decision rules
 
 - Record every edge rule and its order, because composition is order-sensitive.

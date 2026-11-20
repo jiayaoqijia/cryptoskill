@@ -15,6 +15,8 @@ A stack trace is a list of frames, newest first, and most of it is not yours. Th
 
 Two distortions complicate the plain reading. Optimising compilers inline functions, so one source-level frame may be missing or merged, and the line number can be off by the size of the inlined body. Asynchronous runtimes do not keep a call stack across an await or a callback hop, so a trace taken at the moment of failure shows the scheduler, not the logical path that scheduled the work. Both distortions mean the trace is evidence about the machine state, and reconstructing the logical path is separate work.
 
+Primary sources: <https://docs.oracle.com/en/java/javase/21/> and <https://docs.python.org/3/library/traceback.html>.
+
 ## Decision rules
 
 - Read the topmost frames first; identify the first frame in code you own.

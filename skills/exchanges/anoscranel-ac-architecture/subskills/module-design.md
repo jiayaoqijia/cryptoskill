@@ -18,6 +18,8 @@ status: "seedling"
 - Change effort tracks module coupling and churn more than any single complexity metric (Nagappan & Ball, ICSE 2005).
 - Language features replace some GoF patterns: sealed types and pattern matching over Visitor; DI over Singleton.
 
+Primary sources: <https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html> and <https://go.dev/blog>.
+
 ## Decision rules
 
 1. A module owns one reason to change. Two unrelated reasons → split.

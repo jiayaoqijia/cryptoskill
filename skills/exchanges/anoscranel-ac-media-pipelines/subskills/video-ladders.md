@@ -17,6 +17,8 @@ The ladder is where the pipeline's economics become visible. Each rung costs tra
 
 **Segment packaging** closes the loop. HLS and DASH cut each rendition into segments (commonly a few seconds each) and describe them in a playlist manifest; the player fetches the manifest, then pulls segments at the ladder rung the network currently supports. The pipeline's job is to emit consistent, correctly-keyframed segments — every rung must share the same segment boundaries and the same keyframe alignment, or the player's ladder transitions stutter visibly.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs> and <https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers>.
+
 ## Decision rules
 
 - Define the ladder explicitly per use case: resolutions, bitrates, and codec, with a stated audience-quality floor and ceiling.

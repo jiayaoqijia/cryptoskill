@@ -4,6 +4,7 @@ description: "Interrogate an idea, plan, or decision before commitment: structur
 license: MIT
 metadata:
   domain: critical-thinking
+status: seedling
 ---
 
 # Interrogation

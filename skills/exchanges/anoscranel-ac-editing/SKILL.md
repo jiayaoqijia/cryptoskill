@@ -4,6 +4,7 @@ description: "Revising and finishing an existing draft: structural revision (reo
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Editing

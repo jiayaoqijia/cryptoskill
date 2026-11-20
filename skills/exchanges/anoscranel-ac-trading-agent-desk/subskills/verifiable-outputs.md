@@ -10,7 +10,7 @@ status: seedling
 ## Standard
 The verifiable-output contract establishes the mandatory standards for data produced by language model agents within a trading desk. Because probabilistic models exhibit hallucination and drift, no agent output is accepted into production records without an enforceable verification protocol. This contract mandates a strict 10% re-read-to-source check for news and text extraction tasks, requires every categorical label to carry explicit sample size counts ($n$) and UTC date ranges, forces categorical assignments to default to null when sample sizes are small, and mandates a continuous 3% to 5% spot-audit rate for all passed labels.
 
-As outlined in automated data quality frameworks (https://doi.org/10.1145/3580305.3599388), probabilistic extraction pipelines must be bounded by rigorous statistical sampling to maintain data integrity. Unchecked agent outputs propagate systematic errors into quantitative models, corrupting backtests and risk calculations. By enforcing explicit $n$-thresholds and mandatory human-in-the-loop or programmatic spot audits, the desk maintains an unbroken audit trail connecting processed metrics back to raw source documents (https://arxiv.org/abs/2310.12345).
+Hallucination-detection research shows probabilistic outputs can be checked for consistency without ground-truth labels (SelfCheckGPT, <https://arxiv.org/abs/2303.08896>); the desk's contract bounds extraction with rigorous statistical sampling. Unchecked agent outputs propagate systematic errors into quantitative models, corrupting backtests and risk calculations. By enforcing explicit $n$-thresholds and mandatory human-in-the-loop or programmatic spot audits, the desk maintains an unbroken audit trail connecting processed metrics back to raw source documents. Reported agent alpha is not deployment evidence until it survives structural validity tests (<https://arxiv.org/abs/2605.16895>).
 
 ## Decision rules
 - Rule 1: Every text extraction task must undergo a mandatory 10% re-read-to-source verification before archival or analytical use.
@@ -37,8 +37,9 @@ As outlined in automated data quality frameworks (https://doi.org/10.1145/358030
 - [ ] All extracted labels carry explicit $n$ and UTC date range metadata.
 - [ ] Small sample sizes ($n < 30$) automatically resolve to null values.
 - [ ] Automated 3% to 5% random spot-audit routine runs successfully on historical passed labels.
-- [ ] Audit failure thresholds are wired to trip an automatic write-lock circuit breaker (https://doi.org/10.1145/3580305.3599388).
+- [ ] Audit failure thresholds are wired to trip an automatic write-lock circuit breaker.
 
 ## Sources
-- Data Quality and Statistical Sampling in Automated Extraction Pipelines: https://doi.org/10.1145/3580305.3599388
-- Verification Protocols for Probabilistic Information Retrieval Systems: https://arxiv.org/abs/2310.12345
+
+- Manakul et al., SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection: <https://arxiv.org/abs/2303.08896>
+- Ye et al., The Alpha Illusion: Reported Alpha from LLM Trading Agents Should Not Be Treated as Deployment Evidence: <https://arxiv.org/abs/2605.16895>

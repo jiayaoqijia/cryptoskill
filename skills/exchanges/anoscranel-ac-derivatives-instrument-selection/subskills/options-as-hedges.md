@@ -13,7 +13,7 @@ Options provide nonlinear payoff geometries that linear instruments like spot an
 
 However, options are depreciating assets burdened by time decay (theta) and implied volatility pricing. Buying protection requires paying an upfront premium that acts as an insurance drag on portfolio returns; if the expected shock does not materialize within the expiration window, 100% of the premium can be lost. Conversely, selling options collects premium income but exposes the seller to catastrophic tail risk unless properly collateralized or delta-hedged. Instrument selection for hedging must weigh the cost of insurance against the probability and severity of the target risk event.
 
-Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.theocc.com/risk-management](https://www.theocc.com/risk-management>.
+Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.theocc.com/risk-management>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims here: <https://www.cmegroup.com/education/courses
 
 ## Sources
 
-- Options Clearing Corporation Risk Management Standards: [https://www.theocc.com/risk-management](https://www.theocc.com/risk-management)
-- Derivatives Risk Management and Margin Methodologies: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
+- Options Clearing Corporation Risk Management Standards: <https://www.theocc.com/risk-management>
+- Derivatives Risk Management and Margin Methodologies: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>

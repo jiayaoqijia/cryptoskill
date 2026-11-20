@@ -17,6 +17,8 @@ The rule that makes hashing work is that references travel with the graph. The b
 
 Primary source: <https://web.dev/learn>.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching> and <https://web.dev/learn>.
+
 ## Decision rules
 
 - Hash every immutable output asset by content, and record the hash length and placement in the name.

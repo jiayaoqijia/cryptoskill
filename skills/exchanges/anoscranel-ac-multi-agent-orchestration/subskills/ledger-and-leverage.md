@@ -15,6 +15,10 @@ status: seedling
 - **Irreversible action invariant**: destructive operations, spending, releases, and permission changes remain strictly human-gated regardless of agent autonomy level or loop duration.
 - **Heavy-job serialization rule**: heavy tasks (downloads, heavy parsing, build compilation, browser automation) must execute sequentially rather than in parallel to prevent system resource exhaustion. ⚠️ House threshold.
 
+Primary public source for the agent-economics claims here: <https://arxiv.org/abs/2611.01799> (Irene Aldridge, "Learning AI Agents, Market Makers, and Stress in Automated Markets", 2026).
+
+Primary public sources for the claims here: <https://arxiv.org/abs/2611.01799>.
+
 ## Decision rules
 
 1. Maintain an operation ledger recording agent dispatches, model tiers, retry counts, and estimated token costs for every multi-agent run.
@@ -52,3 +56,5 @@ status: seedling
 
 - Internal operational standards for multi-agent ledgers, leverage measurement, and human safety gates.
 - Architectural guidelines on resource serialization and autonomous run safety limits.
+- Aldridge, I. (2026). Learning AI Agents, Market Makers, and Stress in Automated Markets. <https://arxiv.org/abs/2611.01799>
+- ArXiv 2608.24358, The Handoff Tax: <https://arxiv.org/abs/2608.24358>

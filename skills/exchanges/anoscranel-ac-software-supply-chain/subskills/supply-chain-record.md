@@ -17,6 +17,8 @@ Its second purpose is auditability of the trust decisions themselves. Vendoring 
 
 Primary source: <https://slsa.dev/>.
 
+Primary sources: <https://slsa.dev/> and <https://in-toto.io/>.
+
 ## Decision rules
 
 - Record each external source: registry, mirror, vendored copy, direct URL.

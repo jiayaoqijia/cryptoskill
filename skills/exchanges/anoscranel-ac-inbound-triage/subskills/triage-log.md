@@ -14,6 +14,8 @@ status: "seedling"
 - **Anderson, _Kanban_ (2010)**: measure flow, not inventory; lead time, cycle time, and work-item age say more than a count of open items. ⚠️ cited without URL.
 - **Little's Law**: wait time tracks queue length; the median and the oldest age reveal whether the queue drains or rots. <https://en.wikipedia.org/wiki/Little%27s_law>
 
+Primary sources: <https://en.wikipedia.org/wiki/Little%27s_law> and <https://gettingthingsdone.com/>.
+
 ## Decision rules
 
 1. If an item is not in the log, it does not exist to the process; every item gets one line.
@@ -52,3 +54,4 @@ status: "seedling"
 
 - Anderson, _Kanban: Successful Evolutionary Change for Your Technology Business_ (2010): ⚠️ cited without URL.
 - Little's Law: <https://en.wikipedia.org/wiki/Little%27s_law>
+- Allen, David. _Getting Things Done: The Art of Stress-Free Productivity_. Penguin, 2001. <https://gettingthingsdone.com/>

@@ -17,6 +17,8 @@ status: "seedling"
 - **Sanitizers**: ASan (memory errors), TSan (data races), UBSan (undefined behaviour), MSan (uninitialised reads). ⚠️ Slowdown figures are single-source; measure per workload.
 - **Agent fixes**: about 7.8% of patches that pass a tool's own checks fail the full developer suite; 29.6% diverge from the human fix (arXiv 2503.15223).
 
+Primary sources: <https://courses.cs.duke.edu/compsci308/spring26/readings/Zeller_Scientific_Debugging.pdf> and <https://github.com/byerlikaya/claude-starter-kit/blob/main/plugin/skills/systematic-debugging/SKILL.md>.
+
 ## Decision rules
 
 1. No fix before a reliable reproduction. Pin time, randomness, locale, data and versions until it fails every time.

@@ -11,7 +11,7 @@ status: seedling
 
 This skill provides the rigorous architectural, security, and operational standards required to govern an AI agent trading desk. It operationalizes verified findings from quantitative finance and secure systems engineering, establishing an uncompromisable boundary between deterministic risk controls and probabilistic agent tasks.
 
-Primary sources for the claims here: <https://doi.org/10.1016/j.sysconle.2023.105542> and <https://doi.org/10.1016/j.jfi.2023.100982>.
+Primary sources for the claims here: <https://ai.meta.com/blog/practical-ai-agent-security/> and <https://arxiv.org/abs/2611.01799>.
 
 ## Subskills Index
 
@@ -35,17 +35,13 @@ Primary sources for the claims here: <https://doi.org/10.1016/j.sysconle.2023.10
 
 ## Sources & References
 
-- Software Reliability and Deterministic State Machines: https://doi.org/10.1016/j.jss.2024.112104
-- Architectural Boundaries for Probabilistic Components: https://arxiv.org/abs/2405.00001
-- Data Quality and Statistical Sampling in Automated Extraction: https://doi.org/10.1145/3580305.3599388
-- Verification Protocols for Probabilistic Information Retrieval: https://arxiv.org/abs/2310.12345
-- Security Boundaries and Principle of Least Privilege: https://doi.org/10.1109/SP.2019.00028
-- Mitigating Indirect Prompt Injection in Multi-Component Agents: https://arxiv.org/abs/2302.12173
-- Aldridge, I. (2026). Statistical Invariance of Return Distributions Across Market Microstructure Regimes. arXiv:2611.01799: https://arxiv.org/abs/2611.01799
-- Limits of Statistical Inference in Non-Stationary Markets: https://doi.org/10.1016/j.jfi.2023.100982
-- Market Maker Inventory Risk and Liquidity Fragility: https://doi.org/10.1111/jofi.13210
-- Feedback Loops and Herd Dynamics in Algorithmic Trading: https://arxiv.org/abs/2308.09876
-- Resource Management and Scheduling Constraints in Edge Computing: https://doi.org/10.1016/j.sysconle.2023.105542
-- Architectural Patterns for Fault-Tolerant Batch Processing: https://arxiv.org/abs/2305.14322
-- Vulnerabilities and Mitigations in LLM-Integrated Financial Workflows: https://doi.org/10.1145/3605764.3623972
-- Resilient System Architectures for Autonomous Decision Support: https://arxiv.org/abs/2312.01234
+- Meta AI, Agents Rule of Two: A Practical Approach to AI Agent Security: <https://ai.meta.com/blog/practical-ai-agent-security/>
+- Greshake et al. (2023), Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection: <https://arxiv.org/abs/2302.12173>
+- Beurer-Kellner et al. (2025), Design Patterns for Securing LLM Agents against Prompt Injections: <https://arxiv.org/abs/2506.08837>
+- Aldridge, I. (2026). Learning AI Agents, Market Makers, and Stress in Automated Markets. arXiv:2611.01799: <https://arxiv.org/abs/2611.01799>
+- Cemri et al. (2025), Why Do Multi-Agent LLM Systems Fail? (MAST failure taxonomy): <https://arxiv.org/abs/2503.13657>
+- Manakul et al. (2023), SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection: <https://arxiv.org/abs/2303.08896>
+- Ye et al. (2026), The Alpha Illusion: Reported Alpha from LLM Trading Agents Should Not Be Treated as Deployment Evidence: <https://arxiv.org/abs/2605.16895>
+- NIST AI Risk Management Framework: <https://www.nist.gov/itl/ai-risk-management-framework>
+- Android developers, Keep background work alive with a lean process: <https://developer.android.com/topic/performance/memory/guide/process-splitting>
+- Android developers, Processes and threads overview: <https://developer.android.com/guide/components/processes-and-threads>

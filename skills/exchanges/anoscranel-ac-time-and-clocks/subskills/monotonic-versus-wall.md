@@ -15,6 +15,8 @@ The wall clock tells you the time of day; the monotonic clock tells you how much
 
 The classic bug is interval-by-subtraction of wall-clock reads: an NTP correction steps the clock back mid-request and the elapsed time comes out negative, or a migration nudges it forward and a retry storm is computed. The rule that prevents the whole class: durations from the monotonic clock, timestamps for humans and for ordering from the wall clock, and never a wall subtraction where a duration matters.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc3339> and <https://pubs.opengroup.org/onlinepubs/9699919799/>.
+
 ## Decision rules
 
 - Use the monotonic clock for every duration: timeouts, retries, profiling, rate limits.

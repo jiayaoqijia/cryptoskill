@@ -4,6 +4,7 @@ description: "The documented decision process of discretionary crypto trading. I
 license: MIT
 metadata:
   domain: crypto-trading
+status: seedling
 ---
 
 # Crypto Trading Discipline

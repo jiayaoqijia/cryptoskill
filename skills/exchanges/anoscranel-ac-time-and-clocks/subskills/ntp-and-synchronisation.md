@@ -15,6 +15,8 @@ A synchronisation protocol like NTP keeps a host's clock close to a reference, b
 
 Two failure modes deserve design attention. The step correction: when the daemon corrects a large offset at once, processes reading the wall clock see time jump, which is precisely the event the monotonic rule protects durations from. The silent divergence: a misconfigured or unreachable source leaves the clock free-running, so any trust placed in that host's timestamps decays over days. Both argue for monitoring the synchronisation state itself, not just the clock value.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc5905> and <https://www.nist.gov/pml/time-and-frequency-division/>.
+
 ## Decision rules
 
 - Record which synchronisation sources each class of host uses.

@@ -15,6 +15,8 @@ Most of the time, time is smooth: one second follows the last. Occasionally it i
 
 The engineering response is proportionate: for most systems, store in UTC and let the presentation layer carry the zone, and the daylight-saving case dissolves; for the leap second, accept the smear or the small anomaly once every few years unless the system's domain — astronomy, finance timestamps — makes the exact instant matter. The danger is not the events themselves, which are announced, but code that silently assumes a fixed offset between two zones or a fixed number of seconds in a minute.
 
+Primary sources: <https://www.iana.org/time-zones/> and <https://www.nist.gov/pml/time-and-frequency-division/>.
+
 ## Decision rules
 
 - Identify whether any code computes durations across a local clock discontinuity.

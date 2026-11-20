@@ -4,6 +4,7 @@ description: "Product and process documentation: the docs set — README, tutori
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Technical Writing

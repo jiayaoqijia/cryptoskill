@@ -17,6 +17,8 @@ The cost is the reason to design deliberately. Each preview carries the full foo
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/articles/continuousIntegration.html> and <https://martinfowler.com/bliki/DeploymentPipeline.html>.
+
 ## Decision rules
 
 - Record what the preview contains: full stack, changed services only, or service plus stubs.

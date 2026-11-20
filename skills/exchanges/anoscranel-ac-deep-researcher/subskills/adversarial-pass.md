@@ -24,6 +24,8 @@ status: "seedling"
 - The pass searches for disconfirming evidence with fresh lineages. Re-running
  the same engines that built the draft finds the same draft.
 
+Primary sources: <https://arxiv.org> and <https://doi.org/10.1136/bmj.n71>.
+
 ## Decision rules
 
 - The deeper the stake, the harder the pass. A verdict memo for money gets the

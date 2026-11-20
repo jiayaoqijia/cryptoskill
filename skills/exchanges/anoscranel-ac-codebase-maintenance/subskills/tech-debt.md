@@ -18,6 +18,8 @@ status: "seedling"
 - Developers undervalue future cost, so repayment must be scheduled (arXiv:1901.07024).
 - ⚠️ Cost figures such as Stripe's ~33 % of time on debt are vendor-funded.
 
+Primary sources: <https://martinfowler.com/bliki/TechnicalDebtQuadrant.html> and <https://docs.enterprise.codescene.io/versions/1.5.2/guides/technical/hotspots.html>.
+
 ## Decision rules
 
 1. Debt that matters is debt in code you change often. Cold code with high complexity can wait.

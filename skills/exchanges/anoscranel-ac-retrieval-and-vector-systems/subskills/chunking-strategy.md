@@ -15,7 +15,7 @@ A chunk is the unit that gets embedded and retrieved, so its boundaries decide w
 
 Chunk size is a trade-off with two directions. Small chunks retrieve precisely but lose surrounding context, so the retrieved passage may answer a fragment of the question; large chunks carry context but dilute the embedding, so a passage about one topic can be retrieved for a query about another. Overlap between adjacent chunks softens the boundary but multiplies the index and can produce near-duplicate results.
 
-Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://www.nist.gov/>.
+Primary sources: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval> and <https://www.nist.gov/>.
 
 ## Decision rules
 
@@ -54,6 +54,6 @@ Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://www.nist.gov/>
 
 ## Sources
 
-- Information retrieval foundations: <https://nlp.stanford.edu/IR-book/>
+- Information retrieval foundations: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Text retrieval evaluation guidance: <https://www.nist.gov/>
 - Unicode text segmentation: <https://unicode.org/reports/tr29/>

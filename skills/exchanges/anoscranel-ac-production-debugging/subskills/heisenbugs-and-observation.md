@@ -15,6 +15,8 @@ A heisenbug is a failure that changes when you measure it. The physical cause is
 
 The practical consequence for production debugging is a rule about evidence: an observation tool is itself an intervention, and its outputs must be recorded as such. A profiling run that shows no deadlock is not evidence there is no deadlock; it is evidence that the deadlock does not occur under profiling. The skill is choosing observations with the smallest timing footprint first, and reserving the invasive ones for when the cheap ones have failed.
 
+Primary sources: <https://github.com/google/sanitizers> and <https://martinfowler.com/articles/nonDeterminism.html>.
+
 ## Decision rules
 
 - Record every observation tool used, with a note that its output is from an instrumented run.

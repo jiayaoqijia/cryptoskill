@@ -13,7 +13,7 @@ Look-ahead bias and information leakage occur when a backtest utilizes data, par
 
 Point-in-time discipline requires that every feature and universe constituent be reconstructed strictly as it existed at the exact clock time of decision execution. Survivorship bias distorts historical samples by censoring failed entities, artificially inflating historical returns. Furthermore, information leakage from machine learning target encoding or cross-validation temporal boundary breaches invalidates performance metrics instantly. A single leaked feature corrupts the entire analytical pipeline, rendering performance metrics completely void.
 
-Primary sources for the claims in this section: <https://doi.org/10.1111/j.1540-6261.1995.tb05171.x> and <https://doi.org/10.1016/0304-405X(81>.
+Primary sources for the claims in this section: <https://doi.org/10.1111/j.1540-6261.1995.tb05171.x> and <https://doi.org/10.1016/0304-405X(81)90018-0>.
 
 ## Decision rules
 

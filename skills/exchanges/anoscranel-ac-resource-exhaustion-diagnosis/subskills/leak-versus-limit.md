@@ -15,6 +15,8 @@ Every resource exhaustion has one of three causes, and the fixes do not substitu
 
 The differential evidence is the shape of the usage curve under varying load. A leak is load-independent in the long run — it climbs even at night. Saturation tracks load and returns to baseline when load falls. A mis-set limit shows usage crowding against a ceiling with no pathological curve — the ceiling is simply wrong. Two hours of samples usually separate all three without reading a line of code.
 
+Primary sources: <https://www.kernel.org/doc/html/latest/admin-guide/> and <https://learn.microsoft.com/en-us/azure/well-architected/>.
+
 ## Decision rules
 
 - Sample the resource's usage curve across at least one low-load and one high-load period.

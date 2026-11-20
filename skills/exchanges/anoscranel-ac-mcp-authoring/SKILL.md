@@ -4,6 +4,7 @@ description: "Authoring Model Context Protocol servers that expose tools, resour
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # MCP Authoring

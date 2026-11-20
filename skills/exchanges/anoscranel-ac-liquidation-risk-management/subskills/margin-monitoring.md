@@ -10,7 +10,7 @@ status: seedling
 ## Standard
 Continuous margin monitoring is the primary defense against unexpected liquidation. Professional risk management requires strict pre-trade validation and ongoing daily audits comparing liquidation distance against realized volatility, cumulative funding rate drains, and open interest (OI) shifts. As realized volatility expands, the distance between mark price and liquidation price must widen proportionally to prevent normal price oscillation from triggering margin calls. Cumulative negative funding payments act as a persistent tax that steadily erodes account equity, compressing the liquidation buffer over time. Sudden open interest contractions indicate long or short liquidation flushes that can instantly alter market depth and invalidate current margin assumptions. Pre-established tripwires must force automated or manual position size reductions when risk metrics breach safety bands.
 
-Primary sources for the claims here: <https://www.binance.com/en/support/faq/margin-call-and-liquidation-in-futures-trading-360033516312> and <https://www.okx.com/help/risk-management-rules>.
+Primary sources for the claims here: <https://www.binance.com/en/support/faq/margin-call-and-liquidation-in-futures-trading-360033516312> and <https://www.okx.com/en-us/help/forced-liquidation-faq>.
 
 ## Decision rules
 1. Establish a mandatory pre-trade checklist requiring liquidation distance to exceed 3x the 24-hour Average True Range (ATR) for the target trading pair.
@@ -40,4 +40,4 @@ Primary sources for the claims here: <https://www.binance.com/en/support/faq/mar
 
 ## Sources
 - Binance Risk Management and Margin Call Rules: https://www.binance.com/en/support/faq/margin-call-and-liquidation-in-futures-trading-360033516312
-- OKX Risk Management and Position Monitoring Guide: https://www.okx.com/help/risk-management-rules
+- OKX Forced liquidation FAQ (maintenance margin ratio monitoring): https://www.okx.com/en-us/help/forced-liquidation-faq

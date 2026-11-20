@@ -15,7 +15,7 @@ status: seedling
 - **WCAG 2.2 SC 1.4.1, Use of Color**: never signal by hue alone (https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html).
 - **Relative luminance**: the ratio is computed from linearized channels (https://www.w3.org/TR/WCAG22/#dfn-relative-luminance).
 - **60-30-10 palette**: 60 neutral base, 30 secondary, 10 accent. ⚠️ Practitioner convention from interior design.
-- **Color blindness**: about 1 in 12 men (8%) carries a red-green defect (https://www.colourblindawareness.org/colour-blindness/). WebAIM covers the contrast mechanics: https://webaim.org/articles/visual/colorblind.
+- **Color blindness**: about 1 in 12 men (8%) has a colour vision deficiency, most of it red-green (https://www.colourblindawareness.org/colour-blindness/). WebAIM covers the contrast mechanics: https://webaim.org/articles/visual/colorblind.
 
 ## Decision rules
 

@@ -15,6 +15,8 @@ Limits are decisions, but most of them were never made — they were inherited. 
 
 The measurement discipline matters more than the arithmetic. Peak is not the average and not the highest single sample; it is the highest sustained level the workload reaches under its worst realistic load, plus headroom for spikes the samples caught. A limit set at the observed average will break on the first real Monday; one set at a momentary spike multiplied by ten wastes resources quietly for years.
 
+Primary sources: <https://www.kernel.org/doc/html/latest/admin-guide/> and <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>.
+
 ## Decision rules
 
 - Measure the resource's usage across the peak and rest periods, not just one day.
@@ -54,4 +56,4 @@ The measurement discipline matters more than the arithmetic. Peak is not the ave
 
 - Linux process resource limits: <https://www.kernel.org/doc/html/latest/admin-guide/>
 - Container resource management: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
-- Capacity planning from measurement: <https://sre.google/workbook/chapter-capacity-planning/>
+- Capacity planning from measurement: <https://sre.google/workbook/managing-load/>

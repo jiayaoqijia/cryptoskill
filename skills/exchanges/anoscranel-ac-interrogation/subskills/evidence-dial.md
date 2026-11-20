@@ -16,6 +16,8 @@ status: "seedling"
 - **Duke, _Thinking in Bets_ (2018)**: separate decision quality from outcome quality; good decisions can lose. ⚠️ cited without URL.
 - **Galef, _The Scout Mindset_ (2021)**: the test of a belief is what you expect to see if you are wrong. ⚠️ cited without URL.
 
+Primary sources: <https://plato.stanford.edu/entries/popper/> and <https://hbr.org/2007/09/performing-a-project-premortem>.
+
 ## Decision rules
 
 1. If the author cannot answer "what would change your mind?", the claim is unfalsifiable; treat it as a belief, label it, and test the decision without it.
@@ -58,3 +60,4 @@ status: "seedling"
 - Tetlock & Gardner, _Superforecasting_ (2015). ⚠️ cited without URL.
 - Duke, _Thinking in Bets_ (2018). ⚠️ cited without URL.
 - Galef, _The Scout Mindset_ (2021). ⚠️ cited without URL.
+- Klein, premortem (HBR 2007): <https://hbr.org/2007/09/performing-a-project-premortem>

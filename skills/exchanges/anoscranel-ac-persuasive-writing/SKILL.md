@@ -4,6 +4,7 @@ description: "Text written to move a reader: marketing copy and landing pages an
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Persuasive Writing

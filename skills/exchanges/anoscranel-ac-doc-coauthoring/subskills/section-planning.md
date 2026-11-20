@@ -13,6 +13,10 @@ status: "seedling"
 
 Section planning translates gathered context into an answer-first structural skeleton before any prose drafting begins. Grounded in Barbara Minto's Pyramid Principle (1987), this stage structures document sections as logical answers to the questions the reader will naturally ask in sequence, starting with the primary conclusion or recommendation. The standard requires defining strict scope boundaries, assigning one distinct outcome per section, and securing explicit author sign-off on the skeleton. ⚠️ Note: While Minto's pyramid framework is widely adopted in professional communication, empirical cognitive science studies regarding strict hierarchical reading paths remain variable across diverse digital audiences.
 
+Primary source for the claims here: <https://www.iso.org/standard/78907.html>.
+
+Additional public source for the claims here: <https://plainlanguage.gov/guidelines/>.
+
 ## Decision rules
 
 1. Order document sections in answer-first sequence, placing the governing conclusion or recommendation at the very top.
@@ -47,3 +51,4 @@ Section planning translates gathered context into an answer-first structural ske
 
 - Barbara Minto, The Pyramid Principle: Logic in Writing and Thinking (1987), Financial Times Prentice Hall.
 - ISO 24495-1 Plain language standards on document structure and logical navigation: https://www.iso.org/standard/78907.html
+- Reference: <https://plainlanguage.gov/guidelines/>

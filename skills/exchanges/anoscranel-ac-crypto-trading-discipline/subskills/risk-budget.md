@@ -11,10 +11,10 @@ status: seedling
 
 ## Standard
 
-- **Kelly, "A New Interpretation of Information Rate" (1956)**: optimal long-term growth requires strict bounds on wager size relative to bankroll. <https://www.bell-labs.com/institute/about/history-bell-labs/bell-system-technical-journal/>
-- **Bachelier, _Theory of Speculation_ (1900)**: price fluctuations follow probabilistic distributions where unconstrained variance leads to ruin. <https://archive.org/details/theoriadelaspecu00bach>
+- **Kelly, "A New Interpretation of Information Rate" (1956)**: optimal long-term growth requires strict bounds on wager size relative to bankroll. <https://archive.org/details/bstj35-4-917>
+- **Bachelier, _Theory of Speculation_ (1900)**: price fluctuations follow probabilistic distributions where unconstrained variance leads to ruin. <https://archive.numdam.org/article/ASENS_1900_3_17__21_0.pdf>
 - **Markowitz, "Portfolio Selection" (1952)**: risk must be managed at the aggregate portfolio level by accounting for covariance. <https://www.jstor.org/stable/2975931>
-- **Thorp, "The Kelly Criterion" (2008)**: practitioners must fractionalize theoretical bets to absorb estimation error. <https://www.e-m-h.org/Thorp08.pdf>
+- **Thorp, "The Kelly Criterion" (2008)**: practitioners must fractionalize theoretical bets to absorb estimation error. <https://gwern.net/doc/statistics/decision/2006-thorp.pdf>
 - ⚠️ Practitioner heuristic: desks set per-decision risk at 1% of total capital and aggregate open risk at 5%.
 
 ## Decision rules
@@ -54,8 +54,8 @@ status: seedling
 
 ## Sources
 
-- Kelly, "A New Interpretation of Information Rate": <https://www.bell-labs.com/institute/about/history-bell-labs/bell-system-technical-journal/>
+- Kelly, "A New Interpretation of Information Rate": <https://archive.org/details/bstj35-4-917>
 - Markowitz, "Portfolio Selection": <https://www.jstor.org/stable/2975931>
-- Thorp, "The Kelly Criterion": <https://www.e-m-h.org/Thorp08.pdf>
+- Thorp, "The Kelly Criterion": <https://gwern.net/doc/statistics/decision/2006-thorp.pdf>
 
 ⚠️ Gaps: non-linear liquidation risks in crypto markets require continuous dynamic adjustment of the risk fraction.

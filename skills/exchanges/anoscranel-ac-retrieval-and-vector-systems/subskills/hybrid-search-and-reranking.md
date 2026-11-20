@@ -15,7 +15,7 @@ Dense retrieval matches meaning and loses exact strings; sparse retrieval matche
 
 Reranking is a second stage that takes the combined candidate set and reorders it with a more expensive model. Its value depends on the first stage's recall: a reranker cannot recover a document the retrieval stage never returned, so the two are sequential rather than alternative, and the record should state the candidate depth the reranker receives.
 
-Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://www.nist.gov/>.
+Primary sources: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval> and <https://www.nist.gov/>.
 
 ## Decision rules
 
@@ -57,6 +57,6 @@ The reranker's value also depends on what it was trained for: a model trained on
 
 ## Sources
 
-- Information retrieval foundations: <https://nlp.stanford.edu/IR-book/>
+- Information retrieval foundations: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Evaluation methodology: <https://www.nist.gov/>
 - Open model documentation: <https://huggingface.co/docs/transformers/>

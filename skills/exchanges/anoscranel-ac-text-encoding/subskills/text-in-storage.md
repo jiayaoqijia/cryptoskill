@@ -15,6 +15,8 @@ A database column has a character set and a collation, and both are decisions th
 
 The other lying number is length. A column declared with a character limit counts characters — but which unit, and per the column's own rules, varies by engine and version — while the wire and the application may count bytes or graphemes. A validation in the application that permits what the column rejects produces an insert error nobody tested for, and one that is stricter wastes space; the two must be derived from one definition.
 
+Primary sources: <https://www.unicode.org/reports/tr10/> and <https://www.unicode.org/versions/latest/>.
+
 ## Decision rules
 
 - Record the character set and collation of every text-bearing store, explicitly.

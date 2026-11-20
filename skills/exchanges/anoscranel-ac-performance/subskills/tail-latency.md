@@ -15,6 +15,8 @@ The average lies. A p50 of 80 ms with a p99 of 4 seconds is a system that is fas
 
 The tail is created by specific mechanisms, each with a signature. Queueing amplifies: at high utilisation, arrival variance becomes wait variance, and the tail grows faster than the mean (the "tail at scale" observation from Dean and Barroso, https://dl.acm.org/doi/10.1145/2408776.2408804). Variance sources — background jobs, retries elsewhere, lock contention, page cache misses — land on a few requests and are invisible at p50. The fix order is diagnose-then-reduce: find which mechanism produces the tail before changing anything.
 
+Primary sources: <https://dl.acm.org/doi/10.1145/2408776.2408804> and <https://sre.google/sre-book/monitoring-distributed-systems/>.
+
 ## Decision rules
 
 1. Report p50, p95, p99 — and the max — for every critical path. Never the average alone.

@@ -48,7 +48,7 @@ Primary sources for the claims in this section: <https://doi.org/10.1080/0162145
 
 ## Sources
 
-- Efron, B., & Tibshirani, R. J. (1993). An Introduction to the Bootstrap. Chapman and Hall/CRC. https://doi.org/10.1201/97804290246cb
+- Efron, B., & Tibshirani, R. J. (1993). An Introduction to the Bootstrap. Chapman and Hall/CRC. https://doi.org/10.1201/9780429246593
 - Pearl, J. (2009). Causality: Models, Reasoning, and Inference. Cambridge University Press. https://doi.org/10.1017/CBO9780511803161
 - Politis, D. N., & Romano, J. P. (1994). The Stationary Bootstrap. Journal of the American Statistical Association, 89(428), 1303-1313. https://doi.org/10.1080/01621459.1994.10476870
 - Open Science Framework (OSF). Statistical Validation and Null Hypothesis Testing. https://osf.io/prereg/

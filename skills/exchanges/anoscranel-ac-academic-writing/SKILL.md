@@ -4,6 +4,7 @@ description: "Scholarly writing: structuring an IMRaD paper or a thesis chapter,
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Academic Writing

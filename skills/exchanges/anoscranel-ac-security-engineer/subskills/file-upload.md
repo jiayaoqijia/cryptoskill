@@ -14,6 +14,8 @@ status: seedling
 - OWASP File Upload Cheat Sheet controls: allow-list extensions after input validation; validate the real type — "don't trust the Content-Type header"; rename to an app-generated filename; limit filename length and characters; set a size limit; only authorised users upload; store outside the webroot and serve via an id→file handler; run antivirus or sandbox; run Content Disarm & Reconstruction for PDF/DOCX; protect the upload from CSRF.
 - OWASP ASVS 5.0 **V5 File Handling**: 5.1.1 document permitted types and max sizes (L2) · 5.2.1 size limit (L1) · 5.2.2 extension and magic bytes match, including inside archives (L1) · 5.2.3 max uncompressed size and entry count before unpacking (L2) · 5.2.4 per-user quota (L3) · 5.2.5 reject symlinked archives (L3) · 5.2.6 max image pixel size (L3) · 5.3.1 public-folder files never execute as code (L1) · 5.3.2 paths from internal data, not user filenames (L1) · 5.3.3 decompression ignores user paths — zip slip (L3) · 5.4.1 ignore user filenames, set `Content-Disposition` (L2) · 5.4.2 encode served filenames (RFC 6266) (L2) · 5.4.3 AV-scan untrusted sources (L2). ⚠️ Some levels were read from truncated rows — re-check before relying on them.
 
+Primary sources: <https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html> and <https://owasp.org/www-project-application-security-verification-standard/>.
+
 ## Decision rules
 
 1. The declared `Content-Type` is a claim, not evidence: check magic bytes, and the extension allow-list after that.

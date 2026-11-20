@@ -13,6 +13,8 @@ status: "seedling"
 
 Stage 1 of the co-authoring workflow closes the gap between what the author knows implicitly and what the co-author needs explicitly to build an accurate document. Context gathering replaces unstructured guessing with a systematic interview covering core dimensions: document purpose, target reader, the exact decision or action the document must drive, publishing venue, operating constraints, available source material, and the success test. The standard dictates that all necessary parameters must be captured before any section planning or drafting begins. According to standard technical communication frameworks and ISO 24495-1 guidelines, defining the reader's information needs upfront prevents wasted drafting effort and ensures structural relevance from the first paragraph onward.
 
+Primary sources for the claims here: <https://www.iso.org/standard/78907.html> and <https://www.stc.org>.
+
 ## Decision rules
 
 1. Execute context gathering as the mandatory first step of any accepted co-authoring workflow, never skipping directly to outlining or drafting.

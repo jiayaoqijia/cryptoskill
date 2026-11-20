@@ -17,6 +17,8 @@ status: "seedling"
 - OWASP HTTP Headers Cheat Sheet (https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet); MDN references for HSTS and cookies.
 - ASVS 5.0 V3 Web Frontend Security (a new standalone chapter). CWE Top 25 2025: CWE-79 XSS #1, CWE-352 CSRF #3.
 
+Primary sources: <https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html> and <https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP>.
+
 ## Decision rules
 
 1. Rely on framework auto-escaping (React, Vue, Angular); audit the residual sinks: `dangerouslySetInnerHTML`, `v-html`, `|safe`, `innerHTML`, `document.write`.

@@ -15,7 +15,7 @@ The search record gathers every decision that a future debugging session will ne
 
 The record's second function is change safety. Analyzer changes require reindexing; scoring changes alter every result's ordering; structure changes have memory costs. Each of these is a versioned event in the record, tied to the mapping version that shipped it and to the evaluation numbers that justified it. A search system without this history degrades into folklore: the tuning is real but unexplainable, and the next engineer either re-derives everything or reverts something that was load-bearing.
 
-Primary sources: <https://elastic.co/guide/en/elasticsearch/reference/current/analysis.html> and <https://nlp.stanford.edu/IR-book/>.
+Primary sources: <https://elastic.co/guide/en/elasticsearch/reference/current/analysis.html> and <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>.
 
 ## Decision rules
 
@@ -55,5 +55,5 @@ Primary sources: <https://elastic.co/guide/en/elasticsearch/reference/current/an
 ## Sources
 
 - Elasticsearch analysis reference: <https://elastic.co/guide/en/elasticsearch/reference/current/analysis.html>
-- Introduction to Information Retrieval: <https://nlp.stanford.edu/IR-book/>
+- Introduction to Information Retrieval: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Lucene project: <https://lucene.apache.org/core/corenews.html>

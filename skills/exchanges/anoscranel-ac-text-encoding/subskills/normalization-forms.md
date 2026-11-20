@@ -15,6 +15,8 @@ Two strings can render identically and differ byte-for-byte. "é" exists as one 
 
 The name is misleading: normalisation is not something that happens naturally in text handling. Most software passes bytes through unchanged, so a file saved by one application and the same file re-saved by another can silently differ, and the bug reports — "the dedupe missed a duplicate", "login fails for the same user" — never mention encoding. The fix is a decision: pick one form per system, apply it at a defined point, and hold every path to it.
 
+Primary sources: <https://www.unicode.org/reports/tr15/> and <https://www.unicode.org/versions/latest/>.
+
 ## Decision rules
 
 - Choose one normalisation form — typically NFC — for the whole system and write it into the policy.

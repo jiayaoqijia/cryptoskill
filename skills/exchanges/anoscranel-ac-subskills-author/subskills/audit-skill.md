@@ -13,6 +13,8 @@ status: "seedling"
 
 Every skill gets this audit before install. **Fail-closed:** an unreachable scanner, unreadable file or unclear verdict → QUARANTINE; any FAIL ends the audit. Verdict: every applicable stage PASS, else QUARANTINE. Run the scripts from this skill's own installed `scripts/` directory, never a copy inside the audited tree.
 
+Primary sources: <https://skills.sh/<owner/repo> and <https://skills.sh>.
+
 ## Decision rules
 
 Stage 1, triage:

@@ -14,7 +14,7 @@ status: seedling
 BM25 orders documents by a formula with three instincts: a term matters more the rarer it is across the corpus (inverse document frequency); a document matches harder when the term appears more often, but with diminishing returns (term frequency saturation); and a long field dilutes a match that a short field would make look strong (field-length normalization). The shocking majority of relevance surprises trace to one of those three, most often the third: a two-word title matches harder than a forty-paragraph body containing the same two words, and unless that consequence is wanted, the field-length norm needs adjusting.
 
 The formula's knobs are saturations and norms, and tuning them is corpus-specific work with a safety rule: keep an untuned baseline, change one knob at a time, and record each change on a frozen query set. A tuned system whose tuning rationale is lost is indistinguishable from a broken one at the next debugging session. Guards belong outside scoring — filters express what must be true, boosts express what should rank higher — and putting mandatory conditions into boosts is the classic way to produce results that violate the requirements.
-Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html>.
+Primary sources: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval> and <https://elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html>.
 
 ## Decision rules
 
@@ -53,6 +53,6 @@ Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://elastic.co/gui
 
 ## Sources
 
-- Introduction to Information Retrieval: <https://nlp.stanford.edu/IR-book/>
+- Introduction to Information Retrieval: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Elasticsearch query DSL: <https://elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html>
 - Lucene project: <https://lucene.apache.org/core/corenews.html>

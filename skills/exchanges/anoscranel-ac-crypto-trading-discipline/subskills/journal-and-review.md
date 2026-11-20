@@ -13,7 +13,7 @@ status: seedling
 
 - **Montier, _The Little Book of Behavioural Investing_ (2010)**: keeping a structured decision journal prevents hindsight bias and forces objective evaluation of reasoning over randomness. <https://www.wiley.com/en-us/The+Little+Book+of+Behavioural+Investing%3A+How+To+Act+More+Intelligently+Than+Your+5+Friends-p-9780470686157>
 - **Kahneman, _Thinking, Fast and Slow_ (2011)**: distinguishing between outcome quality and decision quality prevents rewarding poor processes that happened to succeed. ⚠️ cited without URL.
-- **Duhigg, _The Power of Habit_ (2012)**: systematic review loops create feedback mechanisms that reinforce disciplined operational habits. <https://www.penguinrandomhouse.com/books/209177/the-power-of-habit-by-charles-duhigg/>
+- **Duhigg, _The Power of Habit_ (2012)**: systematic review loops create feedback mechanisms that reinforce disciplined operational habits. <https://penguinrandomhouse.com/books/202855/the-power-of-habit-by-charles-duhigg>
 - **Endsley, "Toward a Theory of Situation Awareness in Dynamic Systems" (1995)**: post-decision reviews must audit the information available at decision time rather than evaluating with hindsight omniscience. <https://journals.sagepub.com/doi/10.1518/001872095779049543>
 - ⚠️ Practitioner heuristic: review sessions should evaluate process adherence on every trade regardless of financial result; a winning trade executed outside protocol is classified as a failure.
 

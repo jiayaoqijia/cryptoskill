@@ -11,7 +11,7 @@ status: seedling
 
 An institutional execution record provides the empirical foundation for Transaction Cost Analysis (TCA) and performance attribution. Unlike subjective trade journals that record narrative rationales, the execution record captures objective, timestamped market data points for every parent order and child fill. Key required fields include decision timestamp, arrival midpoint price, routing venue, order type and modifiers, exact fill timestamps, executed quantities, fill prices, commission fees, and realized slippage versus benchmark prices. Rigorous execution recordkeeping isolates alpha generation from execution leakage, allowing operators to quantify exactly how much return is lost to spread crossing, poor routing, and market impact across centralized and decentralized venues.
 
-Primary sources for the claims here: <https://www.cfainstitute.org/en/research/foundation/2020/transaction-cost-analysis> and <https://www.fiatchains.com/crypto-tca-standards/>.
+Primary sources for the claims here: <https://cfainstitute.org/insights/professional-learning/refresher-readings/2026/trading-costs-and-electronic-markets> and <https://kaiko.com/resources/how-crypto-regulation-will-reshape-brokerage-in-2026-2>.
 
 ## Decision rules
 
@@ -46,5 +46,5 @@ Primary sources for the claims here: <https://www.cfainstitute.org/en/research/f
 Additionally, storing transaction cost analysis datasets in structured timeseries databases enables automated reporting and rapid identification of latency degradation across distinct API gateway routes.
 ## Sources
 
-- Transaction Cost Analysis in Digital Asset Markets: Best Practices and Metrics: https://www.cfainstitute.org/en/research/foundation/2020/transaction-cost-analysis
-- Execution Data Standards for Institutional Crypto Trading: https://www.fiatchains.com/crypto-tca-standards/
+- CFA Institute, Trading Costs and Electronic Markets (2026 curriculum): https://cfainstitute.org/insights/professional-learning/refresher-readings/2026/trading-costs-and-electronic-markets
+- Kaiko, crypto best-execution and TCA under MiCA (2026): https://kaiko.com/resources/how-crypto-regulation-will-reshape-brokerage-in-2026-2

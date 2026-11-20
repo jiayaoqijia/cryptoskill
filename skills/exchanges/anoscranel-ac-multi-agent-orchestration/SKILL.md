@@ -4,6 +4,7 @@ description: "The craft of running more than one agent on one job: deciding when
 license: MIT
 metadata:
   domain: collaboration
+status: seedling
 ---
 
 # Multi-Agent Orchestration

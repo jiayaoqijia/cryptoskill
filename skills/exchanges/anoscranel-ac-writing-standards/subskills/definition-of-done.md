@@ -29,6 +29,8 @@ Two passes change meaning: structural revision (order, cuts, re-argued claims) a
 - **Proofread**: the pass runs on the final artifact, in a changed medium; two independent passes are counted and the residual estimated; the stop rule is the agreed budget, not perfection.
 - **Publish gate**: no placeholder left, every copyedit query closed, names-dates-numbers verified against the source log, clearance done, human approval recorded.
 
+Primary sources: <https://www.iso.org/standard/78907.html> and <https://www.govinfo.gov/content/pkg/PLAW-111publ274/html/PLAW-111publ274.htm>.
+
 ## Decision rules
 
 The sequence: brief → research and sources → outline → draft → structural revision → line edit → copyedit → proofread → publish. Two passes change meaning (structural revision, line edit); two do not (copyedit, proofread). A pass may never widen beyond its layer: a copyedit that re-argues the argument has broken the frame. Every clause of a stage's line must be true before that stage counts as done.
@@ -52,3 +54,4 @@ The agent prepares the text and the gate list. A human publishes, sends or submi
 ## Sources
 
 - Editorial sequence per the corpus lifecycle frame; plain-language frame ISO 24495-1 (<https://www.iso.org/standard/78907.html>).
+- Plain Writing Act of 2010, Public Law 111-274: <https://www.govinfo.gov/content/pkg/PLAW-111publ274/html/PLAW-111publ274.htm>

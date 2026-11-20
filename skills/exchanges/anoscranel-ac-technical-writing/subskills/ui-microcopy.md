@@ -35,7 +35,7 @@ status: "seedling"
 6. Run the five tests, then fix failures in the text, not by adding words.
 7. Check screen-reader order: label, hint, error with prefix.
 
-## The five tests
+### The five tests
 
 - **Action:** can a tired user pick the right control from the label alone?
 - **Five-second:** read once, then say what happened and what to do.

@@ -4,6 +4,7 @@ description: "Writing-standards reference: which standard, style guide or report
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Writing Standards

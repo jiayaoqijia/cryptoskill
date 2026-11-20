@@ -15,6 +15,8 @@ The rule is old because it is right: store and transmit time in one zone — UTC
 
 The transport format should carry its own offset so the value needs no context to interpret. A timestamp with an explicit offset — ending in Z or a numeric offset — is unambiguous; a timestamp without one is a claim about the writer's zone that the reader can only guess. The conversion to local time belongs in the presentation layer, keyed to the viewer's known zone, and nowhere else in the system.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc3339> and <https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/package-summary.html>.
+
 ## Decision rules
 
 - Store timestamps in UTC; convert at the presentation edge only.

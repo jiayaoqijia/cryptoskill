@@ -30,6 +30,8 @@ Default PASS bars (a job may tighten with `--need GROUP=N`, `--min-pct P`; never
 
 ⚠️ The bars are operator-set thresholds, not prior art; the 80% bar is illustrative.
 
+Primary sources: <https://arxiv.org> and <https://github.com/>.
+
 ## Decision rules
 
 - Any leaf may move to `status: verified` only after a PASS.

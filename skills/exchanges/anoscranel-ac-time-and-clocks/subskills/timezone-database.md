@@ -15,6 +15,8 @@ The mapping between a zone's name and its offsets is not mathematics — it is a
 
 The consequence for engineering is that the zone database is a real dependency with a release process: it must be updated on hosts, in container images, and in runtime libraries, and the update has to be treated as a change worth testing. A system that schedules future events using zone rules must also record which rules it used, because a future event scheduled under old rules and recalculated under new ones silently moves.
 
+Primary sources: <https://www.iana.org/time-zones> and <https://data.iana.org/time-zones/tzdb/>.
+
 ## Decision rules
 
 - Track the zone database as a dependency in the inventory, with its version.

@@ -18,6 +18,8 @@ status: "seedling"
 - **Doe v. GitHub** (9th Cir., 16 Sep 2026) rejected the DMCA §1202(b) output theory, but output can still infringe, and contract and strict-liability exposure still runs against the deployer.
 - **Authorship** needs documented human control; prompts alone never establish it. ⚠️ Practitioner rung.
 
+Primary sources: <https://dev.to/jackfigliomeni/verification-discipline-catching-and-correcting-hallucinations-in-ai-coding-agents-2cj7> and <https://techpolicylaw.org/updates/ninth-circuit-affirms-dismissal-of-programmers-dmca-claim-against-github-copilot>.
+
 ## Decision rules
 
 1. Every agent change arrives with a review packet: diff, test report, eval result, provenance, rollback note.

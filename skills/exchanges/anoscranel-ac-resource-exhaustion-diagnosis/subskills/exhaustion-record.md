@@ -15,6 +15,8 @@ The exhaustion record captures one episode: the resource that ran out, the curve
 
 The record's most valuable line is the derivation of any limit that was changed. A number without its reasoning is exactly the inherited default this skill warns about — two years from now, someone will find a pool sized at forty-seven and have no idea whether that was a measurement or a typo. The derivation converts every future limit question into a diff against known evidence.
 
+Primary sources: <https://sre.google/workbook/managing-load/> and <https://learn.microsoft.com/en-us/azure/well-architected/>.
+
 ## Decision rules
 
 - Record the resource, its symptom, the error verbatim, and the first timestamp.
@@ -54,6 +56,6 @@ A record of this shape also serves the next limit decision directly: the derivat
 
 ## Sources
 
-- Capacity record-keeping: <https://sre.google/workbook/chapter-capacity-planning/>
+- Capacity record-keeping: <https://sre.google/workbook/managing-load/>
 - Resource limit documentation practice: <https://learn.microsoft.com/en-us/azure/well-architected/>
 - Linux limits configuration: <https://www.kernel.org/doc/html/latest/admin-guide/>

@@ -15,7 +15,7 @@ An index is a derived store, and it lags its source by however long the update p
 
 Deletion is the part that is usually wrong. An embedding has no notion of removal, so a deleted document persists in the index until something removes it, and a naive update path that inserts new chunks without tombstoning the old ones produces duplicates and stale answers. The record should state how deletion propagates and how long the index can serve a deleted document.
 
-Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://www.nist.gov/>.
+Primary sources: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval> and <https://www.nist.gov/>.
 
 ## Decision rules
 
@@ -57,6 +57,6 @@ The lag also differs by content type: a document added is visible as soon as its
 
 ## Sources
 
-- Information retrieval update strategies: <https://nlp.stanford.edu/IR-book/>
+- Information retrieval update strategies: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Measurement guidance: <https://www.nist.gov/>
-- Data pipeline context: <https://nlp.stanford.edu/IR-book/html/htmledition/contents-1.html>
+- Data pipeline context: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>

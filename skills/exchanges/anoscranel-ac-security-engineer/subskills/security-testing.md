@@ -16,6 +16,8 @@ status: "seedling"
 - A WAF is not a gate: **1,207 unique bypasses** across tested framework/WAF combinations, every framework falling to at least one bypass class (WAFFLED, ACSAC 2025).
 - AI-code vulnerability density sits in a **27–44%** band across matched-task studies (quote the range with method); AI-assisted commits leak secrets at ~2× baseline (GitGuardian 2026 ⚠️).
 
+Primary sources: <https://owasp.org/www-project-web-security-testing-document/> and <https://cheatsheetseries.owasp.org>.
+
 ## Decision rules
 
 1. Gates block; advisories die — every gate output routes to a tracker with an owner, or the build fails.

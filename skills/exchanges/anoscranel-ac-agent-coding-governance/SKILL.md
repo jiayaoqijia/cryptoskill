@@ -4,6 +4,7 @@ description: "Governing AI-written code and the agent's repo instructions: merge
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Agent Coding Governance

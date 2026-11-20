@@ -16,6 +16,8 @@ status: "seedling"
 - **Socratic method** (Stanford Encyclopedia of Philosophy, "Socrates"): examine the preferred claim by testing what it excludes; the case is understood through the alternatives it rules out. <https://plato.stanford.edu/entries/socrates/>
 - ⚠️ Practitioner convention: do-nothing is always an alternative; when the status quo is missing from the option set, the comparison is rigged.
 
+Source: <https://hbr.org/2018/05/the-surprising-power-of-questions>.
+
 ## Decision rules
 
 1. If fewer than three alternatives exist, keep generating; two options make a referendum, not a choice.
@@ -58,3 +60,4 @@ status: "seedling"
 - Bezos, Amazon shareholder letter (2015). ⚠️ cited without URL.
 - Duke, _Quit_ (2022). ⚠️ cited without URL.
 - Stanford Encyclopedia of Philosophy, "Socrates": <https://plato.stanford.edu/entries/socrates/>
+- "The Surprising Power of Questions", Harvard Business Review, 2018: <https://hbr.org/2018/05/the-surprising-power-of-questions>

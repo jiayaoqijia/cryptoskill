@@ -17,6 +17,8 @@ Health ejection is the rule that protects the rest. A backend that fails its che
 
 Primary source: <https://developer.mozilla.org/en-US/docs/Web/HTTP>.
 
+Primary sources: <https://developer.mozilla.org/en-US/docs/Web/HTTP> and <https://www.rfc-editor.org/rfc/rfc9110>.
+
 ## Decision rules
 
 - Record the balancing algorithm and the workload assumption it encodes.

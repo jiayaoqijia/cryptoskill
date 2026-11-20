@@ -15,6 +15,8 @@ When a scheduler misses a trigger — the process was down, the node was cordone
 
 The wrong choice is usually invisible until an outage. A job with replay semantics that catches up three days of missed runs after downtime can saturate its own dependencies; a job with skip semantics that was needed for compliance silently produced nothing for the gap. The semantics must be chosen per job, written in the schedule record, and known to whoever responds when the outage report arrives.
 
+Primary sources: <https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/> and <https://www.rfc-editor.org/rfc/rfc3339>.
+
 ## Decision rules
 
 - Classify each job by consequence of missing one instance: none, degraded, or material.

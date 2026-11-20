@@ -15,6 +15,8 @@ status: seedling
 - OWASP Top 10:2025 is the quick-pass frame (A01 access control, SSRF folded in · A02 misconfiguration · A03 supply chain · A04 crypto · A05 injection · A06 design · A07 authentication · A08 integrity · A09 logging · A10 exceptional conditions).
 - CISA's FY2024–25 review: **41.5% of KEV entries map to "stubborn" weakness classes** — led by input validation (CWE-20), path traversal (CWE-22), command injection (CWE-78). Ranking ≠ exploitation: CWE-79 XSS tops the Top 25 while trailing on KEV.
 
+Primary sources: <https://owasp.org/www-project-application-security-verification-standard/> and <https://shostack.org>.
+
 ## Decision rules
 
 1. Read the diff, not the file: risk lives in what the change touches — new input paths, data exposure, trust crossings.

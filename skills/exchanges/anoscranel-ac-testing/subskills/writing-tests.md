@@ -16,6 +16,8 @@ status: "seedling"
 - **Test data**: fixtures for read-only reference data; factories for per-test objects; API seeding for later journey steps; ephemeral databases (Testcontainers) for real-infrastructure integration.
 - **Contract tests**: consumer-driven contracts (Pact) check real interactions; OpenAPI schema checks shape only.
 
+Primary sources: <https://helpmetest.com/blog/test-data-management> and <http://martinfowler.com/articles/practical-test-pyramid.html>.
+
 ## Decision rules
 
 1. One test checks one behaviour. Name it for the behaviour: `test_expired_token_returns_401`.

@@ -13,7 +13,7 @@ status: "seedling"
 
 - **Techniques**: canary (shift a small share of traffic, compare, ramp), blue-green (two identical environments, router flip), rings (inner users outward), dark launch (code live but unreachable).
 - **Verification stages**: smoke (0–2 min), canary analysis (5–30 min), business metrics, synthetic checks. ⚠️ Practitioner sources.
-- **GitOps** (OpenGitOps, CNCF): declarative, versioned, pulled automatically, reconciled continuously; Argo CD, Flux (https://opengitops.org).
+- **GitOps** (OpenGitOps, CNCF): declarative, versioned, pulled automatically, reconciled continuously; Argo CD, Flux (https://opengitops.dev).
 - **Rollback doctrine**: prefer flag-off or forward-fix over binary rollback; an untested rollback fails twice.
 - **DORA**: change lead time, deployment frequency, failed deployment recovery time, change fail rate, deployment rework rate. Read as a set; they are gameable (https://dora.dev/guides/dora-metrics/).
 
@@ -74,4 +74,4 @@ status: "seedling"
 
 - <https://launchdarkly.com/blog/what-are-feature-flags>
 - <https://www.ainformat.com/detail/2777>
-- https://dora.dev/guides/dora-metrics/ · https://opengitops.org · https://argoproj.github.io/argo-rollouts/
+- https://dora.dev/guides/dora-metrics/ · https://opengitops.dev · https://argoproj.github.io/argo-rollouts/

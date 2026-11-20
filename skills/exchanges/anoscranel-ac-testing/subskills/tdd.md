@@ -16,6 +16,8 @@ status: "seedling"
 - **Evidence**: Nagappan et al., *Empirical Software Engineering* 2008 (DOI 10.1007/s10664-008-9062-z) — four industrial teams, 40–90% lower pre-release defect density, 15–35% slower initial development. Controlled replications find small or no external-quality effects. Fucci et al. (ICSE 2016): gains track small steps and test cleanliness more than test-first order.
 - **Bug fixes**: a fix lands with a test that fails before and passes after.
 
+Primary sources: <http://martinfowler.com/articles/practical-test-pyramid.html> and <https://github.com/byerlikaya/claude-starter-kit/blob/main/plugin/skills/systematic-debugging/SKILL.md>.
+
 ## Decision rules
 
 1. Use TDD when behaviour is clear and testable in isolation: pure logic, parsers, rules, bug fixes, API handlers.

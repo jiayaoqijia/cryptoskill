@@ -15,6 +15,8 @@ The production debug record is the working document of one debugging episode, ke
 
 Its core value is the ruled-out list. A future investigator facing the same symptom inherits not only the fix but the dead ends: the hypotheses already tested, the log patterns already searched, the tools that perturbed the failure away. Writing down what did not work is what stops a team from re-running the same five searches every incident.
 
+Primary sources: <https://sre.google/sre-book/effective-troubleshooting/> and <https://sre.google/sre-book/postmortem-culture/>.
+
 ## Decision rules
 
 - Record the symptom verbatim with the first timestamp it occurred.
@@ -54,6 +56,6 @@ A record of this shape also compounds across incidents: the ruled-out lists of t
 
 ## Sources
 
-- Google SRE debugging practice: <https://sre.google/sre-book/debugging-tips/>
+- Google SRE debugging practice: <https://sre.google/sre-book/effective-troubleshooting/>
 - Incident analysis writing: <https://sre.google/sre-book/postmortem-culture/>
 - Evidence standards for postmortems: <https://learn.microsoft.com/en-us/azure/well-architected/>

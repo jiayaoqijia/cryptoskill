@@ -4,6 +4,7 @@ description: "Read-only, evidence-backed survey of a whole repository for archit
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Architecture Survey

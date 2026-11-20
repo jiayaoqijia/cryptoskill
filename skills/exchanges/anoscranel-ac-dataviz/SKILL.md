@@ -4,6 +4,7 @@ description: "Chart judgment for a general agent. Eight leaves: claim-first-desi
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Data Visualisation

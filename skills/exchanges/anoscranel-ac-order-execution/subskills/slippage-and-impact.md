@@ -11,7 +11,7 @@ status: seedling
 
 Execution slippage is the quantitative difference between the expected decision price (such as the arrival midpoint or volume-weighted average price) and the actual executed fill price. Market impact measures how order size perturbs the prevailing order book equilibrium. A critical empirical red flag in execution auditing is the flat slippage curve: when execution data reveals constant fractional slippage (e.g., flat 0.030 basis points) across order sizes ranging from $10,000 to $500,000 against a market with massive depth-to-turnover divergence, it signals artificial quote stuffing, wash trading, or non-genuine order book liquidity. Uncontrolled slippage destroys strategy alpha; independent studies demonstrate that gross trading strategies yielding positive Sharpe ratios (e.g., Sharpe 0.43) can be reduced to unviable returns (Sharpe 0.22) purely through unmitigated commission drag, bid-ask spread crossing, and market impact costs.
 
-Primary sources for the claims here: <https://www.cambridge.org/core/journals/financial-markets-and-portfolio-management> and <https://www.nber.org/papers/w27431>.
+Primary sources for the claims here: <https://arxiv.org/abs/2309.13648> and <https://doi.org/10.21314/JOR.2001.041>.
 
 ## Decision rules
 
@@ -44,5 +44,5 @@ Primary sources for the claims here: <https://www.cambridge.org/core/journals/fi
 
 ## Sources
 
-- Measuring Market Impact and Transaction Costs in Digital Asset Markets: https://www.nber.org/papers/w27431
-- Empirical Analysis of Liquidity and Slippage Across Crypto Derivatives Exchanges: https://www.cambridge.org/core/journals/financial-markets-and-portfolio-management
+- Almgren & Chriss, Optimal execution of portfolio transactions (2001): https://doi.org/10.21314/JOR.2001.041
+- Don't Let MEV Slip: The Costs of Swapping on the Uniswap Protocol (arXiv 2309.13648): https://arxiv.org/abs/2309.13648

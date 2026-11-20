@@ -17,6 +17,8 @@ The thresholds should come from the application's own baseline and from what the
 
 Primary source: <https://web.dev/learn>.
 
+Primary sources: <https://web.dev/learn> and <https://developer.mozilla.org/en-US/docs/Web/HTTP/Compression>.
+
 ## Decision rules
 
 - Set budgets from a measured baseline, and state the baseline in the record.

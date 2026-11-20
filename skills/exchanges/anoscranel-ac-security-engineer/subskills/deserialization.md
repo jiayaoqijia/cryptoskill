@@ -16,6 +16,8 @@ status: seedling
 - CWE-502 mitigations: sign/seal the data (e.g. HMAC); populate a new object rather than deserialising; make sensitive fields transient; avoid unnecessary types and allow-list classes — noting "new gadgets are constantly being discovered, so this alone is not a sufficient mitigation".
 - OWASP Top 10 2025 A08 (Software or Data Integrity Failures) is the owning category.
 
+Primary sources: <https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html> and <https://owasp.org/Top10/>.
+
 ## Decision rules
 
 1. JSON with a schema is the default for untrusted data. Native object deserialisation of untrusted data is the bug class.

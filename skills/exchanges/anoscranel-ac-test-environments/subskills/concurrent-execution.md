@@ -17,6 +17,8 @@ The options are ordered. Isolation — separate environments or separate data pe
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/articles/continuousIntegration.html> and <https://martinfowler.com/bliki/DeploymentPipeline.html>.
+
 ## Decision rules
 
 - Record which suites share a stage and which are isolated per run.

@@ -65,3 +65,4 @@ status: "seedling"
 ## Sources
 
 - http://www.extremeprogramming.org/rules/spike.html
+- <https://framework.scaledagile.com/spikes>

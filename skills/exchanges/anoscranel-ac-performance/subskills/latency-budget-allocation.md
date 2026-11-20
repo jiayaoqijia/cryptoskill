@@ -15,6 +15,8 @@ A user-facing budget — the page loads in a second, the API responds in 300 mil
 
 The discipline changes the argument inside a team. Without a written allocation, "is this fast enough" is a negotiation where every layer claims innocence because each is only mildly slow. With one, the question becomes a lookup: this layer owns 80 milliseconds, is taking 140, and is therefore the defect — regardless of whether 140 feels fast.
 
+Primary sources: <https://research.google/pubs/pub44843/> and <https://www.kernel.org/doc/html/latest/>.
+
 ## Decision rules
 
 1. Derive the user-facing budget first; the allocation flows down from it, never upward from estimates.

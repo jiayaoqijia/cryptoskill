@@ -15,6 +15,8 @@ A request-driven system fails loudly: users complain and errors surface. A sched
 
 The design pattern is simple: each run heartbeats an observable signal — a metric incremented, a row updated, a key touched — and a separate monitor checks that signal's freshness against the job's interval. The critical property is independence: the monitor must not depend on the scheduler's own report of "the job ran", because the failure modes that silence the job often silence that report too.
 
+Primary sources: <https://sre.google/sre-book/monitoring-distributed-systems/> and <https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/>.
+
 ## Decision rules
 
 - Every job must emit a heartbeat on each successful run, in a form an external check can read.

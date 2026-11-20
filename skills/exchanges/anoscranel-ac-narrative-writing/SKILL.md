@@ -4,6 +4,7 @@ description: "Story craft in true writing and for the ear: narrative nonfiction 
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Narrative Writing

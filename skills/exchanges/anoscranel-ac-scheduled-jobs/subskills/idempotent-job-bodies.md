@@ -15,6 +15,8 @@ Schedule delivery in practice is at-least-once: retried runs, catch-up replays, 
 
 The reliable technique is an instance key: a stable identifier for "this run of this job for this period", derived from the schedule time, not from execution time. Every effect the body produces checks the key first — a ledger row exists, an export file exists, a flag is set — and skips work already done. Where effects span multiple systems, the key must be shared across them, or the two systems can disagree about what happened.
 
+Primary sources: <https://martinfowler.com/articles/patterns-of-distributed-systems/idempotent-receiver.html> and <https://learn.microsoft.com/en-us/azure/architecture/>.
+
 ## Decision rules
 
 - Derive the instance key from the scheduled period, not from wall-clock execution time.

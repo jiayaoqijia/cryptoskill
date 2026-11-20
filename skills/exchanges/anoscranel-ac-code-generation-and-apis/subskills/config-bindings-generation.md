@@ -17,6 +17,8 @@ The generation boundary is where the craft sits. Parse once at startup, fail fas
 
 Primary source: <https://12factor.net/>.
 
+Primary sources: <https://12factor.net/> and <https://json-schema.org/>.
+
 ## Decision rules
 
 - Record which configuration source the bindings parse: file, environment, or both, and precedence order.

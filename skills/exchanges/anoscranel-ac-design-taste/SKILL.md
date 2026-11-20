@@ -4,6 +4,7 @@ description: "Judging and critiquing UI and visual-design quality: the judgment 
 license: MIT
 metadata:
   domain: software-engineering
+status: seedling
 ---
 
 # Design Taste

@@ -15,7 +15,7 @@ Byzantine messages must be authenticated: a replica must prove a purported messa
 
 The choice behind the choice is recovery. With MACs, a compromised replica's key material exists on every other replica, so evicting it requires the whole membership to redistribute keys. With signatures, revocation replaces one public key and the recovered party can be re-admitted with a fresh keypair without surgery elsewhere. The record should name which recovery the deployment can afford, because the authenticator decision is usually made for performance and paid for during the worst week of the system's life.
 
-Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://en.wikipedia.org/wiki/Message_authentication_code>.
+Primary sources: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf> and <https://en.wikipedia.org/wiki/Message_authentication_code>.
 
 ## Decision rules
 
@@ -56,6 +56,6 @@ The hybrid deserves its own line: many deployments sign only the messages an out
 
 ## Sources
 
-- PBFT authentication discussion: <https://pmg.csail.mit.edu/papers/osdi99.pdf>
+- PBFT authentication discussion: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf>
 - MAC reference: <https://en.wikipedia.org/wiki/Message_authentication_code>
 - Digital signature reference: <https://en.wikipedia.org/wiki/Digital_signature>

@@ -17,6 +17,8 @@ The shield is a concurrency decision expressed as cache topology. The collapse i
 
 Primary source: <https://www.rfc-editor.org/rfc/rfc9111>.
 
+Primary sources: <https://www.rfc-editor.org/rfc/rfc9111> and <https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching>.
+
 ## Decision rules
 
 - Record whether a shield is enabled and which edge locations route through it.

@@ -25,7 +25,7 @@ Sources: <https://doi.org/10.1093/jjfinec/nbt003> and <https://arxiv.org/abs/260
 
 - Rule 1: Always distinguish between mark price and last traded price. Liquidations are triggered strictly by mark price (derived from index spot price plus moving average funding basis) to prevent localized spot wicks from triggering unwarranted cascades.
 - Rule 2: Recognize that liquidation volume is a lagging consequence of price displacement, not an exogenous leading signal. Forced market orders consume book depth, creating further price slippage that triggers adjacent liquidation tiers.
-- Rule 3: Treat empirical cascade scale using verified baseline metrics. Empirical analysis of 2.3 million liquidation events representing $7.84 billion in forced volume over a 30-day window demonstrates massive aggregate turnover, yet branching analysis reveals subcritical propagation ($\hat{\lambda} \approx 0.1$ to $0.2$, Oct 2025 case study) (ArXiv, 2026).
+- Rule 3: Treat empirical cascade scale using verified baseline metrics. Branching analysis of the October 2025 crash reveals subcritical propagation ($\hat{\lambda} \approx 0.1$ to $0.2$), so forced volume largely absorbs rather than compounding into a runaway cascade (Garcia Seuma, arXiv 2608.03616).
 - Rule 4: Refuse any narrative claiming that liquidation cascades are perfectly deterministic or entirely predictable in timing. Subcritical branching ratios mean that most local clusters die out spontaneously without becoming system-wide systemic events.
 
 ## Procedure
@@ -46,11 +46,11 @@ Sources: <https://doi.org/10.1093/jjfinec/nbt003> and <https://arxiv.org/abs/260
 
 - [ ] Mechanical sequence from MMR breach to engine execution documented.
 - [ ] Mark price vs. last traded price distinction explicitly applied.
-- [ ] Empirical volume figures ($7.84B / 30d / 2.3M events) correctly cited.
+- [ ] Cascade branching claim cited to its primary source, with no unsupported volume figures.
 - [ ] Subcritical branching metric ($\hat{\lambda} \approx 0.1$–$0.2$) recorded.
 - [ ] Zero predictive claims or directional recommendations included.
 
 ## Sources
 
 - Cont, R., Kukanov, A., & Stoikov, S. (2014). The Price Impact of Order Book Events. *Journal of Financial Econometrics*, 12(1), 47-88. https://doi.org/10.1093/jjfinec/nbt003
-- ArXiv. (2026). *Cascade Forensics and Branching Ratio Measurement in Derivative Markets* (Report No. 2608.03616). Cornell University. https://arxiv.org/abs/2608.03616
+- Garcia Seuma, R. M. (2026). *Measuring the engine of a liquidation cascade: subcritical branching inside a first-order transition*. arXiv 2608.03616. https://arxiv.org/abs/2608.03616

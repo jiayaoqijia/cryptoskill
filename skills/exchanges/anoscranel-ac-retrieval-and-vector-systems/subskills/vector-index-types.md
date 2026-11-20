@@ -15,7 +15,7 @@ Exact nearest-neighbour search compares the query against every vector, which is
 
 The parameter that matters is recall at the operating point. Every approximate index has knobs that trade recall for latency, and the honest approach is to measure recall against exact search on a sample, then choose the parameters that meet a stated recall target at an acceptable latency. Recording only the latency is recording half the trade.
 
-Primary sources: <https://nlp.stanford.edu/IR-book/> and <https://www.nist.gov/>.
+Primary sources: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval> and <https://www.nist.gov/>.
 
 ## Decision rules
 
@@ -57,6 +57,6 @@ The comparison should be made on the deployed corpus rather than a public benchm
 
 ## Sources
 
-- Information retrieval foundations: <https://nlp.stanford.edu/IR-book/>
+- Information retrieval foundations: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Benchmark and measurement guidance: <https://www.nist.gov/>
 - Vector search documentation: <https://huggingface.co/docs/transformers/>

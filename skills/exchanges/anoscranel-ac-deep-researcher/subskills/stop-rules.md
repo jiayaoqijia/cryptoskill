@@ -27,6 +27,8 @@ status: "seedling"
  confidence that recall exceeds 95% (known-item method, Sampson & McGowan
  2011; check the binomial bound yourself).
 
+Primary sources: <https://osf.io/prereg/> and <https://arxiv.org>.
+
 ## Decision rules
 
 - Stopping early with the reason stated is a success mode, not a failure.

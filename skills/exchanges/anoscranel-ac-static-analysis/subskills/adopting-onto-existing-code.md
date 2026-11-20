@@ -17,6 +17,8 @@ The working middle path is the ratchet. Baseline the existing findings with a re
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/bliki/TechnicalDebt.html> and <https://martinfowler.com/articles/continuousIntegration.html>.
+
 ## Decision rules
 
 - Baseline before enforcing, with a recorded per-rule count.

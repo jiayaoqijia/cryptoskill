@@ -59,4 +59,4 @@ The tokenizer deserves a note of its own: two models can report the same chunk s
 
 - Open model documentation: <https://huggingface.co/docs/transformers/>
 - Evaluation methodology: <https://www.nist.gov/>
-- Vector search guidance: <https://nlp.stanford.edu/IR-book/>
+- Vector search guidance: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>

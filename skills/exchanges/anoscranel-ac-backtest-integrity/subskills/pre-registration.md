@@ -13,7 +13,7 @@ Pre-registration is the formal practice of locking and timestamping a research h
 
 A robust pre-registration document must specify the exact asset universe, historical testing windows, parameter grids, evaluation metrics, and decision rules. For instance, in a multi-cell parameter sweep—such as a 42-cell grid evaluated across rolling windows—the pre-registration must explicitly declare the familywise error rate correction method (e.g., Bonferroni adjustment with $\alpha_{corr} = 0.05 / 42 \approx 0.00119$) and the precise threshold required to claim statistical significance. Any deviation from the pre-registered protocol during execution invalidates confirmatory status, requiring the iteration to be classified strictly as exploratory. Platforms such as the Open Science Framework (OSF) provide standardized registries for locking research protocols prior to empirical execution.
 
-Primary sources for the claims in this section: <https://doi.org/10.1177/09567976611421272> and <https://doi.org/10.1073/pnas.1708276115>.
+Primary sources for the claims in this section: <https://doi.org/10.1177/0956797611417632> and <https://doi.org/10.1073/pnas.1708274114>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims in this section: <https://doi.org/10.1177/0956797
 ## Sources
 
 - Open Science Framework (OSF). Pre-Registration Protocols and Registration Standards. https://osf.io/prereg/
-- Nosek, B. A., Ebersole, C. R., DeHaven, A. C., & Mellor, D. T. (2018). The Preregistration Revolution. Proceedings of the National Academy of Sciences, 115(11), 2600-2606. https://doi.org/10.1073/pnas.1708276115
-- Simmons, J. P., Nelson, L. D., & Simonsohn, U. (2011). False-Positive Psychology: Undisclosed Flexibility in Data Collection and Analysis Allows Presenting Anything as Significant. Psychological Science, 22(11), 1359-1366. https://doi.org/10.1177/09567976611421272
+- Nosek, B. A., Ebersole, C. R., DeHaven, A. C., & Mellor, D. T. (2018). The Preregistration Revolution. Proceedings of the National Academy of Sciences, 115(11), 2600-2606. https://doi.org/10.1073/pnas.1708274114
+- Simmons, J. P., Nelson, L. D., & Simonsohn, U. (2011). False-Positive Psychology: Undisclosed Flexibility in Data Collection and Analysis Allows Presenting Anything as Significant. Psychological Science, 22(11), 1359-1366. https://doi.org/10.1177/0956797611417632
 - National Institute of Standards and Technology (NIST). Scientific Integrity and Research Protocols. https://www.nist.gov/

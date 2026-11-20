@@ -23,6 +23,8 @@ One line per activity: the conditions under which that activity counts as done. 
 - **Operate**: telemetry answers who is affected and since when; reliability targets and alerts exist as records; outages close with owned, dated action items.
 - **Retire**: dependents were notified on a dated schedule; telemetry shows removal is safe; a human approved the removal.
 
+Primary sources: <https://www.computer.org/education/bodies-of-knowledge/software-engineering/topics> and <https://csrc.nist.gov/pubs/sp/800/218/final>.
+
 ## Decision rules
 
 Use the line matching the lifecycle activity in question. Every clause of that line must be true before the activity counts as done; the line states the finish line, never the method (each project's craft work decides how to meet it).
@@ -43,6 +45,9 @@ Any compliance, authorship, conformance or publication claim goes through a huma
 - [ ] The activity's line was read in full and each clause answered true or false.
 - [ ] A human reviewed any compliance, authorship, conformance or publication claim.
 
+The definition should distinguish what is verified from what is asserted, because a checklist that mixes the two lets an assertion inherit the credibility of a verification. Marking each item with how it was established is what keeps the list honest as it grows.
+
 ## Sources
 
 - Built from the corpus definition-of-done conventions for the software lifecycle (SWEBOK v4 topic map, <https://www.computer.org/education/bodies-of-knowledge/software-engineering/topics>).
+- NIST SP 800-218, Secure Software Development Framework (SSDF): <https://csrc.nist.gov/pubs/sp/800/218/final>

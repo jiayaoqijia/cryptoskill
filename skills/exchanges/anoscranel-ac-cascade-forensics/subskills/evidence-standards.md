@@ -12,7 +12,7 @@ status: seedling
 ## Standard
 
 - **National Institute of Standards and Technology (NIST) (2020)**: *Scientific Foundations and Evidence Quality Standards in Forensic Analysis*. Special Publication 800-something framework for reproducible data verification. <https://www.nist.gov/topics/forensic-science>
-- **Kuhn, T. S. (1962)**: *The Structure of Scientific Revolutions*. University of Chicago Press. Emphasizes the necessity of rigorous paradigm-bound verification and transparent anomaly reporting. <https://press.uchicago.edu/ucp/books/book/chicago/S/bo17911671.html>
+- **Kuhn, T. S. (1962)**: *The Structure of Scientific Revolutions*. University of Chicago Press. Emphasizes the necessity of rigorous paradigm-bound verification and transparent anomaly reporting. <https://press.uchicago.edu/ucp/books/book/chicago/S/bo13179781.html>
 
 ## Decision rules
 
@@ -49,5 +49,5 @@ status: seedling
 ## Sources
 
 - NIST Forensic Science Standards and Guidelines. <https://www.nist.gov/topics/forensic-science>
-- Kuhn, T. S. (1962). *The Structure of Scientific Revolutions*. University of Chicago Press. <https://press.uchicago.edu/ucp/books/book/chicago/S/bo17911671.html>
+- Kuhn, T. S. (1962). *The Structure of Scientific Revolutions*. University of Chicago Press. <https://press.uchicago.edu/ucp/books/book/chicago/S/bo13179781.html>
 - Popper, K. (1959). *The Logic of Scientific Discovery*. Routledge. <https://www.routledge.com/The-Logic-of-Scientific-Discovery/Popper/p/book/9780415278447>

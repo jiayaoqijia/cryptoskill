@@ -4,6 +4,7 @@ description: "Routing index for inbound work before it is worked: decide what to
 license: MIT
 metadata:
   domain: collaboration
+status: seedling
 ---
 
 # Inbound Triage

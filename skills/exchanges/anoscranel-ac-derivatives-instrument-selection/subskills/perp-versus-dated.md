@@ -13,7 +13,7 @@ The choice between perpetual futures and dated futures centers on how holding co
 
 Dated futures, by contrast, feature a fixed expiration date where the contract price converges inexorably to the spot index at maturity. They eliminate periodic funding payments, replacing them with an upfront or floating basis (contango or backwardation). However, dated futures introduce roll risk: maintaining exposure across contract expiries requires active position rollover, exposing the trader to basis slippage and transaction friction. Selecting between them requires evaluating whether funding volatility or roll timing presents a greater threat to strategy profitability.
 
-Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm](https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm>.
+Primary sources for the claims here: <https://www.cmegroup.com/education/courses/introduction-to-options.html> and <https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm>.
 
 ## Decision rules
 
@@ -48,6 +48,6 @@ Primary sources for the claims here: <https://www.cmegroup.com/education/courses
 
 ## Sources
 
-- CFTC Futures and Derivatives Market Structure Guidance: [https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm](https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm)
-- Derivatives Risk Management and Margin Methodologies: [https://www.cmegroup.com/education/courses/introduction-to-options.html](https://www.cmegroup.com/education/courses/introduction-to-options.html)
-- Tail-risk calibration and hedging friction in crypto option surfaces: [https://arxiv.org/abs/2611.00958](https://arxiv.org/abs/2611.00958)
+- CFTC Futures and Derivatives Market Structure Guidance: <https://www.cftc.gov/LearnAndProtect/EducationCenter/index.htm>
+- Derivatives Risk Management and Margin Methodologies: <https://www.cmegroup.com/education/courses/introduction-to-options.html>
+- Tail-risk calibration and hedging friction in crypto option surfaces: <https://arxiv.org/abs/2611.00958>

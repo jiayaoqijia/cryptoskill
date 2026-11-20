@@ -17,6 +17,8 @@ The second placement decision is who sees warnings. A finding that only the pipe
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://google.github.io/eng-practices/review/> and <https://martinfowler.com/articles/continuousIntegration.html>.
+
 ## Decision rules
 
 - Run analysis on the diff before review opens; errors block the request, not the reviewer's patience.
@@ -56,6 +58,6 @@ The gate also decides what the reviewer's time is for: every finding the tool ca
 
 ## Sources
 
-- Code review integration: <https://martinfowler.com/articles/code-review.html>
+- Code review integration: <https://google.github.io/eng-practices/review/>
 - CI practice: <https://martinfowler.com/articles/continuousIntegration.html>
-- Refactoring with mechanical checks: <https://martinfowler.com/articles/preparationPathLimitations.html>
+- Refactoring with mechanical checks: <https://refactoring.com/>

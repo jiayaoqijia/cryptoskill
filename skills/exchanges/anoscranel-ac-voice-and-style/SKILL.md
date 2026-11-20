@@ -4,6 +4,7 @@ description: "How text sounds and the rules that keep it consistent: choosing a 
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Voice and Style

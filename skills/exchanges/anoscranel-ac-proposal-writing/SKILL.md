@@ -4,6 +4,7 @@ description: "Scored application documents: proposals and RFP responses with com
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Proposal Writing

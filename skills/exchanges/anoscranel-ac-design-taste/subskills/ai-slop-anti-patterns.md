@@ -12,7 +12,7 @@ status: seedling
 
 - **Anthropic's frontend-design skill**: the anti-slop framing this leaf extends (https://github.com/anthropics/skills/tree/main/skills/frontend-design).
 - **Law of Similarity**: identical repeated cards blur into one undifferentiated mass (https://lawsofux.com/law-of-similarity/).
-- **Material Design 3 shape tokens**: one radius per component class, from a scale (https://m3.material.io/styles/shape/overview).
+- **Material Design 3 shape tokens**: one radius per component class, from a scale (https://m3.material.io/styles/shape).
 - **The default purple-blue gradient tell**: ⚠️ practitioner convention; it is the stock choice of unattended generation, not a standard.
 
 ## Decision rules
@@ -57,4 +57,4 @@ The reliable tell is not any single choice but the absence of a decision: defaul
 
 - https://github.com/anthropics/skills/tree/main/skills/frontend-design
 - https://lawsofux.com/law-of-similarity/
-- https://m3.material.io/styles/shape/overview
+- https://m3.material.io/styles/shape

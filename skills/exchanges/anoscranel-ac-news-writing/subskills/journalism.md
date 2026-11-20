@@ -19,6 +19,8 @@ status: "seedling"
 - **Fact-checking is institutional, not personal.** Independent checkers corroborate against documents and read back factual assertions rather than whole drafts.
 - **Libel elements are stated, and fault standards differ.** Publication of an unprivileged false factual assertion causing reputational injury to an identifiable party. Public figures must prove actual malice; most states require only negligence for private figures.
 
+Primary sources: <https://www.poynter.org/> and <https://www.rcfp.org/open-government-guide/>.
+
 ## Decision rules
 
 1. Every proper noun, date, coordinate and number is checked against a document, not a memory.

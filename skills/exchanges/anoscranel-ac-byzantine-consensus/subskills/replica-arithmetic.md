@@ -15,7 +15,7 @@ Crash tolerance needs 2f+1 replicas because a truthful majority suffices. Byzant
 
 The quorum sizes follow: prepare and commit quorums are 2f+1 of 3f+1, and a client's reply is trusted at f+1 matching responses. The arithmetic is unforgiving in both directions — four replicas tolerate exactly one fault, and losing two of four leaves the system unable to progress, which is a smaller margin than a crash-tolerant cluster of the same size enjoys.
 
-Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
+Primary sources: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
 
 ## Decision rules
 
@@ -56,6 +56,6 @@ The arithmetic also deserves a stated worst case for the deployment's own size: 
 
 ## Sources
 
-- PBFT paper with the 3f+1 derivation: <https://pmg.csail.mit.edu/papers/osdi99.pdf>
+- PBFT paper with the 3f+1 derivation: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf>
 - PBFT reference: <https://en.wikipedia.org/wiki/PBFT>
 - Byzantine generals problem: <https://en.wikipedia.org/wiki/Byzantine_fault>

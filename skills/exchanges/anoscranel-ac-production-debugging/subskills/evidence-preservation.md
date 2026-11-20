@@ -15,6 +15,8 @@ The first human instinct in an incident is to restart the service, and the resta
 
 What to take follows a short checklist for each failure type. For a hang: a thread dump repeated a few seconds apart. For an out-of-memory signal: a heap histogram and the kernel's record of the kill. For a wrong result: request and response logs with the correlation ID. For a restart loop: the log tail and the exit codes. Everything should carry the timestamp and the host, because later analysis runs across machines.
 
+Primary sources: <https://docs.oracle.com/en/java/javase/21/troubleshoot/> and <https://www.kernel.org/doc/html/latest/admin-guide/mm/consumer.html>.
+
 ## Decision rules
 
 - Capture before restarting; a minute of capture is worth hours of guessing.

@@ -14,7 +14,7 @@ status: seedling
 - **NN/g severity method**: scores become comparable only when rated against written anchors with reasons (https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/).
 - **WCAG 2.2** is the floor that caps the color score (https://www.w3.org/TR/WCAG22/).
 
-## The rubric
+### The rubric
 
 Six dimensions: layout, type, color, spacing, motion, consistency.
 

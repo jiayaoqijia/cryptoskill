@@ -17,6 +17,8 @@ The honest decision is per-dependency, not per-project. A small, stable, rarely-
 
 Primary source: <https://reproducible-builds.org/>.
 
+Primary sources: <https://reproducible-builds.org/> and <https://slsa.dev/>.
+
 ## Decision rules
 
 - Record for each vendored dependency: version copied, upstream location, and date.

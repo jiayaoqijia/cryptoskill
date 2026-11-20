@@ -17,6 +17,8 @@ status: "seedling"
 - **YAGNI/KISS** (XP canon, Beck).
 - Behaviour must stay the same. The test suite is the proof.
 
+Primary sources: <https://martinfowler.com/bliki/TechnicalDebtQuadrant.html> and <https://www.iso.org/standard/78176.html>.
+
 ## Decision rules
 
 1. Simplify only code covered by tests. No tests → write characterization tests first.

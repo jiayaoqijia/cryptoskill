@@ -17,6 +17,8 @@ A baseline is the same idea at adoption scale: freeze existing violations, hold 
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://martinfowler.com/articles/continuousIntegration.html> and <https://martinfowler.com/bliki/TechnicalDebt.html>.
+
 ## Decision rules
 
 - Require every suppression to carry a reason and, where supported, an expiry.

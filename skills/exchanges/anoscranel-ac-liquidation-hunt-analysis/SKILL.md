@@ -4,6 +4,7 @@ description: "Reading a set-up that looks like a liquidation hunt: the mechanica
 license: MIT
 metadata:
   domain: crypto-trading
+status: seedling
 ---
 
 # ac-liquidation-hunt-analysis

@@ -16,17 +16,20 @@ status: "seedling"
  lineage named.
 - Verification happens when a claim enters the record, not at the end. An
  injected misleading document lands hardest just before synthesis: false-
- conclusion adoption jumps to 85.0% at that seam, versus 34.5% at cold start
+ conclusion adoption jumps to 85.5% at that seam, versus 40.5% at cold start
  (MisKnow, arXiv 2607.20891).
-- Anchor claims in raw snippets, not in the researcher's notes. Raw snippets
- carried up the chain bought +5pp recall and +3-7pp precision on citation
- accuracy (arXiv 2608.24306).
+- Anchor claims in raw snippets, not in the researcher's notes. Citation errors
+ in agentic deep research are localisable to the agent that introduced them; two
+ targeted interventions raised citation recall by 5% without degrading output
+ quality (arXiv 2608.24306).
 - Every citation resolves in at least two independent indexes (this skill's own bar). Anything heading for a published artifact also gets a retraction
  check at publication time: 32.2% of contaminated-review citations post-date
  retraction (JAMA Network Open 2025).
 - A verifier loop is judged on false-positive rate at the desk's real base
  rate, not recall (HALLMARK, arXiv 2607.18360).
 - Unsupported claims are deleted, not softened.
+
+Primary sources: <https://osf.io/prereg/> and <https://training.cochrane.org>.
 
 ## Decision rules
 
@@ -35,7 +38,7 @@ status: "seedling"
  gets the lineage tag only.
 - A cross-model recheck is not sufficient evidence on its own: it flagged
  every planted item as misleading and the conclusions were still adopted
- (MisKnow, 2025). Resolution and spans decide.
+ (MisKnow, 2026). Resolution and spans decide.
 
 ## Procedure
 
@@ -67,3 +70,7 @@ The verification should also record the version of the source, because a live do
 
 - <https://osf.io/prereg/>
 - <https://training.cochrane.org>
+- MisKnow-Agent, misleading-knowledge adoption in deep research: <https://arxiv.org/abs/2607.20891>
+- Citation-error localisation in agentic deep research: <https://arxiv.org/abs/2608.24306>
+- Citation contamination by paper-mill articles, JAMA Network Open 2025: <https://doi.org/10.1001/jamanetworkopen.2025.15160>
+- HALLMARK, citation-verifier diagnosis and FPR: <https://arxiv.org/abs/2607.18360>

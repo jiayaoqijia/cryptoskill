@@ -16,6 +16,8 @@ status: "seedling"
 - For agent-built code, requirement detail is a measured lever. Vague inputs can cancel the benefit of refinement (arXiv:2604.25862).
 - Decision weight: one-way-door choices get slow review; two-way-door choices get a short doc (Bezos 2015 letter).
 
+Primary sources: <https://datafield.dev/the-science-of-luck/part-07/chapter-36/case-study-01.html> and <https://agilebrandguide.com/wiki/models/jobs-to-be-done-jtbd>.
+
 ## Decision rules
 
 1. Write a spec when the change touches more than one module, adds a dependency, changes a public contract or data schema, or takes more than about 2 days. ⚠️ House threshold.

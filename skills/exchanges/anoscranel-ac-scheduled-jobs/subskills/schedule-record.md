@@ -15,6 +15,8 @@ The schedule record is the register of time-triggered work: every job, its trigg
 
 The record turns the per-leaf decisions of this skill into one queryable inventory. When an outage window is planned, the record answers which jobs will miss triggers and what each will do. When a migration moves the scheduler, it enumerates what must move with it. And when a job mysteriously stops, its documented expected times are what the liveness monitor checks against.
 
+Primary sources: <https://sre.google/workbook/eliminating-toil/> and <https://learn.microsoft.com/en-us/azure/well-architected/>.
+
 ## Decision rules
 
 - Every job appears in the record with its trigger and expected run times.
@@ -54,6 +56,6 @@ The record also earns its keep at blame time: when a consumer reports stale data
 
 ## Sources
 
-- Operational inventories and their audits: <https://sre.google/workbook/part-iii-automation/>
+- Toil elimination and automation of operational work (Google SRE Workbook): <https://sre.google/workbook/eliminating-toil/>
 - Configuration as documentation: <https://learn.microsoft.com/en-us/azure/well-architected/>
 - RFC 3339 timestamps for schedules: <https://www.rfc-editor.org/rfc/rfc3339>

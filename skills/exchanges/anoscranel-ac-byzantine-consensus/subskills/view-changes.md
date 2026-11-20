@@ -15,7 +15,7 @@ In a Byzantine system the primary may itself be the fault: it can sign wrong seq
 
 The subtle failure is timing. A replica that times out declares the primary suspect, but its peers may be running slightly behind and still processing the old view's messages. The protocol resolves this by requiring a view-change quorum before the new view is installed and by having replicas refuse messages from a view older than their own, so a half-completed change cannot fork the membership into two views that both believe they are current.
 
-Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
+Primary sources: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf> and <https://en.wikipedia.org/wiki/PBFT>.
 
 ## Decision rules
 
@@ -54,6 +54,6 @@ Primary sources: <https://pmg.csail.mit.edu/papers/osdi99.pdf> and <https://en.w
 
 ## Sources
 
-- PBFT view changes: <https://pmg.csail.mit.edu/papers/osdi99.pdf>
+- PBFT view changes: <https://rdi.berkeley.edu/berkeley-desys/assets/material/pbft.pdf>
 - View change reference: <https://en.wikipedia.org/wiki/PBFT>
 - Leader-replacement patterns: <https://martinfowler.com/articles/patterns-of-distributed-systems/>

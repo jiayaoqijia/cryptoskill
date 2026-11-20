@@ -17,6 +17,8 @@ status: "seedling"
 - **Hardening** after real incidents (tj-actions, CVE-2025-30066): pin actions to a full commit SHA; default `permissions: contents: read`; never `pull_request_target` with an untrusted checkout; namespace caches per trigger.
 - **Cloud auth** from CI uses short-lived OIDC tokens, not stored long-lived keys.
 
+Primary sources: <https://www.informit.com/store/continuous-delivery-reliable-software-releases-through-9780321670229> and <https://www.cisa.gov/news-events/alerts/2025/03/18/supply-chain-compromise-third-party-tj-actionschanged-files-cve-2025-30066-and-reviewdogaction>.
+
 ## Decision rules
 
 1. Pipeline lives in the repo as code, reviewed like code.

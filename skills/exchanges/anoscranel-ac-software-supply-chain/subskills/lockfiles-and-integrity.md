@@ -17,6 +17,8 @@ What a lockfile pins is what was resolved, not what was reviewed. The file recor
 
 Primary source: <https://slsa.dev/>.
 
+Primary sources: <https://slsa.dev/> and <https://reproducible-builds.org/>.
+
 ## Decision rules
 
 - Commit the lockfile and make CI install from it, failing if the lockfile is out of sync.

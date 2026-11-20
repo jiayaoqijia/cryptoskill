@@ -11,7 +11,7 @@ status: "seedling"
 
 ## Standard
 
-- **Portfolio shapes**: Cohn's pyramid — many unit, fewer integration, thin end-to-end (https://martinfowler.com/articles/practical-test-pyramid.html). Dodds' trophy — integration as the largest band (https://kentcdodds.com/blog/the-testing-trophy-and-testing-classification). Spotify honeycomb for microservices.
+- **Portfolio shapes**: Cohn's pyramid — many unit, fewer integration, thin end-to-end (https://martinfowler.com/articles/practical-test-pyramid.html). Dodds' trophy — integration as the largest band (https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications). Spotify honeycomb for microservices.
 - **Level definitions**: unit = one module, in memory, milliseconds; integration = component plus real infrastructure, often containers; end-to-end = real client through the deployed stack.
 - **Test process standard**: ISO/IEC/IEEE 29119 frames testing by level, type and technique. ⚠️ ISO text paywalled; structure from secondary sources.
 - **Coverage**: line coverage measures reach, not assertion strength. Gate on the diff, not the global number.

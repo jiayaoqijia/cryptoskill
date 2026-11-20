@@ -15,6 +15,8 @@ Memory exhaustion announces itself in one of three ways, and each says something
 
 The kernel kill is the one most often misread, because the process simply vanishes. The kernel writes its accounting before the kill, and that record names the victim, its score, and the memory state at the moment — but only into the system log, where it scrolls away unremarked. Reading production memory failures therefore begins with knowing where that record lands and capturing it before rotation takes it.
 
+Primary sources: <https://www.kernel.org/doc/html/latest/admin-guide/mm/> and <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>.
+
 ## Decision rules
 
 - Determine which of the three failures occurred: runtime allocation error, GC spiral, or kernel kill.

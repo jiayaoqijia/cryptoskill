@@ -15,7 +15,7 @@ Fuzzy matching forgives typos by expanding a query term to every term within an 
 
 Because the cost is real, the engineering answer is to prefer cheaper approximations first: n-gram structures indexed at build time convert runtime expansion into a lookup; normalization fixes systematic errors like case, accent folding, digits and punctuation; and reserving true edit distance for the fields where typos are common — names and identifiers typed by humans — keeps the cost local. The distance itself is a budget the record states per field, because forgiving more and matching worse sit on one dial.
 
-Primary sources: <https://elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html> and <https://nlp.stanford.edu/IR-book/>.
+Primary sources: <https://elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html> and <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>.
 
 ## Decision rules
 
@@ -55,5 +55,5 @@ Primary sources: <https://elastic.co/guide/en/elasticsearch/reference/current/qu
 ## Sources
 
 - Elasticsearch query DSL: <https://elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html>
-- Introduction to Information Retrieval: <https://nlp.stanford.edu/IR-book/>
+- Introduction to Information Retrieval: <https://www.cambridge.org/us/universitypress/subjects/computer-science/knowledge-management-databases-and-data-mining/introduction-information-retrieval>
 - Lucene project: <https://lucene.apache.org/core/corenews.html>

@@ -4,6 +4,7 @@ description: "Handoff craft for a general agent: writing a handoff a stranger ca
 license: MIT
 metadata:
   domain: collaboration
+status: seedling
 ---
 
 # Handoff

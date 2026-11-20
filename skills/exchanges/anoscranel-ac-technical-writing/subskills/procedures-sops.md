@@ -12,7 +12,7 @@ status: "seedling"
 ## Standard
 
 - **A procedure is a how-to guide in Diátaxis terms** (<https://diataxis.fr/>). It is problem-oriented, aimed at a competent user, preconditions first, outcome stated before step one, no theory in the runbook.
-- **Templates beat one-off prompts.** One parameterised template per workflow, sections with sampled parameters and logical constraints. Amazon's open Agent SOPs pattern codifies markdown with SHOULD/MAY boundaries and chainable sub-SOPs (<https://emergentmind.com/topics/synthetic-standard-operating-procedure-sop-generation-framework>).
+- **Templates beat one-off prompts.** One parameterised template per workflow, sections with sampled parameters and logical constraints (synthetic-SOP generation framework: <https://emergentmind.com/topics/synthetic-standard-operating-procedure-sop-generation-framework>).
 - **Knowledge-base articles answer one question.** One question per article, the direct answer in sentence one, a single H1 matching the title, short paragraphs and lists for steps, user-language titles.
 - **Release notes are grouped and user-facing.** Deterministic generation from conventional commits (semantic-release plus the release-notes-generator plugin) where the commit log is disciplined (<https://github.com/semantic-release/release-notes-generator>). Otherwise categorise features, fixes and breaking changes by hand.
 - **Freshness is a pipeline, not a hope.** Staleness signals — age untouched, ticket spikes, failed searches — feed drafting queues. Expose the last-reviewed date on every article.

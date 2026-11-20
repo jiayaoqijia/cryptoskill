@@ -15,6 +15,8 @@ A core dump is a snapshot of a process at its moment of death, and it is only us
 
 The other precondition is that the dump exists at all. Many production configurations disable core dumps because a core file can be as large as the process's memory and a crashing daemon that dumps cores repeatedly will fill a disk. The practical compromise is a limited dump, or a triggered capture on the next occurrence, or a diagnostic that preserves a thread list and a heap histogram instead of a full core.
 
+Primary sources: <https://refspecs.linuxfoundation.org/elf/elf.pdf> and <https://sourceware.org/gdb/documentation/>.
+
 ## Decision rules
 
 - Record the build identifier of the crashed binary before anything else; symbols are build-specific.
@@ -54,4 +56,4 @@ The other precondition is that the dump exists at all. Many production configura
 
 - ELF, build identifiers, and debug information: <https://refspecs.linuxfoundation.org/elf/elf.pdf>
 - GNU debugger and core dump handling: <https://sourceware.org/gdb/documentation/>
-- Symbol servers and minidumps on Windows: <https://learn.microsoft.com/en-us/windows/win32/debug/minidumps>
+- Symbol servers and minidumps on Windows: <https://learn.microsoft.com/en-us/visualstudio/debugger/using-dump-files?view=visualstudio>

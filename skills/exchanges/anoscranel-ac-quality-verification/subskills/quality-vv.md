@@ -17,6 +17,8 @@ status: "seedling"
 - **Alloy**: Jackson's small-scope hypothesis — most design flaws have small counterexamples, so a bounded check catches the bulk.
 - **TLA+ at AWS**: specification found a DynamoDB fault-recovery bug needing a 35-step interleaving no reviewer imagined. ⚠️ Source not cited inline; check the Sources list before relying on this figure.
 
+Primary sources: <https://lamport.azurewebsites.net/tla/amazon-excerpt.html> and <https://www.iso.org/standard/78176.html>.
+
 ## Decision rules
 
 1. Turn each NFR into a measurable quality attribute with a number and a method (out of scope for this leaf: NFR authoring).

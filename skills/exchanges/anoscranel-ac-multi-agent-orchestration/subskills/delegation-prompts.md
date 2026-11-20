@@ -15,6 +15,8 @@ status: seedling
 - **Anthropic, "Effective agent design"**: structured prompt templates with clear tool and output specifications reduce agent hallucination and format drift during delegation. <https://www.anthropic.com/engineering/building-effective-agents>
 - **No-questions discipline**: subagents must flag gaps in state rather than halting to ask questions, preventing interactive deadlock in unattended loops.
 
+Primary source for the claims here: <https://www.anthropic.com/engineering/building-effective-agents>.
+
 ## Decision rules
 
 1. The delegation prompt must open with a clear role preamble defining the agent's function.
@@ -54,3 +56,4 @@ status: seedling
 
 - Anthropic, "Effective agent design": <https://www.anthropic.com/engineering/building-effective-agents>
 - Internal operational standards for subagent delegation prompts and checkpoints.
+- ArXiv 2608.24569, When "Must" Becomes "Maybe" (workflow-constraint erosion in agent handoffs): <https://arxiv.org/abs/2608.24569>

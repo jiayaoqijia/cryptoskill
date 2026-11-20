@@ -1,9 +1,10 @@
 ---
 name: ac-ideation
-description: "Generate and converge on options for a decision: frame before generating, run divergence and convergence separately, and capture each survivor with its assumption and cheapest test. Seven leaves: framing-the-question (decision and decider, walls versus fences), divergence-rules (defer judgment, build on others, silence-then-share, a quota), prompt-techniques (SCAMPER, analogy, inversion, constraints, worst-idea flip, morphology, 10x and 0.1x), nominal-group (silent generation, round-robin, clarification only, ranking), convergence-scoring (criteria before scoring, coarse scales, now/later/drop, kill criteria), idea-capture (one line, a so-that clause, the assumption, cheapest test), session-record (question, constraints, honest count, shortlist, decisions, next test). Use for 'brainstorm this', 'generate options', 'we need ideas', 'how might we', 'get unstuck', 'shortlist these ideas'. Not for attacking an existing plan (ac-interrogation), writing requirements (ac-spec-writing), or deciding alone."
+description: "Generate and converge on options for a decision: frame before generating, run divergence and convergence separately, and capture each survivor with its assumption and cheapest test. Seven leaves: framing-the-question (decision and decider, walls versus fences), divergence-rules (defer judgment, build on others, silence-then-share, a quota), prompt-techniques (SCAMPER, analogy, inversion, constraints, worst-idea flip, morphology, 10x and 0.1x), nominal-group (silent generation, round-robin, clarification only, ranking), convergence-scoring (criteria before scoring, coarse scales, now/later/drop, kill criteria), idea-capture (one line, a so-that clause, the assumption, cheapest test), session-record (question, constraints, honest count, shortlist, decisions, next test). Use when asking 'brainstorm this', 'generate options', 'we need ideas', 'how might we', 'get unstuck', 'shortlist these ideas'. Not for attacking an existing plan (ac-interrogation), writing requirements (ac-spec-writing), or deciding alone."
 license: MIT
 metadata:
   domain: critical-thinking
+status: seedling
 ---
 
 # Ideation

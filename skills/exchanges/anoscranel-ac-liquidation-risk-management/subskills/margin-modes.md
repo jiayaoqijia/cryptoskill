@@ -10,7 +10,7 @@ status: seedling
 ## Standard
 Margin modes dictate how collateral is pooled and allocated across derivative positions. Isolated margin restricts the risk of a position to the specific margin balance allocated to it, protecting the rest of the trading account from total drawdown if liquidated. Cross margin pools the entire account free balance to back all open positions, preventing premature liquidation of individual losing legs at the cost of risking the entire account equity during a systemic shock. Portfolio margin aggregates risk across spot, options, and futures positions, allowing offsetting risks to reduce margin requirements. Cross-collateral arrangements put all deposited assets at risk of liquidation when correlated market downturns depress collateral values simultaneously.
 
-Primary sources for the claims here: <https://www.okx.com/help/margin-trading-rules> and <https://docs.deribit.com/#portfolio-margin>.
+Primary sources for the claims here: <https://www.okx.com/en-us/help/futures-margin-calculation-rules> and <https://docs.deribit.com/#portfolio-margin>.
 
 ## Decision rules
 1. Default all directional, swing, or high-conviction perpetual trades to isolated margin to bound maximum loss to the assigned capital allocation.
@@ -39,5 +39,5 @@ Primary sources for the claims here: <https://www.okx.com/help/margin-trading-ru
 - [ ] Position risk isolation confirmed on exchange terminal interface.
 
 ## Sources
-- OKX Margin Trading and Margin Modes Documentation: https://www.okx.com/help/margin-trading-rules
+- OKX Futures margin calculation rules (cross and isolated modes): https://www.okx.com/en-us/help/futures-margin-calculation-rules
 - Deribit Portfolio Margin and Risk Parameters: https://docs.deribit.com/#portfolio-margin

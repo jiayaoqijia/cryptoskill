@@ -24,6 +24,8 @@ status: "seedling"
  question maps: PICO for intervention questions, SPIDER for qualitative,
  FINER criteria for feasibility.
 
+Primary sources: <https://osf.io/prereg/> and <https://www.cisa.gov>.
+
 ## Decision rules
 
 - If the ask names no decision, write the most likely decision in one line and

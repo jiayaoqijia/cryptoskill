@@ -1,9 +1,10 @@
 ---
 name: ac-slide-decks
-description: "Slide-deck craft: make a deck shareable and readable. Eight leaves: brief-and-audience (who decides what after the read; title-and-decision trailer; tone per exec, team, customer), narrative-spine (SCQA and pyramid spine; one story per deck; section headings as claims), slide-grammar (Alley assertion-evidence; one claim per slide; headline-as-conclusion), charts-per-claim (Cleveland-McGill ranking; FT visual vocabulary; when no chart is right), density-and-reading (words per slide; 10-second skim rule; budgets by audience and format), type-and-media (projection type sizes; thirds layout; imagery discipline; animation restraint), accessibility (alt structure; reading order; WCAG 2.2 SC 1.4.3/1.4.11 contrast; captions; file metadata), recurring-qa (naming and versioning; report templates; title, skim, crash tests). Use when drafting, outlining or reviewing a deck. Not for: talk scripts or speaker notes (use ac-narrative-writing), document typesetting (use ac-technical-writing)."
+description: "Slide-deck craft: make a deck shareable and readable. Eight leaves: brief-and-audience (who decides what after the read; title-and-decision trailer; tone per exec, team, customer), narrative-spine (SCQA and pyramid spine; one story per deck; section headings as claims), slide-grammar (Alley assertion-evidence; one claim per slide; headline-as-conclusion), charts-per-claim (Cleveland-McGill ranking; FT visual vocabulary; when no chart is right), density-and-reading (words per slide; 10-second skim rule; budgets by audience and format), type-and-media (projection type sizes; thirds layout; imagery discipline; animation restraint), accessibility (alt structure; reading order; WCAG 2.2 SC 1.4.3/1.4.11 contrast; captions; file metadata), recurring-qa (naming and versioning; report templates; title, skim, crash tests). Use when asking about drafting, outlining or reviewing a deck. Not for: talk scripts or speaker notes (use ac-narrative-writing), document typesetting (use ac-technical-writing)."
 license: MIT
 metadata:
   domain: writing
+status: seedling
 ---
 
 # Slide Decks

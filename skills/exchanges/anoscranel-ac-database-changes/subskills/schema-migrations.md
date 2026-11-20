@@ -18,6 +18,8 @@ status: "seedling"
 - **Rollback reality**: down-migrations rot because they run once. Forward-fix by reverting the read path; expand/contract is the rollback strategy.
 - **Rollback is not a backup.** A drop is recovered only by a restore.
 
+Primary sources: <https://martinfowler.com/articles/evodb.html> and <https://martinfowler.com/bliki/ParallelChange.html>.
+
 ## Decision rules
 
 1. A rename or a drop is never one release: expand, dual-write, backfill, cutover, then contract.
@@ -62,5 +64,5 @@ status: "seedling"
 
 ## Sources
 
-- <https://youngju.dev/blog/database/2026-06-16-schema-migration-tools-comparison.en>
+- <https://martinfowler.com/articles/evodb.html>
 - https://martinfowler.com/bliki/ParallelChange.html

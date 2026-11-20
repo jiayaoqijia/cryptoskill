@@ -17,6 +17,8 @@ The detection options are ordered by cost and certainty. Recreate-from-definitio
 
 Primary source: <https://martinfowler.com/>.
 
+Primary sources: <https://reproducible-builds.org/> and <https://martinfowler.com/bliki/DeploymentPipeline.html>.
+
 ## Decision rules
 
 - Record which environments are immutable-by-construction: recreated on every use.
