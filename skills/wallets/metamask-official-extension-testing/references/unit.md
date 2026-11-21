@@ -9,6 +9,41 @@ Reference: [MetaMask Unit Testing Guidelines](https://github.com/MetaMask/contri
 - **ALWAYS use Jest** for unit tests (not Mocha or Tape)
 - Leverage Jest's built-in features: module mocks, timer mocks, snapshots, and parallel test execution
 
+### Do Not Test Static Presentation
+
+Choose the layer first via installed `knowledge/extension-testing-layers.md`. Static or default presentation is GAP / ACCEPT there, so a diff that only changes it needs no new test.
+
+Do not unit test static styling: component-library defaults, or overrides
+passed through props (`className`, `style`, color props) that don't depend on
+any logic. The design system already tests that its props apply, and visual
+changes are verified with screenshots (`visual-testing`) and the PR's
+before/after evidence.
+
+Test presentation only when JS logic decides it (state, props or data choose
+between styles, e.g. error vs default, selected, disabled). Prefer asserting
+what the user sees (text, disabled or ARIA state), and use a style assertion
+only when the style itself is the outcome of that logic.
+
+- **NEVER** assert spacing, color, typography, or fixed layout values that no logic chooses (computed styles, `className` strings, design-token values) — a style or class assertion is allowed when JS logic chooses the style (e.g. an error-state class)
+- **NEVER** add a snapshot to cover a static styling change. If an existing snapshot fails because class names or static styles changed, update it so CI stays green — run Jest scoped to the failing file with `--updateSnapshot` (`yarn jest <file> -u`) and confirm the snapshot diff shows only class names or static style values; that update is not coverage of the styling change
+- **NEVER** add a `data-testid` whose only use is reading `style` or `className`
+- An existing test that asserts only static styling is safe to delete — keep any behavioral assertions it also makes, and if the repo's coverage gate flags the removal, assert what the user sees instead of keeping a style assertion
+- **Do not** justify a test by coverage alone. A render that touches a new JSX line adds coverage without protecting behavior.
+
+```typescript
+❌ WRONG:
+it('removes the extra padding from the price summary', () => {
+  render(<PriceSummary />);
+  expect(screen.getByTestId('price-summary')).not.toHaveClass('px-4');
+});
+
+✅ CORRECT:
+it('disables the submit button when the amount is empty', () => {
+  render(<SendForm amount="" />);
+  expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
+});
+```
+
 ### Test File Organization
 
 #### File Placement
@@ -188,6 +223,7 @@ async function withController(...args: WithControllerArgs) {
 - **ALWAYS use "render matches snapshot" or similar variants**
 - Add context when needed: "render matches snapshot when not enabled"
 - Remember: Snapshots only check for changes, NOT correctness
+- Do not add a snapshot to cover a static styling change. If an existing snapshot fails because class names or static styles changed, update it so CI stays green; that update is not coverage of the styling change. See [Do Not Test Static Presentation](#do-not-test-static-presentation)
 
 Examples:
 
@@ -748,6 +784,7 @@ Before submitting tests, ensure:
 ### Final Checks
 
 - [ ] Snapshot tests are named "render matches snapshot"
+- [ ] No tests exist only to cover static styling
 - [ ] All tests pass and are deterministic
 - [ ] Tests run in isolation (can run individually)
 - [ ] No console errors or warnings

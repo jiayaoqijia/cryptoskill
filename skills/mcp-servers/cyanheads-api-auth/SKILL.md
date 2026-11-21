@@ -4,7 +4,7 @@ description: >
   Authentication, authorization, and multi-tenancy patterns for `@cyanheads/mcp-ts-core`. Use when implementing auth scopes on tools/resources, configuring auth modes (none/jwt/oauth), working with JWT/OAuth env vars, or understanding how tenantId flows through ctx.state.
 metadata:
   author: cyanheads
-  version: "1.6"
+  version: "1.9"
   audience: external
   type: reference
 ---
@@ -36,7 +36,7 @@ When `MCP_AUTH_MODE=none`, auth checks are skipped and defaults are allowed.
 
 A failed check returns `Forbidden` (-32005, `Insufficient permissions.`) or, when auth is enabled but the request carries no auth context, `Unauthorized` (-32006). Neither carries `data`: the required, granted, and missing scope names stay in the server log, so a caller cannot enumerate scopes from the error.
 
-The scope check logs a missing scope at `warning`, naming the missing scopes. On a tool, the call's `Error in tool:<name>` record follows at `notice` with no stack — the refusal is the caller's standing, not a fault in this server — and `mcp.errors.classified` counts it with `mcp.error.severity: "notice"`. That holds for the inline check and for `checkScopes` in a handler alike, and the level is fixed: the refusal carries no `data.reason`, so no `errors[]` entry can set it. A missing auth context keeps its `Error in tool:` record at `error`, and so does a `forbidden()` the handler throws itself. A resource read the inline check refuses writes only the scope check's own records.
+The scope check logs a missing scope at `warning`, naming the missing scopes. The call's `Error in tool:<name>` record, or a read's `Error in resource:<name>` record, follows at `notice` with no stack — the refusal is the caller's standing, not a fault in this server — and `mcp.errors.classified` counts it with `mcp.error.severity: "notice"`. That holds for the inline check and for `checkScopes` in a handler alike, and the level is fixed: the refusal carries no `data.reason`, so no `errors[]` entry can set it. A missing auth context keeps that record at `error`, and so does a `forbidden()` the handler throws itself.
 
 ---
 
@@ -78,11 +78,13 @@ Set via `MCP_AUTH_MODE` environment variable.
 | Variable | Required | Purpose |
 |:---------|:---------|:--------|
 | `MCP_AUTH_SECRET_KEY` | Yes (unless bypass) | Signing secret for HS256 JWT verification. Must be ≥ 32 characters. |
-| `DEV_MCP_AUTH_BYPASS` | No | Set to `true` to skip JWT verification in development. Blocked in `NODE_ENV=production`. |
+| `MCP_JWT_EXPECTED_AUDIENCE` | No (recommended) | Expected `aud` claim. Unset, JWT mode accepts any token signed with the key whatever its `aud`, so a token minted for another service that shares the key is accepted; when a key is loaded without it, startup logs one `warning` naming this variable. |
+| `MCP_JWT_EXPECTED_ISSUER` | No | Expected `iss` claim. Any holder of a shared HS256 key can write any `iss`, so pair it with `MCP_JWT_EXPECTED_AUDIENCE` rather than setting it alone. |
+| `DEV_MCP_AUTH_BYPASS` | No | Set to `true` to skip JWT verification in development. Blocked in `NODE_ENV=production`. On Cloudflare Workers, honored only when the environment is explicitly `development` or `testing`, declared by `ENVIRONMENT` or by a `NODE_ENV` that reaches `process.env`. |
 | `DEV_MCP_CLIENT_ID` | No | Client ID injected when bypass is active (default: `'dev-client-id'`). |
 | `DEV_MCP_SCOPES` | No | Comma-separated scopes injected when bypass is active (default: `['dev-scope']`). |
 
-**Important:** With `MCP_AUTH_MODE=jwt`, a missing `MCP_AUTH_SECRET_KEY` is a **fatal startup error** unless `DEV_MCP_AUTH_BYPASS=true` is explicitly set. Setting `DEV_MCP_AUTH_BYPASS` in production (`NODE_ENV=production`) is rejected at config parse time.
+**Important:** With `MCP_AUTH_MODE=jwt`, a missing `MCP_AUTH_SECRET_KEY` is a **fatal startup error** unless `DEV_MCP_AUTH_BYPASS=true` is explicitly set. Setting `DEV_MCP_AUTH_BYPASS` in production (`NODE_ENV=production`) is rejected at config parse time. On Cloudflare Workers, `DEV_MCP_AUTH_BYPASS` is honored only when the Worker's environment is explicitly `development` or `testing`, declared by the `ENVIRONMENT` binding or by a `NODE_ENV` that reaches `process.env`: with the flag on and neither set, initialization fails with a `ConfigurationError` naming `DEV_MCP_AUTH_BYPASS` and `ENVIRONMENT`, and the Worker serves nothing. For local development, set `ENVIRONMENT=development` beside the flag.
 
 ### OAuth config
 
@@ -148,7 +150,7 @@ A `WARNING`-level log is emitted at startup whenever the flag is active so opera
 | `DELETE /mcp` | Yes (when auth enabled) — session termination |
 | `OPTIONS /mcp` | No (handled by CORS middleware before auth) |
 
-**CORS:** Set `MCP_ALLOWED_ORIGINS` to a comma-separated list of allowed origins, or `*` for open access. Left unset, only loopback browser origins reach the endpoint. The preflight for an accepted origin allows every request header the server reads: `Content-Type`, `Authorization`, `Mcp-Session-Id`, `MCP-Protocol-Version`, the 2026-07-28 `Mcp-Method` and `Mcp-Name`, `Last-Event-ID` (SSE resume), and one `Mcp-Param-<Name>` per `headerParam` designation on a registered tool — derived from the tool definitions, nothing to configure. Any other origin gets the first four only, so it learns no designation names.
+**CORS:** Set `MCP_ALLOWED_ORIGINS` to a comma-separated list of allowed origins, or `*` for open access. Left unset, only loopback browser origins reach the endpoint. The preflight for an accepted origin allows every request header the server reads: `Content-Type`, `Authorization`, `Mcp-Session-Id`, `MCP-Protocol-Version`, the 2026-07-28 `Mcp-Method` and `Mcp-Name`, `Last-Event-ID` (SSE resume), and one `Mcp-Param-<Name>` per `headerParam` designation on a registered tool — derived from the tool definitions, nothing to configure. Any other origin gets the first four only, so it learns no designation names. Every response exposes `Mcp-Session-Id`, `WWW-Authenticate`, and `Retry-After`, so a browser client can read its session ID, a 401's RFC 9728 `resource_metadata` challenge, and when a retryable `503` (draining, session capacity) may be retried.
 
 **Stdio mode:** No HTTP auth layer. Authorization is handled entirely by the host process.
 

@@ -27,8 +27,8 @@ These are set by `init` and generally don't need changes. Verify they're present
 | `main` | `"dist/index.js"` | Entry point after build |
 | `types` | `"dist/index.d.ts"` | TypeScript declarations |
 | `files` | `["dist/"]` | What npm publishes |
-| `engines` | `{ "node": ">=24.0.0", "bun": ">=1.4.0" }` | Node runs the built `dist/`; Bun is the dev floor |
-| `packageManager` | `"bun@1.4.3"` | Pins the dev package manager; keep current with the framework's Bun version |
+| `engines` | `{ "node": ">=24.0.0", "bun": ">=1.4.4" }` | Node runs the built `dist/`; Bun is the dev floor |
+| `packageManager` | `"bun@1.4.4"` | Pins the dev package manager; keep current with the framework's Bun version |
 | `scripts` | _(various)_ | Build, dev, test scripts |
 | `dependencies` | `@cyanheads/mcp-ts-core` | Core framework |
 

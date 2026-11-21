@@ -21,6 +21,66 @@ Follow installed `knowledge/testing-layers.md` before choosing unit vs component
 - **Default for screen/view behavior:** `*.view.test.tsx` via [`component-view.md`](component-view.md) — not a broad RTL unit test that mocks hooks/selectors.
 - **This skill applies when:** pure helpers, local utilities, narrow component contracts, or the CV framework cannot cover the case yet (smallest focused unit test + note why).
 - **Do not** add new full-page `*.test.tsx` files that render a screen and mock Redux/hooks to force UI state; convert or write CV instead.
+- **Do not** add a unit test for static styling (component-library defaults, or `twClassName` / `style` / color-prop overrides that depend on no logic). The layer policy marks it GAP / ACCEPT — see [Do Not Test Static Presentation](#do-not-test-static-presentation).
+
+## Do Not Test Static Presentation
+
+Do not unit test static styling: component-library defaults, or overrides
+passed through props (`twClassName`, `style`, color props) that don't depend on
+any logic. The design system already tests that its props apply, and visual
+changes are verified with screenshots (`mobile-visual-testing`) and the PR's
+before/after evidence. A diff that only changes static styling needs no new
+test, even inside an existing `*.test.tsx`; such assertions don't guard
+behavior and break whenever a design token changes. Mobile bans snapshots of
+rendered UI — `toMatchSnapshot()` in any form, and `toMatchInlineSnapshot()` of
+rendered UI — so do not add one to cover a styling change. If an existing
+rendered-UI snapshot fails because class names or static styles changed,
+replace it with explicit assertions (or update it) so CI stays green; that
+change is not coverage of the styling change.
+
+An existing test that asserts only static styling is safe to delete — keep any
+behavioral assertions it also makes, and if the repo's coverage gate flags the
+removal, assert what the user sees instead of keeping a style assertion.
+
+Test presentation only when JS logic decides it (state, props or data choose
+between styles, e.g. error vs default, selected, disabled). Prefer asserting
+what the user sees (text, disabled or accessibility state), and use a style
+assertion only when the style itself is the outcome of that logic.
+
+```tsx
+// ❌ WRONG - asserts padding values after a spacing fix
+const style = StyleSheet.flatten(
+  screen.getByTestId(SelectorsIDs.PRICE_SUMMARY).props.style,
+);
+expect(style.paddingLeft).toBeUndefined();
+
+// ❌ WRONG - asserts fixed truncation props; Jest never renders the overflow
+expect(title.props.numberOfLines).toBe(1);
+expect(title.props.ellipsizeMode).toBe('tail');
+
+// ❌ WRONG - asserts margins set by a Tailwind class
+expect(StyleSheet.flatten(divider.props.style)).toEqual(
+  expect.objectContaining({ marginBottom: 0, marginTop: 20 }),
+);
+
+// ❌ WRONG - asserts a static twClassName override that no logic chooses
+expect(screen.getByTestId('token-list-item').props.twClassName).toBe(
+  'bg-background-default',
+);
+
+// ✅ CORRECT - the error style is chosen by logic (amount exceeds balance)
+it('marks the amount input invalid when the amount exceeds the balance', () => {
+  render(<SendForm amount="1000" />);
+
+  expect(screen.getByTestId('send-amount-input').props.twClassName).toContain(
+    'bg-error',
+  );
+});
+```
+
+- **Do not** add a `testID` whose only use is reading `style`.
+- **Do not** remove a `useTailwind` mock so `StyleSheet.flatten` can see real spacing.
+- **Do not** justify a test by coverage alone. A render that touches a new JSX line adds coverage without protecting behavior.
 
 ## Test Naming Rules
 
@@ -77,7 +137,7 @@ const createTestEvent = (overrides = {}) => ({
 
 - **ALWAYS prefer `testID` props** for selecting elements in tests
 - **Use `getByTestId`** as the primary query method for reliable element selection
-- **Add `testID` props** to components when writing new code or updating existing code
+- **Add `testID` props** when a justified behavior test needs a stable query — not just because a component was touched, and never only to read `style`
 - **Avoid selecting by text** when the text might change (i18n, copy updates)
 
 ```tsx
@@ -192,7 +252,8 @@ testID={`network-option-${network.chainId}`}
 ### The Rule
 
 - ❌ **`toMatchSnapshot()` is BANNED** — Do not use it. Do not add it. Do not approve it.
-- ✅ **`toMatchInlineSnapshot()` is ALLOWED** — Use sparingly, only when the serialized output is the meaningful assertion.
+- ❌ **`toMatchInlineSnapshot()` on rendered UI is BANNED** — the serialized blob locks in styles, class names, and layout, so a design-token or class-name change fails the test even though no behavior regressed.
+- ✅ **`toMatchInlineSnapshot()` on serialized data is ALLOWED** — use it only when the serialized value itself is the assertion (a data object, a formatted string), never as a lazy substitute for explicit `expect` calls.
 
 ### Why `toMatchSnapshot()` Is Banned
 
@@ -202,16 +263,17 @@ External snapshot files (`.snap`) have three critical problems:
 2. **No code ownership** — `CODEOWNERS` explicitly assigns `**/*.snap` to *nobody*, meaning no team is accountable for snapshot correctness.
 3. **Brittle by design** — Any style tweak, whitespace change, or unrelated refactor regenerates the snapshot and silently passes CI.
 
-### Why `toMatchInlineSnapshot()` Is Allowed
+### Why Inline Snapshots of Rendered UI Are Banned
 
-The snapshot string lives directly in the test file, so:
-- It appears in the PR diff alongside the code that produces it
-- The file's code owner is responsible for reviewing it
-- Reviewers can see exactly what changed and why
+An inline snapshot of a component locks in rendered output (styles, class
+names, layout), so a design-token or class-name change fails the test even
+though no behavior regressed. Assert what the component does and shows with
+explicit matchers (`toBeOnTheScreen`, text, disabled state) instead of
+snapshotting the serialized tree.
 
 ### When to Use `toMatchInlineSnapshot()`
 
-Only use it when the serialized shape of the output **is** the assertion — for example, verifying a complex object structure, a formatted string, or a serialized data payload. Do **not** use it as a lazy substitute for explicit `expect` calls.
+Only use it when the serialized shape of the output **is** the assertion — for example, verifying a complex object structure, a formatted string, or a serialized data payload. Never snapshot rendered UI with it, and do not use it as a lazy substitute for explicit `expect` calls.
 
 ```ts
 // ❌ BANNED — writes to an external .snap file
@@ -219,7 +281,10 @@ expect(tree).toMatchSnapshot();
 expect(component).toMatchSnapshot();
 expect(result).toMatchSnapshot();
 
-// ✅ ALLOWED — snapshot is inline and visible in review
+// ❌ BANNED — snapshots rendered UI (styles, class names, layout)
+expect(screen.getByTestId('send-amount-input')).toMatchInlineSnapshot();
+
+// ✅ ALLOWED — the serialized value itself is the assertion (data, not UI)
 expect(result).toMatchInlineSnapshot(`
   {
     "chainId": "0x1",
@@ -236,10 +301,10 @@ expect(result.name).toBe('Ethereum Mainnet');
 
 When you encounter an existing `toMatchSnapshot()` call:
 1. **Prefer replacing it** with explicit `expect` assertions targeting the specific values that matter.
-2. If the full serialized output is genuinely meaningful, convert to `toMatchInlineSnapshot()`.
+2. If the full serialized output is genuinely meaningful — and not rendered UI — convert to `toMatchInlineSnapshot()`.
 3. Delete the corresponding `.snap` file entry once migrated.
 
-Do **not** leave `toMatchSnapshot()` in place when modifying a test file — migrate it as part of your change.
+Migrate opportunistically when you are already modifying a test file; do not block a PR solely to force migration.
 
 
 ## Assertions - PREFER toBeOnTheScreen
@@ -418,7 +483,9 @@ describe('MetaMetricsCustomTimestampPlugin', () => {
 
 ## Test Coverage (MANDATORY)
 
-**EVERY component MUST test:**
+Apply this list only after the layer policy says a unit test is justified. Cover the behavior branches the code actually has. A static styling change adds no branch, so it adds no test.
+
+**When a unit test is justified, it MUST cover:**
 
 - ✅ **Happy path** - normal expected behavior
 - ✅ **Edge cases** - null, undefined, empty values, boundary conditions
@@ -467,7 +534,7 @@ it.each(['small', 'medium', 'large'] as const)('renders %s size', (size) => {
 ## Test Determinism
 
 - **EVERYTHING** not under test must be mocked - no exceptions.
-- Avoid brittle tests: do not test internal state or UI snapshots for logic. **`toMatchSnapshot()` is banned** — see Snapshot Testing Policy above.
+- Avoid brittle tests: do not test internal state or UI snapshots for logic. **`toMatchSnapshot()` and rendered-UI `toMatchInlineSnapshot()` are banned** — see Snapshot Testing Policy above.
 - Only test public behavior, not implementation details.
 - Mock time, randomness, and external systems to ensure consistent results.
 
@@ -583,7 +650,7 @@ expect(result).toBe(false);
 ```
 
 - Ensure tests use proper matchers (`toBeOnTheScreen` vs `toBeDefined`).
-- **Reject any new `.snap` files or new `toMatchSnapshot()` calls** — these are banned; require the author to use explicit assertions or `toMatchInlineSnapshot()` instead.
+- **Reject any new `.snap` files or new `toMatchSnapshot()` calls, and any `toMatchInlineSnapshot()` of rendered UI** — require explicit assertions, or an inline snapshot only when the serialized value is the assertion.
 - Reject tests with complex names combining multiple logical conditions (AND/OR).
 
 # Refactoring Support
@@ -596,7 +663,8 @@ expect(result).toBe(false);
 
 Before submitting any test file, verify:
 
-- [ ] **No `toMatchSnapshot()` calls** — BANNED; use explicit assertions or `toMatchInlineSnapshot()` instead
+- [ ] **No `toMatchSnapshot()` calls and no rendered-UI `toMatchInlineSnapshot()`** — BANNED; use explicit assertions (an inline snapshot is allowed only when the serialized value is the assertion)
+- [ ] **No static style assertions** — no `StyleSheet.flatten` padding/margin/color checks, fixed layout-prop checks, or style-only testIDs; a style assertion is allowed only when the style itself is the outcome of logic
 - [ ] **No mocking to inject testIDs** - Use component's built-in testID support
 - [ ] **testIDs via child prop objects** - Use `closeButtonProps={{ testID }}` not mocks
 - [ ] **No "should" in any test name**
@@ -615,8 +683,9 @@ Before submitting any test file, verify:
 
 # Common Mistakes to AVOID - CRITICAL
 
-- ❌ **Using `toMatchSnapshot()`** — BANNED; it writes opaque `.snap` files with no code owner; use explicit assertions or `toMatchInlineSnapshot()` instead
+- ❌ **Using `toMatchSnapshot()`, or `toMatchInlineSnapshot()` on rendered UI** — BANNED; use explicit assertions instead (inline snapshots of serialized data are fine)
 - ❌ **Mocking to inject testIDs** - Components already support testID (see guidelines above)
+- ❌ **Testing static styling** - Spacing, color, and fixed layout props are verified visually, not in Jest
 - ❌ **Using "should" in test names** - This is the #1 mistake, use action-oriented descriptions
 - ❌ **Testing multiple behaviors in one test** - One test, one behavior
 - ❌ **Sharing state between tests** - Each test must be independent
@@ -659,9 +728,8 @@ yarn test:unit:coverage
 ## Workflow Requirements
 
 - Confirm all tests are passing before commit.
-- **Do not add new `toMatchSnapshot()` calls** — this is banned. See Snapshot Testing Policy.
-- When modifying a test file that contains `toMatchSnapshot()`, opportunistically migrate those calls to explicit assertions or `toMatchInlineSnapshot()` — do not block a PR solely to force migration, but do not add new ones.
-- `toMatchInlineSnapshot()` updates are acceptable but must be reviewed — confirm the new inline snapshot reflects an intentional, expected change.
+- **Do not add new `toMatchSnapshot()` calls, and never snapshot rendered UI with `toMatchInlineSnapshot()`** — see Snapshot Testing Policy.
+- When modifying a test file that contains `toMatchSnapshot()`, opportunistically migrate those calls to explicit assertions or `toMatchInlineSnapshot()` (data only) — do not block a PR solely to force migration, but do not add new ones.
 
 # Reference Code Examples
 
@@ -678,14 +746,17 @@ it('indicates expired milk when past due date', () => {
 });
 ```
 
-## ❌ Banned: `toMatchSnapshot()`
+## ❌ Banned: Snapshots of Rendered UI
 
 ```ts
-// ❌ BANNED — toMatchSnapshot() writes to an external .snap file.
-// It has no code owner, hides regressions, and breaks on trivial changes.
+// ❌ BANNED — toMatchSnapshot() writes to an external .snap file:
+// no code owner, hidden regressions, breaks on trivial changes.
+// toMatchInlineSnapshot() on rendered UI is banned too — the blob locks
+// in styles and class names.
 it('renders the button', () => {
   const { container } = render(<MyButton />);
   expect(container).toMatchSnapshot(); // 🚫 BANNED — do not use
+  expect(container).toMatchInlineSnapshot(); // 🚫 BANNED — do not use
 });
 ```
 
@@ -714,7 +785,7 @@ it('hides selector when disabled', () => {
 
 ## Reviewer Responsibilities
 
-Validate tests fail when code breaks • Ensure proper matchers • **Reject new `toMatchSnapshot()` calls and new `.snap` files** • Reject complex names with AND/OR
+Validate tests fail when code breaks • Ensure proper matchers • **Reject new `toMatchSnapshot()` calls, rendered-UI `toMatchInlineSnapshot()`, and new `.snap` files** • Reject complex names with AND/OR
 
 ```ts
 // OK
@@ -726,6 +797,6 @@ it('renders and disables button when input is empty or missing required field');
 
 ## Workflow
 
-Always run tests after changes • Confirm all pass before commit • **Do not add new `toMatchSnapshot()` calls** — migrate existing ones to explicit assertions or `toMatchInlineSnapshot()` when touching a test file
+Always run tests after changes • Confirm all pass before commit • **Do not add new `toMatchSnapshot()` calls, and never snapshot rendered UI inline** — migrate existing ones to explicit assertions when touching a test file
 
 **Resources**: [Contributor docs](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/unit-testing.md) • [Jest Matchers](https://jestjs.io/docs/using-matchers) • [React Native Testing Library](https://testing-library.com/docs/react-native-testing-library/intro/)
