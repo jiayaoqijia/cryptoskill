@@ -2,13 +2,13 @@
 name: cryptoslip-pocket-slip
 description: Non-custodial Base Mainnet (8453) PocketSlip wallet and settlement MCP skill for AI agents. Provision an agent with a $5 USDC, ETH, cbBTC, or NARA CryptoSLIP URL instead of a master wallet private key; auto-rotates on boot (<1s Keep at 0% fee), enforces an out-of-context BoundedAgentPolicy spend firewall, pays HTTP 402 APIs and merchants, sends 1-tap Telegram/X/SMS human bounties, executes 1-tx Multicall3 batch payouts, verifies cryptographic payment receipts, reclaims unclaimed slips, and collects 0.25% lifetime referral rewards.
 license: MIT
-compatibility: Node.js >= 22. Run pinned version `npx @cryptoslip/mcp@1.0.2` with `CRYPTOSLIP_URL="<YOUR_SLIP_URL>"`.
+compatibility: Node.js >= 22. Run pinned version `npx @cryptoslip/mcp@1.0.3` with `CRYPTOSLIP_URL="<YOUR_SLIP_URL>"`.
 metadata:
   author: nara-protocol
-  version: "1.0.2"
+  version: "1.0.3"
   chain: base-mainnet-8453
-  mcp-package: "@cryptoslip/mcp@1.0.2"
-  sdk-package: "@cryptoslip/sdk@1.0.0"
+  mcp-package: "@cryptoslip/mcp@1.0.3"
+  sdk-package: "@cryptoslip/sdk@1.0.1"
   openclaw:
     requires:
       bins:
@@ -16,6 +16,7 @@ metadata:
       env:
         - CRYPTOSLIP_URL
       optionalEnv:
+        - CRYPTOSLIP_OPERATOR_KEY
         - CRYPTOSLIP_MAX_PER_CALL_USD
         - CRYPTOSLIP_MAX_DAILY_USD
         - CRYPTOSLIP_MAX_SPENDS_PER_MIN
@@ -54,6 +55,7 @@ Give any autonomous agent bounded pocket funds on **Base Mainnet (`8453`)** usin
    - Canonical Uniswap V4 `NARALiquidityHookV5` (`0x07d8F2Dfd121B10dE3176DeAb6A8C0eaa2646aCC`) enforcement for all `NARA` swaps
 3. **Serialized Spend Queue & Sub-Minimum Guard (`V-03`):** Concurrent spends serialize through per-slip `SlipMutex` with pre-flight `$0.10 USDC` (`100 sats` cbBTC / `0.000001` ETH or NARA) remainder checks on `CryptoSlipVaultV32` (`v33`: `0x3f80aa68Fb4834d6E119EE1cf932C14419Cf63EB`).
 4. **Self-Funded USDC Network Fees (`V-04`):** Headless agent calls default to Circle `TokenPaymasterV08` (`0x0578cFB241215b77442a541325d6A4E6dFE700Ec`) + `Simple7702Account` (`0xe6Cae83BdE06E4c305530e199D7217f42808555B`) so bots never consume human mobile relay quotas.
+5. **Crash-Safe Two-Slot Journal & Stateless Container Recovery (`V-05`):** Before any `keepSlip` or `splitAndPay` broadcast, `PocketSlipVault` records a non-destructive `pendingTransition` write-ahead journal without overwriting `activeClaimPrivateKey`, healing automatically across mid-broadcast crashes. Setting `CRYPTOSLIP_OPERATOR_KEY` allows completely wiped stateless containers to rediscover active deterministic PocketSlips directly from Base via `Multicall3` in `<200ms`.
 
 ---
 
@@ -66,7 +68,7 @@ Create a `$5.00 USDC` slip at `https://slip.naraprotocol.io` (or `https://crypto
   "mcpServers": {
     "cryptoslip": {
       "command": "npx",
-      "args": ["@cryptoslip/mcp@1.0.2"],
+      "args": ["@cryptoslip/mcp@1.0.3"],
       "env": {
         "CRYPTOSLIP_URL": "<YOUR_SLIP_URL>",
         "CRYPTOSLIP_MAX_PER_CALL_USD": "0.50",
@@ -78,10 +80,10 @@ Create a `$5.00 USDC` slip at `https://slip.naraprotocol.io` (or `https://crypto
 }
 ```
 
-Or via Claude Code CLI (pinned to the Sigstore-verified `1.0.2` release):
+Or via Claude Code CLI (pinned to the Sigstore-verified `1.0.3` release):
 
 ```bash
-claude mcp add cryptoslip -e CRYPTOSLIP_URL="<YOUR_SLIP_URL>" -- npx @cryptoslip/mcp@1.0.2
+claude mcp add cryptoslip -e CRYPTOSLIP_URL="<YOUR_SLIP_URL>" -- npx @cryptoslip/mcp@1.0.3
 ```
 
 ---
