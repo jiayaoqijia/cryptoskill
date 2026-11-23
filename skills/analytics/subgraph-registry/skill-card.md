@@ -14,7 +14,7 @@ MIT
 
 ## Use Case:
 
-Developers use the MCP server to find and compare The Graph subgraphs, inspect registry metadata, and prepare bounded GraphQL queries for an intended chain or data goal. With an operator-managed Studio API key, they can opt in to live schema checks, health checks, and query execution.
+Developers and agent operators use this MCP server to discover and compare The Graph subgraphs, inspect their metadata, and prepare bounded GraphQL queries for a selected deployment. Live schema checks and query execution require an operator-configured Studio API key.
 
 ### Deployment Geography for Use:
 
@@ -22,21 +22,17 @@ Global
 
 ## Known Risks and Mitigations:
 
-Risk: Security scan coverage is partial: 7 of 11 components were fully scanned, and some JavaScript could not be fully interpreted.
+Risk: The scanner reports a benign verdict with medium confidence because some code analysis was incomplete; the server can make optional network requests when enabled.
 
-Mitigation: Review the published package source and confirm you trust it and its documented network and environment-variable capabilities before installation.
+Mitigation: Install the pinned 0.13.7 release and review its package and source before enabling opt-in network tools.
 
-Risk: Opt-in live query and schema tools use an operator-provided Studio API key, which could be exposed if placed in chat, tool arguments, source files, or logs.
+Risk: A configured Studio API key enables live schema, health, and query operations against The Graph gateway.
 
-Mitigation: Have the operator provide the key through the MCP host's secret store or process environment; never paste or log the key.
+Mitigation: Have the operator store the key in the MCP host secret store; never put it in chat, tool arguments, source files, or logs.
 
-Risk: The optional HTTP/SSE listener can expose access beyond the local machine if configured to bind on a non-loopback address.
+Risk: The optional HTTP/SSE listener can expose server routes when bound beyond loopback.
 
-Mitigation: Keep the listener on 127.0.0.1, or configure SUBGRAPH_REGISTRY_HTTP_TOKEN before using a non-loopback bind.
-
-Risk: An external x402 client may make paid requests, although the MCP server does not sign payments or pay automatically.
-
-Mitigation: Use an external signing client only after the owner explicitly approves the payment amount and route.
+Mitigation: Keep the listener on 127.0.0.1 unless remote access is needed; for a non-loopback bind, configure SUBGRAPH_REGISTRY_HTTP_TOKEN.
 
 ## Reference(s):
 
@@ -46,17 +42,17 @@ Mitigation: Use an external signing client only after the owner explicitly appro
 
 ## Skill Output:
 
-**Output Type(s):** [Text, JSON, GraphQL queries, Configuration guidance]
+**Output Type(s):** [JSON, GraphQL queries, Guidance]
 
-**Output Format:** [Structured MCP tool responses, bounded GraphQL query strings, and setup guidance]
+**Output Format:** [Structured JSON tool responses with bounded GraphQL query strings]
 
 **Output Parameters:** [1D]
 
-**Other Properties Related to Output:** [Discovery and query preparation are keyless; live schema, health, and execution actions require explicit opt-in and an operator-provided Studio API key.]
+**Other Properties Related to Output:** [Discovery is local to the bundled registry; live schema checks and query execution require an operator-configured Studio API key.]
 
 ## Skill Version(s):
 
-0.13.6 (source: package.json, server-resolved release)
+0.13.7 (source: package.json, server-resolved release)
 
 ## Ethical Considerations:
 

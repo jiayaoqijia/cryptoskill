@@ -99,6 +99,10 @@ export const THRESHOLDS = {
   // A pool holding this much TVL while one side is not a known major token.
   // Real pools beyond $1B do not exist on a long-tail pair.
   extreme_tvl_unlisted_pair_usd: 1e9,
+  // Cumulative lifetime volume below 5% of claimed TVL on a $1M+ pool/token
+  // involving an unlisted token is a strong indicator of spoofed/manipulated TVL.
+  unlisted_high_tvl_min_usd: 1e6,
+  unlisted_high_tvl_volume_ratio: 0.05,
   // totalSupply / 10^decimals above this many whole tokens (SHIB ~ 6e14).
   implausible_supply_tokens: 1e15,
   low_activity_tx_count: 25,
@@ -139,7 +143,7 @@ function supplyTokens(row) {
   return n / 10 ** d;
 }
 
-function metricReasons(row) {
+function metricReasons(row, { allowlisted = false } = {}) {
   const out = [];
   const tvl = num(row.totalValueLockedUSD ?? row.tvlUSD);
   const vol = num(row.volumeUSD ?? row.totalVolumeUSD);
@@ -147,6 +151,9 @@ function metricReasons(row) {
   if (tvl !== null && tvl > THRESHOLDS.implausible_tvl_usd) out.push("implausible_tvl_usd");
   if (tvl !== null && vol !== null && tvl > THRESHOLDS.tvl_without_volume_min_tvl_usd && vol < tvl * THRESHOLDS.tvl_without_volume_ratio) {
     out.push("tvl_without_trading_volume");
+  }
+  if (!allowlisted && tvl !== null && vol !== null && tvl >= THRESHOLDS.unlisted_high_tvl_min_usd && vol < tvl * THRESHOLDS.unlisted_high_tvl_volume_ratio && !out.includes("tvl_without_trading_volume")) {
+    out.push("unlisted_token_low_volume_for_tvl");
   }
   if (tvl !== null && tx !== null && tx > 0 && tvl > THRESHOLDS.tvl_per_tx_min_tvl_usd && tvl / tx > THRESHOLDS.tvl_per_tx_usd) out.push("tvl_per_transaction_implausible");
   const supply = supplyTokens(row);
@@ -179,7 +186,7 @@ export function assessRows(rows, { network, trusted = new Set(), kind = "token" 
     let allowlisted = false;
     if (kind === "token") {
       allowlisted = isAllowed(id);
-      if (!allowlisted) reasons.push(...textReasons("", row), ...metricReasons(row));
+      if (!allowlisted) reasons.push(...textReasons("", row), ...metricReasons(row, { allowlisted }));
     } else {
       const t0 = row.token0 && typeof row.token0 === "object" ? row.token0 : null;
       const t1 = row.token1 && typeof row.token1 === "object" ? row.token1 : null;
@@ -187,7 +194,7 @@ export function assessRows(rows, { network, trusted = new Set(), kind = "token" 
       allowlisted = Boolean(ok0 && ok1);
       if (t0 && !ok0) reasons.push(...textReasons("token0_", t0));
       if (t1 && !ok1) reasons.push(...textReasons("token1_", t1));
-      if (!allowlisted) reasons.push(...metricReasons(row));
+      if (!allowlisted) reasons.push(...metricReasons(row, { allowlisted }));
       const poolTvl = num(row.totalValueLockedUSD ?? row.tvlUSD);
       if (!allowlisted && (ok0 || ok1) && poolTvl !== null && poolTvl > THRESHOLDS.extreme_tvl_unlisted_pair_usd && !reasons.includes("implausible_tvl_usd")) {
         reasons.push("extreme_tvl_with_unlisted_token");

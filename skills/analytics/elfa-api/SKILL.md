@@ -100,9 +100,9 @@ Elfa supports two independent ways to authenticate requests:
 | Mode | Endpoint prefix | Auth header | Best for |
 |---|---|---|---|
 | **API key** | `/v2/`, `/v3/` | `x-elfa-api-key: YOUR_KEY` | Humans & apps with a registered key |
-| **x402 (keyless)** | `/x402/v2/` | `PAYMENT-SIGNATURE: <signed-payload>` | Agents & wallets — no signup needed |
+| **x402 (keyless)** | `/x402/v2/`, and the API v3 data endpoints at their `/v3/` URL | `PAYMENT-SIGNATURE: <signed-payload>` | Agents & wallets — no signup needed |
 
-Both modes access the same v2 data. Otherwise the only difference is how you authenticate:
+Both modes access the same v2 data and the API v3 data endpoints. Otherwise the only difference is how you authenticate:
 - **API key** — register at https://go.elfa.ai/claude-skills. A Free key gets 1,000 credits in
   total, not per month; for ongoing use, top up a **pay-as-you-go** balance.
 - **x402** — pay per request with USDC on Base, Arbitrum, Polygon, Avalanche, BNB Smart Chain
@@ -137,10 +137,10 @@ except `key-status` which is API key mode only.
 #### API v3 endpoints
 
 API v3 turns news and market chatter across crypto and equities into events, positions and
-rankings. Every endpoint authenticates with `x-elfa-api-key` (no x402). The data endpoints in the
-first table are `GET`, and every plan, Free included, can call them. Each call but
-`/v3/key-status` and, for now, `/v3/events/prediction-markets` costs credits on Free, PAYG and
-Grow, priced per endpoint ([pricing](https://docs.elfa.ai/platform/pricing#api-v3)); Enterprise keys are not drawn down
+rankings. The data endpoints in the first table are `GET`, and every plan, Free included, can
+call them with `x-elfa-api-key`; with no key, they take an x402 payment at the same URL (Step 2b).
+`/v3/key-status`, Verify and Monitors take a key only. Each call but `/v3/key-status` costs
+credits on Free, PAYG and Grow, priced per endpoint ([pricing](https://docs.elfa.ai/platform/pricing#api-v3)); Enterprise keys are not drawn down
 per call. See Step 2d for the rules they share.
 
 | Question | Endpoint | Returns |
@@ -160,7 +160,7 @@ per call. See Step 2d for the rules they share.
 | Who is worth reading? | `/v3/people/accounts` | Accounts ranked by standing, or by track record with `metric` |
 | What can my key do? | `/v3/key-status` | Plan, credits, limits and how far back it reads |
 
-Verify and Monitors need a PAYG, Grow or Enterprise key; a Free key gets `403`. See
+Verify and Monitors work on every plan, Free included. See
 [Step 2e](#step-2e-verify--check-a-claim) and [Step 2f](#step-2f-monitors--watch-a-topic-in-plain-words).
 
 | Endpoint | Method | Does | Credits |
@@ -341,18 +341,22 @@ price — pick on integration style. A Free key gets 1,000 credits in total, not
 
 Subscription plans:
 
-| | PAYG | Grow | Enterprise |
-|---|---|---|---|
-| Monthly | No subscription | $870 | Custom |
-| Annual (15% off) | — | $8,874 ($739.50/mo) | Custom |
-| Credits / month | Prepaid balance ($0.0145 / credit) | 120,000 | Custom |
-| Overage | — | $0.009 / credit | Custom |
-| Rate limit | 60 RPM | 120 RPM | Custom |
-| Agent Chat | ✓ | ✓ | ✓ |
-| Agent Automation | ✓ (up to 50 active plans) | ✓ (up to 100 active plans) | ✓ |
-| Verify and Monitors | ✓ | ✓ | ✓ |
+| | Starter | PAYG | Grow | Enterprise |
+|---|---|---|---|---|
+| Monthly | $0 | No subscription | $870 | Custom |
+| Annual (15% off) | — | — | $8,874 ($739.50/mo) | Custom |
+| Credits / month | 1,000 in total, once | Prepaid balance ($0.0145 / credit) | 120,000 | Custom |
+| Overage | Calls stop | — | $0.009 / credit | Custom |
+| Rate limit | 60 RPM | 60 RPM | 120 RPM | Custom |
+| Agent Chat | — | ✓ | ✓ | ✓ |
+| Agent Automation | ✓ (up to 10 active plans) | ✓ (up to 50 active plans) | ✓ (up to 100 active plans) | ✓ |
+| Verify and Monitors | ✓ | ✓ | ✓ | ✓ |
+
+Starter is the plan that the API and its error messages call Free.
 
 **What each tier unlocks:**
+- **Starter** — the same social data, API v3, Auto, Verify and Monitors as PAYG, with 1,000
+  credits in total, up to 10 active Auto plans, and no AI Chat (`/v2/chat`, `/v2/chat/stream`)
 - **PAYG** — core social data (trending tokens, top mentions, keyword mentions, event
   summaries, token news, trending contract addresses on Twitter and Telegram), plus API v3
   (events, calls, market data including token mindshare, and people), **trending narratives**, **Elfa Intelligence** (Agent
@@ -369,8 +373,6 @@ Gate summary for the tier-restricted endpoints:
 |---|---|
 | `/v2/chat` | Grow+ or PAYG |
 | `/v2/chat/stream` | Grow+ or PAYG |
-| `/v3/verify` | Grow+ or PAYG |
-| `/v3/monitors` and every `/v3/monitors/{id}` route | Grow+ or PAYG |
 
 On Grow, requests past the monthly credits keep working and are billed as overage, unless
 overage is turned off or a spend cap is set in the dashboard; on Free, past the 1,000 credits
@@ -379,7 +381,7 @@ requests get `429 ERR_RATE_LIMITED` until you upgrade. A `429` has two codes, so
 `ERR_RATE_LIMITED` means the key is out of credits, and retrying does not help. A PAYG key whose
 prepaid balance does not cover a call gets `402 ERR_INSUFFICIENT_CREDITS`. If a
 user hits an authorization error on a gated endpoint, they can move to PAYG, upgrade their plan,
-or use x402 instead (v2 only). Full details at
+or use x402 instead. Full details at
 https://go.elfa.ai/claude-skills.
 
 **Making the call:**
@@ -395,7 +397,8 @@ BNB Smart Chain or Solana, or USDT on BNB Smart Chain — no API key, no registr
 ideal for agents, bots, and programmatic access.
 
 **How x402 works:**
-1. Send a request to the `/x402/v2/` version of a v2 data, chat or Auto endpoint (no auth header).
+1. Send a request to the `/x402/v2/` version of a v2 data, chat or Auto endpoint, or to an API v3
+   data endpoint at its own `/v3/` URL (no auth header).
 2. The server responds with HTTP **402**. The payment requirements are in the `PAYMENT-REQUIRED`
    response header; the body is just `{"error":"Payment required"}`.
 3. Your wallet signs a payment authorization (no gas; on BNB Smart Chain, a one-time Permit2
@@ -416,7 +419,7 @@ ideal for agents, bots, and programmatic access.
 - **Networks:** the server offers every supported network in the 402 response; your client
   signs on the first one it's registered for. Register the network(s) you hold funds on.
 - **Scheme:** `exact` (fixed price per request), plus `batch-settlement` (prepaid channel,
-  metered) on the chat endpoints on Base; every network but BNB Smart Chain uses native Circle
+  metered) on the chat endpoints and the API v3 data endpoints on Base; every network but BNB Smart Chain uses native Circle
   USDC (6 decimals).
   `batch-settlement` needs no token approval: the deposit is a signed USDC authorization. It is
   offered on Base only; every other network, including Solana, is `exact` only.
@@ -435,6 +438,11 @@ ideal for agents, bots, and programmatic access.
   returns `200` with an empty list and is charged, so handle both. `/x402/v2/account/smart-stats`,
   `/x402/v2/chat`, the x402 Auto endpoints and the API-key `/v2` endpoints are unchanged. See
   [Errors](https://docs.elfa.ai/platform/errors).
+- **API v3 data on x402:** send a key or a payment, not both: a request with both is
+  `400 ERR_BAD_REQUEST`. A bad parameter is a `400` before any `402`. An x402 caller reads 30
+  days of history. On events, storylines, arcs, calendar, calls and call episodes, an empty
+  answer is `404 ERR_NO_RESULTS` and costs nothing, within the same hourly allowance.
+  `/v3/key-status`, Verify and Monitors take no x402.
 
 | Network | Chain ID | Token Address | Facilitator |
 |---|---|---|---|
@@ -458,7 +466,14 @@ client must list the token in `spendControls.allowedAssets`. See
 | Standard | 1 | $0.0145 | trending-tokens, smart-stats (deprecated), keyword-mentions, token-news, top-mentions, trending-cas |
 | Extended | 5 | $0.0725 | event-summary, trending-narratives |
 
-Data endpoints are `exact` only. `/x402/v2/chat` is speed-based and offers both schemes — pay a
+**x402 pricing (API v3 data endpoints):**
+
+| Endpoints | `exact` (flat) | `batch-settlement` (charged up to) |
+|---|---|---|
+| Priced per request: entities, prediction markets, call books, mindshare, trending contracts, positioning, top accounts | Its credits × $0.0145 | The same |
+| Priced per item: events, storylines, arcs, calendar, calls, call episodes | 1 credit plus every item up to `limit`, or every id you send, at its v3 price, × $0.0145 | What came back, up to the `exact` price |
+
+The v2 data endpoints are `exact` only. `/x402/v2/chat` is speed-based and offers both schemes — pay a
 flat price with `exact`, or pay from a prepaid `batch-settlement` channel and be charged what the
 turn used, up to the cap:
 
@@ -670,9 +685,9 @@ markets it bears on, who is long or short an asset and whose calls to trust, whi
 most attention, or which accounts are worth reading — across crypto and equities. Endpoints are listed in
 [API v3 endpoints](#api-v3-endpoints). Full docs: [docs.elfa.ai/enrich/overview](https://docs.elfa.ai/enrich/overview).
 
-API v3 needs `ELFA_API_KEY`, on any plan (see [API v3 endpoints](#api-v3-endpoints)), and the
-Step 2a key rules apply. Without one, offer one, or fall back to `event-summary` or `chat` via
-x402. `/v3/key-status` lists the scopes the key holds. The two `403` messages are stable and tell
+The API v3 data endpoints take `ELFA_API_KEY`, on any plan (see [API v3 endpoints](#api-v3-endpoints)),
+and the Step 2a key rules apply. Without one, offer one, or pay with x402 at the same URL
+(Step 2b). `/v3/key-status` lists the scopes the key holds. The two `403` messages are stable and tell
 the cases apart: `The v3 API isn't included in this key's plan. …` is a key on a plan without v3
 (upgrade in the [Developer Portal](https://go.elfa.ai/dev)); `API key does not have the required
 scope: …` is a key without that endpoint (email support@elfa.ai with the `requestId`).
@@ -707,7 +722,7 @@ curl -s "https://api.elfa.ai/v3/calls/positioning?entityId=$ID" \
 |---|---|
 | Times | Unix seconds, UTC, in requests and responses. Milliseconds are a `400`: divide by 1000 |
 | Time ranges | `from` is required, `to` defaults to now, both inclusive. No `from` is needed when fetching by id or searching with `q`; entities, arcs, prediction markets, positioning and top accounts take no range at all, and mindshare takes a `period`. The calendar reads ahead: `from` defaults to 00:00 UTC today and `to` to 30 days after `from` |
-| History | 30 days (Free, PAYG), 60 days (Grow) or 2 years (Enterprise) back. An earlier `from` is cut, and `servedFrom` says where; a `to` before it is a `400`. `/v3/key-status` returns the start as `historyFrom` |
+| History | 30 days (Free, PAYG, x402), 60 days (Grow) or 2 years (Enterprise) back. An earlier `from` is cut, and `servedFrom` says where; a `to` before it is a `400`. `/v3/key-status` returns the start as `historyFrom` |
 | Paging | Pass `nextCursor` back as `cursor`. `hasMore: false` marks the last page. No offset, no total. Change anything but `limit` and the cursor is a `400` |
 | Lists | Parameters marked a list take several values, repeated or comma-separated. At most 30 ids |
 | By id | `eventIds`, `storylineIds`, `arcIds`, `callIds` and `episodeIds` fetch up to 30, with no `from` |
@@ -723,8 +738,13 @@ post or SEC filing behind them.
 
 - **Events.** `sort=relevant` ranks the last 24 hours and refuses `from`, `to`, `eventIds`,
   `arcId`, `eventClass`, `eventType`, `implication`, `novelty` and `order=asc`; `assetClass`,
-  `alertAction`, `hasStoryline`, `notable` and `entityIds` (tokens and equities only) still
-  filter. `q` searches events, storylines and arcs by topic, best match first.
+  `alertAction`, `hasStoryline`, `notable`, `eventCategory` and `entityIds` (tokens and equities
+  only) still filter. `q` searches events, storylines and arcs by topic, best match first.
+  `eventCategory` is what happened (`earnings`, `analystRating`, `exchangeListing`,
+  `securityIncident`, `forecast` and 22 more), a list; `eventType` stays the domain, so combine
+  them: `eventType=macro&eventCategory=economy,commentary,forecast`. It is refused with `q` and
+  `eventIds`. About 1 event in 10 has `eventCategory: null` and never matches the filter; new
+  values may be added, so treat one you do not know as no category.
   `impacts` is empty on most events; `movedFirst` or `marketWide` set to `true` means the move
   probably has another cause. `novelty=new` does not show each story once: keep one event per
   `storylineId` for that. A `503` with `q` means search is down: retry, or drop `q`.
@@ -754,7 +774,7 @@ post or SEC filing behind them.
   an hour before and an hour after a story's first post, with `unusual: true` in the top tenth of
   that market's own moves; it is `null` when no move was measured (the story is too recent, the
   market opened after it, every outcome was priced under 3% or over 97%), and `outcome` is `null`
-  for Kalshi. Free for now.
+  for Kalshi. 1 credit a call, however many ids.
 - **Call books.** Read the lean through `crowdingPercentile`, not `longShare`: the accounts lean
   long almost always. The newest row is a live tick (`live: true`), rewritten every five minutes.
 - **Trending contracts.** `mentionCount` counts posts, not accounts. A range over 30 days is cut
@@ -784,7 +804,7 @@ posts, public Telegram channels and web pages say. Send one sentence; get a verd
 for each verdict and links to the posts and pages it judged. For a written answer instead of a
 verdict, use chat. Full docs: [docs.elfa.ai/verify/overview](https://docs.elfa.ai/verify/overview).
 
-Needs `ELFA_API_KEY` on PAYG, Grow or Enterprise; a Free key gets `403`. A call costs **1 credit,
+Needs `ELFA_API_KEY`, on any plan, Free included; x402 does not work here. A call costs **1 credit,
 whatever the verdict**, even when nothing is found. A `decision` costs nothing more, and errors
 cost nothing.
 
@@ -850,8 +870,8 @@ The response:
 | `400` | Invalid body; `details` names the field | Fix the body |
 | `401` | Missing or invalid key | Send a valid `x-elfa-api-key` |
 | `402` `ERR_INSUFFICIENT_CREDITS` | PAYG balance used up | Top up |
-| `403` | Free plan, or the key lacks the scope | Upgrade at [go.elfa.ai/dev](https://go.elfa.ai/dev), or email support@elfa.ai with `requestId` |
-| `429` `ERR_RATE_LIMIT_EXCEEDED` / `ERR_RATE_LIMITED` | Per-minute limit / spend cap or request limit reached | Retry after `RateLimit-Reset` / raise the cap or turn on overage |
+| `403` | The key lacks the scope, or Elfa blocked Free keys from your network | Email support@elfa.ai with `requestId` |
+| `429` `ERR_RATE_LIMIT_EXCEEDED` / `ERR_RATE_LIMITED` | Per-minute limit / the account has no credits left | Retry after `RateLimit-Reset` / add credits or upgrade; on Grow, turn on overage, raise the spend cap, or wait for `credits.resetsAt` |
 | `503` `ERR_SERVICE_UNAVAILABLE` | Busy, no source answered, or the check (or the `decision`) could not finish | Retry; not charged |
 
 ### Step 2f: Monitors — watch a topic in plain words
@@ -867,9 +887,9 @@ the whole condition: you pick no accounts, channels or sites. Full docs:
 **Monitors or Auto?** Use Monitors when the user can say what to watch but not write it as a
 rule, wants one topic watched across every new event, or wants the watch to run past 30 days.
 Use Auto (Step 3) for a price, indicator, funding rate, named account, filing, prediction market,
-schedule or several conditions at once, for Telegram or AI-written alerts, and on a Free key.
+schedule or several conditions at once, or for Telegram or AI-written alerts.
 
-Needs `ELFA_API_KEY` on PAYG, Grow or Enterprise; a Free key gets `403`.
+Needs `ELFA_API_KEY`, on any plan, Free included; x402 does not work here.
 
 **Pricing: 2 credits for every started hour a monitor is live**, starting with the first hour at
 create — 1,440 credits for a 30-day month. Matches, webhooks, list, get, change and delete are
@@ -1006,7 +1026,7 @@ own limit; matches, and monitors Elfa ended, are kept for 30 days.
 |---|---|---|---|
 | `400` | `ERR_INVALID_PARAMETER` | Body fails validation (unknown field, query too short, empty change), `webhookUrl` not HTTPS or private, a query Elfa cannot run, or a cursor from another monitor | Read `details[].message` and fix it |
 | `401` | `ERR_UNAUTHORIZED` | Missing or invalid key | Send a valid `x-elfa-api-key` |
-| `403` | `ERR_FORBIDDEN` | Free plan, or the key's scopes do not include Monitors (a `*` scope does not) | Move to PAYG, Grow or Enterprise, or ask Elfa to add Monitors to the key |
+| `403` | `ERR_FORBIDDEN` | The key's scopes do not include Monitors (a `*` scope does not) | Ask Elfa to add Monitors to the key |
 | `404` | `ERR_NOT_FOUND` | No monitor with this id for this key: deleted, another key's, or ended more than 30 days ago | Check the id and key |
 | `409` | `ERR_PLAN_LIMIT_EXCEEDED` | 20 live monitors, or the key's live alert-plan limit | Delete a monitor or an Auto alert |
 | `409` | `ERR_CONFLICT` | A change is still applying (retry in a minute), or the monitor has ended (create a new one) | As stated |
@@ -1428,7 +1448,7 @@ sibling — by default a plan is one-shot; see **Repeat** below):
 copy-trading), never on short-timeframe TA/scalps.
 
 **Plan limits (active plans per account):** an account can only hold so many **active** plans
-at once, by API key tier — Free `2`, PAYG `50`, Grow `100`, Enterprise unlimited. A hard
+at once, by API key tier — Free `10`, PAYG `50`, Grow `100`, Enterprise unlimited. A hard
 ceiling of **500 active plans** applies regardless of tier; exceeding either cap returns
 `409`. Only *active* plans count — expired/cancelled/terminal plans free capacity, so
 cancelling stale plans (or choosing a shorter `expiresIn`) is the fastest way to make room.
@@ -1651,9 +1671,9 @@ Triggers on events: news about an asset, project, company, person, or macro — 
 - Shorthand only in practice: the full form takes just `operator: "=="`, `value: true`. No dynamic values.
 - Runtime: events arrive minutes to hours after the first post (to be first, watch the account with `tweet`); only events less than an hour old are matched; each event fires a plan at most once; about 1 in 9 events continues a story already reported that day. To fire once per story, add `relation: "origin"`, or use `repeat.cooldown` to space alerts out.
 - Preview before creating: `GET /v3/events` with the same filters and `from=<now - 1d>` (`entityIds=<id>` for `entity`) returns what the condition would have fired on. `q` has no counterpart: `text` checks a claim per event instead. `GET /v3/events/storylines?storylineIds=<id>` maps to `"storylineId": "<id>"`, one storyline per condition. One value per argument, no time range. The preview is billed like any v3 call: `/v3/entities` is 1 credit, and `/v3/events` is 1 credit plus 1 per event returned, except events already billed to your account within 8 days of their `analyzedAt`. Mapping: https://docs.elfa.ai/auto/sources/elfa-data#events
-- `match` in the trigger payload: `eventId`, `title` (the event's `alertTitle`), `eventClass`, `eventType`, `implication`, `alertAction`, `novelty`, `timeSensitivity`, `citedSourceCount`, `analyzedAt` (ISO 8601), `entities[]` (`symbol`, `name`, `entityType`; up to 10), and `confidence` when `text` was checked. No link, no summary.
-- `match.eventId` is the event's `id` in `/v3/events` — **not** the webhook delivery id (`X-Auto-Event-Id`, the one to dedupe deliveries on). `GET /v3/events?eventIds=<match.eventId>` returns the summary, cited posts with links, price impacts and `storylineId`. To be alerted once per story, filter on `relation: "origin"` rather than comparing `storylineId` values yourself; to follow the story an alert belongs to, create a condition on its `storylineId`.
-- On x402, which has no `/v3` routes, name the entity by ticker or name and read the Validate response for what it resolved to.
+- `match` in the trigger payload: `eventId`, `title` (the event's `alertTitle`), `summary`, `eventClass`, `eventType`, `implication`, `alertAction`, `novelty`, `timeSensitivity`, `analyzedAt` and `firstSeenAt` (ISO 8601), `entities[]` (`symbol`, `name`, `entityType`; up to 10), `storyline` (`storylineId`, `relation`), `confidence` when `text` was checked, `citedSourceCount`, and `citedSources[]` (`source`, `sourceRecordId`, `handle`, `link`; up to 5). Any of these can be missing; fires recorded before 2026-11-18 have no `summary` or `citedSources`.
+- `match.eventId` is the event's `id` in `/v3/events` — **not** the webhook delivery id (`X-Auto-Event-Id`, the one to dedupe deliveries on). `GET /v3/events?eventIds=<match.eventId>` returns price impacts, entity ids and up to 10 cited sources. To be alerted once per story, filter on `relation: "origin"` rather than comparing `storylineId` values yourself; to follow the story an alert belongs to, create a condition on its `storylineId`.
+- On x402, name the entity by ticker or name and read the Validate response for what it resolved to.
 
 ```json
 {
@@ -1737,6 +1757,9 @@ digits, is trimmed, and is normalized to a 10-digit zero-padded CIK (`"1652044"`
 `"0001652044"`). Validate/create checks the CIK against SEC submissions metadata and rejects
 unknown or malformed values rather than creating a plan that can never fire.
 
+Insiders' Forms 3, 4 and 5 and investors' Schedules 13D and 13G count as filings of the company
+whose shares they report, whoever files them.
+
 | Method | Returns | Operators | Description |
 |---|---|---|---|
 | `base_form_type` | enum | `==` `!=` | Normalized base form — amendments stripped (`10-K/A` → `10-K`), `424B*` → `424B` |
@@ -1745,13 +1768,22 @@ unknown or malformed values rather than creating a plan that can never fire.
 | `is_late_filing` | boolean | `==` `!=` | Late notification form (`NT 10-K`, `NT 10-Q`, `NT 20-F`) |
 | `is_offering` | boolean | `==` `!=` | Offering, registration, or prospectus-style filing |
 | `is_ownership_filing` | boolean | `==` `!=` | Insider, beneficial, or institutional ownership filing |
+| `has_item_1_01` | boolean | `==` `!=` | 8-K Item 1.01 — material agreement |
+| `has_item_1_02` | boolean | `==` `!=` | 8-K Item 1.02 — material agreement ended |
 | `has_item_1_03` | boolean | `==` `!=` | 8-K Item 1.03 — bankruptcy or receivership |
 | `has_item_1_05` | boolean | `==` `!=` | 8-K Item 1.05 — material cybersecurity incident |
+| `has_item_2_01` | boolean | `==` `!=` | 8-K Item 2.01 — acquisition or sale of assets completed |
 | `has_item_2_02` | boolean | `==` `!=` | 8-K Item 2.02 — results of operations |
+| `has_item_2_03` | boolean | `==` `!=` | 8-K Item 2.03 — new debt |
 | `has_item_2_05` | boolean | `==` `!=` | 8-K Item 2.05 — exit or disposal costs |
 | `has_item_3_01` | boolean | `==` `!=` | 8-K Item 3.01 — delisting or listing-compliance notice |
+| `has_item_3_02` | boolean | `==` `!=` | 8-K Item 3.02 — unregistered sale of shares |
 | `has_item_4_01` | boolean | `==` `!=` | 8-K Item 4.01 — change of certifying accountant |
+| `has_item_4_02` | boolean | `==` `!=` | 8-K Item 4.02 — restatement |
+| `has_item_5_01` | boolean | `==` `!=` | 8-K Item 5.01 — change in control |
 | `has_item_5_02` | boolean | `==` `!=` | 8-K Item 5.02 — director/officer changes |
+| `has_item_5_07` | boolean | `==` `!=` | 8-K Item 5.07 — shareholder vote |
+| `has_item_7_01` | boolean | `==` `!=` | 8-K Item 7.01 — Reg FD disclosure |
 | `has_item_8_01` | boolean | `==` `!=` | 8-K Item 8.01 — other reported events |
 | `has_primary_document` | boolean | `==` `!=` | Primary filing document name was found |
 | `has_xbrl` | boolean | `==` `!=` | Archive includes XBRL artifacts |
@@ -2575,16 +2607,16 @@ without looking it up:
 |---|---|---|
 | `kalshi` | `title`, `yesSubTitle`, `noSubTitle`, `eventTicker`, `closeTime` | Trade prints: `tradedAt`, `yesPrice`, `noPrice`, `count`, `takerOutcomeSide`, `takerBookSide`, `isBlockTrade`. Market updates: `title`, `yesSubTitle`, `noSubTitle`, `status`, `result`, `settlementValue`, `closeTime` |
 | `polymarket` | `question`, `outcome`, `eventSlug`, `url`, `endDate` | `eventType`, `price`, `size`, `side`, `bestBid`, `bestAsk`, `spread`, `at` (epoch ms), each only when that update type carries it |
-| `sec` | — | `companyName`, `tickers`, `form`, `formDescription`, `items`, `filedDate`, `acceptedAt`, `filingIndexUrl`, `primaryDocumentUrl`; for an original 8-K also `documentKind`, `documentTitle`, `documentUrl`, `documentExhibitType`, `documentTruncated` |
+| `sec` | — | `companyName`, `tickers`, `form`, `formDescription`, `items`, `filedDate`, `acceptedAt`, `filingIndexUrl`, `primaryDocumentUrl`; for an original 8-K also `documentKind`, `documentTitle`, `documentUrl`, `documentExhibitType`, `documentTruncated`; for an original 6-K or Schedule 13D also `documentTitle` and `documentUrl` |
 | `mindshare` | `name`, `symbol` | `symbol`, `market`, `assetId`, `asOf` (unix seconds), `share`, `rank` and `changePct` for `1h`, `4h`, `24h`, `7d` (`share24h`, …), `hot4h`, `hot24h`, `hot7d` |
 | `fear_greed` | — | `value`, `classification`, `updatedAt` |
 | `funding` | — | `symbol`, `exchange`, `annualizedRate`, `intervalRate`, `intervalHours`, `updatedAt` (epoch ms) |
 | `liquidation` | — | `symbol`, `exchange`, total, long and short USD over `1m`, `5m`, `1h` (`totalUsd5m`, `longUsd1h`, …), `largestOrderUsd1h`, `count1h`, `openInterestUsd`, `totalPctOi1m`, `totalPctOi5m`, `totalPctOi1h`, `updatedAt` (epoch ms) |
 
-An SEC filing's text is never in `match`. An `llm` action on an `sec` condition reads it: for an
-original 8-K (not an 8-K/A) the action gets the filing's press release, or the 8-K's own item
-text when it has none, up to 12,000 characters. Other forms, amendments and exhibit-only 8-Ks
-have no text, so tell the action what to do then, e.g. "if the filing's text is missing, say so
+An SEC filing's text is never in `match`. An `llm` action on an `sec` condition reads it, up to
+12,000 characters: on an original 8-K or 6-K, the press release, else the filing's own text; on
+a Schedule 13D, who holds the stake, how big it is and why. Other forms and amendments have no
+text, and neither do many 6-Ks, so tell the action what to do then, e.g. "if the filing's text is missing, say so
 and describe it from its items". Full reference:
 [Read every time a query fired](https://docs.elfa.ai/auto/manage#read-every-time-a-query-fired).
 
@@ -3178,15 +3210,15 @@ See the [Elfa API documentation](https://docs.elfa.ai) for the full parameter sp
 
 **Principles for code generation:**
 - For `/v2`, always mention both access modes (API key and x402) so developers know their options
-- For `/v3`, the API key is the only mode (no x402). Use `from`/`to` in unix seconds (there is no
+- For `/v3`, the data endpoints take an API key, or x402 at the same URL (Step 2b). Use `from`/`to` in unix seconds (there is no
   `timeWindow`; mindshare takes `period`), page with `nextCursor` → `cursor`, and read the list at the top level of the
-  response. See Step 2d. Verify (`POST /v3/verify`) and Monitors (`/v3/monitors`) need PAYG,
-  Grow or Enterprise and follow Steps 2e and 2f; a monitor's match list is wrapped in `data`
+  response. See Step 2d. Verify (`POST /v3/verify`) and Monitors (`/v3/monitors`) take an API
+  key on any plan and follow Steps 2e and 2f; a monitor's match list is wrapped in `data`
 - Include the signup link `https://go.elfa.ai/claude-skills` as a comment near the
   API key placeholder, and link to `https://docs.elfa.ai/platform/authentication#pay-per-request-with-x402` for x402
 - Always include proper error handling
 - For API key mode: show the `x-elfa-api-key` header (use a placeholder like `YOUR_API_KEY`)
-- For x402 mode: show the `/x402/v2/` prefix and recommend `@x402/fetch` or `@x402/axios`
+- For x402 mode: show the `/x402/v2/` prefix (API v3 data keeps its `/v3/` URL) and recommend `@x402/fetch` or `@x402/axios`
 - For Auto mutations in x402 mode: include the agent-secret header
 - Include TypeScript types when generating TS code
 - Add comments explaining each parameter
@@ -3278,9 +3310,9 @@ Use `$` when you want only cashtag-specific mentions. Omit `$` for a more inclus
 - Trending narratives: 5 credits ($0.0725 via x402)
 - Chat: speed-based; via x402 pay `exact` (fast $1, expert $2) or `batch-settlement` (up to fast $2, expert $6)
 - API v3: every plan; priced per endpoint on Free, PAYG and Grow
-  (https://docs.elfa.ai/platform/pricing#api-v3). API key only
+  (https://docs.elfa.ai/platform/pricing#api-v3). Via x402, see Step 2b
 - Verify: 1 credit per call, whatever the verdict; Monitors: 2 credits per started hour a monitor
-  is live, every other monitor call free. PAYG, Grow or Enterprise
+  is live, every other monitor call free. Every plan, API key only
 - `/v2/ping`, `/v2/key-status`: free
 - Every `/v2/*` and `/v3/*` response to an authenticated request carries an **`x-elfa-credits`** header with
   the credits that request consumed — read it instead of diffing `/v2/key-status` around a call.

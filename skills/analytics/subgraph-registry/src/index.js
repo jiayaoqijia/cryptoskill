@@ -24,8 +24,8 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import Database from "better-sqlite3";
 import { boundedStarter, findContractDeployments, freshness, healthObservation, HEALTH_QUERY, HEALTH_STALE_SECONDS } from "./agent-discovery.js";
-import { parseGoal, rankEntities, planKeyless, planWithSchema, schemaProbeQuery, probeHealth, STALE_INDEXING_SECONDS, planFromBundledCatalog } from "./goal-query.js";
-import { applyTokenQuality, normalizeTrusted, resolveTokenSymbol, SPAM_HANDLING } from "./token-quality.js";
+import { parseGoal, rankEntities, planKeyless, planWithSchema, schemaProbeQuery, probeHealth, STALE_INDEXING_SECONDS, planFromBundledCatalog, detectFamily } from "./goal-query.js";
+import { applyTokenQuality, normalizeTrusted, resolveTokenSymbol, RESOLVABLE_SYMBOLS, SPAM_HANDLING } from "./token-quality.js";
 import express from "express";
 import { fileURLToPath, pathToFileURL } from "url";
 import { basename, dirname, join } from "path";
@@ -43,7 +43,7 @@ const __dirname = dirname(__filename);
 // Literal, exact-version npx spec used in generated config examples. Bumped
 // with package.json at release time; test/scanner-hygiene.test.mjs asserts the
 // two agree, so a stale pin fails CI instead of shipping.
-export const PINNED_NPX_PACKAGE = "subgraph-registry-mcp@0.13.6";
+export const PINNED_NPX_PACKAGE = "subgraph-registry-mcp@0.13.7";
 
 const PKG_VERSION = (() => {
   try {
@@ -390,6 +390,8 @@ const NOISE_TOKENS = new Set([
   "liquidity", "yield", "vault", "vaults", "tvl", "stats", "analytics",
   "activity", "subgraph", "subgraphs", "top", "highest", "largest", "biggest",
   "best", "total", "current", "latest", "recent",
+  "containing", "contain", "contains", "involving", "include", "includes",
+  "including", "holding", "paired", "pairing",
 ]);
 
 // "highest volume", "most queried", "top TVL" — the caller is asking for scale,
@@ -985,6 +987,13 @@ function recommendSubgraph(args = {}) {
     // "containing/with/of ETH", or next to a different chain word, it is the
     // token ("pools containing ETH on Base"), not routing.
     if (w === "eth" && (otherChainWord || /\b(containing|contains?|with|involving|includes?|including|holding|paired with|of|for)\s+eth\b/.test(goalLower))) continue;
+    // Major token symbols ("pools containing WETH on Base") are token filters,
+    // not protocol names — treating "weth" as a search term caused Naumachy
+    // (which mentions weth in its description) to beat Uniswap V3 Base.
+    if (RESOLVABLE_SYMBOLS.has(w.toUpperCase()) && (
+      new RegExp(`\\b(containing|contains?|with|involving|includes?|including|holding|paired\\s+with|of|for)\\s+${w}\\b`).test(goalLower) ||
+      allWords.some((o) => o !== w && /^(pools?|pairs?|swaps?|trades?|tokens?|positions?)$/.test(o))
+    )) continue;
     // Only treat it as a chain if it resolves to a network the corpus has —
     // otherwise a protocol genuinely called "Base" or "Mode" would vanish.
     if (isChainish(w)) {
@@ -2302,7 +2311,11 @@ function chooseGoalTarget(intent, discovery, opts = {}) {
     if (!ranked.length) continue;
     const name = String(rec.display_name || "").toLowerCase().replace(/[-_]/g, " ");
     const text = terms.length ? terms.filter((t) => name.includes(t)).length / terms.length : 0;
-    const score = ranked[0].score + 0.3 * text + (idx === null ? 0 : 0.1 * (5 - idx) / 5) + 0.05 * (rec.reliability_score || 0);
+    const family = detectFamily(entities);
+    const catalogBonus = family && planFromBundledCatalog({ intent, entity: ranked[0], entities, first: 5 }) ? 0.15 : 0;
+    const uniV3TokenBonus = family === "uniswap_v3" && intent.primary === "pool" && intent.token_symbols?.length && !/\bv4\b/i.test(discovery.goal || "") && !terms.length ? 0.10 : 0;
+    const volBonus = 0.02 * Math.min(1, Math.log10((rec.query_volume_30d || 0) + 1) / 7);
+    const score = ranked[0].score + catalogBonus + uniV3TokenBonus + 0.3 * text + (idx === null ? 0 : 0.1 * (5 - idx) / 5) + 0.08 * (rec.reliability_score || 0) + volBonus;
     scored.push({ rec, entities, ranked, example_query: row.example_query ?? rec.example_query, score: Number(score.toFixed(4)), text_match: Number(text.toFixed(2)), from_recommendation: idx !== null, unverified_snapshot: opts.only_extra ? false : demote(rec) });
   }
   return scored.sort((a, b) => (Number(a.unverified_snapshot) - Number(b.unverified_snapshot)) || b.score - a.score);
@@ -2454,6 +2467,28 @@ async function queryForGoal({ goal, chain, first, execute = false, validate_sche
           if (intent.ordering && !plan.order && plan.unmet?.some((u) => /^ordering:/.test(u)) && eligible.indexOf(cand) < eligible.length - 1) {
             skip(cand, "ordering_unsupported", plan.unmet.find((u) => /^ordering:/.test(u)), { source: "live_probe" });
             partialFallback ||= { cand, plan, health, target: candTarget, validation: candValidation, partial_fallback: "ordering_unsupported" };
+            continue;
+          }
+          // Likewise, if live introspection confirms this deployment cannot apply a
+          // requested filter (e.g. lacks token0/token1), fall back to the next one.
+          if (plan.blocking_unmet?.length && eligible.indexOf(cand) < eligible.length - 1) {
+            skip(cand, "requested_filter_unsupported", plan.blocking_unmet.join(", "), { source: "live_probe" });
+            partialFallback ||= { cand, plan, health, target: candTarget, validation: candValidation, partial_fallback: "requested_filter_unsupported" };
+            continue;
+          }
+        } else if ((plan?.field_source === "id_only" || plan?.blocking_unmet?.length) && eligible.indexOf(cand) < eligible.length - 1) {
+          // Without live introspection, if the top candidate has no catalog/verified
+          // schema or cannot apply the requested filter, prefer a later candidate
+          // that has a catalog plan without blocking gaps.
+          const hasBetterCatalog = eligible.slice(eligible.indexOf(cand) + 1).some((other) => {
+            const p = withSymbolGaps(planFromBundledCatalog({ intent, entity: other.ranked[0], entities: other.entities, first: overFetch }));
+            return p && !p.blocking_unmet?.length;
+          });
+          if (hasBetterCatalog) {
+            skip(cand, plan?.blocking_unmet?.length ? "requested_filter_unsupported" : "no_catalog_or_verified_schema",
+              (plan?.blocking_unmet?.length ? plan.blocking_unmet.join(", ") : "deployment lacks a bundled catalog schema and was not live-checked"),
+              { source: "planner" });
+            partialFallback ||= { cand, plan, health, target: candTarget, validation: candValidation, partial_fallback: "no_catalog_or_verified_schema" };
             continue;
           }
         }

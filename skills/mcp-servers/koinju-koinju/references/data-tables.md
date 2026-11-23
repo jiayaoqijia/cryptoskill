@@ -141,6 +141,46 @@ WHERE market LIKE '%BTC%'
 ORDER BY timestamp DESC;
 ```
 
+## `api.order_book` and `api.order_book_impact` — order books (parameterized views)
+
+Only the Professional and Business tiers can call these two views. On a Free or Developer account, the call fails with error 47, `Unknown expression or function identifier snapshot`. That error means that the account cannot read the order books.
+
+`api.order_book` gives the book of one market at one time. It starts from the last snapshot of the 24 hours before `at`, and it applies each update after that snapshot.
+
+| Parameter | Type | Value |
+|---|---|---|
+| `exchange` | `String` | `binance`, `binance-usdm-future`, `bybit`, `bybit-usdm-future`, `okx`, `okx-future`, `kraken`, `kraken-future`, `hyperliquid` or `hyperliquid-future`. Another name gives an error that lists these names. |
+| `market` | `String` | The symbol of the exchange, not the Koinju market name. Examples: `BTCUSDT` (Binance, Bybit), `BTC-USDT-SWAP` (OKX futures), `BTC/USD` (Kraken), `PF_XBTUSD` (Kraken futures), `BTC` (Hyperliquid futures). |
+| `at` | `DateTime64(3, 'UTC')` | An event time of the exchange. |
+
+| Column | Type | Value |
+|---|---|---|
+| `bids` | `Array(Tuple(price String, quantity String))` | From the highest price. |
+| `asks` | `Array(Tuple(price String, quantity String))` | From the lowest price. |
+| `snapshot_seq` | `Nullable(UInt64)` | The seq of the start snapshot. It is `NULL`, and both sides are empty, when the 24 hours before `at` have no snapshot. |
+| `updates_applied` | `UInt64` | The updates after the snapshot. |
+| `snapshot_age_ms` | `Nullable(Int64)` | The milliseconds from the snapshot to `at`. |
+
+Prices and quantities are the text of the exchange. Kraken sends numbers, and the view reads them through Float64: 50.0 becomes `50`, and 0.00000001 becomes `1e-8`. The view does not check the chain of the update ids. Thus a book after a lost update can be wrong, with no sign of the loss.
+
+`api.order_book_impact` gives the cost of an order on that book. It takes the three parameters above and two more:
+
+| Parameter | Type | Value |
+|---|---|---|
+| `side` | `String` | `buy` takes the asks, and `sell` takes the bids. |
+| `quantity` | `Float64` | In the unit of the book of the exchange, for example contracts on OKX futures. |
+
+Its columns are `best_bid`, `best_ask`, `mid_price`, `mean_price`, `worst_price` and `impact_bps` as `Nullable(Float64)`, `filled_quantity` as `Float64`, and `levels_used` as `UInt32`. `filled_quantity` is less than `quantity` when the book is too small.
+
+```sql
+SELECT bids[1] AS top_bid, asks[1] AS top_ask, updates_applied
+FROM api.order_book(exchange = 'binance-usdm-future', market = 'BTCUSDT', at = '2026-11-05 15:30:00');
+
+SELECT filled_quantity, mean_price, worst_price, levels_used, impact_bps
+FROM api.order_book_impact(exchange = 'binance-usdm-future', market = 'BTCUSDT',
+                           at = '2026-11-05 15:30:00', side = 'buy', quantity = 10);
+```
+
 ## `api.option_chains` — option Greeks & IV (note: plural)
 
 Table name is `option_chains` (plural). _Full column list in the Live schema reference appendix below._ Notable columns:
@@ -236,7 +276,7 @@ The handwritten table sections above cover usage and gotchas. The block below is
 
 <!-- AUTOGEN START: schemas -->
 
-_Generated from `clickhouse/tables/api/**/*.sql` — 13 public objects. Run `koinju skill build-schemas` to refresh._
+_Generated from `clickhouse/tables/api/**/*.sql` — 15 public objects. Run `koinju skill build-schemas` to refresh._
 
 #### `api.funding_rate`
 _Type: `VIEW` (`clickhouse/tables/api/views/funding_rate.sql`)._
@@ -345,6 +385,20 @@ _Type: `MATERIALIZED VIEW` (`clickhouse/tables/api/option_chains_mv.sql`)._
 Columns (from SELECT aliases): `exchange`, `timestamp`, `instrument_name`, `underlying_asset`, `quote_asset`, `expiration`, `strike`, `option_type`, `bid_price`, `ask_price`, `last_price`, `mark_price`, `index_price`, `underlying_price`, `mark_iv`, `bid_iv`, `ask_iv`, `delta`, `gamma`, `vega`, `theta`, `open_interest`, `volume_24h`, `state`, `meta`
 
 _Types not declared in view DDL. For exact types run `DESCRIBE (SELECT * FROM api.option_chains_mv_okx LIMIT 0)` — add the parameter for parameterized views, e.g. `api.ohlcv(candle_duration_in_minutes = 1440)` — or `bash scripts/probe-schema.sh option_chains_mv_okx`._
+
+#### `api.order_book`
+_Type: `VIEW` (`clickhouse/tables/api/views/order_book.sql`)._
+
+Columns (from SELECT aliases): `bids`, `asks`, `snapshot_seq`, `updates_applied`, `snapshot_age_ms`
+
+_Types not declared in view DDL. For exact types run `DESCRIBE (SELECT * FROM api.order_book LIMIT 0)` — add the parameter for parameterized views, e.g. `api.ohlcv(candle_duration_in_minutes = 1440)` — or `bash scripts/probe-schema.sh order_book`._
+
+#### `api.order_book_impact`
+_Type: `VIEW` (`clickhouse/tables/api/views/order_book.sql`)._
+
+Columns (from SELECT aliases): `best_bid`, `best_ask`, `mid_price`, `filled_quantity`, `mean_price`, `worst_price`, `levels_used`, `impact_bps`
+
+_Types not declared in view DDL. For exact types run `DESCRIBE (SELECT * FROM api.order_book_impact LIMIT 0)` — add the parameter for parameterized views, e.g. `api.ohlcv(candle_duration_in_minutes = 1440)` — or `bash scripts/probe-schema.sh order_book_impact`._
 
 #### `api.trade`
 _Type: `VIEW` (`clickhouse/tables/api/views/trade.sql`)._

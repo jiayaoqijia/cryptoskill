@@ -56,7 +56,7 @@ export const CONCEPTS = [
   { key: "vote", words: /\bvotes?\b/, entities: ["Vote", /vote$/i], fields: ["support", "votes", "weight", "reason", "timestamp", "blockNumber"], order: "time", event: true },
   { key: "delegate", words: /\bdelegates?\b/, entities: ["Delegate", /delegate/i], type: "delegate", fields: ["delegatedVotes", "tokenHoldersRepresentedAmount", "numberVotes"], order: "metric" },
   { key: "domain", words: /\b(domains?|domain names?|ens names?)\b/, entities: ["Domain", /domain/i], type: "domain_name", fields: ["name", "labelName", "createdAt", "expiryDate"], order: "time" },
-  { key: "position", words: /\bpositions?\b/, entities: ["Position", /position$/i], type: "position", fields: ["liquidity", "depositedToken0", "depositedToken1", "withdrawnToken0", "withdrawnToken1", "balance", "isCollateral", "timestampOpened"], order: "metric" },
+  { key: "position", words: /\bpositions?\b/, entities: ["Position", /position$/i], type: "position", fields: ["balance", "principal", "side", "type", "isCollateral", "timestampOpened", "liquidity", "depositedToken0", "depositedToken1", "withdrawnToken0", "withdrawnToken1"], relations: ["account", "user", "asset", "reserve", "market", "pool", "token0", "token1"], order: "metric" },
   { key: "vault", words: /\bvaults?\b/, entities: ["Vault", /vault$/i], type: "vault", fields: ["name", "symbol", "totalValueLockedUSD", "pricePerShare", "createdTimestamp"], order: "metric" },
   { key: "market", words: /\b(lending )?markets?\b/, entities: ["Market", /market$/i], fields: ["name", "totalValueLockedUSD", "totalDepositBalanceUSD", "totalBorrowBalanceUSD", "inputTokenPriceUSD", "createdTimestamp"], order: "metric" },
   { key: "pool_manager", words: /\bpool ?managers?\b/, entities: ["PoolManager", /poolmanager/i], fields: ["poolCount", "txCount", "totalVolumeUSD", "totalFeesUSD", "totalValueLockedUSD"], order: "metric" },
@@ -246,6 +246,8 @@ export function schemaProbeQuery(entityName) {
   f: __type(name: "${entityName}_filter") { inputFields { name type { ...T } } }
   i: __type(name: "Aggregation_interval") { enumValues { name } }
   t: __type(name: "Token") { name fields { name type { ...T } } }
+  mkt: __type(name: "Market") { name fields { name type { ...T } } }
+  rsv: __type(name: "Reserve") { name fields { name type { ...T } } }
   m: _meta { block { number timestamp } hasIndexingErrors deployment }
 }
 fragment T on __Type { kind name ofType { kind name ofType { kind name ofType { kind name } } } }`;
@@ -281,10 +283,17 @@ export function planWithSchema({ intent, entity, probe, first }) {
     // can be shown and checked for spam.
     const rels = (concept?.relations || []).filter((r) => objects.has(r));
     for (const n of want) if (leaf.has(n) && !fields.includes(n) && fields.length < MAX_GOAL_FIELDS - rels.length) fields.push(n);
-    const tokenLeaves = new Set((probe?.t?.fields || []).filter((f) => ["SCALAR", "ENUM"].includes(unwrap(f.type).kind)).map((f) => f.name));
+    const scalarNames = (t) => new Set((t?.fields || []).filter((f) => ["SCALAR", "ENUM"].includes(unwrap(f.type).kind)).map((f) => f.name));
+    const tokenLeaves = scalarNames(probe?.t);
+    const marketLeaves = scalarNames(probe?.mkt);
+    const reserveLeaves = scalarNames(probe?.rsv);
     for (const r of rels) {
       if (fields.length >= MAX_GOAL_FIELDS) break;
-      const sub = objects.get(r)?.name === "Token" ? ["id", ...["symbol", "name"].filter((n) => tokenLeaves.has(n))] : ["id"];
+      const tname = objects.get(r)?.name;
+      let sub = ["id"];
+      if (tname === "Token") sub = ["id", ...["symbol", "name"].filter((n) => tokenLeaves.has(n))];
+      else if (tname === "Market") sub = ["id", ...["name", "symbol"].filter((n) => marketLeaves.has(n))];
+      else if (tname === "Reserve") sub = ["id", ...["symbol", "name", "underlyingAsset"].filter((n) => reserveLeaves.has(n))];
       fields.push({ name: r, sub });
     }
     for (const n of leaf.keys()) if (fields.length < 4 && !fields.includes(n)) fields.push(n);
@@ -319,6 +328,22 @@ export function planWithSchema({ intent, entity, probe, first }) {
       where.push([field, literal(a.address)]); rationale.push(`where ${field} = ${a.address}`);
       if (pair) unmet.push(`address ${a.address} filtered on ${field} only; this schema has no "or" filter, so matches on the other token side are not included`);
     } else { unmet.push(`address filter for ${a.address}: no matching filter field for context "${a.context ?? "none"}"`); blocking.push(`address ${a.address}`); }
+  }
+  // Lending user-position queries: prefer active, non-zero real user positions
+  // over zero-address/sentinel rows with balance 0 (e.g. Aave V3 Position).
+  if (concept?.key === "position" && !where.length && !intent.addresses.length) {
+    if (filterFields.has("balance_gt")) {
+      const bt = filterFields.get("balance_gt")?.name;
+      where.push(["balance_gt", bt === "Int" ? "0" : "\"0\""]);
+      rationale.push("where balance > 0 (prefer active non-zero positions)");
+    }
+    if (filterFields.has("account_not")) {
+      where.push(["account_not", "\"0x0000000000000000000000000000000000000000\""]);
+      rationale.push("where account != zero address (skip sentinel/burn records)");
+    } else if (filterFields.has("user_not")) {
+      where.push(["user_not", "\"0x0000000000000000000000000000000000000000\""]);
+      rationale.push("where user != zero address (skip sentinel/burn records)");
+    }
   }
   if (intent.time_range) {
     const tf = TIME_FIELDS.find((f) => filterFields.has(`${f}_gte`));
@@ -381,12 +406,25 @@ const FAMILIES = {
     ModifyLiquidity: { leaf: { id: "ID", timestamp: "BigInt", sender: "Bytes", origin: "Bytes", amount: "BigInt", amount0: "BigDecimal", amount1: "BigDecimal", amountUSD: "BigDecimal" }, rel: { pool: "Pool", token0: "Token", token1: "Token" } },
     PoolManager: { leaf: { id: "ID", poolCount: "BigInt", txCount: "BigInt", totalVolumeUSD: "BigDecimal", totalFeesUSD: "BigDecimal", totalValueLockedUSD: "BigDecimal" }, rel: {} },
   },
+  // Messari standardized lending schema (Aave V2/V3, Compound V3, Morpho).
+  messari_lending: {
+    Token: { leaf: { id: "ID", symbol: "String", name: "String", decimals: "Int", lastPriceUSD: "BigDecimal" }, rel: {} },
+    Market: { leaf: { id: "ID", name: "String", totalValueLockedUSD: "BigDecimal", totalDepositBalanceUSD: "BigDecimal", totalBorrowBalanceUSD: "BigDecimal", inputTokenBalance: "BigInt", inputTokenPriceUSD: "BigDecimal", createdTimestamp: "BigInt" }, rel: { inputToken: "Token" } },
+    Account: { leaf: { id: "ID", positionCount: "Int", openPositionCount: "Int", closedPositionCount: "Int", depositCount: "Int", borrowCount: "Int" }, rel: {} },
+    Position: { leaf: { id: "ID", side: "String", type: "String", isCollateral: "Boolean", balance: "BigInt", principal: "BigInt", timestampOpened: "BigInt", timestampClosed: "BigInt" }, rel: { account: "Account", asset: "Token", market: "Market" } },
+    Deposit: { leaf: { id: "ID", timestamp: "BigInt", amount: "BigInt", amountUSD: "BigDecimal", hash: "Bytes" }, rel: { account: "Account", asset: "Token", market: "Market" } },
+    Withdraw: { leaf: { id: "ID", timestamp: "BigInt", amount: "BigInt", amountUSD: "BigDecimal", hash: "Bytes" }, rel: { account: "Account", asset: "Token", market: "Market" } },
+    Borrow: { leaf: { id: "ID", timestamp: "BigInt", amount: "BigInt", amountUSD: "BigDecimal", hash: "Bytes" }, rel: { account: "Account", asset: "Token", market: "Market" } },
+    Repay: { leaf: { id: "ID", timestamp: "BigInt", amount: "BigInt", amountUSD: "BigDecimal", hash: "Bytes" }, rel: { account: "Account", asset: "Token", market: "Market" } },
+    Liquidate: { leaf: { id: "ID", timestamp: "BigInt", amount: "BigInt", amountUSD: "BigDecimal", profitUSD: "BigDecimal", hash: "Bytes" }, rel: { liquidator: "Account", liquidatee: "Account", asset: "Token", market: "Market" } },
+  },
 };
 
 // entities: [{name, fields}] from the registry. null when not a known family.
 export function detectFamily(entities) {
   const list = Array.isArray(entities) ? entities : [];
   const by = new Map(list.map((e) => [e.name, e]));
+  if (["LendingProtocol", "Market", "Account", "Position", "Token"].every((n) => by.has(n)) && by.get("Market").fields >= 40) return "messari_lending";
   if (!["Pool", "Token", "Swap", "Transaction"].every((n) => by.has(n))) return null;
   if (!(by.get("Pool").fields >= 20 && by.get("Swap").fields >= 10)) return null;
   if (by.has("PoolManager")) return "uniswap_v4";
@@ -394,7 +432,7 @@ export function detectFamily(entities) {
   return null;
 }
 
-function syntheticProbe(spec, entityName) {
+function syntheticProbe(spec, entityName, family) {
   const list = (t) => ({ kind: "NON_NULL", ofType: { kind: "LIST", ofType: { kind: "NON_NULL", ofType: OBJ(entityName) } } });
   const eFields = [
     ...Object.entries(spec.leaf).map(([name, type]) => ({ name, type: SC(type) })),
@@ -405,13 +443,21 @@ function syntheticProbe(spec, entityName) {
     filter.push({ name, type: SC(type) });
     if (NUMERIC.has(type)) for (const op of ["gt", "gte", "lt", "lte"]) filter.push({ name: `${name}_${op}`, type: SC(type) });
   }
-  for (const name of Object.keys(spec.rel)) filter.push({ name, type: SC("String") });
+  for (const name of Object.keys(spec.rel)) {
+    filter.push({ name, type: SC("String") });
+    filter.push({ name: `${name}_not`, type: SC("String") });
+  }
+  const fam = (family && FAMILIES[family]) || UNI_COMMON;
+  const tokSpec = fam.Token || UNI_COMMON.Token;
+  const mktSpec = fam.Market || null;
   return {
     q: { fields: [{ name: collectionName(entityName), args: [], type: list() }] },
     e: { name: entityName, fields: eFields },
     o: { enumValues: eFields.map((f) => ({ name: f.name })) },
     f: { inputFields: filter },
-    t: { name: "Token", fields: Object.entries(UNI_COMMON.Token.leaf).map(([name, type]) => ({ name, type: SC(type) })) },
+    t: { name: "Token", fields: Object.entries(tokSpec.leaf).map(([name, type]) => ({ name, type: SC(type) })) },
+    mkt: mktSpec ? { name: "Market", fields: Object.entries(mktSpec.leaf).map(([name, type]) => ({ name, type: SC(type) })) } : null,
+    rsv: null,
     i: null, m: null,
   };
 }
@@ -421,12 +467,12 @@ export function planFromBundledCatalog({ intent, entity, entities, first }) {
   const family = detectFamily(entities);
   const spec = family && FAMILIES[family][entity.name];
   if (!spec) return null;
-  const plan = planWithSchema({ intent, entity, probe: syntheticProbe(spec, entity.name), first });
+  const plan = planWithSchema({ intent, entity, probe: syntheticProbe(spec, entity.name, family), first });
   if (plan.errors?.length) return null;
   plan.family = family;
   plan.field_source = "bundled_family_catalog";
   plan.rationale = plan.rationale.map((r) => r.replace("confirmed by live introspection", `taken from the bundled ${family} schema catalog (not live-checked)`));
-  plan.rationale.push(`fields, order and filters come from the bundled ${family} catalog (verified against live Uniswap deployments), selected by entity names and field counts in the registry`);
+  plan.rationale.push(`fields, order and filters come from the bundled ${family} catalog (verified against live family deployments), selected by entity names and field counts in the registry`);
   plan.unmet = [...(plan.unmet || []), "Keyless plan uses the bundled schema-family catalog; field names are not live-checked for this deployment. validate_schema:true (your own Studio key) confirms them."];
   return plan;
 }

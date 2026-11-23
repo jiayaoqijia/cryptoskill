@@ -3208,6 +3208,39 @@
 				],
 				"description": "What kind of development it is. Anything the model cannot place becomes `other`."
 			},
+			"EventCategoryV3": {
+				"type": "string",
+				"enum": [
+					"earnings",
+					"analystRating",
+					"corporateAction",
+					"acquisition",
+					"financing",
+					"partnership",
+					"product",
+					"personnel",
+					"plansAndMilestones",
+					"ipo",
+					"exchangeListing",
+					"delisting",
+					"tokenLaunch",
+					"tokenomics",
+					"governance",
+					"flows",
+					"marketMove",
+					"metricsAndReports",
+					"economy",
+					"policy",
+					"legal",
+					"securityIncident",
+					"outage",
+					"geopolitics",
+					"disaster",
+					"commentary",
+					"forecast"
+				],
+				"description": "What kind of thing happened, finer than `eventType` and across it: `eventType` is the\ndomain (`macro`), the category the happening (`economy`, `commentary`, `forecast`).\nNew values may be added; treat one you do not know as no category."
+			},
 			"EntityTypeV3": {
 				"type": "string",
 				"enum": [
@@ -3308,7 +3341,7 @@
 				"properties": {
 					"source": {
 						"type": "string",
-						"description": "`twitter`, `telegram` or `sec_edgar` (an SEC filing, an 8-K). Empty when\nthe source cannot be told."
+						"description": "`twitter`, `telegram` or `sec_edgar` (an SEC filing: a company's 8-K, a\nforeign issuer's 6-K, or a Schedule 13D, a holder's 5%+ stake in a\ncompany). Empty when the source cannot be told."
 					},
 					"sourceRecordId": {
 						"type": "string",
@@ -3317,12 +3350,12 @@
 					"handle": {
 						"type": "string",
 						"nullable": true,
-						"description": "The X account, or the sender's Telegram name. On `sec_edgar`, the filer's\ncompany name as it stands on the SEC record (`Walmart Inc.`, or\n`CISCO SYSTEMS, INC.` in capitals), not a social handle."
+						"description": "The X account, or the sender's Telegram name. On `sec_edgar`, a company\nname as it stands on the SEC record (`Walmart Inc.`, or\n`CISCO SYSTEMS, INC.` in capitals), not a social handle: the filer's on\nan 8-K or 6-K; on a Schedule 13D, the company whose shares are held, not\nthe holder who filed it."
 					},
 					"link": {
 						"type": "string",
 						"nullable": true,
-						"description": "Permalink where one exists: the X post, or the first message of a Telegram\ngroup in a public chat. Null for a private Telegram chat. On `sec_edgar`,\nthe document on sec.gov the event was read from: the filing's press\nrelease exhibit when it has one, otherwise the 8-K itself."
+						"description": "Permalink where one exists: the X post, or the first message of a Telegram\ngroup in a public chat. Null for a private Telegram chat. On `sec_edgar`,\nthe document on sec.gov the event was read from: on an 8-K or 6-K, its\npress release exhibit when it has one, otherwise the 8-K or 6-K itself; on\na Schedule 13D, the statement itself."
 					}
 				},
 				"required": [
@@ -3394,6 +3427,15 @@
 							}
 						],
 						"nullable": true
+					},
+					"eventCategory": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/EventCategoryV3"
+							}
+						],
+						"nullable": true,
+						"description": "What kind of thing happened. `null` when the event reports no concrete happening\n(chatter, recaps), is not typed yet, or was analysed before 2026-09-30. It can change\nwhen the event is re-analysed."
 					},
 					"primaryEntities": {
 						"items": {
@@ -3471,6 +3513,7 @@
 					"summary",
 					"implication",
 					"eventType",
+					"eventCategory",
 					"primaryEntities",
 					"relatedEntities",
 					"alertAction",
@@ -5812,7 +5855,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "3.13.0",
+		"version": "3.16.0",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
@@ -10647,6 +10690,7 @@
 													"summary": "string",
 													"implication": {},
 													"eventType": {},
+													"eventCategory": {},
 													"primaryEntities": [
 														{
 															"id": "string",
@@ -10709,7 +10753,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10719,7 +10763,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10730,6 +10774,16 @@
 					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: a paid x402 call that listed nothing. Not charged, within a waiver allowance",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -10825,6 +10879,18 @@
 						"required": false,
 						"schema": {
 							"$ref": "#/components/schemas/EventTypeV3"
+						}
+					},
+					{
+						"description": "Repeatable, or comma separated. Matches events in any of them, and combines with\n`eventType` (`eventType=macro&eventCategory=economy,forecast`). An event with no\ncategory never matches. Not with `q` or `eventIds`.",
+						"in": "query",
+						"name": "eventCategory",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/EventCategoryV3"
+							}
 						}
 					},
 					{
@@ -11026,7 +11092,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11036,7 +11102,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11047,6 +11113,16 @@
 					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: a paid x402 call that listed nothing. Not charged, within a waiver allowance",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11238,7 +11314,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11248,7 +11324,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11259,6 +11335,16 @@
 					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: a paid x402 call that listed nothing. Not charged, within a waiver allowance",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11459,7 +11545,17 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"402": {
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11479,7 +11575,7 @@
 						}
 					},
 					"429": {
-						"description": "Rate limit exceeded",
+						"description": "ERR_RATE_LIMIT_EXCEEDED: over the per-minute limit, retry after RateLimit-Reset. ERR_RATE_LIMITED: out of credits, retrying does not help",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11489,7 +11585,7 @@
 						}
 					}
 				},
-				"description": "Returns the open Polymarket and Kalshi markets that events, storylines or arcs bear on. `ids` is required and takes any mix of the three. About one event in eight has a market. Free for now.",
+				"description": "Returns the open Polymarket and Kalshi markets that events, storylines or arcs bear on. `ids` is required and takes any mix of the three. About one event in eight has a market. Costs 1 credit, however many ids you send.",
 				"summary": "List prediction markets",
 				"tags": [
 					"v3 Events"
@@ -11595,7 +11691,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11605,7 +11701,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11616,6 +11712,16 @@
 					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: a paid x402 call that listed nothing. Not charged, within a waiver allowance",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11822,7 +11928,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11832,7 +11938,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11966,7 +12072,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -11976,7 +12082,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12121,7 +12227,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12131,7 +12237,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12271,7 +12377,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12281,7 +12387,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12411,7 +12517,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12421,7 +12527,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12549,7 +12655,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12559,7 +12665,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12706,7 +12812,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12716,7 +12822,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12727,6 +12833,16 @@
 					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: a paid x402 call that listed nothing. Not charged, within a waiver allowance",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12919,7 +13035,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12929,7 +13045,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -12940,6 +13056,16 @@
 					},
 					"403": {
 						"description": "Key is not scoped for this endpoint",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponseV3"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "ERR_NO_RESULTS: a paid x402 call that listed nothing. Not charged, within a waiver allowance",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -13123,7 +13249,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -13133,7 +13259,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -13237,7 +13363,7 @@
 						}
 					},
 					"401": {
-						"description": "Missing or invalid API key",
+						"description": "Invalid API key",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -13247,7 +13373,7 @@
 						}
 					},
 					"402": {
-						"description": "Prepaid credit balance used up",
+						"description": "With a key, prepaid credit balance used up. Without one, x402 payment required: the quote is in the PAYMENT-REQUIRED header",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -13488,7 +13614,7 @@
 						}
 					},
 					"403": {
-						"description": "Key is on the Free plan, or is not scoped for this endpoint",
+						"description": "Key is not scoped for this endpoint",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -13518,7 +13644,7 @@
 						}
 					}
 				},
-				"description": "Checks a statement against X posts, public Telegram channels and web pages. Returns a verdict, its probabilities and the items judged. Needs a PAYG, Grow or Enterprise plan. Costs 1 credit, whatever the verdict. Errors cost nothing.",
+				"description": "Checks a statement against X posts, public Telegram channels and web pages. Returns a verdict, its probabilities and the items judged. Costs 1 credit, whatever the verdict. Errors cost nothing.",
 				"summary": "Verify a statement",
 				"tags": [
 					"v3 Verify"

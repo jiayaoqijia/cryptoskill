@@ -37,7 +37,7 @@ Options:
   -q, --query <params>        Query string (e.g. 'timeWindow=24h&pageSize=10')
   -X, --method <METHOD>       HTTP method (default: GET, auto-set to POST with -d)
   -d, --data <json>           Request body (JSON). Implies -X POST unless -X is given.
-  --x402                      Use x402 keyless mode (rewrites /v2/ to /x402/v2/).
+  --x402                      Use x402 keyless mode (rewrites /v2/ to /x402/v2/; /v3/ stays).
   --payment <payload>         Pre-signed x402 payment header (base64). Requires --x402.
   --agent-secret <secret>     Agent identity secret added as x-elfa-agent-secret header
                               when using --x402 with Auto endpoints. Can also be set via
@@ -58,14 +58,14 @@ Examples:
   ./elfa_call.sh /v2/aggregations/trending-tokens -q 'timeWindow=24h&pageSize=10'
   ./elfa_call.sh /v2/chat -d '{"message":"What is trending?","analysisType":"chat"}'
 
-  # API v3 (API key only): resolve an entity, then read its events (from in unix seconds)
+  # API v3: resolve an entity, then read its events (from in unix seconds)
   ./elfa_call.sh /v3/entities -q 'q=btc&entityType=token&limit=1'
   ./elfa_call.sh /v3/events -q "entityIds=<id>&from=$(( $(date +%s) - 86400 ))&limit=10"
 
-  # Verify (PAYG, Grow or Enterprise): check one claim, 1 credit
+  # Verify (API key only): check one claim, 1 credit
   ./elfa_call.sh /v3/verify -d '{"statement":"Binance will list HYPE for spot trading."}'
 
-  # Monitors (PAYG, Grow or Enterprise): 2 credits per started hour live; delete when done
+  # Monitors (API key only): 2 credits per started hour live; delete when done
   ./elfa_call.sh /v3/monitors -d '{"query":"Binance announces it will delist a token","webhookUrl":"https://example.com/elfa-webhook"}'
   ./elfa_call.sh /v3/monitors
   ./elfa_call.sh /v3/monitors/<id>/events -q 'limit=100'
@@ -74,6 +74,7 @@ Examples:
 
   # x402 mode (pay-per-request with USDC on Base)
   ./elfa_call.sh /v2/aggregations/trending-tokens --x402 --payment '<base64-payload>'
+  ./elfa_call.sh /v3/entities -q 'q=btc' --x402 --payment '<base64-payload>'
 
   # Auto: validate a query
   ./elfa_call.sh /v2/auto/queries/validate -d '{"query":{...}}'
@@ -155,9 +156,10 @@ METHOD=$(printf '%s' "$METHOD" | tr '[:lower:]' '[:upper:]')
 [[ "$ENDPOINT" == /* ]] || die "endpoint must start with / (e.g. /v2/ping)"
 
 if [[ "$X402" == true ]]; then
-  [[ "${ENDPOINT#/x402}" == /v3/* ]] && die "API v3 takes an API key only; x402 is not available on /v3. Set ELFA_API_KEY instead."
+  [[ "${ENDPOINT#/x402}" =~ ^/v3/(key-status|verify|monitors) ]] && die "Key status, Verify and Monitors take an API key only; x402 is not available there. Set ELFA_API_KEY instead."
   # Rewrite /v2/ → /x402/v2/ if not already prefixed
   [[ "$ENDPOINT" == /v2/* ]] && ENDPOINT="/x402${ENDPOINT}"
+  [[ "$ENDPOINT" == /x402/v3/* ]] && ENDPOINT="${ENDPOINT#/x402}"
   [[ -n "$PAYMENT" ]] || die "--x402 requires --payment <payload>. See https://docs.elfa.ai/platform/authentication#pay-per-request-with-x402"
 else
   [[ -z "${ELFA_API_KEY:-}" ]] && die "ELFA_API_KEY is not set. Get a key at https://go.elfa.ai/claude-skills"

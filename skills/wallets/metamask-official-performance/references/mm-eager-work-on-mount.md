@@ -1,7 +1,7 @@
 ---
 title: Eager / Redundant Work on Mount (MetaMask)
 impact: CRITICAL
-tags: tti, mount, pagerview, tabs, carousel, fetch, waterfall, offscreen, lazy
+tags: tti, mount, pagerview, tabs, carousel, fetch, waterfall, offscreen, lazy, transition, defer
 ---
 
 # Skill: Eager / Redundant Work on Mount
@@ -46,6 +46,17 @@ const { data } = useMarketData({ category /* missing: enabled */ });
 ### 4. Request waterfall
 `await a(); await b(); await c();` where b/c don't depend on a — sequential when they could be parallel, multiplying time-to-content.
 
+### 5. Heavy subtree renders during the push transition
+Even with the right data and the right fetches, a pushed screen can mount an expensive below-the-fold subtree (long list, feed rows, chart panel) on the same tick as the enter animation, so the JS thread is busy while the screen slides in.
+
+```tsx
+// ❌ the heavy section mounts with the screen, competing with the push animation
+<ScrollView>
+  <Header />
+  <HeavyFeed rows={rows} />
+</ScrollView>
+```
+
 ## Detection (scope to the suspect feature dir)
 
 ```bash
@@ -80,6 +91,26 @@ const { data } = useMarketData({
 `hasEverBeenActive` should initialize to `isActive` so the visible tab fetches immediately and the rest fetch only when first opened. If the hook has a `useLayoutEffect`/`useEffect` that handles the `false → true` transition, this is clean (no empty-state flash). For pagers, also consider `offscreenPageLimit`/lazy mounting so offscreen pages don't mount at all.
 
 For waterfalls: `const [a, b, c] = await Promise.all([fa(), fb(), fc()])` when independent.
+
+## Fix for #5 — defer on the existing transition hook
+
+Use `useScreenTransitionComplete()` (`app/components/hooks/useScreenTransitionComplete.ts`), already in the app. Do **not** write a new deferral hook, wrapper, or `setTimeout` / `InteractionManager` delay. It returns `false` until the screen's opening transition ends (or a 450 ms fallback), then stays `true`.
+
+```tsx
+const isTransitionComplete = useScreenTransitionComplete(); // above any early return
+// ...
+{isTransitionComplete ? <HeavyFeed rows={rows} /> : <FeedPlaceholder />}
+```
+
+Rules:
+- **One call per screen**; gate every heavy section on the same value.
+- **Keep first paint eager**: header, chart, summary, tab bar, primary actions.
+- **Gate data, not `loading`**: pass a module-level empty constant while not ready. Flipping a child's `loading` makes it tear down the subtree it should keep.
+- **Pushed screens only.** A tab root has no entering transition and would wait for the 450 ms fallback: use `const isPushedScreen = route.name !== Routes.X.TAB;` and gate on `!isPushedScreen || isTransitionComplete`.
+- **Only when a trace shows the JS thread busy during the push because of that subtree** and its data is already ready. For network-bound waits or cheap nodes it only adds latency.
+- **Tests:** with a hand-rolled navigation mock the hook never completes, so mock it (`jest.fn(() => true)`, reset in `beforeEach`) and add one test where it returns `false` and the heavy section is absent. View tests already emit `transitionEnd`.
+
+Measure the opening commit with a local Reassure `eager` (hook mocked to `true`) vs `held` (real hook, never released in the window) pair ([mm-tools.md](mm-tools.md)), then confirm on a real device through TestFlight. Reference adoptions: `PerpsMarketDetailsView`, `TokenDetails`, `SocialV0View`, `SocialV1View`.
 
 ## Counter-example — DON'T gate a shared-subscription hook
 
