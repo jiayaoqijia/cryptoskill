@@ -43,12 +43,16 @@ Never fabricate citations, theorem results, proof steps, experiments, statistics
 
 ## Workflow
 
-1. Apply [protocol.md](references/protocol.md) to freeze claims/evidence and design the paper architecture.
-2. Read [top-venue-gates.md](references/top-venue-gates.md) and verify the current target venue's official rules.
-3. Draft sections in dependency order; keep claim/evidence/gap traceability.
-4. Run consistency, citation, proof-status, parameter, figure/table, ethics/artifact, anonymity, and venue audits.
-5. Return manuscript plus unresolved evidence/decision register.
-6. Use [evaluation-scenarios.md](references/evaluation-scenarios.md) for future independent evaluation.
+The end-to-end runbook for "given an idea + a scheme body + experiments, write a venue-style paper" is [authoring-workflow.md](references/authoring-workflow.md); it orders the work and says when to run the venue skills' instruments. Summary:
+
+1. Freeze the inputs (idea card, scheme spec, experiment ledger) and the venue family; fetch the current official call and record a dated snapshot. An idea without evidence gets a research plan, never a result-bearing draft.
+2. Apply [protocol.md](references/protocol.md) to freeze the claim-evidence ledger and design the paper architecture.
+3. Read [top-venue-gates.md](references/top-venue-gates.md) and verify the current target venue's official rules; load the owning venue skill for thresholds (`crypto-venue-paper-writing` for crypto/LNCS, `ccs-writing-style` for CCS/S&P/NDSS, `usenixsec-writing-style` for USENIX Security).
+4. Draft in dependency order (construction → security → experiments → related work → introduction → abstract/contributions last), keeping claim/evidence/gap traceability and hitting the venue skill's constituents while drafting.
+5. Run the instrument loop after each artifact: `count_venue_gates.py` (crypto family) or `count_prose_gates.py` (security family) with a named region map; measured/no-breach is the exit condition; a breach is repaired (move material, never delete a claim) or recorded as a question for the human author.
+6. Review loop: `crypto-paper-review`, plus `zkp-security-review` and `crypto-theorem-review` where applicable; repair and re-run step 5.
+7. Freeze and hand off: twin parity or a recorded decoupling decision, content-anchored region map, double-blind/disclosure text, and the promotion checklist. Page budget/compile stay a human step when no LaTeX toolchain exists.
+8. Use [evaluation-scenarios.md](references/evaluation-scenarios.md) for future independent evaluation.
 
 ## Output Contract
 
