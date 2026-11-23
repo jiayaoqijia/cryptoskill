@@ -451,9 +451,9 @@ export function TokenSearch({ chain, onSelect }: TokenSearchProps) {
 ## Backend Quirks Affecting UI (Live-Tested)
 
 1. **Spot trading amounts in managed custody are RAW UNITS** (lamports/wei), not human-readable. The `SpotTradeForm` above uses `skill.buyToken()` which handles conversion, but if using `submitManagedPurchase()` directly, convert first.
-2. **`hlCloseAll` is unreliable** — the `PositionTable` close button uses `closePerpPosition()` per coin (a reduce-only order for the live size), not `skill.hlCloseAll()`.
+2. **`hlCloseAll` is unreliable** — the `PositionTable` close button uses `closePerpPosition()` per coin (a market close of the live size), not `skill.hlCloseAll()`.
 3. **Solana Meteora tokens fail** — if building a token selector, filter out `dexId === 'meteora'` tokens to avoid failed trades.
-4. **Leverage goes on the order** — the slider value is passed as `leverage` to `hlCreateOrder()` (sent top-level with the order). The standalone `hlUpdateLeverage` endpoint returns 404.
+4. **Leverage goes on the order** — the slider value is passed as `leverage` to `hlCreateOrder()` (sent top-level with the order). There is no standalone leverage route; `hlUpdateLeverage` always throws. Omitted, the back-end applies the market's maximum.
 5. **`getTopTraders()` needs numeric chainId** — use `622112261`, not `'solana'`.
 
 ## Related Skills

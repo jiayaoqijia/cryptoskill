@@ -75,10 +75,10 @@ for (const pos of positions) {
 
 ### Leverage Is Set Per Order
 
-The standalone `hlUpdateLeverage` / `/v1/hl/update_leverage` endpoint returns **404**. Set leverage on the
-order instead: `hlCreateOrder({ ..., leverage: 5 })` (MCP: `open_perp_position` with `leverage`). The SDK
-sends it as a top-level field next to `computedData`, which is where the backend reads it. Omitted, HL
-uses its default (20x on most markets).
+There is no `/v1/hl/update_leverage` route, and `hlUpdateLeverage` always throws. Set leverage on the
+order: `hlCreateOrder({ ..., leverage: 5 })` (MCP: `open_perp_position` with `leverage`). The SDK
+sends it as a top-level field next to `computedData`, which is where the backend reads it; the backend
+clamps it to the market's maximum. Omitted, the backend applies the market's maximum, so always pass it.
 
 ### HL Signature Format
 

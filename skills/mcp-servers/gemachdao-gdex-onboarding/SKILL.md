@@ -272,9 +272,9 @@ _Consolidated reference (migrated from the umbrella skill). Critical notes and a
 
 > **walletAddress = CONTROL address, NOT managed address.** All HL write operations (`hlCreateOrder`, `hlCloseAll`, `perpDeposit`, etc.) require `walletAddress` set to the **control wallet address** used during sign-in — NOT the managed-custody address returned by `/v1/user`. The backend verifies the session key signature against the sign-in `userId`. Passing the managed address causes `400 Unauthorized (code 103)`.
 
-> **`hlCloseAll` / `/v1/hl/close_all_positions` is unreliable.** It frequently returns `TIMEOUT` or JSON parse errors. Close per coin with `closePerpPosition` (MCP: `close_perp_position`), which places a **reduce-only** order for the exact live position size.
+> **`hlCloseAll` / `/v1/hl/close_all_positions` is unreliable.** It frequently returns `TIMEOUT` or JSON parse errors. Close per coin with `closePerpPosition` (MCP: `close_perp_position`), which closes the live position at market (reduce-only).
 
-> **`hlUpdateLeverage` / `/v1/hl/update_leverage` is not implemented** on the backend (returns 404). Set leverage on the order instead: `hlCreateOrder({ ..., leverage: 5 })` (MCP: `open_perp_position` with `leverage`) sends it as a top-level field with the order.
+> **There is no leverage route.** `/v1/hl/update_leverage` does not exist and `hlUpdateLeverage` always throws. Set leverage on the order: `hlCreateOrder({ ..., leverage: 5 })` (MCP: `open_perp_position` with `leverage`) sends it as a top-level field with the order. Always pass it — omitted, the back-end applies the market's maximum.
 
 > **Solana chainId is `622112261`, NOT `900`.** The correct Solana chain ID is `ChainId.SOLANA = 622112261`. Using `900` falls back to the EVM managed address with `balance: null`. The `/v1/user` endpoint returns a **different managed wallet** per `chainId`:
 > - `chainId=1` → EVM managed: `0x9967...`
@@ -332,8 +332,8 @@ The `limit_buy` and `update_order` ABI schemas use `uint256` for `profitPercent`
 
 | Endpoint | Status | Alternative |
 |----------|--------|-------------|
-| `hlCloseAll` / `/v1/hl/close_all_positions` | Returns TIMEOUT/400 | Use `closePerpPosition` per coin (or `hlCreateOrder` with `reduceOnly: true, isMarket: true`) |
-| `hlUpdateLeverage` / `/v1/hl/update_leverage` | Returns 404 | Pass `leverage` on `hlCreateOrder` |
+| `hlCloseAll` / `/v1/hl/close_all_positions` | Returns TIMEOUT/400 | Use `closePerpPosition` per coin |
+| `hlUpdateLeverage` / `/v1/hl/update_leverage` | No such route; the SDK method throws | Pass `leverage` on `hlCreateOrder` |
 | `getGbotUsdcBalance` | Returns 404 | Use `getHlAccountState()` to check USDC balance |
 | `getHlUserStats(controlAddress)` | Returns 400 | Must pass the **managed** wallet address, not control |
 
@@ -343,10 +343,10 @@ The `limit_buy` and `update_order` ABI schemas use `uint256` for `profitPercent`
 |-------|------------|
 | `400 Unauthorized (103)` | Check: (1) using control address not managed, (2) ABI types match exactly, (3) session key is from the same sign-in |
 | `Insufficient balance` | Check managed wallet balance on the correct chain. For HL, check USDC deposit amount. |
-| `TIMEOUT` on hlCloseAll | Use reduce-only order instead (see above) |
+| `TIMEOUT` on hlCloseAll | Use `closePerpPosition` per coin instead (see above) |
 | `Program error: 1` on Solana | Token routes through Meteora DLMM. Swap to a Raydium-routed token instead. |
 | `lossPercent must be between 0 and 100` | ABI encoding bug — profitPercent/lossPercent must be uint256, not string |
-| `404` on leverage | Expected from `hlUpdateLeverage` — pass `leverage` on `hlCreateOrder` instead. |
+| Error from `hlUpdateLeverage` / `set_leverage` | Expected: there is no leverage route — pass `leverage` on `hlCreateOrder` instead. |
 | `Reused nonce` | Always generate fresh: `String(Math.floor(Date.now() / 1000) + Math.floor(Math.random() * 1000))` |
 | Rate limited (429) | SDK auto-retries with exponential backoff. If manual, wait `retryAfter` seconds. |
 
