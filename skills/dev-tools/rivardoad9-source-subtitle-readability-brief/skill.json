@@ -1,0 +1,37 @@
+{
+  "slug": "subtitle-readability-brief",
+  "name": "subtitle-readability-brief",
+  "displayName": "Subtitle Readability Brief",
+  "version": "1.0.0",
+  "description": "Plan subtitle specs before transcribing or burning captions — CPS limits, line breaks, timing gaps, SRT/VTT rules, SDH cues, and platform targets for readable on-screen text.",
+  "triggerKeywords": [
+    "subtitle readability",
+    "caption timing plan",
+    "srt vtt guidelines",
+    "subtitle line length",
+    "characters per second subtitles",
+    "burn in subtitle plan",
+    "accessibility captions brief",
+    "sdh subtitle rules",
+    "subtitle qc before export",
+    "youtube subtitle specs"
+  ],
+  "tags": [
+    "subtitle",
+    "youtube",
+    "transcribe",
+    "video",
+    "caption"
+  ],
+  "license": "MIT",
+  "language": "en",
+  "promptOnly": true,
+  "hasExecutableCode": false,
+  "requires_api": false,
+  "no_code_execution": true,
+  "execution": "noExec",
+  "no_network": true,
+  "no_credentials": true,
+  "contentType": "document-only",
+  "safety": "Subtitle planning only. Does not transcode video or download content. User must verify platform compliance."
+}

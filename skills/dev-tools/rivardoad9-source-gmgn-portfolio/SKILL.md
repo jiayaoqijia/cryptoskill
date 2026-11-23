@@ -1,0 +1,434 @@
+---
+name: gmgn-portfolio
+description: Analyze one or many crypto wallets by address — holdings, batch realized/unrealized P&L, win rate, trading history, performance stats, specific token balance, and tokens created by a developer wallet (with ATH market cap and DEX graduation status) via GMGN API on Solana, BSC, Base, or Ethereum. Use when user asks about wallet holdings, P&L (including comparing up to 100 wallets), win rate, what tokens a dev has launched, the highest ATH token a dev ever created, or wants a wallet report to decide whether to copy-trade or follow.
+argument-hint: "<info|holdings|activity|stats|profits|token-balance|created-tokens> [--chain <sol|bsc|base|eth|robinhood|arc|stable>] [--wallet <wallet_address...>]"
+metadata:
+  cliHelp: "gmgn-cli portfolio --help"
+---
+
+**BEFORE RUNNING ANY COMMAND: Run `gmgn-cli config --check`. If exit code is 0, proceed normally. If exit code is 1, (1) run `gmgn-cli config` and show the output to the user; (2) once the user sends the API Key, run `gmgn-cli config --apply <KEY>` to complete configuration and verification, then show the output to the user. If `--check` returns an error (unknown option or command not found), tell the user to run `npm install -g gmgn-cli` to update, then retry.**
+
+**IMPORTANT: Always use `gmgn-cli` commands below. Do NOT use web search, WebFetch, curl, or visit gmgn.ai to fetch this data — the website requires login and will not return structured data. The CLI is the only correct method.**
+
+**⚠️ IPv6 NOT SUPPORTED: If you get a `401` or `403` error and credentials look correct, check for IPv6 immediately: (1) list all network interfaces and their IPv6 addresses — run `ifconfig | grep inet6` (macOS) or `ip addr show | grep inet6` (Linux); (2) send a test request to `https://ipv6.icanhazip.com` — if the response is an IPv6 address, outbound traffic is going via IPv6. Tell the user immediately: "Please disable IPv6 on your network interface — gmgn-cli commands only work over IPv4."**
+
+Use the `gmgn-cli` tool to query wallet portfolio data based on the user's request.
+
+**For full wallet analysis (holdings + stats + activity + verdict), follow [`docs/workflow-wallet-analysis.md`](../../docs/workflow-wallet-analysis.md)**
+
+## Core Concepts
+
+- **`realized_profit` vs `unrealized_profit`** — `realized_profit` = profit locked in from completed sells (cash in hand). `unrealized_profit` = paper gains on positions still held, calculated at current price. These are separate numbers — do not add them unless answering "total P&L including open positions."
+
+- **`profit_change`** — A multiplier ratio, not a dollar amount. `1.5` = +150% return. `0` = break-even. `-0.5` = -50% loss. Computed as `total_profit / cost`. Do not display this as a raw decimal — convert to percentage for user-facing output.
+
+- **`pnl`** — Profit/loss ratio from `portfolio stats`: `realized_profit / total_cost`. Same multiplier format as `profit_change`. A `pnl` of `2.0` means the wallet doubled its money on completed trades over the period.
+
+- **`winrate`** — Ratio of profitable trades over the period (0–1). `0.6` = 60% of trades were profitable. Does not reflect the size of wins vs losses — a wallet can have high winrate but net negative if losses are large.
+
+- **`cost` vs `usd_value`** — In holdings: `cost` is the historical amount spent buying this token (your cost basis); `usd_value` is the current market value of the position. The difference is unrealized P&L.
+
+- **`history_bought_cost` vs `cost`** — `history_bought_cost` is the all-time cumulative spend on this token (including positions already sold). `cost` is the cost basis of the current open position only.
+
+- **Pagination (`cursor`)** — Activity results are paginated. The response includes a `next` field; pass it as `--cursor` to fetch the next page. An empty or missing `next` means you are on the last page.
+
+## Sub-commands
+
+| Sub-command | Description |
+|-------------|-------------|
+| `portfolio info` | Wallets and main currency balances bound to the API Key |
+| `portfolio holdings` | Wallet token holdings with P&L |
+| `portfolio activity` | Transaction history |
+| `portfolio stats` | Trading statistics (supports batch) |
+| `portfolio profits` | Batch wallet P&L for 1–100 wallets |
+| `portfolio token-balance` | Token balance for a specific token |
+| `portfolio created-tokens` | Tokens created by a developer wallet, with market cap and ATH info |
+
+## Supported Chains
+
+`sol` / `bsc` / `base` / `eth` / `robinhood` / `arc` / `stable`
+
+## Prerequisites
+
+- `gmgn-cli` installed globally — if missing, run: `npm install -g gmgn-cli`
+- `GMGN_API_KEY` configured in `~/.config/gmgn/.env`
+
+## Rate Limit Handling
+
+All portfolio routes used by this skill go through GMGN's leaky-bucket limiter with `rate=20` and `capacity=20`. Sustained throughput is roughly `20 ÷ weight` requests/second, and the max burst is roughly `floor(20 ÷ weight)` when the bucket is full.
+
+**Critical auth** (`GMGN_API_KEY` + `GMGN_PRIVATE_KEY` required):
+
+| Command | Route | Weight |
+|---------|-------|--------|
+| `portfolio holdings` | `GET /v1/user/wallet_holdings` | 5 |
+
+**Exist auth** (`GMGN_API_KEY` only):
+
+| Command | Route | Weight |
+|---------|-------|--------|
+| `portfolio info` | `GET /v1/user/info` | 1 |
+| `portfolio activity` | `GET /v1/user/wallet_activity` | 3 |
+| `portfolio stats` | `GET /v1/user/wallet_stats` | 3 |
+| `portfolio profits` | `POST /v1/user/wallet_profits` | 3 |
+| `portfolio token-balance` | `GET /v1/user/wallet_token_balance` | 1 |
+| `portfolio created-tokens` | `GET /v1/user/created_tokens` | 2 |
+
+When a request returns `429`:
+
+- On `RATE_LIMIT_EXCEEDED`, tell the user exactly: `已达到当前套餐的限频上限，点击 https://gmgn.ai/ai?chain=bsc&tab=paid_plans 升级套餐，获得更高速率限制`. Show this upgrade guidance at most once per user task. Do not repeat it for subsequent `RATE_LIMIT_BANNED` responses during the same cooldown.
+
+- Read `X-RateLimit-Reset` from the response headers. It is a Unix timestamp in seconds that marks when the limit is expected to reset.
+- If the response body contains `reset_at` (e.g., `{"code":429,"error":"RATE_LIMIT_BANNED","message":"...","reset_at":1775184222}`), extract `reset_at` — it is the Unix timestamp when the ban lifts (typically 5 minutes). Convert to local time and tell the user exactly when they can retry.
+- The CLI may wait and retry once automatically when the remaining cooldown is short. If it still fails, stop and tell the user the exact retry time instead of sending more requests.
+- For `RATE_LIMIT_EXCEEDED` or `RATE_LIMIT_BANNED`, repeated requests during the cooldown can extend the ban by 5 seconds each time, up to 5 minutes. Do not spam retries.
+
+## Usage Examples
+
+```bash
+# API Key wallet info (no --chain or --wallet needed)
+gmgn-cli portfolio info
+
+# Wallet holdings (default sort)
+gmgn-cli portfolio holdings --chain sol --wallet <wallet_address>
+
+# Holdings sorted by USD value, descending
+gmgn-cli portfolio holdings \
+  --chain sol --wallet <wallet_address> \
+  --order-by usd_value --direction desc --limit 20
+
+# Include sold-out positions
+gmgn-cli portfolio holdings --chain sol --wallet <wallet_address> --sell-out
+
+# Transaction activity
+gmgn-cli portfolio activity --chain sol --wallet <wallet_address>
+
+# Activity filtered by type
+gmgn-cli portfolio activity --chain sol --wallet <wallet_address> \
+  --type buy --type sell
+
+# Activity for a specific token
+gmgn-cli portfolio activity --chain sol --wallet <wallet_address> \
+  --token <token_address>
+
+# Trading stats (default 7d)
+gmgn-cli portfolio stats --chain sol --wallet <wallet_address>
+
+# Trading stats for 30 days
+gmgn-cli portfolio stats --chain sol --wallet <wallet_address> --period 30d
+
+# Batch stats for multiple wallets
+gmgn-cli portfolio stats --chain sol \
+  --wallet <wallet_1> --wallet <wallet_2>
+
+# Batch P&L for multiple wallets (default 7d)
+gmgn-cli portfolio profits --chain sol \
+  --wallet <wallet_1> --wallet <wallet_2>
+
+# All-time P&L for up to 100 wallets
+gmgn-cli portfolio profits --chain sol \
+  --wallet <wallet_1> --wallet <wallet_2> --period all
+
+# Token balance
+gmgn-cli portfolio token-balance \
+  --chain sol --wallet <wallet_address> --token <token_address>
+
+# Tokens created by a developer wallet
+gmgn-cli portfolio created-tokens --chain sol --wallet <wallet_address>
+
+# Created tokens sorted by all-time high market cap
+gmgn-cli portfolio created-tokens \
+  --chain sol --wallet <wallet_address> \
+  --order-by token_ath_mc --direction desc
+
+# Only migrated tokens
+gmgn-cli portfolio created-tokens \
+  --chain sol --wallet <wallet_address> --migrate-state migrated
+
+# ETH wallet holdings
+gmgn-cli portfolio holdings --chain eth --wallet <0x_wallet_address>
+
+# ETH wallet transaction activity
+gmgn-cli portfolio activity --chain eth --wallet <0x_wallet_address>
+
+# ETH token balance
+gmgn-cli portfolio token-balance \
+  --chain eth --wallet <0x_wallet_address> --token <0x_token_address>
+```
+
+## `portfolio created-tokens` Options
+
+| Option | Description |
+|--------|-------------|
+| `--order-by <field>` | Sort field: `market_cap` / `token_ath_mc` |
+| `--direction <asc\|desc>` | Sort direction (default `desc`) |
+| `--migrate-state <state>` | Filter by migration status: `migrated` (graduated to DEX) / `non_migrated` (still on bonding curve) |
+
+## `portfolio holdings` Options
+
+| Option | Description |
+|--------|-------------|
+| `--limit <n>` | Page size (default `20`, max 50) |
+| `--cursor <cursor>` | Pagination cursor |
+| `--order-by <field>` | Sort field: `usd_value` / `last_active_timestamp` / `realized_profit` / `unrealized_profit` / `total_profit` / `history_bought_cost` / `history_sold_income` (default `usd_value`) |
+| `--direction <asc\|desc>` | Sort direction (default `desc`) |
+| `--hide-abnormal <bool>` | Hide abnormal positions: `true` / `false` (default: `false`) |
+| `--hide-airdrop <bool>` | Hide airdrop positions: `true` / `false` (default: `true`) |
+| `--hide-closed <bool>` | Hide closed positions: `true` / `false` (default: `true`) |
+| `--hide-open` | Hide open positions |
+
+## `portfolio activity` Options
+
+| Option | Description |
+|--------|-------------|
+| `--token <address>` | Filter by token |
+| `--limit <n>` | Page size |
+| `--cursor <cursor>` | Pagination cursor (pass the `next` value from the previous response) |
+| `--type <type>` | Repeatable: `buy` / `sell` / `transferIn` / `transferOut` / `add` / `remove` |
+
+The activity response includes a `next` field. Pass it to `--cursor` to fetch the next page.
+
+## `portfolio stats` Options
+
+| Option | Description |
+|--------|-------------|
+| `--period <period>` | Stats period: `7d` / `30d` (default `7d`) |
+
+## `portfolio profits` Options
+
+| Option | Description |
+|--------|-------------|
+| `--wallet <address...>` | One or more wallet addresses (required, max 100) |
+| `--period <period>` | P&L period: `1d` / `7d` / `30d` / `all` (default `7d`) |
+
+## Response Field Reference
+
+### Response envelopes — each route wraps differently
+
+Check the envelope before reaching for a field name. Reading a field off the wrong level returns
+`undefined`, which becomes `0`, which reads as a real answer ("this wallet made nothing") rather
+than as an error.
+
+| Route | Top-level shape | Where the rows are |
+|-------|-----------------|--------------------|
+| `portfolio stats` | bare object (array for batch) | the object itself |
+| `portfolio profits` | `{"list": [ {…} ]}` | `list[0]` — a single row, still inside an array |
+| `portfolio activity` | `{"activities": [...], "next": …}` | `activities` — **not** `list` |
+| `portfolio holdings` | `{"list": [...], "next": …}` | `list` — **not** `holdings` |
+| `portfolio created-tokens` | bare object | `tokens`, plus aggregate counts at the top level |
+
+Some deployments additionally wrap the whole body in `{"data": …}`.
+
+### `portfolio holdings` — Key Fields
+
+Rows come back under **`list`**, with a `next` cursor. Confirmed against gmgn-cli 1.5.8 live
+responses — several names differ from what earlier versions of this doc claimed, and the old
+names are not accepted as aliases.
+
+| Field | Description |
+|-------|-------------|
+| `token.token_address` | Token contract address (**not** `token.address` — that name is `activity`'s) |
+| `token.symbol` / `token.name` | Token ticker and full name |
+| `token.price` | Current token price in USD |
+| `token.is_honeypot` | Ships inline — no `gmgn-token security` call needed. **A `true` here is contradicted by `history_total_sells > 0` on the same row**: a honeypot cannot be sold, and transfer-restricted RWA / tokenised-stock contracts trip naive simulators |
+| `token.launchpad_platform` / `token.launchpad` | Where the token came from — the basis for "where does this wallet hunt" |
+| `token.liquidity`, `token.max_supply`, `token.total_supply`, `token.creation_timestamp` | Also inline |
+| `balance` | Current token balance (human-readable units) |
+| `usd_value` | Current USD value of this position |
+| `accu_cost` | Cost basis of the position still held (**not** `cost`) |
+| `history_bought_cost` / `history_sold_income` | All-time buy cost / sell proceeds |
+| `realized_profit` | Profit from completed sells (USD) |
+| `unrealized_profit` | Profit on current unsold holdings at current price (USD) |
+| `total_profit` | `realized_profit + unrealized_profit` (USD) |
+| `total_profit_pnl` | Total profit **ratio** (**not** `profit_change`); `realized_profit_pnl` / `unrealized_profit_pnl` are the split |
+| `history_total_buys` / `history_total_sells` | Buy / sell transaction counts (**not** `buy_tx_count` / `sell_tx_count`) |
+| `history_total_transfer_ins` / `_outs` | Transfer counts — airdrops and internal moves, not trades |
+| `start_holding_at` / `end_holding_at` / `last_active_timestamp` | Position lifetime |
+| `wallet_token_tags` | Per-position tags |
+
+There is **no `--sell-out` flag** — gmgn-cli 1.5.8 rejects it as an unknown option. `avg_cost`
+is not returned; derive it from `accu_cost / balance`.
+
+### `portfolio activity` — Key Fields
+
+Rows come back under **`activities`**, with a `next` cursor for pagination.
+
+| Field | Description |
+|-------|-------------|
+| `tx_hash` | On-chain transaction hash (**not** `transaction_hash`) |
+| `event_type` | Transaction type: `buy` / `sell` / `transferIn` / `transferOut`. Some chains return `type` instead — read `event_type ?? type`. Transfer rows are airdrops and internal moves, **not trades** — exclude them from any ratio |
+| `buy_cost_usd` | On a `sell` row, the cost basis of what was sold — `cost_usd - buy_cost_usd` is that exit's realized P&L |
+| `gas_usd` / `priority_fee` / `tip_fee` | Friction. Compare `gas_usd` against per-trade net, not against nothing |
+| `launchpad_platform` | Where the token came from |
+| `token.address` | Token contract address |
+| `token.symbol` | Token ticker |
+| `token_amount` | Token quantity in this transaction |
+| `cost_usd` | USD value of this transaction |
+| `price` | Token price denominated in the quote token of the trading pair at time of transaction |
+| `price_usd` | Token price in USD at time of transaction |
+| `timestamp` | Unix timestamp of the transaction |
+| `next` | Pagination cursor — pass to `--cursor` to fetch the next page |
+
+### `portfolio stats` — Key Fields
+
+The response is an object (or array for batch). Key fields:
+
+| Field | Description |
+|-------|-------------|
+| `realized_profit` | Total realized profit over the period (USD) |
+| `unrealized_profit` | Total unrealized profit on open positions (USD) |
+| `winrate` | Win rate — ratio of profitable trades (0–1) |
+| `total_cost` | Total amount spent buying in the period (USD) |
+| `buy_count` | Number of buy transactions |
+| `sell_count` | Number of sell transactions |
+| `pnl` | Profit/loss ratio = `realized_profit / total_cost` |
+
+The response also includes a `common` object when available (absent if the upstream identity service is unavailable):
+
+| Field | Description |
+|-------|-------------|
+| `common.avatar` | Wallet avatar URL |
+| `common.name` | Display name |
+| `common.ens` | ENS domain (EVM chains only) |
+| `common.tag` | Primary wallet tag |
+| `common.tags` | All wallet tags (e.g. `["smart_money"]`) |
+| `common.twitter_username` | Twitter handle |
+| `common.twitter_name` | Twitter display name |
+| `common.followers_count` | Twitter follower count |
+| `common.is_blue_verified` | Twitter blue-verified badge |
+| `common.follow_count` | Number of GMGN users following this wallet |
+| `common.remark_count` | Number of GMGN users who have remarked this wallet |
+| `common.created_token_count` | Tokens created by this wallet |
+| `common.created_at` | Wallet creation time (Unix seconds) — records when the first funding transaction arrived; use this as the wallet's age indicator |
+| `common.fund_from` | Funding source label |
+| `common.fund_from_address` | Address that funded this wallet |
+| `common.fund_amount` | Funding amount |
+
+Use `common.tags` and `common.twitter_username` when building a wallet profile narrative. If `common` is absent in the response, omit identity fields silently — do not report it as an error.
+
+### `portfolio profits` — Key Fields
+
+The response has a `list` array with one item per wallet. Monetary values are decimal strings; parse them with decimal arithmetic rather than binary floating point when exact calculations matter.
+
+| Field | Description |
+|-------|-------------|
+| `wallet_address` | Wallet address |
+| `realized_profit` | Realized profit in the selected period |
+| `realized_profit_cost` | Cost basis associated with selected-period realized profit |
+| `buy` / `sell` | Buy and sell counts in the selected period |
+| `unrealized_profit` | Unrealized profit on current holdings |
+| `total_realized_profit` | All-time realized profit |
+| `total_realized_profit_cost` | Cost basis associated with all-time realized profit |
+| `total_profit` | Total profit |
+| `total_cost` | Total cost basis |
+
+### `portfolio created-tokens` — Key Fields
+
+The response `data` object has a `tokens` array plus aggregate stats.
+
+Top-level fields:
+
+| Field | Description |
+|-------|-------------|
+| `last_create_timestamp` | Unix timestamp of the most recent token creation |
+| `inner_count` | Number of tokens still on the bonding curve (NOT graduated) |
+| `open_count` | Number of tokens that have graduated to DEX |
+| `open_ratio` | Graduation rate (string, e.g. `"0.25"`) |
+
+> **Total created = `inner_count + open_count`**. Do NOT use `len(tokens)` as the total — the `tokens` array is capped at 100 entries and may be truncated.
+| `creator_ath_info` | Best-performing token created by this wallet (ATH market cap) |
+| `tokens` | Array of created tokens — see below |
+
+`creator_ath_info` fields:
+
+| Field | Description |
+|-------|-------------|
+| `creator` | Wallet address |
+| `ath_token` | Token address with highest ATH market cap |
+| `ath_mc` | ATH market cap (USD string) |
+| `token_symbol` / `token_name` | Token ticker and name |
+| `token_logo` | Logo URL |
+
+Per-token fields (`tokens[*]`):
+
+| Field | Description |
+|-------|-------------|
+| `token_address` | Token contract address |
+| `symbol` | Token ticker |
+| `chain` | Chain name |
+| `create_timestamp` | Unix timestamp of creation |
+| `is_open` | `true` if graduated to DEX |
+| `market_cap` | Current market cap (USD string) |
+| `token_ath_mc` | All-time high market cap (USD string) |
+| `pool_liquidity` | Current liquidity (USD string) |
+| `holders` | Current holder count |
+| `swap_1h` | Swap count in the last hour |
+| `volume_1h` | Trading volume in the last hour (USD string) |
+| `launchpad_platform` | Launch platform name (e.g. `Pump.fun`) |
+| `is_pump` | `true` if launched on Pump.fun |
+| `bundler_rate` | Bundler participation rate (0–1) |
+| `cto_flag` | `true` if community-takeover token |
+
+**Do NOT guess field names not listed here.** If a field appears in the response but is not in this table, do not interpret it without reading the raw output first.
+
+## Output Format
+
+**Do NOT dump raw JSON.** Always parse and present data in the structured formats below. Use `--raw` only when piping to `jq` or further processing.
+
+### `portfolio holdings` — Holdings Table
+
+Present a table sorted by `usd_value` (descending). Show total portfolio value at the top.
+
+```
+Wallet: {wallet} | Chain: {chain}
+Total value: ~${sum of usd_value across all positions}
+
+# | Token | Balance | USD Value | Total P&L | P&L% | Avg Cost | Buys / Sells
+```
+
+Flag positions where `profit_change` is strongly negative (e.g. < -50%) or positive (e.g. > 200%) with a brief note.
+
+### `portfolio activity` — Activity Feed
+
+Present as a chronological list (newest first). Use human-readable timestamps.
+
+```
+{type} {token.symbol}  |  {token_amount} tokens  |  ${cost_usd}  |  {timestamp}  |  tx: {short hash}
+```
+
+Group by token if the user asks about a specific token.
+
+### `portfolio stats` — Stats Summary
+
+```
+Wallet: {wallet} | Period: {period}
+Realized P&L:   ${realized_profit}
+Unrealized P&L: ${unrealized_profit}
+Win Rate:        {winrate × 100}%
+Total Spent:     ${total_cost}
+Buys / Sells:    {buy_count} / {sell_count}
+PnL Ratio:       {pnl}x
+[Identity:       {common.name or common.twitter_username} | Tags: {common.tags}]
+```
+
+Show the `[Identity: ...]` line only if `common` is present in the response. For batch queries (multiple wallets), present one summary block per wallet.
+
+## Notes
+
+- `portfolio holdings` uses **critical auth** (`GMGN_API_KEY` + `GMGN_PRIVATE_KEY` required — CLI signs the request automatically). All other portfolio commands use exist auth (API Key only, no signature required).
+- `portfolio stats` supports multiple `--wallet` flags for batch queries
+- Use `--raw` to get single-line JSON for further processing
+- **Input validation** — Wallet and token addresses are validated against the expected chain format at runtime (sol: base58 32–44 chars; bsc/base/eth: `0x` + 40 hex digits). The CLI exits with an error on invalid input.
+- For follow-wallet, KOL, and Smart Money trade records, use the `gmgn-track` skill (`track follow-wallet` / `track kol` / `track smartmoney`)
+
+## Workflow
+
+For full wallet analysis including trade history and follow-through on top holdings, see [`docs/workflow-wallet-analysis.md`](../../docs/workflow-wallet-analysis.md)
+
+For in-depth trading style analysis, copy-trade ROI estimation, and smart money leaderboard comparison, see [`docs/workflow-smart-money-profile.md`](../../docs/workflow-smart-money-profile.md)
+
+**When to use which:**
+- User asks "is this wallet worth following" → [`docs/workflow-wallet-analysis.md`](../../docs/workflow-wallet-analysis.md)
+- User asks "what's this wallet's trading style", "when does he take profit", "smart money profile", "if I copied this wallet what would my return be" → [`docs/workflow-smart-money-profile.md`](../../docs/workflow-smart-money-profile.md)
+- User wants to compare multiple smart money wallets by winrate/PnL → [`docs/workflow-smart-money-profile.md`](../../docs/workflow-smart-money-profile.md) Step 5 (leaderboard)
+- User asks "what tokens did this dev create", "dev 发过哪些币", "查一下这个 dev 的代币", "dev 创建记录" → use `portfolio created-tokens --chain <chain> --wallet <creator_address>` directly. Get the creator address first via `token info` if only a token address is given.

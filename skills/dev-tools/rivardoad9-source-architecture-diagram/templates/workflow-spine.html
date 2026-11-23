@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Workflow diagram</title>
+<style>
+  /* Render-ready: no padding anywhere, so screenshot pixels == viewBox pixels. */
+  html, body { margin: 0; padding: 0; background: #020617; }
+  svg { display: block; }
+</style>
+</head>
+<body>
+<!--
+  Vertical workflow spine, 6 stages, phone-legible at 1100x1240.
+  Swap the labels; keep the geometry. If a stage needs more text, grow that
+  box's height and push every later stage down by the same amount.
+  Render: deviceScaleFactor=1 + clip scale=2 (never both at 2).
+-->
+<svg width="1100" height="1240" viewBox="0 0 1100 1240" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#0f1e33" stroke-width="0.5"/>
+    </pattern>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arRose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#fb7185"/>
+    </marker>
+    <marker id="arAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#fbbf24"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="1240" fill="#020617"/>
+  <rect width="1100" height="1240" fill="url(#grid)"/>
+
+  <!-- header lives inside the SVG so the screenshot needs no page chrome -->
+  <circle cx="66" cy="46" r="5" fill="#34d399"/>
+  <text x="86" y="52" font-size="19" font-weight="700" fill="#e2e8f0" letter-spacing=".06em">WORKFLOW NAME</text>
+  <text x="86" y="76" font-size="12" fill="#94a3b8">one line on what this system is for</text>
+
+  <!-- ============ connectors: drawn before boxes, so they sit behind them ============ -->
+  <path d="M 370 205 V 255" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M 680 330 H 740" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#arRose)"/>
+  <path d="M 370 430 V 485" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <!-- fan-out to parallel workers -->
+  <path d="M 370 585 V 620" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+  <path d="M 158 620 H 578" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+  <path d="M 158 620 V 650" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M 370 620 V 650" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M 578 620 V 650" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <!-- merge back, below the group's labels -->
+  <path d="M 158 808 V 840 H 370" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+  <path d="M 578 808 V 840 H 370" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+  <path d="M 370 806 V 870" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <path d="M 370 970 V 1020" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+  <!-- escalations to the human panel -->
+  <path d="M 680 535 H 740" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="6,5" fill="none" marker-end="url(#arAmber)"/>
+  <path d="M 696 730 H 740" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="6,5" fill="none" marker-end="url(#arAmber)"/>
+
+  <!-- ============ 1 source ============ -->
+  <rect x="60" y="100" width="620" height="105" rx="6" fill="#0f172a"/>
+  <rect x="60" y="100" width="620" height="105" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="86" y="136" font-size="16" font-weight="700" fill="#67e8f9" letter-spacing=".06em">1 · SOURCE</text>
+  <text x="86" y="166" font-size="12" fill="#cbd5e1">where events arrive</text>
+  <text x="86" y="190" font-size="12" fill="#cbd5e1">second channel (optional)</text>
+
+  <!-- ============ 2 gate ============ -->
+  <rect x="60" y="255" width="620" height="175" rx="6" fill="#0f172a"/>
+  <rect x="60" y="255" width="620" height="175" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="86" y="291" font-size="16" font-weight="700" fill="#fcd34d" letter-spacing=".05em">2 · GATE (router)</text>
+  <text x="86" y="326" font-size="12" fill="#e2e8f0">first check</text>
+  <text x="86" y="353" font-size="12" fill="#e2e8f0">second check</text>
+  <text x="86" y="380" font-size="12" fill="#e2e8f0">third check</text>
+  <text x="86" y="412" font-size="11" fill="#94a3b8">what the gate itself never does</text>
+
+  <rect x="740" y="270" width="300" height="130" rx="6" fill="#0f172a"/>
+  <rect x="740" y="270" width="300" height="130" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="766" y="306" font-size="14" font-weight="700" fill="#fda4af" letter-spacing=".06em">REJECTED</text>
+  <text x="766" y="338" font-size="11" fill="#fecdd3">dropped silently</text>
+  <text x="766" y="362" font-size="11" fill="#fecdd3">no reply, no record</text>
+
+  <!-- ============ 3 queue ============ -->
+  <rect x="60" y="485" width="620" height="100" rx="6" fill="#0f172a"/>
+  <rect x="60" y="485" width="620" height="100" rx="6" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="86" y="520" font-size="16" font-weight="700" fill="#fdba74" letter-spacing=".06em">3 · TICKET</text>
+  <text x="86" y="552" font-size="12" fill="#e2e8f0">one request = one ticket, queued with an id</text>
+
+  <!-- ============ 4 parallel workers ============ -->
+  <rect x="44" y="632" width="652" height="196" rx="12" fill="none" stroke="#34d399" stroke-width="1" stroke-dasharray="8,5" opacity="0.6"/>
+  <text x="60" y="652" font-size="9" fill="#34d399" letter-spacing=".1em">4 · ISOLATED GROUP</text>
+  <text x="696" y="652" font-size="9" fill="#34d399" text-anchor="end" letter-spacing=".06em">one ticket per folder, no interference</text>
+
+  <g>
+    <rect x="60" y="666" width="195" height="140" rx="6" fill="#0f172a"/>
+    <rect x="60" y="666" width="195" height="140" rx="6" fill="rgba(6,78,59,0.45)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="80" y="698" font-size="13" font-weight="700" fill="#6ee7b7" letter-spacing=".05em">WORKER 1</text>
+    <text x="80" y="728" font-size="10" fill="#e2e8f0">ticket #12</text>
+    <text x="80" y="752" font-size="10" fill="#e2e8f0">folder + session</text>
+    <text x="80" y="776" font-size="10" fill="#e2e8f0">runs in parallel</text>
+  </g>
+  <g>
+    <rect x="270" y="666" width="195" height="140" rx="6" fill="#0f172a"/>
+    <rect x="270" y="666" width="195" height="140" rx="6" fill="rgba(6,78,59,0.45)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="290" y="698" font-size="13" font-weight="700" fill="#6ee7b7" letter-spacing=".05em">WORKER 2</text>
+    <text x="290" y="728" font-size="10" fill="#e2e8f0">ticket #13</text>
+    <text x="290" y="752" font-size="10" fill="#e2e8f0">folder + session</text>
+    <text x="290" y="776" font-size="10" fill="#e2e8f0">runs in parallel</text>
+  </g>
+  <g>
+    <rect x="480" y="666" width="195" height="140" rx="6" fill="#0f172a"/>
+    <rect x="480" y="666" width="195" height="140" rx="6" fill="rgba(6,78,59,0.45)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="500" y="698" font-size="13" font-weight="700" fill="#6ee7b7" letter-spacing=".05em">WORKER 3</text>
+    <text x="500" y="728" font-size="10" fill="#e2e8f0">ticket #14</text>
+    <text x="500" y="752" font-size="10" fill="#e2e8f0">folder + session</text>
+    <text x="500" y="776" font-size="10" fill="#e2e8f0">runs in parallel</text>
+  </g>
+
+  <!-- ============ 5 result ============ -->
+  <rect x="60" y="870" width="620" height="100" rx="6" fill="#0f172a"/>
+  <rect x="60" y="870" width="620" height="100" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="86" y="905" font-size="16" font-weight="700" fill="#c4b5fd" letter-spacing=".06em">5 · RESULT</text>
+  <text x="86" y="937" font-size="12" fill="#e2e8f0">artifact + explanation, returned where it was asked</text>
+
+  <!-- ============ 6 human ============ -->
+  <rect x="60" y="1020" width="620" height="95" rx="6" fill="#0f172a"/>
+  <rect x="60" y="1020" width="620" height="95" rx="6" fill="rgba(30,41,59,0.75)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="86" y="1054" font-size="16" font-weight="700" fill="#e2e8f0" letter-spacing=".06em">6 · HUMAN</text>
+  <text x="86" y="1086" font-size="12" fill="#cbd5e1">review and accept; the person still owns the outcome</text>
+
+  <!-- ============ side panel ============ -->
+  <rect x="740" y="470" width="300" height="300" rx="6" fill="#0f172a"/>
+  <rect x="740" y="470" width="300" height="300" rx="6" fill="rgba(30,41,59,0.7)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="766" y="506" font-size="14" font-weight="700" fill="#e2e8f0" letter-spacing=".05em">PANEL</text>
+  <text x="766" y="532" font-size="10" fill="#94a3b8">one supervision screen</text>
+  <text x="766" y="570" font-size="11" fill="#cbd5e1">shows only what waits on a</text>
+  <text x="766" y="592" font-size="11" fill="#cbd5e1">person: stuck, failed, or</text>
+  <text x="766" y="614" font-size="11" fill="#cbd5e1">needs a decision.</text>
+  <text x="766" y="654" font-size="11" fill="#94a3b8">when healthy it stays empty</text>
+  <text x="766" y="676" font-size="11" fill="#94a3b8">and sends no notification.</text>
+  <text x="766" y="722" font-size="10" fill="#fbbf24">amber arrows = escalation to a</text>
+  <text x="766" y="742" font-size="10" fill="#fbbf24">person, not to the team</text>
+
+  <rect x="740" y="810" width="300" height="180" rx="6" fill="rgba(15,23,42,.5)" stroke="#334155" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="766" y="842" font-size="10" fill="#94a3b8" letter-spacing=".1em">WHY THIS SAVES ATTENTION</text>
+  <text x="766" y="878" font-size="11" fill="#cbd5e1">nothing runs unasked</text>
+  <text x="766" y="906" font-size="11" fill="#cbd5e1">rejections are never answered</text>
+  <text x="766" y="934" font-size="11" fill="#cbd5e1">only a finished result is</text>
+  <text x="766" y="962" font-size="11" fill="#cbd5e1">reported, or a blocker</text>
+
+  <!-- ============ legend: outside every boundary ============ -->
+  <g transform="translate(60,1150)">
+    <line x1="0" y1="0" x2="46" y2="0" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ar)"/>
+    <text x="58" y="4" font-size="11" fill="#cbd5e1">normal flow</text>
+
+    <line x1="210" y1="0" x2="256" y2="0" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arRose)"/>
+    <text x="268" y="4" font-size="11" fill="#cbd5e1">rejected, no trace</text>
+
+    <line x1="480" y1="0" x2="526" y2="0" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="6,5" marker-end="url(#arAmber)"/>
+    <text x="538" y="4" font-size="11" fill="#cbd5e1">escalates to a person</text>
+  </g>
+</svg>
+</body>
+</html>
