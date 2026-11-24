@@ -53,8 +53,11 @@ The condition must be checkable from an available evidence source. Questions abo
 | Visual evidence | Visible layout, copy, ordering, clipping, and interaction state shown |
 | Runtime evidence | The exercised behavior, environment, and observations captured |
 | Existing review comments | Earlier reviewer observations and deduplication |
+| Installed MMDS sources | Component choice, deprecation, tokens, typography, and accessibility rules for the changed UI |
 
 State the evidence boundary. For example, a screenshot supports a visible layout claim; code or runtime evidence supports persistence and error-handling claims.
+
+A UI finding cites the `ui-development` sources the review reached: the installed `@metamask/design-system-*` package types, the hosted Storybook component manifest, MMDS package documentation, and Design Brain when a Notion connector can reach it. The routing block records which of those sources were reached and which stayed unreachable, so an unreached source stays unknown instead of implying that the rule behind the finding was checked.
 
 ## 6. Route skills
 

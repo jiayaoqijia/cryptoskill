@@ -28,9 +28,10 @@ Treat these command names as evidence labels from check output or the pull reque
 | Changed files | Class | Module | Semantic signal |
 | --- | --- | --- | --- |
 | Application `*.test.ts`, `*.test.tsx`, `*.view.test.tsx`, `*.integration.test.ts`, `tests/smoke-appium/` | preference | `mobile-testing` | Application behavior or test-layer coverage changed |
+| UI components, for example under `app/components` or `app/component-library` | preference | `ui-development` | Any UI component changed; no further signal is required |
 | React Native components and screens | capability | `performance` when installed | Rendering, effects, data flow, lists, interaction cost, startup, memory, or responsiveness changed |
 | React Native component JSX | capability | `check-nesting` when installed | Component nesting changed |
-| User-facing copy | preference | `content-guidelines` when installed | Visible strings changed |
+| User-facing copy | preference | `content-guidelines` | Visible strings changed |
 | Analytics, feature flags, or navigation | capability | The installed `analytics`, `feature-flags`, or `navigation` skill | Matching domain behavior changed |
 | Flaky-test detector scripts and workflows | capability | `flaky-test-detection` when installed | Flaky-test detection, history, analysis, or sticky-comment behavior changed |
 
@@ -58,6 +59,8 @@ Use `provided`, `needs author evidence`, or `unread`. Keep these statuses outsid
 - Put template, manual testing, screenshots, changelog, linked issue, checks, and `pr-readiness-check` results under **Author evidence**.
 - Route application test changes to `mobile-testing` and cite `docs/testing/component-view-tests.md` only for a screen or view test in the diff.
 - Route a capability only when both the changed surface and semantic signal match.
+- Route UI changes to `ui-development` and record which of its sources the review reached: installed package types, the Storybook component manifest, MMDS package docs, and Design Brain when Notion is reachable.
+- When a routed preference skill is skipped, record the skip and name it as a coverage gap in the review coverage conclusion.
 - Route flaky-test detector scripts and workflows to `flaky-test-detection` when that installed skill is readable.
 - For a tooling-only diff, review the tooling's own tests and matching domain skills.
 

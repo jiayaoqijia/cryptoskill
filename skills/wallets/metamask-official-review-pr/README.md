@@ -127,7 +127,7 @@ Before specialist routing, `references/reasoning.md` gives every review the same
 
 ### 8. Skill taxonomy and routing
 
-**Repository preference skills** encode norms, conventions, and rules. Examples: `pr-guidelines`, `coding-guidelines`, testing conventions, controller conventions, content guidance, and repo overlays.
+**Repository preference skills** encode norms, conventions, and rules. Examples: `pr-guidelines`, `coding-guidelines`, testing conventions, controller conventions, content guidance, UI development, and repo overlays.
 
 **Domain capability skills** provide specialized knowledge. Examples: performance, analytics, feature flags, navigation, perps, flaky-test detection, observability, and high-cardinality review.
 
@@ -137,6 +137,7 @@ Every routing decision gets an independent per-skill block with class, matching 
 | --- | --- | --- |
 | Pull request template and repository process | preference | `pr-guidelines`; Mobile `pr-readiness-check` feeds Author evidence |
 | Source and test conventions | preference | `coding-guidelines`, repository testing skill |
+| Any UI component changed in Mobile or Extension | preference | `ui-development` |
 | Mobile React Native rendering, effects, lists, data flow, or interaction cost | capability | `performance` |
 | Extension rendering, effects, compiler behavior, or Redux identity | capability | Matching Extension performance skill |
 | Analytics, flags, navigation, or installed domain behavior | capability | Matching installed domain skill |
@@ -145,7 +146,7 @@ Every routing decision gets an independent per-skill block with class, matching 
 | User-facing strings | preference | `content-guidelines` |
 | Metrics, traces, logs, or metric labels | capability | Installed observability skill |
 
-A capability requires both a changed path and a semantic match. Copy-only component changes select content guidance; rendering behavior selects performance.
+A capability requires both a changed path and a semantic match. Copy-only component changes select content guidance; rendering behavior selects performance. `ui-development` is a preference, so a changed UI component selects it without a further signal, and performance or `check-nesting` still need theirs. `ui-development` and `content-guidelines` are `base: true`, so the default install carries both into Mobile and Extension; a routed preference skill that is skipped, whether not installed or missing a required input, is named as a coverage gap in the review coverage conclusion instead of a silent skip.
 
 Tooling, CI, build, and documentation changes under `.github/`, `scripts/`, `development/`, and equivalent paths use matching repository preferences and tooling-domain capabilities. Their collocated tests are reviewed. Application-specific capabilities apply when application code also changed.
 
