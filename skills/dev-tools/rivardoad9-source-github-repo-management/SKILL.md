@@ -274,6 +274,40 @@ curl -s -X PUT \
   -d '{"names": ["machine-learning", "python", "automation"]}'
 ```
 
+## 5b. Renaming a repo and changing visibility
+
+```bash
+gh repo rename new-name -R owner/old-name --yes
+gh repo edit owner/new-name --visibility private --accept-visibility-change-consequences
+```
+
+Both operations are cheap; the collateral damage is what needs checking. Do these in order and verify
+each one from outside, because `gh` succeeding says nothing about links and sites that pointed at the old
+name.
+
+1. **Rename first, visibility second.** A rename leaves a 301 from the old URL, so existing clones and
+   links keep working. Flip to private and anonymous requests to the old URL start returning **404**, not a
+   redirect — every published link dies without warning.
+```bash
+curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' https://github.com/owner/old-name
+```
+2. **Pages follows the repo name**, so `owner.github.io/old-name/` moves to `owner.github.io/new-name/`.
+   A private repo on a free plan has no Pages at all: `gh api repos/owner/new-name/pages` returns 404 and
+   both URLs go dead. Check both URLs and tell the user the site is offline before they discover it.
+3. **The profile repo is special.** Setting the repo named after the account (`owner/owner`) to private
+   removes the profile README from the public profile page. The profile still returns 200 — the content
+   is simply gone, so verify with the raw README URL, not the profile status code.
+4. **Update local clones** (`git remote set-url origin https://github.com/owner/new-name.git`), any script
+   that printed or pushed to the old URL, and README/description text that names the repo. The 301 hides a
+   stale remote until the day it stops.
+5. **Re-verify from a fresh clone**: count `SKILL.md`/files, confirm zero `.env`, zero secret patterns, and
+   zero personal identifiers. A rename is a good moment to catch references to the old name that leaked
+   into docs.
+
+Guarding private data is not the same as deleting it: keep the repo, empty the exposure. When the site must
+stay live while the repo is private, move hosting to a provider that builds from private repos (Vercel,
+Netlify) instead of flipping Pages back on.
+
 ## 6. Branch Protection
 
 ```bash

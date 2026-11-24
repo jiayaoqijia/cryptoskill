@@ -23,6 +23,7 @@ Before implementation, MetaMask Mobile's matching flow, validation, copy and con
 Controller and shared utilities, and Mobile's controller selectors, actions and state shape, are reused with no parallel state or copied logic. Types are narrowed or validated, never silenced.
 
 - [ ] **Parallel controller state** — a Terminal store or cache with its own writes, invalidation or fallback authority (REST snapshots, connection-flag source selection) for controller-owned state. A read-only view cache fed solely by a controller subscription is allowed.
+- [ ] **React Query polling of controller data** — `refetchInterval` (or `refetchIntervalInBackground`) on a query whose data the controller streams. Only a disconnected-stream fallback is allowed (`refetchInterval: isConnected ? false : …`). Polling already in a touched file is migrated in the same PR.
 - [ ] **Force casts** — `as unknown as T`, `as any` or non-null `!` used to silence a type.
 
 <a id="legacy-local-formatters"></a>

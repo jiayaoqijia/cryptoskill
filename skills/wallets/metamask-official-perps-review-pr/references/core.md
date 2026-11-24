@@ -10,6 +10,7 @@ A change to controller state shape, method signatures, event names or payloads, 
 - [ ] **Method signature changes without compatibility plan** — exported controller methods need backward compatibility or coordinated client changes.
 - [ ] **Event name/payload drift** — clients and metrics rely on stable events.
 - [ ] **Package export changes without package-level tests** — changing exports must include consumer-style assertions.
+- [ ] **One-client API shape** — a new method, subscription or event shaped for one client (named after its screen or hook, returning that client's query or view shape, or usable only through its stream layer). New contracts are provider-agnostic, go through the provider interface, and are consumed through one generic stream manager shared by every client. Data that changes over time ships as a subscription with an initial value, not a getter clients must poll. The PR names how Mobile, Extension and Terminal consume it.
 
 <a id="package-release-metadata-must-match-contract-impact"></a>
 
