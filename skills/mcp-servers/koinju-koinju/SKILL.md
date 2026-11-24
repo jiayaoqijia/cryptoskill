@@ -40,7 +40,7 @@ Most "test the API" sessions need only this. Read the Workflow below for nuance.
    - candles / OHLCV / historical price → `api.ohlcv` (parameterized), `api.ohlcv_1m`, `api.ohlcv_1h` (no `_1d` view)
    - tick trades → `api.trade`
    - funding rates (perpetual) → `api.funding_rate` (time column is `timestamp`, not `funding_timestamp`)
-   - order book, depth, slippage or market impact at a time → `api.order_book` and `api.order_book_impact` (parameterized, Professional and Business tiers only)
+   - order book, depth, slippage or market impact at a time → `api.order_book` and `api.order_book_impact` (parameterized, Professional and Enterprise)
    - option chain / Greeks / IV / smile / DVOL → all via `api.option_chains` (**plural** — there's no `api.option_smile` or `api.volatility_index`)
    - exchange or market coverage → `api.market_spot` / `_future` / `_option` (or REST `/market/*`)
 

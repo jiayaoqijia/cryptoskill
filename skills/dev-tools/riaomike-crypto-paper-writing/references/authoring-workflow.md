@@ -57,15 +57,33 @@ python3 ~/.dsh/skills/ccs-writing-style/scripts/count_prose_gates.py \
 
 Rules: **measured, no breach** is the exit condition; a `degenerate`/`unmatched` gate is a finding, not a pass; every breach is either repaired (move material, never delete a claim/status/number) or recorded as a human decision with its reason. Re-run after each repair until the gate list is clean or every remaining item is documented. Keep the exit code honest: the instruments' exit codes separate measured-clean (0) from unmatchable (2) and breach (3).
 
+### Repair-diff audit (mandatory before a finding may close)
+
+`move material, never delete` protects the claim, not the content: a repair that passes a gate can still
+change what the paper says. Before a repair may close a finding:
+
+1. Emit a **repair diff** with four lists: changed `\cite` keys; changed definitions, theorems, round
+   counts and parameters; changed title/abstract claim wording; changed numbers.
+2. If any list is non-empty, the repair is a **content edit**, not a relocation. Run
+   `crypto-theorem-review` on the changed formal object and `crypto-paper-review` in **re-review mode**
+   (map every prior finding to the changed evidence), and write the result into the review report as a
+   required field: `regressions introduced: none verified` or the list of regressions.
+3. Re-run Step 5 after the re-review, not instead of it. A clean gate list over an unreviewed repair diff
+   is not a pass.
+
+
 ## Step 6 — Review loop
 
-Run `crypto-paper-review` (venue-level critique), plus `zkp-security-review` for ZKP/SNARK claims and `crypto-theorem-review` for theorem/proof obligations. Repair findings, then re-run Step 5. Do not let a review finding close without either a repair or a recorded limitation.
+Run `crypto-paper-review` (venue-level critique), plus `zkp-security-review` for ZKP/SNARK claims and `crypto-theorem-review` for theorem/proof obligations. Repair findings, then re-run Step 5. Do not let a review finding close without either a repair or a recorded limitation. After any repair, re-review the repair diff per Step 5's repair-diff audit; a re-review that does not state `regressions introduced` is incomplete.
 
 ## Step 7 — Freeze and hand off
 
 - Twin parity (markdown/tex) or a recorded decision to decouple them.
 - Content-anchored region map (line numbers are non-binding hints) and the allowlist/gate state.
 - Double-blind strings and the AI-disclosure sentence per the fetched call; page budget still requires a compile on a machine with the venue template (**human step** when no LaTeX toolchain exists).
+- Structure conformance: the venue's section order from the owning skill's `references/section-order.md` (security family), with the recorded conformance check; a deviation without a reason blocks the freeze.
+- De-AI evidence: the de-AI grep checklist output (hits plus every waiver with its reason) is a freeze artifact, not an optional pass; zero hits or every hit explicitly waived.
+- Assumption naming: every assumption used in a theorem's hypotheses carries a named `assumption` environment (or the family equivalent) and is cited as such; a bare `A1`-style label blocks the freeze.
 - Promotion checklist: submission guide, integration report, package hashes, README.
 
 ## Worked example (EVH-MLPC, crypto/LNCS family)

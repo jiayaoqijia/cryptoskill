@@ -143,7 +143,7 @@ ORDER BY timestamp DESC;
 
 ## `api.order_book` and `api.order_book_impact` — order books (parameterized views)
 
-Only the Professional and Business tiers can call these two views. On a Free or Developer account, the call fails with error 47, `Unknown expression or function identifier snapshot`. That error means that the account cannot read the order books.
+These two views are included in Professional and Enterprise. On a Free or Developer account, the call fails with error 47, `Unknown expression or function identifier snapshot`. That error means that the account cannot read the order books.
 
 `api.order_book` gives the book of one market at one time. It starts from the last snapshot of the 24 hours before `at`, and it applies each update after that snapshot.
 

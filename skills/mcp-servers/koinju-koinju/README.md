@@ -7,14 +7,14 @@ A [Claude Code](https://claude.com/claude-code) skill for working with the **Koi
 Via the [skills.sh](https://skills.sh) CLI (recommended):
 
 ```bash
-npx skills add https://gitlab.com/koinju-public/agent-skill        # into ./.claude/skills/
-npx skills add https://gitlab.com/koinju-public/agent-skill -g     # global ~/.claude/skills/
+npx skills add https://github.com/koinju/agent-skill        # into ./.claude/skills/
+npx skills add https://github.com/koinju/agent-skill -g     # global ~/.claude/skills/
 ```
 
 Or clone manually:
 
 ```bash
-git clone https://gitlab.com/koinju-public/agent-skill.git ~/.claude/skills/koinju
+git clone https://github.com/koinju/agent-skill.git ~/.claude/skills/koinju
 ```
 
 Update to the latest version:

@@ -1,12 +1,12 @@
 ---
 name: elfa-ai
 description: >
-  Use this skill for Elfa API crypto social intelligence and Auto condition-engine workflows:
-  API v3 events, calendar, positions and rankings (crypto, equities), Verify (check a claim
-  against X, Telegram and the web), Monitors (a topic in plain words, a signed
-  webhook per match), trending tokens, narratives, mentions, token news, trending contract
-  addresses, AI market chat (JSON and SSE streaming), curl/code snippets, automated alerts,
-  EQL queries, trigger pipelines, and agent workflows that react to market conditions.
+  Use this skill for the Elfa API: get events, answers, verdicts and alerts from social and
+  web data. Data (events, calendar, positions, rankings; crypto and equities), Explain (AI
+  market chat, JSON and SSE), Verify (check a claim against X, Telegram and the web),
+  Monitors (a topic in plain words, a signed webhook per match), older social data (trending
+  tokens, narratives, mentions, token news, trending contracts), curl/code snippets, Auto
+  alerts, EQL queries, trigger pipelines, and agent workflows that react to markets.
   Auto can trigger on X/Twitter posts, Telegram channels, events (news), one trader's
   calls, token or stock mindshare, SEC filings, Kalshi and Polymarket prediction markets,
   funding rates, liquidation cascades, the Fear & Greed index, and X follow-graph
@@ -17,17 +17,21 @@ description: >
 
 # Elfa API Skill
 
-This skill enables agents to work with the [Elfa API](https://api.elfa.ai) — a social listening,
-market context layer, and automated condition engine for crypto. Elfa ingests real-time data
-from Twitter/X, Telegram, and other sources, then structures sentiment, narratives, and
-attention shifts into actionable trading insights. The **Market Intelligence** endpoints cover
-measurement (counts, engagement, accounts) and interpretation (chat, summaries, narratives).
-**API v3** turns news and market chatter across crypto and equities into events, positions and
-rankings. **Verify** checks one claim against X posts, public Telegram channels and web pages,
-and **Monitors** sends a signed webhook for each new item that matches a topic you describe in
-plain words.
-The **Auto** subsystem adds a managed condition engine and trigger pipeline — describe what to
-watch for, and Auto evaluates continuously and fires actions when conditions are met.
+This skill enables agents to work with the [Elfa API](https://api.elfa.ai). Get events,
+answers, verdicts and alerts from social and web data.
+
+Elfa indexes social media and web pages, and turns them into high-intent events and entities.
+Your agent can query them, ask about them, or get an alert when they happen. Use one API key.
+Agents without an account can pay per request from a wallet with x402.
+
+- **Data** (`/v3/`) returns structured data about an asset, an account or the market across
+  crypto and equities: events, trading calls, positioning, attention rankings.
+- **Explain** (`/v2/chat`) returns a written, sourced answer to a market question.
+- **Verify** returns a verdict on a claim, with the posts and pages that support or contradict it.
+- **Monitors** send a signed webhook for each new item that matches a topic you describe in
+  plain words. **Auto** runs an alert rule that you write and fires its action when it matches.
+- The older **Social data (v2)** endpoints return mention counts, top posts, trending lists and
+  narratives. Elfa will deprecate them; build new work on Data.
 
 Full documentation: [docs.elfa.ai](https://docs.elfa.ai)
 
@@ -173,7 +177,7 @@ Verify and Monitors work on every plan, Free included. See
 | `/v3/monitors/{id}` | DELETE | Deletes it, so it stops sending and stops costing | Free |
 | `/v3/monitors/{id}/events` | GET | Lists the monitor's matches from the last 30 days, newest first | Free |
 
-#### Auto endpoints (Condition Engine)
+#### Auto endpoints
 
 Auto endpoints are available under `/v2/auto/` (API key) and
 `/x402/v2/auto/` (keyless). See [Auto docs](https://docs.elfa.ai/auto/overview) for full details.
@@ -348,24 +352,27 @@ Subscription plans:
 | Credits / month | 1,000 in total, once | Prepaid balance ($0.0145 / credit) | 120,000 | Custom |
 | Overage | Calls stop | — | $0.009 / credit | Custom |
 | Rate limit | 60 RPM | 60 RPM | 120 RPM | Custom |
-| Agent Chat | — | ✓ | ✓ | ✓ |
-| Agent Automation | ✓ (up to 10 active plans) | ✓ (up to 50 active plans) | ✓ (up to 100 active plans) | ✓ |
-| Verify and Monitors | ✓ | ✓ | ✓ | ✓ |
+| Data history | 30 days | 30 days | 60 days | Up to 2 years |
+| Active Auto alerts | 10 | 50 | 100 | Custom |
+| Data endpoints, Verify and Monitors | ✓ | ✓ | ✓ | ✓ |
+| Explain | — | ✓ | ✓ | ✓ |
 
 Starter is the plan that the API and its error messages call Free.
 
 **What each tier unlocks:**
-- **Starter** — the same social data, API v3, Auto, Verify and Monitors as PAYG, with 1,000
-  credits in total, up to 10 active Auto plans, and no AI Chat (`/v2/chat`, `/v2/chat/stream`)
-- **PAYG** — core social data (trending tokens, top mentions, keyword mentions, event
-  summaries, token news, trending contract addresses on Twitter and Telegram), plus API v3
-  (events, calls, market data including token mindshare, and people), **trending narratives**, **Elfa Intelligence** (Agent
-  Chat and Agent Automation), **streaming AI Chat** (Ask Elfa, `POST /v2/chat/stream`),
-  **Verify** (`POST /v3/verify`) and **Monitors** (`/v3/monitors`)
+- **Starter** — the same Data endpoints, social data, Auto, Verify and Monitors as PAYG, with
+  1,000 credits in total, up to 10 active Auto alerts, and no Explain (`/v2/chat`,
+  `/v2/chat/stream`)
+- **PAYG** — the Data endpoints (events, calls, market data including token mindshare, and
+  people), the older social data endpoints (trending tokens, top mentions, keyword mentions,
+  event summaries, token news, trending contract addresses on Twitter and Telegram),
+  **trending narratives**, **Explain** (`POST /v2/chat`, and streaming with
+  `POST /v2/chat/stream`), **Auto**, **Verify** (`POST /v3/verify`) and **Monitors**
+  (`/v3/monitors`)
 - **Grow** — everything in PAYG, with 120,000 credits a month, $0.009 per overage credit, and
   120 RPM
-- **Enterprise** — everything in Grow, plus custom credit and rate limits, dedicated support,
-  custom integrations, and priority support
+- **Enterprise** — everything in Grow, plus custom credits and rate limits, up to 2 years of
+  data history, a commercial license, an account manager, a support channel and early access
 
 Gate summary for the tier-restricted endpoints:
 
@@ -557,9 +564,9 @@ console.log(data.data.message);
 - For the chat endpoint: display the AI response cleanly.
 - If the response contains an error, explain what went wrong and suggest fixes.
 
-### Step 2c: Market Intelligence — picking the right endpoint
+### Step 2c: Social data and Explain — picking the right endpoint
 
-The data endpoints split into two tiers. Picking the wrong tier is the most common integration
+These endpoints split into two tiers. Picking the wrong tier is the most common integration
 mistake.
 
 | Tier | Endpoints | What comes back |
@@ -1036,9 +1043,9 @@ own limit; matches, and monitors Elfa ended, are kept for 30 days.
 If a create returns an error but an ended monitor then appears in the list, delete it: it is not
 charged.
 
-### Step 3: Auto — Condition Engine and Trigger Pipeline
+### Step 3: Auto — Alerts and Trigger Pipeline
 
-Auto is a managed **condition engine + trigger pipeline** for agents. You describe what to
+Auto runs an alert rule that you write and tells you when it matches. You describe what to
 watch for (price, technical indicators, LLM-evaluated conditions, scheduled checks,
 prediction-market activity, funding rates, liquidation cascades, market sentiment, social
 attention on an asset, one trader's calls), and Auto

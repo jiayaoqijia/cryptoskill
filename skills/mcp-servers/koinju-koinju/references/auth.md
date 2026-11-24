@@ -126,12 +126,13 @@ print(client.query("SELECT min(timestamp), max(timestamp) FROM api.trade").resul
 
 ## REST API
 
-| Endpoints | Auth | Free | Dev | Pro | Biz | Enterprise |
-|---|---|---|---|---|---|---|
-| `/market/*` (spot, future, option listings) | none | 10 req/s | 10 req/s | 10 req/s | 10 req/s | custom |
-| `/ohlcv`, `/trade`, `/funding-rate`, `/volatility-index`, `/stats` | `x-api-key` | 100/day | 1k/day | 10k/day | 50k/day | custom |
+| Endpoints | Auth | Free | Developer | Professional | Enterprise |
+| --- | --- | --- | --- | --- | --- |
+| `/market/*` (spot, future, option listings) | none | 10 req/s | 10 req/s | 10 req/s | 10 req/s |
+| `/ohlcv`, `/trade` | `x-api-key` | 100/day | 1,000/day | 1,000/day | Custom |
+| `/funding-rate`, `/option/chain`, `/option/smile`, `/option/matrix` | `x-api-key` | Not included | Within the daily REST allowance | Within the daily REST allowance | Custom |
 
-Send the API key in the `x-api-key` header. Free tier returns up to 100 items per call; Dev/Pro 1000; Biz unlimited.
+Send the API key in the `x-api-key` header. Record-list endpoints return up to 100 items per call on Free and Developer, and 1,000 on Professional. OHLCV and trades include full available history on all plans. SQL has separate daily result allowances and per-query time limits, with no query-count quota. See [Pricing](https://docs.koinju.io/pricing).
 
 ## SQL API
 

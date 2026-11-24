@@ -93,7 +93,7 @@ A candidate that satisfies none of the three is **an identifier the reader canno
 
 ### Class 6 has two owners, and the output must say which one fired
 
-Row, sample, and configuration labels sit on a boundary, and reporting them without distinguishing the cases is itself a defect. **A label the manuscript defines is not process-register naming — it raises no `D-C1` finding.** What it can raise is a different thing:
+Row, sample, and configuration labels sit on a boundary, and reporting them without distinguishing the cases is itself a defect. **A label the manuscript defines is not process-register naming — it raises no `D-C1` finding — except an assumption or claim label repeated in running prose as a bare construct ID (`(A1)`, `(A2)`), which is a class-1 style finding even when defined inline.** The exemption holds only when the label lives in a standard theorem-like environment (`assumption`, `theorem`, `definition`) and is cited by that environment's own name and number; an inline `(A1)` … `(A4)` list in the body reads as work-plan numbering, not as a paper object. Fix: define the assumption in an `assumption` environment with a descriptive name and cite it as "Assumption 1". What it can raise is a different thing:
 
 - **`D-C1` finding (process-register naming)** — only for a label the manuscript does *not* define and a reader cannot resolve. Verdict `violation`, `no definition found`. This is the only case that is a naming leak.
 - **class-6 style finding** — for a manuscript-defined label **cited outside its own table or caption**, e.g. prose that calls a configuration by its table-row label. This is a *style* finding, not a leak: the label is legitimate and its anchor proves it, but the fix is the one in the class-6 row above — name the configuration by its parameters and let the table caption carry the label. The verdict is `legitimate(a)` **plus** the style flag.
@@ -177,6 +177,8 @@ It (is|was) (important|worth|interesting|crucial) to (note|mention|stress)
 In order to|aims to|aspires to|strives to
 This (section|chapter|paper) (will|aims to|intends to)
 dramatically|remarkably                   # unless a number follows in the same sentence
+# paper-side planning labels (class 1/6 owner; see the Class 6 section)
+\([A-Z][0-9]\)                          # bare work-plan label in prose; fix by an assumption/theorem environment + name
 ```
 
 The process-register classes are deliberately **not** in this block, because a checklist that contains a live identifier cannot be run against itself; they are run by the de-naming scan above, which uses the character classes from the table.

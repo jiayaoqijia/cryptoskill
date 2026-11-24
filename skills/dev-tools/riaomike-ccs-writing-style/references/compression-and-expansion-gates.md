@@ -92,7 +92,7 @@ Length caps do not enter this list because the corpus does not support a per-ven
 
 **Input** the abstract. **Output** words, sentences, longest sentence, per-paragraph move labels (context / gap / build / result), and the share of words in each move.
 
-**Pass:** words ≤ 220 unless a recorded reason names why the venue's own distribution supports more; sentences ≤ 9; mean sentence length ≤ 30 words — **that 30 is the corpus median of 24.1 with the 1.25× tolerance band applied, and it is the bound this gate passes on**, exactly as the threshold table above states it, so the row and the gate cannot disagree; longest sentence ≤ 40 words; at least one paragraph performs the build move by naming the artifact, protocol, or mechanism the paper contributes; zero process-narration spans; no sentence shared verbatim with the contributions list.
+**Pass:** words ≤ 220 unless a recorded reason names why the venue's own distribution supports more; sentences ≤ 9; mean sentence length ≤ 30 words — **that 30 is the corpus median of 24.1 with the 1.25× tolerance band applied, and it is the bound this gate passes on**, exactly as the threshold table above states it, so the row and the gate cannot disagree; longest sentence ≤ 40 words; at least one paragraph performs the build move by naming the artifact, protocol, or mechanism the paper contributes; zero process-narration spans; no sentence shared verbatim with the contributions list; no claim strengthening across the rewrite (see Gate-Condense-Claim-Preservation).
 
 **Fail:** every number inside the caps but no paragraph naming what is built; a 220-word abstract whose analysis paragraphs hold over half the words and whose build paragraph is a single clause. The reported defect has exactly this shape — a 247-word abstract in four paragraphs, three of which report analysis outcomes — and it passes a bare length cap, so a length cap alone never closes this gate.
 
@@ -113,6 +113,16 @@ does not govern a security-venue contribution item. The 2.4× gap is a measured 
 tolerance — before applying either number, name the venue family of the paper, and apply only that family's
 cap. `crypto-venue-paper-writing` carries the mirror statement for the other family.
 
+
+### Gate-Condense-Claim-Preservation
+
+**Input** the claim-bearing text before and after a condensation pass (title, abstract, contributions, overview). **Output** each claim's modality, quantifiers/degree, scope limits, and object before and after, plus the strengthened spans.
+
+**Pass:** condensation may delete a claim, merge two claims, rephrase at equal strength, or **downgrade** a claim. It may not strengthen one: modality (`proves` / `claims` / `supports`), quantifiers and degree (`all`, `never`, `first`, `only`, `every`), scope limits (`under assumptions`, a named parameter range), and the claim's object (committing to the message vs committing to the codeword) are preserved unless the claim ledger already carries the stronger form with its evidence. Any newly added `never`/`always`/`first`/`only` must resolve to a ledger entry.
+
+**Fail:** an outline fact "commits once to the message (no separate codeword commitment)" compressed to "never commits to the codeword" while the construction still commits the codeword columns with a Merkle tree. The word cap was met; the claim changed.
+
+**Near-miss to catch:** an abstract that buys its length by turning a conditional claim into an unconditional one.
 
 ### Gate-Condense-Contributions-vs-Threat-Model
 

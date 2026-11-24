@@ -355,7 +355,8 @@ def select_section(text: str, pattern: str, direct: bool) -> tuple[str, str]:
     """
     spans = section_spans(text, pattern, direct)
     if not spans:
-        raise SystemExit(f"no heading matched {pattern!r}")
+        print(f"count_prose_gates: no heading matched {pattern!r}", file=sys.stderr)
+        raise SystemExit(2)
     return spans[0]
 
 
@@ -880,7 +881,8 @@ def report_section_mass(args: argparse.Namespace) -> int:
         elif ":" in spec:
             name, pattern = spec.split(":", 1)
         else:
-            raise SystemExit(f"--section needs NAME:PATTERN or NAME+=PATTERN, got {spec!r}")
+            print(f"count_prose_gates: --section needs NAME:PATTERN or NAME+=PATTERN, got {spec!r}", file=sys.stderr)
+            raise SystemExit(2)
         spans = section_spans(text, pattern, direct=args.direct)
         if not spans:
             print(json.dumps({

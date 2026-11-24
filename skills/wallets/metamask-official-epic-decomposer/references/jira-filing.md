@@ -31,7 +31,7 @@ Phase 6 only, after the user approves the plan and says to file.
 
 ## Description format
 
-Jira Cloud descriptions are Atlassian Document Format (ADF). Convert the ticket markdown to ADF, keeping headings, tables, fenced code, inline code, links, bold and quote panels. Keep the markdown as the source of truth in `tickets/` so tickets can be regenerated. Check one filed ticket in the browser before filing the rest: tables and links must render.
+Jira Cloud descriptions are Atlassian Document Format (ADF). Convert the ticket markdown to ADF, keeping headings, tables, fenced code, inline code, links, bold and quote panels. `node <installed-skill>/scripts/md2adf.mjs tickets/<id>.md` does this and prints the ADF JSON. Keep the markdown as the source of truth in `tickets/` so tickets can be regenerated. Check one filed ticket in the browser before filing the rest: tables and links must render.
 
 Descriptions are limited to 32,767 characters of ADF. A ticket that comes near that is too big; split it.
 

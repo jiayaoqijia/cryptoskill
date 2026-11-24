@@ -68,6 +68,16 @@ Definition and both distributions: `skills-work/corpus/crypto/statistics.md:206-
 
 The security-venue corpus confirms the same norm with an independent metric, so a paper may cite either: bag-of-words Jaccard median 0.201 and trigram Jaccard median 0.019 between the contribution block and the abstract (`skills-work/corpus/security/statistics.md:61-62`, definition at `skills-work/corpus/security/statistics.md:64-67`, n=22).
 
+## Claim preservation
+
+Condensation may delete, merge, rephrase at equal strength, or **downgrade** a claim; it may never
+strengthen one. Modality (`proves` / `claims` / `supports`), quantifiers and degree (`all`, `never`,
+`first`, `only`), scope limits (`under assumptions`, a named parameter range), and the claim's object
+(committing to the message vs committing to the codeword) are preserved across the rewrite unless the
+claim ledger already carries the stronger form with its evidence. The gate that judges this is
+`Gate-Condense-Claim-Preservation` in `ccs-writing-style/references/compression-and-expansion-gates.md`;
+the same rule governs this family's abstract and contribution passes.
+
 ## The deletion and migration list
 
 Compression here means **relocation**. Every removed span gets a destination, and the destination is recorded in the return value. The following devices are the ones the corpus actually uses; each is anchored to a real instance.

@@ -57,7 +57,7 @@ For a one-shot summary across all three market classes, pipe each into `jq 'leng
 
 | Endpoint | Notes |
 |---|---|
-| `/ohlcv` | Candles. Tier-aware history depth + LIMIT. |
+| `/ohlcv` | Candles. Full available history, with the plan's item limit. |
 | `/trade` | Trades. Tier-aware. |
 | `/funding-rate` | Perpetual funding history. |
 | `/volatility-index` | DVOL series for BTC, ETH. |
@@ -86,17 +86,16 @@ r.raise_for_status()
 candles = r.json()
 ```
 
-### Rate limits per tier
+### Daily REST limits per plan
 
-| Tier | req/s | req/day | items/req |
-|---|---|---|---|
-| Free | 1 | 100 | 100 |
-| Developer | 5 | 1k | 1k |
-| Professional | 10 | 10k | 1k |
-| Business | 20 | 50k | unlimited |
-| Enterprise | custom | custom | custom |
+| Plan | req/day | items/req |
+| --- | --- | --- |
+| Free | 100 | 100 |
+| Developer | 1,000 | 100 |
+| Professional | 1,000 | 1,000 |
+| Enterprise | Custom | Custom |
 
-429 on overflow.
+The item limit applies to record-list endpoints. REST and SQL have separate allowances; there is no shared monthly datapoint budget. OHLCV and trades have full available history on all plans. Option-chain and funding-rate history are included from Developer. Endpoint-specific throttles still apply, with HTTP 429 when a REST rate or daily request limit is reached. See [Pricing](https://docs.koinju.io/pricing).
 
 ## When to choose REST vs SQL
 

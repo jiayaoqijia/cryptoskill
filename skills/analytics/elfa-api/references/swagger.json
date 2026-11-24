@@ -58,11 +58,13 @@
 					},
 					"dailyRequestLimit": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Same as `limits.daily`."
 					},
 					"monthlyRequestLimit": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Same as `limits.monthly`."
 					},
 					"expiresAt": {
 						"anyOf": [
@@ -5855,7 +5857,7 @@
 	},
 	"info": {
 		"title": "Elfa Api",
-		"version": "3.16.0",
+		"version": "3.16.1",
 		"description": "API documentation for Elfa"
 	},
 	"paths": {
