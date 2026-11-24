@@ -128,7 +128,7 @@ live mainnet agent right now:
 
 Paid tools (`get_premium_signals` $0.02, `get_premium_market` $0.05,
 `execute_paid_strategy` $0.25, over x402; `get_mpp_signals` $0.02,
-`get_mpp_market` $0.05, over MPP) need a funded `STELLAR_SECRET_KEY` and
+`get_mpp_market` $0.05, over MPP; on nirium-mcp 0.6.13 the MPP tools are expected to fail until `@stellar/mpp` supports stellar-sdk 17, use 0.6.12 for them) need a funded `STELLAR_SECRET_KEY` and
 are **testnet only today**, with one exception: `get_premium_market` is
 also payable on mainnet (`/api/v1/premium/market` answers `402`). On
 mainnet, `/api/v1/premium/signals` and `/api/v1/premium/execute` return
