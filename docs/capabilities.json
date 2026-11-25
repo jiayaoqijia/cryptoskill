@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-25T00:47:23.711326+00:00",
+  "generated_at": "2026-11-25T06:37:33.256233+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -151916,6 +151916,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/maxmoneycash-hlp": {
+      "name": "hlp",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/mcp-bundle-agent": {
       "name": "mcp-bundle-agent",
       "execution_model": "read_only",
@@ -260431,11 +260493,11 @@
     }
   },
   "summary": {
-    "discovered": 4186,
-    "processed": 4186,
+    "discovered": 4187,
+    "processed": 4187,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2942,
+      "read_only": 2943,
       "router_orchestrator": 187,
       "unknown": 498,
       "analysis_only": 255,
@@ -260446,13 +260508,13 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1492,
+      "can_execute_shell": 1493,
       "can_install_code": 737,
       "can_write_files": 292,
       "can_browse_web": 340,
       "can_spawn_subagents": 338,
       "can_move_funds": 318,
-      "requires_private_key": 560,
+      "requires_private_key": 561,
       "requires_hosted_operator": 390,
       "uses_remote_install_script": 54,
       "mutable_remote_runtime": 737
