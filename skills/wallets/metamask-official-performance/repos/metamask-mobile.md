@@ -44,6 +44,7 @@ Always pair measurement with the **power-user scenario on Android** — see [ref
 | Reviewing a PR / auditing code | [references/mm-audit-playbook.md](references/mm-audit-playbook.md) |
 | Debugging a slow screen / FPS drop | [references/mm-tools.md](references/mm-tools.md) (symptom-first tree) |
 | Instrumenting or testing a flow | [references/mm-tools.md](references/mm-tools.md) + [references/native-measure-tti.md](references/native-measure-tti.md) |
+| Seeing Sentry traces/errors locally; **"open Spotlight"** | Use the `spotlight` skill (`mms-spotlight`): its `references/mm-spotlight.md`, run its `scripts/spotlight.sh on` |
 | Monitoring production | [references/mm-tools.md](references/mm-tools.md) → Sentry / Release Profiler |
 
 ## Problem → reference map
@@ -69,6 +70,7 @@ Always pair measurement with the **power-user scenario on Android** — see [ref
 | Inspect network requests / API timings; is a slow screen data-bound or render-bound? | [js-network-panel.md](references/js-network-panel.md) |
 | Memory grows over a session | [js-memory-leaks.md](references/js-memory-leaks.md) / [native-memory-leaks.md](references/native-memory-leaks.md) |
 | Slow startup (TTI) | [native-measure-tti.md](references/native-measure-tti.md) → [bundle-analyze-js.md](references/bundle-analyze-js.md) |
+| Verify a `trace()` change or inspect trace shape without the Sentry dashboard; Spotlight not connecting; "multiple root transactions" | `spotlight` skill (`mms-spotlight`) → `references/mm-spotlight.md` |
 | Bundle too big / barrel imports / heavy lib | [bundle-barrel-exports.md](references/bundle-barrel-exports.md) → [bundle-analyze-js.md](references/bundle-analyze-js.md) → [bundle-library-size.md](references/bundle-library-size.md) |
 | Native module / sync method blocking JS | [native-sdks-over-polyfills.md](references/native-sdks-over-polyfills.md) |
 | Native lib crashes on 16KB-page Android | [native-android-16kb-alignment.md](references/native-android-16kb-alignment.md) |

@@ -51,7 +51,13 @@ yarn test:view:coverage:folder app/components/UI/MyFeature
 
 # Lint — required before finishing. See Rules (enforced by lint).
 yarn eslint <file>
+
+# Pre-PR repeat — catch flakiness locally instead of in the slower CI: repeats the
+# *.view.test.tsx files changed vs origin/main (including untracked), or the file paths passed as arguments
+yarn test:view:repeat
 ```
+
+`yarn test:view:repeat` repeats the changed view tests 2 times by default, stops at the first failing repetition, and prints the failing seed plus a `TEST_OS` rerun command that reproduces the repetition exactly — follow [Fixing a Flake](#fixing-a-flake) with that seed. Start the repeat in the background alongside prettier and eslint instead of waiting for it at the end. Set `REPEAT_COUNT=5` only for tests that use shared Engine or messenger mocks or assert `toHaveBeenCalledTimes` (*Clear call history before asserting call counts*, *Reset mock implementations between tests*). `REPEAT_COUNT`, `TIME_BUDGET_MINUTES`, `MAX_FILES`, `TEST_OS`, and `HANG_TIMEOUT_MINUTES` override its caps. CI runs the same check with 5 repetitions on PRs to main (`.github/scripts/qa-automation/cv-flakiness/cv-flakiness-detection.mjs`), so cloud agents can skip the local repeat — their PR goes through that job anyway.
 
 ---
 
@@ -83,10 +89,11 @@ Before declaring the task done, go through this checklist for every test written
 | 20  | **Call counts start clean** — every `toHaveBeenCalledTimes` on a shared Engine / messenger mock has `mockClear()` (or `mockReset()`) on that mock in `beforeEach` | Add the clear; check with `--randomize` |
 | 21  | **No `findBy*` result held across a remount** — when the tree can remount after the `await`, the test awaits a loaded-only marker and re-queries with `getBy*` before asserting | Await the loaded marker, then re-query |
 | 22  | **No real timers raced** — countdown, debounce, and expiry behaviour lives in a unit test or in target-state fixtures, not in a widened `waitFor` or a fixed `setTimeout` sleep | Move it to a unit test, change the fixture, or `waitFor` the outcome |
-| 23  | **A flake fix names its cause** — the cause is reproduced locally (seed or load) and the fix passes under that condition; it is not only a longer timeout | Reproduce first; see Fixing a Flake |
-| 24  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and all tests are green. | Fix the failing test before marking the task done |
-| 25  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
-| 26  | **Lint is clean** — `yarn eslint <file>` passes on every new or edited `*.view.test.tsx`. See [Rules (enforced by lint)](../component-view.md#rules-enforced-by-lint). | Fix the violation. Do not disable the rule to keep a sleep, a nested `find*`, or a bare timeout. |
+| 23  | **A flake fix names its cause** — the cause is reproduced locally and the fix passes under that condition; it is not only a longer timeout | Reproduce first; see Fixing a Flake |
+| 24  | **Tests pass** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false --randomize` and all tests are green. | Fix the failing test before marking the task done |
+| 25  | **Changed tests repeated before opening the PR** — the `--randomize` repeat started in the background before the format and lint checks (see [Run the Tests](#run-the-tests)) and finished without a failure | On the first failed repetition, note the printed seed and follow Fixing a Flake |
+| 26  | **Format check passes** — run `yarn format:check` (or `npx prettier --check <file>`) on the new test file and every new supporting file (renderer, preset, api-mock). | Run `npx prettier --write <file>` to auto-fix, then re-run the check |
+| 27  | **Lint is clean** — `yarn eslint <file>` passes on every new or edited `*.view.test.tsx`. See [Rules (enforced by lint)](../component-view.md#rules-enforced-by-lint). | Fix the violation. Do not disable the rule to keep a sleep, a nested `find*`, or a bare timeout. |
 
 ---
 
@@ -120,7 +127,7 @@ Before declaring the task done, go through this checklist for every test written
 ### Fixing a flake
 
 1. **Name the cause** — map the failure to a row above. "CI is slow" is not a cause.
-2. **Reproduce it locally first** — order leaks with `--randomize --seed=<seed from the failing run>`, timing races under CPU load (for example a parallel full-suite run).
+2. **Reproduce it locally first** — order leaks with `--randomize --seed=<seed from the failing run>` (Jest prints the seed of every `--randomize` run, and the CI job summary lists it per repetition), timing races under CPU load (for example a parallel full-suite run).
 3. **Show the fix holds under the same condition** — re-run with the same seed or load and report the result.
 4. **A longer timeout is not a fix** — do not merge a PR whose only change is a raised budget. A `{ timeout }` that stays needs a comment naming its async boundary (*Do not nest `find*` inside `waitFor`*).
 

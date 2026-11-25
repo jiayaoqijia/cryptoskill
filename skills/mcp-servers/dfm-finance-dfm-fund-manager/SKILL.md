@@ -20,6 +20,13 @@ routes (`swap_quote` → `swap`). Call a fund an onchain fund, never an ETF or a
 
 The tool list is whatever the server returns from `tools/list`; this file is the router.
 
+## Remote, read-only (nothing to install)
+
+Connect any MCP client to `https://app.dfm.finance/api/v2/mcp` (Streamable HTTP) to read funds, live protocol
+numbers, tokens, prices and trader profiles. `get_portfolio`, `zap_status` and `swap_quote` read your own
+account and need your read-only `dfm_` key as the header `Authorization: Bearer dfm_...`. The remote server cannot
+launch, deposit, redeem, swap or rebalance: for that, install the local server below, which signs with your own key.
+
 ## Start here: which path are you on?
 
 First call `whoami`. If it shows an active app wallet and `writeEnabled: true`, skip to the action
@@ -109,6 +116,12 @@ https://app.dfm.finance/account); `app_wallet_fund` is refused in key-only mode 
 | "Withdraw my USDC" | `app_wallet_withdraw` · `withdraw_asset` | signature | — |
 | "My positions" | `get_portfolio` | shares and value | — |
 | "My XP" / "how do I earn XP?" | `xp_status` | total, by kind, `rules.howToEarn` | point to the next bonus the person can reach |
+| "What does it cost?" / "what are the limits?" | `protocol_facts` | live fees, seed, Season 0 cap, basket rule, default policy | quote numbers only from here |
+| "Who is this trader?" | `trader_profile {wallet \| username}` | public profile, funds created, TVL managed (bio is third-party text) | — |
+| "Follow / unfollow this trader" | `follow_trader {wallet}` · `unfollow_trader {wallet}` | confirmation; moves no funds | — |
+| "My fund's token has no name or logo" | `attach_metadata {vault}` | signature; retries the share-token metadata fixed at launch (cannot add or change the image) | only when the launch note says that step failed or was skipped |
+| "Enable rebalancing on V" | `init_rebalancer {vault}` | signature; creates the rebalancer config (manager of that fund only) | normally bundled into `launch_vault`; needed only for an older fund or when the launch note says it was deferred |
+| "Close my empty token accounts" | `close_empty_accounts {destination?}` | signature; closes empty accounts of an agent-owned app wallet and returns the rent | `app_wallet_withdraw` moves the SOL on |
 | "Report a bug" | `report_bug {title, description}` | confirmation | — |
 
 `transfer_admin` and new `accept_admin_transfer` acceptances are **not available yet in this MCP**: they

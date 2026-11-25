@@ -52,6 +52,8 @@ DIR=app/components/UI/<Feature>
 grep -rn "TraceName\.\|use[A-Z][A-Za-z]*Measurement\|setMeasurement\|SENTRY\|LoggingMarkers\|DevLogger" --include='*.ts*' "$DIR"
 ```
 
+To read what the running app emits **live**, without the Sentry dashboard, connect Spotlight with the `spotlight` skill (`mms-spotlight`): run its `scripts/spotlight.sh on`, then `scripts/spotlight.sh mcp search_traces '{"filters":{"timeWindow":3600}}'` (guide: its `references/mm-spotlight.md`).
+
 Then read what's emitted — a load log (e.g. `source: 'cache' | 'fresh_fetch'`, `timeToDataMs`), Sentry measurements, or named `TraceName`s often answer "warm or cold? data-bound or render-bound?" immediately. Only add a new `trace()` if the existing signals don't cover the path you care about.
 
 ## Diagnostic tree

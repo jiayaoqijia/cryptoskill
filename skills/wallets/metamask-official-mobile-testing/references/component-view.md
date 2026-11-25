@@ -79,21 +79,7 @@ For full detail (use cases, coverage, presets, route probes, self-review checkli
 
 Always use `jest.config.view.js` — the default Jest config does not apply component view test rules.
 
-**Run tests (no coverage):**
-
-```bash
-yarn jest -c jest.config.view.js <path> --runInBand --silent --coverage=false
-```
-
-Example: `yarn jest -c jest.config.view.js app/components/UI/Bridge/Views/BridgeView/BridgeView.view.test.tsx --runInBand --silent --coverage=false`
-
-**Coverage for a feature folder** (use this instead of `--coverage` to avoid OOM):
-
-```bash
-yarn test:view:coverage:folder app/components/UI/MyFeature
-```
-
-For run-by-name, watch mode, or other options, see `component-view/reference.md` (Run the Tests).
+All run commands — single file, run-by-name, watch mode, coverage, lint, and the pre-PR repeat of changed tests with `--randomize` — are in [`component-view/reference.md`](component-view/reference.md) (Run the Tests).
 
 
 ## Rules (enforced by lint)
@@ -261,14 +247,9 @@ Diagnosis for *Rules (enforced by lint)*. Cite these by name, not by number.
 
 21. **Keep time-dependent behaviour out of view tests** — *No fake timers* applies here. Test countdowns, debounces, and expiry in a unit test, where fake timers are allowed, or serve fixtures already in the target state (an expired quote, an ended game). Never widen a budget to cover a timer.
 
-22. **Fix a flake at its cause** — name the cause, reproduce it locally first (a `--randomize --seed` or CPU load), and show the fix passes under the same condition. A PR whose only change is a longer timeout is not a fix. See [`component-view/reference.md`](component-view/reference.md) (Fixing a Flake).
+22. **Fix a flake at its cause** — name the cause, reproduce it locally first, and show the fix passes under the same condition. A PR whose only change is a longer timeout is not a fix. See [`component-view/reference.md`](component-view/reference.md) (Fixing a Flake) for the reproduction commands.
 
-23. **Run the tests before declaring done** — run `yarn jest -c jest.config.view.js <file> --runInBand --silent --coverage=false` and confirm all tests are green. A test file that has never been run is not done.
-
-24. **Run format:check before declaring done** — run `npx prettier --check <file>` (or `yarn format:check`) on the new test file and every new supporting file (renderer, preset, api-mock). Auto-fix with `npx prettier --write <file>` if needed, then re-check.
-
-25. **Run lint before declaring done** — run `yarn eslint <file>` on every new or edited `*.view.test.tsx`. See *Rules (enforced by lint)*. A green Jest run does not cover these.
-
+Before declaring the task done, work through the Self-Review Checklist in [`component-view/reference.md`](component-view/reference.md) — tests pass, the pre-PR repeat of changed tests with `--randomize`, format check, lint clean.
 
 ## Reference files (when to use)
 
