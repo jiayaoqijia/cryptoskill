@@ -108,7 +108,7 @@ The discovery examples above are curated. The block below is a complete endpoint
 
 <!-- AUTOGEN START: endpoints -->
 
-_Generated from `api/market-data.yaml` — 11 endpoints. Run `koinju skill build-rest` to refresh._
+_Generated from `api/market-data.yaml` — 13 endpoints. Run `koinju skill build-rest` to refresh._
 
 #### `GET /funding-rate`
 _Get funding rates for a perpetual market_
@@ -235,6 +235,39 @@ Parameters:
 | `expiration` | query | yes | string | Expiry date, ISO (`YYYY-MM-DD`). Required. |
 
 Returns: `array of OptionSmileRow`.
+
+#### `GET /order-book`
+_Get the order book of a market at a time_
+The book of one market at one time, as the view api.order_book gives it. It starts from the last snapshot and it applies each update after that snapshot, up to at.
+Auth: **`x-api-key` required**.
+
+Parameters:
+
+| Name | In | Required | Type | Description |
+|---|---|---|---|---|
+| `exchange` | query | yes | string (one of: binance, binance-usdm-future, bybit, bybit-usdm-future, hyperliquid, hyperliquid-future, kraken, kraken-future, okx, okx-future) | An exchange ID |
+| `market` | query | yes | string | The symbol of the exchange for the market, for example BTCUSDT. |
+| `at` | query | yes | string | A time in ISO 8601. Milliseconds are allowed. A time with no zone is in UTC. |
+| `depth` | query | no | integer | The levels on each side. With no depth, the answer holds the full book. |
+
+Returns: `OrderBook`.
+
+#### `GET /order-book/impact`
+_Get the cost to buy or sell a quantity on the order book_
+The cost to buy or to sell a quantity at the time at, as the view api.order_book_impact gives it.
+Auth: **`x-api-key` required**.
+
+Parameters:
+
+| Name | In | Required | Type | Description |
+|---|---|---|---|---|
+| `exchange` | query | yes | string (one of: binance, binance-usdm-future, bybit, bybit-usdm-future, hyperliquid, hyperliquid-future, kraken, kraken-future, okx, okx-future) | An exchange ID of the order books. |
+| `market` | query | yes | string | The symbol of the exchange for the market, for example BTCUSDT, and not BTC-USDT-PERP. |
+| `at` | query | yes | string | A time in ISO 8601. Milliseconds are allowed. A time with no zone is in UTC. |
+| `side` | query | yes | string (one of: buy, sell) | buy takes the asks, and sell takes the bids. |
+| `quantity` | query | yes | number | A positive number, in the unit of the book of the exchange. For OKX perpetual swaps, the unit is contracts. |
+
+Returns: `OrderBookImpact`.
 
 #### `GET /trade`
 _Get public trade for a Market_

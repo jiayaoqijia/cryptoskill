@@ -7,7 +7,7 @@ description: "A Model Context Protocol (MCP) server for interacting with the Cel
 
   <!-- mcp-name: org.celo/celo-mcp -->
 
-A Model Context Protocol (MCP) server for interacting with the Celo blockchain. This server provides comprehensive access to Celo blockchain data, token operations, NFT management, smart contract interactions, transaction handling, and governance operations.
+A Model Context Protocol (MCP) server for interacting with the Celo blockchain. It provides read access to Celo blockchain data, tokens, smart contract calls, gas estimation, governance and staking, plus a testnet faucet.
 
 ## Installation
 
@@ -65,6 +65,15 @@ For Claude Desktop, add this configuration to your MCP settings file (`~/Library
 }
 ```
 
+### Claude Code
+
+```bash
+claude mcp add celo-mcp -- uvx --refresh celo-mcp
+```
+
+Add `--scope user` to make it available in every project. To use the faucet
+tools, pass the key through: `claude mcp add celo-mcp -e CELO_MCP_FAUCET_API_KEY=<key> -- uvx --refresh celo-mcp`.
+
 ### Connect remotely (Streamable HTTP)
 
 The server can also run as a remote MCP endpoint over Streamable HTTP, so clients
@@ -121,11 +130,17 @@ celo-mcp-server
 
 ### Available Tools
 
+The list below is what the server registers; `tests/test_readme_tools.py` fails
+if the two drift apart. Every tool except `request_faucet_funds` only reads from
+the chain: nothing here signs or sends a transaction. The two faucet tools are
+only listed when `CELO_MCP_FAUCET_API_KEY` is set, so a server without a key
+exposes 20 read-only tools.
+
 #### Blockchain Data Operations
 
 1. **get_network_status**
 
-   - Get current network status and connection information
+   - Get current network status and connection information, including the chain ID and explorer URL of the network the server is using
    - No parameters required
 
 2. **get_block**
@@ -140,18 +155,18 @@ celo-mcp-server
 
 4. **get_account**
 
-   - Get account information including balance and nonce
-   - Parameters: `address`
+   - Get an account's CELO balance, nonce, and whether it is a contract or an externally owned account
+   - Parameters: `address`, `include_code` (optional, default false; contract bytecode can be large)
 
 5. **get_latest_blocks**
    - Get information about recent blocks
-   - Parameters: `count` (optional, default: 10, max: 100)
+   - Parameters: `count` (optional, default: 10, max: 100), `offset` (optional, default: 0)
 
 #### Token Operations
 
 6. **get_token_info**
 
-   - Get detailed token information (name, symbol, decimals, supply)
+   - Get ERC-20 token information (name, symbol, decimals, total supply)
    - Parameters: `token_address`
 
 7. **get_token_balance**
@@ -160,76 +175,71 @@ celo-mcp-server
    - Parameters: `token_address`, `address`
 
 8. **get_celo_balances**
+
    - Get CELO and stable token balances for an address
    - Parameters: `address`
 
-#### NFT Operations
-
-9. **get_nft_info**
-
-   - Get NFT information including metadata and collection details
-   - Parameters: `contract_address`, `token_id`
-
-10. **get_nft_balance**
-    - Get NFT balance for an address (supports ERC721 and ERC1155)
-    - Parameters: `contract_address`, `address`, `token_id` (optional for ERC1155)
+9. **get_stable_token_balance**
+   - Get balances of the major stable tokens and CELO for an address in one multicall
+   - Parameters: `address`
 
 #### Smart Contract Operations
 
-11. **call_contract_function**
+10. **call_contract_function**
 
-    - Call a read-only contract function
-    - Parameters: `contract_address`, `function_name`, `abi`, `function_args` (optional), `from_address` (optional)
+    - Call a contract function with `eth_call` and return the decoded result. Read-only, including for functions that would change state
+    - Integers above 2^53 come back as decimal strings and bytes as 0x-prefixed hex, so JavaScript clients do not round token amounts
+    - Parameters: `contract_address`, `function_name`, `abi` (JSON array or JSON string), `function_args` (optional), `from_address` (optional)
 
-12. **estimate_contract_gas**
-    - Estimate gas for a contract function call
-    - Parameters: `contract_address`, `function_name`, `abi`, `from_address`, `function_args` (optional), `value` (optional)
+11. **estimate_contract_gas**
+    - Estimate gas for a contract function call and its cost at the current gas price
+    - Parameters: `contract_address`, `function_name`, `abi`, `from_address`, `function_args` (optional), `value` (optional, in wei)
 
 #### Transaction Operations
 
-13. **estimate_transaction**
+12. **estimate_transaction**
 
     - Estimate gas and cost for a transaction
-    - Parameters: `to`, `from_address`, `value` (optional), `data` (optional)
+    - Parameters: `to`, `from_address`, `value` (optional, in wei), `data` (optional)
 
-14. **get_gas_fee_data**
+13. **get_gas_fee_data**
     - Get current gas fee data including EIP-1559 fees
     - No parameters required
 
 #### Governance Operations
 
-15. **get_governance_proposals**
+14. **get_governance_proposals**
 
     - Get Celo governance proposals with pagination support
     - Parameters: `include_inactive` (optional), `include_metadata` (optional), `page` (optional), `page_size` (optional), `offset` (optional), `limit` (optional)
 
-16. **get_proposal_details**
+15. **get_proposal_details**
     - Get detailed information about a specific governance proposal including content and voting history
     - Parameters: `proposal_id`
 
 #### Staking Operations
 
-17. **get_staking_balances**
+16. **get_staking_balances**
 
     - Get staking balances for an address, including active and pending stakes broken down by validator group
     - Parameters: `address`
 
-18. **get_activatable_stakes**
+17. **get_activatable_stakes**
 
     - Get information about pending stakes that can be activated for earning rewards
     - Parameters: `address`
 
-19. **get_validator_groups**
+18. **get_validator_groups**
 
     - Get information about all validator groups, including their members, votes, capacity, and performance metrics
-    - No parameters required
+    - Parameters: `page` (optional), `page_size` (optional), `offset` (optional), `limit` (optional)
 
-20. **get_validator_group_details**
+19. **get_validator_group_details**
 
     - Get detailed information about a specific validator group including its members and performance data
     - Parameters: `group_address`
 
-21. **get_total_staking_info**
+20. **get_total_staking_info**
     - Get network-wide staking information including total votes and participation metrics
     - No parameters required
 
@@ -238,15 +248,47 @@ celo-mcp-server
 Both faucet tools are testnet-only and require `CELO_MCP_FAUCET_API_KEY` (see
 [Faucet access](#faucet-access) below).
 
-22. **request_faucet_funds**
+21. **request_faucet_funds**
 
     - Request testnet CELO for an address. Returns the payout transaction hash if it lands while the request is open, otherwise a `request_key` to poll with
     - Sends **3 CELO** per request, and **CELO only** — no USDm or other stablecoins
-    - Parameters: `beneficiary`, optional `network` (`celo-sepolia`), optional `wait` (default `true`)
+    - Parameters: `beneficiary`, `network` (optional, only celo-sepolia), `wait` (optional, default true)
 
-23. **get_faucet_request_status**
+22. **get_faucet_request_status**
     - Check whether a queued faucet request has paid out
-    - Parameters: `request_key`, optional `network` (`celo-sepolia`)
+    - Parameters: `request_key`, `network` (optional, only celo-sepolia)
+
+### Network selection
+
+The server talks to one network at a time, chosen when it starts:
+
+| Setting | Network | RPC | Explorer |
+|---------|---------|-----|----------|
+| default | Celo mainnet (chain ID 42220) | `https://forno.celo.org` | `https://explorer.celo.org` |
+| `CELO_MCP_USE_TESTNET=true` | Celo Sepolia (chain ID 11142220) | `https://forno.celo-sepolia.celo-testnet.org` | `https://celo-sepolia.blockscout.com` |
+
+`CELO_MCP_RPC_URL` replaces the RPC endpoint but not the network: the staking
+and governance tools pick their contract addresses from `CELO_MCP_USE_TESTNET`.
+If you point `CELO_MCP_RPC_URL` at a Celo Sepolia node, also set
+`CELO_MCP_USE_TESTNET=true`. `get_network_status` returns a `warning` when the
+chain ID the endpoint reports does not match the configured network. Alfajores
+is sunset and no longer supported.
+
+### Responses and errors
+
+Every tool returns its result as JSON text. Tools whose result has a fixed shape
+also declare an `outputSchema` and return the same data as `structuredContent`,
+so clients can validate it. Those are every tool except `get_network_status`,
+`get_block`, `get_transaction`, `get_account`, `get_latest_blocks`,
+`get_celo_balances` and `get_total_staking_info`, which return JSON text only.
+
+When a call fails, the result has `isError: true` and a text message starting
+with `Error:`. That covers an unknown tool name (the message lists the available
+tools), a missing required argument (the message names it), an invalid address
+or hash, and RPC failures. Some tools report a failure inside a normal result
+instead: `call_contract_function` and `estimate_contract_gas` return
+`success: false` with the revert reason in `error`, and the governance tools
+return an `error` field.
 
 ### Faucet access
 
@@ -295,28 +337,15 @@ of truth if amounts or limits change.
 - **Balance Queries**: Get token balances with proper decimal formatting
 - **Token Information**: Retrieve name, symbol, decimals, and total supply
 
-### NFT Support
-
-- **Multi-Standard**: Support for both ERC721 and ERC1155 standards
-- **Automatic Detection**: Automatically detects NFT standard using ERC165
-- **Metadata Fetching**: Retrieves and parses NFT metadata from URIs
-- **IPFS Support**: Built-in IPFS gateway support for metadata
-- **Collection Information**: Get collection-level information
-
 ### Smart Contract Interactions
 
-- **Function Calls**: Call read-only contract functions
+- **Function Calls**: Call contract functions with `eth_call` (read-only)
 - **Gas Estimation**: Estimate gas costs for contract interactions
-- **ABI Management**: Parse and manage contract ABIs
-- **Event Handling**: Retrieve and decode contract events
-- **Transaction Building**: Build contract transactions
 
-### Transaction Management
+### Transaction Estimates
 
-- **Gas Estimation**: Accurate gas estimation for transactions
-- **EIP-1559 Support**: Modern fee structure with base fee and priority fee
-- **Transaction Simulation**: Simulate transactions before execution
-- **Fee Calculation**: Dynamic fee calculation based on network conditions
+- **Gas Estimation**: Gas and cost estimates for transactions
+- **EIP-1559 Support**: Current base fee and priority fee
 
 ### Governance Support
 

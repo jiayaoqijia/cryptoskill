@@ -161,7 +161,7 @@ These two views are included in Professional and Enterprise. On a Free or Develo
 | `updates_applied` | `UInt64` | The updates after the snapshot. |
 | `snapshot_age_ms` | `Nullable(Int64)` | The milliseconds from the snapshot to `at`. |
 
-Prices and quantities are the text of the exchange. Kraken sends numbers, and the view reads them through Float64: 50.0 becomes `50`, and 0.00000001 becomes `1e-8`. The view does not check the chain of the update ids. Thus a book after a lost update can be wrong, with no sign of the loss.
+Prices and quantities are the text of the exchange. Kraken sends numbers, and the view reads them through Float64: 50.0 becomes `50`, and 0.00000001 becomes `1e-8`.
 
 `api.order_book_impact` gives the cost of an order on that book. It takes the three parameters above and two more:
 
