@@ -14,7 +14,7 @@ Test fixtures used throughout SolEnrich's own tests:
 | Key | Price | Required input | Returns |
 |---|---|---|---|
 | `enrich-wallet-light` | $0.002 | `address` | SOL balance, holdings, NFT breakdown, labels incl. bot/automation flags, 7-factor risk score |
-| `enrich-wallet-full` | $0.005 | `address` | + DeFi positions, connected wallets, enhanced tx history |
+| `enrich-wallet-full` | $0.005 | `address` | + DeFi protocol activity (recent volume per protocol, not position values), connected wallets, enhanced tx history |
 | `enrich-token-light` | $0.002 | `mint` | Price (first of DexScreener / Jupiter / Birdeye, named in `price_source`), mcap, volume, liquidity, slippage at $100/$1K/$10K/$100K, risk flags, `transfer_tax` |
 | `enrich-token-full` | $0.004 | `mint` | + top 20 holders, HHI concentration, volatility |
 | `parse-transaction` | $0.001 | `signature` | Type, protocol, transfer breakdown, account roles |

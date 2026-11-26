@@ -51,7 +51,7 @@ so a briefing costs the same as JSON and never hallucinates.
 | Quick token price, liquidity, slippage, risk flags | `enrich-token-light` | $0.002 |
 | Token holders, concentration (HHI), volatility | `enrich-token-full` | $0.004 |
 | Is this wallet risky, is it a bot, what does it hold | `enrich-wallet-light` | $0.002 |
-| Wallet DeFi positions, connected wallets, tx history | `enrich-wallet-full` | $0.005 |
+| Wallet DeFi protocol activity, connected wallets, tx history | `enrich-wallet-full` | $0.005 |
 | Does this wallet trade well (PnL, win rate, Sharpe) | `copy-trade-signals` | $0.01 |
 | Who are the whales and are they buying or selling | `whale-watch` | $0.008 |
 | What are proven winners buying on spot | `smart-money-flow` | $0.10 |

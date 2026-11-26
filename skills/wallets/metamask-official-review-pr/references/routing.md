@@ -22,7 +22,7 @@ Preference skills encode repository norms, conventions, and rules.
 | `coding-guidelines` | Changed source or test files | Frozen diff and repository coding guidelines | Guided claim checks |
 | Repository testing skill | Application tests changed | Frozen test diff and the testing references selected by the overlay | Guided claim checks |
 | `controller-guidelines` | Controller implementation changed and the overlay selects it | Frozen controller diff | Guided claim checks |
-| `ui-development` | Any UI component changed in `metamask-mobile` or `metamask-extension` | Frozen diff and the installed `@metamask/design-system-*` package types | Guided claim checks |
+| `ui-development` | Any UI component changed in `metamask-mobile` or `metamask-extension` | Frozen diff, the installed `@metamask/design-system-*` package types, and the `components.json` manifest entry for each MMDS component the diff adds or changes | Guided claim checks |
 | `content-guidelines` | User-facing copy changed | Frozen copy diff | Guided claim checks |
 
 Template sections, screenshots, manual testing, linked issues, changelog, and check conclusions are author evidence. Report their status without finding severity.

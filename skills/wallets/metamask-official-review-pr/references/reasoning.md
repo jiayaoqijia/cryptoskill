@@ -57,7 +57,7 @@ The condition must be checkable from an available evidence source. Questions abo
 
 State the evidence boundary. For example, a screenshot supports a visible layout claim; code or runtime evidence supports persistence and error-handling claims.
 
-A UI finding cites the `ui-development` sources the review reached: the installed `@metamask/design-system-*` package types, the hosted Storybook component manifest, MMDS package documentation, and Design Brain when a Notion connector can reach it. The routing block records which of those sources were reached and which stayed unreachable, so an unreached source stays unknown instead of implying that the rule behind the finding was checked.
+A UI finding cites the `ui-development` sources the review reached: the installed `@metamask/design-system-*` package types, the hosted Storybook component manifest, MMDS package documentation, and Design Brain when a Notion connector can reach it. The routing block records which of those sources were reached and which stayed unreachable, so an unreached source stays unknown instead of implying that the rule behind the finding was checked. When the diff adds or changes usage of an MMDS component, the review must fetch that component's entry from `components.json` and quote the relevant props and guidance in its reasoning; reading the installed types does not substitute for this read. If the entry could not or was not read, list that as a coverage gap in the report.
 
 ## 6. Route skills
 

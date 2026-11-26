@@ -137,9 +137,12 @@ it.
   reason is needed. The overlay says how this platform reads one. Read the
   package README at the installed tag
   `@metamask/design-tokens@<version>`.
-- Never use a raw palette value, a hex value, or an arbitrary value
-  (`bg-[#...]`, `p-[15px]`, `rounded-[16px]`, `text-[14px]`,
-  `borderRadius: 16`).
+- Never use a raw palette value, a hex value, or an arbitrary value for
+  padding, margin, gap, color, border radius, or typography (font size,
+  line height, weight): no `bg-[#...]`, `p-[15px]`, `rounded-[16px]`,
+  `text-[14px]`, or `borderRadius: 16`. Those must come from design tokens
+  and the preset scale classes. Fixed `h-[..]`, `w-[..]`, and `size-[..]`
+  values are allowed when the design calls for a specific dimension.
 - Meet WCAG AA contrast (normal text 4.5:1, large text and UI graphics 3:1)
   and check dark mode.
 - Layouts must survive longer translated strings and future RTL without
@@ -201,7 +204,9 @@ installed types win.
 - [ ] No invented components, props, or variants, and no cross-platform ports.
 - [ ] Preset Tailwind classes first. Where Tailwind does not apply, a semantic
       token from the installed design-tokens package. No raw palette values,
-      hex, or arbitrary values.
+      hex, or arbitrary values for padding, margin, gap, color, radius, or
+      typography. Fixed `h-[..]`, `w-[..]`, and `size-[..]` dimensions are
+      allowed when the design calls for one.
 - [ ] Typography uses the design-system text component and the font family
       and variant options from the installed types.
 - [ ] Clashing legacy imports are aliased `Legacy*`; MMDS keeps plain names.

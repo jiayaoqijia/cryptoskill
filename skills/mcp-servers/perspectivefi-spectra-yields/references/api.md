@@ -24,7 +24,7 @@ The response is an array of PTs (futures). Per PT: `symbol`, `maturity` (unix se
 - Skip `tags` containing `stock` for persons in US, GB, CA, AU, SG.
 - Check the `X-Spectra-Catalog-Status` header: `fresh`, `stale` or `partial`.
 
-App link for a market: `https://app.spectra.finance/fixed-rate/{app-slug}:{pool}` where app-slug is the network slug except `mainnet→eth`, `arbitrum→arb`, `optimism→op`, `avalanche→avax`.
+App link for a market: `https://app.spectra.finance/markets/{app-slug}:{pool}` where app-slug is the network slug except `mainnet→eth`, `arbitrum→arb`, `optimism→op`, `avalanche→avax`. Add `?s=yt` for its yield-trading tab or `?s=lp` for liquidity. The old `/fixed-rate/`, `/trade-yield/` and `/pools/` links redirect there.
 
 ```bash
 curl -s https://api.spectra.finance/v1/base/pools | jq '[.[] | {pt: .symbol, maturity: (.maturity|todate), fixed: .pools[0].ptApy, liquidity: .pools[0].liquidity.usd}]'
