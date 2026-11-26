@@ -26,6 +26,14 @@ For full architecture, component locations, and safety details, see the on-deman
 
 ## Prerequisites
 
+Run the CLI from the repository root, where `node_modules/` is installed:
+
+```bash
+node_modules/.bin/mm <command>   # from the repository root
+```
+
+The commands in this skill are written as `mm <command>`; run them as `node_modules/.bin/mm <command>`. `yarn mm <command>` also works but is slower, because Yarn starts on every call.
+
 ```bash
 # iOS: verify the toolchain (Xcode, idb, idb_companion, a booted simulator)
 yarn mm:doctor
@@ -50,19 +58,19 @@ yarn setup && yarn start:ios     # or: yarn start:android
 
 ```bash
 # Reuse the installed app and its current state (pick the platform)
-yarn mm launch --platform ios
-yarn mm launch --platform android
+node_modules/.bin/mm launch --platform ios
+node_modules/.bin/mm launch --platform android
 
 # Pin a specific device/emulator (same --device-id flag on both platforms;
 # value differs: iOS = simulator UDID, Android = adb serial e.g. emulator-5554)
-yarn mm launch --platform ios --device-id <UDID>
-yarn mm launch --platform android --device-id emulator-5554
+node_modules/.bin/mm launch --platform ios --device-id <UDID>
+node_modules/.bin/mm launch --platform android --device-id emulator-5554
 
 # iOS only: install a specific .app build before launching
-yarn mm launch --platform ios --app-bundle ios/build/MetaMask.app
+node_modules/.bin/mm launch --platform ios --app-bundle ios/build/MetaMask.app
 
 # Force-replace an existing active session (runs cleanup first)
-yarn mm launch --force
+node_modules/.bin/mm launch --force
 ```
 
 There is only one supported environment: prod. Do not request or switch launch contexts. Supplying `--context e2e` is rejected.
@@ -78,7 +86,7 @@ Session metadata is written to `test-artifacts/<sessionId>/session.json`. Set `M
 ### 2. Observe Before Acting
 
 ```bash
-yarn mm describe-screen
+mm describe-screen
 ```
 
 Use fresh output after navigation. Accessibility refs (`e1`, `e2`, ...) are ephemeral: always take refs from the latest response (`describe-screen` or the `observations` of your last action). Every observation renumbers the refs, so a ref from the call before last can now name another element. A node with no test ID, name or value can be listed with a ref that is not targetable (`MM_TARGET_NOT_FOUND`, `Unknown a11yRef: e6. Available refs: …`): use a named child or sibling from the `Available refs` list.
@@ -93,8 +101,8 @@ On a real-funds wallet, tap by a unique `--testid`. Use a ref only for a node wi
 **Observation efficiency:** mutating actions (`click`, `type`, ...) and `run-steps` return a compact diff of what changed. Reads, discovery commands and `mm cdp` return no observation. Use the global `--observe <none|diff|full>` flag to change the observation of one call:
 
 ```bash
-yarn mm click --testid log-in-button --observe none   # chain known actions: skip the observation
-yarn mm click e5 --observe full                        # after navigation: get the whole screen
+mm click --testid log-in-button --observe none   # chain known actions: skip the observation
+mm click e5 --observe full                        # after navigation: get the whole screen
 ```
 
 Only mutating and batch calls wait for animations before they observe. To get a settled screen after an action, let the action observe (`--observe full`) instead of running a read afterwards.
@@ -102,7 +110,7 @@ Only mutating and batch calls wait for animations before they observe. To get a 
 A **failed** command prints one JSON line on stdout and exits non-zero; stderr carries only human logs. A success has no `ok` field:
 
 ```bash
-yarn mm click --testid does-not-exist --timeout 2000
+mm click --testid does-not-exist --timeout 2000
 # {"ok":false,"error":{"code":"MM_CLICK_FAILED","message":"Operation failed: Timed out waiting for element: {\"identifier\":\"does-not-exist\"} (2000ms)","retryable":false},"meta":{…}}
 # exit code 4
 ```
@@ -114,13 +122,13 @@ Read `error.code` and `error.retryable` (never the message text). Exit codes: 1 
 Two targeting methods work on both iOS and Android: **test IDs** and **accessibility refs**. Use one per command; prefer a stable test ID, fall back to a fresh a11y ref from `describe-screen`. A test ID is matched against the element's identifier — `resource-id` on Android, the accessibility identifier (`AXUniqueId`) on iOS. A match on the exact identifier wins over a case-insensitive substring match.
 
 ```bash
-yarn mm click --testid unlock-submit
-yarn mm type --testid unlock-password "<password supplied for this wallet>"
-yarn mm wait-for --testid account-overview --timeout 15000
-yarn mm get-text --testid balance-display
+mm click --testid unlock-submit
+mm type --testid unlock-password "<password supplied for this wallet>"
+mm wait-for --testid account-overview --timeout 15000
+mm get-text --testid balance-display
 
-yarn mm click e5
-yarn mm type e2 "text"
+mm click e5
+mm type e2 "text"
 ```
 
 `--selector` (CSS) and `--within` (scoped search) are **rejected by the mobile driver** on both platforms even though the shared CLI accepts the flags — see Gotchas. To disambiguate duplicate targets, use a unique test ID or the exact element's fresh a11y ref.
@@ -130,8 +138,8 @@ The CLI flag is `--testid` (all lowercase); `--testId` is silently mis-parsed as
 **Covered targets.** Before the tap, the device hit-tests the tap point on **iOS and Android**. A covered target fails with `MM_TARGET_OBSCURED` (exit 4) and nothing is tapped. The message names the cover, for example `… is covered at (937, 1903) by the keyboard: android.widget.TextView` or `… by android.view.View around android.widget.ImageView label="Tools"` (the Expo dev button, see Gotchas). When the keyboard is the cover, add `--dismiss-keyboard`: the driver closes the keyboard and taps once more, and the result has `keyboardDismissed: true`:
 
 ```bash
-yarn mm type --testid login-password-input "<wallet password>"
-yarn mm click --testid log-in-button --dismiss-keyboard
+mm type --testid login-password-input "<wallet password>"
+mm click --testid log-in-button --dismiss-keyboard
 # {"clicked":true,"target":"testId:log-in-button","keyboardDismissed":true,"screenChanged":true,"observations":{…}}
 ```
 
@@ -142,8 +150,8 @@ A `click` result (iOS and Android) also has `screenChanged` when an observation 
 **Scrolling.** React Native keeps off-screen rows in the accessibility tree, so "in the tree" does not mean the element can be tapped. `mm scroll-to-element` swipes until the element is inside the viewport:
 
 ```bash
-yarn mm scroll-to-element --testid homepage-section-title-tokens
-yarn mm scroll-to-element --testid import-token-button --direction down   # reveal content below
+mm scroll-to-element --testid homepage-section-title-tokens
+mm scroll-to-element --testid import-token-button --direction down   # reveal content below
 ```
 
 `--direction` is the **content** direction (`down` reveals content below) and defaults to `auto`, which picks it from the element's position; `--maxAttempts` (default 10) caps the swipes. A success returns `{"scrolled":true,"target":"testId:…","swipes":2,"inViewport":true,"bounds":{"width":402,"x":0,"y":401.66666666666663,"height":44},"observations":{…}}`. `MM_TARGET_NOT_VISIBLE` means the element was found but never brought into view; `MM_TARGET_NOT_FOUND` means it was never in the tree.
@@ -154,12 +162,12 @@ yarn mm scroll-to-element --testid import-token-button --direction down   # reve
 
 After a mutating sequence:
 
-1. Run `yarn mm describe-screen`.
+1. Run `mm describe-screen`.
 2. Confirm the expected state.
 3. Capture meaningful before/after evidence:
 
 ```bash
-yarn mm screenshot --name "after-action"
+mm screenshot --name "after-action"
 ```
 
 On mobile the returned `path` is a file in device-mcp's temporary directory (`…/T/device-mcp-XXXX/screenshot-<hex>.png`); `--name` is not reflected in the file name and `MM_ARTIFACTS_DIR` does not move it. Record the returned `path` for the evidence.
@@ -171,12 +179,12 @@ If the state is wrong, capture a debug screenshot and retry from fresh refs.
 On Android, a screen that mounts for the first time in the session (for example the Explore tab after launch) can take about 2 s. The tap works, but its observation can still show the old screen, and `screenChanged` can be `true` anyway. After a tap that should open a new screen:
 
 1. Look for the new screen's test ID in the observation (Explore: `explore-safe-area`).
-2. If it is missing, run `yarn mm wait-for --testid <that id>`. It returns as soon as the screen is there.
+2. If it is missing, run `mm wait-for --testid <that id>`. It returns as soon as the screen is there.
 3. **Do not tap again**: the first tap worked, and a second tap can do the action twice.
 
 ```bash
-yarn mm click --testid tab-bar-item-Trending      # observation still shows wallet-screen
-yarn mm wait-for --testid explore-safe-area       # found after about 1.3 s
+mm click --testid tab-bar-item-Trending      # observation still shows wallet-screen
+mm wait-for --testid explore-safe-area       # found after about 1.3 s
 ```
 
 Later visits to the same tab show the new screen at once. The observation also retries once while the old screen is being torn down. If an observation still looks partial, run `describe-screen` before you act on it.
@@ -184,8 +192,8 @@ Later visits to the same tab show the new screen at once. The observation also r
 ### 5. Cleanup
 
 ```bash
-yarn mm cleanup
-yarn mm cleanup --shutdown   # also stops the daemon
+mm cleanup
+mm cleanup --shutdown   # also stops the daemon
 ```
 
 Always clean up when testing is complete.
@@ -238,10 +246,10 @@ For JS development, attach the installed development app to Metro. The workflow 
 
 ```bash
 yarn watch:clean
-yarn mm launch --metro-port 8081
+mm launch --metro-port 8081
 
 # Equivalent, still supported (the flag wins when both are set)
-MM_METRO_PORT=8081 yarn mm launch
+MM_METRO_PORT=8081 mm launch
 ```
 
 If Metro is not reachable on the given port, launch fails with `MM_INVALID_CONFIG`. If the app is already running and healthily attached to Metro, `mm launch` connects without relaunching (pure-attach). Release/prod builds have no Hermes inspector; Metro attach requires a dev build.
@@ -251,7 +259,7 @@ Node 20 may require `NODE_OPTIONS="--experimental-websocket"` for `mm cdp`; Node
 `mm cdp` evaluates JavaScript in the Hermes runtime through Metro's inspector proxy. It uses the Metro port the session was launched with (`--metro-port` or `MM_METRO_PORT`), so no flag is needed on each call:
 
 ```bash
-yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify(globalThis.__DEV__)"}'
+mm cdp Runtime.evaluate '{"expression":"JSON.stringify(globalThis.__DEV__)"}'
 ```
 
 The session keeps one Hermes connection open and reuses it. The first call connects, so it can take a bit longer; later calls reuse the open connection. `mm hermes-targets` shows `sessionMetroPort`, `connected: true` and the pinned device after the first call. A per-call `--metro-port` or `--app-id` overrides the session values for that call only (one-shot connection). A failure names the port it tried: `[HERMES_CONNECTION_FAILED] Hermes CDP connection failed: fetch failed (Metro port 8099)` (`MM_CDP_FAILED`, exit 1).
@@ -263,7 +271,7 @@ Prefer controller methods over raw Redux mutation when inspecting or changing ru
 Use `run-steps` only for known deterministic sequences:
 
 ```bash
-yarn mm run-steps '{"steps":[
+mm run-steps '{"steps":[
   {"tool":"type","args":{"testId":"login-password-input","text":"<password>"}},
   {"tool":"click","args":{"testId":"log-in-button"}},
   {"tool":"wait_for","args":{"testId":"wallet-screen","timeoutMs":15000}}
@@ -276,7 +284,7 @@ The input must be an object containing `steps`, not a bare array.
 - Add `batchTimeoutMs` (1000–30000 ms) for an overall deadline. It is checked between steps: the step in progress finishes with its own timeout, then the remaining steps are skipped and partial results come back. The CLI and the daemon wait for the deadline plus the slowest step, so the batch is not cut off mid-step.
 - Add a top-level `observe` (`none` / `diff` / `full`, default `diff`) to set the observation collected after the batch. Check `summary.ok` to react to failures.
 
-Pattern: discover with `yarn mm describe-screen` → batch known steps with `yarn mm run-steps` → re-verify with `yarn mm describe-screen`.
+Pattern: discover with `mm describe-screen` → batch known steps with `mm run-steps` → re-verify with `mm describe-screen`.
 
 ## Mobile Limitations and Gotchas
 
@@ -299,7 +307,7 @@ Pattern: discover with `yarn mm describe-screen` → batch known steps with `yar
 - **iOS wallet home actions are in the tree.** `@metamask/device-mcp` supplements the iOS `axbridge` snapshot with the identified elements the `ax` API reports, so `wallet-buy-button`, `wallet-swap-button`, `wallet-send-button` and `wallet-receive-button` appear in `list-testids` and `describe-screen` (verified on iPhone 17 Pro). Clicking them was not verified: if a click fails or times out, fall back to `mm tap-coordinates <x> <y>` (points) using the element's `bounds` or the `mm screenshot` image.
 - **A test ID present in one snapshot can disappear later.** Sections that render conditionally are unmounted from the tree, not just moved off screen. On the iOS wallet home `homepage-section-title-nfts` and `homepage-section-title-defi` were in the first `describe-screen` (`visible: false`) and gone after scrolling, while `homepage-more-section` below them appeared. On `MM_TARGET_NOT_FOUND` after scrolling, re-check with `describe-screen` that the target still exists before retrying; `homepage-section-title-tokens` is a target that was verified.
 - **Timed-out calls are cancelled, and the outcome is structured.** On `MM_CLICK_TIMEOUT`, `MM_TYPE_TIMEOUT`, `MM_QUEUE_TIMEOUT` (the daemon stopped the request) or `MM_REQUEST_TIMEOUT` (the CLI stopped waiting), all exit 5, an action that already started can still have happened, so run `describe-screen` before you retry. The CLI, the daemon queue and the action share one timeout budget, so the CLI never gives up before the daemon answers. An observation that takes longer than 8 s does not fail the call: the result has `observations: {"timedOut": true}`; run `describe-screen` before you use refs.
-- Call `node_modules/.bin/mm` directly to skip the Yarn startup (about 0.4–0.5 s per call) when running many commands.
+- Run `mm` as `node_modules/.bin/mm` from the repository root; see [Prerequisites](#prerequisites).
 - Never assume wallet credentials, balances, networks, or onboarding state. Inspect the installed app and obtain needed credentials from the user/environment.
 
 ## Error Recovery
@@ -313,7 +321,7 @@ Pattern: discover with `yarn mm describe-screen` → batch known steps with `yar
 - `MM_CLICK_TIMEOUT` / `MM_TYPE_TIMEOUT` / `MM_QUEUE_TIMEOUT` / `MM_REQUEST_TIMEOUT`: exit 5, action state unknown; describe before retrying.
 - `MM_DEVICE_NOT_AVAILABLE`: no device is booted, the id does not exist, or the device tool failed. iOS: `xcrun simctl list devices`, boot one, and verify MetaMask is installed. Android: `adb devices` must show exactly one `emulator-*` in state `device` (or the `--device-id` one), booted, with `io.metamask` installed.
 - `MM_INVALID_CONFIG`: the launch options are unusable — no app and no `--app-bundle`, a destructive flag without `--app-bundle`, a `fox_code` mismatch, an unreachable Metro port, or (Android) any APK lifecycle flag or a `.device-session` file. Read the remediation text; reuse the installed app or install a matching build.
-- `MM_DAEMON_NOT_RUNNING`: no daemon, or it refused the connection; `yarn mm launch`.
+- `MM_DAEMON_NOT_RUNNING`: no daemon, or it refused the connection; `mm launch`.
 - `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM`: a browser-only command on a mobile session; use visible UI interactions.
 
 Launch errors use core `ErrorCode`s (not `MM_IOS_*`/`MM_ANDROID_*`). `launch` preserves any consumer-thrown `MM_*` code; a code the CLI does not know reaches the caller and exits 1, so the platform-specific detail stays in the code and message.

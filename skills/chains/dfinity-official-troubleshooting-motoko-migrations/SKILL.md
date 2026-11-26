@@ -39,7 +39,7 @@ Two consequences drive most of the rules in this skill:
 `mops check` validates your chain against the **deployed** canister's stable signature (its `.most` snapshot), not against local git history. So:
 
 - Diagnostics can name fields that are no longer anywhere in your source — they come from the deployed version.
-- The one-pending-migration limit counts migrations **not yet deployed**. Files that are already live do not count toward it.
+- The one-pending-migration limit counts migrations **newer than that baseline**. Files the baseline already records do not count toward it.
 - The stable-signature major in a `.most` header identifies the persistence model: `1` classic, `3` legacy inline `(with migration = ...)`, `4` enhanced migration chain. Once a project reaches `4` it never goes back (see [EM is one-way](#em-is-one-way)).
 
 ## Diagnostics you may hit
@@ -82,7 +82,7 @@ A project can also inherit such a chain without having been converted itself —
 
 Where a hosting platform owns the mops migrations config — the `[canisters.<name>.migrations]` section, its `chain` path, and `check-limit` — you cannot add, remove, or alter it, and the tooling will reject attempts.
 
-- **Never raise or drop `check-limit` to clear a "too many pending migrations" error.** The fix is always to fold the extra changes into a single pending migration. Every file the error lists has not been applied yet, so any of them can be edited.
+- **Never raise or drop `check-limit` to clear a "too many pending migrations" error.** The fix is always to fold every change into the latest pending migration, which the error names, and delete the other pending files. Every file the error lists has not been applied yet, so you can edit or delete any of them.
 - **The chain directory is whatever `chain = ...` says.** It is normally `src/backend/migrations`, but a project imported under a non-default canister name can differ. Read the mops config rather than assuming the path.
 - If the migrations section appears to be missing from a project that has a chain, do not re-add it yourself; report the inconsistency.
 
@@ -113,7 +113,7 @@ Nothing in the toolchain caps chain length, so the one-migration-per-version dis
 
 The actor body must not do work. Stable fields are typed declarations; their values come from the chain.
 
-Older toolchains rejected any effectful actor body outright, and that compiler check has since been relaxed for transient bindings — but the rule stands regardless of whether the compiler complains, because **top-level seeding re-runs on every upgrade** and would overwrite live state.
+Older toolchains rejected any effectful actor body outright, and that compiler check has since been relaxed for transient bindings — but the rule stands regardless of whether the compiler complains, because **top-level seeding re-runs on every upgrade** and would overwrite live state. Starting timers is the exception: upgrades cancel them, so recurring timers belong in the actor body (see `writing-motoko`).
 
 Initialization belongs in exactly two places:
 
@@ -122,7 +122,7 @@ Initialization belongs in exactly two places:
 
 ## When you cannot resolve it
 
-Do not create room to proceed by relaxing protected configuration, deleting or renaming history, or rewriting a frozen file. Those turn a build failure into data loss. If the chain and the deployed signature genuinely disagree in a way none of the above explains, stop and report the mismatch: which fields the checker names, what the latest migration's `NewActor` declares, and what `main.mo` declares.
+Do not create room to proceed by relaxing protected configuration, deleting or renaming applied migrations, or rewriting a frozen file. Those turn a build failure into data loss. If the chain and the deployed signature genuinely disagree in a way none of the above explains, stop and report the mismatch: which fields the checker names, what the latest migration's `NewActor` declares, and what `main.mo` declares.
 
 ## Related skills
 

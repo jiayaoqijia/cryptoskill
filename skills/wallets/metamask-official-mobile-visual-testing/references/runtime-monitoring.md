@@ -24,7 +24,7 @@ Inject interceptors into the Hermes runtime to capture `fetch` requests (includi
 Run once after launch. Installs both fetch and console interceptors in a single call. Idempotent — safe to re-run.
 
 ```bash
-yarn mm cdp Runtime.evaluate '{"expression":"(function(){if(globalThis.__mmNet)return JSON.stringify(\"already installed\");var of=globalThis.fetch;globalThis.__mmNet=[];globalThis.fetch=function(){var u=arguments[0],o=arguments[1]||{},e={t:Date.now(),method:o.method||\"GET\",url:typeof u===\"string\"?u:(u&&u.url)||String(u)};if(o.body){try{var b=typeof o.body===\"string\"?JSON.parse(o.body):o.body;if(b&&b.method)e.rpcMethod=b.method}catch(x){}}globalThis.__mmNet.push(e);if(globalThis.__mmNet.length>2000)globalThis.__mmNet=globalThis.__mmNet.slice(-1000);return of.apply(globalThis,arguments).then(function(r){e.status=r.status;e.ms=Date.now()-e.t;if(e.rpcMethod){try{r.clone().text().then(function(t){try{var j=JSON.parse(t);if(j.error){e.rpcError=(j.error.message||JSON.stringify(j.error)).substring(0,200);e.rpcErrorCode=j.error.code}}catch(x){}}).catch(function(){})}catch(x){}}return r}).catch(function(err){e.err=String(err);e.ms=Date.now()-e.t;throw err})};globalThis.__mmCon=[];[\"log\",\"warn\",\"error\"].forEach(function(l){var orig=console[l];console[l]=function(){var a=Array.prototype.slice.call(arguments);globalThis.__mmCon.push({t:Date.now(),level:l,msg:a.map(function(x){try{return String(x)}catch(e){return\"[unstringifiable]\"}}).join(\" \")});if(globalThis.__mmCon.length>1000)globalThis.__mmCon=globalThis.__mmCon.slice(-500);return orig.apply(console,arguments)}});return JSON.stringify(\"interceptors installed\")})()","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"(function(){if(globalThis.__mmNet)return JSON.stringify(\"already installed\");var of=globalThis.fetch;globalThis.__mmNet=[];globalThis.fetch=function(){var u=arguments[0],o=arguments[1]||{},e={t:Date.now(),method:o.method||\"GET\",url:typeof u===\"string\"?u:(u&&u.url)||String(u)};if(o.body){try{var b=typeof o.body===\"string\"?JSON.parse(o.body):o.body;if(b&&b.method)e.rpcMethod=b.method}catch(x){}}globalThis.__mmNet.push(e);if(globalThis.__mmNet.length>2000)globalThis.__mmNet=globalThis.__mmNet.slice(-1000);return of.apply(globalThis,arguments).then(function(r){e.status=r.status;e.ms=Date.now()-e.t;if(e.rpcMethod){try{r.clone().text().then(function(t){try{var j=JSON.parse(t);if(j.error){e.rpcError=(j.error.message||JSON.stringify(j.error)).substring(0,200);e.rpcErrorCode=j.error.code}}catch(x){}}).catch(function(){})}catch(x){}}return r}).catch(function(err){e.err=String(err);e.ms=Date.now()-e.t;throw err})};globalThis.__mmCon=[];[\"log\",\"warn\",\"error\"].forEach(function(l){var orig=console[l];console[l]=function(){var a=Array.prototype.slice.call(arguments);globalThis.__mmCon.push({t:Date.now(),level:l,msg:a.map(function(x){try{return String(x)}catch(e){return\"[unstringifiable]\"}}).join(\" \")});if(globalThis.__mmCon.length>1000)globalThis.__mmCon=globalThis.__mmCon.slice(-500);return orig.apply(console,arguments)}});return JSON.stringify(\"interceptors installed\")})()","returnByValue":true}'
 ```
 
 **Readable version** of the expression:
@@ -117,7 +117,7 @@ yarn mm cdp Runtime.evaluate '{"expression":"(function(){if(globalThis.__mmNet)r
 Returns all captured data and resets the buffers. Use this between test steps or after a flow completes.
 
 ```bash
-yarn mm cdp Runtime.evaluate '{"expression":"(function(){var r=JSON.stringify({net:globalThis.__mmNet||[],con:globalThis.__mmCon||[]});globalThis.__mmNet=[];globalThis.__mmCon=[];return r})()","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"(function(){var r=JSON.stringify({net:globalThis.__mmNet||[],con:globalThis.__mmCon||[]});globalThis.__mmNet=[];globalThis.__mmCon=[];return r})()","returnByValue":true}'
 ```
 
 ### Read without clearing
@@ -125,7 +125,7 @@ yarn mm cdp Runtime.evaluate '{"expression":"(function(){var r=JSON.stringify({n
 Peek at the buffers without resetting. Useful when you want to keep accumulating across steps.
 
 ```bash
-yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify({net:globalThis.__mmNet||[],con:globalThis.__mmCon||[]})","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"JSON.stringify({net:globalThis.__mmNet||[],con:globalThis.__mmCon||[]})","returnByValue":true}'
 ```
 
 ### Response shape
@@ -164,7 +164,7 @@ yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify({net:globalThis.__mm
 Verify interceptors are still installed. They are lost on app reload or Fast Refresh.
 
 ```bash
-yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify({installed:!!globalThis.__mmNet,netCount:(globalThis.__mmNet||[]).length,conCount:(globalThis.__mmCon||[]).length})","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"JSON.stringify({installed:!!globalThis.__mmNet,netCount:(globalThis.__mmNet||[]).length,conCount:(globalThis.__mmCon||[]).length})","returnByValue":true}'
 ```
 
 If `installed` is `false`, re-run the install command.
@@ -179,7 +179,7 @@ The Engine module walk (`globalThis.__r(id)` loop from [state-manipulation.md](s
 
 ```bash
 for i in 1 2 3 4 5 6 7; do
-  RESULT=$(yarn mm describe-screen 2>&1 | python3 -c "
+  RESULT=$(mm describe-screen 2>&1 | python3 -c "
 import json, sys
 a = json.load(sys.stdin).get('a11y', {}).get('nodes', [])
 dismiss = [n for n in a if n.get('name', '').lower() == 'dismiss']
@@ -189,7 +189,7 @@ print(dismiss[0]['ref'] if dismiss else 'CLEAN')
     echo "All overlays dismissed after $((i-1)) dismissals"
     break
   fi
-  yarn mm click "$RESULT" 2>&1 | grep -q clicked && echo "Dismissed overlay $i"
+  mm click "$RESULT" 2>&1 | grep -q clicked && echo "Dismissed overlay $i"
   sleep 0.5
 done
 ```

@@ -44,11 +44,13 @@ For architecture details, see `test/e2e/playwright/llm-workflow/README.md`.
 
 ## Prerequisites
 
-**CLI invocation** — `mm` is a project-local dependency:
+**CLI invocation** — `mm` is a project-local dependency. Run it from the repository root, where `node_modules/` is:
 
 ```bash
-yarn mm <command>        # or: npx mm <command>
+node_modules/.bin/mm <command>   # from the repository root
 ```
+
+This overlay writes commands as `mm <command>`; run them as `node_modules/.bin/mm <command>`. `yarn mm <command>` also works but is slower, because Yarn starts on every call.
 
 **Build validation** before `mm launch`:
 
@@ -72,10 +74,10 @@ cat .mm-server   # look under subPorts for anvil and fixture ports
 ### 1. Launch
 
 ```bash
-mm launch                                    # pre-onboarded wallet, 25 ETH on local Anvil
-mm launch --state onboarding                 # fresh wallet
-mm launch --context prod --state onboarding  # production-like mode
-MM_HEADLESS=true mm launch                   # headless Chrome
+node_modules/.bin/mm launch                                    # pre-onboarded wallet, 25 ETH on local Anvil
+node_modules/.bin/mm launch --state onboarding                 # fresh wallet
+node_modules/.bin/mm launch --context prod --state onboarding  # production-like mode
+MM_HEADLESS=true node_modules/.bin/mm launch                   # headless Chrome
 ```
 
 Chrome is headed by default. `MM_HEADLESS=true` makes it headless; without `MM_HEADLESS`, `PLAYWRIGHT_HEADLESS`, `HEADLESS` or `CI` also do. The daemon reads it when it starts, so pass it on the `mm launch` that starts the daemon.
@@ -250,9 +252,9 @@ Capture before and after meaningful state changes for visual validation evidence
 ### 8. Cleanup (Always Required)
 
 ```bash
-mm cleanup                 # stop browser and services
-mm cleanup --shutdown      # also stop the daemon
-mm stop                    # stop the daemon only (plain-text output)
+node_modules/.bin/mm cleanup             # stop browser and services
+node_modules/.bin/mm cleanup --shutdown  # also stop the daemon
+node_modules/.bin/mm stop                # stop the daemon only (plain-text output)
 ```
 
 ## Confirmation pages

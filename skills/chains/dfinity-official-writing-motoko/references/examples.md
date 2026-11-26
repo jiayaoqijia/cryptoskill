@@ -587,31 +587,21 @@ import List "mo:core/List";
 actor {
   // Stable state — initial values come from the migration chain
   let logs : List.List<(Int, Text)>;
-  var timerId : Nat;
 
   func logEvent(message : Text) {
     logs.add((Time.now(), message));
   };
 
-  public func startPeriodicCleanup() : async () {
-    timerId := Timer.recurringTimer<system>(
-      #seconds(3600), // Every hour
-      func() : async () {
-        let now = Time.now();
-        let oneHourAgo = now - 3_600_000_000_000; // 1 hour in nanoseconds
-
-        // Remove old logs
-        let newLogs = logs.filter(func((timestamp, logText)) { timestamp > oneHourAgo });
-        logs.clear();
-        logs.addAll(newLogs.values());
-        logEvent("Cleanup completed");
-      },
-    );
+  func cleanup() : async () {
+    let oneHourAgo = Time.now() - Time.toNanoseconds(#hours(1));
+    let newLogs = logs.filter(func((timestamp, _)) { timestamp > oneHourAgo });
+    logs.clear();
+    logs.addAll(newLogs.values());
+    logEvent("Cleanup completed");
   };
 
-  public func stopPeriodicCleanup() : async () {
-    Timer.cancelTimer(timerId);
-  };
+  // Upgrades cancel all timers; this line runs again on every upgrade and restarts it
+  ignore Timer.recurringTimer<system>(#seconds(3600), cleanup);
 
   public query func getLogs() : async [(Int, Text)] {
     logs.toArray();

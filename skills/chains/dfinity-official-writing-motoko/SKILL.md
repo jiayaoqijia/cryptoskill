@@ -20,6 +20,7 @@ Motoko is an under-represented language for the Internet Computer Protocol, so y
 
 - `stable` keyword -- Not needed in enhanced orthogonal persistence mode
 - `mo:base` library -- Deprecated. Use `mo:core` instead
+- `mo:json` (the `json` package) or any JSON library other than `jayson` -- Use `jayson` (see [JSON](#json))
 - `.vals()` -- The deprecated `mo:base` iterator name. Always `.values()`. On arrays `.vals()` still compiles with deprecation warning M0269 (from moc 1.16); on core collections it fails with M0072
 - `system func preupgrade/postupgrade` -- Not needed with enhanced orthogonal persistence
 - `(with migration = ...)` actor-attached migration syntax -- Use the mops-managed migration chain in `migrations/`
@@ -35,7 +36,7 @@ Motoko is an under-represented language for the Internet Computer Protocol, so y
 
 - `mo:core` library version 2.6.0+ (compiler `moc` 1.11.2+)
 - Contextual dot notation -- `list.add(item)`, `map.get(key)`
-- An import of the key type's module in every file that operates on a `Map`/`Set` -- the implicit `compare` is resolved from the imported module (`import Nat "mo:core/Nat"` for a `Map.Map<Nat, _>`), never from the type alone. A missing key-module import is the usual cause of M0230; a record or variant key needs its own module with a `compare` (see Implicit Parameters)
+- An import of the key type's module in every file that operates on a `Map`/`Set` -- the implicit `compare` is resolved from the imported module (`import Nat "mo:core/Nat"` for a `Map.Map<Nat, _>`), never from the type alone (unless the project compiles with `--implicit-package=core`, which resolves `mo:core` modules such as `Nat` and `Text` without an import). Without that flag, a missing key-module import is the usual cause of M0230; with it, look for a record or variant key type with no `compare` in its own module, or a key type from a package other than `core` (see Implicit Parameters)
 - Null coalesce `??`, spaced on both sides, for unwrap-or-default and unwrap-or-trap (`opt ?? default`, `opt ?? Runtime.trap(...)`) -- prefer over a two-arm `switch` on `?T` (requires `moc >= 1.7.0`)
 - Plain `break` / `continue` to exit or skip a loop iteration -- they work inside `for`, `while`, and `loop` just like in other languages
 - Enhanced orthogonal persistence (state persists without `stable` keyword)
@@ -268,7 +269,7 @@ let map = Map.empty<Nat, Text>();
 map.add(5, "hello"); // compare resolved from the imported Nat
 ```
 
-Without `import Nat`, the same code fails — the type is known, but there is no module to take `compare` from:
+Without `import Nat`, the same code fails (unless the project compiles with `--implicit-package=core`) — the type is known, but there is no module to take `compare` from:
 
 ```text
 type error [M0230], Cannot determine implicit argument `compare` of type (Nat, Nat) -> Order
@@ -478,7 +479,7 @@ Add `<In, Out>` only when the compiler actually reports M0098; adding it when in
 The one exception is a callback that must return `async`. There `: async ()` is load-bearing on moc 1 — it is what makes the body async, and there is no unannotated form (`func() = async { ... }` does not work either). Without it moc 1 infers `() -> ()` and the call fails with M0096. moc 2 infers the async callback, but keep the annotation so the code builds on both:
 
 ```motoko
-Timer.recurringTimer<system>(#seconds(3600), func() : async () { cleanup() });
+Timer.recurringTimer<system>(#seconds(3600), func() : async () { pruneLogs() });
 ```
 
 ```motoko
@@ -883,6 +884,16 @@ transient let cache = Map.empty<Text, User>();   // derived; rebuilt after each 
 
 **Static** (what a module `let` field allows) = literals, variant tags (`#x`), options (`?x`), tuples, immutable arrays and records, function values, and imported/variable names — plus `.field` projection over those. **Non-static** = function calls, operators (`+`, `==`, `#`), control flow (`if`/`switch`/loops), and array indexing (`a[i]`).
 
+### Timers
+
+Upgrades cancel every timer, and every install and upgrade runs the actor body again. Start recurring timers in the actor body of `main.mo`, not from a public method and not in a mixin body, which fails with M0197 ([full example](references/examples.md#timer-example)):
+
+```motoko
+ignore Timer.recurringTimer<system>(#seconds(3600), cleanup);
+```
+
+A timer set at runtime, such as a reminder a call schedules, is lost on the next upgrade, and timer IDs start over, so never keep one in stable state. Each upgrade also restarts a recurring timer's interval. For work that must still happen, or a long interval, keep the due time in stable state and set the timer again from the actor body.
+
 ## Numeric Conversion Hygiene
 
 Treat deprecation warnings as failures. **Every conversion is spelled `to`, on the source value** — never a `Module.fromX` call, and never a chain through the sized numeric modules. A conversion is one receiver call:
@@ -904,6 +915,39 @@ let average = sum.toFloat() / count.toFloat(); // Nat.toFloat
 | `Iter.fromArray(a)`       | `a.values()`      |
 
 A conversion that needs several hops is a sign the wrong function was picked: verify the exact `mo:core` signature in [api-reference.md](references/api-reference.md), which lists only non-deprecated APIs.
+
+## JSON
+
+Parse and render all JSON (request and response bodies, HTTP outcall replies, stored documents) with `jayson`, never with `mo:json` or another JSON package. Run `mops add jayson` before the first import, even when `mo:jayson` already resolves: another package can pull in an older copy, and only your own pin gives your code the current version. jayson needs moc 1.14.0 or newer.
+
+Each type's codec is its own module (`TextJson`, `NatJson`, `IntJson`, `FloatJson`, `BoolJson`, `OptionJson`, `ArrayJson`, `RecordJson`, `VariantJson`); import the ones your types use. Encoding a record derives from its fields; decoding does not, so a record you parse gets a `decodeJson` in a module named after its type:
+
+```motoko project=json filepath=src/backend/main.mo
+import Jayson "mo:jayson";
+import NatJson "mo:jayson/NatJson";
+import RecordJson "mo:jayson/RecordJson";
+import TextJson "mo:jayson/TextJson";
+
+actor {
+  type Order = { item : Text; quantity : Nat };
+
+  module Order {
+    public func decodeJson(json : Jayson.Json) : ?Order = do ? {
+      let fields = Jayson.decodeRecord(json)!;
+      {
+        item = fields.decodeField<Text>("item")!;
+        quantity = fields.decodeField<Nat>("quantity")!;
+      };
+    };
+  };
+
+  // The order re-encoded, or null when the body is not an order.
+  public query func normalize(body : Text) : async ?Text {
+    let ?order = Jayson.fromJson<Order>(body) else return null;
+    ?order.toJson();
+  };
+};
+```
 
 ## Security and Authorization
 
@@ -952,7 +996,7 @@ Attaching cycles to an inter-canister call (`await (with cycles = ...) <call>`) 
 | `M0074` / `M0081` / `M0101` inconsistent types         | Array elements or branches with nothing in common | Make them agree, or annotate `: Any`  |
 | `M0060` operator not defined for `{#tag : T}`          | Unparenthesized variant tag  | `#tag(x)`, never `#tag x`                   |
 | `M0060` operator not defined, on `==`                  | `==` on a record with a `var` field (not shared) | Use an `equal` function instead |
-| `M0230` cannot determine implicit argument `compare`   | Key type's module not in scope | Usually a missing import: `import` the key type's module (`Nat`, `Text`, …) in that file. For a record/variant key, add `compare` to the type's own module |
+| `M0230` cannot determine implicit argument `compare`   | Key type's module not in scope | Without `--implicit-package=core`, usually a missing import: `import` the key type's module (`Nat`, `Text`, …) in that file. With that flag, `core` types resolve without an import, so check record/variant key types (add `compare` to the type's own module) and key types from other packages (import their module) |
 | `M0070` expected object type, produces `Nat`           | Receiver `.equal`/`.compare` on a number | Use `==` or `Nat.equal(a, b)`   |
 | `M0096` actor cannot produce expected type `()`        | Declaration after the actor  | The actor must be the last declaration in the file |
 | `field compare does not exist` on Time                 | No Time.compare              | Use `Int.compare`                           |

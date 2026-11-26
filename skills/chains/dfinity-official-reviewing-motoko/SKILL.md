@@ -141,10 +141,14 @@ Every bare `let`/`var` at the top of a `mixin` is implicitly stable and traps at
 ### S5. Migration hygiene — **Blocker**
 
 - A migration file importing anything other than `mo:core/...` — the chain replays forever, so a project import makes it wrong the moment that type changes. (`caffeineai-lints` catches this.)
-- More than one pending migration in a build, or an edit to a migration that was already applied.
+- More than one pending migration in a build (merge them into the newest and delete the others), or an edit to a migration that was already applied.
 - A stable field in `main.mo` that no migration in the chain supplies (M0254 / M0267).
 
 An identity migration body is a **Warning** — the change was stable-compatible, so delete the file. [Full table](references/state-and-persistence.md#migration-hygiene).
+
+### S6. Recurring timer the actor body does not restart — **Blocker**
+
+Upgrades cancel every timer, so a recurring timer started only from a public method silently stops at the next deploy, and a stable timer ID kept to cancel it then names a dead timer or an unrelated new one, because IDs start over. Start it in the actor body of `main.mo`. See `writing-motoko`.
 
 ## Structure
 

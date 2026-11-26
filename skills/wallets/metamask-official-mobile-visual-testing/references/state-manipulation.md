@@ -16,8 +16,8 @@ Use `mm cdp` only for advanced runtime inspection or manipulation of the current
 `mm cdp` sends a Chrome DevTools Protocol command. On mobile, it connects to the Hermes runtime via Metro's inspector proxy, targeting the **React Native JS thread** (on the extension it targets the browser page instead).
 
 ```bash
-yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify(1+1)"}'
-yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify(globalThis.__DEV__)"}'
+mm cdp Runtime.evaluate '{"expression":"JSON.stringify(1+1)"}'
+mm cdp Runtime.evaluate '{"expression":"JSON.stringify(globalThis.__DEV__)"}'
 ```
 
 **Requirements:**
@@ -55,7 +55,7 @@ From `fiber`, traverse the tree with `.child`, `.sibling`, and `.return` exactly
 Find the Redux store on the `<Provider>` component's fiber props:
 
 ```bash
-yarn mm cdp Runtime.evaluate '{"expression":"(function(){var hook=globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__;var rid=hook.renderers.keys().next().value;var root=hook.getFiberRoots(rid).values().next().value;function find(f){if(!f)return null;if(f.memoizedProps&&f.memoizedProps.store&&typeof f.memoizedProps.store.getState===\"function\")return f.memoizedProps.store;return find(f.child)||find(f.sibling)}var store=find(root.current);if(!store)return JSON.stringify(\"store not found\");var s=store.getState();return JSON.stringify({userRegion:s.engine.backgroundState.RampsController.userRegion,moneyEnabled:!!s.engine.backgroundState.RemoteFeatureFlagController})})()","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"(function(){var hook=globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__;var rid=hook.renderers.keys().next().value;var root=hook.getFiberRoots(rid).values().next().value;function find(f){if(!f)return null;if(f.memoizedProps&&f.memoizedProps.store&&typeof f.memoizedProps.store.getState===\"function\")return f.memoizedProps.store;return find(f.child)||find(f.sibling)}var store=find(root.current);if(!store)return JSON.stringify(\"store not found\");var s=store.getState();return JSON.stringify({userRegion:s.engine.backgroundState.RampsController.userRegion,moneyEnabled:!!s.engine.backgroundState.RemoteFeatureFlagController})})()","returnByValue":true}'
 ```
 
 **Readable version** of the expression:
@@ -220,29 +220,29 @@ In dev builds with Metro, `globalThis.__r` is Metro's module require function. S
 
 ```bash
 # 1. Set region to Brazil (unsupported for buy)
-yarn mm cdp Runtime.evaluate '{"expression":"(function(){var hook=globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__;var rid=hook.renderers.keys().next().value;var root=hook.getFiberRoots(rid).values().next().value;var visited=0;function isCtx(o){return o&&typeof o.RampsController!==\"undefined\"&&typeof o.NetworkController!==\"undefined\"}function search(o,d){if(!o||d>3||typeof o!==\"object\")return null;if(isCtx(o))return o;for(var k in o){try{var v=o[k];if(v&&typeof v===\"object\"){var f=search(v,d+1);if(f)return f}}catch(e){}}return null}function walk(f){if(!f||visited>2000)return null;visited++;var c=search(f.memoizedProps,0)||search(f.stateNode,0);if(c)return c;var h=f.memoizedState;while(h){if(h.memoizedState&&typeof h.memoizedState===\"object\"){c=search(h.memoizedState,0);if(c)return c}h=h.next}return walk(f.child)||walk(f.sibling)}var ctx=walk(root.current);if(!ctx)return JSON.stringify(\"not found\");ctx.RampsController.setUserRegion(\"BR\");return JSON.stringify(\"region set to BR\")})()","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"(function(){var hook=globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__;var rid=hook.renderers.keys().next().value;var root=hook.getFiberRoots(rid).values().next().value;var visited=0;function isCtx(o){return o&&typeof o.RampsController!==\"undefined\"&&typeof o.NetworkController!==\"undefined\"}function search(o,d){if(!o||d>3||typeof o!==\"object\")return null;if(isCtx(o))return o;for(var k in o){try{var v=o[k];if(v&&typeof v===\"object\"){var f=search(v,d+1);if(f)return f}}catch(e){}}return null}function walk(f){if(!f||visited>2000)return null;visited++;var c=search(f.memoizedProps,0)||search(f.stateNode,0);if(c)return c;var h=f.memoizedState;while(h){if(h.memoizedState&&typeof h.memoizedState===\"object\"){c=search(h.memoizedState,0);if(c)return c}h=h.next}return walk(f.child)||walk(f.sibling)}var ctx=walk(root.current);if(!ctx)return JSON.stringify(\"not found\");ctx.RampsController.setUserRegion(\"BR\");return JSON.stringify(\"region set to BR\")})()","returnByValue":true}'
 
 # 2. Wait for provider re-resolution
 sleep 3
 
 # 3. Navigate to Money, then Add Money sheet
-yarn mm describe-screen
-yarn mm click --testid money-action-button-row-add
-yarn mm wait-for --testid money-add-money-sheet --timeout 10000
-yarn mm describe-screen
-yarn mm screenshot --name "unsupported-region-no-deposit-funds"
+mm describe-screen
+mm click --testid money-action-button-row-add
+mm wait-for --testid money-add-money-sheet --timeout 10000
+mm describe-screen
+mm screenshot --name "unsupported-region-no-deposit-funds"
 
 # 4. Verify: "Deposit Funds" option should be missing or disabled
 
 # 5. Restore to US
-yarn mm cdp Runtime.evaluate '{"expression":"(function(){/* same walk */ctx.RampsController.setUserRegion(\"US\");return JSON.stringify(\"region restored\")})()","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"(function(){/* same walk */ctx.RampsController.setUserRegion(\"US\");return JSON.stringify(\"region restored\")})()","returnByValue":true}'
 ```
 
 ## Verify State After Mutation
 
 ```bash
 # Read current region from Redux
-yarn mm cdp Runtime.evaluate '{"expression":"(function(){var hook=globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__;var rid=hook.renderers.keys().next().value;var root=hook.getFiberRoots(rid).values().next().value;function find(f){if(!f)return null;if(f.memoizedProps&&f.memoizedProps.store&&typeof f.memoizedProps.store.getState===\"function\")return f.memoizedProps.store;return find(f.child)||find(f.sibling)}var store=find(root.current);if(!store)return JSON.stringify(\"no store\");var r=store.getState().engine.backgroundState.RampsController;return JSON.stringify({regionCode:r.userRegion&&r.userRegion.regionCode,country:r.userRegion&&r.userRegion.country})})()","returnByValue":true}'
+mm cdp Runtime.evaluate '{"expression":"(function(){var hook=globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__;var rid=hook.renderers.keys().next().value;var root=hook.getFiberRoots(rid).values().next().value;function find(f){if(!f)return null;if(f.memoizedProps&&f.memoizedProps.store&&typeof f.memoizedProps.store.getState===\"function\")return f.memoizedProps.store;return find(f.child)||find(f.sibling)}var store=find(root.current);if(!store)return JSON.stringify(\"no store\");var r=store.getState().engine.backgroundState.RampsController;return JSON.stringify({regionCode:r.userRegion&&r.userRegion.regionCode,country:r.userRegion&&r.userRegion.country})})()","returnByValue":true}'
 ```
 
 ## When to Use CDP

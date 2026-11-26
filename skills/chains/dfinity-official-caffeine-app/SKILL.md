@@ -85,7 +85,7 @@ exact tree (file contents below):
 
 ```text
 my-app/
-├── .old/src/backend/dist/
+├── deployed/
 │   └── backend.most           # stable-signature baseline — seed with an empty actor (see below)
 ├── caffeine.toml              # root workspace manifest — MUST contain [workspace]
 ├── mops.toml                  # Motoko build config — ONE per project, at the root
@@ -222,7 +222,7 @@ check-wasm = true
 main = "src/backend/main.mo"
 
 [canisters.backend.check-stable]
-path = ".old/src/backend/dist/backend.most"
+path = "deployed/backend.most"
 
 [toolchain]
 moc = "2.1.0"
@@ -263,12 +263,14 @@ Notes:
   first in `[moc] args`); leave such a project on its pinned version, or move it with the
   `migrating-to-moc-2` skill:
   <https://github.com/caffeinelabs/skills/tree/main/skills/migrating-to-moc-2>.
-- **`check-stable`** points at `.old/src/backend/dist/backend.most`, the stable-signature
-  snapshot of the last deployed backend. `caffeine check` compares your stable state
-  against it, and `caffeine projects clone` restores it from the cloud. Do not delete
-  `.old/`. **A from-scratch project must seed it** with an empty actor, as the Caffeine
-  template does, or `caffeine check` fails with
-  `Deployed file not found: .old/src/backend/dist/backend.most`:
+- **`check-stable`** points at `deployed/backend.most`, the stable-signature snapshot of
+  the last deployed backend. `caffeine check` compares your stable state against it, and
+  `caffeine projects clone` restores it from the cloud. Do not delete or edit
+  `deployed/`. **A from-scratch project must seed it** with an empty actor, as the
+  Caffeine template does, or `caffeine check` fails with
+  `Deployed file not found: deployed/backend.most`. Older projects point `check-stable` at
+  `.old/src/backend/dist/backend.most`, the same baseline in its old home; `caffeine
+  preview` accepts either path, and clone writes both. The seed:
 
   ```motoko
   // Version: 1.0.0
@@ -298,12 +300,12 @@ Notes:
   };
   ```
 
-  `check-limit = 1` allows **one pending (not yet deployed) migration**. Against the seeded
-  empty baseline, `00000000_000000.mo` is itself pending, so until the first deploy you add
-  new stable fields by editing that file, not by adding a second one; a second file fails
+  `check-limit = 1` allows **one pending migration** (one the deployed baseline does not
+  record yet). Against the seeded empty baseline, `00000000_000000.mo` is itself pending, so
+  until the first deploy you add new stable fields by editing that file, not by adding a second one; a second file fails
   `caffeine check` with `too many pending migrations for check-limit=1`. Never edit,
-  rename, or delete a migration after it is deployed. The rules for writing migrations
-  are in the `migrating-motoko-actors` skill:
+  rename, or delete a migration the deployed baseline already records. The rules for
+  writing migrations are in the `migrating-motoko-actors` skill:
   <https://github.com/caffeinelabs/skills/tree/main/skills/migrating-motoko-actors>.
 - **`core`** is the `mo:core` standard library. Use `mo:core`, never the deprecated
   `mo:base` — see the `writing-motoko` skill. **`caffeineai-oql`** provides the `Expose` mixin the
@@ -482,16 +484,21 @@ caffeine build
 #    backend `mops check --fix`, frontend `pnpm typecheck` + `pnpm fix`).
 caffeine check --fix
 
-# 5. Upload a built draft (needs a cloud project id). For a brand-new app, create the
-#    cloud project once to obtain an id, then preview:
+# 5. Upload the source as a draft; Caffeine builds and deploys it (needs a cloud project
+#    id). For a brand-new app, create the cloud project once to obtain an id, then preview:
 caffeine projects create                 # reports a new project id
+#    (optional) place it on a specific cloud instead of the account default; the
+#    choices come from `caffeine clouds list`:
+#    caffeine projects create --cloud european
 #    put that id in caffeine.toml [project] id = "...", OR pass --project-id:
 caffeine preview --build --project-id <id>
 ```
 
-`caffeine preview` refuses to upload when sources changed since the last `caffeine build`;
-`--build` rebuilds first. It also checks the `mops.toml` structure described above and
-needs `src/backend/dist/backend.wasm` and `src/frontend/dist/index.html`. Do not
+`caffeine preview` uploads the project source, never local build output: Caffeine builds
+the code itself. `--build` runs `caffeine build` first, so compile errors show up before
+the upload. Preview checks the `mops.toml` structure described above and refuses while
+another deployment of the project is running. If Caffeine's build fails, the build output
+is in the project chat (`caffeine chat open`). Do not
 `caffeine projects clone` a project you just created: it has no code yet, so the clone
 fails with `No committed draft found`.
 
@@ -512,7 +519,8 @@ at least once before `caffeine check` can typecheck the frontend. A brand-new ap
 returns its URL. Promote a draft to a live URL in the caffeine.ai web app (open it with
 `caffeine chat open` or visit caffeine.ai), or with the `caffeine_go_live` tool of the
 Caffeine MCP connector. There is no CLI deploy command. Use
-`caffeine projects show <id>` to see draft and live URLs, and any custom domains.
+`caffeine projects show <id>` to see draft and live URLs, any custom domains, and the cloud
+the project runs on.
 
 ### Alternative: let Caffeine's own AI build it
 
@@ -574,7 +582,7 @@ ordinary backend method.
 6. **Dropping required `mops.toml` settings.** Keep the single `[canisters.backend]`,
    `[canisters.backend.check-stable]`, `[build] outputDir`, and a `[toolchain] moc` pin
    (mops cannot compile without one).
-7. **Deleting `.old/` or `env.json`, or skipping `copy:env`.** `.old/` holds the
+7. **Deleting `deployed/` or `env.json`, or skipping `copy:env`.** `deployed/` holds the
    stable-signature snapshot `check-stable` compares against; `env.json` must be copied
    into `dist/` so the served frontend can read its runtime config.
 8. **Writing Motoko without the `writing-motoko` skill.** Modern Caffeine Motoko uses
@@ -589,15 +597,17 @@ ordinary backend method.
     lockfile, then the loop works. (An interactive terminal creates it for you.)
 11. **First `caffeine check` fails with `Deployed file not found: …/backend.most`.** The
     stable-signature check needs the last deployed snapshot, which a never-deployed project
-    lacks. Seed `.old/src/backend/dist/backend.most` with an empty actor (shown under the
+    lacks. Seed `deployed/backend.most` with an empty actor (shown under the
     `mops.toml` above). `caffeine build` does not create it.
 12. **`caffeine preview --build` fails with `No project.id in caffeine.toml`.** Uploading
     a draft needs a cloud project. Run `caffeine projects create` to get an id, set it in
     `[project] id` (or pass `--project-id <id>`), then preview. `caffeine build` alone
     needs no id and is enough to verify the app compiles.
 13. **`too many pending migrations for check-limit=1`.** Only one migration can be pending
-    at a time, and on a never-deployed project `00000000_000000.mo` already is. Fold the
-    new state into that pending file instead of adding another.
+    at a time, and on a never-deployed project `00000000_000000.mo` already is. Fold all
+    changes into the latest pending file, which the error names, and delete the other
+    pending files. Nothing is applied yet, so this is safe even when it removes
+    `00000000_000000.mo`.
 14. **`include-authorization` lint error, or `M0169` "stable variable `accessControlState`
     … cannot be implicitly discarded".** `main.mo` dropped `MixinAuthorization` or its
     `accessControlState` field while the package and the first migration still provide
