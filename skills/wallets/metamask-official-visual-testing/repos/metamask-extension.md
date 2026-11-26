@@ -35,7 +35,9 @@ For architecture details, see `test/e2e/playwright/llm-workflow/README.md`.
 - `mm run-steps` expects a JSON **object** with a `steps` key, not a bare array.
 - You cannot switch context during an active session. Run `mm cleanup` first, or use `mm launch --context ...`.
 - The default password for built-in fixtures is `correct horse battery staple`.
-- Network mocks are session-scoped. In the e2e fixture Basic functionality is off, and the home screen made no request to the MetaMask API origins, so a mock there can get no request at all. Check with `mm mock-network requests` before you rely on a mock; see [Mock Network](references/mock-network.md).
+- Network mocks are session-scoped and also match service-worker, offscreen and snap requests. In the e2e fixture Basic functionality is off, so many MetaMask API calls never happen. Find the real request with `mm network --url <text>` before you mock it, and check `mm mock-network requests` after; see [Mock Network](references/mock-network.md).
+- Do not hook `console.error` or enable `Network` with `mm cdp` to catch errors. Mark at the start of a flow and read `mm logs` and `mm network` at the end ([Logs and network](#logs-and-network)). In the e2e fixture the service worker always logs Snaps "requires basic functionality" errors; compare against your mark.
+- `mm click` on a visually hidden checkbox (settings toggles such as `basic-functionality-toggle`) clicks its label and returns `"clickedLabel": true`. Do not click a wrapper or use `mm cdp` for toggles.
 - An element below the fold is not a scroll problem for a click: Playwright's `click` already scrolls its target into view. To bring an element into view for a screenshot, use `mm scroll-to-element --testid <id>`; do not scroll with `mm cdp` scripts.
 - In the e2e fixture, the Activity tab opens "Basic functionality is off" with no bottom navigation, so `mm click --testid bottom-nav-home` fails after 2 s with `MM_TARGET_NOT_FOUND`. Use `mm navigate-home` instead.
 - Right after `mm reload` the observation can be empty. Run `mm wait-for` or `mm describe-screen` before you act on it.
@@ -157,17 +159,17 @@ If `--within` isn't working or you can't identify the right parent testId, use a
 Check styling and disabled states with values instead of by eye:
 
 ```bash
-mm inspect --testid eth-overview-swap                 # disabled, attributes, styles
+mm inspect --testid send-continue-button            # disabled, attributes, styles
 mm inspect --testid eth-overview-send --styles color,opacity,cursor,display
 ```
 
-`mm inspect` returns `attributes`, `disabled`, `readOnly`, `styles` (default `color`, `background-color`, `opacity`, `cursor`) and `effectiveOpacity`. A faded, disabled Swap button reads `"disabled": true`, `"effectiveOpacity": 0.5`, `"cursor": "not-allowed"`. Compare two elements with the same `--styles`; do not compare one against unrelated text.
+`mm inspect` returns `attributes`, `disabled`, `readOnly`, `styles` (default `color`, `background-color`, `opacity`, `cursor`) and `effectiveOpacity`. On the send page, before a recipient and amount are set, the faded Continue button (`send-continue-button`) reads `"disabled": true`, `"effectiveOpacity": 0.5`, `"cursor": "not-allowed"`. Compare two elements with the same `--styles`; do not compare one against unrelated text.
 
 For hover-only UI and layout widths:
 
 ```bash
-mm hover --testid account-menu-icon
-mm screenshot --name account-menu-hovered
+mm hover --testid eth-overview-send
+mm screenshot --name send-hovered
 mm unhover
 mm set-viewport 400 600
 mm screenshot --name narrow
@@ -178,15 +180,17 @@ To bring a row further down a list into view for a screenshot, use `mm scroll-to
 
 #### Timeouts
 
-All interaction commands accept `--timeout <ms>` (default 15000). This is a **single deadline budget** covering visibility wait + action combined.
+All interaction commands accept `--timeout <ms>` (default 15000). This is a **single deadline budget** covering visibility wait + action combined. The daemon queue and the CLI wait for that budget plus the observation, so a long `--timeout` is honoured and fails with the action's own code. Commands without an action timeout (`navigate`, `describe-screen`, `screenshot`, `run-steps` without `batchTimeoutMs`) stop after 30 s with `MM_QUEUE_TIMEOUT` (exit 5, state unknown).
 
 Phase-specific error codes on timeout:
 - `MM_WAIT_TIMEOUT` — element never became visible. `retryable: true`.
-- `MM_TARGET_NOT_FOUND` — `mm click` without `--timeout`: nothing matched after 2 s (a wrong testId shows up here, for example `eth-overview-receive`; Receive is `eth-overview-default`). Pass `--timeout` to wait for a target that appears late.
-- `MM_CLICK_TIMEOUT` — click hung; state unknown. The message ends with Playwright's last step, for example `element is not enabled` (disabled Swap in the fixture) or `… intercepts pointer events` (a modal covers the target). Run `mm describe-screen` before retrying.
+- `MM_TARGET_NOT_FOUND` — `mm click` without `--timeout`: nothing matched after 2 s (usually a wrong testId; check `mm describe-screen`). Pass `--timeout` to wait for a target that appears late.
+- `MM_CLICK_TIMEOUT` — click hung; state unknown. The message ends with Playwright's last step, for example `element is not enabled` (Continue on an empty send form) or `… intercepts pointer events` (a modal covers the target). Run `mm describe-screen` before retrying.
 - `MM_TYPE_TIMEOUT` — the field did not appear or `fill()` hung; state unknown.
 - `MM_GETTEXT_TIMEOUT` — the element did not appear or `textContent()` hung. `retryable: true`.
 - `MM_PAGE_CLOSED` — page closed during action (expected for some confirmation flows); exits 3.
+- `MM_QUEUE_TIMEOUT` — the daemon stopped a command that has no action timeout after about 30 s, for example a `run-steps` batch without `batchTimeoutMs` whose steps take longer. State unknown.
+- `MM_SCREENSHOT_FAILED` — `mm screenshot --selector` on a missing element waits 30 s, then fails with this (exit 1, `locator.screenshot: Timeout 30000ms exceeded`) or with `MM_QUEUE_TIMEOUT` (exit 5), whichever ends first.
 
 For the full error code and exit code tables, see [references/error-recovery.md](references/error-recovery.md).
 
@@ -241,7 +245,7 @@ mm screenshot --name "after-unlock"
 
 Capture before and after meaningful state changes for visual validation evidence.
 
-`mm screenshot` accepts only `--name` and captures the full page. For one element or the viewport, use a `run-steps` screenshot step with `selector` or `"fullPage": false`. See [Element and viewport screenshots](references/cli-reference.md#element-and-viewport-screenshots).
+`mm screenshot` captures the full page. `--selector '<css>'` captures one element and `--frame <iframe>` an iframe. For the viewport only, use a `run-steps` screenshot step with `"fullPage": false`. See [Element, iframe and viewport screenshots](references/cli-reference.md#element-iframe-and-viewport-screenshots).
 
 ### 8. Cleanup (Always Required)
 
@@ -266,6 +270,7 @@ For dapp confirmations, `mm wait-for-notification` finds the confirmation page a
 After `mm launch` and unlock (see [Batching](#batching-with-mm-run-steps)):
 
 ```bash
+mm events mark                                # note "cursor"
 mm click --testid eth-overview-send
 mm click --testid token-asset-0x539-ETH       # "All networks" lists several ETH rows; 0x539 is the local chain
 mm type --testid recipient-address-input 0x2f318C334780961FB129D2a6c30D0763d9a5C970
@@ -273,9 +278,19 @@ mm type --testid send-amount-input 0.01
 mm click --testid send-continue-button
 mm wait-for --testid confirm-footer-button    # the review page shows skeletons first
 mm click --testid confirm-footer-cancel-button   # or confirm-footer-button to send
+mm logs --cursor <cursor>
+mm network --settled --cursor <cursor>
 ```
 
-The review page shows `confirm-send-amount` and `recipient-address`.
+The review page shows `confirm-send-amount` and `recipient-address`. While it loads, the service worker POSTs the transaction to `security-alerts.api.cx.metamask.io/validate/0x539` (`rpcMethods: ["eth_sendTransaction"]`); mock that to test the Blockaid banner (`confirm-banner-alert`), see [Mock Network](references/mock-network.md#record-request-bodies).
+
+## Logs and network
+
+`mm events mark` at the start of a flow, then `mm logs --cursor <n>` and `mm network --settled --cursor <n>` at the end. Records cover the page (`target.kind: "page"`), the background service worker (`"sw"`), the offscreen document and snaps iframes (`"iframe"`); most requests come from the service worker. Check that `summary.startedAt` did not change and `summary.captureErrors` stayed the same; otherwise the capture has a gap. Details and the fixture's baseline errors: [Logs and network](references/logs-and-network.md).
+
+## Iframes
+
+The asset page shows the TradingView chart in a cross-origin iframe when the `tokenDetailsAdvancedCharts` remote flag is on and the candle chart is selected. Both are off in the e2e fixture. To show it there: mock the candles with `mm mock-network add` on `GET https://price.api.cx.metamask.io/v3/ohlcv-chart/**` (JSON `{"data":[{"timestamp":<ms>,"open":…,"high":…,"low":…,"close":…,"volume":…},…],"hasNext":false,"nextCursor":null}`), `mm click --testid multichain-token-list-button`, then write Redux state ([operation 3](references/state-manipulation.md#five-operations)) with `next.remoteFeatureFlags.tokenDetailsAdvancedCharts = true` and `next.preferences.tdpChartType = 1`, and `mm wait-for --testid advanced-chart-iframe`. Without the mock the chart shows no data. `mm describe-screen` lists it as `{"role":"iframe","name":"Advanced Chart"}`. The `advanced-chart-iframe` testId is on the wrapper `<div>`, so pass the ref or `selector:[data-testid="advanced-chart-iframe"] iframe` to `--frame`. The chart draws on a canvas, so it has no accessibility nodes: use `mm screenshot --frame <ref>`. See [Iframes](references/cli-reference.md#iframes).
 
 ## Batching with mm run-steps
 
@@ -290,11 +305,12 @@ mm run-steps '{"steps":[
 ```
 
 Details:
-- Prefer `testId`, `a11yRef`, or `selector` in args (not `ref`)
+- Target with `testId`, `a11yRef`, `selector`, or `ref` (shorthand for `a11yRef`, in every target tool and in `within`)
+- Step args follow the tool schema, not CLI flags: `inspect` takes `"styles":["cursor"]`, `wait_for` takes `"timeoutMs"`
 - Use `within` in args to scope targeting within a parent element
-- Add `batchTimeoutMs` (1000–30000 ms) for an overall deadline. The whole call stops after 30 s, so use a lower value (for example 20000) to get partial results, and split longer flows into several batches
-- Add a top-level `observe` (`none` / `diff` / `full`, default `diff`) to set the observation collected after the batch. `includeObservations` was removed; check `summary.ok` to react to failures
-- A failed step does not stop the batch: later steps still run. Add `"stopOnError": true` to stop at the first failed step
+- Add `batchTimeoutMs` (1000–30000 ms) for an overall deadline. It is checked between steps: the step in progress finishes, then the rest are skipped with `MM_BATCH_TIMEOUT` and the call returns partial results (exit 0). Without `batchTimeoutMs` the whole call stops after 30 s with `MM_QUEUE_TIMEOUT`, so split longer flows into several batches
+- Add a top-level `observe` (`none` / `diff` / `full`, default `diff`) to set the observation collected after the batch. Check `summary.ok` to react to failures
+- A failed step does not stop the batch and the call still exits 0: check `summary.ok`. Add `"stopOnError": true` to stop at the first failed step
 - Tool aliases like `navigate_home` and `navigate-home` are supported
 
 Pattern: discover with `mm describe-screen` → batch known steps with `mm run-steps` → re-verify with `mm describe-screen`.
@@ -320,4 +336,5 @@ Load these on demand — not required for standard visual testing:
 - **[CLI Command Reference](references/cli-reference.md)** — full command tables for all `mm` commands
 - **[State Manipulation](references/state-manipulation.md)** — read/write Redux and persisted state via CDP when fixtures don't cover your scenario
 - **[Mock Network](references/mock-network.md)** — stub network requests for deterministic API responses
+- **[Logs and Network](references/logs-and-network.md)** — console errors and the request log of pages, the service worker and snaps
 - **[Error Recovery](references/error-recovery.md)** — error codes, common failures, and troubleshooting

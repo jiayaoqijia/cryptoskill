@@ -8,7 +8,7 @@ model: sonnet
 license: MIT
 metadata:
   author: pancakeswap
-  version: '1.0.0'
+  version: '1.0.1'
   openclaw:
     homepage: https://github.com/pancakeswap/pancakeswap-ai
     os:
@@ -601,4 +601,4 @@ Cache the list locally (e.g., 1-hour TTL) to avoid repeated fetches. For tokens 
 
 Base URL: `https://hub-api.pancakeswap.com/aggregator`
 
-For API access, contact PancakeSwap: <https://t.me/pancakeswap>
+For API access, contact PancakeSwap business partnerships: <https://docs.pancake.xyz/welcome-to-pancake/contact-us/business-partnerships>

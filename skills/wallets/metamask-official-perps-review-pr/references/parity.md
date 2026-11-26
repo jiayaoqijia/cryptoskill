@@ -3,7 +3,7 @@
 Mobile is the reference implementation for perps. Extension was built after mobile without rigorous
 comparison. Use this map to check that a change on one platform has, or explicitly does not need, its
 counterpart on the other. Check the extension for parity only; never copy its patterns into mobile.
-When a reference checkout the comparison needs is not available, record a FINDING that names the missing checkout and asks for it, as the Terminal overlay does for Mobile.
+When a reference checkout the comparison needs is not available, record NOT_CHECKED, name the missing checkout and ask for it. It is a gap on the reviewer's side, not a finding against the change.
 
 
 ## Screen/Route Mapping

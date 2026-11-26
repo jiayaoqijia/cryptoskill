@@ -3,7 +3,7 @@
   "id": "perps",
   "source": {
     "repository": "MetaMask/experimental-metamask-recipe-perps",
-    "revision": "88fe4da69502988e78874961dd9dba3b32aa566d"
+    "revision": "e58f6453292a3edb3432f491497b057398e36dad"
   },
   "families": [
     {
@@ -529,42 +529,14 @@
             "tests/**/[Pp]erps/**",
             "tests/**/[Pp]erps*/**",
             "tests/**/*[Pp]erps*"
-          ],
-          "extension": [
-            "ui/pages/perps/**",
-            "ui/components/app/perps/**",
-            "ui/pages/confirmations/components/perps-confirmations/**",
-            "ui/hooks/perps/**",
-            "ui/ducks/perps/**",
-            "ui/providers/perps/**",
-            "ui/helpers/perps/**",
-            "ui/selectors/perps/**",
-            "ui/selectors/perps-controller*.ts",
-            "ui/__mocks__/perps/**",
-            "app/scripts/controllers/perps/**",
-            "app/scripts/messenger-client-init/perps-controller-init*.ts",
-            "app/scripts/messenger-client-init/messengers/perps-controller-messenger*.ts",
-            "shared/constants/perps*.ts",
-            "shared/lib/perps-*.ts",
-            "test/e2e/tests/perps/**",
-            "test/e2e/page-objects/pages/perps/**",
-            "ui/pages/confirmations/**/*[Pp]erps*",
-            "ui/pages/confirmations/**/*[Pp]erps*/**"
-          ],
-          "core": [
-            "packages/perps-controller/**"
-          ],
-          "terminal": [
-            "src/features/perpetuals/**",
-            "src/app/order/**",
-            "src/server/perps/**",
-            "electron/services/mm-perps-*",
-            "electron/services/hyperliquid-*"
           ]
         }
       },
       "status": "active",
       "class": "blocking",
+      "clients": [
+        "mobile"
+      ],
       "rules": [
         {
           "label": "Single-gate assumption",
@@ -722,19 +694,17 @@
           ],
           "core": [
             "packages/perps-controller/**"
-          ],
-          "terminal": [
-            "src/features/perpetuals/**",
-            "src/app/order/**",
-            "src/server/perps/**",
-            "electron/services/mm-perps-*",
-            "electron/services/hyperliquid-*"
           ]
         }
       },
       "status": "active",
       "class": "blocking",
       "doc": "Core `packages/perps-controller/docs/contracts/traces.md`, plus the client's `docs/perps/` instrumentation doc.",
+      "clients": [
+        "mobile",
+        "extension",
+        "core"
+      ],
       "rules": [
         {
           "label": "Unbounded background trace volume",
@@ -1076,9 +1046,6 @@
             "ui/pages/confirmations/**/*[Pp]erps*",
             "ui/pages/confirmations/**/*[Pp]erps*/**"
           ],
-          "core": [
-            "packages/perps-controller/**"
-          ],
           "terminal": [
             "src/features/perpetuals/**",
             "src/app/order/**",
@@ -1090,6 +1057,11 @@
       },
       "status": "active",
       "class": "blocking",
+      "clients": [
+        "mobile",
+        "extension",
+        "terminal"
+      ],
       "rules": [
         {
           "label": "Only one path is fixed",

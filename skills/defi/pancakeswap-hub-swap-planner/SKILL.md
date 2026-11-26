@@ -8,7 +8,7 @@ model: sonnet
 license: MIT
 metadata:
   author: pancakeswap
-  version: '1.0.0'
+  version: '1.0.1'
   openclaw:
     homepage: https://github.com/pancakeswap/pancakeswap-ai
     os:
@@ -101,7 +101,7 @@ The Hub API requires a `x-secure-token` header. Before calling the API, check fo
 if [ -z "$PCS_HUB_TOKEN" ]; then
   echo "PCS_HUB_TOKEN is not set."
   echo "Set it with: export PCS_HUB_TOKEN=<your-token>"
-  echo "Contact PancakeSwap to obtain a token: https://t.me/pancakeswap"
+  echo "Contact PancakeSwap business partnerships to obtain a token: https://docs.pancake.xyz/welcome-to-pancake/contact-us/business-partnerships"
   exit 1
 fi
 ```

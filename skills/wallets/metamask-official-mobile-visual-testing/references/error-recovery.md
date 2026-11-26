@@ -33,14 +33,14 @@ For in-app failures:
 
 ## Reading a Failure
 
-With `@metamask/client-mcp-core` 0.14.0 a failed command prints **one JSON line on stdout** and exits non-zero:
+A failed command prints **one JSON line on stdout** and exits non-zero:
 
 ```json
 {"ok":false,"error":{"code":"MM_CLICK_FAILED","message":"Operation failed: Timed out waiting for element: {\"identifier\":\"does-not-exist\"} (2000ms)","retryable":false},"meta":{"timing":{…}}}
 ```
 
 - Decide with `error.code` or the exit code. Do not grep stderr or match `Error:` text: stderr is for human logs only.
-- `error.hint` is optional. `error.retryable` is always present and is `true` only when running the same command again, unchanged, is safe (reads and waits). It is `false` for click, type and request timeouts, because the action state is unknown.
+- `error.hint` is optional. `error.retryable` is always present and is `true` only when running the same command again, unchanged, is safe (reads and waits). It is `false` for click, type, queue and request timeouts, because the action state is unknown.
 - `meta` is present when the daemon answered. A usage error the CLI rejects before sending (exit 2) and a missing daemon (exit 3) have none; a daemon-side schema `VALIDATION_ERROR` does.
 - A successful result has **no** `ok` field. `mm stop` still prints plain text (`Daemon stopped (was PID <pid> on port <port>).`, or `No daemon is running.` on stderr with exit 0).
 - Without a daemon, an unknown command exits 3 (`MM_DAEMON_NOT_RUNNING`), not 2: the daemon check runs first.
@@ -48,12 +48,12 @@ With `@metamask/client-mcp-core` 0.14.0 a failed command prints **one JSON line 
 | Exit | Meaning | Codes (examples) |
 | --- | --- | --- |
 | 0 | ok | |
-| 1 | anything else (internal error, tool failure, unknown code) | `MM_LAUNCH_FAILED`, `MM_INTERNAL_ERROR`, `TOOL_EXECUTION_FAILED` (includes `Tool execution timed out`), an `MM_*` code the CLI does not know |
+| 1 | anything else (internal error, tool failure, unknown code) | `MM_LAUNCH_FAILED`, `MM_INTERNAL_ERROR`, `MM_CDP_FAILED`, `TOOL_EXECUTION_FAILED`, an `MM_*` code the CLI does not know |
 | 2 | usage or validation; nothing ran | `MM_INVALID_INPUT`, `MM_INVALID_CONFIG`, `VALIDATION_ERROR` |
 | 3 | no session, daemon not running, daemon connection lost | `MM_NO_ACTIVE_SESSION`, `MM_DAEMON_NOT_RUNNING`, `MM_DAEMON_CONNECTION_LOST` |
 | 4 | target not found or not actionable | `MM_TARGET_NOT_FOUND`, `MM_TARGET_NOT_VISIBLE`, `MM_TARGET_OBSCURED`, `MM_CLICK_FAILED` |
-| 5 | timeout (click, type and request timeouts: state unknown) | `MM_WAIT_TIMEOUT`, `MM_CLICK_TIMEOUT`, `MM_REQUEST_TIMEOUT`, `MM_BATCH_TIMEOUT` |
-| 6 | platform, device, Metro or Hermes not available | `MM_DEVICE_NOT_AVAILABLE`, `MM_HERMES_FAILED`, `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` |
+| 5 | timeout (click, type, queue and request timeouts: state unknown) | `MM_WAIT_TIMEOUT`, `MM_CLICK_TIMEOUT`, `MM_QUEUE_TIMEOUT`, `MM_REQUEST_TIMEOUT`, `MM_BATCH_TIMEOUT` |
+| 6 | platform, device, Metro or Hermes not available | `MM_DEVICE_NOT_AVAILABLE`, `MM_DEVICE_ACTION_FAILED`, `MM_HERMES_FAILED`, `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` |
 | 7 | daemon version mismatch (reserved) | |
 
 ## Error Codes
@@ -67,15 +67,15 @@ Launch errors use the core `ErrorCode` set. `launch` preserves any consumer-thro
 | `MM_TARGET_NOT_FOUND` | 4 | The element is not in the UI tree, or the reference is stale or not targetable (`Unknown a11yRef`; for `scroll-to-element`: never found). Run `yarn mm describe-screen` and target again; a conditionally rendered section can unmount a test ID that an earlier snapshot had. A message that says `Use device_snapshot` names an MCP tool; the CLI equivalent is `mm describe-screen`. |
 | `MM_TARGET_NOT_VISIBLE` | 4 | The element was found but is outside the viewport: a tap on an off-screen element, or `scroll-to-element` that could not bring it into view. Run `yarn mm scroll-to-element`, then tap. When the failing command **is** `scroll-to-element`, its hint is not useful: run `describe-screen`, check the element still exists and its `bounds`, try the other `--direction`, or tap the center of `bounds` with `mm tap-coordinates`. |
 | `MM_WAIT_TIMEOUT` | 5 | The element did not appear before the deadline. `retryable: true`. Verify the screen and increase `--timeout` if the app is still transitioning. |
-| `MM_TARGET_OBSCURED` | 4 | iOS: another element (keyboard, sheet, overlay) covers the tap point, so nothing was tapped. Close the keyboard with `mm click … --dismiss-keyboard`, or close the overlay first. |
+| `MM_TARGET_OBSCURED` | 4 | iOS and Android: another element (keyboard, sheet, overlay, the Expo "Tools" button of dev builds) covers the tap point, so nothing was tapped. The message names the cover. Close the keyboard with `mm click … --dismiss-keyboard`, or close or move the overlay first. |
 | `MM_CLICK_FAILED` | 4 | The click failed for another reason. On mobile a `--testid` that never appeared usually ends here (the driver's wait timed out) rather than in `MM_TARGET_NOT_FOUND` / `MM_CLICK_TIMEOUT`. Check the test ID with `list-testids`, then re-describe. |
 | `MM_CLICK_TIMEOUT` | 5 | The click hung after the element was found; the state is unknown. Describe the screen before retrying. |
-| `MM_TYPE_FAILED` | 4 | The target may not be editable. Verify the selected element and keyboard state. |
+| `MM_TYPE_FAILED` | 4 | The target may not be editable. Verify the selected element and keyboard state. On iOS, `mm type <field> ""` ends here (`idb ui text` rejects empty text) after the field was cleared. |
 | `MM_TYPE_TIMEOUT` | 5 | Input stalled; the state is unknown. Describe the screen, obtain a fresh target, and retry. |
 | `MM_GETTEXT_FAILED` | 4 | The target detached or does not expose text. Re-describe and re-target. |
 | `MM_GETTEXT_TIMEOUT` | 5 | Text retrieval exceeded the deadline. Retry with a fresh target or larger `--timeout`. |
 | `MM_PAGE_CLOSED` | 3 | The target closed during the action. This can be expected for transitions; inspect current state. |
-| `MM_BATCH_TIMEOUT` | 5 | `run-steps` exceeded `batchTimeoutMs`. Split the batch; the deadline is capped at 30000 ms. |
+| `MM_BATCH_TIMEOUT` | 5 | A `run-steps` step skipped because `batchTimeoutMs` passed. The steps before it have their results. Split the batch; the deadline is capped at 30000 ms. |
 
 ### Session and Launch Errors
 
@@ -85,6 +85,7 @@ Launch errors use the core `ErrorCode` set. `launch` preserves any consumer-thro
 | `MM_NO_ACTIVE_SESSION` | 3 | No app session exists. Run `yarn mm launch`. |
 | `MM_DAEMON_NOT_RUNNING` | 3 | No daemon is running, or it refused the connection. Run `yarn mm launch` (or `yarn mm serve`) to start it. |
 | `MM_DAEMON_CONNECTION_LOST` | 3 | The connection failed after the request was sent. The CLI does not resend it: the action may have run, so run `describe-screen` before retrying. |
+| `MM_QUEUE_TIMEOUT` | 5 | The daemon stopped the request before it finished. The action may have run: run `yarn mm describe-screen` before retrying. |
 | `MM_REQUEST_TIMEOUT` | 5 | The CLI stopped waiting for the daemon. The action state is unknown: run `yarn mm describe-screen` before retrying. |
 | `MM_LAUNCH_FAILED` | 1 | The app or platform driver failed to start (Android: `io.metamask did not become ready`). Run `yarn mm cleanup` and retry; inspect the device, installed app, and `.mm-daemon.log`. |
 | `MM_DEPENDENCIES_MISSING` | 6 | iOS: Xcode command-line tools or `idb` (Facebook iOS Debug Bridge) are missing. Run `yarn mm:doctor`, then install `idb` with `brew tap facebook/fb && brew install idb-companion && pip3 install fb-idb`. Android: `adb` is unavailable; install Android SDK Platform-Tools and put `adb` on `PATH`. |
@@ -111,8 +112,9 @@ On mobile the screenshot is written to device-mcp's own temporary directory (`�
 | `MM_HERMES_NOT_AVAILABLE` | 6 | `hermes-targets` was run on a session with no mobile driver, or Metro is not attached. Launch with `--metro-port <port>` (or `MM_METRO_PORT`) set and retry. |
 | `MM_HERMES_FAILED` | 6 | Hermes target discovery failed. Verify Metro is running, the app is a development build, and one device/one Metro process per worktree. |
 | `MM_CDP_BLOCKED` | 2 | The requested `cdp` method is blocked as destructive. Use a safe inspection method instead. |
-| `MM_CDP_FAILED` | 1 | `cdp` execution failed or timed out. `[HERMES_CONNECTION_FAILED] … fetch failed` means Metro is not on the port used: pass `--metro-port <port>`. On Node 20 confirm `--experimental-websocket` was set at launch; inspect Metro and `.mm-daemon.log`. |
-| `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` | 6 | The command is browser-only on this mobile session (`inspect`, `hover` / `unhover`, `set-viewport` / `reset-viewport`, `reload`, `navigate`, the tab commands, `clipboard`, `mock-network`, `build`), or a mobile-only command ran without a mobile driver. The message names the tool and platform, for example `Tool "inspect" is not supported on ios platform`. Use visible mobile UI interactions instead. |
+| `MM_CDP_FAILED` | 1 | `cdp` execution failed or timed out. The message names the port it used: `[HERMES_CONNECTION_FAILED] … fetch failed (Metro port 8081)` means Metro is not on that port. Launch with `--metro-port <port>` (cdp then reuses it), or pass `--metro-port` on the call. On Node 20 confirm `--experimental-websocket` was set at launch; inspect Metro and `.mm-daemon.log`. |
+| `MM_DEVICE_ACTION_FAILED` | 6 | A device action failed. Android `dismiss-keyboard` ends here when the keyboard is still shown after ESCAPE and BACK. Run `describe-screen`. |
+| `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` | 6 | The command is browser-only on this mobile session (`inspect`, `hover` / `unhover`, `set-viewport` / `reset-viewport`, `reload`, `navigate`, the tab commands, `clipboard`, `mock-network`, `events` / `logs` / `network`, `build`), or a mobile-only command ran without a mobile driver. The message names the tool and platform, for example `Tool "inspect" is not supported on ios platform`. Use visible mobile UI interactions instead. |
 
 ## Common Failures and Solutions
 
@@ -128,17 +130,19 @@ On mobile the screenshot is written to device-mcp's own temporary directory (`�
 | Empty or failed screen snapshot | Splash screen, animation, app transition, or crash | Wait briefly, describe again, and capture a screenshot |
 | Stale accessibility references | Screen changed after the references were generated | Run `yarn mm describe-screen` and use fresh references |
 | Ref taps the wrong element | Ref used after a call with `--observe none` | Run `yarn mm describe-screen`, or target by `--testid` |
-| `MM_REQUEST_TIMEOUT` / `MM_CLICK_TIMEOUT` / `MM_TYPE_TIMEOUT` (exit 5) | The call was cancelled or the action hung; the action state is unknown | Run `yarn mm describe-screen` before retrying; the action can have happened |
+| `MM_REQUEST_TIMEOUT` / `MM_QUEUE_TIMEOUT` / `MM_CLICK_TIMEOUT` / `MM_TYPE_TIMEOUT` (exit 5) | The call was cancelled or the action hung; the action state is unknown | Run `yarn mm describe-screen` before retrying; the action can have happened |
 | Click on a test ID that does not exist (exit 4, `MM_CLICK_FAILED`) | On mobile the driver's wait for the target timed out and the failure is classified as a click failure | Check the ID with `yarn mm list-testids`, re-describe, then retry. Do not retry blindly if the tap may have run |
 | `MM_TARGET_NOT_VISIBLE` from `scroll-to-element` (exit 4) | The element is in the tree but never came into the viewport | `describe-screen`, check its `bounds`, try the other `--direction`, raise `--maxAttempts`, or tap the center of `bounds` with `mm tap-coordinates` |
 | `MM_TARGET_NOT_FOUND` from `scroll-to-element` (exit 4) | The element left the tree (conditionally rendered section) or the ID is wrong | `describe-screen` to confirm it still exists; re-open the screen that renders it |
-| `MM_TARGET_OBSCURED` (exit 4) | iOS: the keyboard, a sheet or an overlay covers the tap point; nothing was tapped | `mm click … --dismiss-keyboard`, or close the overlay first |
+| `MM_TARGET_OBSCURED` (exit 4) | The keyboard, a sheet or an overlay covers the tap point; nothing was tapped | `mm click … --dismiss-keyboard`, or close the overlay first. In a dev build, the cover can be the Expo "Tools" button; see the overlay's Gotchas |
+| The tap opened another screen than expected | A ref that is `ambiguous` or has no test ID matched another element with the same identity | Go back without acting on the new screen; tap by a unique `--testid` |
+| `observations: {"timedOut": true}` | The observation took longer than 8 s; the action itself succeeded | `yarn mm describe-screen` before you use refs |
 | `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` (exit 6) | A browser-only command on a mobile session | Use visible mobile UI interactions; see [cli-reference.md](cli-reference.md#browser-only) |
 | Interaction timeout | Animation, overlay, or stale/ambiguous target | Re-`describe-screen`, target by a unique test ID or fresh a11y ref (no `--within` on mobile), and increase `--timeout` only when appropriate |
 | `--testId` times out | Incorrect capitalization | Use `--testid` in lowercase |
 | Daemon address already in use | Stale daemon state (`MM_PORT_IN_USE`) | Run `yarn mm stop --force`, then `yarn mm launch` |
 
-A call that runs past the daemon's request limit is cancelled and fails with `TOOL_EXECUTION_FAILED` and the message `Tool execution timed out after <n>ms` (exit 1). `MM_REQUEST_TIMEOUT` (exit 5) means the CLI stopped waiting because the daemon did not answer at all. In both cases the action state is unknown: run `yarn mm describe-screen` before retrying.
+A call that runs past the daemon's queue limit fails with `MM_QUEUE_TIMEOUT` (exit 5). `MM_REQUEST_TIMEOUT` (exit 5) means the CLI stopped waiting because the daemon did not answer at all. The CLI waits longer than the daemon queue, and the queue longer than the action plus its observation, so an action timeout (`MM_CLICK_TIMEOUT`, …) normally comes first. In every case the action state is unknown: run `yarn mm describe-screen` before retrying.
 
 ## Safe App Resolution
 
@@ -166,7 +170,7 @@ If Metro attachment or Hermes inspection fails:
 
 1. Start Metro with `yarn watch:clean`.
 2. Verify its status endpoint, normally `http://localhost:8081/status`.
-3. Ensure `--metro-port <port>` (or `MM_METRO_PORT`) matches the running Metro process.
+3. Ensure the launch `--metro-port <port>` (or `MM_METRO_PORT`) matches the running Metro process; `mm hermes-targets` shows `sessionMetroPort` and `connected`.
 4. Confirm the installed app is a compatible development build and belongs to the selected device.
 5. Use one Metro process and one active device per worktree to avoid target ambiguity.
 6. Inspect `.mm-daemon.log` for attachment and target-selection details.

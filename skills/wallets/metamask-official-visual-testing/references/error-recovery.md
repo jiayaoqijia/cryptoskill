@@ -14,7 +14,8 @@
 2. Act on the exit code and `error.code` (tables below). A click, type or request timeout has `retryable: false` and says "state unknown": the action can have happened.
 3. Run `mm describe-screen` (or `mm wait-for`) to see the state before you retry.
 4. Capture `mm screenshot --name "debug"` for diagnosis.
-5. If the cause is not in the app, read the [daemon log](#daemon-log).
+5. Read what the app reported since your last mark: `mm logs --cursor <mark>` and `mm network --errors --cursor <mark>` (see [logs-and-network.md](logs-and-network.md)).
+6. If the cause is not in the app, read the [daemon log](#daemon-log).
 
 Success has no `ok` field, and `mm stop` prints plain text. For the exact JSON shape, see [Output and Errors](cli-reference.md#output-and-errors).
 
@@ -27,7 +28,7 @@ Success has no `ok` field, and `mm stop` prints plain text. For the exact JSON s
 | 2    | usage or validation; nothing ran                       | Fix the command                                                       |
 | 3    | no session, daemon not running, daemon connection lost | `mm launch`; after `MM_DAEMON_CONNECTION_LOST` check the screen first |
 | 4    | target not found or not actionable                     | `mm describe-screen`, then re-target, scroll or dismiss the keyboard  |
-| 5    | timeout (click, type or request: action state unknown) | `mm describe-screen` before any retry                                 |
+| 5    | timeout (click, type, queue or request: action state unknown) | `mm describe-screen` before any retry                          |
 | 6    | platform, device, Metro or Hermes not available        | Check the device, Metro and the build                                 |
 | 7    | daemon version mismatch (reserved)                     |                                                                       |
 
@@ -54,15 +55,17 @@ Success has no `ok` field, and `mm stop` prints plain text. For the exact JSON s
 | `MM_WAIT_TIMEOUT`            | `wait-for`, `hover`, `inspect` or `scroll-to-element` timed out                              |
 | `MM_NOTIFICATION_TIMEOUT`    | `wait-for-notification` timed out                                                            |
 | `MM_PAGE_CLOSED`             | Page closed during interaction — normal after some confirmations; exits 3                    |
-| `MM_SCREENSHOT_FAILED`       | Screenshot capture failed                                                                    |
+| `MM_SCREENSHOT_FAILED`       | Screenshot capture failed, for example `--selector` matched nothing for 30 s; exits 1         |
 | `MM_BATCH_TIMEOUT`           | `batchTimeoutMs` deadline exceeded                                                           |
 | `MM_CONTEXT_SWITCH_BLOCKED`  | Cannot switch context during active session                                                  |
 | `MM_SET_CONTEXT_FAILED`      | Context switch failed                                                                        |
-| `MM_CDP_BLOCKED`             | CDP method is in the destructive-blocklist                                                   |
+| `MM_CDP_BLOCKED`             | CDP method is blocked: destructive (`Browser.close`, …) or it would stop the session's event recording (`Network.disable`, `Network.enable` with params); exits 2 |
 | `MM_CDP_FAILED`              | CDP command execution failed or timed out                                                    |
 | `MM_DAEMON_NOT_RUNNING`      | No daemon, or it refused the connection — `mm launch`                                        |
 | `MM_DAEMON_CONNECTION_LOST`  | Connection failed after the request was sent; the action may have run — `mm describe-screen` |
 | `MM_REQUEST_TIMEOUT`         | The CLI stopped waiting for the daemon; state unknown                                        |
+| `MM_QUEUE_TIMEOUT`           | The daemon stopped a request with no action timeout after its 30 s queue limit; state unknown; exits 5 |
+| `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` | Mobile-only tool on the browser, or the reverse; exits 6                              |
 | `VALIDATION_ERROR`           | Input failed the tool schema; nothing ran                                                    |
 
 ## Common Failures & Solutions
@@ -81,17 +84,18 @@ Success has no `ok` field, and `mm stop` prints plain text. For the exact JSON s
 | `MM_GETTEXT_TIMEOUT`                                    | Element missing (wrong testId or not rendered yet)                     | `mm describe-screen` and re-target                                 |
 | `MM_GETTEXT_FAILED`                                     | Element detached                                                       | `mm describe-screen` and re-target                                 |
 | `MM_PAGE_CLOSED`                                        | Confirmation auto-closed                                               | Expected — `mm describe-screen` to find the active page            |
-| `MM_CDP_BLOCKED`                                        | Destructive CDP method                                                 | Use a non-blocked method                                           |
-| `MM_CDP_FAILED`                                         | Invalid CDP params                                                     | Check method & params; retry with `--timeout` (max 30000)          |
+| `MM_CDP_BLOCKED`                                        | Destructive CDP method, or `Network.disable` / `Network.enable` with params while the session records | Use `mm network` instead; add `--fresh` only if you need that call on its own session |
+| `MM_CDP_FAILED`                                         | Invalid CDP params, or `CDP call "…" timed out after <n>ms`           | Check method & params; retry with `--timeout` (max 30000)          |
 | `MM_CONTEXT_SWITCH_BLOCKED`                             | Active session                                                         | `mm cleanup` before `mm set-context`                               |
 | Fixtures not available                                  | Running in prod context                                                | `mm set-context e2e`                                               |
 | Stale a11yRefs after navigate or reload                 | Refs not refreshed                                                     | `mm describe-screen` for fresh refs                                |
 | A ref clicks the wrong element                          | After `--observe none`: a fallback `role=`/`text=` or icon-button ref  | `mm describe-screen`, or target by `--testid`                      |
 | Ref click fails at once with `MM_TARGET_NOT_FOUND`      | Removed, re-mounted or changed text after the snapshot                 | Expected; `mm describe-screen` and re-target                       |
 | `MM_CLICK_FAILED`: strict mode violation (exit 4)       | A fallback ref or an explicit selector/testId matches several elements | Target by `--testid`/`--selector`; scope it with `--within`        |
-| `TOOL_EXECUTION_FAILED`: `Tool execution timed out after <n>ms` (exit 1) | Call cancelled at the daemon's request limit | `mm describe-screen` before retry; the action can have happened |
+| `MM_QUEUE_TIMEOUT`: `The daemon stopped the request after 30000ms` (exit 5) | A command with no action timeout ran past the queue limit, for example `run-steps` without `batchTimeoutMs` whose steps take longer, or `mm screenshot --selector` on a missing element | `mm describe-screen` before retry; add `batchTimeoutMs` or split the batch; check the selector exists |
+| `MM_TARGET_NOT_FOUND`: `Frame not found: … is not an iframe` (exit 4) | `--frame` points at a wrapper, not the `<iframe>` | Use the iframe's ref from `mm describe-screen`, or `selector:<wrapper> iframe` |
+| `MM_INVALID_INPUT`: `frame cannot be used with a ref` (exit 2) | `--frame` plus a ref target | Drop `--frame` (`f1e*` refs point into the iframe), or target by `--testid` / `--selector` |
 | `MM_REQUEST_TIMEOUT`: `request timed out after <n>ms; state unknown` (exit 5) | The daemon did not answer before the CLI's limit | `mm describe-screen` before retry; the action can have happened |
-| `Error: unknown command 'knowledge-...'`                | Knowledge store removed                                                | No replacement. Discover with `mm describe-screen`                 |
 
 ## Daemon Log
 

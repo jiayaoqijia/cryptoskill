@@ -14,12 +14,12 @@ Use `mm cdp` to read and write wallet state mid-session when fixtures and preset
 
 ## CDP Basics
 
-`mm cdp` sends a raw [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) command against the active page. Use this **only when structured commands cannot express what you need**.
+`mm cdp` sends a raw [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) command to the active page, or with `--target sw` to the background service worker. Use this **only when structured commands cannot express what you need**. For console errors and network traffic use `mm logs` and `mm network` ([logs-and-network.md](logs-and-network.md)), not `Network.enable` or a `console.error` hook.
 
 ```bash
 mm cdp Runtime.evaluate '{"expression":"document.title"}'
-mm cdp Network.enable
-mm cdp DOM.getDocument '{"depth":2}' --timeout 60000
+mm cdp Runtime.evaluate '{"expression":"Object.keys(stateHooks)","returnByValue":true}' --target sw
+mm cdp DOM.getDocument '{"depth":2}' --timeout 5000
 ```
 
 | Argument        | Description                                                       |
@@ -27,8 +27,12 @@ mm cdp DOM.getDocument '{"depth":2}' --timeout 60000
 | `<method>`      | CDP method name (e.g., `Runtime.evaluate`, `DOM.getDocument`)     |
 | `[params-json]` | Optional JSON object with method-specific parameters              |
 | `--timeout`     | Per-command timeout in ms. Default: 30000. Min: 1000. Max: 30000  |
+| `--target`      | `page` (default, the active page) or `sw` (the background service worker) |
+| `--fresh`       | Use a one-shot CDP session, detached after the command            |
 
-**Blocked methods** (returns `MM_CDP_BLOCKED`): `Browser.close`, `Target.closeTarget`, `Target.disposeBrowserContext`, `Browser.crashGpuProcess`.
+Each target keeps one persistent CDP session, so a domain you enable stays enabled for later calls.
+
+**Blocked methods** (returns `MM_CDP_BLOCKED`, exit 2): `Browser.close`, `Target.closeTarget`, `Target.disposeBrowserContext`, `Browser.crashGpuProcess`, and, while the session records events, `Network.disable` or `Network.enable` with params (add `--fresh` to send those on their own session).
 
 An expression that throws does not make `mm cdp` fail. The command returns normally, and the error is in `result.exceptionDetails`. Check for it before you read `result.result.value`.
 
@@ -73,7 +77,7 @@ What works:
 
 What does not work:
 - `chrome.storage.local` writes (operation 4). Reading a property of `chrome` throws.
-- A direct line to the background service worker. `mm cdp` sends each command on a new CDP session for the active page. It has no service-worker target, and the background exposes only read hooks. Use the UI messenger instead.
+- Background writes from the service worker. `mm cdp --target sw` reaches it, but on a LavaMoat test build it exposes only read hooks (`getPersistedState`, `metamaskGetState`, `getSentryState`, …; seen live) and scuttles globals such as `registration`. Use the UI messenger instead.
 
 If you need the debug hooks, use a different build:
 - `yarn build:test:dev` (or `yarn start:test` to watch). No LavaMoat. `METAMASK_DEBUG` and `IN_TEST` are set, so `stateHooks.store` and `stateHooks.submitRequestToBackground` exist.
@@ -137,7 +141,7 @@ next.preferences = Object.assign({}, next.preferences, {showTestNetworks: true})
 
 Notes:
 - The `__reactFiber$` key suffix is a random hash per build. The traversal pattern is stable.
-- The store is a prop of the react-redux `<Provider>` (`ui/pages/index.js`), so read `memoizedProps.store`. The old `stateNode.store` check does not match it.
+- The store is a prop of the react-redux `<Provider>` (`ui/pages/index.js`), so read `memoizedProps.store` (`stateNode.store` does not hold it).
 - `UPDATE_METAMASK_STATE` does not persist. Change is lost on reload.
 - The next background state update can overwrite the change. See [Troubleshooting](#troubleshooting).
 - If the walk returns `"store not found"`, check that you started from `#app-content.firstElementChild` and that the UI has rendered.
@@ -415,7 +419,8 @@ Then read the state again to confirm that no injected items remain.
 | --------------------------------------------- | --------------------------------------------------------- |
 | Read a JS value / `window` property           | `Runtime.evaluate` with `{ "expression": "..." }`        |
 | Inspect / traverse DOM                        | `DOM.getDocument`, `DOM.querySelector`                    |
-| Capture network traffic                       | `Network.enable`                                          |
+| Capture network traffic or console errors     | `mm network` / `mm logs`, not CDP (see [logs-and-network.md](logs-and-network.md)) |
+| Read background state                         | `Runtime.evaluate` with `--target sw` and `stateHooks.getPersistedState()` |
 | Inject cookies or storage                     | `Network.setCookie`, `Storage.setLocalStorage*`           |
 | Key presses beyond `mm click` / `mm type`     | `Input.dispatchKeyEvent`                                  |
 | Hover, pointer or viewport                    | Use `mm hover` / `mm unhover` / `mm set-viewport` / `mm reset-viewport` instead of `Input.dispatchMouseEvent` or `Emulation.setDeviceMetricsOverride` |

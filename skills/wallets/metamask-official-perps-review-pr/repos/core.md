@@ -6,6 +6,8 @@ parent: perps-review-pr
 
 Required for changes to the controller package or its public contract, in addition to the Perps families above.
 
+- [ ] Bound and close every trace
+  Prevents: A flood of traces, or traces that never end. See references/shared.md#sentry-tracing
 - [ ] Public Controller Contracts Must Be Versioned and Migration-Aware
   A change to controller state shape, method signatures, event names or payloads, or package exports ships with a client migration plan and package-level consumer-style tests. See references/core.md#public-controller-contracts-must-be-versioned-and-migration-aware
 - [ ] Package Release Metadata Must Match Contract Impact
@@ -27,11 +29,15 @@ Required for changes to the controller package or its public contract, in additi
 
 ## Verdict and handoff
 
-- [ ] Write the review report
-  Write artifacts/review.md from references/report-template.md; full ledger to artifacts/review-ledger.md. Copy this template, replace its content and keep its order and marks. Follow the host's verdict/header fields. Keep findings concise, with only one collapsed Details for agents section; preserve full evidence and prior-round history in the ledger.
-- [ ] Choose the recommendation
+- [ ] Reconcile outcomes, then choose the verdict
+  Prevents: An unchecked rule reported as passed, or a verdict that does not match the findings.
+  Reconcile the changed-file/acceptance-criteria inventory with the rule outcomes before choosing a verdict. Every applicable rule needs evidence or an explicit gap: a gap the author owes is a finding, a reviewer-side gap is listed as not verified.
   Choose APPROVE, COMMENT or REQUEST_CHANGES using the policy in references/report-template.md. A confirmed Perps anti-pattern remains blocking. Keep the exact recommendation in the host JSON. For a binary pass/issues host, only APPROVE maps to pass; COMMENT and REQUEST_CHANGES map to issues. On pass, keep issues empty and retain non-blocking nits in line-comments.json. Never report an unchecked claim as passed.
+  See references/shared.md#blocking-review-checks
+- [ ] Write the review report
+  Prevents: A posted review nobody can scan.
+  Write artifacts/review.md from references/report-template.md; full ledger to artifacts/review-ledger.md. Copy this template, replace its content and keep its order and marks. Follow the host's verdict/header fields. Keep findings concise, with only one collapsed Details for agents section; preserve full evidence and prior-round history in the ledger.
 - [ ] Write line comments and learnings
+  Prevents: Findings with no line to act on.
   Write artifacts/line-comments.json using the host contract, or {"pr_number": <number>, "recommendation": "APPROVE|REQUEST_CHANGES|COMMENT", "summary": "...", "comments": [{"path": "...", "line": 1, "body": "...", "severity": "must_fix|suggestion|nitpick"}]} for a PR task. Every actionable in-diff finding belongs in a line comment with its full problem, evidence and concrete ask; the review body is only its short index. Keep unanchored findings in Details for agents rather than inventing a line. Write artifacts/learnings.md. For a branch-only review, use an empty comments array without inventing a PR number when the terminal contract requires that file.
-- [ ] Reconcile outcomes before the verdict
-  Reconcile the changed-file/acceptance-criteria inventory with the rule outcomes before choosing a verdict. Every applicable rule needs evidence or an explicit gap: a gap the author owes is a finding, a reviewer-side gap is listed as not verified. In a hosted child checklist, return the report to the caller without completing the parent. For a standalone materialized task, satisfy inputs/worker-terminal-contract.json and its completion command. The caller owns publication, retained sessions and cleanup.
+  Mark this row and run the finish command that start printed. The caller owns publication, retained sessions and cleanup.

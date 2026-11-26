@@ -12,6 +12,7 @@ Complete command reference for the `mm` CLI. For core workflow and getting start
 - [Navigation & Tabs](#navigation--tabs)
 - [Context](#context)
 - [State & Seeding](#state--seeding)
+- [Session Events](#session-events)
 - [Advanced](#advanced)
 
 ## Syntax Rules
@@ -31,7 +32,7 @@ mm click --test-id unlock-submit    # hyphenated — treated as testId "--test-i
 mm click --TestId unlock-submit     # PascalCase — same problem
 ```
 
-The only recognized flags are `--testid`, `--selector`, `--within` and `--timeout`; `mm inspect` adds `--styles`, and `mm scroll-to-element` adds `--direction` and `--maxAttempts`. Anything else (including `--testId` with a capital I) is parsed as a positional argument and used as a literal testId value, producing a locator like `[data-testid="--testId"]` that matches nothing.
+The only recognized flags are `--testid`, `--selector`, `--within`, `--frame` and `--timeout`; `mm inspect` adds `--styles`, and `mm scroll-to-element` adds `--direction` and `--maxAttempts` (and rejects `--frame`). Anything else (including `--testId` with a capital I) is parsed as a positional argument and used as a literal testId value, producing a locator like `[data-testid="--testId"]` that matches nothing.
 
 ### a11yRefs are positional arguments — no `--ref` flag
 
@@ -144,7 +145,7 @@ With no daemon running, an unknown command or a bad flag returns exit 3 (`MM_DAE
 | `mm set-viewport <w> <h>`    | Resize the active page's viewport                      |
 | `mm reset-viewport`          | Restore the size from before `set-viewport`            |
 | `mm describe-screen`         | Combined state + activeTab + testIds + a11y snapshot   |
-| `mm screenshot [--name <n>]` | Take and save a full-page screenshot                   |
+| `mm screenshot [--name <n>] [--selector <css>] [--frame <f>]` | Full page, one element, or an iframe |
 | `mm wait-for <ref>`          | Wait for element to be visible                         |
 | `mm scroll-to-element <ref>` | Scroll the element into view                           |
 | `mm wait-for-notification`   | Wait for the confirmation page, set it as active       |
@@ -152,7 +153,7 @@ With no daemon running, an unknown command or a bad flag returns exit 3 (`MM_DAE
 | `mm list-testids`            | List visible `data-testid` attributes                  |
 | `mm clipboard <action>`      | Read from or write to browser clipboard                |
 
-All interaction commands accept `--timeout <ms>` (default 15000). This is a **single deadline budget** covering visibility wait + action combined — not a per-phase timeout.
+All interaction commands accept `--timeout <ms>` (default 15000). This is a **single deadline budget** covering visibility wait + action combined — not a per-phase timeout. The daemon queue and the CLI derive their own limits from it, so a long `--timeout` is not cut off by a 30 s request limit, and the command answers with the action's own error code (`MM_WAIT_TIMEOUT`, `MM_CLICK_TIMEOUT`, …). Commands without an action timeout (`navigate`, `describe-screen`, `screenshot`, `run-steps` without `batchTimeoutMs`, …) use the daemon queue limit, 30 s (`requestTimeoutMs` in `.mm-server`); past it they fail with `MM_QUEUE_TIMEOUT` (exit 5, state unknown).
 
 `mm inspect` is read-only and returns no observation. `mm hover`, `mm unhover`, `mm set-viewport`, `mm reset-viewport` and `mm scroll-to-element` are mutating and observe by default.
 
@@ -173,10 +174,12 @@ A `MM_CLICK_TIMEOUT` message ends with `(last Playwright step: …)`, which says
 | --- | --- |
 | `element is not enabled` | The button is disabled; check the form state (`mm inspect` shows `disabled`) |
 | `<div …> from <div class="mm-modal" data-testid="home-network-filter-modal">…</div> subtree intercepts pointer events` | Another element covers the target; close it first |
-| `locator resolved to hidden <input …/>` | The element is hidden; click its visible label or wrapper |
-| `waiting for locator('[data-testid="x"]') to be visible` | The target never appeared within `--timeout`, or it is in the DOM but hidden (a styled checkbox `input`); click its visible label or wrapper |
+| `locator resolved to hidden <input …/>` | The element is hidden and has no single plain label; click its visible wrapper |
+| `waiting for locator('[data-testid="x"]') to be visible` | The target never appeared within `--timeout`, or it is in the DOM but hidden; click its visible wrapper |
 
 On a click or type timeout the message says "state unknown" and `retryable` is `false`. The action can have happened: run `mm describe-screen` before you retry.
+
+**Hidden checkbox or radio.** Toggles keep the real `<input type="checkbox">` (and its testId) at 1×1 px under a styled switch, for example `basic-functionality-toggle` in Settings > Privacy. When such an input has one label (a wrapping `<label>` or `<label for>`), `mm click` clicks the label instead and the result has `"clickedLabel": true`; the input toggles. Check the new value with `mm inspect --testid <id>` (`attributes.value`). An input without a label, or whose label holds a link or button, is clicked as before.
 
 ### Waiting for the screen
 
@@ -190,19 +193,36 @@ mm wait-for --selector "text=Copied"
 
 `--selector` takes any Playwright selector, so `text=<text>` waits for visible text. The match is case-insensitive and a substring; use `text="<text>"` with quotes for an exact match.
 
-### Element and viewport screenshots
+### Element, iframe and viewport screenshots
 
-`mm screenshot` accepts only `--name` and always captures the full page. Other flags such as `--testid` or `--selector` are ignored without an error. To capture one element or only the viewport, use a `run-steps` screenshot step:
+`mm screenshot` captures the full page. `--selector <css>` captures one element, and `--frame <iframe>` captures an iframe (with `--selector`, the element inside it). `--testid` is ignored without an error: use `--selector '[data-testid="x"]'`.
 
 ```bash
-# One element (CSS selector; quote attribute values)
-mm run-steps '{"steps":[{"tool":"screenshot","args":{"name":"side-nav","selector":"[data-testid=\"side-nav\"]"}}],"observe":"none"}'
+mm screenshot --name send-btn --selector '[data-testid="eth-overview-send"]'   # 121x56
+mm screenshot --name chart --frame e13                                          # the iframe's ref
 
 # Viewport only
 mm run-steps '{"steps":[{"tool":"screenshot","args":{"name":"viewport","fullPage":false}}],"observe":"none"}'
 ```
 
-The result has the file `path`, `width` and `height`. A selector that matches nothing waits until the request times out (about 30 s), so check that the element exists first.
+The result has the file `path`, `width` and `height`. A selector that matches nothing waits 30 s, then fails with `MM_SCREENSHOT_FAILED` (exit 1, `locator.screenshot: Timeout 30000ms exceeded`) or `MM_QUEUE_TIMEOUT` (exit 5), whichever ends first. Check that the element exists first.
+
+### Iframes
+
+`mm describe-screen` lists an iframe element as a node with role `iframe` (for example `{"ref":"e13","role":"iframe","name":"Advanced Chart"}`), and the accessibility nodes of up to 5 visible iframes after the page's nodes, with refs `f1e1`, `f1e2`, … (`f2e1` for the second). Use those refs like any ref. To target an element inside an iframe by testId or selector, add `--frame <iframe>` to `click`, `type`, `hover`, `wait-for`, `get-text`, `inspect` or `screenshot`. `<iframe>` is the iframe element: its ref (`e13`), `testid:<id>`, `selector:<css>` or a bare testId.
+
+```bash
+mm describe-screen --frame e13                                  # only that iframe's nodes (refs f6e1, …)
+mm get-text --frame e13 --selector body
+mm wait-for --frame 'selector:[data-testid="advanced-chart-iframe"] iframe' --selector body
+```
+
+- `--frame` must point at the `<iframe>` element. A testId on a wrapper fails at once: `MM_TARGET_NOT_FOUND`, `Frame not found: [data-testid="advanced-chart-iframe"] is not an iframe`. On the Extension asset page that testId is on a `<div>`; use the ref or `selector:[data-testid="advanced-chart-iframe"] iframe`.
+- A missing frame on `describe-screen --frame` fails after 5 s with `MM_TARGET_NOT_FOUND` (`Frame not found: no element matches …`); on `get-text` / `wait-for` it waits for the full `--timeout`.
+- `--frame` with a ref target is `MM_INVALID_INPUT` (exit 2): `f1e*` refs already point into their iframe. `scroll-to-element` and `long-press` reject `--frame`.
+- A canvas-only iframe (the TradingView chart) has no accessibility nodes, so `describe-screen --frame` returns `nodes: []`. Use `mm screenshot --frame` and `get-text --frame … --selector body`.
+- `mm inspect --frame` on the chart iframe failed with `MM_INSPECT_FAILED` (`Playwright did not report the element it resolved`). Use `get-text` or a screenshot there.
+- `list-testids` and the `testIds` list cover the page only. Iframes inside iframes are not read.
 
 ### Several matches
 
@@ -235,26 +255,26 @@ Playwright's `click` already scrolls its target into view, so you do not need th
 `mm inspect <ref>` reads an element instead of judging it by eye. Browser only and read-only (no observation). Accepts `--styles <prop,prop>`, `--timeout <ms>` and `--within`.
 
 ```bash
-mm inspect --testid eth-overview-swap
+mm inspect --testid send-continue-button
 mm inspect --testid eth-overview-send --styles color,opacity,cursor,display
 ```
 
 Returns `target`, `tagName`, `attributes` (every attribute, by name), `disabled` (native, `fieldset` or `aria-disabled`), `readOnly` (the `readonly` property or `aria-readonly="true"`), `styles` and `effectiveOpacity`.
 
-`styles` has the computed value of each requested property, keyed as requested (default `color`, `background-color`, `opacity`, `cursor`); an unknown property is `""`. `effectiveOpacity` is the element's opacity times that of every ancestor, so a field faded by a parent shows it. A faded, disabled Swap button on the e2e fixture reads `"disabled":true`, `"effectiveOpacity":0.5`, `"cursor":"not-allowed"`. To check that a field is not faded, inspect it and the field you compare it to with the same `--styles`. `mm type` into a read-only or disabled field fails at once with `MM_ELEMENT_NOT_EDITABLE` instead of waiting for the timeout.
+`styles` has the computed value of each requested property, keyed as requested (default `color`, `background-color`, `opacity`, `cursor`); an unknown property is `""`. `effectiveOpacity` is the element's opacity times that of every ancestor, so a field faded by a parent shows it. On the e2e send page, before a recipient and amount are set, the faded Continue button (`send-continue-button`) reads `"disabled":true`, `"effectiveOpacity":0.5`, `"cursor":"not-allowed"`. To check that a field is not faded, inspect it and the field you compare it to with the same `--styles`. `mm type` into a read-only or disabled field fails at once with `MM_ELEMENT_NOT_EDITABLE` instead of waiting for the timeout.
 
 ### Hover and viewport
 
 `mm hover <ref>` moves the pointer over an element so hover-only UI shows (a tooltip, a popover, a hover style). It waits for the element and checks that nothing covers it, like `mm click`. `mm unhover` moves the pointer off the page, so the hovered element loses its state and no other element gets one. Browser only.
 
 ```bash
-mm hover --testid account-menu-icon
-mm screenshot --name account-menu-hovered
+mm hover --testid eth-overview-send
+mm screenshot --name send-hovered
 mm unhover
-mm screenshot --name account-menu-idle
+mm screenshot --name send-idle
 ```
 
-`mm inspect --testid account-menu-icon --styles background-color` shows the change: `rgb(243, 243, 244)` while hovered, `rgba(0, 0, 0, 0)` after `mm unhover`.
+`mm inspect --testid eth-overview-send --styles background-color` shows the change: `rgba(180, 180, 181, 0.24)` while hovered, `rgba(180, 180, 181, 0.157)` after `mm unhover`. An element hidden with opacity 0 (`effectiveOpacity: 0` in `mm inspect`) cannot be hovered: the hover waits for the full timeout and fails with `MM_WAIT_TIMEOUT`.
 
 The pointer stays where `mm hover` left it until the next hover, click or `mm unhover`, so take the screenshot right after the hover. Success is `{"hovered":true,"target":"testId:<id>"}`; `mm unhover` returns `{"unhovered":true}`. A target that does not appear, or stays covered, fails with `MM_WAIT_TIMEOUT`; other failures return `MM_HOVER_FAILED`.
 
@@ -317,17 +337,42 @@ Two contexts: `e2e` (default — local Anvil, fixtures, seeding) and `prod` (no 
 | `mm get-contract-address` | Get deployed contract address                               |
 | `mm list-contracts`       | List all deployed contracts                                 |
 
-`mm run-steps` returns `summary` (`ok`, `total`, `succeeded`, `failed`, `skipped`, `durationMs`). A failed step does not fail the call or stop the batch (unless `"stopOnError": true`), so check `summary.ok`; a batch that exceeds `batchTimeoutMs` fails the call with `MM_BATCH_TIMEOUT`. The daemon log adds `failed=<n>/<total>` and the first failed step's code (see [Daemon log](#daemon-log)).
+`mm run-steps` returns `summary` (`ok`, `total`, `succeeded`, `failed`, `skipped`, `durationMs`) and exits 0 even when steps fail, so check `summary.ok`. A failed step does not stop the batch unless `"stopOnError": true`. Step args take `ref` as shorthand for `a11yRef` in every target tool (`click`, `type`, `get_text`, `hover`, `inspect`, `wait_for`, `scroll_to_element`, …) and in `within`. Step args use the tool schema, not CLI flags: `inspect` takes `"styles":["cursor"]` (an array; a string is a `VALIDATION_ERROR` step). `batchTimeoutMs` is checked between steps: the step in progress finishes with its own timeout, then the remaining steps are skipped with `MM_BATCH_TIMEOUT`; the call itself still exits 0 with partial results. The daemon log adds `failed=<n>/<total>` and the first failed step's code (see [Daemon log](#daemon-log)).
+
+## Session Events
+
+Browser only. Console errors and network requests of every page, the service worker, the offscreen document and snaps iframes, recorded from `mm launch` on. See [logs-and-network.md](logs-and-network.md) for the per-flow recipe and the record shapes.
+
+| Command | Description |
+|---|---|
+| `mm events mark` | Current `cursor` and `summary` (`startedAt`, `captureErrors`, …) |
+| `mm events clear [--kind console\|network]` | Empty the buffer; the cursor keeps counting |
+| `mm logs [--cursor <n> \| --since <t>] [--limit <n>] [--grep <re>]` | Console errors and uncaught exceptions |
+| `mm logs configure --levels error,warning` | Record more levels from now on |
+| `mm network [--cursor <n> \| --since <t>] [--url <glob>] [--errors] [--settled]` | HTTP(S) requests: status, ms, failure, `rpcMethods` |
+| `mm network configure --rpc-errors` | Also record JSON-RPC `rpcError` |
 
 ## Advanced
 
 | Command                                           | Description                                                 |
 | ------------------------------------------------- | ----------------------------------------------------------- |
-| `mm mock-network add '<json-rule-or-config>'`     | Add Playwright route mocks during active session            |
+| `mm mock-network add '<json-rule-or-config>'`     | Add route mocks (pages, service worker, offscreen, snaps)   |
 | `mm mock-network clear`                           | Clear network mocks and recorded requests                   |
-| `mm mock-network list`                            | List active network mock rules                              |
-| `mm mock-network requests [--limit <n>]`          | Show recorded matched and missed mocked-origin requests     |
-| `mm cdp <method> [params-json] [--timeout <ms>]`  | Send raw Chrome DevTools Protocol command against active page|
+| `mm mock-network list`                            | List rules, with `contexts` and `pending`                   |
+| `mm mock-network requests [--limit <n>] [--url <text>] [--bodies]` | Recorded matched and missed requests, with bodies |
+| `mm cdp <method> [params-json] [--timeout <ms>] [--target page\|sw] [--fresh]` | Raw Chrome DevTools Protocol command |
+
+### mm cdp
+
+`--target page` (default) sends to the active page, `--target sw` to the background service worker. Each target keeps one persistent CDP session, so a domain you enable stays enabled for the next calls. `--fresh` sends the command on a one-shot session that is detached afterwards. `--target hermes` / `android-webview` are mobile only (`MM_INVALID_INPUT`, exit 2).
+
+```bash
+mm cdp Runtime.evaluate '{"expression":"location.pathname","returnByValue":true}'                # "/home.html"
+mm cdp Runtime.evaluate '{"expression":"Object.keys(stateHooks)","returnByValue":true}' --target sw
+mm cdp Runtime.evaluate '{"expression":"1+1","returnByValue":true}' --fresh
+```
+
+The session records events with `Network` and `Runtime` enabled on every target, so `mm cdp Network.enable` (no params) returns `{}` without sending anything, while `Network.disable` or `Network.enable` with params fails at once with `MM_CDP_BLOCKED` (exit 2): `… refused while an event subscription holds the Network domain on this target … Use --fresh to send it on a one-shot session.` `--timeout` (max 30000) bounds the CDP call: `MM_CDP_FAILED` (exit 1), `CDP call "Runtime.evaluate" timed out after 1000ms`.
 
 `mm cdp` returns no observation by default. If the call changed page state, add `--observe full` or run `mm describe-screen`.
 
@@ -338,9 +383,11 @@ Two contexts: `e2e` (default — local Anvil, fixtures, seeding) and `prod` (no 
 ```text
 [2026-11-13T15:25:10.579Z] [INFO] POST /tool/click 200 ok=false code=MM_TARGET_NOT_FOUND 2050ms
 [2026-11-13T13:54:23.290Z] [INFO] POST /tool/scroll_to_element 200 ok=false code=MM_WAIT_TIMEOUT 2063ms
+[2026-11-25T12:29:49.478Z] [INFO] POST /tool/screenshot 200 ok=false code=MM_QUEUE_TIMEOUT 30000ms
 ```
 
 A failed tool call still answers HTTP 200 and puts the failure in the body, so the status code is not the outcome (only a schema failure logs `400 ok=false code=VALIDATION_ERROR`); `grep ok=false .mm-daemon.log` lists the failed calls of a run. A `run_steps` line with failed steps adds `failed=<n>/<total>` and the first failed step's code: `POST /tool/run_steps 200 ok=true failed=1/3 code=MM_WAIT_TIMEOUT …`.
 
 For mock network details, see [mock-network.md](mock-network.md).
+For console errors and the request log, see [logs-and-network.md](logs-and-network.md).
 For CDP state manipulation, see [state-manipulation.md](state-manipulation.md).

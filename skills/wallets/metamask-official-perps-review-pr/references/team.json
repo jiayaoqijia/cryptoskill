@@ -1,0 +1,120 @@
+{
+  "domain": "perps",
+  "name": "Perps",
+  "repository": "MetaMask/experimental-metamask-recipe-perps",
+  "docs": "and docs at Core `packages/perps-controller/docs/` and the client's `docs/perps/`.",
+  "parityNote": "Mobile is the reference implementation; do not copy Extension divergence back into Mobile.",
+  "clients": [
+    "mobile",
+    "extension",
+    "core",
+    "terminal"
+  ],
+  "rows": {
+    "controller-portability-core": {
+      "title": "Keep platform code out of the controller",
+      "prevents": "The shared controller importing host code, or an app reaching into controller internals."
+    },
+    "perps-math-comes-from-the-controller": {
+      "title": "Use the controller math",
+      "prevents": "Two clients showing different PnL, fees or liquidation prices."
+    },
+    "shared-formatting-display-precision": {
+      "title": "Use the shared formatters",
+      "prevents": "The same value shown with different digits on different clients."
+    },
+    "missing-numeric-data-stays-undefined": {
+      "title": "Never turn missing data into zero",
+      "prevents": "A missing price or balance shown or traded as zero."
+    },
+    "protocol-abstraction": {
+      "title": "Keep venue logic behind the provider",
+      "prevents": "One venue leaking into shared code; orders or fills mixed up between venues."
+    },
+    "pro-mode-ui-gating": {
+      "title": "Gate Pro screens on both flags",
+      "prevents": "Pro screens silently not showing, or showing when off.",
+      "clients": [
+        "mobile"
+      ]
+    },
+    "metametrics-events": {
+      "title": "Use the agreed analytics events",
+      "prevents": "Events that break dashboards or double-count."
+    },
+    "sentry-tracing": {
+      "title": "Bound and close every trace",
+      "prevents": "A flood of traces, or traces that never end.",
+      "clients": [
+        "mobile",
+        "extension",
+        "core"
+      ]
+    },
+    "connection-websocket-architecture": {
+      "title": "Own every connection and subscription",
+      "prevents": "Leaked sockets, extra connections, timers polling data that already streams."
+    },
+    "data-flow-state": {
+      "title": "Reset state on account, network and form changes",
+      "prevents": "Old account, network or form data acted on as if current."
+    },
+    "trade-flow-order-execution": {
+      "title": "Send the order the user confirmed",
+      "prevents": "An order sent with the wrong size, price, side or slippage."
+    },
+    "navigation-entry-and-exit-parity": {
+      "title": "Cover every way in and out of a screen",
+      "prevents": "A back button that works from one entry and not another.",
+      "clients": [
+        "mobile",
+        "extension",
+        "terminal"
+      ]
+    },
+    "embedded-signer-boundaries": {
+      "title": "Protect the embedded signer",
+      "prevents": "A signing key leaking out of a WebView."
+    },
+    "test-layer-coverage": {
+      "title": "Write tests that fail when the code breaks",
+      "prevents": "Tests that pass with the wrong formula."
+    },
+    "architecture-docs": {
+      "title": "Keep docs and code in agreement",
+      "prevents": "Code and docs that disagree."
+    },
+    "mobile-trace-instrumentation": {
+      "title": "Trace every Mobile screen",
+      "prevents": "Screens with no performance trace, or traces that never end."
+    },
+    "android-back-paths": {
+      "title": "Handle Android back",
+      "prevents": "Android hardware back skipping a dialog."
+    },
+    "mobile-test-layers": {
+      "title": "Exercise the real order flow in tests",
+      "prevents": "Order flows tested with everything mocked."
+    },
+    "mobile-controller-integration-mocks": {
+      "title": "Keep the controller mocks current",
+      "prevents": "A controller bump that breaks hand-written mocks unnoticed."
+    },
+    "agentic-testability-testids": {
+      "title": "Add testIDs to controls",
+      "prevents": "Buttons our recipes cannot press."
+    },
+    "mobile-ui-structure": {
+      "title": "Keep logic out of components",
+      "prevents": "Logic buried in components where tests cannot reach it."
+    },
+    "native-modal-layout": {
+      "title": "Wrap Pro bottom sheets in a Modal",
+      "prevents": "A bottom sheet clipped in the Pro layout."
+    },
+    "magic-strings-magic-numbers-placeholder-values": {
+      "title": "Use named constants",
+      "prevents": "Hard-coded values that drift from the controller constants."
+    }
+  }
+}

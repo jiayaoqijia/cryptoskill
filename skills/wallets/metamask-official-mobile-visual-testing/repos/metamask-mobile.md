@@ -81,7 +81,14 @@ Session metadata is written to `test-artifacts/<sessionId>/session.json`. Set `M
 yarn mm describe-screen
 ```
 
-Use fresh output after navigation. Accessibility refs (`e1`, `e2`, ...) are ephemeral: always take refs from the latest response (`describe-screen` or the `observations` of your last action). A node with no test ID, name or value can be listed with a ref that is not targetable (`MM_TARGET_NOT_FOUND`, `Unknown a11yRef: e6. Available refs: …`): use a named child or sibling from the `Available refs` list.
+Use fresh output after navigation. Accessibility refs (`e1`, `e2`, ...) are ephemeral: always take refs from the latest response (`describe-screen` or the `observations` of your last action). Every observation renumbers the refs, so a ref from the call before last can now name another element. A node with no test ID, name or value can be listed with a ref that is not targetable (`MM_TARGET_NOT_FOUND`, `Unknown a11yRef: e6. Available refs: …`): use a named child or sibling from the `Available refs` list.
+
+**A mobile ref is not tied to its node.** It is resolved again at tap time: by the node's test ID, or, without one, by its label and type. The tap goes to the **first** element in the tree that matches. So:
+
+- A node with `"ambiguous": true` shares its test ID or label with other nodes, and its ref can tap another one. Do not tap it by ref.
+- A label-only ref (a node with no `testId`) also matches an element with a test ID and the same text.
+
+On a real-funds wallet, tap by a unique `--testid`. Use a ref only for a node with a unique name and no `ambiguous` flag, taken from the latest response. Check the result's `target` and the next screen.
 
 **Observation efficiency:** mutating actions (`click`, `type`, ...) and `run-steps` return a compact diff of what changed. Reads, discovery commands and `mm cdp` return no observation. Use the global `--observe <none|diff|full>` flag to change the observation of one call:
 
@@ -118,9 +125,9 @@ yarn mm type e2 "text"
 
 `--selector` (CSS) and `--within` (scoped search) are **rejected by the mobile driver** on both platforms even though the shared CLI accepts the flags — see Gotchas. To disambiguate duplicate targets, use a unique test ID or the exact element's fresh a11y ref.
 
-The CLI flag is `--testid` (all lowercase); `--testId` is silently mis-parsed as a positional target and hits the wrong element. `mm type` clears the field before typing (iOS: idb `cmd+a` → delete → type; Android: the backend clears via adb before `input text`).
+The CLI flag is `--testid` (all lowercase); `--testId` is silently mis-parsed as a positional target and hits the wrong element. `mm type` clears the field before typing, so a retype replaces the text. To clear a field, run `mm type <field> ""`. It clears on both platforms: on Android it exits 0 (`textLength: 0`); on iOS it exits 4 with `MM_TYPE_FAILED` (`idb ui text` rejects empty text), but the field is already empty. On iOS, `get-text` of a text field returns its placeholder, not what you typed: read the field's `textContent` in `describe-screen`.
 
-If the keyboard covers the submit button, add `--dismiss-keyboard` to the click: the driver closes the keyboard and taps once more, and the result has `keyboardDismissed: true`:
+**Covered targets.** Before the tap, the device hit-tests the tap point on **iOS and Android**. A covered target fails with `MM_TARGET_OBSCURED` (exit 4) and nothing is tapped. The message names the cover, for example `… is covered at (937, 1903) by the keyboard: android.widget.TextView` or `… by android.view.View around android.widget.ImageView label="Tools"` (the Expo dev button, see Gotchas). When the keyboard is the cover, add `--dismiss-keyboard`: the driver closes the keyboard and taps once more, and the result has `keyboardDismissed: true`:
 
 ```bash
 yarn mm type --testid login-password-input "<wallet password>"
@@ -128,7 +135,9 @@ yarn mm click --testid log-in-button --dismiss-keyboard
 # {"clicked":true,"target":"testId:log-in-button","keyboardDismissed":true,"screenChanged":true,"observations":{…}}
 ```
 
-A `click` result (iOS and Android) also has `screenChanged` when an observation was collected: `false` means the screen looks the same as before the click, which is normal for some taps (the open tab) but a hint for a button that should navigate. `true` only means something changed, so check the new screen's test IDs. Before the tap, **iOS** hit-tests the tap point: a covered target fails with `MM_TARGET_OBSCURED` and nothing is tapped. Android does not hit-test, so an overlay on top of the target receives the tap silently.
+`mm dismiss-keyboard` closes the keyboard on its own. On Android it checks that the keyboard is gone and fails with `MM_DEVICE_ACTION_FAILED` (exit 6) if it is still shown; with no keyboard it does nothing and returns `{"dismissed":true}`.
+
+A `click` result (iOS and Android) also has `screenChanged` when an observation was collected and there is an earlier screen to compare with (it is left out for the first click after `launch` when the calls in between used `--observe none`). `false` means the screen looks the same as before the click, which is normal for some taps (the open tab) but a hint for a button that should navigate. `true` does not prove navigation: the tapped button's press feedback alone makes it `true`. Check the new screen's test ID (see [Slow first screens](#slow-first-screens-android)).
 
 **Scrolling.** React Native keeps off-screen rows in the accessibility tree, so "in the tree" does not mean the element can be tapped. `mm scroll-to-element` swipes until the element is inside the viewport:
 
@@ -139,7 +148,7 @@ yarn mm scroll-to-element --testid import-token-button --direction down   # reve
 
 `--direction` is the **content** direction (`down` reveals content below) and defaults to `auto`, which picks it from the element's position; `--maxAttempts` (default 10) caps the swipes. A success returns `{"scrolled":true,"target":"testId:…","swipes":2,"inViewport":true,"bounds":{"width":402,"x":0,"y":401.66666666666663,"height":44},"observations":{…}}`. `MM_TARGET_NOT_VISIBLE` means the element was found but never brought into view; `MM_TARGET_NOT_FOUND` means it was never in the tree.
 
-To tell whether an element is off screen: on iOS, `visible: false` in `list-testids` / `describe-screen`. On Android do not rely on `visible` (the 0.14.0 run reported `true` for every element, even `import-token-button` at y=6936 on a 2400 px screen). Read `bounds` instead (off screen when `y` is at or past the screen height, or `height` is 0), or call `scroll-to-element` before tapping.
+`visible: false` in `list-testids` / `describe-screen` means the element is off screen, on both platforms: its frame does not overlap the screen, the same rule the tap uses. Android reports off-screen rows with a zero height, so they are `visible: false`. Run `scroll-to-element` before you tap one: a tap fails with `MM_TARGET_NOT_VISIBLE`. `scroll-to-element` can still fail with `MM_TARGET_NOT_VISIBLE` for a section that never comes into view.
 
 ### 4. Verify and Capture Evidence
 
@@ -156,6 +165,21 @@ yarn mm screenshot --name "after-action"
 On mobile the returned `path` is a file in device-mcp's temporary directory (`…/T/device-mcp-XXXX/screenshot-<hex>.png`); `--name` is not reflected in the file name and `MM_ARTIFACTS_DIR` does not move it. Record the returned `path` for the evidence.
 
 If the state is wrong, capture a debug screenshot and retry from fresh refs.
+
+### Slow first screens (Android)
+
+On Android, a screen that mounts for the first time in the session (for example the Explore tab after launch) can take about 2 s. The tap works, but its observation can still show the old screen, and `screenChanged` can be `true` anyway. After a tap that should open a new screen:
+
+1. Look for the new screen's test ID in the observation (Explore: `explore-safe-area`).
+2. If it is missing, run `yarn mm wait-for --testid <that id>`. It returns as soon as the screen is there.
+3. **Do not tap again**: the first tap worked, and a second tap can do the action twice.
+
+```bash
+yarn mm click --testid tab-bar-item-Trending      # observation still shows wallet-screen
+yarn mm wait-for --testid explore-safe-area       # found after about 1.3 s
+```
+
+Later visits to the same tab show the new screen at once. The observation also retries once while the old screen is being torn down. If an observation still looks partial, run `describe-screen` before you act on it.
 
 ### 5. Cleanup
 
@@ -175,7 +199,8 @@ Android runs the **same `mm` workflow** shown above (`mm launch --platform andro
 - **Metro:** with `--metro-port`, launch creates `adb reverse tcp:<port> tcp:<port>` when it is missing (and removes only that mapping on cleanup), reuses an identical one, and fails on a conflicting one.
 - **Default package:** `io.metamask` (vs. `io.metamask.MetaMask` on iOS) — relevant for `mm open-app` / `mm close-app` and the `--app-id` on `mm cdp`.
 - **Back button:** Android has a real hardware back button — `mm press-button back` navigates back (on iOS `back` maps to home).
-- **Off-screen taps are refused.** `@metamask/device-mcp` 0.8.0 refuses an Android tap on an element that does not intersect the screen, so the click fails with `MM_TARGET_NOT_VISIBLE` (exit 4, `Element is outside the 1080x2400 viewport … Scroll it into view first`) and nothing is tapped. Verified on `Medium_Phone_API_36.1` with `click --testid homepage-section-title-defi` on the wallet home; the failure took about 6 s. Run `mm scroll-to-element` first.
+- **Off-screen and covered taps are refused.** A tap on an element outside the screen fails with `MM_TARGET_NOT_VISIBLE` (exit 4, `Element is outside the 1080x2400 viewport … Scroll it into view first`); run `mm scroll-to-element` first. A tap on a covered element fails with `MM_TARGET_OBSCURED` (see [Interact](#3-interact)). In both cases nothing is tapped.
+- **The keyboard:** while it is open, `list-testids` and observations include about 100 `com.google.android.inputmethod.latin:id/*` IDs; their presence means the keyboard is open. Close it with `mm dismiss-keyboard` or `--dismiss-keyboard` on the click.
 - **In-app browser / dapp web content (Android only, not validated with this workflow):** the web-page DOM inside MetaMask's in-app browser `WebView` is not reliably targetable by accessibility position. The core CLI can send CDP to a debuggable WebView with `mm cdp <method> [params] --target android-webview [--url-filter <substr>]` (full `Runtime`/`DOM`/`Page`/`Input` surface), while MetaMask's connection and signature sheets stay native. `mm device-context switch` does not change the target on Android, and `tests/llm-workflow/README.md` lists WebView switching as unsupported, so treat this path as untested. There is no iOS equivalent.
 - **Snapshots on churny screens:** see the next section — Android needs the bundled snapshot helper where iOS does not.
 
@@ -191,7 +216,7 @@ To handle this, `@metamask/device-mcp` (the version pinned by the workflow) **sh
 
 Behavior is controlled by the `DEVICE_MCP_ADB_SNAPSHOT` env var on the device backend (`@metamask/device-mcp`, which the `mm` CLI drives on Android):
 
-- **`helper-first`** (default since `@metamask/device-mcp` 0.6.0) — the bundled helper first (fast on busy screens, and a fuller tree than the dump, including WebView content), then one `uiautomator dump` attempt (three if the helper never ran) for non-trust helper failures only.
+- **`helper-first`** (default) — the bundled helper first (fast on busy screens, and a fuller tree than the dump, including WebView content), then one `uiautomator dump` attempt (three if the helper never ran) for non-trust helper failures only.
 - **`auto`** — fast `uiautomator dump` first, then the bundled helper, then remaining dump retries. Sticky per session: once the helper wins, later snapshots skip the quick dump.
 - **`instrument`** — use the bundled helper only, with no dump fallback (fully fail-closed).
 - **`dump`** — stock `uiautomator dump` only; the helper APK is never installed.
@@ -223,11 +248,13 @@ If Metro is not reachable on the given port, launch fails with `MM_INVALID_CONFI
 
 Node 20 may require `NODE_OPTIONS="--experimental-websocket"` for `mm cdp`; Node 22+ includes WebSocket support.
 
-`mm cdp` evaluates JavaScript in the Hermes runtime through Metro's inspector proxy:
+`mm cdp` evaluates JavaScript in the Hermes runtime through Metro's inspector proxy. It uses the Metro port the session was launched with (`--metro-port` or `MM_METRO_PORT`), so no flag is needed on each call:
 
 ```bash
 yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify(globalThis.__DEV__)"}'
 ```
+
+The session keeps one Hermes connection open and reuses it. The first call connects, so it can take a bit longer; later calls reuse the open connection. `mm hermes-targets` shows `sessionMetroPort`, `connected: true` and the pinned device after the first call. A per-call `--metro-port` or `--app-id` overrides the session values for that call only (one-shot connection). A failure names the port it tried: `[HERMES_CONNECTION_FAILED] Hermes CDP connection failed: fetch failed (Metro port 8099)` (`MM_CDP_FAILED`, exit 1).
 
 Prefer controller methods over raw Redux mutation when inspecting or changing runtime state. Runtime modifications affect the current installed app state; restore any state changed during testing.
 
@@ -245,31 +272,33 @@ yarn mm run-steps '{"steps":[
 
 The input must be an object containing `steps`, not a bare array.
 
-- Add `batchTimeoutMs` (1000–30000 ms) for an overall deadline. The whole call stops after 30 s, so use a lower value (for example 20000) to get partial results, and split longer flows into several batches.
-- Add a top-level `observe` (`none` / `diff` / `full`, default `diff`) to set the observation collected after the batch. `includeObservations` was removed; check `summary.ok` to react to failures.
+- `ref` is shorthand for `a11yRef` in every step that takes a target (`click`, `type`, `wait_for`, `get_text`, `scroll_to_element`, `long_press`): `{"tool":"get_text","args":{"ref":"e14"}}`.
+- Add `batchTimeoutMs` (1000–30000 ms) for an overall deadline. It is checked between steps: the step in progress finishes with its own timeout, then the remaining steps are skipped and partial results come back. The CLI and the daemon wait for the deadline plus the slowest step, so the batch is not cut off mid-step.
+- Add a top-level `observe` (`none` / `diff` / `full`, default `diff`) to set the observation collected after the batch. Check `summary.ok` to react to failures.
 
 Pattern: discover with `yarn mm describe-screen` → batch known steps with `yarn mm run-steps` → re-verify with `yarn mm describe-screen`.
 
 ## Mobile Limitations and Gotchas
 
 - **Only `--testid` and a11y refs target elements.** `--selector` throws (`CSS selectors are not supported on mobile`) and `--within` throws (`Scoped element search (within) is not supported on mobile`) at the driver on both iOS and Android, even though the shared CLI parses both flags. Do not use them.
+- **A non-numeric flag value is dropped without an error.** `click --testid x --timeout abc` runs with the default timeout and still taps. Check numeric flag values before you run the command.
 - **The `--testid` flag is lowercase.** `--testId` is not recognized as a flag; the value is treated as a positional target and silently hits the wrong element (usually timing out).
-- **Element matching is exact first, then a case-insensitive substring.** `@metamask/device-mcp` 0.8.0 looks for an element whose identifier `equals` the value somewhere in the tree before it falls back to a substring match (iOS: the accessibility identifier, `AXUniqueId`; Android: `resource-id`), so `--testid account-picker` no longer resolves to `account-picker-avatar`. When no exact match exists the substring fallback still applies: `--testid Confirm` can match `Confirm Transaction`. Prefer exact, unique test IDs. If the screen after a tap is not the expected one, check `list-testids` for longer IDs that contain your value, and use `mm tap-coordinates` at the center of the element's `bounds` from `describe-screen` (Android: pixels).
-- **`mm type` clears first** on both platforms, so there is no need to clear the field manually. There is no trailing-newline submit trick; to submit, tap the on-screen keyboard action button (a fresh a11y ref) or the form's submit control.
+- **Element matching is exact first, then a case-insensitive substring.** `@metamask/device-mcp` looks for an element whose identifier `equals` the value somewhere in the tree before it falls back to a substring match (iOS: the accessibility identifier, `AXUniqueId`; Android: `resource-id`), so `--testid account-picker` resolves to `account-picker`, not `account-picker-avatar`. When no exact match exists the substring fallback still applies: `--testid Confirm` can match `Confirm Transaction`. Prefer exact, unique test IDs. If the screen after a tap is not the expected one, check `list-testids` for longer IDs that contain your value, and use `mm tap-coordinates` at the center of the element's `bounds` from `describe-screen` (Android: pixels).
+- **`mm type` clears first** on both platforms, so there is no need to clear the field manually (`mm type <field> ""` clears it, see [Interact](#3-interact)). There is no trailing-newline submit trick; to submit, tap the on-screen keyboard action button (a fresh a11y ref) or the form's submit control.
 - No `mm build`; build/install separately.
-- Browser-only commands are gated off mobile sessions and fail with `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` (exit 6): `navigate` (so also `navigate-home` and `navigate-settings`), `reload`, `inspect`, `hover` / `unhover`, `set-viewport` / `reset-viewport`, the tab commands, `wait-for-notification`, `clipboard`, `mock-network` and `build`. Navigate through visible UI elements; use `mm device-clipboard` for the device clipboard.
-- `mm cdp` requires Metro. It does not reuse the launch's `--metro-port`, so pass `--metro-port <port>` on each `cdp` / `hermes-targets` call when Metro is not on 8081; otherwise `cdp` fails with `MM_CDP_FAILED` (`[HERMES_CONNECTION_FAILED] … fetch failed`).
+- Browser-only commands are gated off mobile sessions and fail with `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` (exit 6): `navigate` (so also `navigate-home` and `navigate-settings`), `reload`, `inspect`, `hover` / `unhover`, `set-viewport` / `reset-viewport`, the tab commands, `wait-for-notification`, `clipboard`, `mock-network`, `events` / `logs` / `network` and `build`. Navigate through visible UI elements; use `mm device-clipboard` for the device clipboard.
+- `mm cdp` requires Metro and a session launched with `--metro-port` (or `MM_METRO_PORT`); it then reuses that port (see [Metro and Runtime Inspection](#metro-and-runtime-inspection)).
 - One Metro process per worktree is recommended.
 - Mutating commands return compact diff observations; request a full `describe-screen` whenever refs or state are uncertain.
 - **After a call with `--observe none`, refs are not refreshed.** Target by `--testid`, or run `describe-screen` before you use refs again: a stale ref can tap a different element.
 - **Output is one line of JSON** when stdout is not a terminal. Parse it as JSON. A success has no `ok` field; a failure is `{"ok":false,"error":{"code","message","hint"?,"retryable"}}` with a class exit code. Add `--pretty` (or set `MM_PRETTY=1`) only when a human reads the output.
-- **Observations carry no app state**, and `mm get-state` on mobile only reports whether the app is loaded (`source: "stub"`). Identify the screen from `describe-screen` test IDs (`login-password-input` = unlock, `wallet-screen` = wallet home). Read wallet state (account, network, balance) from the screen or through `mm cdp`. The `launch` result's `state` can also carry `isUnlocked` and a generic `prerequisites` list written for the extension; do not rely on either.
-- **The keyboard can cover the submit button.** Add `--dismiss-keyboard` to the click: the driver closes the covering keyboard and taps once more, and the result has `keyboardDismissed: true`. Verified on iOS for unlock (`mm type --testid login-password-input …` then `mm click --testid log-in-button --dismiss-keyboard`); it replaces the old iOS `mm click --testid Done` workaround. A bare `mm dismiss-keyboard` was not re-tested on iOS with `@metamask/device-mcp` 0.8.0 (its changelog, #48, says iOS key presses were fixed). On Android, `mm press-button back` hides the keyboard, then `mm click --testid log-in-button`. While the Android keyboard is open, `list-testids` and observations include over 100 `com.google.android.inputmethod.latin:id/*` IDs; their presence means the keyboard is open.
-- **Dev builds: the Expo dev-menu button can take taps.** In a Metro-attached dev build, the Expo floating "Tools" button is drawn over the app but is not in the accessibility tree. On Android it sat over `navbar-hamburger-menu-button`, and `mm click` opened the Expo dev menu (Reload / Go home / Toggle performance monitor) while returning `clicked:true, screenChanged:true`. After a tap, check that the new screen's test IDs are the expected ones; the dev menu has no app test IDs. Close it with its **Close** item (a named ref), then tap a free part of the target with `mm tap-coordinates` from its `bounds`. Never tap **Reload** or **Go home** on a real-funds wallet.
-- **A navigation can finish after the observation.** The mobile observation retries for at most about 2 s, so after a tap that opens a slow screen (for example the first **Send** of a session) `observations` can still show the previous screen. Confirm with `mm wait-for --testid <id on the new screen>` before the next step.
-- **iOS wallet home actions are in the tree now.** `@metamask/device-mcp` 0.8.0 supplements the iOS `axbridge` snapshot with the identified elements the `ax` API reports (changelog #52), so `wallet-buy-button`, `wallet-swap-button`, `wallet-send-button` and `wallet-receive-button` appear in `list-testids` and `describe-screen` (verified on iPhone 17 Pro). Clicking them was not verified in the 0.14.0 run: if a click fails or times out, fall back to `mm tap-coordinates <x> <y>` (points) using the element's `bounds` or the `mm screenshot` image.
+- **Observations carry no app state**, and `mm get-state` on mobile only reports whether the app is loaded (`source: "stub"`). Identify the screen from `describe-screen` test IDs: `login-password-input` = unlock; wallet home = `wallet-screen` on Android, `account-picker` on iOS (the iOS tree can have no `wallet-screen`, so `wait-for --testid wallet-screen` can time out after a good unlock). Read wallet state (account, network, balance) from the screen or through `mm cdp`. The `launch` result's `state` can also carry `isUnlocked` and a generic `prerequisites` list written for the extension; do not rely on either.
+- **Dev builds: the Expo dev "Tools" button can cover a target.** A Metro-attached dev build can show a floating "Tools" button over the app. Not every setup shows it, and it can be dragged anywhere on the screen, so where it sits depends on the setup. It is not in `testIds` or `a11y`. A click on a target under it is refused with `MM_TARGET_OBSCURED`, and the message names the button (`… by android.view.View around android.widget.ImageView label="Tools"`). A `tap-coordinates` near the target can still hit the button and open the Expo dev menu (Reload / Go home / …). To clear the target, drag the button away with `mm device-swipe` from the button's position (take it from a screenshot), then click again. If the dev menu opens, close it with `mm tap-coordinates` at the center of its close (X) button: the `Close` ref is itself refused as covered by its button, and the button has no name, so it has no usable ref. Never tap **Reload** or **Go home** on a real-funds wallet.
+- **A navigation can finish after the observation.** See [Slow first screens](#slow-first-screens-android): confirm with `mm wait-for --testid <id on the new screen>`, and do not tap again.
+- **iOS: the tab bar items are not in the tree.** On the iPhone 17 Pro, `describe-screen` lists only the `Tab Bar` group (y 791–874 points), not `tab-bar-item-*`, so `click --testid tab-bar-item-Trending` fails with `MM_CLICK_FAILED` after 15 s. Tap the tab with `mm tap-coordinates` from a screenshot of the tab bar (Home, Explore, Money, Social, then the `+` Actions button: never tap `+` on a real-funds wallet). Android lists `tab-bar-item-Wallet`, `tab-bar-item-Trending`, `tab-bar-item-Money` and `tab-bar-item-Social`.
+- **iOS wallet home actions are in the tree.** `@metamask/device-mcp` supplements the iOS `axbridge` snapshot with the identified elements the `ax` API reports, so `wallet-buy-button`, `wallet-swap-button`, `wallet-send-button` and `wallet-receive-button` appear in `list-testids` and `describe-screen` (verified on iPhone 17 Pro). Clicking them was not verified: if a click fails or times out, fall back to `mm tap-coordinates <x> <y>` (points) using the element's `bounds` or the `mm screenshot` image.
 - **A test ID present in one snapshot can disappear later.** Sections that render conditionally are unmounted from the tree, not just moved off screen. On the iOS wallet home `homepage-section-title-nfts` and `homepage-section-title-defi` were in the first `describe-screen` (`visible: false`) and gone after scrolling, while `homepage-more-section` below them appeared. On `MM_TARGET_NOT_FOUND` after scrolling, re-check with `describe-screen` that the target still exists before retrying; `homepage-section-title-tokens` is a target that was verified.
-- **Timed-out calls are cancelled, and the outcome is structured.** On `MM_CLICK_TIMEOUT`, `MM_TYPE_TIMEOUT` or `MM_REQUEST_TIMEOUT` (exit 5), or `TOOL_EXECUTION_FAILED` with `Tool execution timed out after <n>ms` (exit 1, the daemon's request limit), an action that already started can still have happened, so run `describe-screen` before you retry.
+- **Timed-out calls are cancelled, and the outcome is structured.** On `MM_CLICK_TIMEOUT`, `MM_TYPE_TIMEOUT`, `MM_QUEUE_TIMEOUT` (the daemon stopped the request) or `MM_REQUEST_TIMEOUT` (the CLI stopped waiting), all exit 5, an action that already started can still have happened, so run `describe-screen` before you retry. The CLI, the daemon queue and the action share one timeout budget, so the CLI never gives up before the daemon answers. An observation that takes longer than 8 s does not fail the call: the result has `observations: {"timedOut": true}`; run `describe-screen` before you use refs.
 - Call `node_modules/.bin/mm` directly to skip the Yarn startup (about 0.4–0.5 s per call) when running many commands.
 - Never assume wallet credentials, balances, networks, or onboarding state. Inspect the installed app and obtain needed credentials from the user/environment.
 
@@ -278,10 +307,10 @@ Pattern: discover with `yarn mm describe-screen` → batch known steps with `yar
 - `MM_DEPENDENCIES_MISSING`: a required toolchain is missing. iOS: run `yarn mm:doctor`, then `brew tap facebook/fb && brew install idb-companion && pip3 install fb-idb`. Android: install the Android SDK platform-tools so `adb` is on `PATH`.
 - `MM_TARGET_NOT_FOUND`: the element is not in the tree, or a test ID left it (a conditionally rendered section); describe the screen and re-target.
 - `MM_TARGET_NOT_VISIBLE`: the element was found but is outside the viewport; `mm scroll-to-element`, then tap.
-- `MM_TARGET_OBSCURED`: iOS only; the keyboard, a sheet or an overlay covers the tap point and nothing was tapped. Use `--dismiss-keyboard` or close the overlay.
+- `MM_TARGET_OBSCURED`: the keyboard, a sheet or an overlay (dev builds: the Expo "Tools" button) covers the tap point and nothing was tapped. Use `--dismiss-keyboard` or close or move the overlay.
 - `MM_CLICK_FAILED`: a mobile click whose target never appeared usually ends here; check `list-testids` and re-describe.
 - `MM_WAIT_TIMEOUT`: target did not become visible (`retryable: true`); describe the screen and verify the test ID.
-- `MM_CLICK_TIMEOUT` / `MM_TYPE_TIMEOUT` / `MM_REQUEST_TIMEOUT`: exit 5, action state unknown; describe before retrying.
+- `MM_CLICK_TIMEOUT` / `MM_TYPE_TIMEOUT` / `MM_QUEUE_TIMEOUT` / `MM_REQUEST_TIMEOUT`: exit 5, action state unknown; describe before retrying.
 - `MM_DEVICE_NOT_AVAILABLE`: no device is booted, the id does not exist, or the device tool failed. iOS: `xcrun simctl list devices`, boot one, and verify MetaMask is installed. Android: `adb devices` must show exactly one `emulator-*` in state `device` (or the `--device-id` one), booted, with `io.metamask` installed.
 - `MM_INVALID_CONFIG`: the launch options are unusable — no app and no `--app-bundle`, a destructive flag without `--app-bundle`, a `fox_code` mismatch, an unreachable Metro port, or (Android) any APK lifecycle flag or a `.device-session` file. Read the remediation text; reuse the installed app or install a matching build.
 - `MM_DAEMON_NOT_RUNNING`: no daemon, or it refused the connection; `yarn mm launch`.

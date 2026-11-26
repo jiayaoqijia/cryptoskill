@@ -3497,7 +3497,7 @@
     "exchanges/okx-official-agentic-wallet": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-agentic-wallet/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
         "SKILL.md": "0834f1cddfdbd00d40c23ab21e30d3518b925d7d0c86cdd3cf0ce05e8befc3dd",
         "_shared/chain-support.md": "27181796c57a316c1dbcf39567adb43f225e4db23b4c91566fd8c86d6db7ea7f",
@@ -3574,18 +3574,19 @@
     "exchanges/okx-official-okx-agent-payments-protocol": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-agent-payments-protocol/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
-        "SKILL.md": "37b34333f5f71a1bc57311132ab50eb0a6b5ca70ece78a11b4b450a9558ec5d4",
+        "SKILL.md": "c53e62728e6c419f83c8105b095d6ba4f42e5781bfd56a85355467141e3cff91",
         "_shared/amount-display.md": "c82b8a66774a8ea2bf798ced9ac80e6ca44722239ca80ce5eece4cb5b5421146",
         "_shared/preflight.md": "bb9a4f63701d8f34532670ca077f7e4c5ab235a4e8b44aa3d3ef4b6f9a00dcdd",
         "references/a2a_charge.md": "7877be50df1664b889aa2a2777288b2bd7c124887ad90ffe60978ec5933d91f6",
         "references/a2mcp-mcp.md": "400845a8d46db6e5ff2ec09d837229cda0e63fadf9202e8f2e588f3c79731bc3",
         "references/accepts-schemes.md": "ea920452cc81df5724a0ea97e7126350ce6fae15b4c5d7385caa2af625978dc0",
+        "references/app.md": "73c04d85b1ec3d863d0130bb40d83b9aad813acaaff8b952e5a5414d5ec65dd0",
         "references/charge.md": "30c76c20dd742f7a87d1352c0dc2f9a317f679628659065dc71cb11a346e5946",
         "references/multi-scheme.md": "e9aff92c44eab1f4b17d6cce971eb1e6f22a93276125d3396550daa86580e307",
         "references/session.md": "f97c43939cdd2fbba19e800281da462e8bcf214dbba5ea651ad4c0b00a873427",
-        "references/subscription.md": "f6d72e7711e5e10f713f89e7f6ddc2f7181cd9a38fef46edefcd4dc91530d6b0",
+        "references/subscription.md": "ce14570bb36ba901bd1337f87aeacdc8f0810e04c6f53935e38ee841714bedca",
         "LICENSE": "556e49cb4da10df28ca7b8069145a71ac4f20d44c158dc38f487c075927401a1"
       },
       "modes": {
@@ -3595,6 +3596,7 @@
         "references/a2a_charge.md": 420,
         "references/a2mcp-mcp.md": 420,
         "references/accepts-schemes.md": 420,
+        "references/app.md": 420,
         "references/charge.md": 420,
         "references/multi-scheme.md": 420,
         "references/session.md": 420,
@@ -3605,7 +3607,7 @@
     "exchanges/okx-official-okx-dapp-discovery": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-dapp-discovery/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
         "SKILL.md": "735962eef37283031535453afcda37be76f3ad1ba1367da6b83b937164f58cae",
         "references/keyword-glossary.md": "d4a76735347dd4d2e1d0ea51961a79251773c99b638b420aa9919ffe305d58dd",
@@ -3622,7 +3624,7 @@
     "exchanges/okx-official-okx-defi": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-defi/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
         "SKILL.md": "790e5d0dea9001ab26fb5b288e3f71a214850189de01cfd3683f3511ec6c2048",
         "_shared/preflight.md": "bb9a4f63701d8f34532670ca077f7e4c5ab235a4e8b44aa3d3ef4b6f9a00dcdd",
@@ -3649,7 +3651,7 @@
     "exchanges/okx-official-okx-guide": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-guide/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
         "SKILL.md": "091f512d3cc93fb78de32ae3b91b139b7fe03bf352e8ea2fe9d55321e7baa6ad",
         "_shared/preflight.md": "bb9a4f63701d8f34532670ca077f7e4c5ab235a4e8b44aa3d3ef4b6f9a00dcdd",
@@ -6058,7 +6060,7 @@
     "wallets/metamask-official-gator-cli": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/web3-tools/skills/gator-cli/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "8a6ba7df303a73fc29c58d9556483d7df167401e5a23e122e40ec45cb923d332",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -6120,7 +6122,7 @@
     "mcp-servers/coinrithm-coinrithm-trader": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/coinrithm-trader/SKILL.md",
-      "revision": "25c5a09a27726ced964c085f033b2c15e9b154af",
+      "revision": "ac40431dc7599a8f011df8876ae7972848bdeb8c",
       "files": {
         "SKILL.md": "d247d831acaa5a4d3ca9796afd4dc7426170d317ddf39724a60226894360c2ab",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -6133,7 +6135,7 @@
     "mcp-servers/coinrithm-momentum-futures": {
       "repo": "coinrithm/coinrithm-agent-trading",
       "path": "skills/momentum-futures/SKILL.md",
-      "revision": "25c5a09a27726ced964c085f033b2c15e9b154af",
+      "revision": "ac40431dc7599a8f011df8876ae7972848bdeb8c",
       "files": {
         "SKILL.md": "0c251da5f3c4f6bcef5cc04b9e4391872775c67243e64fc7a5f6f8387e7560fe",
         "LICENSE": "4489d62848cb57f8fd88fbbcdb63cb89ca7ca48834ce08865d446e416e3aa96b"
@@ -13316,7 +13318,7 @@
     "wallets/metamask-official-ab-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/ab-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "4f208a0115762d9ad118a94834439f8d9e2db042c894fd5da7f46be166e6e873",
         "repos/metamask-mobile.md": "91525adc1b3ff945dda20054cb5ea4fcfae26c254825a9b53305f7a02d510290",
@@ -13333,7 +13335,7 @@
     "wallets/metamask-official-acceptance-criteria-doc": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/assets/skills/acceptance-criteria-doc/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "dcbdb693545ebcc5c2fa4f385eeb828fee2fd933515fce9fa40d5a98dda91398",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -13346,7 +13348,7 @@
     "wallets/metamask-official-add-evm-network-bridge-controller": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/swaps/skills/add-evm-network-bridge-controller/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/core.md": "4472900e63e1c495e5f33fe0b13ed9ee67240fdbfe9b847682bd68514081d478",
         "SKILL.md": "0d324bc11387b47cccb0c4a03b8c9321f32b25a6cd5b92944f0e9d08a19679bc",
@@ -13361,7 +13363,7 @@
     "wallets/metamask-official-add-non-evm-network": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/swaps/skills/add-non-evm-network/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "06b5539cb6a3f1a5805aac08a00f970336950d621d82255e3b4c6eb53a6f34ff",
         "SKILL.md": "0c7fb445a9efa5d36ac3fe8571f6731abf1646b76dfea6f906540fa853531c68",
@@ -13376,7 +13378,7 @@
     "wallets/metamask-official-codex": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/general/skills/codex/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "95f18c8b95e1a3385b33e80d5af0cdbfab67bb01cda373aae7a22045e0640ad5",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -13389,7 +13391,7 @@
     "wallets/metamask-official-coding-guidelines": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/coding/skills/coding-guidelines/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "ce7bd44d70e10ed136b9b667ae1507d5352a50faf49fc573cd4342d56b1544c7",
         "repos/metamask-mobile.md": "9c3e4886f18f82f4b45eec1d320c078f6cb290e8803c70c78008da2fb163d825",
@@ -13406,7 +13408,7 @@
     "wallets/metamask-official-component-scaffold": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/ui/skills/component-scaffold/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "99d432fc04d20ccd0e0099b0764638e1294239ddf663196845526668a1367b79",
         "SKILL.md": "c4ac016dbb47a4b6db6b8bfd453f061fd2b9d053f98e16e24c79b35871234537",
@@ -13421,7 +13423,7 @@
     "wallets/metamask-official-component-view-test": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/component-view-test/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "05fc66f1cce0f79062aa17ff4f39e0e08eb5721eaca596bbc2556e74b398b73b",
         "SKILL.md": "e128d4c847ed6c9a65f1ea744a09ee1ba4e66091a27346c8f1b50f13faab159e",
@@ -13436,7 +13438,7 @@
     "wallets/metamask-official-content-guidelines": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/ui/skills/content-guidelines/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "cf1a05a1301e2bb00ae3da70ca1d5ea721135210b0c83e8bda93709a1f89967e",
         "repos/metamask-mobile.md": "d1c1ec394c26d24a85bdbbba280ed3f50baf24b24a78a5265ceb0d8a5e0e788b",
@@ -13453,7 +13455,7 @@
     "wallets/metamask-official-controller-guidelines": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/coding/skills/controller-guidelines/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "9b6a8f64ae263ea48d07cd7758ab18303019c5ef09e477d95f670ddf756699b9",
         "SKILL.md": "c49dc2cc0bf36a8f632e189af5bbb0205794b52409dec3f750d76832363a2f39",
@@ -13468,7 +13470,7 @@
     "wallets/metamask-official-controller-integration": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/coding/skills/controller-integration/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "be3a0021c2ac06ed79eed00b60832c43a01cf7650edd3be575dcbd448cc3655c",
         "repos/metamask-mobile.md": "2fc3814d94382d0e72f3d59615d4638006eea877b58ada2d29a98c878694679b",
@@ -13485,7 +13487,7 @@
     "wallets/metamask-official-create-pr": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/create-pr/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "b6ea4f5ab40903935e24db31e6558f087929957649f6afa18c319a4e7b1f524d",
         "SKILL.md": "70f4482383932ca4c33c65e7b25f88fcd0a5ebd972ee02fd650ec9fbd78ffa75",
@@ -13500,7 +13502,7 @@
     "wallets/metamask-official-deeplink-handler": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/coding/skills/deeplink-handler/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "10bc25f424a8e80ddb55b1fe34ac1c7450110f73daf0fa304d4141e3f9457c54",
         "SKILL.md": "4a3a7ba1cb2e44b6a5b6ce136d6d02aa018800f9120728aac5b677c9d562af77",
@@ -13515,7 +13517,7 @@
     "wallets/metamask-official-e2e-flakiness-patterns": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/e2e-flakiness-patterns/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "6e6adacb0db07df57d676c3e1f4f86807d95849394f51c82cd80fa4e6aa470dc",
         "SKILL.md": "9ba5745438fd723fc4c64e8cd01776b037f56f4f8ed65a5c20f345308d2351ed",
@@ -13530,7 +13532,7 @@
     "wallets/metamask-official-e2e-test": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/e2e-test/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "790ee0bfd16c420892faf950c71bb4017e917a8f4cca8327fc72d8242671a8e8",
         "SKILL.md": "63cd14cf7e1ca79ea99b0042de7708a8b53eb859f3aad0f920659c8e69a62f03",
@@ -13545,7 +13547,7 @@
     "wallets/metamask-official-e2e-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/e2e-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "d4cc38f63103fb0c0fba24f4e3e87bd775ab8e353d65918d3f54c1dcc36e27a7",
         "SKILL.md": "76e6027c59637913cbb4fbf8d9d36f2e5aab1f715a47334c179f8b67d5415669",
@@ -13560,7 +13562,7 @@
     "wallets/metamask-official-flaky-test-detection": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/coding/skills/flaky-test-detection/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/gh-analysis.md": "b72076ad3f2a28e960ba3c61b5d52a554704a68fcf9e9346e8a63524b3c896d7",
         "repos/metamask-mobile.md": "7d36c15017c72c983fe395f9f24a733c634f0a49aa2b738dc31a3ea89ce7e8b8",
@@ -13577,7 +13579,7 @@
     "wallets/metamask-official-gemini": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/general/skills/gemini/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "ba265b6bf102f6874e1994e7712c4f78f7ddb4333ea0d317638bffdc63e85781",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -13590,7 +13592,7 @@
     "wallets/metamask-official-integration-test": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/integration-test/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "104d7293cdb2af679102d826dfd528ca317f4deec5bf1046a20f5e8a10052b8a",
         "SKILL.md": "737fbf17b64e002291a45c52cc1592d7a4c2c4795015bd3ad0edf84571952d83",
@@ -13605,13 +13607,13 @@
     "wallets/metamask-official-mobile-visual-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/mobile-visual-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
-        "references/cli-reference.md": "cbd24223d19e6efe0ab7e75dd966a4b1a25a45dd207011bfbcf6c0508bfe5048",
-        "references/error-recovery.md": "aad23d77220de7f5ff72c9f5a55ea39850a658b6e36cb6b0e0dfcf3e49009a3e",
+        "references/cli-reference.md": "e68bb286a51f8c5439baa13dde9d6100b4283c47ea8b76d75ee3756bbc947a47",
+        "references/error-recovery.md": "59ee02dea71ef646ca2df7b3a2aa6a754f6cdf1d20ae0296b2a754523568d858",
         "references/runtime-monitoring.md": "1e29a3a2bf47c40fc6f89a1f87381fcee6b63732c96c20bb8af317cc0d7a6d83",
         "references/state-manipulation.md": "29ac2c72bda88f02d66e13ebb07ab1f730e56aaee928e89eecdcdd0d6d8ea43a",
-        "repos/metamask-mobile.md": "9848b2fdb1b9bf3941324f623d795e602c2312f611f523bb63d04e5aecebbb83",
+        "repos/metamask-mobile.md": "907d7aa8c38a7547368645867b3dfddd5dc9591c5c0075b195653b3faf0129d1",
         "SKILL.md": "0431696b0e60495d607e134becb23b4bea33705a71d855f578db5d4164eca8ae",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
       },
@@ -13628,7 +13630,7 @@
     "wallets/metamask-official-oh-my-opencode": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/web3-tools/skills/oh-my-opencode/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/configuration.md": "fca1ffee6a38246c2ff61076851080747ffbbcc88a6db5c42026c02c94badeb9",
         "references/troubleshooting.md": "f28f9169895df536d1f517a09fa0b1dee2b99ee9254814d8becb1831e20ed635",
@@ -13649,7 +13651,7 @@
     "wallets/metamask-official-perf-hooks-effects": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/perf-hooks-effects/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "3a0c153740c450af5ca0b93c166440520e3b78cd2ec86da676dbe2d3040b5aff",
         "SKILL.md": "cac6f4c1db0e55b04e111189570edcd042f09ca93742a27865cba69237c4bc1c",
@@ -13664,7 +13666,7 @@
     "wallets/metamask-official-perf-react-compiler": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/perf-react-compiler/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "eb9ba841d3949529606aacfc8cfd1890a911e803ac3d61a7e698cb124914d42b",
         "SKILL.md": "a011ceeafc61ec328631f0c4260f1794742aaaa0f8bcfa6df02762d816a3f9f2",
@@ -13679,7 +13681,7 @@
     "wallets/metamask-official-perf-rendering": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/perf-rendering/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "839fa54fa8e6021e2d291341623aee03f65576585dd6c3a5370c2aaeaaeeb836",
         "SKILL.md": "5ab763feef19f257c22a05b3725f6da04e9f768fc4ed1062ab186bcb7b88cec3",
@@ -13694,7 +13696,7 @@
     "wallets/metamask-official-perf-state-management": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/perf-state-management/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "153b726bfc39c623e71d4bdfb1a4779480876327f651f89ee445ee9ea5f6d47a",
         "SKILL.md": "f7eb7f8145bddc0d6df32aee3f9a859470cc310dd2581815ec26913677392c84",
@@ -13709,7 +13711,7 @@
     "wallets/metamask-official-performance": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/performance/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/bundle-analyze-js.md": "b89db20d191e3eb19d573c2d3c9654997eda1cc417e9bce167b648910a266478",
         "references/bundle-barrel-exports.md": "6e7f0fcb12d629cda5604813ffd5b937b203a04256057ff3f821af81af471b1f",
@@ -13832,7 +13834,7 @@
     "wallets/metamask-official-performance-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/performance-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "reference.md": "65a0a64c8a2304d55e1be9fe0b546066e3e302817a73dda487e906be975d355a",
         "repos/metamask-mobile.md": "e428c4902ed82b6a97b123a603fa682eeb349e5e75d506085377e8e6f6b1263b",
@@ -13849,7 +13851,7 @@
     "wallets/metamask-official-perps-breakdown-tickets": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/perps/skills/perps-breakdown-tickets/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "0b96409293870bc71eea355ffa260c74842d4391006286a902387364db0d7ccb",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -13862,32 +13864,36 @@
     "wallets/metamask-official-perps-review-pr": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/perps/skills/perps-review-pr/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "agents/openai.yaml": "a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94",
         "references/core.md": "fff908016f70f4312aab55292112b7ff5b234c4061023c6b5974f5417291f8e1",
+        "references/design-decisions.md": "901cec89c9522dc4e7edc937f14779360504066014727808d38b9039be81b0ca",
         "references/extension.md": "51d7ed0ac813ece6d882bd744d40b7176f7dd37d243f097ab8b9da92b5d0ab4b",
-        "references/maintaining.md": "62da95c8a83daae480e83f553e52e0adc68466901f338ed52a250e5268284c0c",
+        "references/maintaining.md": "b5ba4457534d52da6c0c0b6fc2924b4241af7e9fef886215ee926648babd0d19",
         "references/mobile.md": "46908ea9c30aabaec9dedec52c229fbd8479ce5c3e0eaaf66b30184d835e003a",
         "references/owned-paths.json": "7260a3b271f4943ee6c37139b6cc7b1ecd5e3f0800e39ce37eb11bcae220fff8",
-        "references/pack.json": "c53012a9e5fcfc7618abe910de1ba9eec0b5696c047e8a966b7670db521f31d5",
-        "references/parity.md": "03618f36cb118b0a21d628bf82d0c6ba24fe9616843dfdb2f89f2bc119bf12b4",
+        "references/pack.json": "276637ddd356c99fb19439fad76e6082c2ba585892defe5ddc5a679c44433441",
+        "references/parity.md": "5af8eafa64b17661c32359c62de078c7aad87852358361aefc3351c8ca201127",
         "references/report-template.md": "06d4de2a2268d4721ac4e968bff836276c5270d70a4e41681c7dd464e3b19bb7",
-        "references/review-sources.json": "8086d7d3f7fa6dab0e4706cb7a7d09083c9cf51f857d5a25531e0ea3dcc885fa",
+        "references/review-sources.json": "007f883047d93252bf2bc690c492c37b919f6540c518b073c0f0a846ddaf7f9b",
         "references/shared-packages.md": "9e7bcba85dd29807d3660c5e22b7d263e4fa9933af02344da1efe5cb72b79693",
         "references/shared.md": "d613580b6621cba45c0e1db04163a867b2eebb31f13b48ea6e1ace4514265111",
-        "references/terminal.md": "16eadb3a08f55df71ee044129f85cc14f31edd797e66d8b766f8cc0b61235254",
-        "repos/core.md": "ba5bb8fa5cbcc1521a58588409183e164d22ca9ca4c729925413fa53a2f99556",
-        "repos/metamask-extension.md": "5a82705c58e693b6051b4113d9b285f93ef169e14b913964ff025ba44148f4a3",
-        "repos/metamask-mobile.md": "c99bf718890d7ea059d66a394a044259177ef406cf0857147dba70d8e3f8ae38",
-        "repos/va-mmcx-terminal.md": "9e244c7ee87df33ee79862c70f5985eccd4f85adc46eae7b84afc35bb4a9b483",
-        "scripts/materialize-review.mjs": "21b5ced974f2183ac7f81821cc069944f0c24915220ad1151bd3d11445493d0e",
-        "SKILL.md": "767f55d4ec677242385834f5ce0528caeec4d774a050bc37db3475d5c93b547d",
+        "references/team.json": "b0d68ebe912915e365dd6ae275f5a7317e9ecaba51a70a3e76b2765ee0840065",
+        "references/terminal.md": "7465cbe1e5a6fe558c9266b69c921a0d54dc35e6a8fae4782bb9f490ed2c20a6",
+        "repos/core.md": "553f0f3f050ad569fc0858a3d799dbd32f6e2a387c5f925658827a3a247968b7",
+        "repos/metamask-extension.md": "6b716e4b757ebf6db7e377b8dc6f7ff7e49dcc2f29c65cbce130de947b8350fd",
+        "repos/metamask-mobile.md": "0aa4ce3035ecf145fdb53af37e2d1cf6354e15a3702c1ef8da333292ed2f8f86",
+        "repos/va-mmcx-terminal.md": "8562b03de388c5f65ad26e55ff6611a59839b86c7014cdcd1934f81fccb20473",
+        "scripts/materialize-review.mjs": "726e01fed60068c9d180fecc505eeb390d3fd3dad92b5cbafa200fa0799ee57a",
+        "scripts/review-task.mjs": "d9bf60a094dac6574b673543ea07d89401e4b3ab4e32e3d3e196c450a16b13ae",
+        "SKILL.md": "f0f3d54e2fb1243e601082136b8e37537780b09a2f26ff0dd1ddde105ece1876",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
       },
       "modes": {
         "agents/openai.yaml": 420,
         "references/core.md": 420,
+        "references/design-decisions.md": 420,
         "references/extension.md": 420,
         "references/maintaining.md": 420,
         "references/mobile.md": 420,
@@ -13898,12 +13904,14 @@
         "references/review-sources.json": 420,
         "references/shared-packages.md": 420,
         "references/shared.md": 420,
+        "references/team.json": 420,
         "references/terminal.md": 420,
         "repos/core.md": 420,
         "repos/metamask-extension.md": 420,
         "repos/metamask-mobile.md": 420,
         "repos/va-mmcx-terminal.md": 420,
         "scripts/materialize-review.mjs": 420,
+        "scripts/review-task.mjs": 420,
         "SKILL.md": 420,
         "LICENSE": 420
       }
@@ -13911,7 +13919,7 @@
     "wallets/metamask-official-perps-validate-multiproject": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/perps/skills/perps-validate-multiproject/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "scripts/perps-validate.sh": "3c877f014125843f5e4f2d8d2a733c218598203c94e2b5f7f07ae9d8fbb9113c",
         "SKILL.md": "19fe39fc07d20c9a71f35a6b91b06dc407df0e48ec97072afcc2d69bc9ddda41",
@@ -13926,7 +13934,7 @@
     "wallets/metamask-official-pr-changelog": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-changelog/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "813dfbd7422cabe2f7234c7c781ac490ca20bb114e956d2272904b99df91f230",
         "SKILL.md": "5ff831d0f93c1e769d09aa0fa3e00b5e1d604a501242871339db16d18dc6388a",
@@ -13941,7 +13949,7 @@
     "wallets/metamask-official-pr-codeowners": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-codeowners/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "0380b05c3f8b9c4eb4f146e434a7c612eabb7caa5f2e88ea6c88a8f5f16be7df",
         "SKILL.md": "7aaf38f0d8f99d88aa8cc367a15f612ebe335b5fbce865da1289ba460479680a",
@@ -13956,7 +13964,7 @@
     "wallets/metamask-official-pr-description": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-description/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "48ed1ce70b78133edb4f073dbdc28fc40ed73c2037227148282556686db2a912",
         "SKILL.md": "dfe07aa05436982176eca3ec0576e926ac2852149d1e4b88f5f9156589ece72e",
@@ -13971,7 +13979,7 @@
     "wallets/metamask-official-pr-guidelines": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-guidelines/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "3871c979bb750688b79eee89cb7f73cd6d792f2883b42a690a8594756e65d42c",
         "repos/metamask-mobile.md": "c226c95aae91293e0b576557e199233e8f63a2a25e81727bc594650b456b0291",
@@ -13988,7 +13996,7 @@
     "wallets/metamask-official-pr-issue-search": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-issue-search/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "0807df411e545e193ea99c3aec34d43f9b2e69aac8a54f6e8ea401b38571a4b8",
         "SKILL.md": "3ab10e7dec238d69d8afb53da2e84f8958e2aa8959c322cab8ebf8f948384255",
@@ -14003,7 +14011,7 @@
     "wallets/metamask-official-pr-manual-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-manual-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "27e2cfa78d8839b2f6cc8a071f05186a22a707d9746ece1a564fb58b45518230",
         "SKILL.md": "1e0f45647a25f48a56550ffa87c784f0475f9d8776c194160a76882b88fa0655",
@@ -14018,7 +14026,7 @@
     "wallets/metamask-official-pr-readiness-check": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-readiness-check/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "0d12f4350516c730d336e57b279666cbb9b4a24a6420699ddca65198b423ea9b",
         "SKILL.md": "92c8bc0400c2a0dfae1bed2cbc5dd06ec51d3eaefdb2d4e5700c1ca8891d961d",
@@ -14033,7 +14041,7 @@
     "wallets/metamask-official-pr-review-queue": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-review-queue/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "cbecec3a52bdd269d3bee69ad41f4f3702227e4e14f7246d53752d97fa797aff",
         "SKILL.md": "632d7b4acab4a73421aadbdd8da949165d67e1d18eefddaac1cb4b2899d32909",
@@ -14048,7 +14056,7 @@
     "wallets/metamask-official-pr-title": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/pr-title/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "157639e1cb33b101391c8db48394725042e46b22da65958c16948574ca453fcf",
         "SKILL.md": "e5aff9d32da95570e40716566bc201d0e5926a11ae672e9d0a22ec30b278fb82",
@@ -14063,7 +14071,7 @@
     "wallets/metamask-official-test-i18n-usage": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/test-i18n-usage/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/core.md": "0c6fe1358bb905e0f23692686bf824a0f47e6943e80f8d6ec112cdfacef05eab",
         "repos/metamask-extension.md": "6a181738600eb29f0ad2271a8fdc11f3110e5a799a50a510043f4881bd5c8d2b",
@@ -14084,7 +14092,7 @@
     "wallets/metamask-official-test-layer-placement": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/test-layer-placement/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "a6c2bf971696c5b1a304ca709c02374bac7310fc96aecc3252a8109662e923d6",
         "SKILL.md": "c7b7a7c5cf04a9a55b7a4c61bd80930dcf7c9c890455c18d2d7cbf594dce67f2",
@@ -14099,7 +14107,7 @@
     "wallets/metamask-official-unit-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/unit-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "d1c05aa831eb2e8d6dceae397c8cb20c69678b48b385b25673c963848fe785be",
         "repos/metamask-mobile.md": "174b48453acd7211c4713f60a08be8e46b51210df362366c963b3353167c362f",
@@ -14116,19 +14124,21 @@
     "wallets/metamask-official-visual-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/visual-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
-        "references/cli-reference.md": "89872b059102ffdd1cd9a1734ae427269e76e1e85c34ab874a361d778297b8f8",
-        "references/error-recovery.md": "b20b83810c397ed22978af64b91b1a5f85b4fffbd5fbf7d254fa8bed06cc8f1a",
-        "references/mock-network.md": "7ef6d6c1a389f75021f31d2877f14757d97b07c86da1756ce2501e1b5e9b62cb",
-        "references/state-manipulation.md": "1b2bd384fc21eea82337204183aa639ee016a46924d490c571f091f45149e0bf",
-        "repos/metamask-extension.md": "a6f4a402b9f09d23f9773f08ed0b13657f4a271569c3ab1a9110c2232a9074a8",
+        "references/cli-reference.md": "9713f2065e1020f501cbbc13eaa1afa3409aa380e944965a43173a52bb364ca9",
+        "references/error-recovery.md": "c8f60893590e98328f14023fdb121f91f877c5b63950fcaba963449966446b94",
+        "references/logs-and-network.md": "e9f1617cd6be4df758fe2c059c129a2ecffe0bbc475f50053fcf020e2360d5a3",
+        "references/mock-network.md": "4bea1b6e18284b4a99f1f8e375c0e99a6144beecf5fbc034e7080f7309ab32b2",
+        "references/state-manipulation.md": "baabc28009b8176af468f69073c955eeca66c0465bf895a8b36de42a29a03de2",
+        "repos/metamask-extension.md": "11e18505a7306926761d1b3a25bb81e55adc2198150e8b546aa31eb9ef9d6d38",
         "SKILL.md": "19b64c85c9446739813d86ab6d1735686480c9ea2c620dab3082790966c3c83c",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
       },
       "modes": {
         "references/cli-reference.md": 420,
         "references/error-recovery.md": 420,
+        "references/logs-and-network.md": 420,
         "references/mock-network.md": 420,
         "references/state-manipulation.md": 420,
         "repos/metamask-extension.md": 420,
@@ -14139,7 +14149,7 @@
     "wallets/metamask-official-x402-payments": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/web3-tools/skills/x402-payments/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "28a1e4eba77f7f72d5fc679e16287c6f8d0728dfac78acd77221eded23ca9af0",
         "workflows/delegation-payments.md": "8280b21bd515ae435141f6b7fceb38fac3120ec891e0c116e1c32e3ce11c4b52",
@@ -17544,7 +17554,7 @@
     "exchanges/okx-official-dex-market": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-dex-market/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
         "SKILL.md": "a4f7b058553a9ec50f2c3c520887c421feee082c43105660f32b421647dffc04",
         "_shared/chain-support.md": "27181796c57a316c1dbcf39567adb43f225e4db23b4c91566fd8c86d6db7ea7f",
@@ -17615,7 +17625,7 @@
     "exchanges/okx-official-okx-ai": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-ai/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
         "SKILL.md": "dd7342d03f9bd0aabe0592a8c225bd849a7cc7e92a6dbe8c111f8279ffc78f11",
         "references/a2a/completion.md": "4dc6ea57e9bb57607f6dd4dd20ef755d349448b707a40bded588ae6fddd2f6fb",
@@ -18824,7 +18834,7 @@
     "defi/pancakeswap-collect-fees": {
       "repo": "pancakeswap/pancakeswap-ai",
       "path": "packages/plugins/pancakeswap-driver/skills/collect-fees/SKILL.md",
-      "revision": "f8d2f9da32b9a12404e921fab900648d056853a8",
+      "revision": "02061c83c554aa34f62ff5994cd0de9e247fc99f",
       "files": {
         "SKILL.md": "f7cbdd72a88a9a1be91e81ed07aa37e6d3c148ea0c95ef250667754e03951501",
         "references/fetch-infinity-positions.mjs": "f803bde5a841fc65bf8172dce7cf4c81dd3ce5d898d9c074ed8af6805a496dc8",
@@ -18841,7 +18851,7 @@
     "defi/pancakeswap-swap-integration": {
       "repo": "pancakeswap/pancakeswap-ai",
       "path": "packages/plugins/pancakeswap-driver/skills/swap-integration/SKILL.md",
-      "revision": "f8d2f9da32b9a12404e921fab900648d056853a8",
+      "revision": "02061c83c554aa34f62ff5994cd0de9e247fc99f",
       "files": {
         "SKILL.md": "81fb9883903c55e0795755a9f28bf5c01fe144a1a8cc9b6f510a6ddea958cf1c"
       },
@@ -18852,7 +18862,7 @@
     "defi/pancakeswap-swap-planner": {
       "repo": "pancakeswap/pancakeswap-ai",
       "path": "packages/plugins/pancakeswap-driver/skills/swap-planner/SKILL.md",
-      "revision": "f8d2f9da32b9a12404e921fab900648d056853a8",
+      "revision": "02061c83c554aa34f62ff5994cd0de9e247fc99f",
       "files": {
         "SKILL.md": "d29f8afe7ec9e72d700543f075838fcc5f1413fdc65f986e3b6c9ff46aab18ab"
       },
@@ -18863,7 +18873,7 @@
     "defi/pancakeswap-harvest-rewards": {
       "repo": "pancakeswap/pancakeswap-ai",
       "path": "packages/plugins/pancakeswap-farming/skills/harvest-rewards/SKILL.md",
-      "revision": "f8d2f9da32b9a12404e921fab900648d056853a8",
+      "revision": "02061c83c554aa34f62ff5994cd0de9e247fc99f",
       "files": {
         "SKILL.md": "0c296b3e9d092543d3f3ef773c7a21a36a4fe26bdf49055317d8e1980dd07c99",
         "references/fetch-infinity-pending.py": "7618db86f40c0344a8dc8751ac0dd60c6371d0b6c96541409f399045a790ff54",
@@ -18880,9 +18890,9 @@
     "defi/pancakeswap-hub-api-integration": {
       "repo": "pancakeswap/pancakeswap-ai",
       "path": "packages/plugins/pancakeswap-hub/skills/hub-api-integration/SKILL.md",
-      "revision": "f8d2f9da32b9a12404e921fab900648d056853a8",
+      "revision": "02061c83c554aa34f62ff5994cd0de9e247fc99f",
       "files": {
-        "SKILL.md": "d0c5013763ded22b64c5cb31228acfaf74493feba8145082a333f6ce7b297454"
+        "SKILL.md": "4598a124d09afafb77c5d6237932c2a81810ff4d62a8f3d23210c13ba6598143"
       },
       "modes": {
         "SKILL.md": 420
@@ -18891,9 +18901,9 @@
     "defi/pancakeswap-hub-swap-planner": {
       "repo": "pancakeswap/pancakeswap-ai",
       "path": "packages/plugins/pancakeswap-hub/skills/hub-swap-planner/SKILL.md",
-      "revision": "f8d2f9da32b9a12404e921fab900648d056853a8",
+      "revision": "02061c83c554aa34f62ff5994cd0de9e247fc99f",
       "files": {
-        "SKILL.md": "33fedb3187648e6622c6d0c5d5c6f58d459ada58e248d3e0105c1d9bd2794f69"
+        "SKILL.md": "ffc9d1a800796841b7e7d95c7b51eda4dc2b9fb8744cb0e144dc7310ad0709e9"
       },
       "modes": {
         "SKILL.md": 420
@@ -18980,7 +18990,7 @@
     "wallets/metamask-official-smart-accounts-kit": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/web3-tools/skills/smart-accounts-kit/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/advanced-permissions.md": "d5e21b5dc9870ea55b3cf77f8c1dbe2643d9bd0ed1332752d4fd684c762fdc79",
         "references/delegations.md": "422b115ec4a66990a134243a38324f7d0c66ad8af77a3045166e14b4ecf40c3a",
@@ -19021,7 +19031,7 @@
     "wallets/metamask-official-react-compiler-migration": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/assets/skills/react-compiler-migration/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/patterns.md": "1d67f477baa60846d35782d00c268aaae8db1b678259c027e430d289a6646969",
         "SKILL.md": "1d6baa0c304f03356c4b06048e8993b7f481facff49cce7854c643a3cdee42cd",
@@ -19036,7 +19046,7 @@
     "wallets/metamask-official-perps-write-ticket": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/perps/skills/perps-write-ticket/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "19338b8b3e45e5c44f541f9a9f68372907fc028940ebff6e85492d3b31523e9c",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -19049,7 +19059,7 @@
     "wallets/metamask-official-add-evm-network": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/swaps/skills/add-evm-network/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "2976fd21fc57db7dae6eb856a901b90a26ccb8a3274541774886f2deacc74dd0",
         "repos/metamask-mobile.md": "88fd7e7cec3178e2007e238655e67fb1a68d113726da9f55528507fa9c7cc921",
@@ -19066,7 +19076,7 @@
     "wallets/metamask-official-swaps-cpu-profile-audit": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/swaps/skills/swaps-cpu-profile-audit/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "b4851f36d01b2e36553bf338cb77a63738a33b6ae84316d59a146ab82b57922f",
         "scripts/analyze-cpuprofile.cjs": "32192fc60a75e73c950e3cfb01a8f5f397cdcbf2683d9f6be4e96a71c6b517c1",
@@ -19085,7 +19095,7 @@
     "wallets/metamask-official-extension-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/extension-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/e2e.md": "248c21b0109ad0f7c30a4f11574c0693a08743a0690e2bf987cb98ea6c9441cb",
         "references/e2e/flakiness.md": "259c44a397f44a5dd1bdfe3c1acfd67928b7547a12eca44c9570471f8bdff267",
@@ -19116,7 +19126,7 @@
     "wallets/metamask-official-mobile-testing": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/testing/skills/mobile-testing/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/appium-e2e.md": "42ddb1a69d4f23427edfe75c956a3006c0e7300db722566d843e8f81c3cbdb6f",
         "references/component-view.md": "c96dc0c8673b58a241da6d8a54a7fdd716e728d0714488a3b5bdbcc102ad12bb",
@@ -19163,7 +19173,7 @@
     "wallets/metamask-official-ui-development": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/ui/skills/ui-development/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/reading-mmds-manifests.md": "75ccb2c6d4b63254ae5ad5b2671d688b79fa0c3bdc478d187631a04c5dd19242",
         "repos/metamask-extension.md": "730a050cc5b242e076b4700d5a05844792576f3645e8781b1e70c94a84f03e33",
@@ -21825,7 +21835,7 @@
     "ai-crypto/chaingpt-org-official-aa": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/aa/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "0991886db790fc281c9e6c41819fbbfd05bbf80718eba8c3a0e4cfd3437b8a8f",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21838,7 +21848,7 @@
     "ai-crypto/chaingpt-org-official-agent-wallet": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/agent-wallet/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "f70824de10a3c93b593502bb9ea4b10f397b75fda4218ef99e8af68264c33d67",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21851,7 +21861,7 @@
     "ai-crypto/chaingpt-org-official-base": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/base/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "39b9095dff69f7f438f985425597eabafcad25b8a2b2209c15030672eb83787e",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21864,7 +21874,7 @@
     "ai-crypto/chaingpt-org-official-bridge": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/bridge/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "9d1104be9142b81d31218a80a63433980caac7134afd1fa3a5dfba7fbfad7134",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21877,7 +21887,7 @@
     "ai-crypto/chaingpt-org-official-chaingpt": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/chaingpt/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "f91e7742d0e34719d3f497f49d6dc72724c9581030a4d16699d9e3c6552d386b",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21890,7 +21900,7 @@
     "ai-crypto/chaingpt-org-official-dashboard": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/dashboard/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "bf1de37bc3b88af780bf347a689fb8673a29cfcd0d6aa6f0dfff73792d1a249c",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21903,7 +21913,7 @@
     "ai-crypto/chaingpt-org-official-debug": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/debug/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "538e99424e13f63d1d7f44c0d174e21edfa122ebe640aef3ace8fb7e1bde040c",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21916,7 +21926,7 @@
     "ai-crypto/chaingpt-org-official-defi": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/defi/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "e72636ed90f39f816707a1a888d9a2cb6bfd6534ae1e360d61ae2c5cf17e5ee7",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21929,7 +21939,7 @@
     "ai-crypto/chaingpt-org-official-deploy": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/deploy/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "8d451e528bf7f2e7621e322bbe01c4f0851799fb115dde4fb13f2bc412e6aee0",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21942,7 +21952,7 @@
     "ai-crypto/chaingpt-org-official-drift": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/drift/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "68ce64e1f32a59473c1a4c9c0fb60ed083bf00ac29c0eabe3f706106c71fa286",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21955,7 +21965,7 @@
     "ai-crypto/chaingpt-org-official-hackathon": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/hackathon/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "9268638af4aa2fb43ae6370aa3e2e8c8aeeb0bf0046bc2dc9d5e9320f14e6a54",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21968,7 +21978,7 @@
     "ai-crypto/chaingpt-org-official-hyperliquid": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/hyperliquid/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "0aaa91e2c095320cef800d2d183f54da23c4e3bfeaede974d24d7290d0ec047c",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21981,7 +21991,7 @@
     "ai-crypto/chaingpt-org-official-playground": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/playground/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "352a20c96521dfec8a18d45b12721d7b9f856c649ea9da235cec2234db1b02f1",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -21994,7 +22004,7 @@
     "ai-crypto/chaingpt-org-official-polymarket": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/polymarket/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "07b87f9334dce4baef3c7d7ba21687eb01a050ce2e4daa93c3493d6272d6df73",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22007,7 +22017,7 @@
     "ai-crypto/chaingpt-org-official-research": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/research/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "567ce430da87c0626eb6b17684b055eb983d90e1bd71f71e6429e5c97ea7cd2b",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22020,7 +22030,7 @@
     "ai-crypto/chaingpt-org-official-scheduled-autonomy": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/scheduled-autonomy/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "daca8c06544c15949675bb1b76fff532453707a5da4e2ba23d66192ed96e085b",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22033,7 +22043,7 @@
     "ai-crypto/chaingpt-org-official-security": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/security/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "bde6d7569e01da13f431d3838db293093ee30e9f2b16be6bf1caa7783b9d7f5e",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22046,7 +22056,7 @@
     "ai-crypto/chaingpt-org-official-solana": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/solana/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "7523e4ab01edfbcab343b82cb699708ccd65f1afce16a807e5c126823105405e",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22059,7 +22069,7 @@
     "ai-crypto/chaingpt-org-official-strategy": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/strategy/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "fa20f200cc87e5958e7e05bb3922157283f103403ea71b9ba66595a2916b4fb9",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22072,7 +22082,7 @@
     "ai-crypto/chaingpt-org-official-trade": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/trade/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "5638d9c10a3c9908a24c0e3cef159d6094fa1f3d14c808281c1634ab7f195feb",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22085,7 +22095,7 @@
     "ai-crypto/chaingpt-org-official-tron": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/tron/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "69526268a4e84f740c23fd3deab3675674b79b985559342c6e14312d6011b3b2",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22098,7 +22108,7 @@
     "ai-crypto/chaingpt-org-official-trustless-agents": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/trustless-agents/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "060438b282910f7ebe0f9dc9eb646c33381646b8d125024621d7a3ae0bd9b0d9",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22111,7 +22121,7 @@
     "ai-crypto/chaingpt-org-official-update": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/update/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "bc8d8328bc2697e2e4afd861f3b89c72f56bb520c7017ce5758354d8382d13b5",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22124,7 +22134,7 @@
     "ai-crypto/chaingpt-org-official-x402": {
       "repo": "chaingpt-org/chaingpt-claude-skill",
       "path": "skills/x402/SKILL.md",
-      "revision": "35a2a8b00b927e8bd3443bf8b24a9f97656d7f10",
+      "revision": "075b93ccbd3d9c4634ba32cfdd3e9be9aa995a6f",
       "files": {
         "SKILL.md": "cb52c7c588514f72350671d11c5ba85837a055fd18d84db3bffacf1912f65319",
         "LICENSE": "3b76beb378de078fa358f3912e695e9c28f6884afaa914ebb2a029fbbd51c0a2"
@@ -22182,7 +22192,7 @@
     "wallets/metamask-official-selector-patterns": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/coding/skills/selector-patterns/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "1ecabf6afba641ca3b8c902044f5b79880fff44af1e8edd58b7c663dd0c2eaa1",
         "SKILL.md": "796f2eb91386914a113f5cabe66ee7f72346a3e761205423787e7e23fcd8c57e",
@@ -23551,7 +23561,7 @@
     "wallets/metamask-official-grafana-tempo-queries": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/observability/skills/grafana-tempo-queries/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "0643194e2d3da344949e04693e36161b5dc717050a7cd09ef2ab4917b0af8d72",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -23564,7 +23574,7 @@
     "wallets/metamask-official-instrumentation": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/observability/skills/instrumentation/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "115617503b8a16fa7f7d223523c8197048a4a65392d95dd94959511e7309d7a9",
         "SKILL.md": "f10bdf515a2f33cc66b015df91d7f90dfa5ae5ce22ecca372b515b2dad12c0e8",
@@ -23579,7 +23589,7 @@
     "wallets/metamask-official-performance-attribution": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/observability/skills/performance-attribution/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "e3afa225cc36194b9085ef53031f00111f4440d0624214948991914a99ff21d9",
         "SKILL.md": "f669662d9c8767029d725061a3a307baef96458743e789fbaf457736f849a686",
@@ -23594,7 +23604,7 @@
     "wallets/metamask-official-sentry-grafana-correlation": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/observability/skills/sentry-grafana-correlation/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "aa8d879c0185eae0c5c7aec5fe0e919d0d97fba7206b1363dceb819147e1f910",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -23607,7 +23617,7 @@
     "wallets/metamask-official-sentry-mcp-queries": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/observability/skills/sentry-mcp-queries/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "771adbf3d76ada77847df882f295a1af5d8acec6700286a018fa70e67e968a5c",
         "SKILL.md": "da2862e8628a83595cb98637d2e63882a36366c9e14cf6aebe391106769b7ac4",
@@ -23622,7 +23632,7 @@
     "wallets/metamask-official-sentry-quota": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/observability/skills/sentry-quota/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "b0771f6fa990e719f3ce945c22ec16a401eb1e81c71477e9f720e1e886bb0ecc",
         "SKILL.md": "af6a419d89fd772cde26a939a24d6bd75bd23dd33941f92e46d9f941355a3dab",
@@ -23637,7 +23647,7 @@
     "wallets/metamask-official-analytics": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/platform/skills/analytics/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "dbb7cacdef972ed9c32e79007b40800d9c685fe0f07760afc5d5122adf4c4de3",
         "SKILL.md": "a6cdee1c78cacd1463969982248d896b6b1773b97337da9edac95863db15208d",
@@ -23652,7 +23662,7 @@
     "wallets/metamask-official-feature-flags": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/platform/skills/feature-flags/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "a7fd4c8b0940a5ddcc241be1ef4f482d43b38a8f4ccdf66195a6d24a994749e7",
         "SKILL.md": "7c3f68f97ff73e02772edb61824576bcab94ae0c8624ba70794a910fef94b63c",
@@ -23667,7 +23677,7 @@
     "wallets/metamask-official-navigation": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/platform/skills/navigation/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "51c6bc6711afcc1a640f7c7d60861b77b19a0476c8812b6bd1ccea0812953ed8",
         "SKILL.md": "1473bf6ab04003acffa4ebe7a446172ccb32b0a8898cea062af6ed00c64ccbf9",
@@ -24008,7 +24018,7 @@
     "wallets/metamask-official-data-analysis": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/data-analysis/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "31eaa50677b2be745d1480b08946e9b33da3be1374e4f83a337d470058d1131d",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -24021,7 +24031,7 @@
     "wallets/metamask-official-effect-antipattern-scan": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/effect-antipattern-scan/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "44af52681bb29a64ae3c16848e4fc3b181c5b5ad116de8c8c3df9a6906b89d13",
         "repos/metamask-mobile.md": "da7eaa8788169c7bc7173c2e229052bada5466c6b8b9396ee536c438287b1ba5",
@@ -24038,7 +24048,7 @@
     "wallets/metamask-official-extension-profiling": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/extension-profiling/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "17ff794a0cb48315c6c1acbe1d3cae959b13503ee60b4bed7847fb22ba07ee2f",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -24051,7 +24061,7 @@
     "wallets/metamask-official-react-render-delta": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/react-render-delta/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "9032fe55bcba828fda27fbfee894cd759372ee313e26617df3e7fb302d42b3bf",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -24064,7 +24074,7 @@
     "wallets/metamask-official-selector-antipattern-scan": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/selector-antipattern-scan/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "28922172dcb4ce6511ebfba0c25056148b32128586e273947cad6f96e6f43606",
         "repos/metamask-mobile.md": "e603c8495f916a19f356219279c057ea61b927326d5f0d2b48a5980e13445b0e",
@@ -24081,7 +24091,7 @@
     "wallets/metamask-official-extension-errors-debugging": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/platform/skills/extension-errors-debugging/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "47ad5bdd024374b1de2a62c526b609a20022aa6a614233820268f669741424e9",
         "SKILL.md": "33ed071949aed0096b9f3d30966a36e81f5b677f8b934c931d7f7110db53e453",
@@ -24096,7 +24106,7 @@
     "wallets/metamask-official-extension-lifecycle-decoupling": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/platform/skills/extension-lifecycle-decoupling/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "ee67fa090518019fb6a2c206ce3a99b03f3e9afc52aedab4297b1b584f43391d",
         "SKILL.md": "f787a7e14f89bd68ca372cffd78f05414d4e9216933251d0e6b6d8671c525bd7",
@@ -24111,7 +24121,7 @@
     "wallets/metamask-official-avoid-any": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/typescript/skills/avoid-any/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/core.md": "a8ab8745030b44e009a6e18b03232692ee2813d9ee24d41458f462cc432b3bfd",
         "repos/metamask-extension.md": "bbe41e3cc4d174f14c89f2e8ae1fef47cdad3859d373dc351e39c73a6f631bff",
@@ -24130,7 +24140,7 @@
     "wallets/metamask-official-avoid-widening": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/typescript/skills/avoid-widening/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "de9e218e286cb18ec2dff9c1aee5cd05f9cfa6b8dcee9cfc1696e5fdd78c7b9b",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -24143,7 +24153,7 @@
     "wallets/metamask-official-decompose-large-files": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/typescript/skills/decompose-large-files/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "2b0ce1ae202d9d9306ece480762bed526d98fa18b8e19552b3224718abd6eac9",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -24156,7 +24166,7 @@
     "wallets/metamask-official-derive-types": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/typescript/skills/derive-types/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/core.md": "a4f271f814395027affef3918a6327e2e0c998fdac8de9aab5e3d3d98df14192",
         "repos/metamask-extension.md": "16fabc3a2bf2269a07357a8d8fc4f4124d64ee81ef41a3b876310039cba7e08f",
@@ -24175,7 +24185,7 @@
     "wallets/metamask-official-migration-context-cost": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/typescript/skills/migration-context-cost/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "263c3caf31eecc8cd47e9ebf34c799ab3a3cbfb787cbd2b70f38d89571ce34c4",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -24188,7 +24198,7 @@
     "wallets/metamask-official-tsc-blindspots": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/typescript/skills/tsc-blindspots/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/false-negatives.md": "c9f70e7f7535d403b80e80d6cb14615d03ca375d6d832b0135e014c1def133f2",
         "references/metamask-extension.md": "3a1db42a12a5905e193a84d7f266571af92845f0952a89b815b0c78d9498fd85",
@@ -26591,7 +26601,7 @@
     "wallets/metamask-official-check-nesting": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/check-nesting/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "bbf10dfdbe34b568ef472a98e10f781e3d6408be533855e3aab52d0922672fc7",
         "SKILL.md": "712643443f37a9069a08030e055ae79cc3891d7509439c605f3cef9359659e33",
@@ -26621,7 +26631,7 @@
     "wallets/metamask-official-profiling-regression-proposal": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/performance/skills/profiling-regression-proposal/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/evidence-schema.md": "144912f0afcbd62673674326875e357a9b681a44bc2531f9f64923869e58336c",
         "SKILL.md": "723430f373156bc4a53d40930ee2acdb5b79d3f0596d997e76c721c317305b53",
@@ -26663,7 +26673,7 @@
     "wallets/metamask-official-activity-mappers": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/ui/skills/activity-mappers/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "b7aa2c73dc5e515f00485041a9b02b3eaeb0c3db3d6b08a3e4c2844a653a63a3",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -29854,7 +29864,7 @@
     "wallets/metamask-official-review-pr": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/pr-workflow/skills/review-pr/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "README.md": "65efea12db464b3699dcfa2de40f1a942da1ed7ca06ff74c4e332bddf98e348e",
         "references/operations.md": "a74bb114f536843668b7182cc2d67140b00255a15b21eb2cfb31881785ebe5f4",
@@ -29931,7 +29941,7 @@
     "mcp-servers/blazephoenixxyz-crypto-blazephoenix-defi": {
       "repo": "blazephoenixxyz-crypto/blazephoenix-mcp",
       "path": "plugins/blazephoenix/skills/blazephoenix-defi/SKILL.md",
-      "revision": "6e23c17053da614d224442e97c4556fe502dae67",
+      "revision": "d28487ad2dbfee468008c1a5612a9ed66e2d4a5c",
       "files": {
         "SKILL.md": "e62ed8a9ba90ce6414d3826f8cc707991c00712f5a9e714e17439742af2224d0",
         "LICENSE": "b5bab758e3ed4b3cf300c2d4f627da8e7502d07bf668e21281e0f9e5a0c87bdc"
@@ -30475,7 +30485,7 @@
     "wallets/metamask-official-notifications-category-sync": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/platform/skills/notifications-category-sync/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "dd98eb561bf45f95ee3602c0986c3149199b18a78b25eb75bd85991c29de08f6",
         "SKILL.md": "c68273d8f82f7bb7642f5ff9b0ef646f0790708d8c9442ad9b694159d44aa5f2",
@@ -45454,7 +45464,7 @@
     "wallets/metamask-official-jira-brief": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/planning/skills/jira-brief/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "ac4a264ad4101c8016a68ae40cd211adf6727a94340ae094bb3425352b8c45c1",
         "repos/metamask-mobile.md": "dfbf34553333cdf94acc564546601369fc6b683bb08b20b0fdeac47307706fb7",
@@ -45471,7 +45481,7 @@
     "wallets/metamask-official-planning-spec": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/planning/skills/planning-spec/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "7237b29445d305a937db9fe7d3bd67b8b2985c6e8d207fbc15355b35fdef0afd",
         "repos/metamask-mobile.md": "9cdffd15382cb747fb16e3709c5fc8aa77f3065353ba62890882a6481736c015",
@@ -45488,7 +45498,7 @@
     "wallets/metamask-official-planning": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/planning/skills/planning/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-extension.md": "baccca55e785b4f755c010bced205beedf918585c2fde57c271100355bd81a99",
         "repos/metamask-mobile.md": "9b762a654e7f9771219059cb817286de570e1b97ae6c23b7b3fe54165533598e",
@@ -46666,7 +46676,7 @@
     "ai-crypto/mystenlabs-setup": {
       "repo": "mystenlabs/walrus-memory",
       "path": "packages/mcp/plugin/skills/setup/SKILL.md",
-      "revision": "856fb01793fdb4301cc1b1a9c8673c4c55595f08",
+      "revision": "e0ab39c772f580d2a79aeb149d5b488c5b376b1f",
       "files": {
         "SETUP.md": "68f93b0c7438c905b2e2ed1d5f12bf607bd9ee1c0213db171136b99ee40dd586",
         "SKILL.md": "3de1019f4ca040aee73ae035c156621e1fe85912c22522addcd543c004612c13",
@@ -46896,7 +46906,7 @@
     "wallets/metamask-official-recipe-performance": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/agentic/skills/recipe-performance/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/capture-adapter.md": "d5006dd27444ba7a0f2e54b647e13e6d03053264956b4eb213d683957cf81171",
         "references/mobile-device-measurement.md": "33f1716a26f09619690effcd65591384366440bfacc45d58c3d1d9f30670ecbe",
@@ -46933,7 +46943,7 @@
     "wallets/metamask-official-recipe-library-audit": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/agentic/skills/recipe-library-audit/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "545cd11afc41db9a7360a54c5d9fee5df253cee8813cf04ed38344041212e11b",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -47627,7 +47637,7 @@
     "exchanges/okx-official-okx-mcp-services": {
       "repo": "okx/onchainos-skills",
       "path": "skills/okx-mcp-services/SKILL.md",
-      "revision": "a5ce05f6dc9c4074da1069401b14e1055d62e315",
+      "revision": "cb2f1300322c1f7424be8f93f2515291e84e2d56",
       "files": {
         "SKILL.md": "056c0541772b4ccf39fea45458a77c33d368d0400eeebedf9537ad0bb6eeade7",
         "references/newsliquid/account.md": "0491d016c58977dc587058e1c5b7f18dce371720ed3d5619651a112516d964b2",
@@ -47768,7 +47778,7 @@
     "wallets/metamask-official-recipe-plan-and-dispatch": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/agentic/skills/recipe-plan-and-dispatch/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/plan-format.md": "86e2b8a6598c7b380326b2bf52061d88bee7218fac61d14da2519d6730e73393",
         "SKILL.md": "9f2bbedef80932c40799aa8420bc28aa8e338a198d89ce44deac9e320a019231",
@@ -56941,7 +56951,7 @@
     "wallets/metamask-official-dependency-bump-audit": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/assets/skills/dependency-bump-audit/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "SKILL.md": "1855f2db5762116a6206abc62f6fa3c753e80e6502ca262ff4867692a0e407c3",
         "LICENSE": "686e44c576d9eb1643d1675b0281a5f7a1fa1191741148af9cd825a6c66c7546"
@@ -61719,7 +61729,7 @@
     "wallets/metamask-official-device-capability": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/platform/skills/device-capability/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "repos/metamask-mobile.md": "3ead0505f1afbcc8bba17b541d0413771d0dd111f386ee83a2dcdbdbc148553f",
         "SKILL.md": "74058e055cd8bbfe3151a158b6b888c14b4ff4a8429f3c1d1959009ea633d1f6",
@@ -61763,7 +61773,7 @@
     "wallets/metamask-official-epic-decomposer": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/assets/skills/epic-decomposer/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/eligibility.md": "43471e21d28588bb193aee5dba1676f7dcb411ca69b36e0e7c7a9c0555d08830",
         "references/jira-filing.md": "7fe01decb353c0f0e1e5272c67a01c42033a79f4f5ed30e240e307fa0f0178b3",
@@ -61913,7 +61923,7 @@
     "wallets/metamask-official-component-structure": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/coding/skills/component-structure/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/examples.md": "c2808f180e0151cb1fbd0fe846515bae889bcd317c52a9a468e648c5591b19ce",
         "repos/metamask-extension.md": "e1dd18763d1c27408378f832db3fef9c1b4276d68727e96a3b9cae176d87d2f6",
@@ -61998,7 +62008,7 @@
     "wallets/metamask-official-spotlight": {
       "repo": "metamask/openclaw-skills",
       "path": "domains/observability/skills/spotlight/skill.md",
-      "revision": "3aadc173f12ef789b37577fd61fdad2cea83607f",
+      "revision": "19d48999e92f4b69721128b304d223814ef85af8",
       "files": {
         "references/mm-spotlight.md": "25f1d3accc0aee4ac36e5f5cef5d7f1f1aefdad87bcbb9dbc4d84cf14cc4a011",
         "repos/metamask-mobile.md": "622c41e755a44b4c5bc445e9b1cc3c5386e553d44c570fa87f91027f024175a7",
@@ -62017,7 +62027,7 @@
     "mcp-servers/justalab-co-aave-supply": {
       "repo": "justalab-co/jaw-recipes",
       "path": "recipes.jaw.eth/v1/aave-supply/SKILL.md",
-      "revision": "2091ea24ffef4a74f4b85ca4eb22b54b88daac66",
+      "revision": "37edc3e20c0a4e636d043cdb7e6b4cfee720b6ea",
       "files": {
         "SKILL.md": "4bd2bc9742167503e00228e96d619d6dcd00626d92f2c2d0aa748f6149fc6259",
         "manifest.yaml": "bbb703c2a7539560bd9d4d628fd3f3bf446bd150d9dce6d98b3440cd02ff0928"
@@ -62030,7 +62040,7 @@
     "mcp-servers/justalab-co-aave-withdraw": {
       "repo": "justalab-co/jaw-recipes",
       "path": "recipes.jaw.eth/v1/aave-withdraw/SKILL.md",
-      "revision": "2091ea24ffef4a74f4b85ca4eb22b54b88daac66",
+      "revision": "37edc3e20c0a4e636d043cdb7e6b4cfee720b6ea",
       "files": {
         "SKILL.md": "a9550f41f6c25b9b765e422294bdd230f4181a09ad588e010e8c60184daad51d",
         "manifest.yaml": "3691bde04e3b50c050434ce507a6516be36ca5b3801e487f882cdaa6bcae2cfb"
@@ -62043,7 +62053,7 @@
     "mcp-servers/justalab-co-jaw-recipes": {
       "repo": "justalab-co/jaw-recipes",
       "path": "recipes.jaw.eth/v1/jaw-recipes/SKILL.md",
-      "revision": "2091ea24ffef4a74f4b85ca4eb22b54b88daac66",
+      "revision": "37edc3e20c0a4e636d043cdb7e6b4cfee720b6ea",
       "files": {
         "SKILL.md": "6468100f00b6d4c025cf768ca7ad5df6a6c0ffa681f5e6b5c770cbaaac45a1c4"
       },
@@ -62054,12 +62064,25 @@
     "mcp-servers/justalab-co-token-consolidation": {
       "repo": "justalab-co/jaw-recipes",
       "path": "recipes.jaw.eth/v1/token-consolidation/SKILL.md",
-      "revision": "2091ea24ffef4a74f4b85ca4eb22b54b88daac66",
+      "revision": "37edc3e20c0a4e636d043cdb7e6b4cfee720b6ea",
       "files": {
         "SKILL.md": "320e5d2f21cac59bf5c6f5dd0e53913cc1df0ad91954a41b9be29cd297323260"
       },
       "modes": {
         "SKILL.md": 420
+      }
+    },
+    "mcp-servers/jupnet-gum-trading": {
+      "repo": "jupnet/gum-cli",
+      "path": "skills/gum-trading/SKILL.md",
+      "revision": "ad6533ec6d014a46ef00f7ecf119c528057110a0",
+      "files": {
+        "SKILL.md": "775b7d606cd30c483649d067f80055784a65e2395e3d22641a42200080bd66ec",
+        "LICENSE": "8366737ad6a7d2746f184539c96ba298d6ffe5214147e5240e221327cabfcf79"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
       }
     }
   },
@@ -62105,7 +62128,7 @@
     "chainstacklabs/rpc-nodes-mcp": "8920ed796409e2efc32953f787cdcdfff2e6c335",
     "celo-org/celo-mcp": "3f671c4158eb65ca299e3f0e1429e53cc8c1fcbb",
     "alexchenai/chenswap-mcp": "df99e1a7861004abfb0f2b0c77bdacd50d44f361",
-    "coinrithm/coinrithm-agent-trading": "25c5a09a27726ced964c085f033b2c15e9b154af",
+    "coinrithm/coinrithm-agent-trading": "ac40431dc7599a8f011df8876ae7972848bdeb8c",
     "dexter-dao/dexter-mcp": "e7b2340503ac8c8403abf4ccf026a39b3fddc335",
     "onflow/flow-mcp": "2afc462130e957e3f311f27cd0d0201698cad8ce",
     "injectivelabs/mcp-server": "daa98388cdf6c472c93211b1e9059725d72bc42e",
@@ -62207,7 +62230,7 @@
     "rivaldotimoty/trading-agents-lite": "b3ce8b5910ac326ecc9d53c8668fbf1e3abe0c67",
     "cryptolir/agentglob-trader": "25c310337b155c418f7638a96eb8a6dc7abd02dc",
     "true402/mcp-server": "3b0656f73819b70a932af46f43b09095915918fc",
-    "blazephoenixxyz-crypto/blazephoenix-mcp": "6e23c17053da614d224442e97c4556fe502dae67",
+    "blazephoenixxyz-crypto/blazephoenix-mcp": "d28487ad2dbfee468008c1a5612a9ed66e2d4a5c",
     "fernsugi/x402-api-server": "e57f46120c469316f0e70c99d8fbf72922ce735f",
     "philidor-labs/philidor-mcp": "f28c590fdc8048f5808869cc7faacb42aa38c432",
     "ghostswap1/ghostswap-agents": "262f4b8690396387c50d4c1d58e3919cf654c172",
@@ -62241,7 +62264,7 @@
     "sajanmelcher/plumbline-mcp": "9ba469df6139395ecd8478dca71bf4494083d874",
     "nirholas/perpad": "566266107bf9ee286510b0f5d0d60776100d70fc",
     "nirholas/boosty": "429b537a4a9d8b28fffb4ecdf6069821b9fe077d",
-    "truenorth-lj/sofinance-public": "7661340055c4ef566c7bea0e329a9ccdee7f5132",
+    "truenorth-lj/sofinance-public": "0a03194b3e28613ec53803014831af47e2f39b1d",
     "bitpunklabs/market-brief": "7a5edc8952291a684fb57ff849477d2c8272a6bd",
     "altoninelli/selfpaid-mcp": "4aef4c2adb2a95dbb9466dc520539d3f8b4c9316",
     "rustok-org/mcp": "209d422d3e35d968955a71263ca476fb3bdbe969",
@@ -62371,7 +62394,8 @@
     "ezequiellech/chainguard-mcp": "752530e2b68d7c3fa919e56e18ddeda4ec271c72",
     "raygroup/raygroup-defi-ux-mcp": "f93dfbc6620f558f2874c3f21bdfbe49b686a2d3",
     "aspern-org/aspern-docs": "3fe34cb1820beb3f42f903397c21464a80fcde38",
-    "justalab-co/jaw-recipes": "2091ea24ffef4a74f4b85ca4eb22b54b88daac66",
-    "mik3dev/defi-lens-mcp": "da789a929df50e0a6c9a7c2f4fb2fd0c08909a70"
+    "justalab-co/jaw-recipes": "37edc3e20c0a4e636d043cdb7e6b4cfee720b6ea",
+    "mik3dev/defi-lens-mcp": "da789a929df50e0a6c9a7c2f4fb2fd0c08909a70",
+    "jupnet/gum-cli": "ad6533ec6d014a46ef00f7ecf119c528057110a0"
   }
 }

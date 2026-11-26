@@ -58,7 +58,7 @@ Use exactly one targeting method per command: a positional accessibility referen
 
 - **Supported:** `--testid <id>` and positional a11y refs (`e1`, `e2`, ...).
 - **Not supported:** `--selector <css>` throws `CSS selectors are not supported on mobile`. `--within <scope>` throws `Scoped element search (within) is not supported on mobile`. The parser accepts both flags, but the mobile driver rejects them at runtime.
-- **A test ID match is exact first, then a substring.** `--testid` resolves to an element whose identifier `equals` the value somewhere in the tree before it falls back to a case-insensitive substring match, so `--testid account-picker` no longer returns `account-picker-avatar`. When no exact match exists the substring fallback still applies: `--testid Confirm` can match `Confirm Transaction`. Prefer exact, unique test IDs; there is no `--within` scoping fallback on mobile.
+- **A test ID match is exact first, then a substring.** `--testid` resolves to an element whose identifier `equals` the value somewhere in the tree before it falls back to a case-insensitive substring match, so `--testid account-picker` returns `account-picker`, not `account-picker-avatar`. When no exact match exists the substring fallback still applies: `--testid Confirm` can match `Confirm Transaction`. Prefer exact, unique test IDs; there is no `--within` scoping fallback on mobile.
 - **`--testid` is lowercase.** `--testId` is not recognized as a flag and its value is treated as a positional target.
 
 ## Global Options
@@ -77,7 +77,11 @@ These flags work with every command and can appear anywhere in the command line.
 | `diff` | Only what changed since the previous observation |
 | `full` | The whole compacted screen (`a11y` + `testIds`). Becomes the new diff baseline |
 
-Observations contain `testIds` and `a11y` only, no app state. The mobile a11y tree is flat: layout-only nodes, the status bar, the navigation bar and the Expo dev-launcher "Tools" button are filtered out. The Android soft keyboard is not: while it is open, its `com.google.android.inputmethod.latin:id/*` IDs appear.
+Observations contain `testIds` and `a11y` only, no app state. The mobile a11y tree is flat: layout-only nodes, the status bar, the navigation bar and the Expo dev-launcher "Tools" button are filtered out (the button is still drawn, and can cover a target). The Android soft keyboard is not: while it is open, its `com.google.android.inputmethod.latin:id/*` IDs appear.
+
+A mobile ref is resolved again at tap time, by the node's test ID or, without one, by its label and type, and the first matching element in the tree is tapped. A node with `"ambiguous": true` shares that identity with other nodes, so its ref can tap another one; a label-only ref can also match an element that has a test ID and the same text. Prefer a unique `--testid`.
+
+After a mutating call, an observation that takes longer than 8 s does not fail the call: it is `{"timedOut": true}` with no tree and does not replace the diff baseline. Run `describe-screen` before you use refs.
 
 Every tool, `launch` and `cleanup` response includes `meta.timing` (`queueMs`, `toolMs`, `observationMs`, `totalMs`).
 
@@ -97,7 +101,7 @@ Branch on `error.code` or the exit code, never on the message text. `error.retry
 | 2 | usage or validation; nothing ran |
 | 3 | no session, daemon not running, daemon connection lost |
 | 4 | target not found or not actionable |
-| 5 | timeout (click, type and request timeouts: state unknown) |
+| 5 | timeout (click, type, queue and request timeouts: state unknown) |
 | 6 | platform, device, Metro or Hermes not available |
 
 Exit 0 is success. Exit 7 is reserved for a daemon version mismatch. Without a daemon, any command that needs one, including an unknown command, exits 3 (`MM_DAEMON_NOT_RUNNING`) before it is validated.
@@ -129,7 +133,7 @@ The locally installed core CLI parser exposes these launch flags that are meanin
 | `--metro-port <port>` | Attach to a running Metro bundler on the given port. Equivalent to `MM_METRO_PORT`; the flag wins when both are set |
 | `--force` | Replace an existing active session |
 
-The `--goal` and `--flow-tags` launch flags were removed in `@metamask/client-mcp-core` 0.13.0. Session metadata is written to `test-artifacts/<sessionId>/session.json`. `MM_ARTIFACTS_DIR=<dir>` moves it to `<dir>/<sessionId>/session.json`: the daemon reads the variable when it starts, so set it before `mm launch` starts the daemon. On mobile it moves `session.json` only — `mm screenshot` keeps writing into device-mcp's own temporary directory.
+Session metadata is written to `test-artifacts/<sessionId>/session.json`. `MM_ARTIFACTS_DIR=<dir>` moves it to `<dir>/<sessionId>/session.json`: the daemon reads the variable when it starts, so set it before `mm launch` starts the daemon. On mobile it moves `session.json` only — `mm screenshot` keeps writing into device-mcp's own temporary directory.
 
 Launch timeout is 120 seconds. The project CLI does not build MetaMask. Install the intended app on the device before launching, or (iOS) pass `--app-bundle <path>` to install a specific build.
 
@@ -175,7 +179,7 @@ The generic core package may display environment-selection and test-state comman
 | Command | Description |
 | --- | --- |
 | `yarn mm click <ref>` | Click by accessibility reference or test ID |
-| `yarn mm type <ref> <text>` | Clear and type into an editable element |
+| `yarn mm type <ref> <text>` | Clear and type into an editable element. `""` clears it (Android: exit 0; iOS: the field is cleared, but the call exits 4 with `MM_TYPE_FAILED`) |
 | `yarn mm get-text <ref>` | Read an element's text |
 | `yarn mm wait-for <ref>` | Wait for an element to become visible |
 | `yarn mm scroll-to-element <ref>` | Swipe until the element is inside the viewport |
@@ -184,6 +188,8 @@ The generic core package may display environment-selection and test-state comman
 
 - `--timeout <ms>`: one deadline for visibility and action
 - `--testid <id>`: target by test ID
+
+Timeouts form one budget: the action gets `--timeout` (default 15 s), the daemon queue adds the 8 s observation and a margin, and the CLI waits longer than the queue (32 s for a default click; 187 s on Mobile for tools without an action timeout, because the Mobile daemon allows 180 s per request). Without `--timeout`, a mobile click on a missing target still fails after the 15 s default (`MM_CLICK_FAILED`, exit 4).
 
 `mm click` also accepts `--dismiss-keyboard`: when the keyboard covers the target, the driver closes it and taps once more, and the result has `keyboardDismissed: true`:
 
@@ -194,7 +200,9 @@ yarn mm click --testid log-in-button --dismiss-keyboard
 
 On mobile a `click` result is `{"clicked":true,"target":"testId:…"}`. With an observation (any level except `--observe none`, and when there is an earlier screen to compare with) it also has `screenChanged`: `false` means the screen looks the same as before the click.
 
-Before the tap, iOS hit-tests the tap point. When another element covers it (keyboard, sheet, overlay) nothing is tapped and the click fails with `MM_TARGET_OBSCURED`. Android does not hit-test, so a covering overlay receives the tap. On both platforms a target outside the screen fails with `MM_TARGET_NOT_VISIBLE`.
+Before the tap, iOS and Android hit-test the tap point. When another element covers it (keyboard, sheet, overlay, the Expo "Tools" button of dev builds) nothing is tapped and the click fails with `MM_TARGET_OBSCURED` (exit 4); the message names the cover, for example `… covered at (937, 1903) by the keyboard: android.widget.TextView`. A target outside the screen fails with `MM_TARGET_NOT_VISIBLE`. `screenChanged: true` does not prove navigation (press feedback counts as a change): check the new screen's test ID, and on Android `mm wait-for` it after a first visit to a slow tab.
+
+`yarn mm dismiss-keyboard` closes the keyboard and returns `{"dismissed":true}`. On Android it checks that the keyboard is gone and fails with `MM_DEVICE_ACTION_FAILED` (exit 6) when it is still shown.
 
 `--selector` and `--within` are parsed but rejected by the mobile driver (see [Targeting on mobile](#targeting-on-mobile)). To disambiguate duplicate targets, use a unique test ID or the exact element's fresh a11y ref — there is no scoped-search fallback on mobile.
 
@@ -227,14 +235,14 @@ Failures carry no observations: `MM_TARGET_NOT_VISIBLE` (found, still outside th
 
 | Command | Description |
 | --- | --- |
-| `yarn mm describe-screen` | Return the current screen, the test IDs, the accessibility tree with refs, and the partial mobile `state` (`source: "stub"`). iOS: a test ID with `visible: false` is in the tree but off screen. Android: do not rely on `visible` (see below) |
+| `yarn mm describe-screen` | Return the current screen, the test IDs (`testIds.items`), the accessibility tree with refs (`a11y.nodes`), and the partial mobile `state` (`source: "stub"`). A test ID with `visible: false` is in the tree but off screen |
 | `yarn mm screenshot [--name <name>]` | Capture the current device screen. The returned `path` is a file in device-mcp's temporary directory (`…/T/device-mcp-XXXX/screenshot-<hex>.png`): on mobile `--name` is not reflected in the path, and `MM_ARTIFACTS_DIR` does not move it |
 | `yarn mm accessibility-snapshot` | Return a trimmed accessibility tree (the shared `--root <selector>` flag is ignored on mobile; the full tree is always returned) |
-| `yarn mm list-testids [--limit <n>]` | List the test IDs in the tree; iOS: `visible: false` means in the tree but off screen |
+| `yarn mm list-testids [--limit <n>]` | List the test IDs in the tree (`items`); `visible: false` means in the tree but off screen |
 | `yarn mm get-state` | Return a partial app-state snapshot: `isLoaded`, `extensionId` (the bundle ID / package) and `source: "stub"`. There is no `currentScreen`, and wallet fields (unlock, account, network, balance) are omitted, not guessed. Identify the screen from `describe-screen` test IDs (for example `login-password-input` = unlock, `wallet-screen` = wallet home) |
 | `yarn mm get-context` | Report the static prod environment and available mobile capabilities |
 
-On Android, `visible` was `true` for every element in the 0.14.0 run, even rows thousands of pixels below the screen. Use `describe-screen` `bounds` (off screen when `y` is at or past the screen height, or `height` is 0), or call `scroll-to-element` before tapping.
+`visible` follows the tap rule on both platforms: `true` only when the element's frame overlaps the screen with a positive area. Android gives off-screen rows a zero height, so they are `visible: false`. Call `scroll-to-element` before you tap one.
 
 Mutating tools (`click`, `type`, ...) and `run-steps` return observations with fresh references, as a compact diff from the prior observation by default. Reads, discovery commands and `cdp` return no observation. Use `describe-screen` whenever a complete tree or refreshed baseline is needed.
 
@@ -257,8 +265,10 @@ yarn mm run-steps '{"steps":[
 | --- | --- |
 | `steps` | Required array of `{tool, args}` objects |
 | `stopOnError` | Stop after the first failure; defaults to `false` (remaining steps still run). Set `true` to abort on the first error |
-| `observe` | `none`, `diff` (default) or `full`: the observation collected after the batch. Replaces `includeObservations`, which was removed; check `summary.ok` to react to failures |
-| `batchTimeoutMs` | Overall deadline, 1000–30000 ms; remaining steps are skipped after expiry. The whole call stops after 30 s, so use a lower value (for example 20000) to get partial results, and split longer flows into several batches |
+| `observe` | `none`, `diff` (default) or `full`: the observation collected after the batch. Check `summary.ok` to react to failures |
+| `batchTimeoutMs` | Overall deadline, 1000–30000 ms, checked between steps: the running step finishes with its own timeout, then the remaining steps are skipped (`summary.skipped`) and partial results come back. The CLI and the daemon wait for the deadline plus the slowest step |
+
+`ref` is shorthand for `a11yRef` in every target step (`click`, `type`, `wait_for`, `get_text`, `scroll_to_element`, `long_press`), for example `{"tool":"get_text","args":{"ref":"e14"}}`.
 
 Each step is independently checked for mobile platform support. Do not put browser-only commands in a mobile batch.
 
@@ -270,14 +280,17 @@ On mobile, `cdp` connects to the Hermes runtime through Metro's inspector proxy.
 
 ```bash
 yarn mm cdp Runtime.evaluate '{"expression":"JSON.stringify(globalThis.__DEV__)"}'
-yarn mm cdp Runtime.evaluate '{"expression":"1+1"}' --timeout 30000
+yarn mm cdp Runtime.evaluate '{"expression":"1+1","returnByValue":true}' --timeout 30000
 ```
 
 | Flag | Description |
 | --- | --- |
-| `--timeout <ms>` | Per-command timeout, 1000–30000 ms (default 30000; capped by the daemon request limit) |
-| `--metro-port <port>` | Override the Metro inspector port for this command |
-| `--app-id <id>` | Require a matching app identity for target selection |
+| `--timeout <ms>` | Per-command timeout, 1000–30000 ms (default 30000) |
+| `--metro-port <port>` | Use this Metro port for this call only, instead of the session's |
+| `--app-id <id>` | Use this app identity for this call only (`io.metamask.MetaMask` on iOS, `io.metamask` on Android) |
+| `--target hermes\|android-webview` | `hermes` (default): the React Native runtime. `android-webview`: a debuggable in-app WebView (Android only, not validated) |
+
+`cdp` uses the Metro port of the session: the launch `--metro-port <port>` or `MM_METRO_PORT`, else `HERMES_METRO_PORT`, else 8081. The session keeps one Hermes connection: the first call connects, so it can take a bit longer, and later calls reuse it. A call with `--metro-port` or `--app-id` uses a one-shot connection and leaves the session's connection alone. A failure names the port: `MM_CDP_FAILED` (exit 1), `[HERMES_CONNECTION_FAILED] Hermes CDP connection failed: fetch failed (Metro port 8099)`.
 
 ### `yarn mm hermes-targets [flags]`
 
@@ -286,8 +299,10 @@ Read-only, mobile-only. Lists and diagnoses the debuggable React Native Hermes t
 | Flag | Description |
 | --- | --- |
 | `--all` | List every discovered target instead of only the selected one |
-| `--metro-port <port>` | Override the Metro inspector port |
+| `--metro-port <port>` | Override the session's Metro port for this call |
 | `--app-id <id>` | Require a matching app identity for target selection |
+
+The report also has `sessionMetroPort` (the launch port), `connected` (`true` once a `cdp` call opened the session's connection), `pinnedDeviceId` and the session `deviceId`.
 
 The driver verifies app identity and device pinning before executing commands.
 
@@ -300,8 +315,6 @@ yarn mm launch --metro-port 8081
 # Equivalent, still supported
 MM_METRO_PORT=8081 yarn mm launch
 ```
-
-`yarn mm cdp` and `yarn mm hermes-targets` do not reuse the launch's `--metro-port`: they use the daemon's `HERMES_METRO_PORT` or 8081. When Metro runs on another port, pass `--metro-port <port>` on every `cdp` / `hermes-targets` call, or the call fails with `MM_CDP_FAILED` (exit 1), message `[HERMES_CONNECTION_FAILED] Hermes CDP connection failed: fetch failed`.
 
 On Node 20, add `NODE_OPTIONS="--experimental-websocket"` when launching. `yarn mm cdp` returns no observation by default. After runtime mutation, add `--observe full` or run `yarn mm describe-screen` to resynchronize observations.
 
@@ -333,7 +346,7 @@ The core CLI is shared across consumers, so its help lists commands that this pr
 
 ### Browser-only
 
-These commands are gated off mobile sessions and fail cleanly with `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` (exit 6), for example `Tool "inspect" is not supported on ios platform`. They no longer reach the driver.
+These commands are gated off mobile sessions and fail cleanly with `MM_TOOL_NOT_SUPPORTED_ON_PLATFORM` (exit 6), for example `Tool "inspect" is not supported on ios platform`.
 
 | Command | Mobile behavior or alternative |
 | --- | --- |
@@ -347,6 +360,7 @@ These commands are gated off mobile sessions and fail cleanly with `MM_TOOL_NOT_
 | `yarn mm wait-for-notification` | Browser notification-page command |
 | `yarn mm clipboard` | Browser command; use `mm device-clipboard` for the device clipboard |
 | `yarn mm mock-network` | Browser-only network interception |
+| `yarn mm events` / `logs` / `network` | Browser-only session event buffer; on mobile use the Hermes interceptors in [runtime-monitoring.md](runtime-monitoring.md) |
 | `yarn mm build` | No mobile build capability; build and install separately |
 
 ### E2E-context only (not applicable to prod-only mobile)
