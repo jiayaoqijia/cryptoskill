@@ -16,6 +16,11 @@ hlp schema list_vaults          # input and output JSON Schema of one tool
 hlp status                      # is the network reachable, how much rate-limit budget is left
 ```
 
+`hlp <command> --help --json` prints the same schema by command name.
+
+Under a coding agent hlp already trims results to about 64 KB and names every cut in
+`meta.warnings`. If a field you need was dropped, ask for it with `--select`, or pass `--full`.
+
 ## Recipes
 
 Payloads are large unless you select fields: a vault tearsheet is about 220 KB, a comparison about
