@@ -1,0 +1,14 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      apiKey:
+        type: string
+        description: Optional ChainGuard cg_live_ API key for unlimited calls ($9/mo pass)
+  commandFunction: |-
+    (config) => ({
+      command: 'chainguard-mcp',
+      args: ['mcp'],
+      env: config && config.apiKey ? { CHAINGUARD_API_KEY: config.apiKey } : {}
+    })

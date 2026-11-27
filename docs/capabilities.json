@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T18:30:16.547516+00:00",
+  "generated_at": "2026-11-27T00:45:28.991838+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -142790,6 +142790,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/ezequiellech-chainguard-web3-security": {
+      "name": "chainguard-web3-security",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/farseensh-earnforge": {
       "name": "earnforge",
       "execution_model": "unsigned_tx_builder",
@@ -260869,12 +260931,12 @@
     }
   },
   "summary": {
-    "discovered": 4193,
-    "processed": 4193,
+    "discovered": 4194,
+    "processed": 4194,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2946,
-      "router_orchestrator": 187,
+      "router_orchestrator": 188,
       "unknown": 498,
       "analysis_only": 257,
       "unsigned_tx_builder": 123,
@@ -260884,16 +260946,16 @@
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1495,
-      "can_install_code": 739,
-      "can_write_files": 292,
-      "can_browse_web": 340,
-      "can_spawn_subagents": 340,
-      "can_move_funds": 320,
-      "requires_private_key": 561,
+      "can_execute_shell": 1496,
+      "can_install_code": 740,
+      "can_write_files": 293,
+      "can_browse_web": 341,
+      "can_spawn_subagents": 341,
+      "can_move_funds": 321,
+      "requires_private_key": 562,
       "requires_hosted_operator": 392,
       "uses_remote_install_script": 54,
-      "mutable_remote_runtime": 739
+      "mutable_remote_runtime": 740
     }
   }
 }

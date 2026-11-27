@@ -1,0 +1,18 @@
+{
+  "name": "chainguard-mcp",
+  "version": "1.4.1",
+  "description": "Zero-dependency MCP stdio bridge & CLI for ChainGuard 15-tool Web3 Security, Solidity SARIF Auditor & DeFi Firewall.",
+  "type": "module",
+  "bin": {
+    "chainguard-mcp": "./bin/chainguard-mcp.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EzequielLech/chainguard-mcp.git"
+  },
+  "homepage": "https://chainguard-studio-production.up.railway.app"
+}

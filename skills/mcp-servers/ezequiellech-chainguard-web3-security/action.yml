@@ -1,0 +1,80 @@
+name: "ChainGuard Web3 & MCP Security Gate"
+description: "Zero-dependency CI security gate & SARIF 2.1.0 scanner for Solidity contracts, MCP configs & keys."
+branding:
+  icon: "shield"
+  color: "green"
+
+inputs:
+  path:
+    description: "Directory path to scan recursively"
+    required: false
+    default: "."
+  fail-on-block:
+    description: "Fail workflow run (exit code 2) when any BLOCK-severity finding is detected"
+    required: false
+    default: "true"
+  python-version:
+    description: "Python version used to run chainguard-mcp"
+    required: false
+    default: "3.12"
+  sarif-file:
+    description: "Optional output path for OASIS SARIF 2.1.0 report (for github/codeql-action/upload-sarif)"
+    required: false
+    default: ""
+
+outputs:
+  verdict:
+    description: "Overall gate verdict (ALLOW, WARN, or BLOCK)"
+    value: ${{ steps.scan.outputs.verdict }}
+  files-scanned:
+    description: "Total files scanned"
+    value: ${{ steps.scan.outputs.files_scanned }}
+  findings-count:
+    description: "Total security findings detected"
+    value: ${{ steps.scan.outputs.findings_count }}
+  sarif-file:
+    description: "Path to generated SARIF 2.1.0 report if sarif-file input was provided"
+    value: ${{ steps.scan.outputs.sarif-file }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install chainguard-mcp
+      shell: bash
+      run: pip install --no-deps "${{ github.action_path }}"
+
+    - name: Run ChainGuard security scan
+      id: scan
+      shell: bash
+      run: |
+        set +e
+        SARIF_ARG=""
+        if [ -n "${{ inputs.sarif-file }}" ]; then
+          SARIF_ARG="--sarif ${{ inputs.sarif-file }}"
+        fi
+        JSON_OUT=$(chainguard-mcp scan-dir "${{ inputs.path }}" $SARIF_ARG)
+        python - << 'PY' <<< "$JSON_OUT"
+        import json, os, sys
+        data = json.loads(sys.stdin.read())
+        out_file = os.environ.get("GITHUB_OUTPUT")
+        if out_file:
+            with open(out_file, "a", encoding="utf-8") as fh:
+                fh.write(f"verdict={data.get('verdict', 'ALLOW')}\n")
+                fh.write(f"files_scanned={data.get('files_scanned', 0)}\n")
+                fh.write(f"findings_count={data.get('findings_count', 0)}\n")
+                fh.write(f"sarif-file={os.environ.get('INPUT_SARIF_FILE', '')}\n")
+        PY
+        if [ "${{ inputs.fail-on-block }}" = "true" ]; then
+          chainguard-mcp scan-dir "${{ inputs.path }}" --markdown --github-summary --fail-on-block
+          exit $?
+        else
+          chainguard-mcp scan-dir "${{ inputs.path }}" --markdown --github-summary
+          exit 0
+        fi
+      env:
+        INPUT_SARIF_FILE: ${{ inputs.sarif-file }}

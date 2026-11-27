@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chainguard-mcp"
+version = "1.4.1"
+description = "15-tool Web3 Security, DeFi Yield, ERC-20 Allowance Revoker, Vault Recovery & Non-Custodial USDT/USDC MCP Server, GitHub Action CI Gate & Local Firewall Bridge."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+  {name = "Ezequiel Lech", email = "ezequiellich44@gmail.com"}
+]
+keywords = [
+  "mcp",
+  "model-context-protocol",
+  "web3-security",
+  "smart-contract-audit",
+  "defi",
+  "solana",
+  "ethereum",
+  "base",
+  "x402",
+  "ai-agents"
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0"
+]
+
+[project.scripts]
+chainguard-mcp = "chainguard_mcp.cli:main"
+
+[project.urls]
+Homepage = "https://chainguard-studio-production.up.railway.app"
+MCP = "https://chainguard-studio-production.up.railway.app/mcp"
+Repository = "https://github.com/EzequielLech/chainguard-mcp"
+Issues = "https://github.com/EzequielLech/chainguard-mcp/issues"
+
+[tool.setuptools.packages.find]
+include = ["chainguard_mcp*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
