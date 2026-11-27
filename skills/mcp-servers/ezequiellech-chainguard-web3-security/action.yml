@@ -71,10 +71,21 @@ runs:
         PY
         if [ "${{ inputs.fail-on-block }}" = "true" ]; then
           chainguard-mcp scan-dir "${{ inputs.path }}" --markdown --github-summary --fail-on-block
-          exit $?
+          RC=$?
         else
           chainguard-mcp scan-dir "${{ inputs.path }}" --markdown --github-summary
-          exit 0
+          RC=0
         fi
+        if [ -n "$GITHUB_STEP_SUMMARY" ] && [ -n "$GITHUB_REPOSITORY" ]; then
+          {
+            echo ""
+            echo "---"
+            echo "### ChainGuard Repository Scorecard & Trust Badge"
+            echo "- **Interactive Security Scorecard:** [https://chainguard-studio-production.up.railway.app/audit-github/${GITHUB_REPOSITORY}](https://chainguard-studio-production.up.railway.app/audit-github/${GITHUB_REPOSITORY})"
+            echo "- **Embed README Badge:** \`[![ChainGuard Security](https://chainguard-studio-production.up.railway.app/api/v1/repo-badge/${GITHUB_REPOSITORY}.svg)](https://chainguard-studio-production.up.railway.app/audit-github/${GITHUB_REPOSITORY})\`"
+            echo "- **Mainnet & Grant Readiness:** Unlock the emerald \`ChainGuard Verified\` badge (\$19), Grant & Investor Remediation Dossier (\$49), or 24/7 Drainer Watchdog (\$29/mo)."
+          } >> "$GITHUB_STEP_SUMMARY"
+        fi
+        exit $RC
       env:
         INPUT_SARIF_FILE: ${{ inputs.sarif-file }}

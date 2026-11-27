@@ -6,11 +6,11 @@ const API_KEY = process.env.CHAINGUARD_API_KEY || "";
 const args = process.argv.slice(2);
 
 if (args.includes("--version") || args.includes("-v")) {
-  console.log("1.4.1");
+  console.log("1.5.0");
   process.exit(0);
 }
 if (args.includes("--help") || args.includes("-h")) {
-  console.log("ChainGuard MCP v1.4.1 — Zero-install stdio MCP bridge (npx -y github:EzequielLech/chainguard-mcp)");
+  console.log("ChainGuard MCP v1.5.0 — Zero-install stdio MCP bridge (npx -y github:EzequielLech/chainguard-mcp)");
   console.log("Set CHAINGUARD_API_KEY=cg_live_... for unlimited calls, or use 5 free calls/hr automatically.");
   process.exit(0);
 }

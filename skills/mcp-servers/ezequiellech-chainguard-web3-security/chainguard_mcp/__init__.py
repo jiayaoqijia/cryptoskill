@@ -310,7 +310,7 @@ def format_scan_markdown(report: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def format_scan_sarif(report: dict[str, Any], *, tool_version: str = "1.4.1") -> dict[str, Any]:
+def format_scan_sarif(report: dict[str, Any], *, tool_version: str = "1.5.0") -> dict[str, Any]:
     """Export a scan_directory report as OASIS SARIF 2.1.0 for GitHub Code Scanning."""
     findings = list(report.get("findings") or [])
     rules_by_id: dict[str, dict[str, Any]] = {}
