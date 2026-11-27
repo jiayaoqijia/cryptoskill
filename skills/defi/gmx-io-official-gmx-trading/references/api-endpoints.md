@@ -1,6 +1,6 @@
 # GMX API endpoints
 
-Prefer `GmxApiSdk` from `@gmx-io/sdk/v2` for typed requests and bigint parsing. This mapping was checked against package 2.2.1 on 2026-10-13. See the [API integration guide](https://docs.gmx.io/docs/api/integration-guide/) and [SDK v2](https://docs.gmx.io/docs/sdk/v2/) for current behavior.
+Prefer `GmxApiSdk` from `@gmx-io/sdk/v2` for typed requests and bigint parsing. This mapping was checked against package 2.2.1 on 2026-10-13 and updated for 2.9.1 on 2026-11-25. See the [API integration guide](https://docs.gmx.io/docs/api/integration-guide/) and [SDK v2](https://docs.gmx.io/docs/sdk/v2/) for current behavior.
 
 ## Hosts and transport
 
@@ -10,7 +10,7 @@ Prefer `GmxApiSdk` from `@gmx-io/sdk/v2` for typed requests and bigint parsing. 
 | Avalanche (43114) | `https://avalanche.gmxapi.io` | `https://avalanche.gmxapi.ai` |
 | MegaETH (4326) | `https://megaeth.gmxapi.io` | `https://megaeth.gmxapi.ai` |
 
-`apiUrl` takes an **unversioned host**. SDK methods append `/v1/...` (or `/v2/...` for JIT); supplying `/v1` in `apiUrl` duplicates the path. The two peer deployments are independent. Through 2.2.1 the packaged fallback arrays are empty; explicit configuration is required to enable peer failover:
+`apiUrl` takes an **unversioned host**. SDK methods append `/v1/...` (or `/v2/...` for order transactions, subaccounts, GMX Account cross-chain funding and JIT); supplying `/v1` in `apiUrl` duplicates the path. The two peer deployments are independent. Through 2.9.1 the packaged fallback arrays are empty; explicit configuration is required to enable peer failover:
 
 ```typescript
 import { GmxApiSdk, HttpClientWithFallback } from "@gmx-io/sdk/v2";
@@ -57,7 +57,7 @@ Paths below include their version prefix. GET parameters are query parameters; `
 | `fetchStakingPower(params)` | GET `/v1/staking/power` | `address` |
 | `fetchJitLiquidityInfo({ apiVersion: "v2" })` | GET `/v2/jit/liquidity_info` | JIT map; explicitly pass `v2` |
 
-Through 2.2.1 the JIT method defaults to `apiVersion: "v1"`, which returns HTTP 500 on every host, so `fetchJitLiquidityInfo()` throws unless you pass `{ apiVersion: "v2" }`. For trade sizing prefer `getTradingCapacity()`.
+Through 2.9.1 the JIT method defaults to `apiVersion: "v1"`, which returns HTTP 500 on every host, so `fetchJitLiquidityInfo()` throws unless you pass `{ apiVersion: "v2" }`. For trade sizing prefer `getTradingCapacity()`.
 
 `period` is typed as `"1d" | "7d" | "30d" | "90d" | "180d" | "1y" | "total"`, but accepted values differ by route. Prefer `7d` or `30d`:
 
@@ -73,14 +73,14 @@ All these routes use POST. Builders such as `buildApproveTransaction()` encode c
 
 | SDK method | Route |
 |------------|-------|
-| `prepareOrder()` | `/v1/orders/txns/prepare` |
-| `prepareEditOrder()` | `/v1/orders/txns/edit/prepare` |
-| `prepareCancelOrder()` | `/v1/orders/txns/cancel/prepare` |
-| `prepareCollateral()` | `/v1/orders/txns/collateral/prepare` |
-| `submitOrder()` | `/v1/orders/txns/submit` |
-| `fetchOrderStatus()` | `/v1/orders/txns/status` |
-| `fetchSubaccountStatus()` | `/v1/subaccounts/status` |
-| `prepareSubaccountApproval()` | `/v1/subaccounts/approval/prepare` |
+| `prepareOrder()` | `/v2/orders/txns/prepare` |
+| `prepareEditOrder()` | `/v2/orders/txns/edit/prepare` |
+| `prepareCancelOrder()` | `/v2/orders/txns/cancel/prepare` |
+| `prepareCollateral()` | `/v2/orders/txns/collateral/prepare` |
+| `submitOrder()` | `/v2/orders/txns/submit` |
+| `fetchOrderStatus()` | `/v2/orders/txns/status` |
+| `fetchSubaccountStatus()` | `/v2/subaccounts/status` |
+| `prepareSubaccountApproval()` | `/v2/subaccounts/approval/prepare` |
 
 `signOrder()` and `signSubaccountApproval()` sign locally through the supplied signer, but neither checks amounts, actions or grant limits against the user's intent. Follow [SDK reference](sdk-reference.md) for the complete request, signed payload and submission fields.
 

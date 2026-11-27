@@ -52,6 +52,17 @@ jobs:
 
 ---
 
+## Claude Code Function Hook Mod (`L0` Zero-Network Guard)
+
+Run `chainguard-web3-firewall` natively inside Claude Code `2.1.287+` (`CLAUDE_CODE_ENABLE_FUNCTION_HOOKS`) with `L0` in-memory reach to block plaintext `--private-key` flags, unlimited ERC-20 `approve(max)` calldata, and Trojan-Source Unicode before Bash commands execute:
+
+```bash
+claude plugin validate .claude-plugin/plugin.json
+claude --plugin-dir .
+```
+
+---
+
 ## 1-Line Remote Setup (Claude Desktop · Cursor · Windsurf · OpenCode)
 
 Connect directly to the hosted Streamable-HTTP MCP server (`2025-03-26` + `2024-11-05` compliant, `tools`, `resources`, `prompts`, free tier: 5 calls/hour with zero signup):

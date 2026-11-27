@@ -302,10 +302,10 @@ def format_scan_markdown(report: dict[str, Any]) -> str:
         lines.append("")
 
     lines.append(
-        f"Unlock full remediation patches, embeddable On-Chain Verified SVG Badges, or 24/7 Frontend & Wallet Watchdogs: "
-        f"[Verified Badge & Audit ($19)](https://chainguard-studio-production.up.railway.app/#console) | "
-        f"[24/7 Watchdog ($9-$29/mo)](https://chainguard-studio-production.up.railway.app/#console) | "
-        f"[30-Day Unlimited MCP Pass ($9)]({INSTANT_PASS_URL})"
+        f"Unlock full remediation patches, embeddable On-Chain Verified SVG Badges, or Grant & Investor Dossiers: "
+        f"[Public Repo Scorecard & SVG Badge ($19)](https://chainguard-studio-production.up.railway.app/#console) | "
+        f"[Grant & Investor Readiness Dossier ($49)](https://chainguard-studio-production.up.railway.app/#console) | "
+        f"[30-Day Cloud Pro MCP Pass ($9)]({INSTANT_PASS_URL})"
     )
     return "\n".join(lines)
 

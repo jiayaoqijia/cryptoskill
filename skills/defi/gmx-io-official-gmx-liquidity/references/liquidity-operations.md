@@ -1,6 +1,6 @@
 # Liquidity operations
 
-Use `GmxApiSdk` for the reads in [the skill](../SKILL.md). GM/GLV writes are not exposed by that client in `@gmx-io/sdk@2.2.1`; use its exported ABIs, contract registry, gas keys and calculation helpers with viem. The following examples build transactions; broadcasting is a separate authorized step.
+Use `GmxApiSdk` for the reads in [the skill](../SKILL.md). GM/GLV writes are not exposed by that client in `@gmx-io/sdk@2.9.1`; use its exported ABIs, contract registry, gas keys and calculation helpers with viem. The following examples build transactions; broadcasting is a separate authorized step.
 
 ## Setup and current deployment
 
@@ -16,15 +16,17 @@ import { GAS_LIMITS_STATIC_CONFIG } from "@gmx-io/sdk/configs/gasLimits";
 import * as keys from "@gmx-io/sdk/configs/dataStore";
 import { estimateExecuteDepositGasLimit, estimateDepositOraclePriceCount,
   getExecutionFee, type GasLimitsConfig } from "@gmx-io/sdk/utils/fees";
-import exchangeRouterAbi from "@gmx-io/sdk/abis/ExchangeRouter";
+import { getAbi } from "@gmx-io/sdk/abis/getAbi";
 import glvRouterAbi from "@gmx-io/sdk/abis/GlvRouter";
-import glvReaderAbi from "@gmx-io/sdk/abis/GlvReader";
 import dataStoreAbi from "@gmx-io/sdk/abis/DataStore";
 import { createPublicClient, http, encodeFunctionData, erc20Abi, zeroAddress,
   type Abi, type Account, type Address, type Chain, type Hex, type Transport, type WalletClient } from "viem";
 import { arbitrum } from "viem/chains";
 
 const chainId = 42161;
+// The v2.2.1 ABIs; abis/ExchangeRouter and abis/GlvReader are the 2.2c ones
+const exchangeRouterAbi = getAbi(chainId, "ExchangeRouter");
+const glvReaderAbi = getAbi(chainId, "GlvReader");
 const sdk = new GmxApiSdk({ chainId });
 const rpcUrl = process.env.GMX_RPC_URL;
 if (!rpcUrl) throw new Error("GMX_RPC_URL is required for contract reads");
@@ -62,7 +64,7 @@ For a specific GM/GLV token, read `balanceOf(account)` and `decimals()` using `e
 
 ## Quote and execution fee
 
-Obtain expected outputs using current reader/pricing logic, token prices, supply, pool state, fees and price impact. `SyntheticsReader.getDepositAmountOut`, `getWithdrawalAmountOut` and `getMarketTokenPrice`, plus `GlvReader.getGlvValue` / `getGlvTokenPrice`, are relevant entry points; inspect their ABI signatures and maximize/PnL-factor parameters. A simple TVL/supply division is not an executable quote. GLV raw-token deposits involve both the constituent GM calculation and GLV share conversion. See [Reader](https://docs.gmx.io/docs/api/contracts/reader/) and [GLV Reader](https://docs.gmx.io/docs/api/contracts/glv-reader/).
+Obtain expected outputs using current reader/pricing logic, token prices, supply, pool state, fees and price impact. `SyntheticsReader.getDepositAmountOut`, `getWithdrawalAmountOut` and `getMarketTokenPrice`, plus `GlvReader.getGlvValue` / `getGlvTokenPrice`, are relevant entry points; inspect their ABI signatures and maximize/PnL-factor parameters. For deposit quotes on v2.2.1 use `getMarketTokenPriceForDeposit`, `getGlvValueForDeposit` and `getGlvTokenPriceForDeposit`, which match deposit execution: when a pool side has zero USD but reserved USD, the plain readers revert with `UnableToGetBorrowingFactorEmptyPoolUsd`, while deposit execution does not. Only the `getAbi()` ABIs have these functions. A simple TVL/supply division is not an executable quote. GLV raw-token deposits involve both the constituent GM calculation and GLV share conversion. See [Reader](https://docs.gmx.io/docs/api/contracts/reader/) and [GLV Reader](https://docs.gmx.io/docs/api/contracts/glv-reader/).
 
 Apply the user's slippage tolerance to expected outputs using bigint arithmetic. GM deposit/shift minimums use destination GM units, GLV deposits use GLV units, and withdrawal minimums use each output token's decimals. Do not fill an unknown minimum with zero or silently increase slippage on failure.
 

@@ -4,17 +4,17 @@ description: Query GMX GM pools and GLV vaults with GmxApiSdk, and provide or wi
 license: MIT
 metadata:
   author: gmx-io
-  version: "0.3.0"
+  version: "0.3.1"
   chains: "arbitrum, avalanche, megaeth"
 ---
 
 # GMX Liquidity
 
-Use `GmxApiSdk` from `@gmx-io/sdk/v2` for pool, token, APY, performance and wallet reads. Validated against published `@gmx-io/sdk@2.2.1` on 2026-10-13.
+Use `GmxApiSdk` from `@gmx-io/sdk/v2` for pool, token, APY, performance and wallet reads. Validated against published `@gmx-io/sdk@2.2.1` on 2026-10-13, and moved to `@gmx-io/sdk@2.9.1` (the v2.2.1 contracts) on 2026-11-25.
 
 **Liquidity writes still require contracts.** This release has no GM/GLV deposit, withdrawal or shift preparation methods. Its `buildSameChainDepositTxn()` and cross-chain funding methods fund a **GMX Account**, not a GM pool or GLV vault. Do not substitute them for liquidity provision or invent an `sdk.liquidity` module.
 
-Install the tested versions with `npm install --save-exact --ignore-scripts --legacy-peer-deps @gmx-io/sdk@2.2.1 viem@2.57.1`. `--legacy-peer-deps` skips the unused react-native peer tree and its high-severity audit findings. Keep the generated lockfile and use `npm ci --ignore-scripts --legacy-peer-deps` for repeat installs. Review `npm audit` findings before enabling signing; pins do not guarantee safe dependencies. Upgrade deliberately after reviewing package changes. Through 2.2.1, use `.cjs` for plain Node scripts or compile TypeScript to CommonJS because native Node ESM encounters extensionless SDK imports. Recheck installed types when upgrading.
+Install the tested versions with `npm install --save-exact --ignore-scripts --legacy-peer-deps @gmx-io/sdk@2.9.1 viem@2.57.1`. `--legacy-peer-deps` skips the unused react-native peer tree and its high-severity audit findings. Keep the generated lockfile and use `npm ci --ignore-scripts --legacy-peer-deps` for repeat installs. Review `npm audit` findings before enabling signing; pins do not guarantee safe dependencies. Upgrade deliberately after reviewing package changes. Through 2.9.1, use `.cjs` for plain Node scripts or compile TypeScript to CommonJS because native Node ESM encounters extensionless SDK imports. Recheck installed types when upgrading.
 
 | Network | Chain ID | API host |
 |---------|----------|----------|

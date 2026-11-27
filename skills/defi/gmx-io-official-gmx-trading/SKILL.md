@@ -4,7 +4,7 @@ description: Trade GMX perpetuals and swap tokens using GmxApiSdk. Use for marke
 license: MIT
 metadata:
   author: gmx-io
-  version: "0.3.0"
+  version: "0.3.1"
   chains: "arbitrum, avalanche, megaeth"
 ---
 
@@ -12,14 +12,14 @@ metadata:
 
 Use `GmxApiSdk` from `@gmx-io/sdk/v2` for new integrations. It reads the GMX API and prepares trading transactions; Express orders use EIP-712 signatures and GMX Relay, while Classic orders are sent by the user's wallet. SDK v1 (`GmxSdk`) is in maintenance and is not the default for this skill.
 
-Validated against published `@gmx-io/sdk@2.2.1` on 2026-10-13. Install the package, not the `/v2` import subpath:
+Validated against published `@gmx-io/sdk@2.2.1` on 2026-10-13, and moved to `@gmx-io/sdk@2.9.1` (the v2.2.1 contracts) on 2026-11-25. Install the package, not the `/v2` import subpath:
 
 ```bash
-npm install --save-exact --ignore-scripts --legacy-peer-deps @gmx-io/sdk@2.2.1 viem@2.57.1
+npm install --save-exact --ignore-scripts --legacy-peer-deps @gmx-io/sdk@2.9.1 viem@2.57.1
 npm ls @gmx-io/sdk viem
 ```
 
-`--legacy-peer-deps` keeps npm 7+ from auto-installing the unused react-native peer tree (SDK -> `isomorphic-performance` -> `react-native-performance`), which adds high-severity `npm audit` findings. Keep the generated lockfile and use `npm ci --ignore-scripts --legacy-peer-deps` for repeat installs; plain `npm ci` rejects that lockfile. Review `npm audit` findings before enabling signing; a pinned version is not proof of safe dependencies. Upgrade deliberately after reviewing package changes. Recheck the installed types and [SDK docs](https://docs.gmx.io/docs/sdk/v2/) when using a newer version. The SDK requires Node.js >=18. Through 2.2.1, native Node ESM encounters extensionless internal imports; use `.cjs` for plain Node scripts, or compile TypeScript to CommonJS. TypeScript examples in the references use that compilation model.
+`--legacy-peer-deps` keeps npm 7+ from auto-installing the unused react-native peer tree (SDK -> `isomorphic-performance` -> `react-native-performance`), which adds high-severity `npm audit` findings. Keep the generated lockfile and use `npm ci --ignore-scripts --legacy-peer-deps` for repeat installs; plain `npm ci` rejects that lockfile. Review `npm audit` findings before enabling signing; a pinned version is not proof of safe dependencies. Upgrade deliberately after reviewing package changes. Recheck the installed types and [SDK docs](https://docs.gmx.io/docs/sdk/v2/) when using a newer version. The SDK requires Node.js >=18. Through 2.9.1, native Node ESM encounters extensionless internal imports; use `.cjs` for plain Node scripts, or compile TypeScript to CommonJS. TypeScript examples in the references use that compilation model.
 
 ## Start with reads
 

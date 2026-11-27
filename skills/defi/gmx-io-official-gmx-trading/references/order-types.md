@@ -1,6 +1,6 @@
 # Order types with GmxApiSdk
 
-Use string `kind` / `orderType` values in `prepareOrder()`. The API builds the contract enum and calldata. This reference targets `@gmx-io/sdk@2.2.1`; see [request types](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/utils/orderTransactions/api.ts) and [official examples](https://docs.gmx.io/docs/sdk/v2/examples/).
+Use string `kind` / `orderType` values in `prepareOrder()`. The API builds the contract enum and calldata. This reference targets `@gmx-io/sdk@2.9.1`; see [request types](https://github.com/gmx-io/gmx-interface/blob/release/sdk/src/utils/orderTransactions/api.ts) and [official examples](https://docs.gmx.io/docs/sdk/v2/examples/).
 
 ## Request mapping and triggers
 

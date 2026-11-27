@@ -1,6 +1,6 @@
 # GmxApiSdk reference
 
-Checked against the published `@gmx-io/sdk@2.2.1` declarations and implementation. [SDK v2 docs](https://docs.gmx.io/docs/sdk/v2/), [order examples](https://docs.gmx.io/docs/sdk/v2/examples/), and [source](https://github.com/gmx-io/gmx-interface/tree/release/sdk/src/clients/v2) provide the maintained upstream reference.
+Checked against the published `@gmx-io/sdk@2.2.1` declarations and implementation. Rechecked against `@gmx-io/sdk@2.9.1` on 2026-11-26: every declaration that changed since 2.2.1, and a read-only run of the Express, one-click and Classic preparation on Arbitrum. [SDK v2 docs](https://docs.gmx.io/docs/sdk/v2/), [order examples](https://docs.gmx.io/docs/sdk/v2/examples/), and [source](https://github.com/gmx-io/gmx-interface/tree/release/sdk/src/clients/v2) provide the maintained upstream reference.
 
 ## Setup and signer
 
@@ -354,7 +354,7 @@ Cancellation supports explicit `orderIds`, or `all: true` only when all-account 
 `IAbstractSigner.sendTransaction()` cannot carry fee fields, so send Classic orders with a viem wallet client for the same verified account:
 
 ```typescript
-import exchangeRouterAbi from "@gmx-io/sdk/abis/ExchangeRouter";
+import { getAbi } from "@gmx-io/sdk/abis/getAbi";
 import { createWalletClient, decodeFunctionData } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
@@ -365,6 +365,7 @@ const classic = await sdk.prepareOrder({ ...request, mode: "classic" });
 if (classic.payloadType !== "transaction" || !sameAddress(classic.payload.to, getContract(chainId, "ExchangeRouter"))) {
   throw new Error("Unexpected Classic transaction");
 }
+const exchangeRouterAbi = getAbi(chainId, "ExchangeRouter"); // the v2.2.1 ABI; abis/ExchangeRouter is the 2.2c one
 const outer = decodeFunctionData({ abi: exchangeRouterAbi, data: classic.payload.data });
 if (outer.functionName !== "multicall") throw new Error("Expected an ExchangeRouter multicall");
 const orderVault = getContract(chainId, "OrderVault");
@@ -383,13 +384,13 @@ const hash = await walletClient.sendTransaction({
   to: classic.payload.to,
   data: classic.payload.data,
   value: BigInt(classic.payload.value ?? "0"),
-  maxPriorityFeePerGas: 0n, // Arbitrum: the API's execution fee has no priority-fee allowance
+  maxPriorityFeePerGas: 0n, // Arbitrum: the API's execution fee leaves little room for a tip
 });
 const receipt = await publicClient.waitForTransactionReceipt({ hash });
 if (receipt.status !== "success") throw new Error("Order creation reverted");
 ```
 
-On Arbitrum the API prices the execution fee at the network gas price plus 30%, with no priority-fee allowance, while the contract requires `executionFee >= adjustedGasLimit * tx.gasprice`. A wallet tip above roughly 30% of the gas price makes creation revert with `InsufficientExecutionFee`, so send without a priority fee or raise `executionFeeBufferBps` within the user's fee limit. Simulate with the same fee fields: `eth_call` and `eth_estimateGas` without them run at `tx.gasprice = 0`, so any execution fee passes.
+On Arbitrum the API prices the Classic execution fee at the network gas price plus 30%, plus a 0.03 gwei priority-fee allowance, while the contract requires `executionFee >= adjustedGasLimit * tx.gasprice`. A wallet tip above that headroom makes creation revert with `InsufficientExecutionFee`, so send without a priority fee or raise `executionFeeBufferBps` within the user's fee limit. `skipExecutionFeePriorityFeeAllowance: true` drops the allowance and lowers the fee; then send with a zero tip only. Simulate with the same fee fields: `eth_call` and `eth_estimateGas` without them run at `tx.gasprice = 0`, so any execution fee passes.
 
 Do not pass Classic calldata to `signOrder()` or assume Express relay status tracks a wallet-broadcast transaction. Read the creation receipt's `EventEmitter` logs to obtain all order keys; follow keeper execution/cancellation and refetch positions/orders. A successful creation receipt alone does not establish trade execution.
 
@@ -399,10 +400,10 @@ The SDK's one-click helpers do not enforce the user's limits. `activateSubaccoun
 
 For explicitly authorized delegated trading:
 
-1. Read the current grant on-chain: `DataStore.containsAddress(subaccountListKey(account), subaccount)`, `getUint` of `subaccountActionCountKey`, `maxAllowedSubaccountActionCountKey` and `subaccountExpiresAtKey` (keys from `@gmx-io/sdk/configs/dataStore` with `SUBACCOUNT_ORDER_ACTION`), and `SubaccountGelatoRelayRouter.subaccountApprovalNonces(account)`.
-2. Prepare the approval with `prepareSubaccountApproval()`. Before the main signer signs, rebuild it with `getSubaccountApprovalTypedData()` from `@gmx-io/sdk/utils/subaccount` using the authorized `expiresAt`, `maxAllowedCount` and the on-chain nonce, and require an equal `hashTypedData` digest with primary type `SubaccountApproval`. `maxAllowedCount` is the cumulative action cap, not the number of additional actions.
-3. Sign the rebuilt approval and pass it explicitly as `subaccountApproval` with `subaccountAddress` on each prepare call. Verify each subaccount batch like the main-account flow, rebuilding with `subaccountApprovalHash` (`hashSubaccountApproval()`) and the subaccount relay router. Subaccount batches revert with non-empty external calls, but every other check applies.
+1. Read the current grant on-chain: `DataStore.containsAddress(subaccountListKey(account), subaccount)`, `getUint` of `subaccountActionCountKey`, `maxAllowedSubaccountActionCountKey` and `subaccountExpiresAtKey` (keys from `@gmx-io/sdk/configs/dataStore` with `SUBACCOUNT_ORDER_ACTION`), `getUint(subaccountRevocationCounterKey(account, subaccount))`, and `SubaccountGelatoRelayRouter.subaccountApprovalNonces(account)`.
+2. Prepare the approval with `prepareSubaccountApproval()` and pass `shouldAdd: true`: the SDK type marks it optional, but the API returns HTTP 400 without it. Before the main signer signs, rebuild it with `getSubaccountApprovalTypedData()` from `@gmx-io/sdk/utils/subaccount` using the authorized `expiresAt`, `maxAllowedCount`, the on-chain nonce, `account` and the on-chain `revocationCounter`, and require an equal `hashTypedData` digest with primary type `SubaccountApproval`. On v2.2.1 chains the helper throws without `account` and `revocationCounter`. `maxAllowedCount` is the cumulative action cap, not the number of additional actions.
+3. Sign the rebuilt approval and pass it explicitly as `subaccountApproval` with `subaccountAddress` on each prepare call. Verify each subaccount batch like the main-account flow, rebuilding with `subaccountApprovalHash: hashSubaccountApproval(chainId, approval)` and the subaccount relay router. The one-argument `hashSubaccountApproval(approval)` of 2.2.1 returns `zeroHash` in 2.9.1, so a batch rebuilt with it never matches. Subaccount batches revert with non-empty external calls, but every other check applies.
 4. Never use `activateSubaccount()` defaults or `executeExpressOrder()` for delegated trading.
 5. Revoke with `SubaccountRouter.removeSubaccount(subaccount)` from the main account. `clearSubaccount()` only clears local state.
 
-GMX Account funding methods are a separate surface: `buildSameChainDepositTxn`, `buildSameChainWithdrawTxn`, `executeSameChainDeposit`, `executeSameChainWithdraw`, `prepareCrossChainDeposit`, `executeCrossChainDeposit`, and the cross-chain withdraw prepare/sign/submit/status helpers. Follow their exported request types and [official examples](https://docs.gmx.io/docs/sdk/v2/examples/). Settlement-chain funding support is narrower than general trading-chain support; MegaETH is not a settlement chain in 2.2.1. These methods do not mint/burn GM or GLV liquidity tokens.
+GMX Account funding methods are a separate surface: `buildSameChainDepositTxn`, `buildSameChainWithdrawTxn`, `executeSameChainDeposit`, `executeSameChainWithdraw`, `prepareCrossChainDeposit`, `executeCrossChainDeposit`, and the cross-chain withdraw prepare/sign/submit/status helpers. Follow their exported request types and [official examples](https://docs.gmx.io/docs/sdk/v2/examples/). Settlement-chain funding support is narrower than general trading-chain support; MegaETH is not a settlement chain in 2.9.1. These methods do not mint/burn GM or GLV liquidity tokens.
