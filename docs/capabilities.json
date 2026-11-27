@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T12:32:05.693758+00:00",
+  "generated_at": "2026-11-27T18:28:58.176004+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -26205,7 +26205,7 @@
     },
     "chains/ashrafiucse-cve-research": {
       "name": "cve-research",
-      "execution_model": "local_executor",
+      "execution_model": "router_orchestrator",
       "capabilities": {
         "auto_invocable": {
           "value": null,
@@ -26233,7 +26233,7 @@
           "source": "extracted"
         },
         "can_spawn_subagents": {
-          "value": false,
+          "value": true,
           "confidence": "medium",
           "source": "extracted"
         },
@@ -151110,8 +151110,132 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/justalab-co-test-funds": {
+      "name": "test-funds",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/justalab-co-token-consolidation": {
       "name": "token-consolidation",
+      "execution_model": "read_only",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
+    "mcp-servers/justalab-co-your-recipe": {
+      "name": "your-recipe",
       "execution_model": "read_only",
       "capabilities": {
         "auto_invocable": {
@@ -260931,16 +261055,16 @@
     }
   },
   "summary": {
-    "discovered": 4194,
-    "processed": 4194,
+    "discovered": 4196,
+    "processed": 4196,
     "skipped_no_skill_md": 0,
     "execution_models": {
-      "read_only": 2946,
-      "router_orchestrator": 188,
+      "read_only": 2948,
+      "router_orchestrator": 189,
       "unknown": 498,
       "analysis_only": 257,
       "unsigned_tx_builder": 123,
-      "local_executor": 109,
+      "local_executor": 108,
       "installer_bootstrap": 54,
       "custodial_executor": 19
     },
@@ -260950,7 +261074,7 @@
       "can_install_code": 740,
       "can_write_files": 293,
       "can_browse_web": 341,
-      "can_spawn_subagents": 341,
+      "can_spawn_subagents": 342,
       "can_move_funds": 321,
       "requires_private_key": 562,
       "requires_hosted_operator": 392,

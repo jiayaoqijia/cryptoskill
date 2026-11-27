@@ -74,6 +74,24 @@ claude mcp add celo-mcp -- uvx --refresh celo-mcp
 Add `--scope user` to make it available in every project. To use the faucet
 tools, pass the key through: `claude mcp add celo-mcp -e CELO_MCP_FAUCET_API_KEY=<key> -- uvx --refresh celo-mcp`.
 
+### Hosted endpoint (no install)
+
+Celo runs a public instance of this server over Streamable HTTP:
+
+```
+https://mcp.celo.org/mcp
+```
+
+It exposes the 20 read-only tools against Celo mainnet, with no authentication
+and no faucet. Connect from any remote-capable MCP client, for example:
+
+```bash
+claude mcp add --transport http celo-network https://mcp.celo.org/mcp
+```
+
+Looking for documentation rather than chain data? That is the separate Celo
+Docs server at `https://docs.celo.org/mcp`; this server reads the chain itself.
+
 ### Connect remotely (Streamable HTTP)
 
 The server can also run as a remote MCP endpoint over Streamable HTTP, so clients

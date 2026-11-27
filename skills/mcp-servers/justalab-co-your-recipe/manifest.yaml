@@ -1,0 +1,12 @@
+# Manifest v0: the addresses and calls the server expects from this recipe.
+# Every address comes from the protocol's published deployments for that chain,
+# checksummed, and matches the table in SKILL.md. The zero address is a placeholder
+# and the lint refuses it in a real recipe.
+format: 0
+chains:
+  "8453":
+    TOKEN: "0x0000000000000000000000000000000000000000"
+    PROTOCOL_CONTRACT: "0x0000000000000000000000000000000000000000"
+calls:
+  - { to: TOKEN, fn: "approve(address,uint256)" }
+  - { to: PROTOCOL_CONTRACT, fn: "deposit(address,uint256)" }

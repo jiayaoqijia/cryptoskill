@@ -1,6 +1,6 @@
 ---
 name: crypto-review
-description: Finds cryptographic weaknesses in code — weak ciphers (DES, RC4, ECB mode), weak hashes (MD5, SHA-1) used for security purposes, hardcoded keys/IVs/salts, predictable randomness (Math.random, random, time-based tokens), disabled certificate verification, and undersized key lengths. Use when auditing anything involving encryption, hashing, tokens, certificates, or random number generation.
+description: Finds cryptographic weaknesses in code — weak ciphers (DES, RC4, ECB mode), weak hashes (MD5, SHA-1) used for security purposes, hardcoded keys/IVs/salts, predictable randomness (Math.random, random, time-based tokens), disabled certificate verification, and undersized key lengths. Also triages encoded/encrypted blobs: recursively decodes encoding layers (base64/hex/gzip/…), brute-forces classical ciphers, decodes JWT payloads, identifies one-way hashes and keyed envelope formats, and flags ciphertext+hardcoded-key chains. Use when auditing anything involving encryption, hashing, tokens, certificates, random number generation, or encoded blobs.
 license: MIT
 ---
 
@@ -59,7 +59,25 @@ rg -n "hashlib\.(sha256|sha512)\(\s*f[\"']" src/ app/ -g '*.py'
 rg -n "\.update\([^)]*\)\s*\.update\(" src/ app/ -g '*.js' -g '*.ts' -g '*.py'
 ```
 - **MPC / threshold-crypto inside TEEs**: single-use secrets (nonces, pre-signatures) must be consumed with rollback protection — delete-after-use alone fails because the untrusted TEE host can roll back the filesystem, forcing nonce-share reuse → private-key-share disclosure (ToB, 2026-09-25). Safe shape: monotonic counter / freshness bound in trusted storage before use. Attestation verification must cover quote signature + certificate chain to the vendor root + measurements vs known-good values (reproducible builds / binary transparency) — a "valid" quote over incomplete measurements (runtime-fetched code, unmeasured configs, `LD_PRELOAD`-injectable libs) is false assurance. Constant-time discipline still applies inside the enclave — the host controls timing
+- **Signature validity ≠ authorization scope — check what a signature can STANDING-authorize** (ToB "After Binance…", 2026-11-06): a correctly-signed artifact can grant persistent authority (EIP-7702 delegations "use this code when my account is called", session keys, recovery paths, Safe/ERC-4337 modules) that keeps acting WITHOUT further signatures. For any signing/approval surface in the repo, verify (1) the inventory of what each signing API can approve (transfers, delegations, arbitrary digests), (2) that authority-CHANGING requests are treated as admin-grade (rejected/rate-limited/alerted, not signed like ordinary payloads), (3) monitoring alarms on authority-scope changes — not only on asset moves/ownership. Same shape beyond wallets: webhook-signing secrets that approve standing webhooks, JWT act-as/delegation claims, CI OIDC trust with unrestricted `aud`. The Binance incident: valid signatures, no key leak, standing delegation drained deposits repeatedly
+
+## 3.5 — Encoded/encrypted blob triage (decode what can be decoded; identify the rest)
+
+```bash
+python3 scripts/decode_blob.py "<blob>"        # layered decode tree
+python3 scripts/decode_blob.py --scan <file>   # extract + decode candidate blobs
+python3 scripts/decode_blob.py --selftest      # CI vectors
+```
+
+Decision tree for any suspicious blob found in code/config/logs:
+1. **Encoding ≠ encryption.** base16/32/58/64/85, URL-encoding, unicode escapes, quoted-printable, gzip/zlib/bz2/lzma layers — recursively decoded by the tool. Decoded layers that reveal credentials feed the secrets-detection patterns (encoded secrets hidden from raw greps = the point).
+2. **JWTs** — header+payload decode (never treat as "decrypted": signature verification is separate, §3).
+3. **Wrapper formats** — Ansible Vault, OpenSSL/CryptoJS `Salted__`, PEM, age: the tool IDENTIFIES and prints the exact decrypt command (openssl -pbkdf2 / -md md5 legacy for CryptoJS). **Ciphertext + hardcoded key in the same repo = CRITICAL finding chain** (key: secrets-detection §1; blob: this section) — decrypt to confirm impact, note both file:line.
+4. **One-way hashes** (bcrypt/argon2/MD5/SHA hex) — identified, never "decoded"; judge by §2 purpose rules. Claims of "decrypting" hashes are wordlist lookups.
+5. **Classical ciphers** (Caesar/ROT-n, single-byte XOR) — brute-forced with chi-square scoring; only letter-rich, non-English input is eligible (short strings are statistically ambiguous — verify plausibility before reporting).
+6. **Modern crypto without a key is not decodable — by anyone.** If no key exists in the repo, the finding is the encryption's PURPOSE and CONFIG (mode, IV, key source), not the plaintext.
 
 ## 4 — Reporting
+
 
 Per finding: purpose ("password hashing"), current construction, why it fails (one sentence), the drop-in replacement with correct usage example (e.g. `crypto.createCipheriv('aes-256-gcm', key, crypto.randomBytes(12))`), and severity per the table. Note positives: libsodium/argon2/CSPRNG usage done right.
