@@ -25,8 +25,11 @@ dune query create --name <NAME> --sql <SQL> [flags]
 | `--name` | `string` | Yes | -- | Human-readable query title |
 | `--sql` | `string` | Yes | -- | DuneSQL query text |
 | `--description` | `string` | No | `""` | Short description of the query |
-| `--private` | `bool` | No | `false` | Make the query private (not publicly visible) |
+| `--private` | `bool` | No | `false` | Make the query private (not publicly visible); may be forced by team settings |
 | `--temp` | `bool` | No | `false` | Create a temporary query (auto-deleted, not shown in saved queries) |
+| `--folder-id` | `string` | No | -- | Save the query into this folder (see `dune folder list`) |
+| `--folder-name` | `string` | No | -- | Save the query into the folder with this name |
+| `--parameters` | `string` | No | -- | JSON array declaring `{{key}}` parameters: `[{"key":"days","type":"number","value":"30"}]`; type is text, number, date, or enum |
 | `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
 
 ### Output
@@ -61,6 +64,106 @@ QUERY_ID=$(dune query create --name "My Query" --sql "SELECT 1" -o json | jq -r 
 
 > [!CAUTION]
 > This is a **write** command -- it creates a resource in the user's Dune account.
+
+---
+
+## query search
+
+Find saved queries by name (not case-sensitive), in public queries and the private ones you or your team can access. Use it to get a query ID instead of asking the user for one.
+
+```bash
+dune query search --query <TEXT> [flags]
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--query` | `string` | Yes | -- | Text to find in the query name |
+| `--owned-only` | `bool` | No | `false` | Only queries owned by the API key's user or team |
+| `--limit` | `int` | No | `20` | Maximum results (1-50) |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+```bash
+dune query search --query "dex volume" --owned-only -o json
+```
+
+---
+
+## query create-and-run
+
+Save a query, run it, optionally chart it, and show the first rows, in one call. Prefer it over `query create` + `query run` + `viz create` when the user wants a saved query and its results.
+
+```bash
+dune query create-and-run --name <NAME> --sql <SQL> [--chart-type <TYPE> --config <JSON>] [flags]
+```
+
+### Flags
+
+Takes every `query create` flag, plus:
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--name` | `string` | Yes | -- | Query title |
+| `--sql` | `string` | Yes | -- | DuneSQL, `@path`, or `@-` |
+| `--description` | `string` | No | -- | Query description |
+| `--private` | `bool` | No | `false` | Make the query private |
+| `--temp` | `bool` | No | `false` | Temporary query (cannot have a chart) |
+| `--folder-id` | `string` | No | -- | Save into this folder |
+| `--folder-name` | `string` | No | -- | Save into the folder with this name |
+| `--parameters` | `string` | No | -- | Parameter declarations (JSON array) |
+| `--performance` | `string` | No | (auto) | `small`, `medium`, or `large`; omit by default |
+| `--limit` | `int` | No | `20` | Result rows to show (0-32000) |
+| `--timeout` | `int` | No | `60` | Seconds to wait; on timeout it prints the IDs, so fetch rows later with `dune execution results` |
+| `--chart-type` | `string` | No | -- | `column`, `line`, `area`, `scatter`, `pie`, `counter`, or `table` |
+| `--config` | `string` | No | -- | Chart config JSON (see [visualization-management.md](visualization-management.md#chart-config)) |
+| `--viz-name` | `string` | No | query name | Chart name |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+```bash
+dune query create-and-run --name "Daily blocks" \
+  --sql "SELECT date_trunc('day', time) AS day, count(*) AS blocks FROM ethereum.blocks WHERE time > now() - interval '7' day GROUP BY 1" \
+  --chart-type line --config '{"chart_type":"line","x_axis":{"column":"day","title":"Day"},"y_axes":{"left":{"label_format":"0,0","series":[{"column":"blocks","title":"Blocks"}]},"right_enabled":false,"right_label_format":"","right_series":[]},"enable_legend":false,"stacked":false}' -o json
+```
+
+If the query, run, or chart fails, everything created so far is still printed and the command exits with an error.
+
+> [!CAUTION]
+> This is a **write** command, and the run uses credits.
+
+---
+
+## query alert
+
+Put a saved query on a schedule and notify the user each time a run returns rows. Sets the query's schedule (creating it or replacing its frequency and tier) and creates or replaces the alert on the chosen channel.
+
+```bash
+dune query alert <query-id> --cron <EXPR> --performance <TIER> (--email <ADDR>... | --slack-webhook <URL> | --discord-webhook <URL> | --webhook <URL>)
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--cron` | `string` | Yes | -- | Supported 5-part UTC cron (see [schedules-and-alerts.md](schedules-and-alerts.md#supported-cron-expressions)) |
+| `--performance` | `string` | Yes | -- | `small`, `medium`, or `large`; every run is charged at this tier |
+| `--email` | `string` | One channel | -- | Address to notify; repeat for up to 5 |
+| `--slack-webhook` | `string` | One channel | -- | Slack incoming webhook: inline, `@path`, or `@-` |
+| `--discord-webhook` | `string` | One channel | -- | Discord webhook: inline, `@path`, or `@-` |
+| `--webhook` | `string` | One channel | -- | HTTPS URL that receives a JSON POST per alert: inline, `@path`, or `@-` |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+- Write the query so it returns rows **only** when the event happened in the latest period (e.g. the last hour for an hourly schedule). Otherwise it alerts on every run.
+- A query has one alert per channel; a new alert replaces that channel's alert.
+- Webhook URLs are secrets: pass them as `@path` or `@-`, never inline in a command the user's history keeps.
+- To stop the alert, delete the schedule: `dune schedule delete --query-id <id>`.
+
+```bash
+dune query alert 12345 --cron "0 * * * *" --performance small --email me@example.com -o json
+```
+
+> [!CAUTION]
+> This is a **write** command. It changes the query's schedule, and every scheduled run uses credits.
 
 ---
 
@@ -143,6 +246,9 @@ dune query update <query-id> [flags]
 | `--description` | `string` | No | -- | New description |
 | `--private` | `bool` | No | -- | Set privacy flag |
 | `--tags` | `[]string` | No | -- | Replace all tags (comma-separated) |
+| `--parameters` | `string` | No | -- | Replace all parameters (JSON array, see `query create`) |
+| `--archived` | `bool` | No | -- | `true` archives the query, `false` restores it |
+| `--temp` | `bool` | No | -- | `true` makes the query temporary, `false` saves it to the library |
 | `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
 
 Only the provided flags are updated; omitted fields remain unchanged.

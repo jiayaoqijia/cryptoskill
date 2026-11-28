@@ -16,11 +16,11 @@ If the command fails because `dune` is not found on PATH (e.g. "command not foun
 
 If a command fails with an authentication or authorization error (e.g. 401, "unauthorized", "missing API key"), the user needs to authenticate. **Stop and ask the user** to authenticate in a separate terminal:
 
-1. Go to Dune (https://dune.com), navigate to the "APIs & Connectors" section, and then the "API Keys" tab to generate an API key (if they don't have one)
+1. On https://dune.com, open **Connect > API keys** in the side navigation and create an API key (if they don't have one)
 2. Run `dune auth` in their terminal and follow the prompts
 3. Come back to the conversation once done
 
-Then retry the original command. If it still fails, inform the user their key appears invalid and ask them to retry.
+Then retry the original command. If it still fails, inform the user their key appears invalid and ask them to retry. `dune whoami -o json` shows which account the current key belongs to.
 
 Do **not** attempt to handle the API key yourself -- the user must authenticate outside of this session.
 

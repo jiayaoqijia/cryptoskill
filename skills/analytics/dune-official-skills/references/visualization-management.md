@@ -16,6 +16,10 @@ dune viz <subcommand> [flags]         # alias
 Create a new visualization attached to an existing saved query.
 
 ```bash
+# Preferred: compact chart config, validated by Dune against the query's columns
+dune viz create --query-id <ID> --name <NAME> --chart-type <TYPE> --config '<JSON>' [flags]
+
+# Raw Dune options, for types --chart-type does not cover
 dune viz create --query-id <ID> --name <NAME> --type <TYPE> --options '<JSON>' [flags]
 ```
 
@@ -27,7 +31,9 @@ dune viz create --query-id <ID> --name <NAME> --type <TYPE> --options '<JSON>' [
 | `--name` | `string` | Yes | -- | Visualization name, max 300 characters |
 | `--type` | `string` | No | `table` | Visualization type (see below) |
 | `--description` | `string` | No | `""` | Visualization description, max 1000 characters |
-| `--options` | `string` | Yes | -- | JSON string of visualization options (see format below) |
+| `--chart-type` | `string` | No | -- | `column`, `line`, `area`, `scatter`, `pie`, `counter`, or `table`; use with `--config` |
+| `--config` | `string` | No | -- | Chart config JSON, `@path`, or `@-` (see [Chart Config](#chart-config)) |
+| `--options` | `string` | No | -- | Raw visualization options JSON (see [Options Format](#options-format)); use instead of `--chart-type`/`--config` |
 | `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
 
 ### Visualization Types
@@ -135,6 +141,9 @@ dune viz update <visualization_id> [flags]
 | `--name` | `string` | No | -- | New visualization name (max 300 characters) |
 | `--type` | `string` | No | -- | New visualization type (see [Visualization Types](#visualization-types)) |
 | `--description` | `string` | No | -- | New description (max 1000 characters) |
+| `--counter-label` | `string` | No | -- | Caption shown with a counter's number; empty removes it. Counters only |
+| `--chart-type` | `string` | No | -- | New chart type; use with `--config` |
+| `--config` | `string` | No | -- | New chart config JSON. Options the config does not cover (e.g. custom colors) are kept when the type stays the same |
 | `--options` | `string` | No | -- | New visualization options JSON (see [Options Format](#options-format)) |
 | `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
 
@@ -154,6 +163,12 @@ dune viz update 12345 --type counter \
 
 # Update description only
 dune viz update 12345 --description "Updated weekly report chart" -o json
+
+# Change a counter's caption
+dune viz update 12345 --counter-label "Total volume" -o json
+
+# Switch to a different chart with a chart config
+dune viz update 12345 --chart-type column --config @column.json -o json
 ```
 
 > [!CAUTION]
@@ -213,19 +228,52 @@ This step is required for **two reasons**:
 1. **Column discovery:** Look at `result.metadata.column_names` in the response — these are the **exact** column names you must use in `--options`. Column names are case-sensitive and may be auto-generated (e.g. `SELECT 1` produces `_col0`, not `1`).
 2. **Rendering:** A visualization will show "No results available" until the query has been executed at least once. The embed page displays results from the latest execution — without one, there's nothing to render.
 
-### Step 2: Build options using the discovered column names
+### Step 2: Build a chart config using the discovered column names
 
-Use the column names from step 1 to construct the `--options` JSON for your visualization type (see format below).
+Use the column names from step 1 to write a `--config` for `--chart-type` (see [Chart Config](#chart-config)). Dune rejects a config that names columns the query does not return. Use raw `--options` only for types `--chart-type` does not cover.
 
 ### Step 3: Create the visualization
 
 ```bash
-dune viz create --query-id <id> --name "..." --type <type> --options '<json>' -o json
+dune viz create --query-id <id> --name "..." --chart-type <type> --config '<json>' -o json
 ```
+
+Or create the query, run it, and chart it in one call with `dune query create-and-run --chart-type --config` (see [query-management.md](query-management.md#query-create-and-run)).
 
 ### Step 4: Verify the visualization renders
 
 Open the returned URL to confirm it renders correctly.
+
+---
+
+## Chart Config
+
+`--config` describes the chart in terms of result columns; `chart_type` must equal `--chart-type`. It takes inline JSON, `@path`, or `@-`.
+
+```text
+column/line/area/scatter:
+  {"chart_type":"line","x_axis":{"column":"day","title":"Day"},
+   "y_axes":{"left":{"label_format":"0,0","series":[{"column":"volume","title":"Volume"}]},
+             "right_enabled":false,"right_label_format":"","right_series":[]},
+   "enable_legend":true,"stacked":false}
+  Optional: x_axis.sort_x, y_axes.left.title/tick_format, group_by_column (one series per
+  distinct value), when_duplicate_x (first, sum, all), normalize_to_percentage.
+  Only line and area charts can use the right axis.
+pie:
+  {"chart_type":"pie","x_axis_column":"token","y_axis_column":"volume",
+   "y_axis_title":"Volume","y_axis_label_format":"$0.0a","show_labels":true}
+counter:
+  {"chart_type":"counter","column":"total","row_num":1,"decimal_places":0,"prefix":"",
+   "suffix":"","label":"Total","color_positive":false,"color_negative":false}
+table:
+  {"chart_type":"table","columns":[{"name":"address","title":"Address",
+   "column_type":"normal","data_type":"string","align":"left","is_hidden":false,
+   "color_positive":false,"color_negative":false,"number_format":"0,0"}]}
+```
+
+`dune viz create --help` prints the same format for the installed CLI version.
+
+> For a private query, the chart and image URLs that `viz create` and `viz get` return carry an API key. Do not share them.
 
 ---
 

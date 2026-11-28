@@ -2,7 +2,7 @@
 
 > **Prerequisite:** Read the [main skill](../SKILL.md) for authentication, global flags, and key concepts.
 
-Manage Dune dashboards -- create, retrieve, update, and archive.
+Manage Dune dashboards -- find, create, retrieve, update, edit one widget, render an image, and archive.
 
 ```bash
 dune dashboard <subcommand> [flags]
@@ -195,6 +195,83 @@ dune dashboard update 12345 \
 
 > [!CAUTION]
 > This is a **write** command -- it modifies an existing resource. Widget updates replace ALL existing widgets.
+
+---
+
+## dashboard search
+
+Find dashboards by name (not case-sensitive), in public dashboards and the private ones you or your team can access. Use it to get a dashboard ID instead of asking the user.
+
+```bash
+dune dashboard search --query <TEXT> [flags]
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--query` | `string` | Yes | -- | Text to find in the dashboard name |
+| `--owned-only` | `bool` | No | `false` | Only dashboards owned by the API key's user or team |
+| `--limit` | `int` | No | `20` | Maximum results (1-50) |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+---
+
+## dashboard update-widget
+
+Move or resize one widget, or change a text widget's markdown. Every other widget keeps its content and position, so this is safer than `dashboard update` for small layout changes.
+
+```bash
+dune dashboard update-widget <dashboard_id> --widget-type <TYPE> --widget-id <ID> [--row R --col C --size-x W --size-y H] [--text <MD>]
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--widget-type` | `string` | Yes | -- | `visualization`, `text`, or `param` |
+| `--widget-id` | `string` | Yes | -- | `widget_id` from `dashboard get -o json` (numeric for visualization and text, UUID for param) |
+| `--row` | `int` | With position | -- | Top edge in grid rows (0 is the top) |
+| `--col` | `int` | With position | -- | Left edge in grid columns (0 to 5) |
+| `--size-x` | `int` | With position | -- | Width in grid columns (1 to 6) |
+| `--size-y` | `int` | With position | -- | Height in grid rows |
+| `--text` | `string` | No | -- | New markdown for a text widget: inline, `@path`, or `@-` |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+Give a full position (all four of `--row`, `--col`, `--size-x`, `--size-y`), `--text`, or both. The grid is 6 columns wide; a row is 32 px and charts are 8 rows high by default. To add or remove widgets use `dashboard update`; to rename a chart or change its counter label use `dune viz update`.
+
+```bash
+# Make a chart full width at the top
+dune dashboard update-widget 12345 --widget-type visualization --widget-id 678 --row 0 --col 0 --size-x 6 --size-y 8 -o json
+
+# Rewrite a text widget
+dune dashboard update-widget 12345 --widget-type text --widget-id 679 --text @intro.md -o json
+```
+
+> [!CAUTION]
+> This is a **write** command -- it changes the dashboard's layout or text.
+
+---
+
+## dashboard image
+
+Render the whole dashboard as dune.com shows it and save it as a JPEG, to check the layout after `dashboard create`, `dashboard update`, or `dashboard update-widget`. It uses each query's latest completed results and runs no queries. Rendering takes several seconds.
+
+```bash
+dune dashboard image <dashboard_id> [--file <PATH>] -o json
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--file` | `string` | No | `dashboard-<id>.jpg` | Where to save the JPEG |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+- Open the saved file to look at it (most agents can read images). Fix overlapping or badly sized widgets with `dashboard update-widget`.
+- The command fails, listing the charts, when a chart shows enterprise datasets that are not available to AI tools or a query that never completed. Run those queries first, or tell the user which charts are withheld.
+- If the image shows the dashboard header but no widgets, the render failed on Dune's side. Tell the user, and check the layout from the widget positions in `dune dashboard get <id> -o json` instead.
+- For a private dashboard, Dune reuses or creates a share link, as the **Share** button does. The command never prints the link.
 
 ---
 

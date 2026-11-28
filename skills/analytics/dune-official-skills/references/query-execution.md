@@ -34,6 +34,7 @@ dune query run <query-id> [flags]
 | `--performance` | `string` | No | (auto) | Performance tier override: `small`, `medium`, or `large`. Omit unless the user asks, the query is complex, or a previous run timed out. |
 | `--limit` | `int` | No | `0` | Maximum rows to display (`0` = all rows) |
 | `--no-wait` | `bool` | No | `false` | Submit and exit immediately without waiting for results |
+| `--timeout` | `int` | No | `300` | Seconds to wait for the execution before giving up |
 | `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
 
 ### Wait Behavior
@@ -95,11 +96,12 @@ dune query run-sql --sql <SQL> [flags]
 
 | Flag | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `--sql` | `string` | Yes | -- | DuneSQL query to execute |
+| `--sql` | `string` | Yes | -- | DuneSQL query to execute; also `@path` or `@-` (stdin) |
 | `--param` | `[]string` | No | -- | Query parameter as `key=value` (repeatable). Values are auto-typed by the API. |
 | `--performance` | `string` | No | (auto) | Performance tier override: `small`, `medium`, or `large`. Omit unless the user asks, the query is complex, or a previous run timed out. |
 | `--limit` | `int` | No | `0` | Maximum rows to display (`0` = all rows) |
 | `--no-wait` | `bool` | No | `false` | Submit and exit immediately without waiting for results |
+| `--timeout` | `int` | No | `300` | Seconds to wait for the execution before giving up |
 | `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
 
 ### Output
@@ -169,7 +171,29 @@ dune execution results <execution-id> [flags]
 |------|------|----------|---------|-------------|
 | `--limit` | `int` | No | `0` | Maximum rows to return (`0` = all rows) |
 | `--offset` | `int` | No | `0` | Number of rows to skip (for pagination) |
+| `--columns` | `[]string` | No | -- | Return only these columns, in this order (comma-separated) |
+| `--filter` | `string` | No | -- | Keep rows matching a WHERE-like expression, e.g. `'"amount" > 0'` |
+| `--sort-by` | `string` | No | -- | ORDER BY fragment, e.g. `'"block_time" DESC'` (repeatable) |
+| `--sample` | `int` | No | -- | Random sample of about this many rows; not with `--limit`/`--offset` |
+| `--no-wait` | `bool` | No | `false` | Return the current state without waiting |
+| `--timeout` | `int` | No | `300` | Seconds to wait for completion |
 | `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+### Shape Results on the Server
+
+Prefer `--columns`, `--filter`, `--sort-by`, and `--sample` over downloading every row and filtering locally:
+
+```bash
+# Top 10 rows by gas, two columns only
+dune execution results 01ABC... --columns number,gas_used --filter '"gas_used" > 20000000' --sort-by '"gas_used" DESC' --limit 10 -o json
+
+# A random sample of about 100 rows to inspect a large result
+dune execution results 01ABC... --sample 100 -o json
+```
+
+### Read a Saved Query's Latest Result Without Running It
+
+Running a query costs credits. If the user only needs the last stored result, get the latest execution ID with `dune query get <query-id> -o json` and pass it to `dune execution results`.
 
 ### Execution State Handling
 
@@ -285,6 +309,47 @@ dune execution results 01JXYZ... --limit 100 --offset 0 -o json
 # 4. Fetch next page
 dune execution results 01JXYZ... --limit 100 --offset 100 -o json
 ```
+
+---
+
+## execution list
+
+List the team's query runs from every source (the Dune app, the API, MCP, the CLI, schedules, materialized views, connectors), with who started each, its source, and its engine size. **Needs a team API key.**
+
+```bash
+dune execution list [--status active|finished] -o json
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--status` | `string` | No | `active` | `active`: queued and running runs, oldest first, at most 100. `finished`: runs that finished in the last hour, newest first, at most 50 |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+Use it when the user asks what is running, why their queries are queued, or which run is stuck.
+
+---
+
+## execution cancel
+
+Stop one of the team's queued or running runs. Team admins can stop any of the team's runs; other members only their own. **Needs a team API key.**
+
+```bash
+dune execution cancel <execution-id> --yes -o json
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `-y, --yes` | `bool` | No | `false` | Cancel without the interactive question. Required in a non-interactive shell |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+If the run ends before the cancel arrives, the command fails with "This run has already finished"; there is nothing to cancel, so do not retry.
+
+> [!CAUTION]
+> A run is shared when other users submitted the same SQL on the same engine, and cancelling it stops it for them too. **Always confirm with the user** which run to cancel before passing `--yes`. Find the ID with `dune execution list`.
 
 ---
 

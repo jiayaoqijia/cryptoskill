@@ -188,6 +188,44 @@ dune dataset search-by-contract --contract-address 0x1f9840a85d5aF5bf1D1762F925B
 
 ---
 
+## dataset blockchains
+
+List the blockchain names in the catalog with how many tables each has. Use it when unsure of a chain's exact name before `--blockchains`, or to see which chains cover a topic.
+
+```bash
+dune dataset blockchains [flags]
+```
+
+### Flags
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--categories` | `[]string` | No | -- | Count only tables in these categories: canonical, decoded, spell, community |
+| `--query` | `string` | No | -- | Count only tables matching a topic, e.g. `lending` |
+| `--limit` | `int` | No | `200` | Maximum blockchains to return |
+| `--offset` | `int` | No | `0` | Blockchains to skip |
+| `-o, --output` | `string` | No | `text` | Output format: `text` or `json` |
+
+```bash
+dune dataset blockchains --query lending --limit 10 -o json
+```
+
+---
+
+## dataset size
+
+Show the storage size of a table or view, and of each physical table under it (spells like `dex.trades` sit on many). Use it to estimate how much a full scan reads before running an expensive query. It runs an `EXPLAIN`, which changes no data. It does not return row counts or columns.
+
+```bash
+dune dataset size <table> -o json
+```
+
+```bash
+dune dataset size dex.trades -o json
+```
+
+---
+
 ## Workflow: Discover Tables and Write SQL
 
 ```bash
