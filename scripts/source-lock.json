@@ -62321,6 +62321,48 @@
         "SKILL.md": 420,
         "manifest.yaml": 420
       }
+    },
+    "wallets/viprasol-tech-wallet-security-review": {
+      "repo": "viprasol-tech/wallet-security-review",
+      "path": "skill.md",
+      "revision": "ea29093d9d62222c4003fbf159fa3295e8190aa8",
+      "files": {
+        ".github/workflows/validate.yml": "4b85f33de2dabd57be92994e71092d66e10b9eb423ef364f65a8bf5b212a3228",
+        ".gitignore": "3d58fff83e7a81d9d4ba4f4ae5741871bd7ce4d9b21ad6a90227d31b46a07f32",
+        "CHANGELOG.md": "851920606cd624fb8c9f2cd00e2d883f2be4ea3acd7f89751af86cbf950fc4fb",
+        "LICENSE": "dc80ba485ddde4658af49ef7250a11138acd48dce4af9af357dff7719e5ac6ec",
+        "README.md": "474a22c1ae478db977e6a5956a8d020690107e12cb66bb281cdb3a518eed5363",
+        "examples/permit2-phishing-signature.md": "2487bbd55be6caacc1b84e90a1b7478e7d7a659ee0a0e03366d10dcd221d725f",
+        "examples/wallet-approval-audit.md": "b75f88bc281dc033c924609701100560f8b464b73256d92c98b3506b1ebdb144",
+        "scripts/validate_skill.py": "4c2cede4fb0b0c68263079afb3f98559642ef63f44261f5d16b850d6af3fffe2",
+        "SKILL.md": "8470526ee1aa6e7b904f2fe1bae14d5632ecb940a9dcdfdede73a906a5250501",
+        "tests/test_validate_skill.py": "60050a73123c98c46f9a27d495e9ad516ff77419c0e6e384d3a12879fda96517"
+      },
+      "modes": {
+        ".github/workflows/validate.yml": 420,
+        ".gitignore": 420,
+        "CHANGELOG.md": 420,
+        "LICENSE": 420,
+        "README.md": 420,
+        "examples/permit2-phishing-signature.md": 420,
+        "examples/wallet-approval-audit.md": 420,
+        "scripts/validate_skill.py": 420,
+        "SKILL.md": 420,
+        "tests/test_validate_skill.py": 420
+      }
+    },
+    "mcp-servers/feraterra-feraterra-trading": {
+      "repo": "feraterra/feraterra-mcp",
+      "path": "skills/feraterra-trading/SKILL.md",
+      "revision": "da137614f4d0879fec02872207a42b1a64a3cf26",
+      "files": {
+        "SKILL.md": "068a4c3f9b386345e0c2771da7b606e2af60f85ec83cddd82d483d8cf66587b0",
+        "LICENSE": "9593873abaeb9bedbc61b24d2d3c75e411b41d823de6a43b504f3b1e6b028bb8"
+      },
+      "modes": {
+        "SKILL.md": 420,
+        "LICENSE": 420
+      }
     }
   },
   "repositories": {
@@ -62482,7 +62524,7 @@
     "priors-agents/priors": "e0a91b29efba6fa1b97ce00bcea75505641a2224",
     "ox31461/gasless-anygas-robyn-relay": "b2ac270d6f7e55a685db3efa987684e2e2913f04",
     "pokiehead/sic-crypto-kit": "40608e3ed0286b32596aa6c5704c63a643971cb5",
-    "hristovdimitri2-hub/kristo-intelligence-6": "ed551cf52a8de3b2d9d79ba9796cd8d19c667eb7",
+    "hristovdimitri2-hub/kristo-intelligence-6": "43f35a0949468f3373f73361bebf29657421817c",
     "loomdesk-hq/agents": "ac16b1d8a37acf2f3c7b39c781031d3299c5bcd0",
     "abhi15724/quantforge-ai": "bcae9b2d00ece4449d5ccdf202300cb49ee92973",
     "aveetechapp/avee-skills": "fe4b9338c4f341043b3115ab07bf72664f0005c0",
@@ -62638,10 +62680,11 @@
     "stanislavv01/solana-perps-mcp": "28b413b4ed9f029d937fee5a96d5216a64d65e44",
     "parmasanandgarlic/farmdash-openclaw-skills": "c2fe003a8825af630bb1f33a4f09ce0eafb8e106",
     "quantset/quantset-js": "e81d309537463ec34a8f5e7bc6236f8c46d5ebb5",
-    "feraterra/feraterra-mcp": "c1a04c588efbd706bc7f18ac4de1b6394fd4c380",
+    "feraterra/feraterra-mcp": "da137614f4d0879fec02872207a42b1a64a3cf26",
     "lightsmite/popa-recon-mcp": "9e811d7946580b30ee220b6a7bf6ab1cb053a510",
     "hamzaqai/intelliacore-mcp-afip": "8a3d61a8894dcddea32238419b4d4dc420235fae",
-    "mazhic87/sage-x402-mcp-tools": "ec4f4797e88b4c3ce6b272b2dd37d2e42ed59ca6",
-    "blockrunai/awesome-finance-mcp": "0b28f847673d24c583ae478b9223b6bad35c9971"
+    "mazhic87/sage-x402-mcp-tools": "9c09a67fe3edbb975742f78e1f41c1186360138d",
+    "blockrunai/awesome-finance-mcp": "0b28f847673d24c583ae478b9223b6bad35c9971",
+    "viprasol-tech/wallet-security-review": "ea29093d9d62222c4003fbf159fa3295e8190aa8"
   }
 }

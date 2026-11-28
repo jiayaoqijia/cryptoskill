@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-28T06:34:23.968954+00:00",
+  "generated_at": "2026-11-28T12:31:05.284823+00:00",
   "extractor_version": "0.3.1",
   "taxonomy_version": 1,
   "hostlist_version": "2026-09-06",
@@ -143038,6 +143038,68 @@
       },
       "hosted_operators": []
     },
+    "mcp-servers/feraterra-feraterra-trading": {
+      "name": "feraterra-trading",
+      "execution_model": "local_executor",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "mcp-servers/fernando-mcp-agent": {
       "name": "fernando-mcp-agent",
       "execution_model": "read_only",
@@ -260619,6 +260681,68 @@
       },
       "hosted_operators": []
     },
+    "wallets/viprasol-tech-wallet-security-review": {
+      "name": "wallet-security-review",
+      "execution_model": "router_orchestrator",
+      "capabilities": {
+        "auto_invocable": {
+          "value": null,
+          "confidence": "low",
+          "source": "unknown"
+        },
+        "can_execute_shell": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_install_code": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_write_files": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_browse_web": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_spawn_subagents": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "can_move_funds": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_private_key": {
+          "value": true,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "requires_hosted_operator": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "uses_remote_install_script": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        },
+        "mutable_remote_runtime": {
+          "value": false,
+          "confidence": "medium",
+          "source": "extracted"
+        }
+      },
+      "hosted_operators": []
+    },
     "wallets/wallet-pilot": {
       "name": "WalletPilot",
       "execution_model": "unknown",
@@ -261055,31 +261179,31 @@
     }
   },
   "summary": {
-    "discovered": 4196,
-    "processed": 4196,
+    "discovered": 4198,
+    "processed": 4198,
     "skipped_no_skill_md": 0,
     "execution_models": {
       "read_only": 2948,
-      "router_orchestrator": 189,
+      "router_orchestrator": 190,
       "unknown": 498,
       "analysis_only": 257,
       "unsigned_tx_builder": 123,
-      "local_executor": 108,
+      "local_executor": 109,
       "installer_bootstrap": 54,
       "custodial_executor": 19
     },
     "capability_counts": {
       "auto_invocable": 3,
-      "can_execute_shell": 1496,
-      "can_install_code": 740,
+      "can_execute_shell": 1498,
+      "can_install_code": 741,
       "can_write_files": 293,
       "can_browse_web": 341,
-      "can_spawn_subagents": 342,
-      "can_move_funds": 321,
-      "requires_private_key": 562,
+      "can_spawn_subagents": 343,
+      "can_move_funds": 322,
+      "requires_private_key": 564,
       "requires_hosted_operator": 392,
       "uses_remote_install_script": 54,
-      "mutable_remote_runtime": 740
+      "mutable_remote_runtime": 741
     }
   }
 }
